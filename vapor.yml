@@ -1,0 +1,24 @@
+id: 34225
+name: OpnForm
+ignore:
+  - 'storage/clockwork'
+  - 'storage/logs'
+environments:
+  production:
+    warm: 5
+    memory: 1024
+    cli-memory: 512
+    cli-timeout: 900
+    runtime: 'php-8.1:al2'
+    storage: 'opnforms-prod'
+    database: 'JuPersoDb'
+    domain: 'opnform.com'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+      - 'php artisan event:cache'
+      - 'npm ci && npm run prod && rm -rf node_modules'
+    deploy:
+      - 'php artisan migrate --force'
+    firewall:
+      rate-limit: 1000
+    timeout: 60

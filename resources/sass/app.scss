@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'elements/transitions';
+
+
+body.dark * {
+  @apply border-gray-600
+}
+
+#app {
+  font-family: 'Inter', sans-serif;
+   @apply min-h-screen;
+}
+
+@layer base {
+
+  p, div {
+    @apply text-gray-800 dark:text-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  h1 {
+    @apply text-3xl sm:text-4xl font-extrabold;
+  }
+
+  h2 {
+    @apply text-3xl font-extrabold;
+  }
+
+  a {
+    @apply text-nt-blue hover:underline;
+  }
+}
+
+.bg-white {
+  @apply dark:bg-notion-dark;
+}
+
+.bg-gray-50 {
+  @apply dark:bg-notion-dark-light;
+}
