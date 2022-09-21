@@ -1,76 +1,52 @@
 # OpnForm
 
-<a href="https://github.com/jhumanj/OpnForm/actions"><img src="https://github.com/jhumanj/laravel-vue-tailwind-spa/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/jhumanj/laravel-vue-tailwind-spa"><img src="https://poser.pugx.org/jhumanj/laravel-vue-tailwind-spa/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/jhumanj/laravel-vue-tailwind-spa"><img src="https://poser.pugx.org/jhumanj/laravel-vue-tailwind-spa/v/stable.svg" alt="Latest Stable Version"></a>
-
-> A Laravel-Vue-Tailwind SPA starter kit. Forked from [cretueusebiu/laravel-vue-spa](https://github.com/cretueusebiu/laravel-vue-spa).
-
 <p align="center">
-<img src="https://i.ibb.co/XCcPJXR/Capture-d-e-cran-2021-04-14-a-17-52-07.png">
+<img src="https://github.com/JhumanJ/OpnForm/blob/main/public/img/social-preview.png?raw=true">
 </p>
+
+<a href="https://github.com/jhumanj/OpnForm/actions"><img src="https://github.com/jhumanj/laravel-vue-tailwind-spa/workflows/tests/badge.svg" alt="Build Status"></a>
+
+> An open-source form builder. It's an alternative to products like Typeform, JotForm, Tally etc.
 
 ## Features
 
-- Laravel 8
-- Vue + VueRouter + Vuex + VueI18n + ESlint
-- Pages with dynamic import and custom layouts
-- Login, register, email verification and password reset
-- Authentication with JWT
-- Socialite integration
-- TailwindCSS v2
+- No-code form builder, with infinite number of fields & submissions
+- Text inputs, Date inputs, URL inputs, Phone inputs, Email inputs, Checkboxes, Select and Multi-Select inputs, Number Inputs, Star-ratings, File uploads & more 
+- Embed anywhere (on your website, in your Notion page, etc)
+- Email notifications (for both form owner & form respondents)
+- Hidden fields
+- Form passwords
+- URL form pre-fill
+- Slack integration
+- Webhooks
+- Form logic
+- Customize colors, add images or even some custom code
+- Captcha form protection
+- Form closing date
+- Limit the number of submissions allowed
 
-## Installation
+And much more!
 
-- `composer create-project --prefer-dist JhumanJ/laravel-vue-tailwind-spa`
-- Edit `.env` and set your database connection details
-- (When installed via git clone or download, run `php artisan key:generate` and `php artisan jwt:secret`)
-- `php artisan migrate`
-- `npm install`
+## Getting started with OpnForm
 
-## Usage
+The easiest way to get started with OpnForm is with the [official managed service in the Cloud](https://opnform.com/).
 
-#### Development
+It takes 1 minute to try out the builder for free. You'll have high availability, backups, security, and maintenance all managed for you.
 
-```bash
-# Build and watch
-npm run watch
-```
+## Self-hosting
 
-#### Production
+This section hasn't been written yet, we need to work on this. 
 
-```bash
-npm run production
-```
+## Tech Stack
 
-## Socialite
+OpnForm is a standard web application built with:
+- [Laravel](https://laravel.com/) PHP framework
+- [Vue.js](https://vuejs.org/) front-end framework
+- [TailwindCSS](https://tailwindcss.com/)
 
-This project comes with GitHub as an example for [Laravel Socialite](https://laravel.com/docs/5.8/socialite).
+## Contribute
+You're more than welcome to contribute to this project. We don't have guidelines on this yet, but we will soon. In the meantime, feel free to ask [any question here](https://github.com/JhumanJ/OpnForm/discussions).
 
-To enable the provider create a new GitHub application and use `https://example.com/api/oauth/github/callback` as the Authorization callback URL.
+## License
+OpnForm is open-source under the GNU Affero General Public License Version 3 (AGPLv3) or any later version. You can find it [here](https://github.com/JhumanJ/OpnForm/blob/main/LICENSE).
 
-Edit `.env` and set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` with the keys form your GitHub application.
-
-For other providers you may need to set the appropriate keys in `config/services.php` and redirect url in `OAuthController.php`.
-
-## Email Verification
-
-To enable email verification make sure that your `App\User` model implements the `Illuminate\Contracts\Auth\MustVerifyEmail` contract.
-
-## Testing
-
-```bash
-# Run unit and feature tests
-vendor/bin/phpunit
-
-# Run Dusk browser tests
-php artisan dusk
-```
-
-## Credits
-- [cretueusebiu](https://github.com/cretueusebiu/) for creating the original [Laravel Vue SPA](https://github.com/cretueusebiu/laravel-vue-spa)
-- [Tailwind Kit](https://www.tailwind-kit.com/) for all their Tailwind templates
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
