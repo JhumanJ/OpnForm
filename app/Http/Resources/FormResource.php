@@ -3,13 +3,14 @@
 namespace App\Http\Resources;
 
 use App\Http\Middleware\Form\PasswordProtectedForm;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class FormResource extends JsonResource
 {
-    private Array $cleanings = [];
+    private array $cleanings = [];
 
     /**
      * Transform the resource into an array.
@@ -19,15 +20,14 @@ class FormResource extends JsonResource
      */
     public function toArray($request)
     {
-        $userIsFormOwner = Auth::check() && Auth::user()->workspaces()->find($this->workspace_id) !== null;
-        if(!$userIsFormOwner && $this->doesMissPassword($request)){
+        if(!$this->userIsFormOwner() && $this->doesMissPassword($request)){
             return $this->getPasswordProtectedForm();
         }
 
-        $ownerData = $userIsFormOwner ? [
-            'creator' => $this->creator,
-            'views_count' => $this->when($this->workspace->is_pro, $this->views_count),
-            'submissions_count' => $this->when($this->workspace->is_pro, $this->submissions_count),
+        $ownerData = $this->userIsFormOwner() ? [
+            'creator' => new UserResource($this->creator),
+            'views_count' => $this->when($this->workspaceIsPro(), $this->views_count),
+            'submissions_count' => $this->when($this->workspaceIsPro(), $this->submissions_count),
             'notifies' => $this->notifies,
             'send_submission_confirmation' => $this->send_submission_confirmation,
             'webhook_url' => $this->webhook_url,
@@ -44,11 +44,12 @@ class FormResource extends JsonResource
             'notification_emails' => $this->notification_emails,
         ] : [];
 
-        $baseData = $this->getFilteredFormData(parent::toArray($request), $userIsFormOwner);
+        $baseData = $this->getFilteredFormData(parent::toArray($request), $this->userIsFormOwner());
 
         return array_merge($baseData, $ownerData, [
+            'is_pro' => $this->workspaceIsPro(),
             'workspace_id' => $this->workspace_id,
-            'workspace' => new WorkspaceResource($this->workspace),
+            'workspace' => new WorkspaceResource($this->getWorkspace()),
             'is_closed' => $this->is_closed,
             'is_password_protected' => false,
             'has_password' => $this->has_password,
@@ -86,7 +87,7 @@ class FormResource extends JsonResource
 
     private function doesMissPassword(Request $request)
     {
-        if (!$this->is_pro || !$this->has_password) return false;
+        if (!$this->workspaceIsPro() || !$this->has_password) return false;
 
         return !PasswordProtectedForm::hasCorrectPassword($request, $this->resource);
     }
@@ -106,5 +107,21 @@ class FormResource extends JsonResource
             'width' => 'centered',
             'properties' => []
         ];
+    }
+
+    private function getWorkspace() {
+        return $this->extra?->loadedWorkspace ?? $this->workspace;
+    }
+
+    private function workspaceIsPro() {
+        return $this->extra?->workspaceIsPro ?? $this->getWorkspace()->is_pro ?? $this->is_pro;
+    }
+
+    private function userIsFormOwner() {
+        return $this->extra?->userIsOwner ??
+            (
+                Auth::check()
+                && Auth::user()->workspaces()->find($this->workspace_id) !== null
+            );
     }
 }
