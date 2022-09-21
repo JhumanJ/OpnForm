@@ -8,7 +8,7 @@
             <span class="ml-2 text-xl font-bold tracking-wide text-gray-800 dark:text-gray-200">OpnForm</span>
           </a>
         </div>
-        <div class="grid grid-cols-2 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-3">
+        <div class="grid grid-cols-2 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-3 mt-8 lg:mt-0">
           <div>
             <p class="font-semibold tracking-wide text-gray-800 dark:text-gray-200">
               Resources
@@ -74,13 +74,16 @@
                    class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
                 >Twitter</a>
               </li>
-<!--              <li>-->
-<!--                <router-link :to="{name:'discount-community'}"-->
-<!--                             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"-->
-<!--                >-->
-<!--                  Student Discount-->
-<!--                </router-link>-->
-<!--              </li>-->
+              <li>
+                <a target="_blank" :href="githubUrl"
+                   class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+                >GitHub</a>
+              </li>
+              <li>
+                <a target="_blank" :href="forumUrl"
+                   class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+                >Forum</a>
+              </li>
 <!--              <li>-->
 <!--                <router-link :to="{name:'discount-community'}"-->
 <!--                             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"-->
@@ -149,6 +152,8 @@ export default {
 
   computed: {
     helpUrl: () => window.config.links.help_url,
+    githubUrl: () => window.config.links.github_url,
+    forumUrl: () => window.config.links.github_forum_url,
     changelogUrl: () => window.config.links.changelog_url,
     facebookGroupUrl: () => window.config.links.facebook_group,
     twitterUrl: () => window.config.links.twitter,
