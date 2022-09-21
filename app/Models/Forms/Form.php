@@ -88,7 +88,6 @@ class Form extends Model
 
     protected $appends = [
         'share_url',
-        'is_pro'
     ];
 
     protected $hidden = [
