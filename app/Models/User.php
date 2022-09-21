@@ -59,11 +59,6 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      */
     protected $appends = [
         'photo_url',
-        'is_subscribed',
-        'has_enterprise_subscription',
-        'admin',
-        'has_customer_id',
-        'has_forms'
     ];
 
     protected $withCount = ['workspaces'];

@@ -33,7 +33,17 @@ class FormController extends Controller
         $this->authorize('view', $workspace);
         $this->authorize('viewAny', Form::class);
 
-        return FormResource::collection($workspace->forms);
+        $workspaceIsPro = $workspace->is_pro;
+        $forms = $workspace->forms()->with(['creator','views','submissions'])->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
+            // Add attributes for faster loading
+            $form->extra = (object) [
+                'loadedWorkspace' => $workspace,
+                'workspaceIsPro' => $workspaceIsPro,
+                'userIsOwner' => true,
+            ];
+            return $form;
+        });
+        return FormResource::collection($forms);
     }
 
     /**
@@ -47,7 +57,18 @@ class FormController extends Controller
             $this->authorize('view', $workspace);
             $this->authorize('viewAny', Form::class);
 
-            $forms = $forms->merge($workspace->forms);
+            $workspaceIsPro = $workspace->is_pro;
+            $newForms = $workspace->forms()->with(['creator','views','submissions'])->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
+                // Add attributes for faster loading
+                $form->extra = (object) [
+                    'loadedWorkspace' => $workspace,
+                    'workspaceIsPro' => $workspaceIsPro,
+                    'userIsOwner' => true,
+                ];
+                return $form;
+            });
+
+            $forms = $forms->merge($newForms);
         }
         return FormResource::collection($forms);
     }
