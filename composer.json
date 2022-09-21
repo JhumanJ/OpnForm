@@ -15,10 +15,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/JhumanJ/laravel-notion-api.git"
-    },
-    {
-      "type": "composer",
-      "url": "https://satis.spatie.be"
     }
   ],
   "require": {

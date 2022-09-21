@@ -1,6 +1,6 @@
-# Laravel-Vue-Tailwind SPA 
+# OpnForm
 
-<a href="https://github.com/jhumanj/laravel-vue-tailwind-spa/actions"><img src="https://github.com/jhumanj/laravel-vue-tailwind-spa/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://github.com/jhumanj/OpnForm/actions"><img src="https://github.com/jhumanj/laravel-vue-tailwind-spa/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/jhumanj/laravel-vue-tailwind-spa"><img src="https://poser.pugx.org/jhumanj/laravel-vue-tailwind-spa/d/total.svg" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/jhumanj/laravel-vue-tailwind-spa"><img src="https://poser.pugx.org/jhumanj/laravel-vue-tailwind-spa/v/stable.svg" alt="Latest Stable Version"></a>
 
