@@ -10,6 +10,9 @@
       'links' => config('links'),
       'production' => App::isProduction(),
       'hCaptchaSiteKey' => config('services.h_captcha.site_key'),
+      'google_analytics_code' => config('services.google_analytics_code'),
+      'amplitude_code' => config('services.amplitude_code'),
+      'crisp_website_id' => config('services.crisp_website_id'),
   ];
 @endphp
   <!DOCTYPE html>
@@ -37,8 +40,9 @@
 {{-- Load the application scripts --}}
 <script src="{{ mix('dist/js/app.js') }}"></script>
 
+@if($config['google_analytics_code'])
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script defer src="https://www.googletagmanager.com/gtag/js?id=G-PR916W6KJZ"></script>
+<script defer src="https://www.googletagmanager.com/gtag/js?id={{ $config['google_analytics_code'] }}"></script>
 <script defer>
   window.dataLayer = window.dataLayer || []
 
@@ -46,7 +50,9 @@
 
   gtag('js', new Date())
 
-  gtag('config', 'G-PR916W6KJZ')
+  gtag('config', "{{ $config['google_analytics_code'] }}")
 </script>
+@endif
+
 </body>
 </html>

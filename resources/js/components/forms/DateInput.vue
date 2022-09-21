@@ -11,7 +11,8 @@
                   :style="inputStyle" :name="name" :fixed-classes="fixedClasses" :range="dateRange"
                   :placeholder="placeholder" :timepicker="useTime" 
                   :date-format="useTime?'Z':'Y-m-d'" 
-                  :user-format="useTime?'F j, Y - H:i':'F j, Y'"
+                  :user-format="useTime ? amPm ? 'F j, Y - G:i K' : 'F j, Y - H:i' : 'F j, Y'"
+                  :amPm="amPm"
     />
     <small v-if="help" :class="theme.default.help">
       <slot name="help">{{ help }}</slot>
@@ -30,7 +31,8 @@ export default {
 
   props: {
     withTime: { type: Boolean, default: false },
-    dateRange: { type: Boolean, default: false }
+    dateRange: { type: Boolean, default: false },
+    amPm: { type: Boolean, default: false }
   },
 
   data: () => ({

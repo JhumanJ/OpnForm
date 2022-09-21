@@ -18,10 +18,10 @@ export default {
 
   methods: {
     loadCrisp () {
-      if (this.isIframe) return
+      if (this.isIframe || !window.config.crisp_website_id) return
 
       window.$crisp = []
-      window.CRISP_WEBSITE_ID = '94219d77-06ff-4aec-b07a-5bf26ec8fde1'
+      window.CRISP_WEBSITE_ID = window.config.crisp_website_id
 
       const script = document.createElement('script')
       script.setAttribute('src', 'https://client.crisp.chat/l.js')

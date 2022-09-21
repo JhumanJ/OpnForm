@@ -57,7 +57,7 @@ class FormFactory extends Factory
     {
         return [
             'title' => $this->faker->text(30),
-            'description' => $this->faker->randomHtml(2),
+            'description' => $this->faker->randomHtml(1),
             'notifies' => false,
             'send_submission_confirmation' => false,
             'webhook_url' => null,
@@ -80,7 +80,8 @@ class FormFactory extends Factory
             'use_captcha' => false,
             'can_be_indexed' => true,
             'password' => false,
-            'tags' => []
+            'tags' => [],
+            'slack_webhook_url' => null,
         ];
     }
 

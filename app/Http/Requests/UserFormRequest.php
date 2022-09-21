@@ -40,6 +40,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'notifications_include_submission' => 'boolean',
             'webhook_url' => 'url|nullable',
             'use_captcha' => 'boolean',
+            'slack_webhook_url' => 'url|nullable',
 
             // Customization
             'theme' => ['required',Rule::in(Form::THEMES)],
@@ -96,7 +97,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
             // Date field
             'properties.*.with_time' => 'boolean|nullable',
+            'properties.*.use_am_pm' => 'boolean|nullable',
             'properties.*.date_range' => 'boolean|nullable',
+            'properties.*.prefill_today' => 'boolean|nullable',
 
             // Select / Multi Select field
             'properties.*.allow_creation' => 'boolean|nullable',

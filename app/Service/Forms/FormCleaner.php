@@ -38,6 +38,7 @@ class FormCleaner
         'theme' => 'default',
         'use_captcha' => false,
         'password' => null,
+        'slack_webhook_url' => null,
     ];
 
     private array $fieldDefaults = [
@@ -68,6 +69,7 @@ class FormCleaner
         'logo_picture' => 'The logo was removed.',
         'database_fields_update' => 'Form submission will only create new records (no updates).',
         'theme' => 'Default theme was applied.',
+        'slack_webhook_url' => "Slack webhook disabled.",
 
         // For fields
         'hide_field_name' => 'Hide field name removed.',

@@ -152,6 +152,7 @@ export default {
         properties: [],
 
         notifies: false,
+        slack_notifies: false,
         send_submission_confirmation: false,
         webhook_url: null,
 

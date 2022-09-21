@@ -44,7 +44,7 @@ export default {
       }
     },
     loadAmplitude () {
-      if (this.loaded || !typeof window.amplitude === 'undefined') return
+      if (this.loaded || !typeof window.amplitude === 'undefined' || !window.config.amplitude_code) return
 
       (function (e, t) {
         const n = e.amplitude || { _q: [], _iq: {} }; const r = t.createElement('script')
@@ -88,7 +88,7 @@ export default {
       })(window, document)
 
       this.amplitudeInstance = window.amplitude.getInstance()
-      this.amplitudeInstance.init('9952c8b914ce3f2bd494fce2dba18243')
+      this.amplitudeInstance.init(window.config.amplitude_code)
       this.loaded = true
       this.authenticateUser()
     }

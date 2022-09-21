@@ -29,6 +29,7 @@ class FormResource extends JsonResource
             'views_count' => $this->when($this->workspace->is_pro, $this->views_count),
             'submissions_count' => $this->when($this->workspace->is_pro, $this->submissions_count),
             'notifies' => $this->notifies,
+            'notifies_slack' => $this->notifies_slack,
             'send_submission_confirmation' => $this->send_submission_confirmation,
             'webhook_url' => $this->webhook_url,
             'redirect_url' => $this->redirect_url,
@@ -42,6 +43,7 @@ class FormResource extends JsonResource
             'password' => $this->password,
             'tags' => $this->tags,
             'notification_emails' => $this->notification_emails,
+            'slack_webhook_url' => $this->slack_webhook_url,
         ] : [];
 
         $baseData = $this->getFilteredFormData(parent::toArray($request), $userIsFormOwner);

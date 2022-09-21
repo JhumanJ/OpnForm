@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Http\Controllers\SubscriptionController;
 use App\Models\Forms\Form;
-use App\Models\Workspace;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +12,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
-use Rickycezar\Impersonate\Models\Impersonate;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
@@ -205,5 +203,5 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
                 });
         });
     }
-    
+
 }

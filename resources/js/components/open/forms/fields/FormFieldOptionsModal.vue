@@ -111,12 +111,30 @@
         <p class="text-gray-400 mb-5">
           Include time. Or not. This cannot be used with the date range option yet.
         </p>
+        <v-checkbox v-if="field.with_time"
+                    v-model="field.use_am_pm"
+                    name="use_am_pm"
+        >
+          Use 12h AM/PM format
+        </v-checkbox>
+        <p v-if="field.with_time" class="text-gray-400 mb-5">
+          By default, input uses the 24 hours format
+        </p>
 
         <select-input v-if="field.with_time" name="timezone" class="mt-4"
                       :form="field" :options="timezonesOptions"
                       label="Timezone" :searchable="true"
                       help="Make sure to select correct timezone. Leave blank otherwise."
         />
+        <v-checkbox v-model="field.prefill_today"
+                    name="prefill_today"
+                    @input="onFieldPrefillTodayChange"
+        >
+          Prefill with 'today'
+        </v-checkbox>
+        <p class="text-gray-400 mb-5">
+          if enabled we will pre-fill this field with the current date
+        </p>
       </div>
 
       <!-- select/multiselect Options   -->
@@ -180,6 +198,11 @@
                       label="Pre-filled value"
                       :multiple="field.type==='multi_select'"
         />
+        <date-input v-else-if="field.type==='date' && field.prefill_today!==true" name="prefill" class="mt-4"
+                    :form="field" :with-time="field.with_time===true" :am-pm="field.use_am_pm===true"
+                    :date-range="field.date_range===true"
+                    label="Pre-filled value"
+        />
         <text-area-input v-else-if="field.type === 'text' && field.multi_lines"
                          name="prefill" class="mt-4"
                          :form="field"
@@ -188,6 +211,7 @@
         <text-input v-else-if="field.type!=='files'" name="prefill" class="mt-4"
                     :form="field"
                     label="Pre-filled value"
+                    :disabled="field.type==='date' && field.prefill_today===true"
         />
         <div v-if="['select','multi_select'].includes(field.type)" class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
           <small>
@@ -383,10 +407,12 @@ export default {
       this.$set(this.field, 'date_range', val)
       if (this.field.date_range) {
         this.$set(this.field, 'with_time', false)
+        this.$set(this.field, 'prefill_today', false)
       }
     },
     onFieldWithTimeChange (val) {
       this.$set(this.field, 'with_time', val)
+      this.$set(this.field, 'use_am_pm', false)
       if (this.field.with_time) {
         this.$set(this.field, 'date_range', false)
       }
@@ -419,6 +445,15 @@ export default {
         }
       })
       this.$set(this.field, this.field.type, {'options': tmpOpts})
+    },
+    onFieldPrefillTodayChange (val) {
+      this.$set(this.field, 'prefill_today', val)
+      if (this.field.prefill_today) {
+        this.$set(this.field, 'prefill', 'Pre-filled with current date')
+        this.$set(this.field, 'date_range', false)
+      } else {
+        this.$set(this.field, 'prefill', null)
+      }
     },
     onFieldAllowCreationChange (val) {
       this.$set(this.field, 'allow_creation', val)

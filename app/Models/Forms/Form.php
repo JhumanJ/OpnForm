@@ -37,6 +37,7 @@ class Form extends Model
         'notification_subject',
         'notification_body',
         'notifications_include_submission',
+        'slack_webhook_url',
 
         // integrations
         'webhook_url',
@@ -94,6 +95,7 @@ class Form extends Model
     protected $hidden = [
         'workspace_id',
         'notifies',
+        'slack_webhook_url',
         'webhook_url',
         'send_submission_confirmation',
         'redirect_url',
@@ -222,5 +224,10 @@ class Form extends Model
     public static function newFactory()
     {
         return FormFactory::new();
+    }
+
+    public function getNotifiesSlackAttribute()
+    {
+        return !empty($this->slack_webhook_url);
     }
 }

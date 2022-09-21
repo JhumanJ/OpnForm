@@ -288,6 +288,12 @@ export default {
         } else if (urlPrefill && urlPrefill.has(field.id + '[]')) {
           // Array url prefills
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
+        } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
+          const dateObj = new Date()
+          const currentDate = dateObj.getFullYear() + '-' +
+                  String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+                  String(dateObj.getDate()).padStart(2, '0')
+          formData[field.id] = currentDate
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }
@@ -362,6 +368,9 @@ export default {
           inputProperties.withTime = true
         } else if (field.date_range) {
           inputProperties.dateRange = true
+        }
+        if (field.use_am_pm) {
+          inputProperties.amPm = true
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)

@@ -15,6 +15,17 @@
     <text-area-input v-if="form.notifies" name="notification_emails" :form="form" class="mt-4"
                      label="Notification Emails" help="Add one email per line"
     />
+    <checkbox-input name="notifies_slack" :form="form" class="mt-4"
+                    label="Receive a Slack notification on submission"
+    />
+    <text-input v-if="form.notifies_slack" name="slack_webhook_url" :form="form" class="mt-4"
+                label="Slack webhook url" help="help"
+    >
+      <template #help>
+        Receive slack message on each form submission. <a href="https://api.slack.com/messaging/webhooks" target="_blank">Click here</a> to learn how to get a slack webhook url
+      </template>
+    </text-input>
+    
     <checkbox-input :disabled="emailSubmissionConfirmationField===null" name="send_submission_confirmation"
                     :form="form" class="mt-4"
                     label="Send submission confirmation" :help="emailSubmissionConfirmationHelp"
