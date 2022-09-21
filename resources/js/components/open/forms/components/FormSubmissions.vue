@@ -51,6 +51,16 @@ export default {
     this.initFormStructure()
     this.getSubmissionsData()
   },
+  watch: {
+    form () {
+      debugger
+      if(!this.form){
+        return
+      }
+      this.initFormStructure()
+      this.getSubmissionsData()
+    }
+  },
   computed: {
     form: {
       get() {
