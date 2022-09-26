@@ -54,7 +54,6 @@
       loadTemplates()
       next()
     },
-    middleware: 'auth',
   
     props: {
       metaTitle: { type: String, default: 'Templates' },
