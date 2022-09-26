@@ -15,6 +15,7 @@ use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\FormSubmissionController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -150,3 +151,7 @@ Route::prefix('forms')->name('forms.')->group(function () {
 Route::prefix('content')->name('content.')->group(function () {
     Route::get('changelog/entries', [\App\Http\Controllers\Content\ChangelogController::class, 'index'])->name('changelog.entries');
 });
+
+// Templates
+Route::get('templates', [TemplateController::class, 'index'])->name('templates.show');
+Route::post('templates', [TemplateController::class, 'create'])->name('templates.create');

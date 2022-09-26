@@ -18,8 +18,6 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 {
     use Notifiable, HasFactory, Billable;
 
-    const ADMINS = ['julien@notionforms.io'];
-
     /**
      * The attributes that are mass assignable.
      *
@@ -98,7 +96,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function getAdminAttribute()
     {
-        return in_array($this->email, self::ADMINS);
+        return in_array($this->email, config('services.admin_emails'));
     }
 
     /**

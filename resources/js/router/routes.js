@@ -52,5 +52,9 @@ export default [
   { path: '/integrations', name: 'integrations', component: page('integrations.vue') },
   { path: '/forms/:slug', name: 'forms.show_public', component: page('forms/show-public.vue') },
 
+  // Templates
+  { path: '/templates', name: 'templates', component: page('templates/templates.vue') },
+  { path: '/templates/:slug', name: 'templates.show', component: page('templates/show.vue') },
+
   { path: '*', component: page('errors/404.vue') }
 ]
