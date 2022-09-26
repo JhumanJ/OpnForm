@@ -12,10 +12,10 @@
               </p>
             </div>
             <div class="border-t py-4 px-6">
-              <text-input name="name" :form="templateForm" class="mt-4" label="Title" />
-              <text-input name="slug" :form="templateForm" class="mt-4" label="Slug" />
-              <rich-text-area-input name="description" :form="templateForm" class="mt-4" label="Description" />
-              <text-input name="image_url" :form="templateForm" class="mt-4" label="Image" />
+              <text-input name="name" :form="templateForm" class="mt-4" label="Title" :required="true" />
+              <text-input name="slug" :form="templateForm" class="mt-4" label="Slug" :required="true" />
+              <rich-text-area-input name="description" :form="templateForm" class="mt-4" label="Description" :required="true" />
+              <text-input name="image_url" :form="templateForm" class="mt-4" label="Image" :required="true" />
             </div>
             <div class="flex justify-end mt-4 pb-5 px-6">
               <v-button class="mr-2" :loading="templateForm.busy">Create</v-button>
