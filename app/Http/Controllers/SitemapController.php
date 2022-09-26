@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
-
+use App\Models\Template;
 class SitemapController extends Controller
 {
     /**
@@ -20,7 +20,15 @@ class SitemapController extends Controller
         ['/login', 0.4],
         ['/register', 0.4],
         ['/password/reset', 0.3],
+        ['/templates', 0.9],
     ];
+
+    public function __construct()
+    {
+        foreach(Template::all() as $template){
+            $this->urls[] = ['/templates/'.$template->slug, 0.8];
+        }
+    }
 
     public function getSitemap(Request $request)
     {

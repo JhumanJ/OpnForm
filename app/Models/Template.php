@@ -16,10 +16,12 @@ class Template extends Model
         'description',
         'image_url',
         'structure',
+        'questions',
     ];
 
     protected $casts = [
-        'structure' => 'array'
+        'structure' => 'array',
+        'questions' => 'array',
     ];
 
     public function setDescriptionAttribute($value)

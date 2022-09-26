@@ -22,8 +22,15 @@
                     Use this template
                 </fancy-link>
             </div>
+            <div v-if="template.questions.length > 0" class="mt-5 pt-2 border-t">
+              <h4 class="text-2xl font-bold flex-grow mb-3">Frequently asked questions</h4>
+              <div v-for="(ques,ques_key) in template.questions" :key="ques_key" class="mb-3 mt-3 pb-4 border-2 p-2 pt-0">
+                <h3 class="font-bold border-b-4 py-2">{{ ques.question }}</h3>
+                <div class="pt-4" v-html="ques.answer"></div>
+              </div>
+            </div>
 
-            <open-complete-form ref="open-complete-form" :form="form" :creating="true" class="my-5"/>
+            <open-complete-form ref="open-complete-form" :form="form" :creating="true" class="my-5 pt-2 border-t"/>
             
           </div>
         </div>

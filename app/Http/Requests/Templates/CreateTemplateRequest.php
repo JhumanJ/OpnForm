@@ -20,6 +20,7 @@ class CreateTemplateRequest extends FormRequest
             'slug' => 'required|string|unique:templates',
             'description' => 'required|string|max:2000',
             'image_url' => 'required|string',
+            'questions' => 'array',
         ];
     }
 
@@ -37,7 +38,8 @@ class CreateTemplateRequest extends FormRequest
             'slug' => $this->slug,
             'description' => $this->description,
             'image_url' => $this->image_url,
-            'structure' => $structure
+            'structure' => $structure,
+            'questions' => $this->questions ?? []
         ]);
     }
 }

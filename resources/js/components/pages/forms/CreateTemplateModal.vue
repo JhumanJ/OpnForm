@@ -16,6 +16,7 @@
               <text-input name="slug" :form="templateForm" class="mt-4" label="Slug" :required="true" />
               <rich-text-area-input name="description" :form="templateForm" class="mt-4" label="Description" :required="true" />
               <text-input name="image_url" :form="templateForm" class="mt-4" label="Image" :required="true" />
+              <questions-editor name="questions" :form="templateForm" class="mt-4" label="Frequently asked questions" />
             </div>
             <div class="flex justify-end mt-4 pb-5 px-6">
               <v-button class="mr-2" :loading="templateForm.busy">Create</v-button>
@@ -28,10 +29,11 @@
   
 <script>
 import Form from 'vform'
+import QuestionsEditor from '../../templates/QuestionsEditor';
 
 export default {
     name: 'CreateTemplateModal',
-    components: {  },
+    components: { QuestionsEditor },
     props: {
       show: { type: Boolean, required: true },
       form: { type: Object, required: true }
