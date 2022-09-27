@@ -52,5 +52,5 @@ return [
     'amplitude_code' => env('AMPLITUDE_CODE'),
     'crisp_website_id' => env('CRISP_WEBSITE_ID'),
 
-    'admin_emails' => explode(",", env('ADMIN_EMAILS'))
+    'admin_emails' => explode(",", env('ADMIN_EMAILS') ?? '')
 ];
