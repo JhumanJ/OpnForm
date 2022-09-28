@@ -64,7 +64,13 @@ function checkContains (condition, fieldValue) {
 }
 
 function checkListContains (condition, fieldValue) {
-  return (fieldValue && fieldValue.length > 0) ? condition.value.every(r => fieldValue.includes(r)) : false
+  if (!fieldValue) return false
+  
+  if (Array.isArray(condition.value)) {
+    return condition.value.every(r => fieldValue.includes(r))
+  } else {
+    return fieldValue.includes(condition.value)
+  }
 }
 
 function checkStartsWith (condition, fieldValue) {

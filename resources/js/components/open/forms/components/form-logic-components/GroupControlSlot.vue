@@ -1,16 +1,16 @@
 <template>
-  <div class="flex px-4 py-1">
-    <select-input ref="ruleSelect" v-model="selectedRule" class="flex-grow mr-1"
+  <div class="flex flex-wrap px-4 py-1 -ml-1 -mt-1">
+    <select-input ref="ruleSelect" v-model="selectedRule" class="flex-grow ml-1 mr-1 mt-1"
                   wrapper-class="relative" placeholder="Add condition on input field"
                   :options="groupCtrl.rules" margin-bottom=""
                   emit-key="identifier"
                   option-key="identifier"
                   name="group-control-slot-rule"
     />
-    <v-button class="ml-1" color="blue" size="small" :disabled="selectedRule === ''" @click="addRule">
+    <v-button class="ml-1 mt-1" color="blue" size="small" :disabled="selectedRule === ''" @click="addRule">
       Add Condition
     </v-button>
-    <v-button class="ml-1" color="green" size="small" @click="groupCtrl.newGroup">
+    <v-button class="ml-1 mt-1" color="green" size="small" @click="groupCtrl.newGroup">
       Add Group
     </v-button>
   </div>

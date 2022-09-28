@@ -6,7 +6,8 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Support\Str;
 
-class FormPropertyLogicRule implements Rule, DataAwareRule {
+class FormPropertyLogicRule implements Rule, DataAwareRule 
+{
 
     const ACTIONS_VALUES = [
         'show-block',
@@ -242,7 +243,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
         'multi_select' => [
             'comparators' => [
                 'contains' => [
-                    'expected_type' => 'object',
+                    'expected_type' => ['object', 'string'],
                     'format' => [
                         'type' => 'uuid',
                     ]
@@ -384,36 +385,37 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
     private $field = [];
     private $data = [];
 
-    private function checkBaseCondition($condtion) {
+    private function checkBaseCondition($condition) 
+    {
 
-        if (!isset($condtion['value'])) {
+        if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
             return;
         }
 
-        if (!isset($condtion['value']['property_meta'])) {
+        if (!isset($condition['value']['property_meta'])) {
             $this->isConditionCorrect = false;
             return;
         }
 
-        if (!isset($condtion['value']['property_meta']['type'])) {
+        if (!isset($condition['value']['property_meta']['type'])) {
             $this->isConditionCorrect = false;
             return;
         }
         
-        if (!isset($condtion['value']['operator'])) {
+        if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
             return;
         }
 
-        if (!isset($condtion['value']['value'])) {
+        if (!isset($condition['value']['value'])) {
             $this->isConditionCorrect = false;
             return;
         }
 
-        $typeField = $condtion['value']['property_meta']['type'];
-        $operator = $condtion['value']['operator'];
-        $value = $condtion['value']['value'];
+        $typeField = $condition['value']['property_meta']['type'];
+        $operator = $condition['value']['operator'];
+        $value = $condition['value']['value'];
 
         if (!isset(self::CONDITION_MAPPING[$typeField])) {
             $this->isConditionCorrect = false;
@@ -427,18 +429,38 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
 
         $type = self::CONDITION_MAPPING[$typeField]['comparators'][$operator]['expected_type'];
 
-        // Type d'objet : string, boolean, number, object
+        if (is_array($type)) {
+            $foundCorrectType = false;
+            foreach ($type as $subtype) {
+                if ($this->valueHasCorrectType($subtype, $value)) {
+                    $foundCorrectType = true;
+                }
+            }
+            if (!$foundCorrectType) {
+                $this->isConditionCorrect = false;
+            }
+        } else {
+            if (!$this->valueHasCorrectType($type, $value)) {
+                $this->isConditionCorrect = false;
+            }
+        }
+    }
+
+    private function valueHasCorrectType($type, $value)
+    {
         if (
             ($type === 'string' && gettype($value) !== 'string') ||
             ($type === 'boolean' && !is_bool($value)) ||
             ($type === 'number' && !is_numeric($value)) ||
             ($type === 'object' && !is_array($value))
         ) {
-            $this->isConditionCorrect = false;
+            return false;
         }
+        return true;
     }
 
-    private function checkConditions($conditions) {
+    private function checkConditions($conditions) 
+    {
         if (isset($conditions['operatorIdentifier'])) {
             if (($conditions['operatorIdentifier'] !== 'and') && ($conditions['operatorIdentifier'] !== 'or')) {
                 $this->isConditionCorrect = false;
@@ -463,19 +485,19 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
         }
     }
 
-    private function checkActions($conditions) {
+    private function checkActions($conditions) 
+    {
         if (is_array($conditions) && count($conditions) > 0) {
             foreach($conditions as $val){
                 if (!in_array($val, static::ACTIONS_VALUES) || 
                     (in_array($this->field["type"], ['nf-text', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block'])) ||
-                    (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block','require-answer'])) || 
-                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional','hide-block']))
+                    (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block', 'require-answer'])) || 
+                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block']))
                 ) {
                     $this->isActionCorrect = false;
                     break;
                 }
             }
-            return;
         }
     }
 
@@ -486,7 +508,8 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value) {
+    public function passes($attribute, $value) 
+    {
         $this->setProperty($attribute);
         if(isset($value["conditions"])){
             $this->checkConditions($value["conditions"]);
@@ -501,7 +524,8 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
      * Get the validation error message.
      *
      */
-    public function message() {
+    public function message() 
+    {
         $errorList = [];
         if(!$this->isConditionCorrect){
             $errorList[] = "The logic conditions for ".$this->field['name']." are not complete.";
@@ -527,7 +551,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule {
 
     private function setProperty(string $attributeKey)
     {
-        $attributeKey = Str::of($attributeKey)->replace('.logic','')->toString();
+        $attributeKey = Str::of($attributeKey)->replace('.logic', '')->toString();
         $this->field = \Arr::get($this->data, $attributeKey);
     }
 }
