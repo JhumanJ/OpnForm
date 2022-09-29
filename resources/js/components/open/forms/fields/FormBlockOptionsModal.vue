@@ -7,7 +7,10 @@
         </h2>
         <div>
           <v-button color="red" size="small" @click="removeBlock">
-            Remove Block
+            Remove
+          </v-button>
+          <v-button  size="small" @click="duplicateBlock">
+            Duplicate
           </v-button>
         </div>
       </div>
@@ -160,6 +163,10 @@ export default {
     removeBlock() {
       this.close()
       this.$emit('remove-block', this.field)
+    },
+    duplicateBlock(){
+      this.close()
+      this.$emit('duplicate-block', this.field)
     },
     onFieldRequiredChange(val) {
       this.$set(this.field, 'required', val)

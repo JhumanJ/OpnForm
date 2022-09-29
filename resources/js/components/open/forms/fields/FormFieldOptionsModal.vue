@@ -7,7 +7,10 @@
         </h2>
         <div>
           <v-button color="red" size="small" @click="removeBlock">
-            Remove Block
+            Remove
+          </v-button>
+          <v-button  size="small" @click="duplicateBlock">
+            Duplicate
           </v-button>
         </div>
       </div>
@@ -290,9 +293,6 @@
       <form-block-logic-editor v-model="form" :form="form" :field="field" />
 
       <div class="pt-5 text-right">
-        <v-button color="red" @click="removeBlock">
-          Remove Field
-        </v-button>
         <v-button color="gray" shade="light" @click="close">
           Close
         </v-button>
@@ -387,6 +387,10 @@ export default {
     removeBlock () {
       this.close()
       this.$emit('remove-block', this.field)
+    },
+    duplicateBlock(){
+      this.close()
+      this.$emit('duplicate-block', this.field)
     },
     onFieldRequiredChange (val) {
       this.$set(this.field, 'required', val)
