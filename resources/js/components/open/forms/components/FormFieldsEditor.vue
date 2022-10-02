@@ -11,11 +11,13 @@
                                 :show="!isNotAFormField(formFields[selectedFieldIndex]) && showEditFieldModal"
                                 :form="form" @close="closeInputOptionModal"
                                 @remove-block="removeBlock(selectedFieldIndex)"
+                                @duplicate-block="duplicateBlock(selectedFieldIndex)"
       />
       <form-block-options-modal :field="formFields[selectedFieldIndex]"
                                 :show="isNotAFormField(formFields[selectedFieldIndex]) && showEditFieldModal"
                                 :form="form"
-                                @remove-block="removeBlock(selectedFieldIndex)" @close="closeInputOptionModal"
+                                @remove-block="removeBlock(selectedFieldIndex)" 
+                                @duplicate-block="duplicateBlock(selectedFieldIndex)" @close="closeInputOptionModal"
       />
     </template>
 
@@ -280,6 +282,13 @@ export default {
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
       this.$set(this, 'formFields', newFields)
+    },
+    duplicateBlock(blockIndex) {
+      this.closeInputOptionModal()
+      this.selectedFieldIndex = null
+      const newField = clonedeep(this.formFields[blockIndex])
+      newField.id = this.generateUUID()
+      this.formFields.push(newField)
     },
     closeInputOptionModal() {
       this.showEditFieldModal = false
