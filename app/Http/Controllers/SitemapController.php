@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use App\Models\Template;
+
 class SitemapController extends Controller
 {
     /**
@@ -23,19 +24,13 @@ class SitemapController extends Controller
         ['/templates', 0.9],
     ];
 
-    public function __construct()
-    {
-        foreach(Template::all() as $template){
-            $this->urls[] = ['/templates/'.$template->slug, 0.8];
-        }
-    }
-
     public function getSitemap(Request $request)
     {
         $sitemap = Sitemap::create();
         foreach ($this->urls as $url) {
             $sitemap->add($this->createUrl($url[0], $url[1]));
         }
+        $this->addTemplatesUrls($sitemap);
 
         return $sitemap->toResponse($request);
     }
@@ -43,5 +38,14 @@ class SitemapController extends Controller
     private function createUrl($url, $priority, $frequency = 'daily')
     {
         return Url::create($url)->setPriority($priority)->setChangeFrequency($frequency);
+    }
+
+    private function addTemplatesUrls(Sitemap $sitemap)
+    {
+        Template::chunk(100, function ($templates) use ($sitemap) {
+            foreach ($templates as $template) {
+                $sitemap->add($this->createUrl('/templates/' . $template->slug, 0.7));
+            }
+        });
     }
 }
