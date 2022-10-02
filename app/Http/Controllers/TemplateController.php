@@ -9,13 +9,9 @@ use App\Models\Template;
 
 class TemplateController extends Controller
 {
-    public function __construct()
-    {
-        
-    }
-
     public function index()
     {
+        // TODO: create resource
         return Template::all();
     }
 
