@@ -58,7 +58,7 @@ export default {
       }
 
       if (['select', 'multi_select'].includes(this.property.type)) {
-        componentData.multiple = (this.property.type == 'multi_select')
+        componentData.multiple = false;
         componentData.options = this.property[this.property.type].options.map(option => {
           return {
             name: option.name,

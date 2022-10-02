@@ -81,7 +81,13 @@ class FormLogicConditionChecker
     }
 
     private function checkListContains ($condition, $fieldValue): bool {
-        return ($fieldValue) ? (count(array_intersect($condition['value'], $fieldValue)) === count($condition['value'])) : false;
+        if (is_null($fieldValue)) return false;
+
+        if (is_array($condition['value'])) {
+            return count(array_intersect($condition['value'], $fieldValue)) === count($condition['value']);
+        } else {
+            return in_array($condition['value'], $fieldValue);
+        }
     }
 
     private function checkStartsWith ($condition, $fieldValue): bool {
