@@ -50,5 +50,7 @@ return [
 
     'google_analytics_code' => env('GOOGLE_ANALYTICS_CODE'),
     'amplitude_code' => env('AMPLITUDE_CODE'),
-    'crisp_website_id' => env('CRISP_WEBSITE_ID')
+    'crisp_website_id' => env('CRISP_WEBSITE_ID'),
+
+    'admin_emails' => explode(",", env('ADMIN_EMAILS') ?? '')
 ];

@@ -51,12 +51,21 @@
 </template>
 
 <script>
+import store from '~/store'
 import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
 import saveUpdateAlert from '../../mixins/forms/saveUpdateAlert'
 import clonedeep from 'clone-deep'
 
 const FormEditor = () => import('../../components/open/forms/components/FormEditor')
+
+const loadTemplates = function () {
+  store.commit('open/templates/startLoading')
+  store.dispatch('open/templates/loadIfEmpty').then(() => {
+      store.commit('open/templates/stopLoading')
+  })
+}
+
 export default {
   name: 'CreateForm',
   components: {
@@ -68,6 +77,11 @@ export default {
   },
 
   mixins: [saveUpdateAlert],
+
+  beforeRouteEnter (to, from, next) {
+    loadTemplates()
+    next()
+  },
 
   middleware: 'auth',
 
@@ -126,7 +140,16 @@ export default {
   },
 
   mounted() {
-    this.initForm()
+    if(this.$route.query.template !== undefined && this.$route.query.template){
+      let template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
+      if(template && template.structure){
+        this.form = new Form(template.structure)
+      }else{
+        this.initForm()
+      }
+    }else{
+      this.initForm()
+    }
     this.closeAlert()
     this.loadWorkspaces()
 

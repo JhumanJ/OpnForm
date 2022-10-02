@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
+use App\Models\Template;
 
 class SitemapController extends Controller
 {
@@ -20,6 +21,7 @@ class SitemapController extends Controller
         ['/login', 0.4],
         ['/register', 0.4],
         ['/password/reset', 0.3],
+        ['/templates', 0.9],
     ];
 
     public function getSitemap(Request $request)
@@ -28,6 +30,7 @@ class SitemapController extends Controller
         foreach ($this->urls as $url) {
             $sitemap->add($this->createUrl($url[0], $url[1]));
         }
+        $this->addTemplatesUrls($sitemap);
 
         return $sitemap->toResponse($request);
     }
@@ -35,5 +38,14 @@ class SitemapController extends Controller
     private function createUrl($url, $priority, $frequency = 'daily')
     {
         return Url::create($url)->setPriority($priority)->setChangeFrequency($frequency);
+    }
+
+    private function addTemplatesUrls(Sitemap $sitemap)
+    {
+        Template::chunk(100, function ($templates) use ($sitemap) {
+            foreach ($templates as $template) {
+                $sitemap->add($this->createUrl('/templates/' . $template->slug, 0.7));
+            }
+        });
     }
 }

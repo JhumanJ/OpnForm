@@ -22,6 +22,13 @@
 <!--                </router-link>-->
 <!--              </li>-->
               <li>
+                <router-link :to="{name:'templates'}"
+                    class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+                >
+                  Templates
+                </router-link>
+              </li>
+              <li>
                 <a target="_blank" :href="helpUrl"
                    class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
                 >

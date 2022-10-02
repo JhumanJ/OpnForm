@@ -53,7 +53,6 @@ export default {
   },
   watch: {
     form () {
-      debugger
       if(!this.form){
         return
       }

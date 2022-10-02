@@ -164,6 +164,20 @@
               <loader v-else class="h-6 w-6 text-nt-blue mx-auto" />
             </div>
           </div>
+          <div class="w-full sm:w-1/2 px-2 flex mb-5" v-if="user.admin">
+            <div class="group relative transition-all mt-4 flex items-center p-3 px-6 w-full rounded-md bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900 cursor-pointer hover:text-blue-500"
+                 @click="showCreateTemplateModal=true"
+            >
+              <template>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
+                </svg>
+                <span class="font-semibold group relative-hover:text-blue-500">
+                  Create template
+                </span>
+              </template>
+            </div>
+          </div>
         </div>
 
         <!-- Form Submissions -->
@@ -260,6 +274,8 @@
           </div>
         </modal>
 
+        <create-template-modal :form="form" :show="showCreateTemplateModal" @close="showCreateTemplateModal=false" />
+
         <url-form-prefill-modal :form="form" :show="showUrlFormPrefillModal" @close="showUrlFormPrefillModal=false" />
       </div>
       <div v-else-if="loading" class="text-center w-full p-5">
@@ -282,6 +298,7 @@ import Breadcrumb from '../../components/common/Breadcrumb'
 import { mapGetters, mapState } from 'vuex'
 import ProTag from '../../components/common/ProTag'
 import UrlFormPrefillModal from '../../components/pages/forms/UrlFormPrefillModal'
+import CreateTemplateModal from '../../components/pages/forms/CreateTemplateModal'
 import FormStats from '../../components/open/forms/components/FormStats'
 import FormSubmissions from '../../components/open/forms/components/FormSubmissions'
 
@@ -294,7 +311,7 @@ const loadForms = function () {
 
 export default {
   name: 'EditForm',
-  components: { UrlFormPrefillModal, ProTag, Breadcrumb, ShareFormUrl, EmbedFormCode, FormStats, FormSubmissions },
+  components: { UrlFormPrefillModal, CreateTemplateModal, ProTag, Breadcrumb, ShareFormUrl, EmbedFormCode, FormStats, FormSubmissions },
 
   beforeRouteEnter (to, from, next) {
     loadForms()
@@ -315,7 +332,8 @@ export default {
       showNotionEmbedModal: false,
       showShareEmbedFormModal: false,
       showUrlFormPrefillModal: false,
-      showGenerateFormLinkModal: false
+      showGenerateFormLinkModal: false,
+      showCreateTemplateModal: false
     }
   },
 
