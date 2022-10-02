@@ -10,7 +10,7 @@ module.exports = {
     ],
     options: {
       safelist: [
-        /.*bg-(nt-blue|gray|red|yellow|green).*/, // Buttons
+        /.*bg-(nt-blue|blue|gray|red|yellow|green).*/, // Buttons
         ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
       ]
     }
