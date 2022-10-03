@@ -10,13 +10,11 @@
             Create a new form
           </fancy-link>
         </div>
-        <div v-if="formsLoading" class="text-center">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
-        </div>
-        <p v-else-if="enrichedForms.length === 0 && !isFilteringForms">
+
+        <p v-if="!formsLoading && enrichedForms.length === 0 && !isFilteringForms">
           You don't have any form yet.
         </p>
-        <div v-else class="mb-10">
+        <div v-else-if="forms.length > 0" class="mb-10">
           <text-input v-if="forms.length > 5" class="mb-6" :form="searchForm" name="search" label="Search a form"
                       placeholder="Name of form to search"
           />
@@ -65,6 +63,9 @@
             </template>.
           </p>
         </div>
+        <div v-if="formsLoading" class="text-center">
+          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+        </div>
       </div>
     </div>
     <open-form-footer class="mt-8 border-t" />
@@ -82,7 +83,7 @@ import OpenFormFooter from '../components/pages/OpenFormFooter'
 const loadForms = function () {
   store.commit('open/forms/startLoading')
   store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/load', store.state['open/workspaces'].currentId)
+    store.dispatch('open/forms/loadIfEmpty', store.state['open/workspaces'].currentId)
   })
 }
 

@@ -34,7 +34,7 @@ class FormController extends Controller
         $this->authorize('viewAny', Form::class);
 
         $workspaceIsPro = $workspace->is_pro;
-        $forms = $workspace->forms()->with(['creator','views','submissions'])->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
+        $forms = $workspace->forms()->with(['creator','views','submissions'])->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
             // Add attributes for faster loading
             $form->extra = (object) [
                 'loadedWorkspace' => $workspace,
