@@ -1,188 +1,205 @@
 <template>
   <div id="features" class="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8">
-    <div v-if="!featuresOnly" :class="{'mb-10 md:mb-12':!featuresOnly }" class="max-w-xl md:mx-auto sm:text-center lg:max-w-2xl ">
-      <div>
-        <p
-          class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-nt-blue uppercase rounded-full bg-nt-blue-lighter"
-        >
-          100% Free
-        </p>
-      </div>
-      <h2
-        class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:mx-auto"
-      >
-        <span class="relative inline-block">
-          <svg viewBox="0 0 52 24" fill="currentColor"
-               class="text-nt-blue-light absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
-          >
-            <defs>
-              <pattern id="27df4f81-c854-45de-942a-fe90f7a300f9" x="0" y="0" width=".135" height=".30">
-                <circle cx="1" cy="1" r=".7" />
-              </pattern>
-            </defs>
-            <rect fill="url(#27df4f81-c854-45de-942a-fe90f7a300f9)" width="52" height="24" />
-          </svg>
-          <span class="relative">The</span>
-        </span>
-        easiest way to create forms for free
+    <div v-if="!featuresOnly" :class="{'mb-10':!featuresOnly }" class="max-w-xl md:mx-auto sm:text-center lg:max-w-2xl ">
+      <h2 class="mb-6 font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:mx-auto">
+        The easiest way to create forms. <br/>
+        And it's <span class="text-nt-blue">100% free!</span>
       </h2>
       <p class="text-base text-gray-700 dark:text-gray-300 md:text-lg">
-        You've been paying too much for too long. OpnForm is the first open-source form builder. Need a contact
-        form? Doing a survey? Create a form in 3 minutes and start receiving submissions.
+        Need a contact form? Doing a survey? Create a form in 3 minutes and start receiving submissions.
       </p>
     </div>
-    <div class="grid max-w-screen-lg gap-8 row-gap-10 mx-auto md:grid-cols-2">
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Infinite Number of Fields
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            There are no limits on the number of input fields in your forms. Organize fields and decide which are required.
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Infinite Number of Forms
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            You can create as many forms as you need. Forms everywhere, for everything!
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Infinite Responses
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            All of you forms can have unlimited responses, no need to worry about quotas and other stressful metrics.
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Notifications
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            Receive notifications directly in Slack or in your mailbox whenever your from has a new submission (if you want to).
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Integrate Anywhere
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            You can integrate your form anywhere: on your website, or even within a Notion Page.
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"  class="w-6 h-6 text-nt-blue" >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z" />
-            </svg>
 
-          </div>
-        </div>
+    <div class="grid md:grid-cols-2">
+      <div class="mr-10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+        </svg>
+        <h4 class="my-5 text-4xl font-bold">1. Create</h4>
+        <p class="dark:text-white">
+          There are no limits on the number of input fields in your forms.
+        </p>
         <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Customize Everything
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            Change form themes, change texts, colors, add images, add custom thank you pages and much more.
-          </p>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Build a simple form in minutes.
+          </div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            No coding needed.
+          </div>
         </div>
       </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            File Uploads
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            Easily add file upload inputs to your forms. Uploaded files are securely stored for you. Up to 5mb!
-          </p>
-        </div>
+      <div class="flex items-center justify-center relative w-full">
+        <img loading="lazy" class="block rounded-lg shadow-xl w-full" 
+              :src="asset('img/pages/welcome/product_cover.jpg')" alt="cover-product">
       </div>
-      <div class="flex flex-col max-w-md sm:mx-auto sm:flex-row">
-        <div class="mr-4">
-          <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-nt-blue-lighter">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-nt-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
-        </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 mt-14">
+      <div class="flex items-center justify-center relative w-full">
+        <img loading="lazy" class="block rounded-lg shadow-xl w-full" 
+              :src="asset('img/pages/welcome/product_cover.jpg')" alt="cover-product">
+      </div>
+      <div class="ml-10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+        </svg>
+        <h4 class="my-5 text-4xl font-bold">2. Share</h4>
+        <p class="dark:text-white">
+          Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.
+        </p>
         <div>
-          <h6 class="mb-3 text-xl font-bold leading-5">
-            Advanced features
-          </h6>
-          <p class="mb-3 text-sm dark:text-gray-100 text-gray-900">
-            Form logic, URL pre-fill, hidden fields, unique submission id, form password, webhooks, custom code, closing date, etc. It's all there!
-          </p>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Embed into your website.
+          </div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Launch in an email.
+          </div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Or just share the link.
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="grid md:grid-cols-2 mt-14">
+      <div class="mr-10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+        </svg>
+        <h4 class="my-5 text-4xl font-bold">3. Get results</h4>
+        <p class="dark:text-white">
+          Exercitation veniam consequat sunt nostrud amet.
+        </p>
+        <div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            See responses and completion rates.
+          </div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Generate shareable reports.
+          </div>
+          <div class="flex mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Send data to your favourite tools for in-depth analysis.
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-center relative w-full">
+        <img loading="lazy" class="block rounded-lg shadow-xl w-full" 
+              :src="asset('img/pages/welcome/product_cover.jpg')" alt="cover-product">
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 mt-20 mb-5">
+      <div class="mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+        </svg>
+        <h3 class="my-3 font-bold">Notifications</h3>
+        <p>Receive notifications directly in Slack or in your mailbox whenever your from has a new submission (if you want to).</p>
+      </div>
+      <div class="mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        </svg>
+        <h3 class="my-3 font-bold">File Uploads</h3>
+        <p>Easily add file upload inputs to your forms. Uploaded files are securely stored for you. Up to 5mb!</p>
+      </div>
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-nt-blue">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <h3 class="my-3 font-bold">Customize Everything</h3>
+        <p>Change form themes, change texts, colors, add images, add custom thank you pages and much more.</p>
+      </div>
+    </div>
+    
+    <div class="mt-10 mb-5 text-center">
+      <h3 class="font-bold text-3xl">And many more features</h3>
+      <p class="w-full mt-2 mb-8">
+        OpnForm makes form building easy and comes with powerful features.
+      </p>
+      <div class="grid md:grid-cols-3 mt-10 mb-5">
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Form logic
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          URL pre-fill
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Unique submission ID
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Hidden fields
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Form password
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Webhooks
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Custom code
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          Closing date
+        </div>
+        <div class="flex font-bold my-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+          </svg>
+          And much more...
+        </div>
+      </div>
+    </div>
+    
   </div>
 </template>
 
