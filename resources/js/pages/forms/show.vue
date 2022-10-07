@@ -5,6 +5,7 @@
       <div v-if="form" class="sm:px-6">
         <h2 class="text-nt-blue text-3xl font-bold z-10 mt-6 mb-3">
           {{ form.title }}
+          <span v-if="form.visibility=='draft'" class="float-right text-white p-2 text-xs inline rounded-lg font-semibold mr-2 bg-gray-400 dark:bg-gray-700">Draft (not public)</span>
         </h2>
 
         <p class="mb-3">

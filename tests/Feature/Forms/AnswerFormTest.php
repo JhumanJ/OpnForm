@@ -61,3 +61,26 @@ it('can submit form till max submissions count is not reached at limit', functio
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(403);
 });
+
+it('can not open draft form', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'visibility' => 'draft'
+    ]);
+
+    $this->getJson(route('forms.show', $form->slug))
+        ->assertStatus(404);
+});
+
+it('can not submit draft form', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'visibility' => 'draft'
+    ]);
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(403);
+});

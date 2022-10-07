@@ -31,7 +31,8 @@
           </div>
           <div v-if="enrichedForms && enrichedForms.length" class="border border border-gray-300 dark:bg-notion-dark-light rounded-md w-full">
             <div v-for="(form, index) in enrichedForms" :key="form.id"
-                 class="p-4 w-full mx-auto border-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer relative" :class="{'border-t':index!==0}"
+                 class="p-4 w-full mx-auto border-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer relative" 
+                 :class="{'border-t':index!==0, 'bg-gray-50':form.visibility=='draft'}"
             >
               <div class="items-center space-x-4 truncate">
                 <p class="truncate float-left">

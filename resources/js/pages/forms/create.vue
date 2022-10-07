@@ -171,6 +171,7 @@ export default {
       this.form = new Form({
         title: 'My Form',
         description: null,
+        visibility: 'public',
         workspace_id: this.workspace?.id,
         properties: [],
 

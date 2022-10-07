@@ -29,6 +29,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'title' => 'required|string|max:60',
             'description' => 'nullable|string|max:2000',
             'tags' => 'nullable|array',
+            'visibility' => ['required',Rule::in(Form::VISIBILITY)],
 
             // Notifications
             'notifies' => 'boolean',
