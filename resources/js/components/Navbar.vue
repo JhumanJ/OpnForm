@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="hasNavbar" class="bg-white dark:bg-notion-dark">
+  <nav v-if="hasNavbar" class="bg-gray-50 dark:bg-notion-dark">
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
@@ -14,15 +14,22 @@
           </router-link>
           <workspace-dropdown class="ml-6" />
         </div>
-        <div v-if="user" class="hidden md:block ml-auto relative">
-          <a href="#" class="text-sm text-gray-400 hover:text-gray-800 cursor-pointer mt-1"
+        <div class="hidden md:block ml-auto relative">
+          <router-link :to="{name:'integrations'}" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+            Integrations
+          </router-link>
+          <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+            Feature Requests
+          </a>
+          <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])"
           >
             Help
           </a>
         </div>
+        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r-2 h-5"></div>
         <div v-if="showAuth" class="block">
-          <div class="ml-4 flex items-center md:ml-6">
+          <div class="flex items-center">
             <div class="ml-3 mr-4 relative">
               <div class="relative inline-block text-left">
                 <dropdown v-if="user" dusk="nav-dropdown">
@@ -68,7 +75,7 @@
                   </router-link>
 
                   <a href="#"
-                     class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                     class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                      @click.prevent="logout"
                   >
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -83,13 +90,13 @@
                 </dropdown>
                 <div v-else>
                   <router-link v-if="$route.name !== 'login'" :to="{ name: 'login' }"
-                               class="text-gray-900 hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm font-medium"
+                               class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm font-medium"
                                active-class="text-gray-800 dark:text-white"
                   >
                     {{ $t('login') }}
                   </router-link>
                   <router-link :to="{ name: 'register' }"
-                               class="text-gray-300 hover:text-gray-800 dark:hover:text-white pl-3 py-2 rounded-md text-sm font-medium"
+                               class="hidden md:inline text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white pl-3 py-2 rounded-md text-sm font-medium"
                                active-class="text-gray-800 dark:text-white"
                   >
                     <v-button v-track.nav_create_form_click :arrow="true">

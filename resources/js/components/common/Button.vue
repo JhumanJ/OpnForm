@@ -8,11 +8,11 @@
   >
     <template v-if="!loading">
       <slot />
-      <svg v-if="arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="float-right ml-2 w-6 h-6">
+      <svg v-if="arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="float-right mt-1 ml-2 w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
       </svg>
     </template>
-    <loader v-else class="h-6 w-6 text-white mx-auto" />
+    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`" />
   </button>
 </template>
 
@@ -64,6 +64,16 @@ export default {
           border: 'nt-blue'
         }
       }
+      if (['red','green','blue'].indexOf(this.color) >= 0) {
+        return {
+          main: '600',
+          hover: 'light',
+          ring: 'light',
+          'ring-offset': 'lighter',
+          text: 'white',
+          border: 'white'
+        }
+      }
       if (this.shade === 'lighter') {
         return {
           main: '200',
@@ -81,7 +91,7 @@ export default {
           ring: '300',
           'ring-offset': '150',
           text: 'white',
-          border: 'nt-blue'
+          border: 'white'
         }
       }
       return {
