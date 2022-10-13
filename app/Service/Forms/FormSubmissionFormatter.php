@@ -27,6 +27,8 @@ class FormSubmissionFormatter
 
     private $setEmptyForNoValue = false;
 
+    private $showRemovedFields = false;
+
     public function __construct(private Form $form, private array $formData)
     {
     }
@@ -55,6 +57,12 @@ class FormSubmissionFormatter
         return $this;
     }
 
+    public function showRemovedFields()
+    {
+        $this->showRemovedFields = true;
+        return $this;
+    }
+
     /**
      * Return a nice "FieldName": "Field Response" array
      * - If createLink enabled, returns html link for emails and links
@@ -63,10 +71,15 @@ class FormSubmissionFormatter
     public function getCleanKeyValue()
     {
         $data = $this->formData;
-        $fields = $this->form->properties;
+        $fields = ($this->showRemovedFields) ? array_merge($this->form->properties, $this->form->removed_properties) : $this->form->properties;
 
         $returnArray = [];
         foreach ($fields as &$field) {
+            $isRemoved = in_array($field['id'], array_column($this->form->removed_properties, 'id')) ?? false;
+            if($isRemoved){
+                $field['name'] = $field['name']." (deleted)";
+            }
+
             // If not present skip
             if (!isset($data[$field['id']])) {
                 if ($this->setEmptyForNoValue) {

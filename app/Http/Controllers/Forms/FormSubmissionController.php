@@ -35,7 +35,8 @@ class FormSubmissionController extends Controller
         foreach ($form->submissions->toArray() as $row) {
             $formatter = (new FormSubmissionFormatter($form, $row['data']))
                 ->outputStringsOnly()
-                ->setEmptyForNoValue();
+                ->setEmptyForNoValue()
+                ->showRemovedFields();
             $tmp = $formatter->getCleanKeyValue();
             $tmp['Create Date'] = date("Y-m-d H:i", strtotime($row['created_at']));
             $allRows[] = $tmp;

@@ -44,6 +44,7 @@ class FormResource extends JsonResource
             'tags' => $this->tags,
             'notification_emails' => $this->notification_emails,
             'slack_webhook_url' => $this->slack_webhook_url,
+            'removed_properties' => $this->removed_properties 
         ] : [];
 
         $baseData = $this->getFilteredFormData(parent::toArray($request), $this->userIsFormOwner());
