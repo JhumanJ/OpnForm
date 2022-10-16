@@ -46,7 +46,7 @@
           >
             <img alt="Logo Picture" :src="coverPictureSrc(form.logo_picture)"
                  :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                 class="w-20 h-20 absolute left-5 transition-all"
+                 class="w-20 h-20 object-contain absolute left-5 transition-all"
             >
           </div>
         </div>
