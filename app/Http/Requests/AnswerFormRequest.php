@@ -40,7 +40,7 @@ class AnswerFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return !$this->form->is_closed && !$this->form->max_number_of_submissions_reached;
+        return !$this->form->is_closed && !$this->form->max_number_of_submissions_reached && $this->form->visibility === 'public';
     }
 
     /**
