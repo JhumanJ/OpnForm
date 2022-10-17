@@ -317,6 +317,9 @@ export default {
       if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
         return 'FlatSelectInput'
       }
+      if (field.type === 'checkbox' && field.use_toggle_switch) {
+        return 'ToggleSwitchInput'
+      }
       return this.fieldComponents[field.type]
     },
     getFieldClasses (field) {

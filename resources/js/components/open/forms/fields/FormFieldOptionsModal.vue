@@ -37,6 +37,24 @@
         </v-checkbox>
       </div>
 
+      <!-- Checkbox -->
+      <div v-if="field.type === 'checkbox'" class="-mx-4 sm:-mx-6 p-5 border-b">
+        <h3 class="font-semibold block text-lg">
+          Checkbox
+        </h3>
+        <p class="text-gray-400 mb-5">
+          Advanced options for checkbox.
+        </p>
+        <v-checkbox v-model="field.use_toggle_switch" class="mt-4"
+                    name="use_toggle_switch" help=""
+        >
+          Use toggle switch
+        </v-checkbox>
+        <p class="text-gray-400 mb-5">
+          If enabled, checkbox will be replaced with a toggle switch
+        </p>
+      </div>
+
       <!-- File Uploads -->
       <div v-if="field.type === 'files'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">

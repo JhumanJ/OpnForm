@@ -6,6 +6,9 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <small v-if="help" :class="theme.SelectInput.help" class="block mb-2">
+      <slot name="help">{{ help }}</slot>
+    </small>
 
     <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-for="(option, index) in options" v-else :key="option[optionKey]"
@@ -22,9 +25,6 @@
       </div>
     </div>
 
-    <small v-if="help" :class="theme.SelectInput.help">
-      <slot name="help">{{ help }}</slot>
-    </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>
