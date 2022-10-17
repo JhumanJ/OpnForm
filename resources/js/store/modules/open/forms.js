@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export const formsEndpoint = '/api/open/workspaces/{workspaceId}/forms'
 export const namespaced = true
+export let currentPage = 1
 
 // state
 export const state = {
@@ -36,6 +37,9 @@ export const mutations = {
   set (state, items) {
     state.content = items
   },
+  append (state, items) {
+    state.content = state.content.concat(items)
+  },
   addOrUpdate (state, item) {
     state.content = state.content.filter((val) => val.id !== item.id)
     state.content.push(item)
@@ -56,12 +60,26 @@ export const actions = {
   resetState (context) {
     context.commit('set', [])
     context.commit('stopLoading')
+    currentPage = 1
   },
   load (context, workspaceId) {
     context.commit('startLoading')
-    return axios.get(formsEndpoint.replace('{workspaceId}', workspaceId)).then((response) => {
-      context.commit('set', response.data)
-      context.commit('stopLoading')
+    return axios.get(formsEndpoint.replace('{workspaceId}', workspaceId)+'?page='+currentPage).then((response) => {
+      context.commit((currentPage == 1) ? 'set' : 'append', response.data.data)
+      if (currentPage < response.data.meta.last_page) {
+        currentPage += 1
+        context.dispatch('load', workspaceId)
+      } else {
+        context.commit('stopLoading')
+        currentPage = 1
+      }
     })
+  },
+  loadIfEmpty (context, workspaceId) {
+    if (context.state.content.length === 0) {
+      return context.dispatch('load', workspaceId)
+    }
+    context.commit('stopLoading')
+    return Promise.resolve()
   }
 }

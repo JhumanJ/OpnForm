@@ -306,7 +306,7 @@ import FormSubmissions from '../../components/open/forms/components/FormSubmissi
 const loadForms = function () {
   store.commit('open/forms/startLoading')
   store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/load', store.state['open/workspaces'].currentId)
+    store.dispatch('open/forms/loadIfEmpty', store.state['open/workspaces'].currentId)
   })
 }
 
