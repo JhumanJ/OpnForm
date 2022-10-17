@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 @import 'elements/transitions';
-
+@import 'fonts';
 
 body.dark * {
   @apply border-gray-600
 }
 
 #app {
-  font-family: 'Inter', sans-serif;
+  font-family: GeneralSans, sans-serif !important;
    @apply min-h-screen;
 }
 
@@ -25,7 +25,7 @@ body.dark * {
   }
 
   h1 {
-    @apply text-3xl sm:text-4xl font-extrabold;
+    @apply text-3xl sm:text-4xl font-semibold;
   }
 
   h2 {

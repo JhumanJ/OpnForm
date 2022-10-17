@@ -23,8 +23,6 @@
 
   <title>{{ config('app.name') }}</title>
 
-  <link href="https://fonts.googleapis.com/css?family=Inter:100,400,600,700,800" rel="stylesheet" type="text/css">
-
   <link rel="stylesheet" href="{{ mix('dist/css/app.css') }}">
   <link rel="icon" href="{{asset('/img/logo.svg')}}">
 
