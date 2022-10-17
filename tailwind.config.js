@@ -1,28 +1,27 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
+  mode: 'jit',
   important: true,
-  purge: {
-    content: [
-      './resources/**/*.blade.php',
-      './resources/**/*.js',
-      './resources/**/*.vue'
-    ],
-    options: {
-      safelist: [
-        /.*bg-(nt-blue|blue|gray|red|yellow|green).*/, // Buttons
-        ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
-      ]
-    }
+  content: [
+    './resources/**/*.blade.php',
+    './resources/**/*.js',
+    './resources/**/*.vue'
+  ],
+  options: {
+    safelist: [
+      /.*bg-(nt-blue|blue|gray|red|yellow|green).*/, // Buttons
+      ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
+    ]
   },
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
       keyframes: {
         'bonce-slow': {
-          '0%, 20%': { transform: 'translateY(0)' },
-          '8%': { transform: 'translateY(-25%)' },
-          '16%': { transform: 'translateY(+10%)' }
+          '0%, 20%': {transform: 'translateY(0)'},
+          '8%': {transform: 'translateY(-25%)'},
+          '16%': {transform: 'translateY(+10%)'}
         }
       },
       animation: {
@@ -69,16 +68,6 @@ module.exports = {
         width: 'width',
         spacing: 'margin, padding'
       }
-    }
-  },
-  variants: {
-    extend: {
-      animation: ['hover'],
-      brightness: ['hover', 'focus'],
-      invert: ['dark'],
-      maxWidth: ['hover'],
-      display: ['group-hover', 'dark'],
-      rotate: ['group-hover']
     }
   },
   plugins: []

@@ -3,14 +3,14 @@
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
-          <router-link :to="{ name: user ? 'home' : 'welcome' }" class="flex-shrink-0 font-bold flex items-center">
+          <router-link :to="{ name: user ? 'home' : 'welcome' }" class="flex-shrink-0 font-semibold flex items-center">
             <img :src="asset('img/logo.svg')" alt="notion tools logo" class="w-10 h-10">
             <span
               class="ml-2 text-xl hidden sm:inline text-black dark:text-white"
             >
               {{ appName }}</span><span
-              class="bg-gray-100 font-semibold inline-block mb-4 ml-1 px-3 rounded-full text-black text-xs tracking-wider"
-            >Beta</span>
+              class="bg-gray-100 text-gray-600 font-semibold inline-block mb-4 ml-1 px-3 rounded-full text-black text-xs tracking-wider"
+            >BETA</span>
           </router-link>
           <workspace-dropdown class="ml-6" />
         </div>
