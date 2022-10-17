@@ -58,6 +58,7 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     if(!this.isDirty() || confirm("Changes you made may not be saved. Are you sure want to leave?") === true){
+      window.onbeforeunload = null
       next()
     }
     return false
