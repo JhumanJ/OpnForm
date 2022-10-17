@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex flex-col bg-gray-50 dark:bg-notion-dark">
-      <div class="w-full bg-gradient-to-b from-white to-gray-50">
-        <div class="w-full md:mx-auto flex flex-wrap mb-10 md:-mb-64 md:pt-10 relative max-w-5xl">
+      <div class="w-full bg-gradient-to-b from-white to-gray-100">
+        <div class="w-full md:mx-auto flex flex-wrap mb-10 -mb-32 md:-mb-52 lg:-mb-72 md:pt-10 relative max-w-5xl">
           <div
             class="flex flex-col justify-center w-full text-center lg:pr-10 p-6 lg:p-10 relative z-10"
           >
@@ -12,26 +12,24 @@
             <h3 class="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
               Create beautiful forms and share them anywhere. It takes seconds, you don't need to know how to code
               and <span
-              class="font-semibold"
+              class="font-medium"
             >it's free</span>.
             </h3>
             <div class="mt-6 flex justify-center">
-              <router-link class="mr-1" :to="{ name: 'register' }">
-                <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="blue">
-                  Create a form for FREE
-                </v-button>
-              </router-link>
+              <v-button class="mr-1" :to="{ name: 'register' }" :arrow="true">
+                Create a form for FREE
+              </v-button>
             </div>
             <div class="justify-center flex gap-2 mt-10">
               <div class="flex items-center text-gray-400 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="w-4 h-4 mt-1 mr-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor" class="w-4 h-4 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
                 <span>Unlimited forms</span>
               </div>
               <div class="flex items-center text-gray-400 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                      stroke="currentColor" class="w-4 h-4 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
@@ -40,22 +38,22 @@
                 </span>
               </div>
               <div class="flex text-gray-400 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="w-4 h-4 mt-1 mr-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor" class="w-4 h-4 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
                 <span>Unlimited responses</span>
               </div>
             </div>
           </div>
-          <div class="w-full relative px-6 sm:px-10 lg:px-0 z-10 lg:pr-10 flex items-center justify-center">
-            <img loading="lazy" class="w-full shadow-xl rounded-lg block max-w-2xl lg:max-w-5xl"
-                 :src="asset('img/pages/welcome/product_cover.jpg')" alt="cover-product">
+          <div class="w-full mt-8 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center">
+            <img loading="lazy" class="w-full shadow-2xl rounded-xl block max-w-2xl lg:max-w-5xl"
+                 :src="asset('img/pages/welcome/product-cover.jpg')" alt="cover-product">
           </div>
         </div>
       </div>
 
-      <div class="bg-white dark:bg-notion-dark-light md:pt-64 pb-8">
+      <div class="bg-white dark:bg-notion-dark-light pt-32 md:pt-52 lg:pt-72 pb-8">
         <div class="md:max-w-5xl md:mx-auto w-full">
           <features class="pt-20 pb-8"/>
         </div>

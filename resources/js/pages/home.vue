@@ -6,9 +6,9 @@
           <h2 class="text-nt-blue text-3xl font-bold flex-grow">
             Your Forms
           </h2>
-          <fancy-link v-track.create_form_click class="mt-4 sm:mt-0" :to="{name:'forms.create'}" color="nt-blue" @click="showCreateFormModal=true">
+          <v-button v-track.create_form_click class="mt-4 sm:mt-0" :to="{name:'forms.create'}" @click="showCreateFormModal=true">
             Create a new form
-          </fancy-link>
+          </v-button>
         </div>
         <div v-if="formsLoading" class="text-center">
           <loader class="h-6 w-6 text-nt-blue mx-auto" />

@@ -19,9 +19,9 @@
             <img :src="template.image_url" alt="" class="w-full shadow-xl rounded-lg my-5"/>
             <div v-html="template.description"></div>
             <div class="mt-5 text-center">
-                <fancy-link class="mt-4 sm:mt-0" :to="{path:'/forms/create?template='+template.slug}" color="nt-blue">
+                <v-button class="mt-4 sm:mt-0" :to="{path:'/forms/create?template='+template.slug}">
                     Use this template
-                </fancy-link>
+                </v-button>
             </div>
 
             <h3 class="text-center text-gray-500">Template Preview</h3>

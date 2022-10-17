@@ -7,9 +7,9 @@
             You need a <pro-tag class="mx-1" /> subscription to access your form analytics.
           </p>
           <p class="mt-5 text-center">
-            <fancy-link :to="{name:'pricing'}">
+            <v-button :to="{name:'pricing'}">
               Subscribe
-            </fancy-link>
+            </v-button>
           </p>
         </div>
       </div>
@@ -40,7 +40,6 @@ import {
   PointElement
 } from 'chart.js'
 import ProTag from '../../../common/ProTag'
-import FancyLink from '../../../common/FancyLink'
 
 ChartJS.register(
   Title,
@@ -55,7 +54,6 @@ ChartJS.register(
 export default {
   name: 'FormStats',
   components: {
-    FancyLink,
     ProTag,
     LineChart
   },

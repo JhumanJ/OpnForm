@@ -35,10 +35,9 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
-import FancyLink from '../../components/common/FancyLink'
 
 export default {
-  components: { FancyLink },
+  components: { },
   middleware: 'admin',
   scrollToTop: false,
 

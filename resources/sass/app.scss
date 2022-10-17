@@ -8,8 +8,11 @@ body.dark * {
   @apply border-gray-600
 }
 
-#app {
+* {
   font-family: GeneralSans, sans-serif !important;
+}
+
+#app {
    @apply min-h-screen;
 }
 
@@ -28,7 +31,7 @@ body.dark * {
   }
 
   h2 {
-    @apply text-3xl font-extrabold;
+    @apply text-3xl font-semibold;
   }
 
   a {

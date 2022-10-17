@@ -1,19 +1,29 @@
 <template>
-  <button :type="nativeType" :disabled="loading" :class="`py-${sizes['p-y']} px-${sizes['p-x']}
-    bg-${color}-${colorShades['main']} hover:bg-${color}-${colorShades['hover']} focus:ring-${color}-${colorShades['ring']}
-    focus:ring-offset-${color}-${colorShades['ring-offset']} text-${colorShades['text']}
-    transition ease-in duration-200 text-center text-${sizes['font']} font-semibold focus:outline-none focus:ring-2
-    focus:ring-offset-2 border-2 border-${colorShades['border']} rounded-lg`"
+  <button v-if="!to" :type="nativeType" :disabled="loading" :class="btnClasses"
           @click="$emit('click',$event)"
   >
     <template v-if="!loading">
-      <slot />
-      <svg v-if="arrow" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="float-right mt-1 ml-2 w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+      <span class="no-underline">
+      <slot/>
+        </span>
+      <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 11L11 1M11 1H1M11 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round"/>
       </svg>
+
     </template>
-    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`" />
+    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`"/>
   </button>
+  <router-link v-else :class="btnClasses" :to="to" :target="target"
+  >
+      <span class="no-underline">
+      <slot/>
+      </span>
+    <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 11L11 1M11 1H1M11 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"/>
+    </svg>
+  </router-link>
 </template>
 
 <script>
@@ -24,11 +34,6 @@ export default {
     color: {
       type: String,
       default: 'blue'
-    },
-
-    shade: {
-      type: String,
-      default: 'normal'
     },
 
     size: {
@@ -49,52 +54,60 @@ export default {
     arrow: {
       type: Boolean,
       default: false
-    }
+    },
+
+    to: {
+      type: Object,
+      default: null
+    },
+
+    target: {
+      type: String,
+      default: '_self'
+    },
   },
 
   computed: {
-    colorShades () {
-      if (this.shade === 'lighter') {
-        return {
-          main: '200',
-          hover: '300',
-          ring: '100',
-          'ring-offset': '50',
-          text: 'gray-900',
-          border: 'blue'
-        }
-      }
-      if (this.shade === 'light') {
-        return {
-          main: '400',
-          hover: '500',
-          ring: '300',
-          'ring-offset': '150',
-          text: 'white',
-          border: 'white'
-        }
-      }
-      return {
-        main: '600',
-        hover: '700',
-        ring: '500',
-        'ring-offset': '200',
-        text: 'white',
-        border: 'blue'
-      }
+    btnClasses() {
+      const sizes = this.sizes
+      const colorShades = this.colorShades
+      return `${sizes['p-y']} ${sizes['p-x']}
+        ${colorShades['main']} ${colorShades['hover']} ${colorShades['ring']} ${colorShades['ring-offset']}
+        ${colorShades['text']} transition ease-in duration-200 text-center text-${sizes['font']} font-medium focus:outline-none focus:ring-2
+        focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
     },
-    sizes () {
+    colorShades() {
+      if (this.color === 'blue') {
+        return {
+          main: 'bg-blue-600',
+          hover: 'hover:bg-blue-700',
+          ring: 'focus:ring-blue-500',
+          'ring-offset': 'focus:ring-offset-blue-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'outline-blue') {
+        return {
+          main: 'bg-transparent border-2 border-blue-600',
+          hover: 'hover:bg-blue-600',
+          ring: 'focus:ring-blue-500',
+          'ring-offset': 'focus:ring-offset-blue-200',
+          text: 'text-blue-600 hover:text-white',
+        }
+      }
+      console.error('Unknown color')
+    },
+    sizes() {
       if (this.size === 'small') {
         return {
           font: 'sm',
-          'p-y': '1',
-          'p-x': '2'
+          'p-y': 'py-1',
+          'p-x': 'px-2'
         }
       }
       return {
         font: 'base',
-        'p-y': '2',
-        'p-x': '4'
+        'p-y': 'py-2',
+        'p-x': 'px-4'
       }
     }
   }
