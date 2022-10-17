@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-col bg-gray-50 dark:bg-notion-dark">
-      <div class="w-full ">
+      <div class="w-full bg-gradient-to-b from-white to-gray-50">
         <div class="w-full md:mx-auto flex flex-wrap mb-10 md:-mb-64 md:pt-10 relative max-w-5xl">
           <div
             class="flex flex-col justify-center w-full text-center lg:pr-10 p-6 lg:p-10 relative z-10"
@@ -9,7 +9,7 @@
             <h1 dusk="title" class="text-4xl lg:text-5xl">
               The open-source <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">form builder</span><br>
             </h1>
-            <h3 class="mt-6 text-xl text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+            <h3 class="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
               Create beautiful forms and share them anywhere. It takes seconds, you don't need to know how to code
               and <span
               class="font-semibold"
@@ -17,32 +17,34 @@
             </h3>
             <div class="mt-6 flex justify-center">
               <router-link class="mr-1" :to="{ name: 'register' }">
-                <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="nt-blue">
+                <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="blue">
                   Create a form for FREE
                 </v-button>
               </router-link>
             </div>
-            <div class="justify-center flex mt-10">
-              <div class="flex text-gray-400 mr-4">
+            <div class="justify-center flex gap-2 mt-10">
+              <div class="flex items-center text-gray-400 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="w-4 h-4 mt-1 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
-                Unlimited forms
+                <span>Unlimited forms</span>
               </div>
-              <div class="flex text-gray-400 mr-4">
+              <div class="flex items-center text-gray-400 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="w-4 h-4 mt-1 mr-1">
+                     stroke="currentColor" class="w-4 h-4 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
-                Unlimited fields
+                <span>
+                  Unlimited fields
+                </span>
               </div>
-              <div class="flex text-gray-400">
+              <div class="flex text-gray-400 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="w-4 h-4 mt-1 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                 </svg>
-                Unlimited responses
+                <span>Unlimited responses</span>
               </div>
             </div>
           </div>
@@ -78,7 +80,7 @@
         <p class="text-gray-300 my-8">No trial. Generous, unlimited free plan.</p>
         <div class="mt-6 flex justify-center">
           <router-link class="mr-1" :to="{ name: 'register' }">
-            <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="nt-blue">
+            <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="blue">
               Create a form for FREE
             </v-button>
           </router-link>

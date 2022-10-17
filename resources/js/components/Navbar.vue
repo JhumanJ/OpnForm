@@ -6,7 +6,7 @@
           <router-link :to="{ name: user ? 'home' : 'welcome' }" class="flex-shrink-0 font-semibold flex items-center">
             <img :src="asset('img/logo.svg')" alt="notion tools logo" class="w-10 h-10">
             <span
-              class="ml-2 text-xl hidden sm:inline text-black dark:text-white"
+              class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >
               {{ appName }}</span><span
               class="bg-gray-100 text-gray-600 font-semibold inline-block mb-4 ml-1 px-3 rounded-full text-black text-xs tracking-wider"
@@ -27,7 +27,7 @@
             Help
           </a>
         </div>
-        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r-2 h-5"></div>
+        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5"></div>
         <div v-if="showAuth" class="block">
           <div class="flex items-center">
             <div class="ml-3 mr-4 relative">
@@ -35,7 +35,7 @@
                 <dropdown v-if="user" dusk="nav-dropdown">
                   <template #trigger="{toggle}">
                     <button id="dropdown-menu-button" type="button"
-                            class="flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
+                            class="flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
                             dusk="nav-dropdown-button" @click.prevent="toggle()"
                     >
                       <img :src="user.photo_url" class="rounded-full w-6 h-6">
@@ -90,13 +90,13 @@
                 </dropdown>
                 <div v-else>
                   <router-link v-if="$route.name !== 'login'" :to="{ name: 'login' }"
-                               class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm font-medium"
+                               class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
                                active-class="text-gray-800 dark:text-white"
                   >
                     {{ $t('login') }}
                   </router-link>
                   <router-link :to="{ name: 'register' }"
-                               class="hidden md:inline text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white pl-3 py-2 rounded-md text-sm font-medium"
+                               class="hidden md:inline text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white pl-3 py-2 rounded-md text-sm"
                                active-class="text-gray-800 dark:text-white"
                   >
                     <v-button v-track.nav_create_form_click :arrow="true">

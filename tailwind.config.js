@@ -1,19 +1,17 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  mode: 'jit',
-  important: true,
   content: [
     './resources/**/*.blade.php',
     './resources/**/*.js',
     './resources/**/*.vue'
   ],
-  options: {
-    safelist: [
-      /.*bg-(nt-blue|blue|gray|red|yellow|green).*/, // Buttons
-      ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
-    ]
-  },
+  safelist: [
+    {
+      pattern:  /.*bg-(blue|gray|red|yellow|green).*/,
+    },
+    ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
+  ],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
@@ -69,6 +67,5 @@ module.exports = {
         spacing: 'margin, padding'
       }
     }
-  },
-  plugins: []
+  }
 }
