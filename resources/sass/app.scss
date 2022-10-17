@@ -19,7 +19,7 @@ body.dark * {
 @layer base {
 
   p, div {
-    @apply text-gray-800 dark:text-white;
+    @apply text-gray-900 dark:text-white;
   }
 
   h1, h2, h3, h4, h5, h6 {

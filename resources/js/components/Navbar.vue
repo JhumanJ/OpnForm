@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
-          <router-link :to="{ name: user ? 'home' : 'welcome' }" class="flex-shrink-0 font-semibold flex items-center">
-            <img :src="asset('img/logo.svg')" alt="notion tools logo" class="w-10 h-10">
+          <router-link :to="{ name: user ? 'home' : 'welcome' }" class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
+            <img :src="asset('img/logo.svg')" alt="notion tools logo" class="w-8 h-8">
             <span
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >

@@ -59,14 +59,93 @@
         </div>
       </div>
 
-      <div class="bg-gray-50 dark:bg-notion-dark pb-8">
+      <div class="bg-gray-50 dark:bg-notion-dark py-8">
         <div class="md:max-w-5xl md:mx-auto w-full">
-          <features :features-only="false" class="pt-10 pb-8"/>
+          <div class="my-5 text-center">
+            <h3 class="font-semibold text-3xl">And many more features</h3>
+            <p class="w-full mt-2 mb-8">
+              OpnForm makes form building easy and comes with powerful features.
+            </p>
+            <div class="grid md:grid-cols-3 mt-10 mb-5">
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Form logic
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                URL pre-fill
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Unique submission ID
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Hidden fields
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Form password
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Webhooks
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Custom code
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                Closing date
+              </div>
+              <div class="flex font-semibold my-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 mr-2 text-nt-blue">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+                </svg>
+                And much more...
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">
-        <h3 class="font-bold text-3xl">See what people are saying</h3>
+        <h3 class="font-semibold text-3xl">See what people are saying</h3>
         <p class="w-full mt-2 mb-8">
           These are the stories of our customers who have joined us with great pleasure when using this crazy feature.
         </p>
@@ -74,14 +153,12 @@
       </div>
 
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
-        <h4 class="font-bold text-4xl text-white">Take your forms to the next level</h4>
+        <h4 class="font-semibold text-3xl text-white">Take your forms to the next level</h4>
         <p class="text-gray-300 my-8">No trial. Generous, unlimited free plan.</p>
         <div class="mt-6 flex justify-center">
-          <router-link class="mr-1" :to="{ name: 'register' }">
-            <v-button v-track.welcome_create_form_click :arrow="true" class="py-4" color="blue">
-              Create a form for FREE
-            </v-button>
-          </router-link>
+          <v-button :to="{ name: 'register' }" v-track.welcome_create_form_click :arrow="true" color="blue">
+            Create a form for FREE
+          </v-button>
         </div>
         <div class="flex justify-center mt-6">
           <a target="_blank" href="" class="mr-4">

@@ -10,7 +10,7 @@ export default {
     required: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     placeholder: { type: String, default: null },
-    uppercaseLabels: { type: Boolean, default: true },
+    uppercaseLabels: { type: Boolean, default: false },
     help: { type: String, default: null }, // Show help or bot
     theme: { type: Object, default: () => themes.default },
     color: { type: String, default: '#3B82F6' },

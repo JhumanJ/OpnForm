@@ -1,11 +1,13 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
+    <slot name="label">
+      <label v-if="label" :for="id?id:name"
+             :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
+      >
+        {{ label }}
+        <span v-if="required" class="text-red-500 required-dot">*</span>
+      </label>
+    </slot>
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
            :style="inputStyle"
