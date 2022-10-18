@@ -1,42 +1,15 @@
 <template>
-  <div>
-    <Motion
-      v-model="value"
-      :options="{
-        duration: 150,
-      }"
-      :trigger="[
-        'bg-gray-200 border-gray-300 duration-100 dark:bg-gray-700 dark:border-gray-600',
-        'bg-gray-200 dark:bg-gray-700',
-        'bg-nt-blue border-nt-blue',
-        'bg-nt-blue duration-100',
-      ]"
-      class="inline-flex items-center h-6 w-12 p-1 border rounded-full cursor-pointer focus:outline-none"
-      @click="$emit('input',!internalValue)"
-    >
-      <Motion
-        v-model="internalValue"
-        tag="span"
-        :options="{
-          duration: 150,
-        }"
-        :trigger="[
-          'translate-x-0 duration-150',
-          'rounded-2xl scale-75 duration-100',
-          'translate-x-6 duration-100',
-          'scale-100 duration-150',
-        ]"
-        class="inline-block h-4 w-4 rounded-full bg-white dark:bg-gray-500 shadow"
-      />
-    </Motion>
+  <div @click="onClick">
+    <div class="inline-flex items-center h-6 w-12 p-1 bg-gray-300 border rounded-full cursor-pointer focus:outline-none transition-all transform ease-in-out duration-100" :class="{'bg-nt-blue': internalValue}">
+      <div class="inline-block h-4 w-4 rounded-full bg-white shadow transition-all transform ease-in-out duration-150 rounded-2xl scale-100" :class="{'translate-x-5.5': internalValue}" />
+    </div>
   </div>
 </template>
 
 <script>
-import Motion from 'tinymotion'
 export default {
   name: 'VSwitch',
-  components: { Motion },
+  components: { },
 
   props: {
     value: { type: Boolean, default: false }
@@ -48,14 +21,7 @@ export default {
     }
   },
 
-  computed: {
-    sizeClasses () {
-      if (this.size === 'small') {
-        return 'w-3 h-3'
-      }
-      return 'w-5 h-5'
-    }
-  },
+  computed: {},
 
   watch: {
     value (val) {
@@ -68,12 +34,10 @@ export default {
   },
 
   methods: {
+    onClick () {
+      this.$emit('input', !this.internalValue)
+      this.internalValue = !this.internalValue
+    }
   }
 }
 </script>
-
-<style scoped>
-.translate-x-6 {
-  --tw-translate-x: 1.4rem !important;
-}
-</style>

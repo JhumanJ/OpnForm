@@ -42,8 +42,10 @@ class FormResource extends JsonResource
             'can_be_indexed' => $this->can_be_indexed,
             'password' => $this->password,
             'tags' => $this->tags,
+            'visibility' => $this->visibility,
             'notification_emails' => $this->notification_emails,
             'slack_webhook_url' => $this->slack_webhook_url,
+            'removed_properties' => $this->removed_properties 
         ] : [];
 
         $baseData = $this->getFilteredFormData(parent::toArray($request), $this->userIsFormOwner());

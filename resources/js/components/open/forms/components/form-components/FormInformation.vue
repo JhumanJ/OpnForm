@@ -27,6 +27,11 @@
                 placeholder="Select Tag(s)" :multiple="true" :allowCreation="true"
                 :options="allTagsOptions"
     />
+    <select-input name="visibility" label="Visibility" :form="form" class="mt-3 mb-6"
+                help="Only public form will be accessible"
+                placeholder="Select Visibility" :required="true"
+                :options="visibilityOptions"
+    />
     <button
       v-if="copyFormOptions.length > 0"
       class="group mt-3 cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
@@ -86,7 +91,17 @@ export default {
   data () {
     return {
       showCopyFormSettingsModal: false,
-      copyFormId: null
+      copyFormId: null,
+      visibilityOptions: [
+        {
+          name: "Public",
+          value: "public"
+        },
+        {
+          name: "Draft (form won't be accessible)",
+          value: "draft"
+        }
+      ]
     }
   },
 

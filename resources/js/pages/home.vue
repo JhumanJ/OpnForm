@@ -10,13 +10,11 @@
             Create a new form
           </v-button>
         </div>
-        <div v-if="formsLoading" class="text-center">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
-        </div>
-        <p v-else-if="enrichedForms.length === 0 && !isFilteringForms">
+
+        <p v-if="!formsLoading && enrichedForms.length === 0 && !isFilteringForms">
           You don't have any form yet.
         </p>
-        <div v-else class="mb-10">
+        <div v-else-if="forms.length > 0" class="mb-10">
           <text-input v-if="forms.length > 5" class="mb-6" :form="searchForm" name="search" label="Search a form"
                       placeholder="Name of form to search"
           />
@@ -31,7 +29,8 @@
           </div>
           <div v-if="enrichedForms && enrichedForms.length" class="border border border-gray-300 dark:bg-notion-dark-light rounded-md w-full">
             <div v-for="(form, index) in enrichedForms" :key="form.id"
-                 class="p-4 w-full mx-auto border-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer relative" :class="{'border-t':index!==0}"
+                 class="p-4 w-full mx-auto border-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer relative" 
+                 :class="{'border-t':index!==0, 'bg-gray-50 dark:bg-gray-400':form.visibility=='draft'}"
             >
               <div class="items-center space-x-4 truncate">
                 <p class="truncate float-left">
@@ -65,6 +64,9 @@
             </template>.
           </p>
         </div>
+        <div v-if="formsLoading" class="text-center">
+          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+        </div>
       </div>
     </div>
     <open-form-footer class="mt-8 border-t" />
@@ -82,7 +84,7 @@ import OpenFormFooter from '../components/pages/OpenFormFooter'
 const loadForms = function () {
   store.commit('open/forms/startLoading')
   store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/load', store.state['open/workspaces'].currentId)
+    store.dispatch('open/forms/loadIfEmpty', store.state['open/workspaces'].currentId)
   })
 }
 

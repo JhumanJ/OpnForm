@@ -58,6 +58,7 @@ class FormFactory extends Factory
         return [
             'title' => $this->faker->text(30),
             'description' => $this->faker->randomHtml(1),
+            'visibility' => 'public',
             'notifies' => false,
             'send_submission_confirmation' => false,
             'webhook_url' => null,

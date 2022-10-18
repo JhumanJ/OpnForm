@@ -29,6 +29,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'title' => 'required|string|max:60',
             'description' => 'nullable|string|max:2000',
             'tags' => 'nullable|array',
+            'visibility' => ['required',Rule::in(Form::VISIBILITY)],
 
             // Notifications
             'notifies' => 'boolean',
@@ -83,6 +84,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.timezone' => 'sometimes|nullable',
             'properties.*.width' => ['sometimes', Rule::in(['full','1/2','1/3','2/3','1/3','3/4','1/4'])],
             'properties.*.allowed_file_types' => 'sometimes|nullable',
+            'properties.*.use_toggle_switch' => 'boolean|nullable',
 
             // Logic
             'properties.*.logic' => ['array', 'nullable', new FormPropertyLogicRule()],

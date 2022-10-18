@@ -28,12 +28,10 @@ it('can fetch forms', function () {
 
     $this->getJson(route('open.workspaces.forms.index', $workspace->id))
         ->assertSuccessful()
-        ->assertJsonCount(1)
-        ->assertJson(function (AssertableJson $json) use ($form) {
-            return $json->where('0.id', $form->id)
-                ->whereType('0.title', 'string')
-                ->whereType('0.properties', 'array');
-        });
+        ->assertJsonCount(3)
+        ->assertSuccessful()
+        ->assertJsonPath('data.0.id', $form->id)
+        ->assertJsonPath('data.0.title', $form->title);
 });
 
 it('can update a form', function () {

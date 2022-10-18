@@ -37,6 +37,9 @@ module.exports = {
         10: '10rem',
         8: '2rem'
       },
+      translate: {
+        5.5: '1.4rem'
+      },
       boxShadow: {
         'inner-notion': '#0f0f0f1a 0px 0px 0px 1px inset',
         'focus-notion': '#2eaadcb3 0px 0px 0px 1px inset, #2eaadc66 0px 0px 0px 2px !important'
