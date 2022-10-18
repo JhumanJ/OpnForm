@@ -11,7 +11,7 @@
                     appear @after-leave="leaveCallback"
         >
           <div v-if="show" class="fixed inset-0 transform" @click="close">
-            <div class="absolute inset-0 bg-gray-500 opacity-75" />
+            <div class="absolute inset-0 bg-gray-500 opacity-75"/>
           </div>
         </transition>
 
@@ -22,25 +22,40 @@
                     leave-class="opacity-100 translate-y-0 sm:scale-100"
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <div v-if="show" class="modal-content bg-white dark:bg-notion-dark rounded-lg overflow-y-scroll shadow-xl transform transition-all sm:w-full"
+          <div v-if="show"
+               class="modal-content bg-white dark:bg-notion-dark rounded-lg overflow-y-scroll shadow-xl transform transition-all sm:w-full"
                :class="maxWidthClass"
           >
-            <div class="bg-white dark:bg-notion-dark px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-start">
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <h3 v-if="$scopedSlots.hasOwnProperty('title')" class="text-lg">
-                    <slot name="title" />
-                  </h3>
+            <div class="bg-white relative dark:bg-notion-dark p-4 md:p-6">
+              <div class="absolute top-4 right-4" v-if="closeable">
+                <button class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="close">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sm:flex sm:flex-col sm:items-start">
+                <div v-if="$scopedSlots.hasOwnProperty('icon')" class="flex w-full justify-center mb-4">
+                  <div class="w-14 h-14 rounded-full flex justify-center items-center"
+                       :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'">
+                    <slot name="icon"/>
+                  </div>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 w-full">
+                  <h2 v-if="$scopedSlots.hasOwnProperty('title')" class="text-2xl font-semibold text-center text-gray-900">
+                    <slot name="title"/>
+                  </h2>
                 </div>
               </div>
 
               <div class="mt-2 w-full">
-                <slot />
+                <slot/>
               </div>
             </div>
 
             <div v-if="$scopedSlots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
-              <slot name="footer" />
+              <slot name="footer"/>
             </div>
           </div>
         </transition>
@@ -56,6 +71,9 @@ export default {
   props: {
     show: {
       default: false
+    },
+    iconColor: {
+      default: 'blue'
     },
     maxWidth: {
       default: '2xl'
@@ -73,7 +91,7 @@ export default {
   },
 
   computed: {
-    maxWidthClass () {
+    maxWidthClass() {
       return {
         sm: 'sm:max-w-sm',
         md: 'sm:max-w-md',
@@ -97,7 +115,7 @@ export default {
     }
   },
 
-  created () {
+  created() {
     const closeOnEscape = (e) => {
       if (e.key === 'Escape' && this.show) {
         this.close()
@@ -112,12 +130,12 @@ export default {
   },
 
   methods: {
-    close () {
+    close() {
       if (this.closeable) {
         this.$emit('close')
       }
     },
-    leaveCallback () {
+    leaveCallback() {
       if (this.afterLeave) {
         this.afterLeave()
       }

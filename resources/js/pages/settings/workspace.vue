@@ -1,7 +1,7 @@
 <template>
   <card title="Workspaces" class="bg-gray-50 dark:bg-notion-dark-light">
     <div v-if="loading" class="w-full text-blue-500 text-center">
-      <loader class="h-10 w-10 p-5" />
+      <loader class="h-10 w-10 p-5"/>
     </div>
     <div v-else>
       <div v-for="workspace in workspaces" :key="workspace.id"
@@ -15,12 +15,15 @@
                v-text="workspace.icon"
           />
           <div class="flex-1 flex items-center space-y-4 py-1">
-            <p class="font-bold truncate" v-text="workspace.name" />
+            <p class="font-bold truncate" v-text="workspace.name"/>
           </div>
         </div>
-        <div v-if="workspaces.length > 1" class="block md:hidden group-hover:block text-red-500 p-2 rounded hover:bg-red-50" role="button" @click="deleteWorkspace(workspace)">
+        <div v-if="workspaces.length > 1"
+             class="block md:hidden group-hover:block text-red-500 p-2 rounded hover:bg-red-50" role="button"
+             @click="deleteWorkspace(workspace)">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
           </svg>
         </div>
       </div>
@@ -32,26 +35,32 @@
     </div>
 
     <!--  Workspace modal  -->
-    <modal :show="workspaceModal" @close="workspaceModal=false">
+    <modal :show="workspaceModal" @close="workspaceModal=false" max-width="lg">
+      <template #icon>
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </template>
+      <template #title>
+        Create Workspace
+      </template>
       <div class="px-4">
         <form @submit.prevent="createWorkspace" @keydown="form.onKeydown($event)">
-          <h2 class="text-2xl font-bold z-10 truncate mb-5 text-nt-blue">
-            Create Workspace
-          </h2>
-
           <div>
             <text-input name="name" class="mt-4" :form="form" :required="true"
-                  label="Workspace Name"
+                        label="Workspace Name"
             />
             <text-input name="emoji" class="mt-4" :form="form" :required="false"
-                  label="Emoji"
+                        label="Emoji"
             />
           </div>
 
-          <div class="flex justify-end mt-4">
-            <v-button :loading="form.busy" class="mr-1">Save</v-button>
-            <v-button color="gray" shade="light" @click.prevent="workspaceModal=false">Close</v-button>
+          <div class="w-full mt-6">
+            <v-button :loading="form.busy" class="w-full my-3">Save</v-button>
           </div>
+
         </form>
       </div>
     </modal>
@@ -61,15 +70,15 @@
 
 <script>
 import Form from 'vform'
-import { mapActions, mapState } from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 export default {
 
-  components: { },
+  components: {},
   scrollToTop: false,
 
-  metaInfo () {
-    return { title: 'Workspaces' }
+  metaInfo() {
+    return {title: 'Workspaces'}
   },
 
   data: () => ({
@@ -80,7 +89,7 @@ export default {
     workspaceModal: false
   }),
 
-  mounted () {
+  mounted() {
     this.loadWorkspaces()
   },
 
@@ -95,19 +104,19 @@ export default {
     ...mapActions({
       loadWorkspaces: 'open/workspaces/loadIfEmpty'
     }),
-    switchWorkspace (workspace) {
+    switchWorkspace(workspace) {
       this.$store.commit('open/workspaces/setCurrentId', workspace.id)
-      this.$router.push({ name: 'home' })
+      this.$router.push({name: 'home'})
       this.$store.dispatch('open/forms/load', workspace.id)
     },
-    deleteWorkspace (workspace) {
+    deleteWorkspace(workspace) {
       this.alertConfirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
         this.$store.dispatch('open/workspaces/delete', workspace.id).then(() => {
           this.alertSuccess('Workspace successfully removed.')
         })
       })
     },
-    isUrl (str) {
+    isUrl(str) {
       const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -116,8 +125,8 @@ export default {
         '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
       return !!pattern.test(str)
     },
-    async createWorkspace () {
-      const { data } = await this.form.post('/api/open/workspaces/create')
+    async createWorkspace() {
+      const {data} = await this.form.post('/api/open/workspaces/create')
       this.$store.dispatch('open/workspaces/load')
       this.workspaceModal = false
     }

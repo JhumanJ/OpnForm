@@ -3,7 +3,7 @@
           @click="$emit('click',$event)"
   >
     <template v-if="!loading">
-      <span class="no-underline">
+      <span class="no-underline mx-auto">
       <slot/>
         </span>
       <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +16,7 @@
   </button>
   <router-link v-else :class="btnClasses" :to="to" :target="target"
   >
-      <span class="no-underline">
+      <span class="no-underline mx-auto">
       <slot/>
       </span>
     <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,8 +72,8 @@ export default {
       const sizes = this.sizes
       const colorShades = this.colorShades
       return `${sizes['p-y']} ${sizes['p-x']}
-        ${colorShades['main']} ${colorShades['hover']} ${colorShades['ring']} ${colorShades['ring-offset']}
-        ${colorShades['text']} transition ease-in duration-200 text-center text-${sizes['font']} font-medium focus:outline-none focus:ring-2
+        ${colorShades?.main} ${colorShades?.hover} ${colorShades?.ring} ${colorShades['ring-offset']}
+        ${colorShades?.text} transition ease-in duration-200 text-center text-${sizes?.font} font-medium focus:outline-none focus:ring-2
         focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
     },
     colorShades() {
