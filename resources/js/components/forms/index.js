@@ -16,6 +16,7 @@ import ImageInput from './ImageInput'
 import DateInput from './DateInput';
 import RatingInput from './RatingInput';
 import FlatSelectInput from './FlatSelectInput';
+import ToggleSwitchInput from './ToggleSwitchInput';
 
 // Components that are registered globaly.
 [
@@ -34,7 +35,8 @@ import FlatSelectInput from './FlatSelectInput';
   RichTextAreaInput,
   DateInput,
   RatingInput,
-  FlatSelectInput
+  FlatSelectInput,
+  ToggleSwitchInput
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
