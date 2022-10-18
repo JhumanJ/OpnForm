@@ -30,9 +30,11 @@
                           name="password_confirmation"  :label="$t('confirm_password')"
               />
 
-              <checkbox-input :form="form" name="agree_terms" :required="true" 
-                      label="I agree with the Terms and conditions and Privacy policy of the website and I accept them."
-              />
+              <checkbox-input :form="form" name="agree_terms" :required="true">
+                <template #label>
+                  I agree with the <router-link :to="{name:'terms-conditions'}" target="_blank">Terms and conditions</router-link> and <router-link :to="{name:'privacy-policy'}" target="_blank">Privacy policy</router-link> of the website and I accept them.
+                </template>
+              </checkbox-input>
 
               <!-- Submit Button -->
               <v-button :loading="form.busy">Create an account</v-button>

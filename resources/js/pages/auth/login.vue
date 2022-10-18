@@ -20,7 +20,7 @@
 
               <!-- Remember Me -->
               <div class="relative flex items-center my-5">
-                <v-checkbox v-model="remember" class="w-full md:w-1/2" name="remember">
+                <v-checkbox v-model="remember" class="w-full md:w-1/2" name="remember" size="small">
                   {{ $t('remember_me') }}
                 </v-checkbox>
 
