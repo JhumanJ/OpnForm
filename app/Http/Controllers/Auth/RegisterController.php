@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -52,7 +53,10 @@ class RegisterController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email:filter|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-            'hear_about_us' => 'required|string'
+            'hear_about_us' => 'required|string',
+            'agree_terms' => ['required',Rule::in([true])]
+        ],[
+            'agree_terms' => 'Please agree with the terms and conditions.'
         ]);
     }
 
