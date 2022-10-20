@@ -1,8 +1,8 @@
 <template>
-  <collapse class="p-5 w-full border-b" :default-value="true">
+  <collapse class="py-3 w-full border-b" :default-value="true">
     <template #title class="test">
       <h3 id="v-step-0" class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-gray-500 mr-2 -mt-1" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-nt-blue mr-2 -mt-1" fill="none"
              viewBox="0 0 24 24" stroke="currentColor"
         >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -14,7 +14,7 @@
     </template>
     <text-input name="title" class="mt-4"
                 :form="form"
-                label="Title of your form"
+                label="Form Title"
                 :required="true"
     />
     <rich-text-area-input name="description"
@@ -34,17 +34,13 @@
     />
     <button
       v-if="copyFormOptions.length > 0"
-      class="group mt-3 cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
+      class="group cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
       @click.prevent="showCopyFormSettingsModal=true"
     >
-      Copy another form's settings
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 -mt-1 text-nt-blue inline" fill="none" viewBox="0 0 24 24"
-           stroke="currentColor" stroke-width="2"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-        />
+      <svg class="h-5 w-5 -mt-1 text-nt-blue inline" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.16667 12.4998C3.3901 12.4998 3.00182 12.4998 2.69553 12.373C2.28715 12.2038 1.9627 11.8794 1.79354 11.471C1.66667 11.1647 1.66667 10.7764 1.66667 9.99984V4.33317C1.66667 3.39975 1.66667 2.93304 1.84833 2.57652C2.00812 2.26292 2.26308 2.00795 2.57669 1.84816C2.93321 1.6665 3.39992 1.6665 4.33334 1.6665H10C10.7766 1.6665 11.1649 1.6665 11.4711 1.79337C11.8795 1.96253 12.204 2.28698 12.3731 2.69536C12.5 3.00165 12.5 3.38993 12.5 4.1665M10.1667 18.3332H15.6667C16.6001 18.3332 17.0668 18.3332 17.4233 18.1515C17.7369 17.9917 17.9919 17.7368 18.1517 17.4232C18.3333 17.0666 18.3333 16.5999 18.3333 15.6665V10.1665C18.3333 9.23308 18.3333 8.76637 18.1517 8.40985C17.9919 8.09625 17.7369 7.84128 17.4233 7.68149C17.0668 7.49984 16.6001 7.49984 15.6667 7.49984H10.1667C9.23325 7.49984 8.76654 7.49984 8.41002 7.68149C8.09642 7.84128 7.84145 8.09625 7.68166 8.40985C7.50001 8.76637 7.50001 9.23308 7.50001 10.1665V15.6665C7.50001 16.5999 7.50001 17.0666 7.68166 17.4232C7.84145 17.7368 8.09642 17.9917 8.41002 18.1515C8.76654 18.3332 9.23325 18.3332 10.1667 18.3332Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+      Copy another form's settings
     </button>
 
     <modal :show="showCopyFormSettingsModal" @close="showCopyFormSettingsModal=false">

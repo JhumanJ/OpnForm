@@ -1,8 +1,8 @@
 <template>
-  <collapse class="p-5 w-full border-b">
+  <collapse class="py-3 w-full border-b">
     <template #title>
       <h3 class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-gray-500 mr-2 -mt-1" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-nt-blue mr-2 -mt-1" fill="none"
              viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>

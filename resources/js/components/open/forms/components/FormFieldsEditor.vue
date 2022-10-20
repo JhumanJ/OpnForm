@@ -1,8 +1,13 @@
 <template>
   <div>
-    <v-button class="w-full mb-5" @click="showAddBlock=true">
-      Add Block
-    </v-button>
+    <button 
+      class="mb-3 group cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
+      @click="showAddBlock=true">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg> Add block
+    </button>
+
     <add-form-block-modal :form-blocks="formFields" :show="showAddBlock" @block-added="blockAdded"
                           @close="showAddBlock=false"
     />
@@ -32,12 +37,8 @@
         <div v-if="field" class="flex items-center space-x-1 group py-2 pr-4">
           <!-- Drag handler -->
           <div class="cursor-move draggable p-2 -mr-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-              />
+            <svg  class="h-4 w-4 text-gray-400" viewBox="0 0 18 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.5 1.0835H16.5M1.5 6.91683H16.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
           <!-- Field name and type -->

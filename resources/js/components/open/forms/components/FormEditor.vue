@@ -2,11 +2,27 @@
   <div v-if="form" id="form-editor" class="w-full flex border-t flex-grow relative overflow-x-hidden">
     <!-- Form fields selection -->
     <v-tour name="tutorial" :steps="steps" />
-    <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0">
+    <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0 p-4">
       <div class="p-5 bg-blue-50 border-b text-nt-blue-dark md:hidden">
         We suggest you create this form on a device with a larger screen such as computed. That will allow you
         to preview your form changes.
       </div>
+      
+      <a href="javascript:;" @click="$router.back()" class="flex text-blue mb-5">
+        <svg class="w-4 h-4 text-blue mt-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Go back
+      </a>
+      <h3 class="font-semibold text-lg">{{form.title}}</h3>
+      <small>Edited 2 months ago</small>
+      <v-button v-track.save_form_click class="hidden md:block w-full mt-2 mb-8" :loading="updateFormLoading" @click="saveForm">
+        <svg class="w-4 h-4 text-white inline mr-1" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.6667 1L5.49999 10.1667L1.33333 6" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Save changes
+      </v-button>
+
       <form-information />
       <form-structure />
       <form-customization />
@@ -66,7 +82,8 @@ export default {
 
   data () {
     return {
-      showFormErrorModal: false
+      showFormErrorModal: false,
+      updateFormLoading: false
     }
   },
 
@@ -136,7 +153,10 @@ export default {
     },
     showValidationErrors () {
       this.showFormErrorModal = true
-    }
+    },
+    saveForm () {
+      alert("Comming Soon...")
+    },
   }
 }
 </script>

@@ -10,7 +10,7 @@
     <v-button class="ml-1 mt-1" color="blue" size="small" :disabled="selectedRule === ''" @click="addRule">
       Add Condition
     </v-button>
-    <v-button class="ml-1 mt-1" color="green" size="small" @click="groupCtrl.newGroup">
+    <v-button class="ml-1 mt-1" color="outline-blue" size="small" @click="groupCtrl.newGroup">
       Add Group
     </v-button>
   </div>

@@ -93,6 +93,22 @@ export default {
           'ring-offset': 'focus:ring-offset-blue-200',
           text: 'text-blue-600 hover:text-white',
         }
+      } else if (this.color === 'red') {
+        return {
+          main: 'bg-red-600',
+          hover: 'hover:bg-red-700',
+          ring: 'focus:ring-red-500',
+          'ring-offset': 'focus:ring-offset-red-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'gray') {
+        return {
+          main: 'bg-gray-600',
+          hover: 'hover:bg-gray-700',
+          ring: 'focus:ring-gray-500',
+          'ring-offset': 'focus:ring-offset-gray-200',
+          text: 'text-white',
+        }
       }
       console.error('Unknown color')
     },

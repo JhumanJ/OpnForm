@@ -25,7 +25,7 @@
       />
 
       <!-- Submit Button -->
-      <v-button :loading="loading" type="success" color="nt-blue" class="mt-4 w-full">
+      <v-button :loading="loading" class="mt-4 w-full">
         Impersonate User
       </v-button>
     </form>
