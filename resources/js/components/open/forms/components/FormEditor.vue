@@ -15,7 +15,7 @@
         Go back
       </a>
       <h3 class="font-semibold text-lg">{{form.title}}</h3>
-      <small>Edited 2 months ago</small>
+      <small v-if="isEdit">Edited 2 months ago</small>
       <v-button v-track.save_form_click class="hidden md:block w-full mt-2 mb-8" :loading="updateFormLoading" @click="saveForm">
         <svg class="w-4 h-4 text-white inline mr-1" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M14.6667 1L5.49999 10.1667L1.33333 6" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
@@ -58,6 +58,7 @@ import FormNotifications from './form-components/FormNotifications'
 import FormIntegrations from './form-components/FormIntegrations'
 import FormEditorPreview from './form-components/FormEditorPreview'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy'
+import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert'
 
 export default {
   name: 'FormEditor',
@@ -73,17 +74,21 @@ export default {
     FormErrorModal,
     FormSecurityPrivacy
   },
+  mixins: [saveUpdateAlert],
   props: {
-    validationErrorResponse: {
+    isEdit: {
       required: false,
-      type: Object
+      type: Boolean,
+      default: false
     },
   },
 
   data () {
     return {
       showFormErrorModal: false,
-      updateFormLoading: false
+      validationErrorResponse: null,
+      updateFormLoading: false,
+      createdFormId: null
     }
   },
 
@@ -99,6 +104,12 @@ export default {
       set (value) {
         this.$store.commit('open/working_form/set', value)
       }
+    },
+    createdForm() {
+      return this.$store.getters['open/forms/getById'](this.createdFormId)
+    },
+    workspace() {
+      return this.$store.getters['open/workspaces/getCurrent']()
     },
     steps () {
       return [
@@ -155,8 +166,64 @@ export default {
       this.showFormErrorModal = true
     },
     saveForm () {
-      alert("Comming Soon...")
+      if(this.isEdit){
+        this.saveFormEdit()
+      }else{
+        this.saveFormCreate()
+      }
     },
+    saveFormEdit () {
+      if (this.updateFormLoading) return
+
+      this.updateFormLoading = true
+      this.validationErrorResponse = null
+      this.form.put('/api/open/forms/{id}/'.replace('{id}', this.form.id)).then((response) => {
+        const data = response.data
+        this.$store.commit('open/forms/addOrUpdate', data.form)
+        this.$router.push({ name: 'forms.show', params: { slug: this.form.slug } })
+        this.$logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
+        this.displayFormModificationAlert(data)
+      }).catch((error) => {
+        if (error.response.status === 422) {
+          this.validationErrorResponse = error.response.data
+          this.showValidationErrors()
+        }
+      }).finally(() => {
+        this.updateFormLoading = false
+      })
+    },
+    saveFormCreate () {
+      if (this.updateFormLoading) return
+      this.form.workspace_id = this.workspace.id
+      this.validationErrorResponse = null
+
+      this.updateFormLoading = true
+      this.form.post('/api/open/forms').then((response) => {
+        this.$store.commit('open/forms/addOrUpdate', response.data.form)
+        this.createdFormId = response.data.form.id
+
+        this.$logEvent('form_created', {form_id:  response.data.form.id, form_slug:  response.data.form.slug})
+        this.$getCrisp().push(['set', 'session:event', [[['form_created', {
+          form_id:  response.data.form.id,
+          form_slug:  response.data.form.slug
+        }, 'blue']]]])
+        this.displayFormModificationAlert(response.data)
+        this.$router.push({
+          name: 'forms.show',
+          params: {
+            slug: this.createdForm.slug,
+            new_form: response.data.users_first_form
+          }
+        })
+      }).catch((error) => {
+        if (error.response && error.response.status === 422) {
+          this.validationErrorResponse = error.response.data
+          this.showValidationErrors()
+        }
+      }).finally(() => {
+        this.updateFormLoading = false
+      })
+    }
   }
 }
 </script>
