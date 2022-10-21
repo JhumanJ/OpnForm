@@ -11,7 +11,7 @@
 
     <text-input name="submit_button_text" class="mt-4"
                 :form="form"
-                label="Text of submit button"
+                label="Text of Submit Button"
                 :required="true"
     />
 
@@ -110,12 +110,12 @@
       />
       <rich-text-area-input name="submitted_text"
                             :form="form"
-                            label="Text after submission"
+                            label="Text After Submission"
                             :required="false"
       />
       <date-input :with-time="true" name="closes_at"
                   :form="form"
-                  label="Closing date"
+                  label="Closing Date"
                   help="If filled, then the form won't accept submissions after the given date"
                   :required="false"
       />
@@ -126,7 +126,7 @@
                             :required="false"
       />
       <text-input name="max_submissions_count" native-type="number" :min="1" :form="form"
-                  label="Max number of submissions"
+                  label="Max. Number of Submissions"
                   help="If filled, the form will only accept X number of submissions"
                   :required="false"
       />

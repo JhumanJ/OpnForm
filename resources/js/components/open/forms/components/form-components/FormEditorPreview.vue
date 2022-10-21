@@ -3,7 +3,7 @@
   <div
     class="bg-gray-100 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll shadow-inner"
   >
-    <p class="mb-4 mt-2 text-center text-gray-400">
+    <p class="mb-4 mt-2 text-center">
       Preview Full Page
       <v-switch v-model="previewEmbed" class="inline px-2" />
       Preview Embed

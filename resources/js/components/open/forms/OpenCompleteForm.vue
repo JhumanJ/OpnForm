@@ -101,7 +101,7 @@
           <a href="https://opnform.com"
              class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
              target="_blank"
-          >Powered by OpnForm</a>
+          >Powered by <b>OpnForm</b></a>
         </p>
       </div>
       <div v-else key="submitted" class="px-2">
