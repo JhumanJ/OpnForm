@@ -1,8 +1,10 @@
 <template>
-  <collapse class="py-3 w-full border-b" :default-value="false">
+  <collapse class="py-3 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
     <template #title>
       <h3 class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-blue-600 mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1" 
+          :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
         Custom Code
@@ -34,6 +36,7 @@ export default {
   },
   data () {
     return {
+      isCollapseOpen: false
     }
   },
 
@@ -55,6 +58,9 @@ export default {
   },
 
   methods: {
+    onClickCollapse (e) {
+      this.isCollapseOpen = e
+    }
   }
 }
 </script>

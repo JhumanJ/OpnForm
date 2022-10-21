@@ -1,8 +1,10 @@
 <template>
-  <collapse class="py-3 w-full border-b" :default-value="true">
+  <collapse class="py-3 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
     <template #title>
       <h3 class="font-semibold text-lg relative">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-blue-600 mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1" 
+          :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"  
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
         </svg>
         About Submission
@@ -151,7 +153,8 @@ export default {
   },
   data () {
     return {
-      submissionOptions: {}
+      submissionOptions: {},
+      isCollapseOpen: true
     }
   },
 
@@ -213,7 +216,9 @@ export default {
   },
 
   methods: {
-
+    onClickCollapse (e) {
+      this.isCollapseOpen = e
+    }
   }
 }
 </script>
