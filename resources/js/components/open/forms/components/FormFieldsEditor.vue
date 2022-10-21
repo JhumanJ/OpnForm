@@ -1,13 +1,5 @@
 <template>
   <div>
-    <button 
-      class="mb-3 group cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
-      @click="showAddBlock=true">
-      <svg class="w-4 h-4 text-nt-blue inline mr-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg> Add block
-    </button>
-
     <add-form-block-modal :form-blocks="formFields" :show="showAddBlock" @block-added="blockAdded"
                           @close="showAddBlock=false"
     />
@@ -110,21 +102,24 @@
               *
             </div>
           </button>
-          <button class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-1"
-                  @click="editOptions(index)"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-nt-blue" viewBox="0 0 20 20"
-                 fill="currentColor"
-            >
-              <path fill-rule="evenodd"
-                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                    clip-rule="evenodd"
-              />
+          <button class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-1" @click="editOptions(index)">
+            <svg class="h-6 w-6 text-nt-blue" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.82927 16.1424L7.31631 17.2378C7.46109 17.5639 7.69737 17.8409 7.9965 18.0353C8.29562 18.2298 8.64473 18.3332 9.0015 18.3332C9.35826 18.3332 9.70737 18.2298 10.0065 18.0353C10.3056 17.8409 10.5419 17.5639 10.6867 17.2378L11.1737 16.1424C11.3471 15.7538 11.6387 15.4297 12.0071 15.2165C12.3777 15.0027 12.8065 14.9116 13.2321 14.9563L14.4237 15.0832C14.7784 15.1207 15.1364 15.0545 15.4543 14.8926C15.7721 14.7307 16.0362 14.4801 16.2145 14.1711C16.3929 13.8623 16.478 13.5084 16.4592 13.1522C16.4405 12.7961 16.3188 12.453 16.1089 12.1647L15.4033 11.1952C15.1521 10.8474 15.0179 10.4289 15.02 9.99984C15.0199 9.57199 15.1554 9.15513 15.4071 8.8091L16.1126 7.83965C16.3225 7.5513 16.4442 7.20823 16.4629 6.85207C16.4817 6.4959 16.3966 6.14195 16.2182 5.83317C16.0399 5.5242 15.7758 5.27358 15.458 5.11169C15.1401 4.94981 14.7821 4.88361 14.4274 4.92113L13.2358 5.04799C12.8102 5.09268 12.3814 5.00161 12.0108 4.7878C11.6417 4.57338 11.35 4.24764 11.1774 3.85725L10.6867 2.76187C10.5419 2.43581 10.3056 2.15877 10.0065 1.96434C9.70737 1.76991 9.35826 1.66645 9.0015 1.6665C8.64473 1.66645 8.29562 1.76991 7.9965 1.96434C7.69737 2.15877 7.46109 2.43581 7.31631 2.76187L6.82927 3.85725C6.65671 4.24764 6.365 4.57338 5.99594 4.7878C5.62529 5.00161 5.1965 5.09268 4.77094 5.04799L3.57557 4.92113C3.22084 4.88361 2.86285 4.94981 2.545 5.11169C2.22714 5.27358 1.96308 5.5242 1.78483 5.83317C1.60635 6.14195 1.52131 6.4959 1.54005 6.85207C1.55879 7.20823 1.68049 7.5513 1.89038 7.83965L2.59594 8.8091C2.84756 9.15513 2.98305 9.57199 2.98298 9.99984C2.98305 10.4277 2.84756 10.8445 2.59594 11.1906L1.89038 12.16C1.68049 12.4484 1.55879 12.7914 1.54005 13.1476C1.52131 13.5038 1.60635 13.8577 1.78483 14.1665C1.96326 14.4753 2.22735 14.7258 2.54516 14.8877C2.86297 15.0495 3.22087 15.1158 3.57557 15.0785L4.76724 14.9517C5.19279 14.907 5.62158 14.9981 5.99224 15.2119C6.36268 15.4257 6.65574 15.7515 6.82927 16.1424Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.00001 12.4998C10.3807 12.4998 11.5 11.3805 11.5 9.99984C11.5 8.61913 10.3807 7.49984 9.00001 7.49984C7.61929 7.49984 6.50001 8.61913 6.50001 9.99984C6.50001 11.3805 7.61929 12.4998 9.00001 12.4998Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
         </div>
       </div>
     </draggable>
+
+    <button 
+      class="mt-3 group cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
+      @click="showAddBlock=true">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg> Add block
+    </button>
+
   </div>
 </template>
 

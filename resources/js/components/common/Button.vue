@@ -125,6 +125,14 @@ export default {
           'ring-offset': 'focus:ring-offset-yellow-200',
           text: 'text-white',
         }
+      } else if (this.color === 'white') {
+        return {
+          main: 'bg-transparent border-2 border-gray-300',
+          hover: 'hover:bg-gray-200',
+          ring: 'focus:ring-white-500',
+          'ring-offset': 'focus:ring-offset-white-200',
+          text: 'text-black',
+        }
       }
       console.error('Unknown color')
     },

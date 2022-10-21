@@ -43,32 +43,33 @@
       Copy another form's settings
     </button>
 
-    <modal :show="showCopyFormSettingsModal" @close="showCopyFormSettingsModal=false">
-      <div class="-m-4 sm:-mx-6">
-        <div class="p-4 border-b">
-          <h2 class="text-2xl font-bold z-10 truncate -mt-2 text-nt-blue">
-            Copy Settings from another form
-          </h2>
-        </div>
-        <div class="p-4">
-          <p class="text-gray-600">
-            If you already have another form that you like to use as a base for this form, you can do that here.
-            Select another form, confirm, and we will copy all of the other form settings (except the form structure)
-            to this form.
-          </p>
-          <select-input v-model="copyFormId" name="copy_form_id"
-                        label="Copy settings from" class="mt-3 mb-6"
-                        placeholder="Choose a form" :searchable="copyFormOptions.length > 5"
-                        :options="copyFormOptions"
-          />
-          <div class="flex justify-between">
-            <v-button color="blue" shade="light" @click="copySettings">
-              Confirm & Copy settings
-            </v-button>
-            <v-button color="gray" shade="light" class="ml-1" @click="showCopyFormSettingsModal=false">
-              Close
-            </v-button>
-          </div>
+    <modal :show="showCopyFormSettingsModal" @close="showCopyFormSettingsModal=false" max-width="md">
+      <template #icon>
+        <svg class="w-10 h-10 text-blue" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 27C16.0681 27 15.6022 27 15.2346 26.8478C14.7446 26.6448 14.3552 26.2554 14.1522 25.7654C14 25.3978 14 24.9319 14 24V17.2C14 16.0799 14 15.5198 14.218 15.092C14.4097 14.7157 14.7157 14.4097 15.092 14.218C15.5198 14 16.0799 14 17.2 14H24C24.9319 14 25.3978 14 25.7654 14.1522C26.2554 14.3552 26.6448 14.7446 26.8478 15.2346C27 15.6022 27 16.0681 27 17M24.2 34H30.8C31.9201 34 32.4802 34 32.908 33.782C33.2843 33.5903 33.5903 33.2843 33.782 32.908C34 32.4802 34 31.9201 34 30.8V24.2C34 23.0799 34 22.5198 33.782 22.092C33.5903 21.7157 33.2843 21.4097 32.908 21.218C32.4802 21 31.9201 21 30.8 21H24.2C23.0799 21 22.5198 21 22.092 21.218C21.7157 21.4097 21.4097 21.7157 21.218 22.092C21 22.5198 21 23.0799 21 24.2V30.8C21 31.9201 21 32.4802 21.218 32.908C21.4097 33.2843 21.7157 33.5903 22.092 33.782C22.5198 34 23.0799 34 24.2 34Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </template>
+      <template #title>
+        Copy Settings from another form
+      </template>
+      <div class="p-4">
+        <p class="text-gray-600">
+          If you already have another form that you like to use as a base for this form, you can do that here.
+          Select another form, confirm, and we will copy all of the other form settings (except the form structure)
+          to this form.
+        </p>
+        <select-input v-model="copyFormId" name="copy_form_id"
+                      label="Copy Settings From" class="mt-3 mb-6"
+                      placeholder="Choose a form" :searchable="copyFormOptions.length > 5"
+                      :options="copyFormOptions"
+        />
+        <div class="flex">
+          <v-button color="white" class="w-full mr-2" @click="showCopyFormSettingsModal=false">
+            Cancel
+          </v-button>
+          <v-button color="blue" class="w-full" @click="copySettings">
+            Confirm & Copy
+          </v-button>
         </div>
       </div>
     </modal>
