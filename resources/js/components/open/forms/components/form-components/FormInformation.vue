@@ -2,7 +2,7 @@
   <collapse class="py-3 w-full border-b" :default-value="true">
     <template #title class="test">
       <h3 id="v-step-0" class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-nt-blue mr-2 -mt-1" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-blue-600 mr-2 -mt-1" fill="none"
              viewBox="0 0 24 24" stroke="currentColor"
         >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
