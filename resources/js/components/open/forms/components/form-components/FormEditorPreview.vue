@@ -1,7 +1,7 @@
 <template>
   <!--   Form Preview (desktop only)   -->
   <div
-    class="bg-gray-100 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll shadow-inner"
+    class="bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll"
   >
     <p class="mb-4 mt-2 text-center text-gray-400">
       Preview Full Page
@@ -23,7 +23,7 @@
         </a>
       </span>
     </p>
-    <div class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all"
+    <div class="border rounded-lg bg-white dark:bg-notion-dark w-full block transition-all"
          :class="{'max-w-lg':previewEmbed,'max-w-5xl':!previewEmbed}"
     >
       <transition enter-active-class="linear duration-100 overflow-hidden"
