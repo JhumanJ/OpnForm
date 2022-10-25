@@ -1,9 +1,10 @@
 <template>
-  <collapse class="py-3 w-full border-b" :default-value="true">
+  <collapse class="py-3 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
     <template #title class="test">
       <h3 id="v-step-0" class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline text-nt-blue mr-2 -mt-1" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor"
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1"
+            :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor"
         >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
@@ -98,7 +99,8 @@ export default {
           name: "Draft (form won't be accessible)",
           value: "draft"
         }
-      ]
+      ],
+      isCollapseOpen: true
     }
   },
 
@@ -160,6 +162,9 @@ export default {
         this.form[property] = copyForm[property]
       })
       this.showCopyFormSettingsModal = false
+    },
+    onClickCollapse (e) {
+      this.isCollapseOpen = e
     }
   }
 }

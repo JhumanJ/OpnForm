@@ -34,6 +34,7 @@ export default {
   methods: {
     trigger () {
       this.showContent = !this.showContent
+      this.$emit('click', this.showContent)
     }
   }
 }
