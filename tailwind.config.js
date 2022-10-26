@@ -49,8 +49,8 @@ module.exports = {
         'nt-blue': {
           lighter: colors.blue['100'],
           light: colors.blue['300'],
-          default: colors.blue['500'],
-          DEFAULT: colors.blue['500'],
+          default: colors.blue['600'],
+          DEFAULT: colors.blue['600'],
           dark: colors.blue['800']
         },
         'notion-dark': {

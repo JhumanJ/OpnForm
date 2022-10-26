@@ -87,11 +87,59 @@ export default {
         }
       } else if (this.color === 'outline-blue') {
         return {
-          main: 'bg-transparent border-2 border-blue-600',
+          main: 'bg-transparent border border-blue-600',
           hover: 'hover:bg-blue-600',
           ring: 'focus:ring-blue-500',
           'ring-offset': 'focus:ring-offset-blue-200',
           text: 'text-blue-600 hover:text-white',
+        }
+      } else if (this.color === 'red') {
+        return {
+          main: 'bg-red-600',
+          hover: 'hover:bg-red-700',
+          ring: 'focus:ring-red-500',
+          'ring-offset': 'focus:ring-offset-red-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'gray') {
+        return {
+          main: 'bg-gray-600',
+          hover: 'hover:bg-gray-700',
+          ring: 'focus:ring-gray-500',
+          'ring-offset': 'focus:ring-offset-gray-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'light-gray') {
+        return {
+          main: 'bg-gray-50 border border-gray-300',
+          hover: 'hover:bg-gray-100',
+          ring: 'focus:ring-gray-500',
+          'ring-offset': 'focus:ring-offset-gray-300',
+          text: 'text-gray-700',
+        }
+      } else if (this.color === 'green') {
+        return {
+          main: 'bg-green-600',
+          hover: 'hover:bg-green-700',
+          ring: 'focus:ring-green-500',
+          'ring-offset': 'focus:ring-offset-green-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'yellow') {
+        return {
+          main: 'bg-yellow-600',
+          hover: 'hover:bg-yellow-700',
+          ring: 'focus:ring-yellow-500',
+          'ring-offset': 'focus:ring-offset-yellow-200',
+          text: 'text-white',
+        }
+      } else if (this.color === 'white') {
+        return {
+          main: 'bg-transparent border border-gray-300',
+          hover: 'hover:bg-gray-200',
+          ring: 'focus:ring-white-500',
+          'ring-offset': 'focus:ring-offset-white-200',
+          text: 'text-gray-700',
         }
       }
       console.error('Unknown color')

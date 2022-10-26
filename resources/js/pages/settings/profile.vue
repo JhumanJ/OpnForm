@@ -10,7 +10,7 @@
       <text-input name="email" :form="form" :label="$t('email')" :required="true" />
 
       <!-- Submit Button -->
-      <v-button :loading="form.busy" type="success" color="nt-blue" class="mt-4 w-full">
+      <v-button :loading="form.busy" class="mt-4 w-full">
         {{ $t('update') }}
       </v-button>
     </form>
