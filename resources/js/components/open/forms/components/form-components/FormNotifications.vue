@@ -1,12 +1,12 @@
 <template>
-  <collapse class="py-3 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
+  <collapse class="p-4 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
     <template #title>
       <h3 id="v-step-2" class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1" 
-          :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
-          fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <svg class="h-5 w-5 inline mr-2"
+             :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6M22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+
         Notifications
         <pro-tag />
       </h3>
@@ -27,7 +27,7 @@
         Receive slack message on each form submission. <a href="https://api.slack.com/messaging/webhooks" target="_blank">Click here</a> to learn how to get a slack webhook url
       </template>
     </text-input>
-    
+
     <checkbox-input :disabled="emailSubmissionConfirmationField===null" name="send_submission_confirmation"
                     :form="form" class="mt-4"
                     label="Send submission confirmation" :help="emailSubmissionConfirmationHelp"

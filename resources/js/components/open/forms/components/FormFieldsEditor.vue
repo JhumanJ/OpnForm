@@ -19,11 +19,11 @@
     </template>
 
     <draggable v-model="formFields"
-               class="border bg-white dark:bg-notion-dark-light border-nt-blue-light shadow rounded-md w-full mx-auto transition-colors"
-               ghost-class="bg-nt-blue-lighter" handle=".draggable" :animation="200"
+               class="bg-white overflow-hidden dark:bg-notion-dark-light rounded-md w-full mx-auto border transition-colors"
+               ghost-class="bg-gray-50" handle=".draggable" :animation="200"
     >
       <div v-for="(field,index) in formFields" :key="field.id"
-           class="border-nt-blue-light w-full mx-auto transition-colors bg-white dark:bg-notion-dark-light"
+           class="w-full mx-auto transition-colors bg-white dark:bg-notion-dark-light"
            :class="{'bg-gray-200 dark:bg-gray-800':field.hidden, 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':field && field.type==='nf-page-break'}"
       >
         <div v-if="field" class="flex items-center space-x-1 group py-2 pr-4 relative">
@@ -68,8 +68,8 @@
           <!--          </div>-->
 
           <template v-if="removing == field.id">
-            <div class="text-sm">
-            Remove block? <v-button class="inline" color="gray" size="small">Yes</v-button> <v-button class="inline" color="gray" size="small">No</v-button>
+            <div class="flex text-sm items-center">
+            Remove block? <v-button class="inline ml-1" color="red" size="small" @click="removeBlock(index)">Yes</v-button> <v-button @click="removing=false" class="inline ml-1" color="light-gray" size="small">No</v-button>
             </div>
           </template>
           <template v-else>
@@ -152,15 +152,15 @@
       </div>
     </draggable>
 
-    <button
-      class="mt-3 group cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full py-2 px-4 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100"
+    <v-button
+      class="w-full mt-4" color="light-gray"
       @click="showAddBlock=true">
-      <svg class="w-4 h-4 text-nt-blue inline mr-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
               stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Add block
-    </button>
+    </v-button>
 
   </div>
 </template>

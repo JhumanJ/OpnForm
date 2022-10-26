@@ -1,8 +1,8 @@
 <template>
-  <collapse class="py-3 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
+  <collapse class="p-4 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
     <template #title>
       <h3 class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1" 
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2"
           :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
           fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

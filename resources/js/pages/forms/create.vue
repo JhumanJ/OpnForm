@@ -3,7 +3,7 @@
     <transition v-if="stateReady" name="fade" mode="out-in">
       <div key="2">
         <form-editor v-if="!workspacesLoading" ref="editor"
-                     class="w-full flex border-t flex-grow"
+                     class="w-full flex flex-grow"
                      :style="{
                        'max-height': editorMaxHeight + 'px'
                      }" :error="error"

@@ -3,13 +3,12 @@
   <div
     class="bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll"
   >
-    <p class="mb-4 mt-2 text-center">
+    <p class="mb-2 text-center text-gray-700">
       Preview Full Page
       <v-switch v-model="previewEmbed" class="inline px-2" />
       Preview Embed
     </p>
     <p class="font-semibold">
-      <span v-if="creating" class="font-normal text-gray-400">Answers won't really be saved</span>
       <span v-if="previewFormSubmitted && !form.re_fillable">
         <a href="#" @click.prevent="$refs['form-preview'].restart()">Restart Form
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-nt-blue inline" viewBox="0 0 20 20"
@@ -58,6 +57,7 @@
                             @submitted="previewFormSubmitted=true"
       />
     </div>
+    <p v-if="creating" class=" w-full mt-2 font-normal text-center text-gray-400">Answers won't really be saved</p>
   </div>
 </template>
 

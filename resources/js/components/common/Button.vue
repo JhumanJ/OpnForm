@@ -87,7 +87,7 @@ export default {
         }
       } else if (this.color === 'outline-blue') {
         return {
-          main: 'bg-transparent border-2 border-blue-600',
+          main: 'bg-transparent border border-blue-600',
           hover: 'hover:bg-blue-600',
           ring: 'focus:ring-blue-500',
           'ring-offset': 'focus:ring-offset-blue-200',
@@ -109,6 +109,14 @@ export default {
           'ring-offset': 'focus:ring-offset-gray-200',
           text: 'text-white',
         }
+      } else if (this.color === 'light-gray') {
+        return {
+          main: 'bg-gray-50 border border-gray-300',
+          hover: 'hover:bg-gray-100',
+          ring: 'focus:ring-gray-500',
+          'ring-offset': 'focus:ring-offset-gray-300',
+          text: 'text-gray-700',
+        }
       } else if (this.color === 'green') {
         return {
           main: 'bg-green-600',
@@ -127,11 +135,11 @@ export default {
         }
       } else if (this.color === 'white') {
         return {
-          main: 'bg-transparent border-2 border-gray-300',
+          main: 'bg-transparent border border-gray-300',
           hover: 'hover:bg-gray-200',
           ring: 'focus:ring-white-500',
           'ring-offset': 'focus:ring-offset-white-200',
-          text: 'text-black',
+          text: 'text-gray-700',
         }
       }
       console.error('Unknown color')
