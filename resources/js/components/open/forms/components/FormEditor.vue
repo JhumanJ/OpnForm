@@ -1,5 +1,5 @@
 <template>
-  <div v-if="form" id="form-editor" class="w-full flex border-t flex-grow relative overflow-x-hidden">
+  <div v-if="form" id="form-editor" class="w-full flex flex-grow relative overflow-x-hidden">
     <!-- Form fields selection -->
     <v-tour name="tutorial" :steps="steps" />
     <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0 p-4">
@@ -7,7 +7,7 @@
         We suggest you create this form on a device with a larger screen such as computed. That will allow you
         to preview your form changes.
       </div>
-      
+
       <a href="#" @click.prevent="$router.back()" class="flex text-blue mb-5">
         <svg class="w-4 h-4 text-blue mt-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
