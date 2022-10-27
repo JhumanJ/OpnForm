@@ -198,12 +198,6 @@
       </div>
 
     </div>
-
-    <div class="flex justify-end mt-4">
-      <v-button color="gray" shade="light" @click="close">
-        Close
-      </v-button>
-    </div>
   </modal>
 </template>
 

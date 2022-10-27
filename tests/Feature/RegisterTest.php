@@ -10,6 +10,7 @@ it('can register', function () {
         'hear_about_us' => 'google',
         'password' => 'secret',
         'password_confirmation' => 'secret',
+        'agree_terms' => true
     ])
         ->assertSuccessful()
         ->assertJsonStructure(['id', 'name', 'email']);

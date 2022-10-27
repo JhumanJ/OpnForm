@@ -90,40 +90,27 @@
 
     <div class="grid md:grid-cols-3 mt-20">
       <div class="mb-8 md:mr-10">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="w-10 h-10 text-nt-blue">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"/>
+        <svg class="w-10 h-10 text-nt-blue" viewBox="0 0 44 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M26.0006 40H18.0006M2.58828 9.63978C2.55958 6.73709 4.12455 4.02649 6.6527 2.59999M41.405 9.6398C41.4337 6.7371 39.8687 4.0265 37.3406 2.60001M34.0006 14C34.0006 10.8174 32.7363 7.76516 30.4859 5.51472C28.2354 3.26428 25.1832 2 22.0006 2C18.818 2 15.7658 3.26428 13.5153 5.51472C11.2649 7.76516 10.0006 10.8174 10.0006 14C10.0006 20.1804 8.44154 24.4119 6.69993 27.2108C5.23085 29.5717 4.49631 30.7522 4.52325 31.0815C4.55307 31.4461 4.63032 31.5852 4.92415 31.8032C5.18951 32 6.38578 32 8.7783 32H35.2229C37.6154 32 38.8117 32 39.077 31.8032C39.3709 31.5852 39.4481 31.4461 39.4779 31.0815C39.5049 30.7522 38.7703 29.5718 37.3013 27.2108C35.5597 24.4119 34.0006 20.1804 34.0006 14Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <h3 class="my-3 font-semibold">Notifications</h3>
         <p>Receive notifications directly in Slack or in your mailbox whenever your from has a new submission (if you
           want to).</p>
       </div>
       <div class="mb-8 md:mr-10">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="w-10 h-10 text-nt-blue">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+        <svg class="w-10 h-10 text-nt-blue" viewBox="0 0 45 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21.6666 2H27.0666C30.4269 2 32.1071 2 33.3906 2.65396C34.5195 3.2292 35.4374 4.14708 36.0127 5.27606C36.6666 6.55953 36.6666 8.23969 36.6666 11.6V32.4C36.6666 35.7603 36.6666 37.4405 36.0127 38.7239C35.4374 39.8529 34.5195 40.7708 33.3906 41.346C32.1071 42 30.4269 42 27.0666 42H14.2666C10.9063 42 9.22615 42 7.94268 41.346C6.81371 40.7708 5.89583 39.8529 5.32059 38.7239C4.66663 37.4405 4.66663 35.7603 4.66663 32.4V31M28.6666 24H19.6666M28.6666 16H21.6666M28.6666 32H12.6666M8.66663 18V7C8.66663 5.34315 10.0098 4 11.6666 4C13.3235 4 14.6666 5.34315 14.6666 7V18C14.6666 21.3137 11.9803 24 8.66663 24C5.35292 24 2.66663 21.3137 2.66663 18V10" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <h3 class="my-3 font-semibold">File Uploads</h3>
         <p>Easily add file upload inputs to your forms. Uploaded files are securely stored for you. Up to 5mb!</p>
       </div>
       <div class="mb-8 md:mr-10">
-        <svg class="w-10 h-10 text-nt-blue" viewBox="0 0 49 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M4.33331 24C4.33331 35.0457 13.2876 44 24.3333 44C27.647 44 30.3333 41.3137 30.3333 38V37C30.3333 36.0712 30.3333 35.6067 30.3846 35.2168C30.7391 32.5244 32.8578 30.4058 35.5502 30.0513C35.9401 30 36.4045 30 37.3333 30H38.3333C41.647 30 44.3333 27.3137 44.3333 24C44.3333 12.9543 35.379 4 24.3333 4C13.2876 4 4.33331 12.9543 4.33331 24Z"
-            stroke="#155EEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path
-            d="M14.3333 26C15.4379 26 16.3333 25.1046 16.3333 24C16.3333 22.8954 15.4379 22 14.3333 22C13.2287 22 12.3333 22.8954 12.3333 24C12.3333 25.1046 13.2287 26 14.3333 26Z"
-            stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path
-            d="M32.3333 18C33.4379 18 34.3333 17.1046 34.3333 16C34.3333 14.8954 33.4379 14 32.3333 14C31.2287 14 30.3333 14.8954 30.3333 16C30.3333 17.1046 31.2287 18 32.3333 18Z"
-            stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path
-            d="M20.3333 16C21.4379 16 22.3333 15.1046 22.3333 14C22.3333 12.8954 21.4379 12 20.3333 12C19.2287 12 18.3333 12.8954 18.3333 14C18.3333 15.1046 19.2287 16 20.3333 16Z"
-            stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg class="w-10 h-10 text-nt-blue" viewBox="0 0 45 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.33331 22C2.33331 33.0457 11.2876 42 22.3333 42C25.647 42 28.3333 39.3137 28.3333 36V35C28.3333 34.0712 28.3333 33.6067 28.3846 33.2168C28.7391 30.5244 30.8578 28.4058 33.5502 28.0513C33.9401 28 34.4045 28 35.3333 28H36.3333C39.647 28 42.3333 25.3137 42.3333 22C42.3333 10.9543 33.379 2 22.3333 2C11.2876 2 2.33331 10.9543 2.33331 22Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.3333 24C13.4379 24 14.3333 23.1046 14.3333 22C14.3333 20.8954 13.4379 20 12.3333 20C11.2287 20 10.3333 20.8954 10.3333 22C10.3333 23.1046 11.2287 24 12.3333 24Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M30.3333 16C31.4379 16 32.3333 15.1046 32.3333 14C32.3333 12.8954 31.4379 12 30.3333 12C29.2287 12 28.3333 12.8954 28.3333 14C28.3333 15.1046 29.2287 16 30.3333 16Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18.3333 14C19.4379 14 20.3333 13.1046 20.3333 12C20.3333 10.8954 19.4379 10 18.3333 10C17.2287 10 16.3333 10.8954 16.3333 12C16.3333 13.1046 17.2287 14 18.3333 14Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-
         <h3 class="my-3 font-semibold">Customize Everything</h3>
         <p>Change form themes, change texts, colors, add images, add custom thank you pages and much more.</p>
       </div>
