@@ -61,14 +61,14 @@
               <slot name="option" :option="item" :selected="isSelected(item)" />
             </li>
           </template>
-          <p v-else-if="!loading" class="w-full text-gray-500 text-center py-2">
-            No option available.
+          <p v-else-if="!loading && !(allowCreation && searchTerm)" class="w-full text-gray-500 text-center py-2">
+            {{ (allowCreation ? 'Type something to add an option': 'No option available') }}.
           </p>
           <li v-if="allowCreation && searchTerm" role="option"
               class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-nt-blue focus:outline-none focus:text-white focus:bg-nt-blue"
               @click="createOption(searchTerm)"
-            >
-              Create <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{searchTerm}}</b>
+          >
+            Create <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{ searchTerm }}</b>
           </li>
         </ul>
       </div>
