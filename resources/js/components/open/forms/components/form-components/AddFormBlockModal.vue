@@ -196,6 +196,18 @@
         </div>
         <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Image Block</p>
       </div>
+      <!--   Code Block   -->
+      <div
+        class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
+        role="button" @click.prevent="addBlock('nf-code')"
+      >
+        <div class="mx-auto py-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+          </svg>
+        </div>
+        <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Code Block</p>
+      </div>
 
     </div>
   </modal>
@@ -242,6 +254,7 @@ export default {
         'nf-page-break': 'Page Break',
         'nf-divider': 'Divider',
         'nf-image': 'Image',
+        'nf-code': 'Code Block',
       }
     }
   },
@@ -292,6 +305,8 @@ export default {
       } else if (data.type === 'nf-page-break') {
         data.next_btn_text = 'Next'
         data.previous_btn_text = 'Previous'
+      } else if (data.type === 'nf-code') {
+        data.content = '<div class="text-blue-500 italic">This is a code block.</div>'
       }
       return data
     },
