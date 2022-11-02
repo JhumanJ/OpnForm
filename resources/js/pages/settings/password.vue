@@ -1,24 +1,25 @@
 <template>
-  <card :title="$t('your_password')" class="bg-gray-50 dark:bg-notion-dark-light">
-    <form @submit.prevent="update" @keydown="form.onKeydown($event)">
+  <div>
+    <h3 class="font-semibold text-2xl text-gray-900">Password</h3>
+    <small class="text-gray-600">Manage your password.</small>
+
+    <form @submit.prevent="update" @keydown="form.onKeydown($event)" class="mt-3">
       <alert-success class="mb-5" :form="form" :message="$t('password_updated')" />
 
       <!-- Password -->
-      <text-input class="mt-8" native-type="password"
+      <text-input native-type="password"
                   name="password" :form="form" :label="$t('password')" :required="true"
       />
 
       <!-- Password Confirmation-->
-      <text-input class="mt-8" native-type="password"
+      <text-input native-type="password"
                   name="password_confirmation" :form="form" :label="$t('confirm_password')" :required="true"
       />
 
       <!-- Submit Button -->
-      <v-button :loading="form.busy" class="mt-4 w-full">
-        {{ $t('update') }}
-      </v-button>
+      <v-button :loading="form.busy" class="mt-4">Update password</v-button>
     </form>
-  </card>
+  </div>
 </template>
 
 <script>

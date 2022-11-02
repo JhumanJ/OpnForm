@@ -1,37 +1,41 @@
 <template>
-  <card title="Workspaces" class="bg-gray-50 dark:bg-notion-dark-light">
+  <div>
+    <h3 class="font-semibold text-2xl text-gray-900">Workspace settings</h3>
+    <small class="text-gray-600">Manage your workspaces.</small>
+    
     <div v-if="loading" class="w-full text-blue-500 text-center">
       <loader class="h-10 w-10 p-5"/>
     </div>
     <div v-else>
       <div v-for="workspace in workspaces" :key="workspace.id"
-           class="border border-nt-blue-light shadow rounded-md p-4 mb-5 max-w-sm w-full flex group mx-auto bg-white dark:bg-notion-dark items-center"
+          class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
       >
         <div class="flex space-x-4 flex-grow cursor-pointer" role="button" @click.prevent="switchWorkspace(workspace)">
           <img v-if="isUrl(workspace.icon)" :src="workspace.icon" :alt="workspace.name + ' icon'"
-               class="rounded-full h-12 w-12"
+              class="rounded-full h-12 w-12"
           >
-          <div v-else class="rounded-full bg-nt-blue-lighter h-12 w-12 text-2xl pt-2 text-center overflow-hidden"
-               v-text="workspace.icon"
+          <div v-else class="rounded-2xl bg-gray-100 h-12 w-12 text-2xl pt-2 text-center overflow-hidden"
+              v-text="workspace.icon"
           />
-          <div class="flex-1 flex items-center space-y-4 py-1">
-            <p class="font-bold truncate" v-text="workspace.name"/>
+          <div class="space-y-4 py-1">
+            <div class="font-bold truncate">{{workspace.name}}</div>
           </div>
         </div>
         <div v-if="workspaces.length > 1"
-             class="block md:hidden group-hover:block text-red-500 p-2 rounded hover:bg-red-50" role="button"
-             @click="deleteWorkspace(workspace)">
+            class="block md:hidden group-hover:block text-red-500 p-2 rounded hover:bg-red-50" role="button"
+            @click="deleteWorkspace(workspace)">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
           </svg>
         </div>
       </div>
-      <div class="max-w-sm w-full mx-auto mt-4">
-        <v-button :loading="loading" class="w-full" @click="workspaceModal=true">
-          Create a new workspace
-        </v-button>
-      </div>
+      <v-button :loading="loading" class="mt-4" @click="workspaceModal=true">
+        <svg class="inline text-white mr-1 h-4 w-4" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.99996 1.16699V12.8337M1.16663 7.00033H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Create new workspace
+      </v-button>
     </div>
 
     <!--  Workspace modal  -->
@@ -65,7 +69,7 @@
       </div>
     </modal>
 
-  </card>
+  </div>
 </template>
 
 <script>
