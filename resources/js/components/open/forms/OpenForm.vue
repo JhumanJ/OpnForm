@@ -375,6 +375,11 @@ export default {
         if (field.use_am_pm) {
           inputProperties.amPm = true
         }
+        if (field.disable_past_dates) {
+          inputProperties.disablePastDates = true
+        }else if (field.disable_future_dates) {
+          inputProperties.disableFutureDates = true
+        }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
         inputProperties.mbLimit = 5

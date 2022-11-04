@@ -152,13 +152,23 @@ class AnswerFormRequest extends FormRequest
                 return ['email:filter'];
             case 'date':
                 if (isset($property['date_range']) && $property['date_range']) {
-                    $this->requestRules[$property['id'].'.*'] = ['date'];
-                    return ['array'];
+                    $this->requestRules[$property['id'].'.*'] = $this->getRulesForDate($property);
+                    return ['array', 'min:2'];
                 }
-                return ['date'];
+                return $this->getRulesForDate($property);
             default:
                 return [];
         }
+    }
+
+    private function getRulesForDate($property)
+    {
+        if (isset($property['disable_past_dates']) && $property['disable_past_dates']) {
+            return ['date', 'after_or_equal:today'];
+        }else if (isset($property['disable_future_dates']) && $property['disable_future_dates']) {
+            return ['date', 'before_or_equal:today'];
+        }
+        return ['date'];
     }
 
     private function getSelectPropertyOptions($property): array
