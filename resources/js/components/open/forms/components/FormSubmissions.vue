@@ -129,7 +129,7 @@ export default {
       this.formInitDone = true
 
       this.properties = clonedeep(this.form.properties)
-      this.removed_properties = clonedeep(this.form.removed_properties)
+      this.removed_properties = (this.form.removed_properties) ? clonedeep(this.form.removed_properties) : []
 
       // Get display columns from local storage
       const tmpColumns = window.localStorage.getItem('display-columns-formid-'+this.form.id)

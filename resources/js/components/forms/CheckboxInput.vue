@@ -1,6 +1,6 @@
 <template>
   <div :class="wrapperClass">
-    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled" :name="name" @input="$emit('input',$event)" :size="size">
+    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled" :name="name" @input="$emit('input',$event)">
       <slot name="label">
         {{ label }} <span v-if="required" class="text-red-500 required-dot">*</span>
       </slot>

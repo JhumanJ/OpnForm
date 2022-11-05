@@ -153,6 +153,14 @@ class Form extends Model
         $this->attributes['submitted_text'] = Purify::clean($value);
     }
 
+    public function setTagsAttribute($value)
+    {
+        if ($value == '') {
+            $value = null;
+        }
+        $this->attributes['tags'] = json_encode($value);
+    }
+
     public function getIsClosedAttribute()
     {
         return ($this->closes_at && now()->gt($this->closes_at));

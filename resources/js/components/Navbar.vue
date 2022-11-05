@@ -9,7 +9,7 @@
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >
               {{ appName }}</span><span
-            class="bg-gray-100 text-gray-600 font-semibold inline-block mb-4 ml-1 px-3 rounded-full text-black text-xs tracking-wider"
+            class="bg-gray-100 text-gray-600 font-semibold inline-block ml-1 px-2 rounded-full text-black text-xs tracking-wider"
           >BETA</span>
           </router-link>
           <workspace-dropdown class="ml-6"/>

@@ -23,7 +23,7 @@
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
           <div v-if="show"
-               class="modal-content bg-white dark:bg-notion-dark rounded-lg overflow-y-scroll shadow-xl transform transition-all sm:w-full"
+               class="modal-content bg-white dark:bg-notion-dark rounded-lg overflow-y-auto shadow-xl transform transition-all sm:w-full"
                :class="maxWidthClass"
           >
             <div class="bg-white relative dark:bg-notion-dark p-4 md:p-6">

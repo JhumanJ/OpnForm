@@ -133,7 +133,7 @@ export default {
       if (this.isIframe) return
       // Auto focus on first input
       const visibleElements = []
-      document.querySelectorAll('input,button').forEach(ele => {
+      document.querySelectorAll('input,button,textarea,[role="button"]').forEach(ele => {
         if (ele.offsetWidth !== 0 || ele.offsetHeight !== 0) {
           visibleElements.push(ele)
         }

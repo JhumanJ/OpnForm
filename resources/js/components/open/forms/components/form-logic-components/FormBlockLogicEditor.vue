@@ -2,24 +2,35 @@
   <div v-if="logic" :key="resetKey" class="-mx-4 sm:-mx-6 p-5 border-b">
     <h3 class="font-semibold block text-lg">
       Logic
-      <pro-tag />
+      <pro-tag/>
     </h3>
     <p class="text-gray-400 mb-5">
       Add some logic to this block. Start by adding some conditions, and then add some actions.
     </p>
-    <div class="relative">
-      <v-button size="small" @click="showCopyFormModal=true">
-        Copy from...
-      </v-button>
-      <v-button color="red" shade="light" size="small" class="ml-1" @click="clearAll">
-        Clear All
-      </v-button>
+    <div class="relative flex">
+      <div>
+        <v-button color="light-gray" size="small" @click="showCopyFormModal=true">
+          <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Copy from
+        </v-button>
+      </div>
+      <div>
+        <v-button color="light-gray" shade="light" size="small" class="ml-1" @click="clearAll">
+          <svg class="text-red-600 h-4 w-4 inline -mt-1 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 9L12 15M12 9L18 15M21 4H8L1 12L8 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+
+          Clear All
+        </v-button>
+      </div>
     </div>
 
     <h5 class="font-semibold mt-4">
       1. Conditions
     </h5>
-    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-4 border-t border" :form="form" />
+    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-4 border-t border" :form="form"/>
 
     <h5 class="font-semibold mt-4">
       2. Actions
@@ -63,7 +74,7 @@ import clonedeep from 'clone-deep'
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: { SelectInput, Modal, ProTag, ConditionEditor },
+  components: {SelectInput, Modal, ProTag, ConditionEditor},
   props: {
     field: {
       type: Object,
@@ -75,7 +86,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       resetKey: 0,
       logic: this.field.logic || {
@@ -88,32 +99,32 @@ export default {
   },
 
   computed: {
-    copyFromOptions () {
+    copyFromOptions() {
       return this.form.properties.filter((field) => {
         return field.id !== this.field.id
       }).map((field) => {
-        return { name: field.name, value: field.id }
+        return {name: field.name, value: field.id}
       })
     },
-    actionOptions () {
+    actionOptions() {
       if (['nf-text', 'nf-page-break', 'nf-divider', 'nf-image'].includes(this.field.type)) {
-        return [{ name: 'Hide Block', value: 'hide-block' }]
+        return [{name: 'Hide Block', value: 'hide-block'}]
       }
 
       if (this.field.hidden) {
         return [
-          { name: 'Show Block', value: 'show-block' },
-          { name: 'Require answer', value: 'require-answer' }
+          {name: 'Show Block', value: 'show-block'},
+          {name: 'Require answer', value: 'require-answer'}
         ]
       } else {
         return [
-          { name: 'Hide Block', value: 'hide-block' },
+          {name: 'Hide Block', value: 'hide-block'},
           (this.field.required
-            ? { name: 'Make it optional', value: 'make-it-optional' }
+            ? {name: 'Make it optional', value: 'make-it-optional'}
             : {
-                name: 'Require answer',
-                value: 'require-answer'
-              })
+              name: 'Require answer',
+              value: 'require-answer'
+            })
         ]
       }
     }
@@ -121,32 +132,32 @@ export default {
 
   watch: {
     logic: {
-      handler () {
+      handler() {
         this.$set(this.field, 'logic', this.logic)
       },
       deep: true
     },
     'field.required': {
-      handler () {
+      handler() {
         this.cleanConditions()
       },
       deep: true
     }
   },
 
-  mounted () {
+  mounted() {
     if (!this.field.hasOwnProperty('logic')) {
       this.$set(this.field, 'logic', this.logic)
     }
   },
 
   methods: {
-    clearAll () {
+    clearAll() {
       this.$set(this.logic, 'conditions', null)
       this.$set(this.logic, 'actions', [])
       this.refreshActions()
     },
-    onActionInput () {
+    onActionInput() {
       if (this.logic.actions.length >= 2) {
         if (this.logic.actions[1] === 'require-answer' && this.logic.actions[0] === 'hide-block') {
           this.$set(this.logic, 'actions', ['require-answer'])
@@ -156,7 +167,7 @@ export default {
         this.refreshActions()
       }
     },
-    cleanConditions () {
+    cleanConditions() {
       if (this.required && this.logic.actions.includes('require-answer')) {
         this.$set(this.logic, 'actions', this.logic.actions.filter((action) => action !== 'require-answer'))
       } else if (!this.required && this.logic.actions.includes('make-it-optional')) {
@@ -164,10 +175,10 @@ export default {
       }
       this.resetKey++
     },
-    refreshActions () {
+    refreshActions() {
       this.resetKey++
     },
-    copyLogic () {
+    copyLogic() {
       if (this.copyFrom) {
         const property = this.form.properties.find((property) => {
           return property.id === this.copyFrom
