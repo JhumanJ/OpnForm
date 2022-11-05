@@ -22,7 +22,6 @@
       <template v-if="isMailSent">
         <div class="text-center">We sent a password reset link to <br/><span>{{form.email}}</span></div>
         <div class="w-full p-4 text-center">
-          <v-button class="w-full my-3">Open email app</v-button>
           <span class="mt-4">Didn't receive the email? <a href="#" class="ml-1" @click.prevent="send">Click to resend</a></span>
         </div>
       </template>
@@ -46,10 +45,10 @@
       </div>
     </modal>
   </template>
-  
+
   <script>
   import Form from 'vform'
-  
+
   export default {
     name: 'ForgotPasswordModal',
     components: { },
@@ -77,4 +76,3 @@
     }
   }
   </script>
-  
