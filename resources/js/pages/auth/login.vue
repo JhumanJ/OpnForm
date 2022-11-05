@@ -1,5 +1,7 @@
 <template>
   <div>
+    <forgot-password-modal :show="showForgotModal" @close="showForgotModal=false" />
+
     <div class="flex mt-6 mb-10">
       <div class="w-full md:max-w-6xl mx-auto px-4 flex md:flex-row-reverse flex-wrap">
         <div class="w-full md:w-1/2 md:p-6">
@@ -25,9 +27,9 @@
                 </v-checkbox>
 
                 <div class="w-full md:w-1/2 text-right">
-                  <router-link :to="{ name: 'password.request' }" class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700">
+                  <a href="#" @click.prevent="showForgotModal=true" class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700">
                     Forgot your password?
-                  </router-link>
+                  </a>
                 </div>
               </div>
 
@@ -88,11 +90,13 @@ import Form from 'vform'
 import Cookies from 'js-cookie'
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
 import Testimonials from '../../components/pages/welcome/Testimonials'
+import ForgotPasswordModal from './ForgotPasswordModal'
 
 export default {
   components: {
     OpenFormFooter,
-    Testimonials
+    Testimonials,
+    ForgotPasswordModal
   },
 
   middleware: 'guest',
@@ -106,7 +110,8 @@ export default {
       email: '',
       password: ''
     }),
-    remember: false
+    remember: false,
+    showForgotModal: false
   }),
 
   methods: {
