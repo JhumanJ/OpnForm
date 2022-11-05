@@ -155,8 +155,8 @@ class Form extends Model
 
     public function setTagsAttribute($value)
     {
-        if ($value == null || $value == '') {
-            $value = '[]';
+        if ($value == '') {
+            $value = null;
         }
         $this->attributes['tags'] = json_encode($value);
     }
