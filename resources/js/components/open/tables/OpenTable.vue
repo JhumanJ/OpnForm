@@ -172,7 +172,9 @@ export default {
 
   beforeDestroy() {
     const parent = document.getElementById('table-page')
-    parent.removeEventListener('scroll', this.handleScroll)
+    if (parent) {
+      parent.removeEventListener('scroll', this.handleScroll)
+    }
     window.removeEventListener('resize', this.handleScroll)
   },
 

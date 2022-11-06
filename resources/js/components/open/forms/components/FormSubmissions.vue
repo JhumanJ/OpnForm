@@ -1,10 +1,12 @@
 <template>
   <div
     class="my-4 w-full mx-auto">
-    <h3 class="font-semibold mb-4">
-      Form Submissions 
-      <span v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase mb-2"> - <a :href="exportUrl" target="_blank">Export as CSV</a></span>
-      <span v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> <a href="javascript:void(0);" @click="showColumnsModal=true">Display columns</a></span>
+    <h3 class="font-semibold mb-4 text-xl">
+      Form Submissions
+      <span v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase mb-2"> - <a
+        :href="exportUrl" target="_blank">Export as CSV</a></span>
+      <span v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> <a
+        href="javascript:void(0);" @click="showColumnsModal=true">Display columns</a></span>
     </h3>
 
     <!--  Table columns modal  -->
@@ -20,14 +22,14 @@
             <h4 class="font-bold mb-2">Form Fields</h4>
             <div v-for="field in properties" :key="field.id" class="p-2 border">
               {{ field.name }}
-              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right" />
+              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
             </div>
           </template>
           <template v-if="removed_properties.length > 0">
             <h4 class="font-bold mb-2 mt-4">Removed Fields</h4>
             <div v-for="field in removed_properties" :key="field.id" class="p-2 border">
               {{ field.name }}
-              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right" />
+              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
             </div>
           </template>
         </div>
@@ -87,8 +89,8 @@ export default {
     this.getSubmissionsData()
   },
   watch: {
-    form () {
-      if(!this.form){
+    form() {
+      if (this.form === null) {
         return
       }
       this.initFormStructure()
@@ -117,28 +119,38 @@ export default {
         return
       }
 
-      // Add a "created at" column
-      const columns = clonedeep(this.form.properties)
-      columns.push({
-        "name": "Created at",
-        "id": "created_at",
-        "type": "date",
-        "width": 140,
+      // check if form properties already has a created_at column
+      let hasCreatedAt = false
+      this.form.properties.forEach((property) => {
+        if (property.id === 'created_at') {
+          hasCreatedAt = true
+        }
       })
-      this.$set(this.form, 'properties', columns)
+
+      if (!hasCreatedAt) {
+        // Add a "created at" column
+        const columns = clonedeep(this.form.properties)
+        columns.push({
+          "name": "Created at",
+          "id": "created_at",
+          "type": "date",
+          "width": 140,
+        })
+        this.$set(this.form, 'properties', columns)
+      }
       this.formInitDone = true
 
       this.properties = clonedeep(this.form.properties)
       this.removed_properties = (this.form.removed_properties) ? clonedeep(this.form.removed_properties) : []
 
       // Get display columns from local storage
-      const tmpColumns = window.localStorage.getItem('display-columns-formid-'+this.form.id)
-      if(tmpColumns !== null && tmpColumns){
+      const tmpColumns = window.localStorage.getItem('display-columns-formid-' + this.form.id)
+      if (tmpColumns !== null && tmpColumns) {
         this.displayColumns = JSON.parse(tmpColumns)
         this.onChangeDisplayColumns()
-      }else{
-        this.form.properties.forEach((field) => { 
-          this.displayColumns[field.id] = true 
+      } else {
+        this.form.properties.forEach((field) => {
+          this.displayColumns[field.id] = true
         })
       }
     },
@@ -148,7 +160,7 @@ export default {
       }
       this.isLoading = true
       axios.get('/api/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((response) => {
-        const resData = response.data;
+        const resData = response.data
 
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
 
@@ -168,8 +180,8 @@ export default {
       this.$refs.shadows.toggleShadow()
       this.$refs.shadows.calcDimensions()
     },
-    onChangeDisplayColumns(){
-      window.localStorage.setItem('display-columns-formid-'+this.form.id, JSON.stringify(this.displayColumns))
+    onChangeDisplayColumns() {
+      window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
       const final_properties = this.properties.concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true
       })
