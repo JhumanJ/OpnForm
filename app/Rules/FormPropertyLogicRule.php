@@ -490,7 +490,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         if (is_array($conditions) && count($conditions) > 0) {
             foreach($conditions as $val){
                 if (!in_array($val, static::ACTIONS_VALUES) || 
-                    (in_array($this->field["type"], ['nf-text', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block'])) ||
+                    (in_array($this->field["type"], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block'])) ||
                     (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block', 'require-answer'])) || 
                     (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block']))
                 ) {
