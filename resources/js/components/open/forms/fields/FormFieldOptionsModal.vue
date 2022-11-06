@@ -167,6 +167,20 @@
         <p class="text-gray-400 mb-5">
           if enabled we will pre-fill this field with the current date
         </p>
+
+        <v-checkbox v-model="field.disable_past_dates"
+                    name="disable_past_dates" class="mb-3"
+                    @input="onFieldDisablePastDatesChange"
+        >
+          Disable past dates
+        </v-checkbox>
+
+        <v-checkbox v-model="field.disable_future_dates"
+                    name="disable_future_dates" class="mb-3"
+                    @input="onFieldDisableFutureDatesChange"
+        >
+          Disable future dates
+        </v-checkbox>
       </div>
 
       <!-- select/multiselect Options   -->
@@ -484,6 +498,8 @@ export default {
       if (this.field.prefill_today) {
         this.$set(this.field, 'prefill', 'Pre-filled with current date')
         this.$set(this.field, 'date_range', false)
+        this.$set(this.field, 'disable_future_dates', false)
+        this.$set(this.field, 'disable_past_dates', false)
       } else {
         this.$set(this.field, 'prefill', null)
       }
@@ -500,6 +516,20 @@ export default {
         this.$set(this.field, 'allow_creation', false)
       }
     },
+    onFieldDisablePastDatesChange (val) {
+      this.$set(this.field, 'disable_past_dates', val)
+      if (this.field.disable_past_dates) {
+        this.$set(this.field, 'disable_future_dates', false)
+        this.$set(this.field, 'prefill_today', false)
+      }
+    },
+    onFieldDisableFutureDatesChange (val) {
+      this.$set(this.field, 'disable_future_dates', val)
+      if (this.field.disable_future_dates) {
+        this.$set(this.field, 'disable_past_dates', false)
+        this.$set(this.field, 'prefill_today', false)
+      }
+    }
   }
 }
 </script>
