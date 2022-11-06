@@ -2,7 +2,7 @@
   <div>
     <h3 class="font-semibold text-2xl text-gray-900">Workspace settings</h3>
     <small class="text-gray-600">Manage your workspaces.</small>
-    
+
     <div v-if="loading" class="w-full text-blue-500 text-center">
       <loader class="h-10 w-10 p-5"/>
     </div>
@@ -10,7 +10,7 @@
       <div v-for="workspace in workspaces" :key="workspace.id"
           class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
       >
-        <div class="flex space-x-4 flex-grow cursor-pointer" role="button" @click.prevent="switchWorkspace(workspace)">
+        <div class="flex space-x-4 flex-grow items-center cursor-pointer" role="button" @click.prevent="switchWorkspace(workspace)">
           <img v-if="isUrl(workspace.icon)" :src="workspace.icon" :alt="workspace.name + ' icon'"
               class="rounded-full h-12 w-12"
           >

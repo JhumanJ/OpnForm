@@ -1,6 +1,6 @@
 <template>
   <button v-if="!to" :type="nativeType" :disabled="loading" :class="btnClasses"
-          @click="$emit('click',$event)"
+          @click="onClick($event)"
   >
     <template v-if="!loading">
       <span class="no-underline mx-auto">
@@ -157,6 +157,12 @@ export default {
         'p-y': 'py-2',
         'p-x': 'px-4'
       }
+    }
+  },
+
+  methods: {
+    onClick(event) {
+      this.$emit('click',event)
     }
   }
 }

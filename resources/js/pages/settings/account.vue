@@ -1,10 +1,11 @@
 <template>
   <div>
     <h3 class="font-semibold text-2xl text-gray-900">Danger zone</h3>
-    <small class="text-gray-600">This will permanently delete your entire account. All your forms, submissions and workspaces will be deleted.</small>
-  
-    <p class="mt-3 font-semibold text-red-500">
+    <p class="text-gray-600 text-sm mt-2">
+      This will permanently delete your entire account. All your forms, submissions and workspaces will be deleted.
+    <span class="text-red-500">
       This cannot be undone.
+    </span>
     </p>
 
     <!-- Submit Button -->
