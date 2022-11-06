@@ -115,6 +115,10 @@
                      :form="field" label="Upload Image" :required="false"
         />
       </div>
+      <div v-else-if="field.type == 'nf-code'" class="-mx-4 sm:-mx-6 p-5 border-b border-t">
+        <code-input name="content" class="mt-4 h-36" :form="field" label="Content"
+              help="You can add any html code, including iframes" />
+      </div>
       <div v-else class="-mx-4 sm:-mx-6 p-5 border-b border-t">
         <p>No settings found.</p>
       </div>
@@ -137,10 +141,11 @@
 <script>
 import ProTag from '../../../common/ProTag'
 import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor'
+import CodeInput from '../../../forms/CodeInput'
 
 export default {
   name: 'FormBlockOptionsModal',
-  components: {ProTag, FormBlockLogicEditor},
+  components: {ProTag, FormBlockLogicEditor, CodeInput},
   props: {
     field: {
       type: Object,
