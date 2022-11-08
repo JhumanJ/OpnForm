@@ -1,18 +1,18 @@
 <template>
-  <card title="Account" class="bg-gray-50 dark:bg-notion-dark-light">
-    <h3 class="text-lg font-semibold mb-4">
-      Your Account
-    </h3>
-
-    <p class="text-gray-800 dark:text-gray-200">
-      You can delete your account. All your data will be removed. <span class="font-semibold">This cannot be undone.</span>
+  <div>
+    <h3 class="font-semibold text-2xl text-gray-900">Danger zone</h3>
+    <p class="text-gray-600 text-sm mt-2">
+      This will permanently delete your entire account. All your forms, submissions and workspaces will be deleted.
+    <span class="text-red-500">
+      This cannot be undone.
+    </span>
     </p>
 
     <!-- Submit Button -->
     <v-button :loading="loading" class="mt-4" color="red" @click="alertConfirm('Do you really want to delete your account?',deleteAccount)">
-      Delete my account
+      Delete account
     </v-button>
-  </card>
+  </div>
 </template>
 
 <script>

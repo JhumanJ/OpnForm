@@ -1,9 +1,13 @@
 <template>
-  <card title="Admin" class="bg-gray-50 dark:bg-notion-dark-light">
-    <h3 class="text-lg font-semibold mb-4">
+  <div>
+    <h3 class="font-semibold text-2xl text-gray-900">Admin settings</h3>
+    <small class="text-gray-600">Manage settings.</small>
+
+  
+    <h3 class="mt-3 text-lg font-semibold mb-4">
       Tools
     </h3>
-    <div class="flex flex-wrap mb-10">
+    <div class="flex flex-wrap mb-5">
       <a href="/stats">
         <v-button class="mx-1" color="gray" shade="lighter">
           Stats
@@ -25,11 +29,9 @@
       />
 
       <!-- Submit Button -->
-      <v-button :loading="loading" class="mt-4 w-full">
-        Impersonate User
-      </v-button>
+      <v-button :loading="loading" class="mt-4">Impersonate User</v-button>
     </form>
-  </card>
+  </div>
 </template>
 
 <script>
