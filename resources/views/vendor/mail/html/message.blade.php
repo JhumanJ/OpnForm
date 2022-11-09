@@ -1,9 +1,13 @@
 @component('mail::layout')
 {{-- Header --}}
 @slot('header')
-@component('mail::header', ['url' => config('app.url')])
-{{ config('app.name') }}
-@endcomponent
+@if (!(isset($noBranding) && $noBranding))
+    @component('mail::header', ['url' => config('app.url')])
+    {{ config('app.name') }}
+    @endcomponent
+@else
+    <div style="margin-top:25px;" />
+@endif
 @endslot
 
 {{-- Body --}}
@@ -21,7 +25,9 @@
 {{-- Footer --}}
 @slot('footer')
 @component('mail::footer')
-© {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+@if (!(isset($noBranding) && $noBranding))
+    © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+@endif
 @endcomponent
 @endslot
 @endcomponent
