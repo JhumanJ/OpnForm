@@ -11,31 +11,31 @@
 
     <!--  Table columns modal  -->
     <modal :show="showColumnsModal" @close="showColumnsModal=false">
-      <div class="-m-6">
-        <div class="px-6 py-3">
-          <h2 class="text-nt-blue text-3xl font-bold">
-            Display columns
-          </h2>
-        </div>
-        <div class="border-t py-4 px-6">
-          <template v-if="properties.length > 0">
-            <h4 class="font-bold mb-2">Form Fields</h4>
-            <div v-for="field in properties" :key="field.id" class="p-2 border">
-              {{ field.name }}
-              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
-            </div>
-          </template>
-          <template v-if="removed_properties.length > 0">
-            <h4 class="font-bold mb-2 mt-4">Removed Fields</h4>
-            <div v-for="field in removed_properties" :key="field.id" class="p-2 border">
-              {{ field.name }}
-              <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
-            </div>
-          </template>
-        </div>
-        <div class="flex justify-end mt-4 pb-5 px-6">
-          <v-button color="gray" shade="light" @click="showColumnsModal=false">Close</v-button>
-        </div>
+      <template #icon>
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 5H8C4.13401 5 1 8.13401 1 12C1 15.866 4.13401 19 8 19H16C19.866 19 23 15.866 23 12C23 8.13401 19.866 5 16 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 15C9.65685 15 11 13.6569 11 12C11 10.3431 9.65685 9 8 9C6.34315 9 5 10.3431 5 12C5 13.6569 6.34315 15 8 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </template>
+      <template #title>
+        Display columns
+      </template>
+
+      <div class="px-4">
+        <template v-if="properties.length > 0">
+          <h4 class="font-bold mb-2">Form Fields</h4>
+          <div v-for="field in properties" :key="field.id" class="p-2 border">
+            {{ field.name }}
+            <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
+          </div>
+        </template>
+        <template v-if="removed_properties.length > 0">
+          <h4 class="font-bold mb-2 mt-4">Removed Fields</h4>
+          <div v-for="field in removed_properties" :key="field.id" class="p-2 border">
+            {{ field.name }}
+            <v-switch v-model="displayColumns[field.id]" @input="onChangeDisplayColumns" class="float-right"/>
+          </div>
+        </template>
       </div>
     </modal>
 
