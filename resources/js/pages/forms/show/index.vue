@@ -149,8 +149,7 @@ export default {
           name: 'Share',
           route: 'forms.show.share'
         }
-      ],
-      currentTab: 1,
+      ]
     }
   },
 

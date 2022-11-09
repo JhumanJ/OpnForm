@@ -14,7 +14,7 @@ export default {
   },
 
   metaInfo() {
-    return {title: 'Form Submissions'}
+    return {title: (this.form) ? 'Form Submissions - '+this.form.title : 'Form Submissions'}
   },
 
   data: () => ({

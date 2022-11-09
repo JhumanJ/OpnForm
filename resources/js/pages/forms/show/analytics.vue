@@ -17,7 +17,7 @@ export default {
   },
 
   metaInfo() {
-    return {title: 'Form Analytics'}
+    return {title: (this.form) ? 'Form Analytics - '+this.form.title : 'Form Analytics'}
   },
 
   data: () => ({

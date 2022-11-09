@@ -30,7 +30,7 @@ export default {
   },
 
   metaInfo() {
-    return {title: 'Form Share'}
+    return {title: (this.form) ? 'Form Share - '+this.form.title : 'Form Share'}
   },
 
   data: () => ({
