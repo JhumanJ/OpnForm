@@ -97,7 +97,7 @@
                     {{ $t('login') }}
                   </router-link>
 
-                  <v-button size="small" :to="{ name: 'register' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
+                  <v-button size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
                     Create a form
                   </v-button>
 

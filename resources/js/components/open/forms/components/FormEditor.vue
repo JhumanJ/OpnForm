@@ -8,7 +8,7 @@
         to preview your form changes.
       </div>
       <div class="p-4 pb-0">
-        <a href="#" @click.prevent="$router.back()" class="flex text-blue mb-2 font-semibold text-sm">
+        <a v-if="!isGuest" href="#" @click.prevent="$router.back()" class="flex text-blue mb-2 font-semibold text-sm">
           <svg class="w-3 h-3 text-blue mt-1 mr-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                   stroke-linejoin="round"/>
@@ -84,6 +84,11 @@ export default {
   mixins: [saveUpdateAlert],
   props: {
     isEdit: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+    isGuest: {
       required: false,
       type: Boolean,
       default: false
@@ -165,7 +170,7 @@ export default {
 
   methods: {
     startTour() {
-      if (!this.user.has_forms) {
+      if (this.isGuest || (this.user && !this.user.has_forms)) {
         this.$tours.tutorial.start()
       }
     },
@@ -173,7 +178,9 @@ export default {
       this.showFormErrorModal = true
     },
     saveForm() {
-      if (this.isEdit) {
+      if(this.isGuest) {
+        this.saveFormGuest()
+      } else if (this.isEdit) {
         this.saveFormEdit()
       } else {
         this.saveFormCreate()
@@ -230,6 +237,9 @@ export default {
       }).finally(() => {
         this.updateFormLoading = false
       })
+    },
+    saveFormGuest() {
+      this.$emit('openRegister')
     }
   }
 }

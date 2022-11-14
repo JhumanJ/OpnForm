@@ -16,7 +16,7 @@
             >it's free</span>.
             </h3>
             <div class="mt-6 flex justify-center">
-              <v-button class="mr-1" :to="{ name: 'register' }" :arrow="true">
+              <v-button class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
                 Create a form for FREE
               </v-button>
             </div>
@@ -73,7 +73,7 @@
         <h4 class="font-semibold text-3xl text-white">Take your forms to the next level</h4>
         <p class="text-gray-300 my-8">No trial. Generous, unlimited free plan.</p>
         <div class="mt-6 flex justify-center">
-          <v-button :to="{ name: 'register' }" v-track.welcome_create_form_click :arrow="true" color="blue">
+          <v-button :to="{ name: 'forms.create.guest' }" v-track.welcome_create_form_click :arrow="true" color="blue">
             Create a form for FREE
           </v-button>
         </div>
