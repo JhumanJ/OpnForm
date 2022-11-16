@@ -1,71 +1,89 @@
 <template>
-  <div class="flex flex-col min-h-full mt-6">
-    <div class="w-full flex-grow md:w-3/5 lg:w-1/2 md:mx-auto md:max-w-2xl px-4">
-      <div>
-        <div class="flex flex-wrap items-center mt-6 mb-4">
-          <h2 class="text-nt-blue text-3xl font-bold flex-grow">
-            Your Forms
-          </h2>
-          <v-button v-track.create_form_click class="mt-4 sm:mt-0" :to="{name:'forms.create'}" @click="showCreateFormModal=true">
-            Create a new form
-          </v-button>
+  <div class="bg-white">
+    <div class="flex bg-gray-50 pb-5">
+      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
+        <div class="pt-4 pb-0">
+          <div class="flex">
+            <h2 class="flex-grow text-gray-900">
+              Your Forms
+            </h2>
+            <v-button v-track.create_form_click :to="{name:'forms.create'}">
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Create a new form
+            </v-button>
+          </div>
+          <small class="flex text-gray-500">Manage your forms and submissions.</small>
         </div>
-
-        <p v-if="!formsLoading && enrichedForms.length === 0 && !isFilteringForms">
-          You don't have any form yet.
-        </p>
-        <div v-else-if="forms.length > 0" class="mb-10">
-          <text-input v-if="forms.length > 5" class="mb-6" :form="searchForm" name="search" label="Search a form"
-                      placeholder="Name of form to search"
+      </div>
+    </div>
+    <div class="flex bg-white">
+      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
+        <div class="mt-8 pb-0">
+          <text-input v-if="forms.length > 0" class="mb-6" :form="searchForm" name="search" label="Search a form"
+                placeholder="Name of form to search"
           />
           <div v-if="allTags.length > 0" class="mb-6">
             <div v-for="tag in allTags" :key="tag"
-                 :class="['text-white p-2 text-xs inline rounded-lg font-semibold cursor-pointer mr-2',{'bg-gray-500 dark:bg-gray-400':selectedTags.includes(tag), 'bg-gray-300 dark:bg-gray-700':!selectedTags.includes(tag)}]"
-                 title="Click for filter by tag(s)"
-                 @click="onTagClick(tag)"
+                :class="['text-white p-2 text-xs inline rounded-lg font-semibold cursor-pointer mr-2',{'bg-gray-500 dark:bg-gray-400':selectedTags.includes(tag), 'bg-gray-300 dark:bg-gray-700':!selectedTags.includes(tag)}]"
+                title="Click for filter by tag(s)"
+                @click="onTagClick(tag)"
             >
               {{ tag }}
             </div>
           </div>
-          <div v-if="enrichedForms && enrichedForms.length" class="border border border-gray-300 dark:bg-notion-dark-light rounded-md w-full">
-            <div v-for="(form, index) in enrichedForms" :key="form.id"
-                 class="p-4 w-full mx-auto border-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer relative" 
-                 :class="{'border-t':index!==0, 'bg-gray-50 dark:bg-gray-400':form.visibility=='draft'}"
-            >
-              <div class="items-center space-x-4 truncate">
-                <p class="truncate float-left">
-                  {{ form.title }} <span v-if="form.submissions_count" class="text-gray-400 ml-1">- {{
-                    form.submissions_count
-                  }} Submission{{ form.submissions_count > 0 ? 's' : '' }}</span>
-                </p>
-                <div v-if="form.tags && form.tags.length > 0" class="float-right hidden sm:block">
-                  <template v-for="(tag,i) in form.tags">
-                    <div v-if="i<1" :key="tag"
-                         class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
-                    >
-                      {{ tag }}
-                    </div>
-                    <div v-if="i==1" :key="tag"
-                         class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
-                    >
-                      {{ form.tags.length-1 }} more
-                    </div>
-                  </template>
+          <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
+            <img loading="lazy" class="w-56"
+                  :src="asset('img/pages/forms/search_notfound.png')" alt="search-not-found">
+            <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">No forms found</h3>
+            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search" class="mt-2 w-full text-center">
+              Your search "{{searchForm.search}}" did not match any forms. Please try again.
+            </div>
+            <v-button v-if="forms.length === 0" class="mt-4" v-track.create_form_click :to="{name:'forms.create'}">
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Create a new form
+            </v-button>
+          </div>
+          <div v-else-if="forms.length > 0" class="mb-10">
+            <div v-if="enrichedForms && enrichedForms.length">
+              <div v-for="(form) in enrichedForms" :key="form.id"
+                  class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
+              >
+                <div class="flex-grow items-center truncate cursor-pointer" role="button" @click.prevent="viewForm(form)">
+                  <span class="font-semibold text-gray-900 dark:text-white">{{ form.title }}</span>
+                  <ul class="flex text-gray-500">
+                    <li class="pr-1">{{ form.views_count }} view{{ form.views_count > 0 ? 's' : '' }}</li>
+                    <li class="list-disc ml-6 pr-1">{{ form.submissions_count }}
+                      submission{{ form.submissions_count > 0 ? 's' : '' }}
+                    </li>
+                    <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='draft'">Draft (not public)</li>
+                    <li class="list-disc ml-6">Edited {{ form.last_edited_human }}</li>
+                  </ul>
+                  <div v-if="form.tags && form.tags.length > 0" class="mt-1">
+                    <template v-for="(tag,i) in form.tags">
+                      <div v-if="i<1" :key="tag"
+                          class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
+                      >
+                        {{ tag }}
+                      </div>
+                      <div v-if="i==1" :key="tag"
+                          class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
+                      >
+                        {{ form.tags.length-1 }} more
+                      </div>
+                    </template>
+                  </div>
                 </div>
+                <extra-menu :form="form" :isMainPage="true" />
               </div>
-              <router-link class="absolute inset-0"
-                           :to="{params:{slug:form.slug},name:'forms.show'}"
-              />
             </div>
           </div>
-          <p class="text-gray-400 dark:text-gray-600 mt-2 px-4">
-            You have {{ forms.length }} forms<template v-if="isFilteringForms">
-              ({{ enrichedForms.length }} matching search criteria)
-            </template>.
-          </p>
-        </div>
-        <div v-if="formsLoading" class="text-center">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <div v-if="formsLoading" class="text-center">
+            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +98,7 @@ import Fuse from 'fuse.js'
 import Form from 'vform'
 import TextInput from '../components/forms/TextInput'
 import OpenFormFooter from '../components/pages/OpenFormFooter'
+import ExtraMenu from '../components/pages/forms/show/ExtraMenu'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -89,7 +108,7 @@ const loadForms = function () {
 }
 
 export default {
-  components: { OpenFormFooter, TextInput },
+  components: { OpenFormFooter, TextInput, ExtraMenu },
 
   beforeRouteEnter (to, from, next) {
     loadForms()
@@ -127,6 +146,9 @@ export default {
       } else {
         this.selectedTags.splice(idx, 1)
       }
+    },
+    viewForm (form) {
+      this.$router.push({name: 'forms.show', params: {slug: form.slug}})
     }
   },
 
