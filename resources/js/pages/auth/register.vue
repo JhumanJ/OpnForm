@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex mt-6 mb-10">
-      <div class="w-full md:max-w-6xl mx-auto px-4 flex md:flex-row-reverse flex-wrap">
-        <div class="w-full md:w-1/2 md:p-6">
+      <div class="w-full md:max-w-6xl mx-auto px-4 flex items-center md:flex-row-reverse flex-wrap">
+        <div class="w-full lg:w-1/2 md:p-6">
           <div class="border rounded-md p-6 shadow-md sticky top-4">
             <h2 class="font-semibold text-2xl">
               Create an account
@@ -12,9 +12,9 @@
             <register-form />
           </div>
         </div>
-        <div class="w-full md:w-1/2 md:p-6 mt-8 md:mt-0 ">
+        <div class="w-full hidden lg:block lg:w-1/2 md:p-6 mt-8 md:mt-0 ">
           <h1 class="font-bold">
-            Create beautiful Notion forms and share them anywhere
+            Create beautiful forms and share them anywhere
           </h1>
           <p class="text-gray-900 my-4 text-lg">
             It takes seconds, you don't need to know how to code and it's free.
@@ -45,9 +45,9 @@
               Unlimited submissions
             </p>
           </div>
-          <div class="mt-3 p-6">
-            <testimonials />
-          </div>
+<!--          <div class="mt-3 p-6">-->
+<!--            <testimonials />-->
+<!--          </div>-->
         </div>
       </div>
     </div>

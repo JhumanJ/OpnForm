@@ -191,6 +191,9 @@ export default {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
         })
+
+        window.localStorage.removeItem(this.form.form_pending_submission_Key)
+        
         if (response.data.redirect && response.data.redirect_url) {
           window.location.href = response.data.redirect_url
         }

@@ -25,3 +25,12 @@ it('can parse filenames', function () {
     expect($parsedFilename->getMovedFileName())->toBeNull();
 
 });
+
+it('can handles non-utf characters', function () {
+    $fileName = 'Образец_для_заполнения_85e16d7b-58ed-43bc-8dce-7d3ff7d69f41.png';
+    $parsedFilename = \App\Service\Storage\StorageFileNameParser::parse($fileName);
+    expect($parsedFilename->fileName)->toBe('Образец_для_заполнения');
+    expect($parsedFilename->uuid)->toBe('85e16d7b-58ed-43bc-8dce-7d3ff7d69f41');
+    expect($parsedFilename->extension)->toBe('png');
+    expect($parsedFilename->getMovedFileName())->toBe($fileName);
+});
