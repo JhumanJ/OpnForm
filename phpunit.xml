@@ -32,7 +32,7 @@
         <server name="MAIL_FROM_NAME" value="NotionForms"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
-        <server name="TELESCOPE_ENABLED" value="false"/>
+        <server name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
         <server name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
     </php>
 </phpunit>

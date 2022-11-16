@@ -125,7 +125,7 @@ trait TestHelpers
             ->withProperties(FormFactory::formatProperties($dbProperties))
             ->forWorkspace($workspace)
             ->createdBy($user)
-            ->make($data);            
+            ->make($data);
     }
 
     public function createForm(User $user, Workspace $workspace, array $data = [])
@@ -135,9 +135,9 @@ trait TestHelpers
         return $form;
     }
 
-    public function createUser()
+    public function createUser(array $data = [])
     {
-        return \App\Models\User::factory()->create();
+        return \App\Models\User::factory()->create($data);
     }
 
     public function createProUser()
@@ -191,5 +191,5 @@ trait TestHelpers
         }
         $this->assertGuest();
     }
-    
+
 }
