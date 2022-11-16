@@ -166,6 +166,14 @@ class Form extends Model
         return ($this->closes_at && now()->gt($this->closes_at));
     }
 
+    public function getFormPendingSubmissionKeyAttribute()
+    {
+        if ($this->updated_at?->timestamp) {
+            return "openform-" . $this->id . "-pending-submission-" . substr($this->updated_at?->timestamp, -6);
+        }
+        return null;
+    }
+
     public function getMaxNumberOfSubmissionsReachedAttribute()
     {
         return ($this->max_submissions_count && $this->max_submissions_count <= $this->submissions_count);
