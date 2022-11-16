@@ -15,10 +15,10 @@
           <workspace-dropdown class="ml-6"/>
         </div>
         <div class="hidden md:block ml-auto relative">
-<!--          <router-link :to="{name:'integrations'}"-->
-<!--                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">-->
-<!--            Integrations-->
-<!--          </router-link>-->
+          <router-link :to="{name:'templates'}"
+                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+            Templates
+          </router-link>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])" v-if="hasCrisp"
           >
@@ -99,7 +99,7 @@
                     {{ $t('login') }}
                   </router-link>
 
-                  <v-button size="small" :to="{ name: 'register' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
+                  <v-button size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
                     Create a form
                   </v-button>
 

@@ -7,13 +7,19 @@
                      :style="{
                        'max-height': editorMaxHeight + 'px'
                      }" :error="error"
+                     :isGuest="isGuest"
                      @mounted="onResize"
+                     @openRegister="openRegister"
         />
         <div v-else class="text-center mt-4 py-6">
           <loader class="h-6 w-6 text-nt-blue mx-auto"/>
         </div>
       </div>
     </transition>
+
+    <quick-register :showRegisterModal="registerModal" @close="registerModal=false" @reopen="registerModal=true"
+                    @afterLogin="afterLogin"/>
+
   </div>
 </template>
 
@@ -21,7 +27,8 @@
 import store from '~/store'
 import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
-import initForm from "../../mixins/form_editor/initForm";
+import QuickRegister from '../auth/components/QuickRegister'
+import initForm from "../../mixins/form_editor/initForm"
 
 const FormEditor = () => import('../../components/open/forms/components/FormEditor')
 
@@ -33,15 +40,17 @@ const loadTemplates = function () {
 }
 
 export default {
-  name: 'CreateForm',
-
+  name: 'CreateFormGuest',
   mixins: [initForm],
   components: {
     FormEditor,
+    QuickRegister
   },
 
+  middleware: 'guest',
+
   metaInfo() {
-    return {title: 'Create a new Form'}
+    return {title: 'Create a new Form as Guest'}
   },
 
   beforeRouteEnter(to, from, next) {
@@ -49,14 +58,14 @@ export default {
     next()
   },
 
-  middleware: 'auth',
-
   data() {
     return {
       stateReady: false,
       loading: false,
       error: '',
-      editorMaxHeight: 500
+      editorMaxHeight: 500,
+      registerModal: false,
+      isGuest: true
     }
   },
 
@@ -64,7 +73,6 @@ export default {
     ...mapState({
       workspaces: state => state['open/workspaces'].content,
       workspacesLoading: state => state['open/workspaces'].loading,
-      user: state => state.auth.user
     }),
     form: {
       get() {
@@ -85,13 +93,20 @@ export default {
       if (this.workspace) {
         this.form.workspace_id = this.workspace.id
       }
-    },
-    user() {
-      this.stateReady = true
     }
   },
 
   mounted() {
+    // Set as guest user
+    const guestWorkspace = {
+      id: null,
+      name: "Guest Workspace",
+      is_enterprise: false,
+      is_pro: false
+    }
+    this.$store.commit('open/workspaces/set', [guestWorkspace])
+    this.$store.commit('open/workspaces/setCurrentId', guestWorkspace.id)
+
     this.initForm()
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
@@ -100,9 +115,7 @@ export default {
       }
     }
     this.closeAlert()
-    this.loadWorkspaces()
-
-    this.stateReady = this.user !== null
+    this.stateReady = true
   },
 
   created() {
@@ -114,7 +127,7 @@ export default {
 
   methods: {
     ...mapActions({
-      loadWorkspaces: 'open/workspaces/loadIfEmpty'
+      loadWorkspaces: 'open/workspaces/load'
     }),
     /**
      * Compute max height of editor
@@ -123,6 +136,17 @@ export default {
       if (this.$refs.editor) {
         this.editorMaxHeight = window.innerHeight - this.$refs.editor.$el.offsetTop
       }
+    },
+    openRegister() {
+      this.registerModal = true
+    },
+    afterLogin() {
+      this.registerModal = false
+      this.isGuest = false
+      this.loadWorkspaces()
+      setTimeout(() => {
+        this.$refs.editor.saveFormCreate()
+      }, 500)
     }
   }
 }

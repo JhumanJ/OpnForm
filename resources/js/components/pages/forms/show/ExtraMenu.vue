@@ -20,7 +20,7 @@
           </svg>
         </v-button>
       </template>
-      <router-link v-if="!isMainPage" :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
+      <router-link :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
                     class="block sm:hidden px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                     v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
         >
@@ -34,9 +34,9 @@
         </svg>
         View form
       </router-link>
-      <router-link v-if="isMainPage" :to="{name:'forms.edit', params: {slug: form.slug}}" 
+      <router-link v-if="isMainPage" :to="{name:'forms.edit', params: {slug: form.slug}}"
                     class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                    v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
+                    v-track.edit_form_click="{form_id:form.id, form_slug:form.slug}"
         >
         <svg class="w-4 h-4 mr-2" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -67,6 +67,17 @@
         </svg>
         Duplicate form
       </a>
+      <a href="#" v-if="user.admin"
+         class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+         @click.prevent="showCreateTemplateModal=true"
+      >
+        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
+        </svg>
+        Create Template
+      </a>
       <a href="#"
             class="block block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
             v-track.delete_form_click="{form_id:form.id, form_slug:form.slug}"
@@ -80,24 +91,16 @@
         </svg>
         Delete form
       </a>
-      <a href="#" v-if="!isMainPage && user.admin"
-            class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-            @click.prevent="showCreateTemplateModal=true"
-        >
-        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
-        </svg>
-        Create Template
-      </a>
     </dropdown>
-    
+
     <!-- Delete Form Modal -->
-    <modal :show="showDeleteFormModal" @close="showDeleteFormModal=false" max-width="sm">
+    <modal :show="showDeleteFormModal" icon-color="red" @close="showDeleteFormModal=false" max-width="sm">
       <template #icon>
-        <svg class="w-10 h-10 text-blue" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 27C16.0681 27 15.6022 27 15.2346 26.8478C14.7446 26.6448 14.3552 26.2554 14.1522 25.7654C14 25.3978 14 24.9319 14 24V17.2C14 16.0799 14 15.5198 14.218 15.092C14.4097 14.7157 14.7157 14.4097 15.092 14.218C15.5198 14 16.0799 14 17.2 14H24C24.9319 14 25.3978 14 25.7654 14.1522C26.2554 14.3552 26.6448 14.7446 26.8478 15.2346C27 15.6022 27 16.0681 27 17M24.2 34H30.8C31.9201 34 32.4802 34 32.908 33.782C33.2843 33.5903 33.5903 33.2843 33.782 32.908C34 32.4802 34 31.9201 34 30.8V24.2C34 23.0799 34 22.5198 33.782 22.092C33.5903 21.7157 33.2843 21.4097 32.908 21.218C32.4802 21 31.9201 21 30.8 21H24.2C23.0799 21 22.5198 21 22.092 21.218C21.7157 21.4097 21.4097 21.7157 21.218 22.092C21 22.5198 21 23.0799 21 24.2V30.8C21 31.9201 21 32.4802 21.218 32.908C21.4097 33.2843 21.7157 33.5903 22.092 33.782C22.5198 34 23.0799 34 24.2 34Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
       </template>
       <template #title>
@@ -117,7 +120,7 @@
     <create-template-modal :form="form" :show="showCreateTemplateModal" @close="showCreateTemplateModal=false"/>
   </div>
 </template>
-  
+
 <script>
 import axios from 'axios'
 import {mapGetters, mapState} from 'vuex'
@@ -178,4 +181,3 @@ export default {
     }
 }
 </script>
-  
