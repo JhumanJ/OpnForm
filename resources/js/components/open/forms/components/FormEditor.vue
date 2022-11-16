@@ -1,7 +1,6 @@
 <template>
   <div v-if="form" id="form-editor" class="w-full flex flex-grow relative overflow-x-hidden">
     <!-- Form fields selection -->
-    <v-tour name="tutorial" :steps="steps"/>
     <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0">
       <div class="p-4 bg-blue-50 border-b text-nt-blue-dark md:hidden">
         We suggest you create this form on a device with a larger screen such as computed. That will allow you
@@ -128,7 +127,7 @@ export default {
         {
           target: '#v-step-0',
           header: {
-            title: 'Welcome to the OpenForm Editor!'
+            title: 'Welcome to the OpnForm Editor!'
           },
           content: 'Discover <strong>your form Editor</strong>!'
         },
@@ -165,15 +164,9 @@ export default {
 
   mounted() {
     this.$emit('mounted')
-    this.startTour()
   },
 
   methods: {
-    startTour() {
-      if (this.isGuest || (this.user && !this.user.has_forms)) {
-        this.$tours.tutorial.start()
-      }
-    },
     showValidationErrors() {
       this.showFormErrorModal = true
     },
