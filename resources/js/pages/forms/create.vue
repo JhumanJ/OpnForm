@@ -21,18 +21,21 @@
 import store from '~/store'
 import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
+import initForm from "../../mixins/form_editor/initForm";
 
 const FormEditor = () => import('../../components/open/forms/components/FormEditor')
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
   store.dispatch('open/templates/loadIfEmpty').then(() => {
-      store.commit('open/templates/stopLoading')
+    store.commit('open/templates/stopLoading')
   })
 }
 
 export default {
   name: 'CreateForm',
+
+  mixins: [initForm],
   components: {
     FormEditor,
   },
@@ -41,7 +44,7 @@ export default {
     return {title: 'Create a new Form'}
   },
 
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     loadTemplates()
     next()
   },
@@ -75,12 +78,6 @@ export default {
     workspace() {
       return this.$store.getters['open/workspaces/getCurrent']()
     },
-    fromOnboarding() {
-      return this.$route.params.from_onboarding
-    },
-    fbGroupLink() {
-      return window.config.links.facebook_group
-    }
   },
 
   watch: {
@@ -95,15 +92,12 @@ export default {
   },
 
   mounted() {
-    if(this.$route.query.template !== undefined && this.$route.query.template){
-      let template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
-      if(template && template.structure){
-        this.form = new Form(template.structure)
-      }else{
-        this.initForm()
+    this.initForm()
+    if (this.$route.query.template !== undefined && this.$route.query.template) {
+      const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
+      if (template && template.structure) {
+        this.form = new Form({...this.form.data(), ...template.structure})
       }
-    }else{
-      this.initForm()
     }
     this.closeAlert()
     this.loadWorkspaces()
@@ -122,50 +116,6 @@ export default {
     ...mapActions({
       loadWorkspaces: 'open/workspaces/loadIfEmpty'
     }),
-    initForm() {
-      this.form = new Form({
-        title: 'My Form',
-        description: null,
-        visibility: 'public',
-        workspace_id: this.workspace?.id,
-        properties: [],
-
-        notifies: false,
-        slack_notifies: false,
-        send_submission_confirmation: false,
-        webhook_url: null,
-
-        // Customization
-        theme: 'default',
-        width: 'centered',
-        dark_mode: 'auto',
-        color: '#3B82F6',
-        hide_title: false,
-        no_branding: false,
-        uppercase_labels: true,
-        transparent_background: false,
-        closes_at: null,
-        closed_text: 'This form has now been closed by its owner and does not accept submissions anymore.',
-
-        // Submission
-        submit_button_text: 'Submit',
-        re_fillable: false,
-        re_fill_button_text: 'Fill Again',
-        submitted_text: 'Amazing, we saved your answers. Thank you for your time and have a great day!',
-        notification_sender: 'OpnForm',
-        notification_subject: 'We saved your answers',
-        notification_body: 'Hello there 👋 <br>This is a confirmation that your submission was successfully saved.',
-        notifications_include_submission: true,
-        use_captcha: false,
-        is_rating: false,
-        rating_max_value: 5,
-        max_submissions_count: null,
-        max_submissions_reached_text: 'This form has now reached the maximum number of allowed submissions and is now closed.',
-
-        // Security & Privacy
-        can_be_indexed: true
-      })
-    },
     /**
      * Compute max height of editor
      */
