@@ -15,15 +15,17 @@
           <workspace-dropdown class="ml-6"/>
         </div>
         <div class="hidden md:block ml-auto relative">
-          <router-link :to="{name:'integrations'}"
-                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Integrations
-          </router-link>
-          <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Feature Requests
-          </a>
+<!--          <router-link :to="{name:'integrations'}"-->
+<!--                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">-->
+<!--            Integrations-->
+<!--          </router-link>-->
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])"
+             @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])" v-if="hasCrisp"
+          >
+            Help
+          </a>
+          <a href="https://help.opnform.com/en/" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+             target="_blank" v-else
           >
             Help
           </a>
@@ -205,6 +207,9 @@ export default {
     }),
     userOnboarded() {
       return this.user && this.user.workspaces_count > 0
+    },
+    hasCrisp() {
+      return window.config.crisp_website_id
     }
   },
 

@@ -61,13 +61,13 @@
 
       <more-features />
 
-      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">
-        <h3 class="font-semibold text-3xl">See what people are saying</h3>
-        <p class="w-full mt-2 mb-8">
-          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.
-        </p>
-        <testimonials/>
-      </div>
+<!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
+<!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
+<!--        <p class="w-full mt-2 mb-8">-->
+<!--          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.-->
+<!--        </p>-->
+<!--        <testimonials/>-->
+<!--      </div>-->
 
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
         <h4 class="font-semibold text-3xl text-white">Take your forms to the next level</h4>
