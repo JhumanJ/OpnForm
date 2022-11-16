@@ -17,7 +17,7 @@ class TemplateController extends Controller
 
     public function create(CreateTemplateRequest $request)
     {
-        $this->middleware('admin');
+        $this->authorize('create', Template::class);
 
         // Create template
         $template = $request->getTemplate();
@@ -28,5 +28,4 @@ class TemplateController extends Controller
             'template_id' => $template->id
         ]);
     }
-
 }
