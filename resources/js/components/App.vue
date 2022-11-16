@@ -33,6 +33,7 @@
     </transition>
     <portal-target name="modals" multiple />
     <stop-impersonation />
+    <notifications />
   </div>
 </template>
 
@@ -43,6 +44,7 @@ import Hotjar from './service/Hotjar'
 import Amplitude from './service/Amplitude'
 import Crisp from './service/Crisp'
 import StopImpersonation from './pages/StopImpersonation'
+import Notifications from "./common/Notifications"
 
 // Load layout components dynamically.
 const requireContext = require.context('~/layouts', false, /.*\.vue$/)
@@ -60,6 +62,7 @@ export default {
   el: '#app',
 
   components: {
+    Notifications,
     StopImpersonation,
     Crisp,
     Amplitude,
