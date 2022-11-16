@@ -1,14 +1,13 @@
 <template>
   <div v-if="form" id="form-editor" class="w-full flex flex-grow relative overflow-x-hidden">
     <!-- Form fields selection -->
-    <v-tour name="tutorial" :steps="steps"/>
     <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0">
       <div class="p-4 bg-blue-50 border-b text-nt-blue-dark md:hidden">
         We suggest you create this form on a device with a larger screen such as computed. That will allow you
         to preview your form changes.
       </div>
       <div class="p-4 pb-0">
-        <a href="#" @click.prevent="$router.back()" class="flex text-blue mb-2 font-semibold text-sm">
+        <a v-if="!isGuest" href="#" @click.prevent="$router.back()" class="flex text-blue mb-2 font-semibold text-sm">
           <svg class="w-3 h-3 text-blue mt-1 mr-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                   stroke-linejoin="round"/>
@@ -88,6 +87,11 @@ export default {
       type: Boolean,
       default: false
     },
+    isGuest: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
   },
 
   data() {
@@ -123,7 +127,7 @@ export default {
         {
           target: '#v-step-0',
           header: {
-            title: 'Welcome to the OpenForm Editor!'
+            title: 'Welcome to the OpnForm Editor!'
           },
           content: 'Discover <strong>your form Editor</strong>!'
         },
@@ -160,20 +164,16 @@ export default {
 
   mounted() {
     this.$emit('mounted')
-    this.startTour()
   },
 
   methods: {
-    startTour() {
-      if (!this.user.has_forms) {
-        this.$tours.tutorial.start()
-      }
-    },
     showValidationErrors() {
       this.showFormErrorModal = true
     },
     saveForm() {
-      if (this.isEdit) {
+      if(this.isGuest) {
+        this.saveFormGuest()
+      } else if (this.isEdit) {
         this.saveFormEdit()
       } else {
         this.saveFormCreate()
@@ -230,6 +230,9 @@ export default {
       }).finally(() => {
         this.updateFormLoading = false
       })
+    },
+    saveFormGuest() {
+      this.$emit('openRegister')
     }
   }
 }

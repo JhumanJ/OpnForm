@@ -47,6 +47,17 @@
         </svg>
         Duplicate form
       </a>
+      <a href="#" v-if="user.admin"
+         class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+         @click.prevent="showCreateTemplateModal=true"
+      >
+        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
+        </svg>
+        Create Template
+      </a>
       <a href="#"
             class="block block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
             v-track.delete_form_click="{form_id:form.id, form_slug:form.slug}"
@@ -60,23 +71,12 @@
         </svg>
         Delete form
       </a>
-      <a href="#" v-if="user.admin"
-            class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-            @click.prevent="showCreateTemplateModal=true"
-        >
-        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
-        </svg>
-        Create Template
-      </a>
     </dropdown>
-    
+
     <create-template-modal :form="form" :show="showCreateTemplateModal" @close="showCreateTemplateModal=false"/>
   </div>
 </template>
-  
+
 <script>
 import axios from 'axios'
 import {mapGetters, mapState} from 'vuex'
@@ -127,4 +127,3 @@ export default {
     }
 }
 </script>
-  

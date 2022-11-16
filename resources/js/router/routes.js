@@ -8,6 +8,7 @@ export default [
 
   // Forms
   { path: '/forms/create', name: 'forms.create', component: page('forms/create.vue') },
+  { path: '/forms/create/guest', name: 'forms.create.guest', component: page('forms/create-guest.vue') },
   { path: '/forms/:slug/edit', name: 'forms.edit', component: page('forms/edit.vue') },
   {
     path: '/forms/:slug/show',
