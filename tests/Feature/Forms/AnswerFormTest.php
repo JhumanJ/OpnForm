@@ -84,3 +84,51 @@ it('can not submit draft form', function () {
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(403);
 });
+
+it('can not submit form with past dates', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    
+    $submissionData = [];
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData) {
+        if(in_array($property['type'], ['date'])){
+            $property["disable_past_dates"] = true;
+            $submissionData[$property['id']] = now()->subDays(4)->format('Y-m-d');
+        }
+        return $property;
+    })->toArray();
+    $form->update();
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Date must be a date after or equal to today.'
+        ]);
+});
+
+it('can not submit form with future dates', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $submissionData = [];
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData) {
+        if(in_array($property['type'], ['date'])){
+            $property["disable_future_dates"] = true;
+            $submissionData[$property['id']] = now()->addDays(4)->format('Y-m-d');
+        }
+        return $property;
+    })->toArray();
+    $form->update();
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Date must be a date before or equal to today.'
+        ]);
+});

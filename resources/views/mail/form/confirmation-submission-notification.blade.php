@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('mail::message', ['noBranding' => $noBranding])
 
 {!! $form->notification_body !!}
 

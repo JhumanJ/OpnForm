@@ -42,6 +42,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
             ->markdown('mail.form.confirmation-submission-notification',[
                 'fields' => $formatter->getFieldsWithValue(),
                 'form' => $form,
+                'noBranding' => $form->no_branding
             ]);
     }
 

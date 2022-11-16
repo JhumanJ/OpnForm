@@ -13,6 +13,7 @@
                   :date-format="useTime?'Z':'Y-m-d'" 
                   :user-format="useTime ? amPm ? 'F j, Y - G:i K' : 'F j, Y - H:i' : 'F j, Y'"
                   :amPm="amPm"
+                  :disabled-dates="disabledDates"
     />
     <small v-if="help" :class="theme.default.help">
       <slot name="help">{{ help }}</slot>
@@ -32,7 +33,9 @@ export default {
   props: {
     withTime: { type: Boolean, default: false },
     dateRange: { type: Boolean, default: false },
-    amPm: { type: Boolean, default: false }
+    amPm: { type: Boolean, default: false },
+    disablePastDates: { type: Boolean, default: false },
+    disableFutureDates: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -74,6 +77,15 @@ export default {
         const dateInput = this.$refs.datepicker.$el.getElementsByTagName('input')[0]
         dateInput.style.setProperty('--tw-ring-color', this.color)
       }
+    },
+    disabledDates (date) {
+      const today = new Date()
+      if(this.disablePastDates){
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate()) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      } else if(this.disableFutureDates){
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate()) > new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      }
+      return false;
     }
   }
 }

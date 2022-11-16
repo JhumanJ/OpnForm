@@ -8,8 +8,17 @@ export default [
 
   // Forms
   { path: '/forms/create', name: 'forms.create', component: page('forms/create.vue') },
-  { path: '/forms/:slug/show', name: 'forms.show', component: page('forms/show.vue') },
   { path: '/forms/:slug/edit', name: 'forms.edit', component: page('forms/edit.vue') },
+  {
+    path: '/forms/:slug/show',
+    component: page('forms/show/index.vue'),
+    children: [
+      { path: '', redirect: { name: 'forms.show' } },
+      { path: 'submissions', name: 'forms.show', component: page('forms/show/submissions.vue') },
+      { path: 'analytics', name: 'forms.show.analytics', component: page('forms/show/analytics.vue') },
+      { path: 'share', name: 'forms.show.share', component: page('forms/show/share.vue') }
+    ]
+  },
 
   // Subscription
   { path: '/subscriptions/success', name: 'subscriptions.success', component: page('subscriptions/success.vue') },
