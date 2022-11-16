@@ -5,7 +5,7 @@
     </div>
     <dropdown v-else class="inline" dusk="nav-dropdown">
       <template #trigger="{toggle}">
-        <v-button color="light-gray" class="mr-2" @click="toggle">
+        <v-button color="white" class="mr-2" @click="toggle">
           <svg class="w-4 h-4 inline -mt-1" viewBox="0 0 16 4" fill="none"
               xmlns="http://www.w3.org/2000/svg">
             <path
@@ -20,7 +20,7 @@
           </svg>
         </v-button>
       </template>
-      <router-link :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
+      <router-link v-if="!isMainPage" :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
                     class="block sm:hidden px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                     v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
         >
@@ -34,6 +34,26 @@
         </svg>
         View form
       </router-link>
+      <router-link v-if="isMainPage" :to="{name:'forms.edit', params: {slug: form.slug}}" 
+                    class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
+        >
+        <svg class="w-4 h-4 mr-2" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M8.99998 15.6662H16.5M1.5 15.6662H2.89545C3.3031 15.6662 3.50693 15.6662 3.69874 15.6202C3.8688 15.5793 4.03138 15.512 4.1805 15.4206C4.34869 15.3175 4.49282 15.1734 4.78107 14.8852L15.25 4.4162C15.9404 3.72585 15.9404 2.60656 15.25 1.9162C14.5597 1.22585 13.4404 1.22585 12.75 1.9162L2.28105 12.3852C1.9928 12.6734 1.84867 12.8175 1.7456 12.9857C1.65422 13.1348 1.58688 13.2974 1.54605 13.4675C1.5 13.6593 1.5 13.8631 1.5 14.2708V15.6662Z"
+            stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Edit
+      </router-link>
+      <a href="#" v-if="isMainPage"
+            class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+            @click.prevent="copyLink"
+        >
+        <svg class="w-4 h-4 mr-2" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.00016 8.33317H4.66683C2.82588 8.33317 1.3335 6.84079 1.3335 4.99984C1.3335 3.15889 2.82588 1.6665 4.66683 1.6665H6.00016M10.0002 8.33317H11.3335C13.1744 8.33317 14.6668 6.84079 14.6668 4.99984C14.6668 3.15889 13.1744 1.6665 11.3335 1.6665H10.0002M4.66683 4.99984L11.3335 4.99984" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Copy link to share
+      </a>
       <a href="#"
             class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
             v-track.duplicate_form_click="{form_id:form.id, form_slug:form.slug}"
@@ -50,7 +70,7 @@
       <a href="#"
             class="block block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
             v-track.delete_form_click="{form_id:form.id, form_slug:form.slug}"
-            @click.prevent="alertConfirm('Do you really want to delete this form?',deleteForm)"
+            @click.prevent="showDeleteFormModal=true"
         >
         <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -60,7 +80,7 @@
         </svg>
         Delete form
       </a>
-      <a href="#" v-if="user.admin"
+      <a href="#" v-if="!isMainPage && user.admin"
             class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
             @click.prevent="showCreateTemplateModal=true"
         >
@@ -73,6 +93,27 @@
       </a>
     </dropdown>
     
+    <!-- Delete Form Modal -->
+    <modal :show="showDeleteFormModal" @close="showDeleteFormModal=false" max-width="sm">
+      <template #icon>
+        <svg class="w-10 h-10 text-blue" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 27C16.0681 27 15.6022 27 15.2346 26.8478C14.7446 26.6448 14.3552 26.2554 14.1522 25.7654C14 25.3978 14 24.9319 14 24V17.2C14 16.0799 14 15.5198 14.218 15.092C14.4097 14.7157 14.7157 14.4097 15.092 14.218C15.5198 14 16.0799 14 17.2 14H24C24.9319 14 25.3978 14 25.7654 14.1522C26.2554 14.3552 26.6448 14.7446 26.8478 15.2346C27 15.6022 27 16.0681 27 17M24.2 34H30.8C31.9201 34 32.4802 34 32.908 33.782C33.2843 33.5903 33.5903 33.2843 33.782 32.908C34 32.4802 34 31.9201 34 30.8V24.2C34 23.0799 34 22.5198 33.782 22.092C33.5903 21.7157 33.2843 21.4097 32.908 21.218C32.4802 21 31.9201 21 30.8 21H24.2C23.0799 21 22.5198 21 22.092 21.218C21.7157 21.4097 21.4097 21.7157 21.218 22.092C21 22.5198 21 23.0799 21 24.2V30.8C21 31.9201 21 32.4802 21.218 32.908C21.4097 33.2843 21.7157 33.5903 22.092 33.782C22.5198 34 23.0799 34 24.2 34Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </template>
+      <template #title>
+        Delete form
+      </template>
+      <div class="p-3">
+        <p>
+          If you want to permanently delete this form and all of its data, you can do so below.
+        </p>
+        <div class="flex mt-4">
+          <v-button class="sm:w-1/2 mr-4" color="white" @click.prevent="showDeleteFormModal=false">Cancel</v-button>
+          <v-button class="sm:w-1/2" color="red" :loading="loadingDelete" @click.prevent="deleteForm">Yes, delete it</v-button>
+        </div>
+      </div>
+    </modal>
+
     <create-template-modal :form="form" :show="showCreateTemplateModal" @close="showCreateTemplateModal=false"/>
   </div>
 </template>
@@ -87,12 +128,14 @@ export default {
     name: 'ExtraMenu',
     components: { Dropdown, CreateTemplateModal },
     props: {
-      form: { type: Object, required: true }
+      form: { type: Object, required: true },
+      isMainPage: { type: Boolean, required: false, default: false }
     },
 
     data: () => ({
       loadingDuplicate: false,
       loadingDelete: false,
+      showDeleteFormModal: false,
       showCreateTemplateModal: false
     }),
 
@@ -104,6 +147,14 @@ export default {
     },
 
     methods: {
+      copyLink(){
+        const el = document.createElement('textarea')
+        el.value = this.form.share_url
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+      },
       duplicateForm() {
         if (this.loadingDuplicate) return
         this.loadingDuplicate = true
