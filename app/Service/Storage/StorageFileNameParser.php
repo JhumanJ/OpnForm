@@ -29,7 +29,8 @@ class StorageFileNameParser
     public function getMovedFileName(): ?string
     {
         if ($this->fileName && $this->extension) {
-            return substr($this->fileName,0,50).'_'.$this->uuid.'.'.$this->extension;
+            $fileName = substr($this->fileName, 0, 50).'_'.$this->uuid.'.'.$this->extension;
+            return mb_convert_encoding($fileName, 'UTF-8', 'UTF-8');
         }
         return $this->uuid;
     }
