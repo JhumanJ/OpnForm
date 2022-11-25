@@ -102,11 +102,6 @@ export default {
 
   mounted () {
     this.$loading = this.$refs.loading
-
-    // Dark mode
-    if (window.localStorage.getItem('opnform-dark-mode-enabled') === '1' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.body.classList.add('dark')
-    }
   },
 
   methods: {
