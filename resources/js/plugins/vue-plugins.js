@@ -4,6 +4,7 @@ import PortalVue from 'portal-vue'
 
 import VueTailwind from 'vue-tailwind'
 import TDatepicker from 'vue-tailwind/dist/t-datepicker'
+import Notifications from "vt-notifications"
 
 Vue.use(PortalVue)
 const settings = {
@@ -85,6 +86,8 @@ const settings = {
 }
 
 Vue.use(VueTailwind, settings)
+
+Vue.use(Notifications)
 
 Vue.prototype.$getCrisp = () => {
   return window.$crisp

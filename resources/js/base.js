@@ -39,47 +39,50 @@ export default {
     /**
      * Show an error message.
      */
-    alertError (message) {
-      this.$root.alert.type = 'error'
-      this.$root.alert.autoClose = false
-      this.$root.alert.message = message
-
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    alertError (message, autoClose=10000) {
+      this.$notify(
+        {
+          title: 'Error',
+          text: message,
+          type: 'error',
+        }, autoClose)
     },
 
     /**
      * Show a success message.
      */
-    alertSuccess (message, autoClose = 6000) {
-      this.$root.alert.type = 'success'
-      this.$root.alert.autoClose = autoClose
-      this.$root.alert.message = message
-
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    alertSuccess (message, autoClose=10000) {
+      this.$notify(
+        {
+          title: 'Success',
+          text: message,
+          type: 'success',
+        }, autoClose)
     },
 
     /**
      * Show a warning message.
      */
-    alertWarning (message, autoClose) {
-      this.$root.alert.type = 'warning'
-      this.$root.alert.autoClose = autoClose
-      this.$root.alert.message = message
-
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    alertWarning (message, autoClose=10000) {
+      this.$notify(
+        {
+          title: 'Warning',
+          text: message,
+          type: 'warning',
+        }, autoClose)
     },
 
     /**
      * Show confirmation message.
      */
-    alertConfirm (message, success, failure) {
-      this.$root.alert.type = 'confirmation'
-      this.$root.alert.autoClose = false
-      this.$root.alert.message = message
-      this.$root.alert.confirmationProceed = success
-      this.$root.alert.confirmationCancel = failure
-
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    alertConfirm (message, success, failure, autoClose= 10000) {
+      this.$notify(
+        {
+          title: 'Confirm',
+          text: message,
+          type: 'confirm',
+          success, failure
+        }, autoClose)
     },
 
     /**
