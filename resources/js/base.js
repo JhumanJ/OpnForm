@@ -75,14 +75,14 @@ export default {
     /**
      * Show confirmation message.
      */
-    alertConfirm (message, success, failure) {
-      this.$root.alert.type = 'confirmation'
-      this.$root.alert.autoClose = false
-      this.$root.alert.message = message
-      this.$root.alert.confirmationProceed = success
-      this.$root.alert.confirmationCancel = failure
-
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    alertConfirm (message, success, failure, autoClose= 10000) {
+      this.$notify(
+        {
+          title: 'Confirm',
+          text: message,
+          type: 'confirm',
+          success, failure
+        }, autoClose)
     },
 
     /**

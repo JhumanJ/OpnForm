@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed top-16 bottom-24 right-0 flex px-4 items-start justify-end z-10">
+  <div class="fixed top-0 bottom-24 right-0 flex px-4 items-start justify-end z-10 pointer-events-none">
     <notification v-slot="{ notifications, close }">
-      <div class="relative" v-for="notification in notifications" :key="notification.id">
+      <div class="relative pointer-events-auto" v-for="notification in notifications" :key="notification.id">
         <div
           v-if="notification.type==='success'"
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
@@ -14,7 +14,7 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-green-500 font-semibold">{{notification.title}}</span>
+              <span class="text-green-500 font-semibold pr-6">{{notification.title}}</span>
               <p class="text-gray-600 text-sm">{{notification.text}}</p>
             </div>
           </div>
@@ -31,7 +31,7 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-blue-500 font-semibold">{{notification.title}}</span>
+              <span class="text-blue-500 font-semibold pr-6">{{notification.title}}</span>
               <p class="text-gray-600 text-sm">T{{notification.text}}</p>
             </div>
           </div>
@@ -54,7 +54,7 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-red-500 font-semibold">{{notification.title}}</span>
+              <span class="text-red-500 font-semibold pr-6">{{notification.title}}</span>
               <p class="text-gray-600 text-sm">{{notification.text}}</p>
             </div>
           </div>
@@ -77,12 +77,33 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-yellow-500 font-semibold">{{notification.title}}</span>
+              <span class="text-yellow-500 font-semibold pr-6">{{notification.title}}</span>
               <p class="text-gray-600 text-sm">{{notification.text}}</p>
             </div>
           </div>
         </div>
-        <button @click="close(notification.id)" class="absolute top-0 bottom-4 right-0 px-2 py-2 cursor-pointer">
+        <div
+          class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
+          v-if="notification.type==='confirm'"
+        >
+          <div class="flex justify-center items-center w-12 bg-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 01-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 01-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 01-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584zM12 18a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+            </svg>
+          </div>
+
+          <div class="-mx-3 py-2 px-4">
+            <div class="mx-3">
+              <span class="text-blue-500 font-semibold pr-6">{{notification.title}}</span>
+              <p class="text-gray-600 text-sm">{{notification.text}}</p>
+              <div class="w-full flex gap-2 mt-1">
+                <v-button color="blue" size="small" @click.prevent="notification.success();close(notification.id)">Yes</v-button>
+                <v-button color="transparent" size="small" @click.prevent="notification.failure();close(notification.id)">No</v-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button @click="close(notification.id)" class="absolute top-0 right-0 px-2 py-2 cursor-pointer">
           <svg
             class="fill-current h-6 w-6 text-gray-300 hover:text-gray-500"
             role="button"

@@ -14,7 +14,7 @@
         </div>
         <div class="w-full md:w-1/2 md:p-6 mt-8 md:mt-0 ">
           <h1 class="font-bold">
-            Create beautiful Notion forms and share them anywhere
+            Create beautiful forms and share them anywhere
           </h1>
           <p class="text-gray-900 my-4 text-lg">
             It takes seconds, you don't need to know how to code and it's free.
