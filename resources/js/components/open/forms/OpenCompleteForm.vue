@@ -91,7 +91,7 @@
         >
           <template #submit-btn="{submitForm}">
             <open-form-button :loading="loading" :theme="theme" :color="form.color" class="mt-2 px-8 mx-1"
-                                @click="submitForm"
+                                @click.prevent="submitForm"
             >
               {{ form.submit_button_text }}
             </open-form-button>
@@ -191,6 +191,9 @@ export default {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
         })
+
+        window.localStorage.removeItem(this.form.form_pending_submission_Key)
+
         if (response.data.redirect && response.data.redirect_url) {
           window.location.href = response.data.redirect_url
         }

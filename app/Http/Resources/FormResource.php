@@ -58,7 +58,8 @@ class FormResource extends JsonResource
             'is_closed' => $this->is_closed,
             'is_password_protected' => false,
             'has_password' => $this->has_password,
-            'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached
+            'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached,
+            'form_pending_submission_key' => $this->form_pending_submission_key
         ]);
     }
 

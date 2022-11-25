@@ -15,15 +15,17 @@
           <workspace-dropdown class="ml-6"/>
         </div>
         <div class="hidden md:block ml-auto relative">
-          <router-link :to="{name:'integrations'}"
+          <router-link :to="{name:'templates'}"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Integrations
+            Templates
           </router-link>
-          <a href="#" class="hidden lg:inline text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Feature Requests
-          </a>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])"
+             @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])" v-if="hasCrisp"
+          >
+            Help
+          </a>
+          <a href="https://help.opnform.com/en/" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+             target="_blank" v-else
           >
             Help
           </a>
@@ -97,7 +99,7 @@
                     {{ $t('login') }}
                   </router-link>
 
-                  <v-button size="small" :to="{ name: 'register' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
+                  <v-button size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
                     Create a form
                   </v-button>
 
@@ -178,6 +180,9 @@ export default {
     }),
     userOnboarded() {
       return this.user && this.user.workspaces_count > 0
+    },
+    hasCrisp() {
+      return window.config.crisp_website_id
     }
   },
 

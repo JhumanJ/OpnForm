@@ -31,7 +31,7 @@ export default {
   },
 
   props: {
-    dropdownClass: { type: String, default: 'origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50' }
+    dropdownClass: { type: String, default: 'origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20' }
   },
   data () {
     return {

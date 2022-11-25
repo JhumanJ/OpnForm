@@ -217,7 +217,15 @@ export default {
       handler () {
         this.formVersionId++
       }
-    }
+    },
+    dataForm: {
+      deep: true,
+      handler () {
+        if(this.isPublicFormPage && this.form && this.dataFormValue){
+          window.localStorage.setItem(this.form.form_pending_submission_Key, JSON.stringify(this.dataFormValue))
+        }
+      }
+    },
   },
 
   mounted () {
@@ -266,6 +274,14 @@ export default {
       }
     },
     initForm () {
+      if (this.isPublicFormPage) {
+        const pendingData = window.localStorage.getItem(this.form.form_pending_submission_Key)
+        if(pendingData !== null && pendingData){
+          this.dataForm = new Form(JSON.parse(pendingData))
+          return
+        }
+      }
+      
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
       if (this.isPublicFormPage && this.form.is_pro) {

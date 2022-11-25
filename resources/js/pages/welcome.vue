@@ -16,7 +16,7 @@
             >it's free</span>.
             </h3>
             <div class="mt-6 flex justify-center">
-              <v-button class="mr-1" :to="{ name: 'register' }" :arrow="true">
+              <v-button class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
                 Create a form for FREE
               </v-button>
             </div>
@@ -61,19 +61,19 @@
 
       <more-features />
 
-      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">
-        <h3 class="font-semibold text-3xl">See what people are saying</h3>
-        <p class="w-full mt-2 mb-8">
-          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.
-        </p>
-        <testimonials/>
-      </div>
+<!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
+<!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
+<!--        <p class="w-full mt-2 mb-8">-->
+<!--          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.-->
+<!--        </p>-->
+<!--        <testimonials/>-->
+<!--      </div>-->
 
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
         <h4 class="font-semibold text-3xl text-white">Take your forms to the next level</h4>
         <p class="text-gray-300 my-8">No trial. Generous, unlimited free plan.</p>
         <div class="mt-6 flex justify-center">
-          <v-button :to="{ name: 'register' }" v-track.welcome_create_form_click :arrow="true" color="blue">
+          <v-button :to="{ name: 'forms.create.guest' }" v-track.welcome_create_form_click :arrow="true" color="blue">
             Create a form for FREE
           </v-button>
         </div>

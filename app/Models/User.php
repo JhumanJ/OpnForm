@@ -99,6 +99,11 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         return in_array($this->email, config('services.admin_emails'));
     }
 
+    public function getTemplateEditorAttribute()
+    {
+        return $this->admin || in_array($this->email, config('services.template_editor_emails'));
+    }
+
     /**
      * =================================
      *  Helper Related

@@ -7,17 +7,17 @@
     </div>
     <modal :show="showPremiumModal" @close="showPremiumModal=false">
       <h2 class="text-nt-blue">
-        OpenForm PRO
+        OpnForm PRO
       </h2>
       <h4 v-if="user.is_subscribed && !user.has_enterprise_subscription" class="text-center mt-5">
-        We're happy to have you as a Pro customer. If you're having any issue with OpenForm, or if you have a
+        We're happy to have you as a Pro customer. If you're having any issue with OpnForm, or if you have a
         feature request, please <a href="mailto:contact@opnform.com">contact us</a>.
         <br><br>
         If you need to collaborate, or to work with multiple workspaces, or just larger file uploads, you can
         also upgrade our subscription to get an Enterprise subscription.
       </h4>
       <h4 v-if="user.is_subscribed && user.has_enterprise_subscription" class="text-center mt-5">
-        We're happy to have you as an Enterprise customer. If you're having any issue with OpenForm, or if you have a
+        We're happy to have you as an Enterprise customer. If you're having any issue with OpnForm, or if you have a
         feature request, please <a href="mailto:contact@opnform.com">contact us</a>.
       </h4>
       <p v-if="!user.is_subscribed" class="mt-4">
@@ -25,7 +25,7 @@
           class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold mx-1"
         >
           PRO
-        </span> tag are available in the Pro plan of OpenForm. <b>You can play around and try all Pro features
+        </span> tag are available in the Pro plan of OpnForm. <b>You can play around and try all Pro features
           within
           the form editor, but you can't use them in your real forms</b>. You can subscribe now to gain unlimited access
         to
