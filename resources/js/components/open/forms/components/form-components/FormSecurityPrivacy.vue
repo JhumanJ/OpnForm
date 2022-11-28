@@ -9,11 +9,11 @@
         </svg> Security & Privacy
       </h3>
     </template>
-    <checkbox-input name="can_be_indexed" :form="form" class="mt-4"
+    <toggle-switch-input name="can_be_indexed" :form="form" class="mt-4"
                     label="Indexable by Google"
                     help="If enabled, your form can appear in the search results of Google"
     />
-    <checkbox-input name="use_captcha" :form="form" class="mt-4"
+    <toggle-switch-input name="use_captcha" :form="form" class="mt-4"
                     label="Protect your form with a Captcha"
                     help="If enabled we will make sure respondant is a human"
     />

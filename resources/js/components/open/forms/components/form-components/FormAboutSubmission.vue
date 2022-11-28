@@ -103,7 +103,7 @@
     </template>
     <template v-else>
       <pro-tag class="float-right"/>
-      <checkbox-input name="re_fillable" :form="form" class="mt-4"
+      <toggle-switch-input name="re_fillable" :form="form" class="mt-4"
                       label="Allow users to fill the form again"
       />
       <text-input v-if="form.re_fillable" name="re_fill_button_text"
