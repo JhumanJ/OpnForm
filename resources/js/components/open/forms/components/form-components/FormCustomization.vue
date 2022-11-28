@@ -59,16 +59,16 @@
                  :form="form"
                  label="Color (for buttons & inputs border)"
     />
-    <checkbox-input name="hide_title" :form="form" class="mt-4"
+    <toggle-switch-input name="hide_title" :form="form" class="mt-4"
                     label="Hide Title"
     />
-    <checkbox-input name="no_branding" :form="form" class="mt-4"
+    <toggle-switch-input name="no_branding" :form="form" class="mt-4"
                     label="Remove OpnForm Branding"
     />
-    <checkbox-input name="uppercase_labels" :form="form" class="mt-4"
+    <toggle-switch-input name="uppercase_labels" :form="form" class="mt-4"
                     label="Uppercase Input Labels"
     />
-    <checkbox-input name="transparent_background" :form="form" class="mt-4"
+    <toggle-switch-input name="transparent_background" :form="form" class="mt-4"
                     label="Transparent Background" help="Only applies when form is embedded"
     />
   </collapse>
