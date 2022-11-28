@@ -222,7 +222,9 @@ export default {
       deep: true,
       handler () {
         if(this.isPublicFormPage && this.form && this.dataFormValue){
-          window.localStorage.setItem(this.form.form_pending_submission_Key, JSON.stringify(this.dataFormValue))
+          try {
+            window.localStorage.setItem(this.form.form_pending_submission_key, JSON.stringify(this.dataFormValue))
+          } catch (e) {}
         }
       }
     },
@@ -275,7 +277,12 @@ export default {
     },
     initForm () {
       if (this.isPublicFormPage) {
-        const pendingData = window.localStorage.getItem(this.form.form_pending_submission_Key)
+        let pendingData
+        try {
+          pendingData = window.localStorage.getItem(this.form.form_pending_submission_key)
+        } catch (e) {
+          pendingData = null
+        }
         if(pendingData !== null && pendingData){
           this.dataForm = new Form(JSON.parse(pendingData))
           return
