@@ -192,7 +192,9 @@ export default {
           form_id: this.form.id
         })
 
-        window.localStorage.removeItem(this.form.form_pending_submission_Key)
+        try {
+          window.localStorage.removeItem(this.form.form_pending_submission_key)
+        } catch (e) {}
 
         if (response.data.redirect && response.data.redirect_url) {
           window.location.href = response.data.redirect_url
