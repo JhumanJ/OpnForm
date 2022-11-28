@@ -157,6 +157,7 @@ export default {
         el.select()
         document.execCommand('copy')
         document.body.removeChild(el)
+        this.alertSuccess('Copied!')
       },
       duplicateForm() {
         if (this.loadingDuplicate) return
