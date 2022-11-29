@@ -62,7 +62,7 @@ class SeoMetaResolver
         ],
         'templates' => [
             'title' => 'Templates',
-            'description' => 'Public templates for create form quickly!'
+            'description' => 'Free templates to quickly create beautiful forms for free!'
         ],
     ];
 
@@ -81,7 +81,7 @@ class SeoMetaResolver
      */
     public function getMetas(): array
     {
-        $cacheKey = self::META_CACHE_KEY_PREFIX.urlencode($this->request->path());
+        $cacheKey = self::META_CACHE_KEY_PREFIX . urlencode($this->request->path());
 
         return Cache::remember($cacheKey, now()->addSeconds(self::META_CACHE_DURATION), function () {
             $pattern = $this->resolvePattern();
@@ -89,7 +89,7 @@ class SeoMetaResolver
             if ($this->hasPatternMetaGetter($pattern)) {
                 // Custom function for pattern
                 try {
-                    return array_merge($this->getDefaultMeta(), $this->{'get'.Str::studly($pattern).'Meta'}());
+                    return array_merge($this->getDefaultMeta(), $this->{'get' . Str::studly($pattern) . 'Meta'}());
                 } catch (\Exception $e) {
                     return $this->getDefaultMeta();
                 }
@@ -134,23 +134,23 @@ class SeoMetaResolver
     /**
      * Determine if a get mutator exists for a pattern.
      *
-     * @param  string  $key
+     * @param string $key
      * @return bool
      */
     private function hasPatternMetaGetter($key)
     {
-        return method_exists($this, 'get'.Str::studly($key).'Meta');
+        return method_exists($this, 'get' . Str::studly($key) . 'Meta');
     }
 
     private function titleSuffix()
     {
-        return ' · '.config('app.name');
+        return ' · ' . config('app.name');
     }
 
     private function getDefaultMeta(): array
     {
         return [
-            'title' => 'Create beautiful & open-source forms for free'.$this->titleSuffix(),
+            'title' => 'Create beautiful forms for free' . $this->titleSuffix(),
             'description' => "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
             'image' => asset('/img/social-preview.jpg'),
         ];
@@ -161,7 +161,7 @@ class SeoMetaResolver
         $form = Form::whereSlug($this->patternData['slug'])->firstOrFail();
 
         return [
-            'title' => $form->title.$this->titleSuffix(),
+            'title' => $form->title . $this->titleSuffix(),
         ];
     }
 
@@ -170,8 +170,8 @@ class SeoMetaResolver
         $template = Template::whereSlug($this->patternData['slug'])->firstOrFail();
 
         return [
-            'title' => $template->name.$this->titleSuffix(),
-            'description' => $template->description,
+            'title' => $template->name . $this->titleSuffix(),
+            'description' => Str::of($template->description)->limit(160) ,
             'image' => $template->image_url
         ];
     }
