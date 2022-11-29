@@ -70,5 +70,8 @@ module.exports = {
         spacing: 'margin, padding'
       }
     }
-  }
+  },
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+  ]
 }
