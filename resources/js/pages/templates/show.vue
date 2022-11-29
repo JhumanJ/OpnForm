@@ -70,11 +70,6 @@ export default {
     next()
   },
 
-  props: {
-    metaTitle: {type: String, default: 'Templates'},
-    metaDescription: {type: String, default: 'Public templates for create form quickly!'}
-  },
-
   data() {
     return {}
   },
@@ -99,7 +94,10 @@ export default {
     },
     form() {
       return new Form(this.template.structure)
-    }
+    },
+    metaTitle () {
+      return this.template ? this.template.name : 'Template'
+    },
   }
 }
 </script>

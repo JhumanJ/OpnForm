@@ -94,10 +94,10 @@ export default {
         { vmid: 'description', name: 'description', content: description },
         { vmid: 'og:title', property: 'og:title', content: appName },
         { vmid: 'og:description', property: 'og:description', content: description },
-        { vmid: 'og:image', property: 'og:image', content: '/img/social-preview.png' },
+        { vmid: 'og:image', property: 'og:image', content: this.asset('img/social-preview.jpg') },
         { vmid: 'twitter:title', property: 'twitter:title', content: appName },
         { vmid: 'twitter:description', property: 'twitter:description', content: description },
-        { vmid: 'twitter:image', property: 'twitter:image', content: '/img/social-preview.png' },
+        { vmid: 'twitter:image', property: 'twitter:image', content: this.asset('img/social-preview.jpg') },
         { vmid: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' }
       ]
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\SeoMetaResolver;
+use Illuminate\Http\Request;
 class SpaController extends Controller
 {
     /**
@@ -9,8 +11,10 @@ class SpaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-         return view('spa');
+        return view('spa',[
+            'meta' => (new SeoMetaResolver($request))->getMetas(),
+        ]);
     }
 }
