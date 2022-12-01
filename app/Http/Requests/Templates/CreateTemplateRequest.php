@@ -7,6 +7,44 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateTemplateRequest extends FormRequest
 {
+    const IGNORED_KEYS = [
+        'id',
+        'creator',
+        'cleanings',
+        'closes_at',
+        'created_at',
+        'deleted_at',
+        'updated_at',
+        'form_pending_submission_key',
+        'is_closed',
+        'is_pro',
+        'is_password_protected',
+        'last_edited_human',
+        'max_number_of_submissions_reached',
+        'notifies',
+        'notification_body',
+        'notification_emails',
+        'notification_sender',
+        'notification_subject',
+        'notifications_include_submission',
+        'notifies_slack',
+        'slack_webhook_url',
+        'removed_properties',
+        'creator',
+        'creator_id',
+        'created_at',
+        'updated_at',
+        'extra',
+        'workspace',
+        'workspace_id',
+        'submissions',
+        'submissions_count',
+        'views',
+        'views_count',
+        'visibility',
+        'webhook_url',
+    ];
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,13 +62,12 @@ class CreateTemplateRequest extends FormRequest
         ];
     }
 
-    public function getTemplate() : Template
+    public function getTemplate(): Template
     {
         $structure = $this->form;
-        $ignoreKeys = ['id','creator','creator_id','created_at','updated_at','extra','workspace','submissions','submissions_count','views','views_count'];
-        foreach($structure as $key=>$val){
-            if(in_array($key, $ignoreKeys)){
-                $structure[$key] = null;
+        foreach ($structure as $key => $val) {
+            if (in_array($key, self::IGNORED_KEYS)) {
+                unset($structure[$key]);
             }
         }
         return new Template([
