@@ -64,6 +64,21 @@ import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
 
+const cyrb53 = (str, seed = 0) => {
+  let h1 = 0xdeadbeef ^ seed,
+    h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+
 export default {
   name: 'OpenForm',
   components: { OpenFormButton, VueHcaptcha },
@@ -197,6 +212,9 @@ export default {
         fieldsRequired[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isRequired()
       })
       return fieldsRequired
+    },
+    formPendingSubmissionKey () {
+      return (this.form) ? this.form.form_pending_submission_key + '-' + cyrb53(window.location.href) : ''
     }
   },
 
@@ -223,7 +241,7 @@ export default {
       handler () {
         if(this.isPublicFormPage && this.form && this.dataFormValue){
           try {
-            window.localStorage.setItem(this.form.form_pending_submission_key, JSON.stringify(this.dataFormValue))
+            window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
           } catch (e) {}
         }
       }
@@ -279,7 +297,7 @@ export default {
       if (this.isPublicFormPage) {
         let pendingData
         try {
-          pendingData = window.localStorage.getItem(this.form.form_pending_submission_key)
+          pendingData = window.localStorage.getItem(this.formPendingSubmissionKey)
         } catch (e) {
           pendingData = null
         }
