@@ -13,7 +13,7 @@ export function initCrisp (user) {
         window.clearInterval(intervalId)
         resolve()
       }
-    }, 500)
+    }, 50000)
   })
 }
 

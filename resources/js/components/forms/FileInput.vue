@@ -217,9 +217,10 @@ export default {
       this.$refs['actual-input'].click()
     },
     manualFileUpload (e) {
-      e.target.files.forEach(file => {
-        this.uploadFileToServer(file)
-      })
+      const files = e.target.files
+      for (let i = 0; i < files.length; i++) {
+        this.uploadFileToServer(files.item(i))
+      }
     },
     uploadFileToServer (file) {
       this.loading = true
