@@ -63,10 +63,11 @@ import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
+import SignatureInput from '../../forms/SignatureInput'
 
 export default {
   name: 'OpenForm',
-  components: { OpenFormButton, VueHcaptcha },
+  components: { OpenFormButton, VueHcaptcha, SignatureInput },
   props: {
     form: {
       type: Object,
@@ -345,6 +346,9 @@ export default {
       }
       if (field.type === 'checkbox' && field.use_toggle_switch) {
         return 'ToggleSwitchInput'
+      }
+      if (field.type === 'signature') {
+        return 'SignatureInput'
       }
       return this.fieldComponents[field.type]
     },

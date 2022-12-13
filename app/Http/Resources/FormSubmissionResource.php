@@ -41,7 +41,7 @@ class FormSubmissionResource extends JsonResource
         $data = $this->data;
         $formFields = collect($this->form->properties)->concat(collect($this->form->removed_properties));
         $fileFields = $formFields->filter(function ($field) {
-            return $field['type'] == 'files';
+            return in_array($field['type'], ['files', 'signature']);
         });
         foreach ($fileFields as $field) {
             if (isset($data[$field['id']]) && !empty($data[$field['id']])) {
