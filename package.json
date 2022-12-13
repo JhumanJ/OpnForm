@@ -16,6 +16,7 @@
     "@sentry/vue": "^6.11.0",
     "axios": "^0.21.1",
     "chart.js": "^3.7.1",
+    "cleave.js": "^1.6.0",
     "clone-deep": "^4.0.1",
     "date-fns": "^2.28.0",
     "debounce": "^1.2.1",

@@ -346,6 +346,9 @@ export default {
       if (field.type === 'checkbox' && field.use_toggle_switch) {
         return 'ToggleSwitchInput'
       }
+      if (field.type === 'date' && field.simple_date_input) {
+        return 'SimpleDateInput'
+      }
       return this.fieldComponents[field.type]
     },
     getFieldClasses (field) {
@@ -405,6 +408,9 @@ export default {
           inputProperties.disablePastDates = true
         }else if (field.disable_future_dates) {
           inputProperties.disableFutureDates = true
+        }
+        if (field.simple_date_input && field.simple_date_input_format) {
+          inputProperties.dateFormat = field.simple_date_input_format
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)

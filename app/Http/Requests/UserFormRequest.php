@@ -104,6 +104,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.prefill_today' => 'boolean|nullable',
             'properties.*.disable_past_dates' => 'boolean|nullable',
             'properties.*.disable_future_dates' => 'boolean|nullable',
+            'properties.*.simple_date_input' => 'boolean|nullable',
+            'properties.*.simple_date_input_format' => 'string|nullable',
 
             // Select / Multi Select field
             'properties.*.allow_creation' => 'boolean|nullable',
