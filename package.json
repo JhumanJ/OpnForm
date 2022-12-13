@@ -51,6 +51,7 @@
     "autoprefixer": "^10.4.12",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-node": "^11.1.0",

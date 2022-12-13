@@ -21,18 +21,21 @@
           </div>
           <div v-html="template.description"></div>
           <div class="mt-5 text-center">
-            <v-button class="mt-4 sm:mt-0" :to="{path:'/forms/create?template='+template.slug}">
+            <v-button v-if="authenticated" class="mt-4 sm:mt-0" :to="{path:'/forms/create?template='+template.slug}">
+              Use this template
+            </v-button>
+            <v-button v-else class="mt-4 sm:mt-0" :to="{path:'/forms/create/guest?template='+template.slug}">
               Use this template
             </v-button>
           </div>
 
-          <h3 class="text-center text-gray-500 mt-6 mb-2">Template Preview</h3>
+          <h3 class="text-center text-gray-500 mt-8 mb-2">Template Preview</h3>
           <open-complete-form ref="open-complete-form" :form="form" :creating="true"
                               class="mb-4 p-4 bg-gray-50 rounded-lg overflow-hidden"/>
 
           <div v-if="template.questions.length > 0" id="questions">
-            <h3 class="text-xl font-semibold mb-3">Frequently asked questions</h3>
-            <div class="mt-5 pt-2">
+            <h3 class="text-xl font-semibold mt-8">Frequently asked questions</h3>
+            <div class="pt-2">
               <div v-for="(ques,ques_key) in template.questions" :key="ques_key" class="my-3 border rounded-lg">
                 <h5 class="border-b p-2">{{ ques.question }}</h5>
                 <div class="p-2" v-html="ques.answer"></div>
@@ -70,11 +73,6 @@ export default {
     next()
   },
 
-  props: {
-    metaTitle: {type: String, default: 'Templates'},
-    metaDescription: {type: String, default: 'Public templates for create form quickly!'}
-  },
-
   data() {
     return {}
   },
@@ -85,6 +83,9 @@ export default {
   methods: {},
 
   computed: {
+    ...mapGetters({
+      authenticated: 'auth/check'
+    }),
     ...mapState({
       templatesLoading: state => state['open/templates'].loading
     }),
@@ -99,7 +100,10 @@ export default {
     },
     form() {
       return new Form(this.template.structure)
-    }
+    },
+    metaTitle () {
+      return this.template ? this.template.name : 'Template'
+    },
   }
 }
 </script>

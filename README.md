@@ -1,7 +1,7 @@
 # OpnForm
 
 <p align="center">
-<img src="https://github.com/JhumanJ/OpnForm/blob/main/public/img/social-preview.png?raw=true">
+<img src="https://github.com/JhumanJ/OpnForm/blob/main/public/img/social-preview.jpg?raw=true">
 </p>
 
 <a href="https://github.com/jhumanj/OpnForm/actions"><img src="https://github.com/jhumanj/laravel-vue-tailwind-spa/workflows/tests/badge.svg" alt="Build Status"></a>
