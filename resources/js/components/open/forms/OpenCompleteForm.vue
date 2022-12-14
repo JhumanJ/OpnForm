@@ -124,7 +124,7 @@ import OpenFormButton from './OpenFormButton'
 import { themes } from '~/config/form-themes'
 import VButton from '../../common/Button'
 import VTransition from '../../common/transitions/VTransition'
-import common from '../../../mixins/forms/common'
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm },
@@ -134,7 +134,7 @@ export default {
     creating: { type: Boolean, default: false } // If true, fake form submit
   },
 
-  mixins: [common],
+  mixins: [FormPendingSubmissionKey],
 
   data () {
     return {
@@ -196,7 +196,7 @@ export default {
         })
 
         try {
-          window.localStorage.removeItem(this.formPendingSubmissionKey(this.form))
+          window.localStorage.removeItem(this.formPendingSubmissionKey)
         } catch (e) {}
 
         if (response.data.redirect && response.data.redirect_url) {

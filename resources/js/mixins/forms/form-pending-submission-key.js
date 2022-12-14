@@ -14,9 +14,9 @@ const cyrb53 = (str, seed = 0) => {
 };
 
 export default {
-  methods: {
-    formPendingSubmissionKey (form) {
-      return (form) ? form.form_pending_submission_key + '-' + cyrb53(window.location.href) : ''
+  computed: {
+    formPendingSubmissionKey() {
+      return (this.form) ? this.form.form_pending_submission_key + '-' + cyrb53(window.location.href) : ''
     }
   }
 }

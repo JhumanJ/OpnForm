@@ -63,12 +63,12 @@ import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
-import common from '../../../mixins/forms/common'
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
 
 export default {
   name: 'OpenForm',
   components: { OpenFormButton, VueHcaptcha },
-  mixins: [common],
+  mixins: [FormPendingSubmissionKey],
   props: {
     form: {
       type: Object,
@@ -225,7 +225,7 @@ export default {
       handler () {
         if(this.isPublicFormPage && this.form && this.dataFormValue){
           try {
-            window.localStorage.setItem(this.formPendingSubmissionKey(this.form), JSON.stringify(this.dataFormValue))
+            window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
           } catch (e) {}
         }
       }
@@ -281,7 +281,7 @@ export default {
       if (this.isPublicFormPage) {
         let pendingData
         try {
-          pendingData = window.localStorage.getItem(this.formPendingSubmissionKey(this.form))
+          pendingData = window.localStorage.getItem(this.formPendingSubmissionKey)
         } catch (e) {
           pendingData = null
         }
@@ -290,7 +290,7 @@ export default {
           return
         }
       }
-      
+
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
       if (this.isPublicFormPage && this.form.is_pro) {
