@@ -188,7 +188,7 @@
         >
           Simple date input
         </v-checkbox>
-        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format" name="simple_date_input_format" 
+        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format" name="simple_date_input_format"
                       class="mt-4" :form="field" :options="dateFormatOptions"
                       label="Date format"
         />
@@ -360,12 +360,8 @@
 
 <script>
 
-import VButton from '../../../common/Button'
-import ProTag from '../../../common/ProTag'
-import TextInput from '../../../forms/TextInput'
-import TextAreaInput from '../../../forms/TextAreaInput'
 import timezones from '../../../../../data/timezones.json'
-import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor'
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
 
 export default {
   name: 'FormFieldOptionsModal',

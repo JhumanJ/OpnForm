@@ -140,7 +140,7 @@
 
 <script>
 import ProTag from '../../../common/ProTag'
-import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor'
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
 import CodeInput from '../../../forms/CodeInput'
 
 export default {

@@ -23,8 +23,6 @@ import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
 import initForm from "../../mixins/form_editor/initForm";
 
-const FormEditor = () => import('../../components/open/forms/components/FormEditor')
-
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
   store.dispatch('open/templates/loadIfEmpty').then(() => {
@@ -36,9 +34,7 @@ export default {
   name: 'CreateForm',
 
   mixins: [initForm],
-  components: {
-    FormEditor,
-  },
+  components: {},
 
   metaInfo() {
     return {title: 'Create a new Form'}

@@ -45,9 +45,9 @@
               Unlimited submissions
             </p>
           </div>
-          <div class="mt-3 p-6">
-            <testimonials />
-          </div>
+<!--          <div class="mt-3 p-6">-->
+<!--            <testimonials />-->
+<!--          </div>-->
         </div>
       </div>
     </div>

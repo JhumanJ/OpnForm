@@ -30,8 +30,6 @@ import {mapState, mapActions} from 'vuex'
 import QuickRegister from '../auth/components/QuickRegister'
 import initForm from "../../mixins/form_editor/initForm"
 
-const FormEditor = () => import('../../components/open/forms/components/FormEditor')
-
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
   store.dispatch('open/templates/loadIfEmpty').then(() => {
@@ -43,7 +41,6 @@ export default {
   name: 'CreateFormGuest',
   mixins: [initForm],
   components: {
-    FormEditor,
     QuickRegister
   },
 

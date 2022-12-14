@@ -24,7 +24,6 @@ import Breadcrumb from '../../components/common/Breadcrumb'
 import Form from 'vform'
 
 import { mapState } from 'vuex'
-const FormEditor = () => import('../../components/open/forms/components/FormEditor')
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -35,7 +34,7 @@ const loadForms = function () {
 
 export default {
   name: 'EditForm',
-  components: { Breadcrumb, FormEditor },
+  components: { Breadcrumb },
 
   beforeRouteEnter (to, from, next) {
     if (!store.getters['open/forms/getBySlug'](to.params.slug)) {
