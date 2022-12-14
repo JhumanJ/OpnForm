@@ -51,29 +51,8 @@ export default {
     featureRequestsUrl: () => window.config.links.feature_requests
   },
 
-  mounted () {
-    this.loadCannyChangelog()
-  },
+  mounted () {},
 
-  methods: {
-    loadCannyChangelog () {
-      this.$loadScript('https://canny.io/sdk.js')
-        .then(() => {
-          window.Canny('initChangelog', {
-            appID: '6267ca97f968c052891e7f8b',
-            position: 'top',
-            align: 'left'
-          })
-        })
-    }
-  }
+  methods: {}
 }
 </script>
-
-<style>
-.Canny_Badge {
-  background-color: #3B82F6 !important;
-  top: 5px !important;
-  right: 12px !important;
-}
-</style>
