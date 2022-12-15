@@ -32,7 +32,7 @@ import ToggleSwitchInput from './ToggleSwitchInput'
   ImageInput,
   RatingInput,
   FlatSelectInput,
-  ToggleSwitchInput,
+  ToggleSwitchInput
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
