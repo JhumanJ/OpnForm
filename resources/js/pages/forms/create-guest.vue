@@ -29,6 +29,7 @@ import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
 import QuickRegister from '../auth/components/QuickRegister'
 import initForm from "../../mixins/form_editor/initForm"
+import SeoMeta from '../../mixins/seo-meta'
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -39,16 +40,12 @@ const loadTemplates = function () {
 
 export default {
   name: 'CreateFormGuest',
-  mixins: [initForm],
+  mixins: [initForm, SeoMeta],
   components: {
     QuickRegister
   },
 
   middleware: 'guest',
-
-  metaInfo() {
-    return {title: 'Create a new Form as Guest'}
-  },
 
   beforeRouteEnter(to, from, next) {
     loadTemplates()
@@ -57,6 +54,7 @@ export default {
 
   data() {
     return {
+      metaTitle: 'Create a new Form as Guest',
       stateReady: false,
       loading: false,
       error: '',

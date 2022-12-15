@@ -5,31 +5,6 @@ import debounce from 'debounce'
 
 export default {
   computed: {},
-
-  metaInfo () {
-    const info = {
-      meta: this.metaTags ?? []
-    }
-    if (this.metaTitle) {
-      info.title = this.metaTitle
-      info.meta = [
-        ...info.meta,
-        { vmid: 'og:title', property: 'og:title', content: this.metaTitle },
-        { vmid: 'twitter:title', property: 'twitter:title', content: this.metaTitle }
-      ]
-    }
-    if (this.metaDescription) {
-      info.meta = [
-        ...info.meta,
-        { vmid: 'description', name: 'description', content: this.metaDescription },
-        { vmid: 'og:description', property: 'og:description', content: this.metaDescription },
-        { vmid: 'twitter:description', property: 'twitter:description', content: this.metaDescription }
-      ]
-    }
-
-    return info
-  },
-
   methods: {
     /**
      * Creates a debounced function that delays invoking a callback.

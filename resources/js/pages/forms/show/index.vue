@@ -107,6 +107,7 @@ import {mapGetters, mapState} from 'vuex'
 import ProTag from '../../../components/common/ProTag'
 import VButton from "../../../components/common/Button";
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu'
+import SeoMeta from '../../../mixins/seo-meta'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -122,6 +123,7 @@ export default {
     ProTag,
     ExtraMenu
   },
+  mixins: [SeoMeta],
 
   beforeRouteEnter(to, from, next) {
     loadForms()
@@ -136,6 +138,7 @@ export default {
 
   data() {
     return {
+      metaTitle: 'Home',
       tabsList: [
         {
           name: 'Submissions',
@@ -204,11 +207,7 @@ export default {
       this.workingForm = new Form(this.form)
     }
   },
-
-  metaInfo() {
-    return {title: this.$t('home')}
-  },
-
+ 
   methods: {
     openCrisp() {
       window.$crisp.push(['do', 'chat:show'])
