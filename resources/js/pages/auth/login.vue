@@ -59,7 +59,7 @@
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
 import Testimonials from '../../components/pages/welcome/Testimonials'
 import LoginForm from './components/LoginForm'
-import SeoMeta from '../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: {
