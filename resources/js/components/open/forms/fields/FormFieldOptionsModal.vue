@@ -46,6 +46,7 @@
         >
           Required
         </v-checkbox>
+        <change-field-type :field="field" @changeType="onChangeType" />
       </div>
 
       <!-- Checkbox -->
@@ -363,10 +364,11 @@
 import timezones from '../../../../../data/timezones.json'
 import ProTag from "../../../common/ProTag"
 const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
+import ChangeFieldType from "./components/ChangeFieldType"
 
 export default {
   name: 'FormFieldOptionsModal',
-  components: { ProTag, FormBlockLogicEditor },
+  components: { ProTag, FormBlockLogicEditor, ChangeFieldType },
   props: {
     field: {
       type: Object,
@@ -445,6 +447,9 @@ export default {
   },
 
   methods: {
+    onChangeType (newType) {
+      this.$set(this.field, 'type', newType)
+    },
     close () {
       this.$emit('close')
     },
