@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Dark Mode",
+    "slug": "dark-mode",
+    "image_url": "use-case.jpg",
+    "body": "<p>In recent years, dark mode has become increasingly popular, with many apps and websites now offering the feature. NotionForms, the form builder product, is no exception. With the dark mode feature, you can easily switch your forms and your form builder experience to a dark theme.</p><br><p>Dark mode provides a number of advantages. The most obvious is its aesthetic. Dark mode can give your form builder a sleek, modern look, while its darker background makes the text easier to read. Additionally, dark mode can be easier on the eyes when working in low light, or when you're in a bright environment for an extended period of time.</p><br><p>We offer 3 dark mode settings: light, dark and automatic, which adapts to the viewer's system preferences.</p>",
+    "links": {}
+  },
+  {
+    "title": "Notifications",
+    "slug": "notifications",
+    "image_url": "use-case.jpg",
+    "body": "<p>The email notification feature for NotionForms allows form owners to receive an email every time a form submission is made. This can be useful for keeping track of submissions and staying up-to-date with the latest responses.<br><br>To enable the email notification feature, form owners simply need to go to the settings for their form and check the box for \"Receive email notifications on submissions\" They can then enter the email address where they would like to receive notifications and save their changes.<br><br>Once the email notification feature is enabled, form owners will receive an email each time a form submission is made. The email will include the details of the submission, such as the date and time it was made and the responses to each of the form fields. This can be helpful for quickly reviewing submissions and taking action on them if necessary.</p>",
+    "links": {
+      "Helpdesk Article": "https://help.notionforms.io/en/article/can-i-receive-notifications-on-form-submissions-nmu45r/"
+    }
+  }
+]

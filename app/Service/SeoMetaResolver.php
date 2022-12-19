@@ -36,6 +36,8 @@ class SeoMetaResolver
         'integrations' => '/integrations',
         'templates' => '/templates',
         'template_show' => '/templates/{slug}',
+        'use_cases' => '/use-cases',
+        'use_cases_show' => '/use-cases/{slug}',
     ];
 
     /**
@@ -63,6 +65,10 @@ class SeoMetaResolver
         'templates' => [
             'title' => 'Templates',
             'description' => 'Free templates to quickly create beautiful forms for free!'
+        ],
+        'use_cases' => [
+            'title' => 'Use Cases',
+            'description' => 'Use cases for create form quickly!'
         ],
     ];
 
@@ -173,6 +179,18 @@ class SeoMetaResolver
             'title' => $template->name . $this->titleSuffix(),
             'description' => Str::of($template->description)->limit(160) ,
             'image' => $template->image_url
+        ];
+    }
+
+    private function getUseCasesShowMeta(): array
+    {
+        $filePath = resource_path('data/use_cases.json');
+        $useCases = json_decode(file_get_contents($filePath), true);
+        $useCase = $useCases[array_search($this->patternData['slug'], array_column($useCases, 'slug'))];
+
+        return [
+            'title' => $useCase['title'].$this->titleSuffix(),
+            'image' => asset('/img/pages/use_cases/'.$useCase['image_url']),
         ];
     }
 }

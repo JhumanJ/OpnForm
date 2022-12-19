@@ -66,5 +66,9 @@ export default [
   { path: '/templates', name: 'templates', component: page('templates/templates.vue') },
   { path: '/templates/:slug', name: 'templates.show', component: page('templates/show.vue') },
 
+  // Use Cases
+  { path: '/use-cases', name: 'use_cases', component: page('use-cases/use_cases.vue') },
+  { path: '/use-cases/:slug', name: 'use_cases.show', component: page('use-cases/show.vue') },
+
   { path: '*', component: page('errors/404.vue') }
 ]
