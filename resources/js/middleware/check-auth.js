@@ -7,7 +7,7 @@ export function initCrisp (user) {
         window.$crisp.push(['set', 'user:email', user.email])
         window.$crisp.push(['set', 'user:nickname', user.name])
         window.$crisp.push(['set', 'session:data', [[
-          ['pro-subscription', user.is_subscribed],
+          ['pro-subscription', user?.is_subscribed ?? false],
           ['id', user.id]
         ]]])
         window.clearInterval(intervalId)
