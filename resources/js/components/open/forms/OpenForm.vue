@@ -63,11 +63,10 @@ import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
-import SignatureInput from '../../forms/SignatureInput'
 
 export default {
   name: 'OpenForm',
-  components: { OpenFormButton, VueHcaptcha, SignatureInput },
+  components: { OpenFormButton, VueHcaptcha },
   props: {
     form: {
       type: Object,

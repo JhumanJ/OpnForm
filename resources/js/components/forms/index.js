@@ -40,3 +40,6 @@ import ToggleSwitchInput from './ToggleSwitchInput';
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
+
+// Lazy load some heavy component
+Vue.component('SignatureInput', () => import('./SignatureInput'))

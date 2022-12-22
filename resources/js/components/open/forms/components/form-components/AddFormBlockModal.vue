@@ -321,6 +321,8 @@ export default {
         data.previous_btn_text = 'Previous'
       } else if (data.type === 'nf-code') {
         data.content = '<div class="text-blue-500 italic">This is a code block.</div>'
+      } else if (data.type === 'signature') {
+        data.help = 'Draw your signature above'
       }
       return data
     },

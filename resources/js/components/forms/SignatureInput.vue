@@ -7,15 +7,21 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
 
-    <VueSignaturePad ref="signaturePad" 
-          class="border-2" height="150px" 
-          :name="name" 
-          :options="{ onEnd }" />
-    <button class="float-right text-nt-blue" @click="clear">Clear</button>
+    <VueSignaturePad ref="signaturePad"
+                     :class="[theme.default.input,{ 'ring-red-500 ring-2': hasValidation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }]" height="150px"
+                     :name="name"
+                     :options="{ onEnd }"
+    />
 
-    <small v-if="help" :class="theme.CodeInput.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
+    <div class="flex">
+      <small v-if="help" :class="theme.default.help" class="flex-grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
+      <small v-else class="flex-grow" />
+      <small :class="theme.default.help">
+        <a :class="theme.default.help" href="#" @click.prevent="clear">Clear</a>
+      </small>
+    </div>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>
