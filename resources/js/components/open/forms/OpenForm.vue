@@ -348,6 +348,9 @@ export default {
       if (field.type === 'checkbox' && field.use_toggle_switch) {
         return 'ToggleSwitchInput'
       }
+      if (field.type === 'signature') {
+        return 'SignatureInput'
+      }
       if (field.type === 'date' && field.simple_date_input) {
         return 'SimpleDateInput'
       }

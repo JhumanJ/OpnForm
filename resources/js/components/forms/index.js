@@ -38,6 +38,7 @@ import ToggleSwitchInput from './ToggleSwitchInput'
 })
 
 // Lazy load some heavy component
+Vue.component('SignatureInput', () => import('./SignatureInput'))
 Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput'))
 Vue.component('DateInput', () => import('./DateInput'))
 Vue.component('SimpleDateInput', () => import('./SimpleDateInput'))
