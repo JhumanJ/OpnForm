@@ -13,11 +13,10 @@
 </template>
 
 <script>
-import NotionPage from '../components/open/NotionPage'
 import OpenFormFooter from '../components/pages/OpenFormFooter'
 
 export default {
-  components: { OpenFormFooter, NotionPage },
+  components: { OpenFormFooter },
   layout: 'default',
 
   props: {

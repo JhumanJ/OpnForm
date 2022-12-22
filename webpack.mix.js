@@ -4,7 +4,7 @@ const mix = require('laravel-mix')
 require('laravel-mix-versionhash')
 const tailwindcss = require('tailwindcss')
 
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 mix
   .js('resources/js/app.js', 'public/dist/js').vue()
@@ -14,6 +14,8 @@ mix
     postCss: [tailwindcss('./tailwind.config.js')]
   })
   .disableNotifications()
+  .extract(['vue', 'vue-router', 'vuex', 'axios', 'vue-meta',
+    'vue-i18n', 'portal-vue'])
 
 if (mix.inProduction()) {
   mix
@@ -41,7 +43,7 @@ if (mix.inProduction()) {
 
 mix.webpackConfig({
   plugins: [
-    // new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin()
   ],
   resolve: {
     extensions: ['.js', '.json', '.vue'],

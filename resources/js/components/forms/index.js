@@ -10,13 +10,11 @@ import VSelect from './components/VSelect'
 import CheckboxInput from './CheckboxInput'
 import SelectInput from './SelectInput'
 import ColorInput from './ColorInput'
-import RichTextAreaInput from './RichTextAreaInput'
 import FileInput from './FileInput'
 import ImageInput from './ImageInput'
-import DateInput from './DateInput';
-import RatingInput from './RatingInput';
-import FlatSelectInput from './FlatSelectInput';
-import ToggleSwitchInput from './ToggleSwitchInput';
+import RatingInput from './RatingInput'
+import FlatSelectInput from './FlatSelectInput'
+import ToggleSwitchInput from './ToggleSwitchInput'
 
 // Components that are registered globaly.
 [
@@ -32,8 +30,6 @@ import ToggleSwitchInput from './ToggleSwitchInput';
   TextAreaInput,
   FileInput,
   ImageInput,
-  RichTextAreaInput,
-  DateInput,
   RatingInput,
   FlatSelectInput,
   ToggleSwitchInput
@@ -43,3 +39,6 @@ import ToggleSwitchInput from './ToggleSwitchInput';
 
 // Lazy load some heavy component
 Vue.component('SignatureInput', () => import('./SignatureInput'))
+Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput'))
+Vue.component('DateInput', () => import('./DateInput'))
+Vue.component('SimpleDateInput', () => import('./SimpleDateInput'))

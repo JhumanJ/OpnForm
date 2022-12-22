@@ -181,6 +181,17 @@
         >
           Disable future dates
         </v-checkbox>
+
+        <v-checkbox v-model="field.simple_date_input"
+                    name="simple_date_input" class="mb-3"
+                    @input="onFieldSimpleDateInputChange"
+        >
+          Simple date input
+        </v-checkbox>
+        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format" name="simple_date_input_format"
+                      class="mt-4" :form="field" :options="dateFormatOptions"
+                      label="Date format"
+        />
       </div>
 
       <!-- select/multiselect Options   -->
@@ -349,16 +360,13 @@
 
 <script>
 
-import VButton from '../../../common/Button'
-import ProTag from '../../../common/ProTag'
-import TextInput from '../../../forms/TextInput'
-import TextAreaInput from '../../../forms/TextAreaInput'
 import timezones from '../../../../../data/timezones.json'
-import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor'
+import ProTag from "../../../common/ProTag"
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
 
 export default {
   name: 'FormFieldOptionsModal',
-  components: { TextAreaInput, TextInput, ProTag, VButton, FormBlockLogicEditor },
+  components: { ProTag, FormBlockLogicEditor },
   props: {
     field: {
       type: Object,
@@ -412,6 +420,16 @@ export default {
       return this.field[this.field.type].options.map(option => {
         return option.name
       }).join("\n")
+    },
+    dateFormatOptions () {
+      if (this.field.type !== 'date') return []
+      let formats = ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD']
+      return formats.map((format) => {
+        return {
+          name: format,
+          value: format
+        }
+      })
     }
   },
 
@@ -420,6 +438,9 @@ export default {
   mounted () {
     if(['text','number','url','email','phone_number'].includes(this.field.type) && !this.field.max_char_limit){
       this.field.max_char_limit = 2000
+    }
+    if(this.field.type == 'date' && !this.field.simple_date_input_format){
+      this.field.simple_date_input_format = this.dateFormatOptions[0]['value']
     }
   },
 
@@ -455,6 +476,7 @@ export default {
       if (this.field.date_range) {
         this.$set(this.field, 'with_time', false)
         this.$set(this.field, 'prefill_today', false)
+        this.$set(this.field, 'simple_date_input', false)
       }
     },
     onFieldWithTimeChange (val) {
@@ -462,6 +484,7 @@ export default {
       this.$set(this.field, 'use_am_pm', false)
       if (this.field.with_time) {
         this.$set(this.field, 'date_range', false)
+        this.$set(this.field, 'simple_date_input', false)
       }
     },
     onFieldGenUIdChange (val) {
@@ -528,6 +551,13 @@ export default {
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
+      }
+    },
+    onFieldSimpleDateInputChange (val) {
+      this.$set(this.field, 'simple_date_input', val)
+      if (this.field.simple_date_input) {
+        this.$set(this.field, 'with_time', false)
+        this.$set(this.field, 'date_range', false)
       }
     }
   }

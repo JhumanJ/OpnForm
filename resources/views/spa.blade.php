@@ -48,6 +48,8 @@
 </script>
 
 {{-- Load the application scripts --}}
+<script src="{{ mix('dist/js/manifest.js') }}"></script>
+<script src="{{ mix('dist/js/vendor.js') }}"></script>
 <script src="{{ mix('dist/js/app.js') }}"></script>
 
 @if($config['google_analytics_code'])
@@ -60,7 +62,7 @@
 
   gtag('js', new Date())
 
-  gtag('config', "{{ $config['google_analytics_code'] }}")
+  gtag('config', "{{ $config['google_analytics_code'] }}" {{ \Illuminate\Support\Facades\App::isProduction() ? '' : ', { send_page_view: false, debug_mode:true  }' }})
 </script>
 @endif
 

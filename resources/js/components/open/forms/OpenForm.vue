@@ -63,10 +63,12 @@ import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
 
 export default {
   name: 'OpenForm',
   components: { OpenFormButton, VueHcaptcha },
+  mixins: [FormPendingSubmissionKey],
   props: {
     form: {
       type: Object,
@@ -223,7 +225,7 @@ export default {
       handler () {
         if(this.isPublicFormPage && this.form && this.dataFormValue){
           try {
-            window.localStorage.setItem(this.form.form_pending_submission_key, JSON.stringify(this.dataFormValue))
+            window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
           } catch (e) {}
         }
       }
@@ -279,7 +281,7 @@ export default {
       if (this.isPublicFormPage) {
         let pendingData
         try {
-          pendingData = window.localStorage.getItem(this.form.form_pending_submission_key)
+          pendingData = window.localStorage.getItem(this.formPendingSubmissionKey)
         } catch (e) {
           pendingData = null
         }
@@ -288,7 +290,7 @@ export default {
           return
         }
       }
-      
+
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
       if (this.isPublicFormPage && this.form.is_pro) {
@@ -349,6 +351,9 @@ export default {
       if (field.type === 'signature') {
         return 'SignatureInput'
       }
+      if (field.type === 'date' && field.simple_date_input) {
+        return 'SimpleDateInput'
+      }
       return this.fieldComponents[field.type]
     },
     getFieldClasses (field) {
@@ -408,6 +413,9 @@ export default {
           inputProperties.disablePastDates = true
         }else if (field.disable_future_dates) {
           inputProperties.disableFutureDates = true
+        }
+        if (field.simple_date_input && field.simple_date_input_format) {
+          inputProperties.dateFormat = field.simple_date_input_format
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
