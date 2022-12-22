@@ -37,17 +37,16 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { },
   middleware: 'admin',
   scrollToTop: false,
-
-  metaInfo () {
-    return { title: 'Admin' }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Admin',
     form: new Form({
       identifier: ''
     }),

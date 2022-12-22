@@ -24,15 +24,14 @@
 
 <script>
 import Form from 'vform'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   scrollToTop: false,
-
-  metaInfo () {
-    return { title: this.$t('settings') }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Password',
     form: new Form({
       password: '',
       password_confirmation: ''

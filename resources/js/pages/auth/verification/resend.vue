@@ -25,15 +25,14 @@
 
 <script>
 import Form from 'vform'
+import SeoMeta from '../../../mixins/seo-meta'
 
 export default {
   middleware: 'guest',
-
-  metaInfo () {
-    return { title: this.$t('verify_email') }
-  },
-
+  mixins: [SeoMeta],
+  
   data: () => ({
+    metaTitle: 'Verify Email',
     status: '',
     form: new Form({
       email: ''

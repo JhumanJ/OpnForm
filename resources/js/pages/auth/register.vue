@@ -59,6 +59,7 @@
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
 import Testimonials from '../../components/pages/welcome/Testimonials'
 import RegisterForm from './components/RegisterForm'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: {
@@ -69,12 +70,10 @@ export default {
 
   middleware: 'guest',
 
-  metaInfo () {
-    return { title: this.$t('register') }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
-
+    metaTitle: 'Register',
   }),
 
   computed: {

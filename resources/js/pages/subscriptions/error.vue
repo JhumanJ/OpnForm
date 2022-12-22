@@ -2,17 +2,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { },
   layout: 'default',
   middleware: 'auth',
+  mixins: [SeoMeta],
 
-  metaInfo () {
-    return { title: 'Error' }
-  },
-
-  data: () => ({}),
+  data: () => ({
+    metaTitle: 'Error',
+  }),
 
   mounted () {
     this.$router.push({ name: 'pricing' })
