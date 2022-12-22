@@ -24,19 +24,20 @@
         },
         {
           title: 'Share',
-          description: 'Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.\n',
+          description: 'Your form has a unique link that you can share everywhere. Send the link, or even embed the form on your website.',
           features: [
-            'Build a simple form in minutes.',
-            'No coding needed.'
+            'Share the link to your form',
+            'Embed the form on your website'
           ],
           img: 'img/pages/welcome/step-2.jpg'
         },
         {
           title: 'Get Results',
-          description: 'Create a form in 2 minutes. More than 10 input types, images, logic and much more.',
+          description: 'Receive your form submissions. Receive notifications, send confirmations. Export submissions and check your form analytics.',
           features: [
-            'Build a simple form in minutes.',
-            'No coding needed.'
+            'Unlimited form submissions for free',
+            'Easily export submissions as CSV',
+            'Views & Submissions Analytics'
           ],
           img: 'img/pages/welcome/step-3.jpg'
         }
