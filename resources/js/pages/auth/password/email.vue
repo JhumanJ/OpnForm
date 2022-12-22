@@ -25,17 +25,18 @@
 <script>
 import Form from 'vform'
 import OpenFormFooter from '../../../components/pages/OpenFormFooter'
+import SeoMeta from '../../../mixins/seo-meta'
 
 export default {
   middleware: 'guest',
   components: {
     OpenFormFooter
   },
-  metaInfo () {
-    return { title: this.$t('reset_password') }
-  },
+
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Reset Password',
     status: '',
     form: new Form({
       email: ''

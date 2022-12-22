@@ -18,15 +18,14 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   scrollToTop: false,
-
-  metaInfo () {
-    return { title: 'Account' }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Account',
     form: new Form({
       identifier: ''
     }),

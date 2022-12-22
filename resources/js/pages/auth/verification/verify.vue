@@ -28,6 +28,7 @@
 
 <script>
 import axios from 'axios'
+import SeoMeta from '../../../mixins/seo-meta'
 
 const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 
@@ -47,12 +48,10 @@ export default {
   },
 
   middleware: 'guest',
-
-  metaInfo () {
-    return { title: this.$t('verify_email') }
-  },
-
+  mixins: [SeoMeta],
+  
   data: () => ({
+    metaTitle: 'Verify Email',
     error: '',
     success: ''
   })

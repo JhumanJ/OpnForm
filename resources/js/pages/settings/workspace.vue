@@ -75,17 +75,15 @@
 <script>
 import Form from 'vform'
 import {mapActions, mapState} from 'vuex'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
-
   components: {},
   scrollToTop: false,
-
-  metaInfo() {
-    return {title: 'Workspaces'}
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Workspaces',
     form: new Form({
       name: '',
       emoji: ''

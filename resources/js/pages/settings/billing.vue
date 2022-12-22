@@ -17,16 +17,15 @@
 <script>
 import axios from 'axios'
 import VButton from '../../components/common/Button'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { VButton },
   scrollToTop: false,
-
-  metaInfo () {
-    return { title: 'Billing' }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Billing',
     billingLoading: false
   }),
 

@@ -108,18 +108,18 @@ import Features from '~/components/pages/welcome/Features'
 import MoreFeatures from '~/components/pages/welcome/MoreFeatures'
 import OpenFormFooter from '../components/pages/OpenFormFooter'
 import Testimonials from '../components/pages/welcome/Testimonials'
+import SeoMeta from '../mixins/seo-meta'
 
 export default {
   components: {Testimonials, OpenFormFooter, Features, MoreFeatures},
 
   layout: 'default',
 
-  metaInfo() {
-    return {title: 'Create beautiful & open-source forms for free'}
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
-    title: window.config.appName
+    title: window.config.appName,
+    metaTitle: 'Create beautiful & open-source forms for free',
   }),
 
   mounted() {

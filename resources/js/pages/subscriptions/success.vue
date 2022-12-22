@@ -18,17 +18,16 @@
 <script>
 import { mapGetters } from 'vuex'
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { OpenFormFooter },
   layout: 'default',
   middleware: 'auth',
-
-  metaInfo () {
-    return { title: 'Subscription Success' }
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
+    metaTitle: 'Subscription Success',
     interval: null
   }),
 

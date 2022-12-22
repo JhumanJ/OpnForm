@@ -14,16 +14,15 @@
 
 <script>
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { OpenFormFooter},
   layout: 'default',
-
-  metaInfo () {
-    return { title: 'Privacy Policy' }
-  },
-
+  mixins: [SeoMeta],
+  
   data: () => ({
+    metaTitle: 'Privacy Policy',
   }),
 
   computed: {},

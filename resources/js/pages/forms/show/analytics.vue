@@ -9,23 +9,25 @@
 
 <script>
 import FormStats from '../../../components/open/forms/components/FormStats'
+import SeoMeta from '../../../mixins/seo-meta'
 
 export default {
   components: {FormStats},
   props: {
     form: { type: Object, required: true }
   },
-
-  metaInfo() {
-    return {title: (this.form) ? 'Form Analytics - '+this.form.title : 'Form Analytics'}
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
   }),
 
   mounted() {},
 
-  computed: {},
+  computed: {
+    metaTitle() {
+      return (this.form) ? 'Form Analytics - '+this.form.title : 'Form Analytics'
+    },
+  },
 
   methods: {
     

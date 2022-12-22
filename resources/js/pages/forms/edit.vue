@@ -20,10 +20,9 @@
 import axios from 'axios'
 import store from '~/store'
 import Breadcrumb from '../../components/common/Breadcrumb'
-
 import Form from 'vform'
-
 import { mapState } from 'vuex'
+import SeoMeta from '../../mixins/seo-meta'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -43,6 +42,7 @@ export default {
     next()
   },
   middleware: 'auth',
+  mixins: [SeoMeta],
 
   data () {
     return {
@@ -70,7 +70,10 @@ export default {
     },
     pageLoaded () {
       return !this.loading && this.updatedForm !== null
-    }
+    },
+    metaTitle () {
+      return 'Edit ' + (this.form ? this.form.title : 'Your Form')
+    },
   },
 
   watch: {
@@ -94,11 +97,7 @@ export default {
       this.updatedForm = new Form(this.form)
     }
   },
-
-  metaInfo () {
-    return { title: 'Edit ' + (this.form ? this.form.title : 'Your Form') }
-  },
-
+  
   methods: {
     /**
      * Compute max height of editor

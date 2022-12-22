@@ -14,16 +14,15 @@
 
 <script>
 import OpenFormFooter from '../../components/pages/OpenFormFooter'
+import SeoMeta from '../../mixins/seo-meta'
 
 export default {
   components: { OpenFormFooter },
   layout: 'default',
-
-  metaInfo () {
-    return { title: 'Terms & Conditions' }
-  },
-
+  mixins: [SeoMeta],
+  
   data: () => ({
+    metaTitle: 'Terms & Conditions',
   }),
 
   computed: {},

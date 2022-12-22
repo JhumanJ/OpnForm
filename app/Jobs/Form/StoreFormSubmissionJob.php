@@ -89,6 +89,11 @@ class StoreFormSubmissionJob implements ShouldQueue
                     }
                 }
             }
+
+            // For Singrature
+            if($this->form->is_pro && $field['type'] == 'signature') {
+                $finalData[$field['id']] = $this->storeSignature($answerValue);
+            }
         }
 
         return $finalData;
@@ -128,6 +133,21 @@ class StoreFormSubmissionJob implements ShouldQueue
         Storage::disk('s3')->move($fileName, $completeNewFilename);
 
         return $fileNameParser->getMovedFileName();
+    }
+
+    private function storeSignature(?string $value)
+    {
+        if ($value == null || !isset(explode(',', $value)[1])) {
+            return null;
+        }
+
+        $fileName = 'sign_'.(string) Str::uuid().'.png';
+        $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
+        $completeNewFilename = $newPath.'/'.$fileName;
+
+        Storage::disk('s3')->put($completeNewFilename, base64_decode(explode(',', $value)[1]));
+        
+        return $fileName;
     }
 
     /**

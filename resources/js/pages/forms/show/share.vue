@@ -17,6 +17,7 @@ import ShareLink from '../../../components/pages/forms/show/ShareLink'
 import EmbedCode from '../../../components/pages/forms/show/EmbedCode'
 import UrlFormPrefill from '../../../components/pages/forms/show/UrlFormPrefill'
 import RegenerateFormLink from '../../../components/pages/forms/show/RegenerateFormLink'
+import SeoMeta from '../../../mixins/seo-meta'
 
 export default {
   components: {
@@ -28,17 +29,18 @@ export default {
   props: {
     form: { type: Object, required: true }
   },
-
-  metaInfo() {
-    return {title: (this.form) ? 'Form Share - '+this.form.title : 'Form Share'}
-  },
+  mixins: [SeoMeta],
 
   data: () => ({
   }),
 
   mounted() {},
 
-  computed: {},
+  computed: {
+    metaTitle() {
+      return (this.form) ? 'Form Share - '+this.form.title : 'Form Share'
+    },
+  },
 
   methods: {
     

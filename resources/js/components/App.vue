@@ -45,6 +45,7 @@ import Amplitude from './service/Amplitude'
 import Crisp from './service/Crisp'
 import StopImpersonation from './pages/StopImpersonation'
 import Notifications from "./common/Notifications"
+import SeoMeta from '../mixins/seo-meta'
 
 // Load layout components dynamically.
 const requireContext = require.context('~/layouts', false, /.*\.vue$/)
@@ -70,7 +71,11 @@ export default {
     Loading
   },
 
+  mixins: [SeoMeta],
+
   data: () => ({
+    metaTitle: 'OpnForm',
+    metaDescription: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
     layout: null,
     defaultLayout: 'default',
     announcement: false,
@@ -82,27 +87,7 @@ export default {
       confirmationCancel: null
     }
   }),
-
-  metaInfo () {
-    const { appName } = window.config
-    const description = "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form."
-
-    return {
-      title: appName,
-      titleTemplate: `%s · ${appName}`,
-      meta: [
-        { vmid: 'description', name: 'description', content: description },
-        { vmid: 'og:title', property: 'og:title', content: appName },
-        { vmid: 'og:description', property: 'og:description', content: description },
-        { vmid: 'og:image', property: 'og:image', content: this.asset('img/social-preview.jpg') },
-        { vmid: 'twitter:title', property: 'twitter:title', content: appName },
-        { vmid: 'twitter:description', property: 'twitter:description', content: description },
-        { vmid: 'twitter:image', property: 'twitter:image', content: this.asset('img/social-preview.jpg') },
-        { vmid: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' }
-      ]
-    }
-  },
-
+  
   mounted () {
     this.$loading = this.$refs.loading
   },

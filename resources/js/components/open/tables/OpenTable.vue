@@ -143,6 +143,7 @@ export default {
         url: OpenUrl,
         email: OpenText,
         phone_number: OpenText,
+        signature: OpenFile,
       }
     },
   },
