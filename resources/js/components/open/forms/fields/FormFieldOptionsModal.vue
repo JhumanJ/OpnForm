@@ -5,24 +5,31 @@
         <h2 class="text-2xl font-semibold z-10 truncate mb-5 text-gray-900 flex-grow">
           Configure "<span class="truncate">{{ field.name }}</span>" block
         </h2>
-        <div class="flex mr-6">
+        <div class="flex flex-wrap justify-end mr-6">
           <div>
-          <v-button color="light-gray" size="small" @click="removeBlock">
-            <svg class="h-4 w-4 text-red-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <v-button color="light-gray" size="small" @click="removeBlock">
+              <svg class="h-4 w-4 text-red-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
 
-            Remove
-          </v-button>
+              Remove
+            </v-button>
           </div>
           <div class="ml-1">
-          <v-button size="small" color="light-gray" @click="duplicateBlock">
-            <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Duplicate
-          </v-button>
+            <v-button size="small" color="light-gray" @click="duplicateBlock">
+              <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Duplicate
+            </v-button>
           </div>
+          <change-field-type class="my-1" :field="field" @changeType="onChangeType"/>
         </div>
       </div>
 
@@ -46,7 +53,6 @@
         >
           Required
         </v-checkbox>
-        <change-field-type :field="field" @changeType="onChangeType" />
       </div>
 
       <!-- Checkbox -->
@@ -73,13 +79,13 @@
           File uploads
         </h3>
         <v-checkbox v-model="field.multiple" class="mt-4"
-                  :name="field.id+'_multiple'"
+                    :name="field.id+'_multiple'"
         >
           Allow multiple files
         </v-checkbox>
         <text-input name="allowed_file_types" class="mt-4" :form="field"
-                  label="Allowed file types" placeholder="jpg,jpeg,png,gif"
-                  help="Comma separated values, leave blank to allow all file types"
+                    label="Allowed file types" placeholder="jpg,jpeg,png,gif"
+                    help="Comma separated values, leave blank to allow all file types"
         />
       </div>
 
@@ -87,7 +93,7 @@
       <div v-if="field.type === 'number'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Number Options
-          <pro-tag />
+          <pro-tag/>
         </h3>
         <v-checkbox v-model="field.is_rating" class="mt-4"
                     :name="field.id+'_is_rating'" @input="initRating"
@@ -124,7 +130,7 @@
       <div v-if="field.type === 'date'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Date Options
-          <pro-tag />
+          <pro-tag/>
         </h3>
         <v-checkbox v-model="field.date_range" class="mt-4"
                     :name="field.id+'_date_range'"
@@ -189,7 +195,8 @@
         >
           Simple date input
         </v-checkbox>
-        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format" name="simple_date_input_format"
+        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format"
+                      name="simple_date_input_format"
                       class="mt-4" :form="field" :options="dateFormatOptions"
                       label="Date format"
         />
@@ -199,7 +206,7 @@
       <div v-if="['select','multi_select'].includes(field.type)" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Select Options
-          <pro-tag />
+          <pro-tag/>
         </h3>
         <p class="text-gray-400 mb-5">
           Advanced options for your select/multiselect fields.
@@ -226,7 +233,7 @@
       <div v-if="displayBasedOnAdvanced" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Customization
-          <pro-tag />
+          <pro-tag/>
         </h3>
 
         <p class="text-gray-400 mb-5">
@@ -304,13 +311,14 @@
         />
 
         <template v-if="['text','number','url','email','phone_number'].includes(field.type)">
-          <text-input v-model="field.max_char_limit" name="max_char_limit" native-type="number" :min="1" :max="2000" :form="field"
+          <text-input v-model="field.max_char_limit" name="max_char_limit" native-type="number" :min="1" :max="2000"
+                      :form="field"
                       label="Max character limit"
                       help="Maximum character limit of 2000"
                       :required="false"
           />
           <checkbox-input name="show_char_limit" :form="field" class="mt-4"
-                      label="Always show character limit"
+                          label="Always show character limit"
           />
         </template>
 
@@ -320,7 +328,7 @@
       <div v-if="field.type === 'text'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Advanced Options
-          <pro-tag />
+          <pro-tag/>
         </h3>
 
         <v-checkbox v-model="field.generates_uuid"
@@ -345,7 +353,7 @@
       </div>
 
       <!--  Logic Block -->
-      <form-block-logic-editor v-model="form" :form="form" :field="field" />
+      <form-block-logic-editor v-model="form" :form="form" :field="field"/>
 
       <div class="pt-5 flex justify-end">
         <v-button color="white" @click="close">
@@ -363,12 +371,13 @@
 
 import timezones from '../../../../../data/timezones.json'
 import ProTag from "../../../common/ProTag"
+
 const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
 import ChangeFieldType from "./components/ChangeFieldType"
 
 export default {
   name: 'FormFieldOptionsModal',
-  components: { ProTag, FormBlockLogicEditor, ChangeFieldType },
+  components: {ProTag, FormBlockLogicEditor, ChangeFieldType},
   props: {
     field: {
       type: Object,
@@ -383,17 +392,17 @@ export default {
       required: false
     }
   },
-  data () {
+  data() {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files']
     }
   },
 
   computed: {
-    hasPlaceholder () {
+    hasPlaceholder() {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
-    prefillSelectsOptions () {
+    prefillSelectsOptions() {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
 
       return this.field[this.field.type].options.map(option => {
@@ -403,7 +412,7 @@ export default {
         }
       })
     },
-    timezonesOptions () {
+    timezonesOptions() {
       if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
         return {
@@ -412,18 +421,18 @@ export default {
         }
       })
     },
-    displayBasedOnAdvanced () {
+    displayBasedOnAdvanced() {
       if (this.field.generates_uuid || this.field.generates_auto_increment_id) {
         return false
       }
       return true
     },
-    optionsText(){
+    optionsText() {
       return this.field[this.field.type].options.map(option => {
         return option.name
       }).join("\n")
     },
-    dateFormatOptions () {
+    dateFormatOptions() {
       if (this.field.type !== 'date') return []
       let formats = ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD']
       return formats.map((format) => {
@@ -437,37 +446,37 @@ export default {
 
   watch: {},
 
-  mounted () {
-    if(['text','number','url','email','phone_number'].includes(this.field.type) && !this.field.max_char_limit){
+  mounted() {
+    if (['text', 'number', 'url', 'email', 'phone_number'].includes(this.field.type) && !this.field.max_char_limit) {
       this.field.max_char_limit = 2000
     }
-    if(this.field.type == 'date' && !this.field.simple_date_input_format){
+    if (this.field.type == 'date' && !this.field.simple_date_input_format) {
       this.field.simple_date_input_format = this.dateFormatOptions[0]['value']
     }
   },
 
   methods: {
-    onChangeType (newType) {
+    onChangeType(newType) {
       this.$set(this.field, 'type', newType)
     },
-    close () {
+    close() {
       this.$emit('close')
     },
-    removeBlock () {
+    removeBlock() {
       this.close()
       this.$emit('remove-block', this.field)
     },
-    duplicateBlock(){
+    duplicateBlock() {
       this.close()
       this.$emit('duplicate-block', this.field)
     },
-    onFieldRequiredChange (val) {
+    onFieldRequiredChange(val) {
       this.$set(this.field, 'required', val)
       if (this.field.required) {
         this.$set(this.field, 'hidden', false)
       }
     },
-    onFieldHiddenChange (val) {
+    onFieldHiddenChange(val) {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
@@ -476,7 +485,7 @@ export default {
         this.$set(this.field, 'generates_auto_increment_id', false)
       }
     },
-    onFieldDateRangeChange (val) {
+    onFieldDateRangeChange(val) {
       this.$set(this.field, 'date_range', val)
       if (this.field.date_range) {
         this.$set(this.field, 'with_time', false)
@@ -484,7 +493,7 @@ export default {
         this.$set(this.field, 'simple_date_input', false)
       }
     },
-    onFieldWithTimeChange (val) {
+    onFieldWithTimeChange(val) {
       this.$set(this.field, 'with_time', val)
       this.$set(this.field, 'use_am_pm', false)
       if (this.field.with_time) {
@@ -492,26 +501,26 @@ export default {
         this.$set(this.field, 'simple_date_input', false)
       }
     },
-    onFieldGenUIdChange (val) {
+    onFieldGenUIdChange(val) {
       this.$set(this.field, 'generates_uuid', val)
       if (this.field.generates_uuid) {
         this.$set(this.field, 'generates_auto_increment_id', false)
         this.$set(this.field, 'hidden', true)
       }
     },
-    onFieldGenAutoIdChange (val) {
+    onFieldGenAutoIdChange(val) {
       this.$set(this.field, 'generates_auto_increment_id', val)
       if (this.field.generates_auto_increment_id) {
         this.$set(this.field, 'generates_uuid', false)
         this.$set(this.field, 'hidden', true)
       }
     },
-    initRating () {
+    initRating() {
       if (this.field.is_rating && !this.field.rating_max_value) {
         this.$set(this.field, 'rating_max_value', 5)
       }
     },
-    onFieldOptionsChange (val) {
+    onFieldOptionsChange(val) {
       const vals = (val) ? val.trim().split("\n") : []
       const tmpOpts = vals.map(name => {
         return {
@@ -521,7 +530,7 @@ export default {
       })
       this.$set(this.field, this.field.type, {'options': tmpOpts})
     },
-    onFieldPrefillTodayChange (val) {
+    onFieldPrefillTodayChange(val) {
       this.$set(this.field, 'prefill_today', val)
       if (this.field.prefill_today) {
         this.$set(this.field, 'prefill', 'Pre-filled with current date')
@@ -532,33 +541,33 @@ export default {
         this.$set(this.field, 'prefill', null)
       }
     },
-    onFieldAllowCreationChange (val) {
+    onFieldAllowCreationChange(val) {
       this.$set(this.field, 'allow_creation', val)
-      if(this.field.allow_creation){
+      if (this.field.allow_creation) {
         this.$set(this.field, 'without_dropdown', false)
       }
     },
-    onFieldWithoutDropdownChange (val) {
+    onFieldWithoutDropdownChange(val) {
       this.$set(this.field, 'without_dropdown', val)
-      if(this.field.without_dropdown){
+      if (this.field.without_dropdown) {
         this.$set(this.field, 'allow_creation', false)
       }
     },
-    onFieldDisablePastDatesChange (val) {
+    onFieldDisablePastDatesChange(val) {
       this.$set(this.field, 'disable_past_dates', val)
       if (this.field.disable_past_dates) {
         this.$set(this.field, 'disable_future_dates', false)
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldDisableFutureDatesChange (val) {
+    onFieldDisableFutureDatesChange(val) {
       this.$set(this.field, 'disable_future_dates', val)
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldSimpleDateInputChange (val) {
+    onFieldSimpleDateInputChange(val) {
       this.$set(this.field, 'simple_date_input', val)
       if (this.field.simple_date_input) {
         this.$set(this.field, 'with_time', false)
