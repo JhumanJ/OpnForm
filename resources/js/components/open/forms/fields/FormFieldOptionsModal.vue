@@ -361,11 +361,12 @@
 <script>
 
 import timezones from '../../../../../data/timezones.json'
+import ProTag from "../../../common/ProTag"
 const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
 
 export default {
   name: 'FormFieldOptionsModal',
-  components: { TextAreaInput, TextInput, ProTag, VButton, FormBlockLogicEditor },
+  components: { ProTag, FormBlockLogicEditor },
   props: {
     field: {
       type: Object,

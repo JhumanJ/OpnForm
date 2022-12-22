@@ -32,12 +32,13 @@ import ToggleSwitchInput from './ToggleSwitchInput'
   ImageInput,
   RatingInput,
   FlatSelectInput,
-  ToggleSwitchInput,
+  ToggleSwitchInput
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
 
 // Lazy load some heavy component
+Vue.component('SignatureInput', () => import('./SignatureInput'))
 Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput'))
 Vue.component('DateInput', () => import('./DateInput'))
 Vue.component('SimpleDateInput', () => import('./SimpleDateInput'))

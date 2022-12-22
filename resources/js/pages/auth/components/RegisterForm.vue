@@ -111,9 +111,9 @@ export default {
 
         // Track event
         this.$logEvent('register', { source: this.form.hear_about_us })
-        initCrisp(data).then(() => {
-          this.$getCrisp().push(['set', 'session:event', [[['register', {}, 'blue']]]])
-        })
+        
+        initCrisp(data)
+        this.$crisp.push(['set', 'session:event', [[['register', {}, 'blue']]]])
 
         // Redirect
         if(this.isQuick){

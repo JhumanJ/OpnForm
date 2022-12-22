@@ -4,7 +4,13 @@
 import debounce from 'debounce'
 
 export default {
-  computed: {},
+
+  computed: {
+    $crisp () {
+      return window.$crisp
+    }
+  },
+  
   methods: {
     /**
      * Creates a debounced function that delays invoking a callback.
@@ -14,49 +20,50 @@ export default {
     /**
      * Show an error message.
      */
-    alertError (message, autoClose=10000) {
+    alertError (message, autoClose = 10000) {
       this.$notify(
         {
           title: 'Error',
           text: message,
-          type: 'error',
+          type: 'error'
         }, autoClose)
     },
 
     /**
      * Show a success message.
      */
-    alertSuccess (message, autoClose=10000) {
+    alertSuccess (message, autoClose = 10000) {
       this.$notify(
         {
           title: 'Success',
           text: message,
-          type: 'success',
+          type: 'success'
         }, autoClose)
     },
 
     /**
      * Show a warning message.
      */
-    alertWarning (message, autoClose=10000) {
+    alertWarning (message, autoClose = 10000) {
       this.$notify(
         {
           title: 'Warning',
           text: message,
-          type: 'warning',
+          type: 'warning'
         }, autoClose)
     },
 
     /**
      * Show confirmation message.
      */
-    alertConfirm (message, success, failure, autoClose= 10000) {
+    alertConfirm (message, success, failure = ()=>{}, autoClose = 10000) {
       this.$notify(
         {
           title: 'Confirm',
           text: message,
           type: 'confirm',
-          success, failure
+          success,
+          failure
         }, autoClose)
     },
 

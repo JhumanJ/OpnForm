@@ -143,6 +143,19 @@
         <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">File Input</p>
       </div>
 
+      <!--  Signature Block   -->
+      <div
+        class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
+        role="button" @click.prevent="addBlock('signature')"
+      >
+        <div class="mx-auto py-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+          </svg>
+        </div>
+        <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Signature Input</p>
+      </div>
+
     </div>
 
     <p class="text-gray-500 uppercase text-xs font-semibold mb-2 mt-6">Layout Blocks</p>
@@ -250,6 +263,7 @@ export default {
         'select': 'Select',
         'multi_select': 'Multi Select',
         'files': 'Files',
+        'signature': 'Signature',
         'nf-text': 'Text Block',
         'nf-page-break': 'Page Break',
         'nf-divider': 'Divider',
@@ -307,6 +321,8 @@ export default {
         data.previous_btn_text = 'Previous'
       } else if (data.type === 'nf-code') {
         data.content = '<div class="text-blue-500 italic">This is a code block.</div>'
+      } else if (data.type === 'signature') {
+        data.help = 'Draw your signature above'
       }
       return data
     },

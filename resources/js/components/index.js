@@ -16,5 +16,6 @@ import Loader from './common/Loader'
   Vue.component(Component.name, Component)
 })
 
+// Lazy load some heavy component
 Vue.component('FormEditor', () => import('./open/forms/components/FormEditor'))
 Vue.component('NotionPage', () => import('./open/NotionPage'))

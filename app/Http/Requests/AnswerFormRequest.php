@@ -124,6 +124,7 @@ class AnswerFormRequest extends FormRequest
         switch ($property['type']) {
             case 'text':
             case 'phone_number':
+            case 'signature':
                 return ['string'];
             case 'number':
                 return ['numeric'];
