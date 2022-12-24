@@ -20,7 +20,6 @@ export default {
     loadCrisp () {
       if (this.isIframe || !window.config.crisp_website_id) return
 
-      window.$crisp = []
       window.CRISP_WEBSITE_ID = window.config.crisp_website_id
 
       const script = document.createElement('script')

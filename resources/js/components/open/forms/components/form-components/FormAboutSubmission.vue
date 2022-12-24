@@ -59,7 +59,7 @@
           <small>If the submission has the same value(s) as a previous one for the selected
             column(s), we will update it, instead of creating a new one.
             <a href="#"
-               @click.prevent="$getCrisp().push(['do', 'helpdesk:article:open', ['en', 'how-to-update-a-page-on-form-submission-1t1jwmn']])">More
+               @click.prevent="$crisp.push(['do', 'helpdesk:article:open', ['en', 'how-to-update-a-page-on-form-submission-1t1jwmn']])">More
               info here.</a>
           </small>
         </div>

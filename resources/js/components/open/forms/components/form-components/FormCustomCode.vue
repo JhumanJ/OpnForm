@@ -13,7 +13,7 @@
     </template>
     <p class="mt-4">
       The code will be injected in the <span class="font-semibold">head</span> section of your form page. <a href="#" class="text-gray-500"
-                                                                                 @click.prevent="$getCrisp().push(['do', 'helpdesk:article:open', ['en', 'how-to-inject-custom-code-in-my-form-1amadj3']])"
+                                                                                 @click.prevent="$crisp.push(['do', 'helpdesk:article:open', ['en', 'how-to-inject-custom-code-in-my-form-1amadj3']])"
       >Click
         here to get an example CSS code.</a>
     </p>

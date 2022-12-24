@@ -20,7 +20,7 @@
             Templates
           </router-link>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="$getCrisp().push(['do', 'helpdesk:search'])" v-if="hasCrisp"
+             @click.prevent="$crisp.push(['do', 'helpdesk:search'])" v-if="hasCrisp"
           >
             Help
           </a>

@@ -210,7 +210,7 @@ export default {
         this.createdFormId = response.data.form.id
 
         this.$logEvent('form_created', {form_id: response.data.form.id, form_slug: response.data.form.slug})
-        this.$getCrisp().push(['set', 'session:event', [[['form_created', {
+        this.$crisp.push(['set', 'session:event', [[['form_created', {
           form_id: response.data.form.id,
           form_slug: response.data.form.slug
         }, 'blue']]]])
