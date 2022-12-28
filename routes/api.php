@@ -140,6 +140,7 @@ Route::prefix('forms')->name('forms.')->group(function () {
 
     // Get form and submit
     Route::get('{slug}', [PublicFormController::class, 'show'])->name('show');
+    Route::get('{slug}/submissions/{submission_id}', [PublicFormController::class, 'fetchSubmission'])->name('fetchSubmission');
 
     // File uploads
     Route::get('assets/{assetFileName}', [PublicFormController::class, 'showAsset'])->name('assets.show');

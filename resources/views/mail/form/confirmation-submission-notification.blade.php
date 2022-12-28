@@ -2,6 +2,11 @@
 
 {!! $form->notification_body !!}
 
+@if($form->editable_submissions)
+@component('mail::button', ['url' => $form->share_url.'?submission_id='.$submission_id])
+Edit submission
+@endcomponent
+@endif
 
 @if($form->notifications_include_submission)
 As a reminder, here are your answers:

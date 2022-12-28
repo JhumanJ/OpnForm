@@ -7,11 +7,13 @@ use App\Http\Requests\AnswerFormRequest;
 use App\Http\Resources\FormResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
+use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Vinkla\Hashids\Facades\Hashids;
 
 class PublicFormController extends Controller
 {
@@ -77,10 +79,19 @@ class PublicFormController extends Controller
     public function answer(AnswerFormRequest $request)
     {
         $form = $request->form;
+        $submissionId = false;
 
-        StoreFormSubmissionJob::dispatch($form, $request->validated());
+        if ($form->editable_submissions) {
+            $job = new StoreFormSubmissionJob($form, $request->validated());
+            $job->handle();
+            $submissionId = Hashids::encode($job->getSubmissionId());
+        }else{
+            StoreFormSubmissionJob::dispatch($form, $request->validated());
+        }
+        
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
+            'submission_id' => $submissionId
         ], $request->form->is_pro && $request->form->redirect_url ? [
             'redirect' => true,
             'redirect_url' => $request->form->redirect_url
@@ -88,4 +99,21 @@ class PublicFormController extends Controller
             'redirect' => false
         ]));
     }
+
+    public function fetchSubmission(Request $request, string $slug, string $submissionId)
+    {
+        $submissionId = ($submissionId) ? Hashids::decode($submissionId) : false;
+        $submissionId = isset($submissionId[0]) ? $submissionId[0] : false;
+        $form = Form::whereSlug($slug)->whereVisibility('public')->firstOrFail();
+        if ($form->workspace == null || !$form->editable_submissions || !$submissionId) {
+            return $this->error([
+                'message' => 'Not allowed.',
+            ]);
+        }
+
+        $submission = FormSubmission::findOrFail($submissionId);
+
+        return $this->success(['data' => ($submission) ? $submission->data : []]);
+    }
+
 }

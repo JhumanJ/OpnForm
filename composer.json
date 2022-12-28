@@ -42,7 +42,8 @@
     "spatie/laravel-sluggable": "^3.0",
     "spatie/laravel-webhook-server": "^3.1.2",
     "stevebauman/purify": "^4.0",
-    "tymon/jwt-auth": "^1.0.2"
+    "tymon/jwt-auth": "^1.0.2",
+    "vinkla/hashids": "^10.0"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^2.12",

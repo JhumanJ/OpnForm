@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Form from 'vform'
 import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
@@ -247,6 +248,10 @@ export default {
         this.$refs.hcaptcha.reset()
       }
 
+      if(this.form.editable_submissions && this.form.submission_id) {
+        this.dataForm["submission_id"] = this.form.submission_id
+      }
+
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
@@ -277,7 +282,24 @@ export default {
         })
       }
     },
-    initForm () {
+    async getNotionPageData () {
+      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) { return null }
+      const response =  await axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id)
+      return response.data
+    },
+    async initForm () {
+      if (this.isPublicFormPage && this.form.editable_submissions) {
+        let urlParam = new URLSearchParams(window.location.search)
+        if(urlParam && urlParam.get('submission_id')){
+          this.form.submission_id = urlParam.get('submission_id')
+          const { data } = await this.getNotionPageData()
+          if (data !== null && data) {
+            this.dataForm = new Form(data)
+            return
+          }
+        }
+      }
+      
       if (this.isPublicFormPage) {
         let pendingData
         try {
