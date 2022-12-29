@@ -79,6 +79,22 @@ class StoreFormSubmissionJob implements ShouldQueue
             $submissionId = ($this->submissionData['submission_id']) ? Hashids::decode($this->submissionData['submission_id']) : false;
             return isset($submissionId[0]) ? $submissionId[0] : null;
         }
+        if (!$this->form->is_pro || !$this->form->database_fields_update) {
+            return null;
+        }
+
+        $propertyIds = $this->form->database_fields_update;
+        $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
+            return (in_array($property['id'], $propertyIds) && !in_array($property['type'], ['files','signature','multi_select']));
+        });
+        $submission = FormSubmission::where(function($q) use ($properties, $formData){
+                foreach ($properties as $property) {
+                    $q->where('data->'.$property['id'], $formData[$property['id']]);
+                }
+            })->first();
+        if($submission){
+            return $submission->id;
+        }
 
         return null;
     }
