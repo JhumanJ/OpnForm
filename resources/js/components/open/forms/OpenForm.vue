@@ -13,7 +13,7 @@
                    v-html="field.content"
               />
               <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id" class="nf-code w-full px-2 mb-3"
-                   v-html="field.content"
+                   v-sanitize="field.content"
               />
               <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" class="border-b my-4 w-full mx-2" />
               <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id" :key="field.id" class="my-4 w-full px-2">
@@ -59,11 +59,40 @@
 
 <script>
 import Form from 'vform'
+import Vue from 'vue'
 import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
+import VSanitize from 'v-sanitize'
+const defaultOptions = {
+  allowedTags: ['a', 'div', 'img','article','iframe','input','label','li','ul','ol','map','p','span','strong','table','textarea',
+  'td','th','tr','area','script'
+  ],
+  allowedAttributes: {
+    'a': [ 'href','rel','type','target','download','style','name'],
+    'div':['id','class', 'style','name'],
+    'img' : ['id','class','width','height','src','crossorigin','alt','style','name'],
+    'article':['id','class','style','name'],
+    'iframe':['id','class','style','loading','allowfullscreen','width','height','name'],
+    'input':['id','class','style','name','placeholder','readonly','required'],
+    'li':['id','class','style','name'],
+    'ul':['id','class','style','name'],
+    'ol':['id','class','style','name'],
+    'map':['id','class','style','name'],
+    'p':['id','class','style','name'],
+    'span':['id','class','style','name'],
+    'strong':['id','class','style','name'],
+    'table':['id','class','style','name'],
+    'textarea':['id','class','style','name','autofocus','cols','name','placeholder','readonly','required','rows'],
+    'td':['id','class','style','name','rowspan','colspan','headers'],
+    'th':['id','class','style','name','rowspan','colspan','headers'],
+    'tr':['id','class','style','name','align','bgcolor'],
+    'area':['id','class','style','name','shape','coords','alt','href']
+  }
+}
+Vue.use(VSanitize, defaultOptions)
 
 export default {
   name: 'OpenForm',

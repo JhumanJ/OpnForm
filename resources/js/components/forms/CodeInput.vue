@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 // import Prism Editor
 import { PrismEditor } from 'vue-prism-editor'
 import 'vue-prism-editor/dist/prismeditor.min.css' // import the styles somewhere
@@ -34,6 +35,36 @@ import 'prismjs/components/prism-markup'
 import 'prismjs/themes/prism-tomorrow.css' // import syntax highlighting styles
 import inputMixin from '~/mixins/forms/input'
 
+import VSanitize from 'v-sanitize'
+
+const defaultOptions = {
+  allowedTags: ['a', 'div', 'img','article','iframe','input','label','li','ul','ol','map','p','span','strong','table','textarea',
+  'td','th','tr','area','script'
+  ],
+  allowedAttributes: {
+    'a': [ 'href','rel','type','target','download','style','name'],
+    'div':['id','class', 'style','name'],
+    'img' : ['id','class','width','height','src','crossorigin','alt','style','name'],
+    'article':['id','class','style','name'],
+    'iframe':['id','class','style','loading','allowfullscreen','width','height','name'],
+    'input':['id','class','style','name','placeholder','readonly','required'],
+    'li':['id','class','style','name'],
+    'ul':['id','class','style','name'],
+    'ol':['id','class','style','name'],
+    'map':['id','class','style','name'],
+    'p':['id','class','style','name'],
+    'span':['id','class','style','name'],
+    'strong':['id','class','style','name'],
+    'table':['id','class','style','name'],
+    'textarea':['id','class','style','name','autofocus','cols','name','placeholder','readonly','required','rows'],
+    'td':['id','class','style','name','rowspan','colspan','headers'],
+    'th':['id','class','style','name','rowspan','colspan','headers'],
+    'tr':['id','class','style','name','align','bgcolor'],
+    'area':['id','class','style','name','shape','coords','alt','href']
+  }
+}
+Vue.use(VSanitize, defaultOptions)
+
 export default {
   name: 'CodeInput',
 
@@ -43,6 +74,7 @@ export default {
   methods: {
     onChange (event) {
       const file = event.target.files[0]
+      this.form.content = this.$sanitize(this.form.content)
       this.$set(this.form, this.name, file)
     },
     highlighter (code) {
