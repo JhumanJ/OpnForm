@@ -45,6 +45,7 @@
 {{-- Global configuration object --}}
 <script>
   window.config = @json($config);
+  window.$crisp = []
 </script>
 
 {{-- Load the application scripts --}}

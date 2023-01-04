@@ -42,7 +42,7 @@
                   @input="onActionInput"
     />
 
-    <modal :show="showCopyFormModal" @close="showCopyFormModal">
+    <modal :show="showCopyFormModal" @close="showCopyFormModal = false">
       <h3 class="font-semibold block text-lg">
         Copy logic from another field
       </h3>
