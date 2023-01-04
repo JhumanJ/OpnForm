@@ -137,8 +137,13 @@ class Form extends Model
 
     public function getViewsCountAttribute()
     {
-        return $this->views()->count() +
+        if(env('DB_CONNECTION') == 'pgsql') {
+            return $this->views()->count() +
             $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
+        } elseif(env('DB_CONNECTION') == 'mysql') {
+            return $this->views()->count() +
+            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")); // code to
+        }
     }
 
     public function setDescriptionAttribute($value)
