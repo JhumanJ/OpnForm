@@ -39,6 +39,7 @@ export default {
     if (!store.getters['open/forms/getBySlug'](to.params.slug)) {
       loadForms()
     }
+    store.commit('open/working_form/set', null) // Reset old working form
     next()
   },
   middleware: 'auth',
