@@ -23,8 +23,8 @@
                ghost-class="bg-gray-50" handle=".draggable" :animation="200"
     >
       <div v-for="(field,index) in formFields" :key="field.id"
-           class="w-full mx-auto transition-colors bg-white dark:bg-notion-dark-light"
-           :class="{'bg-gray-200 dark:bg-gray-800':field.hidden, 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':field && field.type==='nf-page-break'}"
+           class="w-full mx-auto transition-colors"
+           :class="{'bg-gray-100 dark:bg-gray-800':field.hidden,'bg-white dark:bg-notion-dark-light':!field.hidden && !field.type==='nf-page-break', 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':field && field.type==='nf-page-break'}"
       >
         <div v-if="field" class="flex items-center space-x-1 group py-2 pr-4 relative">
           <!-- Drag handler -->
