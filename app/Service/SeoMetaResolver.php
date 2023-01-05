@@ -160,9 +160,16 @@ class SeoMetaResolver
     {
         $form = Form::whereSlug($this->patternData['slug'])->firstOrFail();
 
-        return [
+        $meta = [
             'title' => $form->title . $this->titleSuffix(),
         ];
+        if($form->description){
+            $meta['description'] = Str::of($form->description)->limit(160);
+        }
+        if($form->cover_picture){
+            $meta['image'] = $form->cover_picture;
+        }
+        return $meta;
     }
 
     private function getTemplateShowMeta(): array

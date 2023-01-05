@@ -46,6 +46,7 @@ import { mapState } from 'vuex'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm'
 import Cookies from 'js-cookie'
 import sha256 from 'js-sha256'
+import SeoMeta from '../../mixins/seo-meta'
 
 const isFrame = window.location !== window.parent.location || window.frameElement
 
@@ -106,6 +107,7 @@ function loadForm (slug) {
 
 export default {
   components: { OpenCompleteForm },
+  mixins: [SeoMeta],
 
   beforeRouteEnter (to, from, next) {
     if (window.$crisp) {
@@ -171,6 +173,12 @@ export default {
     },
     metaTitle () {
       return this.form ? this.form.title : 'Create beautiful forms'
+    },
+    metaDescription () {
+      return (this.form && this.form.description) ? this.form.description.substring(0,160) : null
+    },
+    metaImage () {
+      return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
     },
     metaTags () {
       return (this.form && this.form.can_be_indexed) ? [] : [{ name: 'robots', content: 'noindex' }]
