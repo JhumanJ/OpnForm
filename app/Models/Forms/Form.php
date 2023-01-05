@@ -141,9 +141,10 @@ class Form extends Model
             return $this->views()->count() +
             $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
         } elseif(env('DB_CONNECTION') == 'mysql') {
-            return $this->views()->count() +
-            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")); // code to
+            return (int)($this->views()->count() +
+            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
         }
+        return 0;
     }
 
     public function setDescriptionAttribute($value)
