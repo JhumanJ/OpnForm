@@ -159,6 +159,25 @@ function checkNextYear (condition, fieldValue) {
   return (fieldDate >= today && fieldDate <= new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()))
 }
 
+function checkLength (condition, fieldValue, operator = '===') {
+  if(!fieldValue || fieldValue.length === 0) return false;
+  switch (operator) {
+    case '===':
+      return fieldValue.length === parseInt(condition.value)
+    case '!==':
+      return fieldValue.length !== parseInt(condition.value)
+    case '>':
+      return fieldValue.length > parseInt(condition.value)
+    case '>=':
+      return fieldValue.length >= parseInt(condition.value)
+    case '<':
+      return fieldValue.length < parseInt(condition.value)
+    case '<=':
+      return fieldValue.length <= parseInt(condition.value)
+  }
+  return false
+}
+
 function textConditionMet (propertyCondition, value) {
   switch (propertyCondition.operator) {
     case 'equals':
@@ -177,6 +196,18 @@ function textConditionMet (propertyCondition, value) {
       return checkIsEmpty(propertyCondition, value)
     case 'is_not_empty':
       return !checkIsEmpty(propertyCondition, value)
+    case 'content_length_equals':
+      return checkLength(propertyCondition, value, '===')
+    case 'content_length_does_not_equal':
+      return checkLength(propertyCondition, value, '!==')
+    case 'content_length_greater_than':
+      return checkLength(propertyCondition, value, '>')
+    case 'content_length_greater_than_or_equal_to':
+      return checkLength(propertyCondition, value, '>=')
+    case 'content_length_less_than':
+      return checkLength(propertyCondition, value, '<')
+    case 'content_length_less_than_or_equal_to':
+      return checkLength(propertyCondition, value, '<=')
   }
   return false
 }
@@ -198,7 +229,19 @@ function numberConditionMet (propertyCondition, value) {
     case 'is_empty':
       return checkIsEmpty(propertyCondition, value)
     case 'is_not_empty':
-      return !checkIsEmpty(propertyCondition, value)
+      return checkIsEmpty(propertyCondition, value)
+    case 'content_length_equals':
+      return checkLength(propertyCondition, value, '===')
+    case 'content_length_does_not_equal':
+      return checkLength(propertyCondition, value, '!==')
+    case 'content_length_greater_than':
+      return checkLength(propertyCondition, value, '>')
+    case 'content_length_greater_than_or_equal_to':
+      return checkLength(propertyCondition, value, '>=')
+    case 'content_length_less_than':
+      return checkLength(propertyCondition, value, '<')
+    case 'content_length_less_than_or_equal_to':
+      return checkLength(propertyCondition, value, '<=')
   }
   return false
 }

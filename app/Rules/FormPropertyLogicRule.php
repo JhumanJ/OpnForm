@@ -50,6 +50,24 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
+                ], 
+                'content_length_equals' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number'
                 ]
             ]
         ],
@@ -86,6 +104,24 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number'
                 ]
             ]
         ],
@@ -122,6 +158,24 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number'
                 ]
             ]
         ],
@@ -158,6 +212,24 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number'
                 ]
             ]
         ],
@@ -194,6 +266,24 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number'
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number'
                 ]
             ]
         ],
