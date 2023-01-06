@@ -1,8 +1,17 @@
 <template>
   <div>
-    <share-link class="mt-4" :form="form" />
+    <!-- Settings -->
+    <h3 class="font-semibold text-xl mt-4">Settings</h3>
+    <toggle-switch-input name="hide_title" class="mt-4"
+        label="Hide Form Title"
+        :disabled="form.hide_title===true"
+        @input="onChangeHideTitle"
+        :help="hideTitleHelp"
+    />
 
-    <embed-code class="mt-6" :form="form" />
+    <share-link class="mt-6" :form="form" :hide-title="hideTitle" />
+
+    <embed-code class="mt-6" :form="form" :hide-title="hideTitle" />
 
     <div class="mt-6 pt-6 border-t w-full flex">
       <regenerate-form-link class="sm:w-1/2 mr-4" :form="form" />
@@ -32,6 +41,7 @@ export default {
   mixins: [SeoMeta],
 
   data: () => ({
+    hideTitle: false
   }),
 
   mounted() {},
@@ -40,10 +50,15 @@ export default {
     metaTitle() {
       return (this.form) ? 'Form Share - '+this.form.title : 'Form Share'
     },
+    hideTitleHelp () {
+      return this.form.hide_title ? 'This option is disabled because the form title is already hidden' : null
+    }
   },
 
   methods: {
-    
+    onChangeHideTitle (val) {
+      this.hideTitle = val;
+    }
   }
 }
 </script>
