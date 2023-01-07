@@ -46,7 +46,10 @@
               </div>
             </div>
           </div>
-          <div class="w-full mt-8 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center">
+          <div class="
+          ease-in-out delay-300 rounded shadow-lg shadow-blue-600/50 hover:skew-z-3 hover:border-blue-600
+          transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300
+          w-full mt-8 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center">
             <img loading="lazy" class="w-full shadow-2xl rounded-xl block max-w-2xl lg:max-w-5xl"
                  :src="asset('img/pages/welcome/product-cover.jpg')" alt="cover-product">
           </div>
