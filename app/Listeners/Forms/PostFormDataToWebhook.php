@@ -55,7 +55,7 @@ class PostFormDataToWebhook implements ShouldQueue
     }
 
     private function getWebhookData(FormSubmitted $event): array {
-        $formatter = (new FormSubmissionFormatter($event->form, $event->data));
+        $formatter = (new FormSubmissionFormatter($event->form, $event->data))->showHiddenFields();
 
         $formattedData = [];
         foreach ($formatter->getFieldsWithValue() as $field) {
