@@ -12,7 +12,8 @@ export default {
   components: { },
 
   props: {
-    value: { type: Boolean, default: false }
+    value: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
   },
 
   data () {
@@ -35,6 +36,7 @@ export default {
 
   methods: {
     onClick () {
+      if(this.disabled) return
       this.$emit('input', !this.internalValue)
       this.internalValue = !this.internalValue
     }
