@@ -24,7 +24,6 @@
     "doctrine/dbal": "^3.4",
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^7.0.1",
-    "itsgoingd/clockwork": "^5.1",
     "jhumanj/laravel-model-stats": "^0.4.0",
     "laravel/cashier": "^13.4",
     "laravel/framework": "^9.0",

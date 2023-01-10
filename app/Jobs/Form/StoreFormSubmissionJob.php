@@ -22,7 +22,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $submissionId = '';
+    public ?string $submissionId = null;
 
     /**
      * Create a new job instance.
@@ -45,7 +45,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
         $this->storeSubmission($formData);
 
-        $formData["submission_id"] = isset($this->submissionData['submission_id']) ? $this->submissionData['submission_id'] : '';
+        $formData["submission_id"] = $this->submissionData['submission_id'] ?? '';
         FormSubmitted::dispatch($this->form, $formData);
     }
 
@@ -57,11 +57,10 @@ class StoreFormSubmissionJob implements ShouldQueue
     private function storeSubmission(array $formData)
     {
         // Create or update record
-        if ($submissionId = $this->submissionToUpdate($formData)) {
-            $submission = FormSubmission::findOrFail($submissionId);
-            $submission->data = $formData;
-            $submission->save();
-            $this->submissionId = $submissionId;
+        if ($previousSubmission = $this->submissionToUpdate()) {
+            $previousSubmission->data = $formData;
+            $previousSubmission->save();
+            $this->submissionId = $previousSubmission->id;
         } else {
             $response = $this->form->submissions()->create([
                 'data' => $formData,
@@ -73,11 +72,12 @@ class StoreFormSubmissionJob implements ShouldQueue
     /**
      * Search for Submission record to update and returns it
      */
-    private function submissionToUpdate(array $formData): ?string
+    private function submissionToUpdate(): ?FormSubmission
     {
         if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
-            $submissionId = ($this->submissionData['submission_id']) ? Hashids::decode($this->submissionData['submission_id']) : false;
-            return isset($submissionId[0]) ? $submissionId[0] : null;
+            $submissionId = $this->submissionData['submission_id'] ? Hashids::decode($this->submissionData['submission_id']) : false;
+            $submissionId = $submissionId[0] ?? null;
+            return $this->form->submissions()->findOrFail($submissionId);
         }
 
         return null;
@@ -183,7 +183,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         $completeNewFilename = $newPath.'/'.$fileName;
 
         Storage::disk('s3')->put($completeNewFilename, base64_decode(explode(',', $value)[1]));
-        
+
         return $fileName;
     }
 
