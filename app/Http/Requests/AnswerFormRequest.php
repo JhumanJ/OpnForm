@@ -99,6 +99,12 @@ class AnswerFormRequest extends FormRequest
         if ($this->form->is_pro && $this->form->use_captcha) {
             $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
         }
+
+        // Validate submission_id for edit mode
+        if ($this->form->editable_submissions) {
+            $this->requestRules['submission_id'] = 'string';
+        }
+
         return $this->requestRules;
     }
 

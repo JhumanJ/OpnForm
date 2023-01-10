@@ -20,7 +20,11 @@
                 :required="true"
     />
 
-    <select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
+    <toggle-switch-input name="editable_submissions" :form="form" class="mt-4"
+                label="Allow users to edit their submission"
+    />
+
+    <flat-select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
                   :options="[
                     {name:'Create new record (default)', value:'create'},
                     {name:'Update Record (if any)', value:'update'}
@@ -47,7 +51,7 @@
           </span>
         </span>
       </template>
-    </select-input>
+    </flat-select-input>
 
     <v-transition>
       <div v-if="submissionOptions.databaseAction == 'update' && filterableFields.length">

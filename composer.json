@@ -24,7 +24,6 @@
     "doctrine/dbal": "^3.4",
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^7.0.1",
-    "itsgoingd/clockwork": "^5.1",
     "jhumanj/laravel-model-stats": "^0.4.0",
     "laravel/cashier": "^13.4",
     "laravel/framework": "^9.0",
@@ -42,7 +41,8 @@
     "spatie/laravel-sluggable": "^3.0",
     "spatie/laravel-webhook-server": "^3.1.2",
     "stevebauman/purify": "^4.0",
-    "tymon/jwt-auth": "^1.0.2"
+    "tymon/jwt-auth": "^1.0.2",
+    "vinkla/hashids": "^10.0"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^2.12",

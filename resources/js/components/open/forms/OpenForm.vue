@@ -9,14 +9,17 @@
                        v-bind="inputProperties(field)" :required="isFieldRequired[field.id]"
             />
             <template v-else>
-              <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id" class="nf-text w-full px-2 mb-3"
+              <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
+                   class="nf-text w-full px-2 mb-3"
                    v-html="field.content"
               />
-              <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id" class="nf-code w-full px-2 mb-3"
+              <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"
+                   class="nf-code w-full px-2 mb-3"
                    v-html="field.content"
               />
-              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" class="border-b my-4 w-full mx-2" />
-              <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id" :key="field.id" class="my-4 w-full px-2">
+              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" class="border-b my-4 w-full mx-2"/>
+              <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
+                   :key="field.id" class="my-4 w-full px-2">
                 <div v-if="!field.image_block" class="p-4 border border-dashed">
                   Open <b>{{ field.name }}'s</b> block settings to upload image.
                 </div>
@@ -31,22 +34,22 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'" />
-        <has-error :form="dataForm" field="h-captcha-response" />
+        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'"/>
+        <has-error :form="dataForm" field="h-captcha-response"/>
       </div>
     </template>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
       <open-form-button v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading" native-type="button"
-                          :color="form.color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
+                        :color="form.color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
       >
         {{ previousFieldsPageBreak.previous_btn_text }}
       </open-form-button>
 
-      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
+      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm"/>
       <open-form-button v-else native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
-                          @click="nextPage"
+                        @click="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -58,16 +61,18 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Form from 'vform'
 import OpenFormButton from './OpenFormButton'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
+
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
 
 export default {
   name: 'OpenForm',
-  components: { OpenFormButton, VueHcaptcha },
+  components: {OpenFormButton, VueHcaptcha},
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
@@ -91,7 +96,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       dataForm: null,
       currentFieldGroupIndex: 0,
@@ -106,7 +111,7 @@ export default {
 
   computed: {
     hCaptchaSiteKey: () => window.config.hCaptchaSiteKey,
-    actualFields () {
+    actualFields() {
       return this.fields.filter((field) => {
         return this.showHidden || !this.isFieldHidden[field.id]
       })
@@ -114,7 +119,7 @@ export default {
     /**
      * Create field groups (or Page) using page breaks if any
      */
-    fieldGroups () {
+    fieldGroups() {
       if (!this.actualFields) return []
       const groups = []
       let currentGroup = []
@@ -128,18 +133,18 @@ export default {
       groups.push(currentGroup)
       return groups
     },
-    currentFields () {
+    currentFields() {
       return this.fieldGroups[this.currentFieldGroupIndex]
     },
     /**
      * Returns the page break block for the current group of fields
      */
-    currentFieldsPageBreak () {
+    currentFieldsPageBreak() {
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
     },
-    previousFieldsPageBreak () {
+    previousFieldsPageBreak() {
       if (this.currentFieldGroupIndex === 0) return null
       const previousFields = this.fieldGroups[this.currentFieldGroupIndex - 1]
       const block = previousFields[previousFields.length - 1]
@@ -150,10 +155,10 @@ export default {
      * Returns true if we're on the last page
      * @returns {boolean}
      */
-    isLastPage () {
+    isLastPage() {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
     },
-    fieldComponents () {
+    fieldComponents() {
       return {
         text: 'TextInput',
         number: 'TextInput',
@@ -167,10 +172,10 @@ export default {
         phone_number: 'TextInput',
       }
     },
-    isPublicFormPage () {
+    isPublicFormPage() {
       return this.$route.name === 'forms.show_public'
     },
-    dataFormValue () {
+    dataFormValue() {
       // For get values instead of Id for select/multi select options
       const data = this.dataForm.data()
       const selectionFields = this.fields.filter((field) => {
@@ -179,21 +184,23 @@ export default {
       selectionFields.forEach((field) => {
         if (data[field.id] !== undefined && data[field.id] !== null && Array.isArray(data[field.id])) {
           data[field.id] = data[field.id].map(option_nfid => {
-            const tmpop = field[field.type].options.find((op) => { return (op.id === option_nfid) })
+            const tmpop = field[field.type].options.find((op) => {
+              return (op.id === option_nfid)
+            })
             return (tmpop) ? tmpop.name : option_nfid
           })
         }
       })
       return data
     },
-    isFieldHidden () {
+    isFieldHidden() {
       const fieldsHidden = {}
       this.fields.forEach((field) => {
         fieldsHidden[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
       })
       return fieldsHidden
     },
-    isFieldRequired () {
+    isFieldRequired() {
       const fieldsRequired = {}
       this.fields.forEach((field) => {
         fieldsRequired[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isRequired()
@@ -205,39 +212,40 @@ export default {
   watch: {
     form: {
       deep: true,
-      handler () {
+      handler() {
         this.initForm()
       }
     },
     fields: {
       deep: true,
-      handler () {
+      handler() {
         this.initForm()
       }
     },
     theme: {
-      handler () {
+      handler() {
         this.formVersionId++
       }
     },
     dataForm: {
       deep: true,
-      handler () {
-        if(this.isPublicFormPage && this.form && this.dataFormValue){
+      handler() {
+        if (this.isPublicFormPage && this.form && this.dataFormValue) {
           try {
             window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
-          } catch (e) {}
+          } catch (e) {
+          }
         }
       }
     },
   },
 
-  mounted () {
+  mounted() {
     this.initForm()
   },
 
   methods: {
-    submitForm () {
+    submitForm() {
       if (this.currentFieldGroupIndex !== this.fieldGroups.length - 1) {
         return
       }
@@ -247,12 +255,16 @@ export default {
         this.$refs.hcaptcha.reset()
       }
 
+      if (this.form.editable_submissions && this.form.submission_id) {
+        this.dataForm["submission_id"] = this.form.submission_id
+      }
+
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
      * If more than one page, show first page with error
      */
-    onSubmissionFailure () {
+    onSubmissionFailure() {
       if (this.fieldGroups.length > 1) {
         // Find first mistake and show page
         let pageChanged = false
@@ -277,7 +289,26 @@ export default {
         })
       }
     },
-    initForm () {
+    async getSubmissionData() {
+      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
+        return null
+      }
+      const response = await axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id)
+      return response.data
+    },
+    async initForm() {
+      if (this.isPublicFormPage && this.form.editable_submissions) {
+        let urlParam = new URLSearchParams(window.location.search)
+        if (urlParam && urlParam.get('submission_id')) {
+          this.form.submission_id = urlParam.get('submission_id')
+          const {data} = await this.getSubmissionData()
+          if (data !== null && data) {
+            this.dataForm = new Form(data)
+            return
+          }
+        }
+      }
+
       if (this.isPublicFormPage) {
         let pendingData
         try {
@@ -285,7 +316,7 @@ export default {
         } catch (e) {
           pendingData = null
         }
-        if(pendingData !== null && pendingData){
+        if (pendingData !== null && pendingData) {
           this.dataForm = new Form(JSON.parse(pendingData))
           return
         }
@@ -319,8 +350,8 @@ export default {
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
           const dateObj = new Date()
           const currentDate = dateObj.getFullYear() + '-' +
-                  String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                  String(dateObj.getDate()).padStart(2, '0')
+            String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+            String(dateObj.getDate()).padStart(2, '0')
           formData[field.id] = currentDate
         } else { // Default prefill if any
           formData[field.id] = field.prefill
@@ -332,7 +363,7 @@ export default {
     /**
      * Get the right input component for the field/options combination
      */
-    getFieldComponents (field) {
+    getFieldComponents(field) {
       if (field.type === 'text' && field.multi_lines) {
         return 'TextAreaInput'
       }
@@ -356,7 +387,7 @@ export default {
       }
       return this.fieldComponents[field.type]
     },
-    getFieldClasses (field) {
+    getFieldClasses(field) {
       if (!field.width || field.width === 'full') return 'w-full px-2'
       else if (field.width === '1/2') {
         return 'w-full sm:w-1/2 px-2'
@@ -373,7 +404,7 @@ export default {
     /**
      * Get the right input component options for the field/options
      */
-    inputProperties (field) {
+    inputProperties(field) {
       const inputProperties = {
         key: field.id,
         name: field.id,
@@ -411,7 +442,7 @@ export default {
         }
         if (field.disable_past_dates) {
           inputProperties.disablePastDates = true
-        }else if (field.disable_future_dates) {
+        } else if (field.disable_future_dates) {
           inputProperties.disableFutureDates = true
         }
         if (field.simple_date_input && field.simple_date_input_format) {
@@ -427,11 +458,11 @@ export default {
 
       return inputProperties
     },
-    previousPage () {
+    previousPage() {
       this.currentFieldGroupIndex -= 1
       return false
     },
-    nextPage () {
+    nextPage() {
       this.currentFieldGroupIndex += 1
       return false
     }
