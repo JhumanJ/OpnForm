@@ -62,7 +62,7 @@ Now, we can configure Laravel. We just need to prepare some vars in our `.env` f
 
 Configure the desired database in the `DATABASE_` section. You can fine tune your installation on the [laravel documentation](https://laravel.com/docs/9.x).
 
-Finally, just run these artisan commands and you're done!
+Run these artisan commands:
 
 ```bash
 # Generate needed secrets 🙈
@@ -71,6 +71,10 @@ php artisan jwt:secret # and select yes!
 
 # Creates DB schemas
 php artisan migrate
+```
+Now, create an S3 bucket (or equivalent). Create an IAM user with access to this bucket, fill the environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`. In your AWS bucket permissions, add the following under "Cross-origin resource sharing (CORS)": 
+```json
+[ { "AllowedHeaders": [ "*" ], "AllowedMethods": [ "PUT", "POST", "GET", "DELETE" ], "AllowedOrigins": [ "*" ], "ExposeHeaders": [] } ]
 ```
 
 🎉 Done! Enjoy your personal OpnForm instance at: [http://opnform.test](http://opnform.test).
