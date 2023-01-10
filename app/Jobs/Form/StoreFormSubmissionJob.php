@@ -6,6 +6,7 @@ use App\Events\Forms\FormSubmitted;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Requests\AnswerFormRequest;
 use App\Models\Forms\Form;
+use App\Models\Forms\FormSubmission;
 use App\Service\Storage\StorageFileNameParser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -15,10 +16,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Vinkla\Hashids\Facades\Hashids;
 
 class StoreFormSubmissionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public string $submissionId = '';
 
     /**
      * Create a new job instance.
@@ -39,11 +43,60 @@ class StoreFormSubmissionJob implements ShouldQueue
         $formData = $this->getFormData();
         $this->addHiddenPrefills($formData);
 
-        $this->form->submissions()->create([
-            'data' => $formData,
-        ]);
+        $this->storeSubmission($formData);
 
+        $formData["submission_id"] = isset($this->submissionData['submission_id']) ? $this->submissionData['submission_id'] : '';
         FormSubmitted::dispatch($this->form, $formData);
+    }
+
+    public function getSubmissionId()
+    {
+        return $this->submissionId;
+    }
+
+    private function storeSubmission(array $formData)
+    {
+        // Create or update record
+        if ($submissionId = $this->submissionToUpdate($formData)) {
+            $submission = FormSubmission::findOrFail($submissionId);
+            $submission->data = $formData;
+            $submission->save();
+            $this->submissionId = $submissionId;
+        } else {
+            $response = $this->form->submissions()->create([
+                'data' => $formData,
+            ]);
+            $this->submissionId = $response->id;
+        }
+    }
+
+    /**
+     * Search for Submission record to update and returns it
+     */
+    private function submissionToUpdate(array $formData): ?string
+    {
+        if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
+            $submissionId = ($this->submissionData['submission_id']) ? Hashids::decode($this->submissionData['submission_id']) : false;
+            return isset($submissionId[0]) ? $submissionId[0] : null;
+        }
+        if (!$this->form->is_pro || !$this->form->database_fields_update) {
+            return null;
+        }
+
+        $propertyIds = $this->form->database_fields_update;
+        $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
+            return (in_array($property['id'], $propertyIds) && !in_array($property['type'], ['files','signature','multi_select']));
+        });
+        $submission = FormSubmission::where(function($q) use ($properties, $formData){
+                foreach ($properties as $property) {
+                    $q->where('data->'.$property['id'], $formData[$property['id']]);
+                }
+            })->first();
+        if($submission){
+            return $submission->id;
+        }
+
+        return null;
     }
 
     /**

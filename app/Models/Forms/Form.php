@@ -75,6 +75,7 @@ class Form extends Model
         'closed_text',
         'max_submissions_count',
         'max_submissions_reached_text',
+        'editable_submissions',
 
         // Security & Privacy
         'can_be_indexed',

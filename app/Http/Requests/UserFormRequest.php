@@ -69,6 +69,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'database_fields_update' => 'nullable|array',
             'max_submissions_count' => 'integer|nullable|min:1',
             'max_submissions_reached_text' => 'string|nullable',
+            'editable_submissions' => 'boolean|nullable',
 
             // Properties
             'properties' => 'required|array',

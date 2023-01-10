@@ -20,7 +20,11 @@
                 :required="true"
     />
 
-    <select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
+    <toggle-switch-input name="editable_submissions" :form="form" class="mt-4"
+                label="Allow users to edit their submission"
+    />
+
+    <flat-select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
                   :options="[
                     {name:'Create new record (default)', value:'create'},
                     {name:'Update Record (if any)', value:'update'}
@@ -47,7 +51,7 @@
           </span>
         </span>
       </template>
-    </select-input>
+    </flat-select-input>
 
     <v-transition>
       <div v-if="submissionOptions.databaseAction == 'update' && filterableFields.length">
@@ -176,11 +180,10 @@ export default {
     filterableFields() {
       if (this.submissionOptions.databaseAction !== 'update') return []
       return this.form.properties.filter((field) => {
-        return !field.hidden && window.config.notion.database_filterable_types.includes(field.type)
+        return !field.hidden && !['files','signature','multi_select'].includes(field.type)
       }).map((field) => {
-        const fieldName = (field.name !== field.notion_name) ? (field.name + ' (' + field.notion_name + ')') : field.name
         return {
-          name: fieldName,
+          name: field.name,
           value: field.id
         }
       })

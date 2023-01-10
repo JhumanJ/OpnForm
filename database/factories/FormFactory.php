@@ -71,6 +71,7 @@ class FormFactory extends Factory
             'uppercase_labels' => true,
             'transparent_background' => false,
             'submit_button_text' => 'Submit',
+            'editable_submissions' => false,
             're_fillable' => false,
             're_fill_button_text' => 'Fill Again',
             'submitted_text' => '<p>Amazing, we saved your answers. Thank you for your time and have a great day!</p>',
