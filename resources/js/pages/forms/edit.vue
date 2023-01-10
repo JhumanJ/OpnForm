@@ -42,6 +42,14 @@ export default {
     store.commit('open/working_form/set', null) // Reset old working form
     next()
   },
+  beforeRouteLeave (to, from, next) {
+    if(!this.isDirty() || confirm("Changes you made may not be saved. Are you sure want to leave?") === true){
+      window.onbeforeunload = null
+      next()
+    }
+    return false
+  },
+
   middleware: 'auth',
   mixins: [SeoMeta],
 
@@ -91,6 +99,12 @@ export default {
   },
 
   mounted () {
+    window.onbeforeunload = () => {
+      if(this.isDirty()){
+        return false
+      }
+    };
+
     this.closeAlert()
     if (!this.form) {
       loadForms()
@@ -107,6 +121,9 @@ export default {
       if (this.$refs.editor) {
         this.editorMaxHeight = Math.max(500, window.innerHeight - this.$refs.editor.$el.offsetTop)
       }
+    },
+    isDirty(){
+      return !this.updateFormLoading && JSON.stringify(this.form) !== JSON.stringify(this.updatedForm.data())
     }
   }
 }
