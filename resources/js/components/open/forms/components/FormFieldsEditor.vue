@@ -23,8 +23,8 @@
                ghost-class="bg-gray-50" handle=".draggable" :animation="200"
     >
       <div v-for="(field,index) in formFields" :key="field.id"
-           class="w-full mx-auto transition-colors bg-white dark:bg-notion-dark-light"
-           :class="{'bg-gray-200 dark:bg-gray-800':field.hidden, 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':field && field.type==='nf-page-break'}"
+           class="w-full mx-auto transition-colors"
+           :class="{'bg-gray-100 dark:bg-gray-800':field.hidden,'bg-white dark:bg-notion-dark-light':!field.hidden && !field.type==='nf-page-break', 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':field && field.type==='nf-page-break'}"
       >
         <div v-if="field" class="flex items-center space-x-1 group py-2 pr-4 relative">
           <!-- Drag handler -->
@@ -37,19 +37,10 @@
           <!-- Field name and type -->
           <div class="flex flex-col flex-grow truncate">
 
-            <editable-div class="truncate" :value="field.name" @input="onChangeName(field, $event)">
-              <label class="cursor-pointer truncate w-full">
+            <editable-div class="max-w-full flex items-center" :value="field.name" @input="onChangeName(field, $event)">
+              <div class="cursor-pointer max-w-full truncate">
                 {{ field.name }}
-              </label>
-
-              <span v-if="field.required" class="text-red-500 required-dot">*</span>
-              <svg v-if="field.hidden" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none"
-                   viewBox="0 0 24 24" stroke="currentColor"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                />
-              </svg>
+              </div>
             </editable-div>
 
             <p class="text-xs text-gray-400 w-full truncate pl-2">
@@ -69,13 +60,15 @@
 
           <template v-if="removing == field.id">
             <div class="flex text-sm items-center">
-            Remove block? <v-button class="inline ml-1" color="red" size="small" @click="removeBlock(index)">Yes</v-button> <v-button @click="removing=false" class="inline ml-1" color="light-gray" size="small">No</v-button>
+              Remove block?
+              <v-button class="inline ml-1" color="red" size="small" @click="removeBlock(index)">Yes</v-button>
+              <v-button @click="removing=false" class="inline ml-1" color="light-gray" size="small">No</v-button>
             </div>
           </template>
           <template v-else>
             <button v-if="!field.type.startsWith('nf-')"
-                    class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden group-hover:md:block"
-                    :class="{'text-blue-500': !field.hidden, 'text-gray-500': field.hidden}"
+                    class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
+                    :class="{'text-blue-500': !field.hidden, 'text-gray-500': field.hidden, 'group-hover:md:block': !field.hidden, 'md:block':field.hidden}"
                     @click="toggleHidden(field)"
             >
               <template v-if="!field.hidden">
@@ -104,8 +97,8 @@
               </template>
             </button>
             <button v-if="!field.type.startsWith('nf-')"
-                    class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden md:group-hover:block"
-                    @click="toggleRequired(field)"
+                    class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
+                    @click="toggleRequired(field)" :class="{'group-hover:md:block': !field.required, 'md:block':field.required}"
             >
               <div class="w-4 h-4 text-center font-bold text-3xl"
                    :class="{'text-red-500': field.required, 'text-gray-500': !field.required}"
@@ -155,7 +148,8 @@
     <v-button
       class="w-full mt-4" color="light-gray"
       @click="showAddBlock=true">
-      <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
               stroke-linecap="round" stroke-linejoin="round"/>
       </svg>

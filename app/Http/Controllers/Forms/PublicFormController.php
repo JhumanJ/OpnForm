@@ -88,7 +88,7 @@ class PublicFormController extends Controller
         }else{
             StoreFormSubmissionJob::dispatch($form, $request->validated());
         }
-        
+
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
             'submission_id' => $submissionId
@@ -112,6 +112,12 @@ class PublicFormController extends Controller
         }
 
         $submission = FormSubmission::findOrFail($submissionId);
+
+        if ($submission->form_id != $form->id) {
+            return $this->error([
+                'message' => 'Not allowed.',
+            ], 403);
+        }
 
         return $this->success(['data' => ($submission) ? $submission->data : []]);
     }
