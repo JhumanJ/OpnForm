@@ -308,7 +308,6 @@ export default {
           }
         }
       }
-
       if (this.isPublicFormPage) {
         let pendingData
         try {

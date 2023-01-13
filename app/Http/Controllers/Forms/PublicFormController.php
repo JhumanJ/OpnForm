@@ -112,6 +112,7 @@ class PublicFormController extends Controller
         }
 
         $submission = FormSubmission::findOrFail($submissionId);
+
         if ($submission->form_id != $form->id) {
             return $this->error([
                 'message' => 'Not allowed.',

@@ -180,11 +180,10 @@ export default {
     filterableFields() {
       if (this.submissionOptions.databaseAction !== 'update') return []
       return this.form.properties.filter((field) => {
-        return !field.hidden && window.config.notion.database_filterable_types.includes(field.type)
+        return !field.hidden && !['files','signature','multi_select'].includes(field.type)
       }).map((field) => {
-        const fieldName = (field.name !== field.notion_name) ? (field.name + ' (' + field.notion_name + ')') : field.name
         return {
-          name: fieldName,
+          name: field.name,
           value: field.id
         }
       })
