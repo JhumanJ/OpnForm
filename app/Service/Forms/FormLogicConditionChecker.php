@@ -102,7 +102,7 @@ class FormLogicConditionChecker
         if(is_array($fieldValue)){
             return count($fieldValue) === 0;
         }
-        return (!$fieldValue || $fieldValue !== '' || $fieldValue !== null);
+        return $fieldValue == '' || $fieldValue == null || !$fieldValue;
     }
 
     private function checkGreaterThan ($condition, $fieldValue): bool {
