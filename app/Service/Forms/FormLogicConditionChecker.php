@@ -23,7 +23,7 @@ class FormLogicConditionChecker
 
         // If it's not a group, just a single condition
         if (!isset($conditions['operatorIdentifier'])) {
-            return $this->propertyConditionMet($conditions['value'], $formData[$conditions['value']['property_meta']['id']]);
+            return $this->propertyConditionMet($conditions['value'], $formData[$conditions['value']['property_meta']['id']] ?? null);
         }
 
         if ($conditions['operatorIdentifier'] === 'and') {
