@@ -84,10 +84,7 @@
       </div>
       <div class="w-full md:w-1/2 lg:w-7/12 flex items-center justify-center relative w-full"
            :class="{'md:pr-8':index%2==1, 'md:pl-8':index%2==0}">
-        <img loading="lazy" class="
-        ease-in-out delay-300 rounded shadow-lg shadow-blue-600/50 hover:skew-y-3 hover:border-blue-600
-        transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300
-        block rounded-2xl w-full"
+        <img loading="lazy" class="block rounded-2xl w-full"
              :src="asset(step.img)" alt="cover-product">
       </div>
     </div>
