@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import {fixedClasses} from '../../plugins/config/vue-tailwind/datePicker'
-import inputMixin from '~/mixins/forms/input'
+import {fixedClasses} from '../../plugins/config/vue-tailwind/datePicker.js'
+import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'DateInput',
