@@ -10,7 +10,7 @@ export default {
       return window.$crisp
     }
   },
-  
+
   methods: {
     /**
      * Creates a debounced function that delays invoking a callback.

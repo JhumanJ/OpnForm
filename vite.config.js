@@ -12,7 +12,7 @@ export default defineConfig({
       input: [
         'resources/js/app.js'
       ],
-      // valetTls: 'opnform.test'
+      valetTls: 'opnform.test'
     }),
     vue({
       template: {
@@ -23,6 +23,11 @@ export default defineConfig({
       }
     })
   ],
+  optimizeDeps: {
+    exclude: [
+      'vt-notifications'
+    ]
+  },
   resolve: {
     alias: {
       '~': '/resources/js',
