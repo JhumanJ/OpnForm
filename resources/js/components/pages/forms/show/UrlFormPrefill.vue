@@ -66,10 +66,10 @@
 </template>
 
 <script>
-import FormUrlPrefill from '../../../open/forms/components/FormUrlPrefill'
-import ProTag from '../../../common/ProTag'
-import OpenForm from '../../../open/forms/OpenForm'
-import { themes } from '~/config/form-themes'
+import FormUrlPrefill from '../../../open/forms/components/FormUrlPrefill.vue'
+import ProTag from '../../../common/ProTag.vue'
+import OpenForm from '../../../open/forms/OpenForm.vue'
+import { themes } from '~/config/form-themes.js'
 
 export default {
   name: 'UrlFormPrefill',

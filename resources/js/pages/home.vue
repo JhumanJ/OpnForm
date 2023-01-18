@@ -96,9 +96,9 @@ import store from '~/store'
 import { mapGetters, mapState } from 'vuex'
 import Fuse from 'fuse.js'
 import Form from 'vform'
-import TextInput from '../components/forms/TextInput'
-import OpenFormFooter from '../components/pages/OpenFormFooter'
-import ExtraMenu from '../components/pages/forms/show/ExtraMenu'
+import TextInput from '../components/forms/TextInput.vue'
+import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
+import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')

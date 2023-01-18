@@ -104,9 +104,9 @@
 </template>
 
 <script>
-import Modal from '../Modal'
+import Modal from '../Modal.vue'
 import axios from 'axios'
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'ImageInput',

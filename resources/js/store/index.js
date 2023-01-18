@@ -4,15 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 // Load store modules dynamically.
-const requireContext = require.context('./modules', true, /.*\.js$/)
+const requireContext = import.meta.glob('./modules/**/*.js', {eager: true})
 
-const modules = requireContext.keys()
+const modules = Object.keys(requireContext)
   .map(file =>
-    [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)]
+    [file.replace(/(^.\/)|(\.js$)/g, '').replace('modules/',''), requireContext[file]]
   )
   .reduce((modules, [name, module]) => {
     if (module.namespaced === undefined) {
-      module.namespaced = true
+      module = {...module, namespaced: true}
     }
 
     return { ...modules, [name]: module }

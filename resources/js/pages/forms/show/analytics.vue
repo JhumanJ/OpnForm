@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import FormStats from '../../../components/open/forms/components/FormStats'
-import SeoMeta from '../../../mixins/seo-meta'
+import FormStats from '../../../components/open/forms/components/FormStats.vue'
+import SeoMeta from '../../../mixins/seo-meta.js'
 
 export default {
   components: {FormStats},

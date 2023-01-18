@@ -63,12 +63,12 @@
 <script>
 import axios from 'axios'
 import Form from 'vform'
-import OpenFormButton from './OpenFormButton'
+import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
-import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
+import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 
 export default {
   name: 'OpenForm',

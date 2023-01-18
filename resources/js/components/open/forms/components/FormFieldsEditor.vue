@@ -161,13 +161,13 @@
 
 <script>
 import draggable from 'vuedraggable'
-import FormFieldOptionsModal from '../fields/FormFieldOptionsModal'
-import AddFormBlockModal from './form-components/AddFormBlockModal'
-import FormBlockOptionsModal from '../fields/FormBlockOptionsModal'
-import ProTag from '../../../common/ProTag'
+import FormFieldOptionsModal from '../fields/FormFieldOptionsModal.vue'
+import AddFormBlockModal from './form-components/AddFormBlockModal.vue'
+import FormBlockOptionsModal from '../fields/FormBlockOptionsModal.vue'
+import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
-import EditableDiv from '../../../common/EditableDiv'
-import VButton from "../../../common/Button";
+import EditableDiv from '../../../common/EditableDiv.vue'
+import VButton from "../../../common/Button.vue";
 
 export default {
   name: 'FormFieldsEditor',

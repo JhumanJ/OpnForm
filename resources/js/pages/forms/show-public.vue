@@ -43,10 +43,10 @@
 import axios from 'axios'
 import store from '~/store'
 import { mapState } from 'vuex'
-import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm'
+import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Cookies from 'js-cookie'
 import sha256 from 'js-sha256'
-import SeoMeta from '../../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 const isFrame = window.location !== window.parent.location || window.frameElement
 

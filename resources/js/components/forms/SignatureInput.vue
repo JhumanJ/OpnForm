@@ -29,7 +29,7 @@
 <script>
 import Vue from 'vue'
 import VueSignaturePad from 'vue-signature-pad'
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
 Vue.use(VueSignaturePad)
 

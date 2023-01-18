@@ -12,9 +12,9 @@
   </template>
   
   <script>
-  import inputMixin from '~/mixins/forms/input'
+  import inputMixin from '~/mixins/forms/input.js'
   
-  import VSwitch from './components/VSwitch'
+  import VSwitch from './components/VSwitch.vue'
   export default {
     name: 'ToggleSwitchInput',
   

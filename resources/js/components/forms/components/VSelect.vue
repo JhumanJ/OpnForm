@@ -78,9 +78,9 @@
 
 <script>
 import { directive as onClickaway } from 'vue-clickaway'
-import TextInput from '../TextInput'
+import TextInput from '../TextInput.vue'
 import Fuse from 'fuse.js'
-import { themes } from '~/config/form-themes'
+import { themes } from '~/config/form-themes.js'
 import debounce from 'debounce'
 
 export default {

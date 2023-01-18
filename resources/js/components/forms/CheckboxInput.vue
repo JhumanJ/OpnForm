@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
-import VCheckbox from './components/VCheckbox'
+import VCheckbox from './components/VCheckbox.vue'
 export default {
   name: 'CheckboxInput',
 

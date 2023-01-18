@@ -2,10 +2,10 @@ import './common'
 import './forms'
 
 import Vue from 'vue'
-import Child from './Child'
-import Modal from './Modal'
+import Child from './Child.vue'
+import Modal from './Modal.vue'
 
-import Loader from './common/Loader'
+import Loader from './common/Loader.vue'
 
 // Components that are registered globaly.
 [
@@ -17,5 +17,5 @@ import Loader from './common/Loader'
 })
 
 // Lazy load some heavy component
-Vue.component('FormEditor', () => import('./open/forms/components/FormEditor'))
-Vue.component('NotionPage', () => import('./open/NotionPage'))
+Vue.component('FormEditor', () => import('./open/forms/components/FormEditor.vue'))
+Vue.component('NotionPage', () => import('./open/NotionPage.vue'))

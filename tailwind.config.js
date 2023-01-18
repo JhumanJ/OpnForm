@@ -45,7 +45,7 @@ module.exports = {
         'focus-notion': '#2eaadcb3 0px 0px 0px 1px inset, #2eaadc66 0px 0px 0px 2px !important'
       },
       colors: {
-        gray: colors.blueGray,
+        gray: colors.slate,
         'nt-blue': {
           lighter: colors.blue['100'],
           light: colors.blue['300'],

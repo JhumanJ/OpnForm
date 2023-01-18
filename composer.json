@@ -26,7 +26,7 @@
     "guzzlehttp/guzzle": "^7.0.1",
     "jhumanj/laravel-model-stats": "^0.4.0",
     "laravel/cashier": "^13.4",
-    "laravel/framework": "^9.0",
+    "laravel/framework": "^9.19.0",
     "laravel/horizon": "^5.7",
     "laravel/socialite": "^5.2",
     "laravel/tinker": "^2.6",

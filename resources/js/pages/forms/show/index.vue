@@ -104,10 +104,10 @@ import axios from 'axios'
 import store from '~/store'
 import Form from 'vform'
 import {mapGetters, mapState} from 'vuex'
-import ProTag from '../../../components/common/ProTag'
-import VButton from "../../../components/common/Button";
-import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu'
-import SeoMeta from '../../../mixins/seo-meta'
+import ProTag from '../../../components/common/ProTag.vue'
+import VButton from "../../../components/common/Button.vue";
+import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
+import SeoMeta from '../../../mixins/seo-meta.js'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')

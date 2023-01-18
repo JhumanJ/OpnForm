@@ -21,7 +21,7 @@
 <script>
 import Form from 'vform'
 import { mapGetters } from 'vuex'
-import SeoMeta from '../../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   scrollToTop: false,

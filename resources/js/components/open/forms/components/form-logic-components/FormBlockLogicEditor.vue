@@ -66,10 +66,10 @@
 </template>
 
 <script>
-import ProTag from '../../../../common/ProTag'
-import ConditionEditor from './ConditionEditor'
-import Modal from '../../../../Modal'
-import SelectInput from '../../../../forms/SelectInput'
+import ProTag from '../../../../common/ProTag.vue'
+import ConditionEditor from './ConditionEditor.vue'
+import Modal from '../../../../Modal.vue'
+import SelectInput from '../../../../forms/SelectInput.vue'
 import clonedeep from 'clone-deep'
 
 export default {

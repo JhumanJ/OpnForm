@@ -124,8 +124,8 @@
 <script>
 import axios from 'axios'
 import {mapGetters, mapState} from 'vuex'
-import Dropdown from '../../../common/Dropdown'
-import CreateTemplateModal from '../CreateTemplateModal'
+import Dropdown from '../../../common/Dropdown.vue'
+import CreateTemplateModal from '../CreateTemplateModal.vue'
 
 export default {
     name: 'ExtraMenu',

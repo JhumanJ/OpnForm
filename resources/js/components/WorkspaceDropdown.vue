@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import Dropdown from './common/Dropdown'
+import Dropdown from './common/Dropdown.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default {

@@ -1,8 +1,8 @@
 import Vue from 'vue'
-const axios = require('axios')
+import axios from "axios"
 
-const assetUrl = process.env.MIX_VAPOR_ASSET_URL
-  ? process.env.MIX_VAPOR_ASSET_URL
+const assetUrl = import.meta.env.VITE_VAPOR_ASSET_URL
+  ? import.meta.env.VITE_VAPOR_ASSET_URL
   : ''
 
 Vue.mixin({

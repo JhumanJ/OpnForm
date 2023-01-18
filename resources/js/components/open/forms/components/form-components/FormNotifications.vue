@@ -20,11 +20,11 @@
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse'
-import ProTag from '../../../../common/ProTag'
-import FormNotificationsOption from './components/FormNotificationsOption'
-import FormNotificationsSlack from './components/FormNotificationsSlack'
-import FormNotificationsSubmissionConfirmation from './components/FormNotificationsSubmissionConfirmation'
+import Collapse from '../../../../common/Collapse.vue'
+import ProTag from '../../../../common/ProTag.vue'
+import FormNotificationsOption from './components/FormNotificationsOption.vue'
+import FormNotificationsSlack from './components/FormNotificationsSlack.vue'
+import FormNotificationsSubmissionConfirmation from './components/FormNotificationsSubmissionConfirmation.vue'
 
 export default {
   components: { FormNotificationsSubmissionConfirmation, FormNotificationsSlack, FormNotificationsOption, Collapse, ProTag },

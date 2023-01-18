@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse'
-import ProTag from '../../../../common/ProTag'
+import Collapse from '../../../../common/Collapse.vue'
+import ProTag from '../../../../common/ProTag.vue'
 
 export default {
   components: { Collapse, ProTag },

@@ -21,8 +21,8 @@
 import store from '~/store'
 import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
-import initForm from "../../mixins/form_editor/initForm";
-import SeoMeta from '../../mixins/seo-meta'
+import initForm from "../../mixins/form_editor/initForm.js";
+import SeoMeta from '../../mixins/seo-meta.js'
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')

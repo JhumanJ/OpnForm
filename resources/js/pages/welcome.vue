@@ -104,11 +104,11 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import Features from '~/components/pages/welcome/Features'
-import MoreFeatures from '~/components/pages/welcome/MoreFeatures'
-import OpenFormFooter from '../components/pages/OpenFormFooter'
-import Testimonials from '../components/pages/welcome/Testimonials'
-import SeoMeta from '../mixins/seo-meta'
+import Features from '~/components/pages/welcome/Features.vue'
+import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
+import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
+import Testimonials from '../components/pages/welcome/Testimonials.vue'
+import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
   components: {Testimonials, OpenFormFooter, Features, MoreFeatures},

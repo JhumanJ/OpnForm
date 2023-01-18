@@ -21,7 +21,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link rel="stylesheet" href="{{ mix('dist/css/app.css') }}">
+  @vite('resources/js/app.js')
+
   <link rel="icon" href="{{asset('/img/logo.svg')}}">
 
   @if($meta)
@@ -48,10 +49,6 @@
   window.$crisp = []
 </script>
 
-{{-- Load the application scripts --}}
-<script src="{{ mix('dist/js/manifest.js') }}"></script>
-<script src="{{ mix('dist/js/vendor.js') }}"></script>
-<script src="{{ mix('dist/js/app.js') }}"></script>
 
 @if($config['google_analytics_code'])
 <!-- Global site tag (gtag.js) - Google Analytics -->

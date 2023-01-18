@@ -54,17 +54,17 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import FormErrorModal from './form-components/FormErrorModal'
-import FormInformation from './form-components/FormInformation'
-import FormStructure from './form-components/FormStructure'
-import FormCustomization from './form-components/FormCustomization'
-import FormCustomCode from './form-components/FormCustomCode'
-import FormAboutSubmission from './form-components/FormAboutSubmission'
-import FormNotifications from './form-components/FormNotifications'
-import FormIntegrations from './form-components/FormIntegrations'
-import FormEditorPreview from './form-components/FormEditorPreview'
-import FormSecurityPrivacy from './form-components/FormSecurityPrivacy'
-import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert'
+import FormErrorModal from './form-components/FormErrorModal.vue'
+import FormInformation from './form-components/FormInformation.vue'
+import FormStructure from './form-components/FormStructure.vue'
+import FormCustomization from './form-components/FormCustomization.vue'
+import FormCustomCode from './form-components/FormCustomCode.vue'
+import FormAboutSubmission from './form-components/FormAboutSubmission.vue'
+import FormNotifications from './form-components/FormNotifications.vue'
+import FormIntegrations from './form-components/FormIntegrations.vue'
+import FormEditorPreview from './form-components/FormEditorPreview.vue'
+import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
+import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
 
 export default {
   name: 'FormEditor',

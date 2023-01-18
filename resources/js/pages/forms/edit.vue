@@ -19,10 +19,10 @@
 <script>
 import axios from 'axios'
 import store from '~/store'
-import Breadcrumb from '../../components/common/Breadcrumb'
+import Breadcrumb from '../../components/common/Breadcrumb.vue'
 import Form from 'vform'
 import { mapState } from 'vuex'
-import SeoMeta from '../../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')

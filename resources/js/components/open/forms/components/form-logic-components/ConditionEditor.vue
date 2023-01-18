@@ -32,9 +32,9 @@
 
 <script>
 import QueryBuilder from 'query-builder-vue'
-import ColumnCondition from './ColumnCondition'
+import ColumnCondition from './ColumnCondition.vue'
 import Vue from 'vue'
-import GroupControlSlot from './GroupControlSlot'
+import GroupControlSlot from './GroupControlSlot.vue'
 
 export default {
 

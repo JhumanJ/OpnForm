@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 import Cleave from 'cleave.js';
 
 export default {

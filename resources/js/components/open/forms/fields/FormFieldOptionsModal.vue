@@ -370,10 +370,10 @@
 <script>
 
 import timezones from '../../../../../data/timezones.json'
-import ProTag from "../../../common/ProTag"
+import ProTag from "../../../common/ProTag.vue"
 
-const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
-import ChangeFieldType from "./components/ChangeFieldType"
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
+import ChangeFieldType from "./components/ChangeFieldType.vue"
 
 export default {
   name: 'FormFieldOptionsModal',
