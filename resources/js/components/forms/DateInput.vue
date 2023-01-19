@@ -78,20 +78,24 @@ export default {
     },
     fromDate: {
       handler(val) {
-        this.compVal = (this.dateRange) ? [val] : val
         this.toDate = null
+        if(val){
+          this.compVal = (this.dateRange) ? [val] : val
+        }else{
+          this.compVal = null
+        }
       },
       immediate: true
     },
     toDate: {
       handler(val) {
-        if(this.dateRange){
+        if(this.dateRange && val){
           if(!Array.isArray(this.compVal)){
-            this.compVal = [];
+            this.compVal = [null];
           }
-          this.compVal[1] = val
+          this.compVal[1] = val ?? null
         }else{
-          this.compVal = []
+          this.compVal = null
         }
       },
       immediate: true
