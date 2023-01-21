@@ -7,15 +7,25 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
 
-    <div class="flex">
+    <div class="flex" v-if="!dateRange">
       <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :class="inputClasses" :disabled="disabled"
           :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
-          :min="setMinDate" :max="setMaxDate" 
+          :min="setMinDate" :max="setMaxDate"
       />
-      <input v-if="dateRange" :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="toDate" :class="inputClasses" :disabled="disabled"
-          :style="inputStyle" :name="name"
-          :min="setMinDate" :max="setMaxDate" 
+    </div>
+    <div :class="inputClasses" v-else>
+      <div class="flex -mx-2">
+      <p class="text-gray-900 px-4">From</p>
+      <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :disabled="disabled"
+             :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD" class="flex-grow border-transparent focus:outline-none "
+             :min="setMinDate" :max="setMaxDate"
       />
+      <p class="text-gray-900 px-4">To</p>
+      <input v-if="dateRange" :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="toDate" :disabled="disabled"
+             :style="inputStyle" :name="name" class="flex-grow border-transparent focus:outline-none"
+             :min="setMinDate" :max="setMaxDate"
+      />
+      </div>
     </div>
 
     <small v-if="help" :class="theme.default.help">
@@ -36,7 +46,6 @@ export default {
   props: {
     withTime: {type: Boolean, default: false},
     dateRange: {type: Boolean, default: false},
-    amPm: {type: Boolean, default: false},
     disablePastDates: {type: Boolean, default: false},
     disableFutureDates: {type: Boolean, default: false}
   },

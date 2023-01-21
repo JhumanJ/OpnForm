@@ -150,15 +150,6 @@
         <p class="text-gray-400 mb-5">
           Include time. Or not. This cannot be used with the date range option yet.
         </p>
-        <v-checkbox v-if="field.with_time"
-                    v-model="field.use_am_pm"
-                    name="use_am_pm"
-        >
-          Use 12h AM/PM format
-        </v-checkbox>
-        <p v-if="field.with_time" class="text-gray-400 mb-5">
-          By default, input uses the 24 hours format
-        </p>
 
         <select-input v-if="field.with_time" name="timezone" class="mt-4"
                       :form="field" :options="timezonesOptions"
@@ -188,18 +179,6 @@
         >
           Disable future dates
         </v-checkbox>
-
-        <v-checkbox v-model="field.simple_date_input"
-                    name="simple_date_input" class="mb-3"
-                    @input="onFieldSimpleDateInputChange"
-        >
-          Simple date input
-        </v-checkbox>
-        <select-input v-if="field.simple_date_input" v-model="field.simple_date_input_format"
-                      name="simple_date_input_format"
-                      class="mt-4" :form="field" :options="dateFormatOptions"
-                      label="Date format"
-        />
       </div>
 
       <!-- select/multiselect Options   -->
@@ -264,7 +243,7 @@
                       :multiple="field.type==='multi_select'"
         />
         <date-input v-else-if="field.type==='date' && field.prefill_today!==true" name="prefill" class="mt-4"
-                    :form="field" :with-time="field.with_time===true" :am-pm="field.use_am_pm===true"
+                    :form="field" :with-time="field.with_time===true"
                     :date-range="field.date_range===true"
                     label="Pre-filled value"
         />
@@ -432,16 +411,6 @@ export default {
         return option.name
       }).join("\n")
     },
-    dateFormatOptions() {
-      if (this.field.type !== 'date') return []
-      let formats = ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD']
-      return formats.map((format) => {
-        return {
-          name: format,
-          value: format
-        }
-      })
-    }
   },
 
   watch: {},
@@ -495,7 +464,6 @@ export default {
     },
     onFieldWithTimeChange(val) {
       this.$set(this.field, 'with_time', val)
-      this.$set(this.field, 'use_am_pm', false)
       if (this.field.with_time) {
         this.$set(this.field, 'date_range', false)
         this.$set(this.field, 'simple_date_input', false)

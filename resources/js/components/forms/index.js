@@ -41,4 +41,3 @@ import ToggleSwitchInput from './ToggleSwitchInput.vue'
 Vue.component('SignatureInput', () => import('./SignatureInput.vue'))
 Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput.vue'))
 Vue.component('DateInput', () => import('./DateInput.vue'))
-Vue.component('SimpleDateInput', () => import('./SimpleDateInput.vue'))
