@@ -25,7 +25,7 @@ export default defineConfig({
   ],
   optimizeDeps: {
     exclude: [
-      'vt-notifications'
+      'vt-notifications', 'vue-tailwind', 'vue-tailwind/dist/vue-tailwind.css'
     ]
   },
   resolve: {
