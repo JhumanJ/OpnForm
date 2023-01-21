@@ -55,7 +55,7 @@ git clone git@github.com:JhumanJ/OpnForm.git && cd OpnForm
 composer install && npm install
 
 # Compile assets (see the scripts section in package.json)
-npm run dev # or prod, or watch
+npm run dev # or build
 ```
 
 Now, we can configure Laravel. We just need to prepare some vars in our `.env` file, just create it with `cp .env.example .env` then open it!
