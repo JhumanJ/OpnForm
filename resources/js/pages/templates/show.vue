@@ -54,9 +54,9 @@ import store from '~/store'
 import Form from 'vform'
 import {mapGetters, mapState} from 'vuex'
 import Fuse from 'fuse.js'
-import OpenFormFooter from '../../components/pages/OpenFormFooter'
-import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm'
-import Breadcrumb from "../../components/common/Breadcrumb";
+import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
+import Breadcrumb from "../../components/common/Breadcrumb.vue";
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')

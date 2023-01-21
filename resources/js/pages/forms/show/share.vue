@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import ShareLink from '../../../components/pages/forms/show/ShareLink'
-import EmbedCode from '../../../components/pages/forms/show/EmbedCode'
-import UrlFormPrefill from '../../../components/pages/forms/show/UrlFormPrefill'
-import RegenerateFormLink from '../../../components/pages/forms/show/RegenerateFormLink'
-import SeoMeta from '../../../mixins/seo-meta'
+import ShareLink from '../../../components/pages/forms/show/ShareLink.vue'
+import EmbedCode from '../../../components/pages/forms/show/EmbedCode.vue'
+import UrlFormPrefill from '../../../components/pages/forms/show/UrlFormPrefill.vue'
+import RegenerateFormLink from '../../../components/pages/forms/show/RegenerateFormLink.vue'
+import SeoMeta from '../../../mixins/seo-meta.js'
 
 export default {
   components: {

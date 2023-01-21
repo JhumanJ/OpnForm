@@ -122,12 +122,12 @@
 
 <script>
 import Form from 'vform'
-import OpenForm from './OpenForm'
-import OpenFormButton from './OpenFormButton'
-import { themes } from '~/config/form-themes'
-import VButton from '../../common/Button'
-import VTransition from '../../common/transitions/VTransition'
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
+import OpenForm from './OpenForm.vue'
+import OpenFormButton from './OpenFormButton.vue'
+import { themes } from '~/config/form-themes.js'
+import VButton from '../../common/Button.vue'
+import VTransition from '../../common/transitions/VTransition.vue'
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm },

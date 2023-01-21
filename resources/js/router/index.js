@@ -3,7 +3,7 @@ import store from '~/store'
 import Meta from 'vue-meta'
 import routes from './routes'
 import Router from 'vue-router'
-import { sync } from 'vuex-router-sync'
+import {sync} from 'vuex-router-sync'
 
 Vue.use(Meta)
 Vue.use(Router)
@@ -12,8 +12,9 @@ Vue.use(Router)
 const globalMiddleware = ['locale', 'check-auth', 'notion-connection']
 
 // Load middleware modules dynamically.
+const requireContext = import.meta.glob('../middleware/**/*.js', { eager: true })
 const routeMiddleware = resolveMiddleware(
-  require.context('~/middleware', false, /.*\.js$/)
+  requireContext
 )
 
 const router = createRouter()
@@ -222,12 +223,13 @@ function scrollBehavior (to, from, savedPosition) {
  * @param  {Object} requireContext
  * @return {Object}
  */
-function resolveMiddleware (requireContext) {
-  return requireContext.keys()
+function resolveMiddleware(requireContext) {
+  const middlewares = {}
+  Object.keys(requireContext)
     .map(file =>
-      [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)]
-    )
-    .reduce((guards, [name, guard]) => (
-      { ...guards, [name]: guard.default }
-    ), {})
+      [file.match(/[^/]*(?=\.[^.]*$)/)[0], requireContext[file]]
+    ).forEach(([name, middleware]) => {
+    middlewares[name] = middleware.default || middleware
+  })
+  return middlewares
 }

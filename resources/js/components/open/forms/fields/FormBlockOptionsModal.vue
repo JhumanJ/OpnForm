@@ -139,9 +139,9 @@
 </template>
 
 <script>
-import ProTag from '../../../common/ProTag'
-const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor')
-import CodeInput from '../../../forms/CodeInput'
+import ProTag from '../../../common/ProTag.vue'
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
+import CodeInput from '../../../forms/CodeInput.vue'
 
 export default {
   name: 'FormBlockOptionsModal',

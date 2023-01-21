@@ -35,7 +35,7 @@
   
 <script>
 import Form from 'vform'
-import QuestionsEditor from '../../templates/QuestionsEditor';
+import QuestionsEditor from '../../templates/QuestionsEditor.vue';
 
 export default {
     name: 'CreateTemplateModal',

@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import OpenFormFooter from '../../components/pages/OpenFormFooter'
-import Testimonials from '../../components/pages/welcome/Testimonials'
-import LoginForm from './components/LoginForm'
-import SeoMeta from '../../mixins/seo-meta'
+import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import Testimonials from '../../components/pages/welcome/Testimonials.vue'
+import LoginForm from './components/LoginForm.vue'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: {

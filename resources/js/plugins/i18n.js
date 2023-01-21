@@ -14,8 +14,11 @@ const i18n = new VueI18n({
  */
 export async function loadMessages (locale) {
   if (Object.keys(i18n.getLocaleMessage(locale)).length === 0) {
-    const messages = await import(/* webpackChunkName: '' */ `~/lang/${locale}`)
-    i18n.setLocaleMessage(locale, messages)
+    if (locale) {
+      const langFiles = import.meta.glob('../lang/**.json', {eager: true})
+      const messages = langFiles[`../lang/${locale}.json`]
+      i18n.setLocaleMessage(locale, messages)
+    }
   }
 
   if (i18n.locale !== locale) {

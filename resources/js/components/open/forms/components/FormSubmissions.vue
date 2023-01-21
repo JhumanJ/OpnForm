@@ -62,10 +62,10 @@
 
 <script>
 import axios from 'axios'
-import ScrollShadow from '../../../common/ScrollShadow'
-import OpenTable from '../../tables/OpenTable'
+import ScrollShadow from '../../../common/ScrollShadow.vue'
+import OpenTable from '../../tables/OpenTable.vue'
 import clonedeep from "clone-deep";
-import VSwitch from '../../../forms/components/VSwitch'
+import VSwitch from '../../../forms/components/VSwitch.vue'
 
 export default {
   name: 'FormSubmissions',

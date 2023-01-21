@@ -26,9 +26,9 @@
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse'
-import ProTag from '../../../../common/ProTag'
-import CodeInput from '../../../../forms/CodeInput'
+import Collapse from '../../../../common/Collapse.vue'
+import ProTag from '../../../../common/ProTag.vue'
+import CodeInput from '../../../../forms/CodeInput.vue'
 
 export default {
   components: { Collapse, ProTag, CodeInput },

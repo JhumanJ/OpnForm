@@ -229,7 +229,7 @@
 <script>
 
 import Form from 'vform'
-import VButton from '../../../../common/Button'
+import VButton from '../../../../common/Button.vue'
 
 export default {
   name: 'AddFormBlockModal',

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 
-import Dropdown from './Dropdown'
-import Card from './Card'
-import Button from './Button'
+import Dropdown from './Dropdown.vue'
+import Card from './Card.vue'
+import Button from './Button.vue'
 // Components that are registered globaly.
 [
   Card,

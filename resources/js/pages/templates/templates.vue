@@ -40,7 +40,7 @@
 import store from '~/store'
 import {mapGetters, mapState} from 'vuex'
 import Fuse from 'fuse.js'
-import OpenFormFooter from '../../components/pages/OpenFormFooter'
+import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')

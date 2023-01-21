@@ -18,7 +18,7 @@
 </template>
     
 <script>
-import CopyContent from '../../../open/forms/components/CopyContent'
+import CopyContent from '../../../open/forms/components/CopyContent.vue'
 
 export default {
     name: 'ShareLink',

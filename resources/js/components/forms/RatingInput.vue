@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'RatingInput',

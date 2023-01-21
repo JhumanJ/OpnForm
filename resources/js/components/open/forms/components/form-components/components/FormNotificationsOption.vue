@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import ProTag from '../../../../../common/ProTag'
+import ProTag from '../../../../../common/ProTag.vue'
 
 export default {
   components: { ProTag },

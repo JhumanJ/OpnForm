@@ -1,20 +1,20 @@
 import Vue from 'vue'
 
 import HasError from './validation/HasError.vue'
-import AlertError from './validation/AlertError'
-import AlertSuccess from './validation/AlertSuccess'
-import VCheckbox from './components/VCheckbox'
-import TextInput from './TextInput'
-import TextAreaInput from './TextAreaInput'
-import VSelect from './components/VSelect'
-import CheckboxInput from './CheckboxInput'
-import SelectInput from './SelectInput'
-import ColorInput from './ColorInput'
-import FileInput from './FileInput'
-import ImageInput from './ImageInput'
-import RatingInput from './RatingInput'
-import FlatSelectInput from './FlatSelectInput'
-import ToggleSwitchInput from './ToggleSwitchInput'
+import AlertError from './validation/AlertError.vue'
+import AlertSuccess from './validation/AlertSuccess.vue'
+import VCheckbox from './components/VCheckbox.vue'
+import TextInput from './TextInput.vue'
+import TextAreaInput from './TextAreaInput.vue'
+import VSelect from './components/VSelect.vue'
+import CheckboxInput from './CheckboxInput.vue'
+import SelectInput from './SelectInput.vue'
+import ColorInput from './ColorInput.vue'
+import FileInput from './FileInput.vue'
+import ImageInput from './ImageInput.vue'
+import RatingInput from './RatingInput.vue'
+import FlatSelectInput from './FlatSelectInput.vue'
+import ToggleSwitchInput from './ToggleSwitchInput.vue'
 
 // Components that are registered globaly.
 [
@@ -38,7 +38,6 @@ import ToggleSwitchInput from './ToggleSwitchInput'
 })
 
 // Lazy load some heavy component
-Vue.component('SignatureInput', () => import('./SignatureInput'))
-Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput'))
-Vue.component('DateInput', () => import('./DateInput'))
-Vue.component('SimpleDateInput', () => import('./SimpleDateInput'))
+Vue.component('SignatureInput', () => import('./SignatureInput.vue'))
+Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput.vue'))
+Vue.component('DateInput', () => import('./DateInput.vue'))

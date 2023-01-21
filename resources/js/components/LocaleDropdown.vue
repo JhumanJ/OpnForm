@@ -18,8 +18,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { loadMessages } from '~/plugins/i18n'
-import Dropdown from './common/Dropdown'
+import { loadMessages } from '~/plugins/i18n.js'
+import Dropdown from './common/Dropdown.vue'
 
 export default {
   components: { Dropdown },

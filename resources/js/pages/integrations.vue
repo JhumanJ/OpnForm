@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import OpenFormFooter from '../components/pages/OpenFormFooter'
+import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 
 export default {
   components: { OpenFormFooter },

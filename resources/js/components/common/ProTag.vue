@@ -45,8 +45,7 @@
 </template>
 
 <script>
-import Modal from '../Modal'
-import axios from 'axios'
+import Modal from '../Modal.vue'
 import { mapGetters } from 'vuex'
 
 export default {

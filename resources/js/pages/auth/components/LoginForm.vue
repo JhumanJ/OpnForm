@@ -39,9 +39,9 @@
 <script>
 import Form from 'vform'
 import Cookies from 'js-cookie'
-import OpenFormFooter from '../../../components/pages/OpenFormFooter'
-import Testimonials from '../../../components/pages/welcome/Testimonials'
-import ForgotPasswordModal from '../ForgotPasswordModal'
+import OpenFormFooter from '../../../components/pages/OpenFormFooter.vue'
+import Testimonials from '../../../components/pages/welcome/Testimonials.vue'
+import ForgotPasswordModal from '../ForgotPasswordModal.vue'
 
 export default {
   name: 'LoginForm',

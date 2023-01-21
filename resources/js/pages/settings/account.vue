@@ -18,7 +18,7 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
-import SeoMeta from '../../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   scrollToTop: false,

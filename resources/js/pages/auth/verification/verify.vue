@@ -28,7 +28,7 @@
 
 <script>
 import axios from 'axios'
-import SeoMeta from '../../../mixins/seo-meta'
+import SeoMeta from '../../../mixins/seo-meta.js'
 
 const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 

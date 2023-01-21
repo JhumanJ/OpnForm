@@ -139,8 +139,8 @@
 </template>
 
 <script>
-import Modal from '../Modal'
-import inputMixin from '~/mixins/forms/input'
+import Modal from '../Modal.vue'
+import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'FileInput',

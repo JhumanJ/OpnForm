@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse'
-import SelectInput from '../../../../forms/SelectInput'
+import Collapse from '../../../../common/Collapse.vue'
+import SelectInput from '../../../../forms/SelectInput.vue'
 import { mapState } from 'vuex'
 import clonedeep from 'clone-deep'
 
