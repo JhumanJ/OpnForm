@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse'
-import FormFieldsEditor from '../FormFieldsEditor'
+import Collapse from '../../../../common/Collapse.vue'
+import FormFieldsEditor from '../FormFieldsEditor.vue'
 
 export default {
   components: { Collapse, FormFieldsEditor },

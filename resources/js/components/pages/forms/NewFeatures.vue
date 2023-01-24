@@ -64,7 +64,7 @@
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import VTransition from '../../common/transitions/VTransition'
+import VTransition from '../../common/transitions/VTransition.vue'
 
 export default {
   components: { VTransition },

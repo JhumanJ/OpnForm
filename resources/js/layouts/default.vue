@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar'
-import Alert from '../components/common/Alert'
+import Navbar from '~/components/Navbar.vue'
+import Alert from '../components/common/Alert.vue'
 
 export default {
   name: 'MainLayout',

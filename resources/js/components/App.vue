@@ -38,26 +38,25 @@
 </template>
 
 <script>
-import Loading from './Loading'
-import { mapState } from 'vuex'
-import Hotjar from './service/Hotjar'
-import Amplitude from './service/Amplitude'
-import Crisp from './service/Crisp'
-import StopImpersonation from './pages/StopImpersonation'
-import Notifications from "./common/Notifications"
-import SeoMeta from '../mixins/seo-meta'
+import Loading from './Loading.vue'
+import Hotjar from './service/Hotjar.vue'
+import Amplitude from './service/Amplitude.vue'
+import Crisp from './service/Crisp.vue'
+import StopImpersonation from './pages/StopImpersonation.vue'
+import Notifications from "./common/Notifications.vue"
+import SeoMeta from '../mixins/seo-meta.js'
 
 // Load layout components dynamically.
-const requireContext = require.context('~/layouts', false, /.*\.vue$/)
+const requireContext = import.meta.glob('../layouts/**.vue')
 
-const layouts = requireContext.keys()
+const layouts = {}
+Object.keys(requireContext)
   .map(file =>
-    [file.replace(/(^.\/)|(\.vue$)/g, ''), requireContext(file)]
+    [file.match(/[^/]*(?=\.[^.]*$)/)[0], requireContext[file]]
   )
-  .reduce((components, [name, component]) => {
-    components[name] = component.default || component
-    return components
-  }, {})
+  .forEach(([name, component]) => {
+    layouts[name] = component.default || component
+  })
 
 export default {
   el: '#app',

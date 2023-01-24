@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import OpenTag from './OpenTag'
+import OpenTag from './OpenTag.vue'
 
 export default {
   components: { OpenTag },

@@ -21,7 +21,7 @@
 
 <script>
 import { VueEditor, Quill } from 'vue2-editor'
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
 Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('notion')
 

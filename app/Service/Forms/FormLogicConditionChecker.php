@@ -173,6 +173,25 @@ class FormLogicConditionChecker
         return ($fieldDate >= now()->toDateString() && $fieldDate <= now()->addYears(1)->toDateString());
     }
 
+    private function checkLength ($condition, $fieldValue, $operator = '==='): bool {
+        if(!$fieldValue || strlen($fieldValue) === 0) return false;
+        switch ($operator) {
+          case '===':
+            return strlen($fieldValue) === (int)$condition['value'];
+          case '!==':
+            return strlen($fieldValue) !== (int)$condition['value'];
+          case '>':
+            return strlen($fieldValue) > (int)$condition['value'];
+          case '>=':
+            return strlen($fieldValue) >= (int)$condition['value'];
+          case '<':
+            return strlen($fieldValue) < (int)$condition['value'];
+          case '<=':
+            return strlen($fieldValue) <= (int)$condition['value'];
+        }
+        return false;
+    }
+
 
     private function textConditionMet (array $propertyCondition, $value): bool {
         switch ($propertyCondition['operator']) {
@@ -192,6 +211,18 @@ class FormLogicConditionChecker
             return $this->checkIsEmpty($propertyCondition, $value);
           case 'is_not_empty':
             return !$this->checkIsEmpty($propertyCondition, $value);
+          case 'content_length_equals':
+            return $this->checkLength($propertyCondition, $value, '===');
+          case 'content_length_does_not_equal':
+            return $this->checkLength($propertyCondition, $value, '!==');
+          case 'content_length_greater_than':
+            return $this->checkLength($propertyCondition, $value, '>');
+          case 'content_length_greater_than_or_equal_to':
+            return $this->checkLength($propertyCondition, $value, '>=');
+          case 'content_length_less_than':
+            return $this->checkLength($propertyCondition, $value, '<');
+          case 'content_length_less_than_or_equal_to':
+            return $this->checkLength($propertyCondition, $value, '<=');
         }
         return false;
     }
@@ -214,6 +245,18 @@ class FormLogicConditionChecker
             return $this->checkIsEmpty($propertyCondition, $value);
           case 'is_not_empty':
             return !$this->checkIsEmpty($propertyCondition, $value);
+          case 'content_length_equals':
+            return $this->checkLength($propertyCondition, $value, '===');
+          case 'content_length_does_not_equal':
+            return $this->checkLength($propertyCondition, $value, '!==');
+          case 'content_length_greater_than':
+            return $this->checkLength($propertyCondition, $value, '>');
+          case 'content_length_greater_than_or_equal_to':
+            return $this->checkLength($propertyCondition, $value, '>=');
+          case 'content_length_less_than':
+            return $this->checkLength($propertyCondition, $value, '<');
+          case 'content_length_less_than_or_equal_to':
+            return $this->checkLength($propertyCondition, $value, '<=');
         }
         return false;
     }

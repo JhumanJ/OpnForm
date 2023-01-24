@@ -72,13 +72,13 @@
 </template>
 
 <script>
-import OpenText from './components/OpenText'
-import OpenUrl from './components/OpenUrl'
-import OpenSelect from './components/OpenSelect'
-import OpenDate from './components/OpenDate'
-import OpenFile from './components/OpenFile'
-import OpenCheckbox from './components/OpenCheckbox'
-import ResizableTh from './components/ResizableTh'
+import OpenText from './components/OpenText.vue'
+import OpenUrl from './components/OpenUrl.vue'
+import OpenSelect from './components/OpenSelect.vue'
+import OpenDate from './components/OpenDate.vue'
+import OpenFile from './components/OpenFile.vue'
+import OpenCheckbox from './components/OpenCheckbox.vue'
+import ResizableTh from './components/ResizableTh.vue'
 import clonedeep from 'clone-deep'
 
 const cyrb53 = function (str, seed = 0) {

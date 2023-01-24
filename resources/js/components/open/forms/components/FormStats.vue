@@ -39,7 +39,7 @@ import {
   CategoryScale,
   PointElement
 } from 'chart.js'
-import ProTag from '../../../common/ProTag'
+import ProTag from '../../../common/ProTag.vue'
 
 ChartJS.register(
   Title,

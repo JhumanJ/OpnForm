@@ -32,7 +32,7 @@ import { highlight, languages } from 'prismjs/components/prism-core'
 import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-markup'
 import 'prismjs/themes/prism-tomorrow.css' // import syntax highlighting styles
-import inputMixin from '~/mixins/forms/input'
+import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'CodeInput',

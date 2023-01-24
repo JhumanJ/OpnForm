@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import VSwitch from '../../../../forms/components/VSwitch'
-import OpenCompleteForm from '../../OpenCompleteForm'
+import VSwitch from '../../../../forms/components/VSwitch.vue'
+import OpenCompleteForm from '../../OpenCompleteForm.vue'
 
 export default {
   components: { OpenCompleteForm, VSwitch },

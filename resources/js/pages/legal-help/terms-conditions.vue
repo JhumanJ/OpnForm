@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import OpenFormFooter from '../../components/pages/OpenFormFooter'
-import SeoMeta from '../../mixins/seo-meta'
+import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { OpenFormFooter },

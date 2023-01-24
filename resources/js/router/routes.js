@@ -1,5 +1,6 @@
 function page (path) {
-  return () => import(/* webpackChunkName: '' */ `~/pages/${path}`).then(m => m.default || m)
+  const pages = import.meta.glob('../pages/**')
+  return pages[`../pages/${path}`]
 }
 
 export default [

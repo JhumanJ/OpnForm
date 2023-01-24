@@ -16,8 +16,8 @@
 
 <script>
 import axios from 'axios'
-import VButton from '../../components/common/Button'
-import SeoMeta from '../../mixins/seo-meta'
+import VButton from '../../components/common/Button.vue'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { VButton },

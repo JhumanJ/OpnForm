@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import VTransition from './transitions/VTransition'
+import VTransition from './transitions/VTransition.vue'
 export default {
   name: 'Collapse',
   components: { VTransition },

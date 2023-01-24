@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import LoginForm from './LoginForm'
-import RegisterForm from './RegisterForm'
+import LoginForm from './LoginForm.vue'
+import RegisterForm from './RegisterForm.vue'
 
 export default {
   name: 'QuickRegister',

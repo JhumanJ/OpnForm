@@ -63,12 +63,12 @@
 <script>
 import axios from 'axios'
 import Form from 'vform'
-import OpenFormButton from './OpenFormButton'
+import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
-import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver'
+import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key'
+import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 
 export default {
   name: 'OpenForm',
@@ -381,9 +381,6 @@ export default {
       if (field.type === 'signature') {
         return 'SignatureInput'
       }
-      if (field.type === 'date' && field.simple_date_input) {
-        return 'SimpleDateInput'
-      }
       return this.fieldComponents[field.type]
     },
     getFieldClasses(field) {
@@ -443,9 +440,6 @@ export default {
           inputProperties.disablePastDates = true
         } else if (field.disable_future_dates) {
           inputProperties.disableFutureDates = true
-        }
-        if (field.simple_date_input && field.simple_date_input_format) {
-          inputProperties.dateFormat = field.simple_date_input_format
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)

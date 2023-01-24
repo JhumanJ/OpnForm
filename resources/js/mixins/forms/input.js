@@ -1,4 +1,4 @@
-import { themes } from '~/config/form-themes'
+import { themes } from '~/config/form-themes.js'
 
 export default {
   props: {

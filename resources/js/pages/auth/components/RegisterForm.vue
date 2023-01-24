@@ -44,9 +44,9 @@
 
 <script>
 import Form from 'vform'
-import LoginWithGithub from '~/components/LoginWithGithub'
-import SelectInput from '../../../components/forms/SelectInput'
-import { initCrisp } from '../../../middleware/check-auth'
+import LoginWithGithub from '~/components/LoginWithGithub.vue'
+import SelectInput from '../../../components/forms/SelectInput.vue'
+import { initCrisp } from '../../../middleware/check-auth.js'
 
 export default {
   name: 'RegisterForm',

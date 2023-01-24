@@ -75,7 +75,7 @@
 <script>
 import Form from 'vform'
 import {mapActions, mapState} from 'vuex'
-import SeoMeta from '../../mixins/seo-meta'
+import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: {},

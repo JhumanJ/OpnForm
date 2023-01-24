@@ -132,9 +132,8 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import Dropdown from './common/Dropdown'
-import axios from 'axios'
-import WorkspaceDropdown from './WorkspaceDropdown'
+import Dropdown from './common/Dropdown.vue'
+import WorkspaceDropdown from './WorkspaceDropdown.vue'
 
 export default {
   components: {
