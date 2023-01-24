@@ -52,8 +52,8 @@ services:
       POSTGRES_DB: 'postgres'
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready', '-d', 'postgres' ]
-      start_period: 2s
-      interval: 30s
+      start_period: 5s
+      interval: 5s
       timeout: 10s
       retries: 3
   migrate:
