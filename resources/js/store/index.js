@@ -5,7 +5,6 @@ Vue.use(Vuex)
 
 // Load store modules dynamically.
 const requireContext = require.context('./modules', true, /.*\.js$/)
-
 const modules = requireContext.keys()
   .map(file =>
     [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)]
@@ -17,7 +16,6 @@ const modules = requireContext.keys()
 
     return { ...modules, [name]: module }
   }, {})
-
 export default new Vuex.Store({
   modules
 })
