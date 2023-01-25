@@ -24,7 +24,7 @@
           >
             Help
           </a>
-          <a href="https://help.opnform.com/en/" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+          <a href="https://github.com/JhumanJ/OpnForm/discussions" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              target="_blank" v-else
           >
             Help
