@@ -29,8 +29,14 @@ class FormSubmissionFormatter
 
     private $showRemovedFields = false;
 
+    /**
+     * Logic resolver needs an array id => value, so we create it here
+     */
+    private $idFormData = null;
+
     public function __construct(private Form $form, private array $formData)
     {
+       $this->initIdFormData();
     }
 
     public function createLinks()
@@ -88,9 +94,9 @@ class FormSubmissionFormatter
                 continue;
             }
 
-            // If should hide hidden fields
+            // If hide hidden fields
             if (!$this->showHiddenFields) {
-                if (isset($field['hidden']) && $field['hidden']) {
+                if (FormLogicPropertyResolver::isHidden($field, $this->idFormData)) {
                     continue;
                 }
             }
@@ -149,7 +155,7 @@ class FormSubmissionFormatter
 
             // If hide hidden fields
             if (!$this->showHiddenFields) {
-                if (isset($field['hidden']) && $field['hidden']) {
+                if (FormLogicPropertyResolver::isHidden($field, $this->idFormData)) {
                     continue;
                 }
             }
@@ -202,6 +208,18 @@ class FormSubmissionFormatter
             $transformedFields[] = $field;
         }
         return $transformedFields;
+    }
+
+    private function initIdFormData() {
+        $formProperties = collect($this->form->properties);
+        foreach ($this->formData as $key => $value) {
+            $property = $formProperties->first(function ($item) use ($key) {
+                return $item['id'] == $key;
+            });
+            if ($property) {
+                $this->idFormData[$property['id']] = $value;
+            }
+        }
     }
 
 }

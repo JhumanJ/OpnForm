@@ -43,7 +43,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
                 'fields' => $formatter->getFieldsWithValue(),
                 'form' => $form,
                 'noBranding' => $form->no_branding,
-                'submission_id' => isset($this->event->data['submission_id']) ? $this->event->data['submission_id'] : ''
+                'submission_id' => $this->event->data['submission_id'] ?? null
             ]);
     }
 
