@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'help_url' => 'https://help.opnform.com/',
+    'help_url' => 'https://github.com/JhumanJ/OpnForm/discussions',
     'helpdesk_sitemap_url' => 'https://notionforms.crisp.help/sitemap.xml',
     'changelog_url' => 'https://opnform.canny.io/changelog',
     'github_url' => 'https://github.com/JhumanJ/OpnForm',

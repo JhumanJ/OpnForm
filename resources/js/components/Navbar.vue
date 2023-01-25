@@ -24,7 +24,7 @@
           >
             Help
           </a>
-          <a href="https://github.com/JhumanJ/OpnForm/discussions" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+          <a :href="helpUrl" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              target="_blank" v-else
           >
             Help
@@ -147,6 +147,7 @@ export default {
 
   computed: {
     githubUrl: () => window.config.links.github_url,
+    helpUrl: () => window.config.links.help_url,
     form() {
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
         return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
@@ -182,7 +183,7 @@ export default {
     },
     hasCrisp() {
       return window.config.crisp_website_id
-    }
+    },
   },
 
   methods: {
