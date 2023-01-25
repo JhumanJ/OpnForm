@@ -256,7 +256,7 @@ export default {
       }
 
       if (this.form.editable_submissions && this.form.submission_id) {
-        this.dataForm["submission_id"] = this.form.submission_id
+        this.dataForm.submission_id = this.form.submission_id
       }
 
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
@@ -290,18 +290,20 @@ export default {
       }
     },
     async getSubmissionData() {
-      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
-        return null
-      }
-      const response = await axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id)
-      return response.data
+      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) { return null }
+      await this.$store.dispatch('open/records/loadRecord',
+        axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((response) => {
+          return { submission_id: this.form.submission_id, ...response.data.data }
+        })
+      )
+      return this.$store.getters['open/records/getById'](this.form.submission_id)
     },
     async initForm() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
-        let urlParam = new URLSearchParams(window.location.search)
+        const urlParam = new URLSearchParams(window.location.search)
         if (urlParam && urlParam.get('submission_id')) {
           this.form.submission_id = urlParam.get('submission_id')
-          const {data} = await this.getSubmissionData()
+          const data = await this.getSubmissionData()
           if (data !== null && data) {
             this.dataForm = new Form(data)
             return
