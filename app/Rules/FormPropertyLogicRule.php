@@ -339,7 +339,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                     ]
                 ],
                 'does_not_contain' => [
-                    'expected_type' => 'object',
+                    'expected_type' => ['object', 'string'],
                     'format' => [
                         'type' => 'uuid',
                     ]
@@ -472,6 +472,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
 
     private $isConditionCorrect = true;
     private $isActionCorrect = true;
+    private $conditionErrors = [];
     private $field = [];
     private $data = [];
 
@@ -480,26 +481,31 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
 
         if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition body';
             return;
         }
 
         if (!isset($condition['value']['property_meta'])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition property';
             return;
         }
 
         if (!isset($condition['value']['property_meta']['type'])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition property type';
             return;
         }
         
         if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition operator';
             return;
         }
 
         if (!isset($condition['value']['value'])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition value';
             return;
         }
 
@@ -509,13 +515,17 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
 
         if (!isset(self::CONDITION_MAPPING[$typeField])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'configuration not found for condition type';
             return;
         }
 
         if (!isset(self::CONDITION_MAPPING[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'configuration not found for condition operator';
             return;
         }
+
+        // TODO: find what's causing the issue when saving this validation rule :(
 
         $type = self::CONDITION_MAPPING[$typeField]['comparators'][$operator]['expected_type'];
 
@@ -532,6 +542,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         } else {
             if (!$this->valueHasCorrectType($type, $value)) {
                 $this->isConditionCorrect = false;
+                $this->conditionErrors[] = 'wrong type of condition value';
             }
         }
     }
@@ -553,16 +564,19 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
     {
         if (isset($conditions['operatorIdentifier'])) {
             if (($conditions['operatorIdentifier'] !== 'and') && ($conditions['operatorIdentifier'] !== 'or')) {
+                $this->conditionErrors[] = 'missing operator';
                 $this->isConditionCorrect = false;
                 return;
             }
 
             if (isset($conditions['operatorIdentifier']['children'])) {
+                $this->conditionErrors[] = 'extra condition';
                 $this->isConditionCorrect = false;
                 return;
             }
 
             if (!is_array($conditions['children'])) {
+                $this->conditionErrors[] = 'wrong sub-condition type';
                 $this->isConditionCorrect = false;
                 return;
             }
@@ -616,14 +630,17 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
      */
     public function message() 
     {
-        $errorList = [];
-        if(!$this->isConditionCorrect){
-            $errorList[] = "The logic conditions for ".$this->field['name']." are not complete.";
+        $message = null;
+        if (! $this->isConditionCorrect) {
+            $message = 'The logic conditions for '.$this->field['name'].' are not complete.';
+        } else if (! $this->isActionCorrect) {
+            $message = 'The logic actions for '.$this->field['name'].' are not valid.';
         }
-        if(!$this->isActionCorrect){
-            $errorList[] = "The logic actions for ".$this->field['name']." are not valid.";
+        if (count($this->conditionErrors) > 0) {
+            return $message . ' Error detail(s): '.implode(', ', $this->conditionErrors);
         }
-        return $errorList;
+
+        return $message;
     }
 
     /**
@@ -635,6 +652,9 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
     public function setData($data)
     {
         $this->data = $data;
+        $this->isConditionCorrect = true;
+        $this->isActionCorrect = true;
+        $this->conditionErrors = [];
 
         return $this;
     }
