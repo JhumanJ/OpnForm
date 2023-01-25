@@ -426,6 +426,10 @@ export default {
 
   methods: {
     onChangeType(newType) {
+      if(['select', 'multi_select'].includes(this.field.type)){
+        this.$set(this.field, newType, this.field[this.field.type]) // Set new options with new type
+        this.$delete(this.field, this.field.type) // remove old type options
+      }
       this.$set(this.field, 'type', newType)
     },
     close() {
