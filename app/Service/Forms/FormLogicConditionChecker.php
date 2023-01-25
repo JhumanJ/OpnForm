@@ -94,7 +94,7 @@ class FormLogicConditionChecker
         return str_starts_with($fieldValue, $condition['value']);
     }
 
-    private function checkendsWith ($condition, $fieldValue): bool {
+    private function checkEndsWith ($condition, $fieldValue): bool {
         return str_ends_with($fieldValue, $condition['value']);
     }
 
@@ -206,7 +206,7 @@ class FormLogicConditionChecker
           case 'starts_with':
             return $this->checkStartsWith($propertyCondition, $value);
           case 'ends_with':
-            return $this->checkendsWith($propertyCondition, $value);
+            return $this->checkEndsWith($propertyCondition, $value);
           case 'is_empty':
             return $this->checkIsEmpty($propertyCondition, $value);
           case 'is_not_empty':

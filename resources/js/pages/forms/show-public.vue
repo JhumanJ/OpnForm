@@ -34,7 +34,16 @@
           <loader class="h-6 w-6 text-nt-blue mx-auto" />
         </p>
       </div>
-      <open-complete-form v-else ref="open-complete-form" :form="form" class="mb-10" @password-entered="passwordEntered" />
+      <template v-else>
+        <div v-if="recordLoading">
+          <p class="text-center mt-6 p-4">
+            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          </p>
+        </div>
+        <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"
+                              @password-entered="passwordEntered"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -125,7 +134,6 @@ export default {
 
   data () {
     return {
-      loading: false,
       submitted: false
     }
   },
@@ -160,7 +168,8 @@ export default {
   computed: {
     ...mapState({
       forms: state => state['open/forms'].content,
-      formLoading: state => state['open/forms'].loading
+      formLoading: state => state['open/forms'].loading,
+      recordLoading: state => state['open/records'].loading
     }),
     formSlug () {
       return this.$route.params.slug
@@ -175,7 +184,7 @@ export default {
       return this.form ? this.form.title : 'Create beautiful forms'
     },
     metaDescription () {
-      return (this.form && this.form.description) ? this.form.description.substring(0,160) : null
+      return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
     },
     metaImage () {
       return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
