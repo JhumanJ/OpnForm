@@ -182,11 +182,19 @@ function resolveComponents (components) {
 function getMiddleware (components) {
   const middleware = [...globalMiddleware]
 
-  components.filter(c => c.middleware).forEach(component => {
-    if (Array.isArray(component.middleware)) {
-      middleware.push(...component.middleware)
+  components.forEach(component => {
+
+    let compMiddleware
+    if (component.middleware) {
+      compMiddleware = component.middleware
+    } else if (component.default && component.default.middleware) {
+      compMiddleware = component.default.middleware
+    }
+
+    if (Array.isArray(compMiddleware)) {
+      middleware.push(...compMiddleware)
     } else {
-      middleware.push(component.middleware)
+      middleware.push(compMiddleware)
     }
   })
 
