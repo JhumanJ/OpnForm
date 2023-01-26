@@ -86,7 +86,13 @@ async function beforeEach (to, from, next) {
   callMiddleware(middleware, to, from, (...args) => {
     // Set the application layout only if "next()" was called with no args.
     if (args.length === 0) {
-      router.app.setLayout(components[0].layout || '')
+      if (components[0].layout) {
+        router.app.setLayout(components[0].layout)
+      } else if (components[0].default && components[0].default.layout) {
+        router.app.setLayout(components[0].default.layout)
+      } else {
+        router.app.setLayout('')
+      }
     }
 
     next(...args)

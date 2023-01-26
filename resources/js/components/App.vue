@@ -47,7 +47,7 @@ import Notifications from "./common/Notifications.vue"
 import SeoMeta from '../mixins/seo-meta.js'
 
 // Load layout components dynamically.
-const requireContext = import.meta.glob('../layouts/**.vue')
+const requireContext = import.meta.glob('../layouts/**.vue', { eager: true })
 
 const layouts = {}
 Object.keys(requireContext)
@@ -86,7 +86,7 @@ export default {
       confirmationCancel: null
     }
   }),
-  
+
   mounted () {
     this.$loading = this.$refs.loading
   },
