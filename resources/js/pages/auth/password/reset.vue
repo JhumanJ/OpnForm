@@ -63,11 +63,15 @@ export default {
 
   methods: {
     async reset () {
-      const { data } = await this.form.post('/api/password/reset')
+      const { data } = await this.form.post('/api/password/reset').then((response) => {
+        if(response.status == 200){
+          setTimeout(() => {
+            this.$router.push({ name: 'login' })
+          }, 5000)
+        }
+      });
 
       this.status = data.status
-
-      this.form.reset()
     }
   }
 }
