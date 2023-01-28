@@ -435,9 +435,6 @@ export default {
         } else if (field.date_range) {
           inputProperties.dateRange = true
         }
-        if (field.use_am_pm) {
-          inputProperties.amPm = true
-        }
         if (field.disable_past_dates) {
           inputProperties.disablePastDates = true
         } else if (field.disable_future_dates) {

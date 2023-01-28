@@ -241,10 +241,6 @@ function scrollBehavior (to, from, savedPosition) {
  * @param  {Object} requireContext
  * @return {Object}
  */
-/**
- * @param  {Object} requireContext
- * @return {Object}
- */
 function resolveMiddleware (requireContext) {
   const middlewares = {}
   Object.keys(requireContext)
