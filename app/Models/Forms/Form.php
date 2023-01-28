@@ -39,6 +39,7 @@ class Form extends Model
         'notification_body',
         'notifications_include_submission',
         'slack_webhook_url',
+        'discord_webhook_url',
 
         // integrations
         'webhook_url',
@@ -98,6 +99,7 @@ class Form extends Model
         'workspace_id',
         'notifies',
         'slack_webhook_url',
+        'discord_webhook_url',
         'webhook_url',
         'send_submission_confirmation',
         'redirect_url',
@@ -248,6 +250,12 @@ class Form extends Model
     public static function newFactory()
     {
         return FormFactory::new();
+    }
+
+
+    public function getNotifiesDiscordAttribute()
+    {
+        return !empty($this->discord_webhook_url);
     }
 
     public function getNotifiesSlackAttribute()
