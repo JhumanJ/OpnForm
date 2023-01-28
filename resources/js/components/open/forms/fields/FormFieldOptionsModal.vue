@@ -419,9 +419,6 @@ export default {
     if (['text', 'number', 'url', 'email', 'phone_number'].includes(this.field.type) && !this.field.max_char_limit) {
       this.field.max_char_limit = 2000
     }
-    if (this.field.type == 'date' && !this.field.simple_date_input_format) {
-      this.field.simple_date_input_format = this.dateFormatOptions[0]['value']
-    }
   },
 
   methods: {
@@ -463,14 +460,12 @@ export default {
       if (this.field.date_range) {
         this.$set(this.field, 'with_time', false)
         this.$set(this.field, 'prefill_today', false)
-        this.$set(this.field, 'simple_date_input', false)
       }
     },
     onFieldWithTimeChange(val) {
       this.$set(this.field, 'with_time', val)
       if (this.field.with_time) {
         this.$set(this.field, 'date_range', false)
-        this.$set(this.field, 'simple_date_input', false)
       }
     },
     onFieldGenUIdChange(val) {
@@ -537,13 +532,6 @@ export default {
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
-      }
-    },
-    onFieldSimpleDateInputChange(val) {
-      this.$set(this.field, 'simple_date_input', val)
-      if (this.field.simple_date_input) {
-        this.$set(this.field, 'with_time', false)
-        this.$set(this.field, 'date_range', false)
       }
     }
   }

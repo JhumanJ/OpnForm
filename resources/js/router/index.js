@@ -90,6 +90,8 @@ async function beforeEach (to, from, next) {
         router.app.setLayout(components[0].layout)
       } else if (components[0].default && components[0].default.layout) {
         router.app.setLayout(components[0].default.layout)
+      } else {
+        router.app.setLayout('')
       }
     }
 
@@ -235,10 +237,6 @@ function scrollBehavior (to, from, savedPosition) {
   })
 }
 
-/**
- * @param  {Object} requireContext
- * @return {Object}
- */
 /**
  * @param  {Object} requireContext
  * @return {Object}
