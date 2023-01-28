@@ -91,7 +91,7 @@ async function beforeEach (to, from, next) {
       } else if (components[0].default && components[0].default.layout) {
         router.app.setLayout(components[0].default.layout)
       } else {
-        router.app.setLayout('')
+        router.app.setLayout(null)
       }
     }
 
