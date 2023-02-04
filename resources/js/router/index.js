@@ -91,7 +91,7 @@ async function beforeEach (to, from, next) {
       } else if (components[0].default && components[0].default.layout) {
         router.app.setLayout(components[0].default.layout)
       } else {
-        router.app.setLayout('')
+        router.app.setLayout(null)
       }
     }
 
@@ -133,7 +133,10 @@ function callMiddleware (middleware, to, from, next) {
       return next(...args)
     }
 
-    const { middleware, params } = parseMiddleware(stack.pop())
+    const {
+      middleware,
+      params
+    } = parseMiddleware(stack.pop())
 
     if (typeof middleware === 'function') {
       middleware(to, from, _next, params)
@@ -183,7 +186,6 @@ function getMiddleware (components) {
   const middleware = [...globalMiddleware]
 
   components.forEach(component => {
-
     let compMiddleware
     if (component.middleware) {
       compMiddleware = component.middleware
@@ -191,10 +193,12 @@ function getMiddleware (components) {
       compMiddleware = component.default.middleware
     }
 
-    if (Array.isArray(compMiddleware)) {
-      middleware.push(...compMiddleware)
-    } else {
-      middleware.push(compMiddleware)
+    if (compMiddleware) {
+      if (Array.isArray(compMiddleware)) {
+        middleware.push(...compMiddleware)
+      } else {
+        middleware.push(compMiddleware)
+      }
     }
   })
 
@@ -237,7 +241,7 @@ function scrollBehavior (to, from, savedPosition) {
  * @param  {Object} requireContext
  * @return {Object}
  */
-function resolveMiddleware(requireContext) {
+function resolveMiddleware (requireContext) {
   const middlewares = {}
   Object.keys(requireContext)
     .map(file =>
