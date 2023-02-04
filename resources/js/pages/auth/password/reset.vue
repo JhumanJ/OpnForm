@@ -62,13 +62,16 @@ export default {
   },
 
   methods: {
-    async reset () {
-      const { data } = await this.form.post('/api/password/reset').then((response) => {
+    reset () {
+      const { data } = this.form.post('/api/password/reset').then((response) => {
         if(response.status == 200){
+          this.alertSuccess('The password was successfully reset.')
           setTimeout(() => {
             this.$router.push({ name: 'login' })
-          }, 5000)
+          }, 6000)
         }
+      }).catch((e)=>{
+        console.log(e, 'error')
       });
 
       this.status = data.status
