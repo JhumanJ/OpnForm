@@ -25,7 +25,6 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
-        <server name="DB_CONNECTION" value="pgsql"/>
         <server name="DB_FOREIGN_KEYS" value="(false)"/>
         <server name="MAIL_MAILER" value="log"/>
         <server name="MAIL_FROM_ADDRESS" value="notifications@notionforms.io"/>
