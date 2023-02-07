@@ -350,9 +350,13 @@ export default {
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
           const dateObj = new Date()
-          const currentDate = dateObj.getFullYear() + '-' +
+          let currentDate = dateObj.getFullYear() + '-' +
             String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
             String(dateObj.getDate()).padStart(2, '0')
+          if(field.with_time === true){
+            currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
+            String(dateObj.getMinutes()).padStart(2, '0');
+          }
           formData[field.id] = currentDate
         } else { // Default prefill if any
           formData[field.id] = field.prefill
