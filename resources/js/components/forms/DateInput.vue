@@ -94,7 +94,7 @@ export default {
           this.compVal = null
         }
       },
-      immediate: true
+      immediate: false
     },
     toDate: {
       handler(val) {
@@ -107,7 +107,7 @@ export default {
           this.compVal = null
         }
       },
-      immediate: true
+      immediate: false
     }
   },
 
