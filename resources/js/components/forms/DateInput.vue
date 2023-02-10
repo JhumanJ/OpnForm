@@ -87,7 +87,14 @@ export default {
     },
     fromDate: {
       handler(val) {
-        this.compVal = (this.dateRange) ? [this.dateToUTC(val)] : this.dateToUTC(val)
+        if(this.dateRange){
+          if(!Array.isArray(this.compVal)){
+            this.compVal = [];
+          }
+          this.compVal[0] = this.dateToUTC(val)
+        }else{
+          this.compVal = this.dateToUTC(val)
+        }
       },
       immediate: false
     },
