@@ -122,6 +122,24 @@ class AnswerFormRequest extends FormRequest
     }
 
     /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        $messages = [];
+        foreach ($this->form->properties as $property) {
+            if($property['type'] == 'date' && isset($property['date_range']) && $property['date_range']){
+                $messages[$property['id'].'.0.required_with'] = "From date is required";
+                $messages[$property['id'].'.1.required_with'] = "To date is required";
+                $messages[$property['id'].'.0.before_or_equal'] = "From date must be before or equal To date";
+            }
+        }
+        return $messages;
+    }
+
+    /**
      * Return validation rules for a given form property
      * @param $property
      */
@@ -160,6 +178,8 @@ class AnswerFormRequest extends FormRequest
             case 'date':
                 if (isset($property['date_range']) && $property['date_range']) {
                     $this->requestRules[$property['id'].'.*'] = $this->getRulesForDate($property);
+                    $this->requestRules[$property['id'].'.0'] = ['required_with:'.$property['id'].'.1', 'before_or_equal:'.$property['id'].'.1'];
+                    $this->requestRules[$property['id'].'.1'] = ['required_with:'.$property['id'].'.0'];
                     return ['array', 'min:2'];
                 }
                 return $this->getRulesForDate($property);

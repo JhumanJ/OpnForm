@@ -87,22 +87,24 @@ export default {
     },
     fromDate: {
       handler(val) {
-        this.toDate = null
-        if(val){
-          this.compVal = (this.dateRange) ? [val] : val
+        if(this.dateRange){
+          if(!Array.isArray(this.compVal)){
+            this.compVal = [];
+          }
+          this.compVal[0] = this.dateToUTC(val)
         }else{
-          this.compVal = null
+          this.compVal = this.dateToUTC(val)
         }
       },
       immediate: false
     },
     toDate: {
       handler(val) {
-        if(this.dateRange && val){
+        if(this.dateRange){
           if(!Array.isArray(this.compVal)){
             this.compVal = [null];
           }
-          this.compVal[1] = val ?? null
+          this.compVal[1] = this.dateToUTC(val)
         }else{
           this.compVal = null
         }
@@ -117,7 +119,7 @@ export default {
         this.fromDate = this.compVal[0] ?? null
         this.toDate = this.compVal[1] ?? null
       }else{
-        this.fromDate = this.compVal
+        this.fromDate = this.dateToLocal(this.compVal)
       }
     }
 
@@ -140,6 +142,29 @@ export default {
         const dateInput = this.$refs.datepicker.$el.getElementsByTagName('input')[0]
         dateInput.style.setProperty('--tw-ring-color', this.color)
       }
+    },
+    dateToUTC(val){
+      if(!val){
+        return null
+      }
+      if(!this.useTime){
+        return val
+      }
+      return new Date(val).toISOString()
+    },
+    dateToLocal(val){
+      if(!val){
+        return null
+      }
+      const dateObj = new Date(val)
+      let dateStr = dateObj.getFullYear() + '-' +
+                  String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+                  String(dateObj.getDate()).padStart(2, '0')
+      if(this.useTime){
+        dateStr += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
+        String(dateObj.getMinutes()).padStart(2, '0');
+      }
+      return dateStr
     }
   }
 }
