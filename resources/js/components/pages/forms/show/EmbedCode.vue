@@ -23,7 +23,8 @@ export default {
     name: 'EmbedCode',
     components: { CopyContent },
     props: {
-      form: { type: Object, required: true }
+      form: { type: Object, required: true },
+      extraQueryParam: { type: String, default: '' }
     },
 
     data: () => ({
@@ -32,11 +33,12 @@ export default {
 
     computed: {
       embedCode() {
-        return '<iframe style="border:none;width:100%;" height="' + this.formHeight + 'px" src="' + this.form.share_url + '"></iframe>'
+        const share_url = (this.extraQueryParam) ? this.form.share_url + "?" + this.extraQueryParam : this.form.share_url + this.extraQueryParam
+        return '<iframe style="border:none;width:100%;" height="' + this.formHeight + 'px" src="' + share_url + '"></iframe>'
       },
       formHeight() {
         let height = 200
-        if (!this.form.hide_title) {
+        if (!this.form.hide_title && !this.extraQueryParam) {
           height += 60
         }
         height += this.form.properties.filter((property) => {

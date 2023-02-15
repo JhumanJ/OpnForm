@@ -1,6 +1,6 @@
 <template>
   <div v-if="form" class="open-complete-form">
-    <h1 v-if="!form.hide_title" class="mb-4 px-2" v-text="form.title" />
+    <h1 v-if="!isHideTitle" class="mb-4 px-2" v-text="form.title" />
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -177,6 +177,9 @@ export default {
     },
     isPublicFormPage () {
       return this.$route.name === 'forms.show_public'
+    },
+    isHideTitle () {
+      return this.form.hide_title || window.location.href.includes('hide_title=true')
     }
   },
 

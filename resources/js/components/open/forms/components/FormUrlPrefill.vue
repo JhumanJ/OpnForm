@@ -28,6 +28,10 @@ export default {
     formData: {
       type: Object,
       required: true
+    },
+    extraQueryParam: { 
+      type: String, 
+      default: '' 
     }
   },
 
@@ -51,7 +55,7 @@ export default {
         }
       })
 
-      return url + '?' + uriComponents
+      return (this.extraQueryParam) ? url + '?' + uriComponents + '&' + this.extraQueryParam : url + '?' + uriComponents
     }
   },
 
