@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
 use Spatie\WebhookServer\WebhookCall;
 use App\Service\Forms\FormSubmissionFormatter;
+use Vinkla\Hashids\Facades\Hashids;
 
 class NotifyFormSubmission implements ShouldQueue
 {
@@ -57,6 +58,15 @@ class NotifyFormSubmission implements ShouldQueue
 
             $formURL = url("forms/".$event->form->slug);
             $editFormURL = url("forms/".$event->form->slug."/show");
+            $submissionId = Hashids::encode($event->data['submission_id']);
+            $externalLinks = [
+                '*<'.$formURL.'|🔗 Open Form>*',
+                '*<'.$editFormURL.'|✍️ Edit Form>*'
+            ];
+            if($event->form->editable_submissions){
+                $externalLinks[] = '*<'.$event->form->share_url.'?submission_id='.$submissionId.'|✍️ Edit Submission>*';
+            }
+
             $finalSlackPostData = [
                 'blocks' => [
                     [
@@ -77,7 +87,7 @@ class NotifyFormSubmission implements ShouldQueue
                         'type' => 'section',
                         'text' => [
                             'type' => 'mrkdwn',
-                            'text' => '*<'.$formURL.'|🔗 Open Form>*     *<'.$editFormURL.'|✍️ Edit Form>*',
+                            'text' => implode('     ', $externalLinks),
                         ]
                     ],
                 ]
