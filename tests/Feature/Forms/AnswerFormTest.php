@@ -85,6 +85,18 @@ it('can not submit draft form', function () {
         ->assertStatus(403);
 });
 
+it('can not submit visibility closed form', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'visibility' => 'closed'
+    ]);
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(403);
+});
+
 it('can not submit form with past dates', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);

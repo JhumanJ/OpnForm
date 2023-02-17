@@ -50,6 +50,7 @@
                 submission{{ form.submissions_count > 0 ? 's' : '' }}
               </li>
               <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='draft'">Draft (not public)</li>
+              <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='closed'">Closed</li>
               <li class="list-disc ml-6">Edited {{ form.last_edited_human }}</li>
             </ul>
 
