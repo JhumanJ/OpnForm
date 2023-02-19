@@ -126,7 +126,7 @@
                   help="If filled, then the form won't accept submissions after the given date"
                   :required="false"
       />
-      <rich-text-area-input v-if="form.closes_at" name="closed_text"
+      <rich-text-area-input v-if="form.closes_at || form.visibility=='closed'" name="closed_text"
                             :form="form"
                             label="Closed form text"
                             help="This message will be shown when the form will be closed"

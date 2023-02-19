@@ -20,7 +20,7 @@ class Form extends Model
     const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
     const THEMES = ['default', 'simple', 'notion'];
     const WIDTHS = ['centered', 'full'];
-    const VISIBILITY = ['public', 'draft'];
+    const VISIBILITY = ['public', 'draft', 'closed'];
 
     use HasFactory, HasSlug, SoftDeletes;
 
