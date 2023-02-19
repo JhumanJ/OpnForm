@@ -90,6 +90,10 @@ export default {
         {
           name: "Draft (form won't be accessible)",
           value: "draft"
+        },
+        {
+          name: "Closed",
+          value: "closed"
         }
       ],
       isCollapseOpen: true

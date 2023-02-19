@@ -33,7 +33,7 @@
       </div>
     </v-transition>
 
-    <div v-if="isPublicFormPage && form.is_closed"
+    <div v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
          class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 border-yellow-500"
     >
       <div class="flex-grow">
@@ -68,7 +68,7 @@
     </div>
 
     <transition
-      v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached))"
+      v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
       enter-active-class="duration-500 ease-out"
       enter-class="translate-x-full opacity-0"
       enter-to-class="translate-x-0 opacity-100"
