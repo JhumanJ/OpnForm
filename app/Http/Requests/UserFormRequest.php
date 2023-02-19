@@ -42,6 +42,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'webhook_url' => 'url|nullable',
             'use_captcha' => 'boolean',
             'slack_webhook_url' => 'url|nullable',
+            'discord_webhook_url' => 'url|nullable',
 
             // Customization
             'theme' => ['required',Rule::in(Form::THEMES)],

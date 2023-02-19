@@ -30,6 +30,7 @@ class FormResource extends JsonResource
             'submissions_count' => $this->when($this->workspaceIsPro(), $this->submissions_count),
             'notifies' => $this->notifies,
             'notifies_slack' => $this->notifies_slack,
+            'notifies_discord' => $this->notifies_discord,
             'send_submission_confirmation' => $this->send_submission_confirmation,
             'webhook_url' => $this->webhook_url,
             'redirect_url' => $this->redirect_url,
@@ -45,6 +46,7 @@ class FormResource extends JsonResource
             'visibility' => $this->visibility,
             'notification_emails' => $this->notification_emails,
             'slack_webhook_url' => $this->slack_webhook_url,
+            'discord_webhook_url' => $this->discord_webhook_url,
             'removed_properties' => $this->removed_properties,
             'last_edited_human' => $this->updated_at?->diffForHumans()
         ] : [];
