@@ -45,7 +45,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
         $this->storeSubmission($formData);
 
-        $formData["submission_id"] = $this->submissionData['submission_id'] ?? null;
+        $formData["submission_id"] = $this->submissionId;
         FormSubmitted::dispatch($this->form, $formData);
     }
 
