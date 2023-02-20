@@ -79,6 +79,40 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 
 🎉 Done! Enjoy your personal OpnForm instance at: [http://opnform.test](http://opnform.test).
 
+
+### Docker installation
+
+There's a `docker compose` setup automating most of the manual steps:
+
+```bash
+make up
+```
+
+The application is now running on [http://localhost:4000](http://localhost:4000)
+
+Alternatively, you may use the compose setup on its own
+
+```bash
+# Start the application
+docker compose up -d server
+
+# Run php commands, for example
+docker compose run php-cli artisan about
+
+# ...or update npm dependencies
+docker compose run node-cli npm ci
+```
+
+`make` keeps track of all executed targets using `.make.*` files.
+In case you'd like to start from scratch (re-install dependencies, reset jwt
+token, run migrations, ...), run
+
+```bash
+make clean
+```
+
+After that, `make` will re-execute all targets upon the next execution.
+
 ## Tech Stack
 
 OpnForm is a standard web application built with:
