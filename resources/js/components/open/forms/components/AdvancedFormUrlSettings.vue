@@ -15,6 +15,11 @@
         @input="onChangeHideTitle"
         :help="hideTitleHelp"
     />
+    <toggle-switch-input :value="value.auto_submit" name="auto_submit" class="mt-4"
+        label="Auto Submit Form"
+        help="Form will auto submit immediate after open URL"
+        @input="onChangeAutoSubmit"
+    />
   </collapse>
 </template>
 
@@ -52,6 +57,9 @@ export default {
   methods: {
     onChangeHideTitle (val) {
       this.value.hide_title = val
+    },
+    onChangeAutoSubmit (val) {
+      this.value.auto_submit = val
     }
   }
 }
