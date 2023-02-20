@@ -13,11 +13,11 @@ server:
 logs:
 	docker compose logs -f server
 
-.make.composer-install:
+.make.composer-install: composer.json composer.lock
 	docker compose run --rm composer-install
 	touch $@
 
-.make.npm-install:
+.make.npm-install: package.json package-lock.json
 	docker compose run --rm npm-install
 	touch $@
 
@@ -39,6 +39,5 @@ logs:
 
 .env:
 	cp .env.example .env
-	sed -i 's/DB_HOST=127.0.0.1/DB_HOST=database/' .env
 
 .PHONY: up down clean server

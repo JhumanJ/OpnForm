@@ -46,22 +46,21 @@ services:
   database:
     image: 'postgres:15'
     restart: 'unless-stopped'
-    environment:
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'postgres'
-      POSTGRES_DB: 'postgres'
+    env_file: '.env.docker'
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready', '-d', 'postgres' ]
       start_period: 5s
       interval: 5s
       timeout: 10s
       retries: 3
+
   migrate:
     extends:
       service: php-cli
     depends_on:
       database:
         condition: service_healthy
+    env_file: '.env.docker'
     command: [ 'artisan', 'migrate' ]
 
   server:
@@ -70,6 +69,7 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+    env_file: '.env.docker'
     command: [ '-S', '0.0.0.0:4000', '-t', './public']
     ports:
       - '4000:4000'
