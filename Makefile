@@ -30,7 +30,7 @@ logs:
 	touch $@
 
 .make.jwt-secret:
-	docker compose run --rm php-cli artisan jwt:secret
+	docker compose run --rm php-cli artisan jwt:secret --f
 	touch $@
 
 .make.migrate:

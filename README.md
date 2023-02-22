@@ -43,8 +43,9 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 - MySQL/MariaDB or PostgreSQL
 - Node.js and NPM/Yarn/... to compile assets
 
-### Local installation
+## Local install
 
+### Using Laravel Valet
 First, let's work with the codebase and its dependencies.
 
 ```bash
@@ -79,8 +80,7 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 
 🎉 Done! Enjoy your personal OpnForm instance at: [http://opnform.test](http://opnform.test).
 
-
-### Docker installation
+### Docker installation 🐳
 
 There's a `docker compose` setup automating most of the manual steps:
 
@@ -88,8 +88,7 @@ There's a `docker compose` setup automating most of the manual steps:
 make up
 ```
 
-The application is now running on [http://localhost:4000](http://localhost:4000)
-
+The application is now running on [http://localhost:4000](http://localhost:4000). 
 Alternatively, you may use the compose setup on its own
 
 ```bash
