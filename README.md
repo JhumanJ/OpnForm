@@ -33,18 +33,49 @@ The easiest way to get started with OpnForm is with the [official managed servic
 
 It takes 1 minute to try out the builder for free. You'll have high availability, backups, security, and maintenance all managed for you.
 
-## Self-hosting
-
-🚧 This section is under construction!
-
 ### Requirements
 
 - PHP >= 8.0
 - MySQL/MariaDB or PostgreSQL
 - Node.js and NPM/Yarn/... to compile assets
 
-### Local installation
+## Installation
 
+
+### Docker installation 🐳
+
+There's a `docker compose` setup automating most of the manual steps:
+
+```bash
+make up
+```
+
+The application is now running on [http://localhost:4000](http://localhost:4000).
+Alternatively, you may use the compose setup on its own
+
+```bash
+# Start the application
+docker compose up -d server
+
+# Run php commands, for example
+docker compose run php-cli artisan about
+
+# ...or update npm dependencies
+docker compose run node-cli npm ci
+```
+
+`make` keeps track of all executed targets using `.make.*` files.
+In case you'd like to start from scratch (re-install dependencies, reset jwt
+token, run migrations, ...), run
+
+```bash
+make clean
+```
+
+After that, `make` will re-execute all targets upon the next execution.
+
+### Using Laravel Valet
+This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.
 First, let's work with the codebase and its dependencies.
 
 ```bash
