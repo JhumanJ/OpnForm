@@ -30,6 +30,7 @@ class StorageFileNameParser
     {
         if ($this->fileName && $this->extension) {
             $fileName = substr($this->fileName, 0, 50).'_'.$this->uuid.'.'.$this->extension;
+            $fileName = preg_replace('#\p{C}+#u', '', $fileName); // avoid CorruptedPathDetected exceptions
             return mb_convert_encoding($fileName, 'UTF-8', 'UTF-8');
         }
         return $this->uuid;
