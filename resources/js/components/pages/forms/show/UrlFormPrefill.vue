@@ -57,7 +57,7 @@
           <h3 class="mt-6 text-xl font-semibold mb-4 pt-6">
             Your Prefill url
           </h3>
-          <form-url-prefill :form="form" :form-data="prefillFormData" />
+          <form-url-prefill :form="form" :form-data="prefillFormData" :extra-query-param="extraQueryParam" />
         </template>
 
       </div>
@@ -75,7 +75,8 @@ export default {
   name: 'UrlFormPrefill',
   components: { FormUrlPrefill, ProTag, OpenForm },
   props: {
-    form: { type: Object, required: true }
+    form: { type: Object, required: true },
+    extraQueryParam: { type: String, default: '' }
   },
 
   data: () => ({

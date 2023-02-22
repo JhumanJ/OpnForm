@@ -3,7 +3,7 @@
       <h3 class="font-semibold text-xl">Share Link</h3>
       <p>Your form is now published and ready to be shared with the world! Copy this link to share your form
           on social media, messaging apps or via email.</p>
-      <copy-content :content="form.share_url">
+      <copy-content :content="share_url">
         <template #icon>
           <svg class="h-4 w-4 -mt-1 text-blue-600 inline mr-1" viewBox="0 0 20 10" fill="none"
                   xmlns="http://www.w3.org/2000/svg">
@@ -24,14 +24,19 @@ export default {
     name: 'ShareLink',
     components: { CopyContent },
     props: {
-      form: { type: Object, required: true }
+      form: { type: Object, required: true },
+      extraQueryParam: { type: String, default: '' }
     },
 
     data: () => ({
       
     }),
 
-    computed: {},
+    computed: {
+      share_url () {
+        return (this.extraQueryParam) ? this.form.share_url + '?' + this.extraQueryParam : this.form.share_url + this.extraQueryParam
+      }
+    },
 
     methods: {}
 }
