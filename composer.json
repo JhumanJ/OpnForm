@@ -54,7 +54,7 @@
     "pestphp/pest": "^1.15",
     "pestphp/pest-plugin-faker": "^1.0",
     "pestphp/pest-plugin-laravel": "^1.1",
-    "pestphp/pest-plugin-parallel": "^1.0",
+    "pestphp/pest-plugin-parallel": "^1.2",
     "phpunit/phpunit": "^9.3.3",
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-ray": "^1.17"
