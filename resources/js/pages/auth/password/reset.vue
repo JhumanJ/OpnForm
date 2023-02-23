@@ -6,7 +6,6 @@
           {{ $t('reset_password') }}
         </h1>
         <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
-          <alert-success class="mb-4" :form="form" :message="status" />
 
           <!-- Email -->
           <text-input name="email" :form="form" :label="$t('email')" :required="true" />
@@ -71,7 +70,7 @@ export default {
           }, 6000)
         }
       }).catch((e)=>{
-        console.log(e, 'error')
+        this.alertError(error.response.data.message)
       });
 
       this.status = data.status
