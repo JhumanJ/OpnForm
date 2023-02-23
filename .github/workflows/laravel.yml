@@ -93,4 +93,4 @@ jobs:
         run: npm install --no-audit --no-progress --silent
 
       - name: Build client
-        run: npm run production
+        run: npm run build
