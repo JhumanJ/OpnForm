@@ -39,6 +39,7 @@ class FormCleaner
         'use_captcha' => false,
         'password' => null,
         'slack_webhook_url' => null,
+        'discord_webhook_url' => null,
     ];
 
     private array $fieldDefaults = [
@@ -70,6 +71,7 @@ class FormCleaner
         'database_fields_update' => 'Form submission will only create new records (no updates).',
         'theme' => 'Default theme was applied.',
         'slack_webhook_url' => "Slack webhook disabled.",
+        'discord_webhook_url' => "Discord webhook disabled.",
 
         // For fields
         'hide_field_name' => 'Hide field name removed.',

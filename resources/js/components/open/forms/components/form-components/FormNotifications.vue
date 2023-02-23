@@ -11,11 +11,12 @@
         <pro-tag />
       </h3>
     </template>
-    
+
     <form-notifications-option />
     <form-notifications-slack />
+    <form-notifications-discord />
     <form-notifications-submission-confirmation />
-    
+
   </collapse>
 </template>
 
@@ -24,10 +25,11 @@ import Collapse from '../../../../common/Collapse.vue'
 import ProTag from '../../../../common/ProTag.vue'
 import FormNotificationsOption from './components/FormNotificationsOption.vue'
 import FormNotificationsSlack from './components/FormNotificationsSlack.vue'
+import FormNotificationsDiscord from './components/FormNotificationsDiscord.vue'
 import FormNotificationsSubmissionConfirmation from './components/FormNotificationsSubmissionConfirmation.vue'
 
 export default {
-  components: { FormNotificationsSubmissionConfirmation, FormNotificationsSlack, FormNotificationsOption, Collapse, ProTag },
+  components: { FormNotificationsSubmissionConfirmation, FormNotificationsSlack, FormNotificationsDiscord, FormNotificationsOption, Collapse, ProTag },
   props: {
   },
   data () {

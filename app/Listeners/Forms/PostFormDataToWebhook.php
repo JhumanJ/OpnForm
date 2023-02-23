@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\WebhookServer\WebhookCall;
 use App\Service\Forms\FormSubmissionFormatter;
-
+use Vinkla\Hashids\Facades\Hashids;
 class PostFormDataToWebhook implements ShouldQueue
 {
     use InteractsWithQueue;
@@ -62,11 +62,16 @@ class PostFormDataToWebhook implements ShouldQueue
             $formattedData[$field['name']] = $field['value'];
         }
 
-        return [
+        $submissionId = Hashids::encode($event->data['submission_id']);
+        $data = [
             'form_title' => $event->form->title,
             'form_slug' => $event->form->slug,
             'submission' => $formattedData
         ];
+        if($event->form->editable_submissions){
+            $data['edit_link'] = $event->form->share_url.'?submission_id='.$submissionId;
+        }
 
+        return $data;
     }
 }

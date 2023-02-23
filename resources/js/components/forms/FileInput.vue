@@ -8,12 +8,16 @@
     </label>
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label" role="button"
-              class="flex cursor-pointer relative w-full" :class="[theme.default.input,{'ring-red-500 ring-2': hasValidation && form.errors.has(name)}]"
+              class="cursor-pointer relative flex"
+              :class="[theme.default.input,{'ring-red-500 ring-2': hasValidation && form.errors.has(name)}]"
               :style="inputStyle" @click.self="showUploadModal=true"
       >
-        <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400 flex-grow" @click.prevent="showUploadModal=true">
-          Upload {{ multiple?'file(s)':'a file' }} <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor"
+        <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400 flex-grow truncate"
+             @click.prevent="showUploadModal=true"
+        >
+          Upload {{ multiple ? 'file(s)' : 'a file' }} <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline"
+                                                            fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor"
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
@@ -21,32 +25,38 @@
           </svg>
         </div>
         <template v-else>
-        <div class="flex-grow h-6 text-gray-600 dark:text-gray-400" @click.prevent="showUploadModal=true">
-          <div class="truncate">
-            <p v-if="files.length==1"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mr-2 -mt-1" fill="none" viewBox="0 0 24 24"
-                                           stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>{{ files[0].file.name }}</p>
-            <p v-else><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mr-2 -mt-1" fill="none" viewBox="0 0 24 24"
-                           stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>{{ files.length }} files</p>
+          <div class="flex-grow h-6 text-gray-600 dark:text-gray-400 truncate" @click.prevent="showUploadModal=true">
+            <div>
+              <p v-if="files.length==1"><svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-6 w-6 inline mr-2 -mt-1" fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>{{ files[0].file.name }}</p>
+              <p v-else><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mr-2 -mt-1" fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>{{ files.length }} file(s)</p>
+            </div>
           </div>
-        </div>
-        <a href="#" v-if="files.length>0" class="hover:text-nt-blue" @click.prevent="clearAll" role="button">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg></a>
+          <div v-if="files.length>0">
+            <a href="#" class="hover:text-nt-blue" role="button" @click.prevent="clearAll">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                   stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </a>
+          </div>
         </template>
       </button>
     </span>
@@ -58,7 +68,7 @@
     <!--  Modal  -->
     <modal :portal-order="2" :show="showUploadModal" @close="showUploadModal=false">
       <h2 class="text-lg font-semibold">
-        Upload {{ multiple?'file(s)':'a file' }}
+        Upload {{ multiple ? 'file(s)' : 'a file' }}
       </h2>
 
       <div class="max-w-3xl mx-auto lg:max-w-none">
@@ -86,8 +96,8 @@
                 />
                 <div class="relative z-20 text-center">
                   <input ref="actual-input" class="hidden" :multiple="multiple" type="file" :name="name"
-                         @change="manualFileUpload"
                          :accept="acceptExtensions"
+                         @change="manualFileUpload"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-24 w-24 text-gray-200" fill="none"
                        viewBox="0 0 24 24" stroke="currentColor"
@@ -102,7 +112,7 @@
                       class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
-                      Upload {{ multiple?'file(s)':'a file' }}
+                      Upload {{ multiple ? 'file(s)' : 'a file' }}
                     </button>
                     or drag and drop
                   </p>
@@ -119,14 +129,17 @@
                     {{ file.file.name }}
                   </p>
                   <div>
-                    <a href="#" class="text-gray-400 dark:text-gray-600 hover:text-nt-blue flex" @click.prevent="clearFile(index)" role="button">
+                    <a href="#" class="text-gray-400 dark:text-gray-600 hover:text-nt-blue flex" role="button"
+                       @click.prevent="clearFile(index)"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                            stroke="currentColor"
                       >
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                         />
-                      </svg></a>
+                      </svg>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -150,7 +163,7 @@ export default {
   props: {
     multiple: { type: Boolean, default: true },
     mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: "" }
+    accept: { type: String, default: '' }
   },
 
   data: () => ({
@@ -166,13 +179,13 @@ export default {
     currentUrl () {
       return this.form[this.name]
     },
-    acceptExtensions(){
-      if(this.accept){
-        return this.accept.split(",").map((i) => {
-            return "."+i.trim()
-          }).join(",")
+    acceptExtensions () {
+      if (this.accept) {
+        return this.accept.split(',').map((i) => {
+          return '.' + i.trim()
+        }).join(',')
       }
-      return ""
+      return ''
     }
   },
 
@@ -209,9 +222,9 @@ export default {
 
       if (!droppedFiles) return
 
-      droppedFiles.forEach(file => {
-        this.uploadFileToServer(file)
-      })
+      for (let i = 0; i < droppedFiles.length; i++) {
+        this.uploadFileToServer(droppedFiles.item(i))
+      }
     },
     openFileUpload () {
       this.$refs['actual-input'].click()

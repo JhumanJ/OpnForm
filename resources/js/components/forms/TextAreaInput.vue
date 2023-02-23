@@ -11,10 +11,17 @@
               class="resize-y"
               :name="name" :style="inputStyle"
               :placeholder="placeholder"
+              :maxlength="maxCharLimit"
     />
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help">{{ help }}</slot>
-    </small>
+    <div v-if="help || showCharLimit" class="flex">
+      <small v-if="help" :class="theme.default.help" class="flex-grow">
+        <slot name="help">{{ help }}</slot>
+      </small>
+      <small v-else class="flex-grow"></small>
+      <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">
+      {{ charCount }}/{{ maxCharLimit }}
+      </small>
+    </div>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>
@@ -24,6 +31,16 @@ import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'TextAreaInput',
-  mixins: [inputMixin]
+  mixins: [inputMixin],
+
+  props: {
+    maxCharLimit: { type: Number, required: false, default: null },
+    showCharLimit: { type: Boolean, required: false, default: false },
+  },
+  computed: {
+    charCount() {
+      return (this.compVal) ? this.compVal.length : 0
+    }
+  }
 }
 </script>

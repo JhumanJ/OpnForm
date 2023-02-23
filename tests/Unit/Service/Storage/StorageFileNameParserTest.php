@@ -2,6 +2,8 @@
 
 uses(\Tests\TestCase::class);
 
+use \Illuminate\Support\Str;
+
 it('can parse filenames', function () {
     $fileName = 'Notion_app_logo_85e16d7b-58ed-43bc-8dce-7d3ff7d69f41.png';
     $parsedFilename = \App\Service\Storage\StorageFileNameParser::parse($fileName);

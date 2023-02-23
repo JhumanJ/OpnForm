@@ -2,6 +2,7 @@ name: laravel
 
 on:
   push:
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ 8.0 ]
+        php: [ 8.1 ]
 
     name: Run Feature & Unit tests (PHP ${{ matrix.php }})
 
@@ -78,7 +79,7 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: Run tests (Unit and Feature)
-        run: ./vendor/bin/pest
+        run: ./vendor/bin/pest -p
 
       - name: "Archive log results"
         if: always()
@@ -92,4 +93,4 @@ jobs:
         run: npm install --no-audit --no-progress --silent
 
       - name: Build client
-        run: npm run production
+        run: npm run build

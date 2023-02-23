@@ -1,0 +1,75 @@
+---
+
+services:
+  php-cli:
+    build:
+      dockerfile: './php-cli.Dockerfile'
+    entrypoint: [ 'php' ]
+    volumes:
+      - '.:/project'
+    working_dir: '/project'
+    user: '1000'
+
+  node-cli:
+    image: 'node:16'
+    volumes:
+      - '.:/project'
+    working_dir: '/project'
+    user: '1000'
+
+  composer-cli:
+    build:
+      dockerfile: './php-cli.Dockerfile'
+    entrypoint: [ 'composer' ]
+    volumes:
+      - '.:/project'
+    working_dir: '/project'
+    user: '1000'
+
+  composer-install:
+    extends:
+      service: composer-cli
+    command: [ 'install' ]
+
+  npm-install:
+    extends:
+      service: node-cli
+    entrypoint: [ 'npm' ]
+    command: [ 'clean-install' ]
+
+  npm-build:
+    extends:
+      service: node-cli
+    entrypoint: [ 'npm', 'run' ]
+    command: [ 'build' ]
+
+  database:
+    image: 'postgres:15'
+    restart: 'unless-stopped'
+    env_file: '.env.docker'
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready', '-d', 'postgres' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  migrate:
+    extends:
+      service: php-cli
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file: '.env.docker'
+    command: [ 'artisan', 'migrate' ]
+
+  server:
+    extends:
+      service: php-cli
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    env_file: '.env.docker'
+    command: [ '-S', '0.0.0.0:4000', '-t', './public']
+    ports:
+      - '4000:4000'
