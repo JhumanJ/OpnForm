@@ -37,7 +37,8 @@ export default {
 
   data: () => ({
     shareFormConfig: {
-      hide_title: false
+      hide_title: false,
+      auto_submit: false
     }
   }),
 

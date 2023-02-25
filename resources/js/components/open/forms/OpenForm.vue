@@ -1,5 +1,10 @@
 <template>
-  <form v-if="dataForm" @submit.prevent="">
+  <div v-if="isAutoSubmit">
+    <p class="text-center p-4">
+      <loader class="h-6 w-6 text-nt-blue mx-auto" />
+    </p>
+  </div>
+  <form v-else-if="dataForm" @submit.prevent="">
     <transition name="fade" mode="out-in" appear>
       <template v-for="group, groupIndex in fieldGroups">
         <div v-if="currentFieldGroupIndex===groupIndex" :key="groupIndex" class="form-group flex flex-wrap w-full">
@@ -105,7 +110,8 @@ export default {
        * Used to force refresh components by changing their keys
        */
       formVersionId: 1,
-      darkModeEnabled: document.body.classList.contains('dark')
+      darkModeEnabled: document.body.classList.contains('dark'),
+      isAutoSubmit: false
     }
   },
 
@@ -242,6 +248,11 @@ export default {
 
   mounted() {
     this.initForm()
+
+    if(window.location.href.includes('auto_submit=true')){
+      this.isAutoSubmit = true
+      this.submitForm()
+    }
   },
 
   methods: {
@@ -265,6 +276,7 @@ export default {
      * If more than one page, show first page with error
      */
     onSubmissionFailure() {
+      this.isAutoSubmit = false
       if (this.fieldGroups.length > 1) {
         // Find first mistake and show page
         let pageChanged = false
