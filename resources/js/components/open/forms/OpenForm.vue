@@ -330,7 +330,21 @@ export default {
           pendingData = null
         }
         if (pendingData !== null && pendingData) {
-          this.dataForm = new Form(JSON.parse(pendingData))
+          pendingData = JSON.parse(pendingData)
+          this.fields.forEach((field) => {
+            if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
+              const dateObj = new Date()
+              let currentDate = dateObj.getFullYear() + '-' +
+                      String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+                      String(dateObj.getDate()).padStart(2, '0')
+              if(field.with_time === true){
+                currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
+                String(dateObj.getMinutes()).padStart(2, '0');
+              }
+              pendingData[field.id] = currentDate
+            }
+          })
+          this.dataForm = new Form(pendingData)
           return
         }
       }
