@@ -9,7 +9,7 @@
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label" role="button"
               class="cursor-pointer relative flex"
-              :class="[theme.default.input,{'ring-red-500 ring-2': hasValidation && form.errors.has(name)}]"
+              :class="[theme.default.input,{'!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled}]"
               :style="inputStyle" @click.self="showUploadModal=true"
       >
         <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400 flex-grow truncate"
@@ -190,6 +190,13 @@ export default {
   },
 
   watch: {
+    showUploadModal: {
+      handler (val) {
+        if(this.disabled){
+          this.showUploadModal = false
+        }
+      }
+    },
     files: {
       deep: true,
       handler (files) {

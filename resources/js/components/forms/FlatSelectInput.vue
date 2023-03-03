@@ -12,7 +12,7 @@
 
     <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-for="(option, index) in options" v-else :key="option[optionKey]" role="button"
-         :class="[theme.default.input,'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex',{ 'mb-2': index !== options.length,'ring-red-500 ring-2': hasValidation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }]"
+         :class="[theme.default.input,'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex',{ 'mb-2': index !== options.length,'!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
          @click="onSelect(option[optionKey])"
     >
       <p class="flex-grow">
@@ -53,6 +53,10 @@ export default {
   computed: {},
   methods: {
     onSelect (value) {
+      if(this.disabled){
+        return
+      }
+      
       if (this.multiple) {
         const emitValue = Array.isArray(this.compVal) ? [...this.compVal] : []
 

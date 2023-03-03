@@ -9,7 +9,7 @@
 
     <prism-editor :id="id?id:name" v-model="compVal" :disabled="disabled"
                   class="code-editor"
-                  :class="[theme.CodeInput.input,{ 'ring-red-500 ring-2': hasValidation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }]"
+                  :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
                   :style="inputStyle" :name="name"
                   :placeholder="placeholder"
                   :highlight="highlighter" @change="onChange"

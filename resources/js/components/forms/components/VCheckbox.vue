@@ -10,7 +10,7 @@
       :disabled="disabled"
       @click="handleClick"
     >
-    <label :for="id || name" class="text-gray-700 dark:text-gray-300 ml-2" :class="{'cursor-not-allowed':disabled}">
+    <label :for="id || name" class="text-gray-700 dark:text-gray-300 ml-2" :class="{'!cursor-not-allowed':disabled}">
       <slot />
     </label>
   </div>

@@ -11,7 +11,7 @@
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
            :style="inputStyle"
-           :class="[theme.default.input,{ 'ring-red-500 ring-2': hasValidation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }]"
+           :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
            :name="name" :accept="accept"
            :placeholder="placeholder" :min="min" :max="max" :maxlength="maxCharLimit"
            @change="onChange" @keydown.enter.prevent="onEnterPress"

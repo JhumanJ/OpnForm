@@ -12,6 +12,7 @@
             <component :is="getFieldComponents(field)" v-if="getFieldComponents(field)"
                        :key="field.id + formVersionId" :class="getFieldClasses(field)"
                        v-bind="inputProperties(field)" :required="isFieldRequired[field.id]"
+                       :disabled="isFieldDisabled[field.id]"
             />
             <template v-else>
               <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
@@ -212,7 +213,14 @@ export default {
         fieldsRequired[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isRequired()
       })
       return fieldsRequired
-    }
+    },
+    isFieldDisabled () {
+      const fieldsDisabled = {}
+      this.fields.forEach((field) => {
+        fieldsDisabled[field.id] = (field.disabled === true)
+      })
+      return fieldsDisabled
+    },
   },
 
   watch: {

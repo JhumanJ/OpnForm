@@ -58,8 +58,10 @@ export default {
 
   computed: {
     inputClasses (){
-      const str = 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700'
-      return this.dateRange ? str + ' w-50' : str + ' w-full'
+      let str = 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700'
+      str += this.dateRange ? ' w-50' : ' w-full'
+      str += this.disabled ? ' !cursor-not-allowed !bg-gray-200' : ''
+      return str
     },
     useTime() {
       return this.withTime && !this.dateRange
