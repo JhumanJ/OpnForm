@@ -43,23 +43,25 @@
     />
 
     <modal :show="showCopyFormModal" @close="showCopyFormModal = false">
-      <h3 class="font-semibold block text-lg">
-        Copy logic from another field
-      </h3>
-      <p class="text-gray-400 mb-5">
-        Select another field/block to copy its logic and apply it to "{{ field.name }}".
-      </p>
-      <select-input v-model="copyFrom" name="copy_from" emit-key="value"
-                    label="Copy logic from" placeholder="Choose a field/block..."
-                    :options="copyFromOptions" :searchable="copyFromOptions && copyFromOptions.options > 5"
-      />
-      <div class="flex justify-between mb-6">
-        <v-button color="blue" shade="light" @click="copyLogic">
-          Confirm & Copy
-        </v-button>
-        <v-button color="gray" shade="light" class="ml-1" @click="showCopyFormModal=false">
-          Close
-        </v-button>
+      <div class="min-h-[450px]">
+        <h3 class="font-semibold block text-lg">
+          Copy logic from another field
+        </h3>
+        <p class="text-gray-400 mb-5">
+          Select another field/block to copy its logic and apply it to "{{ field.name }}".
+        </p>
+        <select-input v-model="copyFrom" name="copy_from" emit-key="value"
+                      label="Copy logic from" placeholder="Choose a field/block..."
+                      :options="copyFromOptions" :searchable="copyFromOptions && copyFromOptions.options > 5"
+        />
+        <div class="flex justify-between mb-6">
+          <v-button color="blue" shade="light" @click="copyLogic">
+            Confirm & Copy
+          </v-button>
+          <v-button color="gray" shade="light" class="ml-1" @click="showCopyFormModal=false">
+            Close
+          </v-button>
+        </div>
       </div>
     </modal>
   </div>
@@ -101,7 +103,7 @@ export default {
   computed: {
     copyFromOptions() {
       return this.form.properties.filter((field) => {
-        return field.id !== this.field.id
+        return field.id !== this.field.id && field.hasOwnProperty('logic') && field.logic !== null && field.logic !== {}
       }).map((field) => {
         return {name: field.name, value: field.id}
       })
