@@ -40,6 +40,21 @@ class FormLogicPropertyResolver {
       return this.property.required
     }
   }
+
+  isDisabled () {
+    if (!this.logic) {
+      return this.property.disabled
+    }
+
+    const conditionsMet = this.conditionsMet(this.logic.conditions, this.formData)
+    if (conditionsMet && this.property.disabled && this.logic.actions.length > 0 && this.logic.actions.includes('enable-block')) {
+      return false
+    } else if (conditionsMet && !this.property.disabled && this.logic.actions.length > 0 && this.logic.actions.includes('disable-block')) {
+      return true
+    } else {
+      return this.property.disabled
+    }
+  }
 }
 
 export default FormLogicPropertyResolver
