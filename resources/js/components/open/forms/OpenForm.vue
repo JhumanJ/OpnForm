@@ -22,9 +22,12 @@
                    class="nf-code w-full px-2 mb-3"
                    v-html="field.content"
               />
-              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" class="border-b my-4 w-full mx-2"/>
+              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" 
+                  class="border-b my-4 w-full mx-2"
+              />
               <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
-                   :key="field.id" class="my-4 w-full px-2">
+                   :key="field.id" class="my-4 w-full px-2"
+              >
                 <div v-if="!field.image_block" class="p-4 border border-dashed">
                   Open <b>{{ field.name }}'s</b> block settings to upload image.
                 </div>
@@ -249,7 +252,7 @@ export default {
   mounted() {
     this.initForm()
 
-    if(window.location.href.includes('auto_submit=true')){
+    if (window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
     }
@@ -381,7 +384,7 @@ export default {
             String(dateObj.getDate()).padStart(2, '0')
           if(field.with_time === true){
             currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-            String(dateObj.getMinutes()).padStart(2, '0');
+            String(dateObj.getMinutes()).padStart(2, '0')
           }
           formData[field.id] = currentDate
         } else { // Default prefill if any
@@ -482,17 +485,19 @@ export default {
     },
     previousPage() {
       this.currentFieldGroupIndex -= 1
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
     nextPage() {
       this.currentFieldGroupIndex += 1
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 .nf-text {
   ol {
     @apply list-decimal list-inside;
