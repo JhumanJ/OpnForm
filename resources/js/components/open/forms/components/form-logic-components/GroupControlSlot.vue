@@ -2,7 +2,7 @@
   <div class="flex flex-wrap px-4 py-1 -ml-1 -mt-1">
     <select-input ref="ruleSelect" v-model="selectedRule" class="flex-grow ml-1 mr-1 mt-1"
                   wrapper-class="relative" placeholder="Add condition on input field"
-                  :options="groupCtrl.rules" margin-bottom=""
+                  :options="groupCtrl.rules" margin-bottom="" :searchable="groupCtrl.rules.length > 5"
                   emit-key="identifier"
                   option-key="identifier"
                   name="group-control-slot-rule"
