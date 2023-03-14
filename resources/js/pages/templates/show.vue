@@ -31,14 +31,14 @@
 
           <h3 class="text-center text-gray-500 mt-8 mb-2">Template Preview</h3>
           <open-complete-form ref="open-complete-form" :form="form" :creating="true"
-                              class="mb-4 p-4 bg-gray-50 rounded-lg overflow-hidden"/>
+                              class="mb-4 p-4 bg-gray-50 rounded-lg"/>
 
           <div v-if="template.questions.length > 0" id="questions">
             <h3 class="text-xl font-semibold mt-8">Frequently asked questions</h3>
             <div class="pt-2">
               <div v-for="(ques,ques_key) in template.questions" :key="ques_key" class="my-3 border rounded-lg">
-                <h5 class="border-b p-2">{{ ques.question }}</h5>
-                <div class="p-2" v-html="ques.answer"></div>
+                <h5 class="border-b p-2 text-gray-700 font-semibold">{{ ques.question }}</h5>
+                <p class="p-2 text-gray-600" v-html="ques.answer"></p>
               </div>
             </div>
           </div>
