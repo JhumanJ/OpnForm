@@ -135,4 +135,38 @@ it('can validate form logic rules for conditions', function () {
     $validatorObj = $this->app['validator']->make($data, $rules);
     $this->assertFalse($validatorObj->passes());
     expect($validatorObj->errors()->messages()['properties.0.logic'][0])->toBe("The logic conditions for Name are not complete. Error detail(s): missing condition value");
+
+    $data = [
+        'properties' => [
+            [
+                'id' => "title",
+                'name' => "Name",
+                'type' => 'text',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    "conditions" => [
+                        "operatorIdentifier"=> null,
+                        "children"=> [
+                            [
+                                "identifier"=> "title",
+                                "value"=> [
+                                    "operator"=> "starts_with",
+                                    "property_meta"=> [
+                                        "id"=> "title",
+                                        "type"=> "text"
+                                    ],
+                                ]
+                            ]
+                        ]
+                    ],
+                    "actions" => []
+                ]
+            ]
+        ]
+    ];
+    
+    $validatorObj = $this->app['validator']->make($data, $rules);
+    $this->assertFalse($validatorObj->passes());
+    expect($validatorObj->errors()->messages()['properties.0.logic'][0])->toBe("The logic conditions for Name are not complete. Error detail(s): missing operator");
 });

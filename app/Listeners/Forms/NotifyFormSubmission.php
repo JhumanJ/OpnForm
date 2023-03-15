@@ -74,7 +74,7 @@ class NotifyFormSubmission implements ShouldQueue
                 '*<'.$editFormURL.'|✍️ Edit Form>*'
             ];
             if($event->form->editable_submissions){
-                $externalLinks[] = '*<'.$event->form->share_url.'?submission_id='.$submissionId.'|✍️ Edit Submission>*';
+                $externalLinks[] = '*<'.$event->form->share_url.'?submission_id='.$submissionId.'|✍️ '.$event->form->editable_submissions_button_text.'>*';
             }
 
             $finalSlackPostData = [

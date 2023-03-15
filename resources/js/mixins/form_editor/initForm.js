@@ -41,6 +41,7 @@ export default {
         rating_max_value: 5,
         max_submissions_count: null,
         max_submissions_reached_text: 'This form has now reached the maximum number of allowed submissions and is now closed.',
+        editable_submissions_button_text: 'Edit submission',
 
         // Security & Privacy
         can_be_indexed: true

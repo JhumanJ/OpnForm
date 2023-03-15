@@ -45,7 +45,7 @@
       <template #title>
         Copy Settings from another form
       </template>
-      <div class="p-4">
+      <div class="p-4 min-h-[450px]">
         <p class="text-gray-600">
           If you already have another form that you like to use as a base for this form, you can do that here.
           Select another form, confirm, and we will copy all of the other form settings (except the form structure)

@@ -23,6 +23,11 @@
     <toggle-switch-input name="editable_submissions" :form="form" class="mt-4"
                 label="Allow users to edit their submission"
     />
+    <text-input v-if="form.editable_submissions" name="editable_submissions_button_text"
+                :form="form"
+                label="Text of editable submissions button"
+                :required="true"
+    />
 
     <flat-select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
                   :options="[

@@ -110,7 +110,9 @@
           {{ form.re_fill_button_text }}
         </open-form-button>
         <p v-if="form.editable_submissions && submissionId" class="mt-5">
-          <a target="_parent" :href="form.share_url+'?submission_id='+submissionId" class="text-nt-blue hover:underline">Edit submission</a>
+          <a target="_parent" :href="form.share_url+'?submission_id='+submissionId" class="text-nt-blue hover:underline">
+            {{ form.editable_submissions_button_text }}
+          </a>
         </p>
         <p v-if="!form.no_branding" class="mt-5">
           <a target="_parent" href="https://opnform.com/?utm_source=form&utm_content=create_form_free" class="text-nt-blue hover:underline">Create your form for free with OpnForm</a>
