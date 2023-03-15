@@ -562,7 +562,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
 
     private function checkConditions($conditions) 
     {
-        if (isset($conditions['operatorIdentifier'])) {
+        if (array_key_exists('operatorIdentifier', $conditions)) {
             if (($conditions['operatorIdentifier'] !== 'and') && ($conditions['operatorIdentifier'] !== 'or')) {
                 $this->conditionErrors[] = 'missing operator';
                 $this->isConditionCorrect = false;
