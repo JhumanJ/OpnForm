@@ -3,7 +3,7 @@
     <div class="grid md:grid-cols-3 my-8">
       <div class="flex mt-2">
         <p class="text-sm text-gray-600 dark:text-gray-400 text-center w-full">
-          © Copyright 2022. All Rights Reserved
+          © Copyright {{ currYear }}. All Rights Reserved
         </p>
       </div>
       <div class="flex justify-center mt-5 md:mt-0">
@@ -36,6 +36,7 @@ import { mapGetters } from 'vuex'
 export default {
   data: () => ({
     appName: window.config.appName,
+    currYear: new Date().getFullYear(),
   }),
 
   computed: {
