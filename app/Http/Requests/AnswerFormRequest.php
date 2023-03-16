@@ -151,6 +151,9 @@ class AnswerFormRequest extends FormRequest
             case 'signature':
                 return ['string'];
             case 'number':
+                if ($property['is_rating'] ?? false) {
+                    return ['numeric', 'min:1'];
+                }
                 return ['numeric'];
             case 'select':
             case 'multi_select':
