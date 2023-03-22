@@ -4,7 +4,7 @@
 
 @if($form->editable_submissions)
 @component('mail::button', ['url' => $form->share_url.'?submission_id='.$submission_id])
-Edit submission
+{{$form.editable_submissions_button_text}}
 @endcomponent
 @endif
 

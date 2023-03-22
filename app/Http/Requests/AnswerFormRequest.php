@@ -135,6 +135,9 @@ class AnswerFormRequest extends FormRequest
                 $messages[$property['id'].'.1.required_with'] = "To date is required";
                 $messages[$property['id'].'.0.before_or_equal'] = "From date must be before or equal To date";
             }
+            if ($property['type'] == 'number' && isset($property['is_rating']) && $property['is_rating']) {
+                $messages[$property['id'] . '.min'] = "A rating must be selected";
+            }
         }
         return $messages;
     }
@@ -151,6 +154,9 @@ class AnswerFormRequest extends FormRequest
             case 'signature':
                 return ['string'];
             case 'number':
+                if ($property['is_rating'] ?? false) {
+                    return ['numeric', 'min:1'];
+                }
                 return ['numeric'];
             case 'select':
             case 'multi_select':
