@@ -13,7 +13,7 @@
       <span class="inline-block w-full rounded-md">
         <button type="button" :dusk="dusk" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
                 class="cursor-pointer"
-                :style="inputStyle" :class="[theme.SelectInput.input,{'py-2':!multiple || loading,'py-1': multiple, 'ring-red-500 ring-2': hasError}]"
+                :style="inputStyle" :class="[theme.SelectInput.input,{'py-2':!multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled}]"
                 @click="openDropdown"
         >
           <div :class="{'h-6':!multiple, 'min-h-8':multiple && !loading}">
@@ -108,6 +108,7 @@ export default {
     uppercaseLabels: { type: Boolean, default: true },
     theme: { type: Object, default: () => themes.default },
     allowCreation: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
   },
   data () {
     return {
@@ -172,7 +173,7 @@ export default {
       this.searchTerm = ''
     },
     openDropdown () {
-      this.isOpen = !this.isOpen
+      this.isOpen = this.disabled ? false : !this.isOpen
     },
     select (value) {
       if (!this.multiple) {

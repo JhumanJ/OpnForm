@@ -7,7 +7,7 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
     <textarea :id="id?id:name" v-model="compVal" :disabled="disabled"
-              :class="[theme.default.input,{ 'ring-red-500 ring-2': hasValidation && form.errors.has(name) }]"
+              :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
               class="resize-y"
               :name="name" :style="inputStyle"
               :placeholder="placeholder"

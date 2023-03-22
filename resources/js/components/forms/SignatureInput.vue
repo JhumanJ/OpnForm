@@ -8,7 +8,7 @@
     </label>
 
     <VueSignaturePad ref="signaturePad"
-                     :class="[theme.default.input,{ 'ring-red-500 ring-2': hasValidation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }]" height="150px"
+                     :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]" height="150px"
                      :name="name"
                      :options="{ onEnd }"
     />
@@ -45,8 +45,12 @@ export default {
       this.onEnd()
     },
     onEnd () {
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
-      this.$set(this.form, this.name, (!isEmpty && data) ? data : null)
+      if(this.disabled){
+        this.$refs.signaturePad.clearSignature()
+      }else{
+        const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+        this.$set(this.form, this.name, (!isEmpty && data) ? data : null)
+      }
     }
   }
 }

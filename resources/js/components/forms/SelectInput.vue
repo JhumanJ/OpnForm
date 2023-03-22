@@ -16,6 +16,7 @@
               :theme="theme"
               :has-error="hasValidation && form.errors.has(name)"
               :allowCreation="allowCreation"
+              :disabled="disabled"
 
               @update-options="updateOptions"
     >

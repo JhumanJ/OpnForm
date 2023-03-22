@@ -53,6 +53,12 @@
         >
           Required
         </v-checkbox>
+        <v-checkbox v-model="field.disabled" class="mb-3"
+                    :name="field.id+'_disabled'"
+                    @input="onFieldDisabledChange"
+        >
+          Disabled
+        </v-checkbox>
       </div>
 
       <!-- Checkbox -->
@@ -440,6 +446,12 @@ export default {
       this.close()
       this.$emit('duplicate-block', this.field)
     },
+    onFieldDisabledChange (val) {
+      this.$set(this.field, 'disabled', val)
+      if (this.field.disabled) {
+        this.$set(this.field, 'hidden', false)
+      }
+    },
     onFieldRequiredChange(val) {
       this.$set(this.field, 'required', val)
       if (this.field.required) {
@@ -450,6 +462,7 @@ export default {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
+        this.$set(this.field, 'disabled', false)
       } else {
         this.$set(this.field, 'generates_uuid', false)
         this.$set(this.field, 'generates_auto_increment_id', false)
