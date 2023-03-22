@@ -13,7 +13,9 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         'show-block',
         'hide-block',
         'make-it-optional',
-        'require-answer'
+        'require-answer',
+        'enable-block',
+        'disable-block'
     ];
 
     const CONDITION_MAPPING = [
@@ -596,7 +598,8 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                 if (!in_array($val, static::ACTIONS_VALUES) || 
                     (in_array($this->field["type"], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block'])) ||
                     (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block', 'require-answer'])) || 
-                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block']))
+                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block', 'disable-block'])) || 
+                    (isset($this->field["disabled"]) && $this->field["disabled"] && !in_array($val, ['enable-block', 'require-answer', 'make-it-optional']))
                 ) {
                     $this->isActionCorrect = false;
                     break;

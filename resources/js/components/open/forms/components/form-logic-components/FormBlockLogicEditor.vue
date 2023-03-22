@@ -118,9 +118,20 @@ export default {
           {name: 'Show Block', value: 'show-block'},
           {name: 'Require answer', value: 'require-answer'}
         ]
+      } else if (this.field.disabled) {
+        return [
+          { name: 'Enable Block', value: 'enable-block' },
+          (this.field.required
+            ? { name: 'Make it optional', value: 'make-it-optional' }
+            : {
+                name: 'Require answer',
+                value: 'require-answer'
+              })
+        ]
       } else {
         return [
           {name: 'Hide Block', value: 'hide-block'},
+          { name: 'Disable Block', value: 'disable-block' },
           (this.field.required
             ? {name: 'Make it optional', value: 'make-it-optional'}
             : {

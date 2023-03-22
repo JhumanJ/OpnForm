@@ -220,7 +220,7 @@ export default {
     isFieldDisabled () {
       const fieldsDisabled = {}
       this.fields.forEach((field) => {
-        fieldsDisabled[field.id] = (field.disabled === true)
+        fieldsDisabled[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isDisabled()
       })
       return fieldsDisabled
     },
