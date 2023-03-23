@@ -66,8 +66,7 @@
             </div>
           </template>
           <template v-else>
-            <button v-if="!field.type.startsWith('nf-')"
-                    class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
+            <button class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
                     :class="{'text-blue-500': !field.hidden, 'text-gray-500': field.hidden, 'group-hover:md:block': !field.hidden, 'md:block':field.hidden}"
                     @click="toggleHidden(field)"
             >
