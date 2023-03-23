@@ -130,6 +130,18 @@ class GenerateTemplate extends Command
         }
         ```
 
+        For the type "number" you can set the property "is_rating" to "true" to turn it into a star rating input.
+
+        If the form is too long, you can paginate it by adding a page break block in the list of properties:
+        ```json
+        {
+            "name":"Page Break",
+            "next_btn_text":"Next",
+            "previous_btn_text":"Previous",
+            "type":"nf-page-break",
+        }
+        ```
+
         Give me the JSON code only, for the following form: "[REPLACE]"
         Do not ask me for more information about required properties or types, suggest me a form structure instead.
     EOD;
@@ -163,27 +175,24 @@ class GenerateTemplate extends Command
     public function handle()
     {
         // Get form structture
-        $completer = new GptCompleter(config('services.openai.api_key'));
+        $completer = (new GptCompleter(config('services.openai.api_key')))
+            ->setSystemMessage('You are a robot helping to generate forms.');
         $completer->completeChat([
-            ["role" => "system", "content" => "You are a robot helping to generate forms."],
             ["role" => "user", "content" => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
-        ],3000);
+        ], 3000);
         $formData = $completer->getArray();
 
         // Now get description and QAs
         $formDescriptionPrompt = Str::of(self::FORM_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString();
         $formDescription = $completer->completeChat([
-            ["role" => "system", "content" => "You are a robot helping to generate forms."],
             ["role" => "user", "content" => $formDescriptionPrompt]
         ])->getString();
         $formQAs = $completer->completeChat([
-            ["role" => "system", "content" => "You are a robot helping to generate forms."],
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
             ["role" => "user", "content" => self::FORM_QAS_PROMPT]
         ])->getArray();
         $formTitle = $completer->completeChat([
-            ["role" => "system", "content" => "You are a robot helping to generate forms."],
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
             ["role" => "user", "content" => self::FORM_TITLE_PROMPT]
@@ -191,7 +200,6 @@ class GenerateTemplate extends Command
 
         // Finally get keyworks for image cover
         $formCoverKeyworks = $completer->completeChat([
-            ["role" => "system", "content" => "You are a robot helping to generate forms."],
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
             ["role" => "user", "content" => self::FORM_IMG_KEYWORDS_PROMPT]
@@ -224,6 +232,9 @@ class GenerateTemplate extends Command
         foreach ($formData['properties'] as &$property) {
             $property['id'] = Str::uuid()->toString();
         }
+
+        // Clean data
+        $formTitle = Str::of($formTitle)->replace('"', '')->toString();
 
         return Template::create([
             'name' => $formTitle,

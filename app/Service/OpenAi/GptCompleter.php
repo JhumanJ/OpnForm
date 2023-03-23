@@ -92,11 +92,11 @@ class GptCompleter
 
     protected function computeChatCompletion(array $messages, int $maxTokens = 512, float $temperature = 0.81): self
     {
-        if (isset($this->systemMessage)) {
-            $messages = array_merge([
+        if (isset($this->systemMessage) && $messages[0]['role'] !== 'system') {
+            $messages = array_merge([[
                 'role' => 'system',
                 'content' => $this->systemMessage
-            ], $messages);
+            ]], $messages);
         }
 
         $completionInput = [
