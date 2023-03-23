@@ -213,16 +213,16 @@ export default {
             },
             submission_data: form.data()
           }, '*')
-        } else {
-          window.postMessage({
-            type: 'form-submitted',
-            form: {
-              slug: this.form.slug,
-              id: this.form.id
-            },
-            submission_data: form.data()
-          }, '*')
         }
+        window.postMessage({
+          type: 'form-submitted',
+          form: {
+            slug: this.form.slug,
+            id: this.form.id
+          },
+          submission_data: form.data()
+        }, '*')
+
 
         try {
           window.localStorage.removeItem(this.formPendingSubmissionKey)
