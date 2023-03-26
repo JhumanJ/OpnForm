@@ -94,3 +94,65 @@ jobs:
 
       - name: Build client
         run: npm run build
+
+  production-deploy:
+    needs: [ tests ]
+    if: success() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [ 8.1 ]
+
+    name: Triggers deploy through Laravel Vapor
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, mbstring, pdo, sqlite, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Prepare the environment
+        run: cp .env.example .env
+
+      - name: Install composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --ignore-platform-reqs --optimize-autoloader
+
+      - name: Directory permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Install npm dependencies
+        run: npm install --no-audit --no-progress --silent
+
+      - name: Build client
+        run: npm run build
+
+      - name: Deploy to production
+        run: php vendor/bin/vapor deploy production --commit="${GITHUB_SHA}" --message="${GITHUB_REF}"
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
