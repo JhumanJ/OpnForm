@@ -1,5 +1,6 @@
+const pages = import.meta.glob('../pages/**')
+
 function page (path) {
-  const pages = import.meta.glob('../pages/**')
   return pages[`../pages/${path}`]
 }
 
@@ -17,8 +18,8 @@ export default [
     children: [
       { path: '', redirect: { name: 'forms.show' } },
       { path: 'submissions', name: 'forms.show', component: page('forms/show/submissions.vue') },
-      { path: 'analytics', name: 'forms.show.analytics', component: page('forms/show/analytics.vue') },
-      { path: 'share', name: 'forms.show.share', component: page('forms/show/share.vue') }
+      { path: 'share', name: 'forms.show.share', component: page('forms/show/share.vue') },
+      { path: 'analytics', name: 'forms.show.analytics', component: page('forms/show/stats.vue') }
     ]
   },
 

@@ -58,9 +58,5 @@ export default {
       return queryStr.slice(1)
     }
   },
-
-  methods: {
-    
-  }
 }
 </script>
