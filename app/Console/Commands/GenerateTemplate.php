@@ -28,7 +28,7 @@ class GenerateTemplate extends Command
         I created a form builder. Forms are represented as Json objects. Here's an example form:
         ```json
          {
-                "title": "Contact Form",
+                "title": "Contact Us",
                 "properties": [
                     {
                         "help": null,
@@ -219,7 +219,6 @@ class GenerateTemplate extends Command
     {
         $url = 'https://api.unsplash.com/search/photos?query=' . urlencode($searchQuery) . '&client_id=' . config('services.unslash.access_key');
         $response = Http::get($url)->json();
-        ray($response, $url);
         if (isset($response['results'][0]['urls']['regular'])) {
             return $response['results'][0]['urls']['regular'];
         }
