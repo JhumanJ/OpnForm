@@ -23,7 +23,7 @@
                    class="nf-code w-full px-2 mb-3"
                    v-html="field.content"
               />
-              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" 
+              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id"
                   class="border-b my-4 w-full mx-2"
               />
               <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
@@ -163,7 +163,7 @@ export default {
     },
     /**
      * Returns true if we're on the last page
-     * @returns {boolean}
+     * @returns {boolean}xs
      */
     isLastPage() {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)

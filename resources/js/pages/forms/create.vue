@@ -2,6 +2,8 @@
   <div class="flex flex-wrap flex-col">
     <transition v-if="stateReady" name="fade" mode="out-in">
       <div key="2">
+        <create-form-base-modal @form-generated="formGenerated" :show="showInitialFormModal"
+                                @close="showInitialFormModal=false"/>
         <form-editor v-if="!workspacesLoading" ref="editor"
                      class="w-full flex flex-grow"
                      :style="{
@@ -23,6 +25,7 @@ import Form from 'vform'
 import {mapState, mapActions} from 'vuex'
 import initForm from "../../mixins/form_editor/initForm.js";
 import SeoMeta from '../../mixins/seo-meta.js'
+import CreateFormBaseModal from "../../components/pages/forms/create/CreateFormBaseModal.vue"
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -35,7 +38,7 @@ export default {
   name: 'CreateForm',
 
   mixins: [initForm, SeoMeta],
-  components: {},
+  components: {CreateFormBaseModal},
 
   beforeRouteEnter(to, from, next) {
     loadTemplates()
@@ -50,7 +53,8 @@ export default {
       stateReady: false,
       loading: false,
       error: '',
-      editorMaxHeight: 500
+      editorMaxHeight: 500,
+      showInitialFormModal: false
     }
   },
 
@@ -92,6 +96,9 @@ export default {
       if (template && template.structure) {
         this.form = new Form({...this.form.data(), ...template.structure})
       }
+    } else {
+      // No template loaded, ask how to start
+      this.showInitialFormModal = true
     }
     this.closeAlert()
     this.loadWorkspaces()
@@ -117,6 +124,9 @@ export default {
       if (this.$refs.editor) {
         this.editorMaxHeight = window.innerHeight - this.$refs.editor.$el.offsetTop
       }
+    },
+    formGenerated(form) {
+      this.form = new Form({...this.form.data(), ...form})
     }
   }
 }

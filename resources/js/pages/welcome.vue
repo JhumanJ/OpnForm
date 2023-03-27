@@ -16,7 +16,10 @@
             >it's free</span>.
             </h3>
             <div class="mt-6 flex justify-center">
-              <v-button class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
+              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
+                Create a form for FREE
+              </v-button>
+              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
                 Create a form for FREE
               </v-button>
             </div>
