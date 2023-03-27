@@ -105,7 +105,7 @@ export default {
         this.$emit('form-generated', response.data.form)
         this.$emit('close')
       }).catch(error => {
-        this.alertError(error.data.message)
+        this.alertError(error.response.data.message)
         this.state = 'default'
       })
     }
