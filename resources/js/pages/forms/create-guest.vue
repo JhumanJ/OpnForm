@@ -2,6 +2,8 @@
   <div class="flex flex-wrap flex-col">
     <transition v-if="stateReady" name="fade" mode="out-in">
       <div key="2">
+        <create-form-base-modal @form-generated="formGenerated" :show="showInitialFormModal"
+                                @close="showInitialFormModal=false"/>
         <form-editor v-if="!workspacesLoading" ref="editor"
                      class="w-full flex flex-grow"
                      :style="{
@@ -30,6 +32,7 @@ import {mapState, mapActions} from 'vuex'
 import QuickRegister from '../auth/components/QuickRegister.vue'
 import initForm from "../../mixins/form_editor/initForm.js"
 import SeoMeta from '../../mixins/seo-meta.js'
+import CreateFormBaseModal from "../../components/pages/forms/create/CreateFormBaseModal.vue"
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -42,7 +45,7 @@ export default {
   name: 'CreateFormGuest',
   mixins: [initForm, SeoMeta],
   components: {
-    QuickRegister
+    QuickRegister, CreateFormBaseModal
   },
 
   middleware: 'guest',
@@ -60,7 +63,8 @@ export default {
       error: '',
       editorMaxHeight: 500,
       registerModal: false,
-      isGuest: true
+      isGuest: true,
+      showInitialFormModal: false
     }
   },
 
@@ -108,6 +112,9 @@ export default {
       if (template && template.structure) {
         this.form = new Form({...this.form.data(), ...template.structure})
       }
+    } else {
+      // No template loaded, ask how to start
+      this.showInitialFormModal = true
     }
     this.closeAlert()
     this.stateReady = true
@@ -142,6 +149,9 @@ export default {
       setTimeout(() => {
         this.$refs.editor.saveFormCreate()
       }, 500)
+    },
+    formGenerated(form) {
+      this.form = new Form({...this.form.data(), ...form})
     }
   }
 }
