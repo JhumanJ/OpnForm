@@ -12,7 +12,7 @@ import FormStats from '../../../components/open/forms/components/FormStats.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
 
 export default {
-  name: 'FormStats',
+  name: 'Stats',
   components: {FormStats},
   props: {
     form: {type: Object, required: true},
