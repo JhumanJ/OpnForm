@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Forms;
 use App\Console\Commands\GenerateTemplate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AiGenerateFormRequest;
+use App\Models\Forms\AI\AiFormCompletion;
 use App\Service\OpenAi\GptCompleter;
 use Illuminate\Support\Str;
 
@@ -13,26 +14,24 @@ class AiFormController extends Controller
     public function generateForm(AiGenerateFormRequest $request)
     {
         $this->middleware('throttle:4,1');
-        $completer = (new GptCompleter(config('services.openai.api_key')))
-            ->setSystemMessage('You are a robot helping to generate forms.');
-        $completer->completeChat([
-            ["role" => "user", "content" => Str::of(GenerateTemplate::FORM_STRUCTURE_PROMPT)
-                ->replace('[REPLACE]', $request->form_prompt)->toString()]
-        ], 3000);
 
         return $this->success([
-            'message' => 'Form successfully generated!',
-            'form' => $this->cleanOutput($completer->getArray())
+            'message' => 'We\'re working on your form, please wait ~1 min.',
+            'ai_form_completion_id' => AiFormCompletion::create([
+                'form_prompt' => $request->input('form_prompt'),
+                'ip' => $request->ip()
+            ])->id
         ]);
     }
 
-    private function cleanOutput($formData)
+    public function show(AiFormCompletion $aiFormCompletion)
     {
-        // Add property uuids
-        foreach ($formData['properties'] as &$property) {
-            $property['id'] = Str::uuid()->toString();
+        if ($aiFormCompletion->ip != request()->ip()) {
+            return $this->error('You are not authorized to view this AI completion.', 403);
         }
 
-        return $formData;
+        return $this->success([
+            'ai_form_completion' => $aiFormCompletion
+        ]);
     }
 }

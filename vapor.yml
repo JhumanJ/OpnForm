@@ -21,4 +21,4 @@ environments:
       - 'php artisan migrate --force'
     firewall:
       rate-limit: 1000
-    timeout: 180
+    timeout: 30

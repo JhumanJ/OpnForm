@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-0 bottom-24 right-0 flex px-4 items-start justify-end z-10 pointer-events-none">
+  <div class="fixed top-0 bottom-24 right-0 flex px-4 items-start justify-end z-50 pointer-events-none">
     <notification v-slot="{ notifications, close }">
       <div class="relative pointer-events-auto" v-for="notification in notifications" :key="notification.id">
         <div

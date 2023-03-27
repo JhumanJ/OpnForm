@@ -26,7 +26,7 @@
     </template>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8" v-if="state=='default'">
       <div class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50"
-           @click="showInitialFormModal=false">
+           @click="showInitialFormModal=false" v-track.select_form_base="{base:'contact-form'}">
         <div class="p-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-blue-500">
             <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/>
@@ -35,7 +35,8 @@
         </div>
         <p class="font-medium">Start from a simple contact form</p>
       </div>
-      <div v-if="aiFeaturesEnabled" class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50" @click="state='ai'">
+      <div v-if="aiFeaturesEnabled" v-track.select_form_base="{base:'ai'}"
+           class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50" @click="state='ai'">
         <div class="p-4 relative">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-blue-500">
             <path fill-rule="evenodd"
@@ -54,7 +55,7 @@
           </svg>
         </div>
         <p class="font-medium">Start from a template</p>
-        <router-link :to="{name:'templates'}" class="absolute inset-0"/>
+        <router-link :to="{name:'templates'}" v-track.select_form_base="{base:'template'}" class="absolute inset-0"/>
       </div>
     </div>
     <div v-else-if="state=='ai'">
@@ -64,9 +65,9 @@
         </svg>
         Back
       </a>
-      <text-area-input label="Form Description" :form="aiForm" name="form_prompt" help="Give us a description of the form you want to build (the more details the better)"
+      <text-area-input label="Form Description" :disabled="loading" :form="aiForm" name="form_prompt" help="Give us a description of the form you want to build (the more details the better)"
                        placeholder="A simple contact form, with a name, email and message field" />
-      <v-button class="w-full" @click.prevent="generateForm" :loading="aiForm.busy">
+      <v-button class="w-full" @click.prevent="generateForm" :loading="loading">
         Generate a form
       </v-button>
       <p class="text-gray-500 text-xs text-center mt-1">~60 sec</p>
@@ -77,6 +78,7 @@
 <script>
 import Loader from "../../../common/Loader.vue";
 import Form from "vform";
+import axios from "axios";
 
 export default {
   name: 'CreateFormBaseModal',
@@ -89,7 +91,8 @@ export default {
     state: 'default',
     aiForm: new Form({
       form_prompt: ''
-    })
+    }),
+    loading: false,
   }),
 
   computed: {
@@ -100,14 +103,39 @@ export default {
 
   methods: {
     generateForm() {
+      if (this.loading) return
+
+      this.loading = true
       this.aiForm.post('/api/forms/ai/generate').then(response => {
         this.alertSuccess(response.data.message)
-        this.$emit('form-generated', response.data.form)
-        this.$emit('close')
+        this.fetchGeneratedForm(response.data.ai_form_completion_id)
       }).catch(error => {
         this.alertError(error.response.data.message)
+        this.loading = false
         this.state = 'default'
       })
+    },
+    fetchGeneratedForm(generationId) {
+      // check every 4 seconds if form is generated
+      setTimeout(() => {
+        axios.get('/api/forms/ai/' + generationId).then(response => {
+          if (response.data.ai_form_completion.status === 'completed') {
+            this.alertSuccess(response.data.message)
+            this.$emit('form-generated', JSON.parse(response.data.ai_form_completion.result))
+            this.$emit('close')
+          } else if (response.data.ai_form_completion.status === 'failed') {
+            this.alertError('Something went wrong, please try again.')
+            this.state = 'default'
+            this.loading = false
+          } else {
+            this.fetchGeneratedForm(generationId)
+          }
+        }).catch(error => {
+          this.alertError(error.response.data.message)
+          this.state = 'default'
+          this.loading = false
+        })
+      }, 4000)
     }
   }
 }
