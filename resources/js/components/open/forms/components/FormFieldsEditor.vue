@@ -209,7 +209,19 @@ export default {
       handler() {
         this.$set(this.form, 'properties', this.formFields)
       }
+    },
+
+    'form.properties':{
+      deep: true,
+      handler() {
+        // If different, then update
+        if (this.form.properties.length !== this.formFields.length ||
+          JSON.stringify(this.form.properties) !== JSON.stringify(this.formFields)) {
+          this.formFields = clonedeep(this.form.properties)
+        }
+      }
     }
+
   },
 
   mounted() {
