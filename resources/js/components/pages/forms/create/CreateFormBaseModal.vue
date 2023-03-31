@@ -26,7 +26,7 @@
     </template>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8" v-if="state=='default'">
       <div class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50"
-           @click="showInitialFormModal=false" v-track.select_form_base="{base:'contact-form'}">
+           @click="$emit('close')" v-track.select_form_base="{base:'contact-form'}">
         <div class="p-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-blue-500">
             <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/>
