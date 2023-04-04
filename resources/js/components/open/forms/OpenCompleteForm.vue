@@ -239,6 +239,12 @@ export default {
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)
+
+        // If enabled display confetti
+        if(this.form.confetti_on_submission){
+          this.playConfetti()
+        }
+
       }).catch((error) => {
         if (error.response.data && error.response.data.message) {
           this.alertError(error.response.data.message)
