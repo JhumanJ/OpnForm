@@ -31,7 +31,6 @@ export default {
 
   watch: {
     shareUrl () {
-      console.log("aa")
       this.generateQR()
     }
   },
@@ -42,7 +41,6 @@ export default {
 
   methods: {
     generateQR () {
-      console.log("bb")
       QRCode.toDataURL(this.shareUrl).then(url => {
         this.QrUrl = url
       })
