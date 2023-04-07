@@ -280,6 +280,7 @@ export default {
           field.placeholder = field.placeholder || null
           field.prefill = field.prefill || null
           field.help = field.help || null
+          field.help_position = field.help_position || 'below_input'
 
           return field
         })

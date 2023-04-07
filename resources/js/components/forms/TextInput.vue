@@ -8,6 +8,11 @@
         <span v-if="required" class="text-red-500 required-dot">*</span>
       </label>
     </slot>
+    <div v-if="help && helpPosition=='above_input'" class="flex">
+      <small :class="theme.default.help" class="grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
+    </div>
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
            :style="inputStyle"
@@ -16,9 +21,9 @@
            :placeholder="placeholder" :min="min" :max="max" :maxlength="maxCharLimit"
            @change="onChange" @keydown.enter.prevent="onEnterPress"
     >
-    <div v-if="help || showCharLimit" class="flex">
-      <small v-if="help" :class="theme.default.help" class="flex-grow">
-        <slot name="help">{{ help }}</slot>
+    <div v-if="(help && helpPosition=='below_input') || showCharLimit" class="flex">
+      <small v-if="help && helpPosition=='below_input'" :class="theme.default.help" class="flex-grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
       </small>
       <small v-else class="flex-grow"></small>
       <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">

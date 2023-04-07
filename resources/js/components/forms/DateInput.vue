@@ -6,6 +6,9 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
 
     <div class="flex" v-if="!dateRange">
       <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :class="inputClasses" :disabled="disabled"
@@ -28,8 +31,8 @@
       </div>
     </div>
 
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help">{{ help }}</slot>
+    <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name"/>
   </div>

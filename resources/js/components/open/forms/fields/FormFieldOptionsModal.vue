@@ -276,11 +276,20 @@
         />
 
         <!--   Help  -->
-        <text-input name="help" class="mt-4"
+        <rich-text-area-input name="help" class="mt-4"
                     :form="field"
+                    :editorToolbar="editorToolbarCustom"
                     label="Field Help"
-
-                    help="Your field help will be shown below the field, just like this message."
+                    help="Your field help will be shown below/above the field, just like this message."
+                    :help-position="field.help_position"
+        />
+        <select-input name="help_position" class="mt-4"
+                    :options="[
+                      {name:'Below input',value:'below_input'},
+                      {name:'Above input',value:'above_input'},
+                    ]"
+                    :form="field" label="Field Help Position"
+                    @input="onFieldHelpPositionChange"
         />
 
         <select-input name="width" class="mt-4"
@@ -379,7 +388,10 @@ export default {
   },
   data() {
     return {
-      typesWithoutPlaceholder: ['date', 'checkbox', 'files']
+      typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
+      editorToolbarCustom: [
+        ['bold', 'italic', 'underline', 'link'],
+      ]
     }
   },
 
@@ -545,6 +557,11 @@ export default {
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
+      }
+    },
+    onFieldHelpPositionChange (val) {
+      if(!val){
+        this.$set(this.field, 'help_position', 'below_input')
       }
     }
   }

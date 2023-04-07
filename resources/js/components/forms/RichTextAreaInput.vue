@@ -6,14 +6,19 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <div v-if="help && helpPosition=='above_input'" class="flex">
+      <small :class="theme.RichTextAreaInput.help" class="grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
+    </div>
     <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled"
                 :placeholder="placeholder" :class="[{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }, theme.RichTextAreaInput.input]"
                 :editor-toolbar="editorToolbar" class="rich-editor resize-y"
                 :style="inputStyle"
     />
 
-    <small v-if="help" :class="theme.RichTextAreaInput.help">
-      <slot name="help">{{ help }}</slot>
+    <small v-if="help && helpPosition=='below_input'" :class="theme.RichTextAreaInput.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>

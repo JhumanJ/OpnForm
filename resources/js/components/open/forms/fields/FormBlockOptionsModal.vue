@@ -92,11 +92,20 @@
           />
 
           <!--   Help  -->
-          <text-input name="help" class="mt-4"
+          <rich-text-area-input name="help" class="mt-4"
                       :form="field"
+                      :editorToolbar="editorToolbarCustom"
                       label="Field Help"
-
-                      help="Your field help will be shown below the field, just like this message."
+                      help="Your field help will be shown below/above the field, just like this message."
+                      :help-position="field.help_position"
+          />
+          <select-input name="help_position" class="mt-4"
+                      :options="[
+                        {name:'Below input',value:'below_input'},
+                        {name:'Above input',value:'above_input'},
+                      ]"
+                      :form="field" label="Field Help Position"
+                      @input="onFieldHelpPositionChange"
           />
         </div>
       </div>
@@ -161,7 +170,11 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      editorToolbarCustom: [
+        ['bold', 'italic', 'underline', 'link'],
+      ]
+    }
   },
 
   computed: {},
@@ -194,6 +207,11 @@ export default {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
+      }
+    },
+    onFieldHelpPositionChange (val) {
+      if(!val){
+        this.$set(this.field, 'help_position', 'below_input')
       }
     }
   }

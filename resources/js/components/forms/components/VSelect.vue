@@ -6,6 +6,9 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <small v-if="help && helpPosition=='above_input'" :class="theme.SelectInput.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
 
     <div v-on-clickaway="closeDropdown"
          class="relative"
@@ -73,6 +76,10 @@
         </ul>
       </div>
     </div>
+
+    <small v-if="help && helpPosition=='below_input'" :class="theme.SelectInput.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
   </div>
 </template>
 
@@ -108,7 +115,9 @@ export default {
     uppercaseLabels: { type: Boolean, default: true },
     theme: { type: Object, default: () => themes.default },
     allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    help: { type: String, default: null },
+    helpPosition: { type: String, default: 'below_input' },
   },
   data () {
     return {

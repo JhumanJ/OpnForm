@@ -1,11 +1,14 @@
 <template>
     <div :class="wrapperClass">
+      <small v-if="help && helpPosition=='above_input'" :class="theme.default.help">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
       <div class="flex">
         <v-switch :id="id?id:name" v-model="compVal" class="inline-block mr-2" :disabled="disabled" :name="name" @input="$emit('input',$event)" />
         <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
       </div>
-      <small v-if="help" :class="theme.default.help">
-        <slot name="help">{{ help }}</slot>
+      <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
       </small>
       <has-error v-if="hasValidation" :form="form" :field="name" />
     </div>

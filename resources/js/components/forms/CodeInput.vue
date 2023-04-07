@@ -16,7 +16,7 @@
     />
 
     <small v-if="help" :class="theme.CodeInput.help">
-      <slot name="help">{{ help }}</slot>
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
