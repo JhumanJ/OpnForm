@@ -87,6 +87,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.multiple' => 'boolean|nullable',
             'properties.*.timezone' => 'sometimes|nullable',
             'properties.*.width' => ['sometimes', Rule::in(['full','1/2','1/3','2/3','1/3','3/4','1/4'])],
+            'properties.*.align' => ['sometimes', Rule::in(['left', 'center', 'right', 'justify'])],
             'properties.*.allowed_file_types' => 'sometimes|nullable',
             'properties.*.use_toggle_switch' => 'boolean|nullable',
 

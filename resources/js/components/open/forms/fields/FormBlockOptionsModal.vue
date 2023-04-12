@@ -25,6 +25,44 @@
           </div>
         </div>
       </div>
+
+      <div class="-mx-4 sm:-mx-6 p-5 border-b border-t">
+        <div class="-mx-4 sm:-mx-6 px-5 pt-0">
+          <h3 class="font-semibold block text-lg">
+            General
+          </h3>
+          <p class="text-gray-400 mb-5">
+            Exclude this field or make it required.
+          </p>
+          <v-checkbox v-model="field.hidden" class="mb-3"
+                      :name="field.id+'_hidden'"
+                      @input="onFieldHiddenChange"
+          >
+            Hidden
+          </v-checkbox>
+          <select-input name="width" class="mt-4"
+                        :options="[
+                          {name:'Full',value:'full'},
+                          {name:'1/2 (half width)',value:'1/2'},
+                          {name:'1/3 (a third of the width)',value:'1/3'},
+                          {name:'2/3 (two thirds of the width)',value:'2/3'},
+                          {name:'1/4 (a quarter of the width)',value:'1/4'},
+                          {name:'3/4 (three quarters of the width)',value:'3/4'}
+                        ]"
+                        :form="field" label="Field Width"
+          />
+          <select-input v-if="['nf-text','nf-image'].includes(field.type)" name="align" class="mt-4"
+                        :options="[
+                          {name:'Left',value:'left'},
+                          {name:'Center',value:'center'},
+                          {name:'Right',value:'right'},
+                          {name:'Justify',value:'justify'}
+                        ]"
+                        :form="field" label="Field Alignment"
+          />
+        </div>
+      </div>
+
       <div v-if="field.type == 'nf-text'" class="-mx-4 sm:-mx-6 p-5 border-b border-t">
         <rich-text-area-input name="content"
                               :form="field"
@@ -44,61 +82,6 @@
                     help="Shown on the next page"
                     :required="true"
         />
-      </div>
-      <div v-else-if="field.type == 'nf-page-body-input'" class="-mx-4 sm:-mx-6 p-5 border-b border-t">
-        <div class="-mx-4 sm:-mx-6 p-5 pt-0 border-b">
-          <h3 class="font-semibold block text-lg">
-            General
-          </h3>
-          <p class="text-gray-400 mb-5">
-            Exclude this field or make it required.
-          </p>
-          <v-checkbox v-model="field.hidden" class="mb-3"
-                      :name="field.id+'_hidden'"
-                      @input="onFieldHiddenChange"
-          >
-            Hidden
-          </v-checkbox>
-          <v-checkbox v-model="field.required"
-                      :name="field.id+'_required'"
-                      @input="onFieldRequiredChange"
-          >
-            Required
-          </v-checkbox>
-        </div>
-        <div class="-mx-4 sm:-mx-6 p-5">
-          <h3 class="font-semibold block text-lg">
-            Customization
-            <pro-tag/>
-          </h3>
-
-          <p class="text-gray-400 mb-5">
-            Change your form field name, pre-fill a value, add hints.
-          </p>
-
-          <text-input name="name" class="mt-4"
-                      :form="field" :required="true"
-                      label="Field Name"
-          />
-          <text-area-input name="prefill" class="mt-4"
-                           :form="field"
-                           label="Pre-filled value"
-          />
-
-          <!--    Placeholder    -->
-          <text-input name="placeholder" class="mt-4"
-                      :form="field"
-                      label="Empty Input Text (Placeholder)"
-          />
-
-          <!--   Help  -->
-          <text-input name="help" class="mt-4"
-                      :form="field"
-                      label="Field Help"
-
-                      help="Your field help will be shown below the field, just like this message."
-          />
-        </div>
       </div>
       <div v-else-if="field.type == 'nf-divider'" class="-mx-4 sm:-mx-6 p-5 border-b border-t">
         <text-input name="name" class="mt-4"
@@ -183,12 +166,6 @@ export default {
     duplicateBlock(){
       this.close()
       this.$emit('duplicate-block', this.field)
-    },
-    onFieldRequiredChange(val) {
-      this.$set(this.field, 'required', val)
-      if (this.field.required) {
-        this.$set(this.field, 'hidden', false)
-      }
     },
     onFieldHiddenChange(val) {
       this.$set(this.field, 'hidden', val)

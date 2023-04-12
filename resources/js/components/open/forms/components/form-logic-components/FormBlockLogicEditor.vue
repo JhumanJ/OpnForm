@@ -110,7 +110,11 @@ export default {
     },
     actionOptions() {
       if (['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'].includes(this.field.type)) {
-        return [{name: 'Hide Block', value: 'hide-block'}]
+        if (this.field.hidden) {
+          return [{ name: 'Show Block', value: 'show-block' }]
+        }else{
+          return [{ name: 'Hide Block', value: 'hide-block' }]
+        }
       }
 
       if (this.field.hidden) {
