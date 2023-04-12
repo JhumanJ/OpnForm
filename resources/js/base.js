@@ -2,6 +2,9 @@
  * Base mixin for all Vue components
  */
 import debounce from 'debounce'
+import Vue from 'vue'
+import VueConfetti from 'vue-confetti'
+Vue.use(VueConfetti)
 
 export default {
 
@@ -78,6 +81,16 @@ export default {
         confirmationProceed: null,
         confirmationCancel: null
       }
+    },
+
+    /**
+     * Display confetti
+     */
+    playConfetti () {
+      this.$confetti.start({ defaultSize: 6 })
+      setTimeout(() => {
+        this.$confetti.stop()
+      }, 3000)
     }
   }
 }
