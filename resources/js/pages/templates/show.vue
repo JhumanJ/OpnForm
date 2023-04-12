@@ -57,6 +57,7 @@ import Fuse from 'fuse.js'
 import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from "../../components/common/Breadcrumb.vue";
+import SeoMeta from "../../mixins/seo-meta";
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -66,6 +67,8 @@ const loadTemplates = function () {
 }
 
 export default {
+  mixins: [SeoMeta],
+
   components: {Breadcrumb, OpenFormFooter, OpenCompleteForm},
 
   beforeRouteEnter(to, from, next) {
