@@ -4,6 +4,8 @@
 
     <embed-code class="mt-6" :form="form" :extra-query-param="shareUrlForQueryParams" />
 
+    <form-qr-code class="mt-6" :form="form" :extra-query-param="shareUrlForQueryParams" />
+
     <advanced-form-url-settings :form="form" v-model="shareFormConfig" />
 
     <div class="mt-6 pt-6 border-t w-full flex">
@@ -17,6 +19,7 @@
 <script>
 import ShareLink from '../../../components/pages/forms/show/ShareLink.vue'
 import EmbedCode from '../../../components/pages/forms/show/EmbedCode.vue'
+import FormQrCode from '../../../components/pages/forms/show/FormQrCode.vue'
 import UrlFormPrefill from '../../../components/pages/forms/show/UrlFormPrefill.vue'
 import RegenerateFormLink from '../../../components/pages/forms/show/RegenerateFormLink.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
@@ -26,6 +29,7 @@ export default {
   components: {
     ShareLink,
     EmbedCode,
+    FormQrCode,
     UrlFormPrefill,
     RegenerateFormLink,
     AdvancedFormUrlSettings
