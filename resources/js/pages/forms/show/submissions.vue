@@ -11,23 +11,21 @@ import SeoMeta from '../../../mixins/seo-meta.js'
 export default {
   components: {FormSubmissions},
   props: {
-    form: { type: Object, required: true }
+    form: {type: Object, required: true}
   },
   mixins: [SeoMeta],
 
-  data: () => ({
-  }),
+  data: () => ({}),
 
-  mounted() {},
+  mounted() {
+  },
 
   computed: {
     metaTitle() {
-      return (this.form) ? 'Form Submissions - '+this.form.title : 'Form Submissions'
+      return (this.form) ? 'Form Submissions - ' + this.form.title : 'Form Submissions'
     },
   },
 
-  methods: {
-    
-  }
+  methods: {}
 }
 </script>

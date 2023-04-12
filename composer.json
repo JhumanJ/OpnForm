@@ -36,6 +36,7 @@
     "laravel/vapor-ui": "^1.5",
     "league/flysystem-aws-s3-v3": "^3.0",
     "maatwebsite/excel": "^3.1",
+    "openai-php/client": "^0.3.5",
     "sentry/sentry-laravel": "^2.11.0",
     "spatie/laravel-sitemap": "^6.0",
     "spatie/laravel-sluggable": "^3.0",

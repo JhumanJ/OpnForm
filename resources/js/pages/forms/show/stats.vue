@@ -12,25 +12,19 @@ import FormStats from '../../../components/open/forms/components/FormStats.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
 
 export default {
+  name: 'Stats',
   components: {FormStats},
   props: {
-    form: { type: Object, required: true }
+    form: {type: Object, required: true},
   },
   mixins: [SeoMeta],
 
-  data: () => ({
-  }),
-
-  mounted() {},
+  data: () => ({}),
 
   computed: {
     metaTitle() {
-      return (this.form) ? 'Form Analytics - '+this.form.title : 'Form Analytics'
-    },
-  },
-
-  methods: {
-    
+      return (this.form ? ('Form Analytics - ' + this.form.title) : 'Form Analytics')
+    }
   }
 }
 </script>

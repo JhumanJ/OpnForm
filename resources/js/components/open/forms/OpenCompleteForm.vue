@@ -204,6 +204,26 @@ export default {
           form_id: this.form.id
         })
 
+        if (this.isIframe) {
+          window.parent.postMessage({
+            type: 'form-submitted',
+            form: {
+              slug: this.form.slug,
+              id: this.form.id
+            },
+            submission_data: form.data()
+          }, '*')
+        }
+        window.postMessage({
+          type: 'form-submitted',
+          form: {
+            slug: this.form.slug,
+            id: this.form.id
+          },
+          submission_data: form.data()
+        }, '*')
+
+
         try {
           window.localStorage.removeItem(this.formPendingSubmissionKey)
         } catch (e) {}
@@ -219,6 +239,12 @@ export default {
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)
+
+        // If enabled display confetti
+        if(this.form.confetti_on_submission){
+          this.playConfetti()
+        }
+
       }).catch((error) => {
         if (error.response.data && error.response.data.message) {
           this.alertError(error.response.data.message)

@@ -178,7 +178,7 @@ class SeoMetaResolver
 
         return [
             'title' => $template->name . $this->titleSuffix(),
-            'description' => Str::of($template->description)->limit(160) ,
+            'description' => Str::of($template->description)->limit(160),
             'image' => $template->image_url
         ];
     }

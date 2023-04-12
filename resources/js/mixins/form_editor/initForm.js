@@ -42,6 +42,7 @@ export default {
         max_submissions_count: null,
         max_submissions_reached_text: 'This form has now reached the maximum number of allowed submissions and is now closed.',
         editable_submissions_button_text: 'Edit submission',
+        confetti_on_submission: false,
 
         // Security & Privacy
         can_be_indexed: true

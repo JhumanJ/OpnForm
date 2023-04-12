@@ -48,6 +48,15 @@ return [
         'worker' => env('NOTION_WORKER','https://notion-forms-worker.notionforms.workers.dev/v1')
     ],
 
+    'openai' => [
+        'api_key' => env('OPEN_AI_API_KEY'),
+    ],
+
+    'unslash' => [
+      'access_key' => env('UNSPLASH_ACCESS_KEY'),
+      'secret_key' => env('UNSPLASH_SECRET_KEY'),
+    ],
+
     'google_analytics_code' => env('GOOGLE_ANALYTICS_CODE'),
     'amplitude_code' => env('AMPLITUDE_CODE'),
     'crisp_website_id' => env('CRISP_WEBSITE_ID'),

@@ -163,7 +163,7 @@ export default {
     },
     /**
      * Returns true if we're on the last page
-     * @returns {boolean}
+     * @returns {boolean}xs
      */
     isLastPage() {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)

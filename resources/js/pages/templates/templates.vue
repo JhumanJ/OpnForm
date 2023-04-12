@@ -41,6 +41,7 @@ import store from '~/store'
 import {mapGetters, mapState} from 'vuex'
 import Fuse from 'fuse.js'
 import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import SeoMeta from "../../mixins/seo-meta";
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -50,6 +51,8 @@ const loadTemplates = function () {
 }
 
 export default {
+  mixins: [SeoMeta],
+
   components: {OpenFormFooter},
 
   beforeRouteEnter(to, from, next) {
@@ -59,7 +62,7 @@ export default {
 
   props: {
     metaTitle: {type: String, default: 'Templates'},
-    metaDescription: {type: String, default: 'Public templates for create form quickly!'}
+    metaDescription: {type: String, default: 'Our collection of beautiful templates to create your own forms!'}
   },
 
   data() {

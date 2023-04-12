@@ -156,7 +156,7 @@ export default {
 
   methods: {
     passwordEntered (password) {
-      Cookies.set('password-' + this.form.slug, sha256(password), { expires: 7 })
+      Cookies.set('password-' + this.form.slug, sha256(password), { expires: 7, sameSite: 'None', secure: true })
       loadForm(this.formSlug).then(() => {
         if (this.form.is_password_protected) {
           this.$refs['open-complete-form'].addPasswordError('Invalid password.')

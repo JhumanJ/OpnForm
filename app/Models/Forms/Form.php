@@ -78,6 +78,7 @@ class Form extends Model
         'max_submissions_reached_text',
         'editable_submissions',
         'editable_submissions_button_text',
+        'confetti_on_submission',
 
         // Security & Privacy
         'can_be_indexed',
