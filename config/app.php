@@ -177,11 +177,12 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\VaporUiServiceProvider::class,
         App\Providers\ModelStatsServiceProvider::class,
-        App\Providers\PurifySetupProvider::class
+        App\Providers\PurifySetupProvider::class,
 
         /*
         * Package Service Providers...
         */
+        Propaganistas\LaravelDisposableEmail\DisposableEmailServiceProvider::class,
 
     ],
 

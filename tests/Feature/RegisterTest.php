@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Tests\TestCase;
+use function Pest\Faker\faker;
 
 it('can register', function () {
     $this->postJson('/api/register', [
@@ -31,4 +32,33 @@ it('cannot register with existing email', function () {
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email']);
+});
+
+it('cannot register with disposable email', function () {
+    // Select random email
+    $email = faker()->randomElement([
+        'dumliyupse@gufum.com', 
+        'kcs79722@zslsz.com', 
+        'pfizexwxtdifxupdhr@tpwlb.com', 
+        'qvj86ypqfm@email.edu.pl'
+    ]);
+
+    $this->postJson('/api/register', [
+            'name' => 'Test disposable',
+            'email' => $email,
+            'hear_about_us' => 'google',
+            'password' => 'secret',
+            'password_confirmation' => 'secret',
+            'agree_terms' => true
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['email'])
+        ->assertJson([
+            'message' => 'Disposable email addresses are not allowed.',
+            'errors' => [
+                'email' => [
+                    'Disposable email addresses are not allowed.',
+                ],
+            ],
+        ]);
 });
