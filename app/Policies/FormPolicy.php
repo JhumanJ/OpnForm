@@ -30,7 +30,7 @@ class FormPolicy
      */
     public function view(User $user, Form $form)
     {
-        return $user->workspaces()->find($form->workspace_id)->exists();
+        return $user->workspaces()->find($form->workspace_id) !== null;
     }
 
     /**
@@ -53,7 +53,7 @@ class FormPolicy
      */
     public function update(User $user, Form $form)
     {
-        return $user->workspaces()->find($form->workspace_id)->exists();
+        return $user->workspaces()->find($form->workspace_id) !== null;
     }
 
     /**
@@ -65,7 +65,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form)
     {
-        return $user->workspaces()->find($form->workspace_id)->exists();
+        return $user->workspaces()->find($form->workspace_id) !== null;
     }
 
     /**
@@ -77,7 +77,7 @@ class FormPolicy
      */
     public function restore(User $user, Form $form)
     {
-        return $user->workspaces()->find($form->workspace_id)->exists();
+        return $user->workspaces()->find($form->workspace_id) !== null;
     }
 
     /**
@@ -89,6 +89,6 @@ class FormPolicy
      */
     public function forceDelete(User $user, Form $form)
     {
-        return $user->workspaces()->find($form->workspace_id)->exists();
+        return $user->workspaces()->find($form->workspace_id) !== null;
     }
 }

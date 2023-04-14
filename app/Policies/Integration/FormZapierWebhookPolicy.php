@@ -20,11 +20,11 @@ class FormZapierWebhookPolicy
 
     public function store(User $user, FormZapierWebhook $webhook)
     {
-        return $this->formPolicy->update($user, $webhook->form); // && $user->is_subscribed;
+        return ($webhook?->form) ? $this->formPolicy->update($user, $webhook->form) : false; // && $user->is_subscribed;
     }
 
     public function delete(User $user, FormZapierWebhook $webhook)
     {
-        return $this->formPolicy->update($user, $webhook->form); // && $user->is_subscribed;
+        return ($webhook?->form) ? $this->formPolicy->update($user, $webhook->form) : false; // && $user->is_subscribed;
     }
 }
