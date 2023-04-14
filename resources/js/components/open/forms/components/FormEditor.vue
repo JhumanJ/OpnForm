@@ -14,8 +14,10 @@
           </svg>
           Go back
         </a>
-        <h3 class="font-semibold text-lg">{{ form.title }}</h3>
-        <small v-if="isEdit" class="text-gray-500">Edited {{ form.last_edited_human }}</small>
+        <template v-if="isEdit">
+          <h3 class="font-semibold text-lg">{{ form.title }}</h3>
+          <small class="text-gray-500">Edited {{ form.last_edited_human }}</small>
+        </template>
       </div>
 
       <div class="p-4 border-b sticky top-0 z-10 bg-white">
