@@ -187,6 +187,7 @@ export default {
       this.form.put('/api/open/forms/{id}/'.replace('{id}', this.form.id)).then((response) => {
         const data = response.data
         this.$store.commit('open/forms/addOrUpdate', data.form)
+        this.$emit('on-save')
         this.$router.push({name: 'forms.show', params: {slug: this.form.slug}})
         this.$logEvent('form_saved', {form_id: this.form.id, form_slug: this.form.slug})
         this.displayFormModificationAlert(data)
@@ -207,6 +208,7 @@ export default {
       this.updateFormLoading = true
       this.form.post('/api/open/forms').then((response) => {
         this.$store.commit('open/forms/addOrUpdate', response.data.form)
+        this.$emit('on-save')
         this.createdFormId = response.data.form.id
 
         this.$logEvent('form_created', {form_id: response.data.form.id, form_slug: response.data.form.slug})
