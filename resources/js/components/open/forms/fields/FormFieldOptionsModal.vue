@@ -222,7 +222,7 @@
         </h3>
 
         <p class="text-gray-400 mb-5">
-          Change your form field name, pre-fill a value, add hints.
+          Change your form field name, pre-fill a value, add hints, etc.
         </p>
 
         <text-input name="name" class="mt-4"
@@ -275,6 +275,18 @@
                     label="Empty Input Text (Placeholder)"
         />
 
+        <select-input name="width" class="mt-4"
+                      :options="[
+                        {name:'Full',value:'full'},
+                        {name:'1/2 (half width)',value:'1/2'},
+                        {name:'1/3 (a third of the width)',value:'1/3'},
+                        {name:'2/3 (two thirds of the width)',value:'2/3'},
+                        {name:'1/4 (a quarter of the width)',value:'1/4'},
+                        {name:'3/4 (three quarters of the width)',value:'3/4'},
+                      ]"
+                      :form="field" label="Field Width"
+        />
+
         <!--   Help  -->
         <rich-text-area-input name="help" class="mt-4"
                     :form="field"
@@ -290,18 +302,6 @@
                     ]"
                     :form="field" label="Field Help Position"
                     @input="onFieldHelpPositionChange"
-        />
-
-        <select-input name="width" class="mt-4"
-                      :options="[
-                        {name:'Full',value:'full'},
-                        {name:'1/2 (half width)',value:'1/2'},
-                        {name:'1/3 (a third of the width)',value:'1/3'},
-                        {name:'2/3 (two thirds of the width)',value:'2/3'},
-                        {name:'1/4 (a quarter of the width)',value:'1/4'},
-                        {name:'3/4 (three quarters of the width)',value:'3/4'},
-                      ]"
-                      :form="field" label="Field Width"
         />
 
         <template v-if="['text','number','url','email','phone_number'].includes(field.type)">
@@ -560,7 +560,7 @@ export default {
       }
     },
     onFieldHelpPositionChange (val) {
-      if(!val){
+      if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
     }
