@@ -6,7 +6,7 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
-    <div v-if="help && helpPosition=='above_input'" class="flex">
+    <div v-if="help && helpPosition=='above_input'" class="flex mb-1">
       <small :class="theme.default.help" class="flex-grow">
         <slot name="help"><span class="field-help" v-html="help" /></slot>
       </small>

@@ -1,6 +1,6 @@
 <template>
   <div :class="wrapperClass">
-    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help">
+    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
       <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled" :name="name" @input="$emit('input',$event)">
