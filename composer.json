@@ -70,7 +70,8 @@
       "ext-posix": "8.0"
     },
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true
     }
   },
   "extra": {
