@@ -42,7 +42,8 @@ export default {
         return [
           [{ header: 1 }, { header: 2 }],
           ['bold', 'italic', 'underline', 'link'],
-          [{ list: 'ordered' }, { list: 'bullet' }]
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{color: []}]
         ]
       }
     }

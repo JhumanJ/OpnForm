@@ -16,18 +16,18 @@
             />
             <template v-else>
               <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
-                   class="nf-text w-full px-2 mb-3"
+                   class="nf-text w-full px-2 mb-3" :class="[getFieldClasses(field), getFieldAlignClasses(field)]"
                    v-html="field.content"
               />
               <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"
-                   class="nf-code w-full px-2 mb-3"
+                   class="nf-code w-full px-2 mb-3" :class="getFieldClasses(field)"
                    v-html="field.content"
               />
-              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id"
-                  class="border-b my-4 w-full mx-2"
+              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" 
+                  class="border-b my-4 w-full mx-2" :class="getFieldClasses(field)"
               />
               <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
-                   :key="field.id" class="my-4 w-full px-2"
+                   :key="field.id" class="my-4 w-full px-2" :class="[getFieldClasses(field), getFieldAlignClasses(field)]"
               >
                 <div v-if="!field.image_block" class="p-4 border border-dashed">
                   Open <b>{{ field.name }}'s</b> block settings to upload image.
@@ -438,6 +438,16 @@ export default {
         return 'w-full sm:w-1/4 px-2'
       } else if (field.width === '3/4') {
         return 'w-full sm:w-3/4 px-2'
+      }
+    },
+    getFieldAlignClasses (field) {
+      if (!field.align || field.align === 'left') return 'text-left'
+      else if (field.align === 'right') {
+        return 'text-right'
+      } else if (field.align === 'center') {
+        return 'text-center'
+      } else if (field.align === 'justify') {
+        return 'text-justify'
       }
     },
     /**
