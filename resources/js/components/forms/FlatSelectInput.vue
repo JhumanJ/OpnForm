@@ -6,8 +6,8 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
-    <small v-if="help" :class="theme.SelectInput.help" class="block mb-2">
-      <slot name="help">{{ help }}</slot>
+    <small v-if="help && helpPosition=='above_input'" :class="theme.SelectInput.help" class="block mb-1">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
 
     <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
@@ -25,6 +25,9 @@
       </div>
     </div>
 
+    <small v-if="help && helpPosition=='below_input'" :class="theme.SelectInput.help" class="block">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>

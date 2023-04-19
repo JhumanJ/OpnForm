@@ -462,6 +462,7 @@ export default {
         color: this.form.color,
         placeholder: field.placeholder,
         help: field.help,
+        helpPosition: (field.help_position) ? field.help_position : 'below_input',
         uppercaseLabels: this.form.uppercase_labels,
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,

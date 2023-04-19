@@ -222,7 +222,7 @@
         </h3>
 
         <p class="text-gray-400 mb-5">
-          Change your form field name, pre-fill a value, add hints.
+          Change your form field name, pre-fill a value, add hints, etc.
         </p>
 
         <text-input name="name" class="mt-4"
@@ -275,14 +275,6 @@
                     label="Empty Input Text (Placeholder)"
         />
 
-        <!--   Help  -->
-        <text-input name="help" class="mt-4"
-                    :form="field"
-                    label="Field Help"
-
-                    help="Your field help will be shown below the field, just like this message."
-        />
-
         <select-input name="width" class="mt-4"
                       :options="[
                         {name:'Full',value:'full'},
@@ -293,6 +285,23 @@
                         {name:'3/4 (three quarters of the width)',value:'3/4'},
                       ]"
                       :form="field" label="Field Width"
+        />
+
+        <!--   Help  -->
+        <rich-text-area-input name="help" class="mt-4"
+                    :form="field"
+                    :editorToolbar="editorToolbarCustom"
+                    label="Field Help"
+                    help="Your field help will be shown below/above the field, just like this message."
+                    :help-position="field.help_position"
+        />
+        <select-input name="help_position" class="mt-4"
+                    :options="[
+                      {name:'Below input',value:'below_input'},
+                      {name:'Above input',value:'above_input'},
+                    ]"
+                    :form="field" label="Field Help Position"
+                    @input="onFieldHelpPositionChange"
         />
 
         <template v-if="['text','number','url','email','phone_number'].includes(field.type)">
@@ -379,7 +388,10 @@ export default {
   },
   data() {
     return {
-      typesWithoutPlaceholder: ['date', 'checkbox', 'files']
+      typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
+      editorToolbarCustom: [
+        ['bold', 'italic', 'underline', 'link'],
+      ]
     }
   },
 
@@ -545,6 +557,11 @@ export default {
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
+      }
+    },
+    onFieldHelpPositionChange (val) {
+      if (!val) {
+        this.$set(this.field, 'help_position', 'below_input')
       }
     }
   }

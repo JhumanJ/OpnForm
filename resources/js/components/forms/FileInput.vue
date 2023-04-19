@@ -6,6 +6,9 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label" role="button"
               class="cursor-pointer relative flex"
@@ -60,8 +63,8 @@
         </template>
       </button>
     </span>
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help">{{ help }}</slot>
+    <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
 

@@ -6,6 +6,11 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <div v-if="help && helpPosition=='above_input'" class="flex mb-1">
+      <small :class="theme.default.help" class="flex-grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
+    </div>
     <textarea :id="id?id:name" v-model="compVal" :disabled="disabled"
               :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
               class="resize-y"
@@ -13,9 +18,9 @@
               :placeholder="placeholder"
               :maxlength="maxCharLimit"
     />
-    <div v-if="help || showCharLimit" class="flex">
-      <small v-if="help" :class="theme.default.help" class="flex-grow">
-        <slot name="help">{{ help }}</slot>
+    <div v-if="(help && helpPosition=='below_input') || showCharLimit" class="flex">
+      <small v-if="help && helpPosition=='below_input'" :class="theme.default.help" class="flex-grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
       </small>
       <small v-else class="flex-grow"></small>
       <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">

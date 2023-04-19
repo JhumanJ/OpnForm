@@ -144,7 +144,11 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      editorToolbarCustom: [
+        ['bold', 'italic', 'underline', 'link'],
+      ]
+    }
   },
 
   computed: {},
@@ -171,6 +175,11 @@ export default {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
+      }
+    },
+    onFieldHelpPositionChange (val) {
+      if(!val){
+        this.$set(this.field, 'help_position', 'below_input')
       }
     }
   }

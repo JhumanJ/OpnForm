@@ -46,3 +46,9 @@ body.dark * {
 .bg-gray-50 {
   @apply dark:bg-notion-dark-light;
 }
+
+.field-help {
+  p {
+    @apply text-gray-400 dark:text-gray-500;
+  }
+}

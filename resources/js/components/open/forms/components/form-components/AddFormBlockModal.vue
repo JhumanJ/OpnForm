@@ -295,6 +295,7 @@ export default {
       if (['select', 'multi_select'].includes(this.blockForm.type)) {
         data[this.blockForm.type] = {'options': []}
       }
+      data.help_position = 'below_input'
       this.$emit('block-added', data)
       this.close()
     },
