@@ -168,7 +168,7 @@ class AnswerFormRequest extends FormRequest
                 return ['boolean'];
             case 'url':
                 if (isset($property['file_upload']) && $property['file_upload']) {
-                    $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize)];
+                    $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, [], $this->form)];
                     return ['array'];
                 }
                 return ['url'];
@@ -177,7 +177,7 @@ class AnswerFormRequest extends FormRequest
                 if($this->form->is_pro && !empty($property['allowed_file_types'])){
                     $allowedFileTypes = explode(",", $property['allowed_file_types']);
                 }
-                $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, $allowedFileTypes)];
+                $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, $allowedFileTypes, $this->form)];
                 return ['array'];
             case 'email':
                 return ['email:filter'];

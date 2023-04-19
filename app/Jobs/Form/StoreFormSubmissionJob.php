@@ -136,6 +136,13 @@ class StoreFormSubmissionJob implements ShouldQueue
         return $finalData;
     }
 
+    // This is use when updating a record, and file uploads aren't changed.
+    private function isSkipForUpload($value)
+    {
+        $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
+        return Storage::disk('s3')->exists($newPath.'/'.$value);
+    }
+
     /**
      * Custom Back-end Value formatting. Use case:
      * - File uploads (move file from tmp storage to persistent)
@@ -148,6 +155,10 @@ class StoreFormSubmissionJob implements ShouldQueue
     {
         if ($value == null) {
             return null;
+        }
+
+        if($this->isSkipForUpload($value)) {
+            return $value;
         }
 
         $fileNameParser = StorageFileNameParser::parse($value);

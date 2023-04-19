@@ -208,7 +208,19 @@ export default {
     }
   },
 
-  created () {
+  async created () {
+    if(this.compVal && this.compVal.length > 0) {
+      let tmpFiles = []
+      for (let i = 0; i < this.compVal.length; i++) {
+        await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
+          tmpFiles.push({
+            file: fileObj,
+            url: this.compVal[i]
+          })
+        })
+      }
+      this.files = tmpFiles
+    }
   },
 
   methods: {
@@ -261,6 +273,14 @@ export default {
         this.clearAll()
         this.showUploadModal = false
         this.loading = false
+      })
+    },
+    async getFileFromUrl(url, defaultType='image/jpeg'){
+      const response = await fetch(url)
+      const data = await response.blob()
+      const name = url.replace(/^.*(\\|\/|\:)/, '')
+      return new File([data], name, {
+        type: data.type || defaultType,
       })
     }
   }
