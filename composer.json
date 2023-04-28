@@ -37,6 +37,7 @@
     "league/flysystem-aws-s3-v3": "^3.0",
     "maatwebsite/excel": "^3.1",
     "openai-php/client": "^0.3.5",
+    "propaganistas/laravel-disposable-email": "^2.2",
     "sentry/sentry-laravel": "^2.11.0",
     "spatie/laravel-sitemap": "^6.0",
     "spatie/laravel-sluggable": "^3.0",
@@ -69,7 +70,8 @@
       "ext-posix": "8.0"
     },
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true
     }
   },
   "extra": {
