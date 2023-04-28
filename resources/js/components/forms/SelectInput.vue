@@ -17,6 +17,8 @@
               :has-error="hasValidation && form.errors.has(name)"
               :allowCreation="allowCreation"
               :disabled="disabled"
+              :help="help"
+              :help-position="helpPosition"
 
               @update-options="updateOptions"
     >
@@ -55,9 +57,7 @@
         </slot>
       </template>
     </v-select>
-    <small v-if="help" :class="theme.SelectInput.help">
-      <slot name="help">{{ help }}</slot>
-    </small>
+     
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>

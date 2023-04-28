@@ -11,7 +11,8 @@ export default {
     disabled: { type: Boolean, default: false },
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: false },
-    help: { type: String, default: null }, // Show help or bot
+    help: { type: String, default: null },
+    helpPosition: { type: String, default: 'below_input' },
     theme: { type: Object, default: () => themes.default },
     color: { type: String, default: '#3B82F6' },
     wrapperClass: { type: String, default: 'relative mb-3' }

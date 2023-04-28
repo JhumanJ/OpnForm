@@ -9,7 +9,7 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
     <small v-if="help" :class="theme.default.help">
-      <slot name="help">{{ help }}</slot>
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>

@@ -7,6 +7,7 @@ use App\Service\Storage\StorageFileNameParser;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Forms\Form;
 
 class StorageFile implements Rule
 {
@@ -21,7 +22,7 @@ class StorageFile implements Rule
      * @param  int  $maxSize
      * @param  string[]  $fileTypes
      */
-    public function __construct(int $maxSize, array $fileTypes = [])
+    public function __construct(int $maxSize, array $fileTypes = [], public ?Form $form = null)
     {
         $this->maxSize = $maxSize;
 
@@ -39,6 +40,14 @@ class StorageFile implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        // This is use when updating a record, and file uploads aren't changed.
+        if($this->form){
+            $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
+            if(Storage::disk('s3')->exists($newPath.'/'.$value)){
+                return true;
+            }
+        }
+
         $fileNameParser = StorageFileNameParser::parse($value);
         if (!$uuid = $fileNameParser->uuid) {
             return false;

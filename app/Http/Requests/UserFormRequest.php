@@ -82,6 +82,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.placeholder' => 'sometimes|nullable',
             'properties.*.prefill' => 'sometimes|nullable',
             'properties.*.help' => 'sometimes|nullable',
+            'properties.*.help_position' => ['sometimes', Rule::in(['below_input', 'above_input'])],
             'properties.*.hidden' => 'boolean|nullable',
             'properties.*.required' => 'boolean|nullable',
             'properties.*.multiple' => 'boolean|nullable',

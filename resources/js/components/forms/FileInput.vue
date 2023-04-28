@@ -6,6 +6,9 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
+    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
+    </small>
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label" role="button"
               class="cursor-pointer relative flex"
@@ -60,8 +63,8 @@
         </template>
       </button>
     </span>
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help">{{ help }}</slot>
+    <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
+      <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name" />
 
@@ -205,7 +208,19 @@ export default {
     }
   },
 
-  created () {
+  async created () {
+    if(this.compVal && this.compVal.length > 0) {
+      let tmpFiles = []
+      for (let i = 0; i < this.compVal.length; i++) {
+        await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
+          tmpFiles.push({
+            file: fileObj,
+            url: this.compVal[i]
+          })
+        })
+      }
+      this.files = tmpFiles
+    }
   },
 
   methods: {
@@ -258,6 +273,14 @@ export default {
         this.clearAll()
         this.showUploadModal = false
         this.loading = false
+      })
+    },
+    async getFileFromUrl(url, defaultType='image/jpeg'){
+      const response = await fetch(url)
+      const data = await response.blob()
+      const name = url.replace(/^.*(\\|\/|\:)/, '')
+      return new File([data], name, {
+        type: data.type || defaultType,
       })
     }
   }
