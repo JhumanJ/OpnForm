@@ -15,6 +15,7 @@
     </div>
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
+           :pattern="pattern"
            :style="inputStyle"
            :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
            :name="name" :accept="accept"
@@ -48,6 +49,7 @@ export default {
     max: { type: Number, required: false, default: null },
     maxCharLimit: { type: Number, required: false, default: null },
     showCharLimit: { type: Boolean, required: false, default: false },
+    pattern: { type: String, default: null }
   },
 
   data: () => ({}),
