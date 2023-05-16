@@ -4,8 +4,8 @@ import vue from '@vitejs/plugin-vue2'
 
 export default defineConfig({
   esbuild: {
-    minify: false,
-    minifySyntax: false
+    minify: true,
+    minifySyntax: true
   },
   plugins: [
     laravel({
