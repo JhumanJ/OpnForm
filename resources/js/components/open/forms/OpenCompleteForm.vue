@@ -1,6 +1,6 @@
 <template>
   <div v-if="form" class="open-complete-form">
-    <h1 v-if="!isHideTitle" class="mb-4 px-2" v-text="form.title" />
+    <h1 v-if="!isHideTitle" class="mb-4 px-2" :class="{&quot;mt-4&quot;:isEmbedPopup}" v-text="form.title" />
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -157,6 +157,9 @@ export default {
   computed: {
     isIframe () {
       return window.location !== window.parent.location || window.frameElement
+    },
+    isEmbedPopup () {
+      return window.location.href.includes('popup=true')
     },
     theme () {
       return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
