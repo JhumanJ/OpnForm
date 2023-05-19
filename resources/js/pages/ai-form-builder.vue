@@ -10,7 +10,7 @@
           <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight">
               Say goodbye to tedious form building with OpnForm's new <span
-                class="bg-clip-text text-transparent bg-gradient-to-r lg:block from-primary-600 to-primary-300">AI-powered
+                class="bg-clip-text text-transparent bg-gradient-to-r lg:block from-blue-600 to-blue-400">AI-powered
                 feature!</span>
             </h1>
             <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
@@ -19,7 +19,7 @@
 
             <div class="mt-8">
               <a href="#" title=""
-                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-primary-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 role="button">
                 Get started for free
                 <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@
           </div>
 
           <div class="max-w-6xl mx-auto mt-12 sm:mt-16">
-            <img class="rounded-lg sm:rounded-xl lg:rounded-2xl ring-1 ring-gray-200 shadow-lg shadow-primary-600/10"
+            <img class="rounded-lg sm:rounded-xl lg:rounded-2xl ring-1 ring-gray-200 shadow-lg shadow-blue-600/10"
               :src="asset('img/pages/ai_form_builder/hero-mockup.png')" alt="">
           </div>
 
@@ -83,7 +83,7 @@
     <section class="bg-white py-12 sm:py-16 lg:py-20 xl:py-24">
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div class="text-center max-w-3xl mx-auto">
-            <h2 class="text-sm font-semibold text-primary-600">
+            <h2 class="text-sm font-semibold text-blue-600">
               How Does It Work?
             </h2>
             <p
@@ -102,7 +102,7 @@
               :src="asset('img/pages/ai_form_builder/step-1.svg')" alt="">
 
               <div
-                class="w-16 h-16 rounded-full bg-primary-50 border-2 border-primary-200 hidden xl:inline-flex items-center justify-center text-primary-600 text-2xl font-semibold leading-none">
+                class="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-200 hidden xl:inline-flex items-center justify-center text-blue-600 text-2xl font-semibold leading-none">
                 1
               </div>
 
@@ -127,7 +127,7 @@
                 :src="asset('img/pages/ai_form_builder/step-2.svg')" alt="">
 
               <div
-                class="w-16 h-16 lg:order-2 rounded-full bg-primary-50 border-2 border-primary-200 hidden xl:inline-flex items-center justify-center text-primary-600 text-2xl font-semibold leading-none">
+                class="w-16 h-16 lg:order-2 rounded-full bg-blue-50 border-2 border-blue-200 hidden xl:inline-flex items-center justify-center text-blue-600 text-2xl font-semibold leading-none">
                 2
               </div>
 
@@ -149,7 +149,7 @@
               :src="asset('img/pages/ai_form_builder/step-3.svg')" alt="">
 
               <div
-                class="w-16 h-16 rounded-full bg-primary-50 border-2 border-primary-200 hidden xl:inline-flex items-center justify-center text-primary-600 text-2xl font-semibold leading-none">
+                class="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-200 hidden xl:inline-flex items-center justify-center text-blue-600 text-2xl font-semibold leading-none">
                 3
               </div>
 
@@ -176,7 +176,7 @@
     <section class="bg-gray-50 py-12 sm:py-16 lg:py-20 xl:py-24">
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div class="text-center max-w-3xl mx-auto">
-            <h2 class="text-sm font-semibold text-primary-600">
+            <h2 class="text-sm font-semibold text-blue-600">
               Examples
             </h2>
             <p
@@ -256,7 +256,7 @@
 
             <div class="mt-8">
               <a href="#" title=""
-                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-primary-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 role="button">
                 Get started for free
                 <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
@@ -309,7 +309,7 @@
     <section class="bg-white py-12 sm:py-16 lg:py-20 xl:py-24">
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div class="text-center max-w-3xl mx-auto">
-          <h2 class="text-sm font-semibold text-primary-600">
+          <h2 class="text-sm font-semibold text-blue-600">
             Customer Testimonials
           </h2>
           <p
@@ -324,7 +324,7 @@
       </div>
     </section>
     <!-- END TESTIMONIALS -->
-    
+
     <!-- START FAQS -->
     <section class="bg-white py-12 sm:py-16 lg:py-20 xl:py-24 border-t border-gray-200">
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -426,12 +426,12 @@
             Create beautiful forms and share them anywhere
           </h2>
           <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
-            It takes seconds, you don't need to know how to code and <span class="text-primary-600">it's free</span>.
+            It takes seconds, you don't need to know how to code and <span class="text-blue-600">it's free</span>.
           </p>
 
           <div class="mt-8">
             <a href="#" title=""
-              class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-primary-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+              class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               role="button">
               Get started for free
               <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
