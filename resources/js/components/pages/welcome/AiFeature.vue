@@ -1,21 +1,16 @@
 <template>
     <div class="py-8">
       <section>
-        <div class="absolute inset-0 grid" aria-hidden="true">
-          <div class="bg-gray-50"></div>
-          <div class="bg-white"></div>
-        </div>
-
         <div class="mx-auto max-w-7xl isolate sm:px-6 lg:px-8">
           <div
-            class="relative px-4 pt-16 overflow-hidden bg-primary-100 ring-primary-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:pt-0 sm:shadow-gray-600/10">
+            class="relative px-4 pt-16 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:pt-0 sm:shadow-gray-600/10">
             <div class="absolute inset-0">
               <img class="object-cover object-top w-full h-full" :src="asset('img/pages/ai_form_builder/background-pattern-ai.svg')" alt="">
             </div>
 
             <div class="relative max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:flex-auto lg:py-16 lg:text-left">
               <span
-                class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-primary-200 ring-1 text-primary-600 px-2.5 py-1.5 rounded-full">
+                class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-blue-200 ring-1 text-blue-600 px-2.5 py-1.5 rounded-full">
                 <svg aria-hidden="true" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                   fill="currentColor">
                   <path fill-rule="evenodd"
@@ -27,7 +22,7 @@
 
               <h2 class="mt-6 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                 Say goodbye to tedious form building with OpnForm's new <span
-                  class="text-transparent bg-clip-text bg-gradient-to-r lg:block from-primary-600 to-primary-300">AI-powered
+                  class="text-transparent bg-clip-text bg-gradient-to-r lg:block from-blue-600 to-blue-300">AI-powered
                   feature!</span>
               </h2>
               <p class="mt-4 text-base font-medium leading-7 text-gray-500 sm:text-lg sm:leading-8">
@@ -69,7 +64,7 @@
 
               <div class="mt-6 sm:mt-8">
                 <a href="#" title=""
-                  class="inline-flex items-center justify-center px-4 py-3 text-base font-semibold text-white transition-all duration-150 shadow-md rounded-xl bg-primary-600 hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                  class="inline-flex items-center justify-center px-4 py-3 text-base font-semibold text-white transition-all duration-150 shadow-md rounded-xl bg-blue-600 hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                   role="button">
                   Get started for free
                   <svg aria-hidden="true" class="w-5 h-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +79,7 @@
 
             <div
               class="relative px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
-              <img class="rounded-t-2xl ring-1 ring-primary-100 lg:rounded-tr-none"
+              <img class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none"
               :src="asset('img/pages/ai_form_builder/ai-feature-illustration.svg')" alt="App screenshot">
             </div>
           </div>
