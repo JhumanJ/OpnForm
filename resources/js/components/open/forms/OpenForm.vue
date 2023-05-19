@@ -498,6 +498,8 @@ export default {
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ""
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)
+      } else if (['number', 'phone_number'].includes(field.type)) {
+        inputProperties.pattern = "/\d*"
       }
 
       return inputProperties
