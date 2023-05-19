@@ -62,6 +62,8 @@
         </div>
       </div>
 
+      <ai-feature class="bg-white" />
+
       <more-features />
 
 <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
@@ -114,12 +116,13 @@
 import {mapGetters} from 'vuex'
 import Features from '~/components/pages/welcome/Features.vue'
 import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
+import AiFeature from '~/components/pages/welcome/AiFeature.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {Testimonials, OpenFormFooter, Features, MoreFeatures},
+  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, AiFeature},
 
   layout: 'default',
 

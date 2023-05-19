@@ -61,6 +61,7 @@ export default [
 
   // Guest Routes
   { path: '/', name: 'welcome', component: page('welcome.vue') },
+  { path: '/ai-form-builder', name: 'aiformbuilder', component: page('ai-form-builder.vue') },
   { path: '/integrations', name: 'integrations', component: page('integrations.vue') },
   { path: '/forms/:slug', name: 'forms.show_public', component: page('forms/show-public.vue') },
 
