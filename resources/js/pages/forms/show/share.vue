@@ -11,7 +11,9 @@
     <div class="mt-6 pt-6 border-t w-full flex">
       <regenerate-form-link class="sm:w-1/2 mr-4" :form="form" />
 
-      <url-form-prefill class="sm:w-1/2" :form="form" :extra-query-param="shareUrlForQueryParams" />
+      <url-form-prefill class="sm:w-1/2 mr-4" :form="form" :extra-query-param="shareUrlForQueryParams" />
+
+      <embed-form-as-popup-modal class="sm:w-1/2" :form="form" />
     </div>
   </div>
 </template>
@@ -24,6 +26,7 @@ import UrlFormPrefill from '../../../components/pages/forms/show/UrlFormPrefill.
 import RegenerateFormLink from '../../../components/pages/forms/show/RegenerateFormLink.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
 import AdvancedFormUrlSettings from '../../../components/open/forms/components/AdvancedFormUrlSettings.vue'
+import EmbedFormAsPopupModal from '../../../components/pages/forms/show/EmbedFormAsPopupModal.vue'
 
 export default {
   components: {
@@ -32,7 +35,8 @@ export default {
     FormQrCode,
     UrlFormPrefill,
     RegenerateFormLink,
-    AdvancedFormUrlSettings
+    AdvancedFormUrlSettings,
+    EmbedFormAsPopupModal
   },
   props: {
     form: { type: Object, required: true }
