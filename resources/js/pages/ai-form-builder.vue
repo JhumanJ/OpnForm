@@ -17,18 +17,13 @@
               Easily generate a fully working form in seconds with just a simple description.
             </p>
 
-            <div class="mt-8">
-              <a href="#" title=""
-                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                role="button">
+            <div class="mt-8 flex justify-center">
+              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
                 Get started for free
-                <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </a>
+              </v-button>
+              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+                Get started for free
+              </v-button>
             </div>
           </div>
 
@@ -254,18 +249,13 @@
               Save time and effortlessly create presentations with SlidesAI
             </p>
 
-            <div class="mt-8">
-              <a href="#" title=""
-                class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                role="button">
+            <div class="mt-8 flex justify-center">
+              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
                 Get started for free
-                <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </a>
+              </v-button>
+              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+                Get started for free
+              </v-button>
             </div>
 
             <ul
@@ -429,18 +419,13 @@
             It takes seconds, you don't need to know how to code and <span class="text-blue-600">it's free</span>.
           </p>
 
-          <div class="mt-8">
-            <a href="#" title=""
-              class="inline-flex items-center justify-center transition-all duration-150 rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-md  hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-              role="button">
+          <div class="mt-8 flex justify-center">
+            <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
               Get started for free
-              <svg aria-hidden="true" class="h-5 w-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd" />
-              </svg>
-            </a>
+            </v-button>
+            <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+              Get started for free
+            </v-button>
           </div>
 
           <ul
