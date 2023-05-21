@@ -10,6 +10,7 @@
                        'max-height': editorMaxHeight + 'px'
                      }" :error="error"
                      @mounted="onResize"
+                     @on-save="formInitialHash=null"
         />
         <div v-else class="text-center mt-4 py-6">
           <loader class="h-6 w-6 text-nt-blue mx-auto"/>
@@ -45,6 +46,16 @@ export default {
     next()
   },
 
+  beforeRouteLeave (to, from, next) {
+    if (this.isDirty()) {
+      return this.alertConfirm('Changes you made may not be saved. Are you sure want to leave?', () => {
+        window.onbeforeunload = null
+        next()
+      }, () => {})
+    }
+    next()
+  },
+
   middleware: 'auth',
 
   data() {
@@ -54,7 +65,8 @@ export default {
       loading: false,
       error: '',
       editorMaxHeight: 500,
-      showInitialFormModal: false
+      showInitialFormModal: false,
+      formInitialHash: null
     }
   },
 
@@ -90,7 +102,14 @@ export default {
   },
 
   mounted() {
+    window.onbeforeunload = () => {
+      if (this.isDirty()) {
+        return false
+      }
+    }
+
     this.initForm()
+    this.formInitialHash = this.hashString(JSON.stringify(this.form.data()))
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
       if (template && template.structure) {
@@ -127,6 +146,23 @@ export default {
     },
     formGenerated(form) {
       this.form = new Form({...this.form.data(), ...form})
+    },
+    isDirty () {
+      return !this.loading && this.formInitialHash && this.formInitialHash !== this.hashString(JSON.stringify(this.form.data()))
+    },
+    hashString (str, seed = 0) {
+      let h1 = 0xdeadbeef ^ seed
+      let h2 = 0x41c6ce57 ^ seed
+      for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i)
+        h1 = Math.imul(h1 ^ ch, 2654435761)
+        h2 = Math.imul(h2 ^ ch, 1597334677)
+      }
+
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+
+      return 4294967296 * (2097151 & h2) + (h1 >>> 0)
     }
   }
 }
