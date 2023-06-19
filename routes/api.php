@@ -14,6 +14,7 @@ use App\Http\Controllers\Forms\FormStatsController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\FormSubmissionController;
 use App\Http\Controllers\Forms\FormController;
+use App\Http\Controllers\Forms\RecordController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
@@ -83,6 +84,9 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
             Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])->name('submissions.file');
+            
+            Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
+
             // Form Admin tool
             Route::put('/{id}/regenerate-link/{option}',
                 [FormController::class, 'regenerateLink'])

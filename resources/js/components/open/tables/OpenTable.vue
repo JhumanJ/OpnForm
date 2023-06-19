@@ -20,7 +20,7 @@
           {{ col.name }}
         </p>
       </resizable-th>
-      <th v-if="hasActions" class="n-table-cell p-0 relative" style="width: 91px">
+      <th v-if="hasActions" class="n-table-cell p-0 relative" style="width: 100px">
         <p
           class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs">
           Actions
@@ -39,7 +39,7 @@
         <slot name="actions"/>
       </td>
     </tr>
-    <tr v-for="row, index in data" :key="row.id" class="n-table-row" :class="{'first':index===0}">
+    <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
       <td v-for="col, colIndex in form.properties"
           :key="col.id"
           :style="{width: col.width + 'px'}"
@@ -50,6 +50,11 @@
         <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
                    :property="col" :value="row[col.id]"
         />
+      </td>
+      <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
+          style="width: 100px"
+      >
+        <record-operations :form="form" :structure="form.properties" :rowid="row.id" @deleted="$emit('deleted')" />
       </td>
     </tr>
     <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
@@ -79,6 +84,7 @@ import OpenDate from './components/OpenDate.vue'
 import OpenFile from './components/OpenFile.vue'
 import OpenCheckbox from './components/OpenCheckbox.vue'
 import ResizableTh from './components/ResizableTh.vue'
+import RecordOperations from '../components/RecordOperations.vue'
 import clonedeep from 'clone-deep'
 
 const cyrb53 = function (str, seed = 0) {
@@ -95,7 +101,7 @@ const cyrb53 = function (str, seed = 0) {
 }
 
 export default {
-  components: {ResizableTh},
+  components: {ResizableTh, RecordOperations},
   props: {
     data: {
       type: Array,
@@ -129,7 +135,8 @@ export default {
       }
     },
     hasActions() {
-      return false
+      // In future if want to hide based on condition
+      return true
     },
     fieldComponents() {
       return {
