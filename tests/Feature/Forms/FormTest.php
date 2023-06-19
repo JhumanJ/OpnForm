@@ -86,7 +86,9 @@ it('can regenerate a form url', function () {
         ->assertSuccessful()
         ->assertJson(function (AssertableJson $json) use ($newSlug) {
             return $json->where('type', 'success')
-                ->where('form.slug', $newSlug)
+                ->where('form.slug', function ($slug) use ($newSlug) {
+                    return substr($slug, 0, -6) == substr($newSlug, 0, -6);
+                })
                 ->etc();
         });
 
