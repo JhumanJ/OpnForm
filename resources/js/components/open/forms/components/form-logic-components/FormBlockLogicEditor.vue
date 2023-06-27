@@ -154,12 +154,9 @@ export default {
       },
       deep: true
     },
-    'field.required': {
-      handler() {
-        this.cleanConditions()
-      },
-      deep: true
-    }
+    'field.required': 'cleanConditions',
+    'field.disabled': 'cleanConditions',
+    'field.hidden': 'cleanConditions',
   },
 
   mounted() {
@@ -185,12 +182,9 @@ export default {
       }
     },
     cleanConditions() {
-      if (this.required && this.logic.actions.includes('require-answer')) {
-        this.$set(this.logic, 'actions', this.logic.actions.filter((action) => action !== 'require-answer'))
-      } else if (!this.required && this.logic.actions.includes('make-it-optional')) {
-        this.$set(this.logic, 'actions', this.logic.actions.filter((action) => action !== 'make-it-optional'))
-      }
-      this.resetKey++
+      const availableActions = this.actionOptions.map(function(op){ return op.value });
+      this.$set(this.logic, 'actions', availableActions.filter(value => this.logic.actions.includes(value)))
+      this.refreshActions()
     },
     refreshActions() {
       this.resetKey++

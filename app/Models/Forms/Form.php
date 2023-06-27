@@ -10,6 +10,7 @@ use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
@@ -245,7 +246,9 @@ class Form extends Model
     {
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
-            ->generateSlugsFrom('title')
+            ->generateSlugsFrom(function (Form $form) {
+                return $form->title . ' ' . Str::random(6);
+            })
             ->saveSlugsTo('slug');
     }
 
