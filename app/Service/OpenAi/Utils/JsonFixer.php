@@ -11,7 +11,7 @@ namespace App\Service\OpenAi\Utils;
  * Licensed under MIT license.
  */
 
-use App\Exceptions\Coursework\InvalidJsonException;
+use Aws\Exception\InvalidJsonException;
 
 /**
  * Attempts to fix truncated JSON by padding contextual counterparts at the end.

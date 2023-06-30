@@ -13,13 +13,13 @@
               Go back
             </a>
 
-            <div class="flex">
+            <div class="flex flex-wrap">
               <h2 class="flex-grow text-gray-900 truncate">
                 {{ form.title }}
               </h2>
               <div class="flex">
                 <extra-menu :form="form" />
-                
+
                 <v-button target="_blank" :to="{name:'forms.show_public', params: {slug: form.slug}}"
                           color="white" class="mr-2 text-blue-600 hidden sm:block"
                           v-track.view_form_click="{form_id:form.id, form_slug:form.slug}">
@@ -44,15 +44,15 @@
               </div>
             </div>
 
-            <ul class="flex text-gray-500">
-              <li class="pr-1">{{ form.views_count }} view{{ form.views_count > 0 ? 's' : '' }}</li>
-              <li class="list-disc ml-6 pr-1">{{ form.submissions_count }}
+            <p class="text-gray-500 text-sm">
+              <span class="pr-1">{{ form.views_count }} view{{ form.views_count > 0 ? 's' : '' }}</span>
+              <span class="pr-1">- {{ form.submissions_count }}
                 submission{{ form.submissions_count > 0 ? 's' : '' }}
-              </li>
-              <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='draft'">Draft (not public)</li>
-              <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='closed'">Closed</li>
-              <li class="list-disc ml-6">Edited {{ form.last_edited_human }}</li>
-            </ul>
+              </span>
+              <span class="text-blue-500" v-if="form.visibility=='draft'">- Draft (not public)</span>
+              <span class="pr-1 text-blue-500" v-if="form.visibility=='closed'">- Closed</span>
+              <span class="">- Edited {{ form.last_edited_human }}</span>
+            </p>
 
             <p v-if="form.closes_at" class="text-yellow-500">
               <span v-if="form.is_closed"> This form stopped accepting submissions on the  {{
@@ -208,7 +208,7 @@ export default {
       this.workingForm = new Form(this.form)
     }
   },
- 
+
   methods: {
     openCrisp() {
       window.$crisp.push(['do', 'chat:show'])

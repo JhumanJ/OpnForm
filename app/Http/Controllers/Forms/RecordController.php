@@ -13,17 +13,11 @@ class RecordController extends Controller
         $form = Form::findOrFail((int) $id);
         $this->authorize('delete', $form);
 
-        $record = $form->submissions()->where('id', $recordId)->first();
-        if($record){
-            $record->delete();
-            
-            return $this->success([
-                'message' => 'Record successfully removed.'
-            ]);
-        }
+        $record = $form->submissions()->where('id', $recordId)->firstOrFail();
+        $record->delete();
 
-        return $this->error([
-            'message' => 'Invalid record id.'
+        return $this->success([
+            'message' => 'Record successfully removed.'
         ]);
     }
 
