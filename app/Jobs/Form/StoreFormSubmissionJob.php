@@ -214,7 +214,7 @@ class StoreFormSubmissionJob implements ShouldQueue
                 && !is_null($property['prefill']);
         })->each(function (array $property) use (&$formData) {
             if ($property['type'] === 'date' && isset($property['prefill_today']) && $property['prefill_today']) {
-                $formData[$property['id']] = now();
+                $formData[$property['id']] = now()->format((isset($property['with_time']) && $property['with_time']) ? 'Y-m-d H:i' : 'Y-m-d');
             } else {
                 $formData[$property['id']] = $property['prefill'];
             }
