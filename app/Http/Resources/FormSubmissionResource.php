@@ -16,7 +16,7 @@ class FormSubmissionResource extends JsonResource
     public function toArray($request)
     {
         $this->generateFileLinks();
-        $this->addTimestamp();
+        $this->addExtraData();
 
         return [
             'data' => $this->data,
@@ -25,10 +25,11 @@ class FormSubmissionResource extends JsonResource
         ];
     }
 
-    private function addTimestamp()
+    private function addExtraData()
     {
         $this->data = array_merge($this->data, [
-            "created_at" => $this->created_at->toDateTimeString()
+            "created_at" => $this->created_at->toDateTimeString(),
+            'id' => $this->id
         ]);
     }
 

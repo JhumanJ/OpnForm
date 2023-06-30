@@ -53,6 +53,7 @@
           :data="tableData"
           :loading="isLoading"
           @resize="dataChanged()"
+          @deleted="onDeleteRecord()"
         >
         </open-table>
       </scroll-shadow>
@@ -186,6 +187,11 @@ export default {
         return this.displayColumns[field.id] === true
       })
       this.$set(this.form, 'properties', final_properties)
+    },
+    onDeleteRecord() {
+      this.fullyLoaded = false
+      this.tableData = []
+      this.getSubmissionsData()
     }
   },
 }
