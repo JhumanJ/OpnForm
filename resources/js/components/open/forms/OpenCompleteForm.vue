@@ -276,13 +276,15 @@ export default {
 
 <style lang="scss">
 .open-complete-form {
-  .form-description {
+  .form-description, .nf-text {
     ol {
       @apply list-decimal list-inside;
+      margin-left: 10px;
     }
 
     ul {
       @apply list-disc list-inside;
+      margin-left: 10px;
     }
   }
 }
