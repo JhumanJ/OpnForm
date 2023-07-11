@@ -62,9 +62,9 @@
         </div>
       </div>
 
-      <ai-feature class="bg-white" />
+      <ai-feature class="bg-white -mb-56" />
 
-      <more-features />
+      <more-features class="pt-56" />
 
 <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
 <!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
