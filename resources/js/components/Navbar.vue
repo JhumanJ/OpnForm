@@ -15,7 +15,11 @@
           <workspace-dropdown class="ml-6"/>
         </div>
         <div class="hidden md:block ml-auto relative">
-          <router-link :to="{name:'templates'}"
+          <router-link :to="{name:'aiformbuilder'}" v-if="$route.name !== 'aiformbuilder'"
+                       class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8">
+            AI Form Builder
+          </router-link>
+          <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
             Templates
           </router-link>
