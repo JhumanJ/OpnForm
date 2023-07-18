@@ -26,8 +26,8 @@ class FormResource extends JsonResource
 
         $ownerData = $this->userIsFormOwner() ? [
             'creator' => new UserResource($this->creator),
-            'views_count' => $this->when($this->workspaceIsPro(), $this->views_count),
-            'submissions_count' => $this->when($this->workspaceIsPro(), $this->submissions_count),
+            'views_count' => $this->views_count,
+            'submissions_count' => $this->submissions_count,
             'notifies' => $this->notifies,
             'notifies_slack' => $this->notifies_slack,
             'notifies_discord' => $this->notifies_discord,
