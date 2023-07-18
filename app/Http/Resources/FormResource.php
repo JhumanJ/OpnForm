@@ -95,7 +95,7 @@ class FormResource extends JsonResource
 
     private function doesMissPassword(Request $request)
     {
-        if (!$this->workspaceIsPro() || !$this->has_password) return false;
+        if (!$this->has_password) return false;
 
         return !PasswordProtectedForm::hasCorrectPassword($request, $this->resource);
     }
