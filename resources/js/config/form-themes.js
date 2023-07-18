@@ -13,7 +13,7 @@ export const themes = {
     },
     CodeInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'rounded-lg border-gray-300 flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent p-2',
+      input: 'rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden',
       help: 'text-gray-400 dark:text-gray-500'
     },
     RichTextAreaInput: {
@@ -43,7 +43,7 @@ export const themes = {
     },
     CodeInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'border-transparent flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent p-2',
+      input: 'border border-gray-300 dark:border-gray-600 overflow-hidden',
       help: 'text-gray-400 dark:text-gray-500'
     },
     RichTextAreaInput: {
@@ -68,7 +68,7 @@ export const themes = {
     },
     CodeInput: {
       label: 'text-gray-900 dark:text-gray-100 mb-2 block mt-4',
-      input: 'rounded border-transparent flex-1 appearance-none shadow-inner-notion border border-gray-300 dark:border-gray-600 w-full text-gray-900 bg-notion-input-background dark:bg-notion-dark-light shadow-inner dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion p-2',
+      input: 'rounded shadow-inner-notion border border-gray-300 dark:border-gray-600 overflow-hidden',
       help: 'text-notion-input-help dark:text-gray-500'
     },
     RichTextAreaInput: {

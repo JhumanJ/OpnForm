@@ -7,13 +7,13 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
 
-    <prism-editor :id="id?id:name" v-model="compVal" :disabled="disabled"
-                  class="code-editor"
-                  :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
+    <div :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]">
+      <codemirror :id="id?id:name" v-model="compVal" :disabled="disabled"
+                  :options="cmOptions"
                   :style="inputStyle" :name="name"
                   :placeholder="placeholder"
-                  :highlight="highlighter" @change="onChange"
-    />
+      />
+    </div>
 
     <small v-if="help" :class="theme.CodeInput.help">
       <slot name="help"><span class="field-help" v-html="help" /></slot>
@@ -23,31 +23,32 @@
 </template>
 
 <script>
-// import Prism Editor
-import { PrismEditor } from 'vue-prism-editor'
-import 'vue-prism-editor/dist/prismeditor.min.css' // import the styles somewhere
-// import highlighting library (you can use any library you want just return html string)
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
 
-import { highlight, languages } from 'prismjs/components/prism-core'
-import 'prismjs/components/prism-clike'
-import 'prismjs/components/prism-markup'
-import 'prismjs/themes/prism-tomorrow.css' // import syntax highlighting styles
+import 'codemirror/mode/htmlmixed/htmlmixed.js'
+
 import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'CodeInput',
 
-  components: { PrismEditor },
+  components: { codemirror },
   mixins: [inputMixin],
 
-  methods: {
-    onChange (event) {
-      const file = event.target.files[0]
-      this.$set(this.form, this.name, file)
-    },
-    highlighter (code) {
-      return highlight(code, languages.markup) // languages.<insert language> to return html with markup
+  data () {
+    return {
+      cmOptions: {
+        // codemirror options
+        tabSize: 4,
+        mode: 'text/html',
+        theme: 'default',
+        lineNumbers: true,
+        line: true
+      }
     }
-  }
+  },
+
+  methods: {}
 }
 </script>
