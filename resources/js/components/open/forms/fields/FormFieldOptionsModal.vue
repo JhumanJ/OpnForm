@@ -99,7 +99,6 @@
       <div v-if="field.type === 'number'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Number Options
-          <pro-tag/>
         </h3>
         <v-checkbox v-model="field.is_rating" class="mt-4"
                     :name="field.id+'_is_rating'" @input="initRating"
@@ -136,7 +135,6 @@
       <div v-if="field.type === 'date'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Date Options
-          <pro-tag/>
         </h3>
         <v-checkbox v-model="field.date_range" class="mt-4"
                     :name="field.id+'_date_range'"
@@ -191,7 +189,6 @@
       <div v-if="['select','multi_select'].includes(field.type)" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Select Options
-          <pro-tag/>
         </h3>
         <p class="text-gray-400 mb-5">
           Advanced options for your select/multiselect fields.
@@ -218,7 +215,6 @@
       <div v-if="displayBasedOnAdvanced" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Customization
-          <pro-tag/>
         </h3>
 
         <p class="text-gray-400 mb-5">
@@ -322,7 +318,6 @@
       <div v-if="field.type === 'text'" class="-mx-4 sm:-mx-6 p-5 border-b">
         <h3 class="font-semibold block text-lg">
           Advanced Options
-          <pro-tag/>
         </h3>
 
         <v-checkbox v-model="field.generates_uuid"

@@ -17,7 +17,6 @@
                     label="Protect your form with a Captcha"
                     help="If enabled we will make sure respondant is a human"
     />
-    <pro-tag class="float-right" />
     <text-input name="password" :form="form" class="mt-4"
                     label="Form Password" help="Leave empty to disable password"
     />

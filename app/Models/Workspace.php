@@ -24,7 +24,9 @@ class Workspace extends Model
 
     public function getIsProAttribute()
     {
-        return true;    // Temporary true for ALL
+        if(is_null(config('cashier.key'))){
+            return true;    // If no paid plan so TRUE for ALL
+        }
 
         // Make sure at least one owner is pro
         foreach ($this->owners as $owner) {
@@ -37,7 +39,9 @@ class Workspace extends Model
 
     public function getIsEnterpriseAttribute()
     {
-        return true;    // Temporary true for ALL
+        if(is_null(config('cashier.key'))){
+            return true;    // If no paid plan so TRUE for ALL
+        }
 
         foreach ($this->owners as $owner) {
             if ($owner->has_enterprise_subscription) {

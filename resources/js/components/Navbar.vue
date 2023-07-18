@@ -8,9 +8,7 @@
             <span
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >
-              {{ appName }}</span><span
-            class="bg-gray-100 text-gray-600 font-semibold inline-block ml-1 px-2 rounded-full text-black text-xs tracking-wider"
-          >BETA</span>
+              {{ appName }}</span>
           </router-link>
           <workspace-dropdown class="ml-6"/>
         </div>
@@ -22,6 +20,11 @@
           <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
             Templates
+          </router-link>
+          <router-link :to="{name:'pricing'}" v-if="(user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
+                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+            <span v-if="user">Upgrade</span>
+            <span v-else>Pricing</span>
           </router-link>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              @click.prevent="$crisp.push(['do', 'helpdesk:search'])" v-if="hasCrisp"
@@ -157,6 +160,9 @@ export default {
         return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
       }
       return null
+    },
+    workspace () {
+      return this.$store.getters['open/workspaces/getCurrent']()
     },
     showAuth() {
       return this.$route.name && !this.$route.name.startsWith('forms.show_public')

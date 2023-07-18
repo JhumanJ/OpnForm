@@ -21,8 +21,13 @@
     />
 
     <toggle-switch-input name="editable_submissions" :form="form" class="mt-4"
-                label="Allow users to edit their submission"
-    />
+                help="Gives user a unique url to update their submission"
+    >
+      <template #label>
+        Editable submissions
+        <pro-tag class="ml-1" />
+      </template>
+    </toggle-switch-input>
     <text-input v-if="form.editable_submissions" name="editable_submissions_button_text"
                 :form="form"
                 label="Text of editable submissions button"
@@ -111,7 +116,6 @@
       />
     </template>
     <template v-else>
-      <pro-tag class="float-right"/>
       <toggle-switch-input name="re_fillable" :form="form" class="mt-4"
                       label="Allow users to fill the form again"
       />

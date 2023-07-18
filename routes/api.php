@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('settings/password', [PasswordController::class, 'update']);
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
+        Route::put('/update-customer-details', [SubscriptionController::class, 'updateStripeDetails'])->name('update-stripe-details');
         Route::get('/new/{subscription}/{plan}/checkout/{trial?}', [SubscriptionController::class, 'checkout'])
             ->name('checkout')
             ->where('subscription', '('.implode('|', SubscriptionController::SUBSCRIPTION_NAMES).')')

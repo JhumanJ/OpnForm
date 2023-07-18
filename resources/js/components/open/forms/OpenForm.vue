@@ -362,7 +362,7 @@ export default {
 
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
-      if (this.isPublicFormPage && this.form.is_pro) {
+      if (this.isPublicFormPage) {
         urlPrefill = new URLSearchParams(window.location.search)
       }
 
@@ -494,8 +494,8 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = 5
-        inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ""
+        inputProperties.mbLimit = this.form.workspace.is_pro ? 50 : 5
+        inputProperties.accept = (field.allowed_file_types) ? field.allowed_file_types : ""
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)
       } else if (['number', 'phone_number'].includes(field.type)) {

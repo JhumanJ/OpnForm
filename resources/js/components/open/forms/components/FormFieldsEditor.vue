@@ -52,11 +52,6 @@
               </p>
             </template>
           </div>
-          <!-- Field options -->
-
-          <!--          <div class="flex-grow" v-if="['files'].includes(field.type) || field.type.startsWith('nf-')">-->
-          <!--            <pro-tag/>-->
-          <!--          </div>-->
 
           <template v-if="removing == field.id">
             <div class="flex text-sm items-center">

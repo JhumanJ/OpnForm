@@ -2,7 +2,6 @@
   <div v-if="logic" :key="resetKey" class="-mx-4 sm:-mx-6 p-5 border-b">
     <h3 class="font-semibold block text-lg">
       Logic
-      <pro-tag/>
     </h3>
     <p class="text-gray-400 mb-5">
       Add some logic to this block. Start by adding some conditions, and then add some actions.
