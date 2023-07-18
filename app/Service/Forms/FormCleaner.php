@@ -31,6 +31,7 @@ class FormCleaner
         'slack_webhook_url' => null,
         'discord_webhook_url' => null,
         'editable_submissions' => false,
+        'custom_code' => null,
     ];
 
     private array $fieldDefaults = [
@@ -47,11 +48,11 @@ class FormCleaner
         'slack_webhook_url' => "Slack webhook disabled.",
         'discord_webhook_url' => "Discord webhook disabled.",
         'editable_submissions' => 'Users will not be able to edit their submissions.',
+        'custom_code' => 'Custom code was disabled',
 
         // For fields
         'file_upload' => "Link field is not a file upload.",
         'custom_block' => 'The custom block was removed.',
-        'files' => 'The file upload file was hidden.',
     ];
 
     /**
