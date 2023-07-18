@@ -91,7 +91,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    private function getPricing($product = 'pro')
+    private function getPricing($product = 'default')
     {
         return App::environment() == 'production' ? config('pricing.production.'.$product.'.pricing') : config('pricing.test.'.$product.'.pricing');
     }
