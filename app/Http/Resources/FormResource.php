@@ -35,7 +35,7 @@ class FormResource extends JsonResource
             'webhook_url' => $this->webhook_url,
             'redirect_url' => $this->redirect_url,
             'database_fields_update' => $this->database_fields_update,
-            'cleanings' => $this->cleanings,
+            'cleanings' => $this->getCleanigns(),
             'notification_sender' => $this->notification_sender,
             'notification_subject' => $this->notification_subject,
             'notification_body' => $this->notification_body,
@@ -131,5 +131,10 @@ class FormResource extends JsonResource
                 Auth::check()
                 && Auth::user()->workspaces()->find($this->workspace_id) !== null
             );
+    }
+
+    private function getCleanigns()
+    {
+        return $this->extra?->cleanings ?? $this->cleanings;
     }
 }
