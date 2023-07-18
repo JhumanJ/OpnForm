@@ -21,7 +21,7 @@
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
             Templates
           </router-link>
-          <router-link :to="{name:'pricing'}" v-if="(user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
+          <router-link :to="{name:'pricing'}" v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
@@ -163,6 +163,9 @@ export default {
     },
     workspace () {
       return this.$store.getters['open/workspaces/getCurrent']()
+    },
+    paidPlansEnabled() {
+      return window.config.paid_plans_enabled
     },
     showAuth() {
       return this.$route.name && !this.$route.name.startsWith('forms.show_public')

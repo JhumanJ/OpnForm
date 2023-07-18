@@ -97,6 +97,14 @@ export default {
 
   props: {},
 
+  beforeRouteEnter (to, from, next) {
+    if (!window.config.paid_plans_enabled) {  // If no paid plan so no need this page
+      window.location.href = '/'
+      return false
+    }
+    next()
+  },
+
   data: () => ({
     metaTitle: 'Pricing',
     metaDescription: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized forms with OpnForms Pro.',
