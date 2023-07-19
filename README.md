@@ -44,35 +44,53 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Docker installation 🐳
 
-There's a `docker compose` setup automating most of the manual steps:
+There's a `Dockerfile` for building a self-contained docker image including databases, webservers etc.
 
-```bash
-make up
+This can be built and run locally but is also hosted publicly on docker hub at `jhumanj/opnform` and is generally best run directly from there.
+
+#### Running from docker hub
+
+```
+docker run -v my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
-The application is now running on [http://localhost:4000](http://localhost:4000).
-Alternatively, you may use the compose setup on its own
+You should now be able to access the application by visiting  http://localhost in a web browser.
 
-```bash
-# Start the application
-docker compose up -d server
+The `-v` argument creates a local directory called `my-opnform-data` which will store your database and files so that your work is not lost when you restart the container.
 
-# Run php commands, for example
-docker compose run php-cli artisan about
 
-# ...or update npm dependencies
-docker compose run node-cli npm ci
+#### Using a custom .env file
+
+If you have a custom env file you can use this like so:
+
+```
+docker run -v my-custom-env-file.env:/app/.env -v my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
-`make` keeps track of all executed targets using `.make.*` files.
-In case you'd like to start from scratch (re-install dependencies, reset jwt
-token, run migrations, ...), run
+This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.docker.env` example file as there are slightly different defaults for the dockerized setup.
 
-```bash
-make clean
+#### Using a custom HTTP port
+
+To run on port 8080
+
+```
+docker run -v my-opnform-data:/persist -p 8080:80 jhumanj/opnform
 ```
 
-After that, `make` will re-execute all targets upon the next execution.
+#### Building a custom docker image
+
+To build a custom docker image from your local source code use this command from the root of the source repository:
+
+```
+docker build . -t my-docker-image-name
+```
+
+This should create a new docker image tagged `my-docker-image-name` which can be run as follows:
+
+```
+docker run -v my-opnform-data:/persist -p 80:80 my-docker-image-name
+
+```
 
 ### Using Laravel Valet
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.
