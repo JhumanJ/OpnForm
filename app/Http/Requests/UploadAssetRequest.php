@@ -22,7 +22,8 @@ class UploadAssetRequest extends FormRequest
                 'jpeg',
                 'jpg',
                 'bmp',
-                'gif'
+                'gif',
+                'svg'
             ])],
         ];
     }
