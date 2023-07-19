@@ -51,7 +51,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
             ->outputStringsOnly();
 
         return (new MailMessage)
-            ->replyTo($notifiable->routes['mail'])
+            ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
             ->from($this->getFromEmail(), config('app.name'))
             ->subject('New form submission for "'.$this->event->form->title.'"')
             ->markdown('mail.form.submission-notification', [
@@ -64,6 +64,39 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
     {
         $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
         return $originalFromAddress->first(). '+' . time() . '@' . $originalFromAddress->last();
+    }
+
+    private function getReplyToEmail($default)
+    {
+        $email = $this->getRespondentEmail();
+        return (!$email) ? $default : $email;
+    }
+
+    private function getRespondentEmail()
+    {
+        // Make sure we only have one email field in the form
+        $emailFields = collect($this->event->form->properties)->filter(function ($field) {
+            $hidden = $field['hidden'] ?? false;
+
+            return !$hidden && $field['type'] == 'email';
+        });
+        if ($emailFields->count() != 1) {
+            return null;
+        }
+
+        if (isset($this->event->data[$emailFields->first()['id']])) {
+            $email = $this->event->data[$emailFields->first()['id']];
+            if ($this->validateEmail($email)) {
+                return $email;
+            }
+        }
+
+        return null;
+    }
+
+    public static function validateEmail($email): bool
+    {
+        return (bool)filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
 }
