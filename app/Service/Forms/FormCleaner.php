@@ -256,14 +256,8 @@ class FormCleaner
         if (in_array($key, $this->customKeys) && $formVal !== null) {
             $newVal = [];
             foreach ($formVal as $k => $val) {
-                $changed = false;
                 if ($val) {
                     $newVal[$k] = $val;
-                    $changed = true;
-                }
-
-                if ($changed) {
-                    $this->cleanings['form'][] = $key;
                 }
             }
             return $newVal;
