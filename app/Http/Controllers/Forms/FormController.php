@@ -123,8 +123,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.',
-            'form_cleaning' => $this->formCleaner->getPerformedCleanings(),
-            'form' => new FormResource($form)
+            'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }
 
