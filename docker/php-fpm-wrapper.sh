@@ -8,6 +8,7 @@
 
 [ -d /persist/storage ] || {
     echo "Initialising blank storage dir"
+    mkdir -p /persist
     cp -a /etc/initial-storage /persist/storage
     chmod 777 -R /persist/storage
 }
