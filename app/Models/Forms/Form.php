@@ -140,6 +140,11 @@ class Form extends Model
         return url('/forms/'.$this->slug);
     }
 
+    public function getEditUrlAttribute()
+    {
+        return url('/forms/'.$this->slug.'/show');
+    }
+
     public function getSubmissionsCountAttribute()
     {
         return $this->submissions()->count();

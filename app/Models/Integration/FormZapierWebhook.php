@@ -3,6 +3,7 @@
 namespace App\Models\Integration;
 
 use App\Models\Forms\Form;
+use App\Service\Forms\Webhooks\WebhookHandlerProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,11 +28,13 @@ class FormZapierWebhook extends Model
         return $this->belongsTo(Form::class);
     }
 
-    public function triggerHook(array $data) {
-        WebhookCall::create()
-            ->url($this->hook_url)
-            ->doNotSign()
-            ->payload($data)
-            ->dispatch();
+    public function triggerHook(array $data) 
+    {
+        WebhookHandlerProvider::getProvider(
+            $this->form,
+            $data,
+            WebhookHandlerProvider::ZAPIER_PROVIDER,
+            $this->hook_url
+        )->handle();
     }
 }
