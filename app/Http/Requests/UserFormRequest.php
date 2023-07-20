@@ -121,6 +121,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Security & Privacy
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
+
+            // Custom SEO
+            'seo_meta' => 'nullable|array'
         ];
     }
 

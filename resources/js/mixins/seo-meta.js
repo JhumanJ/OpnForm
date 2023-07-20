@@ -3,10 +3,11 @@ export default {
     const title = this.metaTitle ?? 'OpnForm'
     const description = this.metaDescription ?? "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form."
     const image = this.metaImage ?? this.asset('img/social-preview.jpg')
+    const metaTemplate = this.metaTemplate ?? '%s · OpnForm'
 
     return {
       title: title,
-      titleTemplate: '%s · OpnForm',
+      titleTemplate: metaTemplate,
       meta: [
         ...(this.metaTags ?? []),
         { vmid: 'og:title', property: 'og:title', content: title },

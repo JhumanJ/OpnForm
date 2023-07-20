@@ -23,6 +23,9 @@ class FormCleaner
 
     private array $data;
 
+    // For remove keys those have empty value
+    private array $customKeys = ['seo_meta'];
+
     private array $formDefaults = [
         'notifies' => false,
         'no_branding' => false,
@@ -32,6 +35,7 @@ class FormCleaner
         'discord_webhook_url' => null,
         'editable_submissions' => false,
         'custom_code' => null,
+        'seo_meta' => []
     ];
 
     private array $fieldDefaults = [
@@ -49,6 +53,7 @@ class FormCleaner
         'discord_webhook_url' => "Discord webhook disabled.",
         'editable_submissions' => 'Users will not be able to edit their submissions.',
         'custom_code' => 'Custom code was disabled',
+        'seo_meta' => 'Custom code was disabled',
 
         // For fields
         'file_upload' => "Link field is not a file upload.",
@@ -202,6 +207,9 @@ class FormCleaner
             // Get value from form
             $formVal = Arr::get($data, $key);
 
+            // Transform customkeys values
+            $formVal = $this->cleanCustomKeys($key, $formVal);
+
             // Transform boolean values
             $formVal = (($formVal === 0 || $formVal === "0") ? false : $formVal);
             $formVal = (($formVal === 1 || $formVal === "1") ? true : $formVal);
@@ -240,6 +248,28 @@ class FormCleaner
                 }
             }
         }
+    }
+
+    // Remove keys those have empty value
+    private function cleanCustomKeys($key, $formVal)
+    {
+        if (in_array($key, $this->customKeys) && $formVal !== null) {
+            $newVal = [];
+            foreach ($formVal as $k => $val) {
+                $changed = false;
+                if ($val) {
+                    $newVal[$k] = $val;
+                    $changed = true;
+                }
+
+                if ($changed) {
+                    $this->cleanings['form'][] = $key;
+                }
+            }
+            return $newVal;
+        }
+
+        return $formVal;
     }
 
 }
