@@ -68,8 +68,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
 
     private function getReplyToEmail($default)
     {
-        $email = $this->getRespondentEmail();
-        return (!$email) ? $default : $email;
+        return $this->getRespondentEmail() ?? $default;
     }
 
     private function getRespondentEmail()
