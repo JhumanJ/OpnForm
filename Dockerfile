@@ -2,7 +2,7 @@ ARG PHP_PACKAGES="php8.1 composer php8.1-common php8.1-pgsql php8.1-redis php8.1
         php8.1-simplexml php8.1-bcmath php8.1-gd php8.1-curl php8.1-zip\
         php8.1-imagick php8.1-bz2 php8.1-gmp php8.1-int php8.1-pcov php8.1-soap php8.1-xsl"
 
-FROM node:16 AS node
+FROM node:16 AS javascript-builder
 WORKDIR /app
 
 # It's best to add as few files as possible before running the build commands
@@ -20,7 +20,7 @@ RUN npm run build
 
 
 # syntax=docker/dockerfile:1.3-labs
-FROM --platform=linux/amd64 ubuntu:23.04 AS composer
+FROM --platform=linux/amd64 ubuntu:23.04 AS php-dependency-installer
 
 ARG PHP_PACKAGES
 
@@ -72,8 +72,8 @@ ADD .env.docker .env
 
 ADD . .
 
-COPY --from=node /app/public/build/ ./public/build/
-COPY --from=composer /app/vendor/ ./vendor/
+COPY --from=javascript-builder /app/public/build/ ./public/build/
+COPY --from=php-dependency-installer /app/vendor/ ./vendor/
 
 RUN chmod a+x /usr/local/bin/*.sh /app/artisan \
     && ln -s /app/artisan /usr/local/bin/artisan \
