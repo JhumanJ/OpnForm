@@ -51,12 +51,14 @@ This can be built and run locally but is also hosted publicly on docker hub at `
 #### Running from docker hub
 
 ```
-docker run -v my-opnform-data:/persist -p 80:80 jhumanj/opnform
+docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
 You should now be able to access the application by visiting  http://localhost in a web browser.
 
 The `-v` argument creates a local directory called `my-opnform-data` which will store your database and files so that your work is not lost when you restart the container.
+
+The `--name` argument names the running container so that you can refer back to it later, with e.g. `docker stop opnform`.  You can use any name you'd like.
 
 
 #### Using a custom .env file
@@ -64,7 +66,7 @@ The `-v` argument creates a local directory called `my-opnform-data` which will 
 If you have a custom env file you can use this like so:
 
 ```
-docker run -v my-custom-env-file.env:/app/.env -v my-opnform-data:/persist -p 80:80 jhumanj/opnform
+docker run --name opnform -v $PWD/my-custom-env-file.env:/app/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
 This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.docker.env` example file as there are slightly different defaults for the dockerized setup.
@@ -74,7 +76,7 @@ This would load load in the env file located at `my-custom-env-file.env`, note t
 To run on port 8080
 
 ```
-docker run -v my-opnform-data:/persist -p 8080:80 jhumanj/opnform
+docker run --name opnform -v $PWD/my-opnform-data:/persist -p 8080:80 jhumanj/opnform
 ```
 
 #### Building a custom docker image
@@ -88,9 +90,38 @@ docker build . -t my-docker-image-name
 This should create a new docker image tagged `my-docker-image-name` which can be run as follows:
 
 ```
-docker run -v my-opnform-data:/persist -p 80:80 my-docker-image-name
+docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 my-docker-image-name
 
 ```
+
+#### Upgrading docker installations
+
+**Please consult the upgrade instructions for the latest opnform version**, e.g. if upgrading from v1 to v2 please check the v2 instructions as the process may change in future releases.
+
+Normal upgrade procedure would be to stop the running container, back up your data directory (you will need this backup if you want to rollback to the old version) and then start a container running the new image with the same arguments.
+
+e.g. if you're running from a specific opnform version with 
+
+```docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:1.0.0```
+
+You could run:
+
+```
+# stop the running container
+docker stop opnform
+# backup the data directory
+cp -r my-opnform-data my-opnform-backup
+# start the new container
+docker run --name opnform-2 -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:2.0.0
+```
+
+Then if everything is running smoothly you can delete the old container with:
+```
+docker rm opnform
+```
+
+If you haven't specified a version e.g. if you are using the image `jhumanj/opnform` or `jhumanj/opnform:latest` you will need to run `docker pull jhumanj/opnform` or `docker pull jhumanj/opnform:latest` before starting the new container.
+
 
 ### Using Laravel Valet
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.
