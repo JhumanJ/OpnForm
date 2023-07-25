@@ -4,7 +4,7 @@
       Logic
       <pro-tag/>
     </h3>
-    <p class="text-gray-400 mb-5">
+    <p class="text-gray-400 text-xs mb-5">
       Add some logic to this block. Start by adding some conditions, and then add some actions.
     </p>
     <div class="relative flex">
@@ -47,7 +47,7 @@
         <h3 class="font-semibold block text-lg">
           Copy logic from another field
         </h3>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 text-xs mb-5">
           Select another field/block to copy its logic and apply it to "{{ field.name }}".
         </p>
         <select-input v-model="copyFrom" name="copy_from" emit-key="value"
