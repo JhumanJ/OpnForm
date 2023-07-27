@@ -20,7 +20,7 @@ export const mutations = {
   openSettingsForField (state, index) {
     // If field is passed, compute index
     if (typeof index === 'object') {
-      index = state.content.properties.findIndex(prop => prop.nf_id === index.nf_id)
+      index = state.content.properties.findIndex(prop => prop.id === index.id)
     }
     state.selectedFieldIndex = index
     state.showEditFieldModal = true
