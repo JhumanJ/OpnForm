@@ -87,6 +87,7 @@
                      :loading="loading"
                      :fields="form.properties"
                      :theme="theme"
+                     :admin-preview="adminPreview"
                      @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
@@ -136,7 +137,8 @@ export default {
 
   props: {
     form: { type: Object, required: true },
-    creating: { type: Boolean, default: false } // If true, fake form submit
+    creating: { type: Boolean, default: false }, // If true, fake form submit
+    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
   mixins: [FormPendingSubmissionKey],

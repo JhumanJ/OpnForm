@@ -53,6 +53,7 @@
       <open-complete-form ref="form-preview" class="w-full mx-auto py-5 px-3" :class="{'max-w-lg': form && (form.width === 'centered')}"
                             :creating="creating"
                             :form="form"
+                            :admin-preview="true"
                             @restarted="previewFormSubmitted=false"
                             @submitted="previewFormSubmitted=true"
       />
