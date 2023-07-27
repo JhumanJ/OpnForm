@@ -127,6 +127,7 @@ export default {
       const groups = []
       let currentGroup = []
       this.fields.forEach((field) => {
+        if (field.type === 'nf-page-break' && this.isFieldHidden(field)) return
         currentGroup.push(field)
         if (field.type === 'nf-page-break') {
           groups.push(currentGroup)
@@ -387,6 +388,9 @@ export default {
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
+    },
+    isFieldHidden (field) {
+      return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
     onDragStart () {
       this.dragging = true
