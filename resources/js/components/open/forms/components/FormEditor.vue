@@ -67,6 +67,7 @@ import FormIntegrations from './form-components/FormIntegrations.vue'
 import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
+import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 
 export default {
   name: 'FormEditor',
@@ -82,7 +83,7 @@ export default {
     FormErrorModal,
     FormSecurityPrivacy
   },
-  mixins: [saveUpdateAlert],
+  mixins: [saveUpdateAlert, fieldsLogic],
   props: {
     isEdit: {
       required: false,
@@ -173,6 +174,7 @@ export default {
       this.showFormErrorModal = true
     },
     saveForm() {
+      this.form.properties = this.validateFieldsLogic(this.form.properties)
       if(this.isGuest) {
         this.saveFormGuest()
       } else if (this.isEdit) {

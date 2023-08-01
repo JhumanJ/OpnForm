@@ -605,6 +605,8 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                     break;
                 }
             }
+        } else {
+            $this->isActionCorrect = false;
         }
     }
 
@@ -620,10 +622,9 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         $this->setProperty($attribute);
         if(isset($value["conditions"])){
             $this->checkConditions($value["conditions"]);
+            $this->checkActions($value['actions'] ?? null);
         }
-        if(isset($value["actions"])){
-            $this->checkActions($value["actions"]);
-        }
+
         return ($this->isConditionCorrect && $this->isActionCorrect);
     }
 
