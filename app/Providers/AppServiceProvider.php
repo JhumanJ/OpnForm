@@ -8,7 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
 use Laravel\Dusk\DuskServiceProvider;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -18,6 +19,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if(config('filesystems.default') === 'local'){
+            Storage::disk('local')->buildTemporaryUrlsUsing(function ($path, $expiration, $options) {
+                return URL::temporarySignedRoute(
+                    'local.temp',
+                    $expiration,
+                    array_merge($options, ['path' => $path])
+                );
+            });
+        }
+
         JsonResource::withoutWrapping();
         Cashier::calculateTaxes();
 

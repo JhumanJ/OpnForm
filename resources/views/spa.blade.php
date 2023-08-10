@@ -13,7 +13,8 @@
       'google_analytics_code' => config('services.google_analytics_code'),
       'amplitude_code' => config('services.amplitude_code'),
       'crisp_website_id' => config('services.crisp_website_id'),
-      'ai_features_enabled' => !is_null(config('services.openai.api_key'))
+      'ai_features_enabled' => !is_null(config('services.openai.api_key')),
+      's3_enabled' => config('filesystems.default') === 's3'
   ];
 @endphp
   <!DOCTYPE html>
