@@ -110,6 +110,7 @@ class FormResource extends JsonResource
             'dark_mode' => $this->dark_mode,
             'transparent_background' => $this->transparent_background,
             'color' => $this->color,
+            'secondary_color' => $this->secondary_color,
             'is_password_protected' => true,
             'has_password' => $this->has_password,
             'width' => 'centered',

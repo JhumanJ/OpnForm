@@ -51,7 +51,7 @@
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
       <open-form-button v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading" native-type="button"
-                        :color="form.color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
+                        :color="form.secondary_color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
       >
         {{ previousFieldsPageBreak.previous_btn_text }}
       </open-form-button>

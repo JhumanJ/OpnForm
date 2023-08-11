@@ -56,8 +56,14 @@
                   :form="form" label="Dark Mode"
     />
     <color-input name="color" class="mt-4"
-                 :form="form"
-                 label="Color (for buttons & inputs border)"
+                :form="form"
+                label="Color"
+                help="Buttons & inputs border"
+    />
+    <color-input name="secondary_color" class="mt-4"
+                :form="form"
+                label="Secondary Color"
+                help="Back buttons"
     />
     <toggle-switch-input name="hide_title" :form="form" class="mt-4"
                     label="Hide Title"

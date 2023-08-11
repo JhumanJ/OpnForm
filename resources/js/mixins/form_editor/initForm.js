@@ -20,6 +20,7 @@ export default {
         width: 'centered',
         dark_mode: 'auto',
         color: '#3B82F6',
+        secondary_color: '#CBD5E1',
         hide_title: false,
         no_branding: false,
         uppercase_labels: true,
