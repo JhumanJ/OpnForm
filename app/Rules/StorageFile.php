@@ -43,7 +43,7 @@ class StorageFile implements Rule
         // This is use when updating a record, and file uploads aren't changed.
         if($this->form){
             $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
-            if(Storage::disk('s3')->exists($newPath.'/'.$value)){
+            if(Storage::exists($newPath.'/'.$value)){
                 return true;
             }
         }
