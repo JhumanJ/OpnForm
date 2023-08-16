@@ -7,35 +7,28 @@
   <form v-else-if="dataForm" @submit.prevent="">
     <transition name="fade" mode="out-in" appear>
       <template v-for="group, groupIndex in fieldGroups">
-        <div v-if="currentFieldGroupIndex===groupIndex" :key="groupIndex" class="form-group flex flex-wrap w-full">
-          <template v-for="field in group">
-            <component :is="getFieldComponents(field)" v-if="getFieldComponents(field)"
-                       :key="field.id + formVersionId" :class="getFieldClasses(field)"
-                       v-bind="inputProperties(field)" :required="isFieldRequired[field.id]"
-                       :disabled="isFieldDisabled[field.id]"
+        <div v-if="currentFieldGroupIndex===groupIndex" 
+              :key="groupIndex" 
+              class="form-group flex flex-wrap w-full">
+
+          <draggable v-model="currentFields"
+                     class="flex flex-wrap transition-all"
+                     :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
+                     ghost-class="ghost-item"
+                     handle=".draggable" :animation="200"
+                     @start="onDragStart" @end="onDragEnd"
+          >
+            <open-form-field v-for="field in group"
+                              :key="field.id + formVersionId"
+                              :field="field"
+                              :show-hidden="showHidden"
+                              :form="form"
+                              :data-form="dataForm"
+                              :data-form-value="dataFormValue"
+                              :theme="theme"
+                              :admin-preview="adminPreview"
             />
-            <template v-else>
-              <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
-                   class="nf-text w-full px-2 mb-3" :class="[getFieldClasses(field), getFieldAlignClasses(field)]"
-                   v-html="field.content"
-              />
-              <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"
-                   class="nf-code w-full px-2 mb-3" :class="getFieldClasses(field)"
-                   v-html="field.content"
-              />
-              <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" 
-                  class="border-b my-4 w-full mx-2" :class="getFieldClasses(field)"
-              />
-              <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
-                   :key="field.id" class="my-4 w-full px-2" :class="[getFieldClasses(field), getFieldAlignClasses(field)]"
-              >
-                <div v-if="!field.image_block" class="p-4 border border-dashed">
-                  Open <b>{{ field.name }}'s</b> block settings to upload image.
-                </div>
-                <img v-else :alt="field.name" :src="field.image_block" class="max-w-full">
-              </div>
-            </template>
-          </template>
+          </draggable>
         </div>
       </template>
     </transition>
@@ -75,13 +68,14 @@ import Form from 'vform'
 import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
-
+import OpenFormField from './OpenFormField.vue'
+import draggable from 'vuedraggable'
 const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 
 export default {
   name: 'OpenForm',
-  components: {OpenFormButton, VueHcaptcha},
+  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha},
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
@@ -103,37 +97,37 @@ export default {
     fields: {
       type: Array,
       required: true
-    }
+    },
+    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
   },
   data() {
     return {
       dataForm: null,
       currentFieldGroupIndex: 0,
-
       /**
        * Used to force refresh components by changing their keys
        */
       formVersionId: 1,
       darkModeEnabled: document.body.classList.contains('dark'),
-      isAutoSubmit: false
+      isAutoSubmit: false,
+      /**
+       * If currently dragging a field
+       */
+      dragging: false
     }
   },
 
   computed: {
     hCaptchaSiteKey: () => window.config.hCaptchaSiteKey,
-    actualFields() {
-      return this.fields.filter((field) => {
-        return this.showHidden || !this.isFieldHidden[field.id]
-      })
-    },
     /**
      * Create field groups (or Page) using page breaks if any
      */
     fieldGroups() {
-      if (!this.actualFields) return []
+      if (!this.fields) return []
       const groups = []
       let currentGroup = []
-      this.actualFields.forEach((field) => {
+      this.fields.forEach((field) => {
+        if (field.type === 'nf-page-break' && this.isFieldHidden(field)) return
         currentGroup.push(field)
         if (field.type === 'nf-page-break') {
           groups.push(currentGroup)
@@ -143,8 +137,26 @@ export default {
       groups.push(currentGroup)
       return groups
     },
-    currentFields() {
-      return this.fieldGroups[this.currentFieldGroupIndex]
+    currentFields: {
+      get () {
+        return this.fieldGroups[this.currentFieldGroupIndex]
+      },
+      set (val) {
+        // On re-order from the form, set the new order
+        // Add the previous groups and next to val, and set the properties on working form
+        const newFields = []
+        this.fieldGroups.forEach((group, index) => {
+          if (index < this.currentFieldGroupIndex) {
+            newFields.push(...group)
+          } else if (index === this.currentFieldGroupIndex) {
+            newFields.push(...val)
+          } else {
+            newFields.push(...group)
+          }
+        })
+        // set the properties on working_form vuex
+        this.$store.commit('open/working_form/setProperties', newFields)
+      }
     },
     /**
      * Returns the page break block for the current group of fields
@@ -168,20 +180,6 @@ export default {
     isLastPage() {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
     },
-    fieldComponents() {
-      return {
-        text: 'TextInput',
-        number: 'TextInput',
-        select: 'SelectInput',
-        multi_select: 'SelectInput',
-        date: 'DateInput',
-        files: 'FileInput',
-        checkbox: 'CheckboxInput',
-        url: 'TextInput',
-        email: 'TextInput',
-        phone_number: 'TextInput',
-      }
-    },
     isPublicFormPage() {
       return this.$route.name === 'forms.show_public'
     },
@@ -202,28 +200,7 @@ export default {
         }
       })
       return data
-    },
-    isFieldHidden() {
-      const fieldsHidden = {}
-      this.fields.forEach((field) => {
-        fieldsHidden[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
-      })
-      return fieldsHidden
-    },
-    isFieldRequired() {
-      const fieldsRequired = {}
-      this.fields.forEach((field) => {
-        fieldsRequired[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isRequired()
-      })
-      return fieldsRequired
-    },
-    isFieldDisabled () {
-      const fieldsDisabled = {}
-      this.fields.forEach((field) => {
-        fieldsDisabled[field.id] = (new FormLogicPropertyResolver(field, this.dataFormValue)).isDisabled()
-      })
-      return fieldsDisabled
-    },
+    }
   },
 
   watch: {
@@ -402,108 +379,6 @@ export default {
       })
       this.dataForm = new Form(formData)
     },
-    /**
-     * Get the right input component for the field/options combination
-     */
-    getFieldComponents(field) {
-      if (field.type === 'text' && field.multi_lines) {
-        return 'TextAreaInput'
-      }
-      if (field.type === 'url' && field.file_upload) {
-        return 'FileInput'
-      }
-      if (field.type === 'number' && field.is_rating && field.rating_max_value) {
-        return 'RatingInput'
-      }
-      if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
-        return 'FlatSelectInput'
-      }
-      if (field.type === 'checkbox' && field.use_toggle_switch) {
-        return 'ToggleSwitchInput'
-      }
-      if (field.type === 'signature') {
-        return 'SignatureInput'
-      }
-      return this.fieldComponents[field.type]
-    },
-    getFieldClasses(field) {
-      if (!field.width || field.width === 'full') return 'w-full px-2'
-      else if (field.width === '1/2') {
-        return 'w-full sm:w-1/2 px-2'
-      } else if (field.width === '1/3') {
-        return 'w-full sm:w-1/3 px-2'
-      } else if (field.width === '2/3') {
-        return 'w-full sm:w-2/3 px-2'
-      } else if (field.width === '1/4') {
-        return 'w-full sm:w-1/4 px-2'
-      } else if (field.width === '3/4') {
-        return 'w-full sm:w-3/4 px-2'
-      }
-    },
-    getFieldAlignClasses (field) {
-      if (!field.align || field.align === 'left') return 'text-left'
-      else if (field.align === 'right') {
-        return 'text-right'
-      } else if (field.align === 'center') {
-        return 'text-center'
-      } else if (field.align === 'justify') {
-        return 'text-justify'
-      }
-    },
-    /**
-     * Get the right input component options for the field/options
-     */
-    inputProperties(field) {
-      const inputProperties = {
-        key: field.id,
-        name: field.id,
-        form: this.dataForm,
-        label: (field.hide_field_name) ? null : field.name + (this.isFieldHidden[field.id] ? ' (Hidden Field)' : ''),
-        color: this.form.color,
-        placeholder: field.placeholder,
-        help: field.help,
-        helpPosition: (field.help_position) ? field.help_position : 'below_input',
-        uppercaseLabels: this.form.uppercase_labels,
-        theme: this.theme,
-        maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
-        showCharLimit: field.show_char_limit || false
-      }
-
-      if (['select', 'multi_select'].includes(field.type)) {
-        inputProperties.options = (field.hasOwnProperty(field.type))
-          ? field[field.type].options.map(option => {
-            return {
-              name: option.name,
-              value: option.name
-            }
-          })
-          : []
-        inputProperties.multiple = (field.type === 'multi_select')
-        inputProperties.allowCreation = (field.allow_creation === true)
-        inputProperties.searchable = (inputProperties.options.length > 4)
-      } else if (field.type === 'date') {
-        if (field.with_time) {
-          inputProperties.withTime = true
-        } else if (field.date_range) {
-          inputProperties.dateRange = true
-        }
-        if (field.disable_past_dates) {
-          inputProperties.disablePastDates = true
-        } else if (field.disable_future_dates) {
-          inputProperties.disableFutureDates = true
-        }
-      } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
-        inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = 5
-        inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ""
-      } else if (field.type === 'number' && field.is_rating) {
-        inputProperties.numberOfStars = parseInt(field.rating_max_value)
-      } else if (['number', 'phone_number'].includes(field.type)) {
-        inputProperties.pattern = "/\d*"
-      }
-
-      return inputProperties
-    },
     previousPage() {
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -513,19 +388,22 @@ export default {
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
+    },
+    isFieldHidden (field) {
+      return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
+    },
+    onDragStart () {
+      this.dragging = true
+    },
+    onDragEnd () {
+      this.dragging = false
     }
   }
 }
 </script>
 
-<style lang='scss'>
-.nf-text {
-  ol {
-    @apply list-decimal list-inside;
-  }
-
-  ul {
-    @apply list-disc list-inside;
-  }
+<style lang='scss' scoped>
+.ghost-item {
+  @apply bg-blue-100 dark:bg-blue-900 rounded-md;
 }
 </style>

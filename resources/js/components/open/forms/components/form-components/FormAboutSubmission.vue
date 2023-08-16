@@ -32,7 +32,7 @@
     <flat-select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action"
                   :options="[
                     {name:'Create new record (default)', value:'create'},
-                    {name:'Update Record (if any)', value:'update'}
+                    {name:'Update Record (or create if no match)', value:'update'}
                   ]" :required="true" help="Create a new record or update an existing one"
     >
       <template #selected="{option,optionName}">
