@@ -15,6 +15,8 @@
 <a href="https://github.com/JhumanJ/OpnForm/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-purple" alt="License">
 <a href="https://github.com/JhumanJ/OpnForm/issues/new"><img src="https://img.shields.io/badge/Report a bug-Github-%231F80C0" alt="Report a bug"></a>
 <a href="https://github.com/JhumanJ/OpnForm/discussions/new?category=q-a"><img src="https://img.shields.io/badge/Ask a question-Github-%231F80C0" alt="Ask a question"></a>
+<a href="https://console.algora.io/org/OpnForm/bounties?status=open"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2FOpnForm%2Fbounties%3Fstatus%3Dopen" alt="Open Bounties"></a>
+<a href="https://console.algora.io/org/OpnForm/bounties?status=completed"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2FOpnForm%2Fbounties%3Fstatus%3Dcompleted" alt="Rewarded Bounties"></a>
 </p>
 
 > An open-source form builder. It's an alternative to products like Typeform, JotForm, Tally etc.
@@ -37,6 +39,16 @@
 - Limit the number of submissions allowed
 
 And much more!
+
+## Bounties
+Get paid for contributing to OpnForm! Here are our open bounties:
+
+<a href="https://console.algora.io/org/OpnForm/bounties?status=open">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://console.algora.io/api/og/OpnForm/bounties.png?p=0&status=open&theme=dark">
+    <img alt="Bounties of OpnForm" src="https://console.algora.io/api/og/OpnForm/bounties.png?p=0&status=open&theme=light">
+  </picture>
+</a>
 
 ## Getting started with OpnForm
 
