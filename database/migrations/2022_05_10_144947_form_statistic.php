@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('form_statistics', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Forms\Form::class,'form_id');
-            $table->jsonb('data')->default('{}');
+            $table->foreignIdFor(\App\Models\Forms\Form::class, 'form_id');
+            // To make this migration fully compatible with both databases, you should
+            // ensure that the data you intend to store in the data column is valid JSON.
+            $table->json('data');
             $table->date('date');
         });
     }
