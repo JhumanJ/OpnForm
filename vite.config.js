@@ -11,8 +11,7 @@ export default defineConfig({
     laravel({
       input: [
         'resources/js/app.js'
-      ],
-      valetTls: 'opnform.test'
+      ]
     }),
     vue({
       template: {

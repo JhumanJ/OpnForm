@@ -58,6 +58,32 @@
       />
       <template v-else>
         <div
+          v-if="field.type === 'phone_number'"
+          :id="field.id"
+          :key="field.id"
+          class="w-full px-2 mb-3"
+          :class="[getFieldAlignClasses(field)]"
+        >
+          <div class="flex">
+            <v-select
+              v-model="selectedCountry"
+              :options="countries"
+              label="name"
+              :clearable="false"
+              @input="handleCountryChange"
+              :class="inputClasses"
+              :style="inputStyle"
+            ></v-select>
+            <input
+              type="tel"
+              v-model="phoneNumber"
+              :name="name"
+              :class="inputClasses"
+              :style="inputStyle"
+            />
+          </div>
+        </div>
+        <div
           v-if="field.type === 'nf-text' && field.content"
           :id="field.id"
           :key="field.id"
@@ -99,9 +125,6 @@
           />
         </div>
       </template>
-      <template v-else-if="field.type === 'phone_number'">
-        <phone-input v-model="dataFormValue[field.id]"></phone-input>
-      </template>
     </div>
   </div>
 </template>
@@ -109,13 +132,10 @@
 <script>
 import FormLogicPropertyResolver from "../../../forms/FormLogicPropertyResolver.js";
 import FormPendingSubmissionKey from "../../../mixins/forms/form-pending-submission-key.js";
-import PhoneInput from "../components/forms/PhoneInput.vue";
 
 export default {
   name: "OpenFormField",
-  components: {
-    PhoneInput,
-  },
+  components: {},
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
@@ -163,6 +183,12 @@ export default {
         phone_number: "TextInput",
       };
     },
+    inputClasses() {
+      return (
+        "border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700" +
+        (this.disabled ? " !cursor-not-allowed !bg-gray-200" : "")
+      );
+    },
     /**
      * Get the right input component for the field/options combination
      */
@@ -192,10 +218,6 @@ export default {
       }
       if (field.type === "signature") {
         return "SignatureInput";
-      }
-      if (field.type === "phone_number") {
-        // Handle phone_number type
-        return "PhoneInput";
       }
       return this.fieldComponents[field.type];
     },
@@ -245,6 +267,12 @@ export default {
   mounted() {},
 
   methods: {
+    handleCountryChange(country) {
+      this.selectedCountry = country;
+      if (country.clashPattern) {
+        this.phoneNumber = this.phoneNumber.replace(country.clashPattern, "");
+      }
+    },
     editFieldOptions() {
       this.$store.commit("open/working_form/openSettingsForField", this.field);
     },
@@ -305,9 +333,7 @@ export default {
         showCharLimit: field.show_char_limit || false,
       };
 
-      if (field.type === "phone_number") {
-        inputProperties.value = this.dataFormValue[field.id]; // Set the value for PhoneInput
-      } else if (["select", "multi_select"].includes(field.type)) {
+      if (["select", "multi_select"].includes(field.type)) {
         inputProperties.options = field.hasOwnProperty(field.type)
           ? field[field.type].options.map((option) => {
               return {
@@ -344,7 +370,7 @@ export default {
       } else if (field.type === "number" && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value);
       } else if (["number", "phone_number"].includes(field.type)) {
-        inputProperties.pattern = "\\d*"; // Update pattern
+        inputProperties.pattern = "/\d*";
       }
 
       return inputProperties;

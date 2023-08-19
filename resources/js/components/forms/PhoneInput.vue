@@ -15,13 +15,15 @@
         label="name"
         :clearable="false"
         @input="handleCountryChange"
+        :class="inputClasses"
+        :style="inputStyle"
       ></v-select>
       <input
         type="tel"
         v-model="phoneNumber"
+        :name="name"
         :class="inputClasses"
         :style="inputStyle"
-        :name="name"
       />
     </div>
 
@@ -33,9 +35,9 @@
 </template>
 
 <script>
-import { fixedClasses } from '../../plugins/config/vue-tailwind/phoneInput.js';
-import inputMixin from '~/mixins/forms/input.js';
-import vSelect from './VSelect.vue'; 
+import inputMixin from '~/mixins/forms/input.js'
+import vSelect from './components/VSelect.vue'
+import countries from '@/data/countries.json'
 
 export default {
   name: 'PhoneInput',
@@ -51,15 +53,21 @@ export default {
     };
   },
 
-  computed: {
+ computed: {
     countries() {
-      // Load countries from resources/data or your data source
-      return require('../resources/data/countries.json');
+      return countries;
     },
     inputClasses() {
-      let classes = 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700';
-      classes += this.disabled ? ' !cursor-not-allowed !bg-gray-200' : '';
-      return classes;
+      return 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700' + (this.disabled ? ' !cursor-not-allowed !bg-gray-200' : '');
+    },
+    wrapperClass() {
+      return 'border-1 border-gray-300 bg-gray-200 px-4 py-2 rounded-lg shadow-sm';
+    },
+    labelClasses() {
+      return 'font-semibold';
+    },
+    inputStyle() {
+      return 'input-style'; 
     },
   },
 
@@ -76,22 +84,20 @@ export default {
 
 <style scoped>
 .wrapper-class {
-  // Add wrapper styles if needed
+  border: 1px solid #ccc;
+  background-color: #f7f7f7;
 }
-
-.label-classes {
-  // Add label styles if needed
+.label-class {
+  border: 1px solid #ccc;
+  background-color: #f7f7f7;
 }
-
+.input-style {
+  border: 1px solid #ccc;
+  background-color: #f7f7f7;
+}
 .input-classes {
   border: 1px solid #ccc;
   background-color: #f7f7f7;
-  // Add other input styles
 }
 
-.input-style {
-  // Add input style if needed
-}
-
-/* Adjust styles based on your needs */
 </style>

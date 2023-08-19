@@ -15,7 +15,6 @@ import ImageInput from './ImageInput.vue'
 import RatingInput from './RatingInput.vue'
 import FlatSelectInput from './FlatSelectInput.vue'
 import ToggleSwitchInput from './ToggleSwitchInput.vue'
-const PhoneInput = () => import('./PhoneInput.vue');
 
 // Components that are registered globaly.
 [
@@ -42,6 +41,5 @@ const PhoneInput = () => import('./PhoneInput.vue');
 Vue.component('SignatureInput', () => import('./SignatureInput.vue'))
 Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput.vue'))
 Vue.component('DateInput', () => import('./DateInput.vue'))
+Vue.component('PhoneInput', () => import('./PhoneInput.vue'))
 
-// Register the PhoneInput component globally after it's loaded
-Vue.component('PhoneInput', PhoneInput);
