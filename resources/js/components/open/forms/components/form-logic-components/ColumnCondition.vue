@@ -22,9 +22,10 @@
 import OpenFilters from '../../../../../../data/open_filters.json'
 
 export default {
-  components: { },
+  components: {  },
   props: {
-    value: { required: true }
+    value: { required: true },
+    property: Object,
   },
 
   data () {
@@ -43,7 +44,7 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'TextInput',
+        phone_number: 'PhoneInput',
       }
     }
   },

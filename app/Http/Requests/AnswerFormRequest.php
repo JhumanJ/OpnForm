@@ -11,6 +11,27 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\ValidHCaptcha;
+use Illuminate\Support\Facades\File;
+
+
+
+
+class ValidPhoneNumber implements Rule
+{
+    public function passes($attribute, $value)
+    {
+        $countries = json_decode(File::get(resource_path('data/countries.json')), true);
+        $selectedDialCode = request('selectedCountry.dial_code');
+        $normalizedPhoneNumber = ltrim($value, '+');
+        return isset($countries[$selectedDialCode]) && strlen($normalizedPhoneNumber) === $countries[$selectedDialCode]['phone_length'];
+    }
+
+    public function message()
+    {
+        return 'The phone number must start with a valid country code and have the correct length.';
+    }
+}
+
 
 class AnswerFormRequest extends FormRequest
 {
@@ -59,6 +80,14 @@ class AnswerFormRequest extends FormRequest
 
             // For get values instead of Id for select/multi select options
             $data = $this->toArray();
+            $countries = json_decode(File::get(resource_path('data/countries.json')), true);
+            $selectedCountryCode = $data['selectedCountry']['code'] ?? null;
+
+            // For phone_number property type, apply the custom validation rule
+            if ($property['type'] === 'phone_number') {
+                $rules[] = 'string';
+                $rules[] = new ValidPhoneNumber($selectedCountryCode);
+            }
             $selectionFields = collect($this->form->properties)->filter(function ($pro) {
                 return in_array($pro['type'], ['select', 'multi_select']);
             });
