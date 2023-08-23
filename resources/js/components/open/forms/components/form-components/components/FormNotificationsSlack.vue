@@ -28,22 +28,30 @@
       <toggle-switch-input name="notifies_slack" :form="form" class="mt-4"
                            label="Receive a Slack notification on submission"
       />
-      <text-input v-if="form.notifies_slack" name="slack_webhook_url" :form="form" class="mt-4"
-                  label="Slack webhook url" help="help"
-      >
-        <template #help>
-          Receive slack message on each form submission. <a href="https://api.slack.com/messaging/webhooks" target="_blank">Click here</a> to learn how to get a slack webhook url
-        </template>
-      </text-input>
+      <template v-if="form.notifies_slack">
+        <text-input name="slack_webhook_url" :form="form" class="mt-4"
+                    label="Slack webhook url" help="help"
+        >
+          <template #help>
+            Receive slack message on each form submission. <a href="https://api.slack.com/messaging/webhooks"
+                                                              target="_blank"
+            >Click here</a> to learn how to get a slack
+            webhook url
+          </template>
+        </text-input>
+        <h4 class="font-bold mt-4">Slack message actions</h4>
+        <form-notifications-message-actions v-model="form.notification_settings.slack"  />
+      </template>
     </modal>
   </div>
 </template>
 
 <script>
 import ProTag from '../../../../../common/ProTag.vue'
+import FormNotificationsMessageActions from './FormNotificationsMessageActions.vue'
 
 export default {
-  components: { ProTag },
+  components: { ProTag, FormNotificationsMessageActions },
   props: {},
   data () {
     return {

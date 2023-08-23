@@ -47,6 +47,7 @@ class FormResource extends JsonResource
             'notification_emails' => $this->notification_emails,
             'slack_webhook_url' => $this->slack_webhook_url,
             'discord_webhook_url' => $this->discord_webhook_url,
+            'notification_settings' => $this->notification_settings,
             'removed_properties' => $this->removed_properties,
             'last_edited_human' => $this->updated_at?->diffForHumans(),
             'seo_meta' => $this->seo_meta
