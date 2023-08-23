@@ -232,14 +232,14 @@ class FormCleaner
         }
 
         // Remove pro types columns
-        foreach (['files'] as $proType) {
+        /*foreach (['files'] as $proType) {
             if ($data['type'] == $proType && (!isset($data['hidden']) || !$data['hidden'])) {
                 $this->cleanings[$data['name']][] = $proType;
                 if (!$simulation) {
                     $data['hidden'] = true;
                 }
             }
-        }
+        }*/
     }
 
 }
