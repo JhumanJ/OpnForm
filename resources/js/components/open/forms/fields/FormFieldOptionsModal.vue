@@ -38,7 +38,7 @@
         <h3 class="font-semibold block text-lg">
           General
         </h3>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Exclude this field or make it required.
         </p>
         <v-checkbox v-model="field.hidden" class="mb-3"
@@ -66,7 +66,7 @@
         <h3 class="font-semibold block text-lg">
           Checkbox
         </h3>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Advanced options for checkbox.
         </p>
         <v-checkbox v-model="field.use_toggle_switch" class="mt-4"
@@ -74,7 +74,7 @@
         >
           Use toggle switch
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           If enabled, checkbox will be replaced with a toggle switch
         </p>
       </div>
@@ -105,7 +105,7 @@
         >
           Rating
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           If enabled then this field will be star rating input.
         </p>
 
@@ -120,7 +120,7 @@
         <h3 class="font-semibold block text-lg">
           Text Options
         </h3>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Keep it simple or make it a multi-lines input.
         </p>
         <v-checkbox v-model="field.multi_lines"
@@ -142,7 +142,7 @@
         >
           Date Range
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Adds an end date. This cannot be used with the time option yet.
         </p>
         <v-checkbox v-model="field.with_time"
@@ -151,7 +151,7 @@
         >
           Date with time
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Include time. Or not. This cannot be used with the date range option yet.
         </p>
 
@@ -166,7 +166,7 @@
         >
           Prefill with 'today'
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           if enabled we will pre-fill this field with the current date
         </p>
 
@@ -190,7 +190,7 @@
         <h3 class="font-semibold block text-lg">
           Select Options
         </h3>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Advanced options for your select/multiselect fields.
         </p>
         <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-4"
@@ -208,7 +208,7 @@
         >
           Always show all select options
         </v-checkbox>
-        <p class="text-gray-400 mb-5">Options won't be in a dropdown anymore, but will all be visible</p>
+        <p class="text-gray-400 mb-5 text-xs">Options won't be in a dropdown anymore, but will all be visible</p>
       </div>
 
       <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
@@ -217,7 +217,7 @@
           Customization
         </h3>
 
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           Change your form field name, pre-fill a value, add hints, etc.
         </p>
 
@@ -326,7 +326,7 @@
         >
           Generates a unique id on submission
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           If you enable this, we will hide this field and fill it a unique id (UUID format) on each new form submission
         </p>
 
@@ -336,7 +336,7 @@
         >
           Generates an auto-incremented id on submission
         </v-checkbox>
-        <p class="text-gray-400 mb-5">
+        <p class="text-gray-400 mb-5 text-xs">
           If you enable this, we will hide this field and fill it a unique number on each new form submission
         </p>
       </div>
@@ -426,7 +426,22 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+    'field.width': {
+      handler (val) {
+        if (val === undefined || val === null) {
+          this.$set(this.field, 'width', 'full')
+        }
+      },
+      immediate: true
+    }
+  },
+
+  created () {
+    if (this.field.width === undefined || this.field.width === null) {
+      this.$set(this.field, 'width', 'full')
+    }
+  },
 
   mounted() {
     if (['text', 'number', 'url', 'email', 'phone_number'].includes(this.field.type) && !this.field.max_char_limit) {
