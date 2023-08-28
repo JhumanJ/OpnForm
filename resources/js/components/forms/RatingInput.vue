@@ -12,11 +12,11 @@
 
     <div class="stars-outer">
       <div v-for="i in numberOfStars" :key="i"
-           class="cursor-pointer inline-block"
-           :class="{'text-yellow-400':i<=compVal, 'text-yellow-100 dark:text-yellow-900':i>compVal && i<=hoverRating ,'text-gray-200 dark:text-gray-800':i>compVal && i>hoverRating, '!cursor-not-allowed':disabled}"
+           class="cursor-pointer inline-block text-gray-200 dark:text-gray-800"
+           :class="{'!text-yellow-400 active-star':i<=compVal, '!text-yellow-200 !dark:text-yellow-800 hover-star':i>compVal && i<=hoverRating, '!cursor-not-allowed':disabled}"
            role="button" @click="setRating(i)"
-           @mouseover="hoverRating = (disabled) ? null : i"
-           @mouseleave="hoverRating = null"
+           @mouseenter="onMouseHover(i)"
+           @mouseleave="hoverRating = -1"
       >
         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -47,19 +47,26 @@ export default {
 
   data () {
     return {
-      hoverRating: null
+      hoverRating: -1
     }
   },
 
+  mounted () {
+    if (!this.compVal) this.compVal = 0
+  },
+
   updated () {
-    if (this.compVal === null) {
+    if (!this.compVal) {
       this.compVal = 0
     }
   },
 
   methods: {
+    onMouseHover (i) {
+      this.hoverRating = (this.disabled) ? -1 : i
+    },
     setRating (val) {
-      if(this.disabled){
+      if (this.disabled) {
         return
       }
       if (this.compVal === val) {
