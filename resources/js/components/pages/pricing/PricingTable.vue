@@ -13,7 +13,7 @@
               Pro Plan
             </h3>
             <p class="mt-2 text-base font-medium leading-7 text-gray-600">
-              OpnForm Pro offers empowering features tailored to the advanced needs of teams and creators.
+              OpnForm Pro offers empowering features tailored to the advanced needs of teams and creators. Enjoy our free 3-day trial!
             </p>
 
             <div class="flex items-center mt-6 gap-x-4">
@@ -52,13 +52,13 @@
 
                 <div class="flex justify-center">
                   <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'register' }" :arrow="true">
-                    Sign up and upgrade
+                    Start free trial
                   </v-button>
                   <v-button v-else-if="authenticated && user.is_subscribed" class="mr-1" @click.prevent="openBilling" :arrow="true">
                     View Billing
                   </v-button>
                   <v-button v-else class="mr-1" @click.prevent="openCustomerCheckout('default')" :arrow="true">
-                    Upgrade
+                    Start free trial
                   </v-button>
                 </div>
                 <p class="text-xs font-medium leading-5 text-gray-600">
@@ -99,7 +99,7 @@ export default {
       'Slack notifications',
       'Discord notifications',
       'Editable submissions',
-      'Custom domain',
+      'Custom domain (soon)',
       'Custom code',
       'Larger file uploads (50mb)',
       'Remove OpnForm branding',

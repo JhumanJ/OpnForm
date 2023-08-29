@@ -27,7 +27,7 @@
             to unlock all of our features and build powerful forms.
           </p>
           <div class="flex flex-wrap items-end w-full">
-            <div class="flex-grow pr-2">
+            <div class="flex-grow flex pr-2">
               <v-button v-track.upgrade_from_form_cleanings_click size="small" class="inline-block" :to="{name:'pricing'}">
                 {{ form.is_pro ? 'Upgrade plan' : 'Start free trial' }}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
