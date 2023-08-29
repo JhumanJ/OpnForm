@@ -98,7 +98,7 @@ class FormController extends Controller
         ]));
 
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.',
+            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
             'users_first_form' => $request->user()->forms()->count() == 1
         ]);
@@ -122,7 +122,7 @@ class FormController extends Controller
         $form->update($formData);
 
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.',
+            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }
