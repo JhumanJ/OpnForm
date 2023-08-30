@@ -26,7 +26,7 @@ class PasswordProtectedForm
                 'form' => $form,
             ]);
             $userIsFormOwner = Auth::check() && Auth::user()->workspaces()->find($form->workspace_id) !== null;
-            if (!$userIsFormOwner && $form->is_pro && $form->has_password) {
+            if (!$userIsFormOwner && $form->has_password) {
                 if($this->hasCorrectPassword($request, $form)){
                     return $next($request);
                 }

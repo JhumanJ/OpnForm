@@ -45,9 +45,8 @@ class PublicFormController extends Controller
             $form->views()->create();
         }
 
-        $formResource = new FormResource($form);
-        $formResource->setCleanings($formCleaner->getPerformedCleanings());
-        return $formResource;
+        return (new FormResource($form))
+            ->setCleanings($formCleaner->getPerformedCleanings());
     }
 
     public function listUsers(Request $request)

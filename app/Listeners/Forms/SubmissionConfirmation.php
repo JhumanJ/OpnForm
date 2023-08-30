@@ -18,6 +18,8 @@ class SubmissionConfirmation implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    const RISKY_USERS_LIMIT = 120;
+
     /**
      * Handle the event.
      *
@@ -26,7 +28,13 @@ class SubmissionConfirmation implements ShouldQueue
      */
     public function handle(FormSubmitted $event)
     {
-        if (!$event->form->send_submission_confirmation) return;
+        if (
+            !$event->form->is_pro ||
+            !$event->form->send_submission_confirmation ||
+            $this->riskLimitReached($event) // To avoid phishing abuse we limit this feature for risky users
+        ) {
+            return;
+        }
 
         $email = $this->getRespondentEmail($event);
         if (!$email) return;
@@ -54,6 +62,21 @@ class SubmissionConfirmation implements ShouldQueue
         }
 
         return null;
+    }
+
+    private function riskLimitReached(FormSubmitted $event): bool
+    {
+        // This is a per-workspace limit for risky workspaces
+        if ($event->form->workspace->is_risky) {
+            if ($event->form->workspace->submissions_count >= self::RISKY_USERS_LIMIT) {
+                \Log::error('!!!DANGER!!! Dangerous user detected! Attempting many email sending.', [
+                    'form_id' => $event->form->id,
+                    'workspace_id' => $event->form->workspace->id,
+                ]);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function validateEmail($email): bool {

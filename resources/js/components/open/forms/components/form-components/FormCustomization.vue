@@ -10,7 +10,6 @@
         </svg>
 
         Customization
-        <pro-tag />
       </h3>
     </template>
 
@@ -62,9 +61,12 @@
     <toggle-switch-input name="hide_title" :form="form" class="mt-4"
                     label="Hide Title"
     />
-    <toggle-switch-input name="no_branding" :form="form" class="mt-4"
-                    label="Remove OpnForm Branding"
-    />
+    <toggle-switch-input name="no_branding" :form="form" class="mt-4">
+      <template #label>
+        Remove OpnForm Branding
+        <pro-tag class="ml-1" />
+      </template>
+    </toggle-switch-input>
     <toggle-switch-input name="uppercase_labels" :form="form" class="mt-4"
                     label="Uppercase Input Labels"
     />

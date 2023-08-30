@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Subscriptions\UpdateStripeDetailsRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Subscription;
 
 class SubscriptionController extends Controller
 {
-    const SUBSCRIPTION_PLANS = ['monthly_2022', 'yearly_2022'];
+    const SUBSCRIPTION_PLANS = ['monthly', 'yearly'];
 
     const PRO_SUBSCRIPTION_NAME = 'default';
     const ENTERPRISE_SUBSCRIPTION_NAME = 'enterprise';
@@ -41,7 +42,7 @@ class SubscriptionController extends Controller
             ->allowPromotionCodes();
 
         if ($trial != null) {
-            $checkoutBuilder->trialDays(3);
+            $checkoutBuilder->trialUntil(now()->addDays(3)->addHour());
         }
 
         $checkout = $checkoutBuilder
@@ -49,10 +50,31 @@ class SubscriptionController extends Controller
             ->checkout([
                 'success_url' => url('/subscriptions/success'),
                 'cancel_url' => url('/subscriptions/error'),
+                'billing_address_collection' => 'required',
+                'customer_update' => [
+                    'address' => 'auto',
+                    'name' => 'never',
+                ]
             ]);
 
         return $this->success([
             'checkout_url' => $checkout->url
+        ]);
+    }
+
+    public function updateStripeDetails(UpdateStripeDetailsRequest $request)
+    {
+        $user = Auth::user();
+        if (!$user->hasStripeId()) {
+            $user->createAsStripeCustomer();
+        }
+        $user->updateStripeCustomer([
+            'email' => $request->email,
+            'name' => $request->name,
+        ]);
+
+        return $this->success([
+            'message' => 'Details saved.',
         ]);
     }
 
@@ -69,7 +91,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    private function getPricing($product = 'pro')
+    private function getPricing($product = 'default')
     {
         return App::environment() == 'production' ? config('pricing.production.'.$product.'.pricing') : config('pricing.test.'.$product.'.pricing');
     }

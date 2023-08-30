@@ -13,7 +13,6 @@
         />
       </svg>
       Url form pre-fill
-      <pro-tag class="ml-2"/>
     </v-button>
 
     <modal :show="showUrlFormPrefillModal" @close="showUrlFormPrefillModal=false">
@@ -26,7 +25,6 @@
       </template>
       <template #title>
         <span>Url Form Prefill</span>
-        <pro-tag class="ml-4 pb-3" />
       </template>
 
       <div class="p-4">

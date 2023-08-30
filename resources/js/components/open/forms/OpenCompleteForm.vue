@@ -49,23 +49,7 @@
       </div>
     </div>
 
-    <div v-if="getFormCleaningsMsg"
-         class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 border-yellow-500"
-    >
-      <div class="flex-grow">
-        <p class="mb-0 py-2 px-4 text-yellow-600">
-          You're seeing this because you are an owner of this form. <br>
-          All your Pro features are de-activated when sharing this form: <br>
-
-          <span v-html="getFormCleaningsMsg" />
-        </p>
-      </div>
-      <div class="text-right">
-        <v-button color="yellow" shade="light" @click="form.cleanings=false">
-          Close
-        </v-button>
-      </div>
-    </div>
+    <form-cleanings v-if="!adminPreview" :hideable="true" class="mb-4 mx-2" :form="form" :specify-form-owner="true" />
 
     <transition
       v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
@@ -131,9 +115,10 @@ import { themes } from '~/config/form-themes.js'
 import VButton from '../../common/Button.vue'
 import VTransition from '../../common/transitions/VTransition.vue'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 
 export default {
-  components: { VTransition, VButton, OpenFormButton, OpenForm },
+  components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
 
   props: {
     form: { type: Object, required: true },
@@ -165,22 +150,6 @@ export default {
     },
     theme () {
       return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
-    },
-    getFormCleaningsMsg () {
-      if (this.form.cleanings && Object.keys(this.form.cleanings).length > 0) {
-        let message = ''
-        Object.keys(this.form.cleanings).forEach((key) => {
-          const fieldName = key.charAt(0).toUpperCase() + key.slice(1)
-          let fieldInfo = '<br/>' + fieldName + "<br/><ul class='list-disc list-inside'>"
-          this.form.cleanings[key].forEach((msg) => {
-            fieldInfo = fieldInfo + '<li>' + msg + '</li>'
-          })
-          message = message + fieldInfo + '<ul/>'
-        })
-
-        return message
-      }
-      return false
     },
     isPublicFormPage () {
       return this.$route.name === 'forms.show_public'

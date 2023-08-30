@@ -38,6 +38,8 @@ it('check formstat chart data', function () {
     }
 
     // Now check chart data
+    $response = $this->getJson(route('open.workspaces.form.stats', [$workspace->id, $form->id]));
+
     $this->getJson(route('open.workspaces.form.stats', [$workspace->id, $form->id]))
         ->assertSuccessful()
         ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) use ($views, $submissions) {
