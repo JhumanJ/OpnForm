@@ -41,6 +41,7 @@ class Form extends Model
         'notifications_include_submission',
         'slack_webhook_url',
         'discord_webhook_url',
+        'notification_settings',
 
         // integrations
         'webhook_url',
@@ -83,10 +84,7 @@ class Form extends Model
 
         // Security & Privacy
         'can_be_indexed',
-        'password',
-
-        // Custom SEO
-        'seo_meta'
+        'password'
     ];
 
     protected $casts = [
@@ -95,7 +93,8 @@ class Form extends Model
         'closes_at' => 'datetime',
         'tags' => 'array',
         'removed_properties' => 'array',
-        'seo_meta' => 'object'
+        'seo_meta' => 'object',
+        'notification_settings' => 'object'
     ];
 
     protected $appends = [

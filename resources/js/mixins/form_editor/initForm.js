@@ -14,6 +14,7 @@ export default {
         slack_notifies: false,
         send_submission_confirmation: false,
         webhook_url: null,
+        notification_settings: {},
 
         // Customization
         theme: 'default',

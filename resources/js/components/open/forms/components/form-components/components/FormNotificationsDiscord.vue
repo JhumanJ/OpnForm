@@ -28,23 +28,29 @@
       <toggle-switch-input name="notifies_discord" :form="form" class="mt-4"
                            label="Receive a Discord notification on submission"
       />
-      <text-input v-if="form.notifies_discord" name="discord_webhook_url" :form="form" class="mt-4"
-                  label="Discord webhook url" help="help"
-      >
-        <template #help>
-          Receive a discord message on each form submission.
-          <a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" target="_blank">Click here</a> to learn how to get a discord webhook url.
-        </template>
-      </text-input>
+      <template v-if="form.notifies_discord">
+        <text-input name="discord_webhook_url" :form="form" class="mt-4"
+                    label="Discord webhook url" help="help"
+        >
+          <template #help>
+            Receive a discord message on each form submission.
+            <a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" target="_blank">Click
+              here</a> to learn how to get a discord webhook url.
+          </template>
+        </text-input>
+        <h4 class="font-bold mt-4">Discord message actions</h4>
+        <form-notifications-message-actions v-model="form.notification_settings.discord"  />
+      </template>
     </modal>
   </div>
 </template>
 
 <script>
 import ProTag from '../../../../../common/ProTag.vue'
+import FormNotificationsMessageActions from './FormNotificationsMessageActions.vue'
 
 export default {
-  components: { ProTag },
+  components: { ProTag, FormNotificationsMessageActions },
   props: {},
   data () {
     return {
