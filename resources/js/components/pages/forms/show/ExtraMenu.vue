@@ -20,8 +20,8 @@
           </svg>
         </v-button>
       </template>
-      <router-link :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
-                    class="block sm:hidden px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+      <router-link v-if="isMainPage" :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
+                    class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                     v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
         >
         <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"

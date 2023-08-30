@@ -3,7 +3,7 @@
     <text-input ref="companyName" label="Company Name" name="name" :required="true" :form="form" help="Name that will appear on invoices" />
     <text-input label="Email" name="email" native-type="email" :required="true" :form="form" help="Where invoices will be sent" />
     <v-button :loading="form.busy || loading" :disabled="form.busy || loading" class="mt-6 block mx-auto"
-              @click="saveDetails"
+              @click="saveDetails" :arrow="true"
     >
       Go to checkout
     </v-button>

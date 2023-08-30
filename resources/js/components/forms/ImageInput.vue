@@ -71,7 +71,7 @@
                 />
                 <div class="relative z-20 text-center">
                   <input ref="actual-input" class="hidden" type="file" :name="name"
-                         accept="image/png, image/gif, image/jpeg, image/bmp" @change="manualFileUpload"
+                         accept="image/png, image/gif, image/jpeg, image/bmp, image/svg+xml" @change="manualFileUpload"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-24 w-24 text-gray-200" fill="none"
                        viewBox="0 0 24 24" stroke="currentColor"
@@ -91,7 +91,7 @@
                     or drag and drop
                   </p>
                   <p class="mt-1 text-xs text-gray-500">
-                    .jpg, .jpeg, .png, .bmp, .gif up to 5mb
+                    .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
                   </p>
                 </div>
               </template>

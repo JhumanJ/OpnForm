@@ -122,7 +122,8 @@ export default {
   data () {
     return {
       isOpen: false,
-      searchTerm: ''
+      searchTerm: '',
+      defaultValue: this.value ?? null
     }
   },
   computed: {
@@ -212,7 +213,7 @@ export default {
         this.$emit('input', emitValue)
       } else {
         if (this.value === value) {
-          this.$emit('input', null)
+          this.$emit('input', this.defaultValue ?? null)
         } else {
           this.$emit('input', value)
         }

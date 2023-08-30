@@ -12,8 +12,8 @@
         Yearly
       </div>
     </button>
-    <div class="absolute hidden sm:block right-0 text-gray-500 text-xs top-0 translate-x-full translate-y-full pl-2">
-      → Save almost 2 months!
+    <div class="absolute hidden sm:block text-gray-500 text-xs mt-12">
+      Save 20% with annual plans
     </div>
   </div>
 </template>

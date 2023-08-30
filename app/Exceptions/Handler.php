@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($this->shouldReport($e) && !in_array(\App::environment(),['testing'])) {
+        if ($this->shouldReport($e) && !in_array(\App::environment(),['testing']) && config('logging.channels.slack.enabled')) {
             Log::channel('slack')->error($e);
         }
 

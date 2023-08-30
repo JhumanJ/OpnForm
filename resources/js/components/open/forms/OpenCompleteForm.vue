@@ -71,6 +71,7 @@
                      :loading="loading"
                      :fields="form.properties"
                      :theme="theme"
+                     :admin-preview="adminPreview"
                      @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
