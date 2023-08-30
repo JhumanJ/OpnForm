@@ -33,6 +33,7 @@
       </h2>
       <toggle-switch-input name="notifies" :form="form" class="mt-4"
                            label="Receive email notifications on submission"
+                           :help="notifiesHelp"
       />
       <text-area-input v-if="form.notifies" name="notification_emails" :form="form" class="mt-4"
                        label="Notification Emails" help="Add one email per line"
@@ -62,6 +63,19 @@ export default {
       set (value) {
         this.$store.commit('open/working_form/set', value)
       }
+    },
+    replayToEmailField () {
+      const emailFields = this.form.properties.filter((field) => {
+        return field.type === 'email' && !field.hidden
+      })
+      if (emailFields.length === 1) return emailFields[0]
+      return null
+    },
+    notifiesHelp () {
+      if (this.replayToEmailField) {
+        return 'Reply-to for this notification will be the email filled in the field "' + this.replayToEmailField.name + '".'
+      }
+      return 'Reply-to for this notification will be your own email. Add a single email field to your form, and it will automatically become the reply to value.'
     }
   },
 

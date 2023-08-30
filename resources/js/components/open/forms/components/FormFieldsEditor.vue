@@ -151,6 +151,7 @@ import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
 import EditableDiv from '../../../common/EditableDiv.vue'
 import VButton from "../../../common/Button.vue";
+import { mapState } from 'vuex'
 
 export default {
   name: 'FormFieldsEditor',
@@ -167,14 +168,16 @@ export default {
   data() {
     return {
       formFields: [],
-      selectedFieldIndex: null,
-      showEditFieldModal: false,
       showAddBlock: false,
       removing: null
     }
   },
 
   computed: {
+    ...mapState({
+      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
+      showEditFieldModal: state => state['open/working_form'].showEditFieldModal
+    }),
     form: {
       get() {
         return this.$store.state['open/working_form'].content
@@ -301,28 +304,25 @@ export default {
       return block && block.type.startsWith('nf')
     },
     editOptions(index) {
-      this.selectedFieldIndex = index
-      this.showEditFieldModal = true
+      this.$store.commit('open/working_form/openSettingsForField', index)
     },
     blockAdded(block) {
       this.formFields.push(block)
     },
     removeBlock(blockIndex) {
       this.closeInputOptionModal()
-      this.selectedFieldIndex = null
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
       this.$set(this, 'formFields', newFields)
     },
     duplicateBlock(blockIndex) {
       this.closeInputOptionModal()
-      this.selectedFieldIndex = null
       const newField = clonedeep(this.formFields[blockIndex])
       newField.id = this.generateUUID()
       this.formFields.push(newField)
     },
     closeInputOptionModal() {
-      this.showEditFieldModal = false
+      this.$store.commit('open/working_form/closeEditFieldModal')
     }
   }
 }

@@ -183,12 +183,12 @@ class FormController extends Controller
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
         $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;;
-        if (!Storage::disk('s3')->exists($fileName)) {
+        if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;
         }
         $newPath = self::ASSETS_UPLOAD_PATH.'/'.$fileNameParser->getMovedFileName();
-        Storage::disk('s3')->move($fileName, $newPath);
+        Storage::move($fileName, $newPath);
 
         return $this->success([
             'message' => 'File uploaded.',
@@ -205,12 +205,12 @@ class FormController extends Controller
         $this->authorize('view', $form);
 
         $path = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id).'/'.$fileName;
-        if (!Storage::disk('s3')->exists($path)) {
+        if (!Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.'
             ]);
         }
 
-        return redirect()->to(Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(5)));
+        return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
     }
 }

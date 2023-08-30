@@ -31,7 +31,7 @@
           <h3 class="font-semibold block text-lg">
             General
           </h3>
-          <p class="text-gray-400 mb-5">
+          <p class="text-gray-400 mb-5 text-xs">
             Exclude this field or make it required.
           </p>
           <v-checkbox v-model="field.hidden" class="mb-3"
@@ -153,7 +153,24 @@ export default {
 
   computed: {},
 
-  watch: {},
+  watch: {
+    'field.width': {
+      handler (val) {
+        if (val === undefined || val === null) {
+          this.$set(this.field, 'width', 'full')
+        }
+      },
+      immediate: true
+    },
+    'field.align': {
+      handler (val) {
+        if (val === undefined || val === null) {
+          this.$set(this.field, 'align', 'left')
+        }
+      },
+      immediate: true
+    }
+  },
 
   mounted() {
 

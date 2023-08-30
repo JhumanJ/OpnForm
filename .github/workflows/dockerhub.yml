@@ -1,0 +1,26 @@
+name: Publish Docker image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag name
+        run: ( echo "TAG_NAME=${GITHUB_REF#refs/*/v}"; echo "DOCKER_REPO=${{secrets.DOCKER_REPO}}") >> $GITHUB_ENV
+
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_ACCESS_TOKEN }}"
+      
+      - name: Build docker image
+        run: docker build . -t $DOCKER_REPO:latest -t $DOCKER_REPO:$TAG_NAME
+      
+      - name: Push Docker image
+        run: docker push $DOCKER_REPO:latest && docker push $DOCKER_REPO:$TAG_NAME

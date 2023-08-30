@@ -55,6 +55,7 @@ return [
         ],
 
         'slack' => [
+            'enabled' => env('LOG_SLACK_WEBHOOK_URL') ? true : false,
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'OpenForm Log',

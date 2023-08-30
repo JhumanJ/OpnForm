@@ -240,14 +240,30 @@ class FormCleaner
         }
 
         // Remove pro types columns
-        foreach (['files'] as $proType) {
+        /*foreach (['files'] as $proType) {
             if ($data['type'] == $proType && (!isset($data['hidden']) || !$data['hidden'])) {
                 $this->cleanings[$data['name']][] = $proType;
                 if (!$simulation) {
                     $data['hidden'] = true;
                 }
             }
+        }*/
+    }
+
+    // Remove keys those have empty value
+    private function cleanCustomKeys($key, $formVal)
+    {
+        if (in_array($key, $this->customKeys) && $formVal !== null) {
+            $newVal = [];
+            foreach ($formVal as $k => $val) {
+                if ($val) {
+                    $newVal[$k] = $val;
+                }
+            }
+            return $newVal;
         }
+
+        return $formVal;
     }
 
     // Remove keys those have empty value
