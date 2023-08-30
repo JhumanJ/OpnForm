@@ -45,9 +45,8 @@ class PublicFormController extends Controller
             $form->views()->create();
         }
 
-        $formResource = new FormResource($form);
-        $formResource->setCleanings($formCleaner->getPerformedCleanings());
-        return $formResource;
+        return (new FormResource($form))
+            ->setCleanings($formCleaner->getPerformedCleanings());
     }
 
     public function listUsers(Request $request)
@@ -66,14 +65,14 @@ class PublicFormController extends Controller
     public function showAsset($assetFileName)
     {
         $path = FormController::ASSETS_UPLOAD_PATH.'/'.$assetFileName;
-        if (!Storage::disk('s3')->exists($path)) {
+        if (!Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.',
                 'file_name' => $assetFileName
             ]);
         }
-
-        return redirect()->to(Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(5)));
+        
+        return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
     }
 
     public function answer(AnswerFormRequest $request)

@@ -33,7 +33,7 @@
       </p>
 
       <p class="my-4 text-center">
-        Feel free to <a href="mailto:contact@opnform.com">contact us</a> if you have any feature request.
+        Feel free to <a href="#" @click.prevent="openChat">contact us</a> if you have any feature request.
       </p>
       <div class="mb-4 text-center">
         <v-button color="gray" shade="light" @click="showPremiumModal=false">
@@ -66,13 +66,20 @@ export default {
       currentWorkSpace: 'open/workspaces/getCurrent',
     }),
     shouldDisplayProTag() {
-      return false; //!this.user.is_subscribed && !(this.currentWorkSpace.is_pro || this.currentWorkSpace.is_enterprise);
+      if(!window.config.paid_plans_enabled) return false
+      if (!this.user) return true
+      return !(this.currentWorkSpace().is_pro || this.currentWorkSpace().is_enterprise)
     },
   },
 
   mounted () {
   },
 
-  methods: {}
+  methods: {
+    openChat () {
+      window.$crisp.push(['do', 'chat:show'])
+      window.$crisp.push(['do', 'chat:open'])
+    },
+  }
 }
 </script>

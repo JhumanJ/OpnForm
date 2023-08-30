@@ -67,11 +67,13 @@
               <span v-else> This form will stop accepting submissions after {{ form.max_submissions_count }} submissions. </span>
             </p>
 
-            <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
+            <form-cleanings class="mt-4" :form="form" />
+
+            <div class="border-b border-gray-200 dark:border-gray-700">
               <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                 <li class="mr-6" v-for="(tab, i) in tabsList" :key="i+1">
                   <router-link :to="{ name: tab.route }"
-                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-600"
+                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
                     active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
                 >{{tab.name}}</router-link>
                 </li>
@@ -109,6 +111,7 @@ import ProTag from '../../../components/common/ProTag.vue'
 import VButton from "../../../components/common/Button.vue";
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
+import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -122,7 +125,8 @@ export default {
   components: {
     VButton,
     ProTag,
-    ExtraMenu
+    ExtraMenu,
+    FormCleanings
   },
   mixins: [SeoMeta],
 

@@ -140,7 +140,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     private function isSkipForUpload($value)
     {
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
-        return Storage::disk('s3')->exists($newPath.'/'.$value);
+        return Storage::exists($newPath.'/'.$value);
     }
 
     /**
@@ -165,7 +165,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
         $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;
-        if (!Storage::disk('s3')->exists($fileName)) {
+        if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;
         }
@@ -178,7 +178,7 @@ class StoreFormSubmissionJob implements ShouldQueue
             'form_id' => $this->form->id,
             'form_slug' => $this->form->slug,
         ]);
-        Storage::disk('s3')->move($fileName, $completeNewFilename);
+        Storage::move($fileName, $completeNewFilename);
 
         return $fileNameParser->getMovedFileName();
     }
@@ -193,7 +193,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
         $completeNewFilename = $newPath.'/'.$fileName;
 
-        Storage::disk('s3')->put($completeNewFilename, base64_decode(explode(',', $value)[1]));
+        Storage::put($completeNewFilename, base64_decode(explode(',', $value)[1]));
 
         return $fileName;
     }

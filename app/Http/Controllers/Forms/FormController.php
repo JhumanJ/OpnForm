@@ -34,13 +34,21 @@ class FormController extends Controller
         $this->authorize('viewAny', Form::class);
 
         $workspaceIsPro = $workspace->is_pro;
-        $forms = $workspace->forms()->with(['creator','views','submissions'])->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
+        $forms = $workspace->forms()->with(['creator','views','submissions'])
+            ->orderByDesc('updated_at')
+            ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
+            
             // Add attributes for faster loading
             $form->extra = (object) [
                 'loadedWorkspace' => $workspace,
                 'workspaceIsPro' => $workspaceIsPro,
                 'userIsOwner' => true,
+                'cleanings' => $this->formCleaner
+                    ->processForm(request(), $form)
+                    ->simulateCleaning($workspace)
+                    ->getPerformedCleanings()
             ];
+
             return $form;
         });
         return FormResource::collection($forms);
@@ -91,8 +99,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.',
-            'form_cleaning' => $this->formCleaner->getPerformedCleanings(),
-            'form' => new FormResource($form),
+            'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
             'users_first_form' => $request->user()->forms()->count() == 1
         ]);
     }
@@ -116,8 +123,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.',
-            'form_cleaning' => $this->formCleaner->getPerformedCleanings(),
-            'form' => new FormResource($form)
+            'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }
 
@@ -177,12 +183,12 @@ class FormController extends Controller
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
         $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;;
-        if (!Storage::disk('s3')->exists($fileName)) {
+        if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;
         }
         $newPath = self::ASSETS_UPLOAD_PATH.'/'.$fileNameParser->getMovedFileName();
-        Storage::disk('s3')->move($fileName, $newPath);
+        Storage::move($fileName, $newPath);
 
         return $this->success([
             'message' => 'File uploaded.',
@@ -199,12 +205,12 @@ class FormController extends Controller
         $this->authorize('view', $form);
 
         $path = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id).'/'.$fileName;
-        if (!Storage::disk('s3')->exists($path)) {
+        if (!Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.'
             ]);
         }
 
-        return redirect()->to(Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(5)));
+        return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
     }
 }

@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('settings/password', [PasswordController::class, 'update']);
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
+        Route::put('/update-customer-details', [SubscriptionController::class, 'updateStripeDetails'])->name('update-stripe-details');
         Route::get('/new/{subscription}/{plan}/checkout/{trial?}', [SubscriptionController::class, 'checkout'])
             ->name('checkout')
             ->where('subscription', '('.implode('|', SubscriptionController::SUBSCRIPTION_NAMES).')')
@@ -70,9 +71,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                     [FormController::class, 'index'])->name('forms.index');
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
-                Route::middleware('pro-form')->group(function () {
-                    Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
-                });
+                Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
             });
         });
 
@@ -84,7 +83,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
             Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])->name('submissions.file');
-            
+
             Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
 
             // Form Admin tool
