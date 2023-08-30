@@ -18,7 +18,7 @@ class ProForm
     public function handle(Request $request, Closure $next)
     {
         if ($request->route('formId') && $form = Form::findOrFail($request->route('formId'))) {
-            if (true || $form->is_pro) {    // For now it's FREE for all
+            if ($form->is_pro) {
                 $request->merge([
                     'form' => $form,
                 ]);
