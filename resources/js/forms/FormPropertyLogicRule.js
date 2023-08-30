@@ -72,7 +72,7 @@ class FormPropertyLogicRule {
  
     const type = this.CONDITION_MAPPING[typeField]['comparators'][operator]['expected_type']
     if (Array.isArray(type)) {
-      const foundCorrectType = false
+      let foundCorrectType = false
       type.forEach(subtype => {
         if (this.valueHasCorrectType(subtype, value)) {
           foundCorrectType = true
