@@ -339,7 +339,7 @@ export default {
 
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
-      if (this.isPublicFormPage && this.form.is_pro) {
+      if (this.isPublicFormPage) {
         urlPrefill = new URLSearchParams(window.location.search)
       }
 

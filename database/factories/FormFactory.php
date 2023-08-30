@@ -85,7 +85,8 @@ class FormFactory extends Factory
             'tags' => [],
             'slack_webhook_url' => null,
             'editable_submissions_button_text' => 'Edit submission',
-            'confetti_on_submission' => false
+            'confetti_on_submission' => false,
+            'seo_meta' => [],
         ];
     }
 

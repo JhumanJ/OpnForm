@@ -181,12 +181,28 @@ export default {
       return window.location !== window.parent.location || window.frameElement
     },
     metaTitle () {
+      if(this.form && this.form.is_pro && this.form.seo_meta.page_title) {
+        return this.form.seo_meta.page_title
+      }
       return this.form ? this.form.title : 'Create beautiful forms'
     },
+    metaTemplate () {
+      if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
+        // Disable template if custom SEO title
+        return '%s'
+      }
+      return null
+    },
     metaDescription () {
+      if (this.form && this.form.is_pro && this.form.seo_meta.page_description) {
+        return this.form.seo_meta.page_description
+      }
       return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
     },
     metaImage () {
+      if (this.form && this.form.is_pro && this.form.seo_meta.page_thumbnail) {
+        return this.form.seo_meta.page_thumbnail
+      }
       return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
     },
     metaTags () {

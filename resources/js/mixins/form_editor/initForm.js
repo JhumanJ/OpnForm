@@ -45,7 +45,10 @@ export default {
         confetti_on_submission: false,
 
         // Security & Privacy
-        can_be_indexed: true
+        can_be_indexed: true,
+
+        // Custom SEO
+        seo_meta: {}
       })
     },
   }
