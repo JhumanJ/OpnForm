@@ -34,13 +34,21 @@ class FormController extends Controller
         $this->authorize('viewAny', Form::class);
 
         $workspaceIsPro = $workspace->is_pro;
-        $forms = $workspace->forms()->with(['creator','views','submissions'])->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
+        $forms = $workspace->forms()->with(['creator','views','submissions'])
+            ->orderByDesc('updated_at')
+            ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
+            
             // Add attributes for faster loading
             $form->extra = (object) [
                 'loadedWorkspace' => $workspace,
                 'workspaceIsPro' => $workspaceIsPro,
                 'userIsOwner' => true,
+                'cleanings' => $this->formCleaner
+                    ->processForm(request(), $form)
+                    ->simulateCleaning($workspace)
+                    ->getPerformedCleanings()
             ];
+
             return $form;
         });
         return FormResource::collection($forms);
@@ -91,8 +99,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.',
-            'form_cleaning' => $this->formCleaner->getPerformedCleanings(),
-            'form' => new FormResource($form),
+            'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
             'users_first_form' => $request->user()->forms()->count() == 1
         ]);
     }
@@ -116,8 +123,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.',
-            'form_cleaning' => $this->formCleaner->getPerformedCleanings(),
-            'form' => new FormResource($form)
+            'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }
 

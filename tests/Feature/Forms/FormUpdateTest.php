@@ -3,7 +3,7 @@
 use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can update form with existing record', function () {
-    $user = $this->actingAsUser();
+    $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
         'editable_submissions' => true,

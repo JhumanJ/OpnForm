@@ -179,6 +179,15 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         return [];
     }
 
+    public function getIsRiskyAttribute()
+    {
+        return $this->created_at->isAfter(now()->subDays(3)) || // created in last 3 days
+            $this->subscriptions()->where(function ($q) {
+                $q->where('stripe_status', 'trialing')
+                    ->orWhere('stripe_status', 'active');
+            })->first()?->onTrial();
+    }
+
     public static function boot ()
     {
         parent::boot();

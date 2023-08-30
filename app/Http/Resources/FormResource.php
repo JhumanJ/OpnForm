@@ -26,8 +26,8 @@ class FormResource extends JsonResource
 
         $ownerData = $this->userIsFormOwner() ? [
             'creator' => new UserResource($this->creator),
-            'views_count' => $this->when($this->workspaceIsPro(), $this->views_count),
-            'submissions_count' => $this->when($this->workspaceIsPro(), $this->submissions_count),
+            'views_count' => $this->views_count,
+            'submissions_count' => $this->submissions_count,
             'notifies' => $this->notifies,
             'notifies_slack' => $this->notifies_slack,
             'notifies_discord' => $this->notifies_discord,
@@ -35,7 +35,7 @@ class FormResource extends JsonResource
             'webhook_url' => $this->webhook_url,
             'redirect_url' => $this->redirect_url,
             'database_fields_update' => $this->database_fields_update,
-            'cleanings' => $this->cleanings,
+            'cleanings' => $this->getCleanigns(),
             'notification_sender' => $this->notification_sender,
             'notification_subject' => $this->notification_subject,
             'notification_body' => $this->notification_body,
@@ -95,7 +95,7 @@ class FormResource extends JsonResource
 
     private function doesMissPassword(Request $request)
     {
-        if (!$this->workspaceIsPro() || !$this->has_password) return false;
+        if (!$this->has_password) return false;
 
         return !PasswordProtectedForm::hasCorrectPassword($request, $this->resource);
     }
@@ -131,5 +131,10 @@ class FormResource extends JsonResource
                 Auth::check()
                 && Auth::user()->workspaces()->find($this->workspace_id) !== null
             );
+    }
+
+    private function getCleanigns()
+    {
+        return $this->extra?->cleanings ?? $this->cleanings;
     }
 }

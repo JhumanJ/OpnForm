@@ -24,7 +24,9 @@ class Workspace extends Model
 
     public function getIsProAttribute()
     {
-        return true;    // Temporary true for ALL
+        if(is_null(config('cashier.key'))){
+            return true;    // If no paid plan so TRUE for ALL
+        }
 
         // Make sure at least one owner is pro
         foreach ($this->owners as $owner) {
@@ -37,7 +39,9 @@ class Workspace extends Model
 
     public function getIsEnterpriseAttribute()
     {
-        return true;    // Temporary true for ALL
+        if(is_null(config('cashier.key'))){
+            return true;    // If no paid plan so TRUE for ALL
+        }
 
         foreach ($this->owners as $owner) {
             if ($owner->has_enterprise_subscription) {
@@ -45,6 +49,28 @@ class Workspace extends Model
             }
         }
         return false;
+    }
+
+    public function getIsRiskyAttribute()
+    {
+        // A workspace is risky if all of his users are risky
+        foreach ($this->owners as $owner) {
+            if (!$owner->is_risky) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getSubmissionsCountAttribute()
+    {
+        $total = 0;
+        foreach ($this->forms as $form) {
+            $total += $form->submissions_count;
+        }
+
+        return $total;
     }
 
     /**

@@ -7,8 +7,8 @@
   <form v-else-if="dataForm" @submit.prevent="">
     <transition name="fade" mode="out-in" appear>
       <template v-for="group, groupIndex in fieldGroups">
-        <div v-if="currentFieldGroupIndex===groupIndex" 
-              :key="groupIndex" 
+        <div v-if="currentFieldGroupIndex===groupIndex"
+              :key="groupIndex"
               class="form-group flex flex-wrap w-full">
 
           <draggable v-model="currentFields"
