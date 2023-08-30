@@ -39,7 +39,7 @@ class FormLogicPropertyResolver
         }
 
         $conditionsMet = FormLogicConditionChecker::conditionsMet($this->logic['conditions'], $this->formData);
-        if ($conditionsMet && $this->property['required'] && count($this->logic['actions']) > 0 && in_array('make-it-optional', $this->logic['actions'])) {
+        if ($conditionsMet && $this->property['required'] && count($this->logic['actions']) > 0 && (in_array('make-it-optional', $this->logic['actions']) || in_array('hide-block', $this->logic['actions']))) {
             return false;
         } else if ($conditionsMet && !$this->property['required'] && count($this->logic['actions']) > 0 && in_array('require-answer', $this->logic['actions'])) {
             return true;

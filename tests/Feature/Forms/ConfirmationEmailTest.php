@@ -50,7 +50,7 @@ it('creates confirmation emails without the submitted data', function () {
 });
 
 it('sends a confirmation email if needed', function () {
-    $user = $this->actingAsUser();
+    $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
         'send_submission_confirmation' => true,

@@ -342,13 +342,13 @@
   "multi_select": {
     "comparators": {
       "contains": {
-        "expected_type": "object",
+        "expected_type": ["object", "string"],
         "format": {
           "type": "uuid"
         }
       },
       "does_not_contain": {
-        "expected_type": "object",
+        "expected_type": ["object", "string"],
         "format": {
           "type": "uuid"
         }
