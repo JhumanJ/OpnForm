@@ -57,14 +57,14 @@ class FormSubmissionController extends Controller
         $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id).'/'
             .urldecode($fileName);
 
-        if (!Storage::disk('s3')->exists($fileName)) {
+        if (!Storage::exists($fileName)) {
             return $this->error([
                 'message' => 'File not found.',
             ], 404);
         }
 
         return redirect(
-            Storage::disk('s3')->temporaryUrl($fileName, now()->addMinute())
+            Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
 }
