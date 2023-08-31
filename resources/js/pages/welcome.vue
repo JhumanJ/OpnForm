@@ -1,21 +1,22 @@
 <template>
   <div>
-    <div class="flex flex-col bg-gray-50 dark:bg-notion-dark">
-      <div class="w-full bg-gradient-to-b from-white to-gray-100">
-        <div class="w-full md:mx-auto flex flex-wrap mb-10 -mb-32 md:-mb-52 lg:-mb-72 md:pt-10 relative max-w-5xl">
-          <div
-            class="flex flex-col justify-center w-full text-center lg:pr-10 p-6 lg:p-10 relative z-10"
-          >
-            <h1 dusk="title" class="text-4xl lg:text-5xl">
-              The open-source <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">form builder</span><br>
+    <section class="bg-gradient-to-b relative from-white to-gray-100 py-12 sm:py-16 lg:py-20 xl:py-24">
+        <div class="absolute inset-0">
+          <img class="w-full h-full object-cover object-top" :src="asset('img/pages/ai_form_builder/background-pattern.svg')" alt="">
+        </div>
+
+        <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72">
+          <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight">
+              The open-source 
+              <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">form builder</span>
             </h1>
-            <h3 class="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+            <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
               Create beautiful forms and share them anywhere. It takes seconds, you don't need to know how to code
-              and <span
-              class="font-medium"
-            >it's free</span>.
-            </h3>
-            <div class="mt-6 flex justify-center">
+              and <span class="font-bold">it's free</span>
+            </p>
+
+            <div class="mt-8 flex justify-center">
               <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
                 Create a form for FREE
               </v-button>
@@ -23,7 +24,8 @@
                 Create a form for FREE
               </v-button>
             </div>
-            <div class="justify-center flex gap-2 mt-10">
+            
+            <div class="font-bold justify-center flex gap-2 mt-10">
               <div class="flex items-center text-gray-400 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                      stroke="currentColor" class="w-4 h-4 mr-1 ticks">
@@ -49,16 +51,18 @@
               </div>
             </div>
           </div>
+
           <div class="w-full mt-8 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center">
             <img loading="lazy" class="w-full shadow-2xl rounded-xl block max-w-2xl lg:max-w-5xl"
                  :src="asset('img/pages/welcome/product-cover.jpg')" alt="cover-product">
           </div>
         </div>
-      </div>
+    </section>
 
+    <div class="flex flex-col bg-gray-50 dark:bg-notion-dark">
       <div class="bg-white dark:bg-notion-dark-light pt-32 md:pt-52 lg:pt-72 pb-8">
         <div class="md:max-w-5xl md:mx-auto w-full">
-          <features class="pt-20 pb-8"/>
+          <features class="pb-8"/>
         </div>
       </div>
 
