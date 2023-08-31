@@ -8,7 +8,7 @@
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72">
           <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight">
-              The open-source 
+              The open-source
               <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">form builder</span>
             </h1>
             <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
@@ -24,8 +24,8 @@
                 Create a form for FREE
               </v-button>
             </div>
-            
-            <div class="font-bold justify-center flex gap-2 mt-10">
+
+            <div class="justify-center flex gap-2 mt-10">
               <div class="flex items-center text-gray-400 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                      stroke="currentColor" class="w-4 h-4 mr-1 ticks">
