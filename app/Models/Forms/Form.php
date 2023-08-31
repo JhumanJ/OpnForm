@@ -84,7 +84,10 @@ class Form extends Model
 
         // Security & Privacy
         'can_be_indexed',
-        'password'
+        'password',
+
+        // Custom SEO
+        'seo_meta'
     ];
 
     protected $casts = [
