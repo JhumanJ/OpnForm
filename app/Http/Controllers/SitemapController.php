@@ -44,7 +44,7 @@ class SitemapController extends Controller
     {
         Template::chunk(100, function ($templates) use ($sitemap) {
             foreach ($templates as $template) {
-                $sitemap->add($this->createUrl('/templates/' . $template->slug, 0.7));
+                $sitemap->add($this->createUrl('/form-templates/' . $template->slug, 0.8));
             }
         });
     }

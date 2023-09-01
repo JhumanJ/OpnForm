@@ -69,7 +69,7 @@
       </a>
       <a href="#" v-if="user.template_editor"
          class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-         @click.prevent="showCreateTemplateModal=true"
+         @click.prevent="showFormTemplateModal=true"
       >
         <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke="currentColor" stroke-width="2">
@@ -117,7 +117,7 @@
       </div>
     </modal>
 
-    <create-template-modal :form="form" :show="showCreateTemplateModal" @close="showCreateTemplateModal=false"/>
+    <form-template-modal :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false"/>
   </div>
 </template>
 
@@ -125,11 +125,11 @@
 import axios from 'axios'
 import {mapGetters, mapState} from 'vuex'
 import Dropdown from '../../../common/Dropdown.vue'
-import CreateTemplateModal from '../CreateTemplateModal.vue'
+import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 
 export default {
     name: 'ExtraMenu',
-    components: { Dropdown, CreateTemplateModal },
+    components: { Dropdown, FormTemplateModal },
     props: {
       form: { type: Object, required: true },
       isMainPage: { type: Boolean, required: false, default: false }
@@ -139,7 +139,7 @@ export default {
       loadingDuplicate: false,
       loadingDelete: false,
       showDeleteFormModal: false,
-      showCreateTemplateModal: false
+      showFormTemplateModal: false
     }),
 
     computed: {

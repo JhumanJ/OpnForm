@@ -1,0 +1,324 @@
+{
+  "order_forms": {
+    "name": "Order Forms",
+    "slug": "order_forms",
+    "meta_title": "Order Form Templates for Notion users",
+    "meta_description": "Simplify ordering process with our free, editable Order Form Templates. Ideal for businesses, all data stored in Notion databases.",
+    "description": "Running a business and managing orders? NoteForms offers Order Form Templates that can simplify your work! By using these form templates, you can collect order details easily, streamline your process and keep everything organized right within your Notion workspace. This means all your data gets stored directly in your Notion databases, making it easy to integrate with your current workflows. Use an order form template below, customize it to fit your needs, and see how NoteForms can upgrade your ordering process."
+  },
+  "registration_forms": {
+    "name": "Registration Forms",
+    "slug": "registration_forms",
+    "meta_title": "Registration Form Templates for Notion users",
+    "meta_description": "Our versatile registration form templates are easy to edit and ideal for Notion users. Collect and store submissions directly in Notion databases.",
+    "description": "Are you organizing an event? Running a webinar? Or maybe you are managing an online course? Then these registration form templates are for you! With NoteForms, you can collect registrant details effortlessly and store them directly in your Notion databases. You don't have to change your current processes or switch between different applications. Use our registration form samples and customize them to fit your needs."
+  },
+  "event_registration_forms": {
+    "name": "Event Registration Forms",
+    "slug": "event_registration_forms",
+    "meta_title": "Event Registration Form Templates for Notion users",
+    "meta_description": "Efficiently manage your event logistics with our Event Registration Form Templates. Ideal for Notion users seeking to streamline their event management.",
+    "description": "Are you an event planner or organizer? Use our Event Registration Form Templates to streamline your event logistics. Our templates are perfect for gathering key information such as attendees' details, payment information, and special requirements. And the best part? All submissions are directly stored in your Notion databases, ensuring a seamless integration into your existing processes. Start using our Event Registration Form Templates and make your event management smooth and efficient."
+  },
+  "payment_forms": {
+    "name": "Payment Forms",
+    "slug": "payment_forms",
+    "meta_title": "Payment Form Templates for Notion users",
+    "meta_description": "Effortlessly manage your financial transactions with our Payment Form templates. Ideal for businesses using Notion.",
+    "description": "Do you manage a business and constantly deal with financial transactions? Our Payment Form templates are perfect for you. They allow for easy and efficient tracking of payments, refunds, donations and much more. These form templates are designed to gather and organize all necessary information effectively, saving you time and preventing errors. The best part? All your submissions are kept in your Notion databases, meaning no alteration to your existing processes. With NoteForms, streamline your payment management directly in your Notion workspace."
+  },
+  "application_forms": {
+    "name": "Application Forms",
+    "slug": "application_forms",
+    "meta_title": "Application Form Templates for Notion users",
+    "meta_description": "Seamlessly manage your applications with our form templates, specifically designed for Notion users. Capture and store data in your Notion databases.",
+    "description": "Running a business or organization that requires applications? Use our application form templates to collect relevant information from your applicants straight into your Notion databases. No need for extra tools or changes to your current process. Our form templates are easy to edit, efficient and convenient. Experience a hassle-free application management with NoteForms."
+  },
+  "file_upload_forms": {
+    "name": "File Upload Forms",
+    "slug": "file_upload_forms",
+    "meta_title": "File Upload Form Templates for Notion Users",
+    "meta_description": "Powerful, easy-to-edit file upload form templates for Notion users. Seamlessly collect and store file uploads straight in your Notion databases.",
+    "description": "Whether you're a business owner, teacher, or project manager, our file upload form templates will simplify your file collection process. With NoteForms, you can collect files of any type and have them directly stored in your Notion databases, keeping all your data in one place. Easily customize the form to fit your needs and streamline your processes without the need for any other third-party services."
+  },
+  "booking_forms": {
+    "name": "Booking Forms",
+    "slug": "booking_forms",
+    "meta_title": "Booking Form Templates for Notion users",
+    "meta_description": "Effortlessly handle bookings using our customizable templates. Ideal for businesses using Notion to manage appointments and reservations.",
+    "description": "Are you running a business that needs to handle bookings? Whether it's for hotel rooms, event tickets, appointments, or any other reservable item, our booking form templates can help. With these forms, you can gather all the necessary details about your clients' bookings directly in your Notion workspace. This means no change to your current processes, and no need to manually transfer data from one place to another. Using a booking form from NoteForms not only simplifies your booking management, but also keeps all your data in one secure, easy-to-access place - your Notion database."
+  },
+  "survey_templates": {
+    "name": "Survey Templates",
+    "slug": "survey_templates",
+    "meta_title": "Survey Form Templates for Notion users",
+    "meta_description": "Efficient and easy to edit survey form templates for Notion users. Gather valuable intel seamlessly stored in your Notion databases.",
+    "description": "Whether you\u2019re conducting market research, getting feedback, or measuring employee satisfaction, our Survey Templates can help you get the answers you need. Easy to edit and efficient, these templates allow you to collect data and store it directly in your Notion databases. There's no need to change your existing processes as our templates work seamlessly with Notion. Start using our survey form templates and make information collection more efficient."
+  },
+  "consent_forms": {
+    "name": "Consent Forms",
+    "slug": "consent_forms",
+    "meta_title": "Consent Form Templates for Notion users",
+    "meta_description": "Edit and manage powerful consent forms directly in your Notion databases. Ideal for healthcare, research, and more.",
+    "description": "Healthcare providers, researchers or any professional that requires consent, these Consent Form templates are designed for you. The smooth process of information collection is simplified with these forms. Consent forms help gather permission with various details needed. With NoteForms, you can keep all submissions in your Notion databases, maintaining your existing processes intact. Use a Consent Form sample below and customize to suit your requirements."
+  },
+  "rsvp_forms": {
+    "name": "RSVP Forms",
+    "slug": "rsvp_forms",
+    "meta_title": "RSVP Form Templates for Notion Users",
+    "meta_description": "Use our RSVP form templates to seamlessly gather event responses. Ideal for Notion users as responses sync directly to your Notion databases.",
+    "description": "Are you hosting an event and need to track RSVPs? Our RSVP form templates are designed for seamless information gathering. Perfect for event organizers, these forms allow you to collect details about your attendees and their preferences directly and efficiently. With NoteForms, if you're already a Notion user, the process is even smoother. All form submissions are stored directly in your Notion databases, allowing you to manage your event without changing your current processes. Pick an RSVP form sample below and customize it to suit your needs."
+  },
+  "appointment_forms": {
+    "name": "Appointment Forms",
+    "slug": "appointment_forms",
+    "meta_title": "Appointment Form Templates for Notion users",
+    "meta_description": "Powerful and easy-to-edit appointment form templates for Notion users. Ideal for medical practitioners, consultants, and more.",
+    "description": "Are you a doctor? A consultant? Or a professional service provider? Our appointment form templates are designed to help you collect, track, and manage appointments directly from your customers. Using our templates, you can collect necessary information, schedule appointments, and manage your day more efficiently. The best part? All form submissions are stored directly in your Notion database, meaning no change to your current processes. Use an appointment form sample below and customize it to fit your needs."
+  },
+  "contact_forms": {
+    "name": "Contact Forms",
+    "slug": "contact_forms",
+    "meta_title": "Contact Form Templates for Notion users",
+    "meta_description": "Streamlined contact form templates for Notion. Easily capture contact details and maintain your existing Notion workflow.",
+    "description": "Are you a business owner, freelancer, or professional needing to collect contact information? Use our contact form templates designed for Notion users. Gathering contact details becomes a breeze with our forms. You can capture name, email, phone number, and much more. The best part? All submissions are stored right in your Notion database, maintaining consistency with your existing workflow. Customize the contact form sample below to fit your unique needs."
+  },
+  "questionnaire_templates": {
+    "name": "Questionnaire Templates",
+    "slug": "questionnaire_templates",
+    "meta_title": "Questionnaire Templates for Notion users",
+    "meta_description": "Powerful, editable questionnaire templates for Notion users. Simplify data collection and storage in your Notion databases.",
+    "description": "Whether you're conducting market research or seeking customer feedback, our questionnaire templates are perfect for Notion users. Streamline information gathering with templates designed for versatility and ease of use. With NoteForms, all your submission data is stored directly in your Notion databases, maintaining the integrity of your work processes without the need for third-party apps. Use a questionnaire template below and customize it to fit your needs."
+  },
+  "signup_forms": {
+    "name": "Signup Forms",
+    "slug": "signup_forms",
+    "meta_title": "Signup Form Templates for Notion Users",
+    "meta_description": "Efficient signup form templates for Notion users. Collect relevant data directly into your Notion databases seamlessly.",
+    "description": "Are you a business owner or a community leader looking for ways to streamline your signup process? Our signup form templates are the perfect solution. With NoteForms, you can collect necessary information from your customers or members directly into your Notion databases, without changing your existing processes. This seamless integration makes it the best solution for Notion users. Start using one of our signup form samples and customize it according to your needs."
+  },
+  "abstract_forms": {
+    "name": "Abstract Forms",
+    "slug": "abstract_forms",
+    "meta_title": "Abstract Form Templates for Notion Users",
+    "meta_description": "Efficient and editable Abstract Form templates for Notion users. Designed for those in academic, research or analysis roles.",
+    "description": "Are you a researcher, academic or analyst? Our Abstract Form templates are perfect for collecting relevant data for your abstracts. These templates are easy to use and customizable to fit your unique needs. With NoteForms, all submissions are kept directly in your Notion databases. There's no shift in your current workflow, making it a seamless addition to your process. Choose an Abstract Form sample below and start collecting information effortlessly."
+  },
+  "audit_forms": {
+    "name": "Audit Forms",
+    "slug": "audit_forms",
+    "meta_title": "Audit Form Templates for Notion users",
+    "meta_description": "Our free audit form templates are powerful, editable, and perfect for auditors. Collect and manage audit data directly in Notion.",
+    "description": "Are you an auditor? Use our audit form templates to collect and manage vital audit data from your clients. These forms are designed to gather comprehensive information for auditing, enabling you to maintain accuracy while saving time. By using an audit form, you can efficiently collect necessary data, create reports, and much more. All form submissions are stored directly in Notion databases, integrating seamlessly with your existing processes. Utilize an audit form sample below and customize it to match your needs. With NoteForms, continue managing your data in Notion with ease."
+  },
+  "award_forms": {
+    "name": "Award Forms",
+    "slug": "award_forms",
+    "meta_title": "Award Form Templates for Notion users",
+    "meta_description": "Award form templates for Notion users. Perfect for event organizers, schools, and corporations. Edit easily and store submissions in Notion.",
+    "description": "Are you an event organizer, school administrator, or corporate manager? Our award form templates are designed for you. Collect nominations, votes, and other essential details directly in your Notion database. This makes the process significantly easier, as there is no change to your current workflow. With NoteForms, you can efficiently manage award ceremonies, recognitions, and other events, while keeping all submissions organized in Notion. Customize the award form samples below to suit your needs."
+  },
+  "calculation_forms": {
+    "name": "Calculation Forms",
+    "slug": "calculation_forms",
+    "meta_title": "Calculation Form Templates for Notion users",
+    "meta_description": "Discover our easy-to-use and customizable calculation form templates. Ideal for any business requiring calculations, stored directly in Notion.",
+    "description": "Are you in a field that requires a lot of calculations? A financial advisor, engineer, or researcher perhaps? Our calculation form templates are an excellent solution for you. They allow you to gather essential calculations without the hassle. Using NoteForms, all your form submissions are stored directly in your Notion databases. This seamless process not only ensures that your current workflow is not disrupted but also improves your efficiency. You can use a calculation form sample below and customize it to fit your needs."
+  },
+  "checklist_forms": {
+    "name": "Checklist Forms",
+    "slug": "checklist_forms",
+    "meta_title": "Checklist Form Templates for Notion users",
+    "meta_description": "Effortlessly create and manage checklists in Notion with our customizable form templates for all your checklist needs.",
+    "description": "If you're a project manager, event organizer, or simply someone who loves to stay organized, our checklist forms are perfect for you. With a Checklist form, you can manage your tasks, keep track of your progress, and ensure everything gets done in an orderly manner. What makes NoteForms the best choice for your checklist forms? Not only are submissions kept directly in your Notion databases, but it also aligns perfectly with your existing workflow. No need to make changes to your current processes, you can simply integrate our checklist forms into your Notion setup. Just select a checklist form sample below and customize it according to your needs."
+  },
+  "content_forms": {
+    "name": "Content Forms",
+    "slug": "content_forms",
+    "meta_title": "Content Form Templates for Notion users",
+    "meta_description": "Optimize your content management with our content forms. Ideal for content creators, writers, editors. Store data directly in Notion.",
+    "description": "Are you a content creator, writer, editor, or someone who deals with a lot of content? Our content form templates are designed to simplify your content management process. With content forms, you can gather information, get feedback, and manage your content effectively. The best part? All submissions are stored directly in your Notion databases, maintaining your current workflow without the need to switch between different platforms. Use a content form sample below and customize it to suit your needs."
+  },
+  "donation_forms": {
+    "name": "Donation Forms",
+    "slug": "donation_forms",
+    "meta_title": "Donation Form Templates for Notion users",
+    "meta_description": "Efficient and customizable donation form templates for Notion users. Store submission data securely in Notion databases.",
+    "description": "Are you an NGO, charity, or fundraiser? Need to manage donations efficiently? Our donation form templates are the perfect solution. Using them, you can collect information about donors, manage fund allocation, track donations and much more. All form submissions are stored directly in Notion databases, integrating seamlessly into your current processes. With NoteForms, manage donations effectively without having to leave your preferred workspace, Notion."
+  },
+  "employment_forms": {
+    "name": "Employment Forms",
+    "slug": "employment_forms",
+    "meta_title": "Employment Form Templates for Notion users",
+    "meta_description": "Effective and customizable employment form templates for Notion users. Ideal for HR professionals to streamline recruitment processes.",
+    "description": "Are you an HR professional or a hiring manager? Our employment form templates are designed to make your recruitment process smoother and more organized. From applicant information to job application forms, we have got all covered for you. What makes it even better is that all of these are customizable according to your specific needs. With NoteForms, all submissions are directly stored in your Notion databases, ensuring a seamless integration with your existing workflow. So why wait? Start using our employment form templates and make your recruitment process a cakewalk."
+  },
+  "enrollment_forms": {
+    "name": "Enrollment Forms",
+    "slug": "enrollment_forms",
+    "meta_title": "Enrollment Form Templates for Notion users",
+    "meta_description": "Use our free enrollment form templates to collect applicant details directly to your Notion databases, streamlining your process.",
+    "description": "Are you an educational institution, club, or course facilitator? Use our enrollment form templates to streamline your application process. An enrollment form template allows you to gather crucial information from applicants directly into your Notion databases, saving time and effort. Forget the hassle of manual data transfer, NoteForms integrates seamlessly with your existing Notion workflow. Use an enrollment form sample below and customize it to fit your needs."
+  },
+  "evaluation_forms": {
+    "name": "Evaluation Forms",
+    "slug": "evaluation_forms",
+    "meta_title": "Evaluation Form Templates for Notion users",
+    "meta_description": "Powerful, easy-to-edit evaluation form templates. Ideal for educators, employers or event organizers. Directly store submissions in Notion databases.",
+    "description": "Whether you're an educator seeking student feedback, an employer evaluating employee performance, or an event organizer needing a post-event assessment, our evaluation form templates are the perfect tool for you. With NoteForms, you can customize these templates to fit your needs. Plus, all submissions are kept directly in Notion databases, allowing for a seamless integration into your current processes. Choose an evaluation form sample below and start customizing today."
+  },
+  "feedback_forms": {
+    "name": "Feedback Forms",
+    "slug": "feedback_forms",
+    "meta_title": "Feedback Form Templates for Notion users",
+    "meta_description": "Easy to use feedback form templates for Notion users. Collect client responses directly in your Notion databases.",
+    "description": "Are you looking to collect customer feedback? Client responses? Use one of these feedback form templates to gather necessary information from your customers. A feedback form template allows you to collect valuable information effortlessly. When you use a feedback form you can get customer insights, improve your services, and much more. You can use a feedback form sample below and customize accordingly to fit your needs. With NoteForms, all your submissions are directly stored in your Notion databases, maintaining your current workflow without any disruption."
+  },
+  "inspection_forms": {
+    "name": "Inspection Forms",
+    "slug": "inspection_forms",
+    "meta_title": "Inspection Form Templates for Notion users",
+    "meta_description": "Powerful, editable inspection form templates are perfect for various inspection tasks. All data stored directly in your Notion databases.",
+    "description": "Are you involved in any kind of inspection activities? Be it property inspections, safety checks, quality inspections or any other, these inspection form templates are perfect for you. With the help of these ready to use form templates, collect all necessary data seamlessly, without disrupting your existing processes. The key advantage of using NoteForms is that all your data submissions stay in your Notion databases. Thus, no changes to your current data management systems. Use an inspection form sample below and customize it to suit your needs."
+  },
+  "interview_forms": {
+    "name": "Interview Forms",
+    "slug": "interview_forms",
+    "meta_title": "Interview Form Templates for Notion users",
+    "meta_description": "Powerful yet simple interview form templates for Notion users. Perfect for recruiters, HR professionals, and researchers.",
+    "description": "Are you a recruiter, HR professional, or researcher? Our interview form templates are perfect for you. Collecting information from interviewees is now seamless with our forms. With these templates, you can gather the necessary details, schedule interviews and much more. All submissions are stored directly in your Notion database, maintaining your current workflow. Customize our interview form samples to fit your needs and enhance your Notion experience."
+  },
+  "lead_generation_forms": {
+    "name": "Lead Generation Forms",
+    "slug": "lead_generation_forms",
+    "meta_title": "Lead Generation Form Templates for Notion users",
+    "meta_description": "Use our lead generation form templates to collect potential client data directly into Notion databases. Ideal for businesses of all sizes.",
+    "description": "Need to gather information on potential clients? Using our lead generation form templates, you can collect useful data directly into your Notion databases. This tool is excellent for businesses of all sizes. With NoteForms, you can streamline your lead generation process without altering your existing Notion-based workflow. Our forms are easy to edit and customize to fit your needs, making lead generation more efficient and effective. With NoteForms, all your important data stays in one place - your Notion workspace."
+  },
+  "legal_forms": {
+    "name": "Legal Forms",
+    "slug": "legal_forms",
+    "meta_title": "Legal Form Templates for Notion users",
+    "meta_description": "Efficient and adaptable legal form templates for Notion users. Ideal for lawyers, law firms and legal departments. Store directly in Notion.",
+    "description": "Are you a lawyer, law firm, or part of a legal department? Our legal form templates are perfect for you. They allow you to collect crucial legal information from your clients efficiently and conveniently. With NoteForms, all submissions are stored directly in your Notion databases, ensuring a smooth integration with your existing processes. Our legal form templates can be easily customized to fit your needs, making your legal operations seamless and effective."
+  },
+  "membership_forms": {
+    "name": "Membership Forms",
+    "slug": "membership_forms",
+    "meta_title": "Membership Form Templates for Notion users",
+    "meta_description": "Customizable membership form templates for clubs, gyms, and organizations. Manage member data effectively and directly in Notion databases.",
+    "description": "Are you running a club, gym, or organization? Our membership form templates can help you to gather information about your members effectively. With the ability to customize to suit your specific needs, these forms make it easy to manage member data. The best part? All submissions are directly stored in your Notion databases, meaning there's no disruption to your current processes. Use a membership form sample below and customize it to fit your needs with NoteForms."
+  },
+  "petition_forms": {
+    "name": "Petition Forms",
+    "slug": "petition_forms",
+    "meta_title": "Petition Form Templates for Notion users",
+    "meta_description": "Create powerful petitions with our templates. Perfect for Notion users, as all responses are stored directly in Notion databases.",
+    "description": "Are you an activist or involved in a cause? Use our petition form templates to gather support and signatures. These forms are ideal for Notion users as all form submissions are directly stored in Notion databases, ensuring integration with your current work processes. A petition form template allows you to collect signatures and contact details seamlessly, helping you focus on your cause. Use a petition form sample below and customize accordingly to fit your needs."
+  },
+  "polls": {
+    "name": "Polls",
+    "slug": "polls",
+    "meta_title": "Poll Form Templates for Notion users",
+    "meta_description": "Create robust polls with our free form templates. Ideal for users of Notion looking to collect, store and analyze polling data directly.",
+    "description": "Are you looking to run a poll for research, feedback or any other purpose? Our poll form templates make it easy for Notion users. With NoteForms, you can create a poll, share it and have responses directly stored in your Notion databases. This means there's no switch to your current workflow. Plus, you get the added advantage of using Notion's powerful data analysis tools on the responses. Use a poll form sample and customize it to fit your needs."
+  },
+  "quiz_forms": {
+    "name": "Quiz Forms",
+    "slug": "quiz_forms",
+    "meta_title": "Quiz Form Templates for Notion Users",
+    "meta_description": "Use our powerful, easy-to-edit quiz form templates. Ideal for educators or trainers. Manage quiz submissions directly in Notion.",
+    "description": "Are you an educator, trainer, or quiz organizer? Our quiz form templates are perfect for your needs. With Quiz forms, you can collect answers, score responses, and even provide feedback. All while keeping your data organized right in your Notion workspace. There's no need to change your current processes or use other tools. NoteForms allows you to manage everything in one place, making your workflow more efficient and streamlined. Customize our quiz form sample below to meet your specific needs."
+  },
+  "quote_forms": {
+    "name": "Quote Forms",
+    "slug": "quote_forms",
+    "meta_title": "Quote Form Templates for Notion users",
+    "meta_description": "Efficient, editable Quote Form templates for Notion users. Ideal for businesses providing quotes for their services.",
+    "description": "Are you providing a service that requires quotation? Use one of these Quote Form templates to gather customer details and their specific requirements. A Quote Form template allows you to collect essential information in a streamlined manner. When you use a Quote Form, you can get detailed client requests, provide accurate quotations, and enhance your customer service. All submissions are kept in Notion databases, making it a perfect solution if you are already working with Notion, as there is no need to change your current processes. Just pick a Quote Form sample below and customize it according to your needs."
+  },
+  "recommendation_forms": {
+    "name": "Recommendation Forms",
+    "slug": "recommendation_forms",
+    "meta_title": "Recommendation Form Templates for Notion users",
+    "meta_description": "Use our adaptable recommendation form templates for Notion users. Ideal for tracking references & evaluations in Notion databases.",
+    "description": "Are you often asking for references or giving evaluations? Our recommendation form templates are perfect for you. They're designed for educators, employers, or anyone who needs to track references. With NoteForms, these forms are directly stored in your Notion database, allowing you to maintain and streamline your existing processes. A recommendation form template allows you to gather valuable input flawlessly. Customize our recommendation form samples to suit your needs."
+  },
+  "report_forms": {
+    "name": "Report Forms",
+    "slug": "report_forms",
+    "meta_title": "Report Form Templates for Notion Users",
+    "meta_description": "Our free report form templates are tailor-made, easy to edit and sync with Notion. Perfect for gathering all types of reports.",
+    "description": "Are you in the need of collecting reports? Our templates are ideal for all users who wish to gather data in the form of reports. Using report forms, you can collect a variety of information in an organized, systematic way. What makes NoteForms the ideal choice is that it is tailor-made for Notion users. All submissions are stored directly in your Notion database, making it easier to manage and process the data without having to compromise or adjust your current processes. You can choose a report form sample from below and customize it to suit your needs."
+  },
+  "request_forms": {
+    "name": "Request Forms",
+    "slug": "request_forms",
+    "meta_title": "Request Form Templates for Notion users",
+    "meta_description": "Edit our powerful free request form templates, perfect for businesses. Collect crucial requests directly in your Notion databases.",
+    "description": "Are you a business looking for seamless request management? Our request form templates are perfect for you. Collect and store crucial requests from customers or employees right in your Notion databases. No need to change your current processes or use another platform. With NoteForms, managing your requests has never been easier. Customize the request form sample below to fit your needs."
+  },
+  "reservation_forms": {
+    "name": "Reservation Forms",
+    "slug": "reservation_forms",
+    "meta_title": "Reservation Form Templates for Notion users",
+    "meta_description": "Our adaptable reservation form templates are designed for simplicity, ideal for any business on Notion, collecting reservation details effortlessly.",
+    "description": "Are you a hotel owner? Restaurant proprietor? Event planner? Utilize our reservation form templates to gather reservation details from your clients. Reservation forms enable you to streamline customer information collection, schedule bookings, and much more. Simplify your operations using one of the reservation form samples below, and tailor it to suit your needs. With NoteForms, all your submissions are stored in your Notion databases, preserving your existing workflow and ensuring a seamless integration."
+  },
+  "sponsorship_forms": {
+    "name": "Sponsorship Forms",
+    "slug": "sponsorship_forms",
+    "meta_title": "Sponsorship Form Templates for Notion Users",
+    "meta_description": "Powerful, editable sponsorship form templates for Notion users. Ideal for events, charities, and organizations. Keep all submissions in your Notion databases.",
+    "description": "Are you an event manager? Part of a charity or organization seeking sponsors? Use our form templates to collect sponsorship details. With NoteForms, these templates are not only powerful but easy to edit and tailor to your needs. All the submissions are stored directly in your Notion databases, meaning there's no need to disrupt your current workflow. Use a sponsorship form sample below and customize it to fit your needs."
+  },
+  "subscription_forms": {
+    "name": "Subscription Forms",
+    "slug": "subscription_forms",
+    "meta_title": "Subscription Form Templates for Notion Users",
+    "meta_description": "Effortlessly create, edit, and manage subscription forms via our templates. All data directly goes into your Notion databases.",
+    "description": "Managing subscriptions can be challenging. With our subscription form templates, this process becomes a lot easier. Whether you own a newsletter, a service or a membership website, these forms will simplify your subscription process. All form submissions are stored directly in your Notion databases, ensuring a seamless integration with your existing processes. Utilize a subscription form sample below and modify it according to your requirements, all while staying in your Notion workspace."
+  },
+  "summer_camp_surveys": {
+    "name": "Summer Camp Surveys",
+    "slug": "summer_camp_surveys",
+    "meta_title": "Summer Camp Survey Templates for Notion users",
+    "meta_description": "Conduct effective surveys with our Summer Camp Survey Templates for Notion users. Collect data right in your Notion database.",
+    "description": "Running a summer camp and want to get insights from attendees or their parents? Our Summer Camp Survey templates are the perfect solution for you. Collect data efficiently and directly into your Notion database. You don't need to change your current processes, as all submissions are kept in your Notion databases. A summer camp survey form template allows you to collect valuable information seamlessly. You can use a summer camp survey form sample below and customize it according to your needs. Embrace the power of NoteForms, the best solution for Notion users."
+  },
+  "telecommuting_forms": {
+    "name": "Telecommuting Forms",
+    "slug": "telecommuting_forms",
+    "meta_title": "Telecommuting Form Templates for Notion users",
+    "meta_description": "Our telecommuting forms are easy to customize and ideal for remote work management. Keep all your data in Notion with NoteForms.",
+    "description": "Are you managing a remote team or a freelancer who works from home? Use our telecommuting form templates to manage work hours, progress and performance. With NoteForms, your data is stored directly in Notion databases, so there is no need to change your current work processes. Our forms are easy to customize to fit your needs. Start managing your remote team more efficiently with NoteForms today."
+  },
+  "tracking_forms": {
+    "name": "Tracking Forms",
+    "slug": "tracking_forms",
+    "meta_title": "Tracking Form Templates for Notion users",
+    "meta_description": "Efficient tracking form templates, perfect for streamlining data collection and storage in Notion. Ideal for logistics, inventory, and more.",
+    "description": "Whether you're in logistics, inventory management, or need to track any type of data, our tracking form templates are designed to streamline your processes. Not only do they help in the collection of crucial information, but all data is stored directly in your Notion databases. This keeps your existing workflow uninterrupted; no need to resort to external data storage systems. With NoteForms, you get an efficient tool that improves data organization and accessibility, all within the familiar environment of Notion. Customize a tracking form template to fit your needs today."
+  },
+  "voting_forms": {
+    "name": "Voting Forms",
+    "slug": "voting_forms",
+    "meta_title": "Voting Form Templates for Notion users",
+    "meta_description": "Powerful, customizable voting form templates for Notion users. Ideal for any voting event. Collect votes directly in your Notion databases.",
+    "description": "Are you organizing a voting event? Maybe a school election, a community choice award, or a company poll? Our Voting Form Templates are perfect for you! These templates are easy to edit and use. With NoteForms, all your data is directly stored in your Notion databases, maintaining your current workflows without any additional hassle. Use a voting form sample below, customize it according to your needs, and start collecting votes seamlessly."
+  },
+  "wedding_forms": {
+    "name": "Wedding Forms",
+    "slug": "wedding_forms",
+    "meta_title": "Wedding Form Templates for Notion users",
+    "meta_description": "Utilize our free Wedding Form Templates, tailored for Notion users. Great for venue owners, photographers, cake designers for efficient wedding planning.",
+    "description": "Are you a wedding planner, photographer, or cake designer? Our Wedding Form Templates are perfect for you. Collect information about wedding organization details from your clients in a simple and efficient manner. With NoteForms, all submissions are directly stored in your Notion database, keeping your workflow consistent and organized. No changes to your current processes are needed. Use our wedding form sample below and customize it as per your needs."
+  },
+  "volunteer_forms": {
+    "name": "Volunteer Forms",
+    "slug": "volunteer_forms",
+    "meta_title": "Volunteer Form Templates for Notion users",
+    "meta_description": "Use our powerful volunteer form templates to collect information from volunteers. Directly stored in Notion databases for easy access.",
+    "description": "Are you in charge of a volunteer event? Our volunteer form templates simplify the process of collecting information from your volunteers. Using NoteForms allows you to seamlessly gather details such as availability, skills, and contact information right into your Notion databases. It's the ideal solution if you're already working with Notion, as all submissions are kept in Notion databases, fitting perfectly into your current processes. Use our volunteer form sample below and customize it to fit your needs."
+  }
+}

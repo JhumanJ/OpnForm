@@ -34,8 +34,8 @@ class SeoMetaResolver
         'privacy_policy' => '/privacy-policy',
         'terms_conditions' => '/terms-conditions',
         'integrations' => '/integrations',
-        'templates' => '/templates',
-        'template_show' => '/templates/{slug}',
+        'templates' => '/form-templates',
+        'templates_show' => '/form-templates/{slug}',
     ];
 
     /**
@@ -62,7 +62,7 @@ class SeoMetaResolver
         ],
         'templates' => [
             'title' => 'Templates',
-            'description' => 'Free templates to quickly create beautiful forms for free!'
+            'description' => 'Our collection of beautiful templates to create your own forms!'
         ],
     ];
 
@@ -182,13 +182,13 @@ class SeoMetaResolver
         return $meta;
     }
 
-    private function getTemplateShowMeta(): array
+    private function getTemplatesShowMeta(): array
     {
         $template = Template::whereSlug($this->patternData['slug'])->firstOrFail();
 
         return [
             'title' => $template->name . $this->titleSuffix(),
-            'description' => Str::of($template->description)->limit(160),
+            'description' => Str::of($template->short_description)->limit(140) . ' | Customize any template and create your own form in minutes.',
             'image' => $template->image_url
         ];
     }
