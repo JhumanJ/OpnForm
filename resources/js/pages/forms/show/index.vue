@@ -49,10 +49,20 @@
               <span class="pr-1">- {{ form.submissions_count }}
                 submission{{ form.submissions_count > 0 ? 's' : '' }}
               </span>
-              <span class="text-blue-500" v-if="form.visibility=='draft'">- Draft (not public)</span>
               <span class="pr-1 text-blue-500" v-if="form.visibility=='closed'">- Closed</span>
               <span class="">- Edited {{ form.last_edited_human }}</span>
             </p>
+            <div v-if="form.visibility=='draft' || (form.tags && form.tags.length > 0)" class="mt-2 flex items-center flex-wrap gap-3">
+              <span v-if="form.visibility=='draft'" 
+                  class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                Draft - not publicly accessible
+              </span>
+              <span v-for="(tag,i) in form.tags" :key="tag"
+                  class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
+              >
+                {{ tag }}
+              </span>
+            </div>
 
             <p v-if="form.closes_at" class="text-yellow-500">
               <span v-if="form.is_closed"> This form stopped accepting submissions on the  {{
@@ -67,11 +77,13 @@
               <span v-else> This form will stop accepting submissions after {{ form.max_submissions_count }} submissions. </span>
             </p>
 
-            <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
+            <form-cleanings class="mt-4" :form="form" />
+
+            <div class="border-b border-gray-200 dark:border-gray-700">
               <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                 <li class="mr-6" v-for="(tab, i) in tabsList" :key="i+1">
                   <router-link :to="{ name: tab.route }"
-                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-600"
+                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
                     active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
                 >{{tab.name}}</router-link>
                 </li>
@@ -109,6 +121,7 @@ import ProTag from '../../../components/common/ProTag.vue'
 import VButton from "../../../components/common/Button.vue";
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
+import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
 
 const loadForms = function () {
   store.commit('open/forms/startLoading')
@@ -122,7 +135,8 @@ export default {
   components: {
     VButton,
     ProTag,
-    ExtraMenu
+    ExtraMenu,
+    FormCleanings
   },
   mixins: [SeoMeta],
 

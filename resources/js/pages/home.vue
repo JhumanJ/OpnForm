@@ -24,11 +24,15 @@
           <text-input v-if="forms.length > 0" class="mb-6" :form="searchForm" name="search" label="Search a form"
                 placeholder="Name of form to search"
           />
-          <div v-if="allTags.length > 0" class="mb-6">
+          <div v-if="allTags.length > 0" class="mb-4">
             <div v-for="tag in allTags" :key="tag"
-                :class="['text-white p-2 text-xs inline rounded-lg font-semibold cursor-pointer mr-2',{'bg-gray-500 dark:bg-gray-400':selectedTags.includes(tag), 'bg-gray-300 dark:bg-gray-700':!selectedTags.includes(tag)}]"
-                title="Click for filter by tag(s)"
-                @click="onTagClick(tag)"
+                 :class="[
+                   'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
+                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.includes(tag),
+                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.includes(tag)}
+                 ]"
+                 title="Click for filter by tag(s)"
+                 @click="onTagClick(tag)"
             >
               {{ tag }}
             </div>
@@ -59,22 +63,18 @@
                     <li class="list-disc ml-6 pr-1">{{ form.submissions_count }}
                       submission{{ form.submissions_count > 0 ? 's' : '' }}
                     </li>
-                    <li class="list-disc ml-6 pr-1 text-blue-500" v-if="form.visibility=='draft'">Draft (not public)</li>
                     <li class="list-disc ml-6">Edited {{ form.last_edited_human }}</li>
                   </ul>
-                  <div v-if="form.tags && form.tags.length > 0" class="mt-1">
-                    <template v-for="(tag,i) in form.tags">
-                      <div v-if="i<1" :key="tag"
-                          class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
-                      >
-                        {{ tag }}
-                      </div>
-                      <div v-if="i==1" :key="tag"
-                          class="bg-gray-300 dark:bg-gray-700 text-white px-2 py-1 mr-2 text-xs inline rounded-lg font-semibold"
-                      >
-                        {{ form.tags.length-1 }} more
-                      </div>
-                    </template>
+                  <div v-if="form.visibility=='draft' || (form.tags && form.tags.length > 0)" class="mt-1 flex items-center flex-wrap gap-3">
+                    <span v-if="form.visibility=='draft'" 
+                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                      Draft
+                    </span>
+                    <span v-for="(tag,i) in form.tags" :key="tag"
+                        class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
+                    >
+                      {{ tag }}
+                    </span>
                   </div>
                 </div>
                 <extra-menu :form="form" :isMainPage="true" />

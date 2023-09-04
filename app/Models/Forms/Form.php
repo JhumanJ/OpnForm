@@ -41,6 +41,7 @@ class Form extends Model
         'notifications_include_submission',
         'slack_webhook_url',
         'discord_webhook_url',
+        'notification_settings',
 
         // integrations
         'webhook_url',
@@ -83,7 +84,10 @@ class Form extends Model
 
         // Security & Privacy
         'can_be_indexed',
-        'password'
+        'password',
+
+        // Custom SEO
+        'seo_meta'
     ];
 
     protected $casts = [
@@ -91,7 +95,9 @@ class Form extends Model
         'database_fields_update' => 'array',
         'closes_at' => 'datetime',
         'tags' => 'array',
-        'removed_properties' => 'array'
+        'removed_properties' => 'array',
+        'seo_meta' => 'object',
+        'notification_settings' => 'object'
     ];
 
     protected $appends = [
@@ -134,6 +140,11 @@ class Form extends Model
     public function getShareUrlAttribute()
     {
         return url('/forms/'.$this->slug);
+    }
+
+    public function getEditUrlAttribute()
+    {
+        return url('/forms/'.$this->slug.'/show');
     }
 
     public function getSubmissionsCountAttribute()

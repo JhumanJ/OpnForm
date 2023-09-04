@@ -160,15 +160,25 @@ class SeoMetaResolver
     {
         $form = Form::whereSlug($this->patternData['slug'])->firstOrFail();
 
-        $meta = [
-            'title' => $form->title . $this->titleSuffix(),
-        ];
-        if($form->description){
+        $meta = [];
+        if ($form->is_pro && $form->seo_meta->page_title) {
+            $meta['title'] = $form->seo_meta->page_title;
+        } else {
+            $meta['title'] = $form->title . $this->titleSuffix();
+        }
+
+        if ($form->is_pro && $form->seo_meta->page_description) {
+            $meta['description'] = $form->seo_meta->page_description;
+        } else if ($form->description) {
             $meta['description'] = Str::of($form->description)->limit(160);
         }
-        if($form->cover_picture){
+
+        if ($form->is_pro && $form->seo_meta->page_thumbnail) {
+            $meta['image'] = $form->seo_meta->page_thumbnail;
+        } else if ($form->cover_picture) {
             $meta['image'] = $form->cover_picture;
         }
+        
         return $meta;
     }
 

@@ -14,6 +14,7 @@ export default {
         slack_notifies: false,
         send_submission_confirmation: false,
         webhook_url: null,
+        notification_settings: {},
 
         // Customization
         theme: 'default',
@@ -45,7 +46,10 @@ export default {
         confetti_on_submission: false,
 
         // Security & Privacy
-        can_be_indexed: true
+        can_be_indexed: true,
+
+        // Custom SEO
+        seo_meta: {}
       })
     },
   }

@@ -43,6 +43,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'use_captcha' => 'boolean',
             'slack_webhook_url' => 'url|nullable',
             'discord_webhook_url' => 'url|nullable',
+            'notification_settings' => 'nullable',
 
             // Customization
             'theme' => ['required',Rule::in(Form::THEMES)],
@@ -121,6 +122,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Security & Privacy
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
+
+            // Custom SEO
+            'seo_meta' => 'nullable|array'
         ];
     }
 

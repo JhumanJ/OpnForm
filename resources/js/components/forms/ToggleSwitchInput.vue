@@ -5,7 +5,9 @@
       </small>
       <div class="flex">
         <v-switch :id="id?id:name" v-model="compVal" class="inline-block mr-2" :disabled="disabled" :name="name" @input="$emit('input',$event)" />
-        <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
+        <slot name="label">
+          <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
+        </slot>
       </div>
       <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
         <slot name="help"><span class="field-help" v-html="help" /></slot>

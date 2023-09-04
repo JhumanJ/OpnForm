@@ -1,6 +1,6 @@
 <template>
   <div class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all">
-    <div v-if="!form.is_pro" class="relative">
+    <div v-if="false" class="relative">
       <div class="absolute inset-0 z-10">
         <div class="p-5 max-w-md mx-auto mt-5">
           <p class="text-center">
@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     getChartData () {
-      if (!this.form || !this.form.is_pro) { return null }
+      if (!this.form) { return null }
       this.isLoading = true
       axios.get('/api/open/workspaces/' + this.form.workspace_id + '/form-stats/' + this.form.id).then((response) => {
         const statsData = response.data
