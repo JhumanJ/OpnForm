@@ -10,11 +10,14 @@ import '~/plugins'
 import '~/components'
 
 import '../sass/app.scss'
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/dist/vue-tel-input.css';
 
 Vue.config.productionTip = false
 
 Vue.mixin(Base)
 Vue.use(LoadScript)
+Vue.use(VueTelInput);
 
 /* eslint-disable no-new */
 new Vue({
