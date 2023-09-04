@@ -43,7 +43,7 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'TextInput',
+        phone_number: 'PhoneInput',
       }
     }
   },

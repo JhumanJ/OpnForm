@@ -69,10 +69,11 @@
 <script>
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+import PhoneInput from '../../forms/PhoneInput.vue'
 
 export default {
   name: 'OpenFormField',
-  components: { },
+  components: { PhoneInput },
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
@@ -117,7 +118,7 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'TextInput',
+        phone_number: 'PhoneInput',
       }
     },
     /**
@@ -232,7 +233,7 @@ export default {
         placeholder: field.placeholder,
         help: field.help,
         helpPosition: (field.help_position) ? field.help_position : 'below_input',
-        uppercaseLabels: this.form.uppercase_labels,
+        uppercaseLabels: this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
         showCharLimit: field.show_char_limit || false
