@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
 {
@@ -36,7 +37,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
             ->outputStringsOnly();
 
         return $this
-            ->replyTo($form->creator->email)
+            ->replyTo($this->getReplyToEmail($form->creator->email))
             ->from($this->getFromEmail(), $form->notification_sender)
             ->subject($form->notification_subject)
             ->markdown('mail.form.confirmation-submission-notification',[
@@ -51,5 +52,11 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     {
         $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
         return $originalFromAddress->first(). '+' . time() . '@' . $originalFromAddress->last();
+    }
+
+    private function getReplyToEmail($default)
+    {
+        $replyTo = Arr::get((array)$this->event->form->notification_settings, 'confirmation_reply_to', null);
+        return $replyTo ?? $default;
     }
 }
