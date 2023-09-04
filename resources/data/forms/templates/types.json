@@ -2,323 +2,323 @@
   "order_forms": {
     "name": "Order Forms",
     "slug": "order_forms",
-    "meta_title": "Order Form Templates for Notion users",
-    "meta_description": "Simplify ordering process with our free, editable Order Form Templates. Ideal for businesses, all data stored in Notion databases.",
-    "description": "Running a business and managing orders? NoteForms offers Order Form Templates that can simplify your work! By using these form templates, you can collect order details easily, streamline your process and keep everything organized right within your Notion workspace. This means all your data gets stored directly in your Notion databases, making it easy to integrate with your current workflows. Use an order form template below, customize it to fit your needs, and see how NoteForms can upgrade your ordering process."
+    "meta_title": "Supercharge Your Order Management with OpnForm's Order Form Templates",
+    "meta_description": "Discover how OpnForm's Order Form Templates can streamline your order management process. Create customized order forms with ease, receive email notifications, integrate with popular tools, and more. Start simplifying your ordering process today!",
+    "description": "Looking to streamline your order management process? OpnForm's Order Form Templates are designed to simplify the collection of order details. With OpnForm, you can easily create customized order forms that fit your business needs. Take advantage of features like email notifications, form branding, custom domains, and integrations with popular tools like Slack and Discord. Whether you're running an online store or managing orders for a restaurant, OpnForm's Order Form Templates can help optimize your workflow and upgrade your ordering process."
   },
   "registration_forms": {
     "name": "Registration Forms",
     "slug": "registration_forms",
-    "meta_title": "Registration Form Templates for Notion users",
-    "meta_description": "Our versatile registration form templates are easy to edit and ideal for Notion users. Collect and store submissions directly in Notion databases.",
-    "description": "Are you organizing an event? Running a webinar? Or maybe you are managing an online course? Then these registration form templates are for you! With NoteForms, you can collect registrant details effortlessly and store them directly in your Notion databases. You don't have to change your current processes or switch between different applications. Use our registration form samples and customize them to fit your needs."
+    "meta_title": "Streamline Your Registration Process with OpnForm's Registration Form Templates",
+    "meta_description": "Looking for an easy way to collect attendee details for your event or workshop? Discover how OpnForm's open-source form builder and Registration Form Templates can simplify your registration process. Fully customizable forms, email notifications, integration options, and more!",
+    "description": "Are you organizing an event or workshop and need to collect attendee details? OpnForm's Registration Form Templates can help streamline your registration process! With our easy-to-use form builder, you can create customized registration forms to suit your specific needs. OpnForm's open-source platform allows you to fully customize and brand your forms, ensuring a seamless experience for your attendees. Additionally, our form builder provides features such as email notifications, integration with popular tools like Slack and Discord, password protection, captcha options, and the ability to add custom code. You can even pre-fill forms via URL parameters and set closing dates or submission limits. Simplify your registration process and make it a breeze with OpnForm and our Registration Form Templates!"
   },
   "event_registration_forms": {
     "name": "Event Registration Forms",
     "slug": "event_registration_forms",
-    "meta_title": "Event Registration Form Templates for Notion users",
-    "meta_description": "Efficiently manage your event logistics with our Event Registration Form Templates. Ideal for Notion users seeking to streamline their event management.",
-    "description": "Are you an event planner or organizer? Use our Event Registration Form Templates to streamline your event logistics. Our templates are perfect for gathering key information such as attendees' details, payment information, and special requirements. And the best part? All submissions are directly stored in your Notion databases, ensuring a seamless integration into your existing processes. Start using our Event Registration Form Templates and make your event management smooth and efficient."
+    "meta_title": "Streamline Event Registrations with OpnForm's Templates",
+    "meta_description": "Easily manage event registrations using OpnForm's Event Registration Form Templates. Customize and embed these forms on your website, streamline your registration process, and benefit from OpnForm's powerful features like email notifications, custom branding, and integrations with popular tools. Upgrade your event management with OpnForm!",
+    "description": "Planning an event and need to manage registrations? OpnForm offers Event Registration Form Templates that can simplify your work! With these templates, you can easily collect attendee information, streamline your registration process, and benefit from OpnForm's powerful features. Customize the form to match your event's branding, embed it on your website, and use OpnForm's integrations with tools like Slack and Discord for seamless event management. Upgrade your event registration process with OpnForm!"
   },
   "payment_forms": {
     "name": "Payment Forms",
     "slug": "payment_forms",
-    "meta_title": "Payment Form Templates for Notion users",
-    "meta_description": "Effortlessly manage your financial transactions with our Payment Form templates. Ideal for businesses using Notion.",
-    "description": "Do you manage a business and constantly deal with financial transactions? Our Payment Form templates are perfect for you. They allow for easy and efficient tracking of payments, refunds, donations and much more. These form templates are designed to gather and organize all necessary information effectively, saving you time and preventing errors. The best part? All your submissions are kept in your Notion databases, meaning no alteration to your existing processes. With NoteForms, streamline your payment management directly in your Notion workspace."
+    "meta_title": "Accept Payments Online with OpnForm's Payment Form Templates",
+    "meta_description": "OpnForm's Payment Form Templates make it simple for businesses and organizations to collect payments and donations. Discover how you can easily create secure and customizable payment forms, integrate with payment gateways, and accept payments online using OpnForm's open-source form builder and templates.",
+    "description": "Looking to collect payments online? OpnForm offers Payment Form Templates that can make it easy for you to accept payments and donations! With OpnForm, you can create secure and customizable payment forms, allowing you to sell products, collect membership fees, receive event registrations, and more. Benefit from features like email notifications, custom branding, integration with payment gateways, and the ability to embed forms on your website. Start accepting payments effortlessly with OpnForm's Payment Form Templates!"
   },
   "application_forms": {
     "name": "Application Forms",
     "slug": "application_forms",
-    "meta_title": "Application Form Templates for Notion users",
-    "meta_description": "Seamlessly manage your applications with our form templates, specifically designed for Notion users. Capture and store data in your Notion databases.",
-    "description": "Running a business or organization that requires applications? Use our application form templates to collect relevant information from your applicants straight into your Notion databases. No need for extra tools or changes to your current process. Our form templates are easy to edit, efficient and convenient. Experience a hassle-free application management with NoteForms."
+    "meta_title": "Simplify Your Application Process with OpnForm's Application Form Templates",
+    "meta_description": "Discover how OpnForm's Application Form Templates can help you collect and manage applications more efficiently. With our open-source form builder, you can easily create and customize application forms for job applications, scholarship applications, or membership applications. Streamline your process, receive email notifications, and integrate with tools like Slack and Discord. Start using OpnForm and our convenient application form templates today!",
+    "description": "Need to streamline your application process? OpnForm's Application Form Templates are designed to simplify the way you collect and manage applications. Whether you're accepting job applications, scholarship applications, or membership applications, OpnForm has you covered. With our open-source form builder, you can easily create and customize application forms to fit your specific needs. Benefit from our email notifications, branding options, embedding capabilities, and integrations with tools like Slack and Discord. Upgrade your application process today with OpnForm and our convenient application form templates!"
   },
   "file_upload_forms": {
     "name": "File Upload Forms",
     "slug": "file_upload_forms",
-    "meta_title": "File Upload Form Templates for Notion Users",
-    "meta_description": "Powerful, easy-to-edit file upload form templates for Notion users. Seamlessly collect and store file uploads straight in your Notion databases.",
-    "description": "Whether you're a business owner, teacher, or project manager, our file upload form templates will simplify your file collection process. With NoteForms, you can collect files of any type and have them directly stored in your Notion databases, keeping all your data in one place. Easily customize the form to fit your needs and streamline your processes without the need for any other third-party services."
+    "meta_title": "Simplify File Uploads with OpnForm",
+    "meta_description": "OpnForm's File Upload Form Templates make it simple to collect files from your users. Create fully branded forms, receive email notifications, and integrate with Zapier or webhooks for seamless file management. Explore OpnForm's open-source form builder now!",
+    "description": "Need to collect files from your users? OpnForm's File Upload Form Templates make it easy! Whether you're running a photography contest, accepting job applications, or gathering design submissions, OpnForm has you covered. With OpnForm's open-source form builder, you can create custom file upload forms, fully branded with your own style. Allow your users to easily upload files, while you receive email notifications with the submissions. Use OpnForm's integration with Zapier or webhooks to automatically send the files to your preferred storage solution. Plus, with OpnForm's advanced features like password protection, custom code integration, and form pre-filling, you can create a secure and personalized experience for your users."
   },
   "booking_forms": {
     "name": "Booking Forms",
     "slug": "booking_forms",
-    "meta_title": "Booking Form Templates for Notion users",
-    "meta_description": "Effortlessly handle bookings using our customizable templates. Ideal for businesses using Notion to manage appointments and reservations.",
-    "description": "Are you running a business that needs to handle bookings? Whether it's for hotel rooms, event tickets, appointments, or any other reservable item, our booking form templates can help. With these forms, you can gather all the necessary details about your clients' bookings directly in your Notion workspace. This means no change to your current processes, and no need to manually transfer data from one place to another. Using a booking form from NoteForms not only simplifies your booking management, but also keeps all your data in one secure, easy-to-access place - your Notion database."
+    "meta_title": "Streamline Your Booking Process with OpnForm's Booking Form Templates",
+    "meta_description": "Are you in need of a convenient and efficient way to handle bookings? Look no further! OpnForm's Booking Form Templates are the perfect solution. With OpnForm, you can easily create customized booking forms, integrate them with various tools, and simplify your booking process. Explore our templates today and see how OpnForm can revolutionize your booking experience!",
+    "description": "Planning an event or managing appointments? OpnForm's Booking Form Templates are designed to simplify the booking process. Whether you're a small business owner, a service provider, or an event organizer, our templates make it easy for you to collect booking details, streamline your workflow, and enhance your overall booking experience. With OpnForm, you can fully customize and brand your booking forms, integrate them with your favorite tools like Slack and Discord, and even protect them with passwords and captchas. Whether you need to schedule appointments, reserve tables, or organize events, OpnForm is here to help you make booking a breeze."
   },
   "survey_templates": {
     "name": "Survey Templates",
     "slug": "survey_templates",
-    "meta_title": "Survey Form Templates for Notion users",
-    "meta_description": "Efficient and easy to edit survey form templates for Notion users. Gather valuable intel seamlessly stored in your Notion databases.",
-    "description": "Whether you\u2019re conducting market research, getting feedback, or measuring employee satisfaction, our Survey Templates can help you get the answers you need. Easy to edit and efficient, these templates allow you to collect data and store it directly in your Notion databases. There's no need to change your existing processes as our templates work seamlessly with Notion. Start using our survey form templates and make information collection more efficient."
+    "meta_title": "Create Engaging Surveys with OpnForm's Survey Template Collection",
+    "meta_description": "OpnForm's Survey Form Templates are built to simplify your survey creation process. Whether you are conducting customer satisfaction surveys, employee feedback surveys, or market research surveys, OpnForm provides an intuitive and customizable platform. Discover how OpnForm's open-source form builder, email notifications, custom branding, and integrations can enhance your survey experience.",
+    "description": "Looking to collect valuable feedback and insights? OpnForm's Survey Form Templates are designed to help you easily create and distribute surveys. Whether you need to conduct customer satisfaction surveys, employee feedback surveys, or market research surveys, OpnForm has got you covered. With our intuitive and customizable survey templates, you can streamline your data collection process, analyze responses effectively, and gain actionable insights. Take advantage of OpnForm's open-source form builder and leverage features like email notifications, custom branding, integrations with popular tools, and more to create impactful surveys."
   },
   "consent_forms": {
     "name": "Consent Forms",
     "slug": "consent_forms",
-    "meta_title": "Consent Form Templates for Notion users",
-    "meta_description": "Edit and manage powerful consent forms directly in your Notion databases. Ideal for healthcare, research, and more.",
-    "description": "Healthcare providers, researchers or any professional that requires consent, these Consent Form templates are designed for you. The smooth process of information collection is simplified with these forms. Consent forms help gather permission with various details needed. With NoteForms, you can keep all submissions in your Notion databases, maintaining your existing processes intact. Use a Consent Form sample below and customize to suit your requirements."
+    "meta_title": "Simplify Consent Forms with OpnForm",
+    "meta_description": "Discover how OpnForm's open-source form builder and Consent Form Templates can streamline your consent form process. Benefit from features like email notifications, customization options, form hosting on your custom domain, integrations with Slack and Discord, and more.",
+    "description": "Need consent forms for your business or organization? OpnForm provides a range of Consent Form Templates to simplify the process. With OpnForm's open-source form builder, you can easily create customized consent forms tailored to your specific needs. Benefit from features such as email notifications for both the form owner and submitter, full customization and branding options, the ability to host forms on your own custom domain, and easy integration with other tools like Slack and Discord via Zapier or webhooks. You can also add password protection, captcha, custom code, and pre-fill forms using URL parameters. Additionally, OpnForm allows you to set form expiration dates or submission limits, and even enables respondents to edit their own submissions. Streamline your consent form process with OpnForm today!"
   },
   "rsvp_forms": {
     "name": "RSVP Forms",
     "slug": "rsvp_forms",
-    "meta_title": "RSVP Form Templates for Notion Users",
-    "meta_description": "Use our RSVP form templates to seamlessly gather event responses. Ideal for Notion users as responses sync directly to your Notion databases.",
-    "description": "Are you hosting an event and need to track RSVPs? Our RSVP form templates are designed for seamless information gathering. Perfect for event organizers, these forms allow you to collect details about your attendees and their preferences directly and efficiently. With NoteForms, if you're already a Notion user, the process is even smoother. All form submissions are stored directly in your Notion databases, allowing you to manage your event without changing your current processes. Pick an RSVP form sample below and customize it to suit your needs."
+    "meta_title": "Simplify RSVP Management with OpnForm's RSVP Form Templates",
+    "meta_description": "Need to manage RSVPs for your event? OpnForm offers RSVP Form Templates that make it easy! Customize the template, embed it on your website, and enjoy features like email notifications, form customization, integrations with tools like Slack, and more. Upgrade your RSVP process with OpnForm today!",
+    "description": "Planning an event or gathering and need to manage RSVPs? OpnForm offers RSVP Form Templates that can simplify your work! With these form templates, you can easily collect RSVP details, streamline your RSVP process, and benefit from OpnForm's advanced features. Customize the RSVP form template to fit your event's needs, embed it on your website, and see how OpnForm can upgrade your RSVP management."
   },
   "appointment_forms": {
     "name": "Appointment Forms",
     "slug": "appointment_forms",
-    "meta_title": "Appointment Form Templates for Notion users",
-    "meta_description": "Powerful and easy-to-edit appointment form templates for Notion users. Ideal for medical practitioners, consultants, and more.",
-    "description": "Are you a doctor? A consultant? Or a professional service provider? Our appointment form templates are designed to help you collect, track, and manage appointments directly from your customers. Using our templates, you can collect necessary information, schedule appointments, and manage your day more efficiently. The best part? All form submissions are stored directly in your Notion database, meaning no change to your current processes. Use an appointment form sample below and customize it to fit your needs."
+    "meta_title": "Simplify Your Appointment Scheduling with OpnForm",
+    "meta_description": "Looking for a convenient way to collect appointment requests? Discover OpnForm's Appointment Form Templates and streamline your scheduling process. With OpnForm's open-source form builder, you can easily create customizable appointment forms, receive email notifications, integrate with tools like Slack and Discord, and more. Try OpnForm today and upgrade your appointment scheduling experience.",
+    "description": "Need to schedule appointments? OpnForm offers Appointment Form Templates that can simplify your scheduling process! These templates are targeted at businesses, professionals, and service providers who need to collect appointment requests from clients. With OpnForm, you can easily create customizable appointment forms, streamline your scheduling process, and benefit from features like email notifications, form customization, form embedding, and integrations with tools like Slack and Discord via Zapier or webhooks. Use an appointment form template below, customize it to fit your needs, and see how OpnForm can upgrade your appointment scheduling process."
   },
   "contact_forms": {
     "name": "Contact Forms",
     "slug": "contact_forms",
-    "meta_title": "Contact Form Templates for Notion users",
-    "meta_description": "Streamlined contact form templates for Notion. Easily capture contact details and maintain your existing Notion workflow.",
-    "description": "Are you a business owner, freelancer, or professional needing to collect contact information? Use our contact form templates designed for Notion users. Gathering contact details becomes a breeze with our forms. You can capture name, email, phone number, and much more. The best part? All submissions are stored right in your Notion database, maintaining consistency with your existing workflow. Customize the contact form sample below to fit your unique needs."
+    "meta_title": "Supercharge Your Communication with OpnForm Contact Form Templates",
+    "meta_description": "Need a reliable way to collect inquiries from your website? Check out OpnForm's Contact Form Templates. Easily create and customize a contact form that matches your brand. Receive email notifications, integrate with Slack or Discord, and streamline your communication process with OpnForm.",
+    "description": "Looking to improve communication with your clients? OpnForm's Contact Form Templates are designed to help you effortlessly collect and manage inquiries from your website. With OpnForm, you can easily create and customize a contact form that matches your brand. Receive email notifications for every form submission, ensuring you never miss a message. Seamlessly integrate your contact form with tools like Slack or Discord using Zapier or webhooks. Whether you're a small business owner or a blogger, OpnForm's Contact Form Templates empower you to engage with your audience and streamline your communication process."
   },
   "questionnaire_templates": {
     "name": "Questionnaire Templates",
     "slug": "questionnaire_templates",
-    "meta_title": "Questionnaire Templates for Notion users",
-    "meta_description": "Powerful, editable questionnaire templates for Notion users. Simplify data collection and storage in your Notion databases.",
-    "description": "Whether you're conducting market research or seeking customer feedback, our questionnaire templates are perfect for Notion users. Streamline information gathering with templates designed for versatility and ease of use. With NoteForms, all your submission data is stored directly in your Notion databases, maintaining the integrity of your work processes without the need for third-party apps. Use a questionnaire template below and customize it to fit your needs."
+    "meta_title": "Create Powerful Questionnaires with OpnForm",
+    "meta_description": "Discover how OpnForm's Questionnaire Templates can simplify your data collection process. Customize and analyze your questionnaires, receive email notifications, and integrate with other tools. Start creating powerful questionnaires with OpnForm today!",
+    "description": "Looking to create a comprehensive questionnaire? OpnForm's Questionnaire Templates are designed to make the process simple and efficient. Whether you need to conduct surveys, gather feedback, or collect data, OpnForm provides all the necessary features to create and analyze your questionnaires. With OpnForm, you can easily customize and brand your forms, receive email notifications for both form owners and respondents, and even integrate with other tools like Slack or Discord. Take advantage of OpnForm's open-source form builder to create powerful questionnaires and streamline your data collection process."
   },
   "signup_forms": {
     "name": "Signup Forms",
     "slug": "signup_forms",
-    "meta_title": "Signup Form Templates for Notion Users",
-    "meta_description": "Efficient signup form templates for Notion users. Collect relevant data directly into your Notion databases seamlessly.",
-    "description": "Are you a business owner or a community leader looking for ways to streamline your signup process? Our signup form templates are the perfect solution. With NoteForms, you can collect necessary information from your customers or members directly into your Notion databases, without changing your existing processes. This seamless integration makes it the best solution for Notion users. Start using one of our signup form samples and customize it according to your needs."
+    "meta_title": "Supercharge Your Signup Process with OpnForm's Signup Form Templates",
+    "meta_description": "Discover how OpnForm's Signup Form Templates can revolutionize your signup process. Streamline user registrations, collect essential information, and integrate with other tools seamlessly. Build professional and branded signup forms using OpnForm's open-source form builder. Try OpnForm now!",
+    "description": "Looking to build a signup form? OpnForm offers a wide range of Signup Form Templates that can cater to your needs! Whether you're running a small business, organizing an event, or managing a community, OpnForm provides an intuitive and customizable form builder to create professional signup forms. With OpnForm, you can easily collect user information, streamline your signup process, and benefit from seamless integrations with tools like Slack and Discord via Zapier or webhooks. Customize your form's branding, protect it with a password, and embed it on any website. Upgrade your signup process with OpnForm and our versatile Signup Form Templates!"
   },
   "abstract_forms": {
     "name": "Abstract Forms",
     "slug": "abstract_forms",
-    "meta_title": "Abstract Form Templates for Notion Users",
-    "meta_description": "Efficient and editable Abstract Form templates for Notion users. Designed for those in academic, research or analysis roles.",
-    "description": "Are you a researcher, academic or analyst? Our Abstract Form templates are perfect for collecting relevant data for your abstracts. These templates are easy to use and customizable to fit your unique needs. With NoteForms, all submissions are kept directly in your Notion databases. There's no shift in your current workflow, making it a seamless addition to your process. Choose an Abstract Form sample below and start collecting information effortlessly."
+    "meta_title": "Create and Manage Abstract Forms with OpnForm",
+    "meta_description": "Discover how OpnForm, an open-source form builder, simplifies the creation and management of abstract forms. Collect abstract data effortlessly, streamline your process, and benefit from OpnForm's extensive features. Start building your abstract forms with OpnForm's customizable templates today!",
+    "description": "Looking for a versatile form builder for your abstract forms? OpnForm has got you covered! With OpnForm's open-source form builder, you can easily create and customize abstract forms tailored to your needs. Collect abstract data effortlessly, streamline your abstract form process, and benefit from OpnForm's extensive features. With email notifications, custom branding, embeddable forms, and integrations with popular tools like Slack and Discord, OpnForm empowers you to create, manage, and analyze abstract form submissions efficiently."
   },
   "audit_forms": {
     "name": "Audit Forms",
     "slug": "audit_forms",
-    "meta_title": "Audit Form Templates for Notion users",
-    "meta_description": "Our free audit form templates are powerful, editable, and perfect for auditors. Collect and manage audit data directly in Notion.",
-    "description": "Are you an auditor? Use our audit form templates to collect and manage vital audit data from your clients. These forms are designed to gather comprehensive information for auditing, enabling you to maintain accuracy while saving time. By using an audit form, you can efficiently collect necessary data, create reports, and much more. All form submissions are stored directly in Notion databases, integrating seamlessly with your existing processes. Utilize an audit form sample below and customize it to match your needs. With NoteForms, continue managing your data in Notion with ease."
+    "meta_title": "Simplify Your Audits with OpnForm's Audit Form Templates",
+    "meta_description": "Looking for a hassle-free way to perform audits? Discover OpnForm's Audit Form Templates and streamline your audit process. With OpnForm's open-source form builder, you can easily create customized audit forms, receive email notifications, integrate with other tools, and embed forms on any website. Start simplifying your audits today!",
+    "description": "Need to perform audits for your business? OpnForm's Audit Form Templates are designed to help you simplify the audit process. With OpnForm, you can easily create custom audit forms tailored to your specific needs. Use our templates as a starting point, customize them with your own questions and sections, and streamline your audit workflow. With features like email notifications, form customization, integration with other tools, and the ability to embed forms on any website, OpnForm is the perfect tool for conducting audits efficiently and effectively."
   },
   "award_forms": {
     "name": "Award Forms",
     "slug": "award_forms",
-    "meta_title": "Award Form Templates for Notion users",
-    "meta_description": "Award form templates for Notion users. Perfect for event organizers, schools, and corporations. Edit easily and store submissions in Notion.",
-    "description": "Are you an event organizer, school administrator, or corporate manager? Our award form templates are designed for you. Collect nominations, votes, and other essential details directly in your Notion database. This makes the process significantly easier, as there is no change to your current workflow. With NoteForms, you can efficiently manage award ceremonies, recognitions, and other events, while keeping all submissions organized in Notion. Customize the award form samples below to suit your needs."
+    "meta_title": "Simplify Your Award Process with OpnForm's Award Form Templates",
+    "meta_description": "Looking for a way to streamline your award process? OpnForm's Award Form Templates are designed to help you gather nominations, track submissions, and simplify the selection process. With OpnForm, you can fully customize and brand your award forms, receive email notifications, integrate with other tools, and more. Discover how OpnForm can enhance your award process today!",
+    "description": "Recognizing excellence in your organization? OpnForm offers Award Form Templates that can simplify the process! These form templates are designed to help you gather nominations, track submissions, and streamline the award selection process. With OpnForm's open-source form builder, you can fully customize and brand your award forms to match your organization's identity. You can also take advantage of features like email notifications, custom domains, form embedding, and integration with tools like Slack and Discord. Explore our award form templates below, customize them to fit your requirements, and see how OpnForm can enhance your award process."
   },
   "calculation_forms": {
     "name": "Calculation Forms",
     "slug": "calculation_forms",
-    "meta_title": "Calculation Form Templates for Notion users",
-    "meta_description": "Discover our easy-to-use and customizable calculation form templates. Ideal for any business requiring calculations, stored directly in Notion.",
-    "description": "Are you in a field that requires a lot of calculations? A financial advisor, engineer, or researcher perhaps? Our calculation form templates are an excellent solution for you. They allow you to gather essential calculations without the hassle. Using NoteForms, all your form submissions are stored directly in your Notion databases. This seamless process not only ensures that your current workflow is not disrupted but also improves your efficiency. You can use a calculation form sample below and customize it to fit your needs."
+    "meta_title": "Streamline Your Calculations with OpnForm's Calculation Form Templates",
+    "meta_description": "Discover the power of OpnForm's Calculation Form Templates to simplify your data analysis and advanced calculations. Customize, integrate, and optimize your calculation forms with our open-source form builder. Explore the features of OpnForm, including email notifications, custom branding, form embedding, and integration with various tools. Upgrade your calculation process with OpnForm today!",
+    "description": "Are you in need of advanced calculation forms? Look no further than OpnForm! Our Calculation Form Templates are designed for businesses and individuals who require complex calculations and data analysis. With OpnForm, you can easily create and customize calculation forms to suit your needs. Benefit from our open-source form builder, which allows you to fully customize and brand your forms. You can also integrate your calculation forms with various tools, such as Slack and Discord, via Zapier or webhooks. With features like email notifications, custom domain hosting, password protection, and form pre-filling, OpnForm provides a complete solution for all your calculation form needs."
   },
   "checklist_forms": {
     "name": "Checklist Forms",
     "slug": "checklist_forms",
-    "meta_title": "Checklist Form Templates for Notion users",
-    "meta_description": "Effortlessly create and manage checklists in Notion with our customizable form templates for all your checklist needs.",
-    "description": "If you're a project manager, event organizer, or simply someone who loves to stay organized, our checklist forms are perfect for you. With a Checklist form, you can manage your tasks, keep track of your progress, and ensure everything gets done in an orderly manner. What makes NoteForms the best choice for your checklist forms? Not only are submissions kept directly in your Notion databases, but it also aligns perfectly with your existing workflow. No need to make changes to your current processes, you can simply integrate our checklist forms into your Notion setup. Just select a checklist form sample below and customize it according to your needs."
+    "meta_title": "Efficient Task Management with OpnForm's Checklist Form Templates",
+    "meta_description": "Utilize OpnForm's Checklist Form Templates to streamline your task management process. With OpnForm, easily create, customize, and track your to-do lists or task checklists. Benefit from features like email notifications, custom branding, form embedding, and integrations with tools like Slack and Discord. Secure your forms with passwords and captchas. Explore our checklist form templates and discover how OpnForm can enhance your task organization and efficiency.",
+    "description": "Managing a to-do list or organizing tasks? OpnForm's Checklist Form Templates are designed to help you stay organized and streamline your workflow. With OpnForm, you can easily create and customize checklist forms, enabling you to track and manage tasks efficiently. Take advantage of OpnForm's email notifications, custom branding, and form embedding capabilities. Integrate your checklist forms with tools like Slack and Discord using Zapier or webhooks. Protect your forms with a password and add a captcha for enhanced security. With OpnForm, you can pre-fill form fields via URL parameters, set deadlines for form submissions, and even allow respondents to edit their own submissions. Explore our checklist form templates below and experience the power of OpnForm in simplifying your task management process."
   },
   "content_forms": {
     "name": "Content Forms",
     "slug": "content_forms",
-    "meta_title": "Content Form Templates for Notion users",
-    "meta_description": "Optimize your content management with our content forms. Ideal for content creators, writers, editors. Store data directly in Notion.",
-    "description": "Are you a content creator, writer, editor, or someone who deals with a lot of content? Our content form templates are designed to simplify your content management process. With content forms, you can gather information, get feedback, and manage your content effectively. The best part? All submissions are stored directly in your Notion databases, maintaining your current workflow without the need to switch between different platforms. Use a content form sample below and customize it to suit your needs."
+    "meta_title": "Boost Your Content Creation with OpnForm's Content Form Templates",
+    "meta_description": "Discover how OpnForm's Content Form Templates can revolutionize your content creation process. Whether you're running a blog, managing a website, or creating online content, OpnForm provides you with the tools to engage your audience, capture valuable feedback, and gather user-generated content. Start using OpnForm's open-source form builder and templates today!",
+    "description": "Looking to create engaging and interactive content? OpnForm's Content Form Templates are designed for content creators, bloggers, and website owners who want to gather valuable feedback, opinions, and user-generated content. With OpnForm, you can easily create stunning forms that capture user responses, embed them on your website, and benefit from advanced customization options. Harness the power of OpnForm's open-source form builder to collect data, interact with your audience, and enhance your content creation process."
   },
   "donation_forms": {
     "name": "Donation Forms",
     "slug": "donation_forms",
-    "meta_title": "Donation Form Templates for Notion users",
-    "meta_description": "Efficient and customizable donation form templates for Notion users. Store submission data securely in Notion databases.",
-    "description": "Are you an NGO, charity, or fundraiser? Need to manage donations efficiently? Our donation form templates are the perfect solution. Using them, you can collect information about donors, manage fund allocation, track donations and much more. All form submissions are stored directly in Notion databases, integrating seamlessly into your current processes. With NoteForms, manage donations effectively without having to leave your preferred workspace, Notion."
+    "meta_title": "Collect Donations Easily with OpnForm's Donation Form Templates",
+    "meta_description": "Looking for a simple and efficient way to collect donations online? Explore OpnForm's Donation Form Templates and discover how you can leverage our open-source form builder to create personalized donation forms, customize them to match your branding, and streamline your fundraising efforts. With features like email notifications, custom domain hosting, and integrations with popular tools like Slack and Zapier, OpnForm is the perfect solution for non-profit organizations seeking to collect donations online.",
+    "description": "Want to collect donations for your non-profit organization? OpnForm offers Donation Form Templates that make it easy to gather donations online. With OpnForm, you can create personalized donation forms, customize them to match your organization's branding, and collect donations securely. Take advantage of OpnForm's email notifications, custom domain hosting, and integrations with popular tools like Slack and Zapier to streamline your donation collection process. Start using one of our donation form templates below, and see how OpnForm can simplify your fundraising efforts."
   },
   "employment_forms": {
     "name": "Employment Forms",
     "slug": "employment_forms",
-    "meta_title": "Employment Form Templates for Notion users",
-    "meta_description": "Effective and customizable employment form templates for Notion users. Ideal for HR professionals to streamline recruitment processes.",
-    "description": "Are you an HR professional or a hiring manager? Our employment form templates are designed to make your recruitment process smoother and more organized. From applicant information to job application forms, we have got all covered for you. What makes it even better is that all of these are customizable according to your specific needs. With NoteForms, all submissions are directly stored in your Notion databases, ensuring a seamless integration with your existing workflow. So why wait? Start using our employment form templates and make your recruitment process a cakewalk."
+    "meta_title": "Simplify Your Hiring Process with OpnForm's Employment Form Templates",
+    "meta_description": "OpnForm's Employment Form Templates are designed to help businesses and organizations streamline their hiring process. With features like email notifications, custom branding, and integrations with popular tools, OpnForm makes it easy to collect employment information and find the right candidates for your team.",
+    "description": "Looking to streamline your hiring process? OpnForm's Employment Form Templates are designed to make it easy for businesses and organizations to collect employment information. With OpnForm's open-source form builder, you can customize and brand your employment forms to match your company's identity. Our templates offer features such as email notifications for both the form owner and the applicant, integration with popular tools like Slack and Discord, and the ability to embed forms on any website. Use OpnForm's Employment Form Templates to simplify your hiring process and find the right candidates for your team."
   },
   "enrollment_forms": {
     "name": "Enrollment Forms",
     "slug": "enrollment_forms",
-    "meta_title": "Enrollment Form Templates for Notion users",
-    "meta_description": "Use our free enrollment form templates to collect applicant details directly to your Notion databases, streamlining your process.",
-    "description": "Are you an educational institution, club, or course facilitator? Use our enrollment form templates to streamline your application process. An enrollment form template allows you to gather crucial information from applicants directly into your Notion databases, saving time and effort. Forget the hassle of manual data transfer, NoteForms integrates seamlessly with your existing Notion workflow. Use an enrollment form sample below and customize it to fit your needs."
+    "meta_title": "Streamline Your Enrollment Process with OpnForm's Enrollment Form Templates",
+    "meta_description": "Discover how OpnForm's Enrollment Form Templates can simplify the enrollment process for educational institutions and training programs. Capture student or participant information easily, customize the forms to fit your needs, and benefit from OpnForm's advanced features like email notifications, branding options, and integrations. Start using OpnForm today and revolutionize your enrollment management!",
+    "description": "Are you running an educational institution or organizing a training program? OpnForm offers Enrollment Form Templates specifically designed for capturing student or participant information. With OpnForm, you can easily create and customize enrollment forms, streamline the enrollment process, and benefit from our various features. Collect all the necessary details, such as personal information, educational background, and program preferences, using our user-friendly templates. Utilize OpnForm's email notifications, branding options, and integration capabilities to enhance your enrollment management. Start using our Enrollment Form Templates now and enjoy a seamless enrollment experience!"
   },
   "evaluation_forms": {
     "name": "Evaluation Forms",
     "slug": "evaluation_forms",
-    "meta_title": "Evaluation Form Templates for Notion users",
-    "meta_description": "Powerful, easy-to-edit evaluation form templates. Ideal for educators, employers or event organizers. Directly store submissions in Notion databases.",
-    "description": "Whether you're an educator seeking student feedback, an employer evaluating employee performance, or an event organizer needing a post-event assessment, our evaluation form templates are the perfect tool for you. With NoteForms, you can customize these templates to fit your needs. Plus, all submissions are kept directly in Notion databases, allowing for a seamless integration into your current processes. Choose an evaluation form sample below and start customizing today."
+    "meta_title": "Revolutionize Performance Evaluation and Feedback Collection with OpnForm",
+    "meta_description": "Looking for an efficient and user-friendly way to conduct performance evaluations and gather feedback? Discover OpnForm's Evaluation Form Templates! With OpnForm, you can easily create customized and branded evaluation forms, streamline the evaluation process, and benefit from integrations with tools like Slack. Join thousands of satisfied users who have upgraded their performance evaluation and feedback collection processes with OpnForm!",
+    "description": "Struggling with evaluating employee performance or gathering feedback from customers? OpnForm's Evaluation Form Templates are here to help! Whether you need to conduct performance reviews, collect customer satisfaction surveys, or gather feedback from event attendees, our templates provide the perfect foundation. With OpnForm, you can easily customize and brand your evaluation forms, ensuring they align with your company's identity. Take advantage of our intuitive form builder, email notifications, and integrations with Slack and other tools to streamline the evaluation process. Start using OpnForm's Evaluation Form Templates today and revolutionize how you assess performance and gather feedback!"
   },
   "feedback_forms": {
     "name": "Feedback Forms",
     "slug": "feedback_forms",
-    "meta_title": "Feedback Form Templates for Notion users",
-    "meta_description": "Easy to use feedback form templates for Notion users. Collect client responses directly in your Notion databases.",
-    "description": "Are you looking to collect customer feedback? Client responses? Use one of these feedback form templates to gather necessary information from your customers. A feedback form template allows you to collect valuable information effortlessly. When you use a feedback form you can get customer insights, improve your services, and much more. You can use a feedback form sample below and customize accordingly to fit your needs. With NoteForms, all your submissions are directly stored in your Notion databases, maintaining your current workflow without any disruption."
+    "meta_title": "Collect Valuable Feedback with OpnForm's Feedback Form Templates",
+    "meta_description": "Discover how OpnForm's Feedback Form Templates can help you gather valuable feedback from your customers or website visitors. Create customizable feedback forms with OpnForm's open-source form builder. Embed them on your website or share them via a unique link. Take advantage of features like email notifications, form customization, integrations, and more. Start collecting feedback today!",
+    "description": "Want to gather feedback from your customers or website visitors? OpnForm's Feedback Form Templates are designed to make feedback collection easy! With OpnForm, you can create custom feedback forms that can be embedded on your website or shared via a unique link. Collect valuable feedback, opinions, and suggestions, and improve your products or services. OpnForm's open-source form builder allows you to fully customize your feedback forms and brand them to match your business. You can also take advantage of features like email notifications, form customization, integrations with tools like Slack and Discord, password protection, captcha, custom code, pre-filling forms via URL parameters, form submission editing, and multi-page forms. Start gathering valuable feedback today with OpnForm's Feedback Form Templates!"
   },
   "inspection_forms": {
     "name": "Inspection Forms",
     "slug": "inspection_forms",
-    "meta_title": "Inspection Form Templates for Notion users",
-    "meta_description": "Powerful, editable inspection form templates are perfect for various inspection tasks. All data stored directly in your Notion databases.",
-    "description": "Are you involved in any kind of inspection activities? Be it property inspections, safety checks, quality inspections or any other, these inspection form templates are perfect for you. With the help of these ready to use form templates, collect all necessary data seamlessly, without disrupting your existing processes. The key advantage of using NoteForms is that all your data submissions stay in your Notion databases. Thus, no changes to your current data management systems. Use an inspection form sample below and customize it to suit your needs."
+    "meta_title": "Simplify Your Inspections with OpnForm's Inspection Form Templates",
+    "meta_description": "OpnForm offers a range of Inspection Form Templates that can help you streamline your inspection process. Create customized inspection forms with ease and collect all the necessary data. Discover the benefits of OpnForm's features like email notifications, form customization, and integrations with tools like Slack and Discord. Use OpnForm and its inspection form templates to enhance your inspection workflow.",
+    "description": "Are you in the business of conducting inspections? OpnForm provides Inspection Form Templates that can simplify the process for you! With OpnForm, you can easily create and customize inspection forms to collect relevant data. Whether you need to conduct safety inspections, property inspections, or any other type of inspection, OpnForm has got you covered. Benefit from features like email notifications, form customization, form embedding, and integrations with tools like Slack and Discord. Explore our inspection form templates below, customize them to fit your specific requirements, and witness how OpnForm streamlines your inspection process."
   },
   "interview_forms": {
     "name": "Interview Forms",
     "slug": "interview_forms",
-    "meta_title": "Interview Form Templates for Notion users",
-    "meta_description": "Powerful yet simple interview form templates for Notion users. Perfect for recruiters, HR professionals, and researchers.",
-    "description": "Are you a recruiter, HR professional, or researcher? Our interview form templates are perfect for you. Collecting information from interviewees is now seamless with our forms. With these templates, you can gather the necessary details, schedule interviews and much more. All submissions are stored directly in your Notion database, maintaining your current workflow. Customize our interview form samples to fit your needs and enhance your Notion experience."
+    "meta_title": "Simplify Your Hiring Process with OpnForm's Interview Form Templates",
+    "meta_description": "Discover how OpnForm's Interview Form Templates can help you streamline your hiring process. Collect information from job applicants easily and efficiently with our open-source form builder. Customize your forms, integrate with communication tools, and simplify your workflow. Upgrade your interview process with OpnForm's Interview Form Templates now!",
+    "description": "Looking to streamline your hiring process? OpnForm offers Interview Form Templates that can help you efficiently collect information from job applicants. With OpnForm's open-source form builder, you can easily create customized interview forms that match your company's unique requirements. Take advantage of features like email notifications, form customization, custom domains, and form embedding to simplify the interview process. Plus, integrate with popular communication tools like Slack and Discord using Zapier or webhooks. Enhance your hiring process with OpnForm's Interview Form Templates today!"
   },
   "lead_generation_forms": {
     "name": "Lead Generation Forms",
     "slug": "lead_generation_forms",
-    "meta_title": "Lead Generation Form Templates for Notion users",
-    "meta_description": "Use our lead generation form templates to collect potential client data directly into Notion databases. Ideal for businesses of all sizes.",
-    "description": "Need to gather information on potential clients? Using our lead generation form templates, you can collect useful data directly into your Notion databases. This tool is excellent for businesses of all sizes. With NoteForms, you can streamline your lead generation process without altering your existing Notion-based workflow. Our forms are easy to edit and customize to fit your needs, making lead generation more efficient and effective. With NoteForms, all your important data stays in one place - your Notion workspace."
+    "meta_title": "Supercharge Your Lead Generation with OpnForm's Form Templates",
+    "meta_description": "Discover how OpnForm's Lead Generation Form Templates can help you capture high-quality leads for your business. Create custom forms, host them on your own domain, and receive email notifications for every new lead. Integrate with popular tools and streamline your lead management process. Try OpnForm today for better lead generation!",
+    "description": "Looking to generate leads for your business? OpnForm's Lead Generation Form Templates are designed to help you do just that! Whether you're a small startup or a large corporation, these templates provide an efficient way to collect valuable information from potential customers. With OpnForm, you can easily create customized lead generation forms, brand them to match your company's identity, and host them on your own domain. Capture leads effortlessly and receive email notifications for every new submission. Take advantage of our integrations with popular tools like Slack and Discord to streamline your lead management process. Enhance your lead generation efforts with OpnForm and start converting more prospects into customers today!"
   },
   "legal_forms": {
     "name": "Legal Forms",
     "slug": "legal_forms",
-    "meta_title": "Legal Form Templates for Notion users",
-    "meta_description": "Efficient and adaptable legal form templates for Notion users. Ideal for lawyers, law firms and legal departments. Store directly in Notion.",
-    "description": "Are you a lawyer, law firm, or part of a legal department? Our legal form templates are perfect for you. They allow you to collect crucial legal information from your clients efficiently and conveniently. With NoteForms, all submissions are stored directly in your Notion databases, ensuring a smooth integration with your existing processes. Our legal form templates can be easily customized to fit your needs, making your legal operations seamless and effective."
+    "meta_title": "Simplify Your Legal Processes with OpnForm's Legal Form Templates",
+    "meta_description": "Need legal forms? OpnForm's open-source form builder and customizable legal form templates can streamline your legal processes. Benefit from features like email notifications, customization options, form embedding, tool integration, and more. Start simplifying your legal document workflow today!",
+    "description": "Need legal forms? OpnForm provides a range of Legal Form Templates to simplify your legal processes! Whether you need a simple contract, a rental agreement, or a non-disclosure agreement, OpnForm has got you covered. With OpnForm's open-source form builder and our customizable legal form templates, you can easily create and manage legal documents. Benefit from features like email notifications for both form owner and submitter, full customization and branding options, custom domain hosting, form embedding, integration with tools like Slack and Discord, password protection, captchas, custom code, pre-filling via URL parameters, form closure options, the ability for respondents to edit submissions, and support for multiple pages. Discover how OpnForm can revolutionize your legal document workflow!"
   },
   "membership_forms": {
     "name": "Membership Forms",
     "slug": "membership_forms",
-    "meta_title": "Membership Form Templates for Notion users",
-    "meta_description": "Customizable membership form templates for clubs, gyms, and organizations. Manage member data effectively and directly in Notion databases.",
-    "description": "Are you running a club, gym, or organization? Our membership form templates can help you to gather information about your members effectively. With the ability to customize to suit your specific needs, these forms make it easy to manage member data. The best part? All submissions are directly stored in your Notion databases, meaning there's no disruption to your current processes. Use a membership form sample below and customize it to fit your needs with NoteForms."
+    "meta_title": "Simplify Membership Management with OpnForm Membership Form Templates",
+    "meta_description": "Streamline your membership management process with OpnForm's Membership Form Templates. Create customized forms, collect member details, and benefit from features like email notifications, form customization, and integrations with other tools. Try OpnForm today!",
+    "description": "Looking to build a membership form? OpnForm offers Membership Form Templates that can simplify the process of collecting membership details. Whether you run a club, an organization, or any other type of membership-based entity, OpnForm has you covered. With our templates, you can easily create customized membership forms that align with your branding and collect all the necessary information from your members. OpnForm's open-source form builder allows you to fully customize and brand your forms, ensuring a seamless membership form experience. Additionally, you can benefit from features such as email notifications for both the form owner and the submitter, integration with various tools via Zapier or webhooks, and the option to protect your forms with a password. Start building your membership form today and see how OpnForm can elevate your membership management process!"
   },
   "petition_forms": {
     "name": "Petition Forms",
     "slug": "petition_forms",
-    "meta_title": "Petition Form Templates for Notion users",
-    "meta_description": "Create powerful petitions with our templates. Perfect for Notion users, as all responses are stored directly in Notion databases.",
-    "description": "Are you an activist or involved in a cause? Use our petition form templates to gather support and signatures. These forms are ideal for Notion users as all form submissions are directly stored in Notion databases, ensuring integration with your current work processes. A petition form template allows you to collect signatures and contact details seamlessly, helping you focus on your cause. Use a petition form sample below and customize accordingly to fit your needs."
+    "meta_title": "Powerful Petition Form Templates for Your Cause | OpnForm",
+    "meta_description": "Create impactful petition forms with OpnForm's Petition Form Templates. Customize the design, protect the form, and integrate with tools like Slack or Discord. Gather signatures and support for your cause easily with OpnForm.",
+    "description": "Are you trying to make a difference and rally support for a cause? OpnForm's Petition Form Templates are designed to help you gather signatures and support for your petition. By using our easy-to-use form builder, you can create impactful and professional petition forms in minutes. Customize the design and branding, protect the form with a password, and integrate it with tools like Slack or Discord. With OpnForm, you can amplify your message and gain momentum for your cause."
   },
   "polls": {
     "name": "Polls",
     "slug": "polls",
-    "meta_title": "Poll Form Templates for Notion users",
-    "meta_description": "Create robust polls with our free form templates. Ideal for users of Notion looking to collect, store and analyze polling data directly.",
-    "description": "Are you looking to run a poll for research, feedback or any other purpose? Our poll form templates make it easy for Notion users. With NoteForms, you can create a poll, share it and have responses directly stored in your Notion databases. This means there's no switch to your current workflow. Plus, you get the added advantage of using Notion's powerful data analysis tools on the responses. Use a poll form sample and customize it to fit your needs."
+    "meta_title": "Discover the Power of Poll Form Templates with OpnForm",
+    "meta_description": "Looking to gather opinions or insights from your audience? Learn how OpnForm's Poll Form Templates can help you create engaging polls, customize them to match your brand, and gain valuable insights. Harness the power of OpnForm's open-source form builder and start creating interactive polls today!",
+    "description": "Running a blog or website and want to engage your audience? OpnForm offers Poll Form Templates that make it easy for you to create interactive polls and gather valuable insights. With OpnForm, you can customize your poll forms to match your brand, embed them on your site, and leverage features such as multiple pages and custom code integration. Engage your readers, collect valuable data, and enhance your content strategy with OpnForm's Poll Form Templates!"
   },
   "quiz_forms": {
     "name": "Quiz Forms",
     "slug": "quiz_forms",
-    "meta_title": "Quiz Form Templates for Notion Users",
-    "meta_description": "Use our powerful, easy-to-edit quiz form templates. Ideal for educators or trainers. Manage quiz submissions directly in Notion.",
-    "description": "Are you an educator, trainer, or quiz organizer? Our quiz form templates are perfect for your needs. With Quiz forms, you can collect answers, score responses, and even provide feedback. All while keeping your data organized right in your Notion workspace. There's no need to change your current processes or use other tools. NoteForms allows you to manage everything in one place, making your workflow more efficient and streamlined. Customize our quiz form sample below to meet your specific needs."
+    "meta_title": "Create Engaging Quizzes with OpnForm's Quiz Form Templates",
+    "meta_description": "Looking for a user-friendly and customizable solution to create quizzes? OpnForm's Quiz Form Templates offer educators, trainers, and businesses the perfect tool. With email notifications, easy embedding, and integration options, OpnForm and our templates simplify the quiz creation process. Discover how you can streamline your assessments with OpnForm!",
+    "description": "Need to create engaging quizzes? OpnForm offers Quiz Form Templates that are perfect for educators, trainers, and businesses looking to assess knowledge and gather data. With OpnForm's open-source form builder, you can easily create interactive quiz forms, customize them to fit your branding, and harness powerful features to enhance your quiz-taking experience. Enjoy email notifications, seamless form embedding, integration with various tools, and the ability to protect your quizzes with passwords. Take your quizzes to the next level with OpnForm!"
   },
   "quote_forms": {
     "name": "Quote Forms",
     "slug": "quote_forms",
-    "meta_title": "Quote Form Templates for Notion users",
-    "meta_description": "Efficient, editable Quote Form templates for Notion users. Ideal for businesses providing quotes for their services.",
-    "description": "Are you providing a service that requires quotation? Use one of these Quote Form templates to gather customer details and their specific requirements. A Quote Form template allows you to collect essential information in a streamlined manner. When you use a Quote Form, you can get detailed client requests, provide accurate quotations, and enhance your customer service. All submissions are kept in Notion databases, making it a perfect solution if you are already working with Notion, as there is no need to change your current processes. Just pick a Quote Form sample below and customize it according to your needs."
+    "meta_title": "Streamline Your Quote Collection Process with OpnForm",
+    "meta_description": "OpnForm is an open-source form builder that offers Quote Form Templates to simplify the process of gathering quotes. With features like email notifications, full customization options, and integrations with popular tools, OpnForm makes it easy to streamline your quote collection process. Try OpnForm and our templates today!",
+    "description": "Are you in need of a quick and easy way to gather quotes? OpnForm provides Quote Form Templates that can simplify the process for you! Whether you're a business owner looking to get quotes from potential vendors or a contractor gathering quotes from clients, OpnForm has got you covered. With our open-source form builder, you can easily create and customize quote forms to suit your specific needs. Benefit from features like email notifications, full customization options, embedding forms on any website, and integrations with popular tools like Slack and Discord. Start streamlining your quote collection process today!"
   },
   "recommendation_forms": {
     "name": "Recommendation Forms",
     "slug": "recommendation_forms",
-    "meta_title": "Recommendation Form Templates for Notion users",
-    "meta_description": "Use our adaptable recommendation form templates for Notion users. Ideal for tracking references & evaluations in Notion databases.",
-    "description": "Are you often asking for references or giving evaluations? Our recommendation form templates are perfect for you. They're designed for educators, employers, or anyone who needs to track references. With NoteForms, these forms are directly stored in your Notion database, allowing you to maintain and streamline your existing processes. A recommendation form template allows you to gather valuable input flawlessly. Customize our recommendation form samples to suit your needs."
+    "meta_title": "Effortless Recommendation Forms with OpnForm",
+    "meta_description": "Discover how OpnForm can simplify the process of collecting recommendations. With a wide range of customizable Recommendation Form Templates, OpnForm offers an open-source form builder with features like email notifications, branding options, integration with popular tools, and more. Start using OpnForm to streamline your recommendation process today!",
+    "description": "Looking for a reliable recommendation form solution? OpnForm offers a range of Recommendation Form Templates designed to make your recommendation process seamless. Whether you need to collect recommendations for products, services, or professionals, OpnForm has you covered. With OpnForm's open-source form builder, you can easily create and customize recommendation forms to suit your needs. Benefit from features like email notifications, fully customizable branding, and the ability to embed forms on any website. Integrate with popular tools like Slack or Discord through Zapier or webhooks. Ensure the security of your recommendation forms with password protection and captcha. Use OpnForm's custom code feature to enhance your forms further. Pre-fill forms via URL parameters, set form closing dates, or limit submissions as needed. Respondents can even edit their own submissions with OpnForm's multiple page functionality."
   },
   "report_forms": {
     "name": "Report Forms",
     "slug": "report_forms",
-    "meta_title": "Report Form Templates for Notion Users",
-    "meta_description": "Our free report form templates are tailor-made, easy to edit and sync with Notion. Perfect for gathering all types of reports.",
-    "description": "Are you in the need of collecting reports? Our templates are ideal for all users who wish to gather data in the form of reports. Using report forms, you can collect a variety of information in an organized, systematic way. What makes NoteForms the ideal choice is that it is tailor-made for Notion users. All submissions are stored directly in your Notion database, making it easier to manage and process the data without having to compromise or adjust your current processes. You can choose a report form sample from below and customize it to suit your needs."
+    "meta_title": "Simplify Your Reporting with OpnForm's Report Form Templates",
+    "meta_description": "Discover how OpnForm and our Report Form Templates can revolutionize your reporting process. Customize and brand your report forms, receive instant email notifications, and streamline your workflow. Find the perfect template for your needs and start reporting with ease today!",
+    "description": "Are you in need of a simple and efficient way to collect reports? OpnForm's Report Form Templates are here to help! Whether you're a manager, supervisor, or team leader, these templates are designed to streamline the reporting process. With OpnForm, you can easily customize and brand your forms, receive instant email notifications for every submission, and even integrate the forms with tools like Slack or Discord. Simply choose a report form template below, customize it to fit your needs, and experience the convenience of OpnForm for all your reporting needs."
   },
   "request_forms": {
     "name": "Request Forms",
     "slug": "request_forms",
-    "meta_title": "Request Form Templates for Notion users",
-    "meta_description": "Edit our powerful free request form templates, perfect for businesses. Collect crucial requests directly in your Notion databases.",
-    "description": "Are you a business looking for seamless request management? Our request form templates are perfect for you. Collect and store crucial requests from customers or employees right in your Notion databases. No need to change your current processes or use another platform. With NoteForms, managing your requests has never been easier. Customize the request form sample below to fit your needs."
+    "meta_title": "Efficiently Manage Requests with OpnForm's Request Form Templates",
+    "meta_description": "Discover how OpnForm's Request Form Templates can simplify your process of collecting requests. Customize the templates to fit your needs, receive email notifications, integrate with other tools, and streamline your request management with OpnForm.",
+    "description": "Need to collect requests and gather information efficiently? OpnForm offers Request Form Templates that can streamline the process! These templates are designed for individuals, businesses, and organizations looking to manage incoming requests. With OpnForm, you can easily customize these templates, collect data securely, and benefit from various features like email notifications, form customization, integrations with Slack and other tools, and much more. Start using OpnForm's Request Form Templates today and simplify the way you handle requests!"
   },
   "reservation_forms": {
     "name": "Reservation Forms",
     "slug": "reservation_forms",
-    "meta_title": "Reservation Form Templates for Notion users",
-    "meta_description": "Our adaptable reservation form templates are designed for simplicity, ideal for any business on Notion, collecting reservation details effortlessly.",
-    "description": "Are you a hotel owner? Restaurant proprietor? Event planner? Utilize our reservation form templates to gather reservation details from your clients. Reservation forms enable you to streamline customer information collection, schedule bookings, and much more. Simplify your operations using one of the reservation form samples below, and tailor it to suit your needs. With NoteForms, all your submissions are stored in your Notion databases, preserving your existing workflow and ensuring a seamless integration."
+    "meta_title": "Simplify Your Reservation Management with OpnForm",
+    "meta_description": "Looking for an easy way to manage reservations? Discover how OpnForm's Reservation Form Templates can streamline your booking process. Customize your form, collect reservation details, and leverage powerful features like email notifications, embeddable forms, and integrations with popular tools. Upgrade your reservation management with OpnForm now!",
+    "description": "Planning an event or managing bookings? OpnForm offers Reservation Form Templates to simplify the process! Whether you run a hotel, a restaurant, or any other business that requires reservations, OpnForm has got you covered. With our templates, you can easily collect reservation details, streamline your booking process, and benefit from OpnForm's powerful features. Customize your reservation form to match your branding, embed it on your website, and leverage our integrations with tools like Slack and Discord via Zapier or webhooks. Take advantage of features like email notifications, form customization, password protection, and more. Upgrade your reservation management with OpnForm today!"
   },
   "sponsorship_forms": {
     "name": "Sponsorship Forms",
     "slug": "sponsorship_forms",
-    "meta_title": "Sponsorship Form Templates for Notion Users",
-    "meta_description": "Powerful, editable sponsorship form templates for Notion users. Ideal for events, charities, and organizations. Keep all submissions in your Notion databases.",
-    "description": "Are you an event manager? Part of a charity or organization seeking sponsors? Use our form templates to collect sponsorship details. With NoteForms, these templates are not only powerful but easy to edit and tailor to your needs. All the submissions are stored directly in your Notion databases, meaning there's no need to disrupt your current workflow. Use a sponsorship form sample below and customize it to fit your needs."
+    "meta_title": "Simplify Sponsorship Management with OpnForm's Templates",
+    "meta_description": "OpnForm's Sponsorship Form Templates are the ultimate solution for event organizers, non-profits, and businesses seeking sponsorships. Create customized forms, streamline the application process, and leverage OpnForm's features such as branding, email notifications, integrations, and more. Explore the power of OpnForm today!",
+    "description": "Looking for a hassle-free way to manage sponsorships? OpnForm's Sponsorship Form Templates are designed to simplify the process! These templates are targeted at event organizers, non-profit organizations, and businesses seeking sponsorships. With OpnForm, you can easily create custom sponsorship forms tailored to your needs. Collect important information from potential sponsors, streamline your sponsorship application process, and enjoy the benefits of OpnForm's powerful features. Customize your form's branding, protect it with a password, and even embed it on your website. With email notifications, you'll stay updated on new submissions, while respondents receive confirmation emails. OpnForm also offers integrations with popular tools like Slack, Discord, and more, enabling seamless communication and automation. Discover the possibilities of OpnForm's Sponsorship Form Templates today!"
   },
   "subscription_forms": {
     "name": "Subscription Forms",
     "slug": "subscription_forms",
-    "meta_title": "Subscription Form Templates for Notion Users",
-    "meta_description": "Effortlessly create, edit, and manage subscription forms via our templates. All data directly goes into your Notion databases.",
-    "description": "Managing subscriptions can be challenging. With our subscription form templates, this process becomes a lot easier. Whether you own a newsletter, a service or a membership website, these forms will simplify your subscription process. All form submissions are stored directly in your Notion databases, ensuring a seamless integration with your existing processes. Utilize a subscription form sample below and modify it according to your requirements, all while staying in your Notion workspace."
+    "meta_title": "Supercharge Your Subscriptions with OpnForm",
+    "meta_description": "Streamline your subscription process with OpnForm's Subscription Form Templates. Collect subscription information easily, customize your forms, and benefit from OpnForm's integrations. Choose a template, make it your own, and see how OpnForm can simplify your subscription management.",
+    "description": "Looking to gather subscriptions? OpnForm's Subscription Form Templates are perfect for anyone who needs to collect subscription information easily and efficiently. Whether you're running a newsletter, membership site, or online service, OpnForm has the tools you need. With features like email notifications, custom branding, and integrations with popular tools, OpnForm can help you streamline your subscription process. Choose a template below, customize it to your needs, and see how OpnForm can simplify your subscription management."
   },
   "summer_camp_surveys": {
     "name": "Summer Camp Surveys",
     "slug": "summer_camp_surveys",
-    "meta_title": "Summer Camp Survey Templates for Notion users",
-    "meta_description": "Conduct effective surveys with our Summer Camp Survey Templates for Notion users. Collect data right in your Notion database.",
-    "description": "Running a summer camp and want to get insights from attendees or their parents? Our Summer Camp Survey templates are the perfect solution for you. Collect data efficiently and directly into your Notion database. You don't need to change your current processes, as all submissions are kept in your Notion databases. A summer camp survey form template allows you to collect valuable information seamlessly. You can use a summer camp survey form sample below and customize it according to your needs. Embrace the power of NoteForms, the best solution for Notion users."
+    "meta_title": "Upgrade Your Summer Camp Surveys with OpnForm!",
+    "meta_description": "If you're an organizer looking to improve your summer camp experience, OpnForm is here to help! Our open-source form builder provides Summer Camp Survey Form Templates that can make collecting feedback a breeze. With OpnForm, you can easily customize and embed these survey forms on your camp's website. Take advantage of features like email notifications and custom domains to streamline your survey process. Upgrade your summer camp surveys today with OpnForm!",
+    "description": "Planning a summer camp and need to gather feedback? OpnForm offers Summer Camp Survey Form Templates that can simplify your work! These templates are designed specifically for summer camp organizers to collect valuable feedback from parents and campers. With OpnForm, you can easily create and customize these survey forms to fit your camp's unique needs. Take advantage of OpnForm's features like email notifications, form customization, custom domains, and form embedding to streamline your survey process. Upgrade your summer camp surveys today with OpnForm!"
   },
   "telecommuting_forms": {
     "name": "Telecommuting Forms",
     "slug": "telecommuting_forms",
-    "meta_title": "Telecommuting Form Templates for Notion users",
-    "meta_description": "Our telecommuting forms are easy to customize and ideal for remote work management. Keep all your data in Notion with NoteForms.",
-    "description": "Are you managing a remote team or a freelancer who works from home? Use our telecommuting form templates to manage work hours, progress and performance. With NoteForms, your data is stored directly in Notion databases, so there is no need to change your current work processes. Our forms are easy to customize to fit your needs. Start managing your remote team more efficiently with NoteForms today."
+    "meta_title": "Streamline Telecommuting with OpnForm's Templates",
+    "meta_description": "Transitioning to telecommuting? Discover OpnForm's Telecommuting Form Templates and simplify the process. Customize your forms, collect vital information, and streamline communication. Benefit from OpnForm's features like email notifications, form branding, and integration with collaboration tools such as Slack and Discord. Upgrade your telecommuting experience with OpnForm!",
+    "description": "Are you transitioning your workforce to telecommuting? OpnForm offers Telecommuting Form Templates that can simplify the process! With these form templates, you can easily collect information from your employees, streamline communication, and ensure a smooth transition to remote work. OpnForm, an open-source form builder, provides features such as customizable forms, email notifications, form branding, and integration with collaboration tools like Slack and Discord. Use our Telecommuting Form Templates to gather essential information, communicate effectively, and leverage OpnForm's powerful features to facilitate seamless telecommuting."
   },
   "tracking_forms": {
     "name": "Tracking Forms",
     "slug": "tracking_forms",
-    "meta_title": "Tracking Form Templates for Notion users",
-    "meta_description": "Efficient tracking form templates, perfect for streamlining data collection and storage in Notion. Ideal for logistics, inventory, and more.",
-    "description": "Whether you're in logistics, inventory management, or need to track any type of data, our tracking form templates are designed to streamline your processes. Not only do they help in the collection of crucial information, but all data is stored directly in your Notion databases. This keeps your existing workflow uninterrupted; no need to resort to external data storage systems. With NoteForms, you get an efficient tool that improves data organization and accessibility, all within the familiar environment of Notion. Customize a tracking form template to fit your needs today."
+    "meta_title": "Simplify Tracking with OpnForm's Tracking Form Templates",
+    "meta_description": "Looking for a simple and efficient way to track shipments and packages? Discover OpnForm's Tracking Form Templates and see how you can leverage our open-source form builder and customizable templates to streamline your tracking process.",
+    "description": "Need to track shipments or packages? OpnForm offers Tracking Form Templates that make it easy to monitor and manage your tracking information. With OpnForm, you can create customized forms to collect tracking details, streamline your tracking process, and benefit from our integration capabilities. Use a tracking form template below, tailor it to your specific needs, and discover how OpnForm can enhance your tracking workflow."
   },
   "voting_forms": {
     "name": "Voting Forms",
     "slug": "voting_forms",
-    "meta_title": "Voting Form Templates for Notion users",
-    "meta_description": "Powerful, customizable voting form templates for Notion users. Ideal for any voting event. Collect votes directly in your Notion databases.",
-    "description": "Are you organizing a voting event? Maybe a school election, a community choice award, or a company poll? Our Voting Form Templates are perfect for you! These templates are easy to edit and use. With NoteForms, all your data is directly stored in your Notion databases, maintaining your current workflows without any additional hassle. Use a voting form sample below, customize it according to your needs, and start collecting votes seamlessly."
+    "meta_title": "Streamline Your Voting Process with OpnForm's Voting Form Templates",
+    "meta_description": "Find the perfect solution for your voting needs with OpnForm's Voting Form Templates. Create customizable forms to collect votes, opinions, and feedback easily. Discover the power of OpnForm's open-source form builder, email notifications, form embedding, custom domains, integrations, security features, and more!",
+    "description": "Looking to collect votes and opinions? OpnForm's Voting Form Templates are here to help! Whether you're running an election, conducting a survey, or seeking feedback, OpnForm provides user-friendly templates that simplify the voting process. With OpnForm's open-source form builder, you can fully customize and brand your voting forms. Take advantage of features like email notifications, form embedding, custom domains, and integrations with popular tools like Slack and Discord via Zapier or webhooks. Ensure the security of your voting forms with password protection and captchas. Plus, you can pre-fill forms, set submission limits, allow respondents to edit their submissions, and even create multi-page forms. Discover how OpnForm can enhance your voting experience today!"
   },
   "wedding_forms": {
     "name": "Wedding Forms",
     "slug": "wedding_forms",
-    "meta_title": "Wedding Form Templates for Notion users",
-    "meta_description": "Utilize our free Wedding Form Templates, tailored for Notion users. Great for venue owners, photographers, cake designers for efficient wedding planning.",
-    "description": "Are you a wedding planner, photographer, or cake designer? Our Wedding Form Templates are perfect for you. Collect information about wedding organization details from your clients in a simple and efficient manner. With NoteForms, all submissions are directly stored in your Notion database, keeping your workflow consistent and organized. No changes to your current processes are needed. Use our wedding form sample below and customize it as per your needs."
+    "meta_title": "Simplify Your Wedding Planning with OpnForm's Wedding Form Templates",
+    "meta_description": "OpnForm's Wedding Form Templates make wedding planning a breeze! Collect RSVPs, manage guest details, and send out wedding invitations effortlessly. Customize your forms, protect them with passwords, and embed them on your wedding website. Get started with OpnForm and make your wedding planning experience a memorable one.",
+    "description": "Planning a wedding has never been easier! OpnForm's Wedding Form Templates are designed specifically for those organizing their special day. With OpnForm, you can effortlessly collect RSVPs, manage guest details, and send out wedding invitations. Our form builder offers a range of features to enhance your wedding planning experience. Customize your forms to match your wedding theme, protect them with passwords, and embed them on your wedding website. Plus, with OpnForm's email notifications, you'll never miss a response. Start simplifying your wedding planning process with OpnForm's Wedding Form Templates today!"
   },
   "volunteer_forms": {
     "name": "Volunteer Forms",
     "slug": "volunteer_forms",
-    "meta_title": "Volunteer Form Templates for Notion users",
-    "meta_description": "Use our powerful volunteer form templates to collect information from volunteers. Directly stored in Notion databases for easy access.",
-    "description": "Are you in charge of a volunteer event? Our volunteer form templates simplify the process of collecting information from your volunteers. Using NoteForms allows you to seamlessly gather details such as availability, skills, and contact information right into your Notion databases. It's the ideal solution if you're already working with Notion, as all submissions are kept in Notion databases, fitting perfectly into your current processes. Use our volunteer form sample below and customize it to fit your needs."
+    "meta_title": "Simplify Volunteer Recruitment with OpnForm's Volunteer Form Templates",
+    "meta_description": "OpnForm's Volunteer Form Templates are the perfect solution for organizations seeking to simplify their volunteer recruitment process. With OpnForm's open-source form builder, you can easily create personalized volunteer forms, customize and brand them to match your organization's identity, and benefit from powerful features like email notifications, integration with popular tools, form protection, and more. Discover how OpnForm can help you streamline your volunteer recruitment today!",
+    "description": "Looking to recruit volunteers? OpnForm offers Volunteer Form Templates that can make the process easier for you! These form templates are designed to help you gather information from potential volunteers, streamline your volunteer recruitment process, and benefit from OpnForm's powerful features. Customize and brand your forms, receive email notifications for new volunteer submissions, integrate with tools like Slack and Discord, and even protect your forms with a password. With OpnForm, you can create engaging and user-friendly volunteer forms that will make it simple for candidates to apply and for you to manage applications."
   }
 }

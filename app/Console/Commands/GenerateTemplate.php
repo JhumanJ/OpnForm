@@ -224,7 +224,7 @@ class GenerateTemplate extends Command
         $completer = (new GptCompleter(config('services.openai.api_key')))
             ->setAiModel('gpt-3.5-turbo-16k')
             ->useStreaming()
-            ->setSystemMessage('You are a robot helping to generate forms.');
+            ->setSystemMessage('You are an assistant helping to generate forms.');
         $completer->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
         ], 6000);
@@ -293,8 +293,9 @@ class GenerateTemplate extends Command
     {
         $url = 'https://api.unsplash.com/search/photos?query=' . urlencode($searchQuery) . '&client_id=' . config('services.unsplash.access_key');
         $response = Http::get($url)->json();
-        if (isset($response['results'][0]['urls']['regular'])) {
-            return Str::of($response['results'][0]['urls']['regular'])->replace('w=1080', 'w=600')->toString();
+        $photoIndex = rand(0, max(count($response['results']) - 1, 10));
+        if (isset($response['results'][$photoIndex]['urls']['regular'])) {
+            return Str::of($response['results'][$photoIndex]['urls']['regular'])->replace('w=1080', 'w=600')->toString();
         }
         return null;
     }
