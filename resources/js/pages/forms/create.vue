@@ -6,10 +6,7 @@
                                 @close="showInitialFormModal=false"/>
         <form-editor v-if="!workspacesLoading" ref="editor"
                      class="w-full flex flex-grow"
-                     :style="{
-                       'max-height': editorMaxHeight + 'px'
-                     }" :error="error"
-                     @mounted="onResize"
+                     :error="error"
                      @on-save="formInitialHash=null"
         />
         <div v-else class="text-center mt-4 py-6">
@@ -64,7 +61,6 @@ export default {
       stateReady: false,
       loading: false,
       error: '',
-      editorMaxHeight: 500,
       showInitialFormModal: false,
       formInitialHash: null
     }
@@ -125,25 +121,13 @@ export default {
     this.stateReady = this.user !== null
   },
 
-  created() {
-    window.addEventListener('resize', this.onResize)
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.onResize)
-  },
+  created() {},
+  destroyed() {},
 
   methods: {
     ...mapActions({
       loadWorkspaces: 'open/workspaces/loadIfEmpty'
     }),
-    /**
-     * Compute max height of editor
-     */
-    onResize() {
-      if (this.$refs.editor) {
-        this.editorMaxHeight = window.innerHeight - this.$refs.editor.$el.offsetTop
-      }
-    },
     formGenerated(form) {
       this.form = new Form({...this.form.data(), ...form})
     },
