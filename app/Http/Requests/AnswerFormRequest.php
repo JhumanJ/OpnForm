@@ -150,7 +150,6 @@ class AnswerFormRequest extends FormRequest
     {
         switch ($property['type']) {
             case 'text':
-            case 'phone_number':
             case 'signature':
                 return ['string'];
             case 'number':
@@ -189,6 +188,8 @@ class AnswerFormRequest extends FormRequest
                     return ['array', 'min:2'];
                 }
                 return $this->getRulesForDate($property);
+            case 'phone_number':
+                return ['string', 'min:10', 'starts_with:+'];
             default:
                 return [];
         }
