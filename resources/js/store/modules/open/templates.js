@@ -35,6 +35,8 @@ export const mutations = {
     state.allLoaded = true
   },
   append (state, items) {
+    const ids = items.map((item) => { return item.id })
+    state.content = state.content.filter((val) => !ids.includes(val.id))
     state.content = state.content.concat(items)
   },
   addOrUpdate (state, item) {
@@ -93,7 +95,8 @@ export const actions = {
     context.commit('startLoading')
     context.dispatch('loadTypesAndIndustries')
     return axios.get(templatesEndpoint).then((response) => {
-      context.commit('set', response.data)
+      context.commit('append', response.data)
+      context.commit('setAllLoaded', true)
       context.commit('stopLoading')
     }).catch((error) => {
       context.commit('stopLoading')
