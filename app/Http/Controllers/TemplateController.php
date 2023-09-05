@@ -17,7 +17,8 @@ class TemplateController extends Controller
             $limit = (int) $request->get('limit');
         }
         return FormTemplateResource::collection(
-            Template::orderByDesc('created_at')
+            Template::where('publicly_listed', true)
+                ->orderByDesc('created_at')
                 ->limit($limit)
                 ->get()
         );

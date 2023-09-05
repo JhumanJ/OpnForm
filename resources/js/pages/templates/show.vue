@@ -1,6 +1,24 @@
 <template>
   <div class="flex flex-col min-h-full">
-    <breadcrumb :path="breadcrumbs" />
+    <breadcrumb :path="breadcrumbs">
+      <template #left>
+        <div v-if="user && (user.admin || user.template_editor)" class="ml-5">
+          <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
+            Edit Template
+          </v-button>
+          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
+                               @close="showFormTemplateModal=false"
+          />
+        </div>
+      </template>
+      <template #right>
+        <v-button v-track.use_template_button_clicked size="small" class="mr-5"
+                  :to="{path: createFormWithTemplateUrl}"
+        >
+          Use this template
+        </v-button>
+      </template>
+    </breadcrumb>
 
     <div v-if="templatesLoading" class="text-center my-4">
       <loader class="h-6 w-6 text-nt-blue mx-auto" />
@@ -10,14 +28,6 @@
     </p>
     <template v-else>
       <section class="pt-12 bg-gray-50 sm:pt-16 border-b pb-[250px] relative">
-        <div v-if="user && (user.admin || user.moderator)" class="fixed sticky-top right-10 top-14 p-4 z-50">
-          <v-button color="blue" size="small" @click.prevent="showFormTemplateModal=true">
-            Edit Template
-          </v-button>
-          <form-template-modal :form="form" :template="template" :show="showFormTemplateModal"
-                               @close="showFormTemplateModal=false"
-          />
-        </div>
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex flex-col items-center justify-center max-w-4xl gap-8 mx-auto md:gap-12 md:flex-row">
             <div class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group max-w-xs">
@@ -58,7 +68,7 @@
         <div class="absolute bottom-0 translate-y-full inset-x-0">
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
-              <v-button class="mx-auto w-full max-w-[300px]" :to="{path: createFormWithTemplateUrl}">
+              <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]" :to="{path: createFormWithTemplateUrl}">
                 Use this template
               </v-button>
             </div>
@@ -253,11 +263,14 @@ export default {
       if (!this.template) return null
       return this.template.image_url
     },
+    metaTags () {
+      return (this.template && this.template.publicly_listed) ? [] : [{ name: 'robots', content: 'noindex' }]
+    },
     createFormWithTemplateUrl () {
       if(this.authenticated) {
-        return '/forms/create?template=' + this.template.slug  
+        return '/forms/create?template=' + this.template?.slug  
       }
-      return '/forms/create/guest?template=' + this.template.slug
+      return '/forms/create/guest?template=' + this.template?.slug
     }
   }
 }
