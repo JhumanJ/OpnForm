@@ -7,8 +7,8 @@
   <form v-else-if="dataForm" @submit.prevent="">
     <transition name="fade" mode="out-in" appear>
       <template v-for="group, groupIndex in fieldGroups">
-        <div v-if="currentFieldGroupIndex===groupIndex" 
-              :key="groupIndex" 
+        <div v-if="currentFieldGroupIndex===groupIndex"
+              :key="groupIndex"
               class="form-group flex flex-wrap w-full">
 
           <draggable v-model="currentFields"
@@ -339,7 +339,7 @@ export default {
 
       const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
       let urlPrefill = null
-      if (this.isPublicFormPage && this.form.is_pro) {
+      if (this.isPublicFormPage) {
         urlPrefill = new URLSearchParams(window.location.search)
       }
 

@@ -90,7 +90,7 @@
               Save hours in just a few clicks
             </p>
             <p class="text-gray-500 text-base leading-7 sm:text-lg sm:leading-8 font-medium mt-4">
-              Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint
+              Building forms has never been easier
             </p>
           </div>
 

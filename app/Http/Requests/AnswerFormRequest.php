@@ -14,8 +14,8 @@ use App\Rules\ValidHCaptcha;
 
 class AnswerFormRequest extends FormRequest
 {
-    const MAX_FILE_SIZE_PRO = 5000000;
-    const MAX_FILE_SIZE_ENTERPRISE = 20000000;
+    const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
+    const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
 
     public Form $form;
 
@@ -26,10 +26,10 @@ class AnswerFormRequest extends FormRequest
     {
         $this->form = $request->form;
 
-        $this->maxFileSize = self::MAX_FILE_SIZE_PRO;
+        $this->maxFileSize = self::MAX_FILE_SIZE_FREE;
         $workspace = $this->form->workspace;
-        if ($workspace && $workspace->is_enterprise) {
-            $this->maxFileSize = self::MAX_FILE_SIZE_ENTERPRISE;
+        if ($workspace && $workspace->is_pro) {
+            $this->maxFileSize = self::MAX_FILE_SIZE_PRO;
         }
     }
 
@@ -53,9 +53,9 @@ class AnswerFormRequest extends FormRequest
         foreach ($this->form->properties as $property) {
             $rules = [];
 
-            if (!$this->form->is_pro) {  // If not pro then not check logic
+            /*if (!$this->form->is_pro) {  // If not pro then not check logic
                 $property['logic'] = false;
-            }
+            }*/
 
             // For get values instead of Id for select/multi select options
             $data = $this->toArray();
@@ -96,12 +96,12 @@ class AnswerFormRequest extends FormRequest
         }
 
         // Validate hCaptcha
-        if ($this->form->is_pro && $this->form->use_captcha) {
+        if ($this->form->use_captcha) {
             $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
         }
 
         // Validate submission_id for edit mode
-        if ($this->form->editable_submissions) {
+        if ($this->form->is_pro && $this->form->editable_submissions) {
             $this->requestRules['submission_id'] = 'string';
         }
 
@@ -159,7 +159,7 @@ class AnswerFormRequest extends FormRequest
                 return ['numeric'];
             case 'select':
             case 'multi_select':
-                if ($this->form->is_pro && ($property['allow_creation'] ?? false)) {
+                if (($property['allow_creation'] ?? false)) {
                     return ['string'];
                 }
                 return [Rule::in($this->getSelectPropertyOptions($property))];
@@ -173,7 +173,7 @@ class AnswerFormRequest extends FormRequest
                 return ['url'];
             case 'files':
                 $allowedFileTypes = [];
-                if($this->form->is_pro && !empty($property['allowed_file_types'])){
+                if(!empty($property['allowed_file_types'])){
                     $allowedFileTypes = explode(",", $property['allowed_file_types']);
                 }
                 $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, $allowedFileTypes, $this->form)];

@@ -1,14 +1,11 @@
 <template>
   <div>
     <h3 class="font-semibold text-2xl text-gray-900">Billing details</h3>
-    <small class="text-gray-600">Manage your billing.</small>
-    
+    <small class="text-gray-600">Manage your billing. Download invoices, update your plan, or cancel it at any time.</small>
+
     <div class="mt-4">
       <v-button color="gray" shade="light" :loading="billingLoading" @click.prevent="openBillingDashboard">
         Manage Subscription
-      </v-button>
-      <v-button color="red" class="mt-3" @click.prevent="cancelSubscription">
-        Cancel Subscription
       </v-button>
     </div>
   </div>
@@ -30,9 +27,6 @@ export default {
   }),
 
   methods: {
-    cancelSubscription () {
-      //   this.alertError('Sorry to see you leave 😢')
-    },
     openBillingDashboard () {
       this.billingLoading = true
       axios.get('/api/subscription/billing-portal').then((response) => {
