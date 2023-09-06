@@ -10,7 +10,9 @@ import '~/plugins'
 import '~/components'
 
 import '../sass/app.scss'
+import CountryFlag from 'vue-country-flag'
 
+Vue.component('country-flag', CountryFlag)
 Vue.config.productionTip = false
 
 Vue.mixin(Base)
