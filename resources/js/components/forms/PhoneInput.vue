@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapperClass">
+  <div :class="wrapperClass" :style="inputStyle">
     <label v-if="label" :for="id ? id : name"
       :class="[theme.default.label, { 'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels }]">
       {{ label }}
@@ -46,7 +46,6 @@ export default {
         name: "telephone",
         maxLen: 25,
         wrapperClasses: "",
-        inputClasses: 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700' + (this.disabled ? ' !cursor-not-allowed !bg-gray-200' : ''),
         inputOptions: {
           showDialCode: true
         },
@@ -59,3 +58,9 @@ export default {
   methods: { },
 };
 </script>
+
+<style scoped>
+/deep/ .vue-tel-input input {
+  background-color: v-bind(inputStyle.backgroundColor);
+}
+</style>
