@@ -13,9 +13,9 @@
     </template>
 
     <form-notifications-option />
+    <form-notifications-submission-confirmation />
     <form-notifications-slack />
     <form-notifications-discord />
-    <form-notifications-submission-confirmation />
 
   </collapse>
 </template>

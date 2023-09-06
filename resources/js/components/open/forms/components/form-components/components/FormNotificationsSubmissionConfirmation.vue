@@ -31,22 +31,32 @@
                            :form="form" class="mt-4"
                            label="Send submission confirmation" :help="emailSubmissionConfirmationHelp"
       />
-      <text-input v-if="form.send_submission_confirmation" name="notification_sender"
-                  :form="form" class="mt-4"
-                  label="Confirmation Email Sender Name" help="Emails will be sent from our email address but you can customize the name of the Sender"
-      />
-      <text-input v-if="form.send_submission_confirmation" name="notification_subject"
-                  :form="form" class="mt-4"
-                  label="Confirmation email subject" help="Subject of the confirmation email that will be sent"
-      />
-      <rich-text-area-input v-if="form.send_submission_confirmation" name="notification_body"
-                            :form="form" class="mt-4"
-                            label="Confirmation email content" help="Content of the confirmation email that will be sent"
-      />
-      <toggle-switch-input v-if="form.send_submission_confirmation" name="notifications_include_submission"
-                      :form="form" class="mt-4"
-                      label="Include submission data" help="If enabled the confirmation email will contain form submission answers"
-      />
+      <template v-if="form.send_submission_confirmation">
+        <text-input name="confirmation_reply_to"
+                    v-model="form.notification_settings.confirmation_reply_to" class="mt-4"
+                    label="Confirmation Reply To" help="help"
+        >
+          <template #help>
+            If empty, Reply-to will be your own email.
+          </template>
+        </text-input>
+        <text-input name="notification_sender"
+                    :form="form" class="mt-4"
+                    label="Confirmation Email Sender Name" help="Emails will be sent from our email address but you can customize the name of the Sender"
+        />
+        <text-input name="notification_subject"
+                    :form="form" class="mt-4"
+                    label="Confirmation email subject" help="Subject of the confirmation email that will be sent"
+        />
+        <rich-text-area-input name="notification_body"
+                              :form="form" class="mt-4"
+                              label="Confirmation email content" help="Content of the confirmation email that will be sent"
+        />
+        <toggle-switch-input name="notifications_include_submission"
+                        :form="form" class="mt-4"
+                        label="Include submission data" help="If enabled the confirmation email will contain form submission answers"
+        />
+      </template>
     </modal>
   </div>
 </template>
