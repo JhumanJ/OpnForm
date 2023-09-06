@@ -1,54 +1,80 @@
 <template>
-  <div v-if="form" id="form-editor" class="w-full flex flex-grow relative overflow-x-hidden">
-    <!-- Form fields selection -->
-    <div class="w-full md:w-1/2 lg:w-2/5 border-r relative overflow-y-scroll md:max-w-sm flex-shrink-0">
-      <div class="p-4 bg-blue-50 border-b text-nt-blue-dark md:hidden">
-        We suggest you create this form on a device with a larger screen such as computed. That will allow you
-        to preview your form changes.
-      </div>
-      <div class="p-4 pb-0">
-        <a v-if="!isGuest" href="#" @click.prevent="$router.back()" class="flex text-blue mb-2 font-semibold text-sm">
-          <svg class="w-3 h-3 text-blue mt-1 mr-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round"/>
-          </svg>
-          Go back
-        </a>
-        <template v-if="isEdit">
-          <h3 class="font-semibold text-lg">{{ form.title }}</h3>
-          <small class="text-gray-500">Edited {{ form.last_edited_human }}</small>
-        </template>
+  <div v-if="form" id="form-editor" class="relative flex w-full flex-col grow max-h-screen">
+    <!--  Navbar  -->
+    <div class="w-full border-b p-2 flex items-center justify-between bg-white">
+      <a v-if="backButton" href="#" class="ml-2 flex text-blue font-semibold text-sm"
+         @click.prevent="$router.back()"
+      >
+        <svg class="w-3 h-3 text-blue mt-1 mr-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"
+          />
+        </svg>
+        Go back
+      </a>
+      <div class="hidden md:flex items-center ml-3">
+        <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
+          {{ form.title }}
+        </h3>
       </div>
 
-      <div class="p-4 border-b sticky top-0 z-10 bg-white">
-        <v-button v-track.save_form_click class="w-full" :loading="updateFormLoading"
-                  @click="saveForm">
-          <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 21V13H7V21M7 3V8H15M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="flex items-center" :class="{'mx-auto md:mx-0':!backButton}">
+        <div class="hidden md:block mr-10 relative">
+          <a href="#"
+             class="text-sm px-3 py-2 hover:bg-gray-50 cursor-pointer rounded-md text-gray-500 px-0 sm:px-3 hover:text-gray-800 cursor-pointer mt-1"
+             @click.prevent="$crisp.push(['do', 'helpdesk:search'])"
+          >
+            Help
+          </a>
+        </div>
+        <v-button v-track.save_form_click size="small" class="w-full px-8 md:px-4 py-2"
+                  :loading="updateFormLoading" :class="saveButtonClass"
+                  @click="saveForm"
+        >
+          <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17 21V13H7V21M7 3V8H15M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            />
           </svg>
-
-          Save changes
+          <template v-if="form.visibility === 'public'">
+            Publish Form
+          </template>
+          <template v-else>
+            Save Changes
+          </template>
         </v-button>
       </div>
-
-      <form-information/>
-      <form-structure/>
-      <form-customization/>
-      <form-about-submission/>
-      <form-notifications/>
-      <form-security-privacy/>
-      <form-custom-seo />
-      <form-custom-code/>
-      <form-integrations/>
     </div>
 
-    <form-editor-preview/>
+    <div class="w-full flex grow overflow-y-scroll">
+      <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
+        <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
+          Please create this form on a device with a larger screen. That will allow you to preview your form changes.
+        </div>
 
-    <!-- Form Error Modal -->
-    <form-error-modal :show="showFormErrorModal"
-                      :validation-error-response="validationErrorResponse"
-                      @close="showFormErrorModal=false"
-    />
+        <form-information/>
+        <form-structure/>
+        <form-customization/>
+        <form-about-submission/>
+        <form-notifications/>
+        <form-security-privacy/>
+        <form-custom-seo />
+        <form-custom-code/>
+        <form-integrations/>
+      </div>
+
+      <form-editor-preview/>
+
+      <!-- Form Error Modal -->
+      <form-error-modal 
+        :show="showFormErrorModal"
+        :validation-error-response="validationErrorResponse"
+        @close="showFormErrorModal=false"
+      />
+    </div>
   </div>
   <div v-else class="flex justify-center items-center">
     <loader class="w-6 h-6"/>
@@ -98,6 +124,16 @@ export default {
       type: Boolean,
       default: false
     },
+    backButton: {
+      required: false,
+      type: Boolean,
+      default: true
+    },
+    saveButtonClass: {
+      required: false,
+      type: String,
+      default: ''
+    }
   },
 
   data() {
@@ -170,6 +206,11 @@ export default {
 
   mounted() {
     this.$emit('mounted')
+    this.$root.hideNavbar()
+  },
+
+  beforeDestroy () {
+    this.$root.hideNavbar(false)
   },
 
   methods: {
