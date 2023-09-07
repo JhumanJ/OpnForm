@@ -18,6 +18,10 @@ body.dark * {
 
 @layer base {
 
+  :root {
+    --bg-form-color: #2563eb;
+  }
+
   p, div {
     @apply text-gray-900 dark:text-white;
   }

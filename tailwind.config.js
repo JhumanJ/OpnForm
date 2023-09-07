@@ -62,7 +62,8 @@ module.exports = {
           backgroundDark: '#272B2C',
           help: '#37352f99',
           helpDark: '#fff9'
-        }
+        },
+        'form-color': 'var(--bg-form-color)'
       },
       transitionProperty: {
         height: 'height',
