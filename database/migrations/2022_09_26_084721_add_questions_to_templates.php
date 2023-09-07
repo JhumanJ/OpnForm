@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('templates', function (Blueprint $table) {
-            $table->json('questions'); // Change jsonb to json
+            $table->json('questions');
         });
     }
 
