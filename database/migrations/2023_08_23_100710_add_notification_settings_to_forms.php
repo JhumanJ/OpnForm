@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->json('notification_settings')->default('{}')->nullable(true);
+            $table->json('notification_settings')->nullable(true);
         });
     }
 
