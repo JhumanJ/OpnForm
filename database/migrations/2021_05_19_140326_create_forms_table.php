@@ -39,7 +39,7 @@ class CreateFormsTable extends Migration
             $table->text('custom_code')->nullable();
             $table->text('notification_emails')->nullable();
             $table->string('theme')->default('default');
-            $table->json('database_fields_update')->nullable(); // Use json instead of jsonb
+            $table->json('database_fields_update')->nullable();
             $table->string('width')->default('centered');
             $table->boolean('transparent_background')->default(false);
             $table->timestamp('closes_at')->nullable();
@@ -51,7 +51,7 @@ class CreateFormsTable extends Migration
             $table->boolean('can_be_indexed')->default(true);
             $table->string('password')->nullable()->default(null);
             $table->string('notification_sender')->default("OpenForm");
-            $table->json('tags'); // Use json instead of jsonb
+            $table->json('tags');
             $table->foreign('workspace_id')->references('id')->on('workspaces');
         });
     }

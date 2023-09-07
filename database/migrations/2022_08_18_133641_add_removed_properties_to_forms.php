@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->text('removed_properties');
+            $table->json('removed_properties');
         });
     }
 
