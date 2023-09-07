@@ -291,6 +291,7 @@ export default {
     },
     blockAdded(block) {
       this.formFields.push(block)
+      this.$store.commit('open/working_form/openSettingsForField', this.formFields.length-1)
     },
     removeBlock(blockIndex) {
       this.closeSidebar()
