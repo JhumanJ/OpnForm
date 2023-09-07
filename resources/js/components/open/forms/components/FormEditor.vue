@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <div class="w-full flex grow overflow-y-scroll">
+    <div class="w-full flex grow overflow-y-scroll relative">
       <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
         <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
           Please create this form on a device with a larger screen. That will allow you to preview your form changes.
@@ -71,7 +71,7 @@
       <form-field-edit-sidebar/>
 
       <!-- Form Error Modal -->
-      <form-error-modal 
+      <form-error-modal
         :show="showFormErrorModal"
         :validation-error-response="validationErrorResponse"
         @close="showFormErrorModal=false"

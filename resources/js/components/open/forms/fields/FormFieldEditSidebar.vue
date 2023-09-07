@@ -1,6 +1,6 @@
 <template>
   <div v-if="showSidebar"
-       class="w-full md:w-1/2 lg:w-2/5 border-l relative overflow-y-scroll md:max-w-[20rem] flex-shrink-0">
+       class="absolute shadow-lg shadow-blue-800/30 top-0 h-[calc(100vh-45px)] right-0 lg:shadow-none lg:relative bg-white w-full md:w-1/2 lg:w-2/5 border-l overflow-y-scroll md:max-w-[20rem] flex-shrink-0">
     <div class="p-4 border-b sticky top-0 z-10 bg-white">
       <button v-if="!field" class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="closeSidebar">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,9 +31,9 @@
             </svg>
             Remove
           </v-button>
-          <v-button size="small" :class="{
-            'rounded-none border-r-0 text-xs':!isBlockField,
-            'rounded-l-none text-xs':isBlockField,
+          <v-button size="small" class="text-xs" :class="{
+            'rounded-none border-r-0':!isBlockField && typeCanBeChanged,
+            'rounded-l-none':isBlockField || !typeCanBeChanged
           }" color="light-gray" @click="duplicateBlock">
             <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
                  xmlns="http://www.w3.org/2000/svg">
@@ -103,6 +103,9 @@ export default {
     },
     isBlockField() {
       return this.field && this.field.type.startsWith('nf')
+    },
+    typeCanBeChanged() {
+      return ['text', 'email', 'phone', 'number','select', 'multi_select'].includes(this.field.type)
     }
   },
 
