@@ -34,7 +34,22 @@ it('can validate form logic rules for actions', function () {
                 'hidden' => true,
                 'required' => false,
                 'logic' => [
-                    "conditions" => null,
+                    "conditions" => [
+                        "operatorIdentifier"=> "and",
+                        "children"=> [
+                            [
+                                "identifier"=> "title",
+                                "value"=> [
+                                    "operator"=> "equals",
+                                    "property_meta"=> [
+                                        "id"=> "title",
+                                        "type"=> "text"
+                                    ],
+                                    "value"=> "TEST"
+                                ]
+                            ]
+                        ]
+                    ],
                     "actions" => ['hide-block']
                 ]
             ]
@@ -51,7 +66,22 @@ it('can validate form logic rules for actions', function () {
                 'name' => "Custom Test",
                 'type' => 'nf-text',
                 'logic' => [
-                    "conditions" => null,
+                    "conditions" => [
+                        "operatorIdentifier"=> "and",
+                        "children"=> [
+                            [
+                                "identifier"=> "title",
+                                "value"=> [
+                                    "operator"=> "equals",
+                                    "property_meta"=> [
+                                        "id"=> "title",
+                                        "type"=> "text"
+                                    ],
+                                    "value"=> "TEST"
+                                ]
+                            ]
+                        ]
+                    ],
                     "actions" => ['require-answer']
                 ]
             ]
@@ -93,7 +123,7 @@ it('can validate form logic rules for conditions', function () {
                             ]
                         ]
                     ],
-                    "actions" => []
+                    "actions" => ['hide-block']
                 ]
             ]
         ]
@@ -126,7 +156,7 @@ it('can validate form logic rules for conditions', function () {
                             ]
                         ]
                     ],
-                    "actions" => []
+                    "actions" => ['hide-block']
                 ]
             ]
         ]
@@ -160,7 +190,7 @@ it('can validate form logic rules for conditions', function () {
                             ]
                         ]
                     ],
-                    "actions" => []
+                    "actions" => ['hide-block']
                 ]
             ]
         ]

@@ -1,11 +1,7 @@
 <template>
   <div class="w-full flex flex-col">
     <form-editor v-if="pageLoaded" ref="editor"
-                 :style="{
-                   'max-height': editorMaxHeight + 'px'
-                 }"
                  :isEdit="true"
-                 @mounted="onResize"
                  @on-save="formInitialHash=null"
     />
     <div v-else-if="!loading && error" class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500">
@@ -61,7 +57,6 @@ export default {
     return {
       loading: false,
       error: null,
-      editorMaxHeight: 500,
       formInitialHash: null
     }
   },
@@ -96,12 +91,8 @@ export default {
     }
   },
 
-  created () {
-    window.addEventListener('resize', this.onResize)
-  },
-  destroyed () {
-    window.removeEventListener('resize', this.onResize)
-  },
+  created () {},
+  destroyed () {},
 
   mounted () {
     window.onbeforeunload = () => {
@@ -120,14 +111,6 @@ export default {
   },
   
   methods: {
-    /**
-     * Compute max height of editor
-     */
-    onResize () {
-      if (this.$refs.editor) {
-        this.editorMaxHeight = Math.max(500, window.innerHeight - this.$refs.editor.$el.offsetTop)
-      }
-    },
     isDirty () {
       return !this.loading && this.formInitialHash && this.formInitialHash !== this.hashString(JSON.stringify(this.updatedForm.data()))
     },

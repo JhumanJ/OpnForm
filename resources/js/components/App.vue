@@ -84,7 +84,8 @@ export default {
       message: '',
       confirmationProceed: null,
       confirmationCancel: null
-    }
+    },
+    navbarHidden: false
   }),
 
   mounted () {
@@ -106,6 +107,9 @@ export default {
     },
     workspaceAdded () {
       this.$router.push({ name: 'home' })
+    },
+    hideNavbar (hidden = true) {
+      this.navbarHidden = hidden
     }
   },
 

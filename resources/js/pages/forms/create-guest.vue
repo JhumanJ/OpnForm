@@ -6,11 +6,8 @@
                                 @close="showInitialFormModal=false"/>
         <form-editor v-if="!workspacesLoading" ref="editor"
                      class="w-full flex flex-grow"
-                     :style="{
-                       'max-height': editorMaxHeight + 'px'
-                     }" :error="error"
+                     :error="error"
                      :isGuest="isGuest"
-                     @mounted="onResize"
                      @openRegister="openRegister"
         />
         <div v-else class="text-center mt-4 py-6">
@@ -61,7 +58,6 @@ export default {
       stateReady: false,
       loading: false,
       error: '',
-      editorMaxHeight: 500,
       registerModal: false,
       isGuest: true,
       showInitialFormModal: false
@@ -120,25 +116,13 @@ export default {
     this.stateReady = true
   },
 
-  created() {
-    window.addEventListener('resize', this.onResize)
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.onResize)
-  },
+  created() {},
+  destroyed() {},
 
   methods: {
     ...mapActions({
       loadWorkspaces: 'open/workspaces/load'
     }),
-    /**
-     * Compute max height of editor
-     */
-    onResize() {
-      if (this.$refs.editor) {
-        this.editorMaxHeight = window.innerHeight - this.$refs.editor.$el.offsetTop
-      }
-    },
     openRegister() {
       this.registerModal = true
     },

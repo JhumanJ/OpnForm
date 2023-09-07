@@ -53,7 +53,7 @@ class FormCleaner
         'discord_webhook_url' => "Discord webhook disabled.",
         'editable_submissions' => 'Users will not be able to edit their submissions.',
         'custom_code' => 'Custom code was disabled',
-        'seo_meta' => 'Custom code was disabled',
+        'seo_meta' => 'Custom SEO was disabled',
 
         // For fields
         'file_upload' => "Link field is not a file upload.",

@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true
     },
+    isDraft: {
+      type: Boolean,
+      default: false
+    },
   },
 
   data() {
@@ -50,7 +54,8 @@ export default {
       el.select()
       document.execCommand('copy')
       document.body.removeChild(el)
-      this.alertSuccess('Copied!')
+      this.alertSuccess((this.isDraft) ? 'Copied! But other people won\'t be able to see the form since it\'s currently in draft mode' : 'Copied!')
+      
     }
   }
 }
