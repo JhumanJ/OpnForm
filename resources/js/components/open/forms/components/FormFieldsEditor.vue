@@ -3,20 +3,6 @@
     <add-form-block-modal :form-blocks="formFields" :show="showAddBlock" @block-added="blockAdded"
                           @close="showAddBlock=false"
     />
-    <template v-if="selectedFieldIndex !== null">
-      <form-field-options-modal :field="formFields[selectedFieldIndex]"
-                                :show="!isNotAFormField(formFields[selectedFieldIndex]) && showEditFieldModal"
-                                :form="form" @close="closeInputOptionModal"
-                                @remove-block="removeBlock(selectedFieldIndex)"
-                                @duplicate-block="duplicateBlock(selectedFieldIndex)"
-      />
-      <form-block-options-modal :field="formFields[selectedFieldIndex]"
-                                :show="isNotAFormField(formFields[selectedFieldIndex]) && showEditFieldModal"
-                                :form="form"
-                                @remove-block="removeBlock(selectedFieldIndex)"
-                                @duplicate-block="duplicateBlock(selectedFieldIndex)" @close="closeInputOptionModal"
-      />
-    </template>
 
     <draggable v-model="formFields"
                class="bg-white overflow-hidden dark:bg-notion-dark-light rounded-md w-full mx-auto border transition-colors"
@@ -61,6 +47,15 @@
             </div>
           </template>
           <template v-else>
+            <button class="hover:bg-red-50 text-gray-500 hover:text-red-600 rounded transition-colors cursor-pointer p-2 hidden md:group-hover:block"
+                    @click="removing=field.id"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
             <button class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
                     :class="{'text-blue-500': !field.hidden, 'text-gray-500': field.hidden, 'group-hover:md:block': !field.hidden, 'md:block':field.hidden}"
                     @click="toggleHidden(field)"
@@ -144,23 +139,18 @@
 
 <script>
 import draggable from 'vuedraggable'
-import FormFieldOptionsModal from '../fields/FormFieldOptionsModal.vue'
 import AddFormBlockModal from './form-components/AddFormBlockModal.vue'
-import FormBlockOptionsModal from '../fields/FormBlockOptionsModal.vue'
 import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
 import EditableDiv from '../../../common/EditableDiv.vue'
 import VButton from "../../../common/Button.vue";
-import { mapState } from 'vuex'
 
 export default {
   name: 'FormFieldsEditor',
   components: {
     VButton,
     ProTag,
-    FormBlockOptionsModal,
     AddFormBlockModal,
-    FormFieldOptionsModal,
     draggable,
     EditableDiv
   },
@@ -174,10 +164,6 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
-      showEditFieldModal: state => state['open/working_form'].showEditFieldModal
-    }),
     form: {
       get() {
         return this.$store.state['open/working_form'].content
@@ -300,9 +286,6 @@ export default {
       }
       return type
     },
-    isNotAFormField(block) {
-      return block && block.type.startsWith('nf')
-    },
     editOptions(index) {
       this.$store.commit('open/working_form/openSettingsForField', index)
     },
@@ -310,19 +293,13 @@ export default {
       this.formFields.push(block)
     },
     removeBlock(blockIndex) {
-      this.closeInputOptionModal()
+      this.closeSidebar()
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
       this.$set(this, 'formFields', newFields)
     },
-    duplicateBlock(blockIndex) {
-      this.closeInputOptionModal()
-      const newField = clonedeep(this.formFields[blockIndex])
-      newField.id = this.generateUUID()
-      this.formFields.push(newField)
-    },
-    closeInputOptionModal() {
-      this.$store.commit('open/working_form/closeEditFieldModal')
+    closeSidebar() {
+      this.$store.commit('open/working_form/closeEditFieldSidebar')
     }
   }
 }

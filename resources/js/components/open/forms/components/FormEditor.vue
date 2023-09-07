@@ -68,6 +68,8 @@
 
       <form-editor-preview/>
 
+      <form-field-edit-sidebar/>
+
       <!-- Form Error Modal -->
       <form-error-modal 
         :show="showFormErrorModal"
@@ -83,6 +85,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import FormFieldEditSidebar from '../fields/FormFieldEditSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
 import FormInformation from './form-components/FormInformation.vue'
 import FormStructure from './form-components/FormStructure.vue'
@@ -100,6 +103,7 @@ import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 export default {
   name: 'FormEditor',
   components: {
+    FormFieldEditSidebar,
     FormEditorPreview,
     FormIntegrations,
     FormNotifications,

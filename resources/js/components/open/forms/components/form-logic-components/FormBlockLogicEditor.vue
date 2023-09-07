@@ -1,5 +1,5 @@
 <template>
-  <div v-if="logic" :key="resetKey" class="-mx-4 sm:-mx-6 p-5 border-b">
+  <div v-if="logic" :key="resetKey" class="border-b mt-4">
     <h3 class="font-semibold block text-lg">
       Logic
     </h3>
