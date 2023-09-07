@@ -1,11 +1,11 @@
 <template>
-  <div v-if="field" class="p-4">
+  <div v-if="field">
     <!-- General -->
-    <div class="border-b">
+    <div class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
         General
       </h3>
-      <p class="text-gray-400 mb-5 text-xs">
+      <p class="text-gray-400 mb-3 text-xs">
         Exclude this field or make it required.
       </p>
       <v-checkbox v-model="field.hidden" class="mb-3"
@@ -14,7 +14,7 @@
       >
         Hidden
       </v-checkbox>
-      <select-input name="width" class="mt-4"
+      <select-input name="width" class="mt-3"
                     :options="[
                       {name:'Full',value:'full'},
                       {name:'1/2 (half width)',value:'1/2'},
@@ -25,7 +25,7 @@
                     ]"
                     :form="field" label="Field Width"
       />
-      <select-input v-if="['nf-text','nf-image'].includes(field.type)" name="align" class="mt-4"
+      <select-input v-if="['nf-text','nf-image'].includes(field.type)" name="align" class="mt-3"
                     :options="[
                       {name:'Left',value:'left'},
                       {name:'Center',value:'center'},
@@ -36,7 +36,7 @@
       />
     </div>
 
-    <div v-if="field.type == 'nf-text'" class="border-b mt-4">
+    <div v-if="field.type == 'nf-text'" class="border-b py-2 px-4">
       <rich-text-area-input name="content"
                             :form="field"
                             label="Content"
@@ -44,7 +44,7 @@
       />
     </div>
 
-    <div v-else-if="field.type == 'nf-page-break'" class="border-b mt-4">
+    <div v-else-if="field.type == 'nf-page-break'" class="border-b py-2 px-4">
       <text-input name="next_btn_text"
                   :form="field"
                   label="Text of next button"
@@ -57,35 +57,35 @@
                   :required="true"
       />
     </div>
-    
-    <div v-else-if="field.type == 'nf-divider'" class="border-b mt-4">
-      <text-input name="name" class="mt-4"
+
+    <div v-else-if="field.type == 'nf-divider'" class="border-b py-2 px-4">
+      <text-input name="name"
                   :form="field" :required="true"
                   label="Field Name"
       />
     </div>
-    
-    <div v-else-if="field.type == 'nf-image'" class="border-b mt-4">
-      <text-input name="name" class="mt-4"
+
+    <div v-else-if="field.type == 'nf-image'" class="border-b py-2 px-4">
+      <text-input name="name"
                   :form="field" :required="true"
                   label="Field Name"
       />
-      <image-input name="image_block" class="mt-4"
+      <image-input name="image_block" class="mt-3"
                     :form="field" label="Upload Image" :required="false"
       />
     </div>
-    
-    <div v-else-if="field.type == 'nf-code'" class="border-b mt-4">
-      <code-input name="content" class="mt-4 h-36" :form="field" label="Content"
+
+    <div v-else-if="field.type == 'nf-code'" class="border-b py-2 px-4">
+      <code-input name="content" :form="field" label="Content"
             help="You can add any html code, including iframes" />
     </div>
-    
-    <div v-else class="border-b mt-4">
+
+    <div v-else class="border-b py-2 px-4">
       <p>No settings found.</p>
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor :form="form" :field="field" v-model="form"/>
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" v-model="form"/>
   </div>
 </template>
 
