@@ -14831,16 +14831,16 @@
         },
         {
             "name": "spatie/ray",
-            "version": "1.37.6",
+            "version": "1.37.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/ray.git",
-                "reference": "caa46a4032c9700d2f33c22d31c23f4f7ef18ae1"
+                "reference": "31e07c3eadc736e180810efff72a0ff882dcddb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/ray/zipball/caa46a4032c9700d2f33c22d31c23f4f7ef18ae1",
-                "reference": "caa46a4032c9700d2f33c22d31c23f4f7ef18ae1",
+                "url": "https://api.github.com/repos/spatie/ray/zipball/31e07c3eadc736e180810efff72a0ff882dcddb6",
+                "reference": "31e07c3eadc736e180810efff72a0ff882dcddb6",
                 "shasum": ""
             },
             "require": {
@@ -14891,7 +14891,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/ray/issues",
-                "source": "https://github.com/spatie/ray/tree/1.37.6"
+                "source": "https://github.com/spatie/ray/tree/1.37.7"
             },
             "funding": [
                 {
@@ -14903,7 +14903,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2023-09-08T09:48:14+00:00"
+            "time": "2023-09-08T12:08:25+00:00"
         },
         {
             "name": "symfony/polyfill-iconv",
