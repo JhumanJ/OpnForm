@@ -30,6 +30,6 @@ export const mutations = {
   },
   closeEditFieldSidebar (state) {
     state.showEditFieldSidebar = false
-    this.selectedFieldIndex = null
+    state.selectedFieldIndex = null
   }
 }
