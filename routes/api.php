@@ -161,5 +161,10 @@ Route::prefix('content')->name('content.')->group(function () {
 });
 
 // Templates
-Route::get('templates', [TemplateController::class, 'index'])->name('templates.show');
-Route::post('templates', [TemplateController::class, 'create'])->name('templates.create');
+Route::prefix('templates')->group(function () {
+    Route::get('/', [TemplateController::class, 'index'])->name('templates.index');
+    Route::post('/', [TemplateController::class, 'create'])->name('templates.create');
+    Route::get('/{slug}', [TemplateController::class, 'show'])->name('templates.show');
+    Route::put('/{id}', [TemplateController::class, 'update'])->name('templates.update');
+    Route::delete('/{id}', [TemplateController::class, 'destroy'])->name('templates.destroy');
+});

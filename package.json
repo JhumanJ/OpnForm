@@ -28,6 +28,7 @@
     "vue-clickaway": "^2.2.2",
     "vue-codemirror": "^4.0.6",
     "vue-confetti": "^2.3.0",
+    "vue-country-flag": "^2.3.2",
     "vue-i18n": "^8.25.0",
     "vue-meta": "^2.4.0",
     "vue-notion": "^0.4.0",
