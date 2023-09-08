@@ -78,6 +78,8 @@
 <!--        <testimonials/>-->
 <!--      </div>-->
 
+      <templates-slider />
+
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
         <h4 class="font-semibold text-3xl text-white">Take your forms to the next level</h4>
         <p class="text-gray-300 my-8">Generous, unlimited free plan.</p>
@@ -123,10 +125,11 @@ import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
 import AiFeature from '~/components/pages/welcome/AiFeature.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
+import TemplatesSlider from '../components/pages/welcome/TemplatesSlider.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, AiFeature},
+  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, AiFeature, TemplatesSlider},
 
   layout: 'default',
 

@@ -1,4 +1,5 @@
 const colors = require('tailwindcss/colors')
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   content: [
@@ -20,10 +21,15 @@ module.exports = {
           '0%, 20%': {transform: 'translateY(0)'},
           '8%': {transform: 'translateY(-25%)'},
           '16%': {transform: 'translateY(+10%)'}
+        },
+        'infinite-scroll': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
         }
       },
       animation: {
-        'bounce-slow': 'bonce-slow 3s ease-in-out infinite'
+        'bounce-slow': 'bonce-slow 3s ease-in-out infinite',
+        'infinite-scroll': 'infinite-scroll 50s linear infinite',
       },
       maxHeight: {
         42: '10.5rem'
@@ -73,5 +79,9 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
+    plugin(function({ addVariant }) {
+      addVariant('between', '&:not(:first-child):not(:last-child)')
+      addVariant('hocus', ['&:hover', '&:focus'])
+    })
   ]
 }

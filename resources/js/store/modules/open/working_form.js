@@ -6,7 +6,7 @@ export const state = {
 
   // Field being edited
   selectedFieldIndex: null,
-  showEditFieldModal: null
+  showEditFieldSidebar: null
 }
 
 // mutations
@@ -23,16 +23,13 @@ export const mutations = {
       index = state.content.properties.findIndex(prop => prop.id === index.id)
     }
     state.selectedFieldIndex = index
-    state.showEditFieldModal = true
+    state.showEditFieldSidebar = true
   },
   setSelectedFieldIndex (state, index) {
     state.selectedFieldIndex = index
   },
-  openEditFieldModal (state) {
-    state.showEditFieldModal = true
-  },
-  closeEditFieldModal (state) {
-    state.showEditFieldModal = false
-    this.selectedFieldIndex = null
+  closeEditFieldSidebar (state) {
+    state.showEditFieldSidebar = false
+    state.selectedFieldIndex = null
   }
 }

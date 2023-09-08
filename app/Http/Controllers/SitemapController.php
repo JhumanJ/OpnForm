@@ -42,9 +42,9 @@ class SitemapController extends Controller
 
     private function addTemplatesUrls(Sitemap $sitemap)
     {
-        Template::chunk(100, function ($templates) use ($sitemap) {
+        Template::where('publicly_listed', true)->chunk(100, function ($templates) use ($sitemap) {
             foreach ($templates as $template) {
-                $sitemap->add($this->createUrl('/templates/' . $template->slug, 0.7));
+                $sitemap->add($this->createUrl('/form-templates/' . $template->slug, 0.8));
             }
         });
     }

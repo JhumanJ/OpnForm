@@ -52,7 +52,7 @@ return [
         'api_key' => env('OPEN_AI_API_KEY'),
     ],
 
-    'unslash' => [
+    'unsplash' => [
       'access_key' => env('UNSPLASH_ACCESS_KEY'),
       'secret_key' => env('UNSPLASH_SECRET_KEY'),
     ],
