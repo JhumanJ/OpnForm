@@ -5,7 +5,7 @@ namespace App\Http\Requests\Templates;
 use App\Models\Template;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTemplateRequest extends FormRequest
+class FormTemplateRequest extends FormRequest
 {
     const IGNORED_KEYS = [
         'id',
@@ -48,12 +48,21 @@ class CreateTemplateRequest extends FormRequest
      */
     public function rules()
     {
+        $slugRule = '';
+        if($this->id){
+            $slugRule = ','.$this->id;
+        }
         return [
             'form' => 'required|array',
+            'publicly_listed' => 'boolean',
             'name' => 'required|string|max:60',
-            'slug' => 'required|string|unique:templates',
-            'description' => 'required|string|max:2000',
+            'slug' => 'required|string|alpha_dash|unique:templates,slug'.$slugRule,
+            'short_description' => 'required|string|max:1000',
+            'description' => 'required|string',
             'image_url' => 'required|string',
+            'types' => 'nullable|array',
+            'industries' => 'nullable|array',
+            'related_templates' => 'nullable|array',
             'questions' => 'array',
         ];
     }
@@ -66,12 +75,18 @@ class CreateTemplateRequest extends FormRequest
                 unset($structure[$key]);
             }
         }
+
         return new Template([
+            'publicly_listed' => $this->publicly_listed,
             'name' => $this->name,
             'slug' => $this->slug,
+            'short_description' => $this->short_description,
             'description' => $this->description,
             'image_url' => $this->image_url,
             'structure' => $structure,
+            'types' => $this->types ?? [],
+            'industries' => $this->industries ?? [],
+            'related_templates' => $this->related_templates ?? [],
             'questions' => $this->questions ?? []
         ]);
     }

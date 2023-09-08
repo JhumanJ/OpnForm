@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Forms;
 
-use App\Console\Commands\GenerateTemplate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AiGenerateFormRequest;
 use App\Models\Forms\AI\AiFormCompletion;
