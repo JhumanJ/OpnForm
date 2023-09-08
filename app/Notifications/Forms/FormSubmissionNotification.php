@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class FormSubmissionNotification extends Notification implements ShouldQueue
 {
@@ -68,6 +69,10 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
 
     private function getReplyToEmail($default)
     {
+        $replyTo = Arr::get((array)$this->event->form->notification_settings, 'notification_reply_to', null);
+        if ($replyTo && $this->validateEmail($replyTo)) {
+            return $replyTo;
+        }
         return $this->getRespondentEmail() ?? $default;
     }
 

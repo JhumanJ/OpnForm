@@ -183,7 +183,7 @@ export default {
           return false
         }
       }
-      return true
+      return !this.$root.navbarHidden
     },
     isIframe() {
       return window.location !== window.parent.location || window.frameElement

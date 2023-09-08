@@ -33,11 +33,18 @@
       </h2>
       <toggle-switch-input name="notifies" :form="form" class="mt-4"
                            label="Receive email notifications on submission"
-                           :help="notifiesHelp"
+                           
       />
-      <text-area-input v-if="form.notifies" name="notification_emails" :form="form" class="mt-4"
-                       label="Notification Emails" help="Add one email per line"
-      />
+      <template v-if="form.notifies">
+        <text-input name="notification_reply_to"
+                    v-model="form.notification_settings.notification_reply_to" class="mt-4"
+                    label="Notification Reply To"
+                    :help="notifiesHelp"
+        />
+        <text-area-input name="notification_emails" :form="form" class="mt-4"
+                        label="Notification Emails" help="Add one email per line"
+        />
+      </template>
     </modal>
   </div>
 </template>
@@ -73,9 +80,9 @@ export default {
     },
     notifiesHelp () {
       if (this.replayToEmailField) {
-        return 'Reply-to for this notification will be the email filled in the field "' + this.replayToEmailField.name + '".'
+        return 'If empty, Reply-to for this notification will be the email filled in the field "' + this.replayToEmailField.name + '".'
       }
-      return 'Reply-to for this notification will be your own email. Add a single email field to your form, and it will automatically become the reply to value.'
+      return 'If empty, Reply-to for this notification will be your own email. Add a single email field to your form, and it will automatically become the reply to value.'
     }
   },
 
