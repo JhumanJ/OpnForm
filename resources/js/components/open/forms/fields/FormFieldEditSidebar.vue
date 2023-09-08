@@ -121,18 +121,18 @@ export default {
       this.$set(this.field, 'type', newType)
     },
     removeBlock() {
-      this.closeSidebar()
       const newFields = clonedeep(this.form.properties)
       newFields.splice(this.selectedFieldIndex, 1)
       this.$set(this.form, 'properties', newFields)
+      this.closeSidebar()
     },
     duplicateBlock() {
-      this.closeSidebar()
       const newFields = clonedeep(this.form.properties)
       const newField = clonedeep(this.form.properties[this.selectedFieldIndex])
       newField.id = this.generateUUID()
       newFields.push(newField)
       this.$set(this.form, 'properties', newFields)
+      this.closeSidebar()
     },
     closeSidebar() {
       this.$store.commit('open/working_form/closeEditFieldSidebar')

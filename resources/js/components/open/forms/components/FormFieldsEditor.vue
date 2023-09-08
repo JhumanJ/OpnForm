@@ -294,10 +294,10 @@ export default {
       this.$store.commit('open/working_form/openSettingsForField', this.formFields.length-1)
     },
     removeBlock(blockIndex) {
-      this.closeSidebar()
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
       this.$set(this, 'formFields', newFields)
+      this.closeSidebar()
     },
     closeSidebar() {
       this.$store.commit('open/working_form/closeEditFieldSidebar')
