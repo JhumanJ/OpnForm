@@ -74,10 +74,7 @@ export default {
   props: {},
   data() {
     return {
-      typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
-      editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link'],
-      ]
+      
     }
   },
 
