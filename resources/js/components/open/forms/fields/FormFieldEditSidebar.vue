@@ -66,11 +66,9 @@ import ChangeFieldType from "./components/ChangeFieldType.vue"
 import FieldOptions from './components/FieldOptions.vue'
 import BlockOptions from './components/BlockOptions.vue'
 
-const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
-
 export default {
   name: 'FormFieldEditSidebar',
-  components: {ChangeFieldType, FieldOptions, BlockOptions, FormBlockLogicEditor},
+  components: {ChangeFieldType, FieldOptions, BlockOptions},
   props: {},
   data() {
     return {
