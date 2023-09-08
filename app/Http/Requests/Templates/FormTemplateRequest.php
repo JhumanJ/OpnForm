@@ -58,7 +58,7 @@ class FormTemplateRequest extends FormRequest
             'name' => 'required|string|max:60',
             'slug' => 'required|string|alpha_dash|unique:templates,slug'.$slugRule,
             'short_description' => 'required|string|max:1000',
-            'description' => 'required|string|max:2000',
+            'description' => 'required|string',
             'image_url' => 'required|string',
             'types' => 'nullable|array',
             'industries' => 'nullable|array',
@@ -75,7 +75,7 @@ class FormTemplateRequest extends FormRequest
                 unset($structure[$key]);
             }
         }
-        
+
         return new Template([
             'publicly_listed' => $this->publicly_listed,
             'name' => $this->name,
