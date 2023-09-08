@@ -19,6 +19,7 @@ return new class extends Migration
             $table->jsonb('types')->default('[]');
             $table->string('short_description')->nullable();
             $table->jsonb('related_templates')->default('[]');
+            $table->string('image_url',500)->nullable()->change();
         });
     }
 

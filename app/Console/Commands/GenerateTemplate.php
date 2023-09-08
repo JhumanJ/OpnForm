@@ -27,7 +27,9 @@ class GenerateTemplate extends Command
     const MAX_RELATED_TEMPLATES = 8;
 
     const FORM_STRUCTURE_PROMPT = <<<EOD
-        I created a form builder. Forms are represented as Json objects. Here's an example form:
+        You are an AI assistant for OpnForm, a form builder and your job is to build a form for our user.
+
+        Forms are represented as Json objects. Here's an example form:
         ```json
          {
                 "title": "Contact Us",
@@ -55,11 +57,11 @@ class GenerateTemplate extends Command
                       "hidden": false,
                       "select": {
                         "options": [
-                            {"name": 1, "id": 1},
-                            {"name": 2, "id": 2},
-                            {"name": 3, "id": 3},
-                            {"name": 4, "id": 4},
-                            {"name": 5, "id": 5}
+                            {"name": 1, "value": 1},
+                            {"name": 2, "value": 2},
+                            {"name": 3, "value": 3},
+                            {"name": 4, "value": 4},
+                            {"name": 5, "value": 5}
                         ]
                       },
                       "prefill": 5,
@@ -106,7 +108,7 @@ class GenerateTemplate extends Command
                 "color": "#64748b"
             }
         ```
-        The form properties can only have one of the following types: 'text', 'number', 'select', 'multi_select', 'date', 'files', 'checkbox', 'url', 'email', 'phone_number'.
+        The form properties can only have one of the following types: 'text', 'number', 'select', 'multi_select', 'date', 'files', 'checkbox', 'url', 'email', 'phone_number', 'signature'.
         All form properties objects need to have the keys 'help', 'name', 'type', 'hidden', 'placeholder', 'prefill'.
         The placeholder property is optional (can be "null") and is used to display a placeholder text in the input field.
         The help property is optional (can be "null") and is used to display extra information about the field.
@@ -115,15 +117,13 @@ class GenerateTemplate extends Command
         ```json
         {
            "options": [
-              {"name": 1, "id": 1},
-              {"name": 2, "id": 2},
-              {"name": 3, "id": 3},
-              {"name": 4, "id": 4}
+              {"name": 1, "value": 1},
+              {"name": 2, "value": 2},
+              {"name": 3, "value": 3},
+              {"name": 4, "value": 4}
            ]
         }
         ```
-        Note that the options are separated by a new line character.
-
 
         For numerical rating inputs, use a "number" type input and set the property "is_rating" to "true" to turn it into a star rating input. Ex:
         ```json
@@ -153,19 +153,19 @@ class GenerateTemplate extends Command
         }
         ```
 
-        Give me the valid JSON code only, for the following form: "[REPLACE]"
-        Do not ask me for more information about required properties or types, suggest me a form structure instead.
+        Give me the valid JSON object only, representing the following form: "[REPLACE]"
+        Do not ask me for more information about required properties or types, only suggest me a form structure.
     EOD;
 
     const FORM_DESCRIPTION_PROMPT = <<<EOD
-        I own a form builder online named OpnForm. It's free to use.
+        You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
         Give me some valid html code (using only h2, p, ul, li html tags) for the following form template page: "[REPLACE]".
 
         The html code should have the following structure:
         - A paragraph explaining what the template is about
         - A paragraph explaining why and when to use such a form
         - A paragraph explaining who is the target audience and why it's a great idea to build this form
-        - A paragraph explaining that OpnForm is the best tool to build this form. They can duplicate this template in a few seconds.
+        - A paragraph explaining that OpnForm is the best tool to build this form. They can duplicate this template in a few seconds, and integrate with many other tools through our webhook or zapier integration.
         Each paragraph (except for the first one) MUST start with with a h2 tag containing a title for this paragraph.
     EOD;
 
@@ -175,20 +175,22 @@ class GenerateTemplate extends Command
     EOD;
 
     const FORM_INDUSTRY_PROMPT = <<<EOD
-        I own a form builder online named OpnForm. It's free to use.
-        I am creating a form template: "[REPLACE]". You must assign the template to one or more industries. Return a maximum of 4 industries and order them by relevance (most relevant first).
+        You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
+        I am creating a form template: "[REPLACE]". You must assign the template to industries. Return a list of industries (minimum 1, maximum 3 but only if very relevant) and order them by relevance (most relevant first).
 
-        Here are the industries you can choose from: [INDUSTRIES]
+        Here are the only industries you can choose from: [INDUSTRIES]
+        Do no make up any new type, only use the ones listed above.
 
         Reply only with a valid JSON, being an array of string. Order assigned industries from the most relevant to the less relevant.
         Ex: ["banking_forms","customer_service_forms"]
     EOD;
 
     const FORM_TYPES_PROMPT = <<<EOD
-        I own a form builder online named OpnForm. It's free to use.
-        I am creating a form template: "[REPLACE]". You must assign the template to one or more types. Return a maximum of 4 types and order them by relevance (most relevant first).
+        You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
+        I am creating a form template: "[REPLACE]". You must assign the template to one or more types. Return a list of types (minimum 1, maximum 3 but only if very accurate) and order them by relevance (most relevant first).
 
-        Here are the types you can choose from: [TYPES]
+        Here are the only types you can choose from: [TYPES]
+        Do no make up any new type, only use the ones listed above.
 
         Reply only with a valid JSON, being an array of string. Order assigned types from the most relevant to the less relevant.
         Ex: ["consent_forms","award_forms"]
@@ -196,12 +198,12 @@ class GenerateTemplate extends Command
 
     const FORM_QAS_PROMPT = <<<EOD
         Now give me 4 to 6 question and answers to put on the form template page. The questions should be about the reasons for this template (when to use, why, target audience, goal etc.).
-        The questions should also explain why OpnForm is the best option to create this form.
+        The questions should also explain why OpnForm is the best option to create this form (open-source, free to use, integrations etc).
         Reply only with a valid JSON, being an array of object containing the keys "question" and "answer".
     EOD;
 
     const FORM_TITLE_PROMPT = <<<EOD
-        Finally give me a title for the template. It should be short and to the point, without any quotes.
+        Finally give me a title for the template. It must contain or end with "template". It should be short and to the point, without any quotes.
     EOD;
 
     const FORM_IMG_KEYWORDS_PROMPT = <<<EOD
@@ -248,6 +250,14 @@ class GenerateTemplate extends Command
         $formDescription = $completer->completeChat([
             ["role" => "user", "content" => $formDescriptionPrompt]
         ])->getHtml();
+
+        $formCoverKeywords = $completer->completeChat([
+            ["role" => "user", "content" => $formDescriptionPrompt],
+            ["role" => "assistant", "content" => $formDescription],
+            ["role" => "user", "content" => self::FORM_IMG_KEYWORDS_PROMPT]
+        ])->getArray();
+        $imageUrl = $this->getImageCoverUrl($formCoverKeywords['search_query']);
+
         $formQAs = $completer->completeChat([
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
@@ -259,13 +269,6 @@ class GenerateTemplate extends Command
             ["role" => "user", "content" => self::FORM_TITLE_PROMPT]
         ])->getString();
 
-        // Finally get keywords for image cover
-        $formCoverKeywords = $completer->completeChat([
-            ["role" => "user", "content" => $formDescriptionPrompt],
-            ["role" => "assistant", "content" => $formDescription],
-            ["role" => "user", "content" => self::FORM_IMG_KEYWORDS_PROMPT]
-        ])->getArray();
-        $imageUrl = $this->getImageCoverUrl($formCoverKeywords['search_query']);
 
         $template = $this->createFormTemplate(
             $formData,
