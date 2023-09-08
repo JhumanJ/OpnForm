@@ -36,9 +36,9 @@
             </div>
           </div>
         </div>
-        <input type="number" class="phone" v-model="inputVal"
+        <input type="text" class="phone" v-model="inputVal"
           :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-          :placeholder="placeholder" :style="inputStyle">
+          :placeholder="placeholder" :style="inputStyle" @input="onInput">
       </div>
 
     </div>
@@ -49,10 +49,14 @@
 import { directive as onClickaway } from 'vue-clickaway'
 import inputMixin from '~/mixins/forms/input.js'
 import countryCodes from '../../../data/country_codes.json'
+import CountryFlag from 'vue-country-flag'
+
 
 export default {
   phone: 'PhoneInput',
-  components: {},
+  components: {
+    CountryFlag
+  },
   directives: {
     onClickaway: onClickaway
   },
@@ -68,10 +72,13 @@ export default {
   },
   watch: {
     inputVal(newVal, oldVal) {
-      this.compVal = this.selectedCountryCode.dial_code + newVal;
+      if (newVal.startsWith('0')) {
+        newVal = newVal.replace(/^0+/, '')
+      }
+      this.compVal = this.selectedCountryCode.dial_code + ' ' + newVal
     },
     selectedCountryCode(newVal, oldVal) {
-      this.compVal = this.compVal.replace(oldVal.dial_code, newVal.dial_code);
+      this.compVal = this.compVal.replace(oldVal.dial_code, newVal.dial_code)
     }
   },
   methods: {
@@ -81,6 +88,11 @@ export default {
     },
     closeDropdown() {
       this.isOpen = false
+    },
+    onInput(event) {
+      const input = event.target.value
+      const digitsOnly = input.replace(/[^0-9]/g, '')
+      this.inputVal = digitsOnly
     },
   }
 }

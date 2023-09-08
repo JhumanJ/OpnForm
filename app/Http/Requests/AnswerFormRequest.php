@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\ValidHCaptcha;
+use App\Rules\ValidPhoneInputRule;
 
 class AnswerFormRequest extends FormRequest
 {
@@ -189,7 +190,7 @@ class AnswerFormRequest extends FormRequest
                 }
                 return $this->getRulesForDate($property);
             case 'phone_number':
-                return ['string', 'min:10', 'starts_with:+'];
+                return [new ValidPhoneInputRule];
             default:
                 return [];
         }
