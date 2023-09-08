@@ -1,12 +1,11 @@
 <template>
   <dropdown dusk="nav-dropdown" v-if="changeTypeOptions.length > 0">
     <template #trigger="{toggle}">
-      <v-button class="relative" size="small" color="light-gray" @click="toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 text-blue-600 inline mr-1 -mt-1">
+      <v-button class="relative" :class="btnClasses" size="small" color="light-gray" @click="toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4 text-blue-600 inline mr-1 -mt-1">
           <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
         </svg>
-
-        Change Field Type
+        <span class="whitespace-nowrap">Change Type</span>
       </v-button>
     </template>
 
@@ -28,6 +27,10 @@ export default {
   props: {
     field: {
       type: Object,
+      required: true
+    },
+    btnClasses: {
+      type: String,
       required: true
     }
   },

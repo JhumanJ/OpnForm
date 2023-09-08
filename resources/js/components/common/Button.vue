@@ -71,7 +71,7 @@ export default {
     btnClasses() {
       const sizes = this.sizes
       const colorShades = this.colorShades
-      return `${sizes['p-y']} ${sizes['p-x']}
+      return `v-btn ${sizes['p-y']} ${sizes['p-x']}
         ${colorShades?.main} ${colorShades?.hover} ${colorShades?.ring} ${colorShades['ring-offset']}
         ${colorShades?.text} transition ease-in duration-200 text-center text-${sizes?.font} font-medium focus:outline-none focus:ring-2
         focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
