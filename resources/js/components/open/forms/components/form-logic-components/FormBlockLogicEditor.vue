@@ -1,9 +1,11 @@
 <template>
-  <div v-if="logic" :key="resetKey" class="-mx-4 sm:-mx-6 p-5 border-b">
-    <h3 class="font-semibold block text-lg">
-      Logic
-    </h3>
-    <p class="text-gray-400 text-xs mb-5">
+  <collapse v-if="logic" :key="resetKey" :default-value="isCollapseOpen" @click="onClickCollapse">
+    <template #title>
+      <h3 class="font-semibold block text-lg">
+        Logic
+      </h3>
+    </template>
+    <p class="text-gray-400 text-xs mb-3">
       Add some logic to this block. Start by adding some conditions, and then add some actions.
     </p>
     <div class="relative flex">
@@ -26,16 +28,16 @@
       </div>
     </div>
 
-    <h5 class="font-semibold mt-4">
+    <h5 class="font-semibold mt-3">
       1. Conditions
     </h5>
-    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-4 border-t border" :form="form"/>
+    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-1 border-t border rounded-md" :form="form"/>
 
-    <h5 class="font-semibold mt-4">
+    <h5 class="font-semibold mt-3">
       2. Actions
     </h5>
     <select-input :key="resetKey" v-model="logic.actions" name="actions"
-                  :multiple="true" class="mt-4" placeholder="Actions..."
+                  :multiple="true" class="mt-1" placeholder="Actions..."
                   help="Action(s) triggerred when above conditions are true"
                   :options="actionOptions"
                   @input="onActionInput"
@@ -63,7 +65,7 @@
         </div>
       </div>
     </modal>
-  </div>
+  </collapse>
 </template>
 
 <script>
@@ -72,10 +74,11 @@ import ConditionEditor from './ConditionEditor.vue'
 import Modal from '../../../../Modal.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
 import clonedeep from 'clone-deep'
+import Collapse from "../../../../common/Collapse.vue";
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: {SelectInput, Modal, ProTag, ConditionEditor},
+  components: {Collapse, SelectInput, Modal, ProTag, ConditionEditor},
   props: {
     field: {
       type: Object,
@@ -89,13 +92,14 @@ export default {
 
   data() {
     return {
+      isCollapseOpen: false,
       resetKey: 0,
       logic: this.field.logic || {
         conditions: null,
         actions: []
       },
       showCopyFormModal: false,
-      copyFrom: null
+      copyFrom: null,
     }
   },
 
@@ -199,6 +203,9 @@ export default {
         }
       }
       this.showCopyFormModal = false
+    },
+    onClickCollapse (e) {
+      this.isCollapseOpen = e
     }
   }
 }

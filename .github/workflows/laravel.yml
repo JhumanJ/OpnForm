@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ 8.1 ]
+        php: [ 8.2 ]
 
     name: Run Feature & Unit tests (PHP ${{ matrix.php }})
 
@@ -102,7 +102,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ 8.1 ]
+        php: [ 8.2 ]
 
     name: Triggers deploy through Laravel Vapor
 

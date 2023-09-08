@@ -95,6 +95,7 @@ class JsonFixer
      */
     public function fix($json)
     {
+        $json = preg_replace('/(?<!\\\\)(?:\\\\{2})*\p{C}+/u', '', $json);
         list($head, $json, $tail) = $this->trim($json);
 
         if (empty($json) || $this->isValid($json)) {
@@ -124,7 +125,7 @@ class JsonFixer
 
     protected function isValid($json)
     {
-        \json_decode($json);
+        \json_decode($json,true,512,JSON_INVALID_UTF8_SUBSTITUTE);
 
         return \JSON_ERROR_NONE === \json_last_error();
     }
@@ -264,6 +265,10 @@ class JsonFixer
         if ($this->silent) {
             return $json;
         }
+
+        \Log::debug('Broken json received: ', [
+            'json' => $json
+        ]);
 
         throw new InvalidJsonException(
             \sprintf('Could not fix JSON (tried padding `%s`)', \substr($tmpJson, $length), $json)

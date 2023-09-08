@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Requests\Templates\CreateTemplateRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TemplateResource extends JsonResource
+class FormTemplateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +14,8 @@ class TemplateResource extends JsonResource
      */
     public function toArray($request)
     {
-        $data = parent::toArray($request);
-        foreach (CreateTemplateRequest::IGNORED_KEYS as $key) {
-            unset($data[$key]);
-        }
-        return $data;
+        return array_merge(parent::toArray($request), [
+            'is_new' => $this->created_at->isAfter(now()->subDays(7))
+        ]);
     }
 }
