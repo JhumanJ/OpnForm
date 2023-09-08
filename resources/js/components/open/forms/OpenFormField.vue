@@ -50,7 +50,7 @@
               class="nf-code w-full px-2 mb-3"
               v-html="field.content"
         />
-        <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id" 
+        <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id"
             class="border-b my-4 w-full mx-2"
         />
         <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
@@ -69,6 +69,7 @@
 <script>
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+import {mapState} from "vuex";
 
 export default {
   name: 'OpenFormField',
@@ -106,6 +107,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
+      showEditFieldSidebar: state => state['open/working_form'].showEditFieldSidebar
+    }),
     fieldComponents() {
       return {
         text: 'TextInput',
@@ -160,6 +165,11 @@ export default {
     isFieldDisabled () {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
     },
+    beingEdited() {
+      return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item)=>{
+        return item.id === this.field.id
+      }) === this.selectedFieldIndex
+    },
     selectionFieldsOptions () {
       // For auto update hidden options
       let fieldsOptions = []
@@ -191,7 +201,11 @@ export default {
     getFieldClasses () {
       let classes = ''
       if (this.adminPreview) {
-        classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative'
+        classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
+
+        if (this.beingEdited) {
+          classes += ' bg-blue-50 rounded-md'
+        }
       }
       return classes
     },

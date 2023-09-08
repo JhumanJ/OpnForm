@@ -1,4 +1,5 @@
 const colors = require('tailwindcss/colors')
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   content: [
@@ -73,5 +74,9 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
+    plugin(function({ addVariant }) {
+      addVariant('between', '&:not(:first-child):not(:last-child)')
+      addVariant('hocus', ['&:hover', '&:focus'])
+    })
   ]
 }

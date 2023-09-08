@@ -1,12 +1,10 @@
 <template>
   <div class="relative">
-    <div>
-      <slot name="trigger"
-            :toggle="toggle"
-            :open="open"
-            :close="close"
-      />
-    </div>
+    <slot name="trigger"
+          :toggle="toggle"
+          :open="open"
+          :close="close"
+    />
     <transition name="fade">
       <div
         v-if="isOpen"
@@ -14,7 +12,7 @@
         :class="dropdownClass"
       >
         <div class="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <slot />
+          <slot/>
         </div>
       </div>
     </transition>
@@ -22,7 +20,7 @@
 </template>
 
 <script>
-import { directive as onClickaway } from 'vue-clickaway'
+import {directive as onClickaway} from 'vue-clickaway'
 
 export default {
   name: 'Dropdown',
@@ -31,21 +29,24 @@ export default {
   },
 
   props: {
-    dropdownClass: { type: String, default: 'origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20' }
+    dropdownClass: {
+      type: String,
+      default: 'origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20'
+    }
   },
-  data () {
+  data() {
     return {
       isOpen: false
     }
   },
   methods: {
-    open () {
+    open() {
       this.isOpen = true
     },
-    close () {
+    close() {
       this.isOpen = false
     },
-    toggle () {
+    toggle() {
       this.isOpen = !this.isOpen
     }
   }
