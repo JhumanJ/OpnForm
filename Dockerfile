@@ -33,7 +33,7 @@ ADD composer.json composer.lock artisan ./
 # post-autoload command from the composer file if we want to run composer without
 # adding a dependency to all the php files.
 RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json
-RUN composer install
+RUN composer install --ignore-platform-req=php
 
 ADD app /app/app
 ADD bootstrap /app/bootstrap
@@ -82,6 +82,6 @@ RUN chmod a+x /usr/local/bin/*.sh /app/artisan \
     && echo "daemonize no" >> /etc/redis/redis.conf\
     && echo "appendonly yes" >> /etc/redis/redis.conf\
     && echo "dir /persist/redis/data" >> /etc/redis/redis.conf
-    
+
 
 EXPOSE 80
