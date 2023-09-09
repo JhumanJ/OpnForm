@@ -264,11 +264,14 @@ export default {
       return this.template.image_url
     },
     metaTags () {
-      return (this.template && this.template.publicly_listed) ? [] : [{ name: 'robots', content: 'noindex' }]
+      if (!this.template) {
+        return [];
+      }
+      return this.template.publicly_listed ? [] : [{ name: 'robots', content: 'noindex' }]
     },
     createFormWithTemplateUrl () {
       if(this.authenticated) {
-        return '/forms/create?template=' + this.template?.slug  
+        return '/forms/create?template=' + this.template?.slug
       }
       return '/forms/create/guest?template=' + this.template?.slug
     }
