@@ -4,6 +4,17 @@
                           @close="showAddBlock=false"
     />
 
+    <v-button v-if="formFields && formFields.length > 8"
+      class="w-full mb-3" color="light-gray"
+      @click="showAddBlock=true">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Add block
+    </v-button>
+
     <draggable v-model="formFields"
                class="bg-white overflow-hidden dark:bg-notion-dark-light rounded-md w-full mx-auto border transition-colors"
                ghost-class="bg-gray-50" handle=".draggable" :animation="200"
@@ -124,7 +135,7 @@
     </draggable>
 
     <v-button
-      class="w-full mt-4" color="light-gray"
+      class="w-full mt-3" color="light-gray"
       @click="showAddBlock=true">
       <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
            xmlns="http://www.w3.org/2000/svg">
