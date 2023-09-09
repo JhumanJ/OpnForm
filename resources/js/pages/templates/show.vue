@@ -249,7 +249,7 @@ export default {
       return this.$store.getters['open/templates/getBySlug'](this.$route.params.slug)
     },
     form () {
-      return new Form(this.template.structure)
+      return this.template ? new Form(this.template.structure) : null
     },
     metaTitle () {
       return this.template ? this.template.name : 'Form Template'
