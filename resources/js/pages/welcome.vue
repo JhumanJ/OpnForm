@@ -12,8 +12,8 @@
               <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">form builder</span>
             </h1>
             <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
-              Create beautiful forms and share them anywhere. It takes seconds, you don't need to know how to code
-              and <span class="font-bold">it's free</span>
+              Create beautiful forms and share them anywhere. It takes seconds, you don't need to know how to code. Get started
+              <span class="font-bold">for free</span>!
             </p>
 
             <div class="mt-8 flex justify-center">

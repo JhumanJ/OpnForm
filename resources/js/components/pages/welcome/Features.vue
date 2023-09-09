@@ -5,7 +5,7 @@
       <h2
         class="mb-6 font-sans text-4xl font-semibold leading-none tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:mx-auto">
         The easiest way to create forms. <br/>
-        And it's <span class="text-nt-blue">100% free!</span>
+        Generous unlimited <span class="text-nt-blue">free plan.</span>
       </h2>
       <p class="text-base text-gray-700 dark:text-gray-300 md:text-lg">
         Need a contact form? Doing a survey? Create a form in 2 minutes and start receiving submissions.

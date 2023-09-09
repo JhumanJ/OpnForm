@@ -1,6 +1,6 @@
-ARG PHP_PACKAGES="php8.2 composer php8.2-common php8.2-pgsql php8.2-redis php8.2-mbstring\
-        php8.2-simplexml php8.2-bcmath php8.2-gd php8.2-curl php8.2-zip\
-        php8.2-imagick php8.2-bz2 php8.2-gmp php8.2-int php8.2-pcov php8.2-soap php8.2-xsl"
+ARG PHP_PACKAGES="php8.1 composer php8.1-common php8.1-pgsql php8.1-redis php8.1-mbstring\
+        php8.1-simplexml php8.1-bcmath php8.1-gd php8.1-curl php8.1-zip\
+        php8.1-imagick php8.1-bz2 php8.1-gmp php8.1-int php8.1-pcov php8.1-soap php8.1-xsl"
 
 FROM node:16 AS javascript-builder
 WORKDIR /app
@@ -33,7 +33,7 @@ ADD composer.json composer.lock artisan ./
 # post-autoload command from the composer file if we want to run composer without
 # adding a dependency to all the php files.
 RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json
-RUN composer install
+RUN composer install --ignore-platform-req=php
 
 ADD app /app/app
 ADD bootstrap /app/bootstrap
@@ -61,11 +61,11 @@ ARG PHP_PACKAGES
 RUN apt-get update \
     && apt-get install -y \
         supervisor nginx sudo postgresql-15 redis\
-        $PHP_PACKAGES php8.2-fpm\
+        $PHP_PACKAGES php8.1-fpm\
     && apt-get clean
 
 ADD docker/postgres-wrapper.sh docker/php-fpm-wrapper.sh docker/redis-wrapper.sh /usr/local/bin/
-ADD docker/php-fpm.conf /etc/php/8.2/fpm/pool.d/
+ADD docker/php-fpm.conf /etc/php/8.1/fpm/pool.d/
 ADD docker/nginx.conf /etc/nginx/sites-enabled/default
 ADD docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD .env.docker .env
