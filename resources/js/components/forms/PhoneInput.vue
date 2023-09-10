@@ -13,7 +13,7 @@
       </small>
     </div>
     <div :id="id ? id : name" :disabled="disabled" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-1/4" :data="countries" :value="selectedCountryCode" :inner-style="{ width: '474px' }"
+      <v-select class="w-1/4 mt-1" :data="countries" :value="selectedCountryCode" :inner-style="{ width: '474px' }"
         :searchable="true" :search-keys="['name']" :option-key="'code'" :color="'#3B82F6'"
         :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onCountryChange">
         <template #option="props">
