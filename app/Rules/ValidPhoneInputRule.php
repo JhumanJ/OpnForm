@@ -19,11 +19,11 @@ class ValidPhoneInputRule implements Rule
         if (count($parts) < 2) {
             return false;
         }
-        return strlen($parts[1]) >= 10;
+        return strlen($parts[1]) >= 5;
     }
 
     public function message()
     {
-        return 'The :attribute must be a string that starts with a "+" character and must be at least 10 digits long.';
+        return 'The :attribute must be a string that starts with a "+" character and must be at least 5 digits long.';
     }
 }
