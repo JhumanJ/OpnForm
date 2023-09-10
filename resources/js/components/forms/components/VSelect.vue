@@ -58,8 +58,8 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto" />
           </div>
           <template v-if="filteredOptions.length>0">
-            <li v-for="item in filteredOptions" :key="item[optionKey]" role="option"
-                class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-nt-blue focus:outline-none focus:text-white focus:bg-nt-blue"
+            <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"
+                class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
                 :dusk="dusk+'_option'" @click="select(item)"
             >
               <slot name="option" :option="item" :selected="isSelected(item)" />
@@ -68,8 +68,8 @@
           <p v-else-if="!loading && !(allowCreation && searchTerm)" class="w-full text-gray-500 text-center py-2">
             {{ (allowCreation ? 'Type something to add an option': 'No option available') }}.
           </p>
-          <li v-if="allowCreation && searchTerm" role="option"
-              class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-nt-blue focus:outline-none focus:text-white focus:bg-nt-blue"
+          <li v-if="allowCreation && searchTerm" role="option" :style="optionStyle"
+              class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
               @click="createOption(searchTerm)"
           >
             Create <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{ searchTerm }}</b>
@@ -129,6 +129,11 @@ export default {
     }
   },
   computed: {
+    optionStyle () {
+      return {
+        '--bg-form-color': this.color
+      }
+    },
     inputStyle () {
       return {
         '--tw-ring-color': this.color
