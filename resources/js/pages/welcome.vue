@@ -70,6 +70,8 @@
 
       <more-features class="pt-56" />
 
+      <pricing-table v-if="paidPlansEnabled" class="pb-20" :home-page="true" />
+
 <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
 <!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
 <!--        <p class="w-full mt-2 mb-8">-->
@@ -122,6 +124,7 @@
 import {mapGetters} from 'vuex'
 import Features from '~/components/pages/welcome/Features.vue'
 import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
+import PricingTable from '../components/pages/pricing/PricingTable.vue'
 import AiFeature from '~/components/pages/welcome/AiFeature.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
@@ -129,7 +132,7 @@ import TemplatesSlider from '../components/pages/welcome/TemplatesSlider.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, AiFeature, TemplatesSlider},
+  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider},
 
   layout: 'default',
 
@@ -155,7 +158,10 @@ export default {
     ...mapGetters({
       authenticated: 'auth/check'
     }),
-    configLinks: () => window.config.links
+    configLinks: () => window.config.links,
+    paidPlansEnabled() {
+      return window.config.paid_plans_enabled
+    }
   }
 }
 </script>
