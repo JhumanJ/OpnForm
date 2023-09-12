@@ -2,49 +2,43 @@
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="label">
       <label v-if="label" :for="id ? id : name"
-        :class="[theme.default.label, { 'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels }]">
+             :class="[theme.default.label, { 'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels }]">
         {{ label }}
         <span v-if="required" class="text-red-500 required-dot">*</span>
       </label>
     </slot>
     <div v-if="help && helpPosition == 'above_input'" class="flex mb-1">
       <small :class="theme.default.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
+        <slot name="help"><span class="field-help" v-html="help"/></slot>
       </small>
     </div>
     <div :id="id ? id : name" :disabled="disabled" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-1/4 mt-1" :data="countries" :value="selectedCountryCode" :inner-style="{ width: '474px' }"
-        :searchable="true" :search-keys="['name']" :option-key="'code'" :color="'#3B82F6'"
-        :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onCountryChange">
+      <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries" :value="selectedCountryCode"
+                :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
+                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onCountryChange">
         <template #option="props">
-          <div class="flex items-center space-x-2">
-            <country-flag :country="props.option.code" />
-            <span>{{ props.option.name }}</span>
-            <span>{{ props.option.code }}</span>
+          <div class="flex items-center space-x-2 hover:text-white">
+            <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code"/>
+            <span class="grow">{{ props.option.name }}</span>
             <span>{{ props.option.dial_code }}</span>
           </div>
         </template>
         <template #selected="props">
-          <div class="flex items-center space-x-2 justify-start">
-            <country-flag :country="props.option.code" :style="{
-              'margin-top': '-0.7em',
-              'margin-left': '-0.9em',
-              'margin-right': '-0.6em',
-              'margin-bottom': '-0.7em'
-            }" />
+          <div class="flex items-center space-x-2 justify-center overflow-hidden">
+            <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code" />
             <span>{{ props.option.dial_code }}</span>
           </div>
         </template>
       </v-select>
-      <input v-model="inputVal" type="text" class="inline-flex-grow ml-5"
-        :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-        :placeholder="placeholder" :style="inputStyle" @input="onInput">
+      <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none"
+             :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
+             :placeholder="placeholder" :style="inputStyle" @input="onInput">
     </div>
   </div>
 </template>
 
 <script>
-import { directive as onClickaway } from 'vue-clickaway'
+import {directive as onClickaway} from 'vue-clickaway'
 import inputMixin from '~/mixins/forms/input.js'
 import countryCodes from '../../../data/country_codes.json'
 import CountryFlag from 'vue-country-flag'
@@ -97,5 +91,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>
