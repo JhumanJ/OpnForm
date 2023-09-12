@@ -41,8 +41,9 @@
           </span>
         </button></span>
       <!-- Select popover, show/hide based on select state. -->
-      <div v-show="isOpen" :dusk="dusk+'_dropdown'"
+      <div v-show="isOpen" :dusk="dusk+'_dropdown' "
            class="absolute mt-1 w-full rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
+           :style="innerStyle"
       >
         <ul tabindex="-1" role="listbox" aria-labelled by="listbox-label" aria-activedescendant="listbox-item-3"
             class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
@@ -99,6 +100,7 @@ export default {
   props: {
     data: Array,
     value: { default: null },
+    innerStyle: { type: Object, default: null },
     label: { type: String, default: null },
     dusk: { type: String, default: null },
     loading: { type: Boolean, default: false },
