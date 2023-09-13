@@ -9,7 +9,7 @@
         <div class="flex flex-col bg-white rounded-md" :class="{'lg:flex-row':!fieldSideBarOpened, 'xl:flex-row':fieldSideBarOpened}">
           <div class="p-2 -mr-3 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer hidden xl:block" role="button"
                :class="{'lg:block':!fieldSideBarOpened, 'xl:block':fieldSideBarOpened}"
-               @click.prevent="editFieldOptions"
+               @click.prevent="openAddFieldModal"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
                  stroke="currentColor" class="w-5 h-5">
@@ -209,6 +209,9 @@ export default {
   methods: {
     editFieldOptions() {
       this.$store.commit('open/working_form/openSettingsForField', this.field)
+    },
+    openAddFieldModal() {
+      this.$store.commit('open/working_form/openAddFieldModal', this.field)
     },
     /**
      * Get the right input component for the field/options combination

@@ -6,7 +6,8 @@ export const state = {
 
   // Field being edited
   selectedFieldIndex: null,
-  showEditFieldSidebar: null
+  showEditFieldSidebar: null,
+  showAddFieldModal: null
 }
 
 // mutations
@@ -24,12 +25,25 @@ export const mutations = {
     }
     state.selectedFieldIndex = index
     state.showEditFieldSidebar = true
-  },
-  setSelectedFieldIndex (state, index) {
-    state.selectedFieldIndex = index
-  },
+    state.showAddFieldModal = false
+  },   
   closeEditFieldSidebar (state) {
-    state.showEditFieldSidebar = false
     state.selectedFieldIndex = null
-  }
+    state.showEditFieldSidebar = false
+    state.showAddFieldModal = false
+  },
+  openAddFieldModal (state, index) {
+    // If field is passed, compute index
+    if (index !== null && typeof index === 'object') {
+      index = state.content.properties.findIndex(prop => prop.id === index.id)
+    }
+    state.selectedFieldIndex = index
+    state.showAddFieldModal = true
+    state.showEditFieldSidebar = false
+  },
+  closeAddFieldModal (state) {
+    state.selectedFieldIndex = null
+    state.showAddFieldModal = false
+    state.showEditFieldSidebar = false
+  },
 }
