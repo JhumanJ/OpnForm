@@ -19,227 +19,32 @@
     <div class="py-2 px-4">
       <div>
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2">Input Blocks</p>
-        <div class="grid grid-cols-2 gap-4">
-
-          <!--   Text Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('text')"
+        <div class="grid grid-cols-2 gap-2">
+          <div v-for="(block, i) in inputBlocks" :key="block.name"
+              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
+              role="button" @click.prevent="addBlock(block.name)"
           >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/>
-              </svg>
+            <div class="mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2" v-html="block.icon"></svg>
             </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Text Input</p>
+            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1">{{ block.title }}</p>
           </div>
-          <!--   Date Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('date')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Date Input</p>
-          </div>
-          <!--   Url Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('url')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">URL Input</p>
-          </div>
-          <!--   Phone Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('phone_number')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Phone Input</p>
-          </div>
-
-          <!--   email Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('email')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Email Input</p>
-          </div>
-
-          <!--   checkbox Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('checkbox')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Checkbox Input</p>
-          </div>
-
-          <!--   select Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('select')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Select Input</p>
-          </div>
-
-          <!--   multiselect Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('multi_select')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold">Multi-select Input</p>
-          </div>
-
-          <!--   number Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('number')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Number Input</p>
-          </div>
-
-          <!--   files Input   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('files')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">File Input</p>
-          </div>
-
-          <!--  Signature Block   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('signature')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Signature Input</p>
-          </div>
-
         </div>
       </div>
       <div class="border-t mt-6">
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2 mt-6">Layout Blocks</p>
-        <div class="grid grid-cols-2 gap-4">
-
-          <!--   Text Block   -->
-          <div
+        <div class="grid grid-cols-2 gap-2">
+          <div v-for="(block, i) in layoutBlocks" :key="block.name"
             class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('nf-text')"
+            role="button" @click.prevent="addBlock(block.name)"
           >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16" />
-              </svg>
+            <div class="mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" 
+                  stroke="currentColor" stroke-width="2" v-html="block.icon"></svg>
             </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Text Block</p>
+            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1">{{ block.title }}</p>
           </div>
-          <!--   Page Break Block   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('nf-page-break')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold">Page-break Block</p>
-          </div>
-          <!--   Divider Block   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('nf-divider')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Divider block</p>
-          </div>
-          <!--   Image Block   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('nf-image')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Image Block</p>
-          </div>
-          <!--   Code Block   -->
-          <div
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
-            role="button" @click.prevent="addBlock('nf-code')"
-          >
-            <div class="mx-auto py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-              </svg>
-            </div>
-            <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mb-4">Code Block</p>
-          </div>
-
         </div>
       </div>
     </div>
@@ -250,15 +55,98 @@
 import {mapState} from 'vuex'
 import Form from 'vform'
 import clonedeep from 'clone-deep'
-import VButton from '../../../../common/Button.vue'
 
 export default {
   name: 'AddFormBlockSidebar',
-  components: {VButton},
+  components: {},
   props: {},
   data() {
     return {
-      blockForm: null
+      blockForm: null,
+      inputBlocks: [
+        {
+          name: 'text',
+          title: 'Text Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/>',
+        },
+        {
+          name: 'date',
+          title: 'Date Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+        },
+        {
+          name: 'url',
+          title: 'URL Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>',
+        },
+        {
+          name: 'phone_number',
+          title: 'Phone Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>',
+        },
+        {
+          name: 'email',
+          title: 'Email Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>',
+        },
+        {
+          name: 'checkbox',
+          title: 'Checkbox Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+        },
+        {
+          name: 'select',
+          title: 'Select Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>',
+        },
+        {
+          name: 'multi_select',
+          title: 'Multi-select Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>',
+        },
+        {
+          name: 'number',
+          title: 'Number Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>',
+        },
+        {
+          name: 'files',
+          title: 'File Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />',
+        },
+        {
+          name: 'signature',
+          title: 'Signature Input',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />',
+        }
+      ],
+      layoutBlocks: [
+        {
+          name: 'nf-text',
+          title: 'Text Block',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16" />',
+        },
+        {
+          name: 'nf-page-break',
+          title: 'Page-break Block',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />',
+        },
+        {
+          name: 'nf-divider',
+          title: 'Divider Block',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />',
+        },
+        {
+          name: 'nf-image',
+          title: 'Image Block',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />',
+        },
+        {
+          name: 'nf-code',
+          title: 'Code Block',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />',
+        }
+      ]
     }
   },
 
