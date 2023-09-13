@@ -16,7 +16,7 @@
       <span class="inline-block w-full rounded-md">
         <button type="button" :dusk="dusk" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
                 class="cursor-pointer"
-                :style="inputStyle" :class="[theme.SelectInput.input,{'py-2':!multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled}]"
+                :style="inputStyle" :class="[theme.SelectInput.input,{'py-2':!multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled}, inputClass]"
                 @click="openDropdown"
         >
           <div :class="{'h-6':!multiple, 'min-h-8':multiple && !loading}">
@@ -41,8 +41,9 @@
           </span>
         </button></span>
       <!-- Select popover, show/hide based on select state. -->
-      <div v-show="isOpen" :dusk="dusk+'_dropdown'"
+      <div v-show="isOpen" :dusk="dusk+'_dropdown' "
            class="absolute mt-1 w-full rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
+           :class="dropdownClass"
       >
         <ul tabindex="-1" role="listbox" aria-labelled by="listbox-label" aria-activedescendant="listbox-item-3"
             class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
@@ -99,6 +100,8 @@ export default {
   props: {
     data: Array,
     value: { default: null },
+    inputClass: {type: String, default: null},
+    dropdownClass: {type: String, default: null},
     label: { type: String, default: null },
     dusk: { type: String, default: null },
     loading: { type: Boolean, default: false },
