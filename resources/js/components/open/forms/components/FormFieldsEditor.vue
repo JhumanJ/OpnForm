@@ -1,12 +1,8 @@
 <template>
   <div>
-    <add-form-block-modal :form-blocks="formFields" :show="showAddBlock" @block-added="blockAdded"
-                          @close="closeAddFieldModal"
-    />
-
     <v-button v-if="formFields && formFields.length > 8"
       class="w-full mb-3" color="light-gray"
-      @click="openAddFieldModal">
+      @click="openAddFieldSidebar">
       <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
            xmlns="http://www.w3.org/2000/svg">
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
@@ -136,7 +132,7 @@
 
     <v-button
       class="w-full mt-3" color="light-gray"
-      @click="openAddFieldModal">
+      @click="openAddFieldSidebar">
       <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
            xmlns="http://www.w3.org/2000/svg">
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
@@ -149,9 +145,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
 import draggable from 'vuedraggable'
-import AddFormBlockModal from './form-components/AddFormBlockModal.vue'
 import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
 import EditableDiv from '../../../common/EditableDiv.vue'
@@ -162,7 +156,6 @@ export default {
   components: {
     VButton,
     ProTag,
-    AddFormBlockModal,
     draggable,
     EditableDiv
   },
@@ -175,10 +168,6 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
-      showAddFieldModal: state => state['open/working_form'].showAddFieldModal
-    }),
     form: {
       get() {
         return this.$store.state['open/working_form'].content
@@ -187,9 +176,6 @@ export default {
       set(value) {
         this.$store.commit('open/working_form/set', value)
       }
-    },
-    showAddBlock() {
-      return (this.form && this.showAddFieldModal) ?? false
     }
   },
 
@@ -307,15 +293,6 @@ export default {
     editOptions(index) {
       this.$store.commit('open/working_form/openSettingsForField', index)
     },
-    blockAdded(block) {
-      if(this.selectedFieldIndex === null || this.selectedFieldIndex === undefined){
-        this.formFields.push(block)
-        this.$store.commit('open/working_form/openSettingsForField', this.formFields.length-1)
-      } else {
-        this.formFields.splice(this.selectedFieldIndex+1, 0, block)
-        this.$store.commit('open/working_form/openSettingsForField', this.selectedFieldIndex+1)
-      }
-    },
     removeBlock(blockIndex) {
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
@@ -325,12 +302,9 @@ export default {
     closeSidebar() {
       this.$store.commit('open/working_form/closeEditFieldSidebar')
     },
-    openAddFieldModal() {
-      this.$store.commit('open/working_form/openAddFieldModal', null)
-    },
-    closeAddFieldModal() {
-      this.$store.commit('open/working_form/closeAddFieldModal')
-    },
+    openAddFieldSidebar() {
+      this.$store.commit('open/working_form/openAddFieldSidebar', null)
+    }
   }
 }
 </script>
