@@ -69,8 +69,10 @@ export default {
   mounted () {
     if(this.compVal) {
       const phoneObj = parsePhoneNumber(this.compVal)
-      if(phoneObj){
-        this.selectedCountryCode = this.getCountryByCode(phoneObj.country)
+      if(phoneObj !== undefined && phoneObj){
+        if(phoneObj.country !== undefined && phoneObj.country){
+          this.selectedCountryCode = this.getCountryByCode(phoneObj.country)
+        }
         this.inputVal = phoneObj.nationalNumber
       }
     }
