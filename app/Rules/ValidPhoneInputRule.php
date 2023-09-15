@@ -12,7 +12,9 @@ class ValidPhoneInputRule implements Rule
         if (!is_string($value) || !Str::startsWith($value, '+')) {
             return false;
         }
-        return true;
+        
+        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        return $phoneUtil->isValidNumber($phoneUtil->parse($value));
     }
 
     public function message()
