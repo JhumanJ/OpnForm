@@ -216,6 +216,11 @@
                   :date-range="field.date_range===true"
                   label="Pre-filled value"
       />
+      <phone-input v-else-if="field.type === 'phone_number'"
+                        name="prefill" class="mt-3"
+                        :form="field"
+                        label="Pre-filled value"
+      />
       <text-area-input v-else-if="field.type === 'text' && field.multi_lines"
                         name="prefill" class="mt-3"
                         :form="field"
@@ -267,7 +272,7 @@
                   @input="onFieldHelpPositionChange"
       />
 
-      <template v-if="['text','number','url','email','phone_number'].includes(field.type)">
+      <template v-if="['text','number','url','email'].includes(field.type)">
         <text-input v-model="field.max_char_limit" name="max_char_limit" native-type="number" :min="1" :max="2000"
                     :form="field"
                     label="Max character limit"
@@ -401,7 +406,7 @@ export default {
   },
 
   mounted() {
-    if (['text', 'number', 'url', 'email', 'phone_number'].includes(this.field?.type) && !this.field?.max_char_limit) {
+    if (['text', 'number', 'url', 'email'].includes(this.field?.type) && !this.field?.max_char_limit) {
       this.field.max_char_limit = 2000
     }
   },

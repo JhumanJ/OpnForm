@@ -12,10 +12,10 @@
         <slot name="help"><span class="field-help" v-html="help"/></slot>
       </small>
     </div>
-    <div :id="id ? id : name" :disabled="disabled" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries" :value="selectedCountryCode"
-                :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
-                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onCountryChange">
+    <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
+      <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries" v-model="selectedCountryCode"
+                :disabled="disabled" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
+                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme">
         <template #option="props">
           <div class="flex items-center space-x-2 hover:text-white">
             <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code"/>
@@ -30,10 +30,16 @@
           </div>
         </template>
       </v-select>
-      <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none"
+      <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled"
              :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
              :placeholder="placeholder" :style="inputStyle" @input="onInput">
     </div>
+    <div v-if="help && helpPosition=='below_input'" class="flex">
+      <small :class="theme.default.help" class="grow">
+        <slot name="help"><span class="field-help" v-html="help" /></slot>
+      </small>
+    </div>
+    <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>
 
@@ -42,13 +48,11 @@ import {directive as onClickaway} from 'vue-clickaway'
 import inputMixin from '~/mixins/forms/input.js'
 import countryCodes from '../../../data/country_codes.json'
 import CountryFlag from 'vue-country-flag'
-import VSelect from './components/VSelect.vue'
+import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
-  components: {
-    CountryFlag, VSelect
-  },
+  components: { CountryFlag },
   directives: {
     onClickaway: onClickaway
   },
@@ -56,18 +60,30 @@ export default {
 
   data() {
     return {
-      selectedCountryCode: countryCodes[234],
+      selectedCountryCode: this.getCountryByCode('US'), // Default US
       countries: countryCodes,
-      isOpen: false,
-      inputVal: ''
+      inputVal: null
     }
   },
-  watch: {
-    inputVal(newVal, oldVal) {
-      if (newVal.startsWith('0')) {
-        newVal = newVal.replace(/^0+/, '')
+  
+  mounted () {
+    if(this.compVal) {
+      const phoneObj = parsePhoneNumber(this.compVal)
+      if(phoneObj){
+        this.selectedCountryCode = this.getCountryByCode(phoneObj.country)
+        this.inputVal = phoneObj.nationalNumber
       }
-      this.compVal = this.selectedCountryCode.dial_code + ' ' + newVal
+    }
+  },
+
+  watch: {
+    inputVal: {
+      handler(val) {
+        if (val && val.startsWith('0')) {
+          val = val.substring(1)
+        }
+        this.compVal = (val) ? this.selectedCountryCode.dial_code + val : null
+      }
     },
     selectedCountryCode(newVal, oldVal) {
       if (this.compVal) {
@@ -76,18 +92,14 @@ export default {
     }
   },
   methods: {
-    onCountryChange(country) {
-      this.selectedCountryCode = country
-      this.closeDropdown()
-    },
-    closeDropdown() {
-      this.isOpen = false
+    getCountryByCode(code) {
+      return countryCodes.find((item) => {
+        return item.code === code
+      })
     },
     onInput(event) {
-      const input = event.target.value
-      const digitsOnly = input.replace(/[^0-9]/g, '')
-      this.inputVal = digitsOnly
-    },
+      this.inputVal = event.target.value.replace(/[^0-9]/g, '')
+    }
   }
 }
 </script>
