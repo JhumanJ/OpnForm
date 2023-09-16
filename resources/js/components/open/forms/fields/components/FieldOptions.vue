@@ -218,7 +218,7 @@
       />
       <phone-input v-else-if="field.type === 'phone_number'"
                         name="prefill" class="mt-3"
-                        :form="field"
+                        :form="field" :can-only-country="true"
                         label="Pre-filled value"
       />
       <text-area-input v-else-if="field.type === 'text' && field.multi_lines"

@@ -15,7 +15,7 @@
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
       <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries" v-model="selectedCountryCode"
                 :disabled="disabled" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
-                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme">
+                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onChangeCountryCode">
         <template #option="props">
           <div class="flex items-center space-x-2 hover:text-white">
             <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code"/>
@@ -57,10 +57,13 @@ export default {
     onClickaway: onClickaway
   },
   mixins: [inputMixin],
+  props: {
+    canOnlyCountry: { type: Boolean, default: false }
+  },
 
   data() {
     return {
-      selectedCountryCode: this.getCountryByCode('US'), // Default US
+      selectedCountryCode: this.getCountryBy('US'), // Default US
       countries: countryCodes,
       inputVal: null
     }
@@ -68,12 +71,14 @@ export default {
   
   mounted () {
     if(this.compVal) {
-      const phoneObj = parsePhoneNumber(this.compVal)
+      const phoneObj = parsePhoneNumber(this.compVal) 
       if(phoneObj !== undefined && phoneObj){
         if(phoneObj.country !== undefined && phoneObj.country){
-          this.selectedCountryCode = this.getCountryByCode(phoneObj.country)
+          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
         this.inputVal = phoneObj.nationalNumber
+      } else if(this.compVal) {
+        this.selectedCountryCode = this.getCountryBy(this.compVal, 'dial_code')
       }
     }
   },
@@ -94,13 +99,18 @@ export default {
     }
   },
   methods: {
-    getCountryByCode(code) {
+    getCountryBy(code, type='code') {
       return countryCodes.find((item) => {
-        return item.code === code
+        return item[type] === code
       })
     },
     onInput(event) {
       this.inputVal = event.target.value.replace(/[^0-9]/g, '')
+    },
+    onChangeCountryCode() {
+      if(this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)){
+        this.compVal = this.selectedCountryCode.dial_code
+      }
     }
   }
 }
