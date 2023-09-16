@@ -13,7 +13,9 @@
       </small>
     </div>
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries" v-model="selectedCountryCode"
+      <v-select class="w-[110px]" dropdown-class="w-[400px]" input-class="rounded-r-none" :data="countries"
+                v-model="selectedCountryCode"
+                :has-error="hasValidation && form.errors.has(name)"
                 :disabled="disabled" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
                 :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @input="onChangeCountryCode">
         <template #option="props">
@@ -25,7 +27,7 @@
         </template>
         <template #selected="props">
           <div class="flex items-center space-x-2 justify-center overflow-hidden">
-            <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code" />
+            <country-flag size="normal" class="!-mt-[9px]" :country="props.option.code"/>
             <span>{{ props.option.dial_code }}</span>
           </div>
         </template>
@@ -36,10 +38,10 @@
     </div>
     <div v-if="help && helpPosition=='below_input'" class="flex">
       <small :class="theme.default.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
+        <slot name="help"><span class="field-help" v-html="help"/></slot>
       </small>
     </div>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
+    <has-error v-if="hasValidation" :form="form" :field="name"/>
   </div>
 </template>
 
@@ -52,13 +54,13 @@ import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
-  components: { CountryFlag },
+  components: {CountryFlag},
   directives: {
     onClickaway: onClickaway
   },
   mixins: [inputMixin],
   props: {
-    canOnlyCountry: { type: Boolean, default: false }
+    canOnlyCountry: {type: Boolean, default: false}
   },
 
   data() {
@@ -68,16 +70,16 @@ export default {
       inputVal: null
     }
   },
-  
-  mounted () {
-    if(this.compVal) {
-      const phoneObj = parsePhoneNumber(this.compVal) 
-      if(phoneObj !== undefined && phoneObj){
-        if(phoneObj.country !== undefined && phoneObj.country){
+
+  mounted() {
+    if (this.compVal) {
+      const phoneObj = parsePhoneNumber(this.compVal)
+      if (phoneObj !== undefined && phoneObj) {
+        if (phoneObj.country !== undefined && phoneObj.country) {
           this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
         this.inputVal = phoneObj.nationalNumber
-      } else if(this.compVal) {
+      } else if (this.compVal) {
         this.selectedCountryCode = this.getCountryBy(this.compVal, 'dial_code')
       }
     }
@@ -99,7 +101,7 @@ export default {
     }
   },
   methods: {
-    getCountryBy(code, type='code') {
+    getCountryBy(code, type = 'code') {
       return countryCodes.find((item) => {
         return item[type] === code
       })
@@ -108,7 +110,7 @@ export default {
       this.inputVal = event.target.value.replace(/[^0-9]/g, '')
     },
     onChangeCountryCode() {
-      if(this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)){
+      if (this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)) {
         this.compVal = this.selectedCountryCode.dial_code
       }
     }
