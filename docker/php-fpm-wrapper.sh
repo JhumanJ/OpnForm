@@ -30,6 +30,6 @@ ln -sf /persist/storage /app/storage
     . /app/.env
 }
 
-/usr/sbin/php-fpm8.2
+/usr/sbin/php-fpm8.1
 
 tail -f /var/log/opnform.log
