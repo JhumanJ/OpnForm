@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <section class="relative">
-      <div class="absolute inset-0 grid" aria-hidden="true">
+      <div v-if="!homePage" class="absolute inset-0 grid" aria-hidden="true">
         <div class="bg-gray-100"></div>
         <div class="bg-white"></div>
       </div>
@@ -9,7 +9,21 @@
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl ring-1 ring-gray-200 lg:flex isolate">
           <div class="p-8 sm:p-8 lg:flex-auto">
-            <h3 class="text-3xl font-semibold tracking-tight text-gray-950">
+            <h3 v-if="homePage" class="text-3xl font-semibold tracking-tight text-gray-950">
+              Check out our 
+              <span class="ml-2 text-nt-blue">
+                <svg class="inline w-10 h-10" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g opacity="0.12">
+                    <path d="M15.9998 27.3333L10.6665 12H21.3332L15.9998 27.3333Z" fill="currentColor"/>
+                    <path d="M13.3332 4H9.33317L2.6665 12L10.6665 12L13.3332 4Z" fill="currentColor"/>
+                    <path d="M18.6665 4H22.6665L29.3332 12L21.3332 12L18.6665 4Z" fill="currentColor"/>
+                  </g>
+                  <path d="M3.33345 12H28.6668M13.3334 4L10.6668 12L16.0001 27.3333L21.3334 12L18.6668 4M16.8195 27.0167L28.7644 12.6829C28.9668 12.4399 29.0681 12.3185 29.1067 12.1829C29.1408 12.0633 29.1408 11.9367 29.1067 11.8171C29.0681 11.6815 28.9668 11.5601 28.7644 11.3171L22.9866 4.3838C22.8691 4.24273 22.8103 4.17219 22.7382 4.12148C22.6744 4.07654 22.6031 4.04318 22.5277 4.02289C22.4426 4 22.3508 4 22.1672 4H9.83305C9.64941 4 9.55758 4 9.4725 4.02289C9.39711 4.04318 9.32586 4.07654 9.26202 4.12148C9.18996 4.17219 9.13118 4.24273 9.01361 4.3838L3.23583 11.3171C3.0334 11.5601 2.93218 11.6815 2.8935 11.8171C2.85939 11.9366 2.85939 12.0633 2.8935 12.1829C2.93218 12.3185 3.0334 12.4399 3.23583 12.6829L15.1807 27.0167C15.4621 27.3544 15.6028 27.5232 15.7713 27.5848C15.919 27.6388 16.0812 27.6388 16.229 27.5848C16.3974 27.5232 16.5381 27.3544 16.8195 27.0167Z" stroke="currentColor" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Pro Features
+              </span>
+            </h3>
+            <h3 v-else class="text-3xl font-semibold tracking-tight text-gray-950">
               Pro Plan
             </h3>
             <p class="mt-2 text-base font-medium leading-7 text-gray-600">
@@ -61,7 +75,7 @@
                     Start free trial
                   </v-button>
                 </div>
-                <p class="text-xs font-medium leading-5 text-gray-600">
+                <p v-if="!homePage" class="text-xs font-medium leading-5 text-gray-600">
                   Invoices and receipts available for easy company reimbursement.
                 </p>
               </div>
@@ -88,7 +102,12 @@ export default {
     MonthlyYearlySelector,
     CheckoutDetailsModal,
   },
-  props: {},
+  props: {
+    homePage: {
+      type: Boolean,
+      default: false
+    }
+  },
   data: () => ({
     isYearly: true,
     selectedPlan: 'pro',

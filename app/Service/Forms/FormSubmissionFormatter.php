@@ -96,7 +96,7 @@ class FormSubmissionFormatter
 
             // If hide hidden fields
             if (!$this->showHiddenFields) {
-                if (FormLogicPropertyResolver::isHidden($field, $this->idFormData)) {
+                if (FormLogicPropertyResolver::isHidden($field, $this->idFormData ?? [])) {
                     continue;
                 }
             }

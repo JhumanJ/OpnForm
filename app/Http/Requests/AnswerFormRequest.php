@@ -190,7 +190,7 @@ class AnswerFormRequest extends FormRequest
                 }
                 return $this->getRulesForDate($property);
             case 'phone_number':
-                return [new ValidPhoneInputRule];
+                return ['string', 'min:6', new ValidPhoneInputRule];
             default:
                 return [];
         }

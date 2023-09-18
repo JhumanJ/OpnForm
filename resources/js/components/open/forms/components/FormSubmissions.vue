@@ -41,6 +41,10 @@
 
     <loader v-if="!form || isLoading" class="h-6 w-6 text-nt-blue mx-auto"/>
     <div v-else>
+      <div class="m-auto w-64">
+        <text-input :form="searchForm" name="search" placeholder="Search..." />
+      </div>
+
       <scroll-shadow
         ref="shadows"
         class="border max-h-full h-full notion-database-renderer"
@@ -50,7 +54,7 @@
         <open-table
           ref="table"
           class="max-h-full"
-          :data="tableData"
+          :data="filteredData"
           :loading="isLoading"
           @resize="dataChanged()"
           @deleted="onDeleteRecord()"
@@ -63,6 +67,8 @@
 
 <script>
 import axios from 'axios'
+import Fuse from 'fuse.js'
+import Form from 'vform'
 import ScrollShadow from '../../../common/ScrollShadow.vue'
 import OpenTable from '../../tables/OpenTable.vue'
 import clonedeep from "clone-deep";
@@ -83,6 +89,9 @@ export default {
       properties: [],
       removed_properties: [],
       displayColumns: {},
+      searchForm: new Form({
+        search: ''
+      })
     }
   },
   mounted() {
@@ -112,6 +121,24 @@ export default {
         return ''
       }
       return '/api/open/forms/' + this.form.id + '/submissions/export'
+    },
+    filteredData () {
+      if(!this.tableData) return []
+
+      let filteredData = clonedeep(this.tableData)
+
+      if (this.searchForm.search === '' || this.searchForm.search === null) {
+        return filteredData
+      }
+
+      // Fuze search
+      const fuzeOptions = {
+        keys: this.form.properties.map((field) => field.id)
+      }
+      const fuse = new Fuse(filteredData, fuzeOptions)
+      return fuse.search(this.searchForm.search).map((res) => {
+        return res.item
+      })
     }
   },
   methods: {
@@ -178,8 +205,10 @@ export default {
       })
     },
     dataChanged() {
-      this.$refs.shadows.toggleShadow()
-      this.$refs.shadows.calcDimensions()
+      if (this.$refs.shadows) {
+        this.$refs.shadows.toggleShadow()
+        this.$refs.shadows.calcDimensions()
+      }
     },
     onChangeDisplayColumns() {
       window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
