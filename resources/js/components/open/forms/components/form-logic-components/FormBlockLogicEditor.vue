@@ -1,10 +1,8 @@
 <template>
-  <collapse v-if="logic" :key="resetKey" :default-value="isCollapseOpen" @click="onClickCollapse">
-    <template #title>
-      <h3 class="font-semibold block text-lg">
-        Logic
-      </h3>
-    </template>
+  <div v-if="logic" :key="resetKey">
+    <h3 class="font-semibold block text-lg">
+      Logic
+    </h3>
     <p class="text-gray-400 text-xs mb-3">
       Add some logic to this block. Start by adding some conditions, and then add some actions.
     </p>
@@ -65,7 +63,7 @@
         </div>
       </div>
     </modal>
-  </collapse>
+  </div>
 </template>
 
 <script>
@@ -74,11 +72,10 @@ import ConditionEditor from './ConditionEditor.vue'
 import Modal from '../../../../Modal.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
 import clonedeep from 'clone-deep'
-import Collapse from "../../../../common/Collapse.vue";
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: {Collapse, SelectInput, Modal, ProTag, ConditionEditor},
+  components: {SelectInput, Modal, ProTag, ConditionEditor},
   props: {
     field: {
       type: Object,
@@ -92,7 +89,6 @@ export default {
 
   data() {
     return {
-      isCollapseOpen: false,
       resetKey: 0,
       logic: this.field.logic || {
         conditions: null,
@@ -157,6 +153,15 @@ export default {
       },
       deep: true
     },
+    'field.id': {
+      handler (field, oldField) {
+        // On field change, reset logic
+        this.logic = this.field.logic || {
+          conditions: null,
+          actions: []
+        }
+      }
+    },
     'field.required': 'cleanConditions',
     'field.disabled': 'cleanConditions',
     'field.hidden': 'cleanConditions',
@@ -203,9 +208,6 @@ export default {
         }
       }
       this.showCopyFormModal = false
-    },
-    onClickCollapse (e) {
-      this.isCollapseOpen = e
     }
   }
 }
