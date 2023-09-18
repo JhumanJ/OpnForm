@@ -44,7 +44,7 @@ class FormSubmissionDataFactory
                     $value = $this->faker->url();
                     break;
                 case 'phone_number':
-                    $value = '+1'.$this->faker->phoneNumber();
+                    $value = '+33749119783';
                     break;
                 case 'date':
                     $value = $this->faker->date();
