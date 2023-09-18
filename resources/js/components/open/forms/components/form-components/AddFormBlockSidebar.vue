@@ -1,7 +1,7 @@
 <template>
   <div v-if="showSidebar"
         class="absolute shadow-lg shadow-blue-800/30 top-0 h-[calc(100vh-45px)] right-0 lg:shadow-none lg:relative bg-white w-full md:w-1/2 lg:w-2/5 border-l overflow-y-scroll md:max-w-[20rem] flex-shrink-0">
-    
+
     <div class="p-4 border-b sticky top-0 z-10 bg-white">
       <div class="flex">
         <button class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="closeSidebar">
@@ -15,13 +15,13 @@
         </div>
       </div>
     </div>
-    
+
     <div class="py-2 px-4">
       <div>
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2">Input Blocks</p>
         <div class="grid grid-cols-2 gap-2">
           <div v-for="(block, i) in inputBlocks" :key="block.name"
-              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
+              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
               role="button" @click.prevent="addBlock(block.name)"
           >
             <div class="mx-auto">
@@ -36,11 +36,11 @@
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2 mt-6">Layout Blocks</p>
         <div class="grid grid-cols-2 gap-2">
           <div v-for="(block, i) in layoutBlocks" :key="block.name"
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 p-2 flex flex-col"
+            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
             role="button" @click.prevent="addBlock(block.name)"
           >
             <div class="mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" 
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor" stroke-width="2" v-html="block.icon"></svg>
             </div>
             <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1">{{ block.title }}</p>
