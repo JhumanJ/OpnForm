@@ -1,8 +1,15 @@
 <template>
   <div>
-    <add-form-block-modal :form-blocks="formFields" :show="showAddBlock" @block-added="blockAdded"
-                          @close="showAddBlock=false"
-    />
+    <v-button v-if="formFields && formFields.length > 8"
+      class="w-full mb-3" color="light-gray"
+      @click="openAddFieldSidebar">
+      <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Add block
+    </v-button>
 
     <draggable v-model="formFields"
                class="bg-white overflow-hidden dark:bg-notion-dark-light rounded-md w-full mx-auto border transition-colors"
@@ -124,8 +131,8 @@
     </draggable>
 
     <v-button
-      class="w-full mt-4" color="light-gray"
-      @click="showAddBlock=true">
+      class="w-full mt-3" color="light-gray"
+      @click="openAddFieldSidebar">
       <svg class="w-4 h-4 text-nt-blue inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
            xmlns="http://www.w3.org/2000/svg">
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
@@ -139,7 +146,6 @@
 
 <script>
 import draggable from 'vuedraggable'
-import AddFormBlockModal from './form-components/AddFormBlockModal.vue'
 import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
 import EditableDiv from '../../../common/EditableDiv.vue'
@@ -150,7 +156,6 @@ export default {
   components: {
     VButton,
     ProTag,
-    AddFormBlockModal,
     draggable,
     EditableDiv
   },
@@ -158,7 +163,6 @@ export default {
   data() {
     return {
       formFields: [],
-      showAddBlock: false,
       removing: null
     }
   },
@@ -172,7 +176,7 @@ export default {
       set(value) {
         this.$store.commit('open/working_form/set', value)
       }
-    },
+    }
   },
 
   watch: {
@@ -289,10 +293,6 @@ export default {
     editOptions(index) {
       this.$store.commit('open/working_form/openSettingsForField', index)
     },
-    blockAdded(block) {
-      this.formFields.push(block)
-      this.$store.commit('open/working_form/openSettingsForField', this.formFields.length-1)
-    },
     removeBlock(blockIndex) {
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
@@ -301,6 +301,9 @@ export default {
     },
     closeSidebar() {
       this.$store.commit('open/working_form/closeEditFieldSidebar')
+    },
+    openAddFieldSidebar() {
+      this.$store.commit('open/working_form/openAddFieldSidebar', null)
     }
   }
 }

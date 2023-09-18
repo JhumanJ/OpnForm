@@ -6,8 +6,18 @@
       <div v-if="adminPreview"
            class="absolute -translate-x-full top-0 bottom-0 opacity-0 group-hover/nffield:opacity-100 transition-opacity mb-4"
       >
-        <div class="flex flex-col lg:flex-row bg-white rounded-md">
-          <div class="p-2 lg:pr-1 text-gray-300 hover:text-blue-500 cursor-pointer" role="button"
+        <div class="flex flex-col bg-white rounded-md" :class="{'lg:flex-row':!fieldSideBarOpened, 'xl:flex-row':fieldSideBarOpened}">
+          <div class="p-2 -mr-3 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer hidden xl:block" role="button"
+               :class="{'lg:block':!fieldSideBarOpened, 'xl:block':fieldSideBarOpened}"
+               @click.prevent="openAddFieldSidebar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                 stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+          </div>
+          <div class="p-2 text-gray-300 hover:text-blue-500 cursor-pointer" role="button"
+               :class="{'lg:-mr-2':!fieldSideBarOpened, 'xl:-mr-2':fieldSideBarOpened}"
                @click.prevent="editFieldOptions"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -20,7 +30,8 @@
             </svg>
           </div>
           <div
-            class="px-2 lg:pl-0 lg:pr-1 lg:pt-2 pb-2 bg-white rounded-md text-gray-300 hover:text-gray-500 cursor-grab draggable"
+            class="px-2 xl:pl-0 lg:pr-1 lg:pt-2 pb-2 bg-white rounded-md text-gray-300 hover:text-gray-500 cursor-grab draggable"
+            :class="{'lg:pr-1 lg:pl-0':!fieldSideBarOpened, 'xl:-mr-2':fieldSideBarOpened}"
             role="button"
           >
             <svg
@@ -38,23 +49,23 @@
         </div>
       </div>
       <component :is="getFieldComponents" v-if="getFieldComponents"
-                  v-bind="inputProperties(field)" :required="isFieldRequired"
-                  :disabled="isFieldDisabled"
+                 v-bind="inputProperties(field)" :required="isFieldRequired"
+                 :disabled="isFieldDisabled"
       />
       <template v-else>
         <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
-              class="nf-text w-full px-2 mb-3" :class="[getFieldAlignClasses(field)]"
-              v-html="field.content"
+             class="nf-text w-full px-2 mb-3" :class="[getFieldAlignClasses(field)]"
+             v-html="field.content"
         />
         <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"
-              class="nf-code w-full px-2 mb-3"
-              v-html="field.content"
+             class="nf-code w-full px-2 mb-3"
+             v-html="field.content"
         />
         <div v-if="field.type === 'nf-divider'" :id="field.id" :key="field.id"
-            class="border-b my-4 w-full mx-2"
+             class="border-b my-4 w-full mx-2"
         />
         <div v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)" :id="field.id"
-              :key="field.id" class="my-4 w-full px-2" :class="[getFieldAlignClasses(field)]"
+             :key="field.id" class="my-4 w-full px-2" :class="[getFieldAlignClasses(field)]"
         >
           <div v-if="!field.image_block" class="p-4 border border-dashed">
             Open <b>{{ field.name }}'s</b> block settings to upload image.
@@ -100,9 +111,9 @@ export default {
       type: Object,
       required: true
     },
-    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
+    adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
   },
-  data () {
+  data() {
     return {}
   },
 
@@ -128,7 +139,7 @@ export default {
     /**
      * Get the right input component for the field/options combination
      */
-     getFieldComponents() {
+    getFieldComponents() {
       const field = this.field
       if (field.type === 'text' && field.multi_lines) {
         return 'TextAreaInput'
@@ -150,27 +161,27 @@ export default {
       }
       return this.fieldComponents[field.type]
     },
-    isPublicFormPage () {
+    isPublicFormPage() {
       return this.$route.name === 'forms.show_public'
     },
-    isFieldHidden () {
+    isFieldHidden() {
       return !this.showHidden && this.shouldBeHidden
     },
-    shouldBeHidden () {
+    shouldBeHidden() {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isHidden()
     },
-    isFieldRequired () {
+    isFieldRequired() {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isRequired()
     },
-    isFieldDisabled () {
+    isFieldDisabled() {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
     },
     beingEdited() {
-      return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item)=>{
+      return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {
         return item.id === this.field.id
       }) === this.selectedFieldIndex
     },
-    selectionFieldsOptions () {
+    selectionFieldsOptions() {
       // For auto update hidden options
       let fieldsOptions = []
 
@@ -184,21 +195,28 @@ export default {
       }
 
       return fieldsOptions
+    },
+    fieldSideBarOpened() {
+      return this.adminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
     }
   },
 
   watch: {},
 
-  mounted () {},
+  mounted() {
+  },
 
   methods: {
-    editFieldOptions () {
+    editFieldOptions() {
       this.$store.commit('open/working_form/openSettingsForField', this.field)
+    },
+    openAddFieldSidebar() {
+      this.$store.commit('open/working_form/openAddFieldSidebar', this.field)
     },
     /**
      * Get the right input component for the field/options combination
      */
-    getFieldClasses () {
+    getFieldClasses() {
       let classes = ''
       if (this.adminPreview) {
         classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
@@ -209,7 +227,7 @@ export default {
       }
       return classes
     },
-    getFieldWidthClasses (field) {
+    getFieldWidthClasses(field) {
       if (!field.width || field.width === 'full') return 'w-full px-2'
       else if (field.width === '1/2') {
         return 'w-full sm:w-1/2 px-2'
@@ -223,7 +241,7 @@ export default {
         return 'w-full sm:w-3/4 px-2'
       }
     },
-    getFieldAlignClasses (field) {
+    getFieldAlignClasses(field) {
       if (!field.align || field.align === 'left') return 'text-left'
       else if (field.align === 'right') {
         return 'text-right'
