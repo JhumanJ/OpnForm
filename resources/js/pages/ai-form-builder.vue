@@ -28,12 +28,13 @@
           </div>
 
           <div class="max-w-6xl mx-auto mt-12 sm:mt-16">
-            <video class="rounded-lg sm:rounded-xl lg:rounded-2xl ring-1 ring-gray-200 shadow-lg shadow-blue-600/10" controls autoplay loop>
-              <source :src="asset('video/opnform-ai.mp4')" type="video/mp4">
-              This browser does not display the video tag.
-            </video>
-<!--            <img class="rounded-lg sm:rounded-xl lg:rounded-2xl ring-1 ring-gray-200 shadow-lg shadow-blue-600/10"-->
-<!--              :src="asset('img/pages/ai_form_builder/hero-mockup.png')" alt="">-->
+            <div
+              class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+              <video class="rounded-md ring-1 ring-gray-200 shadow-xl shadow-blue-600/10 ring-blue-900/10" controls autoplay loop muted>
+                <source :src="asset('video/opnform-ai.mp4')" type="video/mp4">
+                This browser does not display the video tag.
+              </video>
+            </div>
           </div>
 
           <div

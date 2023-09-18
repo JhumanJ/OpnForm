@@ -10,7 +10,7 @@
         <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl ring-1 ring-gray-200 lg:flex isolate">
           <div class="p-8 sm:p-8 lg:flex-auto">
             <h3 v-if="homePage" class="text-3xl font-semibold tracking-tight text-gray-950">
-              Check out our 
+              Check out our
               <span class="ml-2 text-nt-blue">
                 <svg class="inline w-10 h-10" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g opacity="0.12">
@@ -47,8 +47,8 @@
             </ul>
           </div>
 
-          <div class="p-2 -mt-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-            <div class="py-10 text-center rounded-2xl bg-gray-50 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-12">
+          <div class="p-2 -mt-2 flex-col lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+            <div class="grow h-full py-10 text-center rounded-2xl bg-gray-50 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-12">
               <div class="max-w-xs px-8 mx-auto space-y-6">
                 <div class="flex items-center justify-center mb-10">
                   <monthly-yearly-selector v-model="isYearly" />
