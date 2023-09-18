@@ -2,7 +2,7 @@
   <div class="mx-auto mb-12 max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500 ">Single or multi-page forms</h2>
-      <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Discover our beautiful templates</p>
+      <p class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Discover our beautiful templates</p>
       <p class="mt-3 px-8 text-center text-lg text-gray-400 ">If you need inspiration, checkout our templates.</p>
     </div>
     <div class="my-3 flex justify-center">
