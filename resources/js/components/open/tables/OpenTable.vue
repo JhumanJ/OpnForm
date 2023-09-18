@@ -9,7 +9,7 @@
     >
     <tr class="n-table-row overflow-x-hidden">
       <resizable-th v-for="col, index in form.properties" :id="'table-head-cell-' + col.id" :key="col.id"
-                    scope="col" :allow-resize="allowResize" :width="(col.width ? col.width + 'px':'auto')"
+                    scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
                     class="n-table-cell p-0 relative"
                     @resize-width="resizeCol(col, $event)"
       >
@@ -42,7 +42,7 @@
     <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
       <td v-for="col, colIndex in form.properties"
           :key="col.id"
-          :style="{width: col.width + 'px'}"
+          :style="{width: col.cell_width + 'px'}"
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
           :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== form.properties.length - 1 || hasActions},
                      colClasses(col)]"
@@ -213,10 +213,10 @@ export default {
       return [colAlign, colColor, colWrap, colFontWeight]
     },
     onStructureChange() {
-      if (this.form.properties) {
+      if (this.form && this.form.properties) {
         this.$nextTick(() => {
           this.form.properties.forEach(col => {
-            if (!col.hasOwnProperty('width')) {
+            if (!col.hasOwnProperty('cell_width')) {
               if (this.allowResize && this.form !== null && document.getElementById('table-head-cell-' + col.id)) {
                 // Within editor
                 this.resizeCol(col, document.getElementById('table-head-cell-' + col.id).offsetWidth)
@@ -230,7 +230,7 @@ export default {
       if (!this.form) return
       const columns = clonedeep(this.form.properties)
       const index = this.form.properties.findIndex(c => c.id === col.id)
-      columns[index].width = width
+      columns[index].cell_width = width
       this.$set(this.form, 'properties', columns)
       this.$nextTick(() => {
         this.$emit('resize')
