@@ -69,14 +69,11 @@
 <script>
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
-import PhoneInput from '../../forms/PhoneInput.vue'
 import {mapState} from "vuex";
 
 export default {
   name: 'OpenFormField',
-  components: { 
-    PhoneInput 
-  },
+  components: {},
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
