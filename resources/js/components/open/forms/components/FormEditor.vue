@@ -22,7 +22,7 @@
         <div class="hidden md:block mr-10 relative">
           <a href="#"
              class="text-sm px-3 py-2 hover:bg-gray-50 cursor-pointer rounded-md text-gray-500 px-0 sm:px-3 hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="$crisp.push(['do', 'helpdesk:search'])"
+             @click.prevent="openCrisp"
           >
             Help
           </a>
@@ -221,6 +221,10 @@ export default {
   },
 
   methods: {
+    openCrisp () {
+      window.$crisp.push(['do', 'chat:show'])
+      window.$crisp.push(['do', 'chat:open'])
+    },
     showValidationErrors() {
       this.showFormErrorModal = true
     },
