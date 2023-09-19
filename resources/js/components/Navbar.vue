@@ -27,7 +27,7 @@
             <span v-else>Pricing</span>
           </router-link>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="$crisp.push(['do', 'helpdesk:search'])" v-if="hasCrisp"
+             @click.prevent="openCrisp" v-if="hasCrisp"
           >
             Help
           </a>
@@ -194,6 +194,10 @@ export default {
       // Redirect to login.
       this.$router.push({name: 'login'})
     },
+    openCrisp () {
+      window.$crisp.push(['do', 'chat:show'])
+      window.$crisp.push(['do', 'chat:open'])
+    }
   }
 }
 </script>
