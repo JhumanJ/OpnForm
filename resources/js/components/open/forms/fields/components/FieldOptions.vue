@@ -193,10 +193,16 @@
                   label="Field Name"
       />
 
-      <v-checkbox v-model="field.hide_field_name" class="mb-3"
+      <v-checkbox v-model="field.hide_field_name" class="mt-3"
                   :name="field.id+'_hide_field_name'"
       >
         Hide field name
+      </v-checkbox>
+
+      <v-checkbox v-model="field.use_simple_text_input" class="mt-3"
+                  :name="field.id+'_use_simple_text_input'"
+      >
+        Use simple text input
       </v-checkbox>
 
       <!-- Pre-fill depends on type -->
@@ -216,7 +222,7 @@
                   :date-range="field.date_range===true"
                   label="Pre-filled value"
       />
-      <phone-input v-else-if="field.type === 'phone_number'"
+      <phone-input v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
                         name="prefill" class="mt-3"
                         :form="field" :can-only-country="true"
                         label="Pre-filled value"

@@ -13,8 +13,12 @@ class ValidPhoneInputRule implements Rule
             return false;
         }
         
-        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
-        return $phoneUtil->isValidNumber($phoneUtil->parse($value));
+        try {
+            $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+            return $phoneUtil->isValidNumber($phoneUtil->parse($value));
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function message()

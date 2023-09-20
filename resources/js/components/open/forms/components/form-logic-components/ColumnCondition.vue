@@ -43,7 +43,7 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'PhoneInput'
+        phone_number: 'TextInput'
       }
     }
   },
@@ -55,6 +55,10 @@ export default {
         component: this.inputComponent[this.property.type],
         name: this.property.id,
         required: true
+      }
+
+      if (this.property.type === 'phone_number' && !this.property.use_simple_text_input) {
+        componentData.component = 'PhoneInput'
       }
 
       if (['select', 'multi_select'].includes(this.property.type)) {

@@ -190,6 +190,9 @@ class AnswerFormRequest extends FormRequest
                 }
                 return $this->getRulesForDate($property);
             case 'phone_number':
+                if (isset($property['use_simple_text_input']) && $property['use_simple_text_input']) {
+                    return ['string'];
+                }
                 return ['string', 'min:6', new ValidPhoneInputRule];
             default:
                 return [];
