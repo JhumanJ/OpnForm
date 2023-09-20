@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="bg-gradient-to-b relative from-white to-gray-100 py-12 sm:py-16 lg:py-20 xl:py-24">
+    <section class="bg-gradient-to-b relative from-white to-gray-100 py-8 sm:py-16 ">
       <div class="absolute inset-0">
         <img class="w-full h-full object-cover object-top"
              :src="asset('img/pages/ai_form_builder/background-pattern.svg')" alt="">

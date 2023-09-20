@@ -133,7 +133,7 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'PhoneInput'
+        phone_number: 'TextInput'
       }
     },
     /**
@@ -158,6 +158,9 @@ export default {
       }
       if (field.type === 'signature') {
         return 'SignatureInput'
+      }
+      if (field.type === 'phone_number' && !field.use_simple_text_input) {
+        return 'PhoneInput'
       }
       return this.fieldComponents[field.type]
     },
