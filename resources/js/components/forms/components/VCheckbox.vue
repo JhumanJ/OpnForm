@@ -26,21 +26,12 @@ export default {
     value: { type: [Boolean, String], default: false },
     checked: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
-    size: { type: String, default: 'normal' }
+    sizeClasses: { type: String, default: 'w-4 h-4' }
   },
 
   data: () => ({
     internalValue: false
   }),
-
-  computed: {
-    sizeClasses () {
-      if (this.size === 'small') {
-        return 'w-3 h-3'
-      }
-      return 'w-5 h-5'
-    }
-  },
 
   watch: {
     value (val) {

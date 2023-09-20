@@ -42,7 +42,7 @@
         </button></span>
       <!-- Select popover, show/hide based on select state. -->
       <div v-show="isOpen" :dusk="dusk+'_dropdown' "
-           class="absolute mt-1 w-full rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
+           class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
            :class="dropdownClass"
       >
         <ul tabindex="-1" role="listbox" aria-labelled by="listbox-label" aria-activedescendant="listbox-item-3"
@@ -101,7 +101,7 @@ export default {
     data: Array,
     value: { default: null },
     inputClass: {type: String, default: null},
-    dropdownClass: {type: String, default: null},
+    dropdownClass: {type: String, default: 'w-full'},
     label: { type: String, default: null },
     dusk: { type: String, default: null },
     loading: { type: Boolean, default: false },
