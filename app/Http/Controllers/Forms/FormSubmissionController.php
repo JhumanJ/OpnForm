@@ -26,10 +26,16 @@ class FormSubmissionController extends Controller
         return FormSubmissionResource::collection($form->submissions()->paginate(100));
     }
 
-    public function export(string $id)
+    public function export(string $id, $format = "csv")
     {
         $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
+     
+        $allowed = ["csv", "xlsx"];
+        $format = strtolower($format);
+        if (!in_array($format, $allowed)) {
+            abort(403);
+        }
 
         $allRows = [];
         foreach ($form->submissions->toArray() as $row) {
@@ -41,11 +47,23 @@ class FormSubmissionController extends Controller
             $tmp['Create Date'] = date("Y-m-d H:i", strtotime($row['created_at']));
             $allRows[] = $tmp;
         }
-        $csvExport = (new FormSubmissionExport($allRows));
+        $exportData = (new FormSubmissionExport($allRows));
+
+        switch ($format){
+            case 'csv':
+                $exportFormat = \Maatwebsite\Excel\Excel::CSV;
+            break;
+            case 'xlsx':
+                $exportFormat = \Maatwebsite\Excel\Excel::XLSX;
+            break;
+            default:
+                $exportFormat = \Maatwebsite\Excel\Excel::CSV;
+        }
+        
         return Excel::download(
-            $csvExport,
-            $form->slug.'-submission-data.csv',
-            \Maatwebsite\Excel\Excel::CSV
+            $exportData,
+            $form->slug.'-submission-data.'.$format,
+            $exportFormat
         );
     }
 

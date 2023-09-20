@@ -3,10 +3,12 @@
     class="my-4 w-full mx-auto">
     <h3 class="font-semibold mb-4 text-xl">
       Form Submissions
-      <span v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase mb-2"> - <a
-        :href="exportUrl" target="_blank">Export as CSV</a></span>
-      <span v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> <a
-        href="javascript:void(0);" @click="showColumnsModal=true">Display columns</a></span>
+      <br>
+      <span v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase mb-2">
+        <a v-for="format in export_formats" :key="format" :href="getExportUrl(format)" target="_blank">{{ $t('form_data_export_as')+" "+format  }} <br> </a>
+      </span>
+        <span v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> 
+        <a href="javascript:void(0);" @click="showColumnsModal=true">Display columns</a></span>
     </h3>
 
     <!--  Table columns modal  -->
@@ -91,7 +93,11 @@ export default {
       displayColumns: {},
       searchForm: new Form({
         search: ''
-      })
+      }),
+      export_formats: [
+        'xlsx',
+        'csv'
+      ]
     }
   },
   mounted() {
@@ -221,6 +227,12 @@ export default {
       this.fullyLoaded = false
       this.tableData = []
       this.getSubmissionsData()
+    },
+    getExportUrl(format = "csv"){
+      if (!this.form) {
+        return ''
+      }
+      return '/api/open/forms/' + this.form.id + '/submissions/export/'+format
     }
   },
 }
