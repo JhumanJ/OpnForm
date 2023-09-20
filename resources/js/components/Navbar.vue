@@ -12,7 +12,7 @@
           </router-link>
           <workspace-dropdown class="ml-6"/>
         </div>
-        <div class="hidden md:block ml-auto relative">
+        <div v-if="showAuth" class="hidden md:block ml-auto relative">
           <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
             Templates
