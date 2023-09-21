@@ -18,7 +18,7 @@ class TemplatePolicy
      */
     public function create(User $user)
     {
-        return $user->admin || $user->template_editor;
+        return $user !== null;
     }
 
     /**
@@ -30,7 +30,7 @@ class TemplatePolicy
      */
     public function update(User $user, Template $template)
     {
-        return $user->admin || $user->template_editor;
+        return $user->admin || $user->template_editor || $user->formTemplates()->find($template->id) !== null;
     }
 
     /**
@@ -42,6 +42,6 @@ class TemplatePolicy
      */
     public function delete(User $user, Template $template)
     {
-        return $user->admin || $user->template_editor;
+        return $user->admin || $user->template_editor || $user->formTemplates()->find($template->id) !== null;
     }
 }

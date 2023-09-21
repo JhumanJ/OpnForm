@@ -18,13 +18,13 @@
     </template>
     <div class="p-4">
       <p v-if="!template">
-        New template will be create from your form <span class="font-semibold">{{ form.title }}</span>.
+        New template will be create from your form: <span class="font-semibold">{{ form.title }}</span>.
       </p>
 
       <form v-if="templateForm" class="mt-6" @submit.prevent="onSubmit" @keydown="templateForm.onKeydown($event)">
         <div class="-m-6">
           <div class="border-t py-4 px-6">
-            <toggle-switch-input name="publicly_listed" :form="templateForm" class="mt-4" label="Publicly Listed?" />
+            <toggle-switch-input v-if="user && (user.admin || user.template_editor)" name="publicly_listed" :form="templateForm" class="mt-4" label="Publicly Listed?" />
             <text-input name="name" :form="templateForm" class="mt-4" label="Title" :required="true" />
             <text-input name="slug" :form="templateForm" class="mt-4" label="Slug" :required="true" />
             <text-area-input name="short_description" :form="templateForm" class="mt-4" label="Short Description"
@@ -74,7 +74,7 @@
 <script>
 import Form from 'vform'
 import store from '~/store'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import axios from 'axios'
 import QuestionsEditor from './QuestionsEditor.vue'
 
@@ -93,7 +93,7 @@ export default {
 
   mounted () {
     this.templateForm = new Form(this.template ?? {
-      publicly_listed: true,
+      publicly_listed: false,
       name: '',
       slug: '',
       short_description: '',
@@ -112,6 +112,9 @@ export default {
       templates: state => state['open/templates'].content,
       industries: state => state['open/templates'].industries,
       types: state => state['open/templates'].types
+    }),
+    ...mapGetters({
+      user: 'auth/user'
     }),
     typesOptions () {
       return Object.values(this.types).map((type) => {
@@ -153,6 +156,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
+        this.$store.commit('open/templates/addOrUpdate', response.data.data)
         this.$emit('close')
       })
     },
@@ -162,7 +166,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
-        this.$store.dispatch('open/templates/addOrUpdate', response.data.data)
+        this.$store.commit('open/templates/addOrUpdate', response.data.data)
         this.$emit('close')
       })
     },
@@ -173,7 +177,7 @@ export default {
           this.alertSuccess(response.data.message)
         }
         this.$router.push({ name: 'templates' })
-        this.$store.dispatch('open/templates/remove', response.data.data)
+        this.$store.commit('open/templates/remove', this.template)
         this.$emit('close')
       })
     }
