@@ -199,7 +199,7 @@
         Hide field name
       </v-checkbox>
 
-      <v-checkbox v-model="field.use_simple_text_input" class="mt-3"
+      <v-checkbox v-if="field.type === 'phone_number'" v-model="field.use_simple_text_input" class="mt-3"
                   :name="field.id+'_use_simple_text_input'"
       >
         Use simple text input
