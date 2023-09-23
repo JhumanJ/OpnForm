@@ -7,15 +7,19 @@ use Illuminate\Support\Str;
 
 class ValidPhoneInputRule implements Rule
 {
+
+    public ?int $reason;
+
     public function passes($attribute, $value)
     {
         if (!is_string($value) || !Str::startsWith($value, '+')) {
             return false;
         }
-        
         try {
             $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
-            return $phoneUtil->isValidNumber($phoneUtil->parse($value));
+            $phone = $phoneUtil->parse($value);
+            $this->reason = $phoneUtil->isPossibleNumberWithReason($phone);
+            return $this->reason === \libphonenumber\ValidationResult::IS_POSSIBLE;
         } catch (\Exception $e) {
             return false;
         }
@@ -23,6 +27,14 @@ class ValidPhoneInputRule implements Rule
 
     public function message()
     {
-        return 'The :attribute is invalid.';
+        return match ($this->reason) {
+            \libphonenumber\ValidationResult::IS_POSSIBLE => 'The :attribute is not valid for an unknown reason.',
+            \libphonenumber\ValidationResult::INVALID_COUNTRY_CODE => 'The :attribute does not have a valid country code.',
+            \libphonenumber\ValidationResult::TOO_SHORT => 'The :attribute is too short.',
+            \libphonenumber\ValidationResult::TOO_LONG => 'The :attribute is too long.',
+            \libphonenumber\ValidationResult::IS_POSSIBLE_LOCAL_ONLY => 'The :attribute is not a valid phone number (local number).',
+            \libphonenumber\ValidationResult::INVALID_LENGTH => 'The :attribute does not have a valid length.',
+            default => 'The :attribute is not a valid phone number.',
+        };
     }
 }
