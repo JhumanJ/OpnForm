@@ -13,7 +13,7 @@
       </small>
     </div>
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-[110px]" dropdown-class="w-[350px]" input-class="rounded-r-none" :data="countries"
+      <v-select class="w-[130px]" dropdown-class="w-[300px]" input-class="rounded-r-none" :data="countries"
                 v-model="selectedCountryCode"
                 :has-error="hasValidation && form.errors.has(name)"
                 :disabled="disabled" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
