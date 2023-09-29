@@ -97,7 +97,7 @@ export default {
         this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
       }
 
-      const phoneObj = parsePhoneNumber(this.compVal)
+      const phoneObj = parsePhoneNumber(this.compVal.startsWith('+') ? this.compVal : this.compVal.substring(2, 0))
       if (phoneObj !== undefined && phoneObj) {
         if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
           this.selectedCountryCode = this.getCountryBy(phoneObj.country)
