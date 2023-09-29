@@ -8,14 +8,17 @@ use Illuminate\Support\Str;
 class ValidPhoneInputRule implements Rule
 {
 
-    public ?int $reason;
+    public ?int $reason = 0;
 
     public function passes($attribute, $value)
     {
-        if (!is_string($value) || !Str::startsWith($value, '+')) {
+        if (!is_string($value) || !$value) {
             return false;
         }
         try {
+            if(ctype_alpha(substr($value, 0, 2))){  // First 2 will be country code
+                $value = substr($value, 2);
+            }
             $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
             $phone = $phoneUtil->parse($value);
             $this->reason = $phoneUtil->isPossibleNumberWithReason($phone);

@@ -246,6 +246,14 @@ class AnswerFormRequest extends FormRequest
             }
         });
 
+        $countryCodeMapper = json_decode(file_get_contents(resource_path('data/country_code_mapper.json')), true);
+        collect($this->form->properties)->each(function ($property) use ($countryCodeMapper, $receivedData, &$mergeData) {
+            $receivedValue = $receivedData[$property['id']] ?? null;
+            if($property['type'] === 'phone_number' && (!isset($property['use_simple_text_input']) || !$property['use_simple_text_input']) && $receivedValue && in_array($receivedValue, $countryCodeMapper)){
+                $mergeData[$property['id']] = null;
+            }
+        });
+
         $this->merge($mergeData);
     }
 }
