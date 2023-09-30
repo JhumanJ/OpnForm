@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description');
             $table->string('image_url');
-            $table->jsonb('structure')->default('{}');
+            $table->jsonb('structure')->nullable();
         });
     }
 

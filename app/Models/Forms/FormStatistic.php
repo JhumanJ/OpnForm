@@ -28,6 +28,13 @@ class FormStatistic extends Model
     ];
 
     /**
+     * Set Default values
+     */
+    protected $attributes = [
+        'data' => '{}'
+    ];
+
+    /**
      * Relationships
      */
     public function form()

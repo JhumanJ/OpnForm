@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->text('max_submissions_reached_text')->nullable()->default('This form has now reached the maximum number of allowed submissions and is now closed.')->change();
+            $table->text('max_submissions_reached_text')->nullable()->change();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->string('max_submissions_reached_text')->nullable()->default('This form has now reached the maximum number of allowed submissions and is now closed.')->change();
+            $table->string('max_submissions_reached_text')->nullable()->change();
         });
     }
 };

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->jsonb('removed_properties')->default('[]');
+            $table->jsonb('removed_properties')->nullable();
         });
     }
 

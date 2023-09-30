@@ -19,6 +19,13 @@ class FormSubmission extends Model
     ];
 
     /**
+     * Default values
+     */
+    protected $attributes = [
+        'data' => '{}'
+    ];
+
+    /**
      * RelationShips
      */
     public function form() {

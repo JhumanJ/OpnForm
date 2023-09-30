@@ -37,8 +37,16 @@ class Template extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Default values
+     */
     protected $attributes = [
         'publicly_listed' => false,
+        'structure' => '{}',
+        'questions' => '{}',
+        'industries' => '[]',
+        'types' => '[]',
+        'related_templates' => '[]',
     ];
 
     public function setDescriptionAttribute($value)

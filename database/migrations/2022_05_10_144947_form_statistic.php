@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('form_statistics', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Forms\Form::class,'form_id');
-            $table->jsonb('data')->default('{}');
+            $table->jsonb('data')->nullable();
             $table->date('date');
         });
     }

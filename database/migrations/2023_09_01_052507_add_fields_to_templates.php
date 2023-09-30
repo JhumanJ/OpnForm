@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::table('templates', function (Blueprint $table) {
             $table->boolean('publicly_listed')->default(false);
-            $table->jsonb('industries')->default('[]');
-            $table->jsonb('types')->default('[]');
+            $table->jsonb('industries')->nullable();
+            $table->jsonb('types')->nullable();
             $table->string('short_description')->nullable();
-            $table->jsonb('related_templates')->default('[]');
+            $table->jsonb('related_templates')->nullable();
             $table->string('image_url',500)->nullable()->change();
         });
     }

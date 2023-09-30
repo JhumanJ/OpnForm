@@ -124,6 +124,22 @@ class Form extends Model
     ];
 
     /**
+     * Default values
+     */
+    protected $attributes = [
+        'submit_button_text' => 'Submit',
+        're_fill_button_text' => 'Fill Again',
+        'submitted_text' => 'Amazing, we saved your answers. Thank you for your time and have a great day!',
+        'notification_body' => '<p>Hello there 👋 <br>This is a confirmation that your submission was successfully saved.</p>',
+        'tags' => '[]',
+        'removed_properties' => '[]',
+        'max_submissions_reached_text' => 'This form has now reached the maximum number of allowed submissions and is now closed.',
+        'editable_submissions_button_text' => 'Edit submission',
+        'seo_meta' => '{}',
+        'notification_settings' => '{}'
+    ];
+
+    /**
      * The event map for the model.
      *
      * @var array

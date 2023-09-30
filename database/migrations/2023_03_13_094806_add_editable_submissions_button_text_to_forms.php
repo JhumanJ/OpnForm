@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->text('editable_submissions_button_text')->default('Edit submission');
+            $table->text('editable_submissions_button_text')->nullable();
         });
     }
 

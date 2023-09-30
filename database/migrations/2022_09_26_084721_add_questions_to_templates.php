@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('templates', function (Blueprint $table) {
-            $table->jsonb('questions')->default('{}');
+            $table->jsonb('questions')->nullable();
         });
     }
 
