@@ -220,14 +220,14 @@ class AnswerFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        // Escape all '\' in select options
         $receivedData = $this->toArray();
         $mergeData = [];
-        collect($this->form->properties)->filter(function ($property) {
-            return in_array($property['type'], ['select', 'multi_select']);
-        })->each(function ($property) use ($receivedData, &$mergeData) {
+        $countryCodeMapper = json_decode(file_get_contents(resource_path('data/country_code_mapper.json')), true);
+        collect($this->form->properties)->each(function ($property) use ($countryCodeMapper, $receivedData, &$mergeData) {
             $receivedValue = $receivedData[$property['id']] ?? null;
-            if (!is_null($receivedValue)) {
+
+            // Escape all '\' in select options
+            if(in_array($property['type'], ['select', 'multi_select']) && !is_null($receivedValue)){
                 if (is_array($receivedValue)) {
                     $mergeData[$property['id']] = collect($receivedValue)->map(function ($value) {
                         $value = Str::of($value);
@@ -244,11 +244,7 @@ class AnswerFormRequest extends FormRequest
                     )->toString();
                 }
             }
-        });
 
-        $countryCodeMapper = json_decode(file_get_contents(resource_path('data/country_code_mapper.json')), true);
-        collect($this->form->properties)->each(function ($property) use ($countryCodeMapper, $receivedData, &$mergeData) {
-            $receivedValue = $receivedData[$property['id']] ?? null;
             if($property['type'] === 'phone_number' && (!isset($property['use_simple_text_input']) || !$property['use_simple_text_input']) && $receivedValue && in_array($receivedValue, $countryCodeMapper)){
                 $mergeData[$property['id']] = null;
             }
