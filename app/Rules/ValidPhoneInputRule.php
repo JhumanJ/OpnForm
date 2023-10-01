@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class ValidPhoneInputRule implements Rule
 {
 
-    public ?int $reason;
+    public ?int $reason = 0;
 
     public function passes($attribute, $value)
     {
