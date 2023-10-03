@@ -13,7 +13,7 @@
       </small>
     </div>
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
-      <v-select class="w-[110px]" dropdown-class="w-[350px]" input-class="rounded-r-none" :data="countries"
+      <v-select class="w-[130px]" dropdown-class="w-[300px]" input-class="rounded-r-none" :data="countries"
                 v-model="selectedCountryCode"
                 :has-error="hasValidation && form.errors.has(name)"
                 :disabled="disabled" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
@@ -54,64 +54,74 @@ import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
-  components: {CountryFlag},
+  components: { CountryFlag },
   directives: {
     onClickaway: onClickaway
   },
   mixins: [inputMixin],
   props: {
-    canOnlyCountry: {type: Boolean, default: false}
+    canOnlyCountry: { type: Boolean, default: false }
   },
 
-  data() {
+  data () {
     return {
-      selectedCountryCode: this.getCountryBy('US'), // Default US
+      selectedCountryCode: null,
       countries: countryCodes,
       inputVal: null
     }
   },
 
-  mounted() {
-    if (this.compVal) {
-      const phoneObj = parsePhoneNumber(this.compVal)
-      if (phoneObj !== undefined && phoneObj) {
-        if (phoneObj.country !== undefined && phoneObj.country) {
-          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
+  watch: {
+    inputVal: {
+      handler (val) {
+        if (val && val.startsWith('0')) {
+          val = val.substring(1)
         }
-        this.inputVal = phoneObj.nationalNumber
-      } else if (this.compVal) {
-        this.selectedCountryCode = this.getCountryBy(this.compVal, 'dial_code')
+        if (this.canOnlyCountry) {
+          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : this.selectedCountryCode.code + this.selectedCountryCode.dial_code  
+        } else {
+          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : null
+        }
+      }
+    },
+    selectedCountryCode (newVal, oldVal) {
+      if (this.compVal && newVal && oldVal) {
+        this.compVal = this.compVal.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
       }
     }
   },
 
-  watch: {
-    inputVal: {
-      handler(val) {
-        if (val && val.startsWith('0')) {
-          val = val.substring(1)
+  mounted () {
+    if (this.compVal) {
+      if(!this.compVal.startsWith('+')){
+        this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
+      }
+
+      const phoneObj = parsePhoneNumber(this.compVal)
+      if (phoneObj !== undefined && phoneObj) {
+        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
+          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
-        this.compVal = (val) ? this.selectedCountryCode.dial_code + val : null
+        this.inputVal = phoneObj.nationalNumber
       }
-    },
-    selectedCountryCode(newVal, oldVal) {
-      if (this.compVal) {
-        this.compVal = this.compVal.replace(oldVal.dial_code, newVal.dial_code)
-      }
+    }
+    if(!this.selectedCountryCode){
+      this.selectedCountryCode = this.getCountryBy()
     }
   },
   methods: {
-    getCountryBy(code, type = 'code') {
+    getCountryBy (code = 'US', type = 'code') {
+      if(!code) code = 'US' // Default US
       return countryCodes.find((item) => {
         return item[type] === code
       })
     },
-    onInput(event) {
+    onInput (event) {
       this.inputVal = event.target.value.replace(/[^0-9]/g, '')
     },
-    onChangeCountryCode() {
+    onChangeCountryCode () {
       if (this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)) {
-        this.compVal = this.selectedCountryCode.dial_code
+        this.compVal = this.selectedCountryCode.code + this.selectedCountryCode.dial_code
       }
     }
   }
