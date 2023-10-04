@@ -131,6 +131,11 @@ class StoreFormSubmissionJob implements ShouldQueue
             if($this->form->is_pro && $field['type'] == 'signature') {
                 $finalData[$field['id']] = $this->storeSignature($answerValue);
             }
+
+            // For Phone
+            if($field['type'] == 'phone_number' && $answerValue && ctype_alpha(substr($answerValue, 0, 2)) && (!isset($field['use_simple_text_input']) || !$field['use_simple_text_input'])) {
+                $finalData[$field['id']] = substr($answerValue, 2);
+            }
         }
 
         return $finalData;
