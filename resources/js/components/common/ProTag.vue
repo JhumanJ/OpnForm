@@ -15,15 +15,15 @@
       </h4>
       <div v-if="!user || !user.is_subscribed" class="mt-4">
         <p>
-        All the features with a<span
+          All the features with a<span
           class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold mx-1"
         >
           PRO
         </span> tag are available in the Pro plan of OpnForm. <b>You can play around and try all Pro features
           within
           the form editor, but you can't use them in your real forms</b>. You can subscribe now to gain unlimited access
-        to
-        all our pro features!
+          to
+          all our pro features!
         </p>
       </div>
 
@@ -38,15 +38,15 @@
 
 <script>
 import Modal from '../Modal.vue'
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 import PricingTable from "../pages/pricing/PricingTable.vue";
 
 export default {
   name: 'ProTag',
-  components: {PricingTable, Modal },
+  components: {PricingTable, Modal},
   props: {},
 
-  data () {
+  data() {
     return {
       showPremiumModal: false,
       checkoutLoading: false
@@ -59,17 +59,17 @@ export default {
       currentWorkSpace: 'open/workspaces/getCurrent',
     }),
     shouldDisplayProTag() {
-      if(!window.config.paid_plans_enabled) return false
-      if (!this.user) return true
-      return !(this.currentWorkSpace().is_pro || this.currentWorkSpace().is_enterprise)
+      if (!window.config.paid_plans_enabled) return false
+      if (!this.user || !this.currentWorkSpace) return true
+      return !(this.currentWorkSpace.is_pro)
     },
   },
 
-  mounted () {
+  mounted() {
   },
 
   methods: {
-    openChat () {
+    openChat() {
       window.$crisp.push(['do', 'chat:show'])
       window.$crisp.push(['do', 'chat:open'])
     },

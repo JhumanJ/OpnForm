@@ -67,7 +67,7 @@
         </svg>
         Duplicate form
       </a>
-      <a href="#" v-if="user.template_editor"
+      <a href="#" v-if="user && user.template_editor"
          class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
          @click.prevent="showFormTemplateModal=true"
       >

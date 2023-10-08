@@ -131,7 +131,9 @@ export default {
       this.isGuest = false
       this.loadWorkspaces()
       setTimeout(() => {
-        this.$refs.editor.saveFormCreate()
+        if (this.$refs.editor) {
+          this.$refs.editor.saveFormCreate()
+        }
       }, 500)
     },
     formGenerated(form) {
