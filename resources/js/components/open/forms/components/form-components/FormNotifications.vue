@@ -1,8 +1,8 @@
 <template>
-  <collapse class="p-4 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
+  <collapse class="p-4 w-full border-b" v-model="isCollapseOpen">
     <template #title>
       <h3 id="v-step-2" class="font-semibold text-lg">
-        <svg class="h-5 w-5 inline mr-2"
+        <svg class="h-5 w-5 inline mr-2 transition-colors"
              :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6M22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -12,7 +12,7 @@
       </h3>
     </template>
 
-    <form-notifications-option />
+    <form-notifications-option class="mt-2" />
     <form-notifications-submission-confirmation />
     <form-notifications-slack />
     <form-notifications-discord />
@@ -55,11 +55,5 @@ export default {
 
   mounted () {
   },
-
-  methods: {
-    onClickCollapse (e) {
-      this.isCollapseOpen = e
-    }
-  }
 }
 </script>
