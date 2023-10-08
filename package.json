@@ -8,6 +8,7 @@
     "@hcaptcha/vue-hcaptcha": "^0.3.2",
     "@sentry/tracing": "^6.11.0",
     "@sentry/vue": "^6.11.0",
+    "@sentry/integrations": "^7.53.1",
     "axios": "^0.21.1",
     "chart.js": "^3.7.1",
     "clone-deep": "^4.0.1",

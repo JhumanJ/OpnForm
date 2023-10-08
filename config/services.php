@@ -60,6 +60,7 @@ return [
     'google_analytics_code' => env('GOOGLE_ANALYTICS_CODE'),
     'amplitude_code' => env('AMPLITUDE_CODE'),
     'crisp_website_id' => env('CRISP_WEBSITE_ID'),
+    'sentry_vue_dsn' => env('SENTRY_VUE_DSN'),
 
     'admin_emails' => explode(",", env('ADMIN_EMAILS') ?? ''),
     'template_editor_emails' => explode(",", env('TEMPLATE_EDITOR_EMAILS') ?? '')
