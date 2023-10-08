@@ -30,7 +30,7 @@ export default {
   },
   data () {
     return {
-      content: this.value
+      content: this.value ?? {}
     }
   },
 
@@ -48,7 +48,7 @@ export default {
 
   watch: {},
 
-  mounted () {
+  created () {
     if(this.compVal === undefined || this.compVal === null){
       this.compVal = {}
     }
