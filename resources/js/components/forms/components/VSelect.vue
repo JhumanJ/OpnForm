@@ -59,7 +59,8 @@
           </div>
           <template v-if="filteredOptions.length>0">
             <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"
-                class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
+                :class="{'px-3 pr-9':multiple, 'px-3':!multiple}"
+                class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
                 :dusk="dusk+'_option'" @click="select(item)"
             >
               <slot name="option" :option="item" :selected="isSelected(item)" />
@@ -69,7 +70,8 @@
             {{ (allowCreation ? 'Type something to add an option': 'No option available') }}.
           </p>
           <li v-if="allowCreation && searchTerm" role="option" :style="optionStyle"
-              class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9  cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
+              :class="{'px-3 pr-9':multiple, 'px-3':!multiple}"
+              class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
               @click="createOption(searchTerm)"
           >
             Create <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{ searchTerm }}</b>

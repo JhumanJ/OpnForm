@@ -108,6 +108,10 @@ export default {
       this.updatedForm = new Form(this.form)
       this.formInitialHash = this.hashString(JSON.stringify(this.updatedForm.data()))
     }
+
+    if(!this.updatedForm.notification_settings || Array.isArray(this.updatedForm.notification_settings)){
+      this.updatedForm.notification_settings = {}
+    }
   },
   
   methods: {
