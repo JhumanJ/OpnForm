@@ -81,6 +81,7 @@ class Form extends Model
         'editable_submissions',
         'editable_submissions_button_text',
         'confetti_on_submission',
+        'auto_save',
 
         // Security & Privacy
         'can_be_indexed',

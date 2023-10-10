@@ -157,6 +157,10 @@
                   label="Burst of confetti on successful submisison"
                   @input="onChangeConfettiOnSubmission"
       />
+      <toggle-switch-input name="auto_save" :form="form"
+                  label="Auto save form response"
+                  help="Will save data in browser, if user not submit the form then next time will auto prefill last entered data"
+      />
     </template>
   </collapse>
 </template>
