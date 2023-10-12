@@ -12,11 +12,8 @@ class SubscriptionController extends Controller
     const SUBSCRIPTION_PLANS = ['monthly', 'yearly'];
 
     const PRO_SUBSCRIPTION_NAME = 'default';
-    const ENTERPRISE_SUBSCRIPTION_NAME = 'enterprise';
-
     const SUBSCRIPTION_NAMES = [
         self::PRO_SUBSCRIPTION_NAME,
-        self::ENTERPRISE_SUBSCRIPTION_NAME
     ];
 
     /**
