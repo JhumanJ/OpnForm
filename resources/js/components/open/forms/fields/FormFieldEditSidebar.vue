@@ -1,6 +1,6 @@
 <template>
   <div v-if="showSidebar"
-       class="absolute shadow-lg shadow-blue-800/30 top-0 h-[calc(100vh-45px)] right-0 lg:shadow-none lg:relative bg-white w-full md:w-1/2 lg:w-2/5 border-l overflow-y-scroll md:max-w-[20rem] flex-shrink-0">
+       class="absolute shadow-lg shadow-blue-800/30 top-0 h-[calc(100vh-45px)] right-0 lg:shadow-none lg:relative bg-white w-full md:w-1/2 lg:w-2/5 border-l overflow-y-scroll md:max-w-[20rem] flex-shrink-0 overflow-x-hidden">
     <div class="p-4 border-b sticky top-0 z-10 bg-white">
       <button v-if="!field" class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="closeSidebar">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +72,7 @@ export default {
   props: {},
   data() {
     return {
-      
+
     }
   },
 

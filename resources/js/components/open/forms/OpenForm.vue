@@ -224,7 +224,7 @@ export default {
     dataForm: {
       deep: true,
       handler() {
-        if (this.isPublicFormPage && this.form && this.dataFormValue) {
+        if (this.isPublicFormPage && this.form && this.form.auto_save && this.dataFormValue) {
           try {
             window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
           } catch (e) {
@@ -310,7 +310,7 @@ export default {
           }
         }
       }
-      if (this.isPublicFormPage) {
+      if (this.isPublicFormPage && this.form.auto_save) {
         let pendingData
         try {
           pendingData = window.localStorage.getItem(this.formPendingSubmissionKey)
