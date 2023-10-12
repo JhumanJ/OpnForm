@@ -73,6 +73,14 @@
     <toggle-switch-input name="transparent_background" :form="form" class="mt-4"
                     label="Transparent Background" help="Only applies when form is embedded"
     />
+    <toggle-switch-input name="confetti_on_submission" :form="form" class="mt-4"
+                         label="Confetti on successful submisison"
+                         @input="onChangeConfettiOnSubmission"
+    />
+    <toggle-switch-input name="auto_save" :form="form"
+                         label="Auto save form response"
+                         help="Will save data in browser, if user not submit the form then next time will auto prefill last entered data"
+    />
   </collapse>
 </template>
 
@@ -86,6 +94,7 @@ export default {
   },
   data () {
     return {
+      isMounted: false,
       isCollapseOpen: true
     }
   },
@@ -104,10 +113,17 @@ export default {
 
   watch: {},
 
-  mounted () {
+  mounted() {
+    this.isMounted = true
   },
 
   methods: {
+    onChangeConfettiOnSubmission(val) {
+      this.$set(this.form, 'confetti_on_submission', val)
+      if(this.isMounted && val){
+        this.playConfetti()
+      }
+    },
     openChat () {
       window.$crisp.push(['do', 'chat:show'])
       window.$crisp.push(['do', 'chat:open'])

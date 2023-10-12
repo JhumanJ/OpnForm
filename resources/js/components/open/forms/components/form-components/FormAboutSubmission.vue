@@ -153,10 +153,6 @@
                             help="This message will be shown when the form will have the maximum number of submissions"
                             :required="false"
       />
-      <toggle-switch-input name="confetti_on_submission" :form="form" class="mt-4"
-                  label="Burst of confetti on successful submisison"
-                  @input="onChangeConfettiOnSubmission"
-      />
     </template>
   </collapse>
 </template>
@@ -173,7 +169,6 @@ export default {
     return {
       submissionOptions: {},
       isCollapseOpen: true,
-      isMounted: false
     }
   },
 
@@ -229,18 +224,5 @@ export default {
       }
     }
   },
-
-  mounted() {
-    this.isMounted = true
-  },
-
-  methods: {
-    onChangeConfettiOnSubmission(val) {
-      this.$set(this.form, 'confetti_on_submission', val)
-      if(this.isMounted && val){
-        this.playConfetti()
-      }
-    }
-  }
 }
 </script>
