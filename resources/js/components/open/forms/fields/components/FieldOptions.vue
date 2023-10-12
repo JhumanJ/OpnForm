@@ -161,9 +161,9 @@
         Advanced options for your select/multiselect fields.
       </p>
       <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-3"
-                        @input="onFieldOptionsChange"
-                        label="Set selection options"
-                        help="Add one option per line"
+                       @input="onFieldOptionsChange"
+                       label="Set selection options"
+                       help="Add one option per line"
       />
       <v-checkbox v-model="field.allow_creation"
                   name="allow_creation" @input="onFieldAllowCreationChange" help=""
@@ -206,10 +206,10 @@
       </v-checkbox>
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
         <v-select v-model="field.unavailable_countries" class="mt-4"
-                      :data="allCountries" :multiple="true"
-                      :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
-                      label="Unavailable countries" :placeholder="'Select a country'"
-                      help="Countries will not display on phone input"
+                  :data="allCountries" :multiple="true"
+                  :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
+                  label="Disabled countries" :placeholder="'Select a country'"
+                  help="Remove countries from the phone input"
         >
           <template #selected="{option, selected}">
             <div class="flex items-center space-x-2 justify-center overflow-hidden">
@@ -218,7 +218,7 @@
           </template>
           <template #option="{option, selected}">
             <div class="flex items-center space-x-2 hover:text-white">
-              <country-flag size="normal" class="!-mt-[9px]" :country="option.code" />
+              <country-flag size="normal" class="!-mt-[9px]" :country="option.code"/>
               <span class="grow">{{ option.name }}</span>
               <span>{{ option.dial_code }}</span>
             </div>
@@ -233,8 +233,8 @@
           </template>
         </v-select>
         <small class="flex">
-            <a href="#" class="grow" @click.prevent="selectAllCountries">Select All</a>
-            <a href="#" @click.prevent="field.unavailable_countries=null">Un-select All</a>
+          <a href="#" class="grow" @click.prevent="selectAllCountries">Select All</a>
+          <a href="#" @click.prevent="field.unavailable_countries=null">Un-select All</a>
         </small>
       </template>
 
@@ -256,14 +256,14 @@
                   label="Pre-filled value"
       />
       <phone-input v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
-                        name="prefill" class="mt-3"
-                        :form="field" :can-only-country="true" :unavailable-countries="field.unavailable_countries ?? []"
-                        label="Pre-filled value"
+                   name="prefill" class="mt-3"
+                   :form="field" :can-only-country="true" :unavailable-countries="field.unavailable_countries ?? []"
+                   label="Pre-filled value"
       />
       <text-area-input v-else-if="field.type === 'text' && field.multi_lines"
-                        name="prefill" class="mt-3"
-                        :form="field"
-                        label="Pre-filled value"
+                       name="prefill" class="mt-3"
+                       :form="field"
+                       label="Pre-filled value"
       />
       <text-input v-else-if="field.type!=='files'" name="prefill" class="mt-3"
                   :form="field"
@@ -296,19 +296,19 @@
 
       <!--   Help  -->
       <rich-text-area-input name="help" class="mt-3"
-                  :form="field"
-                  :editorToolbar="editorToolbarCustom"
-                  label="Field Help"
-                  help="Your field help will be shown below/above the field, just like this message."
-                  :help-position="field.help_position"
+                            :form="field"
+                            :editorToolbar="editorToolbarCustom"
+                            label="Field Help"
+                            help="Your field help will be shown below/above the field, just like this message."
+                            :help-position="field.help_position"
       />
       <select-input name="help_position" class="mt-3"
-                  :options="[
+                    :options="[
                     {name:'Below input',value:'below_input'},
                     {name:'Above input',value:'above_input'},
                   ]"
-                  :form="field" label="Field Help Position"
-                  @input="onFieldHelpPositionChange"
+                    :form="field" label="Field Help Position"
+                    @input="onFieldHelpPositionChange"
       />
 
       <template v-if="['text','number','url','email'].includes(field.type)">
@@ -338,7 +338,8 @@
         Generates a unique id
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form submission
+        If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form
+        submission
       </p>
 
       <v-checkbox v-model="field.generates_auto_increment_id"
@@ -424,7 +425,7 @@ export default {
 
   watch: {
     'field.width': {
-      handler (val) {
+      handler(val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'width', 'full')
         }
@@ -432,7 +433,7 @@ export default {
       immediate: true
     },
     'field.align': {
-      handler (val) {
+      handler(val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'align', 'left')
         }
@@ -441,7 +442,7 @@ export default {
     }
   },
 
-  created () {
+  created() {
     if (this.field?.width === undefined || this.field?.width === null) {
       this.$set(this.field, 'width', 'full')
     }
@@ -454,7 +455,7 @@ export default {
   },
 
   methods: {
-    onFieldDisabledChange (val) {
+    onFieldDisabledChange(val) {
       this.$set(this.field, 'disabled', val)
       if (this.field.disabled) {
         this.$set(this.field, 'hidden', false)
@@ -555,12 +556,12 @@ export default {
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldHelpPositionChange (val) {
+    onFieldHelpPositionChange(val) {
       if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
     },
-    selectAllCountries () {
+    selectAllCountries() {
       this.$set(this.field, 'unavailable_countries', this.allCountries.map(item => {
         return item.code
       }))
