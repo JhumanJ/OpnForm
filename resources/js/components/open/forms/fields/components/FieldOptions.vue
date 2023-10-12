@@ -204,6 +204,39 @@
       >
         Use simple text input
       </v-checkbox>
+      <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
+        <v-select v-model="field.unavailable_countries" class="mt-4"
+                      :data="allCountries" :multiple="true"
+                      :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
+                      label="Unavailable countries" :placeholder="'Select a country'"
+                      help="Countries will not display on phone input"
+        >
+          <template #selected="{option, selected}">
+            <div class="flex items-center space-x-2 justify-center overflow-hidden">
+              {{ option.length }} selected
+            </div>
+          </template>
+          <template #option="{option, selected}">
+            <div class="flex items-center space-x-2 hover:text-white">
+              <country-flag size="normal" class="!-mt-[9px]" :country="option.code" />
+              <span class="grow">{{ option.name }}</span>
+              <span>{{ option.dial_code }}</span>
+            </div>
+            <span v-if="selected" class="absolute inset-y-0 right-0 flex items-center pr-2 dark:text-white">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                />
+              </svg>
+            </span>
+          </template>
+        </v-select>
+        <small class="flex">
+            <a href="#" class="grow" @click.prevent="selectAllCountries">Select All</a>
+            <a href="#" @click.prevent="field.unavailable_countries=null">Un-select All</a>
+        </small>
+      </template>
 
       <!-- Pre-fill depends on type -->
       <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-3"
@@ -224,7 +257,7 @@
       />
       <phone-input v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
                         name="prefill" class="mt-3"
-                        :form="field" :can-only-country="true"
+                        :form="field" :can-only-country="true" :unavailable-countries="field.unavailable_countries ?? []"
                         label="Pre-filled value"
       />
       <text-area-input v-else-if="field.type === 'text' && field.multi_lines"
@@ -327,10 +360,12 @@
 <script>
 const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 import timezones from '../../../../../../data/timezones.json'
+import countryCodes from '../../../../../../data/country_codes.json'
+import CountryFlag from 'vue-country-flag'
 
 export default {
   name: 'FieldOptions',
-  components: {FormBlockLogicEditor},
+  components: {FormBlockLogicEditor, CountryFlag},
   props: {
     field: {
       type: Object,
@@ -346,7 +381,8 @@ export default {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
       editorToolbarCustom: [
         ['bold', 'italic', 'underline', 'link'],
-      ]
+      ],
+      allCountries: countryCodes,
     }
   },
 
@@ -523,6 +559,11 @@ export default {
       if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
+    },
+    selectAllCountries () {
+      this.$set(this.field, 'unavailable_countries', this.allCountries.map(item => {
+        return item.code
+      }))
     }
   }
 }
