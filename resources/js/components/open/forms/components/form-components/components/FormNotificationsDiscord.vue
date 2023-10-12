@@ -73,7 +73,7 @@ export default {
   watch: {},
 
   mounted () {
-    if(!this.form.notification_settings.discord){
+    if(!this.form.notification_settings.discord || Array.isArray(this.form.notification_settings.discord)){
       this.form.notification_settings.discord = {}
     }
   },

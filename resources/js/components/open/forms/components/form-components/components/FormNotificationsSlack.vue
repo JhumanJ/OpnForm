@@ -74,7 +74,7 @@ export default {
   watch: {},
 
   mounted () {
-    if(!this.form.notification_settings.slack){
+    if(!this.form.notification_settings.slack || Array.isArray(this.form.notification_settings.slack)){
       this.form.notification_settings.slack = {}
     }
   },
