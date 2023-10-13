@@ -93,7 +93,16 @@
 
       <more-features class="pt-56"/>
 
-      <pricing-table v-if="paidPlansEnabled" class="pb-20" :home-page="true"/>
+      <pricing-table v-if="paidPlansEnabled" class="pb-20" :home-page="true">
+        <template #pricing-table>
+          <li class="flex gap-x-3">
+            <router-link :to="{name:'pricing'}" class="flex gap-3">
+              <div class="w-5"/>
+              Read more about our pricing
+            </router-link>
+          </li>
+        </template>
+      </pricing-table>
 
       <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
       <!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
