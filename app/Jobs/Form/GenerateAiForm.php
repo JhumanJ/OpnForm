@@ -55,7 +55,7 @@ class GenerateAiForm implements ShouldQueue
         } catch (\Exception $e) {
             $this->completion->update([
                 'status' => AiFormCompletion::STATUS_FAILED,
-                'result' => $e->getMessage()
+                'result' => ['error' => $e->getMessage()]
             ]);
         }
 

@@ -218,6 +218,11 @@ class Form extends Model
         return !empty($this->password);
     }
 
+    public function getRemovedPropertiesAttribute()
+    {
+        return $this->attributes['removed_properties'] ?? [];
+    }
+
     /**
      * Relationships
      */
