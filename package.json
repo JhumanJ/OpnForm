@@ -6,9 +6,9 @@
   },
   "dependencies": {
     "@hcaptcha/vue-hcaptcha": "^0.3.2",
+    "@sentry/integrations": "^7.53.1",
     "@sentry/tracing": "^6.11.0",
     "@sentry/vue": "^6.11.0",
-    "@sentry/integrations": "^7.53.1",
     "axios": "^0.21.1",
     "chart.js": "^3.7.1",
     "clone-deep": "^4.0.1",
@@ -48,6 +48,7 @@
     "@babel/eslint-parser": "^7.15.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.15.0",
+    "@sentry/vite-plugin": "^2.8.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@vitejs/plugin-vue2": "^2.2.0",
     "autoprefixer": "^10.4.13",

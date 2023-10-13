@@ -151,6 +151,8 @@ jobs:
 
       - name: Build client
         run: npm run build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Deploy to production
         run: php vendor/bin/vapor deploy production --commit="${GITHUB_SHA}" --message="${GITHUB_REF}"
