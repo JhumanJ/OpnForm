@@ -7,6 +7,7 @@ use App\Http\Requests\Templates\FormTemplateRequest;
 use App\Http\Resources\FormTemplateResource;
 use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateController extends Controller
 {
@@ -16,12 +17,16 @@ class TemplateController extends Controller
         if ($request->offsetExists('limit') && $request->get('limit') > 0) {
             $limit = (int) $request->get('limit');
         }
-        return FormTemplateResource::collection(
-            Template::where('publicly_listed', true)
-                ->orderByDesc('created_at')
-                ->limit($limit)
-                ->get()
-        );
+
+        $templates = Template::where('publicly_listed', true)
+            ->when(Auth::check(), function ($query) {
+                $query->orWhere('creator_id', Auth::id());
+            })
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
+
+        return FormTemplateResource::collection($templates);
     }
 
     public function create(FormTemplateRequest $request)
@@ -34,7 +39,8 @@ class TemplateController extends Controller
 
         return $this->success([
             'message' => 'Template was created.',
-            'template_id' => $template->id
+            'template_id' => $template->id,
+            'data' => new FormTemplateResource($template)
         ]);
     }
 

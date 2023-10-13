@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-full">
     <breadcrumb :path="breadcrumbs">
       <template #left>
-        <div v-if="user && (user.admin || user.template_editor)" class="ml-5">
+        <div v-if="canEditTemplate" class="ml-5">
           <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
             Edit Template
           </v-button>
@@ -12,6 +12,11 @@
         </div>
       </template>
       <template #right>
+        <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
+                  @click.prevent="copyTemplateUrl"
+        >
+          Copy Template URL
+        </v-button>
         <v-button v-track.use_template_button_clicked size="small" class="mr-5"
                   :to="{path: createFormWithTemplateUrl}"
         >
@@ -228,6 +233,16 @@ export default {
     cleanQuotes (str) {
       // Remove starting and ending quotes if any
       return (str) ? str.replace(/^"/, '').replace(/"$/, '') : ''
+    },
+    copyTemplateUrl(){
+      const str = this.template.share_url
+      const el = document.createElement('textarea')
+      el.value = str
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.alertSuccess('Copied!')
     }
   },
 
@@ -250,6 +265,9 @@ export default {
     },
     form () {
       return this.template ? new Form(this.template.structure) : null
+    },
+    canEditTemplate () {
+      return this.user && this.template && (this.user.admin || this.user.template_editor || this.template.creator_id === this.user.id)
     },
     metaTitle () {
       return this.template ? this.template.name : 'Form Template'

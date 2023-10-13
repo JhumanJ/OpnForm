@@ -67,6 +67,7 @@ export default [
   { path: '/forms/:slug', name: 'forms.show_public', component: page('forms/show-public.vue') },
 
   // Templates
+  { path: '/my-templates', name: 'my_templates', component: page('templates/my_templates.vue') },
   { path: '/form-templates', name: 'templates', component: page('templates/templates.vue') },
   { path: '/form-templates/:slug', name: 'templates.show', component: page('templates/show.vue') },
 
