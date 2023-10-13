@@ -37,7 +37,7 @@ class FormController extends Controller
         $forms = $workspace->forms()->with(['creator','views','submissions'])
             ->orderByDesc('updated_at')
             ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
-            
+
             // Add attributes for faster loading
             $form->extra = (object) [
                 'loadedWorkspace' => $workspace,
@@ -113,7 +113,7 @@ class FormController extends Controller
             ->processRequest($request)
             ->simulateCleaning($form->workspace)
             ->getData();
-        
+
         // Set Removed Properties
         $formData['removed_properties'] = array_merge($form->removed_properties, collect($form->properties)->filter(function ($field) use ($formData) {
             return (!Str::of($field['type'])->startsWith('nf-') && !in_array($field['id'], collect($formData['properties'])->pluck("id")->toArray()));

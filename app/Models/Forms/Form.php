@@ -15,6 +15,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Form extends Model
 {
@@ -218,9 +219,12 @@ class Form extends Model
         return !empty($this->password);
     }
 
-    public function getRemovedPropertiesAttribute()
-    {
-        return $this->attributes['removed_properties'] ?? [];
+    protected function removedProperties(): Attribute {
+        return Attribute::make(
+            get: function ($value) {
+                return $value ? json_decode($value, true) : [];
+            }
+        );
     }
 
     /**
