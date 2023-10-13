@@ -7,7 +7,7 @@
             My Form Templates
           </h1>
           <p class="text-gray-600 mt-4 text-lg font-normal">
-            You can share your templates so other can create forms like yours!
+            Share your best form as templates so that others can re-use them!
           </p>
         </div>
       </div>

@@ -44,7 +44,7 @@ export default {
 
   watch: {
     user () {
-      this.form.email = this.user.email
+      this.updateUser()
     },
     show () {
       // Wait for modal to open and focus on first field
@@ -59,13 +59,16 @@ export default {
   },
 
   mounted () {
-    if (this.user) {
-      this.form.name = this.user.name
-      this.form.email = this.user.email
-    }
+    this.updateUser()
   },
 
   methods: {
+    updateUser() {
+      if (this.user) {
+        this.form.name = this.user.name
+        this.form.email = this.user.email
+      }
+    },
     saveDetails () {
       if (this.form.busy) return
       this.form.put('api/subscription/update-customer-details').then(() => {
