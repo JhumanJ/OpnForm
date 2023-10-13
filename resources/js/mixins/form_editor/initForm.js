@@ -27,6 +27,7 @@ export default {
         transparent_background: false,
         closes_at: null,
         closed_text: 'This form has now been closed by its owner and does not accept submissions anymore.',
+        auto_save: true,
 
         // Submission
         submit_button_text: 'Submit',

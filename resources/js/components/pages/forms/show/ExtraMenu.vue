@@ -20,7 +20,7 @@
           </svg>
         </v-button>
       </template>
-      <router-link v-if="isMainPage" :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
+      <router-link v-if="isMainPage && user" :to="{name:'forms.show_public', params: {slug: form.slug}}" target="_blank"
                     class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                     v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
         >
@@ -117,7 +117,7 @@
       </div>
     </modal>
 
-    <form-template-modal v-if="!isMainPage" :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false"/>
+    <form-template-modal v-if="!isMainPage && user" :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false"/>
   </div>
 </template>
 

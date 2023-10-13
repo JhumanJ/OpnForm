@@ -1,8 +1,8 @@
 <template>
-  <collapse class="p-4 w-full border-b" :default-value="isCollapseOpen" @click="onClickCollapse">
+  <collapse class="p-4 w-full border-b" v-model="isCollapseOpen">
     <template #title>
       <h3 class="font-semibold text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2"
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 transition-colors"
           :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
           fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -69,13 +69,6 @@ export default {
 
   watch: {},
 
-  mounted() {
-  },
-
-  methods: {
-    onClickCollapse (e) {
-      this.isCollapseOpen = e
-    }
-  }
+  mounted() {},
 }
 </script>

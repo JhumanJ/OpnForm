@@ -4,6 +4,7 @@ import Meta from 'vue-meta'
 import routes from './routes'
 import Router from 'vue-router'
 import {sync} from 'vuex-router-sync'
+import * as Sentry from '@sentry/vue'
 
 Vue.use(Meta)
 Vue.use(Router)
@@ -49,6 +50,11 @@ function createRouter () {
  * @param {Function} next
  */
 async function beforeEach (to, from, next) {
+  // Sentry tracking
+  if (window.config.sentry_dsn) {
+    Sentry.configureScope((scope) => scope.setTransactionName(to?.name || 'Unknown route name'))
+  }
+
   let components = []
 
   // External redirect

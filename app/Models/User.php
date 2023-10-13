@@ -10,12 +10,10 @@ use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
-class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable, HasFactory, Billable;
 
@@ -82,12 +80,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function getIsSubscribedAttribute()
     {
-        return $this->subscribed() || $this->subscribed(SubscriptionController::ENTERPRISE_SUBSCRIPTION_NAME);
-    }
-
-    public function getHasEnterpriseSubscriptionAttribute()
-    {
-        return $this->subscribed(SubscriptionController::ENTERPRISE_SUBSCRIPTION_NAME);
+        return $this->subscribed() || in_array($this->email, config('opnform.extra_pro_users_emails'));
     }
 
     public function getHasCustomerIdAttribute()
@@ -97,12 +90,12 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function getAdminAttribute()
     {
-        return in_array($this->email, config('services.admin_emails'));
+        return in_array($this->email, config('opnform.admin_emails'));
     }
 
     public function getTemplateEditorAttribute()
     {
-        return $this->admin || in_array($this->email, config('services.template_editor_emails'));
+        return $this->admin || in_array($this->email, config('opnform.template_editor_emails'));
     }
 
     /**

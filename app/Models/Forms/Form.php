@@ -15,6 +15,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Form extends Model
 {
@@ -81,6 +82,7 @@ class Form extends Model
         'editable_submissions',
         'editable_submissions_button_text',
         'confetti_on_submission',
+        'auto_save',
 
         // Security & Privacy
         'can_be_indexed',
@@ -215,6 +217,14 @@ class Form extends Model
     public function getHasPasswordAttribute()
     {
         return !empty($this->password);
+    }
+
+    protected function removedProperties(): Attribute {
+        return Attribute::make(
+            get: function ($value) {
+                return $value ? json_decode($value, true) : [];
+            }
+        );
     }
 
     /**

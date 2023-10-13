@@ -1,4 +1,5 @@
 import store from '~/store'
+import * as Sentry from '@sentry/vue'
 
 export function initCrisp (user) {
   return new Promise((resolve, reject) => {
@@ -17,6 +18,19 @@ export function initCrisp (user) {
   })
 }
 
+export function initSentry (user) {
+  if (!window.config.sentry_dsn) {
+    return
+  }
+  Sentry.configureScope((scope) => {
+    scope.setUser({
+      id: user.id,
+      email: user.email,
+      subscription: user?.is_subscribed
+    })
+  })
+}
+
 export default async (to, from, next) => {
   if (!store.getters['auth/check'] &&
     store.getters['auth/token'] !== null &&
@@ -25,6 +39,7 @@ export default async (to, from, next) => {
     try {
       const user = await store.dispatch('auth/fetchUser')
       initCrisp(user)
+      initSentry(user)
     } catch (e) {
       console.log(e, 'error')
     }
