@@ -14,6 +14,7 @@ class Template extends Model
     use HasFactory, HasSlug;
 
     protected $fillable = [
+        'creator_id',
         'name',
         'slug',
         'description',
@@ -40,6 +41,15 @@ class Template extends Model
     protected $attributes = [
         'publicly_listed' => false,
     ];
+
+    protected $appends = [
+        'share_url',
+    ];
+
+    public function getShareUrlAttribute()
+    {
+        return url('/form-templates/'.$this->slug);
+    }
 
     public function setDescriptionAttribute($value)
     {

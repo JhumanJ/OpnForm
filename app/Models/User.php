@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Controllers\SubscriptionController;
 use App\Models\Forms\Form;
+use App\Models\Template;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -138,6 +139,11 @@ class User extends Authenticatable implements JWTSubject
     public function forms()
     {
         return $this->hasMany(Form::class,'creator_id');
+    }
+
+    public function formTemplates()
+    {
+        return $this->hasMany(Template::class, 'creator_id');
     }
 
     /**

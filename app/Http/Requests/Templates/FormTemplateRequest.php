@@ -77,6 +77,7 @@ class FormTemplateRequest extends FormRequest
         }
 
         return new Template([
+            'creator_id' => $this->user()?->id ?? null,
             'publicly_listed' => $this->publicly_listed,
             'name' => $this->name,
             'slug' => $this->slug,
