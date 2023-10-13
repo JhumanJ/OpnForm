@@ -84,6 +84,7 @@ export default {
       }
     },
     emailSubmissionConfirmationField () {
+      if (!this.form.properties || !Array.isArray(this.form.properties)) return null
       const emailFields = this.form.properties.filter((field) => {
         return field.type === 'email' && !field.hidden
       })

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex">
     <v-button
       class="w-full"
       color="light-gray"
@@ -27,7 +27,7 @@
         <span>Url Form Prefill</span>
       </template>
 
-      <div class="p-4">
+      <div class="p-4" ref="content">
         <p>
           Create dynamic links when sharing your form (whether it's embedded or not), that allows you to prefill
           your form fields. You can use this to personalize the form when sending it to multiple contacts for instance.
@@ -89,7 +89,9 @@ export default {
     generateUrl (formData, onFailure) {
       this.prefillFormData = formData
       this.$nextTick().then(() => {
-        this.$refs.content.parentElement.parentElement.parentElement.scrollTop = (this.$refs.content.offsetHeight - this.$refs.content.parentElement.parentElement.parentElement.offsetHeight + 50)
+        if (this.$refs.content) {
+          this.$refs.content.parentElement.parentElement.parentElement.scrollTop = this.$refs.content.offsetHeight
+        }
       })
     }
   }

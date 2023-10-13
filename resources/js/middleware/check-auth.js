@@ -4,6 +4,10 @@ import * as Sentry from '@sentry/vue'
 export function initCrisp (user) {
   return new Promise((resolve, reject) => {
     const intervalId = window.setInterval(function () {
+      if (!user) {
+        resolve()
+        return
+      }
       if (window.$crisp) {
         window.$crisp.push(['set', 'user:email', user.email])
         window.$crisp.push(['set', 'user:nickname', user.name])
@@ -19,7 +23,7 @@ export function initCrisp (user) {
 }
 
 export function initSentry (user) {
-  if (!window.config.sentry_dsn) {
+  if (!window.config.sentry_dsn || !user) {
     return
   }
   Sentry.configureScope((scope) => {

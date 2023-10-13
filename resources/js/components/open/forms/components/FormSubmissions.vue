@@ -3,10 +3,6 @@
     class="my-4 w-full mx-auto">
     <h3 class="font-semibold mb-4 text-xl">
       Form Submissions
-      <span v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase mb-2"> - <a
-        :href="exportUrl" target="_blank">Export as CSV</a></span>
-      <span v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> <a
-        href="javascript:void(0);" @click="showColumnsModal=true">Display columns</a></span>
     </h3>
 
     <!--  Table columns modal  -->
@@ -41,8 +37,16 @@
 
     <loader v-if="!form || isLoading" class="h-6 w-6 text-nt-blue mx-auto"/>
     <div v-else>
-      <div class="m-auto w-64">
-        <text-input :form="searchForm" name="search" placeholder="Search..." />
+      <div class="flex flex-wrap items-end">
+        <div class="flex-grow">
+          <text-input class="w-64" :form="searchForm" name="search" placeholder="Search..." />
+        </div>
+        <div class="font-semibold flex gap-4">
+          <p v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2"> <a
+            href="javascript:void(0);" class="text-gray-500" @click="showColumnsModal=true">Display columns</a></p>
+          <p v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase"><a
+            :href="exportUrl" target="_blank">Export as CSV</a></p>
+        </div>
       </div>
 
       <scroll-shadow
