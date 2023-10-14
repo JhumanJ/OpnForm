@@ -15,6 +15,11 @@ const plugins = [
       transformAssetUrls: {
         base: null,
         includeAbsolute: false
+      },
+      compilerOptions: {
+        compatConfig: {
+          MODE: 2
+        }
       }
     }
   })
@@ -39,13 +44,14 @@ export default defineConfig({
   plugins: plugins,
   optimizeDeps: {
     exclude: [
-      'vt-notifications', 'vue-tailwind', 'vue-tailwind/dist/vue-tailwind.css'
+      'vt-notifications'
     ]
   },
   resolve: {
     alias: {
       '~': '/resources/js',
-      '@': '/resources'
+      '@': '/resources',
+      vue: '@vue/compat'
     }
   }
 })
