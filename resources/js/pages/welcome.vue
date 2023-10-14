@@ -24,10 +24,10 @@
         </div>
         <div class="max-w-4xl mx-auto text-center">
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight">
-            Build
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">beautiful forms</span>
+            Xây dựng
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">biểu mẫu đẹp</span>
             <br>
-            in seconds
+            trong vài giây
           </h1>
           <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
             Create beautiful forms and share them anywhere. It super fast, you don't need to know how to code. Get
@@ -50,7 +50,7 @@
                    stroke="currentColor" class="w-4 h-4 mr-1 ticks">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
               </svg>
-              <span>Unlimited forms</span>
+              <span>Không giới hạn biểu mẫu</span>
             </div>
             <div class="flex items-center text-gray-400 text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"

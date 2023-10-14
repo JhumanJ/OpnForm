@@ -8,7 +8,7 @@ const plugins = [
     input: [
       'resources/js/app.js'
     ],
-    valetTls: 'opnform.test'
+   
   }),
   vue({
     template: {
@@ -30,13 +30,19 @@ if (process.env.SENTRY_AUTH_TOKEN) {
 
 export default defineConfig({
   build: {
-    sourcemap: process.env.SENTRY_AUTH_TOKEN ? true : 'inline'
+    sourcemap: process.env.SENTRY_AUTH_TOKEN ? true : 'inline',
+    watch: true,
   },
   esbuild: {
     minify: true,
     minifySyntax: true
   },
   plugins: plugins,
+  server: {
+    watch: {
+      usePolling: true,
+    }
+  },
   optimizeDeps: {
     exclude: [
       'vt-notifications', 'vue-tailwind', 'vue-tailwind/dist/vue-tailwind.css'
