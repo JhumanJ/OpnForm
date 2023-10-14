@@ -71,5 +71,5 @@ export default [
   { path: '/form-templates', name: 'templates', component: page('templates/templates.vue') },
   { path: '/form-templates/:slug', name: 'templates.show', component: page('templates/show.vue') },
 
-  { path: '*', component: page('errors/404.vue') }
+  { path: '/:pathMatch(.*)*', component: page('errors/404.vue') }
 ]

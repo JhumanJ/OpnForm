@@ -1,7 +1,9 @@
-import Vue from 'vue'
+import Notifications from 'vue3-vt-notifications'
+import Meta from 'vue-meta'
 
-import PortalVue from 'portal-vue'
-import Notifications from 'vt-notifications'
-
-Vue.use(PortalVue)
-Vue.use(Notifications)
+function registerPlugin (app) {
+  app.use(Notifications)
+  app.use(Meta)
+  return app
+}
+export default registerPlugin

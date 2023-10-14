@@ -8,9 +8,9 @@
     <transition name="fade" mode="out-in" appear>
       <template v-for="group, groupIndex in fieldGroups">
         <div v-if="currentFieldGroupIndex===groupIndex"
-              :key="groupIndex"
-              class="form-group flex flex-wrap w-full">
-
+             :key="groupIndex"
+             class="form-group flex flex-wrap w-full"
+        >
           <draggable v-model="currentFields"
                      class="flex flex-wrap transition-all"
                      :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
@@ -19,14 +19,14 @@
                      @start="onDragStart" @end="onDragEnd"
           >
             <open-form-field v-for="field in group"
-                              :key="field.id + formVersionId"
-                              :field="field"
-                              :show-hidden="showHidden"
-                              :form="form"
-                              :data-form="dataForm"
-                              :data-form-value="dataFormValue"
-                              :theme="theme"
-                              :admin-preview="adminPreview"
+                             :key="field.id + formVersionId"
+                             :field="field"
+                             :show-hidden="showHidden"
+                             :form="form"
+                             :data-form="dataForm"
+                             :data-form-value="dataFormValue"
+                             :theme="theme"
+                             :admin-preview="adminPreview"
             />
           </draggable>
         </div>
@@ -36,8 +36,8 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'"/>
-        <has-error :form="dataForm" field="h-captcha-response"/>
+        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'" />
+        <has-error :form="dataForm" field="h-captcha-response" />
       </div>
     </template>
 
@@ -49,7 +49,7 @@
         {{ previousFieldsPageBreak.previous_btn_text }}
       </open-form-button>
 
-      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm"/>
+      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
       <open-form-button v-else native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
                         @click="nextPage"
       >
@@ -70,12 +70,12 @@ import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import OpenFormField from './OpenFormField.vue'
 import draggable from 'vuedraggable'
-const VueHcaptcha = () => import('@hcaptcha/vue-hcaptcha')
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+const VueHcaptcha = () => import('@hcaptcha/vue3-hcaptcha')
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha},
+  components: { draggable, OpenFormField, OpenFormButton, VueHcaptcha },
   mixins: [FormPendingSubmissionKey],
   props: {
     form: {
@@ -98,9 +98,9 @@ export default {
       type: Array,
       required: true
     },
-    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
-  data() {
+  data () {
     return {
       dataForm: null,
       currentFieldGroupIndex: 0,
@@ -122,7 +122,7 @@ export default {
     /**
      * Create field groups (or Page) using page breaks if any
      */
-    fieldGroups() {
+    fieldGroups () {
       if (!this.fields) return []
       const groups = []
       let currentGroup = []
@@ -161,12 +161,12 @@ export default {
     /**
      * Returns the page break block for the current group of fields
      */
-    currentFieldsPageBreak() {
+    currentFieldsPageBreak () {
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
     },
-    previousFieldsPageBreak() {
+    previousFieldsPageBreak () {
       if (this.currentFieldGroupIndex === 0) return null
       const previousFields = this.fieldGroups[this.currentFieldGroupIndex - 1]
       const block = previousFields[previousFields.length - 1]
@@ -177,13 +177,13 @@ export default {
      * Returns true if we're on the last page
      * @returns {boolean}xs
      */
-    isLastPage() {
+    isLastPage () {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
     },
-    isPublicFormPage() {
+    isPublicFormPage () {
       return this.$route.name === 'forms.show_public'
     },
-    dataFormValue() {
+    dataFormValue () {
       // For get values instead of Id for select/multi select options
       const data = this.dataForm.data()
       const selectionFields = this.fields.filter((field) => {
@@ -206,24 +206,24 @@ export default {
   watch: {
     form: {
       deep: true,
-      handler() {
+      handler () {
         this.initForm()
       }
     },
     fields: {
       deep: true,
-      handler() {
+      handler () {
         this.initForm()
       }
     },
     theme: {
-      handler() {
+      handler () {
         this.formVersionId++
       }
     },
     dataForm: {
       deep: true,
-      handler() {
+      handler () {
         if (this.isPublicFormPage && this.form && this.form.auto_save && this.dataFormValue) {
           try {
             window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
@@ -231,10 +231,10 @@ export default {
           }
         }
       }
-    },
+    }
   },
 
-  mounted() {
+  mounted () {
     this.initForm()
 
     if (window.location.href.includes('auto_submit=true')) {
@@ -244,7 +244,7 @@ export default {
   },
 
   methods: {
-    submitForm() {
+    submitForm () {
       if (this.currentFieldGroupIndex !== this.fieldGroups.length - 1) {
         return
       }
@@ -263,7 +263,7 @@ export default {
     /**
      * If more than one page, show first page with error
      */
-    onSubmissionFailure() {
+    onSubmissionFailure () {
       this.isAutoSubmit = false
       if (this.fieldGroups.length > 1) {
         // Find first mistake and show page
@@ -289,7 +289,7 @@ export default {
         })
       }
     },
-    async getSubmissionData() {
+    async getSubmissionData () {
       if (!this.form || !this.form.editable_submissions || !this.form.submission_id) { return null }
       await this.$store.dispatch('open/records/loadRecord',
         axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((response) => {
@@ -298,7 +298,7 @@ export default {
       )
       return this.$store.getters['open/records/getById'](this.form.submission_id)
     },
-    async initForm() {
+    async initForm () {
       if (this.isPublicFormPage && this.form.editable_submissions) {
         const urlParam = new URLSearchParams(window.location.search)
         if (urlParam && urlParam.get('submission_id')) {
@@ -325,9 +325,9 @@ export default {
               let currentDate = dateObj.getFullYear() + '-' +
                       String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
                       String(dateObj.getDate()).padStart(2, '0')
-              if(field.with_time === true){
+              if (field.with_time === true) {
                 currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-                String(dateObj.getMinutes()).padStart(2, '0');
+                String(dateObj.getMinutes()).padStart(2, '0')
               }
               pendingData[field.id] = currentDate
             }
@@ -367,7 +367,7 @@ export default {
           let currentDate = dateObj.getFullYear() + '-' +
             String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
             String(dateObj.getDate()).padStart(2, '0')
-          if(field.with_time === true){
+          if (field.with_time === true) {
             currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
             String(dateObj.getMinutes()).padStart(2, '0')
           }
@@ -375,16 +375,15 @@ export default {
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }
-
       })
       this.dataForm = new Form(formData)
     },
-    previousPage() {
+    previousPage () {
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
-    nextPage() {
+    nextPage () {
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false

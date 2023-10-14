@@ -1,13 +1,8 @@
-import Vue from 'vue'
-import store from '~/store'
-import Meta from 'vue-meta'
 import routes from './routes'
-import Router from 'vue-router'
-import {sync} from 'vuex-router-sync'
+import { createWebHistory, createRouter } from 'vue-router'
 import * as Sentry from '@sentry/vue'
-
-Vue.use(Meta)
-Vue.use(Router)
+import store from '../store'
+// import { nextTick } from '@vue/compat'
 
 // The middleware for every page of the application.
 const globalMiddleware = ['locale', 'check-auth', 'notion-connection']
@@ -18,21 +13,14 @@ const routeMiddleware = resolveMiddleware(
   requireContext
 )
 
-const router = createRouter()
-
-sync(store, router)
+const router = createCustomRouter()
 
 export default router
 
-/**
- * Create a new router instance.
- *
- * @return {Router}
- */
-function createRouter () {
-  const router = new Router({
+function createCustomRouter () {
+  const router = createRouter({
     scrollBehavior,
-    mode: 'history',
+    history: createWebHistory(),
     routes
   })
 
@@ -82,7 +70,7 @@ async function beforeEach (to, from, next) {
 
   // Start the loading bar.
   if (components[components.length - 1].loading !== false) {
-    router.app.$nextTick(() => router.app.$loading.start())
+    // nextTick(() => router.app.$loading.start())
   }
 
   // Get the middleware for all the matched components.
@@ -90,6 +78,7 @@ async function beforeEach (to, from, next) {
 
   // Call each middleware.
   callMiddleware(middleware, to, from, (...args) => {
+    console.log('in', store)
     // Set the application layout only if "next()" was called with no args.
     if (args.length === 0) {
       if (components[0].layout) {
@@ -113,9 +102,8 @@ async function beforeEach (to, from, next) {
  * @param {Function} next
  */
 async function afterEach (to, from, next) {
-  await router.app.$nextTick()
-
-  router.app.$loading.finish()
+  // await nextTick()
+  // router.app.$loading.finish()
 }
 
 /**
@@ -132,9 +120,9 @@ function callMiddleware (middleware, to, from, next) {
   const _next = (...args) => {
     // Stop if "_next" was called with an argument or the stack is empty.
     if (args.length > 0 || stack.length === 0) {
-      if (args.length > 0) {
-        router.app.$loading.finish()
-      }
+      // if (args.length > 0) {
+      //   router.app.$loading.finish()
+      // }
 
       return next(...args)
     }
@@ -253,7 +241,7 @@ function resolveMiddleware (requireContext) {
     .map(file =>
       [file.match(/[^/]*(?=\.[^.]*$)/)[0], requireContext[file]]
     ).forEach(([name, middleware]) => {
-    middlewares[name] = middleware.default || middleware
-  })
+      middlewares[name] = middleware.default || middleware
+    })
   return middlewares
 }

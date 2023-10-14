@@ -161,21 +161,23 @@
         Advanced options for your select/multiselect fields.
       </p>
       <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-3"
-                       @input="onFieldOptionsChange"
                        label="Set selection options"
                        help="Add one option per line"
+                       @input="onFieldOptionsChange"
       />
       <v-checkbox v-model="field.allow_creation"
-                  name="allow_creation" @input="onFieldAllowCreationChange" help=""
+                  name="allow_creation" help="" @input="onFieldAllowCreationChange"
       >
         Allow respondent to create new options
       </v-checkbox>
       <v-checkbox v-model="field.without_dropdown" class="mt-3"
-                  name="without_dropdown" @input="onFieldWithoutDropdownChange" help=""
+                  name="without_dropdown" help="" @input="onFieldWithoutDropdownChange"
       >
         Always show all select options
       </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">Options won't be in a dropdown anymore, but will all be visible</p>
+      <p class="text-gray-400 mb-3 text-xs">
+        Options won't be in a dropdown anymore, but will all be visible
+      </p>
     </div>
 
     <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
@@ -218,7 +220,7 @@
           </template>
           <template #option="{option, selected}">
             <div class="flex items-center space-x-2 hover:text-white">
-              <country-flag size="normal" class="!-mt-[9px]" :country="option.code"/>
+              <country-flag size="normal" class="!-mt-[9px]" :country="option.code" />
               <span class="grow">{{ option.name }}</span>
               <span>{{ option.dial_code }}</span>
             </div>
@@ -297,16 +299,16 @@
       <!--   Help  -->
       <rich-text-area-input name="help" class="mt-3"
                             :form="field"
-                            :editorToolbar="editorToolbarCustom"
+                            :editor-toolbar="editorToolbarCustom"
                             label="Field Help"
                             help="Your field help will be shown below/above the field, just like this message."
                             :help-position="field.help_position"
       />
       <select-input name="help_position" class="mt-3"
                     :options="[
-                    {name:'Below input',value:'below_input'},
-                    {name:'Above input',value:'above_input'},
-                  ]"
+                      {name:'Below input',value:'below_input'},
+                      {name:'Above input',value:'above_input'},
+                    ]"
                     :form="field" label="Field Help Position"
                     @input="onFieldHelpPositionChange"
       />
@@ -322,7 +324,6 @@
                         label="Always show character limit"
         />
       </template>
-
     </div>
 
     <!--  Advanced Options   -->
@@ -354,19 +355,19 @@
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" v-model="form" :form="form" :field="field"/>
+    <form-block-logic-editor v-model="form" class="py-2 px-4 border-b" :form="form" :field="field" />
   </div>
 </template>
 
 <script>
-const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 import timezones from '../../../../../../data/timezones.json'
 import countryCodes from '../../../../../../data/country_codes.json'
-import CountryFlag from 'vue-country-flag'
+import CountryFlag from 'vue-country-flag-next'
+const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 
 export default {
   name: 'FieldOptions',
-  components: {FormBlockLogicEditor, CountryFlag},
+  components: { FormBlockLogicEditor, CountryFlag },
   props: {
     field: {
       type: Object,
@@ -377,21 +378,21 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
       editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link'],
+        ['bold', 'italic', 'underline', 'link']
       ],
-      allCountries: countryCodes,
+      allCountries: countryCodes
     }
   },
 
   computed: {
-    hasPlaceholder() {
+    hasPlaceholder () {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
-    prefillSelectsOptions() {
+    prefillSelectsOptions () {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
 
       return this.field[this.field.type].options.map(option => {
@@ -401,7 +402,7 @@ export default {
         }
       })
     },
-    timezonesOptions() {
+    timezonesOptions () {
       if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
         return {
@@ -410,22 +411,22 @@ export default {
         }
       })
     },
-    displayBasedOnAdvanced() {
+    displayBasedOnAdvanced () {
       if (this.field.generates_uuid || this.field.generates_auto_increment_id) {
         return false
       }
       return true
     },
-    optionsText() {
+    optionsText () {
       return this.field[this.field.type].options.map(option => {
         return option.name
-      }).join("\n")
-    },
+      }).join('\n')
+    }
   },
 
   watch: {
     'field.width': {
-      handler(val) {
+      handler (val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'width', 'full')
         }
@@ -433,7 +434,7 @@ export default {
       immediate: true
     },
     'field.align': {
-      handler(val) {
+      handler (val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'align', 'left')
         }
@@ -442,32 +443,32 @@ export default {
     }
   },
 
-  created() {
+  created () {
     if (this.field?.width === undefined || this.field?.width === null) {
       this.$set(this.field, 'width', 'full')
     }
   },
 
-  mounted() {
+  mounted () {
     if (['text', 'number', 'url', 'email'].includes(this.field?.type) && !this.field?.max_char_limit) {
       this.field.max_char_limit = 2000
     }
   },
 
   methods: {
-    onFieldDisabledChange(val) {
+    onFieldDisabledChange (val) {
       this.$set(this.field, 'disabled', val)
       if (this.field.disabled) {
         this.$set(this.field, 'hidden', false)
       }
     },
-    onFieldRequiredChange(val) {
+    onFieldRequiredChange (val) {
       this.$set(this.field, 'required', val)
       if (this.field.required) {
         this.$set(this.field, 'hidden', false)
       }
     },
-    onFieldHiddenChange(val) {
+    onFieldHiddenChange (val) {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
@@ -477,49 +478,49 @@ export default {
         this.$set(this.field, 'generates_auto_increment_id', false)
       }
     },
-    onFieldDateRangeChange(val) {
+    onFieldDateRangeChange (val) {
       this.$set(this.field, 'date_range', val)
       if (this.field.date_range) {
         this.$set(this.field, 'with_time', false)
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldWithTimeChange(val) {
+    onFieldWithTimeChange (val) {
       this.$set(this.field, 'with_time', val)
       if (this.field.with_time) {
         this.$set(this.field, 'date_range', false)
       }
     },
-    onFieldGenUIdChange(val) {
+    onFieldGenUIdChange (val) {
       this.$set(this.field, 'generates_uuid', val)
       if (this.field.generates_uuid) {
         this.$set(this.field, 'generates_auto_increment_id', false)
         this.$set(this.field, 'hidden', true)
       }
     },
-    onFieldGenAutoIdChange(val) {
+    onFieldGenAutoIdChange (val) {
       this.$set(this.field, 'generates_auto_increment_id', val)
       if (this.field.generates_auto_increment_id) {
         this.$set(this.field, 'generates_uuid', false)
         this.$set(this.field, 'hidden', true)
       }
     },
-    initRating() {
+    initRating () {
       if (this.field.is_rating && !this.field.rating_max_value) {
         this.$set(this.field, 'rating_max_value', 5)
       }
     },
-    onFieldOptionsChange(val) {
-      const vals = (val) ? val.trim().split("\n") : []
+    onFieldOptionsChange (val) {
+      const vals = (val) ? val.trim().split('\n') : []
       const tmpOpts = vals.map(name => {
         return {
           name: name,
           id: name
         }
       })
-      this.$set(this.field, this.field.type, {'options': tmpOpts})
+      this.$set(this.field, this.field.type, { options: tmpOpts })
     },
-    onFieldPrefillTodayChange(val) {
+    onFieldPrefillTodayChange (val) {
       this.$set(this.field, 'prefill_today', val)
       if (this.field.prefill_today) {
         this.$set(this.field, 'prefill', 'Pre-filled with current date')
@@ -530,38 +531,38 @@ export default {
         this.$set(this.field, 'prefill', null)
       }
     },
-    onFieldAllowCreationChange(val) {
+    onFieldAllowCreationChange (val) {
       this.$set(this.field, 'allow_creation', val)
       if (this.field.allow_creation) {
         this.$set(this.field, 'without_dropdown', false)
       }
     },
-    onFieldWithoutDropdownChange(val) {
+    onFieldWithoutDropdownChange (val) {
       this.$set(this.field, 'without_dropdown', val)
       if (this.field.without_dropdown) {
         this.$set(this.field, 'allow_creation', false)
       }
     },
-    onFieldDisablePastDatesChange(val) {
+    onFieldDisablePastDatesChange (val) {
       this.$set(this.field, 'disable_past_dates', val)
       if (this.field.disable_past_dates) {
         this.$set(this.field, 'disable_future_dates', false)
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldDisableFutureDatesChange(val) {
+    onFieldDisableFutureDatesChange (val) {
       this.$set(this.field, 'disable_future_dates', val)
       if (this.field.disable_future_dates) {
         this.$set(this.field, 'disable_past_dates', false)
         this.$set(this.field, 'prefill_today', false)
       }
     },
-    onFieldHelpPositionChange(val) {
+    onFieldHelpPositionChange (val) {
       if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
     },
-    selectAllCountries() {
+    selectAllCountries () {
       this.$set(this.field, 'unavailable_countries', this.allCountries.map(item => {
         return item.code
       }))

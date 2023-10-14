@@ -1,6 +1,6 @@
-import {defineConfig} from 'vite'
+import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
-import vue from '@vitejs/plugin-vue2'
+import vue from '@vitejs/plugin-vue'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const plugins = [
@@ -25,7 +25,7 @@ const plugins = [
   })
 ]
 
-if (process.env.SENTRY_AUTH_TOKEN) {
+if (false && process.env.SENTRY_AUTH_TOKEN) {
   plugins.push(sentryVitePlugin({
     org: 'opnform',
     project: 'opnform',

@@ -1,14 +1,14 @@
 <template>
   <transition enter-active-class="linear duration-500 overflow-hidden"
-              enter-class="max-h-0 opacity-0"
+              enter-from-class="max-h-0 opacity-0"
               enter-to-class="max-h-screen opacity-100"
               leave-active-class="linear duration-500 overflow-hidden"
-              leave-class="max-h-screen opacity-100"
+              leave-from-class="max-h-screen opacity-100"
               leave-to-class="max-h-0 opacity-0"
   >
     <div :class="alertClasses" class="border shadow-sm p-2 flex items-center rounded-md">
       <div class="flex-grow">
-        <p class="mb-0 py-2 px-4" :class="textClasses" v-html="message"/>
+        <p class="mb-0 py-2 px-4" :class="textClasses" v-html="message" />
       </div>
 
       <div class="justify-end">

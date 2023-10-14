@@ -5,10 +5,10 @@
   >
     <div class="border rounded-lg bg-white dark:bg-notion-dark w-full block transition-all max-w-5xl">
       <transition enter-active-class="linear duration-100 overflow-hidden"
-                  enter-class="max-h-0"
+                  enter-from-class="max-h-0"
                   enter-to-class="max-h-56"
                   leave-active-class="linear duration-100 overflow-hidden"
-                  leave-class="max-h-56"
+                  leave-from-class="max-h-56"
                   leave-to-class="max-h-0"
       >
         <div v-if="(form.logo_picture || form.cover_picture)">
@@ -30,11 +30,11 @@
         </div>
       </transition>
       <open-complete-form ref="form-preview" class="w-full mx-auto py-5 px-3" :class="{'max-w-lg': form && (form.width === 'centered')}"
-                            :creating="creating"
-                            :form="form"
-                            :admin-preview="true"
-                            @restarted="previewFormSubmitted=false"
-                            @submitted="previewFormSubmitted=true"
+                          :creating="creating"
+                          :form="form"
+                          :admin-preview="true"
+                          @restarted="previewFormSubmitted=false"
+                          @submitted="previewFormSubmitted=true"
       />
     </div>
     <p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">
@@ -68,7 +68,7 @@ export default {
   },
   data () {
     return {
-      previewFormSubmitted: false,
+      previewFormSubmitted: false
     }
   },
 

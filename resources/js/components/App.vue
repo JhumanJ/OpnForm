@@ -1,17 +1,17 @@
 <template>
   <div id="app" class="bg-white dark:bg-notion-dark">
-    <loading v-show="!isIframe" ref="loading" />
+    <!--    <loading v-show="!isIframe" ref="loading" />-->
 
-<!--    <hotjar />-->
+    <!--    <hotjar />-->
     <amplitude />
     <crisp />
-<!--    <llamafi />-->
+    <!--    <llamafi />-->
 
     <transition enter-active-class="linear duration-200 overflow-hidden"
-                enter-class="max-h-0"
+                enter-from-class="max-h-0"
                 enter-to-class="max-h-screen"
                 leave-active-class="linear duration-200 overflow-hidden"
-                leave-class="max-h-screen"
+                leave-from-class="max-h-screen"
                 leave-to-class="max-h-0"
     >
       <div v-if="announcement && !isIframe" class="bg-nt-blue text-white text-center p-3 relative">
@@ -29,11 +29,11 @@
     </transition>
 
     <transition name="page" mode="out-in">
-      <component :is="layout" v-if="layout" />
+      <component :is="layoutComponent" v-if="layout" />
     </transition>
-    <portal-target name="modals" multiple />
+    <div id="modals" />
     <stop-impersonation />
-    <notifications />
+    <!--    <notifications />-->
   </div>
 </template>
 
@@ -43,8 +43,9 @@ import Hotjar from './service/Hotjar.vue'
 import Amplitude from './service/Amplitude.vue'
 import Crisp from './service/Crisp.vue'
 import StopImpersonation from './pages/StopImpersonation.vue'
-import Notifications from "./common/Notifications.vue"
+import Notifications from './common/Notifications.vue'
 import SeoMeta from '../mixins/seo-meta.js'
+import { mapState } from 'vuex'
 
 // Load layout components dynamically.
 const requireContext = import.meta.glob('../layouts/**.vue', { eager: true })
@@ -61,6 +62,8 @@ Object.keys(requireContext)
 export default {
   el: '#app',
 
+  name: 'OpnForm',
+
   components: {
     Notifications,
     StopImpersonation,
@@ -75,8 +78,6 @@ export default {
   data: () => ({
     metaTitle: 'OpnForm',
     metaDescription: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
-    layout: null,
-    defaultLayout: 'default',
     announcement: false,
     alert: {
       type: null,
@@ -88,41 +89,38 @@ export default {
     navbarHidden: false
   }),
 
-  mounted () {
-    this.$loading = this.$refs.loading
-  },
-
-  methods: {
-    /**
-     * Set the application layout.
-     *
-     * @param {String} layout
-     */
-    setLayout (layout) {
-      if (!layout || !layouts[layout]) {
-        layout = this.defaultLayout
-      }
-
-      this.layout = layouts[layout]
-    },
-    workspaceAdded () {
-      this.$router.push({ name: 'home' })
-    },
-    hideNavbar (hidden = true) {
-      this.navbarHidden = hidden
-    }
-  },
-
   computed: {
     isIframe () {
       return window.location !== window.parent.location || window.frameElement
     },
     isOnboardingPage () {
       return this.$route.name === 'onboarding'
+    },
+    ...mapState({
+      layout: state => state.app.layout
+    }),
+    layoutComponent () {
+      return layouts[this.layout]
     }
   },
 
   watch: {
+  },
+
+  mounted () {
+    // // Make it globally accessible
+    // const app = getCurrentInstance().appContext
+    // app.config.globalProperties.$loading = this.$refs.loading
+    // console.log(app.config.globalProperties.$loading)
+  },
+
+  methods: {
+    workspaceAdded () {
+      this.$router.push({ name: 'home' })
+    },
+    hideNavbar (hidden = true) {
+      this.navbarHidden = hidden
+    }
   }
 }
 </script>

@@ -49,28 +49,32 @@
 </template>
 
 <script>
-import { directive as onClickaway } from 'vue-clickaway'
 import inputMixin from '~/mixins/forms/input.js'
 import countryCodes from '../../../data/country_codes.json'
-import CountryFlag from 'vue-country-flag'
+import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
   components: { CountryFlag },
-  directives: {
-    onClickaway: onClickaway
-  },
   mixins: [inputMixin],
   props: {
     canOnlyCountry: { type: Boolean, default: false },
-    unavailableCountries: { type: Array, default: () => [] },
+    unavailableCountries: { type: Array, default: () => [] }
   },
 
   data () {
     return {
       selectedCountryCode: null,
       inputVal: null
+    }
+  },
+
+  computed: {
+    countries () {
+      return countryCodes.filter((item) => {
+        return !this.unavailableCountries.includes(item.code)
+      })
     }
   },
 
@@ -91,14 +95,6 @@ export default {
       if (this.compVal && newVal && oldVal) {
         this.compVal = this.compVal.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
       }
-    }
-  },
-
-  computed: {
-    countries () {
-      return countryCodes.filter((item) => {
-        return !this.unavailableCountries.includes(item.code)
-      })
     }
   },
 

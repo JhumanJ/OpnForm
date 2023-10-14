@@ -54,10 +54,10 @@
     <transition
       v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
       enter-active-class="duration-500 ease-out"
-      enter-class="translate-x-full opacity-0"
+      enter-from-class="translate-x-full opacity-0"
       enter-to-class="translate-x-0 opacity-100"
       leave-active-class="duration-500 ease-in"
-      leave-class="translate-x-0 opacity-100"
+      leave-from-class="translate-x-0 opacity-100"
       leave-to-class="translate-x-full opacity-0"
       mode="out-in"
     >
@@ -67,16 +67,16 @@
            v-html="form.description"
         />
         <open-form v-if="form"
-                     :form="form"
-                     :loading="loading"
-                     :fields="form.properties"
-                     :theme="theme"
-                     :admin-preview="adminPreview"
-                     @submit="submitForm"
+                   :form="form"
+                   :loading="loading"
+                   :fields="form.properties"
+                   :theme="theme"
+                   :admin-preview="adminPreview"
+                   @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
             <open-form-button :loading="loading" :theme="theme" :color="form.color" class="mt-2 px-8 mx-1"
-                                :class="submitButtonClass" @click.prevent="submitForm"
+                              :class="submitButtonClass" @click.prevent="submitForm"
             >
               {{ form.submit_button_text }}
             </open-form-button>
@@ -120,14 +120,14 @@ import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
 
+  mixins: [FormPendingSubmissionKey],
+
   props: {
     form: { type: Object, required: true },
     creating: { type: Boolean, default: false }, // If true, fake form submit
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
     submitButtonClass: { type: String, default: '' }
   },
-
-  mixins: [FormPendingSubmissionKey],
 
   data () {
     return {
@@ -198,7 +198,6 @@ export default {
           submission_data: form.data()
         }, '*')
 
-
         try {
           window.localStorage.removeItem(this.formPendingSubmissionKey)
         } catch (e) {}
@@ -216,10 +215,9 @@ export default {
         this.$emit('submitted', true)
 
         // If enabled display confetti
-        if(this.form.confetti_on_submission){
+        if (this.form.confetti_on_submission) {
           this.playConfetti()
         }
-
       }).catch((error) => {
         if (error.response.data && error.response.data.message) {
           this.alertError(error.response.data.message)
