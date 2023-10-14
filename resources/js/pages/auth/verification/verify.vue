@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-8 m-auto  px-4">
       <h1 class="my-6">
-        {{ $t('verify_email') }}
+        Verify Email
       </h1>
       <template v-if="success">
         <div class="alert alert-success" role="alert">
@@ -10,16 +10,16 @@
         </div>
 
         <router-link :to="{ name: 'login' }" class="btn btn-primary">
-          {{ $t('login') }}
+          Login
         </router-link>
       </template>
       <template v-else>
         <div class="alert alert-danger" role="alert">
-          {{ error || $t('failed_to_verify_email') }}
+          {{ error || 'Failed to verify email.' }}
         </div>
 
         <router-link :to="{ name: 'verification.resend' }" class="small float-right">
-          {{ $t('resend_verification_link') }}
+          Resend Verification Link?
         </router-link>
       </template>
     </div>
@@ -33,6 +33,7 @@ import SeoMeta from '../../../mixins/seo-meta.js'
 const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 
 export default {
+  mixins: [SeoMeta],
   async beforeRouteEnter (to, from, next) {
     try {
       const { data } = await axios.post(`/api/email/verify/${to.params.id}?${qs(to.query)}`)
@@ -48,8 +49,7 @@ export default {
   },
 
   middleware: 'guest',
-  mixins: [SeoMeta],
-  
+
   data: () => ({
     metaTitle: 'Verify Email',
     error: '',

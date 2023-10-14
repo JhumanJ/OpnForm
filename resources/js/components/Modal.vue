@@ -128,7 +128,7 @@ export default {
 
     document.addEventListener('keydown', closeOnEscape)
 
-    this.$once('hook:destroyed', () => {
+    this.$once('hook:unmounted', () => {
       document.removeEventListener('keydown', closeOnEscape)
     })
   },

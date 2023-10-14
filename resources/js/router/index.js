@@ -2,10 +2,11 @@ import routes from './routes'
 import { createWebHistory, createRouter } from 'vue-router'
 import * as Sentry from '@sentry/vue'
 import store from '../store'
+import { defineComponent } from 'vue'
 // import { nextTick } from '@vue/compat'
 
 // The middleware for every page of the application.
-const globalMiddleware = ['locale', 'check-auth', 'notion-connection']
+const globalMiddleware = ['check-auth', 'notion-connection']
 
 // Load middleware modules dynamically.
 const requireContext = import.meta.glob('../middleware/**/*.js', { eager: true })
@@ -28,6 +29,13 @@ function createCustomRouter () {
   router.afterEach(afterEach)
 
   return router
+}
+
+async function getMatchedComponents (to) {
+  return resolveComponents(to.matched.map((record) => {
+    const component = record.components.default
+    return typeof component === 'function' ? defineComponent(component) : component
+  }))
 }
 
 /**
@@ -54,9 +62,7 @@ async function beforeEach (to, from, next) {
 
   try {
     // Get the matched components and resolve them.
-    components = await resolveComponents(
-      router.getMatchedComponents({ ...to })
-    )
+    components = await getMatchedComponents(to)
   } catch (error) {
     if (/^Loading( CSS)? chunk (\d)+ failed\./.test(error.message)) {
       window.location.reload(true)
@@ -78,15 +84,14 @@ async function beforeEach (to, from, next) {
 
   // Call each middleware.
   callMiddleware(middleware, to, from, (...args) => {
-    console.log('in', store)
     // Set the application layout only if "next()" was called with no args.
     if (args.length === 0) {
       if (components[0].layout) {
-        router.app.setLayout(components[0].layout)
+        store.commit('app/setLayout', components[0].layout)
       } else if (components[0].default && components[0].default.layout) {
-        router.app.setLayout(components[0].default.layout)
+        store.commit('app/setLayout', components[0].default.layout)
       } else {
-        router.app.setLayout(null)
+        store.commit('app/setLayout', null)
       }
     }
 
@@ -218,7 +223,7 @@ function scrollBehavior (to, from, savedPosition) {
     return { selector: to.hash }
   }
 
-  const [component] = router.getMatchedComponents({ ...to }).slice(-1)
+  const [component] = getMatchedComponents(to)
 
   if (component && component.scrollToTop === false) {
     return {}
@@ -226,7 +231,7 @@ function scrollBehavior (to, from, savedPosition) {
 
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve({ x: 0, y: 0 })
+      resolve({ left: 0, top: 0 })
     }, 190)
   })
 }

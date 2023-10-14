@@ -7,71 +7,72 @@
            :class="{'absolute': data.length !== 0}"
            style="will-change: transform; transform: translate3d(0px, 0px, 0px)"
     >
-    <tr class="n-table-row overflow-x-hidden">
-      <resizable-th v-for="col, index in form.properties" :id="'table-head-cell-' + col.id" :key="col.id"
-                    scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
-                    class="n-table-cell p-0 relative"
-                    @resize-width="resizeCol(col, $event)"
-      >
-        <p
-          :class="{'border-r': index < form.properties.length - 1 || hasActions}"
-          class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
+      <tr class="n-table-row overflow-x-hidden">
+        <resizable-th v-for="col, index in form.properties" :id="'table-head-cell-' + col.id" :key="col.id"
+                      scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
+                      class="n-table-cell p-0 relative"
+                      @resize-width="resizeCol(col, $event)"
         >
-          {{ col.name }}
-        </p>
-      </resizable-th>
-      <th v-if="hasActions" class="n-table-cell p-0 relative" style="width: 100px">
-        <p
-          class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs">
-          Actions
-        </p>
-      </th>
-    </tr>
+          <p
+            :class="{'border-r': index < form.properties.length - 1 || hasActions}"
+            class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
+          >
+            {{ col.name }}
+          </p>
+        </resizable-th>
+        <th v-if="hasActions" class="n-table-cell p-0 relative" style="width: 100px">
+          <p
+            class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
+          >
+            Actions
+          </p>
+        </th>
+      </tr>
     </thead>
     <tbody v-if="data.length > 0" class="n-table-body bg-white dark:bg-notion-dark-light">
-    <tr v-if="$slots.hasOwnProperty('actions')"
-        :id="'table-actions-'+tableHash"
-        ref="actions-row"
-        class="action-row absolute w-full"
-        style="will-change: transform; transform: translate3d(0px, 32px, 0px)"
-    >
-      <td :colspan="form.properties.length" class="p-1">
-        <slot name="actions"/>
-      </td>
-    </tr>
-    <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
-      <td v-for="col, colIndex in form.properties"
-          :key="col.id"
-          :style="{width: col.cell_width + 'px'}"
-          class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
-          :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== form.properties.length - 1 || hasActions},
+      <tr v-if="$slots.hasOwnProperty('actions')"
+          :id="'table-actions-'+tableHash"
+          ref="actions-row"
+          class="action-row absolute w-full"
+          style="will-change: transform; transform: translate3d(0px, 32px, 0px)"
+      >
+        <td :colspan="form.properties.length" class="p-1">
+          <slot name="actions" />
+        </td>
+      </tr>
+      <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
+        <td v-for="col, colIndex in form.properties"
+            :key="col.id"
+            :style="{width: col.cell_width + 'px'}"
+            class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
+            :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== form.properties.length - 1 || hasActions},
                      colClasses(col)]"
-      >
-        <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
-                   :property="col" :value="row[col.id]"
-        />
-      </td>
-      <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
-          style="width: 100px"
-      >
-        <record-operations :form="form" :structure="form.properties" :rowid="row.id" @deleted="$emit('deleted')" />
-      </td>
-    </tr>
-    <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
-      <td :colspan="form.properties.length" class="p-8 w-full">
-        <loader class="w-4 h-4 mx-auto"/>
-      </td>
-    </tr>
+        >
+          <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
+                     :property="col" :value="row[col.id]"
+          />
+        </td>
+        <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
+            style="width: 100px"
+        >
+          <record-operations :form="form" :structure="form.properties" :rowid="row.id" @deleted="$emit('deleted')" />
+        </td>
+      </tr>
+      <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
+        <td :colspan="form.properties.length" class="p-8 w-full">
+          <loader class="w-4 h-4 mx-auto" />
+        </td>
+      </tr>
     </tbody>
     <tbody v-else key="body-content" class="n-table-body">
-    <tr class="n-table-row loader w-full">
-      <td :colspan="form.properties.length" class="n-table-cell w-full p-8">
-        <loader v-if="loading" class="w-4 h-4 mx-auto"/>
-        <p v-else class="text-gray-500 text-center">
-          No data found.
-        </p>
-      </td>
-    </tr>
+      <tr class="n-table-row loader w-full">
+        <td :colspan="form.properties.length" class="n-table-cell w-full p-8">
+          <loader v-if="loading" class="w-4 h-4 mx-auto" />
+          <p v-else class="text-gray-500 text-center">
+            No data found.
+          </p>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
@@ -101,7 +102,7 @@ const cyrb53 = function (str, seed = 0) {
 }
 
 export default {
-  components: {ResizableTh, RecordOperations},
+  components: { ResizableTh, RecordOperations },
   props: {
     data: {
       type: Array,
@@ -115,10 +116,10 @@ export default {
       required: false,
       default: true,
       type: Boolean
-    },
+    }
   },
 
-  data() {
+  data () {
     return {
       tableHash: null,
       skip: false
@@ -127,18 +128,18 @@ export default {
 
   computed: {
     form: {
-      get() {
+      get () {
         return this.$store.state['open/working_form'].content
       },
-      set(value) {
+      set (value) {
         this.$store.commit('open/working_form/set', value)
       }
     },
-    hasActions() {
+    hasActions () {
       // In future if want to hide based on condition
       return true
     },
-    fieldComponents() {
+    fieldComponents () {
       return {
         text: OpenText,
         number: OpenText,
@@ -150,35 +151,35 @@ export default {
         url: OpenUrl,
         email: OpenText,
         phone_number: OpenText,
-        signature: OpenFile,
+        signature: OpenFile
       }
-    },
+    }
   },
 
   watch: {
     'form.properties': {
-      handler() {
+      handler () {
         this.onStructureChange()
       },
       deep: true
     },
-    data() {
+    data () {
       this.$nextTick(() => {
         this.handleScroll()
       })
     }
   },
 
-  mounted() {
+  mounted () {
     const parent = document.getElementById('table-page')
     this.tableHash = cyrb53(JSON.stringify(this.form.properties))
-    parent.addEventListener('scroll', this.handleScroll, {passive: true})
+    parent.addEventListener('scroll', this.handleScroll, { passive: true })
     window.addEventListener('resize', this.handleScroll)
     this.onStructureChange()
     this.handleScroll()
   },
 
-  beforeDestroy() {
+  beforeUnmount () {
     const parent = document.getElementById('table-page')
     if (parent) {
       parent.removeEventListener('scroll', this.handleScroll)
@@ -187,7 +188,7 @@ export default {
   },
 
   methods: {
-    colClasses(col) {
+    colClasses (col) {
       let colAlign, colColor, colFontWeight, colWrap
 
       // Column align
@@ -212,7 +213,7 @@ export default {
 
       return [colAlign, colColor, colWrap, colFontWeight]
     },
-    onStructureChange() {
+    onStructureChange () {
       if (this.form && this.form.properties) {
         this.$nextTick(() => {
           this.form.properties.forEach(col => {
@@ -226,7 +227,7 @@ export default {
         })
       }
     },
-    resizeCol(col, width) {
+    resizeCol (col, width) {
       if (!this.form) return
       const columns = clonedeep(this.form.properties)
       const index = this.form.properties.findIndex(c => c.id === col.id)
@@ -236,7 +237,7 @@ export default {
         this.$emit('resize')
       })
     },
-    handleScroll() {
+    handleScroll () {
       const parent = document.getElementById('table-page')
       const posTop = parent.getBoundingClientRect().top
       const tablePosition = Math.max(0, posTop - this.$refs.table.getBoundingClientRect().top)
@@ -264,7 +265,7 @@ export default {
           }
         }
       }
-    },
+    }
   }
 }
 </script>

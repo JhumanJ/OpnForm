@@ -2,15 +2,16 @@
   <div class="flex flex-wrap flex-col">
     <transition v-if="stateReady" name="fade" mode="out-in">
       <div key="2">
-        <create-form-base-modal @form-generated="formGenerated" :show="showInitialFormModal"
-                                @close="showInitialFormModal=false"/>
+        <create-form-base-modal :show="showInitialFormModal" @form-generated="formGenerated"
+                                @close="showInitialFormModal=false"
+        />
         <form-editor v-if="!workspacesLoading" ref="editor"
                      class="w-full flex flex-grow"
                      :error="error"
                      @on-save="formInitialHash=null"
         />
         <div v-else class="text-center mt-4 py-6">
-          <loader class="h-6 w-6 text-nt-blue mx-auto"/>
+          <loader class="h-6 w-6 text-nt-blue mx-auto" />
         </div>
       </div>
     </transition>
@@ -20,10 +21,10 @@
 <script>
 import store from '~/store'
 import Form from 'vform'
-import {mapState, mapActions} from 'vuex'
-import initForm from "../../mixins/form_editor/initForm.js";
+import { mapState, mapActions } from 'vuex'
+import initForm from '../../mixins/form_editor/initForm.js'
 import SeoMeta from '../../mixins/seo-meta.js'
-import CreateFormBaseModal from "../../components/pages/forms/create/CreateFormBaseModal.vue"
+import CreateFormBaseModal from '../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
   store.commit('open/templates/startLoading')
@@ -34,11 +35,11 @@ const loadTemplates = function () {
 
 export default {
   name: 'CreateForm',
+  components: { CreateFormBaseModal },
 
   mixins: [initForm, SeoMeta],
-  components: {CreateFormBaseModal},
 
-  beforeRouteEnter(to, from, next) {
+  beforeRouteEnter (to, from, next) {
     loadTemplates()
     next()
   },
@@ -55,7 +56,7 @@ export default {
 
   middleware: 'auth',
 
-  data() {
+  data () {
     return {
       metaTitle: 'Create a new Form',
       stateReady: false,
@@ -73,31 +74,31 @@ export default {
       user: state => state.auth.user
     }),
     form: {
-      get() {
+      get () {
         return this.$store.state['open/working_form'].content
       },
       /* We add a setter */
-      set(value) {
+      set (value) {
         this.$store.commit('open/working_form/set', value)
       }
     },
-    workspace() {
+    workspace () {
       return this.$store.getters['open/workspaces/getCurrent']()
-    },
+    }
   },
 
   watch: {
-    workspace() {
+    workspace () {
       if (this.workspace) {
         this.form.workspace_id = this.workspace.id
       }
     },
-    user() {
+    user () {
       this.stateReady = true
     }
   },
 
-  mounted() {
+  mounted () {
     window.onbeforeunload = () => {
       if (this.isDirty()) {
         return false
@@ -109,7 +110,7 @@ export default {
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
       if (template && template.structure) {
-        this.form = new Form({...this.form.data(), ...template.structure})
+        this.form = new Form({ ...this.form.data(), ...template.structure })
       }
     } else {
       // No template loaded, ask how to start
@@ -121,15 +122,15 @@ export default {
     this.stateReady = this.user !== null
   },
 
-  created() {},
-  destroyed() {},
+  created () {},
+  unmounted () {},
 
   methods: {
     ...mapActions({
       loadWorkspaces: 'open/workspaces/loadIfEmpty'
     }),
-    formGenerated(form) {
-      this.form = new Form({...this.form.data(), ...form})
+    formGenerated (form) {
+      this.form = new Form({ ...this.form.data(), ...form })
     },
     isDirty () {
       return !this.loading && this.formInitialHash && this.formInitialHash !== this.hashString(JSON.stringify(this.form.data()))

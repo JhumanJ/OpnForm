@@ -10,34 +10,37 @@
             >
               {{ appName }}</span>
           </router-link>
-          <workspace-dropdown class="ml-6"/>
+          <workspace-dropdown class="ml-6" />
         </div>
         <div v-if="showAuth" class="hidden md:block ml-auto relative">
-          <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
-                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+          <router-link v-if="$route.name !== 'templates'" :to="{name:'templates'}"
+                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+          >
             Templates
           </router-link>
-          <router-link :to="{name:'aiformbuilder'}" v-if="$route.name !== 'aiformbuilder'"
-                       class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8">
+          <router-link v-if="$route.name !== 'aiformbuilder'" :to="{name:'aiformbuilder'}"
+                       class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
+          >
             AI Form Builder
           </router-link>
-          <router-link :to="{name:'pricing'}" v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
-                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
+          <router-link v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'" :to="{name:'pricing'}"
+                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+          >
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
           </router-link>
-          <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="openCrisp" v-if="hasCrisp"
+          <a v-if="hasCrisp" href="#"
+             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" @click.prevent="openCrisp"
           >
             Help
           </a>
-          <a :href="helpUrl" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             target="_blank" v-else
+          <a v-else :href="helpUrl"
+             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" target="_blank"
           >
             Help
           </a>
         </div>
-        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5"></div>
+        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5" />
         <div v-if="showAuth" class="block">
           <div class="flex items-center">
             <div class="ml-3 mr-4 relative">
@@ -90,7 +93,7 @@
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    {{ $t('settings') }}
+                    Settings
                   </router-link>
 
                   <a href="#"
@@ -104,21 +107,20 @@
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
-                    {{ $t('logout') }}
+                    Logout
                   </a>
                 </dropdown>
-                <div class="flex gap-2" v-else>
+                <div v-else class="flex gap-2">
                   <router-link v-if="$route.name !== 'login'" :to="{ name: 'login' }"
                                class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
                                active-class="text-gray-800 dark:text-white"
                   >
-                    {{ $t('login') }}
+                    Login
                   </router-link>
 
-                  <v-button size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
+                  <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" :arrow="true">
                     Create a form
                   </v-button>
-
                 </div>
               </div>
             </div>
@@ -130,7 +132,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import Dropdown from './common/Dropdown.vue'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
 
@@ -141,13 +143,13 @@ export default {
   },
 
   data: () => ({
-    appName: window.config.appName,
+    appName: window.config.appName
   }),
 
   computed: {
     githubUrl: () => window.config.links.github_url,
     helpUrl: () => window.config.links.help_url,
-    form() {
+    form () {
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
         return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
       }
@@ -156,13 +158,13 @@ export default {
     workspace () {
       return this.$store.getters['open/workspaces/getCurrent']()
     },
-    paidPlansEnabled() {
+    paidPlansEnabled () {
       return window.config.paid_plans_enabled
     },
-    showAuth() {
+    showAuth () {
       return this.$route.name && !this.$route.name.startsWith('forms.show_public')
     },
-    hasNavbar() {
+    hasNavbar () {
       if (this.isIframe) return false
 
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
@@ -177,22 +179,22 @@ export default {
       }
       return !this.$root.navbarHidden
     },
-    isIframe() {
+    isIframe () {
       return window.location !== window.parent.location || window.frameElement
     },
     ...mapGetters({
       user: 'auth/user'
     }),
-    userOnboarded() {
+    userOnboarded () {
       return this.user && this.user.workspaces_count > 0
     },
-    hasCrisp() {
+    hasCrisp () {
       return window.config.crisp_website_id
-    },
+    }
   },
 
   methods: {
-    async logout() {
+    async logout () {
       // Log out the user.
       await this.$store.dispatch('auth/logout')
 
@@ -201,7 +203,7 @@ export default {
       this.$store.dispatch('open/forms/resetState')
 
       // Redirect to login.
-      this.$router.push({name: 'login'})
+      this.$router.push({ name: 'login' })
     },
     openCrisp () {
       window.$crisp.push(['do', 'chat:show'])

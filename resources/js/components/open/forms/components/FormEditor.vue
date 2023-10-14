@@ -55,21 +55,21 @@
           Please create this form on a device with a larger screen. That will allow you to preview your form changes.
         </div>
 
-        <form-information/>
-        <form-structure/>
-        <form-customization/>
-        <form-about-submission/>
-        <form-notifications/>
-        <form-security-privacy/>
+        <form-information />
+        <form-structure />
+        <form-customization />
+        <form-about-submission />
+        <form-notifications />
+        <form-security-privacy />
         <form-custom-seo />
-        <form-custom-code/>
-        <form-integrations/>
+        <form-custom-code />
+        <form-integrations />
       </div>
 
-      <form-editor-preview/>
+      <form-editor-preview />
 
-      <form-field-edit-sidebar/>
-      <add-form-block-sidebar/>
+      <form-field-edit-sidebar />
+      <add-form-block-sidebar />
 
       <!-- Form Error Modal -->
       <form-error-modal
@@ -80,12 +80,12 @@
     </div>
   </div>
   <div v-else class="flex justify-center items-center">
-    <loader class="w-6 h-6"/>
+    <loader class="w-6 h-6" />
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import AddFormBlockSidebar from './form-components/AddFormBlockSidebar.vue'
 import FormFieldEditSidebar from '../fields/FormFieldEditSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
@@ -143,7 +143,7 @@ export default {
     }
   },
 
-  data() {
+  data () {
     return {
       showFormErrorModal: false,
       validationErrorResponse: null,
@@ -157,21 +157,21 @@ export default {
       user: 'auth/user'
     }),
     form: {
-      get() {
+      get () {
         return this.$store.state['open/working_form'].content
       },
       /* We add a setter */
-      set(value) {
+      set (value) {
         this.$store.commit('open/working_form/set', value)
       }
     },
-    createdForm() {
+    createdForm () {
       return this.$store.getters['open/forms/getById'](this.createdFormId)
     },
-    workspace() {
+    workspace () {
       return this.$store.getters['open/workspaces/getCurrent']()
     },
-    steps() {
+    steps () {
       return [
         {
           target: '#v-step-0',
@@ -211,12 +211,12 @@ export default {
 
   watch: {},
 
-  mounted() {
+  mounted () {
     this.$emit('mounted')
     this.$root.hideNavbar()
   },
 
-  beforeDestroy () {
+  beforeUnmount () {
     this.$root.hideNavbar(false)
   },
 
@@ -225,12 +225,12 @@ export default {
       window.$crisp.push(['do', 'chat:show'])
       window.$crisp.push(['do', 'chat:open'])
     },
-    showValidationErrors() {
+    showValidationErrors () {
       this.showFormErrorModal = true
     },
-    saveForm() {
+    saveForm () {
       this.form.properties = this.validateFieldsLogic(this.form.properties)
-      if(this.isGuest) {
+      if (this.isGuest) {
         this.saveFormGuest()
       } else if (this.isEdit) {
         this.saveFormEdit()
@@ -238,7 +238,7 @@ export default {
         this.saveFormCreate()
       }
     },
-    saveFormEdit() {
+    saveFormEdit () {
       if (this.updateFormLoading) return
 
       this.updateFormLoading = true
@@ -247,8 +247,8 @@ export default {
         const data = response.data
         this.$store.commit('open/forms/addOrUpdate', data.form)
         this.$emit('on-save')
-        this.$router.push({name: 'forms.show', params: {slug: this.form.slug}})
-        this.$logEvent('form_saved', {form_id: this.form.id, form_slug: this.form.slug})
+        this.$router.push({ name: 'forms.show', params: { slug: this.form.slug } })
+        this.$logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {
         if (error.response.status === 422) {
@@ -259,7 +259,7 @@ export default {
         this.updateFormLoading = false
       })
     },
-    saveFormCreate() {
+    saveFormCreate () {
       if (this.updateFormLoading) return
       this.form.workspace_id = this.workspace.id
       this.validationErrorResponse = null
@@ -270,7 +270,7 @@ export default {
         this.$emit('on-save')
         this.createdFormId = response.data.form.id
 
-        this.$logEvent('form_created', {form_id: response.data.form.id, form_slug: response.data.form.slug})
+        this.$logEvent('form_created', { form_id: response.data.form.id, form_slug: response.data.form.slug })
         this.$crisp.push(['set', 'session:event', [[['form_created', {
           form_id: response.data.form.id,
           form_slug: response.data.form.slug
@@ -292,7 +292,7 @@ export default {
         this.updateFormLoading = false
       })
     },
-    saveFormGuest() {
+    saveFormGuest () {
       this.$emit('openRegister')
     }
   }

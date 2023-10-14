@@ -60,19 +60,19 @@ export default {
     const scrollContainerObserver = newResizeObserver(this.toggleShadow)
     if (scrollContainerObserver) {
       scrollContainerObserver.observe(this.$refs.scrollContainer)
-      // Cleanup when the component is destroyed.
-      this.$once('hook:destroyed', () => scrollContainerObserver.disconnect())
+      // Cleanup when the component is unmounted.
+      this.$once('hook:unmounted', () => scrollContainerObserver.disconnect())
     }
 
     // Recalculate the container dimensions when the wrapper is resized.
     const wrapObserver = newResizeObserver(this.calcDimensions)
     if (wrapObserver) {
       wrapObserver.observe(this.$el)
-      // Cleanup when the component is destroyed.
-      this.$once('hook:destroyed', () => wrapObserver.disconnect())
+      // Cleanup when the component is unmounted.
+      this.$once('hook:unmounted', () => wrapObserver.disconnect())
     }
   },
-  destroyed () {
+  unmounted () {
     window.removeEventListener('resize', this.calcDimensions)
   },
   methods: {

@@ -28,7 +28,7 @@ function hookLogEvent (binding) {
 // Register directive to log event
 const registeredListeners = {}
 Vue.directive('track', {
-  bind (el, binding, vnode) {
+  beforeMount (el, binding, vnode) {
     registeredListeners[el] = () => {
       hookLogEvent(binding)
     }

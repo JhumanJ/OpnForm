@@ -22,9 +22,9 @@ import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { OpenFormFooter },
+  mixins: [SeoMeta],
   layout: 'default',
   middleware: 'auth',
-  mixins: [SeoMeta],
 
   data: () => ({
     metaTitle: 'Subscription Success',
@@ -36,7 +36,7 @@ export default {
     this.interval = setInterval(() => this.checkSubscription(), 5000)
   },
 
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.interval)
   },
 

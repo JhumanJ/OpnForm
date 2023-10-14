@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col">
     <form-editor v-if="pageLoaded" ref="editor"
-                 :isEdit="true"
+                 :is-edit="true"
                  @on-save="formInitialHash=null"
     />
     <div v-else-if="!loading && error" class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500">
@@ -31,6 +31,7 @@ const loadForms = function () {
 export default {
   name: 'EditForm',
   components: { Breadcrumb },
+  mixins: [SeoMeta],
 
   beforeRouteEnter (to, from, next) {
     if (!store.getters['open/forms/getBySlug'](to.params.slug)) {
@@ -51,7 +52,6 @@ export default {
   },
 
   middleware: 'auth',
-  mixins: [SeoMeta],
 
   data () {
     return {
@@ -82,7 +82,7 @@ export default {
     },
     metaTitle () {
       return 'Edit ' + (this.form ? this.form.title : 'Your Form')
-    },
+    }
   },
 
   watch: {
@@ -92,7 +92,7 @@ export default {
   },
 
   created () {},
-  destroyed () {},
+  unmounted () {},
 
   mounted () {
     window.onbeforeunload = () => {
@@ -109,11 +109,11 @@ export default {
       this.formInitialHash = this.hashString(JSON.stringify(this.updatedForm.data()))
     }
 
-    if(!this.updatedForm.notification_settings || Array.isArray(this.updatedForm.notification_settings)){
+    if (!this.updatedForm.notification_settings || Array.isArray(this.updatedForm.notification_settings)) {
       this.updatedForm.notification_settings = {}
     }
   },
-  
+
   methods: {
     isDirty () {
       return !this.loading && this.formInitialHash && this.formInitialHash !== this.hashString(JSON.stringify(this.updatedForm.data()))

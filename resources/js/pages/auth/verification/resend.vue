@@ -2,19 +2,19 @@
   <div class="row">
     <div class="col-lg-8 m-auto px-4">
       <h1 class="my-6">
-        {{ $t('verify_email') }}
+        Verify Email
       </h1>
       <form @submit.prevent="send" @keydown="form.onKeydown($event)">
         <alert-success :form="form" :message="status" />
 
         <!-- Email -->
-        <text-input name="email" :form="form" :label="$t('email')" :required="true" />
+        <text-input name="email" :form="form" label="Email" :required="true" />
 
         <!-- Submit Button -->
         <div class="form-group row">
           <div class="col-md-9 ml-md-auto">
             <v-button :loading="form.busy">
-              {{ $t('send_verification_link') }}
+              Send Verification Link
             </v-button>
           </div>
         </div>
@@ -28,9 +28,9 @@ import Form from 'vform'
 import SeoMeta from '../../../mixins/seo-meta.js'
 
 export default {
-  middleware: 'guest',
   mixins: [SeoMeta],
-  
+  middleware: 'guest',
+
   data: () => ({
     metaTitle: 'Verify Email',
     status: '',

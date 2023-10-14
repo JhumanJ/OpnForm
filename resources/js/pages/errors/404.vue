@@ -4,12 +4,12 @@
       <img alt="Nice plant as we have nothing else to show!" :src="asset('img/icons/plant.png')" class="w-56 mb-5">
 
       <h1 class="mb-4 font-semibold text-3xl text-gray-900">
-        {{ $t('page_not_found') }}
+        Page Not Found
       </h1>
 
       <div class="links">
         <router-link :to="{ name: 'welcome' }" class="hover:underline text-gray-700">
-          {{ $t('go_home') }}
+          Go Home
         </router-link>
       </div>
     </div>

@@ -23,6 +23,6 @@ configureCompat({
 })
 
 router.app = app
-app.mount('#app')
+router.isReady().then(() => app.mount('#app'))
 
 export default app
