@@ -1,9 +1,9 @@
 export default {
   metaInfo () {
-    const title = this.metaTitle ?? 'OpnForm'
-    const description = this.metaDescription ?? "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form."
+    const title = this.metaTitle ?? 'e-Form'
+    const description = this.metaDescription ?? "Tạo các biểu mẫu/khảo sát đơn giản, đẹp; hoàn toàn miễn phí và không giới hạn."
     const image = this.metaImage ?? this.asset('img/social-preview.jpg')
-    const metaTemplate = this.metaTemplate ?? '%s · OpnForm'
+    const metaTemplate = this.metaTemplate ?? '%s · e-Form'
 
     return {
       title: title,

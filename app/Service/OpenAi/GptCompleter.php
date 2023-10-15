@@ -14,7 +14,7 @@ use OpenAI\Exceptions\ErrorException;
  */
 class GptCompleter
 {
-    const AI_MODEL = 'gpt-4';
+    const AI_MODEL = 'gpt-3.5-turbo';
 
     protected Client $openAi;
     protected mixed $result;
@@ -47,12 +47,25 @@ class GptCompleter
         return $this;
     }
 
-    public function completeChat(array $messages, int $maxTokens = 4096, float $temperature = 0.81): self
+    public function completeChat(array $messages, int $maxTokens = 2048, float $temperature = 0.81): self
     {
+        // Giảm giới hạn số lượng từ trong tin nhắn để không vượt quá maxTokens
+        $messages = $this->reduceTokensInMessages($messages, $maxTokens);
+
         $this->computeChatCompletion($messages, $maxTokens, $temperature)
             ->queryCompletion();
 
         return $this;
+    }
+
+    
+    protected function calculateTotalTokens(array $messages): int
+    {
+        $totalTokens = 0;
+        foreach ($messages as $message) {
+            $totalTokens += str_word_count($message['content']);
+        }
+        return $totalTokens;
     }
 
     public function getBool(): bool
@@ -113,7 +126,7 @@ class GptCompleter
         return $this->tokenUsed;
     }
 
-    protected function computeChatCompletion(array $messages, int $maxTokens = 4096, float $temperature = 0.81): self
+    protected function computeChatCompletion(array $messages, int $maxTokens = 2048, float $temperature = 0.81): self
     {
         if (isset($this->systemMessage) && $messages[0]['role'] !== 'system') {
             $messages = array_merge([[
@@ -131,6 +144,28 @@ class GptCompleter
 
         $this->completionInput = $completionInput;
         return $this;
+    }
+
+    protected function reduceTokensInMessages(array $messages, int $maxTokens): array
+    {
+        $totalTokens = $this->calculateTotalTokens($messages);
+        $exceedTokens = $totalTokens - $maxTokens;
+
+        // Giảm số lượng từ trong tin nhắn để không vượt quá giới hạn maxTokens
+        for ($i = count($messages) - 1; $i >= 0; $i--) {
+            $messageTokens = str_word_count($messages[$i]['content']);
+            if ($exceedTokens >= $messageTokens) {
+                // Nếu tin nhắn hiện tại có đủ từ để giảm
+                unset($messages[$i]);
+                $exceedTokens -= $messageTokens;
+            } else {
+                // Nếu tin nhắn không đủ từ để giảm hết số từ vượt quá
+                $messages[$i]['content'] = Str::words($messages[$i]['content'], $messageTokens - $exceedTokens, '');
+                break;
+            }
+        }
+
+        return array_values($messages);
     }
 
     protected function queryCompletion(): self

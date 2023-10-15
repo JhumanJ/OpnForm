@@ -15,26 +15,26 @@
         <div v-if="showAuth" class="hidden md:block ml-auto relative">
           <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Templates
+            Thư viện mẫu
           </router-link>
           <router-link :to="{name:'aiformbuilder'}" v-if="$route.name !== 'aiformbuilder'"
                        class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            AI Form Builder
+            Tạo khảo sát tự động (AI)
           </router-link>
           <router-link :to="{name:'pricing'}" v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            <span v-if="user">Upgrade</span>
-            <span v-else>Pricing</span>
+            <span v-if="user">Nâng cấp</span>
+            <span v-else>Bảng giá</span>
           </router-link>
           <a href="#" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              @click.prevent="openCrisp" v-if="hasCrisp"
           >
-            Help
+            Trợ giúp
           </a>
           <a :href="helpUrl" class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
              target="_blank" v-else
           >
-            Help
+            Trợ giúp
           </a>
         </div>
         <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5"></div>
@@ -65,7 +65,7 @@
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                       />
                     </svg>
-                    My Forms
+                    Khảo sát của bạn
                   </router-link>
 
                   <router-link v-if="userOnboarded" :to="{ name: 'my_templates' }"
@@ -74,7 +74,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
-                    My Templates
+                    Thư viện mẫu của bạn
                   </router-link>
 
                   <router-link :to="{ name: 'settings.profile' }"
@@ -116,7 +116,7 @@
                   </router-link>
 
                   <v-button size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" v-track.nav_create_form_click :arrow="true">
-                    Create a form
+                    Tạo khảo sát mới
                   </v-button>
 
                 </div>

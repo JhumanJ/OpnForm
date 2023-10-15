@@ -3,7 +3,7 @@
     <div class="grid md:grid-cols-3 my-8">
       <div class="flex mt-2">
         <p class="text-sm text-gray-600 dark:text-gray-400 text-center w-full">
-          © Copyright {{ currYear }}. All Rights Reserved
+          © Bản quyền {{ currYear }}
         </p>
       </div>
       <div class="flex justify-center mt-5 md:mt-0">
@@ -17,12 +17,12 @@
       <ul class="flex justify-center mt-5 md:mt-1">
           <li class="mr-10">
             <router-link :to="{name:'privacy-policy'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
-              Privacy Policy
+              Chính sách bảo mật
             </router-link>
           </li>
           <li class="list-disc pl-3">
             <router-link :to="{name:'terms-conditions'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
-              Terms & Conditions
+              Điều khoản sử dụng
             </router-link>
           </li>
         </ul>
