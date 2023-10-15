@@ -15,7 +15,7 @@
         <div v-if="showAuth" class="hidden md:block ml-auto relative">
           <router-link :to="{name:'templates'}" v-if="$route.name !== 'templates'"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8">
-            Templates
+            Templates update
           </router-link>
           <router-link :to="{name:'aiformbuilder'}" v-if="$route.name !== 'aiformbuilder'"
                        class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8">
