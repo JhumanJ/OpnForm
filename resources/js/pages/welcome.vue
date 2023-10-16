@@ -10,21 +10,21 @@
         <div class="max-w-4xl mx-auto text-center">
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight">
             Xây dựng
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">biểu mẫu/khảo sát</span>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">biểu mẫu</span>
             <br>
-            nhanh chóng
+            nhanh chóng và miễn phí
           </h1>
           <p class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500">
-            Dễ dàng tạo cũng như chia sẻ biểu mẫu và bản khảo sát trực tuyến, đồng thời phân tích câu trả lời theo thời gian thực. Hoàn toàn
+            Dễ dàng tạo cũng như chia sẻ biểu mẫu và biểu mẫu trực tuyến, đồng thời phân tích câu trả lời theo thời gian thực. Hoàn toàn
             <span class="font-semibold">miễn phí</span>!
           </p>
 
           <div class="mt-8 flex justify-center">
             <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
-              Tạo khảo sát MIỄN PHÍ
+              Tạo biểu mẫu MIỄN PHÍ
             </v-button>
             <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
-              Tạo khảo sát MIỄN PHÍ
+              Tạo biểu mẫu MIỄN PHÍ
             </v-button>
           </div>
 
@@ -34,7 +34,7 @@
                    stroke="currentColor" class="w-4 h-4 mr-1 ticks">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
               </svg>
-              <span>Không giới hạn số khảo sát</span>
+              <span>Không giới hạn số biểu mẫu</span>
             </div>
             <div class="flex items-center text-gray-400 text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -42,7 +42,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
               </svg>
               <span>
-                  Không giới hạn số thuộc tính khảo sát
+                  Không giới hạn số thuộc tính biểu mẫu
                 </span>
             </div>
             <div class="flex text-gray-400 text-sm">
@@ -50,7 +50,7 @@
                    stroke="currentColor" class="w-4 h-4 mr-1 ticks">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
               </svg>
-              <span>Không giới hạn số lượng trả lời khảo sát</span>
+              <span>Không giới hạn số lượng trả lời biểu mẫu</span>
             </div>
           </div>
         </div>
@@ -88,22 +88,14 @@
         </template>
       </pricing-table>
 
-      <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
-      <!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
-      <!--        <p class="w-full mt-2 mb-8">-->
-      <!--          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.-->
-      <!--        </p>-->
-      <!--        <testimonials/>-->
-      <!--      </div>-->
-
       <templates-slider class="max-w-full mb-12"/>
 
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
-        <h4 class="font-semibold text-3xl text-white">Đưa biểu mẫu/khảo sát của bạn lên tầm cao mới</h4>
+        <h4 class="font-semibold text-3xl text-white">Đưa biểu mẫu/biểu mẫu của bạn lên tầm cao mới</h4>
         <p class="text-gray-300 my-8">Miễn phí - Không giới hạn</p>
         <div class="mt-6 flex justify-center">
           <v-button :to="{ name: 'forms.create.guest' }" v-track.welcome_create_form_click :arrow="true" color="blue">
-            Tạo khảo sát miễn phí
+            Tạo biểu mẫu miễn phí
           </v-button>
         </div>
         <div class="flex justify-center mt-6">   
@@ -143,7 +135,7 @@ export default {
 
   data: () => ({
     title: window.config.appName,
-    metaTitle: 'Create beautiful & open-source forms for free',
+    metaTitle: 'Tạo biểu mẫu dễ dàng và hoàn toàn miễn phí',
   }),
 
   mounted() {

@@ -150,8 +150,8 @@ class SeoMetaResolver
     private function getDefaultMeta(): array
     {
         return [
-            'title' => 'Create beautiful forms for free' . $this->titleSuffix(),
-            'description' => "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
+            'title' => 'Tạo khảo sát dễ dàng và miễn phí' . $this->titleSuffix(),
+            'description' => "Tạo các biểu mẫu/khảo sát đơn giản, đẹp; hoàn toàn miễn phí và không giới hạn.",
             'image' => asset('/img/social-preview.jpg'),
         ];
     }

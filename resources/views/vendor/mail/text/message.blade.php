@@ -24,7 +24,7 @@
     @slot('footer')
         @component('mail::footer')
             @if (!(isset($noBranding) && $noBranding))
-                © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+                © {{ date('Y') }} {{ config('app.name') }}
             @endif
         @endcomponent
     @endslot

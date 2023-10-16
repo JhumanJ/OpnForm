@@ -73,8 +73,8 @@ export default {
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'OpnForm',
-    metaDescription: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
+    metaTitle: 'e-Form',
+    metaDescription: 'Tạo các biểu mẫu/khảo sát đơn giản, đẹp; hoàn toàn miễn phí và không giới hạn.',
     layout: null,
     defaultLayout: 'default',
     announcement: false,

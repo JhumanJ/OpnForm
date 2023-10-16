@@ -486,7 +486,7 @@ export default {
   mixins: [SeoMeta],
   data: () => ({
     title: window.config.appName,
-    metaTitle: 'AI form builder for free',
+    metaTitle: 'Tạo biểu mẫu AI miễn phí',
   }),
 
   mounted() {},
