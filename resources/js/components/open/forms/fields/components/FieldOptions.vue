@@ -355,7 +355,7 @@
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor v-model="form" class="py-2 px-4 border-b" :form="form" :field="field" />
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
   </div>
 </template>
 

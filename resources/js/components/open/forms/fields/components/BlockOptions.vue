@@ -71,13 +71,14 @@
                   label="Field Name"
       />
       <image-input name="image_block" class="mt-3"
-                    :form="field" label="Upload Image" :required="false"
+                   :form="field" label="Upload Image" :required="false"
       />
     </div>
 
     <div v-else-if="field.type == 'nf-code'" class="border-b py-2 px-4">
       <code-input name="content" :form="field" label="Content"
-            help="You can add any html code, including iframes" />
+                  help="You can add any html code, including iframes"
+      />
     </div>
 
     <div v-else class="border-b py-2 px-4">
@@ -85,17 +86,17 @@
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" v-model="form"/>
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
   </div>
 </template>
 
 <script>
-const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 import CodeInput from '../../../../forms/CodeInput.vue'
+const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 
 export default {
   name: 'BlockOptions',
-  components: {FormBlockLogicEditor, CodeInput},
+  components: { FormBlockLogicEditor, CodeInput },
   props: {
     field: {
       type: Object,
@@ -106,10 +107,10 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link'],
+        ['bold', 'italic', 'underline', 'link']
       ]
     }
   },
@@ -141,17 +142,17 @@ export default {
     }
   },
 
-  mounted() {},
+  mounted () {},
 
   methods: {
-    onFieldHiddenChange(val) {
+    onFieldHiddenChange (val) {
       this.$set(this.field, 'hidden', val)
       if (this.field.hidden) {
         this.$set(this.field, 'required', false)
       }
     },
     onFieldHelpPositionChange (val) {
-      if(!val){
+      if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
     }

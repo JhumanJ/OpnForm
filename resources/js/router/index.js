@@ -47,7 +47,7 @@ async function getMatchedComponents (to) {
  */
 async function beforeEach (to, from, next) {
   // Sentry tracking
-  if (window.config.sentry_dsn) {
+  if (false && window.config.sentry_dsn) {
     Sentry.configureScope((scope) => scope.setTransactionName(to?.name || 'Unknown route name'))
   }
 
@@ -164,18 +164,6 @@ function parseMiddleware (middleware) {
 }
 
 /**
- * Resolve async components.
- *
- * @param  {Array} components
- * @return {Array}
- */
-function resolveComponents (components) {
-  return Promise.all(components.map(component => {
-    return typeof component === 'function' ? component() : component
-  }))
-}
-
-/**
  * Merge the the global middleware with the components middleware.
  *
  * @param  {Array} components
@@ -222,18 +210,7 @@ function scrollBehavior (to, from, savedPosition) {
   if (to.hash) {
     return { selector: to.hash }
   }
-
-  const [component] = getMatchedComponents(to)
-
-  if (component && component.scrollToTop === false) {
-    return {}
-  }
-
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({ left: 0, top: 0 })
-    }, 190)
-  })
+  return {}
 }
 
 /**
@@ -249,4 +226,16 @@ function resolveMiddleware (requireContext) {
       middlewares[name] = middleware.default || middleware
     })
   return middlewares
+}
+
+/**
+ * Resolve async components.
+ *
+ * @param  {Array} components
+ * @return {Array}
+ */
+function resolveComponents (components) {
+  return Promise.all(components.map(component => {
+    return typeof component === 'function' ? component() : component
+  }))
 }

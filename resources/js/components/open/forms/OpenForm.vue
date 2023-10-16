@@ -6,31 +6,28 @@
   </div>
   <form v-else-if="dataForm" @submit.prevent="">
     <transition name="fade" mode="out-in" appear>
-      <template v-for="group, groupIndex in fieldGroups">
-        <div v-if="currentFieldGroupIndex===groupIndex"
-             :key="groupIndex"
-             class="form-group flex flex-wrap w-full"
+      <div :key="currentFieldGroupIndex" class="form-group flex flex-wrap w-full">
+        <draggable v-model="currentFields"
+                   item-key="id"
+                   class="flex flex-wrap transition-all"
+                   :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
+                   ghost-class="ghost-item"
+                   handle=".draggable" :animation="200"
+                   @start="onDragStart" @end="onDragEnd"
         >
-          <draggable v-model="currentFields"
-                     class="flex flex-wrap transition-all"
-                     :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
-                     ghost-class="ghost-item"
-                     handle=".draggable" :animation="200"
-                     @start="onDragStart" @end="onDragEnd"
-          >
-            <open-form-field v-for="field in group"
-                             :key="field.id + formVersionId"
-                             :field="field"
-                             :show-hidden="showHidden"
-                             :form="form"
-                             :data-form="dataForm"
-                             :data-form-value="dataFormValue"
-                             :theme="theme"
-                             :admin-preview="adminPreview"
+          <template #item="{element}">
+            <open-form-field
+              :field="element"
+              :show-hidden="showHidden"
+              :form="form"
+              :data-form="dataForm"
+              :data-form-value="dataFormValue"
+              :theme="theme"
+              :admin-preview="adminPreview"
             />
-          </draggable>
-        </div>
-      </template>
+          </template>
+        </draggable>
+      </div>
     </transition>
 
     <!-- Captcha -->
@@ -71,6 +68,9 @@ import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.
 import OpenFormField from './OpenFormField.vue'
 import draggable from 'vuedraggable'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+
+draggable.compatConfig = { MODE: 3 }
+
 const VueHcaptcha = () => import('@hcaptcha/vue3-hcaptcha')
 
 export default {
@@ -290,7 +290,9 @@ export default {
       }
     },
     async getSubmissionData () {
-      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) { return null }
+      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
+        return null
+      }
       await this.$store.dispatch('open/records/loadRecord',
         axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((response) => {
           return { submission_id: this.form.submission_id, ...response.data.data }
@@ -323,11 +325,11 @@ export default {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
               const dateObj = new Date()
               let currentDate = dateObj.getFullYear() + '-' +
-                      String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                      String(dateObj.getDate()).padStart(2, '0')
+                String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+                String(dateObj.getDate()).padStart(2, '0')
               if (field.with_time === true) {
                 currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-                String(dateObj.getMinutes()).padStart(2, '0')
+                  String(dateObj.getMinutes()).padStart(2, '0')
               }
               pendingData[field.id] = currentDate
             }
@@ -369,7 +371,7 @@ export default {
             String(dateObj.getDate()).padStart(2, '0')
           if (field.with_time === true) {
             currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-            String(dateObj.getMinutes()).padStart(2, '0')
+              String(dateObj.getMinutes()).padStart(2, '0')
           }
           formData[field.id] = currentDate
         } else { // Default prefill if any
