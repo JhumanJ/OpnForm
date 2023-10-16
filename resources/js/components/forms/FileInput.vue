@@ -156,6 +156,7 @@
 
 <script>
 import Modal from '../Modal.vue'
+import axios from 'axios'
 import inputMixin from '~/mixins/forms/input.js'
 
 export default {
@@ -166,7 +167,8 @@ export default {
   props: {
     multiple: { type: Boolean, default: true },
     mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: '' }
+    accept: { type: String, default: '' },
+    moveToFormAssets: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -263,12 +265,30 @@ export default {
         if (!this.multiple) {
           this.files = []
         }
-        this.files.push({
-          file: file,
-          url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
-        })
-        this.showUploadModal = false
-        this.loading = false
+        if (this.moveToFormAssets) {
+          // Move file to permanent storage for form assets
+          axios.post('/api/open/forms/assets/upload', {
+            type: 'files',
+            url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
+          }).then(moveFileResponse => {
+            this.files.push({
+              file: file,
+              url: moveFileResponse.data.url
+            })
+            this.showUploadModal = false
+            this.loading = false
+          }).catch((error) => {
+            this.showUploadModal = false
+            this.loading = false
+          })
+        } else {
+          this.files.push({
+            file: file,
+            url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
+          })
+          this.showUploadModal = false
+          this.loading = false
+        }
       }).catch((error) => {
         this.clearAll()
         this.showUploadModal = false

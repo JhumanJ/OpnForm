@@ -265,7 +265,12 @@
                        :form="field"
                        label="Pre-filled value"
       />
-      <text-input v-else-if="field.type!=='files'" name="prefill" class="mt-3"
+      <file-input v-else-if="field.type==='files'" name="prefill" class="mt-4"
+                  :form="field"
+                  label="Pre-filled file"
+                  :multiple="field.multiple===true" :moveToFormAssets="true"
+      />
+      <text-input v-else-if="!['files', 'signature'].includes(field.type)" name="prefill" class="mt-3"
                   :form="field"
                   label="Pre-filled value"
                   :disabled="field.type==='date' && field.prefill_today===true"
