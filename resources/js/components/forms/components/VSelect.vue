@@ -51,7 +51,7 @@
         >
           <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark:bg-notion-dark-light z-10">
             <text-input name="search" :color="color" v-model="searchTerm" :theme="theme"
-                        placeholder="Search..."
+                        placeholder="Tìm kiếm..."
             />
           </div>
           <div v-if="loading" class="w-full py-2 flex justify-center">
@@ -67,14 +67,14 @@
             </li>
           </template>
           <p v-else-if="!loading && !(allowCreation && searchTerm)" class="w-full text-gray-500 text-center py-2">
-            {{ (allowCreation ? 'Type something to add an option': 'No option available') }}.
+            {{ (allowCreation ? 'Nhập nội dung để thêm tuỳ chọn': 'Tuỳ chọn không có sẵn') }}.
           </p>
           <li v-if="allowCreation && searchTerm" role="option" :style="optionStyle"
               :class="{'px-3 pr-9':multiple, 'px-3':!multiple}"
               class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus:text-white focus:bg-nt-blue"
               @click="createOption(searchTerm)"
           >
-            Create <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{ searchTerm }}</b>
+            Tạo mới cho <b class="px-1 bg-gray-300 rounded group-hover:text-black">{{ searchTerm }}</b>
           </li>
         </ul>
       </div>

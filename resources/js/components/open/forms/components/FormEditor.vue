@@ -10,7 +10,7 @@
                 stroke-linejoin="round"
           />
         </svg>
-        Go back
+        Trở lại
       </a>
       <div class="hidden md:flex items-center ml-3">
         <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
@@ -19,14 +19,6 @@
       </div>
 
       <div class="flex items-center" :class="{'mx-auto md:mx-0':!backButton}">
-        <div class="hidden md:block mr-10 relative">
-          <a href="#"
-             class="text-sm px-3 py-2 hover:bg-gray-50 cursor-pointer rounded-md text-gray-500 px-0 sm:px-3 hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="openCrisp"
-          >
-            Help
-          </a>
-        </div>
         <v-button v-track.save_form_click size="small" class="w-full px-8 md:px-4 py-2"
                   :loading="updateFormLoading" :class="saveButtonClass"
                   @click="saveForm"
@@ -40,10 +32,10 @@
             />
           </svg>
           <template v-if="form.visibility === 'public'">
-            Publish Form
+            Xuất bản
           </template>
           <template v-else>
-            Save Changes
+            Lưu thay đổi
           </template>
         </v-button>
       </div>
@@ -52,7 +44,7 @@
     <div class="w-full flex grow overflow-y-scroll relative">
       <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
         <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
-          Please create this form on a device with a larger screen. That will allow you to preview your form changes.
+          Vui lòng tạo biểu mẫu này trên thiết bị có màn hình lớn hơn (máy tính). Điều này cho phép bạn xem trước các thay đổi biểu mẫu của mình.
         </div>
 
         <form-information/>

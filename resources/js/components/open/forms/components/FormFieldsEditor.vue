@@ -8,7 +8,7 @@
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
               stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Add block
+      Thêm câu hỏi
     </v-button>
 
     <draggable v-model="formFields"
@@ -138,7 +138,7 @@
         <path d="M7.00001 1.1665V12.8332M1.16667 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
               stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Add block
+      Thêm câu hỏi
     </v-button>
 
   </div>
@@ -226,20 +226,20 @@ export default {
     getDefaultFields() {
       return [
         {
-          "name": "Name",
+          "name": "Tên",
           "type": "text",
           "hidden": false,
           "required": true,
           "id": this.generateUUID(),
         },
         {
-          "name": "Email",
+          "name": "Địa chỉ Email",
           "type": "email",
           "hidden": false,
           "id": this.generateUUID(),
         },
         {
-          "name": "Message",
+          "name": "Lời nhắn",
           "type": "text",
           "hidden": false,
           "multi_lines": true,

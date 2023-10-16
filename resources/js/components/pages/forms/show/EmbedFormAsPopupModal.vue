@@ -69,7 +69,7 @@
           </template>
           <div class="border-t mt-4 -mx-4" />
           <toggle-switch-input v-model="advancedOptions.hide_title" name="hide_title" class="mt-4"
-                              label="Hide Form Title"
+                              label="Ẩn tiêu đề"
                               :disabled="form.hide_title===true"
                               :help="hideTitleHelp"
           />

@@ -43,16 +43,16 @@ export default {
       var newTypes = []
       if (['text', 'email', 'phone', 'number'].includes(this.field.type)) {
         newTypes = [
-          {'name': 'Text Input', 'value': 'text'},
-          {'name': 'Email Input', 'value': 'email'},
-          {'name': 'Phone Input', 'value': 'phone'},
-          {'name': 'Number Input', 'value': 'number'}
+          {'name': 'Văn bản', 'value': 'text'},
+          {'name': 'Email', 'value': 'email'},
+          {'name': 'Số điện thoại', 'value': 'phone'},
+          {'name': 'Số học', 'value': 'number'}
         ]
       }
       if (['select', 'multi_select'].includes(this.field.type)) {
         newTypes = [
-          {'name': 'Select Input', 'value': 'select'},
-          {'name': 'Multi-Select Input', 'value': 'multi_select'}
+          {'name': 'Chọn', 'value': 'select'},
+          {'name': 'Chọn nhiều', 'value': 'multi_select'}
         ]
       }
       return newTypes.filter((item) => {

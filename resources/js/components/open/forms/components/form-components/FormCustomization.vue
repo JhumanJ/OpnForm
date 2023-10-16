@@ -15,71 +15,66 @@
 
     <select-input name="theme" class="mt-4"
                   :options="[
-                    {name:'Default',value:'default'},
-                    {name:'Simple',value:'simple'},
-                    {name:'Notion',value:'notion'},
+                    {name:'Mặc định',value:'default'},
+                    {name:'Đơn giản',value:'simple'},
+                    {name:'Nổi bật nội dung',value:'notion'},
                   ]"
-                  :form="form" label="Form Theme"
+                  :form="form" label="Giao diện/Chủ đề"
     />
-    <div class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
-      <small>
-        Need another theme? <a href="#" @click.prevent="openChat">Send us some suggestions!</a>
-      </small>
-    </div>
 
     <select-input name="width" class="mt-4"
                   :options="[
-                    {name:'Centered',value:'centered'},
-                    {name:'Full Width',value:'full'},
+                    {name:'Canh giữa',value:'centered'},
+                    {name:'Tràn viền',value:'full'},
                   ]"
-                  :form="form" label="Form Width" help="Useful when embedding your form"
+                  :form="form" label="Định dạng" help="Hữu ích khi dùng tính năng nhúng biểu mẫu"
     />
 
     <image-input name="cover_picture" class="mt-4"
-                 :form="form" label="Cover Picture" help="Not visible when form is embedded"
+                 :form="form" label="Ảnh bìa" help="Không khả dụng khi dùng tính năng nhúng biểu mẫu"
                  :required="false"
     />
 
     <image-input name="logo_picture" class="mt-4"
-                 :form="form" label="Logo" help="Not visible when form is embedded"
+                 :form="form" label="Logo" help="Không khả dụng khi dùng tính năng nhúng biểu mẫu"
                  :required="false"
     />
 
     <select-input name="dark_mode" class="mt-4"
-                  help="To see changes, save your form and open it"
+                  help="Để xem các thay đổi, hãy lưu biểu mẫu và mở lại"
                   :options="[
-                    {name:'Auto - use Device System Preferences',value:'auto'},
-                    {name:'Light Mode',value:'light'},
-                    {name:'Dark Mode',value:'dark'}
+                    {name:'Tự động - tuỳ chọn hệ thống của thiết bị',value:'auto'},
+                    {name:'Chế độ sáng',value:'light'},
+                    {name:'Chế độ tối',value:'dark'}
                   ]"
-                  :form="form" label="Dark Mode"
+                  :form="form" label="Chế độ tối"
     />
     <color-input name="color" class="mt-4"
                  :form="form"
-                 label="Color (for buttons & inputs border)"
+                 label="Màu sắc (đối với các nút và đường viền)"
     />
     <toggle-switch-input name="hide_title" :form="form" class="mt-4"
-                    label="Hide Title"
+                    label="Ẩn tiêu đề"
     />
     <toggle-switch-input name="no_branding" :form="form" class="mt-4">
       <template #label>
-        Remove OpnForm Branding
+        Loại bỏ thương hiệu e-Form
         <pro-tag class="ml-1" />
       </template>
     </toggle-switch-input>
     <toggle-switch-input name="uppercase_labels" :form="form" class="mt-4"
-                    label="Uppercase Input Labels"
+                    label="Tiêu đề cấu trúc viết hoa"
     />
     <toggle-switch-input name="transparent_background" :form="form" class="mt-4"
-                    label="Transparent Background" help="Only applies when form is embedded"
+                    label="Nền trong suốt" help="Chỉ áp dụng khi biểu mẫu dùng chức năng nhúng"
     />
     <toggle-switch-input name="confetti_on_submission" :form="form" class="mt-4"
-                         label="Confetti on successful submisison"
+                         label="Kích hoạt hiệu ứng bắn hoa giấy khi gửi biểu mẫu thành công"
                          @input="onChangeConfettiOnSubmission"
     />
     <toggle-switch-input name="auto_save" :form="form"
-                         label="Auto save form response"
-                         help="Will save data in browser, if user not submit the form then next time will auto prefill last entered data"
+                         label="Tự động lưu phản hồi biểu mẫu"
+                         help="Sẽ lưu dữ liệu trong trình duyệt, nếu người dùng không gửi biểu mẫu thì lần sau sẽ tự động điền trước dữ liệu đã nhập trước đó"
     />
   </collapse>
 </template>

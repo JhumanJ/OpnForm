@@ -45,7 +45,7 @@ export default {
 
   beforeRouteLeave (to, from, next) {
     if (this.isDirty()) {
-      return this.alertConfirm('Changes you made may not be saved. Are you sure want to leave?', () => {
+      return this.alertConfirm('Những thay đổi bạn đã thực hiện có thể không được lưu. Bạn có chắc chắn muốn rời trang?', () => {
         window.onbeforeunload = null
         next()
       }, () => {})
@@ -57,7 +57,7 @@ export default {
 
   data() {
     return {
-      metaTitle: 'Create a new Form',
+      metaTitle: 'Tạo biểu mẫu mới',
       stateReady: false,
       loading: false,
       error: '',

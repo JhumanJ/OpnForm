@@ -4,7 +4,7 @@ export default {
   methods: {
     initForm() {
       this.form = new Form({
-        title: 'My Form',
+        title: 'Biểu mẫu của tôi',
         description: null,
         visibility: 'public',
         workspace_id: this.workspace?.id,
@@ -26,13 +26,13 @@ export default {
         uppercase_labels: true,
         transparent_background: false,
         closes_at: null,
-        closed_text: 'This form has now been closed by its owner and does not accept submissions anymore.',
+        closed_text: 'Chủ sở hữu biểu mẫu đã đóng biểu mẫu này và không chấp nhận phản hồi',
         auto_save: true,
 
         // Submission
-        submit_button_text: 'Submit',
+        submit_button_text: 'Gửi',
         re_fillable: false,
-        re_fill_button_text: 'Fill Again',
+        re_fill_button_text: 'Nhập lại',
         submitted_text: 'Amazing, we saved your answers. Thank you for your time and have a great day!',
         notification_sender: 'OpnForm',
         notification_subject: 'We saved your answers',

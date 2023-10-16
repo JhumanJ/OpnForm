@@ -38,12 +38,12 @@
       />
     </div>
     <p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">
-      Form Preview <span v-if="creating"
+      Xem trước biểu mẫu <span v-if="creating"
                          class="font-normal text-gray-400 dark:text-gray-600 text-xs"
-      >- Answers won't be saved</span>
+      >- Các phản hồi sẽ chưa được lưu</span>
       <br>
       <span v-if="previewFormSubmitted && !form.re_fillable">
-        <a href="#" @click.prevent="$refs['form-preview'].restart()">Restart Form
+        <a href="#" @click.prevent="$refs['form-preview'].restart()">Nạp lại biểu mẫu
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-nt-blue inline" viewBox="0 0 20 20"
                fill="currentColor"
           >
