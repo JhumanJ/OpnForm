@@ -4,10 +4,10 @@
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div class="text-center max-w-xl mx-auto">
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900">
-            My Form Templates
+            Mẫu Form Của Tôi
           </h1>
           <p class="text-gray-600 mt-4 text-lg font-normal">
-            Share your best form as templates so that others can re-use them!
+            Chia sẻ những mẫu form tốt nhất của bạn để người khác có thể tái sử dụng chúng!
           </p>
         </div>
       </div>
@@ -27,15 +27,15 @@ export default {
   middleware: 'auth',
 
   props: {
-    metaTitle: { type: String, default: 'My Templates' },
-    metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
+    metaTitle: { type: String, default: 'Mẫu Của Tôi' },
+    metaDescription: { type: String, default: 'Bộ sưu tập các mẫu đẹp để tạo ra các biểu mẫu của bạn!' }
   },
 
-  data () {
+  data() {
     return {}
   },
 
-  mounted () {},
+  mounted() { },
 
   computed: {},
 

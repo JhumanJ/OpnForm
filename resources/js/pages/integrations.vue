@@ -3,7 +3,7 @@
     <div class="mt-6 flex flex-col">
       <div class="w-full md:max-w-3xl md:mx-auto px-4 md:pt-16">
         <h1 class="sm:text-5xl mb-4">
-          Integrations
+          Tích hợp
         </h1>
         <notion-page class="mb-8 integration-page" page-id="492c2bbb31404481b9faaaf407e59640" />
       </div>
@@ -20,8 +20,8 @@ export default {
   layout: 'default',
 
   props: {
-    metaTitle: { type: String, default: 'Integrations' },
-    metaDescription: { type: String, default: 'You can connect your OpnForms to other services via our two integrations: Zapier and Webhooks. Use our integrations to automate your various workflows.' }
+    metaTitle: { type: String, default: 'Tích hợp' },
+    metaDescription: { type: String, default: 'Bạn có thể kết nối OpnForms của mình với các dịch vụ khác thông qua hai tích hợp của chúng tôi: Zapier và Webhooks. Sử dụng tích hợp của chúng tôi để tự động hóa các quy trình làm việc đa dạng của bạn.' }
   },
 
   data: () => ({
@@ -29,7 +29,7 @@ export default {
 
   computed: {},
 
-  mounted () {
+  mounted() {
   }
 }
 </script>

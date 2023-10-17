@@ -5,7 +5,7 @@
         <div class="pt-4 pb-0">
           <div class="flex">
             <h2 class="flex-grow text-gray-900">
-              My Account
+              Tài khoản của tôi
             </h2>
           </div>
           <ul class="flex text-gray-500">
@@ -16,9 +16,8 @@
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
               <li class="mr-6" v-for="(tab, i) in tabsList" :key="i+1">
                 <router-link :to="{ name: tab.route }"
-                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                    active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
-                >{{tab.name}}</router-link>
+                  class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
+                  active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500">{{tab.name}}</router-link>
               </li>
             </ul>
           </div>
@@ -55,33 +54,33 @@ export default {
     tabsList () {
       const tabs = [
         {
-          name: 'Profile',
+          name: 'Hồ sơ',
           route: 'settings.profile'
         },
         {
-          name: 'Workspace Settings',
+          name: 'Cài đặt không gian làm việc',
           route: 'settings.workspaces'
         },
         {
-          name: 'Password',
+          name: 'Mật khẩu',
           route: 'settings.password'
         },
         {
-          name: 'Delete Account',
+          name: 'Xóa tài khoản',
           route: 'settings.account'
         }
       ]
 
       if (this.user.is_subscribed) {
         tabs.splice(1, 0, {
-          name: 'Billing',
+          name: 'Thanh toán',
           route: 'settings.billing'
         })
       }
 
       if(this.user.admin){
         tabs.push({
-          name: 'Admin',
+          name: 'Quản trị viên',
           route: 'settings.admin'
         })
       }

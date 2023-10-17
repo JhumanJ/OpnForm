@@ -3,24 +3,20 @@
     <breadcrumb :path="breadcrumbs">
       <template #left>
         <div v-if="canEditTemplate" class="ml-5">
-          <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
-            Edit Template
+          <v-button color="gray" size="small" @click.prevent="showFormTemplateModal = true">
+            Chỉnh sửa Mẫu
           </v-button>
           <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
-                               @close="showFormTemplateModal=false"
-          />
+            @close="showFormTemplateModal = false" />
         </div>
       </template>
       <template #right>
         <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
-                  @click.prevent="copyTemplateUrl"
-        >
-          Copy Template URL
+          @click.prevent="copyTemplateUrl">
+          Sao chép URL Mẫu
         </v-button>
-        <v-button v-track.use_template_button_clicked size="small" class="mr-5"
-                  :to="{path: createFormWithTemplateUrl}"
-        >
-          Use this template
+        <v-button v-track.use_template_button_clicked size="small" class="mr-5" :to="{ path: createFormWithTemplateUrl }">
+          Sử dụng mẫu này
         </v-button>
       </template>
     </breadcrumb>
@@ -29,7 +25,7 @@
       <loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
     <p v-else-if="template === null || !template" class="text-center my-4">
-      We could not find this template.
+      Chúng tôi không thể tìm thấy mẫu này.
     </p>
     <template v-else>
       <section class="pt-12 bg-gray-50 sm:pt-16 border-b pb-[250px] relative">
@@ -37,8 +33,7 @@
           <div class="flex flex-col items-center justify-center max-w-4xl gap-8 mx-auto md:gap-12 md:flex-row">
             <div class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group max-w-xs">
               <img class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110"
-                   :src="template.image_url" alt="Template cover image"
-              >
+                :src="template.image_url" alt="Template cover image">
             </div>
 
             <div class="flex-1 text-center md:text-left relative">
@@ -49,8 +44,7 @@
                 {{ cleanQuotes(template.short_description) }}
               </p>
               <template-tags :slug="template.slug" :display-all="true"
-                             class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start"
-              />
+                class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start" />
             </div>
           </div>
         </div>
@@ -59,29 +53,28 @@
       <section class="relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div class="max-w-7xl">
           <div
-            class="max-w-2xl p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
-          >
+            class="max-w-2xl p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate">
             <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
-              Template Preview
+              Xem trước mẫu
             </p>
             <open-complete-form ref="open-complete-form" :form="form" :creating="true"
-                                  class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
-            />
+              class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg" />
           </div>
         </div>
 
         <div class="absolute bottom-0 translate-y-full inset-x-0">
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
-              <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]" :to="{path: createFormWithTemplateUrl}">
-                Use this template
+              <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]"
+                :to="{ path: createFormWithTemplateUrl }">
+                Sử dụng mẫu này
               </v-button>
             </div>
             <div class="flex items-center justify-center">
               <div class="text-left mx-auto text-gray-500 text-xs mt-4">
-                ✓ Core features 100% free<br>
-                ✓ No credit card required<br>
-                ✓ No submissions limit on Free plan
+                ✓ Các tính năng cơ bản 100% miễn phí<br>
+                ✓ Không cần thẻ tín dụng<br>
+                ✓ Không giới hạn số lượng nộp form với gói Free
               </div>
             </div>
           </div>
@@ -98,14 +91,14 @@
               <div>
                 <div class="text-center">
                   <h3 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-                    Frequently asked questions
+                    Câu hỏi thường gặp
                   </h3>
                   <p class="mt-2 text-base font-normal text-gray-600">
-                    Everything you need to know about this template.
+                    Tất cả những gì bạn cần biết về mẫu này.
                   </p>
                 </div>
                 <dl class="mt-12 space-y-10">
-                  <div v-for="(ques,ques_key) in template.questions" :key="ques_key" class="space-y-4">
+                  <div v-for="(ques, ques_key) in template.questions" :key="ques_key" class="space-y-4">
                     <dt class="font-semibold text-gray-900 dark:text-gray-100">
                       {{ ques.question }}
                     </dt>
@@ -122,10 +115,10 @@
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex items-center justify-between">
             <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-              Related templates
+              Các mẫu liên quan
             </h4>
-            <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
-              View All
+            <v-button :to="{ name: 'templates' }" color="white" size="small" :arrow="true">
+              Xem Tất Cả
             </v-button>
           </div>
 
@@ -139,47 +132,43 @@
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="text-center">
             <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-              How OpnForm works
+              Cách e-Form hoạt động
             </h4>
           </div>
 
           <div class="grid grid-cols-1 mt-12 md:grid-cols-2 gap-x-8 gap-y-12">
             <div
-              class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
-            >
+              class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row">
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
-              >
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0">
                 1
               </div>
               <div>
                 <h5 class="text-base font-bold leading-tight text-gray-900">
-                  Copy the template and change it the way you like
+                  Sao chép mẫu và chỉnh sửa theo ý bạn
                 </h5>
                 <p class="mt-2 text-sm font-normal text-gray-600">
-                  <router-link :to="{path:createFormWithTemplateUrl}">
-                    Click here to copy this template
+                  <router-link :to="{ path: createFormWithTemplateUrl }">
+                    Nhấp vào đây để sao chép mẫu này
                   </router-link>
-                  and start customizing it. Change the questions, add new ones, choose colors and
-                  more.
+                  và bắt đầu tùy chỉnh. Thay đổi câu hỏi, thêm mới, chọn màu sắc và nhiều hơn nữa.
                 </p>
               </div>
             </div>
 
             <div
-              class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
-            >
+              class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row">
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
-              >
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0">
                 2
               </div>
               <div>
                 <h5 class="text-base font-bold leading-tight text-gray-900">
-                  Embed the form or share it via a link
+                  Nhúng biểu mẫu hoặc chia sẻ thông qua liên kết
                 </h5>
                 <p class="mt-2 text-sm font-normal text-gray-600">
-                  You can directly share your form link, or embed the form on your website. It's magic! 🪄
+                  Bạn có thể chia sẻ trực tiếp liên kết biểu mẫu của bạn hoặc nhúng biểu mẫu vào trang web của bạn. Đó là
+                  phép màu! 🪄
                 </p>
               </div>
             </div>
@@ -191,7 +180,7 @@
       </section>
     </template>
 
-    <open-form-footer class="mt-8 border-t"/>
+    <open-form-footer class="mt-8 border-t" />
   </div>
 </template>
 
@@ -212,7 +201,7 @@ export default {
   components: { Breadcrumb, OpenFormFooter, OpenCompleteForm, TemplateTags, SingleTemplate, FormTemplateModal },
   mixins: [SeoMeta],
 
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     if (to.params?.slug) {
       store.dispatch('open/templates/loadTemplate', to.params?.slug)
       store.dispatch('open/templates/loadTypesAndIndustries')
@@ -220,21 +209,21 @@ export default {
     next()
   },
 
-  data () {
+  data() {
     return {
       showFormTemplateModal: false
     }
   },
 
-  mounted () {
+  mounted() {
   },
 
   methods: {
-    cleanQuotes (str) {
+    cleanQuotes(str) {
       // Remove starting and ending quotes if any
       return (str) ? str.replace(/^"/, '').replace(/"$/, '') : ''
     },
-    copyTemplateUrl(){
+    copyTemplateUrl() {
       const str = this.template.share_url
       const el = document.createElement('textarea')
       el.value = str
@@ -254,41 +243,41 @@ export default {
     ...mapState({
       templatesLoading: state => state['open/templates'].loading
     }),
-    breadcrumbs () {
+    breadcrumbs() {
       if (!this.template) {
         return [{ route: { name: 'templates' }, label: 'Templates' }]
       }
       return [{ route: { name: 'templates' }, label: 'Templates' }, { label: this.template.name }]
     },
-    template () {
+    template() {
       return this.$store.getters['open/templates/getBySlug'](this.$route.params.slug)
     },
-    form () {
+    form() {
       return this.template ? new Form(this.template.structure) : null
     },
-    canEditTemplate () {
+    canEditTemplate() {
       return this.user && this.template && (this.user.admin || this.user.template_editor || this.template.creator_id === this.user.id)
     },
-    metaTitle () {
+    metaTitle() {
       return this.template ? this.template.name : 'Form Template'
     },
-    metaDescription () {
+    metaDescription() {
       if (!this.template) return null
       // take the first 140 characters of the description
       return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
     },
-    metaImage () {
+    metaImage() {
       if (!this.template) return null
       return this.template.image_url
     },
-    metaTags () {
+    metaTags() {
       if (!this.template) {
         return [];
       }
       return this.template.publicly_listed ? [] : [{ name: 'robots', content: 'noindex' }]
     },
-    createFormWithTemplateUrl () {
-      if(this.authenticated) {
+    createFormWithTemplateUrl() {
+      if (this.authenticated) {
         return '/forms/create?template=' + this.template?.slug
       }
       return '/forms/create/guest?template=' + this.template?.slug
@@ -300,6 +289,7 @@ export default {
 <style lang='scss'>
 .nf-text {
   @apply space-y-4;
+
   h2 {
     @apply text-sm font-normal tracking-widest text-gray-500 uppercase;
   }

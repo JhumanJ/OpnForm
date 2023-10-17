@@ -7,25 +7,22 @@
         </div>
       </div>
       <div v-if="form.logo_picture" class="w-full p-5 relative mx-auto"
-           :class="{'pt-20':!form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }"
-      >
+        :class="{ 'pt-20': !form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }">
         <img alt="Logo Picture" :src="form.logo_picture"
-             :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-             class="w-20 h-20 object-contain absolute left-5 transition-all"
-        >
+          :class="{ 'top-5': !form.cover_picture, '-top-10': form.cover_picture }"
+          class="w-20 h-20 object-contain absolute left-5 transition-all">
       </div>
     </div>
     <div class="w-full mx-auto px-4"
-         :class="{'mt-6':!isIframe, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && (form.width === 'centered'), 'max-w-7xl': (form && form.width === 'full' && !isIframe)}"
-    >
+      :class="{ 'mt-6': !isIframe, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && (form.width === 'centered'), 'max-w-7xl': (form && form.width === 'full' && !isIframe) }">
       <div v-if="!formLoading && !form">
         <h1 class="mt-6" v-text="'Whoops'" />
         <p class="mt-6">
-          Unfortunately we could not find this form. It may have been deleted by it's author.
+          Rất tiếc, chúng tôi không thể tìm thấy biểu mẫu này. Có thể nó đã bị tác giả xóa.
         </p>
         <p class="mb-10 mt-4">
-          <router-link :to="{name:'welcome'}">
-            Create your form for free with OpnForm
+          <router-link :to="{ name: 'welcome' }">
+            Tạo biểu mẫu của bạn miễn phí với e-Form
           </router-link>
         </p>
       </div>
@@ -41,8 +38,7 @@
           </p>
         </div>
         <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"
-                              @password-entered="passwordEntered"
-        />
+          @password-entered="passwordEntered" />
       </template>
     </div>
   </div>
@@ -59,7 +55,7 @@ import SeoMeta from '../../mixins/seo-meta.js'
 
 const isFrame = window.location !== window.parent.location || window.frameElement
 
-function handleDarkMode (form) {
+function handleDarkMode(form) {
   // Dark mode
   const body = document.body
   if (form.dark_mode === 'dark') {
@@ -82,7 +78,7 @@ function handleDarkMode (form) {
   }
 }
 
-function handleTransparentMode (form) {
+function handleTransparentMode(form) {
   const isFrame = window.location !== window.parent.location || window.frameElement
   if (!isFrame || !form.transparent_background) return
 
@@ -92,7 +88,7 @@ function handleTransparentMode (form) {
   app.classList.add('bg-transparent')
 }
 
-function loadForm (slug) {
+function loadForm(slug) {
   if (store.state['open/forms'].loading) return
   store.commit('open/forms/startLoading')
   return axios.get('/api/forms/' + slug).then((response) => {
@@ -118,27 +114,27 @@ export default {
   components: { OpenCompleteForm },
   mixins: [SeoMeta],
 
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     if (window.$crisp) {
       window.$crisp.push(['do', 'chat:hide'])
     }
     next()
   },
 
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (window.$crisp) {
       window.$crisp.push(['do', 'chat:show'])
     }
     next()
   },
 
-  data () {
+  data() {
     return {
       submitted: false
     }
   },
 
-  mounted () {
+  mounted() {
     loadForm(this.formSlug).then(() => {
       if (this.isIframe) return
       // Auto focus on first input
@@ -155,11 +151,11 @@ export default {
   },
 
   methods: {
-    passwordEntered (password) {
+    passwordEntered(password) {
       Cookies.set('password-' + this.form.slug, sha256(password), { expires: 7, sameSite: 'None', secure: true })
       loadForm(this.formSlug).then(() => {
         if (this.form.is_password_protected) {
-          this.$refs['open-complete-form'].addPasswordError('Invalid password.')
+          this.$refs['open-complete-form'].addPasswordError('Sai mật khẩu.')
         }
       })
     }
@@ -171,41 +167,41 @@ export default {
       formLoading: state => state['open/forms'].loading,
       recordLoading: state => state['open/records'].loading
     }),
-    formSlug () {
+    formSlug() {
       return this.$route.params.slug
     },
-    form () {
+    form() {
       return this.$store.getters['open/forms/getBySlug'](this.formSlug)
     },
-    isIframe () {
+    isIframe() {
       return window.location !== window.parent.location || window.frameElement
     },
-    metaTitle () {
-      if(this.form && this.form.is_pro && this.form.seo_meta.page_title) {
+    metaTitle() {
+      if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
         return this.form.seo_meta.page_title
       }
-      return this.form ? this.form.title : 'Create beautiful forms'
+      return this.form ? this.form.title : 'Tạo những biểu mẫu xinh đẹp'
     },
-    metaTemplate () {
+    metaTemplate() {
       if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
         // Disable template if custom SEO title
         return '%s'
       }
       return null
     },
-    metaDescription () {
+    metaDescription() {
       if (this.form && this.form.is_pro && this.form.seo_meta.page_description) {
         return this.form.seo_meta.page_description
       }
       return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
     },
-    metaImage () {
+    metaImage() {
       if (this.form && this.form.is_pro && this.form.seo_meta.page_thumbnail) {
         return this.form.seo_meta.page_thumbnail
       }
       return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
     },
-    metaTags () {
+    metaTags() {
       return (this.form && this.form.can_be_indexed) ? [] : [{ name: 'robots', content: 'noindex' }]
     }
   }

@@ -5,18 +5,18 @@ import { mapGetters } from 'vuex'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
-  components: { },
+  components: {},
   layout: 'default',
   middleware: 'auth',
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'Error',
+    metaTitle: 'Lỗi',
   }),
 
-  mounted () {
+  mounted() {
     this.$router.push({ name: 'pricing' })
-    this.alertError('Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.')
+    this.alertError('Rất tiếc, chúng tôi không thể xác nhận đăng ký của bạn. Vui lòng thử lại và liên hệ với chúng tôi nếu vấn đề vẫn tiếp tục.')
   },
 
   computed: {

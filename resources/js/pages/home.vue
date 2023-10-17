@@ -5,13 +5,15 @@
         <div class="pt-4 pb-0">
           <div class="flex">
             <h2 class="flex-grow text-gray-900">
-              Your Forms
+              Biểu mẫu của bạn
             </h2>
-            <v-button v-track.create_form_click :to="{name:'forms.create'}">
-              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+            <v-button v-track.create_form_click :to="{ name: 'forms.create' }">
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+                  stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              Create a new form
+              Tạo biểu mẫu mới
             </v-button>
           </div>
           <small class="flex text-gray-500">Manage your forms and submissions.</small>
@@ -21,58 +23,56 @@
     <div class="flex bg-white">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
         <div class="mt-8 pb-0">
-          <text-input v-if="forms.length > 0" class="mb-6" :form="searchForm" name="search" label="Search a form"
-                placeholder="Name of form to search"
-          />
+          <text-input v-if="forms.length > 0" class="mb-6" :form="searchForm" name="search" label="Tìm kiếm biểu mẫu"
+            placeholder="Tên biểu mẫu để tìm kiếm" />
           <div v-if="allTags.length > 0" class="mb-4">
-            <div v-for="tag in allTags" :key="tag"
-                 :class="[
-                   'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
-                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.includes(tag),
-                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.includes(tag)}
-                 ]"
-                 title="Click for filter by tag(s)"
-                 @click="onTagClick(tag)"
-            >
+            <div v-for="tag in allTags" :key="tag" :class="[
+              'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
+              {
+                'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400': selectedTags.includes(tag),
+                'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400': !selectedTags.includes(tag)
+              }
+            ]" title="Nhấp để lọc theo tag(s)" @click="onTagClick(tag)">
               {{ tag }}
             </div>
           </div>
           <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
-            <img loading="lazy" class="w-56"
-                  :src="asset('img/pages/forms/search_notfound.png')" alt="search-not-found">
-            <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">No forms found</h3>
-            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search" class="mt-2 w-full text-center">
-              Your search "{{searchForm.search}}" did not match any forms. Please try again.
+            <img loading="lazy" class="w-56" :src="asset('img/pages/forms/search_notfound.png')" alt="search-not-found">
+            <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">Không tìm thấy biểu mẫu</h3>
+            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search"
+              class="mt-2 w-full text-center">
+              Tìm kiếm của bạn "{{ searchForm.search }}" không khớp với bất kỳ biểu mẫu nào. Vui lòng thử lại.
             </div>
-            <v-button v-if="forms.length === 0" class="mt-4" v-track.create_form_click :to="{name:'forms.create'}">
-              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+            <v-button v-if="forms.length === 0" class="mt-4" v-track.create_form_click :to="{ name: 'forms.create' }">
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+                  stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              Create a new form
+              Tạo biểu mẫu mới
             </v-button>
           </div>
           <div v-else-if="forms.length > 0" class="mb-10">
             <div v-if="enrichedForms && enrichedForms.length">
               <div v-for="(form) in enrichedForms" :key="form.id"
-                  class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
-              >
+                class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center">
                 <div class="flex-grow items-center truncate cursor-pointer" role="button" @click.prevent="viewForm(form)">
                   <span class="font-semibold text-gray-900 dark:text-white">{{ form.title }}</span>
                   <ul class="flex text-gray-500">
-                    <li class="pr-1">{{ form.views_count }} view{{ form.views_count > 0 ? 's' : '' }}</li>
+                    <li class="pr-1">{{ form.views_count }} lượt xem{{ form.views_count > 0 ? 's' : '' }}</li>
                     <li class="list-disc ml-6 pr-1">{{ form.submissions_count }}
-                      submission{{ form.submissions_count > 0 ? 's' : '' }}
+                      lượt nộp{{ form.submissions_count > 0 ? 's' : '' }}
                     </li>
-                    <li class="list-disc ml-6">Edited {{ form.last_edited_human }}</li>
+                    <li class="list-disc ml-6">Chỉnh sửa lần cuối {{ form.last_edited_human }}</li>
                   </ul>
-                  <div v-if="form.visibility=='draft' || (form.tags && form.tags.length > 0)" class="mt-1 flex items-center flex-wrap gap-3">
-                    <span v-if="form.visibility=='draft'" 
-                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
-                      Draft
+                  <div v-if="form.visibility == 'draft' || (form.tags && form.tags.length > 0)"
+                    class="mt-1 flex items-center flex-wrap gap-3">
+                    <span v-if="form.visibility == 'draft'"
+                      class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                      Bản nháp
                     </span>
-                    <span v-for="(tag,i) in form.tags" :key="tag"
-                        class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
-                    >
+                    <span v-for="(tag, i) in form.tags" :key="tag"
+                      class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
                       {{ tag }}
                     </span>
                   </div>
@@ -110,18 +110,18 @@ const loadForms = function () {
 export default {
   components: { OpenFormFooter, TextInput, ExtraMenu },
 
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     loadForms()
     next()
   },
   middleware: 'auth',
 
   props: {
-    metaTitle: { type: String, default: 'Your Forms' },
-    metaDescription: { type: String, default: 'All of your OpnForm are here. Create new forms, or update your existing one!' }
+    metaTitle: { type: String, default: 'Biểu mẫu của bạn' },
+    metaDescription: { type: String, default: 'Tất cả biểu mẫu của bạn đều ở đây. Tạo biểu mẫu mới hoặc cập nhật biểu mẫu hiện tại của bạn!' }
   },
 
-  data () {
+  data() {
     return {
       showEditFormModal: false,
       selectedForm: null,
@@ -132,14 +132,14 @@ export default {
     }
   },
 
-  mounted () {},
+  mounted() { },
 
   methods: {
-    editForm (form) {
+    editForm(form) {
       this.selectedForm = form
       this.showEditFormModal = true
     },
-    onTagClick (tag) {
+    onTagClick(tag) {
       const idx = this.selectedTags.indexOf(tag)
       if (idx === -1) {
         this.selectedTags.push(tag)
@@ -147,8 +147,8 @@ export default {
         this.selectedTags.splice(idx, 1)
       }
     },
-    viewForm (form) {
-      this.$router.push({name: 'forms.show', params: {slug: form.slug}})
+    viewForm(form) {
+      this.$router.push({ name: 'forms.show', params: { slug: form.slug } })
     }
   },
 
@@ -160,10 +160,10 @@ export default {
       forms: state => state['open/forms'].content,
       formsLoading: state => state['open/forms'].loading
     }),
-    isFilteringForms () {
+    isFilteringForms() {
       return (this.searchForm.search !== '' && this.searchForm.search !== null) || this.selectedTags.length > 0
     },
-    enrichedForms () {
+    enrichedForms() {
       let enrichedForms = this.forms.map((form) => {
         form.workspace = this.$store.getters['open/workspaces/getById'](form.workspace_id)
         return form
@@ -193,7 +193,7 @@ export default {
         return res.item
       })
     },
-    allTags () {
+    allTags() {
       return this.$store.getters['open/forms/getAllTags']
     }
   }

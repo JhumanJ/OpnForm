@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h3 class="font-semibold text-2xl text-gray-900">Admin settings</h3>
-    <small class="text-gray-600">Manage settings.</small>
+    <h3 class="font-semibold text-2xl text-gray-900">Cài đặt quản trị viên</h3>
+    <small class="text-gray-600">Quản lý cài đặt.</small>
 
-  
+
     <h3 class="mt-3 text-lg font-semibold mb-4">
-      Tools
+      Công vụ
     </h3>
     <div class="flex flex-wrap mb-5">
       <a href="/stats">
         <v-button class="mx-1" color="gray" shade="lighter">
-          Stats
+          Thống kê
         </v-button>
       </a>
       <a href="/horizon">
@@ -20,16 +20,15 @@
       </a>
     </div>
     <h3 class="text-lg font-semibold mb-4">
-      Impersonate User
+      Bắt cắt danh tính người dùng
     </h3>
     <form @submit.prevent="impersonate" @keydown="form.onKeydown($event)">
       <!-- Password -->
-      <text-input name="identifier" :form="form" label="Identifier"
-                  :required="true" help="User Id, User Email or Form Slug"
-      />
+      <text-input name="identifier" :form="form" label="Identifier" :required="true"
+        help="User Id, User Email or Form Slug" />
 
       <!-- Submit Button -->
-      <v-button :loading="loading" class="mt-4">Impersonate User</v-button>
+      <v-button :loading="loading" class="mt-4">Bắt cắt danh tính người dùng</v-button>
     </form>
   </div>
 </template>
@@ -40,13 +39,13 @@ import axios from 'axios'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
-  components: { },
+  components: {},
   middleware: 'admin',
   scrollToTop: false,
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'Admin',
+    metaTitle: 'Quản trị viên',
     form: new Form({
       identifier: ''
     }),
@@ -54,7 +53,7 @@ export default {
   }),
 
   methods: {
-    async impersonate () {
+    async impersonate() {
       this.loading = true
       this.$store.commit('auth/startImpersonating')
       axios.get('/api/admin/impersonate/' + encodeURI(this.form.identifier)).then(async (response) => {

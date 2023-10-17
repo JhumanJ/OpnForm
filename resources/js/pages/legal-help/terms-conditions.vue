@@ -3,7 +3,7 @@
     <div class="mt-6 flex flex-col">
       <div class="w-full md:max-w-3xl md:mx-auto px-4 md:pt-16">
         <h1 class="sm:text-5xl">
-          Terms & Conditions
+          Điều Khoản và Điều Kiện
         </h1>
         <notion-page page-id="246420da2834480ca04047b0c5a00929" />
       </div>
@@ -20,14 +20,14 @@ export default {
   components: { OpenFormFooter },
   layout: 'default',
   mixins: [SeoMeta],
-  
+
   data: () => ({
-    metaTitle: 'Terms & Conditions',
+    metaTitle: 'Điều Khoản và Điều Kiện',
   }),
 
   computed: {},
 
-  mounted () {
+  mounted() {
   }
 }
 </script>

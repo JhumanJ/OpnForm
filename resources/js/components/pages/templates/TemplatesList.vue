@@ -4,14 +4,11 @@
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 relative z-20">
         <div class="flex items-center gap-4">
           <div class="flex-1 sm:flex-none">
-            <select-input v-model="selectedType" name="type"
-                          :options="typesOptions" class="w-full sm:w-auto md:w-56"
-            />
+            <select-input v-model="selectedType" name="type" :options="typesOptions" class="w-full sm:w-auto md:w-56" />
           </div>
           <div class="flex-1 sm:flex-none">
-            <select-input v-model="selectedIndustry" name="industry"
-                          :options="industriesOptions" class="w-full sm:w-auto md:w-56"
-            />
+            <select-input v-model="selectedIndustry" name="industry" :options="industriesOptions"
+              class="w-full sm:w-auto md:w-56" />
           </div>
         </div>
         <div class="flex-1 w-full md:max-w-xs">
@@ -23,7 +20,7 @@
         <loader class="h-6 w-6 text-nt-blue mx-auto" />
       </div>
       <p v-else-if="enrichedTemplates.length === 0" class="text-center mt-4">
-        No templates found.
+        Không tìm thấy mẫu.
       </p>
       <div v-else class="relative z-10">
         <div class="grid grid-cols-1 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-y-12">
@@ -69,7 +66,7 @@ export default {
 
   watch: {},
 
-  mounted () {
+  mounted() {
     loadTemplates()
   },
 
@@ -83,7 +80,7 @@ export default {
     ...mapGetters({
       user: 'auth/user'
     }),
-    industriesOptions () {
+    industriesOptions() {
       return [{ name: 'All Industries', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
         return {
           name: industry.name,
@@ -91,7 +88,7 @@ export default {
         }
       }))
     },
-    typesOptions () {
+    typesOptions() {
       return [{ name: 'All Types', value: 'all' }].concat(Object.values(this.types).map((type) => {
         return {
           name: type.name,
@@ -99,8 +96,8 @@ export default {
         }
       }))
     },
-    enrichedTemplates () {
-      let enrichedTemplates = (this.onlyMy && this.user) ? this.templates.filter((item) => { return item.creator_id === this.user.id}) : this.templates
+    enrichedTemplates() {
+      let enrichedTemplates = (this.onlyMy && this.user) ? this.templates.filter((item) => { return item.creator_id === this.user.id }) : this.templates
 
       // Filter by Selected Type
       if (this.selectedType && this.selectedType !== 'all') {

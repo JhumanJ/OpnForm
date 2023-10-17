@@ -50,16 +50,16 @@ export default {
     }
   }),
 
-  mounted() {},
+  mounted() { },
 
   computed: {
     metaTitle() {
-      return (this.form) ? 'Form Share - '+this.form.title : 'Form Share'
+      return (this.form) ? 'Chia sẽ biểu mẫu - ' + this.form.title : 'Chia sẽ biểu mẫu'
     },
-    shareUrlForQueryParams () {
+    shareUrlForQueryParams() {
       let queryStr = ''
       for (const [key, value] of Object.entries(this.shareFormConfig)) {
-        if(value && value !== 'false' && value !== false){
+        if (value && value !== 'false' && value !== false) {
           queryStr += '&' + encodeURIComponent(key) + "=" + encodeURIComponent(value)
         }
       }

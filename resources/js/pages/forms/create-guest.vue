@@ -3,21 +3,17 @@
     <transition v-if="stateReady" name="fade" mode="out-in">
       <div key="2">
         <create-form-base-modal @form-generated="formGenerated" :show="showInitialFormModal"
-                                @close="showInitialFormModal=false"/>
-        <form-editor v-if="!workspacesLoading" ref="editor"
-                     class="w-full flex flex-grow"
-                     :error="error"
-                     :isGuest="isGuest"
-                     @openRegister="openRegister"
-        />
+          @close="showInitialFormModal = false" />
+        <form-editor v-if="!workspacesLoading" ref="editor" class="w-full flex flex-grow" :error="error"
+          :isGuest="isGuest" @openRegister="openRegister" />
         <div v-else class="text-center mt-4 py-6">
-          <loader class="h-6 w-6 text-nt-blue mx-auto"/>
+          <loader class="h-6 w-6 text-nt-blue mx-auto" />
         </div>
       </div>
     </transition>
 
-    <quick-register :showRegisterModal="registerModal" @close="registerModal=false" @reopen="registerModal=true"
-                    @afterLogin="afterLogin"/>
+    <quick-register :showRegisterModal="registerModal" @close="registerModal = false" @reopen="registerModal = true"
+      @afterLogin="afterLogin" />
 
   </div>
 </template>
@@ -25,7 +21,7 @@
 <script>
 import store from '~/store'
 import Form from 'vform'
-import {mapState, mapActions} from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import QuickRegister from '../auth/components/QuickRegister.vue'
 import initForm from "../../mixins/form_editor/initForm.js"
 import SeoMeta from '../../mixins/seo-meta.js'
@@ -54,7 +50,7 @@ export default {
 
   data() {
     return {
-      metaTitle: 'Create a new Form as Guest',
+      metaTitle: 'Tạo biểu mới với tài khoản khách',
       stateReady: false,
       loading: false,
       error: '',
@@ -106,7 +102,7 @@ export default {
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
       if (template && template.structure) {
-        this.form = new Form({...this.form.data(), ...template.structure})
+        this.form = new Form({ ...this.form.data(), ...template.structure })
       }
     } else {
       // No template loaded, ask how to start
@@ -116,8 +112,8 @@ export default {
     this.stateReady = true
   },
 
-  created() {},
-  destroyed() {},
+  created() { },
+  destroyed() { },
 
   methods: {
     ...mapActions({
@@ -137,7 +133,7 @@ export default {
       }, 500)
     },
     formGenerated(form) {
-      this.form = new Form({...this.form.data(), ...form})
+      this.form = new Form({ ...this.form.data(), ...form })
     }
   }
 }

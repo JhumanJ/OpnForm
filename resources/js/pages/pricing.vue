@@ -33,7 +33,7 @@
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <p class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950">
-              Form không giới hạn
+              Số lượng biểu mẫu không giới hạn
             </p>
           </div>
 
@@ -45,7 +45,7 @@
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <p class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950">
-              Không giới hạn số lần nộp
+              Số lượng gửi không giới hạn
             </p>
           </div>
 
@@ -60,7 +60,7 @@
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <p class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950">
-              Không giới hạn trường dữ liệu
+              Số lượng trường không giới hạn
             </p>
           </div>
 
@@ -84,7 +84,7 @@
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <p class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950">
-              Form mật khẩu
+              Biểu mẫu mật khẩu
             </p>
           </div>
 
@@ -162,7 +162,9 @@
                 Giảm giá dành cho tổ chức phi lợi nhuận và sinh viên - 50%
               </p>
               <p class="mt-1 text-base font-medium leading-7 text-yellow-600">
-                Dù tổ chức phi lợi nhuận của bạn lớn hay nhỏ, OpnForm's Form Builder trực tuyến giúp tổ chức của bạn hỗ trợ người khác. Chỉ mất vài phút để tạo và xuất bản biểu mẫu trực tuyến của bạn. Là một lợi ích độc quyền, chúng tôi cung cấp ưu đãi giảm giá 50% cho tổ chức phi lợi nhuận và sinh viên!
+                Dù tổ chức phi lợi nhuận của bạn lớn hay nhỏ, OpnForm's Form Builder trực tuyến giúp tổ chức của bạn hỗ
+                trợ người khác. Chỉ mất vài phút để tạo và xuất bản biểu mẫu trực tuyến của bạn. Là một lợi ích độc quyền,
+                chúng tôi cung cấp ưu đãi giảm giá 50% cho tổ chức phi lợi nhuận và sinh viên!
               </p>
             </div>
           </div>
@@ -185,28 +187,28 @@
           class="grid max-w-5xl grid-cols-1 mx-auto mt-12 gap-y-12 sm:grid-cols-2 sm:mt-16 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10">
           <div v-for="q in [
             {
-                'question': 'Có phiên bản miễn phí của OpnForm không?',
-                'answer': 'Vâng, OpnForm mang đến phiên bản miễn phí với quyền truy cập tới 99% các tính năng, bao gồm biểu mẫu, gửi thông tin, trường dữ liệu không giới hạn và nhiều tính năng khác. Mục tiêu của chúng tôi là cung cấp chức năng mạnh mẽ mà không gặp hạn chế, hoàn toàn phù hợp cho mọi người sử dụng.',
+              'question': 'Có phiên bản miễn phí của OpnForm không?',
+              'answer': 'Vâng, OpnForm mang đến phiên bản miễn phí với quyền truy cập tới 99% các tính năng, bao gồm biểu mẫu, gửi thông tin, trường dữ liệu không giới hạn và nhiều tính năng khác. Mục tiêu của chúng tôi là cung cấp chức năng mạnh mẽ mà không gặp hạn chế, hoàn toàn phù hợp cho mọi người sử dụng.',
             },
             {
-                'question': 'Gói Pro bao gồm những tính năng gì?',
-                'answer': 'Gói OpnForm Pro được thiết kế để đáp ứng nhu cầu cao cấp của các đội ngũ và những người sáng tạo. Bạn sẽ được trải nghiệm các tính năng như email xác nhận biểu mẫu, thông báo qua Slack và Discord, chỉnh sửa dữ liệu gửi, tên miền tùy chỉnh, tích hợp mã tùy chỉnh, tải lên tệp lớn hơn, loại bỏ nhãn hiệu OpnForm, hỗ trợ ưu tiên và nhiều tính năng khác.',
+              'question': 'Gói Pro bao gồm những tính năng gì?',
+              'answer': 'Gói OpnForm Pro được thiết kế để đáp ứng nhu cầu cao cấp của các đội ngũ và những người sáng tạo. Bạn sẽ được trải nghiệm các tính năng như email xác nhận biểu mẫu, thông báo qua Slack và Discord, chỉnh sửa dữ liệu gửi, tên miền tùy chỉnh, tích hợp mã tùy chỉnh, tải lên tệp lớn hơn, loại bỏ nhãn hiệu OpnForm, hỗ trợ ưu tiên và nhiều tính năng khác.',
             },
             {
-                'question': 'Tôi có thể thử gói Pro trước khi đăng ký không?',
-                'answer': 'Chắc chắn! Chúng tôi mang đến thử nghiệm miễn phí 3 ngày cho gói OpnForm Pro. Bạn có cơ hội khám phá tất cả các tính năng mạnh mẽ và trải nghiệm giá trị mà nó mang lại cho quá trình xây dựng biểu mẫu của bạn. Bản dùng thử được kích hoạt tự động.',
+              'question': 'Tôi có thể thử gói Pro trước khi đăng ký không?',
+              'answer': 'Chắc chắn! Chúng tôi mang đến thử nghiệm miễn phí 3 ngày cho gói OpnForm Pro. Bạn có cơ hội khám phá tất cả các tính năng mạnh mẽ và trải nghiệm giá trị mà nó mang lại cho quá trình xây dựng biểu mẫu của bạn. Bản dùng thử được kích hoạt tự động.',
             },
             {
-                'question': 'Có giảm giá cho các gói hàng năm không?',
-                'answer': 'Đúng, chúng tôi cung cấp ưu đãi giảm giá 20% cho đăng ký hàng năm của gói OpnForm Pro. Bằng cách chọn tùy chọn thanh toán hàng năm, bạn có thể tận hưởng những tính năng tuyệt vời với chi phí giảm giá.',
+              'question': 'Có giảm giá cho các gói hàng năm không?',
+              'answer': 'Đúng, chúng tôi cung cấp ưu đãi giảm giá 20% cho đăng ký hàng năm của gói OpnForm Pro. Bằng cách chọn tùy chọn thanh toán hàng năm, bạn có thể tận hưởng những tính năng tuyệt vời với chi phí giảm giá.',
             },
             {
-                'question': 'Ưu đãi giảm giá cho tổ chức phi lợi nhuận và sinh viên làm thế nào?',
-                'answer': 'OpnForm cam kết hỗ trợ tổ chức phi lợi nhuận và sinh viên. Chúng tôi mang đến ưu đãi độc quyền 50% cho gói OpnForm Pro dành cho tổ chức phi lợi nhuận và sinh viên. Ưu đãi này giúp bạn tận dụng tối đa ứng dụng xây dựng biểu mẫu của chúng tôi trong giới hạn ngân sách của bạn.',
+              'question': 'Ưu đãi giảm giá cho tổ chức phi lợi nhuận và sinh viên làm thế nào?',
+              'answer': 'OpnForm cam kết hỗ trợ tổ chức phi lợi nhuận và sinh viên. Chúng tôi mang đến ưu đãi độc quyền 50% cho gói OpnForm Pro dành cho tổ chức phi lợi nhuận và sinh viên. Ưu đãi này giúp bạn tận dụng tối đa ứng dụng xây dựng biểu mẫu của chúng tôi trong giới hạn ngân sách của bạn.',
             },
             {
-                'question': 'Tôi có thể hủy hoặc thay đổi gói của mình bất kỳ lúc nào không?',
-                'answer': 'Chắc chắn, bạn linh hoạt có thể nâng cấp, giảm cấp hoặc hủy gói OpnForm Pro mọi lúc. Những thay đổi sẽ có hiệu lực ngay lập tức và bạn chỉ thanh toán dựa trên gói bạn đang sử dụng.',
+              'question': 'Tôi có thể hủy hoặc thay đổi gói của mình bất kỳ lúc nào không?',
+              'answer': 'Chắc chắn, bạn linh hoạt có thể nâng cấp, giảm cấp hoặc hủy gói OpnForm Pro mọi lúc. Những thay đổi sẽ có hiệu lực ngay lập tức và bạn chỉ thanh toán dựa trên gói bạn đang sử dụng.',
             },
           ]" :key="q.question">
             <dt class="text-base font-semibold leading-7 text-gray-950 sm:text-lg sm:leading-8">
@@ -254,8 +256,8 @@ export default {
   },
 
   data: () => ({
-    metaTitle: 'Pricing',
-    metaDescription: 'Tất cả các tính năng cốt lõi của chúng tôi đều miễn phí và không có giới hạn số lượng. Bạn cũng có thể tạo các biểu mẫu tùy chỉnh và nâng cao hơn với HutechForm Pro.',
+    metaTitle: 'Bảng giá',
+    metaDescription: 'Tất cả các tính năng cốt lõi của chúng tôi đều miễn phí và không có giới hạn số lượng. Bạn cũng có thể tạo các biểu mẫu tùy chỉnh và nâng cao hơn với e-Form Pro.',
   }),
 
   mounted() {

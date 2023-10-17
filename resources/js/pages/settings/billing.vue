@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h3 class="font-semibold text-2xl text-gray-900">Billing details</h3>
-    <small class="text-gray-600">Manage your billing. Download invoices, update your plan, or cancel it at any
-      time.</small>
+    <h3 class="font-semibold text-2xl text-gray-900">Chi tiết thanh toán</h3>
+    <small class="text-gray-600">Quản lý thanh toán của bạn. Tải hóa đơn, cập nhật gói dịch vụ hoặc hủy nó bất cứ lúc
+      nào.</small>
 
     <div class="mt-4">
       <v-button color="gray" shade="light" :loading="billingLoading" @click.prevent="openBillingDashboard">
-        Manage Subscription
+        Quản lý Đăng ký
       </v-button>
     </div>
   </div>
@@ -18,12 +18,12 @@ import VButton from '../../components/common/Button.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
-  components: {VButton},
+  components: { VButton },
   scrollToTop: false,
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'Billing',
+    metaTitle: 'Hóa đơn',
     billingLoading: false
   }),
 
