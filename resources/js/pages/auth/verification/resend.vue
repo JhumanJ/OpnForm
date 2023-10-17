@@ -30,23 +30,23 @@ import SeoMeta from '../../../mixins/seo-meta.js'
 export default {
   middleware: 'guest',
   mixins: [SeoMeta],
-  
+
   data: () => ({
-    metaTitle: 'Verify Email',
+    metaTitle: 'Xác nhận Email',
     status: '',
     form: new Form({
       email: ''
     })
   }),
 
-  created () {
+  created() {
     if (this.$route.query.email) {
       this.form.email = this.$route.query.email
     }
   },
 
   methods: {
-    async send () {
+    async send() {
       const { data } = await this.form.post('/api/email/resend')
 
       this.status = data.status

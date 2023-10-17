@@ -36,7 +36,7 @@ export default {
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'Reset Password',
+    metaTitle: 'Đặt lại mật khẩu',
     status: '',
     form: new Form({
       email: ''
@@ -44,7 +44,7 @@ export default {
   }),
 
   methods: {
-    async send () {
+    async send() {
       const { data } = await this.form.post('/api/password/email')
 
       this.status = data.status

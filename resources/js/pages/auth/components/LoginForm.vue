@@ -1,15 +1,14 @@
 <template>
   <div>
-    <forgot-password-modal :show="showForgotModal" @close="showForgotModal=false" />
+    <forgot-password-modal :show="showForgotModal" @close="showForgotModal = false" />
 
     <form @submit.prevent="login" @keydown="form.onKeydown($event)" class="mt-4">
       <!-- Email -->
       <text-input name="email" :form="form" :label="$t('email')" :required="true" placeholder="Your email address" />
 
       <!-- Password -->
-      <text-input native-type="password" placeholder="Your password"
-                  name="password" :form="form" :label="$t('password')" :required="true"
-      />
+      <text-input native-type="password" placeholder="Your password" name="password" :form="form" :label="$t('password')"
+        :required="true" />
 
       <!-- Remember Me -->
       <div class="relative flex items-center my-5">
@@ -18,19 +17,20 @@
         </v-checkbox>
 
         <div class="w-full md:w-1/2 text-right">
-          <a href="#" @click.prevent="showForgotModal=true" class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700">
-            Forgot your password?
+          <a href="#" @click.prevent="showForgotModal = true"
+            class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700">
+            Quên mật khẩu?
           </a>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <v-button dusk="btn_login" :loading="form.busy">Log in to continue</v-button>
+      <v-button dusk="btn_login" :loading="form.busy">Đăng nhập để tiếp tục</v-button>
 
       <p class="text-gray-500 mt-4">
-        Don't have an account?  
-        <a href="#" v-if="isQuick" @click.prevent="$emit('openRegister')" class="font-semibold ml-1">Sign Up</a>
-        <router-link v-else :to="{name:'register'}" class="font-semibold ml-1">Sign Up</router-link>
+        Chưa có tài khoản?
+        <a href="#" v-if="isQuick" @click.prevent="$emit('openRegister')" class="font-semibold ml-1">Đăng ký</a>
+        <router-link v-else :to="{ name: 'register' }" class="font-semibold ml-1">Đăng ký</router-link>
       </p>
     </form>
   </div>
@@ -56,7 +56,7 @@ export default {
       required: false,
       default: false
     }
-  }, 
+  },
 
   data: () => ({
     form: new Form({
@@ -68,7 +68,7 @@ export default {
   }),
 
   methods: {
-    async login () {
+    async login() {
       // Submit the form.
       const { data } = await this.form.post('/api/login')
 
@@ -85,8 +85,8 @@ export default {
       this.redirect()
     },
 
-    redirect () {
-      if(this.isQuick){
+    redirect() {
+      if (this.isQuick) {
         this.$emit('afterQuickLogin')
         return
       }

@@ -33,7 +33,7 @@ import SeoMeta from '../../../mixins/seo-meta.js'
 const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 
 export default {
-  async beforeRouteEnter (to, from, next) {
+  async beforeRouteEnter(to, from, next) {
     try {
       const { data } = await axios.post(`/api/email/verify/${to.params.id}?${qs(to.query)}`)
 
@@ -49,9 +49,9 @@ export default {
 
   middleware: 'guest',
   mixins: [SeoMeta],
-  
+
   data: () => ({
-    metaTitle: 'Verify Email',
+    metaTitle: 'Xác nhận Email',
     error: '',
     success: ''
   })

@@ -12,14 +12,12 @@
           <text-input name="email" :form="form" :label="$t('email')" :required="true" />
 
           <!-- Password -->
-          <text-input class="mt-8" native-type="password"
-                      name="password" :form="form" :label="$t('password')" :required="true"
-          />
+          <text-input class="mt-8" native-type="password" name="password" :form="form" :label="$t('password')"
+            :required="true" />
 
           <!-- Password Confirmation-->
-          <text-input class="mt-8" native-type="password"
-                      name="password_confirmation" :form="form" :label="$t('confirm_password')" :required="true"
-          />
+          <text-input class="mt-8" native-type="password" name="password_confirmation" :form="form"
+            :label="$t('confirm_password')" :required="true" />
 
           <!-- Submit Button -->
           <v-button class="w-full" :loading="form.busy">
@@ -46,7 +44,7 @@ export default {
   mixins: [SeoMeta],
 
   data: () => ({
-    metaTitle: 'Reset Password',
+    metaTitle: 'Đặt lại mật khẩu',
     status: '',
     form: new Form({
       token: '',
@@ -56,13 +54,13 @@ export default {
     })
   }),
 
-  created () {
+  created() {
     this.form.email = this.$route.query.email
     this.form.token = this.$route.params.token
   },
 
   methods: {
-    async reset () {
+    async reset() {
       const { data } = await this.form.post('/api/password/reset')
 
       this.status = data.status
