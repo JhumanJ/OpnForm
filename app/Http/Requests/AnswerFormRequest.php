@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
+use App\Rules\ValidUrl;
 
 class AnswerFormRequest extends FormRequest
 {
@@ -171,7 +172,7 @@ class AnswerFormRequest extends FormRequest
                     $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, [], $this->form)];
                     return ['array'];
                 }
-                return ['url'];
+                return [new ValidUrl];
             case 'files':
                 $allowedFileTypes = [];
                 if(!empty($property['allowed_file_types'])){
