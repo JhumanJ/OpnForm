@@ -13,7 +13,7 @@
 
       <div class="justify-end">
         <v-button v-if="type == 'error'" color="red" shade="light" @click="close">
-          Close
+          Đóng
         </v-button>
         <v-button v-if="type == 'success'" color="green" shade="light" @click="close">
           OK
@@ -22,10 +22,10 @@
           OK
         </v-button>
         <v-button v-if="type == 'confirmation'" class="mr-1 mb-1" @click="confirm">
-          Yes
+          Đồng ý
         </v-button>
         <v-button v-if="type == 'confirmation'" color="gray" shade="light" @click="cancel">
-          No, cancel
+          Không, huỷ bỏ
         </v-button>
       </div>
     </div>

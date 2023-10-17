@@ -48,9 +48,9 @@
 
           <template v-if="removing == field.id">
             <div class="flex text-sm items-center">
-              Remove block?
-              <v-button class="inline ml-1" color="red" size="small" @click="removeBlock(index)">Yes</v-button>
-              <v-button @click="removing=false" class="inline ml-1" color="light-gray" size="small">No</v-button>
+              Xoá khối này?
+              <v-button class="inline ml-1" color="red" size="small" @click="removeBlock(index)">Đồng ý</v-button>
+              <v-button @click="removing=false" class="inline ml-1" color="light-gray" size="small">Huỷ bỏ</v-button>
             </div>
           </template>
           <template v-else>

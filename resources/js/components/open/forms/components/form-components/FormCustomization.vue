@@ -9,7 +9,7 @@
           <path d="M8.33333 6.6665C8.79357 6.6665 9.16667 6.29341 9.16667 5.83317C9.16667 5.37293 8.79357 4.99984 8.33333 4.99984C7.8731 4.99984 7.5 5.37293 7.5 5.83317C7.5 6.29341 7.8731 6.6665 8.33333 6.6665Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
 
-        Customization
+        Tuỳ biến thêm
       </h3>
     </template>
 
@@ -63,7 +63,7 @@
       </template>
     </toggle-switch-input>
     <toggle-switch-input name="uppercase_labels" :form="form" class="mt-4"
-                    label="Tiêu đề cấu trúc viết hoa"
+                    label="Viết hoa tiêu đề các câu hỏi"
     />
     <toggle-switch-input name="transparent_background" :form="form" class="mt-4"
                     label="Nền trong suốt" help="Chỉ áp dụng khi biểu mẫu dùng chức năng nhúng"

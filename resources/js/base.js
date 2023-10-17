@@ -26,7 +26,7 @@ export default {
     alertError (message, autoClose = 10000) {
       this.$notify(
         {
-          title: 'Error',
+          title: 'Lỗi',
           text: message,
           type: 'error'
         }, autoClose)
@@ -38,7 +38,7 @@ export default {
     alertSuccess (message, autoClose = 10000) {
       this.$notify(
         {
-          title: 'Success',
+          title: 'Thành công',
           text: message,
           type: 'success'
         }, autoClose)
@@ -50,7 +50,7 @@ export default {
     alertWarning (message, autoClose = 10000) {
       this.$notify(
         {
-          title: 'Warning',
+          title: 'Cảnh báo',
           text: message,
           type: 'warning'
         }, autoClose)
@@ -62,7 +62,7 @@ export default {
     alertConfirm (message, success, failure = ()=>{}, autoClose = 10000) {
       this.$notify(
         {
-          title: 'Confirm',
+          title: 'Xác nhận',
           text: message,
           type: 'confirm',
           success,

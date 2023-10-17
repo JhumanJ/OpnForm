@@ -63,7 +63,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 inline -mt-1">
           <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clip-rule="evenodd" />
         </svg>
-        Back
+        Trở lại
       </a>
       <text-area-input label="Form Description" :disabled="loading" :form="aiForm" name="form_prompt" help="Hãy cho chúng tôi mô tả về biểu mẫu bạn muốn xây dựng (càng chi tiết càng tốt)"
                        placeholder="Ví dụ: Một biểu mẫu liên hệ đơn giản gồm có 3 trường cơ bản là: Tên, Email và Lời nhắn" />

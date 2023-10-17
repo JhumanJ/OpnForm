@@ -97,8 +97,8 @@
               <span class="text-blue-500 font-semibold pr-6">{{notification.title}}</span>
               <p class="text-gray-600 text-sm">{{notification.text}}</p>
               <div class="w-full flex gap-2 mt-1">
-                <v-button color="blue" size="small" @click.prevent="notification.success();close(notification.id)">Yes</v-button>
-                <v-button color="gray" shade="light" size="small" @click.prevent="notification.failure();close(notification.id)">No</v-button>
+                <v-button color="blue" size="small" @click.prevent="notification.success();close(notification.id)">Đồng ý</v-button>
+                <v-button color="gray" shade="light" size="small" @click.prevent="notification.failure();close(notification.id)">Huỷ bỏ</v-button>
               </div>
             </div>
           </div>

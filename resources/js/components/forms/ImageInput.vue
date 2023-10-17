@@ -12,7 +12,7 @@
               :style="inputStyle" @click.prevent="showUploadModal=true"
       >
         <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400">
-          Upload image <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24"
+          Tải lên <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor"
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -43,7 +43,7 @@
     <!--  Modal  -->
     <modal :show="showUploadModal" @close="showUploadModal=false">
       <h2 class="text-lg font-semibold">
-        Upload an image
+        Tải ảnh lên
       </h2>
 
       <div class="max-w-3xl mx-auto lg:max-w-none">
@@ -58,7 +58,7 @@
               <div v-if="loading" class="text-gray-600 dark:text-gray-400">
                 <loader class="h-6 w-6 mx-auto m-10" />
                 <p class="text-center mt-6">
-                  Uploading your file...
+                  Tải lên tệp của bạn...
                 </p>
               </div>
               <template v-else>
@@ -86,12 +86,12 @@
                       class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
-                      Upload your image
+                      Tải hình ảnh lên từ thiết bị
                     </button>
-                    or drag and drop
+                    hoặc kéo thả vào ô
                   </p>
                   <p class="mt-1 text-xs text-gray-500">
-                    .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
+                    .jpg, .jpeg, .png, .bmp, .gif, .svg tối đa 5MB
                   </p>
                 </div>
               </template>
