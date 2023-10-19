@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="bg-white dark:bg-notion-dark">
-    <!--    <loading v-show="!isIframe" ref="loading" />-->
+    <loading v-show="!isIframe" ref="loading" />
 
     <!--    <hotjar />-->
     <amplitude />
@@ -101,16 +101,6 @@ export default {
     layoutComponent () {
       return layouts[this.layout]
     }
-  },
-
-  watch: {
-  },
-
-  mounted () {
-    // // Make it globally accessible
-    // const app = getCurrentInstance().appContext
-    // app.config.globalProperties.$loading = this.$refs.loading
-    // console.log(app.config.globalProperties.$loading)
   },
 
   methods: {

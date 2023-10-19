@@ -2,8 +2,7 @@ import routes from './routes'
 import { createWebHistory, createRouter } from 'vue-router'
 import * as Sentry from '@sentry/vue'
 import store from '../store'
-import { defineComponent } from 'vue'
-// import { nextTick } from '@vue/compat'
+import { defineComponent, nextTick } from 'vue'
 
 // The middleware for every page of the application.
 const globalMiddleware = ['check-auth', 'notion-connection']
@@ -76,7 +75,7 @@ async function beforeEach (to, from, next) {
 
   // Start the loading bar.
   if (components[components.length - 1].loading !== false) {
-    // nextTick(() => router.app.$loading.start())
+    nextTick(() => store.commit('app/loaderStart'))
   }
 
   // Get the middleware for all the matched components.
@@ -107,8 +106,7 @@ async function beforeEach (to, from, next) {
  * @param {Function} next
  */
 async function afterEach (to, from, next) {
-  // await nextTick()
-  // router.app.$loading.finish()
+  nextTick(() => store.commit('app/loaderFinish'))
 }
 
 /**
@@ -125,9 +123,9 @@ function callMiddleware (middleware, to, from, next) {
   const _next = (...args) => {
     // Stop if "_next" was called with an argument or the stack is empty.
     if (args.length > 0 || stack.length === 0) {
-      // if (args.length > 0) {
-      //   router.app.$loading.finish()
-      // }
+      if (args.length > 0) {
+        store.commit('app/loaderFinish')
+      }
 
       return next(...args)
     }
