@@ -1,12 +1,11 @@
-import Vue from 'vue'
-
 // Log event function used to log event. Can be used when not using the directive.
-Vue.prototype.$logEvent = function (eventName, eventData) {
+const logEvent = function (eventName, eventData) {
   if (!window.amplitude) return
   if (eventData && typeof eventData !== 'object') {
     throw new Error('Amplitude event value must be an object.')
   }
 
+  console.log('in', window.config.production)
   if (!window.config.production) {
     console.log('[DEBUG] Amplitude logged event:', eventName, eventData)
   } else {
@@ -22,16 +21,21 @@ function hookLogEvent (binding) {
   }
   const eventName = modifiers[0]
 
-  Vue.prototype.$logEvent(eventName, binding.value)
+  logEvent(eventName, binding.value)
 }
 
-// Register directive to log event
-const registeredListeners = {}
-Vue.directive('track', {
-  beforeMount (el, binding, vnode) {
-    registeredListeners[el] = () => {
-      hookLogEvent(binding)
+// Used in vue-plugins.js
+export function registerLogEventOnApp (app) {
+  app.config.globalProperties.$logEvent = logEvent
+
+  // Register directive to log event
+  const registeredListeners = {}
+  app.directive('track', {
+    beforeMount (el, binding, vnode) {
+      registeredListeners[el] = () => {
+        hookLogEvent(binding)
+      }
+      el.addEventListener('click', registeredListeners[el])
     }
-    el.addEventListener('click', registeredListeners[el])
-  }
-})
+  })
+}

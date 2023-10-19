@@ -1,5 +1,5 @@
 <template>
-  <teleport to="#modals">
+  <Teleport to="body">
     <transition leave-active-class="duration-200" name="fade" appear>
       <div v-if="show" class="fixed z-30 top-0 inset-x-0 px-4 pt-6 sm:px-0 sm:flex sm:items-top sm:justify-center">
         <transition enter-active-class="transition-all delay-75 linear duration-300"
@@ -65,7 +65,7 @@
         </transition>
       </div>
     </transition>
-  </teleport>
+  </Teleport>
 </template>
 
 <script>

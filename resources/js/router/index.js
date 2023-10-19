@@ -47,7 +47,7 @@ async function getMatchedComponents (to) {
  */
 async function beforeEach (to, from, next) {
   // Sentry tracking
-  if (false && window.config.sentry_dsn) {
+  if (window.config.sentry_dsn) {
     Sentry.configureScope((scope) => scope.setTransactionName(to?.name || 'Unknown route name'))
   }
 

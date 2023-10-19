@@ -1,0 +1,74 @@
+import { ref, computed, watch, defineEmits } from 'vue'
+import { themes } from '~/config/form-themes.js'
+
+export const inputProps = {
+  id: { type: String, default: null },
+  name: { type: String, required: true },
+  label: { type: String, required: false },
+  form: { type: Object, required: false },
+  value: { required: false },
+  required: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  placeholder: { type: String, default: null },
+  uppercaseLabels: { type: Boolean, default: false },
+  help: { type: String, default: null },
+  helpPosition: { type: String, default: 'below_input' },
+  theme: { type: Object, default: () => themes.default },
+  color: { type: String, default: '#3B82F6' },
+  wrapperClass: { type: String, default: 'relative mb-3' }
+}
+
+export function useFormInput (props) {
+  const content = ref(props.modelValue)
+
+  const inputStyle = computed(() => {
+    return {
+      '--tw-ring-color': props.color
+    }
+  })
+
+  const hasValidation = computed(() => {
+    return props.form !== null && props.form !== undefined && props.form.hasOwnProperty('errors')
+  })
+
+  const hasError = computed(() => {
+    return hasValidation && props.form?.errors.has(name)
+  })
+
+  const compVal = computed({
+    get: () => {
+      if (props.form) {
+        return props.form[props.name]
+      }
+      return content.value
+    },
+    set: (val) => {
+      if (props.form) {
+        props.form[props.name] = val
+      } else {
+        content.value = val
+      }
+
+      if (hasValidation.value) {
+        props.form.errors.clear(props.name)
+      }
+
+      defineEmits('update:modelValue', compVal.value)
+    }
+  })
+
+  // Watch for changes in props.modelValue and update the local content
+  watch(
+    () => props.modelValue,
+    (newValue) => {
+      content.value = newValue
+    }
+  )
+
+  return {
+    compVal,
+    inputStyle,
+    hasValidation,
+    hasError
+  }
+}

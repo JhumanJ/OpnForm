@@ -1,48 +1,50 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="label">
-      <label v-if="label" :for="id?id:name"
-             :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-      >
-        {{ label }}
-        <span v-if="required" class="text-red-500 required-dot">*</span>
-      </label>
+      <input-label v-if="label"
+                   :label="label"
+                   :theme="theme"
+                   :required="true"
+                   :native-for="id?id:name"
+                   :uppercase-labels="uppercaseLabels"
+      />
     </slot>
-    <div v-if="help && helpPosition=='above_input'" class="flex mb-1">
-      <small :class="theme.default.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-    </div>
+    <input-help v-if="help && helpPosition=='above_input'" :help="help" :theme="theme">
+      <template #help>
+        <slot name="help" />
+      </template>
+    </input-help>
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
            :pattern="pattern"
            :style="inputStyle"
-           :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
+           :class="[theme.default.input, { '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200': disabled }]"
            :name="name" :accept="accept"
            :placeholder="placeholder" :min="min" :max="max" :maxlength="maxCharLimit"
            @change="onChange" @keydown.enter.prevent="onEnterPress"
     >
-    <div v-if="(help && helpPosition=='below_input') || showCharLimit" class="flex">
-      <small v-if="help && helpPosition=='below_input'" :class="theme.default.help" class="flex-grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-      <small v-else class="flex-grow"></small>
-      <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">
-      {{ charCount }}/{{ maxCharLimit }}
-      </small>
-    </div>
+    <!--    <input-help v-if="(help && helpPosition=='below_input') || showCharLimit" :help="help" :theme="theme">-->
+    <!--      <template v-if="showCharLimit" #after-help>-->
+    <!--        <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">-->
+    <!--          {{ charCount }}/{{ maxCharLimit }}-->
+    <!--        </small>-->
+    <!--      </template>-->
+    <!--    </input-help>-->
     <has-error v-if="hasValidation" :form="form" :field="name" />
   </div>
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputLabel from './components/InputLabel.vue'
+import InputHelp from './components/InputHelp.vue'
+
 export default {
   name: 'TextInput',
-
-  mixins: [inputMixin],
+  components: { InputHelp, InputLabel },
 
   props: {
+    ...inputProps,
     nativeType: { type: String, default: 'text' },
     accept: { type: String, default: null },
     min: { type: Number, required: false, default: null },
@@ -52,52 +54,28 @@ export default {
     pattern: { type: String, default: null }
   },
 
-  data: () => ({}),
+  setup (props) {
+    const { compVal, inputStyle, hasValidation, hasError } = useFormInput(props)
 
-  computed: {
-    compVal: {
-      set (val) {
-        if (this.form) {
-          this.$set(this.form, this.nativeType !== 'file' ? this.name : 'file-' + this.name, val)
-        } else {
-          this.content = val
-        }
-        if (this.hasValidation) {
-          this.form.errors.clear(this.name)
-        }
-        this.$emit('input', val)
-      },
-      get () {
-        if (this.form) {
-          return this.form[this.nativeType !== 'file' ? this.name : 'file-' + this.name]
-        }
-        return this.content
-      }
-    },
-    charCount() {
-      return (this.compVal) ? this.compVal.length : 0
-    }
-  },
-
-  watch: {},
-
-  created () {},
-
-  methods: {
-    onChange (event) {
-      if (this.nativeType !== 'file') return
+    const onChange = (event) => {
+      console.log(props)
+      if (props.nativeType !== 'file') return
 
       const file = event.target.files[0]
-      this.$set(this.form, this.name, file)
-    },
-    /**
-     * Pressing enter won't submit form
-     * @param event
-     * @returns {boolean}
-     */
-    onEnterPress (event) {
+      // eslint-disable-next-line vue/no-mutating-props
+      props.form[props.name] = file
+    }
+
+    const onEnterPress = (event) => {
       event.preventDefault()
       return false
+    }
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
     }
   }
 }

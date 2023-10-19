@@ -31,7 +31,6 @@
     <transition name="page" mode="out-in">
       <component :is="layoutComponent" v-if="layout" />
     </transition>
-    <div id="modals" />
     <stop-impersonation />
     <!--    <notifications />-->
   </div>
