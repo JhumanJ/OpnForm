@@ -115,9 +115,9 @@
                       class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
-                      Upload {{ multiple ? 'file(s)' : 'a file' }}
+                      Upload {{ multiple ? 'file(s)' : 'a file' }},
                     </button>
-                    or drag and drop
+                    use drag and drop or paste it
                   </p>
                   <p class="mt-1 text-xs text-gray-500">
                     Up to {{ mbLimit }}mb
@@ -198,6 +198,10 @@ export default {
         if(this.disabled){
           this.showUploadModal = false
         }
+        document.removeEventListener('paste', this.onUploadPasteEvent)
+        if(this.showUploadModal){
+          document.addEventListener("paste", this.onUploadPasteEvent)
+        }
       }
     },
     files: {
@@ -237,11 +241,15 @@ export default {
     onUploadDropEvent (e) {
       this.uploadDragoverEvent = false
       this.uploadDragoverTracking = false
-      this.droppedFiles(e)
+      this.droppedFiles(e.dataTransfer.files)
     },
-    droppedFiles (e) {
-      const droppedFiles = e.dataTransfer.files
-
+    onUploadPasteEvent (e) {
+      if(!this.showUploadModal) return
+      this.uploadDragoverEvent = false
+      this.uploadDragoverTracking = false
+      this.droppedFiles(e.clipboardData.files)
+    },
+    droppedFiles (droppedFiles) {
       if (!droppedFiles) return
 
       for (let i = 0; i < droppedFiles.length; i++) {

@@ -86,9 +86,9 @@
                       class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
-                      Upload your image
+                      Upload your image,
                     </button>
-                    or drag and drop
+                    use drag and drop or paste it
                   </p>
                   <p class="mt-1 text-xs text-gray-500">
                     .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
@@ -130,6 +130,17 @@ export default {
     }
   },
 
+  watch: {
+    showUploadModal: {
+      handler (val) {
+        document.removeEventListener('paste', this.onUploadPasteEvent)
+        if(this.showUploadModal){
+          document.addEventListener("paste", this.onUploadPasteEvent)
+        }
+      }
+    }
+  },
+
   methods: {
     clearUrl () {
       this.$set(this.form, this.name, null)
@@ -141,11 +152,15 @@ export default {
     onUploadDropEvent (e) {
       this.uploadDragoverEvent = false
       this.uploadDragoverTracking = false
-      this.droppedFiles(e)
+      this.droppedFiles(e.dataTransfer.files)
     },
-    droppedFiles (e) {
-      const droppedFiles = e.dataTransfer.files
-
+    onUploadPasteEvent (e) {
+      if(!this.showUploadModal) return
+      this.uploadDragoverEvent = false
+      this.uploadDragoverTracking = false
+      this.droppedFiles(e.clipboardData.files)
+    },
+    droppedFiles (droppedFiles) {
       if (!droppedFiles) return
 
       this.file = droppedFiles[0]
