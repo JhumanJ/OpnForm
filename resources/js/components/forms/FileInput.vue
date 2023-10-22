@@ -115,9 +115,9 @@
                       class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
-                      Upload {{ multiple ? 'file(s)' : 'a file' }}
+                      Upload {{ multiple ? 'file(s)' : 'a file' }},
                     </button>
-                    or drag and drop
+                    use drag and drop or paste it
                   </p>
                   <p class="mt-1 text-xs text-gray-500">
                     Up to {{ mbLimit }}mb
@@ -156,6 +156,7 @@
 
 <script>
 import Modal from '../Modal.vue'
+import axios from 'axios'
 import inputMixin from '~/mixins/forms/input.js'
 
 export default {
@@ -166,7 +167,8 @@ export default {
   props: {
     multiple: { type: Boolean, default: true },
     mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: '' }
+    accept: { type: String, default: '' },
+    moveToFormAssets: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -197,6 +199,10 @@ export default {
       handler (val) {
         if(this.disabled){
           this.showUploadModal = false
+        }
+        document.removeEventListener('paste', this.onUploadPasteEvent)
+        if(this.showUploadModal){
+          document.addEventListener("paste", this.onUploadPasteEvent)
         }
       }
     },
@@ -237,11 +243,15 @@ export default {
     onUploadDropEvent (e) {
       this.uploadDragoverEvent = false
       this.uploadDragoverTracking = false
-      this.droppedFiles(e)
+      this.droppedFiles(e.dataTransfer.files)
     },
-    droppedFiles (e) {
-      const droppedFiles = e.dataTransfer.files
-
+    onUploadPasteEvent (e) {
+      if(!this.showUploadModal) return
+      this.uploadDragoverEvent = false
+      this.uploadDragoverTracking = false
+      this.droppedFiles(e.clipboardData.files)
+    },
+    droppedFiles (droppedFiles) {
       if (!droppedFiles) return
 
       for (let i = 0; i < droppedFiles.length; i++) {
@@ -263,12 +273,30 @@ export default {
         if (!this.multiple) {
           this.files = []
         }
-        this.files.push({
-          file: file,
-          url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
-        })
-        this.showUploadModal = false
-        this.loading = false
+        if (this.moveToFormAssets) {
+          // Move file to permanent storage for form assets
+          axios.post('/api/open/forms/assets/upload', {
+            type: 'files',
+            url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
+          }).then(moveFileResponse => {
+            this.files.push({
+              file: file,
+              url: moveFileResponse.data.url
+            })
+            this.showUploadModal = false
+            this.loading = false
+          }).catch((error) => {
+            this.showUploadModal = false
+            this.loading = false
+          })
+        } else {
+          this.files.push({
+            file: file,
+            url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
+          })
+          this.showUploadModal = false
+          this.loading = false
+        }
       }).catch((error) => {
         this.clearAll()
         this.showUploadModal = false

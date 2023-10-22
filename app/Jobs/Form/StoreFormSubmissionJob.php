@@ -4,6 +4,7 @@ namespace App\Jobs\Form;
 
 use App\Events\Forms\FormSubmitted;
 use App\Http\Controllers\Forms\PublicFormController;
+use App\Http\Controllers\Forms\FormController;
 use App\Http\Requests\AnswerFormRequest;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
@@ -162,6 +163,14 @@ class StoreFormSubmissionJob implements ShouldQueue
             return null;
         }
 
+        if(filter_var($value, FILTER_VALIDATE_URL) !== FALSE && str_contains($value, parse_url(config('app.url'))['host'])) {  // In case of prefill we have full url so convert to s3
+            $fileName = basename($value);
+            $path = FormController::ASSETS_UPLOAD_PATH . '/' . $fileName;
+            $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
+            Storage::move($path, $newPath.'/'.$fileName);
+            return $fileName;
+        }
+        
         if($this->isSkipForUpload($value)) {
             return $value;
         }
