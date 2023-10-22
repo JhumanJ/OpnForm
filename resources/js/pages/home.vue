@@ -16,7 +16,7 @@
               Tạo biểu mẫu mới
             </v-button>
           </div>
-          <small class="flex text-gray-500">Manage your forms and submissions.</small>
+          <small class="flex text-gray-500">Quản lý biểu mẫu của bạn và số lượng nộp.</small>
         </div>
       </div>
     </div>
@@ -27,12 +27,12 @@
             placeholder="Tên biểu mẫu để tìm kiếm" />
           <div v-if="allTags.length > 0" class="mb-4">
             <div v-for="tag in allTags" :key="tag" :class="[
-              'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
-              {
-                'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400': selectedTags.includes(tag),
-                'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400': !selectedTags.includes(tag)
-              }
-            ]" title="Nhấp để lọc theo tag(s)" @click="onTagClick(tag)">
+                          'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
+                          {
+                            'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400': selectedTags.includes(tag),
+                            'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400': !selectedTags.includes(tag)
+                          }
+                        ]" title="Nhấp để lọc theo tag(s)" @click="onTagClick(tag)">
               {{ tag }}
             </div>
           </div>

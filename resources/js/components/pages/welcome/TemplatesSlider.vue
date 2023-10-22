@@ -1,25 +1,26 @@
 <template>
   <div class="mx-auto mb-12 max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500 ">Single or multi-page forms</h2>
-      <p class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Discover our beautiful templates</p>
-      <p class="mt-3 px-8 text-center text-lg text-gray-400 ">If you need inspiration, checkout our templates.</p>
+      <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500">Biểu mẫu trang đơn hoặc nhiều trang</h2>
+      <p class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Khám phá các mẫu đẹp của chúng tôi
+      </p>
+      <p class="mt-3 px-8 text-center text-lg text-gray-400">Nếu bạn cần nguồn cảm hứng, hãy kiểm tra các mẫu của chúng
+        tôi.</p>
     </div>
     <div class="my-3 flex justify-center">
       <router-link :to="{name:'templates'}">
-        See all templates
-        <svg class="h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        Xem tất cả mẫu
+        <svg class="h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+          aria-hidden="true">
           <path fill-rule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-          />
+            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
         </svg>
       </router-link>
     </div>
 
     <div v-if="templates.length > 0"
-        class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
-    >
+      class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
       <ul ref="templates-slider" class="flex justify-center md:justify-start animate-infinite-scroll">
         <li v-for="(template, i) in templates" :key="template.id" class="mx-4 w-72 h-auto">
           <single-template :slug="template.slug" />
