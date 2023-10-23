@@ -73,6 +73,12 @@ export default {
     }
   },
 
+  mounted () {
+    if (this.compVal && typeof this.compVal === 'string'){
+      this.compVal = parseInt(this.compVal)
+    }
+  },
+
   methods: {
     btnStyle (isSelected) {
       if (!isSelected) return {}
