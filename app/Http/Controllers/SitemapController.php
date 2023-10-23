@@ -21,7 +21,7 @@ class SitemapController extends Controller
         ['/login', 0.4],
         ['/register', 0.4],
         ['/password/reset', 0.3],
-        ['/templates', 0.9],
+        ['/form-templates', 0.9],
     ];
 
     public function getSitemap(Request $request)
