@@ -18,12 +18,20 @@ class TemplateController extends Controller
             $limit = (int) $request->get('limit');
         }
 
-        $templates = Template::where('publicly_listed', true)
-            ->when(Auth::check(), function ($query) {
+        $onlyMy = false;
+        if ($request->offsetExists('onlymy') && $request->get('onlymy')) {
+            $onlyMy = true;
+        }
+
+        $templates = Template::limit($limit)
+            ->when(Auth::check() && !$onlyMy, function ($query) {
+                $query->where('publicly_listed', true);
                 $query->orWhere('creator_id', Auth::id());
             })
+            ->when(Auth::check() && $onlyMy, function ($query) {
+                $query->where('creator_id', Auth::id());
+            })
             ->orderByDesc('created_at')
-            ->limit($limit)
             ->get();
 
         return FormTemplateResource::collection($templates);

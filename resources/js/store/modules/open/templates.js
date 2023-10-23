@@ -91,12 +91,26 @@ export const actions = {
       context.commit('stopLoading')
     })
   },
-  loadAll (context) {
+  loadAll (context, options=null) {
     context.commit('startLoading')
     context.dispatch('loadTypesAndIndustries')
-    return axios.get(templatesEndpoint).then((response) => {
-      context.commit('append', response.data)
-      context.commit('setAllLoaded', true)
+
+    // Prepare with options
+    let queryStr = ''
+    if(options !== null){
+      for (const [key, value] of Object.entries(options)) {
+        queryStr += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value)
+      }
+      queryStr = queryStr.slice(1)
+    }
+    return axios.get((queryStr) ? templatesEndpoint + '?' + queryStr : templatesEndpoint).then((response) => {
+      if(options !== null){
+        context.commit('set', response.data)
+        context.commit('setAllLoaded', false)
+      } else {
+        context.commit('append', response.data)
+        context.commit('setAllLoaded', true)
+      }
       context.commit('stopLoading')
     }).catch((error) => {
       context.commit('stopLoading')
@@ -108,17 +122,5 @@ export const actions = {
     }
     context.commit('stopLoading')
     return Promise.resolve()
-  },
-  loadWithLimit (context, limit) {
-    context.commit('startLoading')
-    context.dispatch('loadTypesAndIndustries')
-
-    return axios.get(templatesEndpoint + '?limit=' + limit).then((response) => {
-      context.commit('set', response.data)
-      context.commit('setAllLoaded', false)
-      context.commit('stopLoading')
-    }).catch((error) => {
-      context.commit('stopLoading')
-    })
   }
 }
