@@ -70,6 +70,8 @@ export default [
   { path: '/my-templates', name: 'my_templates', component: page('templates/my_templates.vue') },
   { path: '/form-templates', name: 'templates', component: page('templates/templates.vue') },
   { path: '/form-templates/:slug', name: 'templates.show', component: page('templates/show.vue') },
+  { path: '/form-templates/types/:slug', name: 'templates.types.show', component: page('templates/types-show.vue') },
+  { path: '/form-templates/industries/:slug', name: 'templates.industries.show', component: page('templates/industries-show.vue') },
 
   { path: '*', component: page('errors/404.vue') }
 ]

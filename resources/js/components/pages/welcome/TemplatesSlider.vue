@@ -54,7 +54,7 @@ export default {
   },
 
   mounted() {
-    store.dispatch('open/templates/loadWithLimit', 10)
+    store.dispatch('open/templates/loadAll', {'limit':10})
   },
 
   methods: {
