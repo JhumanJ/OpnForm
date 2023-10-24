@@ -132,7 +132,7 @@ export default {
 
   methods: {
     clearUrl () {
-      this.$set(this.form, this.name, null)
+      this.form[this.name] = null
     },
     onUploadDragoverEvent (e) {
       this.uploadDragoverEvent = true

@@ -36,7 +36,7 @@ export default {
     compVal: {
       set (val) {
         if (this.form) {
-          this.$set(this.form, this.name, val)
+          this.form[this.name] = val
         } else {
           this.content = val
         }

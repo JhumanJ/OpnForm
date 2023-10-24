@@ -1,5 +1,5 @@
 <template>
-  <collapse class="py-5 w-full" :default-value="false">
+  <collapse class="py-5 w-full" :model-value="false">
     <template #title>
       <div class="flex">
         <h3 class="font-semibold block text-lg">
@@ -10,15 +10,15 @@
       </div>
     </template>
     <toggle-switch-input :value="value.hide_title" name="hide_title" class="mt-4"
-        label="Hide Form Title"
-        :disabled="form.hide_title===true"
-        @input="onChangeHideTitle"
-        :help="hideTitleHelp"
+                         label="Hide Form Title"
+                         :disabled="form.hide_title===true"
+                         :help="hideTitleHelp"
+                         @input="onChangeHideTitle"
     />
     <toggle-switch-input :value="value.auto_submit" name="auto_submit" class="mt-4"
-        label="Auto Submit Form"
-        help="Form will auto submit immediate after open URL"
-        @input="onChangeAutoSubmit"
+                         label="Auto Submit Form"
+                         help="Form will auto submit immediate after open URL"
+                         @input="onChangeAutoSubmit"
     />
   </collapse>
 </template>

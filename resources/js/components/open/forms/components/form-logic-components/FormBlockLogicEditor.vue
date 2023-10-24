@@ -10,7 +10,7 @@
       <div>
         <v-button color="light-gray" size="small" @click="showCopyFormModal=true">
           <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           Copy from
         </v-button>
@@ -18,7 +18,7 @@
       <div>
         <v-button color="light-gray" shade="light" size="small" class="ml-1" @click="clearAll">
           <svg class="text-red-600 h-4 w-4 inline -mt-1 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 9L12 15M12 9L18 15M21 4H8L1 12L8 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 9L12 15M12 9L18 15M21 4H8L1 12L8 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
 
           Clear All
@@ -29,7 +29,7 @@
     <h5 class="font-semibold mt-3">
       1. Conditions
     </h5>
-    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-1 border-t border rounded-md" :form="form"/>
+    <condition-editor ref="filter-editor" v-model="logic.conditions" class="mt-1 border-t border rounded-md" :form="form" />
 
     <h5 class="font-semibold mt-3">
       2. Actions
@@ -75,7 +75,7 @@ import clonedeep from 'clone-deep'
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: {SelectInput, Modal, ProTag, ConditionEditor},
+  components: { SelectInput, Modal, ProTag, ConditionEditor },
   props: {
     field: {
       type: Object,
@@ -87,7 +87,7 @@ export default {
     }
   },
 
-  data() {
+  data () {
     return {
       resetKey: 0,
       logic: this.field.logic || {
@@ -95,31 +95,31 @@ export default {
         actions: []
       },
       showCopyFormModal: false,
-      copyFrom: null,
+      copyFrom: null
     }
   },
 
   computed: {
-    copyFromOptions() {
+    copyFromOptions () {
       return this.form.properties.filter((field) => {
         return field.id !== this.field.id && field.hasOwnProperty('logic') && field.logic !== null && field.logic !== {}
       }).map((field) => {
-        return {name: field.name, value: field.id}
+        return { name: field.name, value: field.id }
       })
     },
-    actionOptions() {
+    actionOptions () {
       if (['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'].includes(this.field.type)) {
         if (this.field.hidden) {
           return [{ name: 'Show Block', value: 'show-block' }]
-        }else{
+        } else {
           return [{ name: 'Hide Block', value: 'hide-block' }]
         }
       }
 
       if (this.field.hidden) {
         return [
-          {name: 'Show Block', value: 'show-block'},
-          {name: 'Require answer', value: 'require-answer'}
+          { name: 'Show Block', value: 'show-block' },
+          { name: 'Require answer', value: 'require-answer' }
         ]
       } else if (this.field.disabled) {
         return [
@@ -133,14 +133,14 @@ export default {
         ]
       } else {
         return [
-          {name: 'Hide Block', value: 'hide-block'},
+          { name: 'Hide Block', value: 'hide-block' },
           { name: 'Disable Block', value: 'disable-block' },
           (this.field.required
-            ? {name: 'Make it optional', value: 'make-it-optional'}
+            ? { name: 'Make it optional', value: 'make-it-optional' }
             : {
-              name: 'Require answer',
-              value: 'require-answer'
-            })
+                name: 'Require answer',
+                value: 'require-answer'
+              })
         ]
       }
     }
@@ -148,8 +148,8 @@ export default {
 
   watch: {
     logic: {
-      handler() {
-        this.$set(this.field, 'logic', this.logic)
+      handler () {
+        this.field.logic = this.logic
       },
       deep: true
     },
@@ -164,46 +164,46 @@ export default {
     },
     'field.required': 'cleanConditions',
     'field.disabled': 'cleanConditions',
-    'field.hidden': 'cleanConditions',
+    'field.hidden': 'cleanConditions'
   },
 
-  mounted() {
+  mounted () {
     if (!this.field.hasOwnProperty('logic')) {
-      this.$set(this.field, 'logic', this.logic)
+      this.field.logic = this.logic
     }
   },
 
   methods: {
-    clearAll() {
-      this.$set(this.logic, 'conditions', null)
-      this.$set(this.logic, 'actions', [])
+    clearAll () {
+      this.logic.conditions = null
+      this.logic.actions = []
       this.refreshActions()
     },
-    onActionInput() {
+    onActionInput () {
       if (this.logic.actions.length >= 2) {
         if (this.logic.actions[1] === 'require-answer' && this.logic.actions[0] === 'hide-block') {
-          this.$set(this.logic, 'actions', ['require-answer'])
+          this.logic.actions = ['require-answer']
         } else if (this.logic.actions[1] === 'hide-block' && this.logic.actions[0] === 'require-answer') {
-          this.$set(this.logic, 'actions', ['hide-block'])
+          this.logic.actions = ['hide-block']
         }
         this.refreshActions()
       }
     },
-    cleanConditions() {
-      const availableActions = this.actionOptions.map(function(op){ return op.value });
-      this.$set(this.logic, 'actions', availableActions.filter(value => this.logic.actions.includes(value)))
+    cleanConditions () {
+      const availableActions = this.actionOptions.map(function (op) { return op.value })
+      this.logic.actions = availableActions.filter(value => this.logic.actions.includes(value))
       this.refreshActions()
     },
-    refreshActions() {
+    refreshActions () {
       this.resetKey++
     },
-    copyLogic() {
+    copyLogic () {
       if (this.copyFrom) {
         const property = this.form.properties.find((property) => {
           return property.id === this.copyFrom
         })
         if (property && property.logic) {
-          this.$set(this, 'logic', clonedeep(property.logic))
+          this.logic = clonedeep(property.logic)
           this.cleanConditions()
         }
       }

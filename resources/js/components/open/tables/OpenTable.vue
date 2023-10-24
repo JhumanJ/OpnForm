@@ -232,7 +232,7 @@ export default {
       const columns = clonedeep(this.form.properties)
       const index = this.form.properties.findIndex(c => c.id === col.id)
       columns[index].cell_width = width
-      this.$set(this.form, 'properties', columns)
+      this.form.properties = columns
       this.$nextTick(() => {
         this.$emit('resize')
       })

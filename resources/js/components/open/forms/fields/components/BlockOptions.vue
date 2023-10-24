@@ -121,7 +121,7 @@ export default {
     'field.width': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'width', 'full')
+          this.field.width = 'full'
         }
       },
       immediate: true
@@ -129,7 +129,7 @@ export default {
     'field.align': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'align', 'left')
+          this.field.align = 'left'
         }
       },
       immediate: true
@@ -138,7 +138,7 @@ export default {
 
   created () {
     if (this.field?.width === undefined || this.field?.width === null) {
-      this.$set(this.field, 'width', 'full')
+      this.field.width = 'full'
     }
   },
 
@@ -146,14 +146,14 @@ export default {
 
   methods: {
     onFieldHiddenChange (val) {
-      this.$set(this.field, 'hidden', val)
+      this.field.hidden = val
       if (this.field.hidden) {
-        this.$set(this.field, 'required', false)
+        this.field.required = false
       }
     },
     onFieldHelpPositionChange (val) {
       if (!val) {
-        this.$set(this.field, 'help_position', 'below_input')
+        this.field.help_position = 'below_input'
       }
     }
   }

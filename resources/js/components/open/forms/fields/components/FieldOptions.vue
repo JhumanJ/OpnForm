@@ -92,7 +92,7 @@
       </p>
       <v-checkbox v-model="field.multi_lines" class="mb-2"
                   :name="field.id+'_multi_lines'"
-                  @input="$set(field,'multi_lines',$event)"
+                  @input="field.multi_lines = $event"
       >
         Multi-lines input
       </v-checkbox>
@@ -243,7 +243,7 @@
       <!-- Pre-fill depends on type -->
       <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-3"
                   :name="field.id+'_prefill'"
-                  @input="$set(field,'prefill',$event)"
+                  @input="field.prefill =$event"
       >
         Pre-filled value
       </v-checkbox>
@@ -363,6 +363,7 @@
 import timezones from '../../../../../../data/timezones.json'
 import countryCodes from '../../../../../../data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
+
 const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 
 export default {
@@ -428,7 +429,7 @@ export default {
     'field.width': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'width', 'full')
+          this.field.width = 'full'
         }
       },
       immediate: true
@@ -436,7 +437,7 @@ export default {
     'field.align': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'align', 'left')
+          this.field.align = 'left'
         }
       },
       immediate: true
@@ -445,7 +446,7 @@ export default {
 
   created () {
     if (this.field?.width === undefined || this.field?.width === null) {
-      this.$set(this.field, 'width', 'full')
+      this.field.width = 'full'
     }
   },
 
@@ -457,57 +458,57 @@ export default {
 
   methods: {
     onFieldDisabledChange (val) {
-      this.$set(this.field, 'disabled', val)
+      this.field.disabled = val
       if (this.field.disabled) {
-        this.$set(this.field, 'hidden', false)
+        this.field.hidden = false
       }
     },
     onFieldRequiredChange (val) {
-      this.$set(this.field, 'required', val)
+      this.field.required = val
       if (this.field.required) {
-        this.$set(this.field, 'hidden', false)
+        this.field.hidden = false
       }
     },
     onFieldHiddenChange (val) {
-      this.$set(this.field, 'hidden', val)
+      this.field.hidden = val
       if (this.field.hidden) {
-        this.$set(this.field, 'required', false)
-        this.$set(this.field, 'disabled', false)
+        this.field.required = false
+        this.field.disabled = false
       } else {
-        this.$set(this.field, 'generates_uuid', false)
-        this.$set(this.field, 'generates_auto_increment_id', false)
+        this.field.generates_uuid = false
+        this.field.generates_auto_increment_id = false
       }
     },
     onFieldDateRangeChange (val) {
-      this.$set(this.field, 'date_range', val)
+      this.field.date_range = val
       if (this.field.date_range) {
-        this.$set(this.field, 'with_time', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.with_time = false
+        this.field.prefill_today = false
       }
     },
     onFieldWithTimeChange (val) {
-      this.$set(this.field, 'with_time', val)
+      this.field.with_time = val
       if (this.field.with_time) {
-        this.$set(this.field, 'date_range', false)
+        this.field.date_range = false
       }
     },
     onFieldGenUIdChange (val) {
-      this.$set(this.field, 'generates_uuid', val)
+      this.field.generates_uuid = val
       if (this.field.generates_uuid) {
-        this.$set(this.field, 'generates_auto_increment_id', false)
-        this.$set(this.field, 'hidden', true)
+        this.field.generates_auto_increment_id = false
+        this.field.hidden = true
       }
     },
     onFieldGenAutoIdChange (val) {
-      this.$set(this.field, 'generates_auto_increment_id', val)
+      this.field.generates_auto_increment_id = val
       if (this.field.generates_auto_increment_id) {
-        this.$set(this.field, 'generates_uuid', false)
-        this.$set(this.field, 'hidden', true)
+        this.field.generates_uuid = false
+        this.field.hidden = true
       }
     },
     initRating () {
       if (this.field.is_rating && !this.field.rating_max_value) {
-        this.$set(this.field, 'rating_max_value', 5)
+        this.field.rating_max_value = 5
       }
     },
     onFieldOptionsChange (val) {
@@ -518,54 +519,54 @@ export default {
           id: name
         }
       })
-      this.$set(this.field, this.field.type, { options: tmpOpts })
+      this.field[this.field.type] = { options: tmpOpts }
     },
     onFieldPrefillTodayChange (val) {
-      this.$set(this.field, 'prefill_today', val)
+      this.field.prefill_today = val
       if (this.field.prefill_today) {
-        this.$set(this.field, 'prefill', 'Pre-filled with current date')
-        this.$set(this.field, 'date_range', false)
-        this.$set(this.field, 'disable_future_dates', false)
-        this.$set(this.field, 'disable_past_dates', false)
+        this.field.prefill = 'Pre-filled with current date'
+        this.field.date_range = false
+        this.field.disable_future_dates = false
+        this.field.disable_past_dates = false
       } else {
-        this.$set(this.field, 'prefill', null)
+        this.field.prefill = null
       }
     },
     onFieldAllowCreationChange (val) {
-      this.$set(this.field, 'allow_creation', val)
+      this.field.allow_creation = val
       if (this.field.allow_creation) {
-        this.$set(this.field, 'without_dropdown', false)
+        this.field.without_dropdown = false
       }
     },
     onFieldWithoutDropdownChange (val) {
-      this.$set(this.field, 'without_dropdown', val)
+      this.field.without_dropdown = val
       if (this.field.without_dropdown) {
-        this.$set(this.field, 'allow_creation', false)
+        this.field.allow_creation = false
       }
     },
     onFieldDisablePastDatesChange (val) {
-      this.$set(this.field, 'disable_past_dates', val)
+      this.field.disable_past_dates = val
       if (this.field.disable_past_dates) {
-        this.$set(this.field, 'disable_future_dates', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.disable_future_dates = false
+        this.field.prefill_today = false
       }
     },
     onFieldDisableFutureDatesChange (val) {
-      this.$set(this.field, 'disable_future_dates', val)
+      this.field.disable_future_dates = val
       if (this.field.disable_future_dates) {
-        this.$set(this.field, 'disable_past_dates', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.disable_past_dates = false
+        this.field.prefill_today = false
       }
     },
     onFieldHelpPositionChange (val) {
       if (!val) {
-        this.$set(this.field, 'help_position', 'below_input')
+        this.field.help_position = 'below_input'
       }
     },
     selectAllCountries () {
-      this.$set(this.field, 'unavailable_countries', this.allCountries.map(item => {
+      this.field.unavailable_countries = this.allCountries.map(item => {
         return item.code
-      }))
+      })
     }
   }
 }

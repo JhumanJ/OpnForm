@@ -1,14 +1,19 @@
 <template>
   <div class="border border-gray-300 rounded-xl flex p-1 relative">
     <button class="font-semibold block flex-grow cursor-pointer">
-      <div class="p-2 px-3 rounded-lg transition-colors" :class="{'bg-blue-500 text-white':!value}"
-           @click="set(false)"
+      <div
+        class="p-2 px-3 rounded-lg transition-colors"
+        :class="{'bg-blue-500 text-white': !modelValue}"
+        @click="set(false)"
       >
         Monthly
       </div>
     </button>
     <button class="font-semibold block flex-grow cursor-pointer" @click="set(true)">
-      <div class="p-2 px-4 rounded-lg transition-colors" :class="{'bg-blue-500 text-white':value}">
+      <div
+        class="p-2 px-4 rounded-lg transition-colors"
+        :class="{'bg-blue-500 text-white': modelValue}"
+      >
         Yearly
       </div>
     </button>
@@ -18,24 +23,15 @@
   </div>
 </template>
 
-<script>
-export default {
+<script setup>
+import { defineEmits, defineProps } from 'vue'
 
-  components: {},
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: () => ({}),
+defineProps({
+  modelValue: { type: Boolean, required: true }
+})
+const emit = defineEmits()
 
-  computed: {},
-
-  methods: {
-    set (value) {
-      this.$emit('input', value)
-    }
-  }
+const set = (value) => {
+  emit('update:modelValue', value)
 }
 </script>

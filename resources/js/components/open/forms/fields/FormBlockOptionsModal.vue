@@ -9,7 +9,7 @@
           <div>
             <v-button color="light-gray" size="small" @click="removeBlock">
               <svg class="h-4 w-4 text-red-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
 
               Remove
@@ -18,7 +18,7 @@
           <div class="ml-1">
             <v-button size="small" color="light-gray" @click="duplicateBlock">
               <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               Duplicate
             </v-button>
@@ -100,14 +100,15 @@
       </div>
       <div v-else-if="field.type == 'nf-code'" class="-mx-4 sm:-mx-6 p-5 border-b border-t">
         <code-input name="content" class="mt-4 h-36" :form="field" label="Content"
-              help="You can add any html code, including iframes" />
+                    help="You can add any html code, including iframes"
+        />
       </div>
       <div v-else class="-mx-4 sm:-mx-6 p-5 border-b border-t">
         <p>No settings found.</p>
       </div>
 
       <!--  Logic Block -->
-      <form-block-logic-editor :form="form" :field="field" v-model="form"/>
+      <form-block-logic-editor v-model="form" :form="form" :field="field" />
 
       <div class="pt-5 flex justify-end">
         <v-button color="white" @click="close">
@@ -123,12 +124,12 @@
 
 <script>
 import ProTag from '../../../common/ProTag.vue'
-const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
 import CodeInput from '../../../forms/CodeInput.vue'
+const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
 
 export default {
   name: 'FormBlockOptionsModal',
-  components: {ProTag, FormBlockLogicEditor, CodeInput},
+  components: { ProTag, FormBlockLogicEditor, CodeInput },
   props: {
     field: {
       type: Object,
@@ -143,10 +144,10 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link'],
+        ['bold', 'italic', 'underline', 'link']
       ]
     }
   },
@@ -157,7 +158,7 @@ export default {
     'field.width': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'width', 'full')
+          this.field.width = 'full'
         }
       },
       immediate: true
@@ -165,38 +166,38 @@ export default {
     'field.align': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'align', 'left')
+          this.field.align = 'left'
         }
       },
       immediate: true
     }
   },
 
-  mounted() {
+  mounted () {
 
   },
 
   methods: {
-    close() {
+    close () {
       this.$emit('close')
     },
-    removeBlock() {
+    removeBlock () {
       this.close()
       this.$emit('remove-block', this.field)
     },
-    duplicateBlock(){
+    duplicateBlock () {
       this.close()
       this.$emit('duplicate-block', this.field)
     },
-    onFieldHiddenChange(val) {
-      this.$set(this.field, 'hidden', val)
+    onFieldHiddenChange (val) {
+      this.field.hidden = val
       if (this.field.hidden) {
-        this.$set(this.field, 'required', false)
+        this.field.required = false
       }
     },
     onFieldHelpPositionChange (val) {
-      if(!val){
-        this.$set(this.field, 'help_position', 'below_input')
+      if (!val) {
+        this.field.help_position = 'below_input'
       }
     }
   }

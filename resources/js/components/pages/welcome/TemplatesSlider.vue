@@ -1,9 +1,15 @@
 <template>
   <div class="mx-auto mb-12 max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500 ">Single or multi-page forms</h2>
-      <p class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Discover our beautiful templates</p>
-      <p class="mt-3 px-8 text-center text-lg text-gray-400 ">If you need inspiration, checkout our templates.</p>
+      <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500 ">
+        Single or multi-page forms
+      </h2>
+      <p class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
+        Discover our beautiful templates
+      </p>
+      <p class="mt-3 px-8 text-center text-lg text-gray-400 ">
+        If you need inspiration, checkout our templates.
+      </p>
     </div>
     <div class="my-3 flex justify-center">
       <router-link :to="{name:'templates'}">
@@ -18,7 +24,7 @@
     </div>
 
     <div v-if="templates.length > 0"
-        class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
+         class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
     >
       <ul ref="templates-slider" class="flex justify-center md:justify-start animate-infinite-scroll">
         <li v-for="(template, i) in templates" :key="template.id" class="mx-4 w-72 h-auto">
@@ -46,21 +52,24 @@ export default {
   },
 
   watch: {
-    templates () {
-      this.$nextTick(() => {
-        this.setInfinite()
-      })
+    templates: {
+      deep: true,
+      handler () {
+        this.$nextTick(() => {
+          this.setInfinite()
+        })
+      }
     }
   },
 
-  mounted() {
+  mounted () {
     store.dispatch('open/templates/loadWithLimit', 10)
   },
 
   methods: {
-    setInfinite() {
-      let ul = this.$refs['templates-slider']
-      if(ul){
+    setInfinite () {
+      const ul = this.$refs['templates-slider']
+      if (ul) {
         ul.insertAdjacentHTML('afterend', ul.outerHTML)
         ul.nextSibling.setAttribute('aria-hidden', 'true')
       }

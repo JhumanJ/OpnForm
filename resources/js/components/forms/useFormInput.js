@@ -1,4 +1,4 @@
-import { ref, computed, watch, defineEmits } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { themes } from '~/config/form-themes.js'
 
 export const inputProps = {
@@ -18,7 +18,7 @@ export const inputProps = {
   wrapperClass: { type: String, default: 'relative mb-3' }
 }
 
-export function useFormInput (props) {
+export function useFormInput (props, context, formPrefixKey = null) {
   const content = ref(props.modelValue)
 
   const inputStyle = computed(() => {
@@ -38,13 +38,13 @@ export function useFormInput (props) {
   const compVal = computed({
     get: () => {
       if (props.form) {
-        return props.form[props.name]
+        return props.form[(formPrefixKey || '') + props.name]
       }
       return content.value
     },
     set: (val) => {
       if (props.form) {
-        props.form[props.name] = val
+        props.form[(formPrefixKey || '') + props.name] = val
       } else {
         content.value = val
       }
@@ -53,7 +53,7 @@ export function useFormInput (props) {
         props.form.errors.clear(props.name)
       }
 
-      defineEmits('update:modelValue', compVal.value)
+      context.emit('update:modelValue', compVal.value)
     }
   })
 

@@ -32,8 +32,8 @@
                            label="Send submission confirmation" :help="emailSubmissionConfirmationHelp"
       />
       <template v-if="form.send_submission_confirmation">
-        <text-input name="confirmation_reply_to"
-                    v-model="form.notification_settings.confirmation_reply_to" class="mt-4"
+        <text-input v-model="form.notification_settings.confirmation_reply_to"
+                    name="confirmation_reply_to" class="mt-4"
                     label="Confirmation Reply To" help="help"
         >
           <template #help>
@@ -53,8 +53,8 @@
                               label="Confirmation email content" help="Content of the confirmation email that will be sent"
         />
         <toggle-switch-input name="notifications_include_submission"
-                        :form="form" class="mt-4"
-                        label="Include submission data" help="If enabled the confirmation email will contain form submission answers"
+                             :form="form" class="mt-4"
+                             label="Include submission data" help="If enabled the confirmation email will contain form submission answers"
         />
       </template>
     </modal>
@@ -102,7 +102,7 @@ export default {
   watch: {
     emailSubmissionConfirmationField (val) {
       if (val === null) {
-        this.$set(this.form, 'send_submission_confirmation', false)
+        this.form.send_submission_confirmation = false
       }
     }
   },

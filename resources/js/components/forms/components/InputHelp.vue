@@ -1,5 +1,5 @@
 <template>
-  <div class="flex mb-1">
+  <div class="flex mb-1 input-help">
     <small :class="theme.default.help" class="grow flex">
       <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
@@ -15,7 +15,7 @@ export default {
 
   props: {
     theme: { type: Object, required: true },
-    help: { type: String, required: true }
+    help: { type: String, required: false }
   }
 }
 </script>

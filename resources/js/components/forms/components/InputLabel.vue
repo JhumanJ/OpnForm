@@ -1,9 +1,12 @@
 <template>
   <label :for="nativeFor"
+         class="input-label"
          :class="[theme.default.label,{'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels}]"
   >
-    {{ label }}
-    <span v-if="required" class="text-red-500 required-dot">*</span>
+    <slot>
+      {{ label }}
+      <span v-if="required" class="text-red-500 required-dot">*</span>
+    </slot>
   </label>
 </template>
 

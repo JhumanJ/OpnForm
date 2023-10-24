@@ -205,7 +205,7 @@ export default {
     formFields: {
       deep: true,
       handler () {
-        this.$set(this.form, 'properties', this.formFields)
+        this.form.properties = this.formFields
       }
     },
 
@@ -228,21 +228,21 @@ export default {
 
   methods: {
     onChangeName (field, newName) {
-      this.$set(field, 'name', newName)
+      field.name = newName
     },
     toggleHidden (field) {
-      this.$set(field, 'hidden', !field.hidden)
+      field.hidden = !field.hidden
       if (field.hidden) {
-        this.$set(field, 'required', false)
+        field.required = false
       } else {
-        this.$set(field, 'generates_uuid', false)
-        this.$set(field, 'generates_auto_increment_id', false)
+        field.generates_uuid = false
+        field.generates_auto_increment_id = false
       }
     },
     toggleRequired (field) {
-      this.$set(field, 'required', !field.required)
+      field.required = !field.required
       if (field.required) {
-        this.$set(field, 'hidden', false)
+        field.hidden = false
       }
     },
     getDefaultFields () {
@@ -283,7 +283,7 @@ export default {
           return field
         })
       }
-      this.$set(this.form, 'properties', this.formFields)
+      this.form.properties = this.formFields
     },
     generateUUID () {
       let d = new Date().getTime()// Timestamp
@@ -318,7 +318,7 @@ export default {
     removeBlock (blockIndex) {
       const newFields = clonedeep(this.formFields)
       newFields.splice(blockIndex, 1)
-      this.$set(this, 'formFields', newFields)
+      this.formFields = newFields
       this.closeSidebar()
     },
     closeSidebar () {

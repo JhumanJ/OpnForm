@@ -50,11 +50,11 @@ export default {
       this.onEnd()
     },
     onEnd () {
-      if(this.disabled){
+      if (this.disabled) {
         this.$refs.signaturePad.clearSignature()
-      }else{
+      } else {
         const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
-        this.$set(this.form, this.name, (!isEmpty && data) ? data : null)
+        this.form[this.name] = (!isEmpty && data) ? data : null
       }
     }
   }

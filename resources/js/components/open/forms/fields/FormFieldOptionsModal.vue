@@ -9,10 +9,12 @@
           <div>
             <v-button color="light-gray" size="small" @click="removeBlock">
               <svg class="h-4 w-4 text-red-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
-                   xmlns="http://www.w3.org/2000/svg">
+                   xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                />
               </svg>
 
               Remove
@@ -21,15 +23,17 @@
           <div class="ml-1">
             <v-button size="small" color="light-gray" @click="duplicateBlock">
               <svg class="h-4 w-4 text-blue-600 inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
-                   xmlns="http://www.w3.org/2000/svg">
+                   xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                />
               </svg>
               Duplicate
             </v-button>
           </div>
-          <change-field-type class="my-1" :field="field" @changeType="onChangeType"/>
+          <change-field-type class="my-1" :field="field" @changeType="onChangeType" />
         </div>
       </div>
 
@@ -125,7 +129,7 @@
         </p>
         <v-checkbox v-model="field.multi_lines"
                     :name="field.id+'_multi_lines'"
-                    @input="$set(field,'multi_lines',$event)"
+                    @input="field.multi_lines = $event"
         >
           Multi-lines input
         </v-checkbox>
@@ -194,21 +198,23 @@
           Advanced options for your select/multiselect fields.
         </p>
         <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-4"
-                         @input="onFieldOptionsChange"
                          label="Set selection options"
                          help="Add one option per line"
+                         @input="onFieldOptionsChange"
         />
         <v-checkbox v-model="field.allow_creation"
-                    name="allow_creation" @input="onFieldAllowCreationChange" help=""
+                    name="allow_creation" help="" @input="onFieldAllowCreationChange"
         >
           Allow respondent to create new options
         </v-checkbox>
         <v-checkbox v-model="field.without_dropdown" class="mt-4"
-                    name="without_dropdown" @input="onFieldWithoutDropdownChange" help=""
+                    name="without_dropdown" help="" @input="onFieldWithoutDropdownChange"
         >
           Always show all select options
         </v-checkbox>
-        <p class="text-gray-400 mb-5 text-xs">Options won't be in a dropdown anymore, but will all be visible</p>
+        <p class="text-gray-400 mb-5 text-xs">
+          Options won't be in a dropdown anymore, but will all be visible
+        </p>
       </div>
 
       <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
@@ -235,7 +241,7 @@
         <!-- Pre-fill depends on type -->
         <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-4"
                     :name="field.id+'_prefill'"
-                    @input="$set(field,'prefill',$event)"
+                    @input="field.prefill = $event"
         >
           Pre-filled value
         </v-checkbox>
@@ -285,19 +291,19 @@
 
         <!--   Help  -->
         <rich-text-area-input name="help" class="mt-4"
-                    :form="field"
-                    :editorToolbar="editorToolbarCustom"
-                    label="Field Help"
-                    help="Your field help will be shown below/above the field, just like this message."
-                    :help-position="field.help_position"
+                              :form="field"
+                              :editor-toolbar="editorToolbarCustom"
+                              label="Field Help"
+                              help="Your field help will be shown below/above the field, just like this message."
+                              :help-position="field.help_position"
         />
         <select-input name="help_position" class="mt-4"
-                    :options="[
-                      {name:'Below input',value:'below_input'},
-                      {name:'Above input',value:'above_input'},
-                    ]"
-                    :form="field" label="Field Help Position"
-                    @input="onFieldHelpPositionChange"
+                      :options="[
+                        {name:'Below input',value:'below_input'},
+                        {name:'Above input',value:'above_input'},
+                      ]"
+                      :form="field" label="Field Help Position"
+                      @input="onFieldHelpPositionChange"
         />
 
         <template v-if="['text','number','url','email','phone_number'].includes(field.type)">
@@ -311,7 +317,6 @@
                           label="Always show character limit"
           />
         </template>
-
       </div>
 
       <!--  Advanced Options   -->
@@ -342,7 +347,7 @@
       </div>
 
       <!--  Logic Block -->
-      <form-block-logic-editor v-model="form" :form="form" :field="field"/>
+      <form-block-logic-editor v-model="form" :form="form" :field="field" />
 
       <div class="pt-5 flex justify-end">
         <v-button color="white" @click="close">
@@ -359,14 +364,14 @@
 <script>
 
 import timezones from '../../../../../data/timezones.json'
-import ProTag from "../../../common/ProTag.vue"
+import ProTag from '../../../common/ProTag.vue'
+import ChangeFieldType from './components/ChangeFieldType.vue'
 
 const FormBlockLogicEditor = () => import('../components/form-logic-components/FormBlockLogicEditor.vue')
-import ChangeFieldType from "./components/ChangeFieldType.vue"
 
 export default {
   name: 'FormFieldOptionsModal',
-  components: {ProTag, FormBlockLogicEditor, ChangeFieldType},
+  components: { ProTag, FormBlockLogicEditor, ChangeFieldType },
   props: {
     field: {
       type: Object,
@@ -381,20 +386,20 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
       editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link'],
+        ['bold', 'italic', 'underline', 'link']
       ]
     }
   },
 
   computed: {
-    hasPlaceholder() {
+    hasPlaceholder () {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
-    prefillSelectsOptions() {
+    prefillSelectsOptions () {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
 
       return this.field[this.field.type].options.map(option => {
@@ -404,7 +409,7 @@ export default {
         }
       })
     },
-    timezonesOptions() {
+    timezonesOptions () {
       if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
         return {
@@ -413,24 +418,24 @@ export default {
         }
       })
     },
-    displayBasedOnAdvanced() {
+    displayBasedOnAdvanced () {
       if (this.field.generates_uuid || this.field.generates_auto_increment_id) {
         return false
       }
       return true
     },
-    optionsText() {
+    optionsText () {
       return this.field[this.field.type].options.map(option => {
         return option.name
-      }).join("\n")
-    },
+      }).join('\n')
+    }
   },
 
   watch: {
     'field.width': {
       handler (val) {
         if (val === undefined || val === null) {
-          this.$set(this.field, 'width', 'full')
+          this.field.width = 'full'
         }
       },
       immediate: true
@@ -439,139 +444,139 @@ export default {
 
   created () {
     if (this.field.width === undefined || this.field.width === null) {
-      this.$set(this.field, 'width', 'full')
+      this.field.width = 'full'
     }
   },
 
-  mounted() {
+  mounted () {
     if (['text', 'number', 'url', 'email', 'phone_number'].includes(this.field.type) && !this.field.max_char_limit) {
       this.field.max_char_limit = 2000
     }
   },
 
   methods: {
-    onChangeType(newType) {
-      if(['select', 'multi_select'].includes(this.field.type)){
-        this.$set(this.field, newType, this.field[this.field.type]) // Set new options with new type
-        this.$delete(this.field, this.field.type) // remove old type options
+    onChangeType (newType) {
+      if (['select', 'multi_select'].includes(this.field.type)) {
+        this.field[newType] = this.field[this.field.type] // Set new options with new type
+        delete this.field[this.field.type] // remove old type options
       }
-      this.$set(this.field, 'type', newType)
+      this.field.type = newType
     },
-    close() {
+    close () {
       this.$emit('close')
     },
-    removeBlock() {
+    removeBlock () {
       this.close()
       this.$emit('remove-block', this.field)
     },
-    duplicateBlock() {
+    duplicateBlock () {
       this.close()
       this.$emit('duplicate-block', this.field)
     },
     onFieldDisabledChange (val) {
-      this.$set(this.field, 'disabled', val)
+      this.field.disabled = val
       if (this.field.disabled) {
-        this.$set(this.field, 'hidden', false)
+        this.field.hidden = false
       }
     },
-    onFieldRequiredChange(val) {
-      this.$set(this.field, 'required', val)
+    onFieldRequiredChange (val) {
+      this.field.required = val
       if (this.field.required) {
-        this.$set(this.field, 'hidden', false)
+        this.field.hidden = false
       }
     },
-    onFieldHiddenChange(val) {
-      this.$set(this.field, 'hidden', val)
+    onFieldHiddenChange (val) {
+      this.field.hidden = val
       if (this.field.hidden) {
-        this.$set(this.field, 'required', false)
-        this.$set(this.field, 'disabled', false)
+        this.field.required = false
+        this.field.disabled = false
       } else {
-        this.$set(this.field, 'generates_uuid', false)
-        this.$set(this.field, 'generates_auto_increment_id', false)
+        this.field.generates_uuid = false
+        this.field.generates_auto_increment_id = false
       }
     },
-    onFieldDateRangeChange(val) {
-      this.$set(this.field, 'date_range', val)
+    onFieldDateRangeChange (val) {
+      this.field.date_range = val
       if (this.field.date_range) {
-        this.$set(this.field, 'with_time', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.with_time = false
+        this.field.prefill_today = false
       }
     },
-    onFieldWithTimeChange(val) {
-      this.$set(this.field, 'with_time', val)
+    onFieldWithTimeChange (val) {
+      this.field.with_time = val
       if (this.field.with_time) {
-        this.$set(this.field, 'date_range', false)
+        this.field.date_range = false
       }
     },
-    onFieldGenUIdChange(val) {
-      this.$set(this.field, 'generates_uuid', val)
+    onFieldGenUIdChange (val) {
+      this.field.generates_uuid = val
       if (this.field.generates_uuid) {
-        this.$set(this.field, 'generates_auto_increment_id', false)
-        this.$set(this.field, 'hidden', true)
+        this.field.generates_auto_increment_id = false
+        this.field.hidden = true
       }
     },
-    onFieldGenAutoIdChange(val) {
-      this.$set(this.field, 'generates_auto_increment_id', val)
+    onFieldGenAutoIdChange (val) {
+      this.field.generates_auto_increment_id = val
       if (this.field.generates_auto_increment_id) {
-        this.$set(this.field, 'generates_uuid', false)
-        this.$set(this.field, 'hidden', true)
+        this.field.generates_uuid = false
+        this.field.hidden = true
       }
     },
-    initRating() {
+    initRating () {
       if (this.field.is_rating && !this.field.rating_max_value) {
-        this.$set(this.field, 'rating_max_value', 5)
+        this.field.rating_max_value = 5
       }
     },
-    onFieldOptionsChange(val) {
-      const vals = (val) ? val.trim().split("\n") : []
+    onFieldOptionsChange (val) {
+      const vals = (val) ? val.trim().split('\n') : []
       const tmpOpts = vals.map(name => {
         return {
           name: name,
           id: name
         }
       })
-      this.$set(this.field, this.field.type, {'options': tmpOpts})
+      this.field[this.field.type] = { options: tmpOpts }
     },
-    onFieldPrefillTodayChange(val) {
-      this.$set(this.field, 'prefill_today', val)
+    onFieldPrefillTodayChange (val) {
+      this.field.prefill_today = val
       if (this.field.prefill_today) {
-        this.$set(this.field, 'prefill', 'Pre-filled with current date')
-        this.$set(this.field, 'date_range', false)
-        this.$set(this.field, 'disable_future_dates', false)
-        this.$set(this.field, 'disable_past_dates', false)
+        this.field.prefill = 'Pre-filled with current date'
+        this.field.date_range = false
+        this.field.disable_future_dates = false
+        this.field.disable_past_dates = false
       } else {
-        this.$set(this.field, 'prefill', null)
+        this.field.prefill = null
       }
     },
-    onFieldAllowCreationChange(val) {
-      this.$set(this.field, 'allow_creation', val)
+    onFieldAllowCreationChange (val) {
+      this.field.allow_creation = val
       if (this.field.allow_creation) {
-        this.$set(this.field, 'without_dropdown', false)
+        this.field.without_dropdown = false
       }
     },
-    onFieldWithoutDropdownChange(val) {
-      this.$set(this.field, 'without_dropdown', val)
+    onFieldWithoutDropdownChange (val) {
+      this.field.without_dropdown = val
       if (this.field.without_dropdown) {
-        this.$set(this.field, 'allow_creation', false)
+        this.field.allow_creation = false
       }
     },
-    onFieldDisablePastDatesChange(val) {
-      this.$set(this.field, 'disable_past_dates', val)
+    onFieldDisablePastDatesChange (val) {
+      this.field.disable_past_dates = val
       if (this.field.disable_past_dates) {
-        this.$set(this.field, 'disable_future_dates', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.disable_future_dates = false
+        this.field.prefill_today = false
       }
     },
-    onFieldDisableFutureDatesChange(val) {
-      this.$set(this.field, 'disable_future_dates', val)
+    onFieldDisableFutureDatesChange (val) {
+      this.field.disable_future_dates = val
       if (this.field.disable_future_dates) {
-        this.$set(this.field, 'disable_past_dates', false)
-        this.$set(this.field, 'prefill_today', false)
+        this.field.disable_past_dates = false
+        this.field.prefill_today = false
       }
     },
     onFieldHelpPositionChange (val) {
       if (!val) {
-        this.$set(this.field, 'help_position', 'below_input')
+        this.field.help_position = 'below_input'
       }
     }
   }

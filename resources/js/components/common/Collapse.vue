@@ -15,34 +15,27 @@
         </svg>
       </div>
     </div>
-    <v-transition>
+    <VTransition>
       <div v-if="showContent" class="w-full">
         <slot />
       </div>
-    </v-transition>
+    </VTransition>
   </div>
 </template>
 
-<script>
+<script setup>
 import VTransition from './transitions/VTransition.vue'
+import { ref, defineProps, defineEmits } from 'vue'
 
-export default {
-  name: 'Collapse',
-  components: { VTransition },
-  props: {
-    defaultValue: { type: Boolean, default: false },
-    value: { type: Boolean, default: null }
-  },
-  data () {
-    return {
-      showContent: this.value ?? this.defaultValue
-    }
-  },
-  methods: {
-    trigger () {
-      this.showContent = !this.showContent
-      this.$emit('input', this.showContent)
-    }
-  }
+const props = defineProps({
+  modelValue: { type: Boolean, default: null }
+})
+
+const showContent = ref(props.modelValue)
+const emit = defineEmits()
+
+const trigger = () => {
+  showContent.value = !showContent.value
+  emit('update:modelValue', showContent.value)
 }
 </script>

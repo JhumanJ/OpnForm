@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { defineAsyncComponent } from 'vue'
 
 import HasError from './validation/HasError.vue'
 import AlertError from './validation/AlertError.vue'
@@ -16,29 +16,38 @@ import RatingInput from './RatingInput.vue'
 import FlatSelectInput from './FlatSelectInput.vue'
 import ToggleSwitchInput from './ToggleSwitchInput.vue'
 
-// Components that are registered globaly.
-[
-  HasError,
-  AlertError,
-  AlertSuccess,
-  VCheckbox,
-  VSelect,
-  CheckboxInput,
-  ColorInput,
-  TextInput,
-  SelectInput,
-  TextAreaInput,
-  FileInput,
-  ImageInput,
-  RatingInput,
-  FlatSelectInput,
-  ToggleSwitchInput
-].forEach(Component => {
-  Vue.component(Component.name, Component)
-})
+export function registerComponents (app) {
+  [
+    HasError,
+    AlertError,
+    AlertSuccess,
+    VCheckbox,
+    VSelect,
+    CheckboxInput,
+    ColorInput,
+    TextInput,
+    SelectInput,
+    TextAreaInput,
+    FileInput,
+    ImageInput,
+    RatingInput,
+    FlatSelectInput,
+    ToggleSwitchInput
+  ].forEach(Component => {
+    app.component(Component.name, Component)
+  })
 
-// Lazy load some heavy component
-Vue.component('SignatureInput', () => import('./SignatureInput.vue'))
-Vue.component('RichTextAreaInput', () => import('./RichTextAreaInput.vue'))
-Vue.component('DateInput', () => import('./DateInput.vue'))
-Vue.component('PhoneInput', () => import('./PhoneInput.vue'))
+  // Register async components
+  app.component('SignatureInput', defineAsyncComponent(() =>
+    import('./SignatureInput.vue')
+  ))
+  app.component('RichTextAreaInput', defineAsyncComponent(() =>
+    import('./RichTextAreaInput.vue')
+  ))
+  app.component('PhoneInput', defineAsyncComponent(() =>
+    import('./PhoneInput.vue')
+  ))
+  app.component('DateInput', defineAsyncComponent(() =>
+    import('./DateInput.vue')
+  ))
+}

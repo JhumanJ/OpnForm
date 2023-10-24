@@ -4,6 +4,7 @@ import router from '~/router'
 import App from '~/components/App.vue'
 import Base from './base.js'
 import registerPlugin from './plugins'
+import { registerComponents } from './components'
 
 import '~/plugins'
 import '~/components'
@@ -16,10 +17,15 @@ const app = createApp(App)
   .mixin(Base)
 
 registerPlugin(app)
+registerComponents(app)
 
 configureCompat({
   // default everything to Vue 2 behavior
-  MODE: 2
+  MODE: 2,
+  GLOBAL_MOUNT: false,
+  COMPONENT_V_MODEL: false,
+  INSTANCE_SET: false,
+  INSTANCE_DELETE: false
 })
 
 router.app = app

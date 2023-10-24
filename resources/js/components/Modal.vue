@@ -37,7 +37,7 @@
                 </button>
               </div>
               <div class="sm:flex sm:flex-col sm:items-start">
-                <div v-if="$scopedSlots.hasOwnProperty('icon')" class="flex w-full justify-center mb-4">
+                <div v-if="$slots.hasOwnProperty('icon')" class="flex w-full justify-center mb-4">
                   <div class="w-14 h-14 rounded-full flex justify-center items-center"
                        :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'"
                   >
@@ -45,7 +45,7 @@
                   </div>
                 </div>
                 <div class="mt-3 text-center sm:mt-0 w-full">
-                  <h2 v-if="$scopedSlots.hasOwnProperty('title')"
+                  <h2 v-if="$slots.hasOwnProperty('title')"
                       class="text-2xl font-semibold text-center text-gray-900"
                   >
                     <slot name="title" />
@@ -58,7 +58,7 @@
               </div>
             </div>
 
-            <div v-if="$scopedSlots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
+            <div v-if="$slots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
               <slot name="footer" />
             </div>
           </div>
@@ -120,17 +120,11 @@ export default {
   },
 
   created () {
-    const closeOnEscape = (e) => {
-      if (e.key === 'Escape' && this.show) {
-        this.close()
-      }
-    }
+    document.addEventListener('keydown', this.closeOnEscape)
+  },
 
-    document.addEventListener('keydown', closeOnEscape)
-
-    this.$once('hook:unmounted', () => {
-      document.removeEventListener('keydown', closeOnEscape)
-    })
+  beforeUnmount () {
+    document.removeEventListener('keydown', this.closeOnEscape)
   },
 
   methods: {
@@ -142,6 +136,11 @@ export default {
     leaveCallback () {
       if (this.afterLeave) {
         this.afterLeave()
+      }
+    },
+    closeOnEscape (e) {
+      if (e.key === 'Escape' && this.show) {
+        this.close()
       }
     }
   }
