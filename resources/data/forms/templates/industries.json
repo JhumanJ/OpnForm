@@ -1,13 +1,13 @@
 {
   "advertising_forms": {
-    "name": "Advertising Forms",
+    "name": "Quảng cáo",
     "slug": "advertising_forms",
     "meta_title": "Supercharge Your Advertising Campaigns with OpnForm",
     "meta_description": "Discover how OpnForm and our Advertising Form Templates can revolutionize your advertising campaigns. Customize, embed, and integrate forms to streamline data collection and improve collaboration with clients and team members.",
     "description": "Attention all advertising professionals! Our Advertising Form Templates are designed to streamline your data collection process. Whether you need to gather client information, conduct market research surveys, or collect feedback from customers, OpnForm has you covered. With OpnForm, you can fully customize and brand your forms to represent your agency or brand. Embed these forms on your website or share them via email, social media, or any other online channel. Take advantage of features like email notifications for form owners and submitters, integration with Slack, Discord, and other tools via Zapier or webhooks, and the ability to protect your forms with a password. Plus, our forms support captchas to prevent spam submissions and allow you to add custom code for advanced functionality. Start optimizing your advertising workflow with OpnForm and our Advertising Form Templates today!"
   },
   "alumni_forms": {
-    "name": "Alumni Forms",
+    "name": "Nhập học",
     "slug": "alumni_forms",
     "meta_title": "Unlock the Potential of Your Alumni Community with OpnForm",
     "meta_description": "Discover how OpnForm empowers educational institutions, alumni associations, and professional networking groups to streamline alumni data collection, feedback gathering, and event organization. With our Alumni Form Templates, easily create customized forms, receive email notifications, integrate with popular tools, and enhance security measures. Start engaging with your alumni community like never before!",
@@ -21,28 +21,28 @@
     "description": "Are you an animal shelter or rescue organization? OpnForm's Animal Shelter Form Templates are designed to streamline your workflow and help you efficiently manage the adoption process for your furry friends. With OpnForm, you can easily collect information from potential adopters, foster parents, and volunteers in a user-friendly manner. Customize and brand your forms to match your organization's identity. Our open-source form builder offers a wide range of features, including email notifications for both form owners and respondents, custom domains to host your forms, and the ability to embed forms on your website. Connect with popular tools like Slack, Discord, and more using our seamless integrations. Ensure the security of your forms with password protection and captchas. Let respondents edit their own submissions and create multi-page forms to gather comprehensive information. Get started with our Animal Shelter Form Templates today!"
   },
   "banking_forms": {
-    "name": "Banking Forms",
+    "name": "Ngân hàng",
     "slug": "banking_forms",
     "meta_title": "Revolutionize Your Banking Processes with OpnForm's Banking Form Templates",
     "meta_description": "Discover how OpnForm's Banking Form Templates can modernize your banking operations. Collect essential information like loan applications, account opening forms, and customer feedback with ease. Customize and brand your forms, protect them with passwords, embed them on your website, and integrate them with banking systems. Automate email notifications, enable form editing for respondents, enhance security with captchas, and add custom code. Optimize your banking processes today!",
     "description": "Are you in the banking industry? Streamline your processes and enhance customer experiences with OpnForm's Banking Form Templates. Easily collect essential information from your customers, such as loan applications, account opening forms, or customer feedback. With OpnForm, you have access to a powerful open-source form builder that offers advanced features tailored for the banking industry. Customize and brand your forms, protect them with passwords, and embed them on your website or share them via a custom domain. Integrate your forms with tools like Slack, Discord, or other banking systems through Zapier or webhooks. Automate email notifications for both form owners and form submitters, and enable form editing for respondents to update their submissions. Enhance security with captchas and add custom code to meet your specific requirements. Optimize your banking operations with OpnForm and our Banking Form Templates."
   },
   "business_forms": {
-    "name": "Business Forms",
+    "name": "Doanh nghiệp",
     "slug": "business_forms",
     "meta_title": "Supercharge Your Data Collection with OpnForm's Business Form Templates",
     "meta_description": "Discover how OpnForm's open-source form builder and Business Form Templates can revolutionize your data collection processes. Collect valuable information from your customers, conduct market research, and streamline your business operations. With features like email notifications, custom branding, and integration with popular tools, OpnForm is the ultimate solution for efficient and effective data collection.",
     "description": "Are you a business owner or manager looking for a better way to collect and manage information? Look no further! OpnForm's Business Form Templates are designed to streamline your data collection processes. Whether you need to gather customer feedback, conduct market research, or collect orders, OpnForm has you covered. With our open-source form builder, you can easily create customized forms that match your brand and meet your specific needs. Our templates come with powerful features, including email notifications for both the form owner and the submitter, the ability to embed forms on any website, and seamless integration with popular tools like Slack, Discord, and Zapier. Plus, you can add password protection, captchas, custom code, and pre-fill options to enhance your form's functionality. Don't miss out on the benefits of OpnForm and our Business Form Templates. Start simplifying your data collection processes today!"
   },
   "charity_forms": {
-    "name": "Charity Forms",
+    "name": "Từ thiện",
     "slug": "charity_forms",
     "meta_title": "Streamline Your Charity Organization with OpnForm",
     "meta_description": "Discover how OpnForm and our Charity Form Templates can simplify data collection for your charity organization. Easily collect donations, volunteer registrations, event registrations, and more with our customizable forms. Explore powerful features such as email notifications, form customization, embedding forms on your website, integrating with popular tools, and more. Start streamlining your charity organization's processes today!",
     "description": "Are you a charity organization looking for a simple and effective way to collect information from donors, volunteers, and beneficiaries? OpnForm's Charity Form Templates are designed specifically for your needs. With OpnForm, you can easily create customized forms to collect donations, volunteer registrations, event registrations, and more. Our templates are ready to use, but can also be easily customized to match your branding and requirements. With OpnForm, you have access to powerful features such as email notifications for both the form owner and the form submitter, form customization and branding, the ability to host forms on your own custom domain, and the option to embed forms on your website. Integrating with other tools is a breeze with OpnForm's integration capabilities with popular platforms like Slack, Discord, and many others via Zapier or webhooks. You can also protect your forms with a password, add captchas for added security, and even include custom code to further enhance your forms. In addition, OpnForm allows you to pre-fill forms via URL parameters, set closing dates or submission limits, and enables respondents to edit their own form submissions. Start streamlining your charity organization's data collection process today with OpnForm and our Charity Form Templates."
   },
   "church_forms": {
-    "name": "Church Forms",
+    "name": "Nhà thờ",
     "slug": "church_forms",
     "meta_title": "Simplify Church Administration with OpnForm's Church Form Templates",
     "meta_description": "OpnForm's Church Form Templates provide church administrators, pastors, and event organizers with an efficient way to collect information from their congregation or event attendees. With OpnForm's open-source form builder, customize your forms to match your church's branding, embed them on your website, and receive email notifications for every submission. Discover the features of OpnForm and simplify your church administration tasks today.",

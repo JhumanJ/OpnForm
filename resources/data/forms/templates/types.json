@@ -1,20 +1,20 @@
 {
   "order_forms": {
-    "name": "Order Forms",
+    "name": "Đặt hàng",
     "slug": "order_forms",
     "meta_title": "Supercharge Your Order Management with OpnForm's Order Form Templates",
     "meta_description": "Discover how OpnForm's Order Form Templates can streamline your order management process. Create customized order forms with ease, receive email notifications, integrate with popular tools, and more. Start simplifying your ordering process today!",
     "description": "Looking to streamline your order management process? OpnForm's Order Form Templates are designed to simplify the collection of order details. With OpnForm, you can easily create customized order forms that fit your business needs. Take advantage of features like email notifications, form branding, custom domains, and integrations with popular tools like Slack and Discord. Whether you're running an online store or managing orders for a restaurant, OpnForm's Order Form Templates can help optimize your workflow and upgrade your ordering process."
   },
   "registration_forms": {
-    "name": "Registration Forms",
+    "name": "Đăng ký",
     "slug": "registration_forms",
     "meta_title": "Streamline Your Registration Process with OpnForm's Registration Form Templates",
     "meta_description": "Looking for an easy way to collect attendee details for your event or workshop? Discover how OpnForm's open-source form builder and Registration Form Templates can simplify your registration process. Fully customizable forms, email notifications, integration options, and more!",
     "description": "Are you organizing an event or workshop and need to collect attendee details? OpnForm's Registration Form Templates can help streamline your registration process! With our easy-to-use form builder, you can create customized registration forms to suit your specific needs. OpnForm's open-source platform allows you to fully customize and brand your forms, ensuring a seamless experience for your attendees. Additionally, our form builder provides features such as email notifications, integration with popular tools like Slack and Discord, password protection, captcha options, and the ability to add custom code. You can even pre-fill forms via URL parameters and set closing dates or submission limits. Simplify your registration process and make it a breeze with OpnForm and our Registration Form Templates!"
   },
   "event_registration_forms": {
-    "name": "Event Registration Forms",
+    "name": "Sự kiện",
     "slug": "event_registration_forms",
     "meta_title": "Streamline Event Registrations with OpnForm's Templates",
     "meta_description": "Easily manage event registrations using OpnForm's Event Registration Form Templates. Customize and embed these forms on your website, streamline your registration process, and benefit from OpnForm's powerful features like email notifications, custom branding, and integrations with popular tools. Upgrade your event management with OpnForm!",

@@ -3,7 +3,7 @@
     <template #title>
       <h3 class="font-semibold text-lg">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 transition-colors"
-          :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}" fill="none" viewBox="0 0 24 24"
+          :class="{ 'text-blue-600': isCollapseOpen, 'text-gray-500': !isCollapseOpen }" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
@@ -12,7 +12,7 @@
         <pro-tag />
       </h3>
     </template>
-    <text-input name="webhook_url" class="mt-4" :form="form" help="We will post form submissions to this endpoint."
+    <text-input name="webhook_url" class="mt-4" :form="form" help="Chúng tôi sẽ gửi biểu mẫu gửi đến URL này."
       label="Webhook URL" />
 
     <!--    <div>-->
@@ -43,7 +43,7 @@ import Collapse from '../../../../common/Collapse.vue'
 import ProTag from '../../../../common/ProTag.vue'
 
 export default {
-  components: {Collapse, ProTag},
+  components: { Collapse, ProTag },
   props: {},
   data() {
     return {
@@ -67,6 +67,6 @@ export default {
 
   watch: {},
 
-  mounted() {},
+  mounted() { },
 }
 </script>

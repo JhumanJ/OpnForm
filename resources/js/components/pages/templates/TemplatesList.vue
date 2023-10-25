@@ -81,7 +81,7 @@ export default {
       user: 'auth/user'
     }),
     industriesOptions() {
-      return [{ name: 'All Industries', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
+      return [{ name: 'Tất cả các ngành', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
         return {
           name: industry.name,
           value: industry.slug
@@ -89,7 +89,7 @@ export default {
       }))
     },
     typesOptions() {
-      return [{ name: 'All Types', value: 'all' }].concat(Object.values(this.types).map((type) => {
+      return [{ name: 'Tất cả các loại', value: 'all' }].concat(Object.values(this.types).map((type) => {
         return {
           name: type.name,
           value: type.slug

@@ -3,28 +3,19 @@
     <!-- General -->
     <div class="border-b px-4">
       <h3 class="font-semibold block text-lg">
-        General
+        Tổng quan
       </h3>
       <p class="text-gray-400 mb-2 text-xs">
-        Exclude this field or make it required.
+        Loại trừ trường này hoặc đặt nó là bắt buộc.
       </p>
-      <v-checkbox v-model="field.hidden" class="mb-3"
-                  :name="field.id+'_hidden'"
-                  @input="onFieldHiddenChange"
-      >
-        Hidden
+      <v-checkbox v-model="field.hidden" class="mb-3" :name="field.id + '_hidden'" @input="onFieldHiddenChange">
+        Ẩn
       </v-checkbox>
-      <v-checkbox v-model="field.required" class="mb-3"
-                  :name="field.id+'_required'"
-                  @input="onFieldRequiredChange"
-      >
-        Required
+      <v-checkbox v-model="field.required" class="mb-3" :name="field.id + '_required'" @input="onFieldRequiredChange">
+        Bắt buộc
       </v-checkbox>
-      <v-checkbox v-model="field.disabled" class="mb-3"
-                  :name="field.id+'_disabled'"
-                  @input="onFieldDisabledChange"
-      >
-        Disabled
+      <v-checkbox v-model="field.disabled" class="mb-3" :name="field.id + '_disabled'" @input="onFieldDisabledChange">
+        Vô hiệu hóa
       </v-checkbox>
     </div>
 
@@ -34,298 +25,219 @@
         Checkbox
       </h3>
       <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for checkbox.
+        Tùy chọn nâng cao cho check box.
       </p>
-      <v-checkbox v-model="field.use_toggle_switch" class="mt-3"
-                  name="use_toggle_switch" help=""
-      >
-        Use toggle switch
+      <v-checkbox v-model="field.use_toggle_switch" class="mt-3" name="use_toggle_switch" help="">
+        Sử dụng công tắc bật tắt
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If enabled, checkbox will be replaced with a toggle switch
+        Nếu được bật, hộp kiểm sẽ được thay thế bằng nút chuyển đổi
       </p>
     </div>
 
     <!-- File Uploads -->
     <div v-if="field.type === 'files'" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        File uploads
+        Tải file lên
       </h3>
-      <v-checkbox v-model="field.multiple" class="mt-3"
-                  :name="field.id+'_multiple'"
-      >
-        Allow multiple files
+      <v-checkbox v-model="field.multiple" class="mt-3" :name="field.id + '_multiple'">
+        Cho phép nhiều tập tin
       </v-checkbox>
-      <text-input name="allowed_file_types" class="mt-3" :form="field"
-                  label="Allowed file types" placeholder="jpg,jpeg,png,gif"
-                  help="Comma separated values, leave blank to allow all file types"
-      />
+      <text-input name="allowed_file_types" class="mt-3" :form="field" label="Loại tệp được phép"
+        placeholder="jpg,jpeg,png,gif"
+        help="Các giá trị được phân tách bằng dấu phẩy, để trống để cho phép tất cả các loại tệp" />
     </div>
 
     <!--   Number Options   -->
     <div v-if="field.type === 'number'" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        Number Options
+        Tùy chọn số
       </h3>
-      <v-checkbox v-model="field.is_rating" class="mt-3"
-                  :name="field.id+'_is_rating'" @input="initRating"
-      >
-        Rating
+      <v-checkbox v-model="field.is_rating" class="mt-3" :name="field.id + '_is_rating'" @input="initRating">
+        Đánh giá
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If enabled then this field will be star rating input.
+        Nếu được bật thì trường này sẽ là đầu vào đánh giá sao.
       </p>
 
-      <text-input v-if="field.is_rating" name="rating_max_value" native-type="number" :min="1" class="mt-3"
-                  :form="field" required
-                  label="Max rating value"
-      />
+      <text-input v-if="field.is_rating" name="rating_max_value" native-type="number" :min="1" class="mt-3" :form="field"
+        required label="Giá trị đánh giá tối đa" />
     </div>
 
     <!--   Text Options   -->
     <div v-if="field.type === 'text' && displayBasedOnAdvanced" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        Text Options
+        Tùy chọn văn bản
       </h3>
       <p class="text-gray-400 mb-3 text-xs">
-        Keep it simple or make it a multi-lines input.
+        Giữ nó đơn giản hoặc biến nó thành một đầu vào nhiều dòng.
       </p>
-      <v-checkbox v-model="field.multi_lines" class="mb-2"
-                  :name="field.id+'_multi_lines'"
-                  @input="$set(field,'multi_lines',$event)"
-      >
-        Multi-lines input
+      <v-checkbox v-model="field.multi_lines" class="mb-2" :name="field.id + '_multi_lines'"
+        @input="$set(field, 'multi_lines', $event)">
+        Đầu vào nhiều dòng
       </v-checkbox>
     </div>
 
     <!--   Date Options   -->
     <div v-if="field.type === 'date'" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        Date Options
+        Tùy chọn ngày
       </h3>
-      <v-checkbox v-model="field.date_range" class="mt-3"
-                  :name="field.id+'_date_range'"
-                  @input="onFieldDateRangeChange"
-      >
-        Date Range
+      <v-checkbox v-model="field.date_range" class="mt-3" :name="field.id + '_date_range'" @input="onFieldDateRangeChange">
+        Phạm vi ngày
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        Adds an end date. This cannot be used with the time option yet.
+        Thêm ngày kết thúc. Điều này chưa thể được sử dụng với tùy chọn thời gian.
       </p>
-      <v-checkbox v-model="field.with_time"
-                  :name="field.id+'_with_time'"
-                  @input="onFieldWithTimeChange"
-      >
-        Date with time
+      <v-checkbox v-model="field.with_time" :name="field.id + '_with_time'" @input="onFieldWithTimeChange">
+        Ngày với thời gian
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        Include time. Or not. This cannot be used with the date range option yet.
+        Bao gồm thời gian. Hay không. Điều này chưa thể được sử dụng với tùy chọn phạm vi ngày.
       </p>
 
-      <select-input v-if="field.with_time" name="timezone" class="mt-3"
-                    :form="field" :options="timezonesOptions"
-                    label="Timezone" :searchable="true"
-                    help="Make sure to select correct timezone. Leave blank otherwise."
-      />
-      <v-checkbox v-model="field.prefill_today"
-                  name="prefill_today"
-                  @input="onFieldPrefillTodayChange"
-      >
-        Prefill with 'today'
+      <select-input v-if="field.with_time" name="timezone" class="mt-3" :form="field" :options="timezonesOptions"
+        label="Timezone" :searchable="true" help="Đảm bảo chọn đúng múi giờ. Nếu không thì để trống." />
+      <v-checkbox v-model="field.prefill_today" name="prefill_today" @input="onFieldPrefillTodayChange">
+        Điền trước bằng 'hôm nay'
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        if enabled we will pre-fill this field with the current date
+        Nếu được bật, chúng tôi sẽ điền trước trường này với ngày hiện tại
       </p>
 
-      <v-checkbox v-model="field.disable_past_dates"
-                  name="disable_past_dates" class="mb-3"
-                  @input="onFieldDisablePastDatesChange"
-      >
-        Disable past dates
+      <v-checkbox v-model="field.disable_past_dates" name="disable_past_dates" class="mb-3"
+        @input="onFieldDisablePastDatesChange">
+        Vô hiệu hóa ngày trong quá khứ
       </v-checkbox>
 
-      <v-checkbox v-model="field.disable_future_dates"
-                  name="disable_future_dates" class="mb-3"
-                  @input="onFieldDisableFutureDatesChange"
-      >
-        Disable future dates
+      <v-checkbox v-model="field.disable_future_dates" name="disable_future_dates" class="mb-3"
+        @input="onFieldDisableFutureDatesChange">
+        Vô hiệu hóa ngày trong tương lai
       </v-checkbox>
     </div>
 
     <!-- select/multiselect Options   -->
-    <div v-if="['select','multi_select'].includes(field.type)" class="border-b py-2 px-4">
+    <div v-if="['select', 'multi_select'].includes(field.type)" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        Select Options
+        Lựa chọn các phương án
       </h3>
       <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for your select/multiselect fields.
+        Tùy chọn nâng cao cho các trường chọn/nhiều lựa chọn của bạn.
       </p>
-      <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-3"
-                       @input="onFieldOptionsChange"
-                       label="Set selection options"
-                       help="Add one option per line"
-      />
-      <v-checkbox v-model="field.allow_creation"
-                  name="allow_creation" @input="onFieldAllowCreationChange" help=""
-      >
-        Allow respondent to create new options
+      <text-area-input v-model="optionsText" :name="field.id + '_options_text'" class="mt-3" @input="onFieldOptionsChange"
+        label="Đặt tùy chọn lựa chọn" help="Thêm một tùy chọn trên mỗi dòng" />
+      <v-checkbox v-model="field.allow_creation" name="allow_creation" @input="onFieldAllowCreationChange" help="">
+        Cho phép người trả lời tạo các tùy chọn mới
       </v-checkbox>
-      <v-checkbox v-model="field.without_dropdown" class="mt-3"
-                  name="without_dropdown" @input="onFieldWithoutDropdownChange" help=""
-      >
-        Always show all select options
+      <v-checkbox v-model="field.without_dropdown" class="mt-3" name="without_dropdown"
+        @input="onFieldWithoutDropdownChange" help="">
+        Luôn hiển thị tất cả các tùy chọn đã chọn
       </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">Options won't be in a dropdown anymore, but will all be visible</p>
+      <p class="text-gray-400 mb-3 text-xs">Các tùy chọn sẽ không còn trong danh sách thả xuống nữa nhưng tất cả sẽ hiển
+        thị</p>
     </div>
 
     <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
     <div v-if="displayBasedOnAdvanced" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        Customization
+        Tùy biến
       </h3>
 
       <p class="text-gray-400 mb-3 text-xs">
-        Change your form field name, pre-fill a value, add hints, etc.
+        Thay đổi tên trường biểu mẫu của bạn, điền trước một giá trị, thêm gợi ý, v.v.
       </p>
 
-      <text-input name="name" class="mt-3"
-                  :form="field" :required="true"
-                  label="Field Name"
-      />
+      <text-input name="name" class="mt-3" :form="field" :required="true" label="Field Name" />
 
-      <v-checkbox v-model="field.hide_field_name" class="mt-3"
-                  :name="field.id+'_hide_field_name'"
-      >
-        Hide field name
+      <v-checkbox v-model="field.hide_field_name" class="mt-3" :name="field.id + '_hide_field_name'">
+        Tên trường ẩn
       </v-checkbox>
 
       <v-checkbox v-if="field.type === 'phone_number'" v-model="field.use_simple_text_input" class="mt-3"
-                  :name="field.id+'_use_simple_text_input'"
-      >
-        Use simple text input
+        :name="field.id + '_use_simple_text_input'">
+        Sử dụng kiểu nhập văn bản đơn giản
       </v-checkbox>
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
-        <v-select v-model="field.unavailable_countries" class="mt-4"
-                  :data="allCountries" :multiple="true"
-                  :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
-                  label="Disabled countries" :placeholder="'Select a country'"
-                  help="Remove countries from the phone input"
-        >
-          <template #selected="{option, selected}">
+        <v-select v-model="field.unavailable_countries" class="mt-4" :data="allCountries" :multiple="true"
+          :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
+          label="Vô hiệu hóa trường đất nước" :placeholder="'Chọn đất nước'" help="Xóa quốc gia khỏi đầu vào điện thoại">
+          <template #selected="{ option, selected }">
             <div class="flex items-center space-x-2 justify-center overflow-hidden">
-              {{ option.length }} selected
+              {{ option.length }} Đã chọn
             </div>
           </template>
-          <template #option="{option, selected}">
+          <template #option="{ option, selected }">
             <div class="flex items-center space-x-2 hover:text-white">
-              <country-flag size="normal" class="!-mt-[9px]" :country="option.code"/>
+              <country-flag size="normal" class="!-mt-[9px]" :country="option.code" />
               <span class="grow">{{ option.name }}</span>
               <span>{{ option.dial_code }}</span>
             </div>
             <span v-if="selected" class="absolute inset-y-0 right-0 flex items-center pr-2 dark:text-white">
               <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"
-                />
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
               </svg>
             </span>
           </template>
         </v-select>
         <small class="flex">
-          <a href="#" class="grow" @click.prevent="selectAllCountries">Select All</a>
-          <a href="#" @click.prevent="field.unavailable_countries=null">Un-select All</a>
+          <a href="#" class="grow" @click.prevent="selectAllCountries">Chọn tất cả</a>
+          <a href="#" @click.prevent="field.unavailable_countries = null">Bỏ chọn tất cả</a>
         </small>
       </template>
 
       <!-- Pre-fill depends on type -->
-      <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-3"
-                  :name="field.id+'_prefill'"
-                  @input="$set(field,'prefill',$event)"
-      >
-        Pre-filled value
+      <v-checkbox v-if="field.type == 'checkbox'" v-model="field.prefill" class="mt-3" :name="field.id + '_prefill'"
+        @input="$set(field, 'prefill', $event)">
+        Giá trị điền sẵn
       </v-checkbox>
-      <select-input v-else-if="['select','multi_select'].includes(field.type)" name="prefill" class="mt-3"
-                    :form="field" :options="prefillSelectsOptions"
-                    label="Pre-filled value"
-                    :multiple="field.type==='multi_select'"
-      />
-      <date-input v-else-if="field.type==='date' && field.prefill_today!==true" name="prefill" class="mt-3"
-                  :form="field" :with-time="field.with_time===true"
-                  :date-range="field.date_range===true"
-                  label="Pre-filled value"
-      />
-      <phone-input v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
-                   name="prefill" class="mt-3"
-                   :form="field" :can-only-country="true" :unavailable-countries="field.unavailable_countries ?? []"
-                   label="Pre-filled value"
-      />
-      <text-area-input v-else-if="field.type === 'text' && field.multi_lines"
-                       name="prefill" class="mt-3"
-                       :form="field"
-                       label="Pre-filled value"
-      />
-      <file-input v-else-if="field.type==='files'" name="prefill" class="mt-4"
-                  :form="field"
-                  label="Pre-filled file"
-                  :multiple="field.multiple===true" :moveToFormAssets="true"
-      />
-      <text-input v-else-if="!['files', 'signature'].includes(field.type)" name="prefill" class="mt-3"
-                  :form="field"
-                  label="Pre-filled value"
-                  :disabled="field.type==='date' && field.prefill_today===true"
-      />
-      <div v-if="['select','multi_select'].includes(field.type)" class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
+      <select-input v-else-if="['select', 'multi_select'].includes(field.type)" name="prefill" class="mt-3" :form="field"
+        :options="prefillSelectsOptions" label="Pre-filled value" :multiple="field.type === 'multi_select'" />
+      <date-input v-else-if="field.type === 'date' && field.prefill_today !== true" name="prefill" class="mt-3" :form="field"
+        :with-time="field.with_time === true" :date-range="field.date_range === true" label="Pre-filled value" />
+      <phone-input v-else-if="field.type === 'phone_number' && !field.use_simple_text_input" name="prefill" class="mt-3"
+        :form="field" :can-only-country="true" :unavailable-countries="field.unavailable_countries ?? []"
+        label="Pre-filled value" />
+      <text-area-input v-else-if="field.type === 'text' && field.multi_lines" name="prefill" class="mt-3" :form="field"
+        label="Pre-filled value" />
+      <file-input v-else-if="field.type === 'files'" name="prefill" class="mt-4" :form="field" label="Pre-filled file"
+        :multiple="field.multiple === true" :moveToFormAssets="true" />
+      <text-input v-else-if="!['files', 'signature'].includes(field.type)" name="prefill" class="mt-3" :form="field"
+        label="Pre-filled value" :disabled="field.type === 'date' && field.prefill_today === true" />
+      <div v-if="['select', 'multi_select'].includes(field.type)" class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
         <small>
-          A problem? <a href="#" @click.prevent="field.prefill=null">Click here to clear your pre-fill</a>
+          Vấn đề? <a href="#" @click.prevent="field.prefill = null">Nhấn vào đây để xóa phần điền trước của bạn</a>
         </small>
       </div>
 
       <!--    Placeholder    -->
-      <text-input v-if="hasPlaceholder" name="placeholder" class="mt-3"
-                  :form="field"
-                  label="Empty Input Text (Placeholder)"
-      />
+      <text-input v-if="hasPlaceholder" name="placeholder" class="mt-3" :form="field"
+        label="Empty Input Text (Placeholder)" />
 
-      <select-input name="width" class="mt-3"
-                    :options="[
-                      {name:'Full',value:'full'},
-                      {name:'1/2 (half width)',value:'1/2'},
-                      {name:'1/3 (a third of the width)',value:'1/3'},
-                      {name:'2/3 (two thirds of the width)',value:'2/3'},
-                      {name:'1/4 (a quarter of the width)',value:'1/4'},
-                      {name:'3/4 (three quarters of the width)',value:'3/4'},
-                    ]"
-                    :form="field" label="Field Width"
-      />
+      <select-input name="width" class="mt-3" :options="[
+        { name: 'Đầy đủ', value: 'full' },
+        { name: '1/2 (nửa chiều rộng)', value: '1/2' },
+        { name: '1/3 (một phần ba chiều rộng)', value: '1/3' },
+        { name: '2/3 (hai phần ba chiều rộng)', value: '2/3' },
+        { name: '1/4 (một phần tư chiều rộng)', value: '1/4' },
+        { name: '3/4 (ba phần tư chiều rộng)', value: '3/4' },
+      ]" :form="field" label="Field Width" />
 
       <!--   Help  -->
-      <rich-text-area-input name="help" class="mt-3"
-                            :form="field"
-                            :editorToolbar="editorToolbarCustom"
-                            label="Field Help"
-                            help="Your field help will be shown below/above the field, just like this message."
-                            :help-position="field.help_position"
-      />
-      <select-input name="help_position" class="mt-3"
-                    :options="[
-                    {name:'Below input',value:'below_input'},
-                    {name:'Above input',value:'above_input'},
-                  ]"
-                    :form="field" label="Field Help Position"
-                    @input="onFieldHelpPositionChange"
-      />
+      <rich-text-area-input name="help" class="mt-3" :form="field" :editorToolbar="editorToolbarCustom"
+        label="Trường trợ giúp"
+        help="Trợ giúp về trường của bạn sẽ được hiển thị bên dưới/phía trên trường, giống như thông báo này."
+        :help-position="field.help_position" />
+      <select-input name="help_position" class="mt-3" :options="[
+        { name: 'Below input', value: 'below_input' },
+        { name: 'Above input', value: 'above_input' },
+      ]" :form="field" label="Vị trí trường trợ giúp" @input="onFieldHelpPositionChange" />
 
-      <template v-if="['text','number','url','email'].includes(field.type)">
+      <template v-if="['text', 'number', 'url', 'email'].includes(field.type)">
         <text-input v-model="field.max_char_limit" name="max_char_limit" native-type="number" :min="1" :max="2000"
-                    :form="field"
-                    label="Max character limit"
-                    help="Maximum character limit of 2000"
-                    :required="false"
-        />
-        <checkbox-input name="show_char_limit" :form="field" class="mt-3"
-                        label="Always show character limit"
-        />
+          :form="field" label="Giới hạn số ký tự" help="Giới hạn ký tự tối đa là 2000" :required="false" />
+        <checkbox-input name="show_char_limit" :form="field" class="mt-3" label="Luôn hiển thị giới hạn ký tự" />
       </template>
 
     </div>
@@ -333,33 +245,29 @@
     <!--  Advanced Options   -->
     <div v-if="field.type === 'text'" class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg mb-3">
-        Advanced Options
+        Tùy chọn nâng cao
       </h3>
 
-      <v-checkbox v-model="field.generates_uuid"
-                  :name="field.id+'_generates_uuid'"
-                  @input="onFieldGenUIdChange"
-      >
-        Generates a unique id
+      <v-checkbox v-model="field.generates_uuid" :name="field.id + '_generates_uuid'" @input="onFieldGenUIdChange">
+        Tạo một id duy nhất
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form
-        submission
+        Nếu bạn bật tính năng này, chúng tôi sẽ ẩn trường này và điền vào nó một id duy nhất (định dạng UUID) trên mỗi
+        biểu mẫu mới nộp hồ sơ
       </p>
 
-      <v-checkbox v-model="field.generates_auto_increment_id"
-                  :name="field.id+'_generates_auto_increment_id'"
-                  @input="onFieldGenAutoIdChange"
-      >
-        Generates an auto-incremented id
+      <v-checkbox v-model="field.generates_auto_increment_id" :name="field.id + '_generates_auto_increment_id'"
+        @input="onFieldGenAutoIdChange">
+        Tạo ra id tự tăng
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it a unique incrementing number on each new form submission
+        Nếu bạn bật tính năng này, chúng tôi sẽ ẩn trường này và điền vào đó một số tăng dần duy nhất trên mỗi lần gửi
+        biểu mẫu mới
       </p>
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" v-model="form" :form="form" :field="field"/>
+    <form-block-logic-editor class="py-2 px-4 border-b" v-model="form" :form="form" :field="field" />
   </div>
 </template>
 
@@ -371,7 +279,7 @@ import CountryFlag from 'vue-country-flag'
 
 export default {
   name: 'FieldOptions',
-  components: {FormBlockLogicEditor, CountryFlag},
+  components: { FormBlockLogicEditor, CountryFlag },
   props: {
     field: {
       type: Object,
@@ -522,7 +430,7 @@ export default {
           id: name
         }
       })
-      this.$set(this.field, this.field.type, {'options': tmpOpts})
+      this.$set(this.field, this.field.type, { 'options': tmpOpts })
     },
     onFieldPrefillTodayChange(val) {
       this.$set(this.field, 'prefill_today', val)

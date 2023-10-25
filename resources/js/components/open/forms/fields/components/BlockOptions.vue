@@ -3,89 +3,60 @@
     <!-- General -->
     <div class="border-b py-2 px-4">
       <h3 class="font-semibold block text-lg">
-        General
+        Tổng quan
       </h3>
       <p class="text-gray-400 mb-3 text-xs">
-        Exclude this field or make it required.
+        Loại trừ trường này hoặc đặt nó là bắt buộc.
       </p>
-      <v-checkbox v-model="field.hidden" class="mb-3"
-                  :name="field.id+'_hidden'"
-                  @input="onFieldHiddenChange"
-      >
-        Hidden
+      <v-checkbox v-model="field.hidden" class="mb-3" :name="field.id + '_hidden'" @input="onFieldHiddenChange">
+        Ẩn
       </v-checkbox>
-      <select-input name="width" class="mt-3"
-                    :options="[
-                      {name:'Full',value:'full'},
-                      {name:'1/2 (half width)',value:'1/2'},
-                      {name:'1/3 (a third of the width)',value:'1/3'},
-                      {name:'2/3 (two thirds of the width)',value:'2/3'},
-                      {name:'1/4 (a quarter of the width)',value:'1/4'},
-                      {name:'3/4 (three quarters of the width)',value:'3/4'}
-                    ]"
-                    :form="field" label="Field Width"
-      />
-      <select-input v-if="['nf-text','nf-image'].includes(field.type)" name="align" class="mt-3"
-                    :options="[
-                      {name:'Left',value:'left'},
-                      {name:'Center',value:'center'},
-                      {name:'Right',value:'right'},
-                      {name:'Justify',value:'justify'}
-                    ]"
-                    :form="field" label="Field Alignment"
-      />
+      <select-input name="width" class="mt-3" :options="[
+        { name: 'Full', value: 'full' },
+        { name: '1/2 (half width)', value: '1/2' },
+        { name: '1/3 (a third of the width)', value: '1/3' },
+        { name: '2/3 (two thirds of the width)', value: '2/3' },
+        { name: '1/4 (a quarter of the width)', value: '1/4' },
+        { name: '3/4 (three quarters of the width)', value: '3/4' }
+      ]" :form="field" label="Field Width" />
+      <select-input v-if="['nf-text', 'nf-image'].includes(field.type)" name="align" class="mt-3" :options="[
+        { name: 'Left', value: 'left' },
+        { name: 'Center', value: 'center' },
+        { name: 'Right', value: 'right' },
+        { name: 'Justify', value: 'justify' }
+      ]" :form="field" label="Field Alignment" />
     </div>
 
     <div v-if="field.type == 'nf-text'" class="border-b py-2 px-4">
-      <rich-text-area-input name="content"
-                            :form="field"
-                            label="Content"
-                            :required="false"
-      />
+      <rich-text-area-input name="content" :form="field" label="Content" :required="false" />
     </div>
 
     <div v-else-if="field.type == 'nf-page-break'" class="border-b py-2 px-4">
-      <text-input name="next_btn_text"
-                  :form="field"
-                  label="Text of next button"
-                  :required="true"
-      />
-      <text-input name="previous_btn_text"
-                  :form="field"
-                  label="Text of previous button"
-                  help="Shown on the next page"
-                  :required="true"
-      />
+      <text-input name="next_btn_text" :form="field" label="Text of next button" :required="true" />
+      <text-input name="previous_btn_text" :form="field" label="Text of previous button" help="Shown on the next page"
+        :required="true" />
     </div>
 
     <div v-else-if="field.type == 'nf-divider'" class="border-b py-2 px-4">
-      <text-input name="name"
-                  :form="field" :required="true"
-                  label="Field Name"
-      />
+      <text-input name="name" :form="field" :required="true" label="Tên trường" />
     </div>
 
     <div v-else-if="field.type == 'nf-image'" class="border-b py-2 px-4">
-      <text-input name="name"
-                  :form="field" :required="true"
-                  label="Field Name"
-      />
-      <image-input name="image_block" class="mt-3"
-                    :form="field" label="Upload Image" :required="false"
-      />
+      <text-input name="name" :form="field" :required="true" label="Tên trường" />
+      <image-input name="image_block" class="mt-3" :form="field" label="Tải hình ảnh lên" :required="false" />
     </div>
 
     <div v-else-if="field.type == 'nf-code'" class="border-b py-2 px-4">
       <code-input name="content" :form="field" label="Content"
-            help="You can add any html code, including iframes" />
+        help="Bạn có thể thêm bất kỳ code html nào, bao gồm cả iframe" />
     </div>
 
     <div v-else class="border-b py-2 px-4">
-      <p>No settings found.</p>
+      <p>Không tìm thấy cài đặt nào.</p>
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" v-model="form"/>
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" v-model="form" />
   </div>
 </template>
 
@@ -95,7 +66,7 @@ import CodeInput from '../../../../forms/CodeInput.vue'
 
 export default {
   name: 'BlockOptions',
-  components: {FormBlockLogicEditor, CodeInput},
+  components: { FormBlockLogicEditor, CodeInput },
   props: {
     field: {
       type: Object,
@@ -118,7 +89,7 @@ export default {
 
   watch: {
     'field.width': {
-      handler (val) {
+      handler(val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'width', 'full')
         }
@@ -126,7 +97,7 @@ export default {
       immediate: true
     },
     'field.align': {
-      handler (val) {
+      handler(val) {
         if (val === undefined || val === null) {
           this.$set(this.field, 'align', 'left')
         }
@@ -135,13 +106,13 @@ export default {
     }
   },
 
-  created () {
+  created() {
     if (this.field?.width === undefined || this.field?.width === null) {
       this.$set(this.field, 'width', 'full')
     }
   },
 
-  mounted() {},
+  mounted() { },
 
   methods: {
     onFieldHiddenChange(val) {
@@ -150,8 +121,8 @@ export default {
         this.$set(this.field, 'required', false)
       }
     },
-    onFieldHelpPositionChange (val) {
-      if(!val){
+    onFieldHelpPositionChange(val) {
+      if (!val) {
         this.$set(this.field, 'help_position', 'below_input')
       }
     }
