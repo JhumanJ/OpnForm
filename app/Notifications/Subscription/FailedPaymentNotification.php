@@ -31,11 +31,11 @@ class FailedPaymentNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Your Payment Failed')
-            ->greeting(__('We tried to charge your card for your OpenForm subscription but the payment but did not work.'))
-            ->line(__('Please go to OpenForm, click on your name on the top right corner, and click on "Billing".
-            You will then be able to update your card details. To avoid any service disruption, you can reply to this email whenever
-            you updated your card details, and we\'ll manually attempt to charge your card.'))
-            ->action(__('Go to OpenForm'), url('/'));
+            ->subject('Thanh toán của bạn không thành công')
+            ->greeting(__('Chúng tôi đã cố gắng tính phí vào thẻ cho đăng ký OpenForm của bạn nhưng việc thanh toán không thành công.'))
+            ->line(__('Vui lòng truy cập OpenForm, nhấp vào tên của bạn ở góc trên bên phải và nhấp vào "Thanh toán".
+            Sau đó, bạn sẽ có thể cập nhật thông tin thẻ của mình. Để tránh bất kỳ sự gián đoạn dịch vụ nào, bạn có thể trả lời email này bất cứ khi nào
+            bạn đã cập nhật chi tiết thẻ của mình và chúng tôi sẽ cố gắng tính phí thẻ của bạn theo cách thủ công.'))
+            ->action(__('Vào e-Form'), url('/'));
     }
 }

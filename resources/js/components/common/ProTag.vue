@@ -1,13 +1,12 @@
 <template>
   <div class="inline" v-if="shouldDisplayProTag">
     <div class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold cursor-pointer"
-         @click.prevent="showPremiumModal=true"
-    >
+      @click.prevent="showPremiumModal=true">
       PRO
     </div>
     <modal :show="showPremiumModal" @close="showPremiumModal=false">
       <h2 class="text-nt-blue">
-        OpnForm PRO
+        e-Form PRO
       </h2>
       <h4 v-if="user && user.is_subscribed" class="text-center mt-5">
         We're happy to have you as a Pro customer. If you're having any issue with OpnForm, or if you have a
@@ -15,21 +14,21 @@
       </h4>
       <div v-if="!user || !user.is_subscribed" class="mt-4">
         <p>
-          All the features with a<span
-          class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold mx-1"
-        >
-          PRO
-        </span> tag are available in the Pro plan of OpnForm. <b>You can play around and try all Pro features
-          within
-          the form editor, but you can't use them in your real forms</b>. You can subscribe now to gain unlimited access
-          to
-          all our pro features!
+          Tất cả các tính năng có<span
+            class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold mx-1">
+            PRO
+          </span> có sẵn trong gói Pro của e-Form. <b>Bạn có thể thử và thử tất cả các tính năng Pro
+            ở trong
+            trình chỉnh sửa biểu mẫu, nhưng bạn không thể sử dụng chúng trong biểu mẫu thực của mình</b>. Bạn có thể đăng
+          ký ngay bây giờ để có được quyền truy cập không giới hạn
+          ĐẾN
+          tất cả các tính năng PRO của chúng tôi!
         </p>
       </div>
 
       <div class="my-4 text-center">
         <v-button color="white" @click="showPremiumModal=false">
-          Close
+          Đóng
         </v-button>
       </div>
     </modal>

@@ -26,10 +26,10 @@
     <text-input v-if="form.editable_submissions" name="editable_submissions_button_text" :form="form"
       label="Text of editable submissions button" :required="true" />
 
-    <flat-select-input :form="submissionOptions" name="databaseAction" label="Database Submission Action" :options="[
-      { name: 'Create new record (default)', value: 'create' },
-      { name: 'Update Record (or create if no match)', value: 'update' }
-    ]" :required="true" help="Create a new record or update an existing one">
+    <flat-select-input :form="submissionOptions" name="databaseAction" label="Hành động gửi cơ sở dữ liệu" :options="[
+       { name: 'Tạo bản ghi mới (mặc định)', value: 'tạo' },
+       { name: 'Cập nhật bản ghi (hoặc tạo nếu không khớp)', value: 'update' }
+     ]" :required="true" help="Tạo bản ghi mới hoặc cập nhật bản ghi hiện có">
       <template #selected="{ option, optionName }">
         <div class="flex items-center truncate mr-6">
           {{ optionName }}
@@ -57,20 +57,19 @@
         <select-input v-if="filterableFields.length" :form="form" name="database_fields_update"
           label="Properties to check on update" :options="filterableFields" :required="true" :multiple="true" />
         <div class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
-          <small>If the submission has the same value(s) as a previous one for the selected
-            column(s), we will update it, instead of creating a new one.
-            <a href="#"
-              @click.prevent="$crisp.push(['do', 'helpdesk:article:open', ['en', 'how-to-update-a-page-on-form-submission-1t1jwmn']])">More
-              info here.</a>
+          <small>Nếu bài gửi có cùng giá trị với bài gửi trước đó cho bài đã chọn, chúng tôi sẽ cập nhật cột đó thay vì tạo cột mới.
+             <a href="#"
+               @click.prevent="$crisp.push(['do', 'helpdesk:article:open', ['en', 'how-to-update-a-page-on-form-submission-1t1jwmn']] )">Thêm
+               thông tin ở đây.</a>
           </small>
         </div>
       </div>
     </v-transition>
 
     <select-input :form="submissionOptions" name="submissionMode" label="Post Submission Action" :options="[
-      { name: 'Show Success page', value: 'default' },
-      { name: 'Redirect', value: 'redirect' }
-    ]" :required="true" help="Show a message, or redirect to a URL">
+      { name: 'Hiện trang thành công', value: 'default' },
+      { name: 'Chuyển hướng', value: 'redirect' }
+    ]" :required="true" help="Hiển thị thông báo hoặc chuyển hướng đến một URL">
       <template #selected="{ option, optionName }">
         <div class="flex items-center truncate mr-6">
           {{ optionName }}
@@ -93,24 +92,24 @@
       </template>
     </select-input>
     <template v-if="submissionOptions.submissionMode === 'redirect'">
-      <text-input name="redirect_url" :form="form" label="Redirect URL" :required="true"
-        help="On submit, redirects to that URL" />
+      <text-input name="redirect_url" :form="form" label="Chuyển hướng URL" :required="true"
+        help="Khi gửi, chuyển hướng đến URL đó" />
     </template>
     <template v-else>
-      <toggle-switch-input name="re_fillable" :form="form" class="mt-4" label="Allow users to fill the form again" />
+      <toggle-switch-input name="re_fillable" :form="form" class="mt-4" label="Cho phép người dùng điền lại biểu mẫu" />
       <text-input v-if="form.re_fillable" name="re_fill_button_text" :form="form" label="Text of re-start button"
         :required="true" />
-      <rich-text-area-input name="submitted_text" :form="form" label="Text After Submission" :required="false" />
-      <date-input :with-time="true" name="closes_at" :form="form" label="Closing Date"
-        help="If filled, then the form won't accept submissions after the given date" :required="false" />
+      <rich-text-area-input name="submitted_text" :form="form" label="Nội dung sau khi nộp" :required="false" />
+      <date-input :with-time="true" name="closes_at" :form="form" label="Ngày đóng"
+        help="Nếu đã điền thì biểu mẫu sẽ không chấp nhận gửi sau ngày đã cho" :required="false" />
       <rich-text-area-input v-if="form.closes_at || form.visibility == 'closed'" name="closed_text" :form="form"
-        label="Closed form text" help="This message will be shown when the form will be closed" :required="false" />
+        label="Nội dung biểu mẫu đóng" help="Thông báo này sẽ được hiển thị khi biểu mẫu sẽ được đóng lại" :required="false" />
       <text-input name="max_submissions_count" native-type="number" :min="1" :form="form"
-        label="Max. Number of Submissions" help="If filled, the form will only accept X number of submissions"
+        label="Tối đa. Số lượt nộp" help="Nếu được điền, biểu mẫu sẽ chỉ chấp nhận số lần gửi X"
         :required="false" />
       <rich-text-area-input v-if="form.max_submissions_count && form.max_submissions_count > 0"
-        name="max_submissions_reached_text" :form="form" label="Max Submissions reached text"
-        help="This message will be shown when the form will have the maximum number of submissions" :required="false" />
+        name="max_submissions_reached_text" :form="form" label="Văn bản đã đạt tới số lần gửi tối đa"
+        help="Thông báo này sẽ được hiển thị khi biểu mẫu có số lần gửi tối đa" :required="false" />
     </template>
   </collapse>
 </template>

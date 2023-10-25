@@ -2,13 +2,10 @@
   <div v-if="form" id="form-editor" class="relative flex w-full flex-col grow max-h-screen">
     <!--  Navbar  -->
     <div class="w-full border-b p-2 flex items-center justify-between bg-white">
-      <a v-if="backButton" href="#" class="ml-2 flex text-blue font-semibold text-sm"
-         @click.prevent="$router.back()"
-      >
+      <a v-if="backButton" href="#" class="ml-2 flex text-blue font-semibold text-sm" @click.prevent="$router.back()">
         <svg class="w-3 h-3 text-blue mt-1 mr-1" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round"
-          />
+            stroke-linejoin="round" />
         </svg>
         Trở lại
       </a>
@@ -19,17 +16,13 @@
       </div>
 
       <div class="flex items-center" :class="{'mx-auto md:mx-0':!backButton}">
-        <v-button v-track.save_form_click size="small" class="w-full px-8 md:px-4 py-2"
-                  :loading="updateFormLoading" :class="saveButtonClass"
-                  @click="saveForm"
-        >
+        <v-button v-track.save_form_click size="small" class="w-full px-8 md:px-4 py-2" :loading="updateFormLoading"
+          :class="saveButtonClass" @click="saveForm">
           <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
-               xmlns="http://www.w3.org/2000/svg"
-          >
+            xmlns="http://www.w3.org/2000/svg">
             <path
               d="M17 21V13H7V21M7 3V8H15M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            />
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <template v-if="form.visibility === 'public'">
             Xuất bản
@@ -44,35 +37,33 @@
     <div class="w-full flex grow overflow-y-scroll relative">
       <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
         <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
-          Vui lòng tạo biểu mẫu này trên thiết bị có màn hình lớn hơn (máy tính). Điều này cho phép bạn xem trước các thay đổi biểu mẫu của mình.
+          Vui lòng tạo biểu mẫu này trên thiết bị có màn hình lớn hơn (máy tính). Điều này cho phép bạn xem trước các thay
+          đổi biểu mẫu của mình.
         </div>
 
-        <form-information/>
-        <form-structure/>
-        <form-customization/>
-        <form-about-submission/>
-        <form-notifications/>
-        <form-security-privacy/>
+        <form-information />
+        <form-structure />
+        <form-customization />
+        <form-about-submission />
+        <form-notifications />
+        <form-security-privacy />
         <form-custom-seo />
-        <form-custom-code/>
-        <form-integrations/>
+        <form-custom-code />
+        <form-integrations />
       </div>
 
-      <form-editor-preview/>
+      <form-editor-preview />
 
-      <form-field-edit-sidebar/>
-      <add-form-block-sidebar/>
+      <form-field-edit-sidebar />
+      <add-form-block-sidebar />
 
       <!-- Form Error Modal -->
-      <form-error-modal
-        :show="showFormErrorModal"
-        :validation-error-response="validationErrorResponse"
-        @close="showFormErrorModal=false"
-      />
+      <form-error-modal :show="showFormErrorModal" :validation-error-response="validationErrorResponse"
+        @close="showFormErrorModal=false" />
     </div>
   </div>
   <div v-else class="flex justify-center items-center">
-    <loader class="w-6 h-6"/>
+    <loader class="w-6 h-6" />
   </div>
 </template>
 
@@ -168,33 +159,33 @@ export default {
         {
           target: '#v-step-0',
           header: {
-            title: 'Welcome to the OpnForm Editor!'
+            title: 'Chào mừng bạn đến với Trình chỉnh sửa e-Form!'
           },
-          content: 'Discover <strong>your form Editor</strong>!'
+          content: 'Khám phá <strong>trình chỉnh sữa biểu mẫu</strong> của bạn!'
         },
         {
           target: '#v-step-1',
           header: {
-            title: 'Change your form fields'
+            title: 'Thay đổi trường biểu mẫu của bạn'
           },
-          content: 'Here you can decide which field to include or not, but also the ' +
-            'order you want your fields to be and so on. You also have custom options available for each field, just ' +
-            'click the blue cog.'
+          content: 'Tại đây, bạn có thể quyết định nên bao gồm hay không trường nào, cũng như ' +
+             'thứ tự bạn muốn các trường của bạn như vậy, v.v. Bạn cũng có sẵn các tùy chọn tùy chỉnh cho từng trường, chỉ cần ' +
+             'nhấp vào bánh răng màu xanh.'
         },
         {
           target: '#v-step-2',
           header: {
-            title: 'Notifications, Customizations and more!'
+            title: 'Thông báo, Tùy chỉnh và hơn thế nữa!'
           },
-          content: 'Many more options are available: change colors, texts and receive a ' +
-            'notifications whenever someones submits your form.'
+          content: 'Có nhiều tùy chọn khác: thay đổi màu sắc, văn bản và nhận ' +
+             'thông báo bất cứ khi nào ai đó gửi biểu mẫu của bạn.'
         },
         {
           target: '.v-last-step',
           header: {
-            title: 'Create your form'
+            title: 'Tạo biểu mẫu của bạn'
           },
-          content: 'Click this button when you\'re done to save your form!'
+          content: 'Nhấp vào nút này khi bạn hoàn tất việc lưu biểu mẫu của mình!'
         }
       ]
     },
@@ -295,7 +286,8 @@ export default {
 .v-step {
   color: white;
 
-  .v-step__header, .v-step__content {
+  .v-step__header,
+  .v-step__content {
     color: white;
 
     div {
