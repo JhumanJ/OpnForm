@@ -150,6 +150,9 @@ export default {
       if (field.type === 'number' && field.is_rating && field.rating_max_value) {
         return 'RatingInput'
       }
+      if (field.type === 'number' && field.is_scale && field.scale_max_value) {
+        return 'ScaleInput'
+      }
       if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
         return 'FlatSelectInput'
       }
@@ -302,6 +305,10 @@ export default {
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ""
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)
+      } else if (field.type === 'number' && field.is_scale) {
+        inputProperties.minScale = parseInt(field.scale_min_value) ?? 1
+        inputProperties.maxScale = parseInt(field.scale_max_value) ?? 5
+        inputProperties.stepScale = parseInt(field.scale_step_value) ?? 1
       } else if (field.type === 'number' || (field.type === 'phone_number' && field.use_simple_text_input)) {
         inputProperties.pattern = '/\d*'
       } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
