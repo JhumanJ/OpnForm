@@ -29,6 +29,7 @@ class FormResource extends JsonResource
             'views_count' => $this->views_count,
             'submissions_count' => $this->submissions_count,
             'notifies' => $this->notifies,
+            'notifies_webhook' => $this->notifies_webhook,
             'notifies_slack' => $this->notifies_slack,
             'notifies_discord' => $this->notifies_discord,
             'send_submission_confirmation' => $this->send_submission_confirmation,

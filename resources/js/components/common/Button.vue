@@ -1,5 +1,8 @@
 <template>
-  <button v-if="!to" :type="nativeType" :disabled="loading" :class="btnClasses"
+  <a v-if="href" :class="btnClasses" :href="href" :target="target">
+    <slot />
+  </a>
+  <button v-else-if="!to" :type="nativeType" :disabled="loading" :class="btnClasses"
           @click="onClick($event)"
   >
     <template v-if="!loading">
@@ -58,6 +61,11 @@ export default {
 
     to: {
       type: Object,
+      default: null
+    },
+
+    href: {
+      type: String,
       default: null
     },
 
