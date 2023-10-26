@@ -60,6 +60,7 @@
         <form-customization/>
         <form-notifications/>
         <form-about-submission/>
+        <form-access />
         <form-security-privacy/>
         <form-custom-seo />
         <form-custom-code/>
@@ -97,6 +98,7 @@ import FormNotifications from './form-components/FormNotifications.vue'
 import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
+import FormAccess from './form-components/FormAccess.vue'
 import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
 import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 
@@ -114,7 +116,8 @@ export default {
     FormInformation,
     FormErrorModal,
     FormSecurityPrivacy,
-    FormCustomSeo
+    FormCustomSeo,
+    FormAccess
   },
   mixins: [saveUpdateAlert, fieldsLogic],
   props: {

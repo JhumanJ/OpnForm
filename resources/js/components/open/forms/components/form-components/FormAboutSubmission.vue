@@ -129,30 +129,6 @@
                             label="Text After Submission"
                             :required="false"
       />
-      <date-input :with-time="true" name="closes_at"
-                  :form="form"
-                  label="Closing Date"
-                  help="If filled, then the form won't accept submissions after the given date"
-                  :required="false"
-      />
-      <rich-text-area-input v-if="form.closes_at || form.visibility=='closed'" name="closed_text"
-                            :form="form"
-                            label="Closed form text"
-                            help="This message will be shown when the form will be closed"
-                            :required="false"
-      />
-      <text-input name="max_submissions_count" native-type="number" :min="1" :form="form"
-                  label="Max. Number of Submissions"
-                  help="If filled, the form will only accept X number of submissions"
-                  :required="false"
-      />
-      <rich-text-area-input v-if="form.max_submissions_count && form.max_submissions_count > 0"
-                            name="max_submissions_reached_text"
-                            :form="form"
-                            label="Max Submissions reached text"
-                            help="This message will be shown when the form will have the maximum number of submissions"
-                            :required="false"
-      />
     </template>
   </collapse>
 </template>
