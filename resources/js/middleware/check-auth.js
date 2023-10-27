@@ -41,11 +41,12 @@ export default async (to, from, next) => {
     store.getters['auth/token'] !== undefined
   ) {
     try {
-      const user = await store.dispatch('auth/fetchUser')
-      initCrisp(user)
-      initSentry(user)
+      store.dispatch('auth/fetchUser').then((user) => {
+        initCrisp(user)
+        initSentry(user)
+      })
     } catch (e) {
-      console.log(e, 'error')
+      console.error(e)
     }
   }
   next()

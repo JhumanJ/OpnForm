@@ -39,13 +39,11 @@
 
 <script>
 import { inputProps, useFormInput } from './useFormInput.js'
-import InputLabel from './components/InputLabel.vue'
-import InputHelp from './components/InputHelp.vue'
 import InputWrapper from './components/InputWrapper.vue'
 
 export default {
   name: 'TextInput',
-  components: { InputWrapper, InputHelp, InputLabel },
+  components: { InputWrapper },
 
   props: {
     ...inputProps,

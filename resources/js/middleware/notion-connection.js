@@ -1,7 +1,7 @@
 import store from '~/store'
 
 export default async (to, from, next) => {
- /* if (store.getters['auth/check'] && store.getters['auth/user'].workspaces_count === 0) {
+  if (store.getters['auth/check'] && store.getters['auth/user'].workspaces_count === 0) {
     if ([
       'forms.create',
       'forms.show',
@@ -10,8 +10,9 @@ export default async (to, from, next) => {
     ].includes(to.name)
     ) {
       next({ name: 'onboarding' })
+      return
     }
-  }*/
+  }
 
   next()
 }
