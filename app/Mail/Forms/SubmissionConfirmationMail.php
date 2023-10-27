@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Vinkla\Hashids\Facades\Hashids;
 
 class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
 {
@@ -44,7 +45,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
                 'fields' => $formatter->getFieldsWithValue(),
                 'form' => $form,
                 'noBranding' => $form->no_branding,
-                'submission_id' => $this->event->data['submission_id'] ?? null
+                'submission_id' => (isset($this->event->data['submission_id']) && $this->event->data['submission_id']) ? Hashids::encode($this->event->data['submission_id']) : null
             ]);
     }
 
