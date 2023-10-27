@@ -36,6 +36,8 @@ class SeoMetaResolver
         'integrations' => '/integrations',
         'templates' => '/form-templates',
         'templates_show' => '/form-templates/{slug}',
+        'templates_types_show' => '/form-templates/types/{slug}',
+        'templates_industries_show' => '/form-templates/industries/{slug}',
     ];
 
     /**
@@ -190,6 +192,28 @@ class SeoMetaResolver
             'title' => $template->name . $this->titleSuffix(),
             'description' => Str::of($template->short_description)->limit(140) . ' | Customize any template and create your own form in minutes.',
             'image' => $template->image_url
+        ];
+    }
+
+    private function getTemplatesTypesShowMeta(): array
+    {
+        $types = json_decode(file_get_contents(resource_path('data/forms/templates/types.json')), true);
+        $type = $types[array_search($this->patternData['slug'], array_column($types, 'slug'))];
+
+        return [
+            'title' => $type['meta_title'],
+            'description' => Str::of($type['meta_description'])->limit(140),
+        ];
+    }
+
+    private function getTemplatesIndustriesShowMeta(): array
+    {
+        $industries = json_decode(file_get_contents(resource_path('data/forms/templates/industries.json')), true);
+        $industry = $industries[array_search($this->patternData['slug'], array_column($industries, 'slug'))];
+
+        return [
+            'title' => $industry['meta_title'],
+            'description' => Str::of($industry['meta_description'])->limit(140),
         ];
     }
 }

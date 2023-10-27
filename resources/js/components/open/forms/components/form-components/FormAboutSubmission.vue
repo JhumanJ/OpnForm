@@ -96,6 +96,7 @@
         help="Khi gửi, chuyển hướng đến URL đó" />
     </template>
     <template v-else>
+<<<<<<< HEAD
       <toggle-switch-input name="re_fillable" :form="form" class="mt-4" label="Cho phép người dùng điền lại biểu mẫu" />
       <text-input v-if="form.re_fillable" name="re_fill_button_text" :form="form" label="Text of re-start button"
         :required="true" />
@@ -110,6 +111,21 @@
       <rich-text-area-input v-if="form.max_submissions_count && form.max_submissions_count > 0"
         name="max_submissions_reached_text" :form="form" label="Văn bản đã đạt tới số lần gửi tối đa"
         help="Thông báo này sẽ được hiển thị khi biểu mẫu có số lần gửi tối đa" :required="false" />
+=======
+      <toggle-switch-input name="re_fillable" :form="form" class="mt-4"
+                      label="Allow users to fill the form again"
+      />
+      <text-input v-if="form.re_fillable" name="re_fill_button_text"
+                  :form="form"
+                  label="Text of re-start button"
+                  :required="true"
+      />
+      <rich-text-area-input name="submitted_text"
+                            :form="form"
+                            label="Text After Submission"
+                            :required="false"
+      />
+>>>>>>> 2e52518aa770a7f532ebfd35bb4fc718dd5211fc
     </template>
   </collapse>
 </template>

@@ -10,12 +10,23 @@
         </svg> Bảo mật & Quyền riêng tư
       </h3>
     </template>
+<<<<<<< HEAD
     <toggle-switch-input name="can_be_indexed" :form="form" class="mt-4" label="Indexable by Google"
       help="Nếu được bật, biểu mẫu của bạn có thể xuất hiện trong kết quả tìm kiếm của Google" />
     <toggle-switch-input name="use_captcha" :form="form" class="mt-4" label="Bảo vệ biểu mẫu của bạn bằng Captcha"
       help="Nếu được bật, chúng tôi sẽ đảm bảo người trả lời là con người" />
     <text-input name="password" :form="form" class="mt-4" label="Mật khẩu biểu mẫu"
       help="Để trống để vô hiệu hóa mật khẩu" />
+=======
+    <toggle-switch-input name="can_be_indexed" :form="form" class="mt-4"
+                    label="Indexable by Google"
+                    help="If enabled, your form can appear in the search results of Google"
+    />
+    <toggle-switch-input name="use_captcha" :form="form" class="mt-4"
+                    label="Protect your form with a Captcha"
+                    help="If enabled we will make sure respondant is a human"
+    />
+>>>>>>> 2e52518aa770a7f532ebfd35bb4fc718dd5211fc
   </collapse>
 </template>
 

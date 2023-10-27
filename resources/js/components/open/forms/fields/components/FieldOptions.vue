@@ -57,11 +57,44 @@
         Đánh giá
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
+<<<<<<< HEAD
         Nếu được bật thì trường này sẽ là đầu vào đánh giá sao.
       </p>
 
       <text-input v-if="field.is_rating" name="rating_max_value" native-type="number" :min="1" class="mt-3" :form="field"
         required label="Giá trị đánh giá tối đa" />
+=======
+        Transform this field into a star rating input.
+      </p>
+
+      <text-input v-if="field.is_rating" name="rating_max_value" native-type="number" :min="1" class="mt-3"
+                  :form="field" required
+                  label="Max rating value"
+      />
+
+      <v-checkbox v-model="field.is_scale" class="mt-4"
+                  :name="field.id+'_is_scale'" @input="initScale"
+      >
+        Scale
+      </v-checkbox>
+      <p class="text-gray-400 text-xs mb-5">
+        Transform this field into a scale/score input.
+      </p>
+      <template v-if="field.is_scale">
+        <text-input name="scale_min_value" native-type="number" class="mt-4"
+                    :form="field" required
+                    label="Min scale value"
+        />
+        <text-input name="scale_max_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Max scale value"
+        />
+        <text-input name="scale_step_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Scale step svalue"
+        />
+      </template>
+>>>>>>> 2e52518aa770a7f532ebfd35bb4fc718dd5211fc
     </div>
 
     <!--   Text Options   -->
@@ -418,8 +451,25 @@ export default {
       }
     },
     initRating() {
-      if (this.field.is_rating && !this.field.rating_max_value) {
-        this.$set(this.field, 'rating_max_value', 5)
+      if (this.field.is_rating) {
+        this.$set(this.field, 'is_scale', false)
+        if (!this.field.rating_max_value) {
+          this.$set(this.field, 'rating_max_value', 5)
+        }
+      }
+    },
+    initScale () {
+      if (this.field.is_scale) {
+        this.$set(this.field, 'is_rating', false)
+        if (!this.field.scale_min_value) {
+          this.$set(this.field, 'scale_min_value', 1)
+        }
+        if (!this.field.scale_max_value) {
+          this.$set(this.field, 'scale_max_value', 5)
+        }
+        if (!this.field.scale_step_value) {
+          this.$set(this.field, 'scale_step_value', 1)
+        }
       }
     },
     onFieldOptionsChange(val) {

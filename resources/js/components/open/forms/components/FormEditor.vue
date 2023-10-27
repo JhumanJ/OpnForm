@@ -41,6 +41,7 @@
           đổi biểu mẫu của mình.
         </div>
 
+<<<<<<< HEAD
         <form-information />
         <form-structure />
         <form-customization />
@@ -50,6 +51,17 @@
         <form-custom-seo />
         <form-custom-code />
         <form-integrations />
+=======
+        <form-information/>
+        <form-structure/>
+        <form-customization/>
+        <form-notifications/>
+        <form-about-submission/>
+        <form-access />
+        <form-security-privacy/>
+        <form-custom-seo />
+        <form-custom-code/>
+>>>>>>> 2e52518aa770a7f532ebfd35bb4fc718dd5211fc
       </div>
 
       <form-editor-preview />
@@ -78,10 +90,10 @@ import FormCustomization from './form-components/FormCustomization.vue'
 import FormCustomCode from './form-components/FormCustomCode.vue'
 import FormAboutSubmission from './form-components/FormAboutSubmission.vue'
 import FormNotifications from './form-components/FormNotifications.vue'
-import FormIntegrations from './form-components/FormIntegrations.vue'
 import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
+import FormAccess from './form-components/FormAccess.vue'
 import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
 import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 
@@ -91,7 +103,6 @@ export default {
     AddFormBlockSidebar,
     FormFieldEditSidebar,
     FormEditorPreview,
-    FormIntegrations,
     FormNotifications,
     FormAboutSubmission,
     FormCustomCode,
@@ -100,7 +111,8 @@ export default {
     FormInformation,
     FormErrorModal,
     FormSecurityPrivacy,
-    FormCustomSeo
+    FormCustomSeo,
+    FormAccess
   },
   mixins: [saveUpdateAlert, fieldsLogic],
   props: {
