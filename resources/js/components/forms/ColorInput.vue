@@ -1,25 +1,50 @@
 <template>
-  <div :class="wrapperClass">
-    <input :id="id?id:name" v-model="compVal" :disabled="disabled"
-           type="color"
-           :name="name"
-    >
-    <label v-if="label" :for="id?id:name" class="text-gray-700 dark:text-gray-300">
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+  <input-wrapper v-bind="$props">
+    <template #label>
+      <span />
+    </template>
+
+    <div class="flex items-center">
+      <input :id="id?id:name" v-model="compVal" :disabled="disabled"
+             type="color" class="mr-2"
+             :name="name"
+      >
+      <slot name="label">
+        <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
+      </slot>
+    </div>
+
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input.js'
+import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from './useFormInput.js'
 
 export default {
   name: 'ColorInput',
-  mixins: [inputMixin]
+  components: { InputWrapper },
+
+  props: {
+    ...inputProps
+  },
+
+  setup (props, context) {
+    const { compVal, inputStyle, hasValidation, hasError } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
+  }
 }
 </script>

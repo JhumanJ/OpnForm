@@ -16,64 +16,57 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'VCheckbox',
+<script setup>
+import { ref, watch, onMounted, defineProps, defineEmits, defineOptions } from 'vue'
 
-  props: {
-    id: { type: String, default: null },
-    name: { type: String, default: 'checkbox' },
-    value: { type: [Boolean, String], default: false },
-    checked: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
-    sizeClasses: { type: String, default: 'w-4 h-4' }
-  },
+defineOptions({
+  name: 'VCheckbox'
+})
 
-  data: () => ({
-    internalValue: false
-  }),
+const props = defineProps({
+  id: { type: String, default: null },
+  name: { type: String, default: 'checkbox' },
+  modelValue: { type: [Boolean, String], default: false },
+  checked: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  sizeClasses: { type: String, default: 'w-4 h-4' }
+})
 
-  watch: {
-    value (val) {
-      this.internalValue = val
-    },
+const emit = defineEmits(['update:modelValue', 'click'])
 
-    checked (val) {
-      this.internalValue = val
-    },
+const internalValue = ref(props.modelValue)
 
-    internalValue (val, oldVal) {
-      // Support form data string checkbox (string 1 or 0)
-      if (val === 0 || val === '0') val = false
-      if (val === 1 || val === '1') val = true
+watch(() => props.modelValue, val => {
+  internalValue.value = val
+})
 
-      if (val !== oldVal) {
-        this.$emit('input', val)
-      }
-    }
-  },
+watch(() => props.checked, val => {
+  internalValue.value = val
+})
 
-  created () {
-    this.internalValue = this.value
+watch(() => internalValue.value, (val, oldVal) => {
+  if (val === 0 || val === '0') val = false
+  if (val === 1 || val === '1') val = true
 
-    if ('checked' in this.$options.propsData) {
-      this.internalValue = this.checked
-    }
-  },
+  if (val !== oldVal) {
+    emit('update:modelValue', val)
+  }
+})
 
-  mounted () {
-    this.$emit('input', this.internalValue)
-  },
+if ('checked' in props) {
+  internalValue.value = props.checked
+}
 
-  methods: {
-    handleClick (e) {
-      this.$emit('click', e)
+onMounted(() => {
+  emit('update:modelValue', internalValue.value)
+})
 
-      if (!e.isPropagationStopped) {
-        this.internalValue = e.target.checked
-        this.$emit('input', this.internalValue)
-      }
-    }
+const handleClick = (e) => {
+  emit('click', e)
+
+  if (!e.isPropagationStopped) {
+    internalValue.value = e.target.checked
+    emit('update:modelValue', internalValue.value)
   }
 }
 </script>

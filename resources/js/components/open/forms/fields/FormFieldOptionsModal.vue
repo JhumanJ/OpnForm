@@ -47,19 +47,19 @@
         </p>
         <v-checkbox v-model="field.hidden" class="mb-3"
                     :name="field.id+'_hidden'"
-                    @input="onFieldHiddenChange"
+                    @update:model-value="onFieldHiddenChange"
         >
           Hidden
         </v-checkbox>
         <v-checkbox v-model="field.required" class="mb-3"
                     :name="field.id+'_required'"
-                    @input="onFieldRequiredChange"
+                    @update:model-value="onFieldRequiredChange"
         >
           Required
         </v-checkbox>
         <v-checkbox v-model="field.disabled" class="mb-3"
                     :name="field.id+'_disabled'"
-                    @input="onFieldDisabledChange"
+                    @update:model-value="onFieldDisabledChange"
         >
           Disabled
         </v-checkbox>
@@ -105,7 +105,7 @@
           Number Options
         </h3>
         <v-checkbox v-model="field.is_rating" class="mt-4"
-                    :name="field.id+'_is_rating'" @input="initRating"
+                    :name="field.id+'_is_rating'" @update:model-value="initRating"
         >
           Rating
         </v-checkbox>
@@ -142,7 +142,7 @@
         </h3>
         <v-checkbox v-model="field.date_range" class="mt-4"
                     :name="field.id+'_date_range'"
-                    @input="onFieldDateRangeChange"
+                    @update:model-value="onFieldDateRangeChange"
         >
           Date Range
         </v-checkbox>
@@ -151,7 +151,7 @@
         </p>
         <v-checkbox v-model="field.with_time"
                     :name="field.id+'_with_time'"
-                    @input="onFieldWithTimeChange"
+                    @update:model-value="onFieldWithTimeChange"
         >
           Date with time
         </v-checkbox>
@@ -166,7 +166,7 @@
         />
         <v-checkbox v-model="field.prefill_today"
                     name="prefill_today"
-                    @input="onFieldPrefillTodayChange"
+                    @update:model-value="onFieldPrefillTodayChange"
         >
           Prefill with 'today'
         </v-checkbox>
@@ -176,14 +176,14 @@
 
         <v-checkbox v-model="field.disable_past_dates"
                     name="disable_past_dates" class="mb-3"
-                    @input="onFieldDisablePastDatesChange"
+                    @update:model-value="onFieldDisablePastDatesChange"
         >
           Disable past dates
         </v-checkbox>
 
         <v-checkbox v-model="field.disable_future_dates"
                     name="disable_future_dates" class="mb-3"
-                    @input="onFieldDisableFutureDatesChange"
+                    @update:model-value="onFieldDisableFutureDatesChange"
         >
           Disable future dates
         </v-checkbox>
@@ -203,12 +203,12 @@
                          @input="onFieldOptionsChange"
         />
         <v-checkbox v-model="field.allow_creation"
-                    name="allow_creation" help="" @input="onFieldAllowCreationChange"
+                    name="allow_creation" help="" @update:model-value="onFieldAllowCreationChange"
         >
           Allow respondent to create new options
         </v-checkbox>
         <v-checkbox v-model="field.without_dropdown" class="mt-4"
-                    name="without_dropdown" help="" @input="onFieldWithoutDropdownChange"
+                    name="without_dropdown" help="" @update:model-value="onFieldWithoutDropdownChange"
         >
           Always show all select options
         </v-checkbox>
@@ -241,7 +241,7 @@
         <!-- Pre-fill depends on type -->
         <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-4"
                     :name="field.id+'_prefill'"
-                    @input="field.prefill = $event"
+                    @update:model-value="field.prefill = $event"
         >
           Pre-filled value
         </v-checkbox>
@@ -327,7 +327,7 @@
 
         <v-checkbox v-model="field.generates_uuid"
                     :name="field.id+'_generates_uuid'"
-                    @input="onFieldGenUIdChange"
+                    @update:model-value="onFieldGenUIdChange"
         >
           Generates a unique id on submission
         </v-checkbox>
@@ -337,7 +337,7 @@
 
         <v-checkbox v-model="field.generates_auto_increment_id"
                     :name="field.id+'_generates_auto_increment_id'"
-                    @input="onFieldGenAutoIdChange"
+                    @update:model-value="onFieldGenAutoIdChange"
         >
           Generates an auto-incremented id on submission
         </v-checkbox>

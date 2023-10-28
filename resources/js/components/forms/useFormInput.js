@@ -11,6 +11,7 @@ export const inputProps = {
   disabled: { type: Boolean, default: false },
   placeholder: { type: String, default: null },
   uppercaseLabels: { type: Boolean, default: false },
+  hideFieldName: { type: Boolean, default: false },
   help: { type: String, default: null },
   helpPosition: { type: String, default: 'below_input' },
   theme: { type: Object, default: () => themes.default },
@@ -32,7 +33,7 @@ export function useFormInput (props, context, formPrefixKey = null) {
   })
 
   const hasError = computed(() => {
-    return hasValidation && props.form?.errors.has(name)
+    return hasValidation && props.form?.errors?.has(name)
   })
 
   const compVal = computed({

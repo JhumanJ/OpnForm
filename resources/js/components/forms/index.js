@@ -34,7 +34,7 @@ export function registerComponents (app) {
     FlatSelectInput,
     ToggleSwitchInput
   ].forEach(Component => {
-    app.component(Component.name, Component)
+    Component.name ? app.component(Component.name, Component) : app.component(Component.name, Component)
   })
 
   // Register async components

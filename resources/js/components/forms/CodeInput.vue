@@ -1,13 +1,18 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.CodeInput.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
 
-    <div :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]">
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <div
+      :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
+    >
       <codemirror :id="id?id:name" v-model="compVal" :disabled="disabled"
                   :options="cmOptions"
                   :style="inputStyle" :name="name"
@@ -15,11 +20,10 @@
       />
     </div>
 
-    <small v-if="help" :class="theme.CodeInput.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
@@ -28,13 +32,32 @@ import 'codemirror/lib/codemirror.css'
 
 import 'codemirror/mode/htmlmixed/htmlmixed.js'
 
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 
 export default {
   name: 'CodeInput',
 
-  components: { codemirror },
-  mixins: [inputMixin],
+  components: { InputWrapper, codemirror },
+  props: {
+    ...inputProps
+  },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
+  },
 
   data () {
     return {
@@ -47,8 +70,6 @@ export default {
         line: true
       }
     }
-  },
-
-  methods: {}
+  }
 }
 </script>

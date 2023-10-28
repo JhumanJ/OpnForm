@@ -4,7 +4,7 @@
       <slot name="help"><span class="field-help" v-html="help" /></slot>
     </small>
     <slot name="after-help">
-      <small class="flex-grow" />
+      <small class="flex-grow"  />
     </slot>
   </div>
 </template>

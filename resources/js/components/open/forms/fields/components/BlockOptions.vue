@@ -10,7 +10,7 @@
       </p>
       <v-checkbox v-model="field.hidden" class="mb-3"
                   :name="field.id+'_hidden'"
-                  @input="onFieldHiddenChange"
+                  @update:model-value="onFieldHiddenChange"
       >
         Hidden
       </v-checkbox>

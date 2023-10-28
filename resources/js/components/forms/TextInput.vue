@@ -5,9 +5,6 @@
     <template #label>
       <slot name="label" />
     </template>
-    <template v-if="helpPosition==='above_input'" #help>
-      <slot name="help" />
-    </template>
 
     <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            :type="nativeType"
@@ -19,17 +16,11 @@
            @change="onChange" @keydown.enter.prevent="onEnterPress"
     >
 
-    <!--  TODO: fix this in the case of below input there's something off  -->
-    <!--    <input-help v-if="helpPosition==='below_input' || showCharLimit" :help="help" :theme="theme">-->
-    <!--      <template #help>-->
-    <!--        <slot name="help" />-->
-    <!--      </template>-->
-    <!--      <template v-if="showCharLimit" #after-help>-->
-    <!--        <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">-->
-    <!--          {{ charCount }}/{{ maxCharLimit }}-->
-    <!--        </small>-->
-    <!--      </template>-->
-    <!--    </input-help>-->
+    <template v-if="maxCharLimit && showCharLimit" #bottom_after_help>
+      <small :class="theme.default.help">
+      {{ charCount }}/{{ maxCharLimit }}
+      </small>
+    </template>
 
     <template #error>
       <slot name="error" />

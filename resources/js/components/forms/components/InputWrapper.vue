@@ -1,10 +1,10 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="label">
-      <input-label v-if="label"
+      <input-label v-if="label && !hideFieldName"
                    :label="label"
                    :theme="theme"
-                   :required="true"
+                   :required="required"
                    :native-for="id?id:name"
                    :uppercase-labels="uppercaseLabels"
       />
@@ -13,8 +13,13 @@
       <input-help :help="help" :theme="theme" />
     </slot>
     <slot />
-    <slot v-if="help && helpPosition==='below_input'" name="help">
-      <input-help :help="help" :theme="theme" />
+
+    <slot v-if="(help && helpPosition==='below_input') || $slots.bottom_after_help" name="help">
+      <input-help :help="help" :theme="theme">
+        <template #after-help>
+          <slot name="bottom_after_help" />
+        </template>
+      </input-help>
     </slot>
     <slot name="error">
       <has-error v-if="hasValidation" :form="form" :field="name" />
@@ -34,14 +39,16 @@ export default {
     id: { type: String, required: false },
     name: { type: String, required: false },
     theme: { type: Object, required: true },
+    form: { type: Object, required: false },
     wrapperClass: { type: String, required: false },
     inputStyle: { type: Object, required: false },
     help: { type: String, required: false },
     label: { type: String, required: false },
     helpPosition: { type: String, default: 'below_input' },
     uppercaseLabels: { type: Boolean, default: true },
-    hasValidation: { type: Boolean, default: true },
-    form: { type: Object, required: false }
+    hideFieldName: { type: Boolean, default: true },
+    required: { type: Boolean, default: false },
+    hasValidation: { type: Boolean, default: true }
   }
 }
 </script>

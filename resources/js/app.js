@@ -22,7 +22,7 @@ registerComponents(app)
 configureCompat({
   // default everything to Vue 2 behavior
   MODE: 2,
-  GLOBAL_MOUNT: false,
+  // GLOBAL_MOUNT: false,
   COMPONENT_V_MODEL: false,
   INSTANCE_SET: false,
   INSTANCE_DELETE: false

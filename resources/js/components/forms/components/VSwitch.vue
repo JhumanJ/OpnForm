@@ -17,7 +17,6 @@ const emit = defineEmits(['update:modelValue'])
 
 const onClick = () => {
   if (disabled) return
-  console.log('ok emiting', !modelValue)
   emit('update:modelValue', !modelValue)
 }
 </script>

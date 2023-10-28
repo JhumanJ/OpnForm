@@ -7,32 +7,35 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
     <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
+      <slot name="help"><span class="field-help" v-html="help"/></slot>
     </small>
 
     <div class="flex" v-if="!dateRange">
-      <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :class="inputClasses" :disabled="disabled"
-          :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
-          :min="setMinDate" :max="setMaxDate"
+      <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :class="inputClasses"
+             :disabled="disabled"
+             :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
+             :min="setMinDate" :max="setMaxDate"
       />
     </div>
     <div :class="inputClasses" v-else>
       <div class="flex -mx-2">
-      <p class="text-gray-900 px-4">From</p>
-      <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :disabled="disabled"
-             :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD" class="flex-grow border-transparent focus:outline-none "
-             :min="setMinDate" :max="setMaxDate"
-      />
-      <p class="text-gray-900 px-4">To</p>
-      <input v-if="dateRange" :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="toDate" :disabled="disabled"
-             :style="inputStyle" :name="name" class="flex-grow border-transparent focus:outline-none"
-             :min="setMinDate" :max="setMaxDate"
-      />
+        <p class="text-gray-900 px-4">From</p>
+        <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :disabled="disabled"
+               :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
+               class="flex-grow border-transparent focus:outline-none "
+               :min="setMinDate" :max="setMaxDate"
+        />
+        <p class="text-gray-900 px-4">To</p>
+        <input v-if="dateRange" :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="toDate"
+               :disabled="disabled"
+               :style="inputStyle" :name="name" class="flex-grow border-transparent focus:outline-none"
+               :min="setMinDate" :max="setMaxDate"
+        />
       </div>
     </div>
 
     <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
+      <slot name="help"><span class="field-help" v-html="help"/></slot>
     </small>
     <has-error v-if="hasValidation" :form="form" :field="name"/>
   </div>
@@ -53,13 +56,13 @@ export default {
   },
 
   data: () => ({
-    fixedClasses: fixedClasses,
+    fixedClasses: null,
     fromDate: null,
     toDate: null
   }),
 
   computed: {
-    inputClasses (){
+    inputClasses() {
       let str = 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700'
       str += this.dateRange ? ' w-50' : ' w-full'
       str += this.disabled ? ' !cursor-not-allowed !bg-gray-200' : ''
@@ -68,13 +71,13 @@ export default {
     useTime() {
       return this.withTime && !this.dateRange
     },
-    setMinDate () {
+    setMinDate() {
       if (this.disablePastDates) {
         return new Date().toISOString().split('T')[0]
       }
       return false
     },
-    setMaxDate () {
+    setMaxDate() {
       if (this.disableFutureDates) {
         return new Date().toISOString().split('T')[0]
       }
@@ -91,12 +94,12 @@ export default {
     },
     fromDate: {
       handler(val) {
-        if(this.dateRange){
-          if(!Array.isArray(this.compVal)){
+        if (this.dateRange) {
+          if (!Array.isArray(this.compVal)) {
             this.compVal = [];
           }
           this.compVal[0] = this.dateToUTC(val)
-        }else{
+        } else {
           this.compVal = this.dateToUTC(val)
         }
       },
@@ -104,12 +107,12 @@ export default {
     },
     toDate: {
       handler(val) {
-        if(this.dateRange){
-          if(!Array.isArray(this.compVal)){
+        if (this.dateRange) {
+          if (!Array.isArray(this.compVal)) {
             this.compVal = [null];
           }
           this.compVal[1] = this.dateToUTC(val)
-        }else{
+        } else {
           this.compVal = null
         }
       },
@@ -118,16 +121,16 @@ export default {
   },
 
   mounted() {
-    if(this.compVal){
-      if(Array.isArray(this.compVal)){
+    if (this.compVal) {
+      if (Array.isArray(this.compVal)) {
         this.fromDate = this.compVal[0] ?? null
         this.toDate = this.compVal[1] ?? null
-      }else{
+      } else {
         this.fromDate = this.dateToLocal(this.compVal)
       }
     }
 
-    fixedClasses.input = this.theme.default.input
+    this.fixedClasses.input = this.theme.default.input
     this.setInputColor()
   },
 
@@ -147,26 +150,26 @@ export default {
         dateInput.style.setProperty('--tw-ring-color', this.color)
       }
     },
-    dateToUTC(val){
-      if(!val){
+    dateToUTC(val) {
+      if (!val) {
         return null
       }
-      if(!this.useTime){
+      if (!this.useTime) {
         return val
       }
       return new Date(val).toISOString()
     },
-    dateToLocal(val){
-      if(!val){
+    dateToLocal(val) {
+      if (!val) {
         return null
       }
       const dateObj = new Date(val)
       let dateStr = dateObj.getFullYear() + '-' +
-                  String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                  String(dateObj.getDate()).padStart(2, '0')
-      if(this.useTime){
+        String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+        String(dateObj.getDate()).padStart(2, '0')
+      if (this.useTime) {
         dateStr += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-        String(dateObj.getMinutes()).padStart(2, '0');
+          String(dateObj.getMinutes()).padStart(2, '0');
       }
       return dateStr
     }
