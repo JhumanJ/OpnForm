@@ -19,11 +19,11 @@ class AppSumoAuthController extends Controller
 
     public function handleCallback(Request $request)
     {
+        ray($request->all());
         $this->validate($request, [
             'code' => 'required',
         ]);
-
-        dd($request->code);
+        dd('ok');
 
         try {
             $workspace = $this->retrieveAccessToken($request->code);
