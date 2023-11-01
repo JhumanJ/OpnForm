@@ -42,39 +42,30 @@ class AppSumoController extends Controller
 
     private function handleActivateEvent($request)
     {
-        $licence = License::firstOrNew([
-            'license_key' => $request->license_key,
-            'license_provider' => 'appsumo',
-            'status' => License::STATUS_ACTIVE,
-        ]);
-        $licence->meta = $request->json()->all();
-        $licence->save();
-        Log::info('[APPSUMO] activating license', $request->toArray());
+        $this->createLicense($request->json()->all());
     }
 
     private function handleChangeEvent($request)
     {
-        // Deactivate old license
-        $oldLicense = License::where([
-            'license_key' => $request->prev_license_key,
-            'license_provider' => 'appsumo',
-        ])->firstOrFail();
-        $oldLicense->update([
-            'status' => License::STATUS_INACTIVE,
-        ]);
+        $this->deactivateLicense($request->prev_license_key);
+        $this->createLicense($request->json()->all());
+    }
 
-        Log::info('[APPSUMO] De-activating license', [
-            'license_key' => $request->prev_license_key,
-            'license_id' => $oldLicense->id,
-        ]);
+    private function handleDeactivateEvent($request)
+    {
+        $this->deactivateLicense($request->license_key);
+    }
 
-        // Create new license
-        $license = License::create([
-            'license_key' => $request->license_key,
+    private function createLicense(array $licenseData)
+    {
+        $license = License::firstOrNew([
+            'license_key' => $licenseData['license_key'],
             'license_provider' => 'appsumo',
             'status' => License::STATUS_ACTIVE,
-            'meta' => $request->json()->all(),
         ]);
+        $license->meta = $licenseData;
+        $license->save();
+
         Log::info('[APPSUMO] creating new license',
             [
                 'license_key' => $license->license_key,
@@ -82,18 +73,17 @@ class AppSumoController extends Controller
             ]);
     }
 
-    private function handleDeactivateEvent($request)
+    private function deactivateLicense(string $licenseKey)
     {
-        // Deactivate old license
         $oldLicense = License::where([
-            'license_key' => $request->prev_license_key,
+            'license_key' => $licenseKey,
             'license_provider' => 'appsumo',
         ])->firstOrFail();
         $oldLicense->update([
             'status' => License::STATUS_INACTIVE,
         ]);
         Log::info('[APPSUMO] De-activating license', [
-            'license_key' => $request->prev_license_key,
+            'license_key' => $licenseKey,
             'license_id' => $oldLicense->id,
         ]);
     }
