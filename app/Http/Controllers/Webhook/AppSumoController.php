@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
 use App\Models\License;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -14,12 +15,15 @@ class AppSumoController extends Controller
         $this->validateSignature($request);
 
         if ($request->test) {
+            Log::info('[APPSUMO] test request received', $request->toArray());
             return $this->success([
                 'message' => 'Webhook received.',
                 'event' => $request->event,
                 'success' => true,
             ]);
         }
+
+        Log::info('[APPSUMO] request received', $request->toArray());
 
         // Call the right function depending on the event using match()
         match ($request->event) {
@@ -45,6 +49,7 @@ class AppSumoController extends Controller
         ]);
         $licence->meta = $request->json()->all();
         $licence->save();
+        Log::info('[APPSUMO] activating license', $request->toArray());
     }
 
     private function handleChangeEvent($request)
@@ -58,13 +63,23 @@ class AppSumoController extends Controller
             'status' => License::STATUS_INACTIVE,
         ]);
 
+        Log::info('[APPSUMO] De-activating license', [
+            'license_key' => $request->prev_license_key,
+            'license_id' => $oldLicense->id,
+        ]);
+
         // Create new license
-        License::create([
+        $license = License::create([
             'license_key' => $request->license_key,
             'license_provider' => 'appsumo',
             'status' => License::STATUS_ACTIVE,
             'meta' => $request->json()->all(),
         ]);
+        Log::info('[APPSUMO] creating new license',
+            [
+                'license_key' => $license->license_key,
+                'license_id' => $license->id,
+            ]);
     }
 
     private function handleDeactivateEvent($request)
@@ -76,6 +91,10 @@ class AppSumoController extends Controller
         ])->firstOrFail();
         $oldLicense->update([
             'status' => License::STATUS_INACTIVE,
+        ]);
+        Log::info('[APPSUMO] De-activating license', [
+            'license_key' => $request->prev_license_key,
+            'license_id' => $oldLicense->id,
         ]);
     }
 
