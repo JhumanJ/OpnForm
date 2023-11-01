@@ -7,24 +7,24 @@
   >
     <template v-if="!loading">
       <span class="no-underline mx-auto">
-      <slot/>
-        </span>
+        <slot />
+      </span>
       <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M1 11L11 1M11 1H1M11 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round"/>
+              stroke-linejoin="round"
+        />
       </svg>
-
     </template>
-    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`"/>
+    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`" />
   </button>
-  <router-link v-else :class="btnClasses" :to="to" :target="target"
-  >
-      <span class="no-underline mx-auto">
-      <slot/>
-      </span>
+  <router-link v-else :class="btnClasses" :to="to" :target="target">
+    <span class="no-underline mx-auto">
+      <slot />
+    </span>
     <svg v-if="arrow" class="ml-2 w-3 h-3 inline" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M1 11L11 1M11 1H1M11 1V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round"/>
+            stroke-linejoin="round"
+      />
     </svg>
   </router-link>
 </template>
@@ -72,11 +72,11 @@ export default {
     target: {
       type: String,
       default: '_self'
-    },
+    }
   },
 
   computed: {
-    btnClasses() {
+    btnClasses () {
       const sizes = this.sizes
       const colorShades = this.colorShades
       return `v-btn ${sizes['p-y']} ${sizes['p-x']}
@@ -84,14 +84,14 @@ export default {
         ${colorShades?.text} transition ease-in duration-200 text-center text-${sizes?.font} font-medium focus:outline-none focus:ring-2
         focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
     },
-    colorShades() {
+    colorShades () {
       if (this.color === 'blue') {
         return {
           main: 'bg-blue-600',
           hover: 'hover:bg-blue-700',
           ring: 'focus:ring-blue-500',
           'ring-offset': 'focus:ring-offset-blue-200',
-          text: 'text-white',
+          text: 'text-white'
         }
       } else if (this.color === 'outline-blue') {
         return {
@@ -99,7 +99,15 @@ export default {
           hover: 'hover:bg-blue-600',
           ring: 'focus:ring-blue-500',
           'ring-offset': 'focus:ring-offset-blue-200',
-          text: 'text-blue-600 hover:text-white',
+          text: 'text-blue-600 hover:text-white'
+        }
+      } else if (this.color === 'outline-gray') {
+        return {
+          main: 'bg-transparent border border-gray-300',
+          hover: 'hover:bg-gray-500',
+          ring: 'focus:ring-gray-500',
+          'ring-offset': 'focus:ring-offset-gray-200',
+          text: 'text-gray-500 hover:text-white'
         }
       } else if (this.color === 'red') {
         return {
@@ -107,7 +115,7 @@ export default {
           hover: 'hover:bg-red-700',
           ring: 'focus:ring-red-500',
           'ring-offset': 'focus:ring-offset-red-200',
-          text: 'text-white',
+          text: 'text-white'
         }
       } else if (this.color === 'gray') {
         return {
@@ -115,7 +123,7 @@ export default {
           hover: 'hover:bg-gray-700',
           ring: 'focus:ring-gray-500',
           'ring-offset': 'focus:ring-offset-gray-200',
-          text: 'text-white',
+          text: 'text-white'
         }
       } else if (this.color === 'light-gray') {
         return {
@@ -123,7 +131,7 @@ export default {
           hover: 'hover:bg-gray-100',
           ring: 'focus:ring-gray-500',
           'ring-offset': 'focus:ring-offset-gray-300',
-          text: 'text-gray-700',
+          text: 'text-gray-700'
         }
       } else if (this.color === 'green') {
         return {
@@ -131,7 +139,7 @@ export default {
           hover: 'hover:bg-green-700',
           ring: 'focus:ring-green-500',
           'ring-offset': 'focus:ring-offset-green-200',
-          text: 'text-white',
+          text: 'text-white'
         }
       } else if (this.color === 'yellow') {
         return {
@@ -139,7 +147,7 @@ export default {
           hover: 'hover:bg-yellow-700',
           ring: 'focus:ring-yellow-500',
           'ring-offset': 'focus:ring-offset-yellow-200',
-          text: 'text-white',
+          text: 'text-white'
         }
       } else if (this.color === 'white') {
         return {
@@ -147,12 +155,12 @@ export default {
           hover: 'hover:bg-gray-200',
           ring: 'focus:ring-white-500',
           'ring-offset': 'focus:ring-offset-white-200',
-          text: 'text-gray-700',
+          text: 'text-gray-700'
         }
       }
       console.error('Unknown color')
     },
-    sizes() {
+    sizes () {
       if (this.size === 'small') {
         return {
           font: 'sm',
@@ -169,8 +177,8 @@ export default {
   },
 
   methods: {
-    onClick(event) {
-      this.$emit('click',event)
+    onClick (event) {
+      this.$emit('click', event)
     }
   }
 }

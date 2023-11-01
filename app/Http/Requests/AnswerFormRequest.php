@@ -16,9 +16,6 @@ use App\Rules\ValidUrl;
 
 class AnswerFormRequest extends FormRequest
 {
-    const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
-    const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
-
     public Form $form;
 
     protected array $requestRules = [];
@@ -27,12 +24,7 @@ class AnswerFormRequest extends FormRequest
     public function __construct(Request $request)
     {
         $this->form = $request->form;
-
-        $this->maxFileSize = self::MAX_FILE_SIZE_FREE;
-        $workspace = $this->form->workspace;
-        if ($workspace && $workspace->is_pro) {
-            $this->maxFileSize = self::MAX_FILE_SIZE_PRO;
-        }
+        $this->maxFileSize = $this->form->workspace->max_file_size;
     }
 
     /**

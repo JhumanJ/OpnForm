@@ -45,7 +45,7 @@ return [
     ],
 
     'notion' => [
-        'worker' => env('NOTION_WORKER','https://notion-forms-worker.notionforms.workers.dev/v1')
+        'worker' => env('NOTION_WORKER', 'https://notion-forms-worker.notionforms.workers.dev/v1')
     ],
 
     'openai' => [
@@ -53,8 +53,14 @@ return [
     ],
 
     'unsplash' => [
-      'access_key' => env('UNSPLASH_ACCESS_KEY'),
-      'secret_key' => env('UNSPLASH_SECRET_KEY'),
+        'access_key' => env('UNSPLASH_ACCESS_KEY'),
+        'secret_key' => env('UNSPLASH_SECRET_KEY'),
+    ],
+
+    'appsumo' => [
+        'client_id' => env('APPSUMO_CLIENT_ID'),
+        'client_secret' => env('APPSUMO_CLIENT_SECRET'),
+        'api_key' => env('APPSUMO_API_KEY'),
     ],
 
     'google_analytics_code' => env('GOOGLE_ANALYTICS_CODE'),

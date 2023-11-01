@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Http\Requests\AnswerFormRequest;
 use App\Models\Forms\Form;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Workspace extends Model
 {
     use HasFactory;
+
+    const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
+    const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
 
     protected $fillable = [
         'name',
@@ -35,6 +38,26 @@ class Workspace extends Model
             }
         }
         return false;
+    }
+
+    public function getMaxFileSizeAttribute()
+    {
+        if(is_null(config('cashier.key'))){
+            return self::MAX_FILE_SIZE_PRO;
+        }
+
+        // Return max file size depending on subscription
+        foreach ($this->owners as $owner) {
+            if ($owner->is_subscribed) {
+                if ($license = $owner->activeLicense()) {
+                    // In case of special License
+                    return $license->max_file_size;
+                }
+            }
+            return self::MAX_FILE_SIZE_PRO;
+        }
+
+        return self::MAX_FILE_SIZE_FREE;
     }
 
     public function getIsEnterpriseAttribute()

@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'template_editor' => $this->template_editor,
             'has_customer_id' => $this->has_customer_id,
             'has_forms' => $this->has_forms,
+            'active_license' => $this->licenses()->active()->first(),
         ] : [];
 
         return array_merge(parent::toArray($request), $personalData);
