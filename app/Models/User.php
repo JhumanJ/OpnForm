@@ -154,7 +154,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(License::class);
     }
 
-    public function activeLicense(): License
+    public function activeLicense(): ?License
     {
         return $this->licenses()->active()->first();
     }
