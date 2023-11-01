@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\Workspaces\WorkspaceAlreadyExisting;
-use App\Exceptions\Workspaces\WorkspaceLimit;
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use App\Models\License;
+use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class AppSumoAuthController extends Controller
 {
@@ -19,167 +17,101 @@ class AppSumoAuthController extends Controller
 
     public function handleCallback(Request $request)
     {
-        ray($request->all());
         $this->validate($request, [
             'code' => 'required',
         ]);
-        dd('ok');
+        $accessToken = $this->retrieveAccessToken($request->code);
+        $license = $this->fetchOrCreateLicense($accessToken);
 
-        try {
-            $workspace = $this->retrieveAccessToken($request->code);
-        } catch (ClientException $exception) {
+        // If user connected, attach license
+        if (Auth::check()) return $this->attachLicense($license);
 
-            // Permission issue: owner does not have full access to shared page
-            if (Str::of($exception->getMessage())->contains('User does not have edit access to record')) {
-                Log::error('Notion connection permission Error', [
-                    'exception_msg' => $exception->getMessage(),
-                    'response' => $exception->getResponse(),
-                    'exception' => $exception,
-                    'user' => Auth::user()->id,
-                ]);
-
-                return $this->callbackResponse([
-                    'type' => 'error',
-                    'message' => 'You do not have full access to the Notion pages you selected. Please make sure you have the right permissions.'
-                ]);
-            }
-
-            Log::error('Error while connecting to notion', [
-                'exception_msg' => $exception->getMessage(),
-                'exception' => $exception,
-            ]);
-
-            return $this->callbackResponse([
-                'type' => 'error',
-                'message' => 'Error while connecting with Notion. Please try again!',
-            ]);
-        } catch (WorkspaceAlreadyExisting $exception) {
-            // TODO: notify workspace owner
-            return $this->callbackResponse([
-                'type' => 'error',
-                'upgrade' => true,
-                'message' => 'workspace_already_existing',
-                'owner' => $exception->getOwner(),
-            ]);
-        } catch (WorkspaceLimit $exception) {
-            return $this->callbackResponse([
-                'type' => 'error',
-                'upgrade' => true,
-                'retry' => false,
-                'message' => 'You are only allowed to connect 1 Notion workspace. Please upgrade your subscription to the Enterprise plan  before adding more workspaces.',
-            ]);
+        // otherwise start login flow by passing the encrypted license key id
+        if (is_null($license->user_id)) {
+            return redirect(url('/register?appsumo_license='.encrypt($license->id)));
         }
 
-        return $this->callbackResponse([
-            'type' => 'success',
-            'workspace' => $workspace,
-        ]);
+        return redirect(url('/register?appsumo_error=1'));
     }
 
-    private function retrieveAccessToken(string $requestCode): Workspace
+    private function retrieveAccessToken(string $requestCode): string
     {
-        $baseUrl = 'https://api.notion.com/' . config('notion.version') . '/oauth/';
-        $client = new Client([
-            'base_uri' => $baseUrl,
-        ]);
-
-        $response = $client->post('token', [
-            'form_params' => [
-                'grant_type' => 'authorization_code',
-                'code' => $requestCode,
-                'redirect_uri' => route('notion.callback'),
-            ],
-            'auth' => [
-                config('notion.client_id'),
-                config('notion.client_secret'),
-            ],
-        ]);
-
-        $body = (string)$response->getBody();
-        $body = json_decode($body, true);
-
-        return $this->findOrCreateWorkspace($body);
+        return Http::withHeaders([
+            'Content-type' => 'application/json'
+        ])->post('https://appsumo.com/openid/token/', [
+            'grant_type' => 'authorization_code',
+            'code' => $requestCode,
+            'redirect_uri' => route('appsumo.callback'),
+            'client_id' => config('services.appsumo.client_id'),
+            'client_secret' => config('services.appsumo.client_secret'),
+        ])->throw()->json('access_token');
     }
 
-    private function findOrCreateWorkspace(array $workspaceData): Workspace
+    private function fetchOrCreateLicense(string $accessToken): License
     {
-        // Check user's workspaces
-        if ($workspace = Auth::user()->workspaces()
-            ->where(function ($query) use ($workspaceData) {
-                return $query->where('name', $workspaceData['workspace_name'])
-                    ->orWhere('notion_workspace_id', $workspaceData['workspace_id']);
-            })
-            ->first()) {
-            $workspace->update([
-                'name' => utf8_encode($workspaceData['workspace_name']),
-                'icon' => utf8_encode($workspaceData['workspace_icon'] ?? ucfirst($workspaceData['workspace_name'][0])),
-                'bot_id' => $workspaceData['bot_id'],
-                'notion_workspace_id' => $workspaceData['workspace_id'],
-            ]);
-        } // Check other existing workspaces
-        elseif ($workspace = Workspace::where('notion_workspace_id', $workspaceData['workspace_id'])->first()) {
-            $this->checkCanConnectWorkspace($workspace);
-            $workspace->update([
-                'name' => utf8_encode($workspaceData['workspace_name']),
-                'icon' => utf8_encode($workspaceData['workspace_icon'] ?? ucfirst($workspaceData['workspace_name'][0])),
-                'bot_id' => $workspaceData['bot_id'],
-                'notion_workspace_id' => $workspaceData['workspace_id'],
-            ]);
-        } // New workspace, create it
-        else {
-            $this->checkCanConnectWorkspace();
-            $workspace = Workspace::create([
-                'bot_id' => $workspaceData['bot_id'],
-                'notion_workspace_id' => $workspaceData['workspace_id'],
-                'name' => utf8_encode($workspaceData['workspace_name']),
-                'icon' => utf8_encode($workspaceData['workspace_icon'] ?? ucfirst($workspaceData['workspace_name'][0])),
+        // Fetch license from API
+        $licenseKey = Http::get('https://appsumo.com/openid/license_key/?access_token=' . $accessToken)
+            ->throw()
+            ->json('license_key');
+
+        // Fetch or create license model
+        $license = License::where('license_provider','appsumo')->where('license_key',$licenseKey)->first();
+        if (!$license) {
+            $licenseData = Http::withHeaders([
+                'X-AppSumo-Licensing-Key' => config('services.appsumo.api_key'),
+            ])->get('https://api.licensing.appsumo.com/v2/licenses/'.$licenseKey)->json();
+
+            // Create new license
+            $license = License::create([
+                'license_key' => $licenseKey,
+                'license_provider' => 'appsumo',
+                'status' => $licenseData['status'] === 'active' ? License::STATUS_ACTIVE : License::STATUS_INACTIVE,
+                'meta' => $licenseData,
             ]);
         }
 
-        // Add relation with user
-        Auth::user()->workspaces()->sync([
-            $workspace->id => [
-                'access_token' => $workspaceData['access_token'],
-                'is_owner' => true,
-            ],
-        ], false);
-
-        return $workspace;
+        return $license;
     }
 
-    private function checkCanConnectWorkspace($workspace = null)
-    {
-        $user = Auth::user();
-
-        if ($workspace && $workspace->haveOpenedGates()) {
-            return;
+    private function attachLicense(License $license) {
+        if (!Auth::check()) {
+            throw new AuthenticationException('User not authenticated');
         }
 
-        // If user has enterprise subscription, can do everything
-        if ($user->has_enterprise_subscription) {
-            return;
+        // Attach license if not already attached
+        if (is_null($license->user_id)) {
+            $license->user_id = Auth::id();
+            $license->save();
+            return redirect(url('/home?appsumo_connect=1'));
         }
 
-        // If user doens't have enterprise
-        if ($user->workspaces()->count() > 0) {
-            throw new WorkspaceLimit();
-        } else {
-            // User has room for new workspace
-            if ($workspace && $workspace->is_enterprise) {
-                return;
-            } elseif ($workspace) {
-                // User has room, but workspace not enterprise
-                throw new WorkspaceAlreadyExisting($workspace);
-            }
-        }
+        // Licensed already attached
+        return redirect(url('/home?appsumo_error=1'));
     }
 
-    private function callbackResponse(array $result)
+    /**
+     * @param User $user
+     * @param string|null $licenseHash
+     * @return string|null
+     *
+     * Returns null if no license found
+     * Returns true if license was found and attached
+     * Returns false if there was an error (license not found or already attached)
+     */
+    public static function registerWithLicense(User $user, ?string $licenseHash): ?bool
     {
-        return view('notion.callback', [
-            'result' => array_merge($result, [
-                'source' => 'notion_tools',
-            ]),
-        ]);
+        if (!$licenseHash) {
+            return null;
+        }
+        $licenseId = decrypt($licenseHash);
+        $license = License::find($licenseId);
+
+        if ($license && is_null($license->user_id)) {
+            $license->user_id = $user->id;
+            $license->save();
+            return true;
+        }
+
+        return false;
     }
 }

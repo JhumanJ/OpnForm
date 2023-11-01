@@ -38,13 +38,13 @@ class AppSumoController extends Controller
 
     private function handleActivateEvent($request)
     {
-        License::updateOrCreate([
+        $licence = License::firstOrNew([
             'license_key' => $request->license_key,
-            'user_identifier' => $request->user_fingerprint,
             'license_provider' => 'appsumo',
             'status' => License::STATUS_ACTIVE,
-            'meta' => $request->json()->all(),
         ]);
+        $licence->meta = $request->json()->all();
+        $licence->save();
     }
 
     private function handleChangeEvent($request)
@@ -61,7 +61,6 @@ class AppSumoController extends Controller
         // Create new license
         License::create([
             'license_key' => $request->license_key,
-            'user_identifier' => $request->user_fingerprint,
             'license_provider' => 'appsumo',
             'status' => License::STATUS_ACTIVE,
             'meta' => $request->json()->all(),

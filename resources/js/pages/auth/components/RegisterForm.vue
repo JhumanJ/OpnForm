@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="register" @keydown="form.onKeydown($event)" class="mt-4">
+    <form class="mt-4" @submit.prevent="register" @keydown="form.onKeydown($event)">
       <!-- Name -->
       <text-input name="name" :form="form" :label="$t('name')" placeholder="Your name" :required="true" />
 
@@ -18,42 +18,42 @@
 
       <!-- Password Confirmation-->
       <text-input native-type="password" :form="form" :required="true" placeholder="Enter confirm password"
-                  name="password_confirmation"  :label="$t('confirm_password')"
+                  name="password_confirmation" :label="$t('confirm_password')"
       />
 
       <checkbox-input :form="form" name="agree_terms" :required="true">
         <template #label>
-          I agree with the <router-link :to="{name:'terms-conditions'}" target="_blank">Terms and conditions</router-link> and <router-link :to="{name:'privacy-policy'}" target="_blank">Privacy policy</router-link> of the website and I accept them.
+          I agree with the <router-link :to="{name:'terms-conditions'}" target="_blank">
+            Terms and conditions
+          </router-link> and <router-link :to="{name:'privacy-policy'}" target="_blank">
+            Privacy policy
+          </router-link> of the website and I accept them.
         </template>
       </checkbox-input>
 
       <!-- Submit Button -->
-      <v-button :loading="form.busy">Create an account</v-button>
+      <v-button :loading="form.busy">
+        Create an account
+      </v-button>
 
       <p class="text-gray-500 mt-4">
-        Already have an account?  
-        <a href="#" v-if="isQuick" @click.prevent="$emit('openLogin')" class="font-semibold ml-1">Log In</a>
-        <router-link v-else :to="{name:'login'}" class="font-semibold ml-1">Log In</router-link>
+        Already have an account?
+        <a v-if="isQuick" href="#" class="font-semibold ml-1" @click.prevent="$emit('openLogin')">Log In</a>
+        <router-link v-else :to="{name:'login'}" class="font-semibold ml-1">
+          Log In
+        </router-link>
       </p>
-
-      <!-- GitHub Register Button -->
-      <login-with-github />
     </form>
   </div>
 </template>
 
 <script>
 import Form from 'vform'
-import LoginWithGithub from '~/components/LoginWithGithub.vue'
-import SelectInput from '../../../components/forms/SelectInput.vue'
 import { initCrisp } from '../../../middleware/check-auth.js'
 
 export default {
   name: 'RegisterForm',
-  components: {
-    SelectInput,
-    LoginWithGithub,
-  },
+  components: {},
   props: {
     isQuick: {
       type: Boolean,
@@ -68,7 +68,8 @@ export default {
       email: '',
       password: '',
       password_confirmation: '',
-      agree_terms: false
+      agree_terms: false,
+      appsumo_license: null
     }),
     mustVerifyEmail: false
   }),
@@ -88,6 +89,13 @@ export default {
         .map(({ value }) => value)
       options.push({ name: 'Other', value: 'other' })
       return options
+    }
+  },
+
+  mounted () {
+    // Set appsumo license
+    if (this.$route.query.appsumo_license !== undefined && this.$route.query.appsumo_license) {
+      this.form.appsumo_license = this.$route.query.appsumo_license
     }
   },
 
@@ -111,14 +119,23 @@ export default {
 
         // Track event
         this.$logEvent('register', { source: this.form.hear_about_us })
-        
+
         initCrisp(data)
         this.$crisp.push(['set', 'session:event', [[['register', {}, 'blue']]]])
 
+        // AppSumo License
+        if (data.appsumo_license === false) {
+          this.alertError('Invalid AppSumo license. This probably happened because this license was already' +
+            ' attached to another OpnForm account. Please contact support.')
+        } else if (data.appsumo_license === true) {
+          this.alertSuccess('Your AppSumo license was successfully activated! You now have access to all the' +
+            ' features of the AppSumo deal.')
+        }
+
         // Redirect
-        if(this.isQuick){
+        if (this.isQuick) {
           this.$emit('afterQuickLogin')
-        }else{
+        } else {
           this.$router.push({ name: 'forms.create' })
         }
       }

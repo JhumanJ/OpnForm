@@ -14,7 +14,7 @@ class License extends Model
 
     protected $fillable = [
         'license_key',
-        'user_identifier',
+        'user_id',
         'license_provider',
         'status',
         'meta'
@@ -23,4 +23,14 @@ class License extends Model
     protected $casts = [
         'meta' => 'array',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
 }

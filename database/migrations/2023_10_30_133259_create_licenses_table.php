@@ -16,14 +16,14 @@ return new class extends Migration
         Schema::create('licenses', function (Blueprint $table) {
             $table->id();
             $table->string('license_key');
-            $table->string('user_identifier');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('license_provider');
             $table->string('status');
             $table->json('meta');
             $table->timestamps();
 
             $table->index(['license_key', 'license_provider']);
-            $table->index(['user_identifier', 'license_provider']);
+            $table->index(['user_id', 'license_provider']);
         });
     }
 
