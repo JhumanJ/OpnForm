@@ -15,7 +15,7 @@ class TemplateController extends Controller
     {
         $limit = null;
         if ($request->offsetExists('limit') && $request->get('limit') > 0) {
-            $limit = (int) $request->get('limit');
+            $limit = (int)$request->get('limit');
         }
 
         $onlyMy = false;
@@ -24,12 +24,18 @@ class TemplateController extends Controller
         }
 
         $templates = Template::limit($limit)
-            ->when(Auth::check() && !$onlyMy, function ($query) {
-                $query->where('publicly_listed', true);
-                $query->orWhere('creator_id', Auth::id());
+            ->when(Auth::check(), function ($query) use ($onlyMy) {
+                if ($onlyMy) {
+                    $query->where('creator_id', Auth::id());
+                } else {
+                    $query->where(function ($query) {
+                        $query->where('publicly_listed', true)
+                            ->orWhere('creator_id', Auth::id());
+                    });
+                }
             })
-            ->when(Auth::check() && $onlyMy, function ($query) {
-                $query->where('creator_id', Auth::id());
+            ->when(!Auth::check(), function ($query) {
+                return $query->publiclyListed();
             })
             ->orderByDesc('created_at')
             ->get();
