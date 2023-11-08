@@ -66,6 +66,7 @@ class AppSumoController extends Controller
             'status' => License::STATUS_ACTIVE,
         ]);
         $license->meta = $licenseData;
+        $license->user_id = $licenseData['user_id'] ?? null;
         $license->save();
 
         Log::info('[APPSUMO] creating new license',
