@@ -47,8 +47,10 @@ class AppSumoController extends Controller
 
     private function handleChangeEvent($request)
     {
-        $this->deactivateLicense($request->prev_license_key);
-        $this->createLicense($request->json()->all());
+        $license = $this->deactivateLicense($request->prev_license_key);
+        $this->createLicense(array_merge($request->json()->all(), [
+            'user_id' => $license->user_id,
+        ]));
     }
 
     private function handleDeactivateEvent($request)
@@ -56,7 +58,7 @@ class AppSumoController extends Controller
         $this->deactivateLicense($request->license_key);
     }
 
-    private function createLicense(array $licenseData)
+    private function createLicense(array $licenseData): License
     {
         $license = License::firstOrNew([
             'license_key' => $licenseData['license_key'],
@@ -71,21 +73,25 @@ class AppSumoController extends Controller
                 'license_key' => $license->license_key,
                 'license_id' => $license->id,
             ]);
+
+        return $license;
     }
 
-    private function deactivateLicense(string $licenseKey)
+    private function deactivateLicense(string $licenseKey): License
     {
-        $oldLicense = License::where([
+        $license = License::where([
             'license_key' => $licenseKey,
             'license_provider' => 'appsumo',
         ])->firstOrFail();
-        $oldLicense->update([
+        $license->update([
             'status' => License::STATUS_INACTIVE,
         ]);
         Log::info('[APPSUMO] De-activating license', [
             'license_key' => $licenseKey,
-            'license_id' => $oldLicense->id,
+            'license_id' => $license->id,
         ]);
+
+        return $license;
     }
 
     private function validateSignature(Request $request)
