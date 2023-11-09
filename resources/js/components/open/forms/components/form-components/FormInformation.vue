@@ -84,15 +84,15 @@ export default {
       copyFormId: null,
       visibilityOptions: [
         {
-          name: "Public",
+          name: "Published",
           value: "public"
         },
         {
-          name: "Draft (form won't be accessible)",
+          name: "Draft - not publicly accessible",
           value: "draft"
         },
         {
-          name: "Closed",
+          name: "Closed - won\'t accept new submissions",
           value: "closed"
         }
       ],
