@@ -35,7 +35,7 @@ class TemplateController extends Controller
                 }
             })
             ->when(!Auth::check(), function ($query) {
-                return $query->publiclyListed();
+                $query->where('publicly_listed', true);
             })
             ->orderByDesc('created_at')
             ->get();
