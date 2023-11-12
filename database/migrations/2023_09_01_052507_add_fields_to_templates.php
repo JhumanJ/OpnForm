@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -15,10 +16,10 @@ return new class extends Migration
     {
         Schema::table('templates', function (Blueprint $table) {
             $table->boolean('publicly_listed')->default(false);
-            $table->jsonb('industries')->default('[]');
-            $table->jsonb('types')->default('[]');
+            $table->jsonb('industries')->default(new Expression("(JSON_ARRAY())"));
+            $table->jsonb('types')->default(new Expression("(JSON_ARRAY())"));
             $table->string('short_description')->nullable();
-            $table->jsonb('related_templates')->default('[]');
+            $table->jsonb('related_templates')->default(new Expression("(JSON_ARRAY())"));
             $table->string('image_url',500)->nullable()->change();
         });
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,7 +17,7 @@ return new class extends Migration
         Schema::create('form_statistics', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Forms\Form::class,'form_id');
-            $table->jsonb('data')->default('{}');
+            $table->jsonb('data')->default(new Expression("(JSON_OBJECT())"));
             $table->date('date');
         });
     }
