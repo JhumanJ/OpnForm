@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateFormsTable extends Migration
@@ -14,7 +15,9 @@ class CreateFormsTable extends Migration
      */
     public function up()
     {
-        Schema::create('forms', function (Blueprint $table) {
+        $driver = DB::getDriverName();
+
+        Schema::create('forms', function (Blueprint $table) use ($driver) {
             $table->id();
             $table->foreignIdFor(\App\Models\Workspace::class,'workspace_id');
             $table->string('title');
@@ -52,7 +55,11 @@ class CreateFormsTable extends Migration
             $table->boolean('can_be_indexed')->default(true);
             $table->string('password')->nullable()->default(null);
             $table->string('notification_sender')->default("OpenForm");
-            $table->jsonb('tags')->default(new Expression('(JSON_ARRAY())'));
+            if ($driver === 'mysql') {
+                $table->jsonb('tags')->default(new Expression('(JSON_ARRAY())'));
+            } else {
+                $table->jsonb('tags')->default('[]');
+            }            
         });
     }
 
