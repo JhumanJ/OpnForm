@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -14,8 +15,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('forms', function (Blueprint $table) {
-            $table->json('seo_meta')->default(new Expression("(JSON_OBJECT())"));
+        $driver = DB::getDriverName();
+        
+        Schema::table('forms', function (Blueprint $table) use ($driver) {
+            if ($driver === 'mysql') {
+                $table->json('seo_meta')->default(new Expression("(JSON_OBJECT())"));
+            } else {
+                $table->json('seo_meta')->default("{}");
+            }
         });
     }
 
