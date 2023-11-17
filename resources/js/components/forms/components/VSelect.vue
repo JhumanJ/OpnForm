@@ -15,7 +15,7 @@
             </div>
             <div v-else key="placeholder">
               <slot name="placeholder">
-                <div class="text-gray-400 dark:text-gray-500 w-full text-left"
+                <div class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
                      :class="{'py-1': multiple && !loading}"
                 >
                   {{ placeholder }}

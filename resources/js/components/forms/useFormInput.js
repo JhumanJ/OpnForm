@@ -6,7 +6,7 @@ export const inputProps = {
   name: { type: String, required: true },
   label: { type: String, required: false },
   form: { type: Object, required: false },
-  value: { required: false },
+  modelValue: { required: false },
   required: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   placeholder: { type: String, default: null },
