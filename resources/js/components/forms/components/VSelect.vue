@@ -20,8 +20,8 @@
           <div :class="{'h-6': !multiple, 'min-h-8': multiple && !loading}">
             <transition name="fade" mode="out-in">
               <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
-              <div v-else-if="value" key="value" class="flex" :class="{'min-h-8': multiple}">
-                <slot name="selected" :option="value" />
+              <div v-else-if="modelValue" key="modelValue" class="flex" :class="{'min-h-8': multiple}">
+                <slot name="selected" :option="modelValue" />
               </div>
               <div v-else key="placeholder">
                 <slot name="placeholder">
@@ -48,7 +48,7 @@
             :class="{'max-h-42 py-1': !isSearchable,'max-h-48 pb-1': isSearchable}"
         >
           <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark-bg-notion-dark-light z-10">
-            <text-input v-model="searchTerm" name="search" :color="color" :theme="theme"
+            <text-input v-model="searchTerm.value" name="search" :color="color" :theme="theme"
                         placeholder="Search..."
             />
           </div>
@@ -84,157 +84,166 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, onMounted, defineProps, defineEmits, defineOptions, computed } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
 import TextInput from '../TextInput.vue'
 import Fuse from 'fuse.js'
 import { themes } from '~/config/form-themes.js'
 import debounce from 'debounce'
 
-export default {
-  name: 'VSelect',
-  components: { TextInput },
-  directives: {
-    onClickaway: vOnClickOutside
-  },
-  props: {
-    data: Array,
-    value: { default: null },
-    inputClass: { type: String, default: null },
-    dropdownClass: { type: String, default: 'w-full' },
-    label: { type: String, default: null },
-    dusk: { type: String, default: null },
-    loading: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    multiple: { type: Boolean, default: false },
-    searchable: { type: Boolean, default: false },
-    hasError: { type: Boolean, default: false },
-    remote: { type: Function, default: null },
-    searchKeys: { type: Array, default: () => ['name'] },
-    optionKey: { type: String, default: 'id' },
-    emitKey: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' },
-    placeholder: { type: String, default: null },
-    uppercaseLabels: { type: Boolean, default: true },
-    theme: { type: Object, default: () => themes.default },
-    allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
-    help: { type: String, default: null },
-    helpPosition: { type: String, default: 'below_input' }
-  },
-  data () {
-    return {
-      isOpen: false,
-      searchTerm: '',
-      defaultValue: this.value ?? null
-    }
-  },
-  computed: {
-    optionStyle () {
-      return {
-        '--bg-form-color': this.color
-      }
-    },
-    inputStyle () {
-      return {
-        '--tw-ring-color': this.color
-      }
-    },
-    debouncedRemote () {
-      if (this.remote) {
-        return debounce(this.remote, 300)
-      }
-      return null
-    },
-    filteredOptions () {
-      if (!this.data) return []
-      if (!this.searchable || this.remote || this.searchTerm === '') {
-        return this.data
-      }
 
-      // Fuse search
-      const fuzeOptions = {
-        keys: this.searchKeys
-      }
-      const fuse = new Fuse(this.data, fuzeOptions)
-      return fuse.search(this.searchTerm).map((res) => {
-        return res.item
-      })
-    },
-    isSearchable () {
-      return this.searchable || this.remote !== null || this.allowCreation
-    }
-  },
-  watch: {
-    searchTerm (val) {
-      if (!this.debouncedRemote) return
-      if ((this.remote && val) || (val === '' && !this.value) || (val === '' && this.isOpen)) {
-        return this.debouncedRemote(val)
-      }
-    }
-  },
-  methods: {
-    isSelected (value) {
-      if (!this.value) return false
+defineOptions({
+  name: 'VSelect'
+})
 
-      if (this.emitKey && value[this.emitKey]) {
-        value = value[this.emitKey]
-      }
+const props = defineProps({
+  data: Array,
+  modelValue: { default: null },
+  inputClass: { type: String, default: null },
+  dropdownClass: { type: String, default: 'w-full' },
+  label: { type: String, default: null },
+  dusk: { type: String, default: null },
+  loading: { type: Boolean, default: false },
+  required: { type: Boolean, default: false },
+  multiple: { type: Boolean, default: false },
+  searchable: { type: Boolean, default: false },
+  hasError: { type: Boolean, default: false },
+  remote: { type: Function, default: null },
+  searchKeys: { type: Array, default: () => ['name'] },
+  optionKey: { type: String, default: 'id' },
+  emitKey: { type: String, default: null },
+  color: { type: String, default: '#3B82F6' },
+  placeholder: { type: String, default: null },
+  uppercaseLabels: { type: Boolean, default: true },
+  theme: { type: Object, default: () => themes.default },
+  allowCreation: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  help: { type: String, default: null },
+  helpPosition: { type: String, default: 'below_input' }
+})
 
-      if (this.multiple) {
-        return this.value.includes(value)
-      }
-      return this.value === value
-    },
-    closeDropdown () {
-      this.isOpen = false
-      this.searchTerm = ''
-    },
-    openDropdown () {
-      this.isOpen = this.disabled ? false : !this.isOpen
-    },
-    select (value) {
-      if (!this.multiple) {
-        this.closeDropdown()
-      }
+const emit = defineEmits(['update:modelValue', 'update-options'])
 
-      if (this.emitKey) {
-        value = value[this.emitKey]
-      }
+const defaultValue = ref(props.modelValue)
+let searchTerm = ref('')
+let isOpen = ref(false)
 
-      if (this.multiple) {
-        const emitValue = Array.isArray(this.value) ? [...this.value] : []
+const optionStyle = computed(() => {
+  return {
+    '--bg-form-color': props.color
+  }
+})
 
-        if (this.isSelected(value)) {
-          this.$emit('input', emitValue.filter((item) => {
-            if (this.emitKey) {
-              return item !== value
-            }
-            return item[this.optionKey] !== value && item[this.optionKey] !== value[this.optionKey]
-          }))
-          return
+const inputStyle = computed(() => {
+  return {
+    '--tw-ring-color': props.color
+  }
+})
+
+const debouncedRemote = computed(() => {
+  if (props.remote) {
+    return debounce(props.remote, 300)
+  }
+  return null
+})
+
+const filteredOptions = computed(() => {
+  if (!props.data) return []
+  if (!props.searchable || props.remote || searchTerm.value === '') {
+    return props.data
+  }
+
+  // Fuse search
+  const fuzeOptions = {
+    keys: props.searchKeys
+  }
+  const fuse = new Fuse(props.data, fuzeOptions)
+  return fuse.search(searchTerm.value).map((res) => {
+    return res.item
+  })
+})
+
+const isSearchable = computed(() => {
+  return props.searchable || props.remote !== null || props.allowCreation
+})
+
+watch(() => searchTerm, val => {
+  if (!props.debouncedRemote) return
+  if ((props.remote && val) || (val === '' && !props.modelValue) || (val === '' && isOpen)) {
+    return props.debouncedRemote(val)
+  }
+})
+
+
+const isSelected = (value) => {
+  if (!props.modelValue) return false
+
+  if (props.emitKey && value[props.emitKey]) {
+    value = value[props.emitKey]
+  }
+
+  if (props.multiple) {
+    return props.modelValue.includes(value)
+  }
+  return props.modelValue === value
+}
+
+const closeDropdown = () => {
+  isOpen.value = false
+  searchTerm.value = ''
+}
+const openDropdown = () => {
+  isOpen.value = props.disabled ? false : !isOpen.value
+}
+const select = (value) => {
+  if (!props.multiple) {
+    closeDropdown()
+  }
+
+  if (props.emitKey) {
+    value = value[props.emitKey]
+  }
+
+  if (props.multiple) {
+    const emitValue = Array.isArray(props.modelValue) ? [...props.modelValue] : []
+
+    if (isSelected(value)) {
+      emit('update:modelValue', emitValue.filter((item) => {
+        if (props.emitKey) {
+          return item !== value
         }
+        return item[props.optionKey] !== value && item[props.optionKey] !== value[props.optionKey]
+      }))
+      return
+    }
 
-        emitValue.push(value)
-        this.$emit('input', emitValue)
-      } else {
-        if (this.value === value) {
-          this.$emit('input', this.defaultValue ?? null)
-        } else {
-          this.$emit('input', value)
-        }
-      }
-    },
-    createOption (newOption) {
-      if (newOption) {
-        const newItem = {
-          name: newOption,
-          value: newOption
-        }
-        this.$emit('update-options', newItem)
-        this.select(newItem)
-      }
+    emitValue.push(value)
+    emit('update:modelValue', emitValue)
+  } else {
+    if (props.modelValue === value) {
+      emit('update:modelValue', defaultValue ?? null)
+    } else {
+      emit('update:modelValue', value)
     }
   }
 }
+const createOption = (newOption) => {
+  if (newOption) {
+    const newItem = {
+      name: newOption,
+      value: newOption
+    }
+    emit('update-options', newItem)
+    select(newItem)
+  }
+}
+
+
+// export default {
+//   components: { TextInput },
+//   directives: {
+//     onClickaway: vOnClickOutside
+//   }
+// }
 </script>

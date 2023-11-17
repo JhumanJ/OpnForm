@@ -1,14 +1,9 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label"
-           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
+  <input-wrapper v-bind="$props">
+    <template #label>
+      <slot name="label" />
+    </template>
+
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label" role="button"
               class="cursor-pointer relative flex"
@@ -63,10 +58,14 @@
         </template>
       </button>
     </span>
-    <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
+
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <template #error>
+      <slot name="error" />
+    </template>
 
     <!--  Modal  -->
     <modal :portal-order="2" :show="showUploadModal" @close="showUploadModal=false">
@@ -151,23 +150,25 @@
         </div>
       </div>
     </modal>
-  </div>
+  </input-wrapper>
 </template>
 
 <script>
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 import Modal from '../Modal.vue'
 import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'FileInput',
-
-  components: { Modal },
-  mixins: [inputMixin],
+  components: { InputWrapper, Modal },
   props: {
+    ...inputProps,
     multiple: { type: Boolean, default: true },
     mbLimit: { type: Number, default: 5 },
     accept: { type: String, default: '' }
   },
+  mixins: [inputMixin],
 
   data: () => ({
     showUploadModal: false,

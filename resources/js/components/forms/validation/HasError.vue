@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     errorMessage () {
-      if (!this.form.errors || !this.form.errors.any()) return null
+      if (!this.form || !this.form.errors || !this.form.errors.any()) return null
       const subErrorsKeys = Object.keys(this.form.errors.all()).filter((key) => {
         return key.startsWith(this.field) && key !== this.field
       })

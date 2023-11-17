@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import {fixedClasses} from '../../plugins/config/vue-tailwind/datePicker.js'
 import inputMixin from '~/mixins/forms/input.js'
 
 export default {
@@ -56,7 +57,7 @@ export default {
   },
 
   data: () => ({
-    fixedClasses: null,
+    fixedClasses: fixedClasses,
     fromDate: null,
     toDate: null
   }),
