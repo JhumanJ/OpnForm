@@ -31,7 +31,7 @@
         </span>
       </button>
     </span>
-    <div v-show="isOpen" :dusk="dusk+'_dropdown' "
+    <div v-show="isOpen"
          class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
          :class="dropdownClass"
     >
@@ -51,7 +51,7 @@
           <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"
               :class="{'px-3 pr-9': multiple, 'px-3': !multiple}"
               class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover-bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-              :dusk="dusk+'_option'" @click="select(item)"
+              @click="select(item)"
           >
             <slot name="option" :option="item" :selected="isSelected(item)" />
           </li>

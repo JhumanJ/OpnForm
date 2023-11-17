@@ -1,18 +1,11 @@
 <template>
-  <div :class="wrapperClass" :style="inputStyle">
-    <slot name="label">
-      <label v-if="label" :for="id ? id : name"
-             :class="[theme.default.label, { 'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels }]"
-      >
-        {{ label }}
-        <span v-if="required" class="text-red-500 required-dot">*</span>
-      </label>
-    </slot>
-    <div v-if="help && helpPosition == 'above_input'" class="flex mb-1">
-      <small :class="theme.default.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-    </div>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
+
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
       <v-select v-model="selectedCountryCode" class="w-[130px]" dropdown-class="w-[300px]" input-class="rounded-r-none"
                 :data="countries"
@@ -35,32 +28,52 @@
         </template>
       </v-select>
       <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled"
-             :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-             :placeholder="placeholder" :style="inputStyle" @input="onInput"
+            :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
+            :placeholder="placeholder" :style="inputStyle" @input="onInput"
       >
     </div>
-    <div v-if="help && helpPosition=='below_input'" class="flex">
-      <small :class="theme.default.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-    </div>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <template #error>
+      <slot name="error" />
+    </template>
+
+  </input-wrapper>
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 import countryCodes from '../../../data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
-  components: { CountryFlag },
-  mixins: [inputMixin],
+  components: { InputWrapper, CountryFlag },
   props: {
+    ...inputProps,
     canOnlyCountry: { type: Boolean, default: false },
     unavailableCountries: { type: Array, default: () => [] }
+  },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
   },
 
   data () {

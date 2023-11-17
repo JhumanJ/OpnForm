@@ -207,8 +207,8 @@
         Use simple text input
       </v-checkbox>
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
-        <v-select v-model="field.unavailable_countries" class="mt-4"
-                  :data="allCountries" :multiple="true"
+        <select-input v-model="field.unavailable_countries" class="mt-4" wrapper-class="relative"
+                  :options="allCountries" :multiple="true"
                   :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
                   label="Disabled countries" :placeholder="'Select a country'"
                   help="Remove countries from the phone input"
@@ -233,8 +233,8 @@
               </svg>
             </span>
           </template>
-        </v-select>
-        <small class="flex">
+        </select-input>
+        <small class="flex -mt-2">
           <a href="#" class="grow" @click.prevent="selectAllCountries">Select All</a>
           <a href="#" @click.prevent="field.unavailable_countries=null">Un-select All</a>
         </small>

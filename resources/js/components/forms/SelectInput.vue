@@ -7,7 +7,6 @@
     </template>
 
     <v-select v-model="compVal"
-              :dusk="name"
               :data="finalOptions"
               :label="label"
               :option-key="optionKey"
@@ -29,21 +28,21 @@
               @update-options="updateOptions"
     >
       <template #selected="{option}">
-        <template v-if="multiple">
-          <div class="flex items-center truncate mr-6">
-            <span v-for="(item,index) in option" :key="item" class="truncate">
-              <span v-if="index!==0">, </span>
-              {{ getOptionName(item) }}
-            </span>
-          </div>
-        </template>
-        <template v-else>
-          <slot name="selected" :option="option" :optionName="getOptionName(option)">
+        <slot name="selected" :option="option" :optionName="getOptionName(option)">
+          <template v-if="multiple">
+            <div class="flex items-center truncate mr-6">
+              <span v-for="(item,index) in option" :key="item" class="truncate">
+                <span v-if="index!==0">, </span>
+                {{ getOptionName(item) }}
+              </span>
+            </div>
+          </template>
+          <template v-else>
             <div class="flex items-center truncate mr-6">
               <div>{{ getOptionName(option) }}</div>
             </div>
-          </slot>
-        </template>
+          </template>
+        </slot>
       </template>
       <template #option="{option, selected}">
         <slot name="option" :option="option" :selected="selected">
