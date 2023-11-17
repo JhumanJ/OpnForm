@@ -21,6 +21,9 @@ import { vOnClickOutside } from '@vueuse/components'
 
 export default {
   name: 'Dropdown',
+  directives: {
+    onClickOutside: vOnClickOutside
+  },
   props: {
     dropdownClass: {
       type: String,

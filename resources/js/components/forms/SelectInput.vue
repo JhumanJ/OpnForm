@@ -1,5 +1,11 @@
 <template>
-  <div :class="wrapperClass">
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
+
     <v-select v-model="compVal"
               :dusk="name"
               :data="finalOptions"
@@ -15,7 +21,7 @@
               :uppercase-labels="uppercaseLabels"
               :theme="theme"
               :has-error="hasValidation && form.errors.has(name)"
-              :allowCreation="allowCreation"
+              :allow-creation="allowCreation"
               :disabled="disabled"
               :help="help"
               :help-position="helpPosition"
@@ -57,22 +63,30 @@
         </slot>
       </template>
     </v-select>
-     
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 
 /**
  * Options: {name,value} objects
  */
 export default {
   name: 'SelectInput',
-  mixins: [inputMixin],
+  components: { InputWrapper },
 
   props: {
+    ...inputProps,
     options: { type: Array, required: true },
     optionKey: { type: String, default: 'value' },
     emitKey: { type: String, default: 'value' },
@@ -82,13 +96,30 @@ export default {
     searchable: { type: Boolean, default: false },
     allowCreation: { type: Boolean, default: false }
   },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
+  },
   data () {
     return {
       additionalOptions: []
     }
   },
+
   computed: {
-    finalOptions(){
+    finalOptions () {
       return this.options.concat(this.additionalOptions)
     }
   },
@@ -100,8 +131,8 @@ export default {
       if (option) return option[this.displayKey]
       return null
     },
-    updateOptions(newItem) {
-      if(newItem){
+    updateOptions (newItem) {
+      if (newItem) {
         this.additionalOptions.push(newItem)
       }
     }
