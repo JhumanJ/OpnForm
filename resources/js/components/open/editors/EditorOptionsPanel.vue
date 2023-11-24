@@ -1,8 +1,8 @@
 <template>
-  <collapse class="p-4 w-full border-b" v-model="show" @input="onChangeCollapse">
+  <collapse class="p-4 w-full border-b" v-model="show">
     <template #title>
       <div class="flex items-center pr-8">
-        <div class="text-gray-500 mr-3">
+        <div class="mr-3" :class="{'text-blue-600':show, 'text-gray-500':!show}">
           <slot name="icon" />
         </div>
         <h3 id="v-step-2" class="font-semibold flex-grow">
@@ -32,19 +32,14 @@ export default {
       type: Boolean,
       default: false
     },
-    value: {
+    alreadyOpened: {
       type: Boolean,
       default: false
     }
   },
   data () {
     return {
-      show: this.value
-    }
-  },
-  methods: {
-    onChangeCollapse () {
-      this.$emit('input', this.show)
+      show: this.alreadyOpened
     }
   }
 }
