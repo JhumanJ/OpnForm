@@ -1,7 +1,7 @@
 <template>
   <editor-options-panel name="Form Access" v-model="isCollapseOpen">
     <template #icon>
-      <svg class="h-5 w-5 inline mr-2 transition-colors" 
+      <svg class="h-5 w-5"
           :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       >
         <path stroke-linecap="round" stroke-linejoin="round"

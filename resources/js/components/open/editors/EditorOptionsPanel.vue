@@ -2,7 +2,7 @@
   <collapse class="p-4 w-full border-b" v-model="show" @input="onChangeCollapse">
     <template #title>
       <div class="flex items-center pr-8">
-        <div class="text-gray-500 mr-2">
+        <div class="text-gray-500 mr-3">
           <slot name="icon" />
         </div>
         <h3 id="v-step-2" class="font-semibold flex-grow">
