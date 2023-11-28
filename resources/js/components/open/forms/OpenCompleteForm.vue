@@ -219,7 +219,7 @@ export default {
           this.playConfetti()
         }
       }).catch((error) => {
-        if (error.response.data && error.response.data.message) {
+        if (error.response && error.response.data && error.response.data.message) {
           this.alertError(error.response.data.message)
         }
         this.loading = false
