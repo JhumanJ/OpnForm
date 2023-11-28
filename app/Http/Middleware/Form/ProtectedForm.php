@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PasswordProtectedForm
+class ProtectedForm
 {
     const PASSWORD_HEADER_NAME = 'form-password';
 
@@ -20,24 +20,32 @@ class PasswordProtectedForm
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->route('slug')) {
-            $form = Form::where('slug',$request->route('slug'))->firstOrFail();
-            $request->merge([
-                'form' => $form,
-            ]);
-            $userIsFormOwner = Auth::check() && Auth::user()->workspaces()->find($form->workspace_id) !== null;
-            if (!$userIsFormOwner && $form->has_password) {
-                if($this->hasCorrectPassword($request, $form)){
-                    return $next($request);
-                }
-
-                return response([
-                    'status' => 'Unauthorized',
-                    'message' => 'Form is password protected.',
-                ], 403);
-            }
+        if (!$request->route('slug')) {
+            return $next($request);
         }
+
+        $form = Form::where('slug',$request->route('slug'))->firstOrFail();
+        $request->merge([
+            'form' => $form,
+        ]);
+        $userIsFormOwner = Auth::check() && Auth::user()->ownsForm($form);
+        if (!$userIsFormOwner && $this->isProtected($request, $form)) {
+            return response([
+                'status' => 'Unauthorized',
+                'message' => 'Form is protected.',
+            ], 403);
+        }
+
         return $next($request);
+    }
+
+    public static function isProtected(Request $request, Form $form)
+    {
+        if (!$form->has_password) {
+            return false;
+        }
+
+        return !self::hasCorrectPassword($request, $form);
     }
 
     public static function hasCorrectPassword(Request $request, Form $form)
