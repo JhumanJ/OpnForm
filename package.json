@@ -35,7 +35,7 @@
     "vue-meta": "^3.0.0-alpha.2",
     "vue-notion": "^3.0.0-beta.1",
     "vue-router": "^4.2.5",
-    "vue-signature-pad": "^2.0.5",
+    "vue-signature-pad": "^3.0.2",
     "vue2-editor": "^2.10.3",
     "vue3-vt-notifications": "^1.0.0",
     "vuedraggable": "^4.1.0",

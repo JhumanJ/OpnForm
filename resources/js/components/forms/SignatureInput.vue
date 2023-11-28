@@ -1,16 +1,10 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.CodeInput.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <div v-if="help && helpPosition=='above_input'" class="flex mb-1">
-      <small :class="theme.default.help" class="flex-grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-    </div>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
 
     <VueSignaturePad ref="signaturePad"
                      :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]" height="150px"
@@ -19,30 +13,48 @@
     />
 
     <div class="flex">
-      <small v-if="help && helpPosition=='below_input'" :class="theme.default.help" class="flex-grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-      <small v-else class="flex-grow" />
       <small :class="theme.default.help">
         <a :class="theme.default.help" href="#" @click.prevent="clear">Clear</a>
       </small>
     </div>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
-import Vue from 'vue'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 import VueSignaturePad from 'vue-signature-pad'
-import inputMixin from '~/mixins/forms/input.js'
-
-Vue.use(VueSignaturePad)
 
 export default {
   name: 'SignatureInput',
+  components: {InputWrapper, VueSignaturePad},
 
-  components: {},
-  mixins: [inputMixin],
+  props: {
+    ...inputProps,
+  },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
+  },
 
   methods: {
     clear () {

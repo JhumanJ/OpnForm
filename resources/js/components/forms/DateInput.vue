@@ -1,14 +1,10 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <small v-if="help && helpPosition=='above_input'" :class="theme.default.help" class="flex mb-1">
-      <slot name="help"><span class="field-help" v-html="help"/></slot>
-    </small>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
 
     <div class="flex" v-if="!dateRange">
       <input :type="useTime ? 'datetime-local' : 'date'" :id="id?id:name" v-model="fromDate" :class="inputClasses"
@@ -34,26 +30,47 @@
       </div>
     </div>
 
-    <small v-if="help && helpPosition=='below_input'" :class="theme.default.help">
-      <slot name="help"><span class="field-help" v-html="help"/></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name"/>
-  </div>
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 import {fixedClasses} from '../../plugins/config/vue-tailwind/datePicker.js'
-import inputMixin from '~/mixins/forms/input.js'
 
 export default {
   name: 'DateInput',
-  mixins: [inputMixin],
+  components: { InputWrapper },
+  mixins: [],
 
   props: {
+    ...inputProps,
     withTime: {type: Boolean, default: false},
     dateRange: {type: Boolean, default: false},
     disablePastDates: {type: Boolean, default: false},
     disableFutureDates: {type: Boolean, default: false}
+  },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
   },
 
   data: () => ({

@@ -1,14 +1,10 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <small v-if="help && helpPosition=='above_input'" :class="theme.SelectInput.help" class="block mb-1">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
 
     <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-for="(option, index) in options" v-else :key="option[optionKey]" role="button"
@@ -25,30 +21,49 @@
       </div>
     </div>
 
-    <small v-if="help && helpPosition=='below_input'" :class="theme.SelectInput.help" class="block">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 
 /**
  * Options: {name,value} objects
  */
 export default {
   name: 'FlatSelectInput',
-  mixins: [inputMixin],
+  components: { InputWrapper },
 
   props: {
+    ...inputProps,
     options: { type: Array, required: true },
     optionKey: { type: String, default: 'value' },
     emitKey: { type: String, default: 'value' },
     displayKey: { type: String, default: 'name' },
     loading: { type: Boolean, default: false },
     multiple: { type: Boolean, default: false }
+  },
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
   },
   data () {
     return {}
