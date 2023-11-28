@@ -40,6 +40,11 @@ class StorageFile implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        // If full path then no need to validate
+        if (filter_var($value, FILTER_VALIDATE_URL) !== FALSE) {
+            return true;
+        }
+
         // This is use when updating a record, and file uploads aren't changed.
         if($this->form){
             $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);

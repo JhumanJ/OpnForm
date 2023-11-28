@@ -98,6 +98,8 @@
       </div>
     </section>
 
+    <custom-plan v-if="!homePage" />
+
     <checkout-details-modal :show="showDetailsModal" :yearly="isYearly" :plan="selectedPlan"
                             @close="showDetailsModal=false"
     />
@@ -109,13 +111,15 @@ import { mapGetters } from 'vuex'
 import axios from 'axios'
 import MonthlyYearlySelector from './MonthlyYearlySelector.vue'
 import CheckoutDetailsModal from './CheckoutDetailsModal.vue'
+import CustomPlan from './CustomPlan.vue'
 
 MonthlyYearlySelector.compatConfig = { MODE: 3 }
 
 export default {
   components: {
     MonthlyYearlySelector,
-    CheckoutDetailsModal
+    CheckoutDetailsModal,
+    CustomPlan
   },
   props: {
     homePage: {

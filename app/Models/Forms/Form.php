@@ -279,6 +279,11 @@ class Form extends Model
     }
 
 
+    public function getNotifiesWebhookAttribute()
+    {
+        return !empty($this->webhook_url);
+    }
+    
     public function getNotifiesDiscordAttribute()
     {
         return !empty($this->discord_webhook_url);

@@ -1,19 +1,11 @@
 <template>
-  <collapse v-model="isCollapseOpen" class="p-4 w-full border-b">
-    <template #title>
-      <h3 class="font-semibold text-lg relative">
-        <svg
-          class="h-5 w-5 inline mr-2 -mt-0.5 transition-colors" :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}"
-          viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.83333 6.08333H9M4.83333 9H11.5M4.83333 14V15.9463C4.83333 16.3903 4.83333 16.6123 4.92436 16.7263C5.00352 16.8255 5.12356 16.8832 5.25045 16.8831C5.39636 16.8829 5.56973 16.7442 5.91646 16.4668L7.90434 14.8765C8.31043 14.5517 8.51347 14.3892 8.73957 14.2737C8.94017 14.1712 9.15369 14.0963 9.37435 14.051C9.62306 14 9.88308 14 10.4031 14H12.5C13.9001 14 14.6002 14 15.135 13.7275C15.6054 13.4878 15.9878 13.1054 16.2275 12.635C16.5 12.1002 16.5 11.4001 16.5 10V5.5C16.5 4.09987 16.5 3.3998 16.2275 2.86502C15.9878 2.39462 15.6054 2.01217 15.135 1.77248C14.6002 1.5 13.9001 1.5 12.5 1.5H5.5C4.09987 1.5 3.3998 1.5 2.86502 1.77248C2.39462 2.01217 2.01217 2.39462 1.77248 2.86502C1.5 3.3998 1.5 4.09987 1.5 5.5V10.6667C1.5 11.4416 1.5 11.8291 1.58519 12.147C1.81635 13.0098 2.49022 13.6836 3.35295 13.9148C3.67087 14 4.05836 14 4.83333 14Z"
-            stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"
-          />
-        </svg>
-
-        About Submissions
-      </h3>
+  <editor-options-panel name="About Submissions" :already-opened="true">
+    <template #icon>
+      <svg class="h-5 w-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M4.83333 6.08333H9M4.83333 9H11.5M4.83333 14V15.9463C4.83333 16.3903 4.83333 16.6123 4.92436 16.7263C5.00352 16.8255 5.12356 16.8832 5.25045 16.8831C5.39636 16.8829 5.56973 16.7442 5.91646 16.4668L7.90434 14.8765C8.31043 14.5517 8.51347 14.3892 8.73957 14.2737C8.94017 14.1712 9.15369 14.0963 9.37435 14.051C9.62306 14 9.88308 14 10.4031 14H12.5C13.9001 14 14.6002 14 15.135 13.7275C15.6054 13.4878 15.9878 13.1054 16.2275 12.635C16.5 12.1002 16.5 11.4001 16.5 10V5.5C16.5 4.09987 16.5 3.3998 16.2275 2.86502C15.9878 2.39462 15.6054 2.01217 15.135 1.77248C14.6002 1.5 13.9001 1.5 12.5 1.5H5.5C4.09987 1.5 3.3998 1.5 2.86502 1.77248C2.39462 2.01217 2.01217 2.39462 1.77248 2.86502C1.5 3.3998 1.5 4.09987 1.5 5.5V10.6667C1.5 11.4416 1.5 11.8291 1.58519 12.147C1.81635 13.0098 2.49022 13.6836 3.35295 13.9148C3.67087 14 4.05836 14 4.83333 14Z"
+          stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </template>
 
     <text-input name="submit_button_text" class="mt-4"
@@ -132,46 +124,21 @@
                             label="Text After Submission"
                             :required="false"
       />
-      <date-input :with-time="true" name="closes_at"
-                  :form="form"
-                  label="Closing Date"
-                  help="If filled, then the form won't accept submissions after the given date"
-                  :required="false"
-      />
-      <rich-text-area-input v-if="form.closes_at || form.visibility=='closed'" name="closed_text"
-                            :form="form"
-                            label="Closed form text"
-                            help="This message will be shown when the form will be closed"
-                            :required="false"
-      />
-      <text-input name="max_submissions_count" native-type="number" :min="1" :form="form"
-                  label="Max. Number of Submissions"
-                  help="If filled, the form will only accept X number of submissions"
-                  :required="false"
-      />
-      <rich-text-area-input v-if="form.max_submissions_count && form.max_submissions_count > 0"
-                            name="max_submissions_reached_text"
-                            :form="form"
-                            label="Max Submissions reached text"
-                            help="This message will be shown when the form will have the maximum number of submissions"
-                            :required="false"
-      />
     </template>
-  </collapse>
+  </editor-options-panel>
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse.vue'
+import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import ProTag from '../../../../common/ProTag.vue'
 import VTransition from '../../../../common/transitions/VTransition.vue'
 
 export default {
-  components: { Collapse, ProTag, VTransition },
+  components: {EditorOptionsPanel, ProTag, VTransition},
   props: {},
   data () {
     return {
-      submissionOptions: {},
-      isCollapseOpen: true
+      submissionOptions: {}
     }
   },
 

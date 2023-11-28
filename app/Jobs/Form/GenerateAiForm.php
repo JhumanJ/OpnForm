@@ -3,11 +3,9 @@
 namespace App\Jobs\Form;
 
 use App\Console\Commands\GenerateTemplate;
-use App\Http\Requests\AiGenerateFormRequest;
 use App\Models\Forms\AI\AiFormCompletion;
 use App\Service\OpenAi\GptCompleter;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -40,6 +38,7 @@ class GenerateAiForm implements ShouldQueue
         ]);
 
         $completer = (new GptCompleter(config('services.openai.api_key')))
+            ->useStreaming()
             ->setSystemMessage('You are a robot helping to generate forms.');
 
         try {
@@ -53,27 +52,9 @@ class GenerateAiForm implements ShouldQueue
                 'result' => $this->cleanOutput($completer->getArray())
             ]);
         } catch (\Exception $e) {
-            $this->completion->update([
-                'status' => AiFormCompletion::STATUS_FAILED,
-                'result' => ['error' => $e->getMessage()]
-            ]);
+            $this->onError($e);
         }
 
-    }
-
-    public function generateForm(AiGenerateFormRequest $request)
-    {
-        $completer = (new GptCompleter(config('services.openai.api_key')))
-            ->setSystemMessage('You are a robot helping to generate forms.');
-        $completer->completeChat([
-            ["role" => "user", "content" => Str::of(GenerateTemplate::FORM_STRUCTURE_PROMPT)
-                ->replace('[REPLACE]', $request->form_prompt)->toString()]
-        ], 3000);
-
-        return $this->success([
-            'message' => 'Form successfully generated!',
-            'form' => $this->cleanOutput($completer->getArray())
-        ]);
     }
 
     private function cleanOutput($formData)
@@ -84,5 +65,20 @@ class GenerateAiForm implements ShouldQueue
         }
 
         return $formData;
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        $this->onError($exception);
+    }
+
+    private function onError(\Throwable $e) {
+        $this->completion->update([
+            'status' => AiFormCompletion::STATUS_FAILED,
+            'result' => ['error' => $e->getMessage()]
+        ]);
     }
 }

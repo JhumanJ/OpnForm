@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,8 +15,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('forms', function (Blueprint $table) {
-            $table->json('notification_settings')->default('{}')->nullable(true);
+        $driver = DB::getDriverName();
+
+        Schema::table('forms', function (Blueprint $table) use ($driver) {
+            if ($driver === 'mysql') {
+                $table->json('notification_settings')->default(new Expression("(JSON_OBJECT())"))->nullable(true);
+            } else {
+                $table->json('notification_settings')->default('{}')->nullable(true);
+            }
         });
     }
 

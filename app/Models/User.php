@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable, HasFactory, Billable;
@@ -60,6 +61,11 @@ class User extends Authenticatable implements JWTSubject
 
     protected $withCount = ['workspaces'];
 
+    public function ownsForm(Form $form)
+    {
+        return $this->workspaces()->find($form->workspace_id) !== null;
+    }
+    
     /**
      * Get the profile photo URL attribute.
      *
@@ -80,7 +86,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsSubscribedAttribute()
     {
-        return $this->subscribed() || in_array($this->email, config('opnform.extra_pro_users_emails'));
+        return $this->subscribed()
+            || in_array($this->email, config('opnform.extra_pro_users_emails'))
+            || !is_null($this->activeLicense());
     }
 
     public function getHasCustomerIdAttribute()
@@ -138,12 +146,22 @@ class User extends Authenticatable implements JWTSubject
 
     public function forms()
     {
-        return $this->hasMany(Form::class,'creator_id');
+        return $this->hasMany(Form::class, 'creator_id');
     }
 
     public function formTemplates()
     {
         return $this->hasMany(Template::class, 'creator_id');
+    }
+
+    public function licenses()
+    {
+        return $this->hasMany(License::class);
+    }
+
+    public function activeLicense(): ?License
+    {
+        return $this->licenses()->active()->first();
     }
 
     /**
@@ -187,26 +205,26 @@ class User extends Authenticatable implements JWTSubject
             })->first()?->onTrial();
     }
 
-    public static function boot ()
+    public static function boot()
     {
         parent::boot();
-        static::deleting(function(User $user) {
+        static::deleting(function (User $user) {
             // Remove user's workspace if he's the only one with this workspace
             foreach ($user->workspaces as $workspace) {
                 if ($workspace->users()->count() == 1) {
                     $workspace->delete();
                 }
             }
-      });
+        });
     }
 
     public function scopeWithActiveSubscription($query)
     {
-        return $query->whereHas('subscriptions', function($query) {
-            $query->where(function($q){
-                    $q->where('stripe_status', 'trialing')
-                        ->orWhere('stripe_status', 'active');
-                });
+        return $query->whereHas('subscriptions', function ($query) {
+            $query->where(function ($q) {
+                $q->where('stripe_status', 'trialing')
+                    ->orWhere('stripe_status', 'active');
+            });
         });
     }
 

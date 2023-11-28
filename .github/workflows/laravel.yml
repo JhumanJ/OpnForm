@@ -12,7 +12,7 @@ jobs:
     services:
       postgres:
         # Docker Hub image
-        image: postgres
+        image: postgres:14
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: postgres
@@ -27,6 +27,24 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
+      mysql:
+        # Docker Hub image
+        image: mysql:8
+        # Provide the password for mysql
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+        # Set health checks to wait until mysql has started
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        ports:
+          # Maps tcp port 3306 on service container to the host
+          - 3306:3306
 
     concurrency:
       group: 'run-tests'
@@ -35,8 +53,22 @@ jobs:
       fail-fast: true
       matrix:
         php: [ 8.2 ]
+        connection: [ pgsql, mysql ]
+        include:
+          - connection: pgsql
+            host: localhost
+            port: 5432
+            user: postgres
+            password: postgres
+            database: postgres
+          - connection: mysql
+            host: '127.0.0.1'
+            port: 3306
+            user: root
+            password: test
+            database: test
 
-    name: Run Feature & Unit tests (PHP ${{ matrix.php }})
+    name: Run Feature & Unit tests (PHP ${{ matrix.php }} - ${{ matrix.connection }})
 
     steps:
       - name: Checkout code
@@ -80,6 +112,13 @@ jobs:
 
       - name: Run tests (Unit and Feature)
         run: ./vendor/bin/pest -p
+        env:
+          DB_CONNECTION: ${{ matrix.connection }}
+          DB_HOST: ${{ matrix.host }}
+          DB_PORT: ${{ matrix.port }}
+          DB_DATABASE: ${{ matrix.database }}
+          DB_USERNAME: ${{ matrix.user }}
+          DB_PASSWORD: ${{ matrix.password }}
 
       - name: "Archive log results"
         if: always()

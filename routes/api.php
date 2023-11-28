@@ -129,11 +129,17 @@ Route::group(['middleware' => 'guest:api'], function () {
     Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
 });
 
+
+Route::group(['prefix' => 'appsumo'], function () {
+    Route::get('oauth/callback', [\App\Http\Controllers\Auth\AppSumoAuthController::class, 'handleCallback'])->name('appsumo.callback');
+    Route::post('webhook', [\App\Http\Controllers\Webhook\AppSumoController::class, 'handle'])->name('appsumo.webhook');
+});
+
 /*
  * Public Forms related routes
  */
 Route::prefix('forms')->name('forms.')->group(function () {
-    Route::middleware('password-protected-form')->group(function () {
+    Route::middleware('protected-form')->group(function () {
         Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer');
 
         // Form content endpoints (user lists, relation lists etc.)

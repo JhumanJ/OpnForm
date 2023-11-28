@@ -74,6 +74,7 @@ module.exports = {
       transitionProperty: {
         height: 'height',
         width: 'width',
+        maxWidth: 'max-width',
         spacing: 'margin, padding'
       }
     }

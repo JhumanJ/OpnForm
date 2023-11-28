@@ -15,6 +15,7 @@ import ImageInput from './ImageInput.vue'
 import RatingInput from './RatingInput.vue'
 import FlatSelectInput from './FlatSelectInput.vue'
 import ToggleSwitchInput from './ToggleSwitchInput.vue'
+import ScaleInput from './ScaleInput.vue'
 
 export function registerComponents (app) {
   [
@@ -32,7 +33,8 @@ export function registerComponents (app) {
     ImageInput,
     RatingInput,
     FlatSelectInput,
-    ToggleSwitchInput
+    ToggleSwitchInput,
+    ScaleInput
   ].forEach(Component => {
     Component.name ? app.component(Component.name, Component) : app.component(Component.name, Component)
   })

@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Middleware\Form\PasswordProtectedForm;
+use App\Http\Middleware\Form\ProtectedForm;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -20,8 +20,8 @@ class FormResource extends JsonResource
      */
     public function toArray($request)
     {
-        if(!$this->userIsFormOwner() && $this->doesMissPassword($request)){
-            return $this->getPasswordProtectedForm();
+        if(!$this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)){
+            return $this->getProtectedForm();
         }
 
         $ownerData = $this->userIsFormOwner() ? [
@@ -29,6 +29,7 @@ class FormResource extends JsonResource
             'views_count' => $this->views_count,
             'submissions_count' => $this->submissions_count,
             'notifies' => $this->notifies,
+            'notifies_webhook' => $this->notifies_webhook,
             'notifies_slack' => $this->notifies_slack,
             'notifies_discord' => $this->notifies_discord,
             'send_submission_confirmation' => $this->send_submission_confirmation,
@@ -95,14 +96,7 @@ class FormResource extends JsonResource
         return $this;
     }
 
-    private function doesMissPassword(Request $request)
-    {
-        if (!$this->has_password) return false;
-
-        return !PasswordProtectedForm::hasCorrectPassword($request, $this->resource);
-    }
-
-    private function getPasswordProtectedForm()
+    private function getProtectedForm()
     {
         return [
             'id' => $this->id,
@@ -130,8 +124,7 @@ class FormResource extends JsonResource
     private function userIsFormOwner() {
         return $this->extra?->userIsOwner ??
             (
-                Auth::check()
-                && Auth::user()->workspaces()->find($this->workspace_id) !== null
+                Auth::check() && Auth::user()->ownsForm($this->resource)
             );
     }
 

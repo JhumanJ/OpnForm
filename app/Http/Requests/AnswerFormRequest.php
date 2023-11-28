@@ -12,12 +12,10 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
+use App\Rules\ValidUrl;
 
 class AnswerFormRequest extends FormRequest
 {
-    const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
-    const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
-
     public Form $form;
 
     protected array $requestRules = [];
@@ -26,12 +24,7 @@ class AnswerFormRequest extends FormRequest
     public function __construct(Request $request)
     {
         $this->form = $request->form;
-
-        $this->maxFileSize = self::MAX_FILE_SIZE_FREE;
-        $workspace = $this->form->workspace;
-        if ($workspace && $workspace->is_pro) {
-            $this->maxFileSize = self::MAX_FILE_SIZE_PRO;
-        }
+        $this->maxFileSize = $this->form->workspace->max_file_size;
     }
 
     /**
@@ -171,7 +164,7 @@ class AnswerFormRequest extends FormRequest
                     $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, [], $this->form)];
                     return ['array'];
                 }
-                return ['url'];
+                return [new ValidUrl];
             case 'files':
                 $allowedFileTypes = [];
                 if(!empty($property['allowed_file_types'])){

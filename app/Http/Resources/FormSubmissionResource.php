@@ -46,7 +46,9 @@ class FormSubmissionResource extends JsonResource
         });
         foreach ($fileFields as $field) {
             if (isset($data[$field['id']]) && !empty($data[$field['id']])) {
-                $data[$field['id']] = collect($data[$field['id']])->map(function ($file) {
+                $data[$field['id']] = collect($data[$field['id']])->filter(function ($file) {
+                    return $file !== null && $file;
+                })->map(function ($file) {
                     return [
                         'file_url' => route('open.forms.submissions.file', [$this->form_id, $file]),
                         'file_name' => $file,

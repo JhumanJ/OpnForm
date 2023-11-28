@@ -73,13 +73,36 @@
         Rating
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If enabled then this field will be star rating input.
+        Transform this field into a star rating input.
       </p>
 
       <text-input v-if="field.is_rating" name="rating_max_value" native-type="number" :min="1" class="mt-3"
                   :form="field" required
                   label="Max rating value"
       />
+
+      <v-checkbox v-model="field.is_scale" class="mt-4"
+                  :name="field.id+'_is_scale'" @input="initScale"
+      >
+        Scale
+      </v-checkbox>
+      <p class="text-gray-400 text-xs mb-5">
+        Transform this field into a scale/score input.
+      </p>
+      <template v-if="field.is_scale">
+        <text-input name="scale_min_value" native-type="number" class="mt-4"
+                    :form="field" required
+                    label="Min scale value"
+        />
+        <text-input name="scale_max_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Max scale value"
+        />
+        <text-input name="scale_step_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Scale step svalue"
+        />
+      </template>
     </div>
 
     <!--   Text Options   -->
@@ -267,7 +290,12 @@
                        :form="field"
                        label="Pre-filled value"
       />
-      <text-input v-else-if="field.type!=='files'" name="prefill" class="mt-3"
+      <file-input v-else-if="field.type==='files'" name="prefill" class="mt-4"
+                  :form="field"
+                  label="Pre-filled file"
+                  :multiple="field.multiple===true" :moveToFormAssets="true"
+      />
+      <text-input v-else-if="!['files', 'signature'].includes(field.type)" name="prefill" class="mt-3"
                   :form="field"
                   label="Pre-filled value"
       />
@@ -505,9 +533,26 @@ export default {
         this.field.hidden = true
       }
     },
-    initRating () {
-      if (this.field.is_rating && !this.field.rating_max_value) {
-        this.field.rating_max_value = 5
+    initRating() {
+      if (this.field.is_rating) {
+        this.$set(this.field, 'is_scale', false)
+        if (!this.field.rating_max_value) {
+          this.$set(this.field, 'rating_max_value', 5)
+        }
+      }
+    },
+    initScale () {
+      if (this.field.is_scale) {
+        this.$set(this.field, 'is_rating', false)
+        if (!this.field.scale_min_value) {
+          this.$set(this.field, 'scale_min_value', 1)
+        }
+        if (!this.field.scale_max_value) {
+          this.$set(this.field, 'scale_max_value', 5)
+        }
+        if (!this.field.scale_step_value) {
+          this.$set(this.field, 'scale_step_value', 1)
+        }
       }
     },
     onFieldOptionsChange (val) {

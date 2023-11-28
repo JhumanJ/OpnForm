@@ -55,15 +55,15 @@
           Please create this form on a device with a larger screen. That will allow you to preview your form changes.
         </div>
 
-        <form-information />
-        <form-structure />
-        <form-customization />
-        <form-about-submission />
-        <form-notifications />
-        <form-security-privacy />
+        <form-information/>
+        <form-structure/>
+        <form-customization/>
+        <form-notifications/>
+        <form-about-submission/>
+        <form-access />
+        <form-security-privacy/>
         <form-custom-seo />
-        <form-custom-code />
-        <form-integrations />
+        <form-custom-code/>
       </div>
 
       <form-editor-preview />
@@ -95,10 +95,10 @@ import FormCustomization from './form-components/FormCustomization.vue'
 import FormCustomCode from './form-components/FormCustomCode.vue'
 import FormAboutSubmission from './form-components/FormAboutSubmission.vue'
 import FormNotifications from './form-components/FormNotifications.vue'
-import FormIntegrations from './form-components/FormIntegrations.vue'
 import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
+import FormAccess from './form-components/FormAccess.vue'
 import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
 import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 
@@ -108,7 +108,6 @@ export default {
     AddFormBlockSidebar,
     FormFieldEditSidebar,
     FormEditorPreview,
-    FormIntegrations,
     FormNotifications,
     FormAboutSubmission,
     FormCustomCode,
@@ -117,7 +116,8 @@ export default {
     FormInformation,
     FormErrorModal,
     FormSecurityPrivacy,
-    FormCustomSeo
+    FormCustomSeo,
+    FormAccess
   },
   mixins: [saveUpdateAlert, fieldsLogic],
   props: {

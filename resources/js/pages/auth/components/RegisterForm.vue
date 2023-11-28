@@ -43,25 +43,17 @@
           Log In
         </router-link>
       </p>
-
-      <!-- GitHub Register Button -->
-      <login-with-github />
     </form>
   </div>
 </template>
 
 <script>
 import Form from 'vform'
-import LoginWithGithub from '~/components/LoginWithGithub.vue'
-import SelectInput from '../../../components/forms/SelectInput.vue'
 import { initCrisp } from '../../../middleware/check-auth.js'
 
 export default {
   name: 'RegisterForm',
-  components: {
-    SelectInput,
-    LoginWithGithub
-  },
+  components: {},
   props: {
     isQuick: {
       type: Boolean,
@@ -76,7 +68,8 @@ export default {
       email: '',
       password: '',
       password_confirmation: '',
-      agree_terms: false
+      agree_terms: false,
+      appsumo_license: null
     }),
     mustVerifyEmail: false
   }),
@@ -96,6 +89,13 @@ export default {
         .map(({ value }) => value)
       options.push({ name: 'Other', value: 'other' })
       return options
+    }
+  },
+
+  mounted () {
+    // Set appsumo license
+    if (this.$route.query.appsumo_license !== undefined && this.$route.query.appsumo_license) {
+      this.form.appsumo_license = this.$route.query.appsumo_license
     }
   },
 
@@ -122,6 +122,15 @@ export default {
 
         initCrisp(data)
         this.$crisp.push(['set', 'session:event', [[['register', {}, 'blue']]]])
+
+        // AppSumo License
+        if (data.appsumo_license === false) {
+          this.alertError('Invalid AppSumo license. This probably happened because this license was already' +
+            ' attached to another OpnForm account. Please contact support.')
+        } else if (data.appsumo_license === true) {
+          this.alertSuccess('Your AppSumo license was successfully activated! You now have access to all the' +
+            ' features of the AppSumo deal.')
+        }
 
         // Redirect
         if (this.isQuick) {

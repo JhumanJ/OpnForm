@@ -49,13 +49,16 @@
               <span class="pr-1">- {{ form.submissions_count }}
                 submission{{ form.submissions_count > 0 ? 's' : '' }}
               </span>
-              <span class="pr-1 text-blue-500" v-if="form.visibility=='closed'">- Closed</span>
-              <span class="">- Edited {{ form.last_edited_human }}</span>
+              <span>- Edited {{ form.last_edited_human }}</span>
             </p>
-            <div v-if="form.visibility=='draft' || (form.tags && form.tags.length > 0)" class="mt-2 flex items-center flex-wrap gap-3">
+            <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)" class="mt-2 flex items-center flex-wrap gap-3">
               <span v-if="form.visibility=='draft'" 
                   class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
                 Draft - not publicly accessible
+              </span>
+              <span v-else-if="form.visibility=='closed'" 
+                  class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                Closed - won't accept new submissions
               </span>
               <span v-for="(tag,i) in form.tags" :key="tag"
                   class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
