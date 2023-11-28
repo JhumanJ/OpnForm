@@ -139,7 +139,7 @@ Route::group(['prefix' => 'appsumo'], function () {
  * Public Forms related routes
  */
 Route::prefix('forms')->name('forms.')->group(function () {
-    Route::middleware('password-protected-form')->group(function () {
+    Route::middleware('protected-form')->group(function () {
         Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer');
 
         // Form content endpoints (user lists, relation lists etc.)
