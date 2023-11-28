@@ -3,14 +3,14 @@ import store from '~/store'
 import Meta from 'vue-meta'
 import routes from './routes'
 import Router from 'vue-router'
-import {sync} from 'vuex-router-sync'
+import { sync } from 'vuex-router-sync'
 import * as Sentry from '@sentry/vue'
 
 Vue.use(Meta)
 Vue.use(Router)
 
 // The middleware for every page of the application.
-const globalMiddleware = ['locale', 'check-auth', 'notion-connection']
+const globalMiddleware = ['locale', 'check-auth', 'custom-domains']
 
 // Load middleware modules dynamically.
 const requireContext = import.meta.glob('../middleware/**/*.js', { eager: true })
@@ -253,7 +253,7 @@ function resolveMiddleware (requireContext) {
     .map(file =>
       [file.match(/[^/]*(?=\.[^.]*$)/)[0], requireContext[file]]
     ).forEach(([name, middleware]) => {
-    middlewares[name] = middleware.default || middleware
-  })
+      middlewares[name] = middleware.default || middleware
+    })
   return middlewares
 }

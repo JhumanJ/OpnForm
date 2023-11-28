@@ -42,4 +42,13 @@ class License extends Model
             3 => 75000000, // 75 MB,
         ][$this->meta['tier']];
     }
+
+    public function getCustomDomainLimitCountAttribute()
+    {
+        return [
+            1 => 5,
+            2 => 25,
+            3 => null,
+        ][$this->meta['tier']];
+    }
 }

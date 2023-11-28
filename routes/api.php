@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 Route::get('/forms',
                     [FormController::class, 'index'])->name('forms.index');
+                Route::put('/custom-domains', [WorkspaceController::class, 'saveCustomDomain'])->name('save-custom-domains');
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');

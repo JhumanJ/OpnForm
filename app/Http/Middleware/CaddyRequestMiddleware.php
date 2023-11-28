@@ -13,10 +13,13 @@ class CaddyRequestMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!config('custom-domains.enabled')) {
-            return $next($request);
+            return response()->json([
+                'success' => false,
+                'message' => 'Custom domains not enabled',
+            ], 401);
         }
 
-        if (config('custom-domains.enabled') && config('services.caddy.authorized_ip') !== $request->ip()) {
+        if (config('custom-domains.enabled') && !in_array($request->ip(), config('custom-domains.authorized_ips'))) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -24,7 +27,7 @@ class CaddyRequestMiddleware
         }
 
         $secret = $request->route('secret');
-        if (config('services.caddy.secret') && (!$secret || $secret !== config('services.caddy.secret'))) {
+        if (config('custom-domains.caddy_secret') && (!$secret || $secret !== config('custom-domains.caddy_secret'))) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',

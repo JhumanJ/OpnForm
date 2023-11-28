@@ -125,7 +125,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'password' => 'sometimes|nullable',
 
             // Custom SEO
-            'seo_meta' => 'nullable|array'
+            'seo_meta' => 'nullable|array',
+            'custom_domain' => 'sometimes|nullable|regex:/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}$/'
         ];
     }
 

@@ -14,15 +14,22 @@ class Workspace extends Model
     const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
     const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
 
+    const MAX_DOMAIN_PRO = 1;
+
     protected $fillable = [
         'name',
         'icon',
         'user_id',
+        'custom_domain',
     ];
 
     protected $appends = [
         'is_pro',
         'is_enterprise'
+    ];
+
+    protected $casts = [
+        'custom_domains' => 'array',
     ];
 
     public function getIsProAttribute()
@@ -58,6 +65,26 @@ class Workspace extends Model
         }
 
         return self::MAX_FILE_SIZE_FREE;
+    }
+
+    public function getCustomDomainCountLimitAttribute()
+    {
+        if(is_null(config('cashier.key'))){
+            return null;
+        }
+
+        // Return max file size depending on subscription
+        foreach ($this->owners as $owner) {
+            if ($owner->is_subscribed) {
+                if ($license = $owner->activeLicense()) {
+                    // In case of special License
+                    return $license->custom_domain_limit_count;
+                }
+            }
+            return self::MAX_DOMAIN_PRO;
+        }
+
+        return 0;
     }
 
     public function getIsEnterpriseAttribute()

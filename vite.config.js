@@ -7,7 +7,8 @@ const plugins = [
   laravel({
     input: [
       'resources/js/app.js'
-    ]
+    ],
+    refresh: true
   }),
   vue({
     template: {
@@ -45,6 +46,12 @@ export default defineConfig({
     alias: {
       '~': '/resources/js',
       '@': '/resources'
+    }
+  },
+  server: {
+    hmr: {
+      host: 'localhost',
+      protocol: 'ws'
     }
   }
 })
