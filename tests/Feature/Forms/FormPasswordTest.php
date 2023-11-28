@@ -54,7 +54,7 @@ it('can not submit form without password for guest user', function () {
         ->assertStatus(403)
         ->assertJson([
             'status' => 'Unauthorized',
-            'message' => 'Form is password protected.'
+            'message' => 'Form is protected.'
         ]);
 });
 
@@ -66,7 +66,7 @@ it('can not submit form with wrong password for guest user', function () {
         ->assertStatus(403)
         ->assertJson([
             'status' => 'Unauthorized',
-            'message' => 'Form is password protected.'
+            'message' => 'Form is protected.'
         ]);
 });
 

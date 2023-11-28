@@ -82,6 +82,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         'pro-form' => \App\Http\Middleware\Form\ProForm::class,
-        'password-protected-form' => \App\Http\Middleware\Form\PasswordProtectedForm::class,
+        'protected-form' => \App\Http\Middleware\Form\ProtectedForm::class,
     ];
 }

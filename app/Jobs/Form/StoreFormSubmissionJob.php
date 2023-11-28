@@ -8,6 +8,7 @@ use App\Http\Controllers\Forms\FormController;
 use App\Http\Requests\AnswerFormRequest;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
+use App\Service\Forms\FormLogicPropertyResolver;
 use App\Service\Storage\StorageFileNameParser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -224,8 +225,10 @@ class StoreFormSubmissionJob implements ShouldQueue
         collect($this->form->properties)->filter(function ($property) {
             return isset($property['hidden'])
                 && isset($property['prefill'])
-                && $property['hidden']
-                && !is_null($property['prefill']);
+                && FormLogicPropertyResolver::isHidden($property, $this->submissionData)
+                && !is_null($property['prefill'])
+                && !in_array($property['type'], ['files'])
+                && !($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
         })->each(function (array $property) use (&$formData) {
             if ($property['type'] === 'date' && isset($property['prefill_today']) && $property['prefill_today']) {
                 $formData[$property['id']] = now()->format((isset($property['with_time']) && $property['with_time']) ? 'Y-m-d H:i' : 'Y-m-d');
