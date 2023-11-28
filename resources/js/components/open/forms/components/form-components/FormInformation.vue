@@ -1,13 +1,9 @@
 <template>
-  <collapse class="p-4 w-full border-b" v-model="isCollapseOpen">
-    <template #title>
-      <h3 id="v-step-0" class="font-semibold text-lg">
-        <svg class="h-5 w-5 inline mr-2 -mt-1 transition-colors" :class="{'text-blue-600':isCollapseOpen, 'text-gray-500':!isCollapseOpen}" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 13.3332V9.99984M10 6.6665H10.0083M18.3333 9.99984C18.3333 14.6022 14.6024 18.3332 10 18.3332C5.39763 18.3332 1.66667 14.6022 1.66667 9.99984C1.66667 5.39746 5.39763 1.6665 10 1.6665C14.6024 1.6665 18.3333 5.39746 18.3333 9.99984Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-
-        Information
-      </h3>
+  <editor-options-panel name="Information" :already-opened="true">
+    <template #icon>
+      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 13.3332V9.99984M10 6.6665H10.0083M18.3333 9.99984C18.3333 14.6022 14.6024 18.3332 10 18.3332C5.39763 18.3332 1.66667 14.6022 1.66667 9.99984C1.66667 5.39746 5.39763 1.6665 10 1.6665C14.6024 1.6665 18.3333 5.39746 18.3333 9.99984Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </template>
     <text-input name="title" class="mt-4"
                 :form="form"
@@ -66,17 +62,17 @@
         </div>
       </div>
     </modal>
-  </collapse>
+  </editor-options-panel>
 </template>
 
 <script>
-import Collapse from '../../../../common/Collapse.vue'
+import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
 import { mapState } from 'vuex'
 import clonedeep from 'clone-deep'
 
 export default {
-  components: { SelectInput, Collapse },
+  components: { SelectInput, EditorOptionsPanel },
   props: {},
   data () {
     return {
@@ -95,8 +91,7 @@ export default {
           name: "Closed - won\'t accept new submissions",
           value: "closed"
         }
-      ],
-      isCollapseOpen: true
+      ]
     }
   },
 
