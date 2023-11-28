@@ -1,11 +1,11 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label"
-           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
+
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
               class="cursor-pointer relative w-full" :class="[theme.default.input,{'ring-red-500 ring-2': hasValidation && form.errors.has(name)}]"
@@ -35,10 +35,13 @@
         </div>
       </button>
     </span>
-    <small v-if="help" :class="theme.default.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
+
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
 
     <!--  Modal  -->
     <modal :show="showUploadModal" @close="showUploadModal=false">
@@ -100,20 +103,38 @@
         </div>
       </div>
     </modal>
-  </div>
+  </input-wrapper>
 </template>
 
 <script>
-import Modal from '../Modal.vue'
 import axios from 'axios'
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
+import Modal from '../Modal.vue'
 
 export default {
   name: 'ImageInput',
+  components: { InputWrapper, Modal },
+  mixins: [],
+  props: {
+    ...inputProps
+  },
 
-  components: { Modal },
-  mixins: [inputMixin],
-  props: {},
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
+  },
 
   data: () => ({
     showUploadModal: false,
