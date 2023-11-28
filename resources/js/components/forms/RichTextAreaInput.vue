@@ -1,41 +1,39 @@
 <template>
-  <div :class="wrapperClass">
-    <label v-if="label" :for="id?id:name"
-           :class="[theme.RichTextAreaInput.label, {'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
-    >
-      {{ label }}
-      <span v-if="required" class="text-red-500 required-dot">*</span>
-    </label>
-    <div v-if="help && helpPosition=='above_input'" class="flex mb-1">
-      <small :class="theme.RichTextAreaInput.help" class="grow">
-        <slot name="help"><span class="field-help" v-html="help" /></slot>
-      </small>
-    </div>
+  <input-wrapper
+    v-bind="$props"
+  >
+    <template #label>
+      <slot name="label" />
+    </template>
+
     <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled"
                 :placeholder="placeholder" :class="[{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }, theme.RichTextAreaInput.input]"
                 :editor-toolbar="editorToolbar" class="rich-editor resize-y"
                 :style="inputStyle"
     />
 
-    <small v-if="help && helpPosition=='below_input'" :class="theme.RichTextAreaInput.help">
-      <slot name="help"><span class="field-help" v-html="help" /></slot>
-    </small>
-    <has-error v-if="hasValidation" :form="form" :field="name" />
-  </div>
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
 </template>
 
 <script>
-import { VueEditor, Quill } from 'vue2-editor'
-import inputMixin from '~/mixins/forms/input.js'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
+import { VueEditor, Quill } from 'vue3-editor'
 
 Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('notion')
 
 export default {
   name: 'RichTextAreaInput',
-  components: { VueEditor },
-  mixins: [inputMixin],
+  components: { InputWrapper, VueEditor },
 
   props: {
+    ...inputProps,
     editorToolbar: {
       type: Array,
       default: () => {
@@ -47,7 +45,24 @@ export default {
         ]
       }
     }
+  },
+
+  setup (props, context) {
+    const {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    } = useFormInput(props, context)
+
+    return {
+      compVal,
+      inputStyle,
+      hasValidation,
+      hasError
+    }
   }
+
 }
 </script>
 

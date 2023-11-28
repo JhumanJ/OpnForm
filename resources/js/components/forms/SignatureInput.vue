@@ -13,15 +13,12 @@
                      :options="{ onEnd }"
     />
 
-    <div class="flex">
+    <template #bottom_after_help>
       <small :class="theme.default.help">
         <a :class="theme.default.help" href="#" @click.prevent="clear">Clear</a>
       </small>
-    </div>
-
-    <template #help>
-      <slot name="help" />
     </template>
+    
     <template #error>
       <slot name="error" />
     </template>
