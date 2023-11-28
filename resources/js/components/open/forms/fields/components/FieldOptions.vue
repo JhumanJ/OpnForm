@@ -208,10 +208,10 @@
       </v-checkbox>
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
         <select-input v-model="field.unavailable_countries" class="mt-4" wrapper-class="relative"
-                  :options="allCountries" :multiple="true"
-                  :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
-                  label="Disabled countries" :placeholder="'Select a country'"
-                  help="Remove countries from the phone input"
+                      :options="allCountries" :multiple="true"
+                      :searchable="true" :search-keys="['name']" :option-key="'code'" :emit-key="'code'"
+                      label="Disabled countries" :placeholder="'Select a country'"
+                      help="Remove countries from the phone input"
         >
           <template #selected="{option, selected}">
             <div class="flex items-center space-x-2 justify-center overflow-hidden">
@@ -243,7 +243,7 @@
       <!-- Pre-fill depends on type -->
       <v-checkbox v-if="field.type=='checkbox'" v-model="field.prefill" class="mt-3"
                   :name="field.id+'_prefill'"
-                  @update:model-value="field.prefill =$event"
+                  @update:model-value="field.prefill = $event"
       >
         Pre-filled value
       </v-checkbox>

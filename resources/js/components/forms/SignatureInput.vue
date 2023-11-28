@@ -7,7 +7,8 @@
     </template>
 
     <VueSignaturePad ref="signaturePad"
-                     :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]" height="150px"
+                     :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
+                     height="150px"
                      :name="name"
                      :options="{ onEnd }"
     />
@@ -30,14 +31,14 @@
 <script>
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
-import VueSignaturePad from 'vue-signature-pad'
+import { VueSignaturePad } from 'vue-signature-pad'
 
 export default {
   name: 'SignatureInput',
-  components: {InputWrapper, VueSignaturePad},
+  components: { InputWrapper, VueSignaturePad },
 
   props: {
-    ...inputProps,
+    ...inputProps
   },
 
   setup (props, context) {
