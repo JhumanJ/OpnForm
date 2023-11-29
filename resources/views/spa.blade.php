@@ -16,7 +16,8 @@
       'crisp_website_id' => config('services.crisp_website_id'),
       'ai_features_enabled' => !is_null(config('services.openai.api_key')),
       's3_enabled' => config('filesystems.default') === 's3',
-      'paid_plans_enabled' => !is_null(config('cashier.key'))
+      'paid_plans_enabled' => !is_null(config('cashier.key')),
+      'custom_domains_enabled' => config('custom-domains.enabled'),
   ];
 @endphp
   <!DOCTYPE html>

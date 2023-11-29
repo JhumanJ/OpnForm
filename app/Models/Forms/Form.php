@@ -53,6 +53,7 @@ class Form extends Model
         'visibility',
 
         // Customization
+        'custom_domain',
         'theme',
         'width',
         'cover_picture',
@@ -141,12 +142,15 @@ class Form extends Model
 
     public function getShareUrlAttribute()
     {
-        return url('/forms/'.$this->slug);
+        if ($this->custom_domain) {
+            return 'https://' . $this->custom_domain . '/forms/' . $this->slug;
+        }
+        return url('/forms/' . $this->slug);
     }
 
     public function getEditUrlAttribute()
     {
-        return url('/forms/'.$this->slug.'/show');
+        return url('/forms/' . $this->slug . '/show');
     }
 
     public function getSubmissionsCountAttribute()
@@ -156,12 +160,12 @@ class Form extends Model
 
     public function getViewsCountAttribute()
     {
-        if(env('DB_CONNECTION') == 'pgsql') {
+        if (env('DB_CONNECTION') == 'pgsql') {
             return $this->views()->count() +
-            $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
-        } elseif(env('DB_CONNECTION') == 'mysql') {
+                $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
+        } elseif (env('DB_CONNECTION') == 'mysql') {
             return (int)($this->views()->count() +
-            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
+                $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
         }
         return 0;
     }
@@ -219,7 +223,8 @@ class Form extends Model
         return !empty($this->password);
     }
 
-    protected function removedProperties(): Attribute {
+    protected function removedProperties(): Attribute
+    {
         return Attribute::make(
             get: function ($value) {
                 return $value ? json_decode($value, true) : [];
@@ -283,7 +288,7 @@ class Form extends Model
     {
         return !empty($this->webhook_url);
     }
-    
+
     public function getNotifiesDiscordAttribute()
     {
         return !empty($this->discord_webhook_url);

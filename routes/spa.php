@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('{path}', SpaController::class)->where('path', '^(?!(api|stats|mailcoach|vapor|sitemap|dist)).*$');
+Route::get('{path}', SpaController::class)->where('path', '^(?!(api|stats|mailcoach|vapor|sitemap|caddy|dist)).*$');

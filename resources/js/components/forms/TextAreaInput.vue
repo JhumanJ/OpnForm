@@ -22,9 +22,9 @@
       <small v-if="help && helpPosition=='below_input'" :class="theme.default.help" class="flex-grow">
         <slot name="help"><span class="field-help" v-html="help" /></slot>
       </small>
-      <small v-else class="flex-grow"></small>
+      <small v-else class="flex-grow" />
       <small v-if="showCharLimit && maxCharLimit" :class="theme.default.help">
-      {{ charCount }}/{{ maxCharLimit }}
+        {{ charCount }}/{{ maxCharLimift }}
       </small>
     </div>
     <has-error v-if="hasValidation" :form="form" :field="name" />
@@ -40,10 +40,10 @@ export default {
 
   props: {
     maxCharLimit: { type: Number, required: false, default: null },
-    showCharLimit: { type: Boolean, required: false, default: false },
+    showCharLimit: { type: Boolean, required: false, default: false }
   },
   computed: {
-    charCount() {
+    charCount () {
       return (this.compVal) ? this.compVal.length : 0
     }
   }

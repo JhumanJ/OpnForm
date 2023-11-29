@@ -61,6 +61,10 @@ export const mutations = {
   },
   remove (state, itemId) {
     state.content = state.content.filter((val) => val.id !== itemId)
+    if (state.currentId === itemId) {
+      state.currentId = state.content.length > 0 ? state.content[0].id : null
+      localStorage.setItem(localStorageCurrentWorkspaceKey, state.currentId)
+    }
   },
   startLoading () {
     state.loading = true
