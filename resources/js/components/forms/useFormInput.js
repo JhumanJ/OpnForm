@@ -62,7 +62,9 @@ export function useFormInput (props, context, formPrefixKey = null) {
   watch(
     () => props.modelValue,
     (newValue) => {
-      content.value = newValue
+      if (content.value !== newValue){
+        content.value = newValue
+      }
     }
   )
 
