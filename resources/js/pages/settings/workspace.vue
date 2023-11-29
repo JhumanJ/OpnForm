@@ -168,7 +168,8 @@ export default {
         custom_domains: this.customDomains.split('\n')
           .map(domain => domain.trim())
           .filter(domain => domain && domain.length > 0)
-      }).then(() => {
+      }).then((response) => {
+        this.$store.commit('open/workspaces/addOrUpdate', response.data)
         this.alertSuccess('Custom domains saved.')
       }).catch((error) => {
         this.alertError('Failed to update custom domains: ' + error.response.data.message)

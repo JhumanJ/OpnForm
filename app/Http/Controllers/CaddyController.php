@@ -21,12 +21,25 @@ class CaddyController extends Controller
             ]);
         }
 
-        if (Workspace::whereJsonContains('custom_domains',$domain)->exists()) {
+        \Log::info('Caddy request received',[
+            'domain' => $domain,
+        ]);
+
+        if ($workspace = Workspace::whereJsonContains('custom_domains',$domain)->first()) {
+            \Log::info('Caddy request successful',[
+                'domain' => $domain,
+                'workspace' => $workspace->id,
+            ]);
             return $this->success([
                 'success' => true,
                 'message' => 'OK',
             ]);
         }
+
+        \Log::info('Caddy request failed',[
+            'domain' => $domain,
+            'workspace' => $workspace?->id,
+        ]);
 
         return $this->error([
             'success' => false,
