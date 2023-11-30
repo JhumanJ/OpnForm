@@ -1,6 +1,7 @@
 @php
   $config = [
       'appName' => config('app.name'),
+      'app_url' => config('app.url'),
       'locale' => $locale = app()->getLocale(),
       'locales' => config('app.locales'),
       'githubAuth' => config('services.github.client_id'),
