@@ -22,7 +22,7 @@ class CaddyRequestMiddleware
         if (config('custom-domains.enabled') && !in_array($request->ip(), config('custom-domains.authorized_ips'))) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized',
+                'message' => 'Unauthorized IP',
             ], 401);
         }
 
