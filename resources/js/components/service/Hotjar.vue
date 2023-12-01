@@ -1,11 +1,18 @@
 <template />
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 
 export default {
-
   name: 'Hotjar',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check),
+    }
+  },
 
   watch: {
     authenticated () {
@@ -38,9 +45,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      authenticated: 'auth/check'
-    }),
     isIframe () {
       return window.location !== window.parent.location || window.frameElement
     }

@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import store from '~/store'
+import { computed } from 'vue'
+import { useTemplatesStore } from '../../../stores/templates'
 import TemplateTags from './TemplateTags.vue'
 
 export default {
@@ -52,22 +53,29 @@ export default {
     }
   },
 
+  setup () {
+    const templatesStore = useTemplatesStore()
+    return {
+      templatesStore
+    }
+  },
+
   data: () => ({}),
 
   computed: {
     template () {
-      return this.$store.getters['open/templates/getBySlug'](this.slug)
+      return this.templatesStore.getBySlug(this.slug)
     }
   },
 
   watch: {
     slug () {
-      store.dispatch('open/templates/loadTemplate', this.slug)
+      this.templatesStore.loadTemplate(this.slug)
     }
   },
 
   mounted () {
-    store.dispatch('open/templates/loadTemplate', this.slug)
+    this.templatesStore.loadTemplate(this.slug)
   },
 
   methods: {

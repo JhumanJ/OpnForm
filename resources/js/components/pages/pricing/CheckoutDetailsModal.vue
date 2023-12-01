@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import TextInput from '../../forms/TextInput.vue'
-import Form from 'vform'
-import VButton from '../../common/Button.vue'
+import { computed } from 'vue'
 import axios from 'axios'
+import Form from 'vform'
+import { useAuthStore } from '../../../stores/auth'
+import TextInput from '../../forms/TextInput.vue'
+import VButton from '../../common/Button.vue'
 
 export default {
-
   components: { VButton, TextInput },
   props: {
     show: {
@@ -34,6 +34,14 @@ export default {
       default: true
     }
   },
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user)
+    }
+  },
+
   data: () => ({
     form: new Form({
       name: '',
@@ -88,10 +96,6 @@ export default {
     }
   },
 
-  computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    })
-  }
+  computed: {}
 }
 </script>

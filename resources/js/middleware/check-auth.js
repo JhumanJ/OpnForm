@@ -1,4 +1,4 @@
-import store from '~/store'
+import { useAuthStore } from '../stores/auth';
 import * as Sentry from '@sentry/vue'
 
 export function initCrisp (user) {
@@ -36,12 +36,13 @@ export function initSentry (user) {
 }
 
 export default async (to, from, next) => {
-  if (!store.getters['auth/check'] &&
-    store.getters['auth/token'] !== null &&
-    store.getters['auth/token'] !== undefined
+  const authStore = useAuthStore()
+  if (!authStore.check &&
+    authStore.token !== null &&
+    authStore.token !== undefined
   ) {
     try {
-      store.dispatch('auth/fetchUser').then((user) => {
+      authStore.fetchUser().then((user) => {
         initCrisp(user)
         initSentry(user)
       })

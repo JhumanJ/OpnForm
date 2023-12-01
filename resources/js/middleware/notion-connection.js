@@ -1,7 +1,8 @@
-import store from '~/store'
+import { useAuthStore } from '../stores/auth';
 
 export default async (to, from, next) => {
-  if (store.getters['auth/check'] && store.getters['auth/user'].workspaces_count === 0) {
+  const authStore = useAuthStore()
+  if (authStore.check && authStore.user?.workspaces_count === 0) {
     if ([
       'forms.create',
       'forms.show',

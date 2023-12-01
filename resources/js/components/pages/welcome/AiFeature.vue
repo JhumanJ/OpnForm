@@ -87,16 +87,19 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../stores/auth'
 
 export default {
-    props: {},
-    data: () => ({}),
-    computed: {
-      ...mapGetters({
-        authenticated: 'auth/check'
-      }),
-    },
-    methods: {}
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check)
+    }
+  },
+  props: {},
+  data: () => ({}),
+  computed: {},
+  methods: {}
 }
 </script>

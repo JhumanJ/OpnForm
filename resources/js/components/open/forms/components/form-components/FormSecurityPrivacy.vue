@@ -17,11 +17,17 @@
 </template>
 
 <script>
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 
 export default {
   components: { EditorOptionsPanel },
-  props: {
+  props: {},
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
   },
   data () {
     return {
@@ -30,11 +36,11 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     }
   },

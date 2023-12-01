@@ -24,28 +24,34 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth';
+import { useWorkspacesStore } from '../../stores/workspaces';
 
 export default {
+  setup () {
+    const authStore = useAuthStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      authStore,
+      workspacesStore,
+      isImpersonating : computed(() => authStore.isImpersonating),
+    }
+  },
+
   data: () => ({
     loading: false
   }),
 
-  computed: {
-    ...mapGetters({
-      isImpersonating: 'auth/isImpersonating'
-    })
-  },
+  computed: {},
 
-  mounted () {
-  },
+  mounted () {},
 
   methods: {
     reverseImpersonation () {
       this.loading = true
-      this.$store.dispatch('auth/stopImpersonating')
-        .then(() => {
-          this.$store.commit('open/workspaces/set', [])
+      this.authStore.stopImpersonating().then(() => {
+          this.workspacesStore.set([])
           this.$router.push({ name: 'settings.admin' })
           this.loading = false
         })

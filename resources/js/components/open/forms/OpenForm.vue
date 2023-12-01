@@ -62,6 +62,9 @@
 <script>
 import axios from 'axios'
 import Form from 'vform'
+import { computed } from 'vue'
+import { useRecordsStore } from '../../../stores/records'
+import { useWorkingFormStore } from '../../../stores/working_form'
 import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
@@ -100,6 +103,16 @@ export default {
     },
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
+
+  setup () {
+    const recordsStore = useRecordsStore()
+    const workingFormStore = useWorkingFormStore()
+    return {
+      recordsStore,
+      workingFormStore
+    }
+  },
+
   data () {
     return {
       dataForm: null,
@@ -154,8 +167,8 @@ export default {
             newFields.push(...group)
           }
         })
-        // set the properties on working_form vuex
-        this.$store.commit('open/working_form/setProperties', newFields)
+        // set the properties on working_form store
+        this.workingFormStore.setProperties(newFields)
       }
     },
     /**
@@ -293,12 +306,12 @@ export default {
       if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
         return null
       }
-      await this.$store.dispatch('open/records/loadRecord',
+      await this.recordsStore.loadRecord(
         axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((response) => {
           return { submission_id: this.form.submission_id, ...response.data.data }
         })
       )
-      return this.$store.getters['open/records/getById'](this.form.submission_id)
+      return this.recordsStore.getById(this.form.submission_id)
     },
     async initForm () {
       if (this.isPublicFormPage && this.form.editable_submissions) {

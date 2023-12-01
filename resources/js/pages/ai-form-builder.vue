@@ -476,7 +476,8 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
@@ -484,6 +485,14 @@ export default {
   components: {OpenFormFooter},
   layout: 'default',
   mixins: [SeoMeta],
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check),
+    }
+  },
+
   data: () => ({
     title: window.config.appName,
     metaTitle: 'AI form builder for free',
@@ -494,9 +503,6 @@ export default {
   methods: {},
 
   computed: {
-    ...mapGetters({
-      authenticated: 'auth/check'
-    }),
     configLinks: () => window.config.links
   }
 }

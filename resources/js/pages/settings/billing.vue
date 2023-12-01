@@ -21,15 +21,23 @@
 
 <script>
 import axios from 'axios'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 import VButton from '../../components/common/Button.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
-import { mapGetters } from 'vuex'
 import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
 
 export default {
   components: { AppSumoBilling, VButton },
   mixins: [SeoMeta],
   scrollToTop: false,
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user)
+    }
+  },
 
   data: () => ({
     metaTitle: 'Billing',
@@ -50,10 +58,6 @@ export default {
     }
   },
 
-  computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    })
-  }
+  computed: {}
 }
 </script>

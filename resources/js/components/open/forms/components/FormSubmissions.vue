@@ -83,6 +83,7 @@
 import axios from 'axios'
 import Fuse from 'fuse.js'
 import Form from 'vform'
+import { useWorkingFormStore } from '../../../../stores/working_form'
 import ScrollShadow from '../../../common/ScrollShadow.vue'
 import OpenTable from '../../tables/OpenTable.vue'
 import clonedeep from 'clone-deep'
@@ -92,6 +93,15 @@ export default {
   name: 'FormSubmissions',
   components: { ScrollShadow, OpenTable, VSwitch },
   props: {},
+
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
+  },
+
+
   data () {
     return {
       formInitDone: false,
@@ -111,10 +121,10 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     exportUrl () {

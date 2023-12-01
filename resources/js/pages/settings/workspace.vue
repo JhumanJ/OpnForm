@@ -73,14 +73,27 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import Form from 'vform'
-import {mapActions, mapState} from 'vuex'
+import { useFormsStore } from '../../stores/forms'
+import { useWorkspacesStore } from '../../stores/workspaces'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: {},
   scrollToTop: false,
   mixins: [SeoMeta],
+
+  setup () {
+    const formsStore = useFormsStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workspacesStore,
+      workspaces: computed(() => workspacesStore.content),
+      loading: computed(() => workspacesStore.loading)
+    }
+  },
 
   data: () => ({
     metaTitle: 'Workspaces',
@@ -92,28 +105,20 @@ export default {
   }),
 
   mounted() {
-    this.loadWorkspaces()
+    this.workspacesStore.loadIfEmpty()
   },
 
-  computed: {
-    ...mapState({
-      workspaces: state => state['open/workspaces'].content,
-      loading: state => state['open/workspaces'].loading
-    })
-  },
+  computed: {},
 
   methods: {
-    ...mapActions({
-      loadWorkspaces: 'open/workspaces/loadIfEmpty'
-    }),
     switchWorkspace(workspace) {
-      this.$store.commit('open/workspaces/setCurrentId', workspace.id)
+      this.workspacesStore.setCurrentId(workspace.id)
       this.$router.push({name: 'home'})
-      this.$store.dispatch('open/forms/load', workspace.id)
+      this.formsStore.load(workspace.id)
     },
     deleteWorkspace(workspace) {
       this.alertConfirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
-        this.$store.dispatch('open/workspaces/delete', workspace.id).then(() => {
+        this.workspacesStore.delete(workspace.id).then(() => {
           this.alertSuccess('Workspace successfully removed.')
         })
       })
@@ -129,7 +134,7 @@ export default {
     },
     async createWorkspace() {
       const {data} = await this.form.post('/api/open/workspaces/create')
-      this.$store.dispatch('open/workspaces/load')
+      this.workspacesStore.load()
       this.workspaceModal = false
     }
   }

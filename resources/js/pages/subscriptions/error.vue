@@ -1,7 +1,8 @@
 <template />
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
@@ -9,6 +10,13 @@ export default {
   layout: 'default',
   middleware: 'auth',
   mixins: [SeoMeta],
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check),
+    }
+  },
 
   data: () => ({
     metaTitle: 'Error',
@@ -19,10 +27,6 @@ export default {
     this.alertError('Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.')
   },
 
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/check'
-    })
-  }
+  computed: {}
 }
 </script>

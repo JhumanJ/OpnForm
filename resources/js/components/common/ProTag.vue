@@ -37,14 +37,25 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import Modal from '../Modal.vue'
-import {mapGetters} from 'vuex'
+import { useAuthStore } from '../../stores/auth';
+import { useWorkspacesStore } from '../../stores/workspaces';
 import PricingTable from "../pages/pricing/PricingTable.vue";
 
 export default {
   name: 'ProTag',
   components: {PricingTable, Modal},
   props: {},
+
+  setup () {
+    const authStore = useAuthStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      user : computed(() => authStore.user),
+      currentWorkSpace : computed(() => workspacesStore.getCurrent())
+    }
+  },
 
   data() {
     return {
@@ -54,10 +65,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user',
-      currentWorkSpace: 'open/workspaces/getCurrent',
-    }),
     shouldDisplayProTag() {
       if (!window.config.paid_plans_enabled) return false
       if (!this.user || !this.currentWorkSpace) return true

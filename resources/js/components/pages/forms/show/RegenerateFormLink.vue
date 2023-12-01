@@ -72,7 +72,9 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import axios from 'axios'
+import { useFormsStore } from '../../../../stores/forms'
 
 export default {
   name: 'RegenerateFormLink',
@@ -80,6 +82,13 @@ export default {
   props: {
     form: { type: Object, required: true }
   },
+
+  setup () {
+      const formsStore = useFormsStore()
+      return {
+        formsStore
+      }
+    },
 
   data: () => ({
     loadingNewLink: false,
@@ -95,7 +104,7 @@ export default {
       if (this.loadingNewLink) return
       this.loadingNewLink = true
       axios.put(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option).then((response) => {
-        this.$store.commit('open/forms/addOrUpdate', response.data.form)
+        this.formsStore.addOrUpdate(response.data.form)
         this.$router.push({name: 'forms.show', params: {slug: response.data.form.slug}})
         this.alertSuccess(response.data.message)
         this.loadingNewLink = false

@@ -166,6 +166,8 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useWorkingFormStore } from '../../../../stores/working_form'
 import draggable from 'vuedraggable'
 import ProTag from '../../../common/ProTag.vue'
 import clonedeep from 'clone-deep'
@@ -182,6 +184,13 @@ export default {
     EditableDiv
   },
 
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
+  },
+
   data () {
     return {
       formFields: [],
@@ -192,11 +201,11 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     }
   },
@@ -313,7 +322,7 @@ export default {
       return type
     },
     editOptions (index) {
-      this.$store.commit('open/working_form/openSettingsForField', index)
+      this.workingFormStore.openSettingsForField(index)
     },
     removeBlock (blockIndex) {
       const newFields = clonedeep(this.formFields)
@@ -322,10 +331,10 @@ export default {
       this.closeSidebar()
     },
     closeSidebar () {
-      this.$store.commit('open/working_form/closeEditFieldSidebar')
+      this.workingFormStore.closeEditFieldSidebar()
     },
     openAddFieldSidebar () {
-      this.$store.commit('open/working_form/openAddFieldSidebar', null)
+      this.workingFormStore.openAddFieldSidebar(null)
     }
   }
 }

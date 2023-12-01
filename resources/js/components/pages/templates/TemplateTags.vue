@@ -41,6 +41,9 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useTemplatesStore } from '../../../stores/templates'
+
 export default {
   props: {
     slug: {
@@ -53,19 +56,26 @@ export default {
     }
   },
 
+  setup () {
+    const templatesStore = useTemplatesStore()
+    return {
+      templatesStore
+    }
+  },
+
   data: () => ({}),
 
   computed: {
     template () {
-      return this.$store.getters['open/templates/getBySlug'](this.slug)
+      return this.templatesStore.getBySlug(this.slug)
     },
     types () {
       if (!this.template) return null
-      return this.$store.getters['open/templates/getTemplateTypes'](this.template.types)
+      return this.templatesStore.getTemplateTypes(this.template.types)
     },
     industries () {
       if (!this.template) return null
-      return this.$store.getters['open/templates/getTemplateIndustries'](this.template.industries)
+      return this.templatesStore.getTemplateIndustries(this.template.industries)
     }
   },
 

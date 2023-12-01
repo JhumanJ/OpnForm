@@ -38,10 +38,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 
 export default {
   middleware: 'auth',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user)
+    }
+  },
 
   data () {
     return {
@@ -49,9 +57,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     tabsList () {
       const tabs = [
         {

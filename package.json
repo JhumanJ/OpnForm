@@ -21,6 +21,7 @@
     "js-cookie": "^2.2.1",
     "js-sha256": "^0.9.0",
     "libphonenumber-js": "^1.10.44",
+    "pinia": "^2.1.7",
     "prismjs": "^1.24.1",
     "qrcode": "^1.5.1",
     "query-builder-vue": "^1.2.0",
@@ -38,8 +39,7 @@
     "vue-signature-pad": "^3.0.2",
     "vue3-editor": "^0.1.1",
     "vue3-vt-notifications": "^1.0.0",
-    "vuedraggable": "^4.1.0",
-    "vuex": "^4.1.0"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

@@ -62,13 +62,21 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import axios from 'axios'
-import { mapGetters } from 'vuex'
+import { useAuthStore } from '../../../stores/auth';
 import VTransition from '../../common/transitions/VTransition.vue'
 
 export default {
   components: { VTransition },
   props: {},
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user)
+    }
+  },
 
   data: () => ({
     changelogEntries: [],
@@ -80,9 +88,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     requestFeatureLink () {
       return window.config.links.feature_requests
     },

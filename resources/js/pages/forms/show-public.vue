@@ -50,8 +50,9 @@
 
 <script>
 import axios from 'axios'
-import store from '~/store'
-import { mapState } from 'vuex'
+import { computed } from 'vue'
+import { useFormsStore } from '../../stores/forms'
+import { useRecordsStore } from '../../stores/records'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Cookies from 'js-cookie'
 import sha256 from 'js-sha256'
@@ -93,11 +94,12 @@ function handleTransparentMode (form) {
 }
 
 function loadForm (slug) {
-  if (store.state['open/forms'].loading) return
-  store.commit('open/forms/startLoading')
+  const formsStore = useFormsStore()
+  if (formsStore.loading) return
+  formsStore.startLoading()
   return axios.get('/api/forms/' + slug).then((response) => {
     const form = response.data
-    store.commit('open/forms/set', [response.data])
+    formsStore.set([response.data])
 
     // Custom code injection
     if (form.custom_code) {
@@ -108,9 +110,9 @@ function loadForm (slug) {
     handleDarkMode(form)
     handleTransparentMode(form)
 
-    store.commit('open/forms/stopLoading')
+    formsStore.stopLoading()
   }).catch(() => {
-    store.commit('open/forms/stopLoading')
+    formsStore.stopLoading()
   })
 }
 
@@ -130,6 +132,17 @@ export default {
       window.$crisp.push(['do', 'chat:show'])
     }
     next()
+  },
+
+  setup () {
+    const formsStore = useFormsStore()
+    const recordsStore = useRecordsStore()
+    return {
+      formsStore,
+      forms : computed(() => formsStore.content),
+      formLoading : computed(() => formsStore.loading),
+      recordLoading : computed(() => recordsStore.loading)
+    }
   },
 
   data () {
@@ -166,16 +179,11 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      forms: state => state['open/forms'].content,
-      formLoading: state => state['open/forms'].loading,
-      recordLoading: state => state['open/records'].loading
-    }),
     formSlug () {
       return this.$route.params.slug
     },
     form () {
-      return this.$store.getters['open/forms/getBySlug'](this.formSlug)
+      return this.formsStore.getBySlug(this.formSlug)
     },
     isIframe () {
       return window.location !== window.parent.location || window.frameElement

@@ -36,19 +36,23 @@
 </template>
 
 <script>
-import store from '~/store'
-import { mapGetters, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useTemplatesStore } from '../../../stores/templates'
 import SingleTemplate from '../templates/SingleTemplate.vue'
 
 export default {
   components: { SingleTemplate },
   props: { },
+  setup () {
+    const templatesStore = useTemplatesStore()
+    return {
+      templatesStore,
+      templates : computed(() => templatesStore.content)
+    }
+  },
   data: () => ({}),
 
   computed: {
-    ...mapState({
-      templates: state => state['open/templates'].content
-    }),
     sliderTemplates () {
       return this.templates.slice(0, 20)
     }
@@ -66,7 +70,7 @@ export default {
   },
 
   mounted() {
-    store.dispatch('open/templates/loadAll', { limit: 20 })
+    this.templatesStore.loadAll({ limit: 20 })
   },
 
   methods: {

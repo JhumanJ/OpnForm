@@ -1,7 +1,8 @@
-import store from '~/store'
+import { useAuthStore } from '../stores/auth';
 
 export default (to, from, next) => {
-  if (!store.getters['auth/user'].is_subscribed) {
+  const authStore = useAuthStore()
+  if (!authStore.user?.is_subscribed) {
     next({ name: 'pricing' })
   } else {
     next()

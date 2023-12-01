@@ -132,7 +132,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth';
+import { useFormsStore } from '../stores/forms';
+import { useWorkspacesStore } from '../stores/workspaces';
 import Dropdown from './common/Dropdown.vue'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
 
@@ -140,6 +143,18 @@ export default {
   components: {
     WorkspaceDropdown,
     Dropdown
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      authStore,
+      formsStore,
+      workspacesStore,
+      user : computed(() => authStore.user)
+    }
   },
 
   data: () => ({
@@ -151,12 +166,12 @@ export default {
     helpUrl: () => window.config.links.help_url,
     form () {
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
-        return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
+        return this.formsStore.getBySlug(this.$route.params.slug)
       }
       return null
     },
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent()
     },
     paidPlansEnabled () {
       return window.config.paid_plans_enabled
@@ -182,9 +197,6 @@ export default {
     isIframe () {
       return window.location !== window.parent.location || window.frameElement
     },
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     userOnboarded () {
       return this.user && this.user.workspaces_count > 0
     },
@@ -196,11 +208,11 @@ export default {
   methods: {
     async logout () {
       // Log out the user.
-      await this.$store.dispatch('auth/logout')
+      await this.authStore.logout()
 
       // Reset store
-      this.$store.dispatch('open/workspaces/resetState')
-      this.$store.dispatch('open/forms/resetState')
+      this.workspacesStore.resetState()
+      this.formsStore.resetState()
 
       // Redirect to login.
       this.$router.push({ name: 'login' })

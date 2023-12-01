@@ -107,7 +107,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../stores/auth'
 import axios from 'axios'
 import MonthlyYearlySelector from './MonthlyYearlySelector.vue'
 import CheckoutDetailsModal from './CheckoutDetailsModal.vue'
@@ -125,6 +126,13 @@ export default {
     homePage: {
       type: Boolean,
       default: false
+    }
+  },
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check),
+      user : computed(() => authStore.user)
     }
   },
   data: () => ({
@@ -160,11 +168,6 @@ export default {
     }
   },
 
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    })
-  }
+  computed: {}
 }
 </script>
