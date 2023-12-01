@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -121,18 +121,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 
@@ -155,8 +145,8 @@ export default {
     showUploadModal: {
       handler (val) {
         document.removeEventListener('paste', this.onUploadPasteEvent)
-        if(this.showUploadModal){
-          document.addEventListener("paste", this.onUploadPasteEvent)
+        if (this.showUploadModal) {
+          document.addEventListener('paste', this.onUploadPasteEvent)
         }
       }
     }
@@ -176,7 +166,7 @@ export default {
       this.droppedFiles(e.dataTransfer.files)
     },
     onUploadPasteEvent (e) {
-      if(!this.showUploadModal) return
+      if (!this.showUploadModal) return
       this.uploadDragoverEvent = false
       this.uploadDragoverTracking = false
       this.droppedFiles(e.clipboardData.files)

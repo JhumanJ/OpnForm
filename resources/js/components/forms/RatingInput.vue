@@ -1,11 +1,10 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
     </template>
-
 
     <div class="stars-outer">
       <div v-for="i in numberOfStars" :key="i"
@@ -46,21 +45,10 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
-
 
   data () {
     return {

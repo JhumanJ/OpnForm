@@ -27,7 +27,7 @@
         Submission confirmation
         <pro-tag />
       </h2>
-      <toggle-switch-input :disabled="emailSubmissionConfirmationField===null" name="send_submission_confirmation"
+      <toggle-switch-input :disabled="(emailSubmissionConfirmationField===null)?true:null" name="send_submission_confirmation"
                            :form="form" class="mt-4"
                            label="Send submission confirmation" :help="emailSubmissionConfirmationHelp"
       />

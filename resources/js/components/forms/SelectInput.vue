@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -21,7 +21,7 @@
               :theme="theme"
               :has-error="hasValidation && form.errors.has(name)"
               :allow-creation="allowCreation"
-              :disabled="disabled"
+              :disabled="disabled?true:null"
               :help="help"
               :help-position="helpPosition"
 
@@ -97,20 +97,11 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
+
   data () {
     return {
       additionalOptions: []

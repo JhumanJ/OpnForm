@@ -11,7 +11,7 @@
     </template>
     <toggle-switch-input :value="value.hide_title" name="hide_title" class="mt-4"
                          label="Hide Form Title"
-                         :disabled="form.hide_title===true"
+                         :disabled="(form.hide_title===true)?true:null"
                          :help="hideTitleHelp"
                          @update:model-value="onChangeHideTitle"
     />

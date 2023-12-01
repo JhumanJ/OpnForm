@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -9,7 +9,7 @@
     <div :id="id ? id : name" :name="name" :style="inputStyle" class="flex items-center">
       <v-select v-model="selectedCountryCode" class="w-[130px]" dropdown-class="w-[300px]" input-class="rounded-r-none"
                 :data="countries"
-                :disabled="disabled || countries.length===1" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
+                :disabled="(disabled || countries.length===1)?true:null" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
                 :has-error="hasValidation && form.errors.has(name)"
                 :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @update:model-value="onChangeCountryCode"
       >
@@ -27,9 +27,9 @@
           </div>
         </template>
       </v-select>
-      <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled"
-            :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-            :placeholder="placeholder" :style="inputStyle" @update:model-value="onInput"
+      <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled?true:null"
+             :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
+             :placeholder="placeholder" :style="inputStyle" @update:model-value="onInput"
       >
     </div>
 
@@ -40,7 +40,6 @@
     <template #error>
       <slot name="error" />
     </template>
-
   </input-wrapper>
 </template>
 
@@ -61,18 +60,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 

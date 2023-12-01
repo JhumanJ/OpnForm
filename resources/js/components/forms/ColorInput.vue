@@ -1,11 +1,11 @@
 <template>
-  <input-wrapper v-bind="$props">
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <span />
     </template>
 
     <div class="flex items-center">
-      <input :id="id?id:name" v-model="compVal" :disabled="disabled"
+      <input :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
              type="color" class="mr-2"
              :name="name"
       >
@@ -37,13 +37,8 @@ export default {
   },
 
   setup (props, context) {
-    const { compVal, inputStyle, hasValidation, hasError } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   }
 }

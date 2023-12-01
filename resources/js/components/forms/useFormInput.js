@@ -6,6 +6,7 @@ export const inputProps = {
   name: { type: String, required: true },
   label: { type: String, required: false },
   form: { type: Object, required: false },
+  theme: { type: Object, default: () => themes.default },
   modelValue: { required: false },
   required: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
@@ -14,7 +15,6 @@ export const inputProps = {
   hideFieldName: { type: Boolean, default: false },
   help: { type: String, default: null },
   helpPosition: { type: String, default: 'below_input' },
-  theme: { type: Object, default: () => themes.default },
   color: { type: String, default: '#3B82F6' },
   wrapperClass: { type: String, default: 'relative mb-3' }
 }
@@ -58,11 +58,21 @@ export function useFormInput (props, context, formPrefixKey = null) {
     }
   })
 
+  const inputWrapperProps = computed(() => {
+    const wrapperProps = {}
+    Object.keys(inputProps).forEach((key) => {
+      if (!['modelValue', 'disabled', 'placeholder', 'color'].includes(key)) {
+        wrapperProps[key] = props[key]
+      }
+    })
+    return wrapperProps
+  })
+
   // Watch for changes in props.modelValue and update the local content
   watch(
     () => props.modelValue,
     (newValue) => {
-      if (content.value !== newValue){
+      if (content.value !== newValue) {
         content.value = newValue
       }
     }
@@ -72,6 +82,7 @@ export function useFormInput (props, context, formPrefixKey = null) {
     compVal,
     inputStyle,
     hasValidation,
-    hasError
+    hasError,
+    inputWrapperProps
   }
 }

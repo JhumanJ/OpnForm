@@ -1,12 +1,12 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
     </template>
 
-    <textarea :id="id?id:name" v-model="compVal" :disabled="disabled"
+    <textarea :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
               :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }]"
               class="resize-y"
               :name="name" :style="inputStyle"
@@ -16,7 +16,7 @@
 
     <template v-if="maxCharLimit && showCharLimit" #bottom_after_help>
       <small :class="theme.default.help">
-      {{ charCount }}/{{ maxCharLimit }}
+        {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
 
@@ -38,25 +38,17 @@ export default {
   props: {
     ...inputProps,
     maxCharLimit: { type: Number, required: false, default: null },
-    showCharLimit: { type: Boolean, required: false, default: false },
+    showCharLimit: { type: Boolean, required: false, default: false }
   },
-  setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
 
+  setup (props, context) {
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
+
   computed: {
-    charCount() {
+    charCount () {
       return (this.compVal) ? this.compVal.length : 0
     }
   }

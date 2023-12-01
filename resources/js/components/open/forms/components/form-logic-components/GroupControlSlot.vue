@@ -7,7 +7,7 @@
                   option-key="identifier"
                   name="group-control-slot-rule"
     />
-    <v-button class="ml-1 mt-1" color="blue" size="small" :disabled="selectedRule === ''" @click="addRule">
+    <v-button class="ml-1 mt-1" color="blue" size="small" :disabled="(selectedRule === '')?true:null" @click="addRule">
       Add Condition
     </v-button>
     <v-button class="ml-1 mt-1" color="outline-blue" size="small" @click="groupCtrl.newGroup">

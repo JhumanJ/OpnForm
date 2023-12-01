@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -18,7 +18,7 @@
         <a :class="theme.default.help" href="#" @click.prevent="clear">Clear</a>
       </small>
     </template>
-    
+
     <template #error>
       <slot name="error" />
     </template>
@@ -39,18 +39,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 

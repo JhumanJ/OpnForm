@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -13,7 +13,7 @@
     <div
       :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
     >
-      <codemirror :id="id?id:name" v-model="compVal" :disabled="disabled"
+      <codemirror :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
                   :options="cmOptions"
                   :style="inputStyle" :name="name"
                   :placeholder="placeholder"
@@ -44,18 +44,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 

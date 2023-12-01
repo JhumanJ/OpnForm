@@ -1,11 +1,11 @@
 <template>
-  <input-wrapper v-bind="$props">
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <span />
     </template>
 
     <div class="flex">
-      <v-switch :id="id?id:name" v-model="compVal" class="inline-block mr-2" :disabled="disabled" />
+      <v-switch :id="id?id:name" v-model="compVal" class="inline-block mr-2" :disabled="disabled?true:null" />
       <slot name="label">
         <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
       </slot>
@@ -34,13 +34,8 @@ export default {
   },
 
   setup (props, context) {
-    const { compVal, inputStyle, hasValidation, hasError } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 

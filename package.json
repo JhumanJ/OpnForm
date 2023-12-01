@@ -39,7 +39,7 @@
     "vue-signature-pad": "^3.0.2",
     "vue3-editor": "^0.1.1",
     "vue3-vt-notifications": "^1.0.0",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "next"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

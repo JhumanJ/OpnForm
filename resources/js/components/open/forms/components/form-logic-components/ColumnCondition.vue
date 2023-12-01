@@ -10,8 +10,8 @@
     />
 
     <template v-if="hasInput">
-      <component :is="inputComponentData.component" v-model="content.value" class="w-full"
-                 :name="'value_'+property.id" v-bind="inputComponentData" placeholder="Filter Value"
+      <component v-bind="inputComponentData" :is="inputComponentData.component" v-model="content.value" class="w-full"
+                 :name="'value_'+property.id" placeholder="Filter Value"
                  @input="$emit('input',castContent(content))"
       />
     </template>
@@ -62,7 +62,7 @@ export default {
       }
 
       if (['select', 'multi_select'].includes(this.property.type)) {
-        componentData.multiple = false;
+        componentData.multiple = false
         componentData.options = this.property[this.property.type].options.map(option => {
           return {
             name: option.name,
@@ -97,7 +97,7 @@ export default {
 
     this.content.property_meta = {
       id: this.property.id,
-      type: this.property.type,
+      type: this.property.type
     }
     this.isMounted = true
   },

@@ -7,7 +7,7 @@
       type="checkbox"
       :class="sizeClasses"
       class="rounded border-gray-500 cursor-pointer"
-      :disabled="disabled"
+      :disabled="disabled?true:null"
       @click="handleClick"
     >
     <label :for="id || name" class="text-gray-700 dark:text-gray-300 ml-2" :class="{'!cursor-not-allowed':disabled}">

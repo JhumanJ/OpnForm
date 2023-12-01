@@ -1,10 +1,10 @@
 <template>
-  <input-wrapper v-bind="$props">
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <span />
     </template>
 
-    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled" :name="name">
+    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled?true:null" :name="name">
       <slot name="label">
         {{ label }} <span v-if="required" class="text-red-500 required-dot">*</span>
       </slot>
@@ -34,18 +34,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 
