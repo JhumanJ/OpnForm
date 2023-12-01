@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import { useWorkingFormStore } from '../../../stores/working_form'
 import OpenText from './components/OpenText.vue'
 import OpenUrl from './components/OpenUrl.vue'
 import OpenSelect from './components/OpenSelect.vue'
@@ -119,6 +120,13 @@ export default {
     }
   },
 
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
+  },
+
   data () {
     return {
       tableHash: null,
@@ -129,10 +137,11 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
+      /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     hasActions () {

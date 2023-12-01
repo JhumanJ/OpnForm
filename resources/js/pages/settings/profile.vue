@@ -24,12 +24,21 @@
 
 <script>
 import Form from 'vform'
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   mixins: [SeoMeta],
   scrollToTop: false,
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore,
+      user : computed(() => authStore.user)
+    }
+  },
 
   data: () => ({
     metaTitle: 'Profile',
@@ -37,10 +46,6 @@ export default {
       name: '',
       email: ''
     })
-  }),
-
-  computed: mapGetters({
-    user: 'auth/user'
   }),
 
   created () {
@@ -54,7 +59,7 @@ export default {
     async update () {
       const { data } = await this.form.patch('/api/settings/profile')
 
-      this.$store.dispatch('auth/updateUser', { user: data })
+      this.authStore.updateUser(data)
     }
   }
 }

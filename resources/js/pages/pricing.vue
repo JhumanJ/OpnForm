@@ -236,14 +236,14 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth';
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import PricingTable from '../components/pages/pricing/PricingTable.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
   components: {OpenFormFooter, PricingTable},
-
   mixins: [SeoMeta],
   layout: 'default',
 
@@ -257,20 +257,23 @@ export default {
     next()
   },
 
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user),
+      authenticated : computed(() => authStore.check)
+    }
+  },
+
   data: () => ({
     metaTitle: 'Pricing',
     metaDescription: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized forms with OpnForms Pro.',
   }),
 
-  mounted() {
-  },
+  mounted() {},
 
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    })
-  },
+  computed: {},
+
   methods: {
     contactUs() {
       window.$crisp.push(['do', 'chat:show'])

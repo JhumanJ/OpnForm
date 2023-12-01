@@ -1,5 +1,5 @@
 import { createApp, configureCompat, ref } from 'vue'
-import store from '~/store'
+import { createPinia } from 'pinia'
 import router from '~/router'
 import App from '~/components/App.vue'
 import Base from './base.js'
@@ -11,9 +11,10 @@ import '~/components'
 
 import '../sass/app.scss'
 
+const pinia = createPinia()
 const app = createApp(App)
   .use(router)
-  .use(store)
+  .use(pinia)
   .mixin(Base)
 
 registerPlugin(app)
@@ -25,7 +26,9 @@ configureCompat({
   // GLOBAL_MOUNT: false,
   COMPONENT_V_MODEL: false,
   INSTANCE_SET: false,
-  INSTANCE_DELETE: false
+  INSTANCE_DELETE: false,
+  ATTR_FALSE_VALUE: false,
+  WATCH_ARRAY: false
 })
 
 router.app = app

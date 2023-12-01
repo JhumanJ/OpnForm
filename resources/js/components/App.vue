@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useAppStore } from '../stores/app'
 import Loading from './Loading.vue'
 import Hotjar from './service/Hotjar.vue'
 import Amplitude from './service/Amplitude.vue'
@@ -44,7 +46,6 @@ import Crisp from './service/Crisp.vue'
 import StopImpersonation from './pages/StopImpersonation.vue'
 import Notifications from './common/Notifications.vue'
 import SeoMeta from '../mixins/seo-meta.js'
-import { mapState } from 'vuex'
 
 // Load layout components dynamically.
 const requireContext = import.meta.glob('../layouts/**.vue', { eager: true })
@@ -74,6 +75,13 @@ export default {
 
   mixins: [SeoMeta],
 
+  setup () {
+    const appStore = useAppStore()
+    return {
+      layout : computed(() => appStore.layout)
+    }
+  },
+
   data: () => ({
     metaTitle: 'OpnForm',
     metaDescription: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
@@ -95,9 +103,6 @@ export default {
     isOnboardingPage () {
       return this.$route.name === 'onboarding'
     },
-    ...mapState({
-      layout: state => state.app.layout
-    }),
     layoutComponent () {
       return layouts[this.layout]
     }

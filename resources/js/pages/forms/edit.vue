@@ -14,17 +14,20 @@
 </template>
 
 <script>
-import axios from 'axios'
-import store from '~/store'
-import Breadcrumb from '../../components/common/Breadcrumb.vue'
+import { computed } from 'vue'
 import Form from 'vform'
-import { mapState } from 'vuex'
+import { useFormsStore } from '../../stores/forms'
+import { useWorkingFormStore } from '../../stores/working_form'
+import { useWorkspacesStore } from '../../stores/workspaces'
+import Breadcrumb from '../../components/common/Breadcrumb.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 const loadForms = function () {
-  store.commit('open/forms/startLoading')
-  store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/load', store.state['open/workspaces'].currentId)
+  const formsStore = useFormsStore()
+  const workspacesStore = useWorkspacesStore()
+  formsStore.startLoading()
+  workspacesStore.loadIfEmpty().then(() => {
+    formsStore.load(workspacesStore.currentId)
   })
 }
 
@@ -32,12 +35,15 @@ export default {
   name: 'EditForm',
   components: { Breadcrumb },
   mixins: [SeoMeta],
+  middleware: 'auth',
 
   beforeRouteEnter (to, from, next) {
-    if (!store.getters['open/forms/getBySlug'](to.params.slug)) {
+    const formsStore = useFormsStore()
+    const workingFormStore = useWorkingFormStore()
+    if (!formsStore.getBySlug(to.params.slug)) {
       loadForms()
     }
-    store.commit('open/working_form/set', null) // Reset old working form
+    workingFormStore.set(null)  // Reset old working form
     next()
   },
 
@@ -51,7 +57,17 @@ export default {
     next()
   },
 
-  middleware: 'auth',
+  setup () {
+    const formsStore = useFormsStore()
+    const workingFormStore = useWorkingFormStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workingFormStore,
+      workspacesStore,
+      formsLoading : computed(() => formsStore.loading)
+    }
+  },
 
   data () {
     return {
@@ -62,20 +78,17 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      formsLoading: state => state['open/forms'].loading
-    }),
     updatedForm: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     form () {
-      return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
+      return this.formsStore.getBySlug(this.$route.params.slug)
     },
     pageLoaded () {
       return !this.loading && this.updatedForm !== null

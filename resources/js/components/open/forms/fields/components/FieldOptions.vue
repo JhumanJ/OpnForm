@@ -186,7 +186,7 @@
       <text-area-input v-model="optionsText" :name="field.id+'_options_text'" class="mt-3"
                        label="Set selection options"
                        help="Add one option per line"
-                       @input="onFieldOptionsChange"
+                       @update:model-value="onFieldOptionsChange"
       />
       <v-checkbox v-model="field.allow_creation"
                   name="allow_creation" help="" @update:model-value="onFieldAllowCreationChange"

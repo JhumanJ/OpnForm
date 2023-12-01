@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import FormNotificationsOption from './components/FormNotificationsOption.vue'
 import FormNotificationsSlack from './components/FormNotificationsSlack.vue'
@@ -40,7 +41,12 @@ import FormNotificationsWebhook from './components/FormNotificationsWebhook.vue'
 
 export default {
   components: { FormNotificationsSubmissionConfirmation, FormNotificationsSlack, FormNotificationsDiscord, FormNotificationsOption, EditorOptionsPanel, FormNotificationsWebhook },
-  props: {
+  props: {},
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
   },
   data () {
     return {
@@ -50,11 +56,11 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     zapierUrl: () => window.config.links.zapier_integration

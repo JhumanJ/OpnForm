@@ -41,8 +41,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import Form from 'vform'
 import Cookies from 'js-cookie'
+import { useAuthStore } from '../../../stores/auth'
 import OpenFormFooter from '../../../components/pages/OpenFormFooter.vue'
 import Testimonials from '../../../components/pages/welcome/Testimonials.vue'
 import ForgotPasswordModal from '../ForgotPasswordModal.vue'
@@ -62,6 +64,13 @@ export default {
     }
   },
 
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore
+    }
+  },
+
   data: () => ({
     form: new Form({
       email: '',
@@ -77,13 +86,10 @@ export default {
       const { data } = await this.form.post('/api/login')
 
       // Save the token.
-      this.$store.dispatch('auth/saveToken', {
-        token: data.token,
-        remember: this.remember
-      })
+      this.authStore.saveToken(data.token, this.remember)
 
       // Fetch the user.
-      await this.$store.dispatch('auth/fetchUser')
+      await this.authStore.fetchUser()
 
       // Redirect home.
       this.redirect()

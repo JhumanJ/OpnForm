@@ -1,11 +1,20 @@
 <template />
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 
 export default {
-
   name: 'Amplitude',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore,
+      authenticated : computed(() => authStore.check),
+      user : computed(() => authStore.user)
+    }
+  },
 
   data: function () {
     return {
@@ -14,12 +23,7 @@ export default {
     }
   },
 
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    })
-  },
+  computed: {},
 
   watch: {
     $route () {

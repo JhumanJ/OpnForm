@@ -14,8 +14,17 @@
 </template>
 
 <script>
+import { useAuthStore } from '../stores/auth'
+
 export default {
   name: 'LoginWithGithub',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore
+    }
+  },
 
   computed: {
     githubAuth: () => window.config.githubAuth,
@@ -34,9 +43,7 @@ export default {
     async login () {
       const newWindow = openWindow('', 'Login')
 
-      const url = await this.$store.dispatch('auth/fetchOauthUrl', {
-        provider: 'github'
-      })
+      const url = await this.authStore.fetchOauthUrl('github')
 
       newWindow.location.href = url
     },
@@ -49,9 +56,7 @@ export default {
         return
       }
 
-      this.$store.dispatch('auth/saveToken', {
-        token: e.data.token
-      })
+      this.authStore.saveToken(e.data.token)
 
       this.$router.push({ name: 'home' })
     }

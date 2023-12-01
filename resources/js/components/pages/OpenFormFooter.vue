@@ -31,18 +31,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 
 export default {
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user)
+    }
+  },
+
   data: () => ({
     appName: window.config.appName,
     currYear: new Date().getFullYear(),
   }),
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     helpUrl: () => window.config.links.help_url,
     githubUrl: () => window.config.links.github_url,
     forumUrl: () => window.config.links.github_forum_url,

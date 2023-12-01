@@ -24,18 +24,21 @@
 </template>
 
 <script>
-import store from '~/store'
+import { computed } from 'vue'
 import Form from 'vform'
-import { mapState, mapActions } from 'vuex'
+import { useTemplatesStore } from '../../stores/templates'
+import { useWorkingFormStore } from '../../stores/working_form'
+import { useWorkspacesStore } from '../../stores/workspaces'
 import QuickRegister from '../auth/components/QuickRegister.vue'
 import initForm from '../../mixins/form_editor/initForm.js'
 import SeoMeta from '../../mixins/seo-meta.js'
 import CreateFormBaseModal from '../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
-  store.commit('open/templates/startLoading')
-  store.dispatch('open/templates/loadIfEmpty').then(() => {
-    store.commit('open/templates/stopLoading')
+  const templatesStore = useTemplatesStore()
+  templatesStore.startLoading()
+  templatesStore.loadIfEmpty().then(() => {
+    templatesStore.stopLoading()
   })
 }
 
@@ -45,13 +48,25 @@ export default {
     QuickRegister, CreateFormBaseModal
   },
   mixins: [initForm, SeoMeta],
+  middleware: 'guest',
 
   beforeRouteEnter (to, from, next) {
     loadTemplates()
     next()
   },
 
-  middleware: 'guest',
+  setup () {
+    const templatesStore = useTemplatesStore()
+    const workingFormStore = useWorkingFormStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      templatesStore,
+      workingFormStore,
+      workspacesStore,
+      workspaces : computed(() => workspacesStore.content),
+      workspacesLoading : computed(() => workspacesStore.loading)
+    }
+  },
 
   data () {
     return {
@@ -66,21 +81,17 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      workspaces: state => state['open/workspaces'].content,
-      workspacesLoading: state => state['open/workspaces'].loading
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent()
     }
   },
 
@@ -100,12 +111,12 @@ export default {
       is_enterprise: false,
       is_pro: false
     }
-    this.$store.commit('open/workspaces/set', [guestWorkspace])
-    this.$store.commit('open/workspaces/setCurrentId', guestWorkspace.id)
+    this.workspacesStore.set([guestWorkspace])
+    this.workspacesStore.setCurrentId(guestWorkspace.id)
 
     this.initForm()
     if (this.$route.query.template !== undefined && this.$route.query.template) {
-      const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
+      const template = this.templatesStore.getBySlug(this.$route.query.template)
       if (template && template.structure) {
         this.form = new Form({ ...this.form.data(), ...template.structure })
       }
@@ -121,16 +132,13 @@ export default {
   unmounted () {},
 
   methods: {
-    ...mapActions({
-      loadWorkspaces: 'open/workspaces/load'
-    }),
     openRegister () {
       this.registerModal = true
     },
     afterLogin () {
       this.registerModal = false
       this.isGuest = false
-      this.loadWorkspaces()
+      this.workspacesStore.load()
       setTimeout(() => {
         if (this.$refs.editor) {
           this.$refs.editor.saveFormCreate()

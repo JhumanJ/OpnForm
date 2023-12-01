@@ -181,7 +181,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
 import Features from '~/components/pages/welcome/Features.vue'
 import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
 import PricingTable from '../components/pages/pricing/PricingTable.vue'
@@ -193,10 +194,15 @@ import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
   components: { Testimonials, OpenFormFooter, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider },
-
   mixins: [SeoMeta],
-
   layout: 'default',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authenticated : computed(() => authStore.check)
+    }
+  },
 
   data: () => ({
     title: window.config.appName,
@@ -215,9 +221,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      authenticated: 'auth/check'
-    }),
     configLinks: () => window.config.links,
     paidPlansEnabled () {
       return window.config.paid_plans_enabled

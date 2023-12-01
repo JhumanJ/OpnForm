@@ -38,7 +38,7 @@
                   :multiple="true" class="mt-1" placeholder="Actions..."
                   help="Action(s) triggerred when above conditions are true"
                   :options="actionOptions"
-                  @input="onActionInput"
+                  @update:model-value="onActionInput"
     />
 
     <modal :show="showCopyFormModal" @close="showCopyFormModal = false">

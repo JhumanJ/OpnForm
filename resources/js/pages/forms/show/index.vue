@@ -116,10 +116,12 @@
 </template>
 
 <script>
-import axios from 'axios'
-import store from '~/store'
+import { computed } from 'vue'
 import Form from 'vform'
-import {mapGetters, mapState} from 'vuex'
+import { useAuthStore } from '../../../stores/auth'
+import { useFormsStore } from '../../../stores/forms'
+import { useWorkingFormStore } from '../../../stores/working_form'
+import { useWorkspacesStore } from '../../../stores/workspaces'
 import ProTag from '../../../components/common/ProTag.vue'
 import VButton from "../../../components/common/Button.vue";
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
@@ -127,9 +129,11 @@ import SeoMeta from '../../../mixins/seo-meta.js'
 import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
 
 const loadForms = function () {
-  store.commit('open/forms/startLoading')
-  store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/loadIfEmpty', store.state['open/workspaces'].currentId)
+  const formsStore = useFormsStore()
+  const workspacesStore = useWorkspacesStore()
+  formsStore.startLoading()
+  workspacesStore.loadIfEmpty().then(() => {
+    formsStore.loadIfEmpty(workspacesStore.currentId)
   })
 }
 
@@ -154,6 +158,21 @@ export default {
   },
   middleware: 'auth',
 
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    const workingFormStore = useWorkingFormStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workingFormStore,
+      workspacesStore,
+      user : computed(() => authStore.user),
+      formsLoading : computed(() => formsStore.loading),
+      workspacesLoading : computed(() => workspacesStore.loading)
+    }
+  },
+
   data() {
     return {
       metaTitle: 'Home',
@@ -175,27 +194,21 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
-    ...mapState({
-      formsLoading: state => state['open/forms'].loading,
-      workspacesLoading: state => state['open/workspaces'].loading
-    }),
     workingForm: {
-      get() {
-        return this.$store.state['open/working_form'].content
+      get () {
+        return this.workingFormStore.content
       },
-      set(value) {
-        this.$store.commit('open/working_form/set', value)
+      /* We add a setter */
+      set (value) {
+        this.workingFormStore.set(value)
       }
     },
     workspace() {
       if (!this.form) return null
-      return this.$store.getters['open/workspaces/getById'](this.form.workspace_id)
+      return this.workspacesStore.getById(this.form.workspace_id)
     },
     form() {
-      return this.$store.getters['open/forms/getBySlug'](this.$route.params.slug)
+      return this.formsStore.getBySlug(this.$route.params.slug)
     },
     formEndpoint: () => '/api/open/forms/{id}',
     loading() {

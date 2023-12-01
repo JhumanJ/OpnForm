@@ -37,6 +37,8 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
+import { useWorkspacesStore } from '../../stores/workspaces'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
@@ -44,6 +46,15 @@ export default {
   middleware: 'admin',
   scrollToTop: false,
   mixins: [SeoMeta],
+
+  setup () {
+    const authStore = useAuthStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      authStore,
+      workspacesStore
+    }
+  },
 
   data: () => ({
     metaTitle: 'Admin',
@@ -56,21 +67,18 @@ export default {
   methods: {
     async impersonate () {
       this.loading = true
-      this.$store.commit('auth/startImpersonating')
+      this.authStore.startImpersonating()
       axios.get('/api/admin/impersonate/' + encodeURI(this.form.identifier)).then(async (response) => {
         this.loading = false
 
         // Save the token.
-        this.$store.dispatch('auth/saveToken', {
-          token: response.data.token,
-          remember: false
-        })
+        this.authStore.saveToken(response.data.token, false)
 
         // Fetch the user.
-        await this.$store.dispatch('auth/fetchUser')
+        await this.authStore.fetchUser()
 
         // Redirect to the dashboard.
-        this.$store.commit('open/workspaces/set', [])
+        this.workspacesStore.set([])
         this.$router.push({ name: 'home' })
       }).catch((error) => {
         this.alertError(error.response.data.message)

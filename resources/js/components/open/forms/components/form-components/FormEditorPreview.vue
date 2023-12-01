@@ -59,12 +59,18 @@
 </template>
 
 <script>
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 import VSwitch from '../../../../forms/components/VSwitch.vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
 
 export default {
   components: { OpenCompleteForm, VSwitch },
-  props: {
+  props: {},
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore
+    }
   },
   data () {
     return {
@@ -75,11 +81,11 @@ export default {
   computed: {
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     creating () { // returns true if we are creating a form

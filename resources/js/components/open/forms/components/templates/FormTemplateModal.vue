@@ -72,10 +72,11 @@
 </template>
 
 <script>
-import Form from 'vform'
-import store from '~/store'
-import { mapState, mapGetters } from 'vuex'
 import axios from 'axios'
+import Form from 'vform'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../../../stores/auth'
+import { useTemplatesStore } from '../../../../../stores/templates'
 import QuestionsEditor from './QuestionsEditor.vue'
 
 export default {
@@ -85,6 +86,18 @@ export default {
     show: { type: Boolean, required: true },
     form: { type: Object, required: true },
     template: { type: Object, required: false, default: () => {} }
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const templatesStore = useTemplatesStore()
+    return {
+      templatesStore,
+      user : computed(() => authStore.user),
+      templates : computed(() => templatesStore.content),
+      industries : computed(() => templatesStore.industries),
+      types : computed(() => templatesStore.types)
+    }
   },
 
   data: () => ({
@@ -104,18 +117,10 @@ export default {
       related_templates: null,
       questions: []
     })
-    store.dispatch('open/templates/loadIfEmpty')
+    this.templatesStore.loadIfEmpty()
   },
 
   computed: {
-    ...mapState({
-      templates: state => state['open/templates'].content,
-      industries: state => state['open/templates'].industries,
-      types: state => state['open/templates'].types
-    }),
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     typesOptions () {
       return Object.values(this.types).map((type) => {
         return {
@@ -156,7 +161,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
-        this.$store.commit('open/templates/addOrUpdate', response.data.data)
+        this.templatesStore.addOrUpdate(response.data.data)
         this.$emit('close')
       })
     },
@@ -166,7 +171,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
-        this.$store.commit('open/templates/addOrUpdate', response.data.data)
+        this.templatesStore.addOrUpdate(response.data.data)
         this.$emit('close')
       })
     },
@@ -177,7 +182,7 @@ export default {
           this.alertSuccess(response.data.message)
         }
         this.$router.push({ name: 'templates' })
-        this.$store.commit('open/templates/remove', this.template)
+        this.templatesStore.remove(this.template)
         this.$emit('close')
       })
     }

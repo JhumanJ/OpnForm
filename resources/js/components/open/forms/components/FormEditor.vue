@@ -85,7 +85,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../../stores/auth';
+import { useFormsStore } from '../../../../stores/forms';
+import { useWorkingFormStore } from '../../../../stores/working_form';
+import { useWorkspacesStore } from '../../../../stores/workspaces';
 import AddFormBlockSidebar from './form-components/AddFormBlockSidebar.vue'
 import FormFieldEditSidebar from '../fields/FormFieldEditSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
@@ -143,6 +147,19 @@ export default {
     }
   },
 
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    const workingFormStore = useWorkingFormStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workingFormStore,
+      workspacesStore,
+      user : computed(() => authStore.user)
+    }
+  },
+
   data () {
     return {
       showFormErrorModal: false,
@@ -153,23 +170,20 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     createdForm () {
-      return this.$store.getters['open/forms/getById'](this.createdFormId)
+      return this.formsStore.getById(this.createdFormId)
     },
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent()
     },
     steps () {
       return [
@@ -245,7 +259,7 @@ export default {
       this.validationErrorResponse = null
       this.form.put('/api/open/forms/{id}/'.replace('{id}', this.form.id)).then((response) => {
         const data = response.data
-        this.$store.commit('open/forms/addOrUpdate', data.form)
+        this.formsStore.addOrUpdate(data.form)
         this.$emit('on-save')
         this.$router.push({ name: 'forms.show', params: { slug: this.form.slug } })
         this.$logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
@@ -266,7 +280,7 @@ export default {
 
       this.updateFormLoading = true
       this.form.post('/api/open/forms').then((response) => {
-        this.$store.commit('open/forms/addOrUpdate', response.data.form)
+        this.formsStore.addOrUpdate(response.data.form)
         this.$emit('on-save')
         this.createdFormId = response.data.form.id
 

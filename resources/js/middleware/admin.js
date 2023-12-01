@@ -1,7 +1,8 @@
-import store from '~/store'
+import { useAuthStore } from '../stores/auth';
 
 export default (to, from, next) => {
-  if (!store.getters['auth/user'].admin) {
+  const authStore = useAuthStore()
+  if (!authStore.user?.admin) {
     next({ name: 'home' })
   } else {
     next()

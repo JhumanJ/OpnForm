@@ -1,4 +1,4 @@
-import store from '~/store'
+import { useAuthStore } from '../stores/auth';
 
 /**
  * This is middleware to check the current user role.
@@ -7,14 +7,13 @@ import store from '~/store'
  */
 
 export default (to, from, next, roles) => {
-  // Grab the user
-  const user = store.getters['auth/user']
-
+  const authStore = useAuthStore()
+  
   // Split roles into an array
   roles = roles.split(',')
 
   // Check if the user has one of the required roles...
-  if (!roles.includes(user.role)) {
+  if (!roles.includes(authStore.user?.role)) {
     next('/unauthorized')
   }
 

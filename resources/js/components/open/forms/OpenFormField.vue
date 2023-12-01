@@ -78,9 +78,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useWorkingFormStore } from '../../../stores/working_form';
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
-import {mapState} from "vuex";
 
 export default {
   name: 'OpenFormField',
@@ -113,15 +114,21 @@ export default {
     },
     adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
   },
+
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore,
+      selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex),
+      showEditFieldSidebar : computed(() => workingFormStore.showEditFieldSidebar)
+    }
+  },
+
   data() {
     return {}
   },
 
   computed: {
-    ...mapState({
-      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
-      showEditFieldSidebar: state => state['open/working_form'].showEditFieldSidebar
-    }),
     fieldComponents() {
       return {
         text: 'TextInput',
@@ -214,10 +221,10 @@ export default {
 
   methods: {
     editFieldOptions() {
-      this.$store.commit('open/working_form/openSettingsForField', this.field)
+      this.workingFormStore.openSettingsForField(this.field)
     },
     openAddFieldSidebar() {
-      this.$store.commit('open/working_form/openAddFieldSidebar', this.field)
+      this.workingFormStore.openAddFieldSidebar(this.field)
     },
     /**
      * Get the right input component for the field/options combination

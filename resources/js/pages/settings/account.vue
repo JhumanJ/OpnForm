@@ -18,11 +18,19 @@
 <script>
 import Form from 'vform'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   scrollToTop: false,
   mixins: [SeoMeta],
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore
+    }
+  },
 
   data: () => ({
     metaTitle: 'Account',
@@ -39,7 +47,7 @@ export default {
         this.loading = false
         this.alertSuccess(response.data.message)
         // Log out the user.
-        await this.$store.dispatch('auth/logout')
+        await this.authStore.logout()
 
         // Redirect to login.
         this.$router.push({ name: 'login' })

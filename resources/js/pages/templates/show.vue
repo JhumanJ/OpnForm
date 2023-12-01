@@ -196,9 +196,10 @@
 </template>
 
 <script>
-import store from '~/store'
 import Form from 'vform'
-import { mapGetters, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
+import { useTemplatesStore } from '../../stores/templates'
 import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from '../../components/common/Breadcrumb.vue'
@@ -213,11 +214,23 @@ export default {
   mixins: [SeoMeta],
 
   beforeRouteEnter (to, from, next) {
+    const templatesStore = useTemplatesStore()
     if (to.params?.slug) {
-      store.dispatch('open/templates/loadTemplate', to.params?.slug)
-      store.dispatch('open/templates/loadTypesAndIndustries')
+      templatesStore.loadTemplate(to.params?.slug)
+      templatesStore.loadTypesAndIndustries()
     }
     next()
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const templatesStore = useTemplatesStore()
+    return {
+      templatesStore,
+      authenticated : computed(() => authStore.check),
+      user : computed(() => authStore.user),
+      templatesLoading : computed(() => templatesStore.loading)
+    }
   },
 
   data () {
@@ -226,8 +239,7 @@ export default {
     }
   },
 
-  mounted () {
-  },
+  mounted () {},
 
   methods: {
     cleanQuotes (str) {
@@ -247,13 +259,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    }),
-    ...mapState({
-      templatesLoading: state => state['open/templates'].loading
-    }),
     breadcrumbs () {
       if (!this.template) {
         return [{ route: { name: 'templates' }, label: 'Templates' }]
@@ -261,7 +266,7 @@ export default {
       return [{ route: { name: 'templates' }, label: 'Templates' }, { label: this.template.name }]
     },
     template () {
-      return this.$store.getters['open/templates/getBySlug'](this.$route.params.slug)
+      return this.templatesStore.getBySlug(this.$route.params.slug)
     },
     form () {
       return this.template ? new Form(this.template.structure) : null

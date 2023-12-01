@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
 import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
 
@@ -25,6 +26,15 @@ export default {
   mixins: [SeoMeta],
   layout: 'default',
   middleware: 'auth',
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore,
+      authenticated : computed(() => authStore.check),
+      user : computed(() => authStore.user)
+    }
+  },
 
   data: () => ({
     metaTitle: 'Subscription Success',
@@ -43,7 +53,7 @@ export default {
   methods: {
     async checkSubscription () {
       // Fetch the user.
-      await this.$store.dispatch('auth/fetchUser')
+      await this.authStore.fetchUser()
       this.redirectIfSubscribed()
     },
     redirectIfSubscribed () {
@@ -63,11 +73,6 @@ export default {
     }
   },
 
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    })
-  }
+  computed: {}
 }
 </script>

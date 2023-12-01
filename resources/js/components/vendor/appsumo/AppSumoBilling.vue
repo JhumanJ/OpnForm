@@ -21,13 +21,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../stores/auth'
 import VButton from '../../common/Button.vue'
 
 export default {
-
   name: 'AppSumoBilling',
   components: { VButton },
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      user : computed(() => authStore.user),
+    }
+  },
 
   data () {
     return {
@@ -35,9 +42,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     licenseTier () {
       return this.user?.active_license?.meta?.tier
     },
@@ -67,10 +71,9 @@ export default {
 
   mounted () {},
 
-  created () {
-  },
-  destroyed () {
-  },
+  created () {},
+
+  destroyed () {},
 
   methods: {}
 }

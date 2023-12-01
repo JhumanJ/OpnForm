@@ -10,7 +10,8 @@
 
 <script>
 // https://github.com/nuxt/nuxt.js/blob/master/lib/app/components/nuxt-loading.vue
-import { mapState } from 'vuex'
+import { computed } from 'vue'
+import { useAppStore } from '../stores/app';
 
 export default {
   data: () => ({
@@ -19,12 +20,13 @@ export default {
     failedColor: 'red'
   }),
 
-  computed: {
-    ...mapState({
-      percent: state => state.app.loader.percent,
-      canSuccess: state => state.app.loader.canSuccess,
-      show: state => state.app.loader.show
-    })
+  setup () {
+    const appStore = useAppStore()
+    return {
+      percent : computed(() => appStore.loader.percent),
+      canSuccess : computed(() => appStore.loader.canSuccess),
+      show : computed(() => appStore.loader.show)
+    }
   }
 }
 </script>

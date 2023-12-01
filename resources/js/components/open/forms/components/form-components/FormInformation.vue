@@ -66,14 +66,27 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import clonedeep from 'clone-deep'
+import { useFormsStore } from '../../../../../stores/forms'
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
-import { mapState } from 'vuex'
-import clonedeep from 'clone-deep'
 
 export default {
   components: { SelectInput, EditorOptionsPanel },
   props: {},
+
+  setup () {
+    const formsStore = useFormsStore()
+    const workingFormStore = useWorkingFormStore()
+    return {
+      formsStore,
+      workingFormStore,
+      forms : computed(() => formsStore.content)
+    }
+  },
+
   data () {
     return {
       showCopyFormSettingsModal: false,
@@ -106,20 +119,17 @@ export default {
         }
       })
     },
-    ...mapState({
-      forms: state => state['open/forms'].content
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     allTagsOptions () {
-      return this.$store.getters['open/forms/getAllTags'].map((tagname) => {
+      return this.formsStore.getAllTags.map((tagname) => {
         return {
           name: tagname,
           value: tagname

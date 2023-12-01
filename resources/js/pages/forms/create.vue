@@ -19,17 +19,21 @@
 </template>
 
 <script>
-import store from '~/store'
 import Form from 'vform'
-import { mapState, mapActions } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
+import { useTemplatesStore } from '../../stores/templates'
+import { useWorkingFormStore } from '../../stores/working_form'
+import { useWorkspacesStore } from '../../stores/workspaces'
 import initForm from '../../mixins/form_editor/initForm.js'
 import SeoMeta from '../../mixins/seo-meta.js'
 import CreateFormBaseModal from '../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
-  store.commit('open/templates/startLoading')
-  store.dispatch('open/templates/loadIfEmpty').then(() => {
-    store.commit('open/templates/stopLoading')
+  const templatesStore = useTemplatesStore()
+  templatesStore.startLoading()
+  templatesStore.loadIfEmpty().then(() => {
+    templatesStore.stopLoading()
   })
 }
 
@@ -38,6 +42,7 @@ export default {
   components: { CreateFormBaseModal },
 
   mixins: [initForm, SeoMeta],
+  middleware: 'auth',
 
   beforeRouteEnter (to, from, next) {
     loadTemplates()
@@ -54,7 +59,20 @@ export default {
     next()
   },
 
-  middleware: 'auth',
+  setup () {
+    const authStore = useAuthStore()
+    const templatesStore = useTemplatesStore()
+    const workingFormStore = useWorkingFormStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      templatesStore,
+      workingFormStore,
+      workspacesStore,
+      user: computed(() => authStore.user),
+      workspaces : computed(() => workspacesStore.content),
+      workspacesLoading : computed(() => workspacesStore.loading)
+    }
+  },
 
   data () {
     return {
@@ -68,22 +86,17 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      workspaces: state => state['open/workspaces'].content,
-      workspacesLoading: state => state['open/workspaces'].loading,
-      user: state => state.auth.user
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent()
     }
   },
 
@@ -108,7 +121,7 @@ export default {
     this.initForm()
     this.formInitialHash = this.hashString(JSON.stringify(this.form.data()))
     if (this.$route.query.template !== undefined && this.$route.query.template) {
-      const template = this.$store.getters['open/templates/getBySlug'](this.$route.query.template)
+      const template = this.templatesStore.getBySlug(this.$route.query.template)
       if (template && template.structure) {
         this.form = new Form({ ...this.form.data(), ...template.structure })
       }
@@ -117,7 +130,7 @@ export default {
       this.showInitialFormModal = true
     }
     this.closeAlert()
-    this.loadWorkspaces()
+    this.workspacesStore.loadIfEmpty()
 
     this.stateReady = this.user !== null
   },
@@ -126,9 +139,6 @@ export default {
   unmounted () {},
 
   methods: {
-    ...mapActions({
-      loadWorkspaces: 'open/workspaces/loadIfEmpty'
-    }),
     formGenerated (form) {
       this.form = new Form({ ...this.form.data(), ...form })
     },

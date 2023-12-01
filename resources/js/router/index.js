@@ -1,7 +1,7 @@
 import routes from './routes'
 import { createWebHistory, createRouter } from 'vue-router'
 import * as Sentry from '@sentry/vue'
-import store from '../store'
+import { useAppStore } from '../stores/app'
 import { defineComponent, nextTick } from 'vue'
 
 // The middleware for every page of the application.
@@ -45,6 +45,8 @@ async function getMatchedComponents (to) {
  * @param {Function} next
  */
 async function beforeEach (to, from, next) {
+  const appStore = useAppStore()
+
   // Sentry tracking
   if (window.config.sentry_dsn) {
     Sentry.configureScope((scope) => scope.setTransactionName(to?.name || 'Unknown route name'))
@@ -75,7 +77,7 @@ async function beforeEach (to, from, next) {
 
   // Start the loading bar.
   if (components[components.length - 1].loading !== false) {
-    nextTick(() => store.commit('app/loaderStart'))
+    nextTick(() => appStore.loaderStart())
   }
 
   // Get the middleware for all the matched components.
@@ -86,11 +88,11 @@ async function beforeEach (to, from, next) {
     // Set the application layout only if "next()" was called with no args.
     if (args.length === 0) {
       if (components[0].layout) {
-        store.commit('app/setLayout', components[0].layout)
+        appStore.setLayout(components[0].layout)
       } else if (components[0].default && components[0].default.layout) {
-        store.commit('app/setLayout', components[0].default.layout)
+        appStore.setLayout(components[0].default.layout)
       } else {
-        store.commit('app/setLayout', null)
+        appStore.setLayout(null)
       }
     }
 
@@ -106,7 +108,8 @@ async function beforeEach (to, from, next) {
  * @param {Function} next
  */
 async function afterEach (to, from, next) {
-  nextTick(() => store.commit('app/loaderFinish'))
+  const appStore = useAppStore()
+  nextTick(() => appStore.loaderFinish())
 }
 
 /**
@@ -118,13 +121,14 @@ async function afterEach (to, from, next) {
  * @param {Function} next
  */
 function callMiddleware (middleware, to, from, next) {
+  const appStore = useAppStore()
   const stack = middleware.reverse()
 
   const _next = (...args) => {
     // Stop if "_next" was called with an argument or the stack is empty.
     if (args.length > 0 || stack.length === 0) {
       if (args.length > 0) {
-        store.commit('app/loaderFinish')
+        appStore.loaderFinish()
       }
 
       return next(...args)

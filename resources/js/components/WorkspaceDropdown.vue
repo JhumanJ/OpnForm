@@ -41,8 +41,11 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import { useFormsStore } from '../stores/forms'
+import { useWorkspacesStore } from '../stores/workspaces'
 import Dropdown from './common/Dropdown.vue'
-import { mapGetters, mapState } from 'vuex'
 
 export default {
 
@@ -51,20 +54,26 @@ export default {
     Dropdown
   },
 
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workspacesStore,
+      user : computed(() => authStore.user),
+      workspaces : computed(() => workspacesStore.content),
+      loading : computed(() => workspacesStore.loading)
+    }
+  },
+
   data: () => ({
     appName: window.config.appName
   }),
 
   computed: {
-    ...mapState({
-      workspaces: state => state['open/workspaces'].content,
-      loading: state => state['open/workspaces'].loading
-    }),
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent()
     }
   },
 
@@ -76,12 +85,12 @@ export default {
 
   methods: {
     switchWorkspace (workspace) {
-      this.$store.commit('open/workspaces/setCurrentId', workspace.id)
+      this.workspacesStore.setCurrentId(workspace.id)
       this.$refs.dropdown.close()
       if (this.$route.name !== 'home') {
         this.$router.push({ name: 'home' })
       }
-      this.$store.dispatch('open/forms/load', workspace.id)
+      this.formsStore.load(workspace.id)
     },
     isUrl (str) {
       try {

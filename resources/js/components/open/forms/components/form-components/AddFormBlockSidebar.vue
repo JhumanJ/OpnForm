@@ -30,7 +30,7 @@
             <div class="mx-auto">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor" stroke-width="2" v-html="block.icon"
-              />
+              ></svg>
             </div>
             <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1">
               {{ block.title }}
@@ -50,7 +50,7 @@
             <div class="mx-auto">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor" stroke-width="2" v-html="block.icon"
-              />
+              ></svg>
             </div>
             <p class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1">
               {{ block.title }}
@@ -63,14 +63,26 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Form from 'vform'
 import clonedeep from 'clone-deep'
+import { computed } from 'vue'
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 
 export default {
   name: 'AddFormBlockSidebar',
   components: {},
   props: {},
+
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore,
+      selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex),
+      showAddFieldSidebar : computed(() => workingFormStore.showAddFieldSidebar)
+    }
+  },
+
+
   data () {
     return {
       blockForm: null,
@@ -162,17 +174,13 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
-      showAddFieldSidebar: state => state['open/working_form'].showAddFieldSidebar
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     showSidebar () {
@@ -209,7 +217,7 @@ export default {
 
   methods: {
     closeSidebar () {
-      this.$store.commit('open/working_form/closeAddFieldSidebar')
+      this.workingFormStore.closeAddFieldSidebar()
     },
     reset () {
       this.blockForm = new Form({
@@ -231,12 +239,12 @@ export default {
         const newFields = clonedeep(this.form.properties)
         newFields.push(newBlock)
         this.form.properties = newFields
-        this.$store.commit('open/working_form/openSettingsForField', this.form.properties.length - 1)
+        this.workingFormStore.openSettingsForField(this.form.properties.length - 1)
       } else {
         const newFields = clonedeep(this.form.properties)
         newFields.splice(this.selectedFieldIndex + 1, 0, newBlock)
         this.form.properties = newFields
-        this.$store.commit('open/working_form/openSettingsForField', this.selectedFieldIndex + 1)
+        this.workingFormStore.openSettingsForField(this.selectedFieldIndex + 1)
       }
       this.reset()
     },

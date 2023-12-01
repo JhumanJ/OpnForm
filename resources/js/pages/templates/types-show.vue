@@ -93,19 +93,21 @@
 </template>
 
 <script>
-import store from '~/store'
 import Form from 'vform'
 import Fuse from 'fuse.js'
-import { mapGetters, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
+import { useTemplatesStore } from '../../stores/templates'
 import SeoMeta from '../../mixins/seo-meta.js'
 import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 import Breadcrumb from '../../components/common/Breadcrumb.vue'
 import SingleTemplate from '../../components/pages/templates/SingleTemplate.vue'
 
 const loadTemplates = function () {
-  store.commit('open/templates/startLoading')
-  store.dispatch('open/templates/loadIfEmpty').then(() => {
-    store.commit('open/templates/stopLoading')
+  const templatesStore = useTemplatesStore()
+  templatesStore.startLoading()
+  templatesStore.loadIfEmpty().then(() => {
+    templatesStore.stopLoading()
   })
 }
 
@@ -116,6 +118,19 @@ export default {
   beforeRouteEnter (to, from, next) {
     loadTemplates()
     next()
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const templatesStore = useTemplatesStore()
+    return {
+      authenticated : computed(() => authStore.check),
+      user : computed(() => authStore.user),
+      templates : computed(() => templatesStore.content),
+      templatesLoading : computed(() => templatesStore.loading),
+      industries : computed(() => templatesStore.industries),
+      types : computed(() => templatesStore.types)
+    }
   },
 
   data () {
@@ -130,16 +145,6 @@ export default {
   mounted () {},
 
   computed: {
-    ...mapGetters({
-      authenticated: 'auth/check',
-      user: 'auth/user'
-    }),
-    ...mapState({
-      templates: state => state['open/templates'].content,
-      templatesLoading: state => state['open/templates'].loading,
-      industries: state => state['open/templates'].industries,
-      types: state => state['open/templates'].types
-    }),
     breadcrumbs () {
       if (!this.type) {
         return [{ route: { name: 'templates' }, label: 'Templates' }]

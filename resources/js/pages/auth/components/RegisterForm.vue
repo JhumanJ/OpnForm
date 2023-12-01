@@ -48,7 +48,9 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import Form from 'vform'
+import { useAuthStore } from '../../../stores/auth'
 import { initCrisp } from '../../../middleware/check-auth.js'
 
 export default {
@@ -59,6 +61,13 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    }
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    return {
+      authStore
     }
   },
 
@@ -112,10 +121,10 @@ export default {
         const { data: { token } } = await this.form.post('/api/login')
 
         // Save the token.
-        this.$store.dispatch('auth/saveToken', { token })
+        this.authStore.saveToken(token)
 
         // Update the user.
-        await this.$store.dispatch('auth/updateUser', { user: data })
+        await this.authStore.updateUser(data)
 
         // Track event
         this.$logEvent('register', { source: this.form.hear_about_us })

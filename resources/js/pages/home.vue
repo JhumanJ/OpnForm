@@ -104,8 +104,10 @@
 </template>
 
 <script>
-import store from '~/store'
-import { mapGetters, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth';
+import { useFormsStore } from '../stores/forms';
+import { useWorkspacesStore } from '../stores/workspaces';
 import Fuse from 'fuse.js'
 import Form from 'vform'
 import TextInput from '../components/forms/TextInput.vue'
@@ -113,9 +115,11 @@ import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
 
 const loadForms = function () {
-  store.commit('open/forms/startLoading')
-  store.dispatch('open/workspaces/loadIfEmpty').then(() => {
-    store.dispatch('open/forms/loadIfEmpty', store.state['open/workspaces'].currentId)
+  const formsStore = useFormsStore()
+  const workspacesStore = useWorkspacesStore()
+  formsStore.startLoading()
+  workspacesStore.loadIfEmpty().then(() => {
+    formsStore.loadIfEmpty(workspacesStore.currentId)
   })
 }
 
@@ -131,6 +135,19 @@ export default {
   props: {
     metaTitle: { type: String, default: 'Your Forms' },
     metaDescription: { type: String, default: 'All of your OpnForm are here. Create new forms, or update your existing one!' }
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    const workspacesStore = useWorkspacesStore()
+    return {
+      formsStore,
+      workspacesStore,
+      user : computed(() => authStore.user),
+      forms : computed(() => formsStore.content),
+      formsLoading : computed(() => formsStore.loading)
+    }
   },
 
   data () {
@@ -165,19 +182,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    }),
-    ...mapState({
-      forms: state => state['open/forms'].content,
-      formsLoading: state => state['open/forms'].loading
-    }),
     isFilteringForms () {
       return (this.searchForm.search !== '' && this.searchForm.search !== null) || this.selectedTags.length > 0
     },
     enrichedForms () {
       let enrichedForms = this.forms.map((form) => {
-        form.workspace = this.$store.getters['open/workspaces/getById'](form.workspace_id)
+        form.workspace = this.workspacesStore.getById(form.workspace_id)
         return form
       })
 
@@ -206,7 +216,7 @@ export default {
       })
     },
     allTags () {
-      return this.$store.getters['open/forms/getAllTags']
+      return this.formsStore.getAllTags
     }
   }
 }

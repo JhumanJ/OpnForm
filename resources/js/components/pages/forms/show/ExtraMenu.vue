@@ -122,8 +122,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import axios from 'axios'
-import {mapGetters, mapState} from 'vuex'
+import { useAuthStore } from '../../../../stores/auth'
+import { useFormsStore } from '../../../../stores/forms'
 import Dropdown from '../../../common/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 
@@ -135,6 +137,15 @@ export default {
       isMainPage: { type: Boolean, required: false, default: false }
     },
 
+    setup () {
+      const authStore = useAuthStore()
+      const formsStore = useFormsStore()
+      return {
+        formsStore,
+        user : computed(() => authStore.user)
+      }
+    },
+
     data: () => ({
       loadingDuplicate: false,
       loadingDelete: false,
@@ -143,9 +154,6 @@ export default {
     }),
 
     computed: {
-      ...mapGetters({
-        user: 'auth/user'
-      }),
       formEndpoint: () => '/api/open/forms/{id}',
     },
 
@@ -163,7 +171,7 @@ export default {
         if (this.loadingDuplicate) return
         this.loadingDuplicate = true
         axios.post(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate').then((response) => {
-          this.$store.commit('open/forms/addOrUpdate', response.data.new_form)
+          this.formsStore.addOrUpdate(response.data.new_form)
           this.$router.push({name: 'forms.show', params: {slug: response.data.new_form.slug}})
           this.alertSuccess('Form was successfully duplicated.')
           this.loadingDuplicate = false
@@ -173,7 +181,7 @@ export default {
         if (this.loadingDelete) return
         this.loadingDelete = true
         axios.delete(this.formEndpoint.replace('{id}', this.form.id)).then(() => {
-          this.$store.commit('open/forms/remove', this.form)
+          this.formsStore.remove(this.form)
           this.$router.push({name: 'home'})
           this.alertSuccess('Form was deleted.')
           this.loadingDelete = false

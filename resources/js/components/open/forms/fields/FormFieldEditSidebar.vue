@@ -70,8 +70,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { computed } from 'vue'
 import clonedeep from 'clone-deep'
+import { useWorkingFormStore } from '../../../../stores/working_form'
 import ChangeFieldType from './components/ChangeFieldType.vue'
 import FieldOptions from './components/FieldOptions.vue'
 import BlockOptions from './components/BlockOptions.vue'
@@ -80,6 +81,14 @@ export default {
   name: 'FormFieldEditSidebar',
   components: { ChangeFieldType, FieldOptions, BlockOptions },
   props: {},
+  setup () {
+    const workingFormStore = useWorkingFormStore()
+    return {
+      workingFormStore,
+      selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex),
+      showEditFieldSidebar : computed(() => workingFormStore.showEditFieldSidebar)
+    }
+  },
   data () {
     return {
 
@@ -87,17 +96,13 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
-      showEditFieldSidebar: state => state['open/working_form'].showEditFieldSidebar
-    }),
     form: {
       get () {
-        return this.$store.state['open/working_form'].content
+        return this.workingFormStore.content
       },
       /* We add a setter */
       set (value) {
-        this.$store.commit('open/working_form/set', value)
+        this.workingFormStore.set(value)
       }
     },
     field () {
@@ -145,7 +150,7 @@ export default {
       this.closeSidebar()
     },
     closeSidebar () {
-      this.$store.commit('open/working_form/closeEditFieldSidebar')
+      this.workingFormStore.closeEditFieldSidebar()
     },
     generateUUID () {
       let d = new Date().getTime()// Timestamp

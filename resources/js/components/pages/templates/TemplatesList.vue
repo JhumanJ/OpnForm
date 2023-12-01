@@ -79,28 +79,41 @@
 </template>
 
 <script>
-import store from '~/store'
-import { mapGetters, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useAuthStore } from '../../../stores/auth'
+import { useTemplatesStore } from '../../../stores/templates'
 import Form from 'vform'
 import Fuse from 'fuse.js'
 import SingleTemplate from './SingleTemplate.vue'
 
 const loadTemplates = function (onlyMy) {
+  const templatesStore = useTemplatesStore()
   if(onlyMy){
-    store.dispatch('open/templates/loadAll', {'onlymy':true})
+    templatesStore.loadAll({'onlymy':true})
   } else {
-    store.dispatch('open/templates/loadIfEmpty')
+    templatesStore.loadIfEmpty()
   }
 }
 
 export default {
   name: 'TemplatesList',
   components: { SingleTemplate },
-
   props: {
     onlyMy: {
       type: Boolean,
       required: false
+    }
+  },
+
+  setup () {
+    const authStore = useAuthStore()
+    const templatesStore = useTemplatesStore()
+    return {
+      user : computed(() => authStore.user),
+      templates : computed(() => templatesStore.content),
+      templatesLoading : computed(() => templatesStore.loading),
+      industries : computed(() => templatesStore.industries),
+      types : computed(() => templatesStore.types)
     }
   },
 
@@ -119,15 +132,6 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      templates: state => state['open/templates'].content,
-      templatesLoading: state => state['open/templates'].loading,
-      industries: state => state['open/templates'].industries,
-      types: state => state['open/templates'].types
-    }),
-    ...mapGetters({
-      user: 'auth/user'
-    }),
     industriesOptions () {
       return [{ name: 'All Industries', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
         return {
