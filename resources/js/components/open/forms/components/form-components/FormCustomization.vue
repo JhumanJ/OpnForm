@@ -71,7 +71,7 @@
     />
     <toggle-switch-input name="confetti_on_submission" :form="form" class="mt-4"
                          label="Confetti on successful submisison"
-                         @input="onChangeConfettiOnSubmission"
+                         @update:model-value="onChangeConfettiOnSubmission"
     />
     <toggle-switch-input name="auto_save" :form="form"
                          label="Auto save form response"

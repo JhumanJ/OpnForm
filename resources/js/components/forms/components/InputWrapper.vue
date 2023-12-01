@@ -22,7 +22,7 @@
       </input-help>
     </slot>
     <slot name="error">
-      <has-error v-if="hasValidation" :form="form" :field="name" />
+      <has-error v-if="hasValidation && form" :form="form" :field="name" />
     </slot>
   </div>
 </template>

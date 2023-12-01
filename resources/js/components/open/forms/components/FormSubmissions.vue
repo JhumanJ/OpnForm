@@ -25,7 +25,7 @@
           </h4>
           <div v-for="field in properties" :key="field.id" class="p-2 border">
             {{ field.name }}
-            <v-switch v-model="displayColumns[field.id]" class="float-right" @input="onChangeDisplayColumns" />
+            <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
           </div>
         </template>
         <template v-if="removed_properties.length > 0">
@@ -34,7 +34,7 @@
           </h4>
           <div v-for="field in removed_properties" :key="field.id" class="p-2 border">
             {{ field.name }}
-            <v-switch v-model="displayColumns[field.id]" class="float-right" @input="onChangeDisplayColumns" />
+            <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
           </div>
         </template>
       </div>
