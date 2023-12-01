@@ -26,7 +26,9 @@ configureCompat({
   // GLOBAL_MOUNT: false,
   COMPONENT_V_MODEL: false,
   INSTANCE_SET: false,
-  INSTANCE_DELETE: false
+  INSTANCE_DELETE: false,
+  ATTR_FALSE_VALUE: false,
+  WATCH_ARRAY: false
 })
 
 router.app = app
