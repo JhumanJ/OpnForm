@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import QueryBuilder from 'query-builder-vue'
+import QueryBuilder from 'query-builder-vue-3'
 import ColumnCondition from './ColumnCondition.vue'
 import Vue from 'vue'
 import GroupControlSlot from './GroupControlSlot.vue'
