@@ -1,5 +1,5 @@
 <template>
-  <button :type="nativeType" :disabled="loading" :class="`py-${sizes['p-y']} px-${sizes['p-x']} text-${sizes['font']} ${theme.Button.body}`" :style="buttonStyle"
+  <button :type="nativeType" :disabled="loading?true:null" :class="`py-${sizes['p-y']} px-${sizes['p-x']} text-${sizes['font']} ${theme.Button.body}`" :style="buttonStyle"
           class="btn" @click="$emit('click',$event)"
   >
     <template v-if="!loading">

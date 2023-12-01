@@ -1,12 +1,12 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
     </template>
 
-    <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled"
+    <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled?true:null"
                 :placeholder="placeholder" :class="[{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }, theme.RichTextAreaInput.input]"
                 :editor-toolbar="editorToolbar" class="rich-editor resize-y"
                 :style="inputStyle"
@@ -41,25 +41,15 @@ export default {
           [{ header: 1 }, { header: 2 }],
           ['bold', 'italic', 'underline', 'link'],
           [{ list: 'ordered' }, { list: 'bullet' }],
-          [{color: []}]
+          [{ color: [] }]
         ]
       }
     }
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   }
 

@@ -14,11 +14,13 @@
 
           <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
-              <li class="mr-6" v-for="(tab, i) in tabsList" :key="i+1">
+              <li v-for="(tab, i) in tabsList" :key="i+1" class="mr-6">
                 <router-link :to="{ name: tab.route }"
-                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                    active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
-                >{{tab.name}}</router-link>
+                             class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
+                             active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
+                >
+                  {{ tab.name }}
+                </router-link>
               </li>
             </ul>
           </div>
@@ -28,9 +30,11 @@
     <div class="flex bg-white">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
         <div class="mt-8 pb-0">
-          <transition name="fade" mode="out-in">
-            <router-view />
-          </transition>
+          <router-view v-slot="{ Component }">
+            <transition name="page" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
         </div>
       </div>
     </div>
@@ -47,7 +51,7 @@ export default {
   setup () {
     const authStore = useAuthStore()
     return {
-      user : computed(() => authStore.user)
+      user: computed(() => authStore.user)
     }
   },
 
@@ -84,7 +88,7 @@ export default {
         })
       }
 
-      if(this.user.admin){
+      if (this.user.admin) {
         tabs.push({
           name: 'Admin',
           route: 'settings.admin'

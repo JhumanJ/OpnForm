@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -51,18 +51,8 @@ export default {
     multiple: { type: Boolean, default: false }
   },
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
   data () {
@@ -71,10 +61,10 @@ export default {
   computed: {},
   methods: {
     onSelect (value) {
-      if(this.disabled){
+      if (this.disabled) {
         return
       }
-      
+
       if (this.multiple) {
         const emitValue = Array.isArray(this.compVal) ? [...this.compVal] : []
 

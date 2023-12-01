@@ -1,6 +1,6 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
@@ -41,18 +41,8 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context)
-
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context)
     }
   },
 
@@ -62,7 +52,7 @@ export default {
 
   computed: {
     scaleList () {
-      let list = []
+      const list = []
       for (let i = this.minScale; i <= this.maxScale; i += this.stepScale) {
         list.push(i)
       }
@@ -89,7 +79,7 @@ export default {
   },
 
   mounted () {
-    if (this.compVal && typeof this.compVal === 'string'){
+    if (this.compVal && typeof this.compVal === 'string') {
       this.compVal = parseInt(this.compVal)
     }
   },

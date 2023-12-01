@@ -2,7 +2,7 @@
   <a v-if="href" :class="btnClasses" :href="href" :target="target">
     <slot />
   </a>
-  <button v-else-if="!to" :type="nativeType" :disabled="loading" :class="btnClasses"
+  <button v-else-if="!to" :type="nativeType" :disabled="loading?true:null" :class="btnClasses"
           @click="onClick($event)"
   >
     <template v-if="!loading">

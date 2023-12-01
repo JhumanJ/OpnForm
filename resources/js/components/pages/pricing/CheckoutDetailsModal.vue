@@ -2,8 +2,8 @@
   <modal :show="show" max-width="lg" @close="close">
     <text-input ref="companyName" label="Company Name" name="name" :required="true" :form="form" help="Name that will appear on invoices" />
     <text-input label="Email" name="email" native-type="email" :required="true" :form="form" help="Where invoices will be sent" />
-    <v-button :loading="form.busy || loading" :disabled="form.busy || loading" class="mt-6 block mx-auto"
-              @click="saveDetails" :arrow="true"
+    <v-button :loading="form.busy || loading" :disabled="(form.busy || loading)?true:null" class="mt-6 block mx-auto"
+              :arrow="true" @click="saveDetails"
     >
       Go to checkout
     </v-button>
@@ -38,7 +38,7 @@ export default {
   setup () {
     const authStore = useAuthStore()
     return {
-      user : computed(() => authStore.user)
+      user: computed(() => authStore.user)
     }
   },
 
@@ -49,6 +49,8 @@ export default {
     }),
     loading: false
   }),
+
+  computed: {},
 
   watch: {
     user () {
@@ -71,7 +73,7 @@ export default {
   },
 
   methods: {
-    updateUser() {
+    updateUser () {
       if (this.user) {
         this.form.name = this.user.name
         this.form.email = this.user.email
@@ -94,8 +96,6 @@ export default {
     close () {
       this.$emit('close')
     }
-  },
-
-  computed: {}
+  }
 }
 </script>

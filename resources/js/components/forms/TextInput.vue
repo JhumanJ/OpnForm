@@ -1,12 +1,12 @@
 <template>
   <input-wrapper
-    v-bind="$props"
+    v-bind="inputWrapperProps"
   >
     <template #label>
       <slot name="label" />
     </template>
 
-    <input :id="id?id:name" v-model="compVal" :disabled="disabled"
+    <input :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
            :type="nativeType"
            :pattern="pattern"
            :style="inputStyle"
@@ -18,7 +18,7 @@
 
     <template v-if="maxCharLimit && showCharLimit" #bottom_after_help>
       <small :class="theme.default.help">
-      {{ charCount }}/{{ maxCharLimit }}
+        {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
 
@@ -48,13 +48,6 @@ export default {
   },
 
   setup (props, context) {
-    const {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
-    } = useFormInput(props, context, props.nativeType === 'file' ? 'file-' : null)
-
     const onChange = (event) => {
       if (props.nativeType !== 'file') return
 
@@ -69,10 +62,9 @@ export default {
     }
 
     return {
-      compVal,
-      inputStyle,
-      hasValidation,
-      hasError
+      ...useFormInput(props, context, props.nativeType === 'file' ? 'file-' : null),
+      onEnterPress,
+      onChange
     }
   },
   computed: {

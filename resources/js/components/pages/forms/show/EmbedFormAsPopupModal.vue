@@ -70,7 +70,7 @@
           <div class="border-t mt-4 -mx-4" />
           <toggle-switch-input v-model="advancedOptions.hide_title" name="hide_title" class="mt-4"
                                label="Hide Form Title"
-                               :disabled="form.hide_title===true"
+                               :disabled="(form.hide_title===true)?true:null"
                                :help="hideTitleHelp"
           />
           <color-input v-model="advancedOptions.bgcolor" name="bgcolor" class="mt-4"
