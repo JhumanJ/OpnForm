@@ -49,7 +49,7 @@ class Workspace extends Model implements CachableAttributes
             return self::MAX_FILE_SIZE_PRO;
         }
 
-        return $this->remember('max_file_size', 15, function(): int {
+        return $this->remember('max_file_size', 15 * 60, function(): int {
             // Return max file size depending on subscription
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
@@ -71,7 +71,7 @@ class Workspace extends Model implements CachableAttributes
             return null;
         }
 
-        return $this->remember('custom_domain_count', 15, function(): int {
+        return $this->remember('custom_domain_count', 15 * 60, function(): int {
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
                     if ($license = $owner->activeLicense()) {
@@ -92,7 +92,7 @@ class Workspace extends Model implements CachableAttributes
             return true;    // If no paid plan so TRUE for ALL
         }
 
-        return $this->remember('is_pro', 15, function(): bool {
+        return $this->remember('is_pro', 15 * 60, function(): bool {
             // Make sure at least one owner is pro
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
@@ -109,7 +109,7 @@ class Workspace extends Model implements CachableAttributes
             return true;    // If no paid plan so TRUE for ALL
         }
 
-        return $this->remember('is_enterprise', 15, function(): bool {
+        return $this->remember('is_enterprise', 15 * 60, function(): bool {
             // Make sure at least one owner is pro
             foreach ($this->owners as $owner) {
                 if ($owner->has_enterprise_subscription) {
@@ -122,7 +122,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsRiskyAttribute()
     {
-        return $this->remember('is_risky', 15, function(): bool {
+        return $this->remember('is_risky', 15 * 60, function(): bool {
             // A workspace is risky if all of his users are risky
             foreach ($this->owners as $owner) {
                 if (!$owner->is_risky) {
@@ -136,7 +136,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->remember('submissions_count', 15, function(): int {
+        return $this->remember('submissions_count', 15 * 60, function(): int {
             $total = 0;
             foreach ($this->forms as $form) {
                 $total += $form->submissions_count;

@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class Form extends Model implements CachableAttributes
 {
     use CachesAttributes;
+
     const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
     const THEMES = ['default', 'simple', 'notion'];
     const WIDTHS = ['centered', 'full'];
@@ -131,7 +132,6 @@ class Form extends Model implements CachableAttributes
 
     protected $cachableAttributes = [
         'is_pro',
-        'submissions_count',
         'views_count',
     ];
 
@@ -146,7 +146,7 @@ class Form extends Model implements CachableAttributes
 
     public function getIsProAttribute()
     {
-        return $this->remember('is_pro', 15, function(): bool {
+        return $this->remember('is_pro', 15 * 60, function (): bool {
             return optional($this->workspace)->is_pro;
         });
     }
@@ -166,14 +166,12 @@ class Form extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->remember('submissions_count', 5, function(): int {
-            return $this->submissions()->count();
-        });
+        return $this->submissions()->count();
     }
 
     public function getViewsCountAttribute()
     {
-        return $this->remember('views_count', 5, function(): int {
+        return $this->remember('views_count', 15 * 60, function (): int {
             if (env('DB_CONNECTION') == 'mysql') {
                 return (int)($this->views()->count() +
                     $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
@@ -218,7 +216,6 @@ class Form extends Model implements CachableAttributes
 
     public function getMaxNumberOfSubmissionsReachedAttribute()
     {
-        $this->forget('submissions_count');
         return ($this->max_submissions_count && $this->max_submissions_count <= $this->submissions_count);
     }
 
