@@ -58,8 +58,8 @@ class CreateFormsTable extends Migration
             if ($driver === 'mysql') {
                 $table->jsonb('tags')->default(new Expression('(JSON_ARRAY())'));
             } else {
-                $table->jsonb('tags')->default('[]');
-            }            
+                $table->jsonb('tags')->default('[]')->nullable();
+            }
         });
     }
 

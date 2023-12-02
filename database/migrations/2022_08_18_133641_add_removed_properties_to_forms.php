@@ -21,7 +21,7 @@ return new class extends Migration
             if ($driver === 'mysql') {
                 $table->jsonb('removed_properties')->default(new Expression("(JSON_ARRAY())"));
             } else {
-                $table->jsonb('removed_properties')->default("[]");
+                $table->jsonb('removed_properties')->default("[]")->nullable();
             }
         });
     }
