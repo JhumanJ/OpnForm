@@ -4,6 +4,8 @@ namespace App\Models\Forms;
 
 use App\Events\Models\FormCreated;
 use App\Models\Integration\FormZapierWebhook;
+use App\Models\Traits\CachableAttributes;
+use App\Models\Traits\CachesAttributes;
 use App\Models\User;
 use App\Models\Workspace;
 use Database\Factories\FormFactory;
@@ -17,8 +19,9 @@ use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Form extends Model
+class Form extends Model implements CachableAttributes
 {
+    use CachesAttributes;
     const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
     const THEMES = ['default', 'simple', 'notion'];
     const WIDTHS = ['centered', 'full'];
@@ -126,6 +129,12 @@ class Form extends Model
         'removed_properties'
     ];
 
+    protected $cachableAttributes = [
+        'is_pro',
+        'submissions_count',
+        'views_count',
+    ];
+
     /**
      * The event map for the model.
      *
@@ -137,7 +146,9 @@ class Form extends Model
 
     public function getIsProAttribute()
     {
-        return optional($this->workspace)->is_pro;
+        return $this->remember('is_pro', 15, function(): bool {
+            return optional($this->workspace)->is_pro;
+        });
     }
 
     public function getShareUrlAttribute()
@@ -155,19 +166,21 @@ class Form extends Model
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->submissions()->count();
+        return $this->remember('submissions_count', 5, function(): int {
+            return $this->submissions()->count();
+        });
     }
 
     public function getViewsCountAttribute()
     {
-        if (env('DB_CONNECTION') == 'pgsql') {
+        return $this->remember('views_count', 5, function(): int {
+            if (env('DB_CONNECTION') == 'mysql') {
+                return (int)($this->views()->count() +
+                    $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
+            }
             return $this->views()->count() +
                 $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
-        } elseif (env('DB_CONNECTION') == 'mysql') {
-            return (int)($this->views()->count() +
-                $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
-        }
-        return 0;
+        });
     }
 
     public function setDescriptionAttribute($value)

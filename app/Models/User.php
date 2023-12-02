@@ -59,13 +59,11 @@ class User extends Authenticatable implements JWTSubject
         'photo_url',
     ];
 
-    protected $withCount = ['workspaces'];
-
     public function ownsForm(Form $form)
     {
         return $this->workspaces()->find($form->workspace_id) !== null;
     }
-    
+
     /**
      * Get the profile photo URL attribute.
      *
