@@ -25,8 +25,6 @@ class FormController extends Controller
     {
         $this->middleware('auth');
         $this->formCleaner = new FormCleaner();
-
-        ray()->showQueries();
     }
 
     public function index($workspaceId)
