@@ -29,7 +29,7 @@ class FormController extends Controller
 
     public function index($workspaceId)
     {
-        $workspace = Workspace::with('forms')->findOrFail($workspaceId);
+        $workspace = Workspace::findOrFail($workspaceId);
         $this->authorize('view', $workspace);
         $this->authorize('viewAny', Form::class);
 
