@@ -218,6 +218,7 @@ class Form extends Model implements CachableAttributes
 
     public function getMaxNumberOfSubmissionsReachedAttribute()
     {
+        $this->disableCache('submissions_count');
         return ($this->max_submissions_count && $this->max_submissions_count <= $this->submissions_count);
     }
 

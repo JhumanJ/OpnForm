@@ -20,6 +20,8 @@ trait CachesAttributes
     /** @var array<string, mixed> */
     protected $attributeCache = [];
 
+    protected $disabledCache = [];
+
     public static function bootCachesAttributes(): void
     {
         static::deleting(function (Model $model): void {
@@ -28,8 +30,18 @@ trait CachesAttributes
         });
     }
 
+    public function disableCache($key)
+    {
+        $this->disabledCache[] = $key;
+        return $this;
+    }
+
     public function remember(string $attribute, ?int $ttl, Closure $callback)
     {
+        if (in_array($attribute, $this->disabledCache)) {
+            return value($callback);
+        }
+
         if ($ttl === 0 || ! $this->exists) {
             if (! isset($this->attributeCache[$attribute])) {
                 $this->attributeCache[$attribute] = value($callback);
