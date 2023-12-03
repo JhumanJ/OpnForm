@@ -59,12 +59,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function ownsForm(Form $form)
     {
-        return $this->workspaces()->whereUserId($form->workspace_id)->exists();
+        return $this->workspaces()->where('workspaces.id',$form->workspace_id)->exists();
     }
 
     public function ownsWorkspace(Workspace $workspace)
     {
-        return $this->workspaces()->whereUserId($workspace->id)->exists();
+        return $this->workspaces()->where('workspaces.id',$workspace->id)->exists();
     }
 
     /**
