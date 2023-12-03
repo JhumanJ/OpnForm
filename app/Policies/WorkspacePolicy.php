@@ -30,7 +30,7 @@ class WorkspacePolicy
      */
     public function view(User $user, Workspace $workspace)
     {
-        return $workspace->users()->find($user->id)!==null;
+        return $user->ownsWorkspace($workspace);
     }
 
     /**

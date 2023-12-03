@@ -51,4 +51,18 @@ class License extends Model
             3 => null,
         ][$this->meta['tier']];
     }
+
+    public static function booted(): void
+    {
+        static::saved(function (License $license) {
+            if ($license->user) {
+                $license->user->flushCache();
+            }
+        });
+        static::deleted(function (License $license) {
+            if ($license->user) {
+                $license->user->flushCache();
+            }
+        });
+    }
 }

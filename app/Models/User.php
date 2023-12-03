@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\SubscriptionController;
 use App\Models\Forms\Form;
-use App\Models\Template;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -61,7 +59,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function ownsForm(Form $form)
     {
-        return $this->workspaces()->find($form->workspace_id) !== null;
+        return $this->workspaces()->whereUserId($form->workspace_id)->exists();
+    }
+
+    public function ownsWorkspace(Workspace $workspace)
+    {
+        return $this->workspaces()->whereUserId($workspace->id)->exists();
     }
 
     /**
@@ -201,6 +204,16 @@ class User extends Authenticatable implements JWTSubject
                 $q->where('stripe_status', 'trialing')
                     ->orWhere('stripe_status', 'active');
             })->first()?->onTrial();
+    }
+
+    public function flushCache()
+    {
+        $this->workspaces()->with('forms')->get()->each(function (Workspace $workspace) {
+            $workspace->flush();
+            $workspace->forms->each(function (Form $form) {
+                $form->flush();
+            });
+        });
     }
 
     public static function boot()
