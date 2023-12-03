@@ -46,8 +46,8 @@ class License extends Model
     public function getCustomDomainLimitCountAttribute()
     {
         return [
-            1 => 5,
-            2 => 25,
+            1 => 1,
+            2 => 10,
             3 => null,
         ][$this->meta['tier']];
     }
