@@ -78,8 +78,8 @@ class Workspace extends Model implements CachableAttributes
                         // In case of special License
                         return $license->custom_domain_limit_count;
                     }
+                    return self::MAX_DOMAIN_PRO;
                 }
-                return self::MAX_DOMAIN_PRO;
             }
 
             return 0;
