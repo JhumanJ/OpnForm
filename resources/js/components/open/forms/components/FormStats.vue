@@ -20,15 +20,15 @@
     </div>
     <loader v-else-if="isLoading" class="h-6 w-6 text-nt-blue mx-auto" />
     <LineChart v-else
-               :chart-options="chartOptions"
-               :chart-data="chartData"
+               :options="chartOptions"
+               :data="chartData"
     />
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import { Line as LineChart } from 'vue-chartjs/legacy'
+import { Line as LineChart } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   Title,
@@ -93,7 +93,7 @@ export default {
           }
         },
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: true
       }
     }
   },
