@@ -210,17 +210,20 @@ export default {
       if (!this.form || this.fullyLoaded) {
         return
       }
-      this.isLoading = true
+      if(this.currentPage === 1){
+        this.isLoading = true
+      }
       axios.get('/api/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((response) => {
+        this.isLoading = false
         const resData = response.data
 
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
+        this.dataChanged()
 
         if (this.currentPage < resData.meta.last_page) {
           this.currentPage += 1
           this.getSubmissionsData()
         } else {
-          this.isLoading = false
           this.fullyLoaded = true
         }
       }).catch((error) => {

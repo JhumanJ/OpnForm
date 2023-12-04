@@ -182,7 +182,9 @@ export default {
   mounted () {
     const parent = document.getElementById('table-page')
     this.tableHash = cyrb53(JSON.stringify(this.form.properties))
-    parent.addEventListener('scroll', this.handleScroll, { passive: true })
+    if (parent) {
+      parent.addEventListener('scroll', this.handleScroll, { passive: true })
+    }
     window.addEventListener('resize', this.handleScroll)
     this.onStructureChange()
     this.handleScroll()
