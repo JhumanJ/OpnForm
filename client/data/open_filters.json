@@ -1,0 +1,492 @@
+{
+  "email": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string"
+      },
+      "does_not_equal": {
+        "expected_type": "string"
+      },
+      "contains": {
+        "expected_type": "string"
+      },
+      "does_not_contain": {
+        "expected_type": "string"
+      },
+      "starts_with": {
+        "expected_type": "string"
+      },
+      "ends_with": {
+        "expected_type": "string"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "url": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string"
+      },
+      "does_not_equal": {
+        "expected_type": "string"
+      },
+      "contains": {
+        "expected_type": "string"
+      },
+      "does_not_contain": {
+        "expected_type": "string"
+      },
+      "starts_with": {
+        "expected_type": "string"
+      },
+      "ends_with": {
+        "expected_type": "string"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "phone_number": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string"
+      },
+      "does_not_equal": {
+        "expected_type": "string"
+      },
+      "contains": {
+        "expected_type": "string"
+      },
+      "does_not_contain": {
+        "expected_type": "string"
+      },
+      "starts_with": {
+        "expected_type": "string"
+      },
+      "ends_with": {
+        "expected_type": "string"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "text": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string"
+      },
+      "does_not_equal": {
+        "expected_type": "string"
+      },
+      "contains": {
+        "expected_type": "string"
+      },
+      "does_not_contain": {
+        "expected_type": "string"
+      },
+      "starts_with": {
+        "expected_type": "string"
+      },
+      "ends_with": {
+        "expected_type": "string"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "number": {
+    "comparators": {
+      "equals": {
+        "expected_type": "number"
+      },
+      "does_not_equal": {
+        "expected_type": "number"
+      },
+      "greater_than": {
+        "expected_type": "number"
+      },
+      "less_than": {
+        "expected_type": "number"
+      },
+      "greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "less_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "checkbox": {
+    "comparators": {
+      "equals": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "does_not_equal": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      }
+    }
+  },
+  "select": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string"
+      },
+      "does_not_equal": {
+        "expected_type": "string"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      }
+    }
+  },
+  "multi_select": {
+    "comparators": {
+      "contains": {
+        "expected_type": ["object", "string"],
+        "format": {
+          "type": "uuid"
+        }
+      },
+      "does_not_contain": {
+        "expected_type": ["object", "string"],
+        "format": {
+          "type": "uuid"
+        }
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      }
+    }
+  },
+  "date": {
+    "comparators": {
+      "equals": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "before": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "after": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "on_or_before": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "on_or_after": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "past_week": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      },
+      "past_month": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      },
+      "past_year": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      },
+      "next_week": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      },
+      "next_month": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      },
+      "next_year": {
+        "expected_type": "object",
+        "format": {
+          "type": "empty",
+          "values": "{}"
+        }
+      }
+    }
+  },
+  "files": {
+    "comparators": {
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      }
+    }
+  }
+}
