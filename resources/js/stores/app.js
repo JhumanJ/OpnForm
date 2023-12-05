@@ -31,13 +31,13 @@ export const useAppStore = defineStore('app', {
       this.loaderHide()
     },
     loaderSetTimer (timerVal) {
-      this._timer = timerVal
+      this.loader._timer = timerVal
     },
     loaderPause () {
       clearInterval(this.loader._timer)
     },
     loaderHide () {
-      clearInterval(this.loader._timer)
+      this.loaderPause()
       this.loader._timer = null
       setTimeout(() => {
         this.loader.show = false
