@@ -1,7 +1,5 @@
 <template>
-  <div v-if="showSidebar"
-       class="absolute shadow-lg shadow-blue-800/30 top-0 h-[calc(100vh-45px)] right-0 lg:shadow-none lg:relative bg-white w-full md:w-1/2 lg:w-2/5 border-l overflow-y-scroll md:max-w-[20rem] flex-shrink-0"
-  >
+  <div>
     <div class="p-4 border-b sticky top-0 z-10 bg-white">
       <div class="flex">
         <button class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="closeSidebar">
@@ -69,7 +67,7 @@ import { computed } from 'vue'
 import { useWorkingFormStore } from '../../../../../stores/working_form'
 
 export default {
-  name: 'AddFormBlockSidebar',
+  name: 'AddFormBlock',
   components: {},
   props: {},
 
@@ -77,8 +75,7 @@ export default {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
-      selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex),
-      showAddFieldSidebar : computed(() => workingFormStore.showAddFieldSidebar)
+      selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex)
     }
   },
 
@@ -182,9 +179,6 @@ export default {
       set (value) {
         this.workingFormStore.set(value)
       }
-    },
-    showSidebar () {
-      return (this.form && this.showAddFieldSidebar) ?? false
     },
 
     defaultBlockNames () {

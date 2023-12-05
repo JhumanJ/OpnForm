@@ -68,8 +68,7 @@
 
       <form-editor-preview />
 
-      <form-field-edit-sidebar />
-      <add-form-block-sidebar />
+      <form-editor-sidebar />
 
       <!-- Form Error Modal -->
       <form-error-modal
@@ -90,8 +89,7 @@ import { useAuthStore } from '../../../../stores/auth';
 import { useFormsStore } from '../../../../stores/forms';
 import { useWorkingFormStore } from '../../../../stores/working_form';
 import { useWorkspacesStore } from '../../../../stores/workspaces';
-import AddFormBlockSidebar from './form-components/AddFormBlockSidebar.vue'
-import FormFieldEditSidebar from '../fields/FormFieldEditSidebar.vue'
+import FormEditorSidebar from './form-components/FormEditorSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
 import FormInformation from './form-components/FormInformation.vue'
 import FormStructure from './form-components/FormStructure.vue'
@@ -109,8 +107,7 @@ import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 export default {
   name: 'FormEditor',
   components: {
-    AddFormBlockSidebar,
-    FormFieldEditSidebar,
+    FormEditorSidebar,
     FormEditorPreview,
     FormNotifications,
     FormAboutSubmission,
