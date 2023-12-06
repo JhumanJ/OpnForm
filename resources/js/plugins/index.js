@@ -1,5 +1,6 @@
 import './axios'
 import { registerLogEventOnApp } from './amplitude'
+import { MotionPlugin } from '@vueuse/motion'
 import './vapor'
 import './sentry'
 
@@ -11,6 +12,7 @@ function registerPlugin (app) {
 
   app.use(Notifications)
   app.use(metaManager)
+  app.use(MotionPlugin)
   registerLogEventOnApp(app)
   return app
 }

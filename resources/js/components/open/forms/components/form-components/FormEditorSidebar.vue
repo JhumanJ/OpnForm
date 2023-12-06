@@ -1,7 +1,9 @@
 <template>
   <editor-right-sidebar :show="form && (showEditFieldSidebar || showAddFieldSidebar)">
-     <form-field-edit v-if="showEditFieldSidebar" />
-     <add-form-block v-else-if="showAddFieldSidebar" />
+    <transition mode="out-in">
+      <form-field-edit v-if="showEditFieldSidebar" :key="editFieldIndex" v-motion-fade="'fade'" />
+      <add-form-block v-else-if="showAddFieldSidebar" v-motion-fade="'fade'" />
+    </transition>
   </editor-right-sidebar>
 </template>
 
@@ -13,21 +15,22 @@ import FormFieldEdit from '../../fields/FormFieldEdit.vue'
 import AddFormBlock from './AddFormBlock.vue'
 
 export default {
- name: 'FormEditorSidebar',
- components: { EditorRightSidebar, AddFormBlock, FormFieldEdit },
- props: {},
- setup () {
+  name: 'FormEditorSidebar',
+  components: { EditorRightSidebar, AddFormBlock, FormFieldEdit },
+  props: {},
+  setup () {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
-      showEditFieldSidebar : computed(() => workingFormStore.showEditFieldSidebar),
-      showAddFieldSidebar : computed(() => workingFormStore.showAddFieldSidebar)
+      editFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
+      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
+      showAddFieldSidebar: computed(() => workingFormStore.showAddFieldSidebar)
     }
   },
- data () {
-   return {}
- },
- computed: {
+  data () {
+    return {}
+  },
+  computed: {
     form: {
       get () {
         return this.workingFormStore.content
@@ -37,10 +40,10 @@ export default {
         this.workingFormStore.set(value)
       }
     }
- },
- watch: {},
- mounted () {
- },
- methods: {}
+  },
+  watch: {},
+  mounted () {
+  },
+  methods: {}
 }
 </script>
