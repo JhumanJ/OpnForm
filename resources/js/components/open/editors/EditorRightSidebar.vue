@@ -23,11 +23,6 @@ export default {
     return {
       motions: useMotions()
     }
-  },
-  watch: {
-    show (val) {
-      console.log(this.motions)
-    }
   }
 }
 </script>
