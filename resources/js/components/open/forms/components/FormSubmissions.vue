@@ -40,19 +40,19 @@
       </div>
     </modal>
 
-    <loader v-if="!form || isLoading" class="h-6 w-6 text-nt-blue mx-auto" />
+    <loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-else>
-      <div class="flex flex-wrap items-end">
+      <div class="flex flex-wrap items-end" v-if="form && tableData.length > 0">
         <div class="flex-grow">
           <text-input class="w-64" :form="searchForm" name="search" placeholder="Search..." />
         </div>
         <div class="font-semibold flex gap-4">
-          <p v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2">
+          <p class="float-right text-xs uppercase mb-2">
             <a
               href="javascript:void(0);" class="text-gray-500" @click="showColumnsModal=true"
             >Display columns</a>
           </p>
-          <p v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase">
+          <p class="text-right text-xs uppercase">
             <a
               :href="exportUrl" target="_blank"
             >Export as CSV</a>
@@ -210,11 +210,8 @@ export default {
       if (!this.form || this.fullyLoaded) {
         return
       }
-      if(this.currentPage === 1){
-        this.isLoading = true
-      }
+      this.isLoading = true
       axios.get('/api/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((response) => {
-        this.isLoading = false
         const resData = response.data
 
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
@@ -224,6 +221,7 @@ export default {
           this.currentPage += 1
           this.getSubmissionsData()
         } else {
+          this.isLoading = false
           this.fullyLoaded = true
         }
       }).catch((error) => {
