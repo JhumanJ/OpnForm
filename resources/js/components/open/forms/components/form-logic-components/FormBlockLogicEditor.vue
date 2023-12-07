@@ -67,7 +67,6 @@
 </template>
 
 <script>
-import ProTag from '../../../../common/ProTag.vue'
 import ConditionEditor from './ConditionEditor.vue'
 import Modal from '../../../../Modal.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
@@ -75,7 +74,7 @@ import clonedeep from 'clone-deep'
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: { SelectInput, Modal, ProTag, ConditionEditor },
+  components: { SelectInput, Modal, ConditionEditor },
   props: {
     field: {
       type: Object,

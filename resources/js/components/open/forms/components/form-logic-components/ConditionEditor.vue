@@ -1,5 +1,5 @@
 <template>
-  <query-builder v-model="query" :rules="rules" :config="config" @input="onChange">
+  <query-builder v-model="query" :rules="rules" :config="config" @update:modelValue="onChange">
     <template #groupOperator="props">
       <div class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-1 flex">
         <p class="mr-2 font-semibold">
@@ -7,13 +7,13 @@
         </p>
         <select-input
           wrapper-class="relative"
-          :value="props.currentOperator"
+          :model-value="props.currentOperator"
           :options="props.operators"
           emit-key="identifier"
           option-key="identifier"
           name="operator-input"
           margin-bottom=""
-          @input="props.updateCurrentOperator($event)"
+          @update:modelValue="props.updateCurrentOperator($event)"
         />
       </div>
     </template>
@@ -23,17 +23,17 @@
     <template #rule="ruleCtrl">
       <component
         :is="ruleCtrl.ruleComponent"
-        :value="ruleCtrl.ruleData"
-        @input="ruleCtrl.updateRuleData"
+        :model-value="ruleCtrl.ruleData"
+        @update:modelValue="ruleCtrl.updateRuleData"
       />
     </template>
   </query-builder>
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import QueryBuilder from 'query-builder-vue-3'
 import ColumnCondition from './ColumnCondition.vue'
-import Vue from 'vue'
 import GroupControlSlot from './GroupControlSlot.vue'
 
 export default {
@@ -66,7 +66,8 @@ export default {
           identifier: property.id,
           name: property.name,
           component: (function () {
-            return Vue.extend(ColumnCondition).extend({
+            return defineComponent({
+              extends: ColumnCondition,
               computed: {
                 property () {
                   return property
@@ -111,7 +112,7 @@ export default {
 
   methods: {
     onChange () {
-      this.$emit('input', this.query)
+      this.$emit('update:modelValue', this.query)
     }
   }
 }

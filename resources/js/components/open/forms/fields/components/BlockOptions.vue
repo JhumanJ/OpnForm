@@ -86,17 +86,16 @@
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
+    <!--    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />-->
   </div>
 </template>
 
 <script>
 import CodeInput from '../../../../forms/CodeInput.vue'
-const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
 
 export default {
   name: 'BlockOptions',
-  components: { FormBlockLogicEditor, CodeInput },
+  components: { CodeInput },
   props: {
     field: {
       type: Object,
