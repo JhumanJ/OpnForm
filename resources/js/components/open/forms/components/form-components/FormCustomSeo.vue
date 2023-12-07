@@ -8,8 +8,11 @@
       </svg>
     </template>
     <p class="mt-4 text-gray-500 text-sm">
-      Customize the image and text that appear when you share your form on other sites (Open Graph).
+      Customize the link, images and text that appear when you share your form on other sites (Open Graph).
     </p>
+    <select-input v-if="customDomainAllowed" v-model="form.custom_domain" :disabled="customDomainOptions.length <= 0" :options="customDomainOptions" name="type"
+                  class="mt-4" label="Form Domain" placeholder="yourdomain.com"
+    />
     <text-input v-model="form.seo_meta.page_title" name="page_title" class="mt-4"
                 label="Page Title" help="Under or approximately 60 characters"
     />
@@ -48,6 +51,20 @@ export default {
       set (value) {
         this.workingFormStore.set(value)
       }
+    },
+    workspace () {
+      return this.$store.getters['open/workspaces/getCurrent']()
+    },
+    customDomainOptions () {
+      return this.workspace.custom_domains.map((domain) => {
+        return {
+          name: domain,
+          value: domain
+        }
+      })
+    },
+    customDomainAllowed () {
+      return window.config.custom_domains_enabled
     }
   },
   watch: {},

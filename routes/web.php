@@ -38,3 +38,6 @@ Route::get('local/temp/{path}', function (Request $request, string $path){
 })->where('path', '(.*)')->name('local.temp');
 
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'getSitemap'])->name('sitemap');
+
+Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
+    ->name('caddy.ask')->middleware(\App\Http\Middleware\CaddyRequestMiddleware::class);

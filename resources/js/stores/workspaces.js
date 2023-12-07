@@ -57,6 +57,10 @@ export const useWorkspacesStore = defineStore('workspaces', {
     },
     remove (itemId) {
       this.content = this.content.filter((val) => val.id !== itemId)
+      if (this.currentId === itemId) {
+        this.currentId = this.content.length > 0 ? this.content[0].id : null
+        localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
+      }
     },
     startLoading () {
       this.loading = true

@@ -5,7 +5,7 @@ import { useAppStore } from '../stores/app'
 import { defineComponent, nextTick } from 'vue'
 
 // The middleware for every page of the application.
-const globalMiddleware = ['check-auth', 'notion-connection']
+const globalMiddleware = ['locale', 'check-auth', 'custom-domains']
 
 // Load middleware modules dynamically.
 const requireContext = import.meta.glob('../middleware/**/*.js', { eager: true })
