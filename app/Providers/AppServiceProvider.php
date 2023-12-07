@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Billing\Subscription;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
         JsonResource::withoutWrapping();
         Cashier::calculateTaxes();
+        Cashier::useSubscriptionModel(Subscription::class);
 
         if ($this->app->runningUnitTests()) {
             Schema::defaultStringLength(191);

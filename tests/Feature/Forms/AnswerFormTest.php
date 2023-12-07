@@ -101,7 +101,7 @@ it('can not submit form with past dates', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
-    
+
     $submissionData = [];
     $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData) {
         if(in_array($property['type'], ['date'])){

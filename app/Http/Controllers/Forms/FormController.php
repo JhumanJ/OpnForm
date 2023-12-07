@@ -34,7 +34,7 @@ class FormController extends Controller
         $this->authorize('viewAny', Form::class);
 
         $workspaceIsPro = $workspace->is_pro;
-        $forms = $workspace->forms()->with(['creator','views','submissions'])
+        $forms = $workspace->forms()
             ->orderByDesc('updated_at')
             ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
 
@@ -66,7 +66,7 @@ class FormController extends Controller
             $this->authorize('viewAny', Form::class);
 
             $workspaceIsPro = $workspace->is_pro;
-            $newForms = $workspace->forms()->with(['creator','views','submissions'])->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
+            $newForms = $workspace->forms()->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
                 // Add attributes for faster loading
                 $form->extra = (object) [
                     'loadedWorkspace' => $workspace,

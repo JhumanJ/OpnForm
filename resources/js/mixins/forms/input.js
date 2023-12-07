@@ -52,5 +52,13 @@ export default {
         return this.content
       }
     }
+  },
+
+  watch: {
+    value (val) {
+      if (val !== this.compVal) {
+        this.compVal = val
+      }
+    }
   }
 }

@@ -4,6 +4,8 @@ namespace App\Models\Forms;
 
 use App\Events\Models\FormCreated;
 use App\Models\Integration\FormZapierWebhook;
+use App\Models\Traits\CachableAttributes;
+use App\Models\Traits\CachesAttributes;
 use App\Models\User;
 use App\Models\Workspace;
 use Database\Factories\FormFactory;
@@ -17,8 +19,10 @@ use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Form extends Model
+class Form extends Model implements CachableAttributes
 {
+    use CachesAttributes;
+
     const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
     const THEMES = ['default', 'simple', 'notion'];
     const WIDTHS = ['centered', 'full'];
@@ -53,6 +57,7 @@ class Form extends Model
         'visibility',
 
         // Customization
+        'custom_domain',
         'theme',
         'width',
         'cover_picture',
@@ -125,6 +130,11 @@ class Form extends Model
         'removed_properties'
     ];
 
+    protected $cachableAttributes = [
+        'is_pro',
+        'views_count',
+    ];
+
     /**
      * The event map for the model.
      *
@@ -136,17 +146,22 @@ class Form extends Model
 
     public function getIsProAttribute()
     {
-        return optional($this->workspace)->is_pro;
+        return $this->remember('is_pro', 15 * 60, function (): ?bool {
+            return optional($this->workspace)->is_pro === true;
+        });
     }
 
     public function getShareUrlAttribute()
     {
-        return url('/forms/'.$this->slug);
+        if ($this->custom_domain) {
+            return 'https://' . $this->custom_domain . '/forms/' . $this->slug;
+        }
+        return url('/forms/' . $this->slug);
     }
 
     public function getEditUrlAttribute()
     {
-        return url('/forms/'.$this->slug.'/show');
+        return url('/forms/' . $this->slug . '/show');
     }
 
     public function getSubmissionsCountAttribute()
@@ -156,14 +171,14 @@ class Form extends Model
 
     public function getViewsCountAttribute()
     {
-        if(env('DB_CONNECTION') == 'pgsql') {
+        return $this->remember('views_count', 15 * 60, function (): int {
+            if (env('DB_CONNECTION') == 'mysql') {
+                return (int)($this->views()->count() +
+                    $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
+            }
             return $this->views()->count() +
-            $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
-        } elseif(env('DB_CONNECTION') == 'mysql') {
-            return (int)($this->views()->count() +
-            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
-        }
-        return 0;
+                $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
+        });
     }
 
     public function setDescriptionAttribute($value)
@@ -219,7 +234,8 @@ class Form extends Model
         return !empty($this->password);
     }
 
-    protected function removedProperties(): Attribute {
+    protected function removedProperties(): Attribute
+    {
         return Attribute::make(
             get: function ($value) {
                 return $value ? json_decode($value, true) : [];
@@ -283,7 +299,7 @@ class Form extends Model
     {
         return !empty($this->webhook_url);
     }
-    
+
     public function getNotifiesDiscordAttribute()
     {
         return !empty($this->discord_webhook_url);

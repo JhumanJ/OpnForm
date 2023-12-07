@@ -3,11 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,12 +14,11 @@ return new class extends Migration
     public function up()
     {
         $driver = DB::getDriverName();
-
-        Schema::table('forms', function (Blueprint $table) use ($driver) {
+        Schema::table('workspaces', function (Blueprint $table) use ($driver){
             if ($driver === 'mysql') {
-                $table->jsonb('removed_properties')->default(new Expression("(JSON_ARRAY())"));
+                $table->json('custom_domains')->default(new Expression("(JSON_OBJECT())"))->nullable(true);
             } else {
-                $table->jsonb('removed_properties')->default("[]")->nullable();
+                $table->json('custom_domains')->default('{}')->nullable(true);
             }
         });
     }
@@ -33,8 +30,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('forms', function (Blueprint $table) {
-            $table->dropColumn('removed_properties');
+        Schema::table('workspaces', function (Blueprint $table) {
+            $table->dropColumn('custom_domains');
         });
     }
 };
