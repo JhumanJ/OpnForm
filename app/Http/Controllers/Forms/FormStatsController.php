@@ -13,7 +13,7 @@ class FormStatsController extends Controller
         $this->middleware('auth');
     }
 
-    public function getFormStats(string $formId)
+    public function getFormStats(string $workspaceId, string $formId)
     {
         $form = Form::findOrFail($formId);
 
