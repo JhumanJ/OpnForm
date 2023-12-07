@@ -42,7 +42,7 @@
 
     <loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-else>
-      <div class="flex flex-wrap items-end" v-if="form && tableData.length > 0">
+      <div v-if="form && tableData.length > 0" class="flex flex-wrap items-end">
         <div class="flex-grow">
           <text-input class="w-64" :form="searchForm" name="search" placeholder="Search..." />
         </div>
@@ -101,7 +101,6 @@ export default {
     }
   },
 
-
   data () {
     return {
       formInitDone: false,
@@ -153,7 +152,7 @@ export default {
     }
   },
   watch: {
-    form () {
+    'form.id' () {
       if (this.form === null) {
         return
       }

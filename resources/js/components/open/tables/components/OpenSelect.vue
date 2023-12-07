@@ -1,7 +1,7 @@
 <template>
-  <span class="-mb-2" v-if="value">
+  <span v-if="value" class="-mb-2">
     <template v-if="valueIsObject">
-      <open-tag v-for="val,index in value" :key="index" :opt="val" />
+      <open-tag v-for="(val,index) in value" :key="index+val" :opt="val" />
     </template>
     <open-tag v-else :opt="value" />
   </span>
