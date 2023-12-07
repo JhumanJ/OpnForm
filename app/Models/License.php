@@ -42,4 +42,27 @@ class License extends Model
             3 => 75000000, // 75 MB,
         ][$this->meta['tier']];
     }
+
+    public function getCustomDomainLimitCountAttribute()
+    {
+        return [
+            1 => 1,
+            2 => 10,
+            3 => null,
+        ][$this->meta['tier']];
+    }
+
+    public static function booted(): void
+    {
+        static::saved(function (License $license) {
+            if ($license->user) {
+                $license->user->flushCache();
+            }
+        });
+        static::deleted(function (License $license) {
+            if ($license->user) {
+                $license->user->flushCache();
+            }
+        });
+    }
 }

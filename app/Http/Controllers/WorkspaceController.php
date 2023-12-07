@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
 use App\Service\WorkspaceHelper;
@@ -27,6 +28,13 @@ class WorkspaceController extends Controller
         $this->authorize('view', $workspace);
 
         return (new WorkspaceHelper($workspace))->getAllUsers();
+    }
+
+    public function saveCustomDomain(CustomDomainRequest $request)
+    {
+        $request->workspace->custom_domains = $request->customDomains;
+        $request->workspace->save();
+        return $request->workspace;
     }
 
     public function delete($id)

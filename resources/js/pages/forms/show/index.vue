@@ -23,7 +23,7 @@
                 <extra-menu :form="form" />
 
                 <v-button v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
-                          :to="{name:'forms.show_public', params: {slug: form.slug}}" color="white"
+                          :href="form.share_url" color="white"
                           class="mr-2 text-blue-600 hidden sm:block"
                 >
                   <svg class="w-6 h-6 inline -mt-1" viewBox="0 0 24 24" fill="none"
@@ -210,7 +210,7 @@ export default {
 
   computed: {
     workingForm: {
-      get () {
+      get  () {
         return this.workingFormStore.content
       },
       /* We add a setter */

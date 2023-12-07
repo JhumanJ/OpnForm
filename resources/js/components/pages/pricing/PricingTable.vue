@@ -145,7 +145,7 @@ export default {
       'Slack notifications',
       'Discord notifications',
       'Editable submissions',
-      'Custom domain (soon)',
+      '1 Custom domain',
       'Custom code',
       'Larger file uploads (50mb)',
       'Remove OpnForm branding',
