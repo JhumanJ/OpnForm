@@ -167,7 +167,7 @@ export default {
   },
   methods: {
     initFormStructure () {
-      if (!this.form || this.formInitDone) {
+      if (!this.form || !this.form.properties || this.formInitDone) {
         return
       }
 
