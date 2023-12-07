@@ -148,7 +148,7 @@ export default {
     }
   },
 
-  beforeDestroy () {
+  beforeUnmount () {
     document.body.classList.remove('overflow-hidden')
   },
 

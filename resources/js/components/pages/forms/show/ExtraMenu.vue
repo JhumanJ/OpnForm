@@ -5,7 +5,7 @@
     </div>
     <dropdown v-else class="inline" dusk="nav-dropdown">
       <template #trigger="{toggle}">
-        <v-button color="white" class="mr-2" @click="toggle">
+        <v-button color="white" class="mr-2" @click.stop="toggle">
           <svg class="w-4 h-4 inline -mt-1" viewBox="0 0 16 4" fill="none"
                xmlns="http://www.w3.org/2000/svg"
           >
@@ -147,21 +147,21 @@ import Dropdown from '../../../common/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 
 export default {
-    name: 'ExtraMenu',
-    components: { Dropdown, FormTemplateModal },
-    props: {
-      form: { type: Object, required: true },
-      isMainPage: { type: Boolean, required: false, default: false }
-    },
+  name: 'ExtraMenu',
+  components: { Dropdown, FormTemplateModal },
+  props: {
+    form: { type: Object, required: true },
+    isMainPage: { type: Boolean, required: false, default: false }
+  },
 
-    setup () {
-      const authStore = useAuthStore()
-      const formsStore = useFormsStore()
-      return {
-        formsStore,
-        user : computed(() => authStore.user)
-      }
-    },
+  setup () {
+    const authStore = useAuthStore()
+    const formsStore = useFormsStore()
+    return {
+      formsStore,
+      user: computed(() => authStore.user)
+    }
+  },
 
   data: () => ({
     loadingDuplicate: false,
@@ -170,40 +170,40 @@ export default {
     showFormTemplateModal: false
   }),
 
-    computed: {
-      formEndpoint: () => '/api/open/forms/{id}',
-    },
+  computed: {
+    formEndpoint: () => '/api/open/forms/{id}'
+  },
 
-    methods: {
-      copyLink(){
-        const el = document.createElement('textarea')
-        el.value = this.form.share_url
-        document.body.appendChild(el)
-        el.select()
-        document.execCommand('copy')
-        document.body.removeChild(el)
-        this.alertSuccess('Copied!')
-      },
-      duplicateForm() {
-        if (this.loadingDuplicate) return
-        this.loadingDuplicate = true
-        axios.post(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate').then((response) => {
-          this.formsStore.addOrUpdate(response.data.new_form)
-          this.$router.push({name: 'forms.show', params: {slug: response.data.new_form.slug}})
-          this.alertSuccess('Form was successfully duplicated.')
-          this.loadingDuplicate = false
-        })
-      },
-      deleteForm() {
-        if (this.loadingDelete) return
-        this.loadingDelete = true
-        axios.delete(this.formEndpoint.replace('{id}', this.form.id)).then(() => {
-          this.formsStore.remove(this.form)
-          this.$router.push({name: 'home'})
-          this.alertSuccess('Form was deleted.')
-          this.loadingDelete = false
-        })
-      },
+  methods: {
+    copyLink () {
+      const el = document.createElement('textarea')
+      el.value = this.form.share_url
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.alertSuccess('Copied!')
+    },
+    duplicateForm () {
+      if (this.loadingDuplicate) return
+      this.loadingDuplicate = true
+      axios.post(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate').then((response) => {
+        this.formsStore.addOrUpdate(response.data.new_form)
+        this.$router.push({ name: 'forms.show', params: { slug: response.data.new_form.slug } })
+        this.alertSuccess('Form was successfully duplicated.')
+        this.loadingDuplicate = false
+      })
+    },
+    deleteForm () {
+      if (this.loadingDelete) return
+      this.loadingDelete = true
+      axios.delete(this.formEndpoint.replace('{id}', this.form.id)).then(() => {
+        this.formsStore.remove(this.form)
+        this.$router.push({ name: 'home' })
+        this.alertSuccess('Form was deleted.')
+        this.loadingDelete = false
+      })
     }
+  }
 }
 </script>

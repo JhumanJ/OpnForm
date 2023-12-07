@@ -4,7 +4,7 @@
             dusk="workspace-dropdown"
   >
     <template v-if="workspace" #trigger="{toggle}">
-      <div class="flex items-center cursor group" role="button" @click.prevent="toggle()">
+      <div class="flex items-center cursor group" role="button" @click.stop="toggle()">
         <div class="rounded-full h-8 8">
           <img v-if="isUrl(workspace.icon)"
                :src="workspace.icon"
@@ -61,9 +61,9 @@ export default {
     return {
       formsStore,
       workspacesStore,
-      user : computed(() => authStore.user),
-      workspaces : computed(() => workspacesStore.content),
-      loading : computed(() => workspacesStore.loading)
+      user: computed(() => authStore.user),
+      workspaces: computed(() => workspacesStore.content),
+      loading: computed(() => workspacesStore.loading)
     }
   },
 
