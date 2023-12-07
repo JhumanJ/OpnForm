@@ -59,7 +59,9 @@
               </span>
               <span>- Edited {{ form.last_edited_human }}</span>
             </p>
-            <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)" class="mt-2 flex items-center flex-wrap gap-3">
+            <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)"
+                 class="mt-2 flex items-center flex-wrap gap-3"
+            >
               <span v-if="form.visibility=='draft'"
                     class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
               >
@@ -110,13 +112,11 @@
       <div class="flex bg-white">
         <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
           <div class="py-4">
-            <transition name="fade" mode="out-in">
-              <router-view v-slot="{ Component }">
-                <transition name="page" mode="out-in">
-                  <component :is="Component" :form="form" />
-                </transition>
-              </router-view>
-            </transition>
+            <router-view v-slot="{ Component }">
+              <transition name="page" mode="out-in">
+                <component :is="Component" :form="form" />
+              </transition>
+            </router-view>
           </div>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default {
 
   computed: {
     workingForm: {
-      get  () {
+      get () {
         return this.workingFormStore.content
       },
       /* We add a setter */

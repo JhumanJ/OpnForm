@@ -40,19 +40,19 @@
       </div>
     </modal>
 
-    <loader v-if="!form || isLoading" class="h-6 w-6 text-nt-blue mx-auto" />
+    <loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-else>
-      <div class="flex flex-wrap items-end">
+      <div v-if="form && tableData.length > 0" class="flex flex-wrap items-end">
         <div class="flex-grow">
           <text-input class="w-64" :form="searchForm" name="search" placeholder="Search..." />
         </div>
         <div class="font-semibold flex gap-4">
-          <p v-if="form && !isLoading && formInitDone" class="float-right text-xs uppercase mb-2">
+          <p class="float-right text-xs uppercase mb-2">
             <a
               href="javascript:void(0);" class="text-gray-500" @click="showColumnsModal=true"
             >Display columns</a>
           </p>
-          <p v-if="form && !isLoading && tableData.length > 0" class="text-right text-xs uppercase">
+          <p class="text-right text-xs uppercase">
             <a
               :href="exportUrl" target="_blank"
             >Export as CSV</a>
@@ -100,7 +100,6 @@ export default {
       workingFormStore
     }
   },
-
 
   data () {
     return {
@@ -153,7 +152,7 @@ export default {
     }
   },
   watch: {
-    form () {
+    'form.id' () {
       if (this.form === null) {
         return
       }
@@ -167,7 +166,7 @@ export default {
   },
   methods: {
     initFormStructure () {
-      if (!this.form || this.formInitDone) {
+      if (!this.form || !this.form.properties || this.formInitDone) {
         return
       }
 
@@ -215,6 +214,7 @@ export default {
         const resData = response.data
 
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
+        this.dataChanged()
 
         if (this.currentPage < resData.meta.last_page) {
           this.currentPage += 1
