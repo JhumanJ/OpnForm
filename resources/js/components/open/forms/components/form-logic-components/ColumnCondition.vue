@@ -6,13 +6,13 @@
     </div>
     <SelectInput v-model="content.operator" class="w-full" :options="operators"
                  :name="'operator_'+property.id" placeholder="Comparison operator"
-                 @input="operatorChanged()"
+                 @update:modelValue="operatorChanged()"
     />
 
     <template v-if="hasInput">
       <component v-bind="inputComponentData" :is="inputComponentData.component" v-model="content.value" class="w-full"
                  :name="'value_'+property.id" placeholder="Filter Value"
-                 @input="$emit('input',castContent(content))"
+                 @update:modelValue="emitInput()"
       />
     </template>
   </div>
@@ -131,7 +131,7 @@ export default {
       } else if (typeof this.content.value === 'boolean' || typeof this.content.value === 'object') {
         this.content.value = null
       }
-      this.$emit('input', this.castContent(this.content))
+      this.emitInput()
     },
     needsInput () {
       const operator = this.selectedOperator()
@@ -165,6 +165,9 @@ export default {
       return key.split('_').map(function (item) {
         return item.charAt(0).toUpperCase() + item.substring(1)
       }).join(' ')
+    },
+    emitInput () {
+      this.$emit('update:modelValue', this.castContent(this.content))
     }
   }
 }

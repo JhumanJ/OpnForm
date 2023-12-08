@@ -293,7 +293,7 @@
       <file-input v-else-if="field.type==='files'" name="prefill" class="mt-4"
                   :form="field"
                   label="Pre-filled file"
-                  :multiple="field.multiple===true" :moveToFormAssets="true"
+                  :multiple="field.multiple===true" :move-to-form-assets="true"
       />
       <text-input v-else-if="!['files', 'signature'].includes(field.type)" name="prefill" class="mt-3"
                   :form="field"
@@ -382,7 +382,7 @@
     </div>
 
     <!--  Logic Block -->
-    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
+    <!--    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />-->
   </div>
 </template>
 
@@ -391,11 +391,9 @@ import timezones from '../../../../../../data/timezones.json'
 import countryCodes from '../../../../../../data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 
-const FormBlockLogicEditor = () => import('../../components/form-logic-components/FormBlockLogicEditor.vue')
-
 export default {
   name: 'FieldOptions',
-  components: { FormBlockLogicEditor, CountryFlag },
+  components: { CountryFlag },
   props: {
     field: {
       type: Object,
@@ -533,7 +531,7 @@ export default {
         this.field.hidden = true
       }
     },
-    initRating() {
+    initRating () {
       if (this.field.is_rating) {
         this.$set(this.field, 'is_scale', false)
         if (!this.field.rating_max_value) {

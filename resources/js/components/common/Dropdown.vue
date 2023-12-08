@@ -5,25 +5,23 @@
           :open="open"
           :close="close"
     />
-    <transition name="fade">
-      <div v-if="isOpen" v-on-click-outside="close" :class="dropdownClass">
-        <div class="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <slot />
-        </div>
+
+    <collapsible v-model="isOpen" :class="dropdownClass">
+      <div class="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+        <slot />
       </div>
-    </transition>
+    </collapsible>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { vOnClickOutside } from '@vueuse/components'
+import Collapsible from './transitions/Collapsible.vue'
 
 export default {
   name: 'Dropdown',
-  directives: {
-    onClickOutside: vOnClickOutside
-  },
+  components: { Collapsible },
+  directives: {},
   props: {
     dropdownClass: {
       type: String,
@@ -45,14 +43,11 @@ export default {
       isOpen.value = !isOpen.value
     }
 
-    const dropdownRef = ref(null)
-
     return {
       isOpen,
       open,
       close,
-      toggle,
-      dropdownRef
+      toggle
     }
   }
 }

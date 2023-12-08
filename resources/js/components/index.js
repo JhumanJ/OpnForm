@@ -21,4 +21,7 @@ export function registerComponents (app) {
   app.component('NotionPage', defineAsyncComponent(() =>
     import('./open/NotionPage.vue')
   ))
+  app.component('FormBlockLogicEditor', defineAsyncComponent(() =>
+    import('./open/forms/components/form-logic-components/FormBlockLogicEditor.vue')
+  ))
 }

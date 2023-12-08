@@ -49,7 +49,7 @@
                   <template #trigger="{toggle}">
                     <button id="dropdown-menu-button" type="button"
                             class="flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
-                            dusk="nav-dropdown-button" @click.prevent="toggle()"
+                            dusk="nav-dropdown-button" @click.stop="toggle()"
                     >
                       <img :src="user.photo_url" class="rounded-full w-6 h-6">
                       <p class="ml-2 hidden sm:inline">
@@ -133,9 +133,9 @@
 
 <script>
 import { computed } from 'vue'
-import { useAuthStore } from '../stores/auth';
-import { useFormsStore } from '../stores/forms';
-import { useWorkspacesStore } from '../stores/workspaces';
+import { useAuthStore } from '../stores/auth'
+import { useFormsStore } from '../stores/forms'
+import { useWorkspacesStore } from '../stores/workspaces'
 import Dropdown from './common/Dropdown.vue'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
 
@@ -153,7 +153,7 @@ export default {
       authStore,
       formsStore,
       workspacesStore,
-      user : computed(() => authStore.user)
+      user: computed(() => authStore.user)
     }
   },
 

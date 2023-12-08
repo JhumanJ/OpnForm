@@ -49,27 +49,25 @@
       </div>
     </div>
 
-    <div class="w-full flex grow overflow-y-scroll relative">
-      <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
+    <div class="w-full flex grow overflow-y-scroll relative bg-gray-50">
+      <div class="relative w-full bg-white shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5">
         <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
           Please create this form on a device with a larger screen. That will allow you to preview your form changes.
         </div>
 
-        <form-information/>
-        <form-structure/>
-        <form-customization/>
-        <form-notifications/>
-        <form-about-submission/>
+        <form-information />
+        <form-structure />
+        <form-customization />
+        <form-notifications />
+        <form-about-submission />
         <form-access />
-        <form-security-privacy/>
+        <form-security-privacy />
         <form-custom-seo />
-        <form-custom-code/>
+        <form-custom-code />
       </div>
 
       <form-editor-preview />
-
-      <form-field-edit-sidebar />
-      <add-form-block-sidebar />
+      <form-editor-sidebar />
 
       <!-- Form Error Modal -->
       <form-error-modal
@@ -86,12 +84,11 @@
 
 <script>
 import { computed } from 'vue'
-import { useAuthStore } from '../../../../stores/auth';
-import { useFormsStore } from '../../../../stores/forms';
-import { useWorkingFormStore } from '../../../../stores/working_form';
-import { useWorkspacesStore } from '../../../../stores/workspaces';
-import AddFormBlockSidebar from './form-components/AddFormBlockSidebar.vue'
-import FormFieldEditSidebar from '../fields/FormFieldEditSidebar.vue'
+import { useAuthStore } from '../../../../stores/auth'
+import { useFormsStore } from '../../../../stores/forms'
+import { useWorkingFormStore } from '../../../../stores/working_form'
+import { useWorkspacesStore } from '../../../../stores/workspaces'
+import FormEditorSidebar from './form-components/FormEditorSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
 import FormInformation from './form-components/FormInformation.vue'
 import FormStructure from './form-components/FormStructure.vue'
@@ -109,8 +106,7 @@ import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
 export default {
   name: 'FormEditor',
   components: {
-    AddFormBlockSidebar,
-    FormFieldEditSidebar,
+    FormEditorSidebar,
     FormEditorPreview,
     FormNotifications,
     FormAboutSubmission,
@@ -156,7 +152,7 @@ export default {
       formsStore,
       workingFormStore,
       workspacesStore,
-      user : computed(() => authStore.user)
+      user: computed(() => authStore.user)
     }
   },
 

@@ -1,11 +1,11 @@
 <template>
-  <div v-on-click-outside="closeDropdown" class="v-select relative">
+  <div class="v-select relative">
     <span class="inline-block w-full rounded-md">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
               class="cursor-pointer"
               :style="inputStyle"
               :class="[theme.SelectInput.input,{'py-2': !multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200': disabled}, inputClass]"
-              @click="openDropdown"
+              @click.stop="toggleDropdown"
       >
         <div :class="{'h-6': !multiple, 'min-h-8': multiple && !loading}">
           <transition name="fade" mode="out-in">
@@ -31,11 +31,11 @@
         </span>
       </button>
     </span>
-    <div v-show="isOpen"
-         class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-lg z-10"
-         :class="dropdownClass"
+    <collapsible v-model="isOpen"
+                 class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10"
+                 :class="dropdownClass"
     >
-      <ul tabindex="-1" role="listbox" aria-labelled by="listbox-label" aria-activedescendant="listbox-item-3"
+      <ul tabindex="-1" role="listbox"
           class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
           :class="{'max-h-42 py-1': !isSearchable,'max-h-48 pb-1': isSearchable}"
       >
@@ -50,7 +50,7 @@
         <template v-if="filteredOptions.length > 0">
           <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"
               :class="{'px-3 pr-9': multiple, 'px-3': !multiple}"
-              class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover-bg-form-color focus:outline-none focus-text-white focus-nt-blue"
+              class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
               @click="select(item)"
           >
             <slot name="option" :option="item" :selected="isSelected(item)" />
@@ -61,29 +61,27 @@
         </p>
         <li v-if="allowCreation && searchTerm" role="option" :style="optionStyle"
             :class="{'px-3 pr-9': multiple, 'px-3': !multiple}"
-            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover-bg-form-color focus:outline-none focus-text-white focus-nt-blue"
+            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
             @click="createOption(searchTerm)"
         >
           Create <b class="px-1 bg-gray-300 rounded group-hover-text-black">{{ searchTerm }}</b>
         </li>
       </ul>
-    </div>
+    </collapsible>
   </div>
 </template>
 
 <script>
-import { vOnClickOutside } from '@vueuse/components'
-import TextInput from '../TextInput.vue'
-import Fuse from 'fuse.js'
+import Collapsible from '../../common/transitions/Collapsible.vue'
 import { themes } from '../../../config/form-themes'
+import TextInput from '../TextInput.vue'
 import debounce from 'debounce'
+import Fuse from 'fuse.js'
 
 export default {
   name: 'VSelect',
-  components: { TextInput },
-  directives: {
-    onClickOutside: vOnClickOutside
-  },
+  components: { Collapsible, TextInput },
+  directives: {},
   props: {
     data: Array,
     modelValue: { default: null },
@@ -169,16 +167,19 @@ export default {
       }
       return this.modelValue === value
     },
-    closeDropdown () {
-      this.isOpen = false
-      this.searchTerm = ''
-    },
-    openDropdown () {
-      this.isOpen = this.disabled ? false : !this.isOpen
+    toggleDropdown () {
+      if (this.disabled) {
+        this.isOpen = false
+      }
+      this.isOpen = !this.isOpen
+      if (!this.isOpen) {
+        this.searchTerm = ''
+      }
     },
     select (value) {
       if (!this.multiple) {
-        this.closeDropdown()
+        // Close after select
+        this.toggleDropdown()
       }
 
       if (this.emitKey) {
