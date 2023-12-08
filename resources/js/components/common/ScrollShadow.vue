@@ -50,7 +50,9 @@ export default {
         bottom: false,
         left: false
       },
-      debounceTimeout: null
+      debounceTimeout: null,
+      scrollContainerObserver: null,
+      wrapObserver: null
     }
   },
   mounted () {
@@ -60,20 +62,19 @@ export default {
     const scrollContainerObserver = newResizeObserver(this.toggleShadow)
     if (scrollContainerObserver) {
       scrollContainerObserver.observe(this.$refs.scrollContainer)
-      // Cleanup when the component is unmounted.
-      this.$once('hook:unmounted', () => scrollContainerObserver.disconnect())
     }
 
     // Recalculate the container dimensions when the wrapper is resized.
-    const wrapObserver = newResizeObserver(this.calcDimensions)
-    if (wrapObserver) {
-      wrapObserver.observe(this.$el)
-      // Cleanup when the component is unmounted.
-      this.$once('hook:unmounted', () => wrapObserver.disconnect())
+    this.wrapObserver = newResizeObserver(this.calcDimensions)
+    if (this.wrapObserver) {
+      this.wrapObserver.observe(this.$el)
     }
   },
   unmounted () {
     window.removeEventListener('resize', this.calcDimensions)
+    // Cleanup when the component is unmounted.
+    this.wrapObserver.disconnect()
+    this.scrollContainerObserver.disconnect()
   },
   methods: {
     async calcDimensions () {
