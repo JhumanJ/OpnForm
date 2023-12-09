@@ -1,0 +1,30 @@
+export default {
+  "appName": "OpnForm",
+  "app_url": "https://opnform.test",
+  "locale": "en",
+  "locales": {"en": "EN"},
+  "githubAuth": null,
+  "notion": {"worker": "https://notion-forms-worker.notionforms.workers.dev/v1"},
+  "links": {
+    "help_url": "https://github.com/JhumanJ/OpnForm/discussions",
+    "helpdesk_sitemap_url": "https://notionforms.crisp.help/sitemap.xml",
+    "changelog_url": "https://opnform.canny.io/changelog",
+    "github_url": "https://github.com/JhumanJ/OpnForm",
+    "github_forum_url": "https://github.com/JhumanJ/OpnForm/discussions",
+    "facebook_group": "https://www.facebook.com/groups/opnform/",
+    "twitter": "https://twitter.com/OpnForm",
+    "zapier_integration": "https://zapier.com/developer/public-invite/146950/58db583730cc46b821614468d94c35de/",
+    "book_onboarding": "https://zcal.co/i/YQVGEULQ",
+    "feature_requests": "https://opnform.canny.io/feature-requests"
+  },
+  "production": false,
+  "hCaptchaSiteKey": "4ee2dabb-4012-477e-8eb6-8017355f07cd",
+  "google_analytics_code": "",
+  "amplitude_code": "",
+  "sentry_dsn": "https://f1829a9d456704e776eccc73e1b30369@o4504910866612224.ingest.sentry.io/4506014678646784",
+  "crisp_website_id": "94219d77-06ff-4aec-b07a-5bf26ec8fde1",
+  "ai_features_enabled": true,
+  "s3_enabled": false,
+  "paid_plans_enabled": true,
+  "custom_domains_enabled": true
+}
