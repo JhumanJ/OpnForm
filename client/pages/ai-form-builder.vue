@@ -19,7 +19,7 @@
             </p>
 
             <div class="mt-8 flex justify-center">
-              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
+              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
                 Get started for free
               </v-button>
               <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
@@ -270,7 +270,7 @@
 <!--&lt;!&ndash;            </p>&ndash;&gt;-->
 
 <!--&lt;!&ndash;            <div class="mt-8 flex justify-center">&ndash;&gt;-->
-<!--&lt;!&ndash;              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">&ndash;&gt;-->
+<!--&lt;!&ndash;              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">&ndash;&gt;-->
 <!--&lt;!&ndash;                Get started for free&ndash;&gt;-->
 <!--&lt;!&ndash;              </v-button>&ndash;&gt;-->
 <!--&lt;!&ndash;              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">&ndash;&gt;-->
@@ -443,7 +443,7 @@
           </p>
 
           <div class="mt-8 flex justify-center">
-            <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">
+            <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
               Get started for free
             </v-button>
             <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">

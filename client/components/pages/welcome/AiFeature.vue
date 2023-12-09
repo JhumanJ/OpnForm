@@ -64,7 +64,7 @@
               </ul>
 
               <div class="mt-6 sm:mt-8 flex text-center justify-center lg:justify-start">
-<!--                <v-button v-if="!authenticated" class="mr-2 block" :to="{ name: 'forms.create.guest' }" :arrow="true">-->
+<!--                <v-button v-if="!authenticated" class="mr-2 block" :to="{ name: 'forms-create-guest' }" :arrow="true">-->
 <!--                  Get started for free-->
 <!--                </v-button>-->
 <!--                <v-button v-else class="mr-2 block" :to="{ name: 'forms.create' }" :arrow="true">-->

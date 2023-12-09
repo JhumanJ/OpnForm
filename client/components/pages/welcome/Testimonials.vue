@@ -1,5 +1,5 @@
 <template>
-  <iframe v-if="!isDarkMode" id="testimonialto-carousel-all-notionforms"
+  <iframe v-if="!isDark" id="testimonialto-carousel-all-notionforms"
           loading="lazy"
           src="https://embed.testimonial.to/carousel/all/notionforms?theme=light&autoplay=on&showmore=on&one-row=on&same-height=off"
           frameBorder="0" scrolling="no" width="100%"
@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import {useDark} from "@vueuse/core";
+
 export default {
 
   props: {
@@ -18,9 +20,10 @@ export default {
   },
   data: () => ({}),
 
-  computed: {
-    isDarkMode () {
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  setup () {
+    const isDark = useDark()
+    return {
+      isDark
     }
   },
 

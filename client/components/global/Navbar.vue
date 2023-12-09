@@ -119,7 +119,7 @@
                     Login
                   </router-link>
 
-                  <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms.create.guest' }" color="outline-blue" :arrow="true">
+                  <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms-create-guest' }" color="outline-blue" :arrow="true">
                     Create a form
                   </v-button>
                 </div>

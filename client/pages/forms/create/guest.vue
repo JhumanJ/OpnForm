@@ -26,13 +26,13 @@
 <script>
 import { computed } from 'vue'
 import Form from 'vform'
-import { useTemplatesStore } from '../../stores/templates'
-import { useWorkingFormStore } from '../../stores/working_form'
-import { useWorkspacesStore } from '../../stores/workspaces'
+import { useTemplatesStore } from '../../../stores/templates.js'
+import { useWorkingFormStore } from '../../../stores/working_form.js'
+import { useWorkspacesStore } from '../../../stores/workspaces.js'
 import QuickRegister from '~/components/pages/auth/components/QuickRegister.vue'
-import initForm from '../../mixins/form_editor/initForm.js'
-import SeoMeta from '../../mixins/seo-meta.js'
-import CreateFormBaseModal from '../../components/pages/forms/create/CreateFormBaseModal.vue'
+import initForm from '../../../mixins/form_editor/initForm.js'
+import SeoMeta from '../../../mixins/seo-meta.js'
+import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
   const templatesStore = useTemplatesStore()

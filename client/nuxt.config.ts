@@ -29,5 +29,16 @@ export default defineNuxtConfig({
     },
     sentry: {
         dsn: opnformConfig.sentry_dsn,
+    },
+    routeRules: {
+        '/ai-form-builder': {
+            swr: 60*60
+        },
+        '/privacy-policy': {
+            swr: 60*60
+        },
+        '/terms-conditions': {
+            swr: 60*60
+        },
     }
 })

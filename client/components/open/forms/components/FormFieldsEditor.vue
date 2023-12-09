@@ -279,7 +279,7 @@ export default {
       ]
     },
     init () {
-      if (this.$route.name === 'forms.create' || this.$route.name === 'forms.create.guest') { // Set Default fields
+      if (this.$route.name === 'forms.create' || this.$route.name === 'forms-create-guest') { // Set Default fields
         this.formFields = (this.form.properties.length > 0) ? clonedeep(this.form.properties) : this.getDefaultFields()
       } else {
         this.formFields = clonedeep(this.form.properties).map((field) => {

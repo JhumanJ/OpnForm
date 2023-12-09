@@ -44,12 +44,12 @@
           </p>
 
           <div class="mt-8 flex justify-center">
-<!--            <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms.create.guest' }" :arrow="true">-->
-<!--              Create a form for FREE-->
-<!--            </v-button>-->
-<!--            <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">-->
-<!--              Create a form for FREE-->
-<!--            </v-button>-->
+            <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
+              Create a form for FREE
+            </v-button>
+            <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+              Create a form for FREE
+            </v-button>
           </div>
 
           <div class="justify-center flex gap-2 mt-10">
@@ -118,13 +118,13 @@
         </template>
       </pricing-table>
 
-      <!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
-      <!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
-      <!--        <p class="w-full mt-2 mb-8">-->
-      <!--          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.-->
-      <!--        </p>-->
-      <!--        <testimonials/>-->
-      <!--      </div>-->
+<!--      <div class="pt-20 pb-5 text-center bg-white dark:bg-notion-dark-light">-->
+<!--        <h3 class="font-semibold text-3xl">See what people are saying</h3>-->
+<!--        <p class="w-full mt-2 mb-8">-->
+<!--          These are the stories of our customers who have joined us with great pleasure when using this crazy feature.-->
+<!--        </p>-->
+<!--        <testimonials/>-->
+<!--      </div>-->
 
 <!--      <templates-slider class="max-w-full mb-12"/>-->
 
@@ -136,9 +136,9 @@
           Generous, unlimited free plan.
         </p>
         <div class="mt-6 flex justify-center">
-<!--          <v-button v-track.welcome_create_form_click :to="{ name: 'forms.create.guest' }" :arrow="true" color="blue">-->
-<!--            Create a form for FREE-->
-<!--          </v-button>-->
+          <v-button v-track.welcome_create_form_click :to="{ name: 'forms-create-guest' }" :arrow="true" color="blue">
+            Create a form for FREE
+          </v-button>
         </div>
         <div class="flex justify-center mt-6">
           <a target="_blank" :href="configLinks.twitter" class="mr-4">
