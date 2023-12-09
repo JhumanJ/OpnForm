@@ -1,6 +1,5 @@
 <template>
   <div id="app" class="bg-white dark:bg-notion-dark">
-    <ServiceCrisp/>
     <transition enter-active-class="linear duration-200 overflow-hidden"
                 enter-from-class="max-h-0"
                 enter-to-class="max-h-screen"
@@ -45,10 +44,15 @@ export default {
 
   setup() {
     const appStore = useAppStore()
+
     return {
       layout: computed(() => appStore.layout),
       isIframe: useIsIframe()
     }
+  },
+
+  mounted() {
+    useCrisp().showChat()
   },
 
   data: () => ({

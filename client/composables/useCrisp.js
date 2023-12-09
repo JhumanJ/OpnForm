@@ -1,46 +1,72 @@
 export const useCrisp = () => {
 
-  function push(args) {
-    if (process.client) {
-      window.$crisp.push(args)
-    }
-  }
+  let crisp = process.client ? window.Crisp : null
 
   function openChat() {
-    push(['do', 'chat:open'])
+    if (!crisp) return
+    crisp.chat.open()
   }
 
   function showChat() {
-    push(['do', 'chat:show'])
+    if (!crisp) return
+    crisp.chat.show()
   }
 
   function hideChat() {
-    push(['do', 'chat:hide'])
+    if (!crisp) return
+    crisp.chat.hide()
   }
 
   function closeChat() {
-    push(['do', 'chat:close'])
+    if (!crisp) return
+    crisp.chat.close()
   }
 
   function openAndShowChat(message = null) {
+    if (!crisp) return
     showChat()
     openChat()
     if (message) sendTextMessage(message)
   }
 
   function openHelpdesk(){
-    push(['do', 'helpdesk:search'])
+    if (!crisp) return
+    openChat()
+    crisp.chat.setHelpdeskView()
   }
-  function openHelpdeskArticle(articleSlug, lang = 'en') {
-    push(['do', 'helpdesk:article:open', [lang, articleSlug]])
+  function openHelpdeskArticle(articleSlug, locale = 'en') {
+    if (!crisp) return
+    crisp.chat.openHelpdeskArticle(locale, articleSlug);
   }
 
   function sendTextMessage(message) {
-    push(['do', 'message:send', ['text',message]])
+    if (!crisp) return
+    crisp.message.send('text', message)
+  }
+
+  function setUser (user) {
+    if (!crisp) return
+    crisp.user.setEmail(user.email);
+    crisp.user.setNickname(user.name);
+    crisp.session.setData({
+      user_id : user.id,
+      'pro-subscription' : user?.is_subscribed ?? false,
+      'stripe-id' : user?.stripe_id ?? '',
+      'subscription' : user?.has_enterprise_subscription ? 'enterprise' : 'pro'
+    });
+
+    if (user?.is_subscribed ?? false) {
+      setSegments([['subscribed', user?.has_enterprise_subscription ? 'enterprise' : 'pro']])
+    }
+  }
+
+  function setSegments(segments, overwrite = false) {
+    if (!crisp) return
+    crisp.session.setSegments(segments, overwrite)
   }
 
   return {
-    push,
+    crisp,
     openChat,
     showChat,
     hideChat,
@@ -48,6 +74,7 @@ export const useCrisp = () => {
     openAndShowChat,
     openHelpdesk,
     openHelpdeskArticle,
-    sendTextMessage
+    sendTextMessage,
+    setUser
   }
 }

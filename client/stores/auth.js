@@ -38,6 +38,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { data } = await axios.get('/api/user')
         this.user = data
+        this.initServiceClients()
 
         return data
       } catch (e) {
@@ -50,7 +51,11 @@ export const useAuthStore = defineStore('auth', {
       this.user = payload
     },
 
-    load
+    initServiceClients() {
+      if (!this.user) return
+      useAmplitude().setUser(this.user)
+      useCrisp().setUser(this.user)
+    },
 
     async logout () {
       try {

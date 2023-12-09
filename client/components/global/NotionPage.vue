@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "styles.css";
+@import "vue-notion/src/styles.css";
 
 .notion-blue {
   @apply text-nt-blue;
