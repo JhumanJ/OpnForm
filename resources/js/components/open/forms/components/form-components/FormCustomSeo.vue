@@ -49,6 +49,9 @@ export default {
       return this.$store.getters['open/workspaces/getCurrent']()
     },
     customDomainOptions () {
+      if (!this.workspace || !this.workspace.custom_domains) {
+        return []
+      }
       return this.workspace.custom_domains.map((domain) => {
         return {
           name: domain,
