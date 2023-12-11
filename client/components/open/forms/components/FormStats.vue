@@ -19,7 +19,7 @@
       >
 
     </div>
-    <loader v-else-if="isLoading" class="h-6 w-6 text-nt-blue mx-auto" />
+    <Loader v-else-if="isLoading" class="h-6 w-6 text-nt-blue mx-auto" />
     <LineChart v-else
                :options="chartOptions"
                :data="chartData"

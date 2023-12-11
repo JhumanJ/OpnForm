@@ -59,7 +59,7 @@
               @drop.prevent="onUploadDropEvent($event)"
             >
               <div v-if="loading" class="text-gray-600 dark:text-gray-400">
-                <loader class="h-6 w-6 mx-auto m-10" />
+                <Loader class="h-6 w-6 mx-auto m-10" />
                 <p class="text-center mt-6">
                   Uploading your file...
                 </p>

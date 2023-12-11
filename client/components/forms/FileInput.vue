@@ -19,7 +19,7 @@
         v-if="loading"
         class="text-gray-600 dark:text-gray-400"
       >
-        <loader class="mx-auto h-6 w-6" />
+        <Loader class="mx-auto h-6 w-6" />
         <p class="mt-2 text-center text-sm text-gray-500">
           Uploading your file...
         </p>

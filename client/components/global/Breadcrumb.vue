@@ -6,7 +6,7 @@
     <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
       <div class="flex items-center justify-center space-x-4">
         <div v-if="displayHome" class="flex items-center">
-          <router-link class="text-gray-400 hover:text-gray-500" :to="{ name: (authenticated) ? 'home' : 'index' }">
+          <NuxtLink class="text-gray-400 hover:text-gray-500" :to="{ name: (authenticated) ? 'home' : 'index' }">
             <svg class="flex-shrink-0 w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd"
                     d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
@@ -14,7 +14,7 @@
               />
             </svg>
             <span class="sr-only">Home</span>
-          </router-link>
+          </NuxtLink>
           <svg class="flex-shrink-0 w-5 h-5 text-gray-400 ml-4" viewBox="0 0 20 20" fill="currentColor"
                aria-hidden="true"
           >
@@ -26,11 +26,11 @@
         </div>
 
         <div v-for="(item,index) in path" :key="index" class="flex items-center">
-          <router-link v-if="item.route" class="text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
+          <NuxtLink v-if="item.route" class="text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
                        :to="item.route"
           >
             {{ item.label }}
-          </router-link>
+          </NuxtLink>
           <div v-else class="text-sm font-semibold sm:w-full w-36 text-blue-500 truncate">
             {{ item.label }}
           </div>

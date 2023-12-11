@@ -46,9 +46,6 @@
               Unlimited submissions
             </p>
           </div>
-          <!--          <div class="mt-3 p-6">-->
-          <!--            <testimonials />-->
-          <!--          </div>-->
         </div>
       </div>
     </div>
@@ -57,10 +54,9 @@
 </template>
 
 <script>
-import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
-import RegisterForm from './components/RegisterForm.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
-import AppSumoRegister from '../../components/vendor/appsumo/AppSumoRegister.vue'
+import OpenFormFooter from '~/components/pages/OpenFormFooter.vue'
+import RegisterForm from "~/components/pages/auth/components/RegisterForm.vue"
+import AppSumoRegister from "~/components/vendor/appsumo/AppSumoRegister.vue"
 
 export default {
   components: {
@@ -69,7 +65,6 @@ export default {
     RegisterForm
   },
 
-  mixins: [SeoMeta],
 
   middleware: 'guest',
 

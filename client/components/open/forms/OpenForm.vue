@@ -1,7 +1,7 @@
 <template>
   <div v-if="isAutoSubmit">
     <p class="text-center p-4">
-      <loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </p>
   </div>
   <form v-else-if="dataForm" @submit.prevent="">

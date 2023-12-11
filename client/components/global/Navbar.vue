@@ -3,43 +3,43 @@
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
-          <router-link :to="{ name: user ? 'home' : 'index' }" class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
+          <NuxtLink :to="{ name: user ? 'home' : 'index' }" class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
             <img src="/img/logo.svg" alt="notion tools logo" class="w-8 h-8">
 
             <span
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >
               OpnForm</span>
-          </router-link>
+          </NuxtLink>
           <workspace-dropdown class="ml-6" />
         </div>
         <div v-if="showAuth" class="hidden md:block ml-auto relative">
-          <router-link v-if="$route.name !== 'templates'" :to="{name:'templates'}"
+          <NuxtLink v-if="$route.name !== 'templates'" :to="{name:'templates'}"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             Templates
-          </router-link>
-          <router-link v-if="$route.name !== 'ai-form-builder'" :to="{name:'ai-form-builder'}"
+          </NuxtLink>
+          <NuxtLink v-if="$route.name !== 'ai-form-builder'" :to="{name:'ai-form-builder'}"
                        class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             AI Form Builder
-          </router-link>
-          <router-link v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'" :to="{name:'pricing'}"
+          </NuxtLink>
+          <NuxtLink v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'" :to="{name:'pricing'}"
                        class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
-          </router-link>
+          </NuxtLink>
           <a v-if="hasCrisp" href="#"
              class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" @click.prevent="openCrisp"
           >
             Help
           </a>
-          <a v-else :href="helpUrl"
+          <NuxtLink v-else :href="helpUrl"
              class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" target="_blank"
           >
             Help
-          </a>
+          </NuxtLink>
         </div>
         <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5" />
         <div v-if="showAuth" class="block">
@@ -59,7 +59,7 @@
                     </button>
                   </template>
 
-                  <router-link v-if="userOnboarded" :to="{ name: 'home' }"
+                  <NuxtLink v-if="userOnboarded" :to="{ name: 'home' }"
                                class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
@@ -70,18 +70,18 @@
                       />
                     </svg>
                     My Forms
-                  </router-link>
+                  </NuxtLink>
 
-                  <router-link v-if="userOnboarded" :to="{ name: 'my_templates' }"
+                  <NuxtLink v-if="userOnboarded" :to="{ name: 'my_templates' }"
                                class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
                     My Templates
-                  </router-link>
+                  </NuxtLink>
 
-                  <router-link :to="{ name: 'settings.profile' }"
+                  <NuxtLink :to="{ name: 'settings.profile' }"
                                class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -95,7 +95,7 @@
                       />
                     </svg>
                     Settings
-                  </router-link>
+                  </NuxtLink>
 
                   <a href="#"
                      class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
@@ -112,12 +112,12 @@
                   </a>
                 </dropdown>
                 <div v-else class="flex gap-2">
-                  <router-link v-if="$route.name !== 'login'" :to="{ name: 'login' }"
+                  <NuxtLink v-if="$route.name !== 'login'" :to="{ name: 'login' }"
                                class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
                                active-class="text-gray-800 dark:text-white"
                   >
                     Login
-                  </router-link>
+                  </NuxtLink>
 
                   <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms-create-guest' }" color="outline-blue" :arrow="true">
                     Create a form

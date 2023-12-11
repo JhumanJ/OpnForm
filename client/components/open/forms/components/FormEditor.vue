@@ -78,7 +78,7 @@
     </div>
   </div>
   <div v-else class="flex justify-center items-center">
-    <loader class="w-6 h-6" />
+    <Loader class="w-6 h-6" />
   </div>
 </template>
 

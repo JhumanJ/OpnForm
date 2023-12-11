@@ -60,14 +60,14 @@
       </tr>
       <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
         <td :colspan="form.properties.length" class="p-8 w-full">
-          <loader class="w-4 h-4 mx-auto" />
+          <Loader class="w-4 h-4 mx-auto" />
         </td>
       </tr>
     </tbody>
     <tbody v-else key="body-content" class="n-table-body">
       <tr class="n-table-row loader w-full">
         <td :colspan="form.properties.length" class="n-table-cell w-full p-8">
-          <loader v-if="loading" class="w-4 h-4 mx-auto" />
+          <Loader v-if="loading" class="w-4 h-4 mx-auto" />
           <p v-else class="text-gray-500 text-center">
             No data found.
           </p>

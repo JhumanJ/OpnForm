@@ -49,6 +49,7 @@ export const useAuthStore = defineStore('auth', {
 
     updateUser (payload) {
       this.user = payload
+      this.initServiceClients()
     },
 
     initServiceClients() {

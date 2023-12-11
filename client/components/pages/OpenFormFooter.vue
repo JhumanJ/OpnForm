@@ -7,24 +7,24 @@
         </p>
       </div>
       <div class="flex justify-center mt-5 md:mt-0">
-        <router-link :to="{ name: user ? 'home' : 'index' }" class="flex-shrink-0 font-semibold flex items-center">
+        <NuxtLink :to="{ name: user ? 'home' : 'index' }" class="flex-shrink-0 font-semibold flex items-center">
           <img src="/img/logo.svg" alt="notion tools logo" class="w-10 h-10">
 
           <span class="ml-2 text-xl text-black dark:text-white">
             OpnForm
           </span>
-        </router-link>
+        </NuxtLink>
       </div>
       <ul class="flex justify-center mt-5 md:mt-1">
           <li class="mr-10">
-            <router-link :to="{name:'privacy-policy'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            <NuxtLink :to="{name:'privacy-policy'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
               Privacy Policy
-            </router-link>
+            </NuxtLink>
           </li>
           <li class="list-disc pl-3">
-            <router-link :to="{name:'terms-conditions'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            <NuxtLink :to="{name:'terms-conditions'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
               Terms & Conditions
-            </router-link>
+            </NuxtLink>
           </li>
         </ul>
     </div>

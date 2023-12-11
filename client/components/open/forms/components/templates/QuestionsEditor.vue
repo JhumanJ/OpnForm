@@ -7,7 +7,7 @@
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
 
-    <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
+    <Loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-else class="my-3">
       <div v-for="(questionForm, quesKey) in allQuestions" :key="quesKey" class="bg-gray-100 p-2 mb-4">
           <v-button color="red" size="small" class="mb-2" @click.prevent="onRemove(quesKey)">
@@ -64,7 +64,7 @@ export default {
   watch: { },
 
   computed: { },
-  
+
   methods: {
     onAdd() {
       this.allQuestions.push(this.newQuestion)

@@ -20,7 +20,7 @@
     </div>
 
     <div v-if="loading" class="w-full text-blue-500 text-center">
-      <loader class="h-10 w-10 p-5" />
+      <Loader class="h-10 w-10 p-5" />
     </div>
     <div v-else-if="workspace">
       <div class="mt-4 flex group bg-white items-center">

@@ -5,7 +5,7 @@
     <template v-if="!loading">
       <slot />
     </template>
-    <loader v-else class="h-6 w-6 text-white mx-auto" />
+    <Loader v-else class="h-6 w-6 text-white mx-auto" />
   </button>
 </template>
 

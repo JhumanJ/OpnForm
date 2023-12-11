@@ -31,13 +31,13 @@
       </div>
       <div v-else-if="formLoading">
         <p class="text-center mt-6 p-4">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
         </p>
       </div>
       <template v-else>
         <div v-if="recordLoading">
           <p class="text-center mt-6 p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
           </p>
         </div>
         <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"

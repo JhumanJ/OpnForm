@@ -40,7 +40,7 @@
       </div>
     </modal>
 
-    <loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto" />
+    <Loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto" />
     <div v-else>
       <div v-if="form && tableData.length > 0" class="flex flex-wrap items-end">
         <div class="flex-grow">

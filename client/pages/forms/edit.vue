@@ -8,7 +8,7 @@
       {{ error }}
     </div>
     <div v-else class="text-center mt-4 py-6">
-      <loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
   </div>
 </template>

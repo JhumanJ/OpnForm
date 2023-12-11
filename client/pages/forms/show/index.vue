@@ -122,7 +122,7 @@
       </div>
     </template>
     <div v-else-if="loading" class="text-center w-full p-5">
-      <loader class="h-6 w-6 mx-auto" />
+      <Loader class="h-6 w-6 mx-auto" />
     </div>
     <div v-else class="text-center w-full p-5">
       Form not found.

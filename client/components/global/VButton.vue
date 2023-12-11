@@ -1,7 +1,7 @@
 <template>
-  <a v-if="href" :class="btnClasses" :href="href" :target="target">
+  <NuxtLink v-if="href" :class="btnClasses" :href="href" :target="target">
     <slot />
-  </a>
+  </NuxtLink>
   <button v-else-if="!to" :type="nativeType" :disabled="loading?true:null" :class="btnClasses"
           @click="onClick($event)"
   >
@@ -15,9 +15,9 @@
         />
       </svg>
     </template>
-    <loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`" />
+    <Loader v-else class="h-6 w-6 mx-auto" :class="`text-${colorShades['text']}`" />
   </button>
-  <router-link v-else :class="btnClasses" :to="to" :target="target">
+  <NuxtLink v-else :class="btnClasses" :to="to" :target="target">
     <span class="no-underline mx-auto">
       <slot />
     </span>
@@ -26,7 +26,7 @@
             stroke-linejoin="round"
       />
     </svg>
-  </router-link>
+  </NuxtLink>
 </template>
 
 <script>

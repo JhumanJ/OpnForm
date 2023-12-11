@@ -16,7 +16,7 @@
       </template>
       <template v-else>
         <div class="px-6">
-          <loader class="h-4 w-4 inline" />
+          <Loader class="h-4 w-4 inline" />
         </div>
       </template>
     </button>

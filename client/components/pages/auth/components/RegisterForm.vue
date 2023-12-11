@@ -48,10 +48,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
 import Form from 'vform'
-import { useAuthStore } from '../../../../stores/auth.js'
-import { initCrisp } from '../../../middleware/check-auth.js'
 
 export default {
   name: 'RegisterForm',
@@ -66,8 +63,10 @@ export default {
 
   setup () {
     const authStore = useAuthStore()
+    const amplitude = useAmplitude()
     return {
-      authStore
+      authStore,
+      logEvent: amplitude.logEvent
     }
   },
 
@@ -127,10 +126,8 @@ export default {
         await this.authStore.updateUser(data)
 
         // Track event
-        this.$logEvent('register', { source: this.form.hear_about_us })
 
-        initCrisp(data)
-        this.$crisp.push(['set', 'session:event', [[['register', {}, 'blue']]]])
+        logEvent('register', { source: this.form.hear_about_us })
 
         // AppSumo License
         if (data.appsumo_license === false) {

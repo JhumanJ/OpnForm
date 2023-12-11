@@ -45,9 +45,6 @@
               Unlimited submissions
             </p>
           </div>
-<!--          <div class="mt-3 p-6">-->
-<!--            <testimonials />-->
-<!--          </div>-->
         </div>
       </div>
     </div>
@@ -56,21 +53,16 @@
 </template>
 
 <script>
-import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
-import Testimonials from '../../components/pages/welcome/Testimonials.vue'
-import LoginForm from './components/LoginForm.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
+import OpenFormFooter from '~/components/pages/OpenFormFooter.vue'
+import LoginForm from "~/components/pages/auth/components/LoginForm.vue"
 
 export default {
   components: {
     OpenFormFooter,
-    Testimonials,
     LoginForm
   },
 
   middleware: 'guest',
-
-  mixins: [SeoMeta],
 
   data: () => ({
     metaTitle: 'Login',

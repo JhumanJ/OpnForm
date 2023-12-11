@@ -26,7 +26,7 @@
     </breadcrumb>
 
     <div v-if="templatesLoading" class="text-center my-4">
-      <loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
     <p v-else-if="template === null || !template" class="text-center my-4">
       We could not find this template.

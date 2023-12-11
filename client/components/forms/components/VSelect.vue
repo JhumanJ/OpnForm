@@ -9,7 +9,7 @@
       >
         <div :class="{'h-6': !multiple, 'min-h-8': multiple && !loading}">
           <transition name="fade" mode="out-in">
-            <loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
             <div v-else-if="modelValue" key="value" class="flex" :class="{'min-h-8': multiple}">
               <slot name="selected" :option="modelValue" />
             </div>
@@ -45,7 +45,7 @@
           />
         </div>
         <div v-if="loading" class="w-full py-2 flex justify-center">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
         </div>
         <template v-if="filteredOptions.length > 0">
           <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"

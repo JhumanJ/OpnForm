@@ -30,15 +30,26 @@ export default defineNuxtConfig({
     sentry: {
         dsn: opnformConfig.sentry_dsn,
     },
+    components: [
+        {
+            path: '~/components/forms',
+            pathPrefix: false,
+        },
+        {
+            path: '~/components/global',
+            pathPrefix: false,
+        },
+        '~/components',
+    ],
     routeRules: {
         '/ai-form-builder': {
-            swr: 60*60
+            swr: 60 * 60
         },
         '/privacy-policy': {
-            swr: 60*60
+            swr: 60 * 60
         },
         '/terms-conditions': {
-            swr: 60*60
+            swr: 60 * 60
         },
     }
 })

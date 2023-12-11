@@ -8,7 +8,7 @@
         We're checking the status of your subscription please wait a moment...
       </h4>
       <div class="text-center">
-        <loader class="h-6 w-6 text-nt-blue mx-auto mt-20" />
+        <Loader class="h-6 w-6 text-nt-blue mx-auto mt-20" />
       </div>
     </div>
     <open-form-footer />

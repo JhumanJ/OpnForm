@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="loadingDuplicate || loadingDelete" class="pr-4 pt-2">
-      <loader class="h-6 w-6 mx-auto" />
+      <Loader class="h-6 w-6 mx-auto" />
     </div>
     <dropdown v-else class="inline" dusk="nav-dropdown">
       <template #trigger="{toggle}">

@@ -95,7 +95,7 @@
             </div>
           </div>
           <div v-if="formsLoading" class="text-center">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
           </div>
         </div>
       </div>
