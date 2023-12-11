@@ -70,7 +70,7 @@
                     label="Transparent Background" help="Only applies when form is embedded"
     />
     <toggle-switch-input name="confetti_on_submission" :form="form" class="mt-4"
-                         label="Confetti on successful submisison"
+                         label="Confetti on successful submission"
                          @input="onChangeConfettiOnSubmission"
     />
     <toggle-switch-input name="auto_save" :form="form"
