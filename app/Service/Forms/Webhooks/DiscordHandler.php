@@ -68,7 +68,7 @@ class DiscordHandler extends AbstractWebhookHandler
                 "description" => implode(' - ', $externalLinks)
             ];
         }
-        
+
         return [
             'content' => 'New submission for your form **' . $this->form->title . '**',
             'tts' => false,

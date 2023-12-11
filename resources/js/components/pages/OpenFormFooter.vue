@@ -24,6 +24,10 @@
              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
             Roadmap
           </a>
+          <a href="www.facebook.com/groups/opnform" target="_blank"
+             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Facebook Group
+          </a>
           <router-link :to="{name:'privacy-policy'}"
                        class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
             Privacy Policy
