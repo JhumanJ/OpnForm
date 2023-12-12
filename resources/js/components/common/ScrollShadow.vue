@@ -59,9 +59,9 @@ export default {
     window.addEventListener('resize', this.calcDimensions)
 
     // Check if shadows are necessary after the element is resized.
-    const scrollContainerObserver = newResizeObserver(this.toggleShadow)
-    if (scrollContainerObserver) {
-      scrollContainerObserver.observe(this.$refs.scrollContainer)
+    this.scrollContainerObserver = newResizeObserver(this.toggleShadow)
+    if (this.scrollContainerObserver) {
+      this.scrollContainerObserver.observe(this.$refs.scrollContainer)
     }
 
     // Recalculate the container dimensions when the wrapper is resized.
