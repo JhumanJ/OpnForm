@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Requests\AnswerFormRequest;
 use App\Models\Forms\Form;
 use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
@@ -71,7 +70,7 @@ class Workspace extends Model implements CachableAttributes
             return null;
         }
 
-        return $this->remember('custom_domain_count', 15 * 60, function(): int {
+        return $this->remember('custom_domain_count', 15 * 60, function(): ?int {
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
                     if ($license = $owner->activeLicense()) {

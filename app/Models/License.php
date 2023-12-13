@@ -34,7 +34,7 @@ class License extends Model
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
-    public function getMaxFileSizeAttribute()
+    public function getMaxFileSizeAttribute(): int
     {
         return [
             1 => 25000000, // 25 MB,
@@ -43,7 +43,7 @@ class License extends Model
         ][$this->meta['tier']];
     }
 
-    public function getCustomDomainLimitCountAttribute()
+    public function getCustomDomainLimitCountAttribute(): ?int
     {
         return [
             1 => 1,
