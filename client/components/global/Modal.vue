@@ -1,5 +1,5 @@
 <template>
-  <portal to="modals" :order="portalOrder">
+  <Teleport to="body">
     <transition @leave="(el,done) => motions.backdrop.leave(done)">
       <div v-if="show" v-motion="'backdrop'" :variants="motionFadeIn"
            class="fixed z-30 top-0 inset-0 px-4 sm:px-0 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll"
@@ -46,7 +46,7 @@
         </div>
       </div>
     </transition>
-  </portal>
+  </Teleport>
 </template>
 
 <script>
@@ -71,9 +71,6 @@ export default {
     },
     closeable: {
       default: true
-    },
-    portalOrder: {
-      default: 1
     }
   },
 

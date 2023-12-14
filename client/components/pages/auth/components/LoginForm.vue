@@ -41,19 +41,12 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import Form from 'vform'
 import Cookies from 'js-cookie'
-import { useAuthStore } from '../../../../stores/auth.js'
-import OpenFormFooter from '../../OpenFormFooter.vue'
-import Testimonials from '../../welcome/Testimonials.vue'
 import ForgotPasswordModal from '../ForgotPasswordModal.vue'
 
 export default {
   name: 'LoginForm',
   components: {
-    OpenFormFooter,
-    Testimonials,
     ForgotPasswordModal
   },
   props: {
@@ -72,7 +65,7 @@ export default {
   },
 
   data: () => ({
-    form: new Form({
+    form: useForm({
       email: '',
       password: ''
     }),
@@ -83,10 +76,10 @@ export default {
   methods: {
     async login () {
       // Submit the form.
-      const { data } = await this.form.post('/api/login')
+      const data = await this.form.post('login')
 
       // Save the token.
-      this.authStore.saveToken(data.token, this.remember)
+      this.authStore.setToken(data.token, this.remember)
 
       // Fetch the user.
       await this.authStore.fetchUser()

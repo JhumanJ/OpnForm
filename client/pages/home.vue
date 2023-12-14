@@ -7,7 +7,7 @@
             <h2 class="flex-grow text-gray-900">
               Your Forms
             </h2>
-            <v-button v-track.create_form_click :to="{name:'forms.create'}">
+            <v-button v-track.create_form_click :to="{name:'forms-create'}">
               <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
@@ -48,7 +48,7 @@
             <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search" class="mt-2 w-full text-center">
               Your search "{{ searchForm.search }}" did not match any forms. Please try again.
             </div>
-            <v-button v-if="forms.length === 0" v-track.create_form_click class="mt-4" :to="{name:'forms.create'}">
+            <v-button v-if="forms.length === 0" v-track.create_form_click class="mt-4" :to="{name:'forms-create'}">
               <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
@@ -119,7 +119,7 @@ const loadForms = function () {
   const formsStore = useFormsStore()
   const workspacesStore = useWorkspacesStore()
   formsStore.startLoading()
-  workspacesStore.loadIfEmpty().then(() => {
+  return workspacesStore.loadIfEmpty().then(() => {
     formsStore.loadIfEmpty(workspacesStore.currentId)
   })
 }
@@ -127,10 +127,6 @@ const loadForms = function () {
 export default {
   components: { OpenFormFooter, TextInput, ExtraMenu },
 
-  beforeRouteEnter (to, from, next) {
-    loadForms()
-    next()
-  },
   middleware: 'auth',
 
   props: {
@@ -138,10 +134,11 @@ export default {
     metaDescription: { type: String, default: 'All of your OpnForm are here. Create new forms, or update your existing one!' }
   },
 
-  setup () {
+  async setup () {
     const authStore = useAuthStore()
     const formsStore = useFormsStore()
     const workspacesStore = useWorkspacesStore()
+    loadForms()
     return {
       formsStore,
       workspacesStore,

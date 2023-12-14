@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import axios from 'axios'
+import {defineStore} from 'pinia'
+import {useOpnFetch} from "~/composables/useOpnFetch.js";
 
-export const formsEndpoint = '/api/open/workspaces/{workspaceId}/forms'
+export const formsEndpoint = '/open/workspaces/{workspaceId}/forms'
 export let currentPage = 1
 
 export const useFormsStore = defineStore('forms', {
@@ -22,7 +22,7 @@ export const useFormsStore = defineStore('forms', {
       if (state.content.length === 0) return []
       let allTags = []
       state.content.forEach(form => {
-        if(form.tags && form.tags.length > 0){
+        if (form.tags && form.tags.length > 0) {
           allTags = allTags.concat(form.tags)
         }
       })
@@ -30,34 +30,34 @@ export const useFormsStore = defineStore('forms', {
     }
   },
   actions: {
-    set (items) {
+    set(items) {
       this.content = items
     },
-    append (items) {
+    append(items) {
       this.content = this.content.concat(items)
     },
-    addOrUpdate (item) {
+    addOrUpdate(item) {
       this.content = this.content.filter((val) => val.id !== item.id)
       this.content.push(item)
     },
-    remove (item) {
+    remove(item) {
       this.content = this.content.filter((val) => val.id !== item.id)
     },
-    startLoading () {
+    startLoading() {
       this.loading = true
     },
-    stopLoading () {
+    stopLoading() {
       this.loading = false
     },
-    resetState () {
+    resetState() {
       this.set([])
       this.stopLoading()
       currentPage = 1
     },
-    load (workspaceId) {
+    load(workspaceId) {
       this.startLoading()
-      return axios.get(formsEndpoint.replace('{workspaceId}', workspaceId)+'?page='+currentPage).then((response) => {
-        if (currentPage == 1) {
+      return useOpnFetch(formsEndpoint.replace('{workspaceId}', workspaceId) + '?page=' + currentPage).get().then((response) => {
+        if (currentPage === 1) {
           this.set(response.data.data)
         } else {
           this.append(response.data.data)
@@ -71,7 +71,7 @@ export const useFormsStore = defineStore('forms', {
         }
       })
     },
-    loadIfEmpty (workspaceId) {
+    loadIfEmpty(workspaceId) {
       if (this.content.length === 0) {
         return this.load(workspaceId)
       }

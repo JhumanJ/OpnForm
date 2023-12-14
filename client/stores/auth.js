@@ -1,53 +1,64 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import axios from 'axios'
-import Cookies from 'js-cookie'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null,
-    token: Cookies.get('token'),
-
-    // For admin impersonation
-    admin_token: Cookies.get('admin_token') ?? null
-  }),
+  state: () => {
+    return {
+      token: null,
+      admin_token: null,
+      user: null,
+    }
+  },
   getters: {
     check: (state) => (state.user !== null && state.user !== undefined),
     isImpersonating: (state) => (state.admin_token !== null && state.admin_token !== undefined)
   },
   actions: {
     // Stores admin token temporarily for impersonation
-    startImpersonating () {
-      this.admin_token = this.token
-      Cookies.set('admin_token', this.token, { expires: 365 })
+    startImpersonating() {
+      this.setAdminToken(this.token)
     },
     // Stop admin impersonation
-    stopImpersonating () {
+    stopImpersonating() {
       this.token = this.admin_token
       this.admin_token = null
-      Cookies.set('token', this.token, { expires: 365 })
-      Cookies.remove('admin_token')
       this.fetchUser()
     },
 
-    saveToken (token, remember) {
+    setToken(token) {
+      useCookie('token', {maxAge: 60 * 60 * 24 * 30}).value = token
       this.token = token
-      Cookies.set('token', token, { expires: remember ? 365 : null })
     },
 
-    async fetchUser () {
+    setAdminToken(token) {
+      useCookie('admin_token', {maxAge: 60 * 60 * 24 * 30}).value = token
+      this.admin_token = token
+    },
+
+    loadTokenFromCookie() {
+      this.token = useCookie('token').value
+      this.admin_token = useCookie('admin_token').value
+    },
+
+    async fetchUser() {
       try {
-        const { data } = await axios.get('/api/user')
+        const {data} = await axios.get('/api/user')
         this.user = data
         this.initServiceClients()
 
         return data
       } catch (e) {
-        this.token = null
-        Cookies.remove('token')
+        this.setToken(null)
       }
     },
 
-    updateUser (payload) {
+    async fetchUserIfNotFetched() {
+      if (this.user === null && this.token) {
+        await this.fetchUser()
+      }
+    },
+
+    updateUser(payload) {
       this.user = payload
       this.initServiceClients()
     },
@@ -56,20 +67,29 @@ export const useAuthStore = defineStore('auth', {
       if (!this.user) return
       useAmplitude().setUser(this.user)
       useCrisp().setUser(this.user)
+
+      // Init sentry
+      Sentry.configureScope((scope) => {
+        scope.setUser({
+          id: this.user.id,
+          email: this.user.email,
+          subscription: this.user?.is_subscribed
+        })
+      })
     },
 
-    async logout () {
+    async logout() {
       try {
         await axios.post('/api/logout')
-      } catch (e) { }
+      } catch (e) {
+      }
 
       this.user = null
-      this.token = null
-      Cookies.remove('token')
+      this.setToken(null)
     },
 
-    async fetchOauthUrl (provider) {
-      const { data } = await axios.post(`/api/oauth/${provider}`)
+    async fetchOauthUrl(provider) {
+      const {data} = await axios.post(`/api/oauth/${provider}`)
       return data.url
     }
   }

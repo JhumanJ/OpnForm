@@ -22,7 +22,7 @@
               <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
                 Get started for free
               </v-button>
-              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+              <v-button v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">
                 Get started for free
               </v-button>
             </div>
@@ -273,7 +273,7 @@
 <!--&lt;!&ndash;              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">&ndash;&gt;-->
 <!--&lt;!&ndash;                Get started for free&ndash;&gt;-->
 <!--&lt;!&ndash;              </v-button>&ndash;&gt;-->
-<!--&lt;!&ndash;              <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">&ndash;&gt;-->
+<!--&lt;!&ndash;              <v-button v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">&ndash;&gt;-->
 <!--&lt;!&ndash;                Get started for free&ndash;&gt;-->
 <!--&lt;!&ndash;              </v-button>&ndash;&gt;-->
 <!--&lt;!&ndash;            </div>&ndash;&gt;-->
@@ -446,7 +446,7 @@
             <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
               Get started for free
             </v-button>
-            <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+            <v-button v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">
               Get started for free
             </v-button>
           </div>

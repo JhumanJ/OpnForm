@@ -67,7 +67,7 @@
 <!--                <v-button v-if="!authenticated" class="mr-2 block" :to="{ name: 'forms-create-guest' }" :arrow="true">-->
 <!--                  Get started for free-->
 <!--                </v-button>-->
-<!--                <v-button v-else class="mr-2 block" :to="{ name: 'forms.create' }" :arrow="true">-->
+<!--                <v-button v-else class="mr-2 block" :to="{ name: 'forms-create' }" :arrow="true">-->
 <!--                  Get started for free-->
 <!--                </v-button>-->
 <!--                <v-button color="light-gray" class="mr-1 block" :to="{ name: 'aiformbuilder' }">-->

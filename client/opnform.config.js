@@ -1,6 +1,6 @@
 export default {
-  "appName": "OpnForm",
-  "app_url": "https://opnform.test",
+  "app_ame": "OpnForm",
+  "api_url": "https://opnform.test/api",
   "locale": "en",
   "locales": {"en": "EN"},
   "githubAuth": null,

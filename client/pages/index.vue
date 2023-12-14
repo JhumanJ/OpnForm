@@ -47,7 +47,7 @@
             <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">
               Create a form for FREE
             </v-button>
-            <v-button v-else class="mr-1" :to="{ name: 'forms.create' }" :arrow="true">
+            <v-button v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">
               Create a form for FREE
             </v-button>
           </div>

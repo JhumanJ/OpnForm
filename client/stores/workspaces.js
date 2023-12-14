@@ -1,8 +1,10 @@
-import axios from 'axios'
-import { defineStore } from 'pinia'
-export const workspaceEndpoint = '/api/open/workspaces/'
+import {defineStore} from 'pinia'
+import {useOpnFetch} from "~/composables/useOpnFetch.js"
+import {useStorage} from "@vueuse/core"
 
-const localStorageCurrentWorkspaceKey = 'currentWorkspace'
+export const workspaceEndpoint = 'open/workspaces/'
+
+const storedWorkspaceId = useStorage('currentWorkspace', 0)
 
 export const useWorkspacesStore = defineStore('workspaces', {
   state: () => ({
@@ -21,72 +23,68 @@ export const useWorkspacesStore = defineStore('workspaces', {
     }
   },
   actions: {
-    set (items) {
+    set(items) {
       this.content = items
       if (this.currentId == null && this.content.length > 0) {
         // If one only, set it
         if (this.content.length === 1) {
-          this.currentId = items[0].id
-          localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
-        } else if (localStorage.getItem(localStorageCurrentWorkspaceKey) && this.content.find(item => item.id === parseInt(localStorage.getItem(localStorageCurrentWorkspaceKey)))) {
+          this.setCurrentId(items[0].id)
+        } else if (storedWorkspaceId && this.content.find(item => item.id === parseInt(storedWorkspaceId.value))) {
           // Check local storage for current workspace, or take first
-          this.currentId = parseInt(localStorage.getItem(localStorageCurrentWorkspaceKey))
-          localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
+          this.setCurrentId(parseInt(storedWorkspaceId.value))
         } else {
           // Else, take first
-          this.currentId = items[0].id
-          localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
+          this.setCurrentId(items[0].id)
         }
       } else {
-        localStorage.removeItem(localStorageCurrentWorkspaceKey)
+        this.setCurrentId(null)
       }
     },
-    setCurrentId (id) {
+    setCurrentId(id) {
       this.currentId = id
-      localStorage.setItem(localStorageCurrentWorkspaceKey, id)
+      storedWorkspaceId.value = id
     },
-    addOrUpdate (item) {
+    addOrUpdate(item) {
       this.content = this.content.filter((val) => val.id !== item.id)
       this.content.push(item)
       if (this.currentId == null) {
         this.currentId = item.id
-        localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
+        storedWorkspaceId.value = this.currentId
       }
     },
-    remove (itemId) {
+    remove(itemId) {
       this.content = this.content.filter((val) => val.id !== itemId)
       if (this.currentId === itemId) {
-        this.currentId = this.content.length > 0 ? this.content[0].id : null
-        localStorage.setItem(localStorageCurrentWorkspaceKey, this.currentId)
+        this.setCurrentId(this.content.length > 0 ? this.content[0].id : null)
       }
     },
-    startLoading () {
+    startLoading() {
       this.loading = true
     },
-    stopLoading () {
+    stopLoading() {
       this.loading = false
     },
-    resetState () {
+    resetState() {
       this.set([])
       this.stopLoading()
     },
-    load () {
+    load() {
       this.set([])
       this.startLoading()
-      return axios.get(workspaceEndpoint).then((response) => {
+      return useOpnFetch(workspaceEndpoint).then((response) => {
         this.set(response.data)
         this.stopLoading()
       })
     },
-    loadIfEmpty () {
+    loadIfEmpty() {
       if (this.content.length === 0) {
         return this.load()
       }
       return Promise.resolve()
     },
-    delete (id) {
+    delete(id) {
       this.startLoading()
-      return axios.delete(workspaceEndpoint + id).then((response) => {
+      return useOpnFetch(workspaceEndpoint + id, {method: 'DELETE'}).then((response) => {
         this.remove(response.data.workspace_id)
         this.stopLoading()
       })

@@ -142,7 +142,7 @@ export default {
         if (this.isQuick) {
           this.$emit('afterQuickLogin')
         } else {
-          this.$router.push({ name: 'forms.create' })
+          this.$router.push({ name: 'forms-create' })
         }
       }
     }
