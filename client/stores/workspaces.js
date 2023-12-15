@@ -71,8 +71,9 @@ export const useWorkspacesStore = defineStore('workspaces', {
     load() {
       this.set([])
       this.startLoading()
-      return useOpnFetch(workspaceEndpoint).then((response) => {
-        this.set(response.data)
+      return useOpnFetch(workspaceEndpoint,{server: false}).then(({data,error}) => {
+        console.log(data,error)
+        this.set(data)
         this.stopLoading()
       })
     },

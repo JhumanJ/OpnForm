@@ -2,8 +2,9 @@ import { ofetch } from 'ofetch'
 import {useAuthStore} from "~/stores/auth.js";
 
 function addAuthHeader(request, options) {
+  console.log('insidecookie', useRequestHeaders('cookie'))
   const authStore = useAuthStore()
-  if (authStore.check) {
+  if (authStore.token) {
     options.headers = { Authorization: `Bearer ${authStore.token}` }
     console.log('addidng auth',options)
   }
@@ -24,6 +25,8 @@ export default defineNuxtPlugin((_nuxtApp) => {
   globalThis.$fetch = ofetch.create({
     onRequest ({ request, options }) {
       // TODO: check that it's our own domain called
+      console.log(request)
+      options.headers = { accept: 'application/json', ...options.headers }
       addAuthHeader(request, options)
       addPasswordToFormRequest(request)
     },

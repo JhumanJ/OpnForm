@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
+import {useOpnFetch} from "~/composables/useOpnFetch.js";
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -41,15 +42,18 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchUser() {
-      try {
-        const {data} = await axios.get('/api/user')
-        this.user = data
+      useOpnFetch('/user').then(({data, error}) => {
+        console.log('fetch user', data,error)
+        if (error.value) {
+          console.error('Error fetching user', error.value)
+          this.setToken(null)
+        }
+
+        this.user = data.value
         this.initServiceClients()
 
-        return data
-      } catch (e) {
-        this.setToken(null)
-      }
+        return this.user
+      })
     },
 
     async fetchUserIfNotFetched() {
