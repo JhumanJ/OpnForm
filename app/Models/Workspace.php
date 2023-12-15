@@ -14,9 +14,7 @@ class Workspace extends Model implements CachableAttributes
 
     const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
     const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
-
     const MAX_DOMAIN_PRO = 1;
-
     protected $fillable = [
         'name',
         'icon',

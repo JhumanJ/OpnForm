@@ -12,8 +12,9 @@
                @click.prevent="openAddFieldSidebar"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
-                 stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                 stroke="currentColor" class="w-5 h-5"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </div>
           <div class="p-2 text-gray-300 hover:text-blue-500 cursor-pointer" role="button"
@@ -80,7 +81,7 @@
 <script>
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
-import {mapState} from "vuex";
+import { mapState } from 'vuex'
 
 export default {
   name: 'OpenFormField',
@@ -111,9 +112,9 @@ export default {
       type: Object,
       required: true
     },
-    adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
-  data() {
+  data () {
     return {}
   },
 
@@ -122,7 +123,7 @@ export default {
       selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
       showEditFieldSidebar: state => state['open/working_form'].showEditFieldSidebar
     }),
-    fieldComponents() {
+    fieldComponents () {
       return {
         text: 'TextInput',
         number: 'TextInput',
@@ -139,7 +140,7 @@ export default {
     /**
      * Get the right input component for the field/options combination
      */
-    getFieldComponents() {
+    getFieldComponents () {
       const field = this.field
       if (field.type === 'text' && field.multi_lines) {
         return 'TextAreaInput'
@@ -167,27 +168,27 @@ export default {
       }
       return this.fieldComponents[field.type]
     },
-    isPublicFormPage() {
+    isPublicFormPage () {
       return this.$route.name === 'forms.show_public'
     },
-    isFieldHidden() {
+    isFieldHidden () {
       return !this.showHidden && this.shouldBeHidden
     },
-    shouldBeHidden() {
+    shouldBeHidden () {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isHidden()
     },
-    isFieldRequired() {
+    isFieldRequired () {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isRequired()
     },
-    isFieldDisabled() {
+    isFieldDisabled () {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
     },
-    beingEdited() {
+    beingEdited () {
       return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {
         return item.id === this.field.id
       }) === this.selectedFieldIndex
     },
-    selectionFieldsOptions() {
+    selectionFieldsOptions () {
       // For auto update hidden options
       let fieldsOptions = []
 
@@ -202,27 +203,27 @@ export default {
 
       return fieldsOptions
     },
-    fieldSideBarOpened() {
+    fieldSideBarOpened () {
       return this.adminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
     }
   },
 
   watch: {},
 
-  mounted() {
+  mounted () {
   },
 
   methods: {
-    editFieldOptions() {
+    editFieldOptions () {
       this.$store.commit('open/working_form/openSettingsForField', this.field)
     },
-    openAddFieldSidebar() {
+    openAddFieldSidebar () {
       this.$store.commit('open/working_form/openAddFieldSidebar', this.field)
     },
     /**
      * Get the right input component for the field/options combination
      */
-    getFieldClasses() {
+    getFieldClasses () {
       let classes = ''
       if (this.adminPreview) {
         classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
@@ -233,7 +234,7 @@ export default {
       }
       return classes
     },
-    getFieldWidthClasses(field) {
+    getFieldWidthClasses (field) {
       if (!field.width || field.width === 'full') return 'w-full px-2'
       else if (field.width === '1/2') {
         return 'w-full sm:w-1/2 px-2'
@@ -247,7 +248,7 @@ export default {
         return 'w-full sm:w-3/4 px-2'
       }
     },
-    getFieldAlignClasses(field) {
+    getFieldAlignClasses (field) {
       if (!field.align || field.align === 'left') return 'text-left'
       else if (field.align === 'right') {
         return 'text-right'
@@ -260,7 +261,7 @@ export default {
     /**
      * Get the right input component options for the field/options
      */
-    inputProperties(field) {
+    inputProperties (field) {
       const inputProperties = {
         key: field.id,
         name: field.id,
@@ -270,7 +271,7 @@ export default {
         placeholder: field.placeholder,
         help: field.help,
         helpPosition: (field.help_position) ? field.help_position : 'below_input',
-        uppercaseLabels: this.form.uppercase_labels  == 1 || this.form.uppercase_labels == true,
+        uppercaseLabels: this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
         showCharLimit: field.show_char_limit || false
@@ -301,8 +302,8 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = 5
-        inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ""
+        inputProperties.mbLimit = this.form.max_file_size
+        inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)
       } else if (field.type === 'number' && field.is_scale) {
@@ -316,7 +317,7 @@ export default {
       }
 
       return inputProperties
-    },
+    }
   }
 }
 </script>
