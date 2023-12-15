@@ -33,18 +33,20 @@ export function useFormInput (props, context, formPrefixKey = null) {
   })
 
   const hasError = computed(() => {
-    return hasValidation && props.form?.errors?.has(name)
+    return hasValidation && props.form?.errors?.has(props.name)
   })
 
   const compVal = computed({
     get: () => {
       if (props.form) {
+        console.log(props, 'props')
         return props.form[(formPrefixKey || '') + props.name]
       }
       return content.value
     },
     set: (val) => {
       if (props.form) {
+        console.log(props, 'props')
         props.form[(formPrefixKey || '') + props.name] = val
       } else {
         content.value = val
