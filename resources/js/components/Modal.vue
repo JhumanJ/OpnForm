@@ -51,6 +51,7 @@
 
 <script>
 import { useMotions } from '@vueuse/motion'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 export default {
   name: 'Modal',
@@ -78,6 +79,20 @@ export default {
   },
 
   setup () {
+    const closeOnEscape = (e) => {
+      if (e.key === 'Escape' && this.show) {
+        this.close()
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('keydown', closeOnEscape)
+    })
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', closeOnEscape)
+    })
+
     return {
       motions: useMotions()
     }
@@ -150,20 +165,6 @@ export default {
 
   beforeUnmount () {
     document.body.classList.remove('overflow-hidden')
-  },
-
-  created () {
-    const closeOnEscape = (e) => {
-      if (e.key === 'Escape' && this.show) {
-        this.close()
-      }
-    }
-
-    document.addEventListener('keydown', closeOnEscape)
-
-    this.$once('hook:destroyed', () => {
-      document.removeEventListener('keydown', closeOnEscape)
-    })
   },
 
   methods: {
