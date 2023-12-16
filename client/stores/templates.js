@@ -1,9 +1,6 @@
-import axios from 'axios'
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
-export const templatesEndpoint = '/api/templates'
-
-
+export const templatesEndpoint = '/templates'
 export const useTemplatesStore = defineStore('templates', {
   state: () => ({
     content: [],
@@ -19,56 +16,57 @@ export const useTemplatesStore = defineStore('templates', {
     },
     getTemplateTypes: (state) => (slugs) => {
       if (state.types.length === 0) return null
-      return Object.values(state.types).filter((val) => slugs.includes(val.slug)).map((item) => { return item.name })
+      return Object.values(state.types).filter((val) => slugs.includes(val.slug)).map((item) => {
+        return item.name
+      })
     },
     getTemplateIndustries: (state) => (slugs) => {
       if (state.industries.length === 0) return null
-      return Object.values(state.industries).filter((val) => slugs.includes(val.slug)).map((item) => { return item.name })
+      return Object.values(state.industries).filter((val) => slugs.includes(val.slug)).map((item) => {
+        return item.name
+      })
     }
   },
   actions: {
-    set (items) {
+    set(items) {
       this.content = items
       this.allLoaded = true
     },
-    append (items) {
-      const ids = items.map((item) => { return item.id })
+    append(items) {
+      const ids = items.map((item) => {
+        return item.id
+      })
       this.content = this.content.filter((val) => !ids.includes(val.id))
       this.content = this.content.concat(items)
     },
-    addOrUpdate (item) {
+    addOrUpdate(item) {
       this.content = this.content.filter((val) => val.id !== item.id)
       this.content.push(item)
     },
-    remove (item) {
+    remove(item) {
       this.content = this.content.filter((val) => val.id !== item.id)
     },
-    startLoading () {
+    startLoading() {
       this.loading = true
     },
-    stopLoading () {
+    stopLoading() {
       this.loading = false
     },
-    setAllLoaded (val) {
+    setAllLoaded(val) {
       this.allLoaded = val
     },
-    resetState () {
+    resetState() {
       this.set([])
       this.stopLoading()
     },
-    loadTypesAndIndustries () {
-      if (Object.keys(this.industries).length === 0) {
-        import('@/data/forms/templates/industries.json').then((module) => {
-          this.industries = module.default
-        })
-      }
-      if (Object.keys(this.types).length === 0) {
-        import('@/data/forms/templates/types.json').then((module) => {
-          this.types = module.default
-        })
+    async loadTypesAndIndustries() {
+      if (Object.keys(this.industries).length === 0 || Object.keys(this.types).length === 0) {
+        const files = import.meta.glob('~/data/forms/templates/*.json')
+        this.industries = await files['/data/forms/templates/industries.json']()
+        this.types = await files['/data/forms/templates/types.json']()
       }
     },
-    loadTemplate (slug) {
+    loadTemplate(slug) {
       this.startLoading()
       this.loadTypesAndIndustries()
 
@@ -77,31 +75,31 @@ export const useTemplatesStore = defineStore('templates', {
         return Promise.resolve()
       }
 
-      return axios.get(templatesEndpoint + '/' + slug).then((response) => {
-        this.addOrUpdate(response.data)
+      return useOpnApi(templatesEndpoint + '/' + slug).then(({data, error}) => {
+        this.addOrUpdate(data.value)
         this.stopLoading()
       }).catch((error) => {
         this.stopLoading()
       })
     },
-    loadAll (options=null) {
+    loadAll(options = null) {
       this.startLoading()
       this.loadTypesAndIndustries()
 
       // Prepare with options
       let queryStr = ''
-      if(options !== null){
+      if (options !== null) {
         for (const [key, value] of Object.entries(options)) {
           queryStr += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value)
         }
         queryStr = queryStr.slice(1)
       }
-      return axios.get((queryStr) ? templatesEndpoint + '?' + queryStr : templatesEndpoint).then((response) => {
-        if(options !== null){
-          this.set(response.data)
+      return useOpnApi((queryStr) ? templatesEndpoint + '?' + queryStr : templatesEndpoint).then(({data, error}) => {
+        if (options !== null) {
+          this.set(data.value)
           this.setAllLoaded(false)
         } else {
-          this.append(response.data)
+          this.append(data.value)
           this.setAllLoaded(true)
         }
         this.stopLoading()
@@ -109,7 +107,7 @@ export const useTemplatesStore = defineStore('templates', {
         this.stopLoading()
       })
     },
-    loadIfEmpty () {
+    loadIfEmpty() {
       if (!this.allLoaded) {
         return this.loadAll()
       }

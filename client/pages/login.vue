@@ -62,7 +62,11 @@ export default {
     LoginForm
   },
 
-  middleware: 'guest',
+  setup() {
+    definePageMeta({
+      middleware: "guest"
+    })
+  },
 
   data: () => ({
     metaTitle: 'Login',

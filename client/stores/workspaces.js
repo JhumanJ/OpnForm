@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import {useOpnFetch} from "~/composables/useOpnFetch.js"
 import {useStorage} from "@vueuse/core"
 
 export const workspaceEndpoint = 'open/workspaces/'
@@ -17,9 +16,9 @@ export const useWorkspacesStore = defineStore('workspaces', {
       if (state.content.length === 0) return null
       return state.content.find(item => item.id === id)
     },
-    getCurrent: (state) => () => {
-      if (state.content.length === 0 || state.currentId === null) return null
-      return state.content.find(item => item.id === state.currentId)
+    getCurrent (){
+      if (this.content.length === 0 || this.currentId === null) return null
+      return this.content.find(item => item.id === this.currentId)
     }
   },
   actions: {
@@ -71,9 +70,8 @@ export const useWorkspacesStore = defineStore('workspaces', {
     load() {
       this.set([])
       this.startLoading()
-      return useOpnFetch(workspaceEndpoint,{server: false}).then(({data,error}) => {
-        console.log(data,error)
-        this.set(data)
+      return useOpnApi(workspaceEndpoint).then(({data, error}) => {
+        this.set(data.value)
         this.stopLoading()
       })
     },
@@ -85,8 +83,8 @@ export const useWorkspacesStore = defineStore('workspaces', {
     },
     delete(id) {
       this.startLoading()
-      return useOpnFetch(workspaceEndpoint + id, {method: 'DELETE'}).then((response) => {
-        this.remove(response.data.workspace_id)
+      return useOpnApi(workspaceEndpoint + id, {method: 'DELETE'}).then(({data}) => {
+        this.remove(data.value.workspace_id)
         this.stopLoading()
       })
     }

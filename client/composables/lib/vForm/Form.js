@@ -1,8 +1,6 @@
 import {serialize} from 'object-to-formdata';
 import Errors from './Errors';
 import cloneDeep from 'clone-deep';
-import {useOpnFetch} from "~/composables/useOpnFetch.js";
-
 function hasFiles(data) {
   return data instanceof File ||
     data instanceof Blob ||
@@ -124,7 +122,7 @@ class Form {
     }
 
     return new Promise((resolve, reject) => {
-      useOpnFetch(config.url, config)
+      useOpnApi(config.url, config)
         .then(({data, error}) => {
           if (error.value) {
             this.handleErrors(error);

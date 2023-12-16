@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import ForgotPasswordModal from '../ForgotPasswordModal.vue'
 
 export default {

@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
-import {useOpnFetch} from "~/composables/useOpnFetch.js";
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -27,39 +26,34 @@ export const useAuthStore = defineStore('auth', {
     },
 
     setToken(token) {
-      useCookie('token', {maxAge: 60 * 60 * 24 * 30}).value = token
+      this.setCookie('token', token)
       this.token = token
     },
 
     setAdminToken(token) {
-      useCookie('admin_token', {maxAge: 60 * 60 * 24 * 30}).value = token
+      this.setCookie('admin_token', token)
       this.admin_token = token
     },
 
-    loadTokenFromCookie() {
-      this.token = useCookie('token').value
-      this.admin_token = useCookie('admin_token').value
-    },
-
-    async fetchUser() {
-      useOpnFetch('/user').then(({data, error}) => {
-        console.log('fetch user', data,error)
-        if (error.value) {
-          console.error('Error fetching user', error.value)
-          this.setToken(null)
-        }
-
-        this.user = data.value
-        this.initServiceClients()
-
-        return this.user
-      })
-    },
-
-    async fetchUserIfNotFetched() {
-      if (this.user === null && this.token) {
-        await this.fetchUser()
+    setCookie(name, value) {
+      if (process.client) {
+        useCookie(name).value = value
       }
+    },
+
+    initStore(token, adminToken) {
+      this.token = token
+      this.admin_token = adminToken
+    },
+
+    setUser(user) {
+      if (!user) {
+        console.error('Error.setting.user')
+        this.setToken(null)
+      }
+
+      this.user = user
+      this.initServiceClients()
     },
 
     updateUser(payload) {
@@ -73,13 +67,14 @@ export const useAuthStore = defineStore('auth', {
       useCrisp().setUser(this.user)
 
       // Init sentry
-      Sentry.configureScope((scope) => {
-        scope.setUser({
-          id: this.user.id,
-          email: this.user.email,
-          subscription: this.user?.is_subscribed
-        })
-      })
+      // console.log(process)
+      // $sentry.configureScope((scope) => {
+      //   scope.setUser({
+      //     id: this.user.id,
+      //     email: this.user.email,
+      //     subscription: this.user?.is_subscribed
+      //   })
+      // })
     },
 
     async logout() {

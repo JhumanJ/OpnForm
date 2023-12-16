@@ -5,21 +5,21 @@
     <div v-if="templatesLoading" class="text-center my-4">
       <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
-    <p v-else-if="type === null || !type" class="text-center my-4">
-      We could not find this type.
+    <p v-else-if="industry === null || !industry" class="text-center my-4">
+      We could not find this industry.
     </p>
     <template v-else>
       <section class="py-12 sm:py-16 bg-gray-50 border-b border-gray-200">
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div class="text-center mx-auto">
             <div class="font-semibold sm:w-full text-blue-500 mb-3">
-              {{ type.name }}
+              {{ industry.name }}
             </div>
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900">
-              {{ type.meta_title }}
+              {{ industry.meta_title }}
             </h1>
             <p class="max-w-xl mx-auto text-gray-600 mt-4 text-lg font-normal">
-              {{ type.meta_description }}
+              {{ industry.meta_description }}
             </p>
           </div>
         </div>
@@ -30,9 +30,9 @@
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 relative z-20">
             <div class="flex items-center gap-4">
               <div class="flex-1 sm:flex-none">
-                <select-input v-model="selectedIndustry" name="industry"
-                            :options="industriesOptions" class="w-full sm:w-auto md:w-56"
-                />
+                <select-input v-model="selectedType" name="type"
+                          :options="typesOptions" class="w-full sm:w-auto md:w-56"
+            />
               </div>
             </div>
             <div class="flex-1 w-full md:max-w-xs">
@@ -57,7 +57,7 @@
       <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <p class="text-gray-600 font-normal">
-            {{ type.description }}
+            {{ industry.description }}
           </p>
         </div>
       </section>
@@ -66,7 +66,7 @@
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex items-center justify-between">
             <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-              Other Types
+              Other Industries
             </h4>
 
             <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
@@ -75,8 +75,8 @@
           </div>
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <router-link v-for="row in otherTypes" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates.types.show'}"
+            <router-link v-for="row in otherIndustries" :key="row.slug"
+                        :to="{params:{slug:row.slug}, name:'templates-industries'}"
                         :title="row.name"
                         class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
             >
@@ -124,6 +124,7 @@ export default {
     const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
     return {
+      authStore,
       authenticated : computed(() => authStore.check),
       user : computed(() => authStore.user),
       templates : computed(() => templatesStore.content),
@@ -135,7 +136,7 @@ export default {
 
   data () {
     return {
-      selectedIndustry: 'all',
+      selectedType: 'all',
       searchTemplate: new Form({
         search: ''
       })
@@ -146,41 +147,41 @@ export default {
 
   computed: {
     breadcrumbs () {
-      if (!this.type) {
+      if (!this.industry) {
         return [{ route: { name: 'templates' }, label: 'Templates' }]
       }
-      return [{ route: { name: 'templates' }, label: 'Templates' }, { label: this.type.name }]
+      return [{ route: { name: 'templates' }, label: 'Templates' }, { label: this.industry.name }]
     },
-    type () {
-      return Object.values(this.types).find((type) => {
-        return type.slug === this.$route.params.slug
+    industry () {
+      return Object.values(this.industries).find((industry) => {
+        return industry.slug === this.$route.params.slug
       })
     },
-    industriesOptions () {
-      return [{ name: 'All Industries', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
+    typesOptions () {
+      return [{ name: 'All Types', value: 'all' }].concat(Object.values(this.types).map((type) => {
         return {
-          name: industry.name,
-          value: industry.slug
+          name: type.name,
+          value: type.slug
         }
       }))
     },
-    otherTypes() {
-      return Object.values(this.types).filter((type) => {
-        return type.slug !== this.$route.params.slug
+    otherIndustries() {
+      return Object.values(this.industries).filter((industry) => {
+        return industry.slug !== this.$route.params.slug
       })
     },
     enrichedTemplates () {
       let enrichedTemplates = this.templates
 
-      // Filter by current Type only
+      // Filter by current Industry only
       enrichedTemplates = enrichedTemplates.filter((item) => {
-        return (item.types && item.types.length > 0) ? item.types.includes(this.$route.params.slug) : false
+        return (item.industries && item.industries.length > 0) ? item.industries.includes(this.$route.params.slug) : false
       })
 
-      // Filter by Selected Industry
-      if (this.selectedIndustry && this.selectedIndustry !== 'all') {
+      // Filter by Selected Type
+      if (this.selectedType && this.selectedType !== 'all') {
         enrichedTemplates = enrichedTemplates.filter((item) => {
-          return (item.industries && item.industries.length > 0) ? item.industries.includes(this.selectedIndustry) : false
+          return (item.types && item.types.length > 0) ? item.types.includes(this.selectedType) : false
         })
       }
 
@@ -203,11 +204,11 @@ export default {
       })
     },
     metaTitle () {
-      return this.type ? this.type.meta_title : 'Form Template Type'
+      return this.industry ? this.industry.meta_title : 'Form Template Industry'
     },
     metaDescription () {
-      if (!this.type) return null
-      return this.type.meta_description.substring(0, 140)
+      if (!this.industry) return null
+      return this.industry.meta_description.substring(0, 140)
     }
   },
 
@@ -235,4 +236,3 @@ export default {
   }
 }
 </style>
-

@@ -1,5 +1,6 @@
 export default {
   "app_ame": "OpnForm",
+  "app_url": "https://opnform.test",
   "api_url": "https://opnform.test/api",
   "locale": "en",
   "locales": {"en": "EN"},
@@ -20,11 +21,11 @@ export default {
   "production": false,
   "hCaptchaSiteKey": "4ee2dabb-4012-477e-8eb6-8017355f07cd",
   "google_analytics_code": "",
-  "amplitude_code": "",
+  "amplitude_code": "9952c8b914ce3f2bd494fce2dba18243",
   "sentry_dsn": "https://f1829a9d456704e776eccc73e1b30369@o4504910866612224.ingest.sentry.io/4506014678646784",
   "crisp_website_id": "94219d77-06ff-4aec-b07a-5bf26ec8fde1",
   "ai_features_enabled": true,
   "s3_enabled": false,
   "paid_plans_enabled": true,
-  "custom_domains_enabled": true
+  "custom_domains_enabled": false
 }

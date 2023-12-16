@@ -2,7 +2,10 @@ import amplitude from 'amplitude-js'
 import config from '~/opnform.config.js'
 
 export default () => {
-  const amplitudeClient = config.amplitude_code ? amplitude.getInstance().init(config.amplitude_code) : null;
+  const amplitudeClient = config.amplitude_code ? amplitude.getInstance() : null;
+  if (amplitudeClient) {
+    amplitudeClient.init(config.amplitude_code)
+  }
 
   const logEvent = function (eventName, eventData) {
     if (!config.production || !amplitudeClient) {
@@ -17,11 +20,12 @@ export default () => {
   }
 
   const setUser = function (user) {
+    if (!amplitudeClient) return
     amplitudeClient.setUserId(user.id)
     amplitudeClient.setUserProperties({
-      email: this.user.email,
-      subscribed: this.user.is_subscribed,
-      enterprise_subscription: this.user.has_enterprise_subscription
+      email: user.email,
+      subscribed: user.is_subscribed,
+      enterprise_subscription: user.has_enterprise_subscription
     })
   }
 

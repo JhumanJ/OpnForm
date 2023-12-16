@@ -8,8 +8,10 @@
               Your Forms
             </h2>
             <v-button v-track.create_form_click :to="{name:'forms-create'}">
-              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+                      stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               Create a new form
             </v-button>
@@ -45,12 +47,15 @@
             <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">
               No forms found
             </h3>
-            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search" class="mt-2 w-full text-center">
+            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search"
+                 class="mt-2 w-full text-center">
               Your search "{{ searchForm.search }}" did not match any forms. Please try again.
             </div>
             <v-button v-if="forms.length === 0" v-track.create_form_click class="mt-4" :to="{name:'forms-create'}">
-              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
+              <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.99996 1.1665V12.8332M1.16663 6.99984H12.8333" stroke="currentColor" stroke-width="1.67"
+                      stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               Create a new form
             </v-button>
@@ -60,7 +65,8 @@
               <div v-for="(form) in enrichedForms" :key="form.id"
                    class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
               >
-                <div class="flex-grow items-center truncate cursor-pointer" role="button" @click.prevent="viewForm(form)">
+                <div class="flex-grow items-center truncate cursor-pointer" role="button"
+                     @click.prevent="viewForm(form)">
                   <span class="font-semibold text-gray-900 dark:text-white">{{ form.title }}</span>
                   <ul class="flex text-gray-500">
                     <li class="pr-1">
@@ -74,13 +80,14 @@
                       Edited {{ form.last_edited_human }}
                     </li>
                   </ul>
-                  <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)" class="mt-1 flex items-center flex-wrap gap-3">
+                  <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)"
+                       class="mt-1 flex items-center flex-wrap gap-3">
                     <span v-if="form.visibility=='draft'"
-                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                          class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
                       Draft
                     </span>
                     <span v-else-if="form.visibility=='closed'"
-                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                          class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
                       Closed
                     </span>
                     <span v-for="(tag,i) in form.tags" :key="tag"
@@ -90,25 +97,25 @@
                     </span>
                   </div>
                 </div>
-                <extra-menu :form="form" :is-main-page="true" />
+                <extra-menu :form="form" :is-main-page="true"/>
               </div>
             </div>
           </div>
           <div v-if="formsLoading" class="text-center">
-            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
           </div>
         </div>
       </div>
     </div>
-    <open-form-footer class="mt-8 border-t" />
+    <open-form-footer class="mt-8 border-t"/>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useAuthStore } from '../stores/auth';
-import { useFormsStore } from '../stores/forms';
-import { useWorkspacesStore } from '../stores/workspaces';
+import {computed} from 'vue'
+import {useAuthStore} from '../stores/auth';
+import {useFormsStore} from '../stores/forms';
+import {useWorkspacesStore} from '../stores/workspaces';
 import Fuse from 'fuse.js'
 import Form from 'vform'
 import TextInput from '../components/forms/TextInput.vue'
@@ -120,35 +127,43 @@ const loadForms = function () {
   const workspacesStore = useWorkspacesStore()
   formsStore.startLoading()
   return workspacesStore.loadIfEmpty().then(() => {
-    formsStore.loadIfEmpty(workspacesStore.currentId)
+    if (process.client) {
+      formsStore.loadIfEmpty(workspacesStore.currentId)
+    }
   })
 }
 
 export default {
-  components: { OpenFormFooter, TextInput, ExtraMenu },
-
-  middleware: 'auth',
+  components: {OpenFormFooter, TextInput, ExtraMenu},
 
   props: {
-    metaTitle: { type: String, default: 'Your Forms' },
-    metaDescription: { type: String, default: 'All of your OpnForm are here. Create new forms, or update your existing one!' }
+    metaTitle: {type: String, default: 'Your Forms'},
+    metaDescription: {
+      type: String,
+      default: 'All of your OpnForm are here. Create new forms, or update your existing one!'
+    }
   },
 
-  async setup () {
+  async setup() {
     const authStore = useAuthStore()
     const formsStore = useFormsStore()
     const workspacesStore = useWorkspacesStore()
+
+    definePageMeta({
+      middleware: "auth"
+    })
+
     loadForms()
     return {
       formsStore,
       workspacesStore,
-      user : computed(() => authStore.user),
-      forms : computed(() => formsStore.content),
-      formsLoading : computed(() => formsStore.loading)
+      user: computed(() => authStore.user),
+      forms: computed(() => formsStore.content),
+      formsLoading: computed(() => formsStore.loading)
     }
   },
 
-  data () {
+  data() {
     return {
       showEditFormModal: false,
       selectedForm: null,
@@ -159,14 +174,15 @@ export default {
     }
   },
 
-  mounted () {},
+  mounted() {
+  },
 
   methods: {
-    editForm (form) {
+    editForm(form) {
       this.selectedForm = form
       this.showEditFormModal = true
     },
-    onTagClick (tag) {
+    onTagClick(tag) {
       const idx = this.selectedTags.indexOf(tag)
       if (idx === -1) {
         this.selectedTags.push(tag)
@@ -174,16 +190,16 @@ export default {
         this.selectedTags.splice(idx, 1)
       }
     },
-    viewForm (form) {
-      this.$router.push({ name: 'forms.show', params: { slug: form.slug } })
+    viewForm(form) {
+      this.$router.push({name: 'forms.show', params: {slug: form.slug}})
     }
   },
 
   computed: {
-    isFilteringForms () {
+    isFilteringForms() {
       return (this.searchForm.search !== '' && this.searchForm.search !== null) || this.selectedTags.length > 0
     },
-    enrichedForms () {
+    enrichedForms() {
       let enrichedForms = this.forms.map((form) => {
         form.workspace = this.workspacesStore.getById(form.workspace_id)
         return form
@@ -213,7 +229,7 @@ export default {
         return res.item
       })
     },
-    allTags () {
+    allTags() {
       return this.formsStore.getAllTags
     }
   }

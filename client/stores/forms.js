@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import {useOpnFetch} from "~/composables/useOpnFetch.js";
 
 export const formsEndpoint = '/open/workspaces/{workspaceId}/forms'
 export let currentPage = 1
@@ -56,13 +55,14 @@ export const useFormsStore = defineStore('forms', {
     },
     load(workspaceId) {
       this.startLoading()
-      return useOpnFetch(formsEndpoint.replace('{workspaceId}', workspaceId) + '?page=' + currentPage).get().then((response) => {
+      return useOpnApi(formsEndpoint.replace('{workspaceId}', workspaceId) + '?page=' + currentPage)
+        .then(({data, error}) => {
         if (currentPage === 1) {
-          this.set(response.data.data)
+          this.set(data.value.data)
         } else {
-          this.append(response.data.data)
+          this.append(data.value.data)
         }
-        if (currentPage < response.data.meta.last_page) {
+        if (currentPage < data.value.meta.last_page) {
           currentPage += 1
           this.load(workspaceId)
         } else {

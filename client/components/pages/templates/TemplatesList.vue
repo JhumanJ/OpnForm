@@ -45,7 +45,7 @@
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <router-link v-for="row in types" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates.types.show'}"
+                        :to="{params:{slug:row.slug}, name:'templates-types'}"
                         :title="row.name"
                         class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
             >
@@ -65,7 +65,7 @@
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <router-link v-for="row in industries" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates.industries.show'}"
+                        :to="{params:{slug:row.slug}, name:'templates-industries'}"
                         :title="row.name"
                         class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
             >

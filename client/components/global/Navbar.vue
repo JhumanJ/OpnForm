@@ -168,7 +168,7 @@ export default {
       return null
     },
     workspace () {
-      return this.workspacesStore.getCurrent()
+      return this.workspacesStore.getCurrent
     },
     paidPlansEnabled () {
       return this.config.paid_plans_enabled

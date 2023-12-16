@@ -23,6 +23,7 @@
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import TemplatesList from '../components/pages/templates/TemplatesList.vue'
 import SeoMeta from '../mixins/seo-meta.js'
+import {useTemplatesStore} from "~/stores/templates.js";
 
 export default {
 
@@ -32,6 +33,11 @@ export default {
   props: {
     metaTitle: { type: String, default: 'Templates' },
     metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
+  },
+
+  setup() {
+    const templatesStore = useTemplatesStore()
+    templatesStore.loadAll()
   },
 
   data () {

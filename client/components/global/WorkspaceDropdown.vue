@@ -69,7 +69,7 @@ export default {
 
   computed: {
     workspace () {
-      return this.workspacesStore.getCurrent()
+      return this.workspacesStore.getCurrent
     }
   },
 

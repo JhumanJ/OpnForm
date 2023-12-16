@@ -32,7 +32,7 @@
     <template-tags :slug="template.slug"
                    class="flex mt-4 items-center flex-wrap gap-3"
     />
-    <router-link :to="{params:{slug:template.slug},name:'templates.show'}" title="">
+    <router-link :to="{params:{slug:template.slug},name:'templates-slug'}" title="">
       <span class="absolute inset-0" aria-hidden="true" />
     </router-link>
   </div>
