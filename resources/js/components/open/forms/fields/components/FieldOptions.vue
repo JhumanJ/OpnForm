@@ -533,23 +533,23 @@ export default {
     },
     initRating () {
       if (this.field.is_rating) {
-        this.$set(this.field, 'is_scale', false)
+        this.field.is_scale = false
         if (!this.field.rating_max_value) {
-          this.$set(this.field, 'rating_max_value', 5)
+          this.field.rating_max_value = 5
         }
       }
     },
     initScale () {
       if (this.field.is_scale) {
-        this.$set(this.field, 'is_rating', false)
+        this.field.is_rating = false
         if (!this.field.scale_min_value) {
-          this.$set(this.field, 'scale_min_value', 1)
+          this.field.scale_min_value = 1
         }
         if (!this.field.scale_max_value) {
-          this.$set(this.field, 'scale_max_value', 5)
+          this.field.scale_max_value = 5
         }
         if (!this.field.scale_step_value) {
-          this.$set(this.field, 'scale_step_value', 1)
+          this.field.scale_step_value = 1
         }
       }
     },
