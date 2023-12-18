@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { themes } from '~/config/form-themes.js'
+import { themes } from '~/lib/forms/form-themes.js'
 
 export default {
   name: 'OpenFormButton',

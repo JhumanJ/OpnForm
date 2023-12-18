@@ -3,7 +3,7 @@ import {defineStore} from 'pinia'
 export const templatesEndpoint = '/templates'
 export const useTemplatesStore = defineStore('templates', {
   state: () => ({
-    content: [],
+    content: [], // TODO: convert to a map
     industries: {},
     types: {},
     allLoaded: false,
@@ -61,12 +61,14 @@ export const useTemplatesStore = defineStore('templates', {
     },
     async loadTypesAndIndustries() {
       if (Object.keys(this.industries).length === 0 || Object.keys(this.types).length === 0) {
-        const files = import.meta.glob('~/data/forms/templates/*.json')
-        this.industries = await files['/data/forms/templates/industries.json']()
-        this.types = await files['/data/forms/templates/types.json']()
+        // const files = import.meta.glob('~/data/forms/templates/*.json')
+        // console.log(await files['/data/forms/templates/industries.json']())
+        // this.industries = await files['/data/forms/templates/industries.json']()
+        // this.types = await files['/data/forms/templates/types.json']()
       }
     },
     loadTemplate(slug) {
+      console.log('loading template',slug)
       this.startLoading()
       this.loadTypesAndIndustries()
 

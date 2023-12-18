@@ -71,10 +71,12 @@ export default {
     },
     types () {
       if (!this.template) return null
+      console.log('template in types',this.template)
       return this.templatesStore.getTemplateTypes(this.template.types)
     },
     industries () {
       if (!this.template) return null
+      console.log('template in types',this.template)
       return this.templatesStore.getTemplateIndustries(this.template.industries)
     }
   },

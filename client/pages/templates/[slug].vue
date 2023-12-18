@@ -26,7 +26,7 @@
     </breadcrumb>
 
     <div v-if="templatesLoading" class="text-center my-4">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
     </div>
     <p v-else-if="template === null || !template" class="text-center my-4">
       We could not find this template.
@@ -65,7 +65,7 @@
               Template Preview
             </p>
             <open-complete-form ref="open-complete-form" :form="form" :creating="true"
-                                  class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
+                                class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
             />
           </div>
         </div>
@@ -73,7 +73,8 @@
         <div class="absolute bottom-0 translate-y-full inset-x-0">
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
-              <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]" :to="{path: createFormWithTemplateUrl}">
+              <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]"
+                        :to="{path: createFormWithTemplateUrl}">
                 Use this template
               </v-button>
             </div>
@@ -91,7 +92,7 @@
       <section class="pt-20 pb-12 bg-white sm:pb-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="max-w-2xl mx-auto mt-16 space-y-12 sm:mt-16 sm:space-y-16">
-            <div class="nf-text" v-html="template.description" />
+            <div class="nf-text" v-html="template.description"/>
 
             <template v-if="template.questions.length > 0">
               <hr class="mt-12 border-gray-200">
@@ -109,7 +110,7 @@
                     <dt class="font-semibold text-gray-900 dark:text-gray-100">
                       {{ ques.question }}
                     </dt>
-                    <dd class="mt-2 leading-6 text-gray-600 dark:text-gray-400" v-html="ques.answer" />
+                    <dd class="mt-2 leading-6 text-gray-600 dark:text-gray-400" v-html="ques.answer"/>
                   </div>
                 </dl>
               </div>
@@ -130,7 +131,7 @@
           </div>
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-y-12">
-            <single-template v-for="related in template.related_templates" :key="related" :slug="related" />
+            <single-template v-for="related in template.related_templates" :key="related.id" :template="related"/>
           </div>
         </div>
       </section>
@@ -197,10 +198,7 @@
 
 <script>
 import Form from 'vform'
-import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth'
-import { useTemplatesStore } from '../../stores/templates'
-import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import {computed} from 'vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
@@ -210,43 +208,43 @@ import FormTemplateModal from '../../components/open/forms/components/templates/
 
 export default {
 
-  components: { Breadcrumb, OpenFormFooter, OpenCompleteForm, TemplateTags, SingleTemplate, FormTemplateModal },
+  components: {Breadcrumb, OpenCompleteForm, TemplateTags, SingleTemplate, FormTemplateModal},
   mixins: [SeoMeta],
 
-  beforeRouteEnter (to, from, next) {
-    const templatesStore = useTemplatesStore()
-    if (to.params?.slug) {
-      templatesStore.loadTemplate(to.params?.slug)
-      templatesStore.loadTypesAndIndustries()
-    }
-    next()
-  },
-
-  setup () {
+  setup() {
     const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
+
+    const route = useRoute()
+    const slug = computed(() => route.params.slug)
+    if (slug) {
+      templatesStore.loadTemplate(slug)
+    }
+
+
     return {
       templatesStore,
-      authenticated : computed(() => authStore.check),
-      user : computed(() => authStore.user),
-      templatesLoading : computed(() => templatesStore.loading)
+      authenticated: computed(() => authStore.check),
+      user: computed(() => authStore.user),
+      templatesLoading: computed(() => templatesStore.loading)
     }
   },
 
-  data () {
+  data() {
     return {
       showFormTemplateModal: false
     }
   },
 
-  mounted () {},
+  mounted() {
+  },
 
   methods: {
-    cleanQuotes (str) {
+    cleanQuotes(str) {
       // Remove starting and ending quotes if any
       return (str) ? str.replace(/^"/, '').replace(/"$/, '') : ''
     },
-    copyTemplateUrl(){
+    copyTemplateUrl() {
       const str = this.template.share_url
       const el = document.createElement('textarea')
       el.value = str
@@ -259,41 +257,41 @@ export default {
   },
 
   computed: {
-    breadcrumbs () {
+    breadcrumbs() {
       if (!this.template) {
-        return [{ route: { name: 'templates' }, label: 'Templates' }]
+        return [{route: {name: 'templates'}, label: 'Templates'}]
       }
-      return [{ route: { name: 'templates' }, label: 'Templates' }, { label: this.template.name }]
+      return [{route: {name: 'templates'}, label: 'Templates'}, {label: this.template.name}]
     },
-    template () {
+    template() {
       return this.templatesStore.getBySlug(this.$route.params.slug)
     },
-    form () {
+    form() {
       return this.template ? new Form(this.template.structure) : null
     },
-    canEditTemplate () {
+    canEditTemplate() {
       return this.user && this.template && (this.user.admin || this.user.template_editor || this.template.creator_id === this.user.id)
     },
-    metaTitle () {
+    metaTitle() {
       return this.template ? this.template.name : 'Form Template'
     },
-    metaDescription () {
+    metaDescription() {
       if (!this.template) return null
       // take the first 140 characters of the description
       return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
     },
-    metaImage () {
+    metaImage() {
       if (!this.template) return null
       return this.template.image_url
     },
-    metaTags () {
+    metaTags() {
       if (!this.template) {
         return [];
       }
-      return this.template.publicly_listed ? [] : [{ name: 'robots', content: 'noindex' }]
+      return this.template.publicly_listed ? [] : [{name: 'robots', content: 'noindex'}]
     },
-    createFormWithTemplateUrl () {
-      if(this.authenticated) {
+    createFormWithTemplateUrl() {
+      if (this.authenticated) {
         return '/forms/create?template=' + this.template?.slug
       }
       return '/forms/create/guest?template=' + this.template?.slug

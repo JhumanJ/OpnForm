@@ -13,21 +13,18 @@
       </div>
     </section>
 
-    <templates-list />
+    <templates-list :templates="templates" :loading="loading" />
 
     <open-form-footer class="mt-8 border-t"/>
   </div>
 </template>
 
 <script>
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
-import TemplatesList from '../components/pages/templates/TemplatesList.vue'
-import SeoMeta from '../mixins/seo-meta.js'
+import SeoMeta from '../../mixins/seo-meta.js'
 import {useTemplatesStore} from "~/stores/templates.js";
 
 export default {
 
-  components: { OpenFormFooter, TemplatesList },
   mixins: [SeoMeta],
 
   props: {
@@ -38,16 +35,10 @@ export default {
   setup() {
     const templatesStore = useTemplatesStore()
     templatesStore.loadAll()
+    return {
+      templates: templatesStore.content,
+      loading: templatesStore.loading
+    }
   },
-
-  data () {
-    return {}
-  },
-
-  mounted () {},
-
-  computed: {},
-
-  methods: {}
 }
 </script>

@@ -62,12 +62,9 @@
 <script>
 import axios from 'axios'
 import Form from 'vform'
-import { computed } from 'vue'
-import { useRecordsStore } from '../../../stores/records'
-import { useWorkingFormStore } from '../../../stores/working_form'
 import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
-import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
+import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js";
 import OpenFormField from './OpenFormField.vue'
 import draggable from 'vuedraggable'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'

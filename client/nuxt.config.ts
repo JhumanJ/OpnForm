@@ -11,6 +11,16 @@ const modules = [
 if (opnformConfig.sentry_dsn) {
     modules.push('@nuxtjs/sentry')
 }
+
+const cachedRoutes = [
+    '/',
+    '/ai-form-builder',
+    '/login',
+    '/register',
+    '/privacy-policy',
+    '/terms-conditions',
+].reduce((acc, curr) => (acc[curr] = {swr: 60 * 60}, acc), {});
+
 export default defineNuxtConfig({
     devtools: {enabled: true},
     css: ['~/scss/app.scss'],
@@ -39,17 +49,11 @@ export default defineNuxtConfig({
             path: '~/components/global',
             pathPrefix: false,
         },
+        {
+            path: '~/components/pages',
+            pathPrefix: false,
+        },
         '~/components',
     ],
-    routeRules: {
-        '/ai-form-builder': {
-            swr: 60 * 60
-        },
-        '/privacy-policy': {
-            swr: 60 * 60
-        },
-        '/terms-conditions': {
-            swr: 60 * 60
-        },
-    }
+    routeRules: { ... cachedRoutes}
 })

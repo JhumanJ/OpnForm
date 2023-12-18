@@ -1,5 +1,5 @@
 import { ref, computed, watch } from 'vue'
-import { themes } from '~/config/form-themes.js'
+import { themes } from '~/lib/forms/form-themes.js'
 
 export const inputProps = {
   id: { type: String, default: null },

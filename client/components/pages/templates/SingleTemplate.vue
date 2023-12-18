@@ -39,43 +39,16 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useTemplatesStore } from '../../../stores/templates'
 import TemplateTags from './TemplateTags.vue'
 
 export default {
   components: { TemplateTags },
 
   props: {
-    slug: {
-      type: String,
+    template: {
+      type: Object,
       required: true
     }
-  },
-
-  setup () {
-    const templatesStore = useTemplatesStore()
-    return {
-      templatesStore
-    }
-  },
-
-  data: () => ({}),
-
-  computed: {
-    template () {
-      return this.templatesStore.getBySlug(this.slug)
-    }
-  },
-
-  watch: {
-    slug () {
-      this.templatesStore.loadTemplate(this.slug)
-    }
-  },
-
-  mounted () {
-    this.templatesStore.loadTemplate(this.slug)
   },
 
   methods: {

@@ -16,104 +16,103 @@
             </div>
           </div>
           <div class="flex-1 w-full md:max-w-xs">
-            <text-input name="search" :form="searchTemplate" placeholder="Search..." />
+            <text-input autocomplete="off" name="search" :form="searchTemplate" placeholder="Search..."/>
           </div>
         </div>
 
         <div v-if="templatesLoading" class="text-center mt-4">
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
         </div>
         <p v-else-if="enrichedTemplates.length === 0" class="text-center mt-4">
           No templates found.
         </p>
         <div v-else class="relative z-10">
           <div class="grid grid-cols-1 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-y-12">
-            <single-template v-for="template in enrichedTemplates" :key="template.id" :slug="template.slug" />
+            <single-template v-for="template in enrichedTemplates" :key="template.id" :template="template"/>
           </div>
         </div>
       </div>
     </section>
 
-    <template v-if="!onlyMy">
-      <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
-        <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-              All Types
-            </h4>
-          </div>
 
-          <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <router-link v-for="row in types" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates-types'}"
-                        :title="row.name"
-                        class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
-            >
-              {{ row.name }}
-            </router-link>
-          </div>
+    <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+      <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+            All Types
+          </h4>
         </div>
-      </section>
 
-      <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
-        <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-              All Industries
-            </h4>
-          </div>
-
-          <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <router-link v-for="row in industries" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates-industries'}"
-                        :title="row.name"
-                        class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
-            >
-              {{ row.name }}
-            </router-link>
-          </div>
+        <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <router-link v-for="row in types" :key="row.slug"
+                       :to="{params:{slug:row.slug}, name:'templates-types'}"
+                       :title="row.name"
+                       class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+          >
+            {{ row.name }}
+          </router-link>
         </div>
-      </section>
-    </template>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+      <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+            All Industries
+          </h4>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <router-link v-for="row in industries" :key="row.slug"
+                       :to="{params:{slug:row.slug}, name:'templates-industries'}"
+                       :title="row.name"
+                       class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+          >
+            {{ row.name }}
+          </router-link>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useAuthStore } from '../../../stores/auth'
-import { useTemplatesStore } from '../../../stores/templates'
+import {computed} from 'vue'
 import Form from 'vform'
 import Fuse from 'fuse.js'
 import SingleTemplate from './SingleTemplate.vue'
 
-const loadTemplates = function (onlyMy) {
-  const templatesStore = useTemplatesStore()
-  if(onlyMy){
-    templatesStore.loadAll({'onlymy':true})
-  } else {
-    templatesStore.loadIfEmpty()
-  }
-}
+// const loadTemplates = function (onlyMy) {
+//   const templatesStore = useTemplatesStore()
+//   if(onlyMy){
+//     templatesStore.loadAll({'onlymy':true})
+//   } else {
+//     templatesStore.loadIfEmpty()
+//   }
+// }
 
 export default {
   name: 'TemplatesList',
-  components: { SingleTemplate },
+  components: {SingleTemplate},
   props: {
-    onlyMy: {
+    templates: {
+      type: Array,
+      required: true
+    },
+    loading: {
       type: Boolean,
-      required: false
+      default: false
     }
   },
 
-  setup () {
+  setup() {
     const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
     return {
-      user : computed(() => authStore.user),
-      templates : computed(() => templatesStore.content),
-      templatesLoading : computed(() => templatesStore.loading),
-      industries : computed(() => templatesStore.industries),
-      types : computed(() => templatesStore.types)
+      user: computed(() => authStore.user),
+      industries: computed(() => templatesStore.industries),
+      types: computed(() => templatesStore.types)
     }
   },
 
@@ -127,29 +126,25 @@ export default {
 
   watch: {},
 
-  mounted () {
-    loadTemplates(this.onlyMy)
-  },
-
   computed: {
-    industriesOptions () {
-      return [{ name: 'All Industries', value: 'all' }].concat(Object.values(this.industries).map((industry) => {
+    industriesOptions() {
+      return [{name: 'All Industries', value: 'all'}].concat(Object.values(this.industries).map((industry) => {
         return {
           name: industry.name,
           value: industry.slug
         }
       }))
     },
-    typesOptions () {
-      return [{ name: 'All Types', value: 'all' }].concat(Object.values(this.types).map((type) => {
+    typesOptions() {
+      return [{name: 'All Types', value: 'all'}].concat(Object.values(this.types).map((type) => {
         return {
           name: type.name,
           value: type.slug
         }
       }))
     },
-    enrichedTemplates () {
-      let enrichedTemplates = (this.onlyMy && this.user) ? this.templates.filter((item) => { return item.creator_id === this.user.id}) : this.templates
+    enrichedTemplates() {
+      let enrichedTemplates = this.templates
 
       // Filter by Selected Type
       if (this.selectedType && this.selectedType !== 'all') {
@@ -184,7 +179,5 @@ export default {
       })
     }
   },
-
-  methods: {}
 }
 </script>

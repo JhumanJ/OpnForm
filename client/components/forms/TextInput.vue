@@ -7,7 +7,7 @@
     </template>
 
     <input :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
-           :type="nativeType"
+           :type="nativeType" :autocomplete="autocomplete"
            :pattern="pattern"
            :style="inputStyle"
            :class="[theme.default.input, { '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200': disabled }]"
@@ -42,6 +42,7 @@ export default {
     accept: { type: String, default: null },
     min: { type: Number, required: false, default: null },
     max: { type: Number, required: false, default: null },
+    autocomplete: { default: null },
     maxCharLimit: { type: Number, required: false, default: null },
     showCharLimit: { type: Boolean, required: false, default: false },
     pattern: { type: String, default: null }

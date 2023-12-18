@@ -80,9 +80,8 @@
 
 <script>
 import { computed } from 'vue'
-import { useWorkingFormStore } from '../../../stores/working_form'
-import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import FormPendingSubmissionKey from '~/mixins/forms/form-pending-submission-key.js'
 
 export default {
   name: 'OpenFormField',

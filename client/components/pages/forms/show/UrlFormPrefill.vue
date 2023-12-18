@@ -67,7 +67,7 @@
 import FormUrlPrefill from '../../../open/forms/components/FormUrlPrefill.vue'
 import ProTag from '~/components/global/ProTag.vue'
 import OpenForm from '../../../open/forms/OpenForm.vue'
-import { themes } from '~/config/form-themes.js'
+import { themes } from '~/lib/forms/form-themes.js'
 
 export default {
   name: 'UrlFormPrefill',

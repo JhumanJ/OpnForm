@@ -54,7 +54,6 @@ import { computed } from 'vue'
 import { useFormsStore } from '../../stores/forms'
 import { useRecordsStore } from '../../stores/records'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
-import Cookies from 'js-cookie'
 import sha256 from 'js-sha256'
 import SeoMeta from '../../mixins/seo-meta.js'
 
@@ -169,7 +168,9 @@ export default {
 
   methods: {
     passwordEntered (password) {
-      Cookies.set('password-' + this.form.slug, sha256(password), { expires: 7, sameSite: 'None', secure: true })
+      if (process.client) {
+        useCookie('password-' + this.form.slug, {maxAge: { expires: 60*60*7}}).value = sha256(password)
+      }
       loadForm(this.formSlug).then(() => {
         if (this.form.is_password_protected) {
           this.$refs['open-complete-form'].addPasswordError('Invalid password.')

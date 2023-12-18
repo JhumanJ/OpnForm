@@ -111,7 +111,7 @@
 import Form from 'vform'
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
-import { themes } from '~/config/form-themes.js'
+import { themes } from '~/lib/forms/form-themes.js'
 import VButton from '~/components/global/VButton.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
