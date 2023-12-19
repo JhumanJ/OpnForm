@@ -16,6 +16,7 @@ class SitemapController extends Controller
      */
     protected $urls = [
         ['/', 1],
+        ['/pricing', 0.9],
         ['/privacy-policy', 0.5],
         ['/terms-conditions', 0.5],
         ['/login', 0.4],

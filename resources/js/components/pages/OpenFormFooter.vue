@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <div class="grid md:grid-cols-3 my-8">
-      <div class="flex mt-2">
+      <div class="flex mt-2 items-center">
         <p class="text-sm text-gray-600 dark:text-gray-400 text-center w-full">
           © Copyright {{ currYear }}. All Rights Reserved
         </p>
@@ -14,18 +14,31 @@
           </span>
         </router-link>
       </div>
-      <ul class="flex justify-center mt-5 md:mt-1">
-          <li class="mr-10">
-            <router-link :to="{name:'privacy-policy'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
-              Privacy Policy
-            </router-link>
-          </li>
-          <li class="list-disc pl-3">
-            <router-link :to="{name:'terms-conditions'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
-              Terms & Conditions
-            </router-link>
-          </li>
-        </ul>
+      <div class="flex justify-center mt-5 md:mt-0">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
+          <a href="https://opnform.featurebase.app/" target="_blank"
+             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Feature Requests
+          </a>
+          <a href="https://opnform.featurebase.app/roadmap" target="_blank"
+             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Roadmap
+          </a>
+          <a href="www.facebook.com/groups/opnform" target="_blank"
+             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Facebook Group
+          </a>
+          <router-link :to="{name:'privacy-policy'}"
+                       class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Privacy Policy
+          </router-link>
+
+          <router-link :to="{name:'terms-conditions'}"
+                       class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
+            Terms & Conditions
+          </router-link>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -57,7 +70,8 @@ export default {
     featureRequestsUrl: () => window.config.links.feature_requests
   },
 
-  mounted () {},
+  mounted() {
+  },
 
   methods: {}
 }
