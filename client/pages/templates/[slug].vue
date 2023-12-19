@@ -45,9 +45,9 @@
               <p class="mt-2 text-lg font-normal text-gray-600">
                 {{ cleanQuotes(template.short_description) }}
               </p>
-              <!--              <template-tags :slug="template.slug" :display-all="true"-->
-              <!--                             class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start"-->
-              <!--              />-->
+              <template-tags :template="template" :display-all="true"
+                             class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start"
+              />
             </div>
           </div>
         </div>
@@ -226,6 +226,7 @@ const {data: relatedTemplatesData} = await useAsyncData('related-templates', () 
   }))
 })
 templatesStore.save(relatedTemplatesData.value)
+templatesStore.initTypesAndIndustries()
 
 // State
 const showFormTemplateModal = ref(false)
@@ -235,7 +236,7 @@ const breadcrumbs = computed(() => {
   if (!template.value) {
     return [{route: {name: 'templates'}, label: 'Templates'}]
   }
-  return [{route: {name: 'templates'}, label: 'Templates'}, {label: template.name}]
+  return [{route: {name: 'templates'}, label: 'Templates'}, {label: template.value.name}]
 })
 const relatedTemplates = computed(() => templatesStore.getByKey(template?.value?.related_templates))
 const canEditTemplate = computed(() => authStore.authenticated && template.value && (authStore.user.admin || authStore.user.template_editor || template.creator_id === authStore.user.id))

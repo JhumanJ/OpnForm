@@ -76,7 +76,7 @@
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <router-link v-for="row in otherIndustries" :key="row.slug"
-                        :to="{params:{slug:row.slug}, name:'templates-industries'}"
+                        :to="{params:{slug:row.slug}, name:'templates-industries-slug'}"
                         :title="row.name"
                         class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
             >
@@ -96,12 +96,12 @@
 import Form from 'vform'
 import Fuse from 'fuse.js'
 import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth'
-import { useTemplatesStore } from '../../stores/templates'
-import SeoMeta from '../../mixins/seo-meta.js'
-import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
+import { useAuthStore } from '../../../stores/auth.js'
+import { useTemplatesStore } from '../../../stores/templates.js'
+import SeoMeta from '../../../mixins/seo-meta.js'
+import OpenFormFooter from '../../../components/pages/OpenFormFooter.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
-import SingleTemplate from '../../components/pages/templates/SingleTemplate.vue'
+import SingleTemplate from '../../../components/pages/templates/SingleTemplate.vue'
 
 const loadTemplates = function () {
   const templatesStore = useTemplatesStore()

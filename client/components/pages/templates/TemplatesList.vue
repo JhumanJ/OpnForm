@@ -16,7 +16,7 @@
             </div>
           </div>
           <div class="flex-1 w-full md:max-w-xs">
-            <text-input autocomplete="off" name="search" :form="searchTemplate" placeholder="Search..."/>
+            <text-input autocomplete="off" name="search" v-model="search" placeholder="Search..."/>
           </div>
         </div>
 
@@ -45,7 +45,7 @@
 
         <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <router-link v-for="row in types" :key="row.slug"
-                       :to="{params:{slug:row.slug}, name:'templates-types'}"
+                       :to="{params: {slug:row.slug}, name:'templates-types-slug'}"
                        :title="row.name"
                        class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
           >
@@ -65,7 +65,7 @@
 
         <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <router-link v-for="row in industries" :key="row.slug"
-                       :to="{params:{slug:row.slug}, name:'templates-industries'}"
+                       :to="{params:{slug:row.slug}, name:'templates-industries-slug'}"
                        :title="row.name"
                        class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
           >
@@ -79,9 +79,9 @@
 
 <script>
 import {computed} from 'vue'
-import Form from 'vform'
 import Fuse from 'fuse.js'
 import SingleTemplate from './SingleTemplate.vue'
+import {refThrottled} from "@vueuse/core";
 
 export default {
   name: 'TemplatesList',
@@ -100,22 +100,21 @@ export default {
   setup() {
     const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
+    const search = ref('')
+    const throttledSearch = refThrottled(search, 1000)
     return {
+      search,
+      throttledSearch,
       user: computed(() => authStore.user),
-      industries: computed(() => templatesStore.industries),
-      types: computed(() => templatesStore.types)
+      industries: computed(() => [...templatesStore.industries.values()]),
+      types: computed(() => [...templatesStore.types.values()])
     }
   },
 
   data: () => ({
     selectedType: 'all',
     selectedIndustry: 'all',
-    searchTemplate: new Form({
-      search: ''
-    })
   }),
-
-  watch: {},
 
   computed: {
     industriesOptions() {
@@ -151,7 +150,8 @@ export default {
         })
       }
 
-      if (this.searchTemplate.search === '' || this.searchTemplate.search === null) {
+      console.log(this.throttledSearch, '---inode')
+      if (!this.throttledSearch || this.throttledSearch === '' || this.throttledSearch === null) {
         return enrichedTemplates
       }
 
@@ -165,7 +165,7 @@ export default {
         ]
       }
       const fuse = new Fuse(enrichedTemplates, fuzeOptions)
-      return fuse.search(this.searchTemplate.search).map((res) => {
+      return fuse.search(this.throttledSearch).map((res) => {
         return res.item
       })
     }

@@ -1,5 +1,7 @@
 import {defineStore} from 'pinia'
 import {useContentStore} from "~/composables/stores/useContentStore.js";
+import templateTypes from "~/data/forms/templates/types.json"
+import industryTypes from "~/data/forms/templates/industries.json"
 
 const templatesEndpoint = 'templates'
 export const useTemplatesStore = defineStore('templates', () => {
@@ -7,29 +9,26 @@ export const useTemplatesStore = defineStore('templates', () => {
   const contentStore = useContentStore('slug')
 
   const allLoaded = ref(false)
-  const industries = ref({})
-  const types = ref({})
+  const industries = ref(new Map)
+  const types = ref(new Map)
 
-  const getTemplateTypes = computed((state) => (slugs) => {
-    if (state.types.length === 0) return null
-    return Object.values(state.types).filter((val) => slugs.includes(val.slug)).map((item) => {
-      return item.name
-    })
-    // todo: use map
-  })
-  const getTemplateIndustries = computed((state) => (slugs) => {
-    if (state.industries.length === 0) return null
-    return Object.values(state.industries).filter((val) => slugs.includes(val.slug)).map((item) => {
-      return item.name
-    })
-  })
+  const getTemplateTypes = (slugs) => {
+    return slugs.map((slug) => {
+      return types.value.get(slug)
+    }).filter((item) => item !== undefined)
+  }
+  const getTemplateIndustries =(slugs) => {
+    return slugs.map((slug) => {
+      return industries.value.get(slug)
+    }).filter((item) => item !== undefined)
+  }
 
-  const loadTypesAndIndustries = function() {
-    if (Object.keys(this.industries).length === 0 || Object.keys(this.types).length === 0) {
-      // const files = import.meta.glob('~/data/forms/templates/*.json')
-      // console.log(await files['/data/forms/templates/industries.json']())
-      // this.industries = await files['/data/forms/templates/industries.json']()
-      // this.types = await files['/data/forms/templates/types.json']()
+  const initTypesAndIndustries = () => {
+    if (types.value.size === 0) {
+      types.value = new Map(Object.entries(templateTypes))
+    }
+    if (industries.value.size === 0) {
+      industries.value = new Map(Object.entries(industryTypes))
     }
   }
 
@@ -39,7 +38,7 @@ export const useTemplatesStore = defineStore('templates', () => {
     types,
     getTemplateTypes,
     getTemplateIndustries,
-    loadTypesAndIndustries,
+    initTypesAndIndustries
   }
 })
 
@@ -49,5 +48,10 @@ export const fetchTemplate = (slug) => {
 
 export const fetchAllTemplates = () => {
   return useOpnApi(templatesEndpoint)
+}
+
+export const loadTypesAndIndustries = () => {
+  // Load the json files
+
 }
 

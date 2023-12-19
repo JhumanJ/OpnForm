@@ -31,6 +31,7 @@ const templatesStore = useTemplatesStore()
 
 if (!templatesStore.allLoaded) {
   templatesStore.startLoading()
+  templatesStore.initTypesAndIndustries()
   const {data} = await fetchAllTemplates()
   templatesStore.set(data.value)
   templatesStore.allLoaded = true
