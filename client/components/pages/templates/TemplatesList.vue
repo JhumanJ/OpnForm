@@ -5,12 +5,12 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 relative z-20">
           <div class="flex items-center gap-4">
             <div class="flex-1 sm:flex-none">
-              <select-input v-model="selectedType" name="type"
+              <select-input v-model="selectedType" name="type" v-if="filterTypes"
                             :options="typesOptions" class="w-full sm:w-auto md:w-56"
               />
             </div>
             <div class="flex-1 sm:flex-none">
-              <select-input v-model="selectedIndustry" name="industry"
+              <select-input v-model="selectedIndustry" name="industry" v-if="filterIndustries"
                             :options="industriesOptions" class="w-full sm:w-auto md:w-56"
               />
             </div>
@@ -34,16 +34,20 @@
       </div>
     </section>
 
+    <slot name="before-lists"/>
 
-    <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+    <section class="py-12 bg-white border-t border-gray-200 sm:py-16" v-if="showTypes">
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="flex items-center justify-between">
           <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
             All Types
           </h4>
+          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
+            View All Templates
+          </v-button>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div class="grid grid-cols-1 gap-x-8 gap-y-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <router-link v-for="row in types" :key="row.slug"
                        :to="{params: {slug:row.slug}, name:'templates-types-slug'}"
                        :title="row.name"
@@ -55,15 +59,18 @@
       </div>
     </section>
 
-    <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+    <section class="py-12 bg-white border-t border-gray-200 sm:py-16" v-if="showIndustries">
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="flex items-center justify-between">
           <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
             All Industries
           </h4>
+          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
+            View All Templates
+          </v-button>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div class="grid grid-cols-1 gap-x-8 gap-y-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <router-link v-for="row in industries" :key="row.slug"
                        :to="{params:{slug:row.slug}, name:'templates-industries-slug'}"
                        :title="row.name"
@@ -94,6 +101,22 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    showTypes: {
+      type: Boolean,
+      default: true
+    },
+    filterTypes: {
+      type: Boolean,
+      default: true
+    },
+    showIndustries: {
+      type: Boolean,
+      default: true
+    },
+    filterIndustries: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -137,14 +160,14 @@ export default {
       let enrichedTemplates = this.templates
 
       // Filter by Selected Type
-      if (this.selectedType && this.selectedType !== 'all') {
+      if (this.filterTypes && this.selectedType && this.selectedType !== 'all') {
         enrichedTemplates = enrichedTemplates.filter((item) => {
           return (item.types && item.types.length > 0) ? item.types.includes(this.selectedType) : false
         })
       }
 
       // Filter by Selected Industry
-      if (this.selectedIndustry && this.selectedIndustry !== 'all') {
+      if (this.filterIndustries && this.selectedIndustry && this.selectedIndustry !== 'all') {
         enrichedTemplates = enrichedTemplates.filter((item) => {
           return (item.industries && item.industries.length > 0) ? item.industries.includes(this.selectedIndustry) : false
         })

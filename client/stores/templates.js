@@ -17,7 +17,7 @@ export const useTemplatesStore = defineStore('templates', () => {
       return types.value.get(slug)
     }).filter((item) => item !== undefined)
   }
-  const getTemplateIndustries =(slugs) => {
+  const getTemplateIndustries = (slugs) => {
     return slugs.map((slug) => {
       return industries.value.get(slug)
     }).filter((item) => item !== undefined)
@@ -50,8 +50,12 @@ export const fetchAllTemplates = () => {
   return useOpnApi(templatesEndpoint)
 }
 
-export const loadTypesAndIndustries = () => {
-  // Load the json files
-
+export const loadAllTemplates = async (store) => {
+  if (!store.allLoaded) {
+    store.startLoading()
+    store.initTypesAndIndustries()
+    const {data} = await fetchAllTemplates()
+    store.set(data.value)
+    store.allLoaded = true
+  }
 }
-

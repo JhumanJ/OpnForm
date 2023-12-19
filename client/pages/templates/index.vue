@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import {fetchAllTemplates} from "~/stores/templates.js";
+import {loadAllTemplates} from "~/stores/templates.js";
 
 // props: {
 //   metaTitle: { type: String, default: 'Templates' },
@@ -28,14 +28,7 @@ import {fetchAllTemplates} from "~/stores/templates.js";
 // },
 
 const templatesStore = useTemplatesStore()
-
-if (!templatesStore.allLoaded) {
-  templatesStore.startLoading()
-  templatesStore.initTypesAndIndustries()
-  const {data} = await fetchAllTemplates()
-  templatesStore.set(data.value)
-  templatesStore.allLoaded = true
-}
+loadAllTemplates(templatesStore)
 
 const templates = computed(() => templatesStore.getAll)
 </script>
