@@ -126,10 +126,8 @@ const loadForms = function () {
   const formsStore = useFormsStore()
   const workspacesStore = useWorkspacesStore()
   formsStore.startLoading()
-  return workspacesStore.loadIfEmpty().then(() => {
-    if (process.client) {
-      formsStore.loadIfEmpty(workspacesStore.currentId)
-    }
+  workspacesStore.loadIfEmpty().then(() => {
+    formsStore.loadIfEmpty(workspacesStore.currentId)
   })
 }
 

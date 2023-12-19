@@ -20,7 +20,7 @@
           </div>
         </div>
 
-        <div v-if="templatesLoading" class="text-center mt-4">
+        <div v-if="loading" class="text-center mt-4">
           <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
         </div>
         <p v-else-if="enrichedTemplates.length === 0" class="text-center mt-4">
@@ -82,15 +82,6 @@ import {computed} from 'vue'
 import Form from 'vform'
 import Fuse from 'fuse.js'
 import SingleTemplate from './SingleTemplate.vue'
-
-// const loadTemplates = function (onlyMy) {
-//   const templatesStore = useTemplatesStore()
-//   if(onlyMy){
-//     templatesStore.loadAll({'onlymy':true})
-//   } else {
-//     templatesStore.loadIfEmpty()
-//   }
-// }
 
 export default {
   name: 'TemplatesList',

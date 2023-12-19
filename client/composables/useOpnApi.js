@@ -44,6 +44,10 @@ export function getOpnRequestsOptions(request, opts) {
   }
 }
 
+export const opnFetch = (request, opts = {}) => {
+  return $fetch(request, getOpnRequestsOptions(request, opts))
+}
+
 export const useOpnApi = (request, opts = {}) => {
   return useFetch(request, getOpnRequestsOptions(request, opts))
 }

@@ -106,7 +106,8 @@ export default {
     const workingFormStore = useWorkingFormStore()
     return {
       recordsStore,
-      workingFormStore
+      workingFormStore,
+      darkModeEnabled: useDark()
     }
   },
 
@@ -118,7 +119,6 @@ export default {
        * Used to force refresh components by changing their keys
        */
       formVersionId: 1,
-      darkModeEnabled: document.body.classList.contains('dark'),
       isAutoSubmit: false,
       /**
        * If currently dragging a field
@@ -259,7 +259,7 @@ export default {
         return
       }
 
-      if (this.form.use_captcha) {
+      if (this.form.use_captcha && process.client) {
         this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
         this.$refs.hcaptcha.reset()
       }
@@ -291,6 +291,7 @@ export default {
       }
 
       // Scroll to error
+      if (process.server) return
       const elements = document.getElementsByClassName('has-error')
       if (elements.length > 0) {
         window.scroll({

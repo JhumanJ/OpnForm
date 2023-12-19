@@ -1,14 +1,14 @@
 <template>
   <div class="flex flex-col min-h-full">
-    <breadcrumb :path="breadcrumbs">
+    <breadcrumb :path="breadcrumbs" v-if="template">
       <template #left>
         <div v-if="canEditTemplate" class="ml-5">
           <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
             Edit Template
           </v-button>
-          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
-                               @close="showFormTemplateModal=false"
-          />
+          <!--          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"-->
+          <!--                               @close="showFormTemplateModal=false"-->
+          <!--          />-->
         </div>
       </template>
       <template #right>
@@ -25,10 +25,7 @@
       </template>
     </breadcrumb>
 
-    <div v-if="templatesLoading" class="text-center my-4">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
-    </div>
-    <p v-else-if="template === null || !template" class="text-center my-4">
+    <p v-if="template === null || !template" class="text-center my-4">
       We could not find this template.
     </p>
     <template v-else>
@@ -48,9 +45,9 @@
               <p class="mt-2 text-lg font-normal text-gray-600">
                 {{ cleanQuotes(template.short_description) }}
               </p>
-              <template-tags :slug="template.slug" :display-all="true"
-                             class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start"
-              />
+              <!--              <template-tags :slug="template.slug" :display-all="true"-->
+              <!--                             class="flex flex-wrap items-center justify-center gap-3 mt-4 md:justify-start"-->
+              <!--              />-->
             </div>
           </div>
         </div>
@@ -119,7 +116,8 @@
         </div>
       </section>
 
-      <section v-if="template.related_templates.length > 0" class="py-12 bg-white border-t border-gray-200 sm:py-16">
+      <section v-if="relatedTemplates && relatedTemplates.length > 0"
+               class="py-12 bg-white border-t border-gray-200 sm:py-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex items-center justify-between">
             <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
@@ -131,7 +129,7 @@
           </div>
 
           <div class="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-y-12">
-            <single-template v-for="related in template.related_templates" :key="related.id" :template="related"/>
+            <single-template v-for="related in relatedTemplates" :key="related.id" :template="related"/>
           </div>
         </div>
       </section>
@@ -196,108 +194,93 @@
   </div>
 </template>
 
-<script>
-import Form from 'vform'
+<script setup>
 import {computed} from 'vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
-import TemplateTags from '../../components/pages/templates/TemplateTags.vue'
 import SingleTemplate from '../../components/pages/templates/SingleTemplate.vue'
-import FormTemplateModal from '../../components/open/forms/components/templates/FormTemplateModal.vue'
+import {fetchTemplate} from "~/stores/templates.js";
 
-export default {
+const authStore = useAuthStore()
+const templatesStore = useTemplatesStore()
 
-  components: {Breadcrumb, OpenCompleteForm, TemplateTags, SingleTemplate, FormTemplateModal},
-  mixins: [SeoMeta],
+const route = useRoute()
+const slug = computed(() => route.params.slug)
 
-  setup() {
-    const authStore = useAuthStore()
-    const templatesStore = useTemplatesStore()
+const template = computed(() => templatesStore.getByKey(slug.value))
+const form = computed(() => template.value.structure)
 
-    const route = useRoute()
-    const slug = computed(() => route.params.slug)
-    if (slug) {
-      templatesStore.loadTemplate(slug)
-    }
-
-
-    return {
-      templatesStore,
-      authenticated: computed(() => authStore.check),
-      user: computed(() => authStore.user),
-      templatesLoading: computed(() => templatesStore.loading)
-    }
-  },
-
-  data() {
-    return {
-      showFormTemplateModal: false
-    }
-  },
-
-  mounted() {
-  },
-
-  methods: {
-    cleanQuotes(str) {
-      // Remove starting and ending quotes if any
-      return (str) ? str.replace(/^"/, '').replace(/"$/, '') : ''
-    },
-    copyTemplateUrl() {
-      const str = this.template.share_url
-      const el = document.createElement('textarea')
-      el.value = str
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      this.alertSuccess('Copied!')
-    }
-  },
-
-  computed: {
-    breadcrumbs() {
-      if (!this.template) {
-        return [{route: {name: 'templates'}, label: 'Templates'}]
-      }
-      return [{route: {name: 'templates'}, label: 'Templates'}, {label: this.template.name}]
-    },
-    template() {
-      return this.templatesStore.getBySlug(this.$route.params.slug)
-    },
-    form() {
-      return this.template ? new Form(this.template.structure) : null
-    },
-    canEditTemplate() {
-      return this.user && this.template && (this.user.admin || this.user.template_editor || this.template.creator_id === this.user.id)
-    },
-    metaTitle() {
-      return this.template ? this.template.name : 'Form Template'
-    },
-    metaDescription() {
-      if (!this.template) return null
-      // take the first 140 characters of the description
-      return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
-    },
-    metaImage() {
-      if (!this.template) return null
-      return this.template.image_url
-    },
-    metaTags() {
-      if (!this.template) {
-        return [];
-      }
-      return this.template.publicly_listed ? [] : [{name: 'robots', content: 'noindex'}]
-    },
-    createFormWithTemplateUrl() {
-      if (this.authenticated) {
-        return '/forms/create?template=' + this.template?.slug
-      }
-      return '/forms/create/guest?template=' + this.template?.slug
-    }
-  }
+// Fetch the template
+if (!template.value) {
+  const {data} = await fetchTemplate(slug.value)
+  templatesStore.save(data.value)
 }
+
+// Fetch related templates
+const {data: relatedTemplatesData} = await useAsyncData('related-templates', () => {
+  return Promise.all(template.value.related_templates.map((slug) => {
+    if (templatesStore.getByKey(slug)) {
+      return Promise.resolve(templatesStore.getByKey(slug))
+    }
+    return fetchTemplate(slug).then((res) => res.data.value)
+  }))
+})
+templatesStore.save(relatedTemplatesData.value)
+
+// State
+const showFormTemplateModal = ref(false)
+
+// Computed
+const breadcrumbs = computed(() => {
+  if (!template.value) {
+    return [{route: {name: 'templates'}, label: 'Templates'}]
+  }
+  return [{route: {name: 'templates'}, label: 'Templates'}, {label: template.name}]
+})
+const relatedTemplates = computed(() => templatesStore.getByKey(template?.value?.related_templates))
+const canEditTemplate = computed(() => authStore.authenticated && template.value && (authStore.user.admin || authStore.user.template_editor || template.creator_id === authStore.user.id))
+const createFormWithTemplateUrl = computed(() => {
+  if (authStore.authenticated) {
+    return '/forms/create?template=' + template?.value?.slug
+  }
+  return '/forms/create/guest?template=' + template?.value?.slug
+})
+
+// methods
+const cleanQuotes = (str) => {
+  // Remove starting and ending quotes if any
+  return (str) ? str.replace(/^"/, '').replace(/"$/, '') : ''
+}
+
+const copyTemplateUrl = () => {
+  const str = template.value.share_url
+  const el = document.createElement('textarea')
+  el.value = str
+  document.body.appendChild(el)
+  el.select()
+  document.execCommand('copy')
+  document.body.removeChild(el)
+  this.alertSuccess('Copied!')
+}
+
+// metaTitle() {
+//   return this.template ? this.template.name : 'Form Template'
+// },
+// metaDescription() {
+//   if (!this.template) return null
+//   // take the first 140 characters of the description
+//   return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
+// },
+// metaImage() {
+//   if (!this.template) return null
+//   return this.template.image_url
+// },
+// metaTags() {
+//   if (!this.template) {
+//     return [];
+//   }
+//   return this.template.publicly_listed ? [] : [{name: 'robots', content: 'noindex'}]
+// },
 </script>
 
 <style lang='scss'>

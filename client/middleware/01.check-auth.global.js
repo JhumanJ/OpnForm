@@ -1,3 +1,5 @@
+import {useWorkspacesStore} from "~/stores/workspaces.js";
+
 export default defineNuxtRouteMiddleware(async(to, from) => {
   const authStore = useAuthStore()
   authStore.initStore(useCookie('token').value, useCookie('admin_token').value)

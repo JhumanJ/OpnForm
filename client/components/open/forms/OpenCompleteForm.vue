@@ -129,6 +129,12 @@ export default {
     submitButtonClass: { type: String, default: '' }
   },
 
+  setup() {
+    return {
+      isIframe: useIsIframe()
+    }
+  },
+
   data () {
     return {
       loading: false,
@@ -143,11 +149,8 @@ export default {
   },
 
   computed: {
-    isIframe () {
-      return window.location !== window.parent.location || window.frameElement
-    },
     isEmbedPopup () {
-      return window.location.href.includes('popup=true')
+      return process.client && window.location.href.includes('popup=true')
     },
     theme () {
       return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
@@ -156,7 +159,7 @@ export default {
       return this.$route.name === 'forms.show_public'
     },
     isHideTitle () {
-      return this.form.hide_title || window.location.href.includes('hide_title=true')
+      return this.form.hide_title || (process.client && window.location.href.includes('hide_title=true'))
     }
   },
 

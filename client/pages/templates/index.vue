@@ -13,32 +13,28 @@
       </div>
     </section>
 
-    <templates-list :templates="templates" :loading="loading" />
+    <templates-list :templates="templates"/>
 
     <open-form-footer class="mt-8 border-t"/>
   </div>
 </template>
 
-<script>
-import SeoMeta from '../../mixins/seo-meta.js'
-import {useTemplatesStore} from "~/stores/templates.js";
+<script setup>
+import {fetchAllTemplates} from "~/stores/templates.js";
 
-export default {
+// props: {
+//   metaTitle: { type: String, default: 'Templates' },
+//   metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
+// },
 
-  mixins: [SeoMeta],
+const templatesStore = useTemplatesStore()
 
-  props: {
-    metaTitle: { type: String, default: 'Templates' },
-    metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
-  },
-
-  setup() {
-    const templatesStore = useTemplatesStore()
-    templatesStore.loadAll()
-    return {
-      templates: templatesStore.content,
-      loading: templatesStore.loading
-    }
-  },
+if (!templatesStore.allLoaded) {
+  templatesStore.startLoading()
+  const {data} = await fetchAllTemplates()
+  templatesStore.set(data.value)
+  templatesStore.allLoaded = true
 }
+
+const templates = computed(() => templatesStore.getAll)
 </script>

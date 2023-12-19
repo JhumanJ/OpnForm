@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', {
     stopImpersonating() {
       this.token = this.admin_token
       this.admin_token = null
-      this.fetchUser()
+        // TODO: re-fetch user
     },
 
     setToken(token) {
@@ -79,7 +79,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await axios.post('/api/logout')
+        await useOpnApi('logout', {method: 'POST'})
       } catch (e) {
       }
 

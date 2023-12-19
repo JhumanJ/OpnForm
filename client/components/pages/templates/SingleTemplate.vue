@@ -29,7 +29,7 @@
     <p class="line-clamp-2 mt-2 text-sm font-normal text-gray-600">
       {{ cleanQuotes(template.short_description) }}
     </p>
-    <template-tags :slug="template.slug"
+    <template-tags :template="template"
                    class="flex mt-4 items-center flex-wrap gap-3"
     />
     <router-link :to="{params:{slug:template.slug},name:'templates-slug'}" title="">
@@ -46,8 +46,7 @@ export default {
 
   props: {
     template: {
-      type: Object,
-      required: true
+      type: Object
     }
   },
 

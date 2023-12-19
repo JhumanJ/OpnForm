@@ -1,6 +1,7 @@
 import {serialize} from 'object-to-formdata';
 import Errors from './Errors';
 import cloneDeep from 'clone-deep';
+import {opnFetch} from "~/composables/useOpnApi.js";
 function hasFiles(data) {
   return data instanceof File ||
     data instanceof Blob ||
@@ -120,18 +121,14 @@ class Form {
         config.transformRequest = [data => serialize(data)];
       }
     }
-
     return new Promise((resolve, reject) => {
-      useOpnApi(config.url, config)
-        .then(({data, error}) => {
-          if (error.value) {
-            this.handleErrors(error);
-            reject(error);
-            return;
-          }
-
+      opnFetch(config.url, config)
+        .then((data) => {
           this.finishProcessing();
-          resolve(data.value);
+          resolve(data);
+        }).catch((error) => {
+          this.handleErrors(error);
+          resolve(error)
         })
     });
   }
@@ -139,8 +136,8 @@ class Form {
   handleErrors(error) {
     this.busy = false;
 
-    if (error.value) {
-      this.errors.set(this.extractErrors(error.value.data));
+    if (error) {
+      this.errors.set(this.extractErrors(error.data));
     }
   }
 

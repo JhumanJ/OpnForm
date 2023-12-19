@@ -42,6 +42,7 @@
 
 <script>
 import ForgotPasswordModal from '../ForgotPasswordModal.vue'
+import {opnFetch} from "~/composables/useOpnApi.js";
 
 export default {
   name: 'LoginForm',
@@ -78,10 +79,10 @@ export default {
       const data = await this.form.post('login')
 
       // Save the token.
-      this.authStore.setToken(data.token, this.remember)
+      this.authStore.setToken(data.token)
 
-      // Fetch the user.
-      await this.authStore.fetchUser()
+      const userData = await opnFetch('user')
+      this.authStore.setUser(userData)
 
       // Redirect home.
       this.redirect()
@@ -93,13 +94,14 @@ export default {
         return
       }
 
-      const intendedUrl = Cookies.get('intended_url')
+      const intendedUrlCookie = useCookie('intended_url')
+      const router = useRouter()
 
-      if (intendedUrl) {
-        Cookies.remove('intended_url')
-        this.$router.push({ path: intendedUrl })
+      if (intendedUrlCookie.value) {
+        router.push({ path: intendedUrlCookie.value })
+        useCookie('intended_url').value = null
       } else {
-        this.$router.push({ name: 'home' })
+        router.push({ name: 'home' })
       }
     }
   }

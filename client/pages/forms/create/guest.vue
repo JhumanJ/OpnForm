@@ -116,7 +116,7 @@ export default {
 
     this.initForm()
     if (this.$route.query.template !== undefined && this.$route.query.template) {
-      const template = this.templatesStore.getBySlug(this.$route.query.template)
+      const template = this.templatesStore.getByKey(this.$route.query.template)
       if (template && template.structure) {
         this.form = new Form({ ...this.form.data(), ...template.structure })
       }

@@ -161,7 +161,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
-        this.templatesStore.addOrUpdate(response.data.data)
+        this.templatesStore.save(response.data.data)
         this.$emit('close')
       })
     },
@@ -171,7 +171,7 @@ export default {
         if (response.data.message) {
           this.alertSuccess(response.data.message)
         }
-        this.templatesStore.addOrUpdate(response.data.data)
+        this.templatesStore.save(response.data.data)
         this.$emit('close')
       })
     },

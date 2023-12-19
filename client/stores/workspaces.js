@@ -7,7 +7,7 @@ const storedWorkspaceId = useStorage('currentWorkspace', 0)
 
 export const useWorkspacesStore = defineStore('workspaces', {
   state: () => ({
-    content: [],
+    content: new Map,
     currentId: null,
     loading: false
   }),
@@ -70,6 +70,7 @@ export const useWorkspacesStore = defineStore('workspaces', {
     load() {
       this.set([])
       this.startLoading()
+      console.log('loaindgworkspaces')
       return useOpnApi(workspaceEndpoint).then(({data, error}) => {
         this.set(data.value)
         this.stopLoading()
