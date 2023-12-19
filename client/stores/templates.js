@@ -52,7 +52,6 @@ export const fetchAllTemplates = (options = {}) => {
 }
 
 export const loadAllTemplates = async (store, options={}) => {
-  console.log('in------',store, store.allLoaded)
   if (!store.allLoaded) {
     store.startLoading()
     store.initTypesAndIndustries()

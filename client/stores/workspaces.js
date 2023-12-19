@@ -22,7 +22,6 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
 
   const save = (items) => {
     contentStore.save(items)
-    console.log('cookie issi', currentId.value, contentStore.length.value)
     if (currentId.value == null && contentStore.length.value) {
       setCurrentId(items[0].id)
     }

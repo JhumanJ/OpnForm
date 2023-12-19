@@ -161,7 +161,7 @@ export default {
       showFormErrorModal: false,
       validationErrorResponse: null,
       updateFormLoading: false,
-      createdFormId: null
+      createdFormSlug: null
     }
   },
 
@@ -176,7 +176,7 @@ export default {
       }
     },
     createdForm () {
-      return this.formsStore.getById(this.createdFormId)
+      return this.formsStore.getBySlug(this.createdFormSlug)
     },
     workspace () {
       return this.workspacesStore.getCurrent()
@@ -278,7 +278,7 @@ export default {
       this.form.post('/api/open/forms').then((response) => {
         this.formsStore.addOrUpdate(response.data.form)
         this.$emit('on-save')
-        this.createdFormId = response.data.form.id
+        this.createdFormSlug = response.data.form.slug
 
         this.$logEvent('form_created', { form_id: response.data.form.id, form_slug: response.data.form.slug })
         this.$crisp.push(['set', 'session:event', [[['form_created', {

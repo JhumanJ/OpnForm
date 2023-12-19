@@ -47,9 +47,9 @@
             <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">
               No forms found
             </h3>
-            <div v-if="isFilteringForms && enrichedForms.length === 0 && searchForm.search"
+            <div v-if="isFilteringForms && enrichedForms.length === 0 && search"
                  class="mt-2 w-full text-center">
-              Your search "{{ searchForm.search }}" did not match any forms. Please try again.
+              Your search "{{ search }}" did not match any forms. Please try again.
             </div>
             <v-button v-if="forms.length === 0" v-track.create_form_click class="mt-4" :to="{name:'forms-create'}">
               <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 14 14" fill="none"
@@ -112,23 +112,18 @@
 </template>
 
 <script setup>
-import {useAuthStore} from '../stores/auth';
-import {useFormsStore} from '../stores/forms';
-import {useWorkspacesStore} from '../stores/workspaces';
+import {useAuthStore} from '../stores/auth'
+import {useFormsStore} from '../stores/forms'
+import {useWorkspacesStore} from '../stores/workspaces'
 import Fuse from 'fuse.js'
 import TextInput from '../components/forms/TextInput.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
-import {refDebounced} from "@vueuse/core";
+import {refDebounced} from "@vueuse/core"
 
-const loadForms = function () {
-  const formsStore = useFormsStore()
-  const workspacesStore = useWorkspacesStore()
-  formsStore.startLoading()
-  workspacesStore.loadIfEmpty().then(() => {
-    formsStore.loadIfEmpty(workspacesStore.currentId)
-  })
-}
+definePageMeta({
+  middleware: "auth"
+})
 
 // metaTitle: {type: String, default: 'Your Forms'},
 // metaDescription: {
@@ -140,16 +135,16 @@ const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 
-definePageMeta({
-  middleware: "auth"
+onMounted(() => {
+  formsStore.load(workspacesStore.currentId)
 })
 
 // State
-const {content: forms, loading: formsLoading} = storeToRefs(formsStore)
+const {getAll: forms, loading: formsLoading} = storeToRefs(formsStore)
 const showEditFormModal = ref(false)
 const selectedForm = ref(null)
 const search = ref('')
-const debounceSearch = refDebounced(search, 500)
+const debouncedSearch = refDebounced(search, 500)
 const selectedTags = ref(new Set())
 
 // Methods
@@ -173,13 +168,24 @@ const isFilteringForms = computed(() => {
   return (search.value !== '' && search.value !== null) || selectedTags.value.size > 0
 })
 const allTags = computed(() => {
-  return formsStore.getAllTags
+  let tags = []
+  forms.value.forEach((form) => {
+    console.log(form.tags)
+    // TODO: check this works
+    if (form.tags && form.tags.length) {
+      tags = tags.concat(form.tags.split(','))
+    }
+  })
+  return [...new Set(tags)]
 })
 const enrichedForms = computed(() => {
   let enrichedForms = forms.value.map((form) => {
     form.workspace = workspacesStore.getByKey(form.workspace_id)
     return form
   }).filter((form) => {
+    if (selectedTags.value.size === 0) {
+      return true
+    }
     return form.tags && form.tags.length ? [...selectedTags].every(r => form.tags.includes(r)) : false
   })
 
@@ -196,7 +202,7 @@ const enrichedForms = computed(() => {
     ]
   }
   const fuse = new Fuse(enrichedForms, fuzeOptions)
-  return fuse.search(search.value).map((res) => {
+  return fuse.search(debouncedSearch.value).map((res) => {
     return res.item
   })
 })
