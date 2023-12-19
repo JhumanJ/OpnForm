@@ -23,7 +23,7 @@
     <div class="flex bg-white">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
         <div class="mt-8 pb-0">
-          <text-input v-if="forms.length > 0" class="mb-6" :form="searchForm" name="search" label="Search a form"
+          <text-input v-if="forms.length > 0" class="mb-6" v-model="search" name="search" label="Search a form"
                       placeholder="Name of form to search"
           />
           <div v-if="allTags.length > 0" class="mb-4">
@@ -63,7 +63,7 @@
           <div v-else-if="forms.length > 0" class="mb-10">
             <div v-if="enrichedForms && enrichedForms.length">
               <div v-for="(form) in enrichedForms" :key="form.id"
-                   class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center"
+                   class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center relative"
               >
                 <div class="flex-grow items-center truncate cursor-pointer" role="button"
                      @click.prevent="viewForm(form)">
@@ -111,16 +111,15 @@
   </div>
 </template>
 
-<script>
-import {computed} from 'vue'
+<script setup>
 import {useAuthStore} from '../stores/auth';
 import {useFormsStore} from '../stores/forms';
 import {useWorkspacesStore} from '../stores/workspaces';
 import Fuse from 'fuse.js'
-import Form from 'vform'
 import TextInput from '../components/forms/TextInput.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
+import {refDebounced} from "@vueuse/core";
 
 const loadForms = function () {
   const formsStore = useFormsStore()
@@ -131,105 +130,74 @@ const loadForms = function () {
   })
 }
 
-export default {
-  components: {OpenFormFooter, TextInput, ExtraMenu},
+// metaTitle: {type: String, default: 'Your Forms'},
+// metaDescription: {
+//   type: String,
+//   default: 'All of your OpnForm are here. Create new forms, or update your existing one!'
+// }
 
-  props: {
-    metaTitle: {type: String, default: 'Your Forms'},
-    metaDescription: {
-      type: String,
-      default: 'All of your OpnForm are here. Create new forms, or update your existing one!'
-    }
-  },
+const authStore = useAuthStore()
+const formsStore = useFormsStore()
+const workspacesStore = useWorkspacesStore()
 
-  async setup() {
-    const authStore = useAuthStore()
-    const formsStore = useFormsStore()
-    const workspacesStore = useWorkspacesStore()
+definePageMeta({
+  middleware: "auth"
+})
 
-    definePageMeta({
-      middleware: "auth"
-    })
+// State
+const {content: forms, loading: formsLoading} = storeToRefs(formsStore)
+const showEditFormModal = ref(false)
+const selectedForm = ref(null)
+const search = ref('')
+const debounceSearch = refDebounced(search, 500)
+const selectedTags = ref(new Set())
 
-    loadForms()
-    return {
-      formsStore,
-      workspacesStore,
-      user: computed(() => authStore.user),
-      forms: computed(() => formsStore.content),
-      formsLoading: computed(() => formsStore.loading)
-    }
-  },
-
-  data() {
-    return {
-      showEditFormModal: false,
-      selectedForm: null,
-      searchForm: new Form({
-        search: ''
-      }),
-      selectedTags: []
-    }
-  },
-
-  mounted() {
-  },
-
-  methods: {
-    editForm(form) {
-      this.selectedForm = form
-      this.showEditFormModal = true
-    },
-    onTagClick(tag) {
-      const idx = this.selectedTags.indexOf(tag)
-      if (idx === -1) {
-        this.selectedTags.push(tag)
-      } else {
-        this.selectedTags.splice(idx, 1)
-      }
-    },
-    viewForm(form) {
-      this.$router.push({name: 'forms.show', params: {slug: form.slug}})
-    }
-  },
-
-  computed: {
-    isFilteringForms() {
-      return (this.searchForm.search !== '' && this.searchForm.search !== null) || this.selectedTags.length > 0
-    },
-    enrichedForms() {
-      let enrichedForms = this.forms.map((form) => {
-        form.workspace = this.workspacesStore.getById(form.workspace_id)
-        return form
-      })
-
-      // Filter by Selected Tags
-      if (this.selectedTags.length > 0) {
-        enrichedForms = enrichedForms.filter((item) => {
-          return (item.tags && item.tags.length > 0) ? this.selectedTags.every(r => item.tags.includes(r)) : false
-        })
-      }
-
-      if (!this.isFilteringForms || this.searchForm.search === '' || this.searchForm.search === null) {
-        return enrichedForms
-      }
-
-      // Fuze search
-      const fuzeOptions = {
-        keys: [
-          'title',
-          'slug',
-          'tags'
-        ]
-      }
-      const fuse = new Fuse(enrichedForms, fuzeOptions)
-      return fuse.search(this.searchForm.search).map((res) => {
-        return res.item
-      })
-    },
-    allTags() {
-      return this.formsStore.getAllTags
-    }
+// Methods
+const editForm = (form) => {
+  selectedForm.value = form
+  showEditFormModal.value = true
+}
+const onTagClick = (tag) => {
+  if (selectedTags.value.has(tag)) {
+    selectedTags.value.remove(tag)
+  } else {
+    selectedTags.value.add(tag)
   }
 }
+const viewForm = (form) => {
+  useRouter.push({name: 'forms.show', params: {slug: form.slug}})
+}
+
+// Computed
+const isFilteringForms = computed(() => {
+  return (search.value !== '' && search.value !== null) || selectedTags.value.size > 0
+})
+const allTags = computed(() => {
+  return formsStore.getAllTags
+})
+const enrichedForms = computed(() => {
+  let enrichedForms = forms.value.map((form) => {
+    form.workspace = workspacesStore.getByKey(form.workspace_id)
+    return form
+  }).filter((form) => {
+    return form.tags && form.tags.length ? [...selectedTags].every(r => form.tags.includes(r)) : false
+  })
+
+  if (!isFilteringForms || search.value === '' || search.value === null) {
+    return enrichedForms
+  }
+
+  // Fuze search
+  const fuzeOptions = {
+    keys: [
+      'title',
+      'slug',
+      'tags'
+    ]
+  }
+  const fuse = new Fuse(enrichedForms, fuzeOptions)
+  return fuse.search(search.value).map((res) => {
+    return res.item
+  })
+})
 </script>

@@ -17,12 +17,12 @@ export const useContentStore = (mapKey = 'id') => {
     return content.value.get(key)
   }
 
+  const length = computed(() => content.value.size)
+
   // Actions
   function set(items) {
     content.value = new Map
-    items.forEach((item) => {
-      content.value.set(item[mapKey], item)
-    })
+    save(items)
   }
 
   function save(items) {
@@ -31,7 +31,6 @@ export const useContentStore = (mapKey = 'id') => {
       content.value.set(item[mapKey], item)
     })
   }
-
   function remove(item) {
     content.value.remove(item[mapKey])
   }
@@ -54,6 +53,7 @@ export const useContentStore = (mapKey = 'id') => {
     loading,
     getAll,
     getByKey,
+    length,
     set,
     save,
     remove,

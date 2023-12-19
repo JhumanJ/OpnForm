@@ -74,12 +74,14 @@
                     </li>
                   </ul>
                   <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)" class="mt-1 flex items-center flex-wrap gap-3">
-                    <span v-if="form.visibility=='draft'" 
-                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                    <span v-if="form.visibility=='draft'"
+                          class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
+                    >
                       Draft
                     </span>
-                    <span v-else-if="form.visibility=='closed'" 
-                        class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+                    <span v-else-if="form.visibility=='closed'"
+                          class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
+                    >
                       Closed
                     </span>
                     <span v-for="(tag,i) in form.tags" :key="tag"
@@ -105,31 +107,18 @@
 
 <script>
 import { computed } from 'vue'
-import { useAuthStore } from '../stores/auth';
-import { useFormsStore } from '../stores/forms';
-import { useWorkspacesStore } from '../stores/workspaces';
+import { useAuthStore } from '../stores/auth'
+import { useFormsStore } from '../stores/forms'
+import { useWorkspacesStore } from '../stores/workspaces'
 import Fuse from 'fuse.js'
 import Form from 'vform'
 import TextInput from '../components/forms/TextInput.vue'
 import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
-import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
-
-const loadForms = function () {
-  const formsStore = useFormsStore()
-  const workspacesStore = useWorkspacesStore()
-  formsStore.startLoading()
-  workspacesStore.loadIfEmpty().then(() => {
-    formsStore.loadIfEmpty(workspacesStore.currentId)
-  })
-}
+import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue
 
 export default {
   components: { OpenFormFooter, TextInput, ExtraMenu },
 
-  beforeRouteEnter (to, from, next) {
-    loadForms()
-    next()
-  },
   middleware: 'auth',
 
   props: {
@@ -141,12 +130,16 @@ export default {
     const authStore = useAuthStore()
     const formsStore = useFormsStore()
     const workspacesStore = useWorkspacesStore()
+
+    formsStore.startLoading()
+    formsStore.loadIfEmpty(workspacesStore.currentId)
+
     return {
       formsStore,
       workspacesStore,
-      user : computed(() => authStore.user),
-      forms : computed(() => formsStore.content),
-      formsLoading : computed(() => formsStore.loading)
+      user: computed(() => authStore.user),
+      forms: computed(() => formsStore.content),
+      formsLoading: computed(() => formsStore.loading)
     }
   },
 
@@ -158,26 +151,6 @@ export default {
         search: ''
       }),
       selectedTags: []
-    }
-  },
-
-  mounted () {},
-
-  methods: {
-    editForm (form) {
-      this.selectedForm = form
-      this.showEditFormModal = true
-    },
-    onTagClick (tag) {
-      const idx = this.selectedTags.indexOf(tag)
-      if (idx === -1) {
-        this.selectedTags.push(tag)
-      } else {
-        this.selectedTags.splice(idx, 1)
-      }
-    },
-    viewForm (form) {
-      this.$router.push({ name: 'forms.show', params: { slug: form.slug } })
     }
   },
 
@@ -217,6 +190,26 @@ export default {
     },
     allTags () {
       return this.formsStore.getAllTags
+    }
+  },
+
+  mounted () {},
+
+  methods: {
+    editForm (form) {
+      this.selectedForm = form
+      this.showEditFormModal = true
+    },
+    onTagClick (tag) {
+      const idx = this.selectedTags.indexOf(tag)
+      if (idx === -1) {
+        this.selectedTags.push(tag)
+      } else {
+        this.selectedTags.splice(idx, 1)
+      }
+    },
+    viewForm (form) {
+      this.$router.push({ name: 'forms.show', params: { slug: form.slug } })
     }
   }
 }

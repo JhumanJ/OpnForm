@@ -13,7 +13,7 @@
       </div>
     </section>
 
-    <templates-list :templates="templates"/>
+    <templates-list :templates="templates" :loading="loading"/>
 
     <open-form-footer class="mt-8 border-t"/>
   </div>
@@ -30,5 +30,6 @@ import {loadAllTemplates} from "~/stores/templates.js";
 const templatesStore = useTemplatesStore()
 loadAllTemplates(templatesStore)
 
+const loading = computed(() => templatesStore.loading)
 const templates = computed(() => templatesStore.getAll)
 </script>

@@ -1,4 +1,5 @@
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../stores/auth'
+import { useWorkspacesStore } from '../stores/workspaces'
 import * as Sentry from '@sentry/vue'
 
 export function initCrisp (user) {
@@ -45,6 +46,7 @@ export default async (to, from, next) => {
       authStore.fetchUser().then((user) => {
         initCrisp(user)
         initSentry(user)
+        useWorkspacesStore().fetchWorkspaces()
       })
     } catch (e) {
       console.error(e)

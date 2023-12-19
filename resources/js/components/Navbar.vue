@@ -71,7 +71,7 @@
                     My Forms
                   </router-link>
 
-                  <router-link v-if="userOnboarded" :to="{ name: 'my_templates' }"
+                  <router-link v-if="userOnboarded" :to="{ name: 'templates-my-templates' }"
                                class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -80,7 +80,7 @@
                     My Templates
                   </router-link>
 
-                  <router-link :to="{ name: 'settings.profile' }"
+                  <router-link :to="{ name: 'settings-profile' }"
                                class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

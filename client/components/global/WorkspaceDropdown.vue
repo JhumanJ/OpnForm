@@ -42,9 +42,6 @@
 
 <script>
 import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth.js'
-import { useFormsStore } from '../../stores/forms.js'
-import { useWorkspacesStore } from '../../stores/workspaces.js'
 import Dropdown from '~/components/global/Dropdown.vue'
 
 export default {
@@ -62,7 +59,7 @@ export default {
       formsStore,
       workspacesStore,
       user: computed(() => authStore.user),
-      workspaces: computed(() => workspacesStore.content),
+      workspaces: computed(() => workspacesStore.getAll),
       loading: computed(() => workspacesStore.loading)
     }
   },
@@ -83,8 +80,10 @@ export default {
     switchWorkspace (workspace) {
       this.workspacesStore.setCurrentId(workspace.id)
       this.$refs.dropdown.close()
-      if (this.$route.name !== 'home') {
-        this.$router.push({ name: 'home' })
+      const router = useRouter()
+      const route = useRoute()
+      if (route.name !== 'home') {
+        router.push({ name: 'home' })
       }
       this.formsStore.load(workspace.id)
     },

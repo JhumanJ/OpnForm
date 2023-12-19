@@ -36,26 +36,29 @@ export const useTemplatesStore = defineStore('templates', () => {
     ...contentStore,
     industries,
     types,
+    allLoaded,
     getTemplateTypes,
     getTemplateIndustries,
     initTypesAndIndustries
   }
 })
 
-export const fetchTemplate = (slug) => {
-  return useOpnApi(templatesEndpoint + '/' + slug)
+export const fetchTemplate = (slug, options = {}) => {
+  return useOpnApi(templatesEndpoint + '/' + slug, options)
 }
 
-export const fetchAllTemplates = () => {
-  return useOpnApi(templatesEndpoint)
+export const fetchAllTemplates = (options = {}) => {
+  return useOpnApi(templatesEndpoint, options)
 }
 
-export const loadAllTemplates = async (store) => {
+export const loadAllTemplates = async (store, options={}) => {
+  console.log('in------',store, store.allLoaded)
   if (!store.allLoaded) {
     store.startLoading()
     store.initTypesAndIndustries()
-    const {data} = await fetchAllTemplates()
+    const {data} = await fetchAllTemplates(options)
     store.set(data.value)
+    store.stopLoading()
     store.allLoaded = true
   }
 }

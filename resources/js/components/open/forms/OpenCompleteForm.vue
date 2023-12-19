@@ -129,6 +129,12 @@ export default {
     submitButtonClass: { type: String, default: '' }
   },
 
+  setup () {
+    return {
+      isIframe: useIsIframe()
+    }
+  },
+
   data () {
     return {
       loading: false,
@@ -143,10 +149,8 @@ export default {
   },
 
   computed: {
-    isIframe () {
-      return window.location !== window.parent.location || window.frameElement
-    },
     isEmbedPopup () {
+      if (process.server) return false
       return window.location.href.includes('popup=true')
     },
     theme () {

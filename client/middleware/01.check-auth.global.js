@@ -1,4 +1,4 @@
-import {useWorkspacesStore} from "~/stores/workspaces.js";
+import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
 export default defineNuxtRouteMiddleware(async(to, from) => {
   const authStore = useAuthStore()
@@ -7,5 +7,10 @@ export default defineNuxtRouteMiddleware(async(to, from) => {
   if (authStore.token && !authStore.user) {
     const {data, error} = await useOpnApi('user')
     authStore.setUser(data.value)
+
+    // Load workspaces
+    const workspaceStore = useWorkspacesStore()
+    const {data: workspacesData, error: workspacesError} = await fetchAllWorkspaces()
+    workspaceStore.save(workspacesData.value)
   }
 })

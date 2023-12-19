@@ -126,7 +126,7 @@
 <!--        <testimonials/>-->
 <!--      </div>-->
 
-<!--      <templates-slider class="max-w-full mb-12"/>-->
+      <templates-slider class="max-w-full mb-12"/>
 
       <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
         <h4 class="font-semibold text-3xl text-white">

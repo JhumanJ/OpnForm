@@ -23,12 +23,12 @@
       </router-link>
     </div>
 
-    <div v-if="templates.length > 0"
+    <div v-if="sliderTemplates.length > 0"
          class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
     >
       <ul ref="templates-slider" class="flex justify-center md:justify-start animate-infinite-scroll">
         <li v-for="(template, i) in sliderTemplates" :key="template.id" class="mx-4 w-72 h-auto">
-          <single-template :slug="template.slug" />
+          <single-template :template="template" />
         </li>
       </ul>
     </div>
@@ -37,29 +37,31 @@
 
 <script>
 import { computed } from 'vue'
-import { useTemplatesStore } from '../../../stores/templates'
 import SingleTemplate from '../templates/SingleTemplate.vue'
 
 export default {
   components: { SingleTemplate },
-  props: { },
   setup () {
     const templatesStore = useTemplatesStore()
+    templatesStore.initTypesAndIndustries()
+
+    onMounted(() => {
+      if (templatesStore.getAll.length < 10) {
+        opnFetch('templates',{query: {limit: 10}}).then((data) => {
+          templatesStore.set(data)
+        })
+      }
+    })
+
     return {
       templatesStore,
-      templates : computed(() => templatesStore.content)
-    }
-  },
-  data: () => ({}),
-
-  computed: {
-    sliderTemplates () {
-      return this.templates.slice(0, 20)
+      allLoaded: computed(() => templatesStore.allLoaded),
+      sliderTemplates: computed(() => templatesStore.getAll.slice(0, 10))
     }
   },
 
   watch: {
-    templates: {
+    sliderTemplates: {
       deep: true,
       handler () {
         this.$nextTick(() => {
@@ -67,10 +69,6 @@ export default {
         })
       }
     }
-  },
-
-  mounted() {
-    this.templatesStore.loadAll({ limit: 20 })
   },
 
   methods: {

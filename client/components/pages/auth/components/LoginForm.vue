@@ -42,7 +42,8 @@
 
 <script>
 import ForgotPasswordModal from '../ForgotPasswordModal.vue'
-import {opnFetch} from "~/composables/useOpnApi.js";
+import {opnFetch} from "~/composables/useOpnApi.js"
+import {fetchAllWorkspaces} from "~/stores/workspaces.js"
 
 export default {
   name: 'LoginForm',
@@ -58,9 +59,9 @@ export default {
   },
 
   setup () {
-    const authStore = useAuthStore()
     return {
-      authStore
+      authStore: useAuthStore(),
+      workspaceStore: useWorkspacesStore()
     }
   },
 
@@ -83,6 +84,9 @@ export default {
 
       const userData = await opnFetch('user')
       this.authStore.setUser(userData)
+
+      const workspaces = await fetchAllWorkspaces()
+      this.workspaceStore.set(workspaces.data.value)
 
       // Redirect home.
       this.redirect()
