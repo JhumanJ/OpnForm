@@ -81,7 +81,7 @@
 import {computed} from 'vue'
 import Fuse from 'fuse.js'
 import SingleTemplate from './SingleTemplate.vue'
-import {refThrottled} from "@vueuse/core";
+import {refDebounced} from "@vueuse/core";
 
 export default {
   name: 'TemplatesList',
@@ -101,10 +101,10 @@ export default {
     const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
     const search = ref('')
-    const throttledSearch = refThrottled(search, 1000)
+    const debouncedSearch = refDebounced(search, 500)
     return {
       search,
-      throttledSearch,
+      debouncedSearch,
       user: computed(() => authStore.user),
       industries: computed(() => [...templatesStore.industries.values()]),
       types: computed(() => [...templatesStore.types.values()])
@@ -150,8 +150,7 @@ export default {
         })
       }
 
-      console.log(this.throttledSearch, '---inode')
-      if (!this.throttledSearch || this.throttledSearch === '' || this.throttledSearch === null) {
+      if (!this.debouncedSearch || this.debouncedSearch === '' || this.debouncedSearch === null) {
         return enrichedTemplates
       }
 
@@ -165,7 +164,7 @@ export default {
         ]
       }
       const fuse = new Fuse(enrichedTemplates, fuzeOptions)
-      return fuse.search(this.throttledSearch).map((res) => {
+      return fuse.search(this.debouncedSearch).map((res) => {
         return res.item
       })
     }

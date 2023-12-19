@@ -1,59 +1,43 @@
 <template>
-  <transition @leave="(el,done) => motions.collapsible.leave(done)">
+  <transition @leave="(el,done)=>motions.collapsible.leave(done)">
     <div
+      ref="collapsible"
       v-if="modelValue"
-      key="dropdown"
       v-motion="'collapsible'"
+      :variants="variants"
       v-on-click-outside.bubble="close"
-      :variants="motionCollapse"
     >
-      <slot />
+      <slot/>
     </div>
   </transition>
 </template>
 
-<script>
-import { vOnClickOutside } from '@vueuse/components'
-import { useMotions } from '@vueuse/motion'
+<script setup>
+import {vOnClickOutside} from '@vueuse/components'
 
-export default {
-  name: 'Collapsible',
-  directives: {
-    onClickOutside: vOnClickOutside
+const props = defineProps({
+  modelValue: {type: Boolean},
+  closeOnClickAway: {type: Boolean, default: true},
+  maxHeight: {type: Number, default: 200},
+})
+const emits = defineEmits(['update:modelValue'])
+
+const motions = useMotions()
+const variants = ref({
+  enter: {
+    opacity: 1,
+    y: 0,
+    transition: {duration: 150, ease: 'easeOut'}
   },
-  props: {
-    modelValue: { type: Boolean },
-    closeOnClickAway: { type: Boolean, default: true }
+  initial: {
+    opacity: 0,
+    y: -10,
+    transition: {duration: 75, ease: 'easeIn'}
   },
-  setup () {
-    return {
-      motions: useMotions()
-    }
-  },
-  computed: {
-    motionCollapse () {
-      return {
-        enter: {
-          opacity: 1,
-          y: 0,
-          height: 'auto',
-          transition: { duration: 150, ease: 'easeOut' }
-        },
-        initial: {
-          opacity: 0,
-          y: -10,
-          height: 0,
-          transition: { duration: 75, ease: 'easeIn' }
-        }
-      }
-    }
-  },
-  methods: {
-    close () {
-      if (this.closeOnClickAway) {
-        this.$emit('update:modelValue', false)
-      }
-    }
+})
+const close = () => {
+  if (props.closeOnClickAway) {
+    emits('update:modelValue', false)
   }
 }
 </script>

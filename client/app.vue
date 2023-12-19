@@ -21,12 +21,11 @@
       </div>
     </transition>
 
-    <transition name="page" mode="out-in">
-      <NuxtLayout>
-        <NuxtLoadingIndicator color="#2563eb"/>
-        <NuxtPage/>
-      </NuxtLayout>
-    </transition>
+
+    <NuxtLayout>
+      <NuxtLoadingIndicator color="#2563eb"/>
+      <NuxtPage/>
+    </NuxtLayout>
     <ToolsStopImpersonation/>
     <!--    <notifications />-->
   </div>
