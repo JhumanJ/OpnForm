@@ -44,7 +44,7 @@ export default defineConfig({
   plugins: plugins,
   optimizeDeps: {
     exclude: [
-      'vt-notifications'
+      'vue3-vt-notifications'
     ]
   },
   resolve: {

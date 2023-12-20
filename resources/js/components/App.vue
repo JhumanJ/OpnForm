@@ -32,7 +32,7 @@
       <component :is="layoutComponent" v-if="layout" />
     </transition>
     <stop-impersonation />
-    <!--    <notifications />-->
+    <notifications />
   </div>
 </template>
 
