@@ -4,8 +4,8 @@
       <loader class="h-6 w-6 mx-auto" />
     </div>
     <dropdown v-else class="inline" dusk="nav-dropdown">
-      <template #trigger="{toggle}">
-        <v-button color="white" class="mr-2" @click.stop="toggle">
+      <template #trigger="actions">
+        <v-button color="white" class="mr-2" @click.native="onClick(actions)">
           <svg class="w-4 h-4 inline -mt-1" viewBox="0 0 16 4" fill="none"
                xmlns="http://www.w3.org/2000/svg"
           >
@@ -147,8 +147,8 @@
 </template>
 
 <script>
-import { computed } from 'vue'
 import axios from 'axios'
+import { computed } from 'vue'
 import { useAuthStore } from '../../../../stores/auth'
 import { useFormsStore } from '../../../../stores/forms'
 import Dropdown from '../../../common/Dropdown.vue'
@@ -184,6 +184,9 @@ export default {
   },
 
   methods: {
+    onClick (actions) {
+      console.log('click', actions)
+    },
     copyLink () {
       const el = document.createElement('textarea')
       el.value = this.form.share_url

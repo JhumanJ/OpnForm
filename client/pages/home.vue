@@ -170,8 +170,6 @@ const isFilteringForms = computed(() => {
 const allTags = computed(() => {
   let tags = []
   forms.value.forEach((form) => {
-    console.log(form.tags)
-    // TODO: check this works
     if (form.tags && form.tags.length) {
       tags = tags.concat(form.tags.split(','))
     }

@@ -3,9 +3,9 @@
     <div v-if="loadingDuplicate || loadingDelete" class="pr-4 pt-2">
       <Loader class="h-6 w-6 mx-auto" />
     </div>
-    <dropdown v-else class="inline" dusk="nav-dropdown">
+    <dropdown v-else class="inline">
       <template #trigger="{toggle}">
-        <v-button color="white" class="mr-2" @click.stop="toggle">
+        <v-button color="white" class="mr-2" @click="toggle">
           <svg class="w-4 h-4 inline -mt-1" viewBox="0 0 16 4" fill="none"
                xmlns="http://www.w3.org/2000/svg"
           >
@@ -42,7 +42,7 @@
         View form
       </a>
       <router-link v-if="isMainPage" v-track.edit_form_click="{form_id:form.id, form_slug:form.slug}"
-                   :to="{name:'forms.edit', params: {slug: form.slug}}"
+                   :to="{name:'forms-edit', params: {slug: form.slug}}"
                    class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
       >
         <svg class="w-4 h-4 mr-2" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -141,8 +141,6 @@
 <script>
 import { computed } from 'vue'
 import axios from 'axios'
-import { useAuthStore } from '../../../../stores/auth'
-import { useFormsStore } from '../../../../stores/forms'
 import Dropdown from '~/components/global/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 

@@ -1,11 +1,9 @@
 <template>
-  <transition @leave="(el,done)=>motions.collapsible.leave(done)">
+  <transition @leave="onLeave">
     <div
       ref="collapsible"
       v-if="modelValue"
-      v-motion="'collapsible'"
-      :variants="variants"
-      v-on-click-outside.bubble="close"
+      v-on-click-outside.bubble="onClickAway"
     >
       <slot/>
     </div>
@@ -17,27 +15,38 @@ import {vOnClickOutside} from '@vueuse/components'
 
 const props = defineProps({
   modelValue: {type: Boolean},
-  closeOnClickAway: {type: Boolean, default: true},
   maxHeight: {type: Number, default: 200},
 })
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['click-away'])
 
-const motions = useMotions()
-const variants = ref({
-  enter: {
-    opacity: 1,
-    y: 0,
-    transition: {duration: 150, ease: 'easeOut'}
-  },
+const motion = ref(null)
+const collapsible = ref(null)
+const variants = {
   initial: {
     opacity: 0,
     y: -10,
     transition: {duration: 75, ease: 'easeIn'}
   },
-})
-const close = () => {
-  if (props.closeOnClickAway) {
-    emits('update:modelValue', false)
+  enter: {
+    opacity: 1,
+    y: 0,
+    transition: {duration: 150, ease: 'easeOut'}
   }
+}
+
+watch(() => props.modelValue, (newValue) => {
+  if (newValue) {
+    nextTick(() => {
+      motion.value = useMotion(collapsible.value, variants)
+    })
+  }
+})
+
+const onLeave = (el, done) => {
+  motion.value.leave(done)
+}
+
+const onClickAway = (event) => {
+  emits('click-away', event)
 }
 </script>

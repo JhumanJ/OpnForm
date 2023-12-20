@@ -263,7 +263,7 @@ export default {
       this.$router.push({ name: 'home' })
     },
     openEdit () {
-      this.$router.push({ name: 'forms.edit', params: { slug: this.form.slug } })
+      this.$router.push({ name: 'forms-edit', params: { slug: this.form.slug } })
     }
   }
 }

@@ -2,9 +2,7 @@
   <NuxtLink v-if="href" :class="btnClasses" :href="href" :target="target">
     <slot />
   </NuxtLink>
-  <button v-else-if="!to" :type="nativeType" :disabled="loading?true:null" :class="btnClasses"
-          @click="onClick($event)"
-  >
+  <button v-else-if="!to" :type="nativeType" :disabled="loading?true:null" :class="btnClasses">
     <template v-if="!loading">
       <span class="no-underline mx-auto">
         <slot />
@@ -175,11 +173,5 @@ export default {
       }
     }
   },
-
-  methods: {
-    onClick (event) {
-      this.$emit('click', event)
-    }
-  }
 }
 </script>
