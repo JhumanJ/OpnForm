@@ -163,7 +163,7 @@ export default {
 
   computed: {
     createdForm () {
-      return this.formsStore.getBySlug(this.createdFormSlug)
+      return this.formsStore.getByKey(this.createdFormSlug)
     },
     steps () {
       return [
@@ -246,7 +246,7 @@ export default {
       this.form.put('/open/forms/{id}/'.replace('{id}', this.form.id)).then((data) => {
         this.formsStore.addOrUpdate(data.form)
         this.$emit('on-save')
-        this.$router.push({ name: 'forms.show', params: { slug: this.form.slug } })
+        this.$router.push({ name: 'forms-slug-show', params: { slug: this.form.slug } })
         this.amplitude.logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {

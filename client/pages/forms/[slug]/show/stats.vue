@@ -12,14 +12,11 @@ import FormStats from '../../../../components/open/forms/components/FormStats.vu
 import SeoMeta from '../../../../mixins/seo-meta.js'
 
 export default {
-  name: 'Stats',
   components: {FormStats},
+
   props: {
     form: {type: Object, required: true},
   },
-  mixins: [SeoMeta],
-
-  data: () => ({}),
 
   computed: {
     metaTitle() {

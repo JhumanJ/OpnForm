@@ -32,7 +32,7 @@ export const useContentStore = (mapKey = 'id') => {
     })
   }
   function remove(item) {
-    content.value.remove(item[mapKey])
+    content.value.delete( typeof item === 'object' ? item[mapKey] : item)
   }
 
   function startLoading() {

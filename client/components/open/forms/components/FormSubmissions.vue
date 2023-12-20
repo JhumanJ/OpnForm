@@ -210,9 +210,7 @@ export default {
         return
       }
       this.isLoading = true
-      axios.get('/api/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((response) => {
-        const resData = response.data
-
+      opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((resData) => {
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
         this.dataChanged()
 
@@ -235,6 +233,7 @@ export default {
       }
     },
     onChangeDisplayColumns () {
+      if (process.client)
       window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
       this.form.properties = this.properties.concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true

@@ -80,13 +80,13 @@ export default {
     switchWorkspace (workspace) {
       this.workspacesStore.setCurrentId(workspace.id)
       this.formsStore.resetState()
-      this.formsStore.load(workspace.id)
+      this.formsStore.loadAll(workspace.id)
       const router = useRouter()
       const route = useRoute()
       if (route.name !== 'home') {
         router.push({ name: 'home' })
       }
-      this.formsStore.load(workspace.id)
+      this.formsStore.loadAll(workspace.id)
     },
     isUrl (str) {
       try {

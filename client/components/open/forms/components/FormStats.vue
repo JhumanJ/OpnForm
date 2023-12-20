@@ -105,8 +105,7 @@ export default {
     getChartData () {
       if (!this.form) { return null }
       this.isLoading = true
-      axios.get('/api/open/workspaces/' + this.form.workspace_id + '/form-stats/' + this.form.id).then((response) => {
-        const statsData = response.data
+      opnFetch('/open/workspaces/' + this.form.workspace_id + '/form-stats/' + this.form.id).then((statsData) => {
         if (statsData && statsData.views !== undefined) {
           this.chartData.labels = Object.keys(statsData.views)
           this.chartData.datasets[0].data = statsData.views

@@ -117,7 +117,7 @@ export default {
       related_templates: null,
       questions: []
     })
-    this.templatesStore.loadIfEmpty()
+    loadAllTemplates(this.templatesStore)
   },
 
   computed: {

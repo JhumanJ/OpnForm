@@ -169,7 +169,7 @@ export default {
   }),
 
   computed: {
-    formEndpoint: () => '/api/open/forms/{id}'
+    formEndpoint: () => '/open/forms/{id}'
   },
 
   methods: {
@@ -185,9 +185,9 @@ export default {
     duplicateForm () {
       if (this.loadingDuplicate) return
       this.loadingDuplicate = true
-      axios.post(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate').then((response) => {
-        this.formsStore.addOrUpdate(response.data.new_form)
-        this.$router.push({ name: 'forms.show', params: { slug: response.data.new_form.slug } })
+      opnFetch(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate',{method: 'POST'}).then((data) => {
+        this.formsStore.save(data.new_form)
+        this.$router.push({ name: 'forms-show', params: { slug: data.new_form.slug } })
         this.alertSuccess('Form was successfully duplicated.')
         this.loadingDuplicate = false
       })
@@ -195,7 +195,7 @@ export default {
     deleteForm () {
       if (this.loadingDelete) return
       this.loadingDelete = true
-      axios.delete(this.formEndpoint.replace('{id}', this.form.id)).then(() => {
+      opnFetch(this.formEndpoint.replace('{id}', this.form.id),{method:'DELETE'}).then(() => {
         this.formsStore.remove(this.form)
         this.$router.push({ name: 'home' })
         this.alertSuccess('Form was deleted.')

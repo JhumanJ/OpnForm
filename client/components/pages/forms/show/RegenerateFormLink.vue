@@ -105,7 +105,7 @@ export default {
       this.loadingNewLink = true
       axios.put(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option).then((response) => {
         this.formsStore.addOrUpdate(response.data.form)
-        this.$router.push({name: 'forms.show', params: {slug: response.data.form.slug}})
+        this.$router.push({name: 'forms-slug-show', params: {slug: response.data.form.slug}})
         this.alertSuccess(response.data.message)
         this.loadingNewLink = false
       }).finally(() => {

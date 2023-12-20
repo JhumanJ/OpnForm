@@ -162,7 +162,7 @@ export default {
     helpUrl: () => this.config.links.help_url,
     form () {
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
-        return this.formsStore.getBySlug(this.$route.params.slug)
+        return this.formsStore.getByKey(this.$route.params.slug)
       }
       return null
     },

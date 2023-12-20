@@ -9,7 +9,7 @@ export const useFormsStore = defineStore('forms', () => {
   const allLoaded = ref(false)
   const currentPage = ref(1)
 
-  const load = (workspaceId) => {
+  const loadAll = (workspaceId) => {
     contentStore.startLoading()
     return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId),{query: {page: currentPage.value}})
       .then((response) => {
@@ -21,12 +21,20 @@ export const useFormsStore = defineStore('forms', () => {
         }
         if (currentPage.value < response.meta.last_page) {
           currentPage.value++
-          load(workspaceId)
+          loadAll(workspaceId)
         } else {
           allLoaded.value = true
           contentStore.stopLoading()
           currentPage.value = 1
         }
+      })
+  }
+
+  const load = (workspaceId, slug) => {
+    contentStore.startLoading()
+    return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId) + '/' + slug)
+      .then((response) => {
+        console.log(response.data.value)
       })
   }
 
@@ -44,6 +52,7 @@ export const useFormsStore = defineStore('forms', () => {
     ...contentStore,
     allLoaded,
     allTags,
+    loadAll,
     load
   }
 })

@@ -133,13 +133,14 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
-formsStore.startLoading()
 const workspacesStore = useWorkspacesStore()
+formsStore.startLoading()
 
 onMounted(() => {
   if (!formsStore.allLoaded) {
-    console.log('starting to load')
-    formsStore.load(workspacesStore.currentId)
+    formsStore.loadAll(workspacesStore.currentId)
+  } else {
+    formsStore.stopLoading()
   }
 })
 
@@ -164,7 +165,7 @@ const onTagClick = (tag) => {
   }
 }
 const viewForm = (form) => {
-  useRouter.push({name: 'forms.show', params: {slug: form.slug}})
+  useRouter().push({name: 'forms-slug-show', params: {slug: form.slug}})
 }
 
 // Computed

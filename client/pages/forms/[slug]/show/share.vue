@@ -38,10 +38,14 @@ export default {
     AdvancedFormUrlSettings,
     EmbedFormAsPopupModal
   },
+
   props: {
-    form: { type: Object, required: true }
+    form: {type: Object, required: true},
   },
-  mixins: [SeoMeta],
+
+  mounted() {
+    console.log('form',this.form)
+  },
 
   data: () => ({
     shareFormConfig: {
@@ -49,8 +53,6 @@ export default {
       auto_submit: false
     }
   }),
-
-  mounted() {},
 
   computed: {
     metaTitle() {

@@ -9,13 +9,13 @@
         </h3>
       </div>
     </template>
-    <toggle-switch-input :value="value.hide_title" name="hide_title" class="mt-4"
+    <toggle-switch-input :model-value="modelValue.hide_title" name="hide_title" class="mt-4"
                          label="Hide Form Title"
                          :disabled="(form.hide_title===true)?true:null"
                          :help="hideTitleHelp"
                          @update:model-value="onChangeHideTitle"
     />
-    <toggle-switch-input :value="value.auto_submit" name="auto_submit" class="mt-4"
+    <toggle-switch-input :model-value="modelValue.auto_submit" name="auto_submit" class="mt-4"
                          label="Auto Submit Form"
                          help="Form will auto submit immediate after open URL"
                          @update:model-value="onChangeAutoSubmit"
@@ -33,7 +33,7 @@ export default {
       type: Object,
       required: true
     },
-    value: {
+    modelValue: {
       type: Object,
       required: true
     }
@@ -56,10 +56,10 @@ export default {
 
   methods: {
     onChangeHideTitle (val) {
-      this.value.hide_title = val
+      this.modelValue.hide_title = val
     },
     onChangeAutoSubmit (val) {
-      this.value.auto_submit = val
+      this.modelValue.auto_submit = val
     }
   }
 }

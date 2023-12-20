@@ -16,36 +16,14 @@
 <script>
 import { computed } from 'vue'
 import Form from 'vform'
-import { useFormsStore } from '../../../stores/forms.js'
-import { useWorkingFormStore } from '../../../stores/working_form.js'
-import { useWorkspacesStore } from '../../../stores/workspaces.js'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
-
-const loadForms = function () {
-  const formsStore = useFormsStore()
-  const workspacesStore = useWorkspacesStore()
-  formsStore.startLoading()
-  workspacesStore.loadIfEmpty().then(() => {
-    formsStore.load(workspacesStore.currentId)
-  })
-}
 
 export default {
   name: 'EditForm',
   components: { Breadcrumb },
   mixins: [SeoMeta],
   middleware: 'auth',
-
-  beforeRouteEnter (to, from, next) {
-    const formsStore = useFormsStore()
-    const workingFormStore = useWorkingFormStore()
-    if (!formsStore.getBySlug(to.params.slug)) {
-      loadForms()
-    }
-    workingFormStore.set(null)  // Reset old working form
-    next()
-  },
 
   beforeRouteLeave (to, from, next) {
     if (this.isDirty()) {
@@ -61,11 +39,17 @@ export default {
     const formsStore = useFormsStore()
     const workingFormStore = useWorkingFormStore()
     const workspacesStore = useWorkspacesStore()
+
+    if (!formsStore.allLoaded) {
+      formsStore.loadAll(useWorkspacesStore().currentId)
+    }
+    workingFormStore.set(null) // Reset old working form
+
     return {
       formsStore,
       workingFormStore,
       workspacesStore,
-      formsLoading : computed(() => formsStore.loading)
+      formsLoading: computed(() => formsStore.loading)
     }
   },
 
@@ -88,7 +72,7 @@ export default {
       }
     },
     form () {
-      return this.formsStore.getBySlug(this.$route.params.slug)
+      return this.formsStore.getByKey(this.$route.params.slug)
     },
     pageLoaded () {
       return !this.loading && this.updatedForm !== null
@@ -114,7 +98,7 @@ export default {
       }
     }
 
-    this.closeAlert()
+    // this.closeAlert()
     if (!this.form) {
       loadForms()
     } else {

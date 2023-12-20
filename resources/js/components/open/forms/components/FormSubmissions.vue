@@ -80,7 +80,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Fuse from 'fuse.js'
 import Form from 'vform'
 import { useWorkingFormStore } from '../../../../stores/working_form'
@@ -88,6 +87,7 @@ import ScrollShadow from '../../../common/ScrollShadow.vue'
 import OpenTable from '../../tables/OpenTable.vue'
 import clonedeep from 'clone-deep'
 import VSwitch from '../../../forms/components/VSwitch.vue'
+import { opnFetch } from '~/composables/useOpnApi.js'
 
 export default {
   name: 'FormSubmissions',
@@ -210,9 +210,7 @@ export default {
         return
       }
       this.isLoading = true
-      axios.get('/api/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((response) => {
-        const resData = response.data
-
+      opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((resData) => {
         this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
         this.dataChanged()
 

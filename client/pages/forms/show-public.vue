@@ -184,7 +184,7 @@ export default {
       return this.$route.params.slug
     },
     form () {
-      return this.formsStore.getBySlug(this.formSlug)
+      return this.formsStore.getByKey(this.formSlug)
     },
     isIframe () {
       return window.location !== window.parent.location || window.frameElement
