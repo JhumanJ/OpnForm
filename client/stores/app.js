@@ -5,6 +5,7 @@ import { nextTick } from 'vue'
 export const useAppStore = defineStore('app', {
   state: () => ({
     layout: 'default',
+    navbarHidden: false,
 
     // App Loader
     loader: {
@@ -17,6 +18,12 @@ export const useAppStore = defineStore('app', {
     }
   }),
   actions: {
+    hideNavbar () {
+      this.navbarHidden = true
+    },
+    showNavbar () {
+      this.navbarHidden = false
+    },
     setLayout (layout) {
       this.layout = layout ?? 'default'
     },

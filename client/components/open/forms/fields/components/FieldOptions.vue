@@ -387,8 +387,8 @@
 </template>
 
 <script>
-import timezones from '../../../../../../data/timezones.json'
-import countryCodes from '../../../../../../data/country_codes.json'
+import timezones from '~/data/timezones.json'
+import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 
 export default {

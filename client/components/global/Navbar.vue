@@ -144,15 +144,14 @@ export default {
   },
 
   setup () {
-    const authStore = useAuthStore()
-    const formsStore = useFormsStore()
-    const workspacesStore = useWorkspacesStore()
     const {openCrisp} = useCrisp()
+    const authStore = useAuthStore()
     return {
       authStore,
-      formsStore,
-      workspacesStore,
       openCrisp,
+      appStore: useAppStore(),
+      formsStore: useFormsStore(),
+      workspacesStore: useWorkspacesStore(),
       config: useConfig(),
       user: computed(() => authStore.user),
       isIframe: useIsIframe(),
@@ -189,7 +188,7 @@ export default {
           return false
         }
       }
-      return !this.$root.navbarHidden
+      return !this.appStore.navbarHidden
     },
     userOnboarded () {
       return this.user && this.user.workspaces_count > 0

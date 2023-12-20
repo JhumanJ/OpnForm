@@ -91,20 +91,16 @@
 </template>
 
 <script>
-import Loader from '~/components/global/Loader.vue'
-import Form from 'vform'
 import axios from 'axios'
 
 export default {
-  name: 'CreateFormBaseModal',
-  components: { Loader },
   props: {
     show: { type: Boolean, required: true }
   },
 
   data: () => ({
     state: 'default',
-    aiForm: new Form({
+    aiForm: useForm({
       form_prompt: ''
     }),
     loading: false
@@ -112,7 +108,7 @@ export default {
 
   computed: {
     aiFeaturesEnabled () {
-      return this.$config.ai_features_enabled
+      return useConfig().ai_features_enabled
     }
   },
 

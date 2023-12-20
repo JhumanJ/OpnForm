@@ -139,7 +139,9 @@ export default {
   props: {},
   setup () {
     const workingFormStore = useWorkingFormStore()
+    const {content: form} = storeToRefs(workingFormStore)
     return {
+      form,
       workingFormStore
     }
   },

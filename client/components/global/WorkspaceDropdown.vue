@@ -79,7 +79,8 @@ export default {
   methods: {
     switchWorkspace (workspace) {
       this.workspacesStore.setCurrentId(workspace.id)
-      this.$refs.dropdown.close()
+      this.formsStore.resetState()
+      this.formsStore.load(workspace.id)
       const router = useRouter()
       const route = useRoute()
       if (route.name !== 'home') {

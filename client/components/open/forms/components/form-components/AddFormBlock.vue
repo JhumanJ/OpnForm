@@ -73,7 +73,9 @@ export default {
 
   setup () {
     const workingFormStore = useWorkingFormStore()
+    const {content: form} = storeToRefs(workingFormStore)
     return {
+      form,
       workingFormStore,
       selectedFieldIndex : computed(() => workingFormStore.selectedFieldIndex)
     }
@@ -171,16 +173,6 @@ export default {
   },
 
   computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
-
     defaultBlockNames () {
       return {
         text: 'Your name',
@@ -230,6 +222,7 @@ export default {
       }
       newBlock.help_position = 'below_input'
       if (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) {
+        console.log('------',this.form)
         const newFields = clonedeep(this.form.properties)
         newFields.push(newBlock)
         this.form.properties = newFields

@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import FormSubmissions from '../../../components/open/forms/components/FormSubmissions.vue'
-import SeoMeta from '../../../mixins/seo-meta.js'
+import FormSubmissions from '../../../../components/open/forms/components/FormSubmissions.vue'
+import SeoMeta from '../../../../mixins/seo-meta.js'
 
 export default {
   components: {FormSubmissions},

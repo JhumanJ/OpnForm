@@ -50,15 +50,15 @@
 </template>
 
 <script>
-import { useWorkingFormStore } from '../../../../../../stores/working_form'
 import ProTag from '~/components/global/ProTag.vue'
 
 export default {
   components: { ProTag },
-  props: {},
   setup () {
     const workingFormStore = useWorkingFormStore()
+    const {content: form} = storeToRefs(workingFormStore)
     return {
+      form,
       workingFormStore
     }
   },
@@ -69,17 +69,8 @@ export default {
   },
 
   computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
     replayToEmailField () {
-      const emailFields = this.form.properties.filter((field) => {
+      const emailFields = this.form.value.properties.filter((field) => {
         return field.type === 'email' && !field.hidden
       })
       if (emailFields.length === 1) return emailFields[0]

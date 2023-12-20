@@ -91,11 +91,9 @@
 </template>
 
 <script>
-import CodeInput from '../../../../forms/CodeInput.vue'
-
 export default {
   name: 'BlockOptions',
-  components: { CodeInput },
+  components: { },
   props: {
     field: {
       type: Object,

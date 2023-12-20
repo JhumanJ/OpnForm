@@ -46,7 +46,6 @@
 <script>
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
-import { fixedClasses } from '../../plugins/config/vue-tailwind/datePicker.js'
 
 export default {
   name: 'DateInput',
@@ -68,7 +67,6 @@ export default {
   },
 
   data: () => ({
-    fixedClasses: fixedClasses,
     fromDate: null,
     toDate: null
   }),
@@ -142,7 +140,6 @@ export default {
       }
     }
 
-    this.fixedClasses.input = this.theme.default.input
     this.setInputColor()
   },
 

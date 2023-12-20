@@ -1,5 +1,5 @@
 <template>
-  <div class="v-select relative">
+  <div class="v-select relative" ref="select">
     <span class="inline-block w-full rounded-md">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
               class="cursor-pointer"
@@ -31,7 +31,7 @@
         </span>
       </button>
     </span>
-    <collapsible v-model="isOpen"
+    <collapsible v-model="isOpen" @click-away="onClickAway"
                  class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10"
                  :class="dropdownClass"
     >
@@ -155,6 +155,12 @@ export default {
     }
   },
   methods: {
+    onClickAway (event) {
+      // Check that event target isn't children of dropdown
+      if (this.$refs.select && !this.$refs.select.contains(event.target)) {
+        this.isOpen = false
+      }
+    },
     isSelected (value) {
       if (!this.modelValue) return false
 

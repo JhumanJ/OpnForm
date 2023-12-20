@@ -41,8 +41,8 @@
         </svg>
         View form
       </a>
-      <router-link v-if="isMainPage" v-track.edit_form_click="{form_id:form.id, form_slug:form.slug}"
-                   :to="{name:'forms-edit', params: {slug: form.slug}}"
+      <nuxt-link v-if="isMainPage" v-track.edit_form_click="{form_id:form.id, form_slug:form.slug}"
+                   :to="{name:'forms-slug-edit', params: {slug: form.slug}}"
                    class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
       >
         <svg class="w-4 h-4 mr-2" width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,7 +52,7 @@
           />
         </svg>
         Edit
-      </router-link>
+      </nuxt-link>
       <a v-if="isMainPage" href="#"
          class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
          @click.prevent="copyLink"

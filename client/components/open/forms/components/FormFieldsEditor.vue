@@ -166,8 +166,6 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useWorkingFormStore } from '../../../../stores/working_form'
 import draggable from 'vuedraggable'
 import ProTag from '~/components/global/ProTag.vue'
 import clonedeep from 'clone-deep'
@@ -187,6 +185,7 @@ export default {
   setup () {
     const workingFormStore = useWorkingFormStore()
     return {
+      route: useRoute(),
       workingFormStore
     }
   },
@@ -279,7 +278,7 @@ export default {
       ]
     },
     init () {
-      if (this.$route.name === 'forms-create' || this.$route.name === 'forms-create-guest') { // Set Default fields
+      if (this.route.name === 'forms-create' || this.route.name === 'forms-create-guest') { // Set Default fields
         this.formFields = (this.form.properties.length > 0) ? clonedeep(this.form.properties) : this.getDefaultFields()
       } else {
         this.formFields = clonedeep(this.form.properties).map((field) => {

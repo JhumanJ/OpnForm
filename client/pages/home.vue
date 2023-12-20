@@ -133,14 +133,18 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
+formsStore.startLoading()
 const workspacesStore = useWorkspacesStore()
 
 onMounted(() => {
-  formsStore.load(workspacesStore.currentId)
+  if (!formsStore.allLoaded) {
+    console.log('starting to load')
+    formsStore.load(workspacesStore.currentId)
+  }
 })
 
 // State
-const {getAll: forms, loading: formsLoading} = storeToRefs(formsStore)
+const {getAll: forms, loading: formsLoading, allTags} = storeToRefs(formsStore)
 const showEditFormModal = ref(false)
 const selectedForm = ref(null)
 const search = ref('')
@@ -167,15 +171,7 @@ const viewForm = (form) => {
 const isFilteringForms = computed(() => {
   return (search.value !== '' && search.value !== null) || selectedTags.value.size > 0
 })
-const allTags = computed(() => {
-  let tags = []
-  forms.value.forEach((form) => {
-    if (form.tags && form.tags.length) {
-      tags = tags.concat(form.tags.split(','))
-    }
-  })
-  return [...new Set(tags)]
-})
+
 const enrichedForms = computed(() => {
   let enrichedForms = forms.value.map((form) => {
     form.workspace = workspacesStore.getByKey(form.workspace_id)

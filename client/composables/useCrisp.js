@@ -4,6 +4,7 @@ export const useCrisp = () => {
 
   function openChat() {
     if (!crisp) return
+    showChat()
     crisp.chat.open()
   }
 
@@ -29,11 +30,12 @@ export const useCrisp = () => {
     if (message) sendTextMessage(message)
   }
 
-  function openHelpdesk(){
+  function openHelpdesk() {
     if (!crisp) return
     openChat()
     crisp.chat.setHelpdeskView()
   }
+
   function openHelpdeskArticle(articleSlug, locale = 'en') {
     if (!crisp) return
     crisp.chat.openHelpdeskArticle(locale, articleSlug);
@@ -44,20 +46,25 @@ export const useCrisp = () => {
     crisp.message.send('text', message)
   }
 
-  function setUser (user) {
+  function setUser(user) {
     if (!crisp) return
     crisp.user.setEmail(user.email);
     crisp.user.setNickname(user.name);
     crisp.session.setData({
-      user_id : user.id,
-      'pro-subscription' : user?.is_subscribed ?? false,
-      'stripe-id' : user?.stripe_id ?? '',
-      'subscription' : user?.has_enterprise_subscription ? 'enterprise' : 'pro'
+      user_id: user.id,
+      'pro-subscription': user?.is_subscribed ?? false,
+      'stripe-id': user?.stripe_id ?? '',
+      'subscription': user?.has_enterprise_subscription ? 'enterprise' : 'pro'
     });
 
     if (user?.is_subscribed ?? false) {
       setSegments([['subscribed', user?.has_enterprise_subscription ? 'enterprise' : 'pro']])
     }
+  }
+
+  function pushEvent(event, data = {}) {
+    if (!crisp) return
+    crisp.pushEvent(event, data)
   }
 
   function setSegments(segments, overwrite = false) {
@@ -75,6 +82,7 @@ export const useCrisp = () => {
     openHelpdesk,
     openHelpdeskArticle,
     sendTextMessage,
+    pushEvent,
     setUser
   }
 }

@@ -33,7 +33,6 @@ const open = (event) => {
 }
 
 const close = (event) => {
-  console.log('closing')
   isOpen.value = false
 }
 

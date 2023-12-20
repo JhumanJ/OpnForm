@@ -16,11 +16,11 @@
 <script>
 import { computed } from 'vue'
 import Form from 'vform'
-import { useFormsStore } from '../../stores/forms'
-import { useWorkingFormStore } from '../../stores/working_form'
-import { useWorkspacesStore } from '../../stores/workspaces'
+import { useFormsStore } from '../../../stores/forms.js'
+import { useWorkingFormStore } from '../../../stores/working_form.js'
+import { useWorkspacesStore } from '../../../stores/workspaces.js'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
+import SeoMeta from '../../../mixins/seo-meta.js'
 
 const loadForms = function () {
   const formsStore = useFormsStore()

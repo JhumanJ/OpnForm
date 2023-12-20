@@ -68,8 +68,6 @@
 <script>
 import { computed } from 'vue'
 import clonedeep from 'clone-deep'
-import { useFormsStore } from '../../../../../stores/forms'
-import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
 
@@ -80,10 +78,11 @@ export default {
   setup () {
     const formsStore = useFormsStore()
     const workingFormStore = useWorkingFormStore()
+    const {getAll: forms} = storeToRefs(formsStore)
     return {
+      forms,
       formsStore,
       workingFormStore,
-      forms : computed(() => formsStore.content)
     }
   },
 
@@ -129,7 +128,7 @@ export default {
       }
     },
     allTagsOptions () {
-      return this.formsStore.getAllTags.map((tagname) => {
+      return this.formsStore.allTags.map((tagname) => {
         return {
           name: tagname,
           value: tagname

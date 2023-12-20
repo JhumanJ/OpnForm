@@ -36,8 +36,6 @@ import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 
 export default {
-  name: 'CodeInput',
-
   components: { InputWrapper, codemirror },
   props: {
     ...inputProps

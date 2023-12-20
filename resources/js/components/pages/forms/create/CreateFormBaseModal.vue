@@ -91,20 +91,16 @@
 </template>
 
 <script>
-import Loader from '../../../common/Loader.vue'
-import Form from 'vform'
-import axios from 'axios'
-
 export default {
   name: 'CreateFormBaseModal',
-  components: { Loader },
+  components: { },
   props: {
     show: { type: Boolean, required: true }
   },
 
   data: () => ({
     state: 'default',
-    aiForm: new Form({
+    aiForm: useForm({
       form_prompt: ''
     }),
     loading: false

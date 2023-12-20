@@ -77,17 +77,12 @@
       />
     </div>
   </div>
-  <div v-else class="flex justify-center items-center">
+  <div v-else class="flex justify-center items-center p-8">
     <Loader class="w-6 h-6" />
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useAuthStore } from '../../../../stores/auth'
-import { useFormsStore } from '../../../../stores/forms'
-import { useWorkingFormStore } from '../../../../stores/working_form'
-import { useWorkspacesStore } from '../../../../stores/workspaces'
 import FormEditorSidebar from './form-components/FormEditorSidebar.vue'
 import FormErrorModal from './form-components/FormErrorModal.vue'
 import FormInformation from './form-components/FormInformation.vue'
@@ -100,8 +95,7 @@ import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
 import FormAccess from './form-components/FormAccess.vue'
-import saveUpdateAlert from '../../../../mixins/forms/saveUpdateAlert.js'
-import fieldsLogic from '../../../../mixins/forms/fieldsLogic.js'
+import {validatePropertiesLogic} from "~/composables/forms/validatePropertiesLogic.js"
 
 export default {
   name: 'FormEditor',
@@ -119,7 +113,6 @@ export default {
     FormCustomSeo,
     FormAccess
   },
-  mixins: [saveUpdateAlert, fieldsLogic],
   props: {
     isEdit: {
       required: false,
@@ -144,15 +137,18 @@ export default {
   },
 
   setup () {
-    const authStore = useAuthStore()
+    const {user} = storeToRefs(useAuthStore())
     const formsStore = useFormsStore()
-    const workingFormStore = useWorkingFormStore()
-    const workspacesStore = useWorkspacesStore()
+    const {content: form} = storeToRefs(useWorkingFormStore())
+    const {getCurrent: workspace} = storeToRefs(useWorkspacesStore())
     return {
+      appStore: useAppStore(),
+      crisp: useCrisp(),
+      amplitude: useAmplitude(),
+      workspace,
       formsStore,
-      workingFormStore,
-      workspacesStore,
-      user: computed(() => authStore.user)
+      form,
+      user,
     }
   },
 
@@ -166,20 +162,8 @@ export default {
   },
 
   computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
     createdForm () {
       return this.formsStore.getBySlug(this.createdFormSlug)
-    },
-    workspace () {
-      return this.workspacesStore.getCurrent()
     },
     steps () {
       return [
@@ -223,23 +207,29 @@ export default {
 
   mounted () {
     this.$emit('mounted')
-    this.$root.hideNavbar()
+    this.appStore.hideNavbar()
   },
 
   beforeUnmount () {
-    this.$root.hideNavbar(false)
+    this.appStore.showNavbar()
   },
 
   methods: {
+    displayFormModificationAlert (responseData) {
+      if (responseData.form && responseData.form.cleanings && Object.keys(responseData.form.cleanings).length > 0) {
+        this.alertWarning(responseData.message)
+      } else {
+        this.alertSuccess(responseData.message)
+      }
+    },
     openCrisp () {
-      window.$crisp.push(['do', 'chat:show'])
-      window.$crisp.push(['do', 'chat:open'])
+      this.crisp.openChat()
     },
     showValidationErrors () {
       this.showFormErrorModal = true
     },
     saveForm () {
-      this.form.properties = this.validateFieldsLogic(this.form.properties)
+      this.form.properties = validatePropertiesLogic(this.form.properties)
       if (this.isGuest) {
         this.saveFormGuest()
       } else if (this.isEdit) {
@@ -253,12 +243,11 @@ export default {
 
       this.updateFormLoading = true
       this.validationErrorResponse = null
-      this.form.put('/api/open/forms/{id}/'.replace('{id}', this.form.id)).then((response) => {
-        const data = response.data
+      this.form.put('/open/forms/{id}/'.replace('{id}', this.form.id)).then((data) => {
         this.formsStore.addOrUpdate(data.form)
         this.$emit('on-save')
         this.$router.push({ name: 'forms.show', params: { slug: this.form.slug } })
-        this.$logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
+        this.amplitude.logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {
         if (error.response.status === 422) {
@@ -275,27 +264,27 @@ export default {
       this.validationErrorResponse = null
 
       this.updateFormLoading = true
-      this.form.post('/api/open/forms').then((response) => {
-        this.formsStore.addOrUpdate(response.data.form)
+      this.form.post('/open/forms').then((response) => {
+        this.formsStore.save(response.form)
         this.$emit('on-save')
-        this.createdFormSlug = response.data.form.slug
+        this.createdFormSlug = response.form.slug
 
-        this.$logEvent('form_created', { form_id: response.data.form.id, form_slug: response.data.form.slug })
-        this.$crisp.push(['set', 'session:event', [[['form_created', {
-          form_id: response.data.form.id,
-          form_slug: response.data.form.slug
-        }, 'blue']]]])
-        this.displayFormModificationAlert(response.data)
-        this.$router.push({
-          name: 'forms.show',
+        this.amplitude.logEvent('form_created', { form_id: response.form.id, form_slug: response.form.slug })
+        this.crisp.pushEvent('form_created',{
+          form_id: response.form.id,
+          form_slug: response.form.slug
+        })
+        this.displayFormModificationAlert(response)
+        useRouter().push({
+          name: 'forms-show',
           params: {
             slug: this.createdForm.slug,
-            new_form: response.data.users_first_form
+            new_form: response.users_first_form
           }
         })
       }).catch((error) => {
         if (error.response && error.response.status === 422) {
-          this.validationErrorResponse = error.response.data
+          this.validationErrorResponse = error.response
           this.showValidationErrors()
         }
       }).finally(() => {

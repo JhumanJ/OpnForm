@@ -133,15 +133,15 @@
 <script>
 import { computed } from 'vue'
 import Form from 'vform'
-import { useAuthStore } from '../../../stores/auth'
-import { useFormsStore } from '../../../stores/forms'
-import { useWorkingFormStore } from '../../../stores/working_form'
-import { useWorkspacesStore } from '../../../stores/workspaces'
+import { useAuthStore } from '../../../../stores/auth.js'
+import { useFormsStore } from '../../../../stores/forms.js'
+import { useWorkingFormStore } from '../../../../stores/working_form.js'
+import { useWorkspacesStore } from '../../../../stores/workspaces.js'
 import ProTag from '~/components/global/ProTag.vue'
 import VButton from '~/components/global/VButton.vue'
-import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
-import SeoMeta from '../../../mixins/seo-meta.js'
-import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
+import ExtraMenu from '../../../../components/pages/forms/show/ExtraMenu.vue'
+import SeoMeta from '../../../../mixins/seo-meta.js'
+import FormCleanings from '../../../../components/pages/forms/show/FormCleanings.vue'
 
 const loadForms = function () {
   const formsStore = useFormsStore()
@@ -263,7 +263,7 @@ export default {
       this.$router.push({ name: 'home' })
     },
     openEdit () {
-      this.$router.push({ name: 'forms-edit', params: { slug: this.form.slug } })
+      this.$router.push({ name: 'forms-slug-edit', params: { slug: this.form.slug } })
     }
   }
 }

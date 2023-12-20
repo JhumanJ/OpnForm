@@ -44,8 +44,10 @@ export default {
   props: {},
   setup () {
     const workingFormStore = useWorkingFormStore()
+    const {content: form} = storeToRefs(workingFormStore)
     return {
-      workingFormStore
+      workingFormStore,
+      form
     }
   },
   data () {
@@ -54,16 +56,7 @@ export default {
   },
 
   computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
-    zapierUrl: () => this.$config.links.zapier_integration
+    zapierUrl: () => useConfig().links.zapier_integration
   },
 
   watch: {

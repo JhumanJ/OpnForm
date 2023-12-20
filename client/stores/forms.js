@@ -6,7 +6,7 @@ export const formsEndpoint = '/open/workspaces/{workspaceId}/forms'
 export const useFormsStore = defineStore('forms', () => {
 
   const contentStore = useContentStore('slug')
-  contentStore.startLoading()
+  const allLoaded = ref(false)
   const currentPage = ref(1)
 
   const load = (workspaceId) => {
@@ -23,14 +23,27 @@ export const useFormsStore = defineStore('forms', () => {
           currentPage.value++
           load(workspaceId)
         } else {
+          allLoaded.value = true
           contentStore.stopLoading()
           currentPage.value = 1
         }
       })
   }
 
+  const allTags = computed(() => {
+    let tags = []
+    contentStore.getAll.value.forEach((form) => {
+      if (form.tags && form.tags.length) {
+        tags = tags.concat(form.tags.split(','))
+      }
+    })
+    return [...new Set(tags)]
+  })
+
   return {
     ...contentStore,
+    allLoaded,
+    allTags,
     load
   }
 })
