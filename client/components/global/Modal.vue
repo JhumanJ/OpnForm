@@ -1,12 +1,12 @@
 <template>
   <Teleport to="body">
-    <transition @leave="(el,done) => motions.backdrop.leave(done)">
-      <div v-if="show" v-motion="'backdrop'" :variants="motionFadeIn"
+    <transition @leave="onLeave">
+      <div v-if="show" ref="backdrop"
            class="fixed z-30 top-0 inset-0 px-4 sm:px-0 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll"
            :class="{'backdrop-blur-sm':backdropBlur}"
            @click.self="close"
       >
-        <div ref="content" v-motion="'body'" :variants="motionSlideBottom"
+        <div ref="content"
              class="self-start bg-white dark:bg-notion-dark w-full relative p-4 md:p-6 my-6 rounded-xl shadow-xl"
              :class="maxWidthClass"
         >
@@ -40,7 +40,7 @@
             <slot/>
           </div>
 
-          <div v-if="$scopedSlots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
+          <div v-if="$slots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
             <slot name="footer"/>
           </div>
         </div>
@@ -50,7 +50,6 @@
 </template>
 
 <script setup>
-import {useMotions} from '@vueuse/motion'
 import {watch} from "vue";
 
 const props = defineProps({
@@ -98,8 +97,6 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeOnEscape)
 })
 
-const motions = useMotions()
-
 const maxWidthClass = computed(() => {
   return {
     sm: 'sm:max-w-sm',
@@ -110,62 +107,66 @@ const maxWidthClass = computed(() => {
   }[props.maxWidth]
 })
 
-const motionFadeIn = computed(() => {
-  return {
-    initial: {
-      opacity: 0,
-      transition: {
-        delay: 100,
-        duration: 200,
-        ease: 'easeIn'
-      }
-    },
-    enter: {
-      opacity: 1,
-      transition: {
-        duration: 200
-      }
+const motionFadeIn = {
+  initial: {
+    opacity: 0,
+    transition: {
+      delay: 100,
+      duration: 200,
+      ease: 'easeIn'
+    }
+  },
+  enter: {
+    opacity: 1,
+    transition: {
+      duration: 200
     }
   }
-})
+}
 
-const motionSlideBottom = computed(() => {
-  return {
-    initial: {
-      y: 150,
-      opacity: 0,
-      transition: {
-        ease: 'easeIn',
-        duration: 200
-      }
-    },
-    enter: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 250,
-        ease: 'easeOut',
-        delay: 100
-      }
+const motionSlideBottom = {
+  initial: {
+    y: 150,
+    opacity: 0,
+    transition: {
+      ease: 'easeIn',
+      duration: 200
+    }
+  },
+  enter: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 250,
+      ease: 'easeOut',
+      delay: 100
     }
   }
-})
+}
 
-watch(() => props.show, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    if (newVal) {
-      motions.body.apply('enter')
-      motions.backdrop.apply('enter')
-    } else {
-      motions.body.apply('initial')
-      motions.backdrop.apply('initial')
-    }
-  }
-})
+const onLeave = (el, done) => {
+  contentMotion.value.leave(()=>{})
+  backdropMotion.value.leave(done)
+}
 
 const close = () => {
   if (props.closeable) {
     emits('close')
   }
 }
+
+const backdrop = ref(null)
+const content = ref(null)
+const backdropMotion = ref(null)
+const contentMotion = ref(null)
+
+watch(() => props.show, (newVal, oldVal) => {
+  if (newVal) {
+    nextTick(() => {
+      backdropMotion.value = useMotion(backdrop.value, motionFadeIn)
+      contentMotion.value = useMotion(content.value, motionSlideBottom)
+    })
+  }
+})
+
 </script>
