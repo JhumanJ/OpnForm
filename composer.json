@@ -22,7 +22,6 @@
     "ext-json": "*",
     "aws/aws-sdk-php": "^3.183",
     "doctrine/dbal": "^3.4",
-    "fruitcake/laravel-cors": "^2.0",
     "giggsey/libphonenumber-for-php": "^8.13",
     "guzzlehttp/guzzle": "^7.0.1",
     "jhumanj/laravel-model-stats": "^0.4.0",

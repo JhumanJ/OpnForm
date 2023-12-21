@@ -55,5 +55,8 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    routeRules: { ... cachedRoutes}
+    routeRules: { ... cachedRoutes},
+    devServer: {
+        https: true,
+    }
 })
