@@ -82,7 +82,7 @@
       />
 
       <v-checkbox v-model="field.is_scale" class="mt-4"
-                  :name="field.id+'_is_scale'" @input="initScale"
+                  :name="field.id+'_is_scale'" @update:model-value="initScale"
       >
         Scale
       </v-checkbox>
@@ -337,7 +337,7 @@
                       {name:'Above input',value:'above_input'},
                     ]"
                     :form="field" label="Field Help Position"
-                    @input="onFieldHelpPositionChange"
+                    @update:model-value="onFieldHelpPositionChange"
       />
 
       <template v-if="['text','number','url','email'].includes(field.type)">

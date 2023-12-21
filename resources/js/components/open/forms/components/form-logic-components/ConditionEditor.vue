@@ -1,5 +1,5 @@
 <template>
-  <query-builder v-model="query" :rules="rules" :config="config" @update:modelValue="onChange">
+  <query-builder v-model="query" :rules="rules" :config="config" @update:model-value="onChange">
     <template #groupOperator="props">
       <div class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-1 flex">
         <p class="mr-2 font-semibold">
@@ -13,7 +13,7 @@
           option-key="identifier"
           name="operator-input"
           margin-bottom=""
-          @update:modelValue="props.updateCurrentOperator($event)"
+          @update:model-value="props.updateCurrentOperator($event)"
         />
       </div>
     </template>
@@ -24,7 +24,7 @@
       <component
         :is="ruleCtrl.ruleComponent"
         :model-value="ruleCtrl.ruleData"
-        @update:modelValue="ruleCtrl.updateRuleData"
+        @update:model-value="ruleCtrl.updateRuleData"
       />
     </template>
   </query-builder>
