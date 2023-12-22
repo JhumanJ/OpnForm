@@ -9,9 +9,9 @@
       </h1>
 
       <div class="links">
-        <router-link :to="{ name: 'index' }" class="hover:underline text-gray-700">
+        <NuxtLink :to="{ name: 'index' }" class="hover:underline text-gray-700">
           Go Home
-        </router-link>
+        </NuxtLink>
       </div>
     </div>
   </div>

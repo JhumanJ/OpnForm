@@ -67,7 +67,7 @@
         <p class="font-medium">
           Start from a template
         </p>
-        <router-link v-track.select_form_base="{base:'template'}" :to="{name:'templates'}" class="absolute inset-0" />
+        <NuxtLink v-track.select_form_base="{base:'template'}" :to="{name:'templates'}" class="absolute inset-0" />
       </div>
     </div>
     <div v-else-if="state=='ai'">

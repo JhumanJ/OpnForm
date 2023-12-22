@@ -21,9 +21,9 @@
         <div class="border-t mt-1 p-4 pb-2 -mx-2">
           <p class="text-gray-500 text-sm" v-html="cleaningContent" />
           <p class="text-gray-500 text-sm mb-4 font-semibold">
-            <router-link :to="{name:'pricing'}">
+            <NuxtLink :to="{name:'pricing'}">
               {{ form.is_pro ? 'Upgrade your OpnForms plan today' : 'Start your free OpnForms trial' }}
-            </router-link>
+            </NuxtLink>
             to unlock all of our features and build powerful forms.
           </p>
           <div class="flex flex-wrap items-end w-full">

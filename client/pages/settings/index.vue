@@ -15,12 +15,12 @@
           <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
               <li v-for="(tab, i) in tabsList" :key="i+1" class="mr-6">
-                <router-link :to="{ name: tab.route }"
+                <NuxtLink :to="{ name: tab.route }"
                              class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
                              active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
                 >
                   {{ tab.name }}
-                </router-link>
+                </NuxtLink>
               </li>
             </ul>
           </div>
@@ -65,33 +65,33 @@ export default {
       const tabs = [
         {
           name: 'Profile',
-          route: 'settings.profile'
+          route: 'settings-profile'
         },
         {
           name: 'Workspace Settings',
-          route: 'settings.workspaces'
+          route: 'settings-workspace'
         },
         {
           name: 'Password',
-          route: 'settings.password'
+          route: 'settings-password'
         },
         {
           name: 'Delete Account',
-          route: 'settings.account'
+          route: 'settings-account'
         }
       ]
 
       if (this.user.is_subscribed) {
         tabs.splice(1, 0, {
           name: 'Billing',
-          route: 'settings.billing'
+          route: 'settings-billing'
         })
       }
 
       if (this.user.admin) {
         tabs.push({
           name: 'Admin',
-          route: 'settings.admin'
+          route: 'settings-admin'
         })
       }
 

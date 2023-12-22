@@ -32,9 +32,9 @@
       <p class="text-gray-500 mt-4">
         Don't have an account?
         <a v-if="isQuick" href="#" class="font-semibold ml-1" @click.prevent="$emit('openRegister')">Sign Up</a>
-        <router-link v-else :to="{name:'register'}" class="font-semibold ml-1">
+        <NuxtLink v-else :to="{name:'register'}" class="font-semibold ml-1">
           Sign Up
-        </router-link>
+        </NuxtLink>
       </p>
     </form>
   </div>
