@@ -110,10 +110,10 @@
       <pricing-table v-if="paidPlansEnabled" class="pb-20" :home-page="true">
         <template #pricing-table>
           <li class="flex gap-x-3">
-            <router-link :to="{name:'pricing'}" class="flex gap-3">
+            <NuxtLink :to="{name:'pricing'}" class="flex gap-3">
               <div class="w-5"/>
               Read more about our pricing
-            </router-link>
+            </NuxtLink>
           </li>
         </template>
       </pricing-table>

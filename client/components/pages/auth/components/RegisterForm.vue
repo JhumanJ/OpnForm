@@ -23,11 +23,11 @@
 
       <checkbox-input :form="form" name="agree_terms" :required="true">
         <template #label>
-          I agree with the <router-link :to="{name:'terms-conditions'}" target="_blank">
+          I agree with the <NuxtLink :to="{name:'terms-conditions'}" target="_blank">
             Terms and conditions
-          </router-link> and <router-link :to="{name:'privacy-policy'}" target="_blank">
+          </NuxtLink> and <NuxtLink :to="{name:'privacy-policy'}" target="_blank">
             Privacy policy
-          </router-link> of the website and I accept them.
+          </NuxtLink> of the website and I accept them.
         </template>
       </checkbox-input>
 
@@ -39,9 +39,9 @@
       <p class="text-gray-500 mt-4">
         Already have an account?
         <a v-if="isQuick" href="#" class="font-semibold ml-1" @click.prevent="$emit('openLogin')">Log In</a>
-        <router-link v-else :to="{name:'login'}" class="font-semibold ml-1">
+        <NuxtLink v-else :to="{name:'login'}" class="font-semibold ml-1">
           Log In
-        </router-link>
+        </NuxtLink>
       </p>
     </form>
   </div>
