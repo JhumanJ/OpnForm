@@ -152,7 +152,7 @@ export default {
       appStore: useAppStore(),
       formsStore: useFormsStore(),
       workspacesStore: useWorkspacesStore(),
-      config: useConfig(),
+      config: useAppConfig(),
       user: computed(() => authStore.user),
       isIframe: useIsIframe(),
     }

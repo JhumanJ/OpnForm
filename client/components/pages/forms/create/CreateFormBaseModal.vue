@@ -108,7 +108,7 @@ export default {
 
   computed: {
     aiFeaturesEnabled () {
-      return useConfig().ai_features_enabled
+      return useAppConfig().ai_features_enabled
     }
   },
 

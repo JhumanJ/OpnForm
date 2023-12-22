@@ -203,7 +203,7 @@ export default {
     const authStore = useAuthStore()
     return {
       authenticated: computed(() => authStore.check),
-      config: useConfig()
+      config: useAppConfig()
     }
   },
 
