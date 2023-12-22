@@ -12,14 +12,16 @@ if (opnformConfig.sentry_dsn) {
     modules.push('@nuxtjs/sentry')
 }
 
-const cachedRoutes = [
+const preRenderedRoutes = [
     '/',
     '/ai-form-builder',
     '/login',
     '/register',
-    '/privacy-policy',
-    '/terms-conditions',
-].reduce((acc, curr) => (acc[curr] = {swr: 60 * 60}, acc), {});
+    // '/privacy-policy',
+    // '/terms-conditions',
+    '/templates',
+    '/templates/*',
+].reduce((acc, curr) => (acc[curr] = {prerender: true}, acc), {});
 
 export default defineNuxtConfig({
     devtools: {enabled: true},
@@ -55,8 +57,5 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    routeRules: { ... cachedRoutes},
-    devServer: {
-        https: true,
-    }
+    routeRules: { ... preRenderedRoutes}
 })

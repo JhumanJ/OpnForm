@@ -26,6 +26,7 @@ export const useContentStore = (mapKey = 'id') => {
   }
 
   function save(items) {
+    if (!items) return
     if (!Array.isArray(items)) items = [items]
     items.forEach((item) => {
       content.value.set(item[mapKey], item)

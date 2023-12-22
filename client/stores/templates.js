@@ -55,7 +55,7 @@ export const loadAllTemplates = async (store, options={}) => {
   if (!store.allLoaded) {
     store.startLoading()
     store.initTypesAndIndustries()
-    const {data} = await fetchAllTemplates(options)
+    const {data,error} = await fetchAllTemplates(options)
     store.set(data.value)
     store.stopLoading()
     store.allLoaded = true

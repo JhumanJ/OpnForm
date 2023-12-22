@@ -11,12 +11,6 @@
   ],
   "license": "MIT",
   "type": "project",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/JhumanJ/laravel-notion-api.git"
-    }
-  ],
   "require": {
     "php": "^8.2",
     "ext-json": "*",
