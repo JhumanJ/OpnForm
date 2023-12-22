@@ -156,9 +156,9 @@
                   Copy the template and change it the way you like
                 </h5>
                 <p class="mt-2 text-sm font-normal text-gray-600">
-                  <router-link :to="{path:createFormWithTemplateUrl}">
+                  <NuxtLink :to="{path:createFormWithTemplateUrl}">
                     Click here to copy this template
-                  </router-link>
+                  </NuxtLink>
                   and start customizing it. Change the questions, add new ones, choose colors and
                   more.
                 </p>

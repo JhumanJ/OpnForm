@@ -24,9 +24,9 @@
           Unfortunately we could not find this form. It may have been deleted by it's author.
         </p>
         <p class="mb-10 mt-4">
-          <router-link :to="{name:'index'}">
+          <NuxtLink :to="{name:'index'}">
             Create your form for free with OpnForm
-          </router-link>
+          </NuxtLink>
         </p>
       </div>
       <div v-else-if="formLoading">

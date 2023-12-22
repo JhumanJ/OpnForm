@@ -9,18 +9,18 @@
           {{ success }}
         </div>
 
-        <router-link :to="{ name: 'login' }" class="btn btn-primary">
+        <NuxtLink :to="{ name: 'login' }" class="btn btn-primary">
           Login
-        </router-link>
+        </NuxtLink>
       </template>
       <template v-else>
         <div class="alert alert-danger" role="alert">
           {{ error || 'Failed to verify email.' }}
         </div>
 
-        <router-link :to="{ name: 'verification.resend' }" class="small float-right">
+        <NuxtLink :to="{ name: 'auth-verification-resend' }" class="small float-right">
           Resend Verification Link?
-        </router-link>
+        </NuxtLink>
       </template>
     </div>
   </div>
