@@ -16,11 +16,11 @@ export default {
   },
 
   async setup(props) {
-    const apiUrl = useConfig().notion.worker
+    const apiUrl = useAppConfig().notion.worker
     const {data} = await useFetch(`${apiUrl}/page/${props.pageId}`)
 
     return {
-      apiUrl: useConfig().notion.worker,
+      apiUrl: useAppConfig().notion.worker,
       blockMap: data,
     }
   }

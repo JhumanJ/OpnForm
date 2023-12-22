@@ -56,7 +56,7 @@ export default {
   },
 
   computed: {
-    zapierUrl: () => useConfig().links.zapier_integration
+    zapierUrl: () => useAppConfig().links.zapier_integration
   },
 
   watch: {
