@@ -48,7 +48,6 @@ export default {
     watch(form, (form) => {
       if (form) {
         updatedForm.value = useForm(form)
-        console.log('updatedForm.value',updatedForm.value)
       }
     })
 

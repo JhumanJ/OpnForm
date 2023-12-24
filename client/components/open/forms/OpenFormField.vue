@@ -124,10 +124,6 @@ export default {
     }
   },
 
-  data () {
-    return {}
-  },
-
   computed: {
     fieldComponents () {
       return {

@@ -13,8 +13,6 @@ export const useWorkingFormStore = defineStore('working_form', {
   }),
   actions: {
     set (form) {
-      console.log('setting working form', form)
-      console.trace();
       this.content = form
     },
     setProperties (properties) {

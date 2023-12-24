@@ -46,6 +46,7 @@ export default defineNuxtConfig({
         {
             path: '~/components/forms',
             pathPrefix: false,
+            global: true,
         },
         {
             path: '~/components/global',
