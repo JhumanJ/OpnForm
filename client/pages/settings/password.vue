@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import Form from 'vform'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
@@ -36,7 +35,7 @@ export default {
 
   data: () => ({
     metaTitle: 'Password',
-    form: new Form({
+    form: useForm({
       password: '',
       password_confirmation: ''
     })

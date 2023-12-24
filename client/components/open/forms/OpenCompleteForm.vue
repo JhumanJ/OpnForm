@@ -108,19 +108,16 @@
 </template>
 
 <script>
-import Form from 'vform'
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import { themes } from '~/lib/forms/form-themes.js'
 import VButton from '~/components/global/VButton.vue'
-import VTransition from '~/components/global/transitions/VTransition.vue'
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
+import VTransition from '~/components/global/transitions/VTransition.vue'
+import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
-
-  mixins: [FormPendingSubmissionKey],
 
   props: {
     form: { type: Object, required: true },
@@ -129,9 +126,10 @@ export default {
     submitButtonClass: { type: String, default: '' }
   },
 
-  setup() {
+  setup(props) {
     return {
-      isIframe: useIsIframe()
+      isIframe: useIsIframe(),
+      pendingSubmission: pendingSubmission(props.form)
     }
   },
 
@@ -140,7 +138,7 @@ export default {
       loading: false,
       submitted: false,
       themes: themes,
-      passwordForm: new Form({
+      passwordForm: useForm({
         password: null
       }),
       hidePasswordDisabledMsg: false,
@@ -163,9 +161,6 @@ export default {
     }
   },
 
-  mounted () {
-  },
-
   methods: {
     submitForm (form, onFailure) {
       if (this.creating) {
@@ -175,8 +170,8 @@ export default {
       }
 
       this.loading = true
-      this.closeAlert()
-      form.post('/api/forms/' + this.form.slug + '/answer').then((response) => {
+      // this.closeAlert()
+      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.$logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
@@ -202,15 +197,15 @@ export default {
         }, '*')
 
         try {
-          window.localStorage.removeItem(this.formPendingSubmissionKey)
+          this.pendingSubmission.remove()
         } catch (e) {}
 
-        if (response.data.redirect && response.data.redirect_url) {
-          window.location.href = response.data.redirect_url
+        if (data.redirect && data.redirect_url) {
+          window.location.href = data.redirect_url
         }
 
-        if (response.data.submission_id) {
-          this.submissionId = response.data.submission_id
+        if (data.submission_id) {
+          this.submissionId = data.submission_id
         }
 
         this.loading = false
@@ -223,7 +218,8 @@ export default {
         }
       }).catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {
-          this.alertError(error.response.data.message)
+          console.error(error)
+          // this.alertError(error.response.data.message)
         }
         this.loading = false
         onFailure()

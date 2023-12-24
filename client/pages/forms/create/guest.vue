@@ -25,13 +25,8 @@
 
 <script>
 import { computed } from 'vue'
-import Form from 'vform'
-import { useTemplatesStore } from '../../../stores/templates.js'
-import { useWorkingFormStore } from '../../../stores/working_form.js'
-import { useWorkspacesStore } from '../../../stores/workspaces.js'
 import QuickRegister from '~/components/pages/auth/components/QuickRegister.vue'
 import initForm from '../../../mixins/form_editor/initForm.js'
-import SeoMeta from '../../../mixins/seo-meta.js'
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
@@ -47,7 +42,7 @@ export default {
   components: {
     QuickRegister, CreateFormBaseModal
   },
-  mixins: [initForm, SeoMeta],
+  mixins: [initForm],
   middleware: 'guest',
 
   beforeRouteEnter (to, from, next) {
@@ -118,7 +113,7 @@ export default {
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.templatesStore.getByKey(this.$route.query.template)
       if (template && template.structure) {
-        this.form = new Form({ ...this.form.data(), ...template.structure })
+        this.form = useForm({ ...this.form.data(), ...template.structure })
       }
     } else {
       // No template loaded, ask how to start
@@ -146,7 +141,7 @@ export default {
       }, 500)
     },
     formGenerated (form) {
-      this.form = new Form({ ...this.form.data(), ...form })
+      this.form = useForm({ ...this.form.data(), ...form })
     }
   }
 }

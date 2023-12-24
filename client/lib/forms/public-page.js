@@ -1,0 +1,55 @@
+/**
+ * Handle form public pages dark mode and transparent mode
+ */
+export function handleDarkMode (darkMode, elem = null) {
+  if (process.server) return
+  const darkModeNodeParent = elem ?? document.body
+
+  // Dark mode
+  if (['dark', 'light'].includes(darkMode)) {
+    return handleDarkModeToggle(darkMode === 'dark')
+  }
+
+  // Case auto
+  handleDarkModeToggle(window.matchMedia('(prefers-color-scheme: dark)').matches, darkModeNodeParent)
+
+  // Create listener
+  window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', handleDarkModeToggle)
+}
+
+function handleDarkModeToggle (enabled, darkModeNodeParent) {
+  if (enabled !== false && enabled !== true) {
+    // if we received an event
+    enabled = enabled.matches
+  }
+  enabled ? darkModeNodeParent.classList.add('dark') : darkModeNodeParent.classList.remove('dark')
+}
+
+export function disableDarkMode () {
+  if (process.server) return
+  const body = document.body
+  body.classList.remove('dark')
+  // Remove event listener
+  window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', handleDarkModeToggle)
+}
+
+export function handleTransparentMode (transparentModeEnabled) {
+  if (process.server) return
+  if (!useIsIframe() || !transparentModeEnabled) return
+
+  const app = document.getElementById('app')
+  app.classList.remove('bg-white')
+  app.classList.remove('dark:bg-notion-dark')
+  app.classList.add('bg-transparent')
+}
+
+export function focusOnFirstFormElement() {
+  if (process.server) return
+  for (const ele of document.querySelectorAll('input,button,textarea,[role="button"]')) {
+    if (ele.offsetWidth !== 0 || ele.offsetHeight !== 0) {
+      ele.focus()
+      break
+    }
+  }
+}

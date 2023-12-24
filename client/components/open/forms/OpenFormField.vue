@@ -81,12 +81,10 @@
 <script>
 import { computed } from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import FormPendingSubmissionKey from '~/mixins/forms/form-pending-submission-key.js'
 
 export default {
   name: 'OpenFormField',
   components: {},
-  mixins: [FormPendingSubmissionKey],
   props: {
     form: {
       type: Object,
@@ -115,7 +113,7 @@ export default {
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
-  setup () {
+  setup (props) {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
@@ -125,20 +123,6 @@ export default {
   },
 
   computed: {
-    fieldComponents () {
-      return {
-        text: 'TextInput',
-        number: 'TextInput',
-        select: 'SelectInput',
-        multi_select: 'SelectInput',
-        date: 'DateInput',
-        files: 'FileInput',
-        checkbox: 'CheckboxInput',
-        url: 'TextInput',
-        email: 'TextInput',
-        phone_number: 'TextInput'
-      }
-    },
     /**
      * Get the right input component for the field/options combination
      */
@@ -168,7 +152,18 @@ export default {
       if (field.type === 'phone_number' && !field.use_simple_text_input) {
         return 'PhoneInput'
       }
-      return this.fieldComponents[field.type]
+      return {
+        text: 'TextInput',
+        number: 'TextInput',
+        select: 'SelectInput',
+        multi_select: 'SelectInput',
+        date: 'DateInput',
+        files: 'FileInput',
+        checkbox: 'CheckboxInput',
+        url: 'TextInput',
+        email: 'TextInput',
+        phone_number: 'TextInput'
+      }[field.type]
     },
     isPublicFormPage () {
       return this.$route.name === 'forms.show_public'

@@ -27,7 +27,6 @@
     "qrcode": "^1.5.1",
     "query-builder-vue-3": "^1.0.1",
     "tinymotion": "^0.2.0",
-    "vform": "^2.1.1",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",
     "vue-codemirror": "^4.0.6",

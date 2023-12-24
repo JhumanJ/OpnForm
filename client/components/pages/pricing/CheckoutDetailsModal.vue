@@ -13,8 +13,6 @@
 <script>
 import { computed } from 'vue'
 import axios from 'axios'
-import Form from 'vform'
-import { useAuthStore } from '../../../stores/auth'
 import TextInput from '../../forms/TextInput.vue'
 import VButton from '~/components/global/VButton.vue'
 
@@ -43,7 +41,7 @@ export default {
   },
 
   data: () => ({
-    form: new Form({
+    form: useForm({
       name: '',
       email: ''
     }),

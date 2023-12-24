@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import Form from 'vform'
 import OpenFormFooter from '../../../components/pages/OpenFormFooter.vue'
 import SeoMeta from '../../../mixins/seo-meta.js'
 
@@ -48,7 +47,7 @@ export default {
   data: () => ({
     metaTitle: 'Reset Password',
     status: '',
-    form: new Form({
+    form: useForm({
       token: '',
       email: '',
       password: '',

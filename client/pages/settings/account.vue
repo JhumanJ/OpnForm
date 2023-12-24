@@ -16,14 +16,10 @@
 </template>
 
 <script>
-import Form from 'vform'
 import axios from 'axios'
-import { useAuthStore } from '../../stores/auth'
-import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   scrollToTop: false,
-  mixins: [SeoMeta],
 
   setup () {
     const authStore = useAuthStore()
@@ -34,7 +30,7 @@ export default {
 
   data: () => ({
     metaTitle: 'Account',
-    form: new Form({
+    form: useForm({
       identifier: ''
     }),
     loading: false

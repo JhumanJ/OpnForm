@@ -61,10 +61,8 @@
 </template>
 
 <script>
-import Form from 'vform'
 import clonedeep from 'clone-deep'
 import { computed } from 'vue'
-import { useWorkingFormStore } from '../../../../../stores/working_form'
 
 export default {
   name: 'AddFormBlock',
@@ -206,7 +204,7 @@ export default {
       this.workingFormStore.closeAddFieldSidebar()
     },
     reset () {
-      this.blockForm = new Form({
+      this.blockForm = useForm({
         type: null,
         name: null
       })
@@ -222,7 +220,6 @@ export default {
       }
       newBlock.help_position = 'below_input'
       if (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) {
-        console.log('------',this.form)
         const newFields = clonedeep(this.form.properties)
         newFields.push(newBlock)
         this.form.properties = newFields

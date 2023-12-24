@@ -128,7 +128,6 @@
 
 <script>
 import { computed } from 'vue'
-import Form from 'vform'
 import ProTag from '~/components/global/ProTag.vue'
 import VButton from '~/components/global/VButton.vue'
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
@@ -222,13 +221,13 @@ export default {
 
   watch: {
     form () {
-      this.workingForm = new Form(this.form)
+      this.workingForm = useForm(this.form)
     }
   },
 
   mounted () {
     if (this.form) {
-      this.workingForm = new Form(this.form)
+      this.workingForm = useForm(this.form)
     }
   },
 

@@ -115,20 +115,12 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import Form from 'vform'
-import { useFormsStore } from '../../stores/forms'
-import { useWorkspacesStore } from '../../stores/workspaces'
-import SeoMeta from '../../mixins/seo-meta.js'
 import TextAreaInput from '../../components/forms/TextAreaInput.vue'
 import axios from 'axios'
-import * as domain from 'domain'
 
 export default {
   components: { TextAreaInput },
-  mixins: [SeoMeta],
   scrollToTop: false,
-  mixins: [SeoMeta],
 
   setup () {
     const formsStore = useFormsStore()
@@ -143,7 +135,7 @@ export default {
 
   data: () => ({
     metaTitle: 'Workspaces',
-    form: new Form({
+    form: useForm({
       name: '',
       emoji: ''
     }),

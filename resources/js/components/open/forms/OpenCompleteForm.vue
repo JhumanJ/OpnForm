@@ -109,10 +109,10 @@
 
 <script>
 import Form from 'vform'
+import { themes } from '~/lib/forms/form-themes'
 import OpenForm from './OpenForm.vue'
-import OpenFormButton from './OpenFormButton.vue'
-import { themes } from '~/config/form-themes.js'
 import VButton from '../../common/Button.vue'
+import OpenFormButton from './OpenFormButton.vue'
 import VTransition from '../../common/transitions/VTransition.vue'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
@@ -165,6 +165,7 @@ export default {
   },
 
   mounted () {
+    console.log('inside', this.form)
   },
 
   methods: {

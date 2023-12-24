@@ -5,7 +5,7 @@
     </p>
   </div>
   <form v-else-if="dataForm" @submit.prevent="">
-    <transition name="fade" mode="out-in" appear>
+    <transition name="fade" mode="out-in">
       <div :key="currentFieldGroupIndex" class="form-group flex flex-wrap w-full">
         <draggable v-model="currentFields"
                    item-key="id"
@@ -61,22 +61,17 @@
 
 <script>
 import axios from 'axios'
-import Form from 'vform'
-import OpenFormButton from './OpenFormButton.vue'
 import clonedeep from 'clone-deep'
-import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js";
-import OpenFormField from './OpenFormField.vue'
 import draggable from 'vuedraggable'
-import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
-
-draggable.compatConfig = { MODE: 3 }
-
-const VueHcaptcha = () => import('@hcaptcha/vue3-hcaptcha')
+import OpenFormButton from './OpenFormButton.vue'
+import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
+import OpenFormField from './OpenFormField.vue'
+import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
+import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js";
 
 export default {
   name: 'OpenForm',
   components: { draggable, OpenFormField, OpenFormButton, VueHcaptcha },
-  mixins: [FormPendingSubmissionKey],
   props: {
     form: {
       type: Object,
@@ -101,24 +96,26 @@ export default {
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
-  setup () {
+  setup (props) {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
+    const dataForm = ref(useForm())
+
     return {
+      dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: useDark()
+      darkModeEnabled: useDark(),
+      pendingSubmission: pendingSubmission(props.form)
     }
   },
 
   data () {
     return {
-      dataForm: null,
       currentFieldGroupIndex: 0,
       /**
        * Used to force refresh components by changing their keys
        */
-      formVersionId: 1,
       isAutoSubmit: false,
       /**
        * If currently dragging a field
@@ -128,7 +125,7 @@ export default {
   },
 
   computed: {
-    hCaptchaSiteKey: () => this.$config.hCaptchaSiteKey,
+    hCaptchaSiteKey: () => useAppConfig().hCaptchaSiteKey,
     /**
      * Create field groups (or Page) using page breaks if any
      */
@@ -191,7 +188,7 @@ export default {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
     },
     isPublicFormPage () {
-      return this.$route.name === 'forms.show_public'
+      return this.$route.name === 'forms-slug'
     },
     dataFormValue () {
       // For get values instead of Id for select/multi select options
@@ -226,19 +223,11 @@ export default {
         this.initForm()
       }
     },
-    theme: {
-      handler () {
-        this.formVersionId++
-      }
-    },
-    dataForm: {
+    dataFormValue: {
       deep: true,
       handler () {
-        if (this.isPublicFormPage && this.form && this.form.auto_save && this.dataFormValue) {
-          try {
-            window.localStorage.setItem(this.formPendingSubmissionKey, JSON.stringify(this.dataFormValue))
-          } catch (e) {
-          }
+        if (this.isPublicFormPage && this.form && this.form.auto_save) {
+          this.pendingSubmission.set(this.dataFormValue)
         }
       }
     }
@@ -246,8 +235,7 @@ export default {
 
   mounted () {
     this.initForm()
-
-    if (window.location.href.includes('auto_submit=true')) {
+    if (window.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
     }
@@ -318,20 +306,14 @@ export default {
           this.form.submission_id = urlParam.get('submission_id')
           const data = await this.getSubmissionData()
           if (data !== null && data) {
-            this.dataForm = new Form(data)
+            this.dataForm = useForm(data)
             return
           }
         }
       }
       if (this.isPublicFormPage && this.form.auto_save) {
-        let pendingData
-        try {
-          pendingData = window.localStorage.getItem(this.formPendingSubmissionKey)
-        } catch (e) {
-          pendingData = null
-        }
+        let pendingData = this.pendingSubmission.get()
         if (pendingData !== null && pendingData) {
-          pendingData = JSON.parse(pendingData)
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
               const dateObj = new Date()
@@ -345,7 +327,7 @@ export default {
               pendingData[field.id] = currentDate
             }
           })
-          this.dataForm = new Form(pendingData)
+          this.dataForm = useForm(pendingData)
           return
         }
       }
@@ -389,7 +371,7 @@ export default {
           formData[field.id] = field.prefill
         }
       })
-      this.dataForm = new Form(formData)
+      this.dataForm = useForm(formData)
     },
     previousPage () {
       this.currentFieldGroupIndex -= 1

@@ -47,8 +47,6 @@
   </template>
 
   <script>
-  import Form from 'vform'
-
   export default {
     name: 'ForgotPasswordModal',
     components: { },
@@ -60,7 +58,7 @@
     },
     data: () => ({
       isMailSent: false,
-      form: new Form({
+      form: useForm({
         email: ''
       })
     }),

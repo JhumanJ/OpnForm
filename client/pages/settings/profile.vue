@@ -23,13 +23,7 @@
 </template>
 
 <script>
-import Form from 'vform'
-import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth'
-import SeoMeta from '../../mixins/seo-meta.js'
-
 export default {
-  mixins: [SeoMeta],
   scrollToTop: false,
 
   setup () {
@@ -42,7 +36,7 @@ export default {
 
   data: () => ({
     metaTitle: 'Profile',
-    form: new Form({
+    form: useForm({
       name: '',
       email: ''
     })

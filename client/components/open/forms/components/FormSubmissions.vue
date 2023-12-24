@@ -89,7 +89,6 @@
 
 <script>
 import Fuse from 'fuse.js'
-import Form from 'vform'
 import clonedeep from 'clone-deep'
 import VSwitch from '../../../forms/components/VSwitch.vue'
 import OpenTable from '../../tables/OpenTable.vue'
@@ -117,7 +116,7 @@ export default {
       properties: [],
       removed_properties: [],
       displayColumns: {},
-      searchForm: new Form({
+      searchForm: useForm({
         search: ''
       })
     }

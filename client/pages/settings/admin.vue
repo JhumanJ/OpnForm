@@ -3,7 +3,7 @@
     <h3 class="font-semibold text-2xl text-gray-900">Admin settings</h3>
     <small class="text-gray-600">Manage settings.</small>
 
-  
+
     <h3 class="mt-3 text-lg font-semibold mb-4">
       Tools
     </h3>
@@ -35,17 +35,12 @@
 </template>
 
 <script>
-import Form from 'vform'
 import axios from 'axios'
-import { useAuthStore } from '../../stores/auth'
-import { useWorkspacesStore } from '../../stores/workspaces'
-import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { },
   middleware: 'admin',
   scrollToTop: false,
-  mixins: [SeoMeta],
 
   setup () {
     const authStore = useAuthStore()
@@ -58,7 +53,7 @@ export default {
 
   data: () => ({
     metaTitle: 'Admin',
-    form: new Form({
+    form: useForm({
       identifier: ''
     }),
     loading: false

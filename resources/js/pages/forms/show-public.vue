@@ -41,7 +41,7 @@
           </p>
         </div>
         <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"
-                              @password-entered="passwordEntered"
+                            @password-entered="passwordEntered"
         />
       </template>
     </div>
@@ -54,44 +54,10 @@ import { computed } from 'vue'
 import { useFormsStore } from '../../stores/forms'
 import { useRecordsStore } from '../../stores/records'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
-import Cookies from 'js-cookie'
 import sha256 from 'js-sha256'
-import SeoMeta from '../../mixins/seo-meta.js'
-
-const isFrame = window.location !== window.parent.location || window.frameElement
-
-function handleDarkMode (form) {
-  // Dark mode
-  const body = document.body
-  if (form.dark_mode === 'dark') {
-    body.classList.add('dark')
-  } else if (form.dark_mode === 'light') {
-    body.classList.remove('dark')
-  } else if (form.dark_mode === 'auto' && isFrame) {
-    // Remove dark mode if embed in a notion basic site
-    let parentUrl
-    try {
-      parentUrl = window.location.ancestorOrigins[0]
-    } catch (e) {
-      parentUrl = (window.location !== window.parent.location)
-        ? document.referrer
-        : document.location.href
-    }
-    if (parentUrl.includes('.notion.site')) {
-      body.classList.remove('dark')
-    }
-  }
-}
-
-function handleTransparentMode (form) {
-  const isFrame = window.location !== window.parent.location || window.frameElement
-  if (!isFrame || !form.transparent_background) return
-
-  const app = document.getElementById('app')
-  app.classList.remove('bg-white')
-  app.classList.remove('dark:bg-notion-dark')
-  app.classList.add('bg-transparent')
-}
+import { onBeforeRouteLeave } from 'vue-router'
+import { disableDarkMode, handleDarkMode, handleTransparentMode } from '~lib/forms/public-page'
+import { focusOnFirstFormElement } from '../../../../client/lib/forms/public-page'
 
 function loadForm (slug) {
   const formsStore = useFormsStore()
@@ -118,63 +84,38 @@ function loadForm (slug) {
 
 export default {
   components: { OpenCompleteForm },
-  mixins: [SeoMeta],
-
-  beforeRouteEnter (to, from, next) {
-    if (window.$crisp) {
-      window.$crisp.push(['do', 'chat:hide'])
-    }
-    next()
-  },
-
-  beforeRouteLeave (to, from, next) {
-    if (window.$crisp) {
-      window.$crisp.push(['do', 'chat:show'])
-    }
-    next()
-  },
 
   setup () {
+    const crisp = useCrisp()
+    crisp.hideChat()
+
+    onBeforeRouteLeave((to, from) => {
+      crisp.showChat()
+      disableDarkMode()
+    })
+
     const formsStore = useFormsStore()
     const recordsStore = useRecordsStore()
-    return {
-      formsStore,
-      forms : computed(() => formsStore.content),
-      formLoading : computed(() => formsStore.loading),
-      recordLoading : computed(() => recordsStore.loading)
-    }
-  },
 
-  data () {
-    return {
-      submitted: false
-    }
-  },
-
-  mounted () {
-    loadForm(this.formSlug).then(() => {
-      if (this.isIframe) return
-      // Auto focus on first input
-      const visibleElements = []
-      document.querySelectorAll('input,button,textarea,[role="button"]').forEach(ele => {
-        if (ele.offsetWidth !== 0 || ele.offsetHeight !== 0) {
-          visibleElements.push(ele)
-        }
-      })
-      if (visibleElements.length > 0) {
-        visibleElements[0].focus()
-      }
-    })
-  },
-
-  methods: {
-    passwordEntered (password) {
-      Cookies.set('password-' + this.form.slug, sha256(password), { expires: 7, sameSite: 'None', secure: true })
+    const passwordEntered = function (password) {
+      useCookie('password-' + this.form.slug, { maxAge: { expires: 60 * 60 * 7 }, sameSite: false, secure: true }).value = sha256(password)
       loadForm(this.formSlug).then(() => {
         if (this.form.is_password_protected) {
           this.$refs['open-complete-form'].addPasswordError('Invalid password.')
         }
       })
+    }
+
+    const slug = useRoute()
+
+    return {
+      formsStore,
+      passwordEntered,
+      submitted: ref(false),
+      isIframe: useIsIframe(),
+      form: computed(() => formsStore.getByKey()),
+      formLoading: computed(() => formsStore.loading),
+      recordLoading: computed(() => recordsStore.loading)
     }
   },
 
@@ -184,38 +125,42 @@ export default {
     },
     form () {
       return this.formsStore.getBySlug(this.formSlug)
-    },
-    isIframe () {
-      return window.location !== window.parent.location || window.frameElement
-    },
-    metaTitle () {
-      if(this.form && this.form.is_pro && this.form.seo_meta.page_title) {
-        return this.form.seo_meta.page_title
-      }
-      return this.form ? this.form.title : 'Create beautiful forms'
-    },
-    metaTemplate () {
-      if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
-        // Disable template if custom SEO title
-        return '%s'
-      }
-      return null
-    },
-    metaDescription () {
-      if (this.form && this.form.is_pro && this.form.seo_meta.page_description) {
-        return this.form.seo_meta.page_description
-      }
-      return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
-    },
-    metaImage () {
-      if (this.form && this.form.is_pro && this.form.seo_meta.page_thumbnail) {
-        return this.form.seo_meta.page_thumbnail
-      }
-      return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
-    },
-    metaTags () {
-      return (this.form && this.form.can_be_indexed) ? [] : [{ name: 'robots', content: 'noindex' }]
     }
+    // metaTitle () {
+    //   if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
+    //     return this.form.seo_meta.page_title
+    //   }
+    //   return this.form ? this.form.title : 'Create beautiful forms'
+    // },
+    // metaTemplate () {
+    //   if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
+    //     // Disable template if custom SEO title
+    //     return '%s'
+    //   }
+    //   return null
+    // },
+    // metaDescription () {
+    //   if (this.form && this.form.is_pro && this.form.seo_meta.page_description) {
+    //     return this.form.seo_meta.page_description
+    //   }
+    //   return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
+    // },
+    // metaImage () {
+    //   if (this.form && this.form.is_pro && this.form.seo_meta.page_thumbnail) {
+    //     return this.form.seo_meta.page_thumbnail
+    //   }
+    //   return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
+    // },
+    // metaTags () {
+    //   return (this.form && this.form.can_be_indexed) ? [] : [{ name: 'robots', content: 'noindex' }]
+    // }
+  },
+
+  mounted () {
+    loadForm(this.formSlug).then(() => {
+      if (this.isIframe) return
+      focusOnFirstFormElement()
+    })
   }
 }
 </script>

@@ -73,10 +73,7 @@
 
 <script>
 import axios from 'axios'
-import Form from 'vform'
 import { computed } from 'vue'
-import { useAuthStore } from '../../../../../stores/auth'
-import { useTemplatesStore } from '../../../../../stores/templates'
 import QuestionsEditor from './QuestionsEditor.vue'
 
 export default {
@@ -105,7 +102,7 @@ export default {
   }),
 
   mounted () {
-    this.templateForm = new Form(this.template ?? {
+    this.templateForm = useForm(this.template ?? {
       publicly_listed: false,
       name: '',
       slug: '',

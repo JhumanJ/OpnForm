@@ -156,7 +156,7 @@ class Form extends Model implements CachableAttributes
         if ($this->custom_domain) {
             return 'https://' . $this->custom_domain . '/forms/' . $this->slug;
         }
-        return url('/forms/' . $this->slug);
+        return '/forms/' . $this->slug;
     }
 
     public function getEditUrlAttribute()

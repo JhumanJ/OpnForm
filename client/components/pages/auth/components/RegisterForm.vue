@@ -48,8 +48,6 @@
 </template>
 
 <script>
-import Form from 'vform'
-
 export default {
   name: 'RegisterForm',
   components: {},
@@ -71,7 +69,7 @@ export default {
   },
 
   data: () => ({
-    form: new Form({
+    form: useForm({
       name: '',
       email: '',
       password: '',
