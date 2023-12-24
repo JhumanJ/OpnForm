@@ -74,7 +74,9 @@ export default {
     window.removeEventListener('resize', this.calcDimensions)
     // Cleanup when the component is unmounted.
     this.wrapObserver.disconnect()
-    this.scrollContainerObserver.disconnect()
+    if (this.scrollContainerObserver) {
+      this.scrollContainerObserver.disconnect()
+    }
   },
   methods: {
     async calcDimensions () {
@@ -88,6 +90,7 @@ export default {
     },
     // Check if shadows are needed.
     toggleShadow () {
+      if (!this.$refs.scrollContainer) return
       const hasHorizontalScrollbar =
         this.$refs.scrollContainer.clientWidth <
         this.$refs.scrollContainer.scrollWidth

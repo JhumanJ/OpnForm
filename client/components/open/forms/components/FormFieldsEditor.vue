@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-button v-if="formFields && formFields.length > 8"
+    <v-button v-if="form.properties && form.properties.length > 8"
               class="w-full mb-3" color="light-gray"
               @click="openAddFieldSidebar"
     >
@@ -14,7 +14,7 @@
       Add block
     </v-button>
 
-    <draggable v-model="formFields"
+    <draggable v-model="form.properties"
                item-key="id"
                class="bg-white overflow-hidden dark:bg-notion-dark-light rounded-md w-full mx-auto border transition-colors"
                ghost-class="bg-gray-50"
@@ -23,7 +23,7 @@
     >
       <template #item="{element, index}">
         <div class="w-full mx-auto transition-colors"
-             :class="{'bg-gray-100 dark:bg-gray-800':element.hidden,'bg-white dark:bg-notion-dark-light':!element.hidden && !element.type==='nf-page-break', 'border-b': (index!== formFields.length -1), 'bg-blue-50 dark:bg-blue-900':element && element.type==='nf-page-break'}"
+             :class="{'bg-gray-100 dark:bg-gray-800':element.hidden,'bg-white dark:bg-notion-dark-light':!element.hidden && !element.type==='nf-page-break', 'border-b': (index!== form.properties.length -1), 'bg-blue-50 dark:bg-blue-900':element && element.type==='nf-page-break'}"
         >
           <div v-if="element" class="flex items-center space-x-1 group py-2 pr-4 relative">
             <!-- Drag handler -->
@@ -186,51 +186,23 @@ export default {
     const workingFormStore = useWorkingFormStore()
     return {
       route: useRoute(),
-      workingFormStore
+      workingFormStore,
+      form: storeToRefs(workingFormStore).content,
     }
   },
 
   data () {
     return {
-      formFields: [],
       removing: null
     }
   },
 
-  computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    }
-  },
-
-  watch: {
-    formFields: {
-      deep: true,
-      handler () {
-        this.form.properties = this.formFields
-      }
-    },
-
-    'form.properties': {
-      deep: true,
-      handler () {
-        // If different, then update
-        if (this.form.properties.length !== this.formFields.length ||
-          JSON.stringify(this.form.properties) !== JSON.stringify(this.formFields)) {
-          this.formFields = clonedeep(this.form.properties)
-        }
-      }
-    }
-
+  beforeMount() {
+    console.log('beforemounted formfields editor with', this.form)
   },
 
   mounted () {
+    console.log('mounted formfields editor with', this.form)
     this.init()
   },
 
@@ -279,9 +251,11 @@ export default {
     },
     init () {
       if (this.route.name === 'forms-create' || this.route.name === 'forms-create-guest') { // Set Default fields
-        this.formFields = (this.form.properties.length > 0) ? clonedeep(this.form.properties) : this.getDefaultFields()
+        if (!this.form.properties) {
+          this.form.properties = this.getDefaultFields()
+        }
       } else {
-        this.formFields = clonedeep(this.form.properties).map((field) => {
+        this.form.properties = this.form.properties.map((field) => {
           // Add more field properties
           field.placeholder = field.placeholder || null
           field.prefill = field.prefill || null
@@ -291,7 +265,6 @@ export default {
           return field
         })
       }
-      this.form.properties = this.formFields
     },
     generateUUID () {
       let d = new Date().getTime()// Timestamp
@@ -324,9 +297,7 @@ export default {
       this.workingFormStore.openSettingsForField(index)
     },
     removeBlock (blockIndex) {
-      const newFields = clonedeep(this.formFields)
-      newFields.splice(blockIndex, 1)
-      this.formFields = newFields
+      this.form.properties.splice(blockIndex, 1)
       this.closeSidebar()
     },
     closeSidebar () {

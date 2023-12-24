@@ -132,7 +132,6 @@ import Form from 'vform'
 import ProTag from '~/components/global/ProTag.vue'
 import VButton from '~/components/global/VButton.vue'
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
-import SeoMeta from '../../../mixins/seo-meta.js'
 import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
 export default {
   name: 'ShowForm',
@@ -141,11 +140,6 @@ export default {
     ProTag,
     ExtraMenu,
     FormCleanings
-  },
-  mixins: [SeoMeta],
-
-  beforeUnmount() {
-    this.workingForm = null
   },
 
   middleware: 'auth',

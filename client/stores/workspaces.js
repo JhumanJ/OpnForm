@@ -22,7 +22,7 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
 
   const save = (items) => {
     contentStore.save(items)
-    if (currentId.value == null && contentStore.length.value) {
+    if ((getCurrent.value == null) && contentStore.length.value) {
       setCurrentId(items[0].id)
     }
   }

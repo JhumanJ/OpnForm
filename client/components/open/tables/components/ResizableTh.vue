@@ -43,7 +43,7 @@ export default {
       this.w = parseInt(styles.width, 10)
 
       // Attach the listeners to `document`
-      if (process.server) {
+      if (process.client) {
         document.addEventListener('mousemove', this.mouseMoveHandler)
         document.addEventListener('mouseup', this.mouseUpHandler)
       }
@@ -57,7 +57,7 @@ export default {
     },
     mouseUpHandler () {
       // Remove the handlers of `mousemove` and `mouseup`
-      if (process.server) {
+      if (process.client) {
         document.removeEventListener('mousemove', this.mouseMoveHandler)
         document.removeEventListener('mouseup', this.mouseUpHandler)
       }

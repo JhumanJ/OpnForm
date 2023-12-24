@@ -27,14 +27,18 @@ export const useFormsStore = defineStore('forms', () => {
           contentStore.stopLoading()
           currentPage.value = 1
         }
+      }).catch((error) => {
+        contentStore.stopLoading()
+        currentPage.value = 1
+        throw error
       })
   }
 
   const load = (workspaceId, slug) => {
     contentStore.startLoading()
     return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId) + '/' + slug)
-      .then((response) => {
-        console.log(response.data.value)
+      .finally(() => {
+        contentStore.stopLoading()
       })
   }
 

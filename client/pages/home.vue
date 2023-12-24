@@ -65,8 +65,9 @@
               <div v-for="(form) in enrichedForms" :key="form.id"
                    class="mt-4 p-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center relative"
               >
-                <div class="flex-grow items-center truncate cursor-pointer" role="button"
-                     @click.prevent="viewForm(form)">
+                <div class="flex-grow items-center truncate cursor-pointer relative">
+                  <NuxtLink :to="{name:'forms-slug-show-submissions', params: {slug:form.slug}}"
+                            class="absolute inset-0"/>
                   <span class="font-semibold text-gray-900 dark:text-white">{{ form.title }}</span>
                   <ul class="flex text-gray-500">
                     <li class="pr-1">
@@ -163,9 +164,6 @@ const onTagClick = (tag) => {
   } else {
     selectedTags.value.add(tag)
   }
-}
-const viewForm = (form) => {
-  useRouter().push({name: 'forms-slug-show', params: {slug: form.slug}})
 }
 
 // Computed

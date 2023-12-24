@@ -1,5 +1,14 @@
 <template>
-  <div>
+  <div class="mb-20">
+
+    <div class="mb-6 pb-6 border-b w-full flex flex-col sm:flex-row gap-2">
+      <regenerate-form-link class="sm:w-1/2 flex" :form="form" />
+
+      <url-form-prefill class="sm:w-1/2" :form="form" :extra-query-param="shareUrlForQueryParams" />
+
+      <embed-form-as-popup-modal class="sm:w-1/2 flex" :form="form" />
+    </div>
+
     <share-link class="mt-4" :form="form" :extra-query-param="shareUrlForQueryParams" />
 
     <embed-code class="mt-6" :form="form" :extra-query-param="shareUrlForQueryParams" />
@@ -8,13 +17,6 @@
 
     <advanced-form-url-settings :form="form" v-model="shareFormConfig" />
 
-    <div class="mt-6 pt-6 border-t w-full flex">
-      <regenerate-form-link class="sm:w-1/2 mr-4" :form="form" />
-
-      <url-form-prefill class="sm:w-1/2 mr-4" :form="form" :extra-query-param="shareUrlForQueryParams" />
-
-      <embed-form-as-popup-modal class="sm:w-1/2" :form="form" />
-    </div>
   </div>
 </template>
 

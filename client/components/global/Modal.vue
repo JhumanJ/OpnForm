@@ -11,7 +11,7 @@
              :class="maxWidthClass"
         >
           <div v-if="closeable" class="absolute top-4 right-4">
-            <button class="text-gray-500 hover:text-gray-900 cursor-pointer" @click.prevent="close">
+            <button class="text-gray-500 hover:text-gray-900 cursor-pointer" @click="close()">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round"

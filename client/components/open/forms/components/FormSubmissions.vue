@@ -23,18 +23,26 @@
           <h4 class="font-bold mb-2">
             Form Fields
           </h4>
-          <div v-for="field in properties" :key="field.id" class="p-2 border">
-            {{ field.name }}
-            <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
+          <div class="border border-gray-300 rounded-md">
+            <div v-for="(field,index) in properties" :key="field.id" class="p-2 border-gray-300 flex items-center" :class="{'border-t':index!=0}">
+              <p class="flex-grow truncate">
+              {{ field.name }}
+              </p>
+              <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
+            </div>
           </div>
         </template>
         <template v-if="removed_properties.length > 0">
           <h4 class="font-bold mb-2 mt-4">
             Removed Fields
           </h4>
-          <div v-for="field in removed_properties" :key="field.id" class="p-2 border">
-            {{ field.name }}
-            <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
+          <div class="border border-gray-300 rounded-md">
+            <div v-for="(field,index) in removed_properties" :key="field.id" class="p-2 border-gray-300 flex items-center" :class="{'border-t':index!=0}">
+              <p class="flex-grow truncate">
+                {{ field.name }}
+              </p>
+              <v-switch v-model="displayColumns[field.id]" class="float-right" @update:model-value="onChangeDisplayColumns" />
+            </div>
           </div>
         </template>
       </div>
@@ -80,18 +88,15 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Fuse from 'fuse.js'
 import Form from 'vform'
-import { useWorkingFormStore } from '../../../../stores/working_form'
-import ScrollShadow from '~/components/global/ScrollShadow.vue'
-import OpenTable from '../../tables/OpenTable.vue'
 import clonedeep from 'clone-deep'
 import VSwitch from '../../../forms/components/VSwitch.vue'
+import OpenTable from '../../tables/OpenTable.vue'
 
 export default {
   name: 'FormSubmissions',
-  components: { ScrollShadow, OpenTable, VSwitch },
+  components: { OpenTable, VSwitch },
   props: {},
 
   setup () {

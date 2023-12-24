@@ -6,13 +6,13 @@
       v-track.regenerate_form_link_click="{form_id:form.id, form_slug:form.slug}"
       @click="showGenerateFormLinkModal=true"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-4 text-blue-600 inline" fill="none"
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600 inline" fill="none"
             viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
         />
       </svg>
-      Regenerate form link
+      Regenerate link
     </v-button>
 
     <!--  Regenerate form link modal  -->
@@ -105,7 +105,7 @@ export default {
       this.loadingNewLink = true
       axios.put(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option).then((response) => {
         this.formsStore.addOrUpdate(response.data.form)
-        this.$router.push({name: 'forms-slug-show', params: {slug: response.data.form.slug}})
+        this.$router.push({name: 'forms-slug-show-share', params: {slug: response.data.form.slug}})
         this.alertSuccess(response.data.message)
         this.loadingNewLink = false
       }).finally(() => {
