@@ -1,5 +1,5 @@
 
-export const initForm = (options = {}) => {
+export const initForm = (defaultValue = {}) => {
   return useForm({
     title: 'My Form',
     description: null,
@@ -49,6 +49,6 @@ export const initForm = (options = {}) => {
     // Custom SEO
     seo_meta: {},
 
-    ...options
+    ...defaultValue
   })
 }

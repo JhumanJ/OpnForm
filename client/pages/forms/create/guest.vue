@@ -24,9 +24,8 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import {initForm} from "~/composables/forms/initForm.js"
 import QuickRegister from '~/components/pages/auth/components/QuickRegister.vue'
-import initForm from '../../../mixins/form_editor/initForm.js'
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 
 const loadTemplates = function () {
@@ -42,7 +41,6 @@ export default {
   components: {
     QuickRegister, CreateFormBaseModal
   },
-  mixins: [initForm],
   middleware: 'guest',
 
   beforeRouteEnter (to, from, next) {
@@ -109,7 +107,7 @@ export default {
     this.workspacesStore.set([guestWorkspace])
     this.workspacesStore.setCurrentId(guestWorkspace.id)
 
-    this.initForm()
+    this.form = initForm()
     if (this.$route.query.template !== undefined && this.$route.query.template) {
       const template = this.templatesStore.getByKey(this.$route.query.template)
       if (template && template.structure) {
