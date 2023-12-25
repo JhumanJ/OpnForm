@@ -90,6 +90,7 @@ const closeOnEscape = (e) => {
 onMounted(() => {
   if (process.server) return
   document.addEventListener('keydown', closeOnEscape)
+  initMotions()
 })
 
 onBeforeUnmount(() => {
@@ -160,13 +161,15 @@ const content = ref(null)
 const backdropMotion = ref(null)
 const contentMotion = ref(null)
 
-watch(() => props.show, (newVal, oldVal) => {
-  if (newVal) {
+const initMotions = () => {
+  if (props.show) {
     nextTick(() => {
       backdropMotion.value = useMotion(backdrop.value, motionFadeIn)
       contentMotion.value = useMotion(content.value, motionSlideBottom)
     })
   }
-})
+}
+
+watch(() => props.show, initMotions)
 
 </script>

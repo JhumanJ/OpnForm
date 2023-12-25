@@ -61,6 +61,7 @@ export default {
   setup () {
     return {
       authStore: useAuthStore(),
+      formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore()
     }
   },
@@ -87,6 +88,9 @@ export default {
 
       const workspaces = await fetchAllWorkspaces()
       this.workspaceStore.set(workspaces.data.value)
+
+      // Load forms
+      this.formsStore.loadAll(this.workspaceStore.currentId)
 
       // Redirect home.
       this.redirect()

@@ -1,5 +1,5 @@
 <template>
-  <modal :show="show" :closeable="!aiForm.busy" @close="$emit('close')">
+  <Modal :show="show" :closeable="!aiForm.busy" @close="$emit('close')">
     <template #icon>
       <template v-if="state=='default'">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-blue">
@@ -87,7 +87,7 @@
         ~60 sec
       </p>
     </div>
-  </modal>
+  </Modal>
 </template>
 
 <script>
