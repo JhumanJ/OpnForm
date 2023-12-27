@@ -109,7 +109,7 @@ export default {
       return this.field && this.field.type.startsWith('nf')
     },
     typeCanBeChanged () {
-      return ['text', 'email', 'phone', 'number', 'select', 'multi_select'].includes(this.field.type)
+      return ['text', 'email', 'phone_number', 'number', 'select', 'multi_select'].includes(this.field.type)
     }
   },
 
