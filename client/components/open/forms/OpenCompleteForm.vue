@@ -219,7 +219,7 @@ export default {
       }).catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {
           console.error(error)
-          // this.alertError(error.response.data.message)
+          // useAlert().error(error.response.data.message)
         }
         this.loading = false
         onFailure()

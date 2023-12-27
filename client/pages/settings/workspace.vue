@@ -169,9 +169,9 @@ export default {
           .filter(domain => domain && domain.length > 0)
       }).then((response) => {
         this.workspacesStore.addOrUpdate(response.data)
-        this.alertSuccess('Custom domains saved.')
+        useAlert().success('Custom domains saved.')
       }).catch((error) => {
-        this.alertError('Failed to update custom domains: ' + error.response.data.message)
+        useAlert().error('Failed to update custom domains: ' + error.response.data.message)
       }).finally(() => {
         this.customDomainsLoading = false
       })
@@ -182,12 +182,12 @@ export default {
     },
     deleteWorkspace (workspace) {
       if (this.workspaces.length <= 1) {
-        this.alertError('You cannot delete your only workspace.')
+        useAlert().error('You cannot delete your only workspace.')
         return
       }
-      this.alertConfirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
+      useAlert().confirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
         this.workspacesStore.delete(workspace.id).then(() => {
-          this.alertSuccess('Workspace successfully removed.')
+          useAlert().success('Workspace successfully removed.')
         })
       })
     },

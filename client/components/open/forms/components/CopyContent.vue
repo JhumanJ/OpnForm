@@ -56,9 +56,9 @@ export default {
       document.execCommand('copy')
       document.body.removeChild(el)
       if(this.isDraft){
-        this.alertWarning('Copied! But other people won\'t be able to see the form since it\'s currently in draft mode')
+        useAlert().warning('Copied! But other people won\'t be able to see the form since it\'s currently in draft mode')
       } else {
-        this.alertSuccess('Copied!')
+        useAlert().success('Copied!')
       }
 
     }

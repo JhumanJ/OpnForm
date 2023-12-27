@@ -20,6 +20,11 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
     storedWorkspaceId.value = id
   }
 
+  const set = (items) => {
+    contentStore.content.value = new Map
+    save(items)
+  }
+
   const save = (items) => {
     contentStore.save(items)
     if ((getCurrent.value == null) && contentStore.length.value) {
@@ -39,6 +44,7 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
     currentId,
     getCurrent,
     setCurrentId,
+    set,
     save,
     remove
   }

@@ -63,10 +63,10 @@ export default {
         this.$router.push({ name: 'home' })
 
         if (this.user.has_enterprise_subscription) {
-          this.alertSuccess('Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Enterprise ' +
+          useAlert().success('Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Enterprise ' +
             'features. No need to invite your teammates, just ask them to create a OpnForm account and to connect the same Notion workspace. Feel free to contact us if you have any question 🙌')
         } else {
-          this.alertSuccess('Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Pro ' +
+          useAlert().success('Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Pro ' +
             'features. Feel free to contact us if you have any question 🙌')
         }
       }

@@ -180,7 +180,7 @@ export default {
       el.select()
       document.execCommand('copy')
       document.body.removeChild(el)
-      this.alertSuccess('Copied!')
+      useAlert().success('Copied!')
     },
     duplicateForm () {
       if (this.loadingDuplicate) return
@@ -188,7 +188,7 @@ export default {
       opnFetch(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate',{method: 'POST'}).then((data) => {
         this.formsStore.save(data.new_form)
         this.$router.push({ name: 'forms-show', params: { slug: data.new_form.slug } })
-        this.alertSuccess('Form was successfully duplicated.')
+        useAlert().success('Form was successfully duplicated.')
         this.loadingDuplicate = false
       })
     },
@@ -198,7 +198,7 @@ export default {
       opnFetch(this.formEndpoint.replace('{id}', this.form.id),{method:'DELETE'}).then(() => {
         this.formsStore.remove(this.form)
         this.$router.push({ name: 'home' })
-        this.alertSuccess('Form was deleted.')
+        useAlert().success('Form was deleted.')
         this.loadingDelete = false
       })
     }

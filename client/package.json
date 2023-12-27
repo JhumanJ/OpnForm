@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -50,7 +50,7 @@
     "vue-notion": "^3.0.0-beta.1",
     "vue-signature-pad": "^3.0.2",
     "vue3-editor": "^0.1.1",
-    "vue3-vt-notifications": "^1.0.0",
+    "nuxt3-notifications": "^1.1.9",
     "vuedraggable": "next"
   }
 }

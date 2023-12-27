@@ -41,14 +41,14 @@ export default {
       this.loading = true
       axios.delete('/api/user').then(async (response) => {
         this.loading = false
-        this.alertSuccess(response.data.message)
+        useAlert().success(response.data.message)
         // Log out the user.
         await this.authStore.logout()
 
         // Redirect to login.
         this.$router.push({ name: 'login' })
       }).catch((error) => {
-        this.alertError(error.response.data.message)
+        useAlert().error(error.response.data.message)
         this.loading = false
       })
     }

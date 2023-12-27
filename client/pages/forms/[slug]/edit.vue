@@ -25,7 +25,7 @@ export default {
 
   beforeRouteLeave (to, from, next) {
     if (this.isDirty()) {
-      return this.alertConfirm('Changes you made may not be saved. Are you sure want to leave?', () => {
+      return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
         window.onbeforeunload = null
         next()
       }, () => {})

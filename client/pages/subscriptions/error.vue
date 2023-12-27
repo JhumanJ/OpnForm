@@ -24,7 +24,7 @@ export default {
 
   mounted () {
     this.$router.push({ name: 'pricing' })
-    this.alertError('Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.')
+    useAlert().error('Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.')
   },
 
   computed: {}

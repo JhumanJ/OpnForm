@@ -106,7 +106,7 @@ export default {
       axios.put(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option).then((response) => {
         this.formsStore.addOrUpdate(response.data.form)
         this.$router.push({name: 'forms-slug-show-share', params: {slug: response.data.form.slug}})
-        this.alertSuccess(response.data.message)
+        useAlert().success(response.data.message)
         this.loadingNewLink = false
       }).finally(() => {
         this.showGenerateFormLinkModal = false
