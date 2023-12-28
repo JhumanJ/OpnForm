@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import OpenFilters from '../../../../../../data/open_filters.json'
+import OpenFilters from '../../../../../data/open_filters.json'
 
 export default {
   components: { },

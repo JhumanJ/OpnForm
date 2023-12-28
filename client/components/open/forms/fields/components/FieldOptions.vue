@@ -382,7 +382,7 @@
     </div>
 
     <!--  Logic Block -->
-    <!--    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />-->
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
   </div>
 </template>
 
@@ -390,10 +390,11 @@
 import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
+import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag },
+  components: { CountryFlag, FormBlockLogicEditor },
   props: {
     field: {
       type: Object,

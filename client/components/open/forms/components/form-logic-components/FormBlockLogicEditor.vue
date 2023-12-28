@@ -69,12 +69,11 @@
 <script>
 import ConditionEditor from './ConditionEditor.vue'
 import Modal from '../../../../global/Modal.vue'
-import SelectInput from '../../../../forms/SelectInput.vue'
 import clonedeep from 'clone-deep'
 
 export default {
   name: 'FormBlockLogicEditor',
-  components: { SelectInput, Modal, ConditionEditor },
+  components: { Modal, ConditionEditor },
   props: {
     field: {
       type: Object,
