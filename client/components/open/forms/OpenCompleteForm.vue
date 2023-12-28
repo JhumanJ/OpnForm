@@ -214,7 +214,7 @@ export default {
 
         // If enabled display confetti
         if (this.form.confetti_on_submission) {
-          this.playConfetti()
+          useConfetti().play()
         }
       }).catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {

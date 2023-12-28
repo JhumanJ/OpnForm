@@ -123,7 +123,7 @@ export default {
     onChangeConfettiOnSubmission (val) {
       this.form.confetti_on_submission = val
       if (this.isMounted && val) {
-        this.playConfetti()
+        useConfetti().play()
       }
     },
     openChat () {
