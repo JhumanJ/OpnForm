@@ -93,7 +93,8 @@ export default {
       user : computed(() => authStore.user),
       templates : computed(() => templatesStore.content),
       industries : computed(() => templatesStore.industries),
-      types : computed(() => templatesStore.types)
+      types : computed(() => templatesStore.types),
+      useAlert: useAlert()
     }
   },
 
@@ -156,7 +157,7 @@ export default {
       this.templateForm.form = this.form
       await this.templateForm.post('/api/templates').then((response) => {
         if (response.data.message) {
-          useAlert().success(response.data.message)
+          this.useAlert.success(response.data.message)
         }
         this.templatesStore.save(response.data.data)
         this.$emit('close')
@@ -166,7 +167,7 @@ export default {
       this.templateForm.form = this.form
       await this.templateForm.put('/api/templates/' + this.template.id).then((response) => {
         if (response.data.message) {
-          useAlert().success(response.data.message)
+          this.useAlert.success(response.data.message)
         }
         this.templatesStore.save(response.data.data)
         this.$emit('close')
@@ -176,7 +177,7 @@ export default {
       if (!this.template) return
       axios.delete('/api/templates/' + this.template.id).then((response) => {
         if (response.data.message) {
-          useAlert().success(response.data.message)
+          this.useAlert.success(response.data.message)
         }
         this.$router.push({ name: 'templates' })
         this.templatesStore.remove(this.template)
