@@ -27,7 +27,8 @@
       <NuxtPage/>
     </NuxtLayout>
     <ToolsStopImpersonation/>
-    <!--    <notifications />-->
+
+    <Notifications />
   </div>
 </template>
 

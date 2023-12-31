@@ -97,7 +97,11 @@ export default {
   props: {
     show: { type: Boolean, required: true }
   },
-
+  setup () {
+    return {
+      useAlert: useAlert()
+    }
+  },
   data: () => ({
     state: 'default',
     aiForm: useForm({
@@ -118,10 +122,10 @@ export default {
 
       this.loading = true
       this.aiForm.post('/api/forms/ai/generate').then(response => {
-        this.alertSuccess(response.data.message)
+        this.useAlert.success(response.data.message)
         this.fetchGeneratedForm(response.data.ai_form_completion_id)
       }).catch(error => {
-        this.alertError(error.response.data.message)
+        this.useAlert.error(error.response.data.message)
         this.loading = false
         this.state = 'default'
       })
@@ -131,18 +135,18 @@ export default {
       setTimeout(() => {
         axios.get('/api/forms/ai/' + generationId).then(response => {
           if (response.data.ai_form_completion.status === 'completed') {
-            this.alertSuccess(response.data.message)
+            this.useAlert.success(response.data.message)
             this.$emit('form-generated', JSON.parse(response.data.ai_form_completion.result))
             this.$emit('close')
           } else if (response.data.ai_form_completion.status === 'failed') {
-            this.alertError('Something went wrong, please try again.')
+            this.useAlert.error('Something went wrong, please try again.')
             this.state = 'default'
             this.loading = false
           } else {
             this.fetchGeneratedForm(generationId)
           }
         }).catch(error => {
-          this.alertError(error.response.data.message)
+          this.useAlert.error(error.response.data.message)
           this.state = 'default'
           this.loading = false
         })

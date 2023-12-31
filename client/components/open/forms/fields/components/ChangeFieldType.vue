@@ -41,11 +41,11 @@ export default {
   computed: {
     changeTypeOptions () {
       let newTypes = []
-      if (['text', 'email', 'phone', 'number'].includes(this.field.type)) {
+      if (['text', 'email', 'phone_number', 'number'].includes(this.field.type)) {
         newTypes = [
           { name: 'Text Input', value: 'text' },
           { name: 'Email Input', value: 'email' },
-          { name: 'Phone Input', value: 'phone' },
+          { name: 'Phone Input', value: 'phone_number' },
           { name: 'Number Input', value: 'number' }
         ]
       }

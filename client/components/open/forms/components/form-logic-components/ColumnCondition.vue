@@ -6,20 +6,20 @@
     </div>
     <SelectInput v-model="content.operator" class="w-full" :options="operators"
                  :name="'operator_'+property.id" placeholder="Comparison operator"
-                 @update:modelValue="operatorChanged()"
+                 @update:model-value="operatorChanged()"
     />
 
     <template v-if="hasInput">
       <component v-bind="inputComponentData" :is="inputComponentData.component" v-model="content.value" class="w-full"
                  :name="'value_'+property.id" placeholder="Filter Value"
-                 @update:modelValue="emitInput()"
+                 @update:model-value="emitInput()"
       />
     </template>
   </div>
 </template>
 
 <script>
-import OpenFilters from '../../../../../../data/open_filters.json'
+import OpenFilters from '../../../../../data/open_filters.json'
 
 export default {
   components: { },

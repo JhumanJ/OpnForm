@@ -82,7 +82,7 @@
       />
 
       <v-checkbox v-model="field.is_scale" class="mt-4"
-                  :name="field.id+'_is_scale'" @input="initScale"
+                  :name="field.id+'_is_scale'" @update:model-value="initScale"
       >
         Scale
       </v-checkbox>
@@ -337,7 +337,7 @@
                       {name:'Above input',value:'above_input'},
                     ]"
                     :form="field" label="Field Help Position"
-                    @input="onFieldHelpPositionChange"
+                    @update:model-value="onFieldHelpPositionChange"
       />
 
       <template v-if="['text','number','url','email'].includes(field.type)">
@@ -382,7 +382,7 @@
     </div>
 
     <!--  Logic Block -->
-    <!--    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />-->
+    <form-block-logic-editor class="py-2 px-4 border-b" :form="form" :field="field" />
   </div>
 </template>
 
@@ -390,10 +390,11 @@
 import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
+import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag },
+  components: { CountryFlag, FormBlockLogicEditor },
   props: {
     field: {
       type: Object,
@@ -533,23 +534,23 @@ export default {
     },
     initRating () {
       if (this.field.is_rating) {
-        this.$set(this.field, 'is_scale', false)
+        this.field.is_scale = false
         if (!this.field.rating_max_value) {
-          this.$set(this.field, 'rating_max_value', 5)
+          this.field.rating_max_value = 5
         }
       }
     },
     initScale () {
       if (this.field.is_scale) {
-        this.$set(this.field, 'is_rating', false)
+        this.field.is_rating = false
         if (!this.field.scale_min_value) {
-          this.$set(this.field, 'scale_min_value', 1)
+          this.field.scale_min_value = 1
         }
         if (!this.field.scale_max_value) {
-          this.$set(this.field, 'scale_max_value', 5)
+          this.field.scale_max_value = 5
         }
         if (!this.field.scale_step_value) {
-          this.$set(this.field, 'scale_step_value', 1)
+          this.field.scale_step_value = 1
         }
       }
     },

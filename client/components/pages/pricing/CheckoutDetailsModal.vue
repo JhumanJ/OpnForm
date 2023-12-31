@@ -84,7 +84,7 @@ export default {
         axios.get('/api/subscription/new/' + this.plan + '/' + (!this.yearly ? 'monthly' : 'yearly') + '/checkout/with-trial').then((response) => {
           window.location = response.data.checkout_url
         }).catch((error) => {
-          this.alertError(error.response.data.message)
+          useAlert().error(error.response.data.message)
         }).finally(() => {
           this.loading = false
           this.close()

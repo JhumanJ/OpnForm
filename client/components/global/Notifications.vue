@@ -1,9 +1,9 @@
 <template>
-  <div class="fixed top-0 bottom-24 right-0 flex px-4 items-start justify-end z-50 pointer-events-none">
-    <notification v-slot="{ notifications, close }">
-      <div class="relative pointer-events-auto" v-for="notification in notifications" :key="notification.id">
+  <div class="fixed top-0 bottom-24 right-0 flex px-4 items-start justify-end z-50 relative pointer-events-auto">
+    <NuxtNotifications>
+      <template #body="props">
         <div
-          v-if="notification.type==='success'"
+          v-if="props.item.type==='success'"
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
         >
           <div class="flex justify-center items-center w-12 bg-green-500">
@@ -14,13 +14,13 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-green-500 font-semibold pr-6">{{notification.title}}</span>
-              <p class="text-gray-600 text-sm">{{notification.text}}</p>
+              <span class="text-green-500 font-semibold pr-6">{{props.item.title}}</span>
+              <p class="text-gray-600 text-sm">{{props.item.text}}</p>
             </div>
           </div>
         </div>
         <div
-          v-if="notification.type==='info'"
+          v-if="props.item.type==='info'"
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
         >
           <div class="flex justify-center items-center w-12 bg-blue-500">
@@ -31,13 +31,13 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-blue-500 font-semibold pr-6">{{notification.title}}</span>
-              <p class="text-gray-600 text-sm">T{{notification.text}}</p>
+              <span class="text-blue-500 font-semibold pr-6">{{props.item.title}}</span>
+              <p class="text-gray-600 text-sm">T{{props.item.text}}</p>
             </div>
           </div>
         </div>
         <div
-          v-if="notification.type==='error'"
+          v-if="props.item.type==='error'"
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
         >
           <div class="flex justify-center items-center w-12 bg-red-500">
@@ -54,14 +54,14 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-red-500 font-semibold pr-6">{{notification.title}}</span>
-              <p class="text-gray-600 text-sm">{{notification.text}}</p>
+              <span class="text-red-500 font-semibold pr-6">{{props.item.title}}</span>
+              <p class="text-gray-600 text-sm">{{props.item.text}}</p>
             </div>
           </div>
         </div>
         <div
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
-          v-if="notification.type==='warning'"
+          v-if="props.item.type==='warning'"
         >
           <div class="flex justify-center items-center w-12 bg-yellow-500">
             <svg
@@ -77,14 +77,14 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-yellow-500 font-semibold pr-6">{{notification.title}}</span>
-              <p class="text-gray-600 text-sm">{{notification.text}}</p>
+              <span class="text-yellow-500 font-semibold pr-6">{{props.item.title}}</span>
+              <p class="text-gray-600 text-sm">{{props.item.text}}</p>
             </div>
           </div>
         </div>
         <div
           class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-4"
-          v-if="notification.type==='confirm'"
+          v-if="props.item.type==='confirm'"
         >
           <div class="flex justify-center items-center w-12 bg-blue-500">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
@@ -94,16 +94,16 @@
 
           <div class="-mx-3 py-2 px-4">
             <div class="mx-3">
-              <span class="text-blue-500 font-semibold pr-6">{{notification.title}}</span>
-              <p class="text-gray-600 text-sm">{{notification.text}}</p>
+              <span class="text-blue-500 font-semibold pr-6">{{props.item.title}}</span>
+              <p class="text-gray-600 text-sm">{{props.item.text}}</p>
               <div class="w-full flex gap-2 mt-1">
-                <v-button color="blue" size="small" @click.prevent="notification.success();close(notification.id)">Yes</v-button>
-                <v-button color="gray" shade="light" size="small" @click.prevent="notification.failure();close(notification.id)">No</v-button>
+                <v-button color="blue" size="small" @click.prevent="props.item.data.success();props.close()">Yes</v-button>
+                <v-button color="gray" shade="light" size="small" @click.prevent="props.item.data.failure();props.close()">No</v-button>
               </div>
             </div>
           </div>
         </div>
-        <button @click="close(notification.id)" class="absolute top-0 right-0 px-2 py-2 cursor-pointer">
+        <button @click="props.close()" class="absolute top-0 right-0 px-2 py-2 cursor-pointer">
           <svg
             class="fill-current h-6 w-6 text-gray-300 hover:text-gray-500"
             role="button"
@@ -116,8 +116,8 @@
             />
           </svg>
         </button>
-      </div>
-    </notification>
+      </template>
+    </NuxtNotifications>
   </div>
 </template>
 

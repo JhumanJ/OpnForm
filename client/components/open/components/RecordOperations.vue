@@ -34,6 +34,11 @@ export default {
       default: () => {}
     }
   },
+  setup () {
+    return {
+      useAlert: useAlert()
+    }
+  },
   data () {
     return {
     }
@@ -44,18 +49,18 @@ export default {
   },
   methods: {
     onDeleteClick () {
-      this.alertConfirm('Do you really want to delete this record?', this.deleteRecord)
+      this.useAlert.confirm('Do you really want to delete this record?', this.deleteRecord)
     },
     async deleteRecord () {
       axios.delete('/api/open/forms/' + this.form.id + '/records/' + this.rowid + '/delete').then(async (response) => {
         if (response.data.type === 'success') {
           this.$emit('deleted')
-          this.alertSuccess(response.data.message)
+          this.useAlert.success(response.data.message)
         } else {
-          this.alertError('Something went wrong!')
+          this.useAlert.error('Something went wrong!')
         }
       }).catch((error) => {
-        this.alertError(error.response.data.message)
+        this.useAlert.error(error.response.data.message)
       })
     }
   }

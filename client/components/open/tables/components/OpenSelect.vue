@@ -14,8 +14,7 @@ export default {
   components: { OpenTag },
   props: {
     value: {
-      type: Object | null,
-      required: true
+      type: Object
     }
 
   },

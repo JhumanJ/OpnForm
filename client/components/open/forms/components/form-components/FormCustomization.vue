@@ -19,7 +19,7 @@
     />
     <div class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
       <small>
-        Need another theme? <a href="#" @click.prevent="openChat">Send us some suggestions!</a>
+        Need another theme? <a href="#" @click.prevent="crisp.openAndShowChat">Send us some suggestions!</a>
       </small>
     </div>
 
@@ -80,56 +80,25 @@
   </editor-options-panel>
 </template>
 
-<script>
+<script setup>
 import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import ProTag from '~/components/global/ProTag.vue'
 
-export default {
-  components: { EditorOptionsPanel, ProTag },
-  props: {
-  },
-  setup () {
-    const workingFormStore = useWorkingFormStore()
-    return {
-      workingFormStore
-    }
-  },
-  data () {
-    return {
-      isMounted: false
-    }
-  },
+const workingFormStore = useWorkingFormStore()
+const form = storeToRefs(workingFormStore).content
+const isMounted =  ref(false)
+const crisp = useCrisp()
+const confetti = useConfetti()
 
-  computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    }
-  },
+onMounted(() => {
+  isMounted.value = true
+})
 
-  watch: {},
-
-  mounted () {
-    this.isMounted = true
-  },
-
-  methods: {
-    onChangeConfettiOnSubmission (val) {
-      this.form.confetti_on_submission = val
-      if (this.isMounted && val) {
-        this.playConfetti()
-      }
-    },
-    openChat () {
-      window.$crisp.push(['do', 'chat:show'])
-      window.$crisp.push(['do', 'chat:open'])
-    }
+const onChangeConfettiOnSubmission = (val) => {
+  form.confetti_on_submission = val
+  if (isMounted.value && val) {
+    confetti.play()
   }
 }
 </script>

@@ -129,7 +129,8 @@ export default {
   setup(props) {
     return {
       isIframe: useIsIframe(),
-      pendingSubmission: pendingSubmission(props.form)
+      pendingSubmission: pendingSubmission(props.form),
+      confetti: useConfetti()
     }
   },
 
@@ -214,12 +215,11 @@ export default {
 
         // If enabled display confetti
         if (this.form.confetti_on_submission) {
-          this.playConfetti()
+          this.confetti.play()
         }
       }).catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {
-          console.error(error)
-          // this.alertError(error.response.data.message)
+          useAlert().error(error.response.data.message)
         }
         this.loading = false
         onFailure()

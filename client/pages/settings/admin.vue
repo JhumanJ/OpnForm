@@ -76,7 +76,7 @@ export default {
         this.workspacesStore.set([])
         this.$router.push({ name: 'home' })
       }).catch((error) => {
-        this.alertError(error.response.data.message)
+        useAlert().error(error.response.data.message)
         this.loading = false
       })
 

@@ -261,7 +261,7 @@ const copyTemplateUrl = () => {
   el.select()
   document.execCommand('copy')
   document.body.removeChild(el)
-  this.alertSuccess('Copied!')
+  useAlert().success('Copied!')
 }
 
 // metaTitle() {

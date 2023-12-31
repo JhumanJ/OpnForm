@@ -51,7 +51,7 @@ export default {
         const url = response.data.portal_url
         window.location = url
       }).catch((error) => {
-        this.alertError(error.response.data.message)
+        useAlert().error(error.response.data.message)
       }).finally(() => {
         this.billingLoading = false
       })
