@@ -87,6 +87,7 @@ import OpenCheckbox from './components/OpenCheckbox.vue'
 import ResizableTh from './components/ResizableTh.vue'
 import RecordOperations from '../components/RecordOperations.vue'
 import clonedeep from 'clone-deep'
+import {hash} from "~/lib/utils.js";
 
 export default {
   components: { ResizableTh, RecordOperations },

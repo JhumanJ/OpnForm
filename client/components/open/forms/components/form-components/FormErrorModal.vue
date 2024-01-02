@@ -5,10 +5,10 @@
         Error saving your form
       </h2>
 
-      <div v-if="validationErrorResponse" class="p-4 border-b border-t">
-        <p v-if="validationErrorResponse.message" v-text="validationErrorResponse.message" />
+      <div v-if="form.errors" class="p-4 border-b border-t">
+        <p v-if="form.errors.message" v-text="form.errors.message" />
         <ul class="list-disc list-inside">
-          <li v-for="err, key in validationErrorResponse.errors" :key="key">
+          <li v-for="err, key in form.errors.errors" :key="key">
             {{ Array.isArray(err)?err[0]:err }}
           </li>
         </ul>
@@ -29,7 +29,7 @@ export default {
   components: {},
   props: {
     show: { type: Boolean, required: true },
-    validationErrorResponse: { type: Object, required: false }
+    form: { type: Object, required: false }
   },
   data: () => ({}),
 

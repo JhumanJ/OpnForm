@@ -72,7 +72,7 @@
       <!-- Form Error Modal -->
       <form-error-modal
         :show="showFormErrorModal"
-        :validation-error-response="validationErrorResponse"
+        :form="form"
         @close="showFormErrorModal=false"
       />
     </div>
@@ -216,10 +216,13 @@ export default {
 
   methods: {
     displayFormModificationAlert (responseData) {
+      const alert = useAlert()
+      console.log("in okd ----.", responseData)
       if (responseData.form && responseData.form.cleanings && Object.keys(responseData.form.cleanings).length > 0) {
-        useAlert().warning(responseData.message)
-      } else {
-        useAlert().success(responseData.message)
+        alert.warning(responseData.message)
+      } else if (responseData.message) {
+        console.log(responseData.message)
+        alert.success(responseData.message)
       }
     },
     openCrisp () {

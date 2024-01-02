@@ -197,12 +197,7 @@ export default {
     }
   },
 
-  beforeMount() {
-    console.log('beforemounted formfields editor with', this.form)
-  },
-
   mounted () {
-    console.log('mounted formfields editor with', this.form)
     this.init()
   },
 

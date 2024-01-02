@@ -45,10 +45,6 @@ export default {
     form: {type: Object, required: true},
   },
 
-  mounted() {
-    console.log('form',this.form)
-  },
-
   data: () => ({
     shareFormConfig: {
       hide_title: false,
