@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import clonedeep from 'clone-deep'
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
@@ -293,8 +292,8 @@ export default {
         return null
       }
       await this.recordsStore.loadRecord(
-        axios.get('/api/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((response) => {
-          return { submission_id: this.form.submission_id, ...response.data.data }
+        opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
+          return { submission_id: this.form.submission_id, ...data.data }
         })
       )
       return this.recordsStore.getById(this.form.submission_id)

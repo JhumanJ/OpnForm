@@ -72,7 +72,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { computed } from 'vue'
 import QuestionsEditor from './QuestionsEditor.vue'
 
@@ -175,9 +174,9 @@ export default {
     },
     async deleteFormTemplate () {
       if (!this.template) return
-      axios.delete('/api/templates/' + this.template.id).then((response) => {
-        if (response.data.message) {
-          this.useAlert.success(response.data.message)
+      opnFetch('/templates/' + this.template.id, {method:'DELETE'}).then((data) => {
+        if (data.message) {
+          this.useAlert.success(data.message)
         }
         this.$router.push({ name: 'templates' })
         this.templatesStore.remove(this.template)

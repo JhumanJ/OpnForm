@@ -73,7 +73,6 @@
 
 <script>
 import { computed } from 'vue'
-import axios from 'axios'
 import { useFormsStore } from '../../../../stores/forms'
 
 export default {
@@ -103,10 +102,10 @@ export default {
     regenerateLink(option) {
       if (this.loadingNewLink) return
       this.loadingNewLink = true
-      axios.put(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option).then((response) => {
-        this.formsStore.addOrUpdate(response.data.form)
-        this.$router.push({name: 'forms-slug-show-share', params: {slug: response.data.form.slug}})
-        useAlert().success(response.data.message)
+      opnFetch(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option, {method:'PUT'}).then((data) => {
+        this.formsStore.addOrUpdate(data.form)
+        this.$router.push({name: 'forms-slug-show-share', params: {slug: data.form.slug}})
+        useAlert().success(data.message)
         this.loadingNewLink = false
       }).finally(() => {
         this.showGenerateFormLinkModal = false

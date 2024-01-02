@@ -109,7 +109,6 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../../../stores/auth'
-import axios from 'axios'
 import MonthlyYearlySelector from './MonthlyYearlySelector.vue'
 import CheckoutDetailsModal from './CheckoutDetailsModal.vue'
 import CustomPlan from './CustomPlan.vue'
@@ -160,9 +159,9 @@ export default {
     },
     openBilling () {
       this.billingLoading = true
-      axios.get('/api/subscription/billing-portal').then((response) => {
+      opnFetch('/subscription/billing-portal').then((data) => {
         this.billingLoading = false
-        const url = response.data.portal_url
+        const url = data.portal_url
         window.location = url
       })
     }
