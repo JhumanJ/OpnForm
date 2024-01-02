@@ -5,7 +5,7 @@
               class="cursor-pointer"
               :style="inputStyle"
               :class="[theme.SelectInput.input,{'py-2': !multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200': disabled}, inputClass]"
-              @click.stop="toggleDropdown"
+              @click="toggleDropdown"
       >
         <div :class="{'h-6': !multiple, 'min-h-8': multiple && !loading}">
           <transition name="fade" mode="out-in">
