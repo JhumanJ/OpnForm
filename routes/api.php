@@ -167,6 +167,8 @@ Route::prefix('content')->name('content.')->group(function () {
     Route::get('changelog/entries', [\App\Http\Controllers\Content\ChangelogController::class, 'index'])->name('changelog.entries');
 });
 
+Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
+
 // Templates
 Route::prefix('templates')->group(function () {
     Route::get('/', [TemplateController::class, 'index'])->name('templates.index');

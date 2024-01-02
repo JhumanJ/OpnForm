@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -88,8 +87,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchOauthUrl(provider) {
-      const {data} = await axios.post(`/api/oauth/${provider}`)
-      return data.url
+      // const {data} = await axios.post(`/api/oauth/${provider}`)
+      // return data.url
     }
   }
 })

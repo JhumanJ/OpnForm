@@ -28,6 +28,7 @@ Route::post(
     '/upload-file',
     [\App\Http\Controllers\Content\FileUploadController::class, 'upload']
 )->middleware([]);
+
 Route::get('local/temp/{path}', function (Request $request, string $path){
     if (!$request->hasValidSignature()) {
         abort(401);
@@ -36,8 +37,6 @@ Route::get('local/temp/{path}', function (Request $request, string $path){
     $response->header("Content-Type", Storage::mimeType($path));
     return $response;
 })->where('path', '(.*)')->name('local.temp');
-
-Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'getSitemap'])->name('sitemap');
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
     ->name('caddy.ask')->middleware(\App\Http\Middleware\CaddyRequestMiddleware::class);
