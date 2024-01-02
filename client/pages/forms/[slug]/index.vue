@@ -87,7 +87,6 @@ const passwordEntered = function (password) {
 
 const loadForm = async () => {
   if (formsStore.loading || form.value) return Promise.resolve()
-  console.info('Loading form', slug)
   const {data, error} = await formsStore.publicLoad(slug)
   if (error.value) {
     formsStore.stopLoading()

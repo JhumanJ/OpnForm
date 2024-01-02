@@ -170,6 +170,7 @@ export default {
         return
       }
 
+      if (form.busy) return
       this.loading = true
       // this.closeAlert()
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
@@ -218,8 +219,9 @@ export default {
           this.confetti.play()
         }
       }).catch((error) => {
-        if (error.response && error.response.data && error.response.data.message) {
-          useAlert().error(error.response.data.message)
+        console.log('here')
+        if (error.response && error.data && error.data.message) {
+          useAlert().error(error.data.message)
         }
         this.loading = false
         onFailure()
