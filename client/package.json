@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt build",
     "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev",
-    "generate": "nuxt generate",
+    "generate": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },

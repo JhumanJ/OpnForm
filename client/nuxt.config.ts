@@ -3,6 +3,9 @@ import opnformConfig from "./opnform.config";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
+    site: {
+        url: opnformConfig.app_url
+    },
     devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
@@ -13,6 +16,9 @@ export default defineNuxtConfig({
         'nuxt-simple-sitemap',
         // ... opnformConfig.sentry_dsn ? ['@nuxtjs/sentry'] : [],
     ],
+    build: {
+        transpile: ["vue-notion"],
+    },
     postcss: {
         plugins: {
             'postcss-import': {},

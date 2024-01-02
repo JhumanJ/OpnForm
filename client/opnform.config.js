@@ -1,6 +1,6 @@
 export default {
   "app_ame": "OpnForm",
-  "app_url": "https://opnform.test",
+  "app_url": "http://localhost:3000/",
   "api_url": "https://opnform.test/api",
   "locale": "en",
   "locales": {"en": "EN"},
