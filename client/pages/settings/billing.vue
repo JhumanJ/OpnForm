@@ -19,45 +19,25 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import VButton from '~/components/global/VButton.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
 import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
 
-export default {
-  components: { AppSumoBilling, VButton },
-  mixins: [SeoMeta],
-  scrollToTop: false,
+const metaTitle = 'Billing'
+const authStore = useAuthStore()
+let user = computed(() => authStore.user)
+let billingLoading = false
 
-  setup () {
-    const authStore = useAuthStore()
-    return {
-      user : computed(() => authStore.user)
-    }
-  },
-
-  data: () => ({
-    metaTitle: 'Billing',
-    billingLoading: false
-  }),
-
-  methods: {
-    openBillingDashboard () {
-      this.billingLoading = true
-      axios.get('/api/subscription/billing-portal').then((response) => {
-        const url = response.data.portal_url
-        window.location = url
-      }).catch((error) => {
-        useAlert().error(error.response.data.message)
-      }).finally(() => {
-        this.billingLoading = false
-      })
-    }
-  },
-
-  computed: {}
+const openBillingDashboard = () => {
+  billingLoading = true
+  opnFetch('/subscription/billing-portal').then((data) => {
+    const url = data.portal_url
+    window.location = url
+  }).catch((error) => {
+    useAlert().error(error.response.data.message)
+  }).finally(() => {
+    billingLoading = false
+  })
 }
 </script>

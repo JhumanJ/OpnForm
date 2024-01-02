@@ -34,54 +34,40 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
+import { useRouter } from 'vue-router';
 
-export default {
-  components: { },
-  middleware: 'admin',
-  scrollToTop: false,
+definePageMeta({
+  middleware: "admin"
+})
 
-  setup () {
-    const authStore = useAuthStore()
-    const workspacesStore = useWorkspacesStore()
-    return {
-      authStore,
-      workspacesStore
-    }
-  },
+const  metaTitle = 'Admin'
+const authStore = useAuthStore()
+const workspacesStore = useWorkspacesStore()
+const router = useRouter()
+let form = useForm({
+  identifier: ''
+})
+let loading = false
 
-  data: () => ({
-    metaTitle: 'Admin',
-    form: useForm({
-      identifier: ''
-    }),
-    loading: false
-  }),
+const impersonate = () => {
+  loading = true
+  authStore.startImpersonating()
+  opnFetch('/admin/impersonate/' + encodeURI(form.identifier)).then(async (data) => {
+    loading = false
 
-  methods: {
-    async impersonate () {
-      this.loading = true
-      this.authStore.startImpersonating()
-      axios.get('/api/admin/impersonate/' + encodeURI(this.form.identifier)).then(async (response) => {
-        this.loading = false
+    // Save the token.
+    authStore.saveToken(data.token, false)
 
-        // Save the token.
-        this.authStore.saveToken(response.data.token, false)
+    // Fetch the user.
+    await authStore.fetchUser()
 
-        // Fetch the user.
-        await this.authStore.fetchUser()
-
-        // Redirect to the dashboard.
-        this.workspacesStore.set([])
-        this.$router.push({ name: 'home' })
-      }).catch((error) => {
-        useAlert().error(error.response.data.message)
-        this.loading = false
-      })
-
-      // this.form.reset()
-    }
-  }
+    // Redirect to the dashboard.
+    workspacesStore.set([])
+    router.push({ name: 'home' })
+  }).catch((error) => {
+    useAlert().error(error.response.data.message)
+    loading = false
+  })
 }
 </script>

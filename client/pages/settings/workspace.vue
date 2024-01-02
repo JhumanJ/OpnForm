@@ -46,7 +46,7 @@
         />
         <p class="text-gray-500 text-sm">
           Read our <a href="#"
-                      @click.prevent="$crisp.push(['do', 'helpdesk:article:open', ['en', 'how-to-use-my-own-domain-9m77g7']])"
+                      @click.prevent="crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')"
           >custom
             domain instructions</a> to learn how to use your own domain.
         </p>
@@ -65,7 +65,7 @@
           Save Domains
         </v-button>
         <v-button v-if="workspaces.length > 1" color="white" class="group w-full sm:w-auto" :loading="loading"
-                  @click="deleteWorkspace(workspace)"
+                  @click="deleteWorkspace(workspace.id)"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 -mt-1 inline group-hover:text-red-700" fill="none"
                viewBox="0 0 24 24" stroke="currentColor"
@@ -114,103 +114,88 @@
   </div>
 </template>
 
-<script>
-import TextAreaInput from '../../components/forms/TextAreaInput.vue'
-import axios from 'axios'
+<script setup>
+import {watch} from "vue";
+import opnformConfig from "~/opnform.config.js";
+import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
-export default {
-  components: { TextAreaInput },
-  scrollToTop: false,
+const crisp = useCrisp()
+const workspacesStore = useWorkspacesStore()
+const workspaces = computed(() => workspacesStore.getAll)
+let loading = computed(() => workspacesStore.loading)
+const metaTitle = 'Workspaces'
+let form = useForm({
+  name: '',
+  emoji: ''
+})
+let workspaceModal = ref(false)
+let customDomains = ''
+let customDomainsLoading = ref(false)
 
-  setup () {
-    const formsStore = useFormsStore()
-    const workspacesStore = useWorkspacesStore()
-    return {
-      formsStore,
-      workspacesStore,
-      workspaces: computed(() => workspacesStore.content),
-      loading: computed(() => workspacesStore.loading)
-    }
-  },
+let workspace = computed(() => workspacesStore.getCurrent)
+let customDomainsEnabled = computed(() => opnformConfig.custom_domains_enabled)
 
-  data: () => ({
-    metaTitle: 'Workspaces',
-    form: useForm({
-      name: '',
-      emoji: ''
-    }),
-    workspaceModal: false,
-    customDomains: '',
-    customDomainsLoading: false
-  }),
+watch(() => workspace, () => {
+  initCustomDomains()
+})
 
-  mounted () {
-    this.workspacesStore.loadIfEmpty()
-    this.initCustomDomains()
-  },
+onMounted(() => {
+  fetchAllWorkspaces()
+  initCustomDomains()
+})
 
-  computed: {
-    workspace () {
-      return this.workspacesStore.getCurrent()
-    },
-    customDomainsEnabled () {
-      return this.$config.custom_domains_enabled
-    }
-  },
-
-  methods: {
-    saveChanges () {
-      if (this.customDomainsLoading) return
-      this.customDomainsLoading = true
-      // Update the workspace custom domain
-      axios.put('/api/open/workspaces/' + this.workspace.id + '/custom-domains', {
-        custom_domains: this.customDomains.split('\n')
-          .map(domain => domain.trim())
-          .filter(domain => domain && domain.length > 0)
-      }).then((response) => {
-        this.workspacesStore.addOrUpdate(response.data)
-        useAlert().success('Custom domains saved.')
-      }).catch((error) => {
-        useAlert().error('Failed to update custom domains: ' + error.response.data.message)
-      }).finally(() => {
-        this.customDomainsLoading = false
-      })
-    },
-    initCustomDomains () {
-      if (!this.workspace) return
-      this.customDomains = this.workspace.custom_domains.join('\n')
-    },
-    deleteWorkspace (workspace) {
-      if (this.workspaces.length <= 1) {
-        useAlert().error('You cannot delete your only workspace.')
-        return
-      }
-      useAlert().confirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
-        this.workspacesStore.delete(workspace.id).then(() => {
-          useAlert().success('Workspace successfully removed.')
-        })
-      })
-    },
-    isUrl (str) {
-      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
-      return !!pattern.test(str)
-    },
-    async createWorkspace() {
-      const {data} = await this.form.post('/api/open/workspaces/create')
-      this.workspacesStore.load()
-      this.workspaceModal = false
-    }
-  },
-
-  watch: {
-    workspace () {
-      this.initCustomDomains()
-    }
-  }
+const saveChanges = () => {
+  if (customDomainsLoading.value) return
+  customDomainsLoading.value = true
+  // Update the workspace custom domain
+  opnFetch('/open/workspaces/' + workspace.value.id + '/custom-domains', {
+    method:'PUT',
+    custom_domains: customDomains.split('\n')
+      .map(domain => domain.trim())
+      .filter(domain => domain && domain.length > 0)
+  }).then((data) => {
+    workspacesStore.addOrUpdate(data)
+    useAlert().success('Custom domains saved.')
+  }).catch((error) => {
+    useAlert().error('Failed to update custom domains: ' + error.response.data.message)
+  }).finally(() => {
+    customDomainsLoading.value = false
+  })
 }
+
+const initCustomDomains = () => {
+  if (!workspace || !workspace.value.custom_domains) return
+  customDomains = workspace.value.custom_domains.join('\n')
+}
+
+const deleteWorkspace = (workspaceId) => {
+  if (workspaces.length <= 1) {
+    useAlert().error('You cannot delete your only workspace.')
+    return
+  }
+  useAlert().confirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
+    opnFetch('/open/workspaces/' + workspaceId, {method:'DELETE'}).then((data) => {
+      useAlert().success('Workspace successfully removed.')
+      workspacesStore.remove(workspaceId)
+    })
+  })
+}
+
+const isUrl = (str) => {
+  const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+  return !!pattern.test(str)
+}
+const createWorkspace = () => {
+  form.post('/open/workspaces/create').then((response) => {
+    fetchAllWorkspaces()
+    workspaceModal.value = false
+    useAlert().success('Workspace successfully created.')
+  })
+}
+
 </script>
