@@ -107,7 +107,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import Modal from '../global/Modal.vue'
@@ -190,13 +189,14 @@ export default {
       // Store file in s3
       this.storeFile(this.file).then(response => {
         // Move file to permanent storage for form assets
-        axios.post('/api/open/forms/assets/upload', {
+        opnFetch('/open/forms/assets/upload', {
+          method: 'POST',
           url: this.file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
-        }).then(moveFileResponse => {
+        }).then(moveFileResponseData => {
           if (!this.multiple) {
             this.files = []
           }
-          this.compVal = moveFileResponse.data.url
+          this.compVal = moveFileResponseData.url
           this.showUploadModal = false
           this.loading = false
         }).catch((error) => {

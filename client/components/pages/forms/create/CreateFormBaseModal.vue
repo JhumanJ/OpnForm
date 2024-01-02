@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   props: {
@@ -133,12 +132,12 @@ export default {
     fetchGeneratedForm (generationId) {
       // check every 4 seconds if form is generated
       setTimeout(() => {
-        axios.get('/api/forms/ai/' + generationId).then(response => {
-          if (response.data.ai_form_completion.status === 'completed') {
-            this.useAlert.success(response.data.message)
-            this.$emit('form-generated', JSON.parse(response.data.ai_form_completion.result))
+        opnFetch('/forms/ai/' + generationId).then(data => {
+          if (data.ai_form_completion.status === 'completed') {
+            this.useAlert.success(data.message)
+            this.$emit('form-generated', JSON.parse(data.ai_form_completion.result))
             this.$emit('close')
-          } else if (response.data.ai_form_completion.status === 'failed') {
+          } else if (data.ai_form_completion.status === 'failed') {
             this.useAlert.error('Something went wrong, please try again.')
             this.state = 'default'
             this.loading = false

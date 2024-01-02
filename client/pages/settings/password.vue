@@ -6,8 +6,6 @@
     <small class="text-gray-600">Manage your password.</small>
 
     <form class="mt-3" @submit.prevent="update" @keydown="form.onKeydown($event)">
-      <alert-success class="mb-5" :form="form" message="Password updated." />
-
       <!-- Password -->
       <text-input native-type="password"
                   name="password" :form="form" label="Password" :required="true"
@@ -26,27 +24,17 @@
   </div>
 </template>
 
-<script>
-import SeoMeta from '../../mixins/seo-meta.js'
+<script setup>
+const metaTitle = 'Password'
+let form = useForm({
+  password: '',
+  password_confirmation: ''
+})
 
-export default {
-  mixins: [SeoMeta],
-  scrollToTop: false,
-
-  data: () => ({
-    metaTitle: 'Password',
-    form: useForm({
-      password: '',
-      password_confirmation: ''
-    })
-  }),
-
-  methods: {
-    async update () {
-      await this.form.patch('/api/settings/password')
-
-      this.form.reset()
-    }
-  }
+const update = () => {
+  form.patch('/settings/password').then((response) => {
+    form.reset()
+    useAlert().success('Password updated.')
+  })
 }
 </script>

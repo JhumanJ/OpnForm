@@ -35,7 +35,7 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
   const remove = (itemId) => {
     contentStore.remove(itemId)
     if (currentId.value === itemId) {
-      setCurrentId(contentStore.length.value > 0 ? contentStore.getAll[0].id : null)
+      setCurrentId(contentStore.length.value > 0 ? contentStore.getAll.value[0].id : null)
     }
   }
 

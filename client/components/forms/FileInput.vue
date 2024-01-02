@@ -76,7 +76,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
@@ -193,13 +192,14 @@ export default {
           }
           if (this.moveToFormAssets) {
             // Move file to permanent storage for form assets
-            axios.post('/api/open/forms/assets/upload', {
+            opnFetch('/open/forms/assets/upload', {
+              method: 'POST',
               type: 'files',
               url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
-            }).then(moveFileResponse => {
+            }).then(moveFileResponseData => {
               this.files.push({
                 file: file,
-                url: moveFileResponse.data.url,
+                url: moveFileResponseData.url,
                 src: this.getFileSrc(file)
               })
               this.loading = false

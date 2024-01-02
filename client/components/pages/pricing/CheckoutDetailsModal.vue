@@ -12,7 +12,6 @@
 
 <script>
 import { computed } from 'vue'
-import axios from 'axios'
 import TextInput from '../../forms/TextInput.vue'
 import VButton from '~/components/global/VButton.vue'
 
@@ -81,8 +80,8 @@ export default {
       if (this.form.busy) return
       this.form.put('api/subscription/update-customer-details').then(() => {
         this.loading = true
-        axios.get('/api/subscription/new/' + this.plan + '/' + (!this.yearly ? 'monthly' : 'yearly') + '/checkout/with-trial').then((response) => {
-          window.location = response.data.checkout_url
+        opnFetch('/subscription/new/' + this.plan + '/' + (!this.yearly ? 'monthly' : 'yearly') + '/checkout/with-trial').then((data) => {
+          window.location = data.checkout_url
         }).catch((error) => {
           useAlert().error(error.response.data.message)
         }).finally(() => {

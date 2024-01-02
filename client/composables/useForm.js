@@ -1,5 +1,5 @@
 import Form from "~/composables/lib/vForm/Form.js"
 
 export const useForm = (formData = {}) => {
-  return new Form(formData)
+  return reactive(new Form(formData))
 }

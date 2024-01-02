@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   components: { },
@@ -52,10 +51,10 @@ export default {
       this.useAlert.confirm('Do you really want to delete this record?', this.deleteRecord)
     },
     async deleteRecord () {
-      axios.delete('/api/open/forms/' + this.form.id + '/records/' + this.rowid + '/delete').then(async (response) => {
-        if (response.data.type === 'success') {
+      opnFetch('/open/forms/' + this.form.id + '/records/' + this.rowid + '/delete', {method:'DELETE'}).then(async (data) => {
+        if (data.type === 'success') {
           this.$emit('deleted')
-          this.useAlert.success(response.data.message)
+          this.useAlert.success(data.message)
         } else {
           this.useAlert.error('Something went wrong!')
         }

@@ -140,7 +140,6 @@
 
 <script>
 import { computed } from 'vue'
-import axios from 'axios'
 import Dropdown from '~/components/global/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 

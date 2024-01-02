@@ -6,8 +6,6 @@
     <small class="text-gray-600">Update your username and manage your account details.</small>
 
     <form class="mt-3" @submit.prevent="update" @keydown="form.onKeydown($event)">
-      <alert-success class="mb-5" :form="form" message="Your info has been updated!" />
-
       <!-- Name -->
       <text-input name="name" :form="form" label="Name" :required="true" />
 
@@ -22,39 +20,26 @@
   </div>
 </template>
 
-<script>
-export default {
-  scrollToTop: false,
+<script setup>
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
+const metaTitle = 'Profile'
+let form = useForm({
+  name: '',
+  email: ''
+})
 
-  setup () {
-    const authStore = useAuthStore()
-    return {
-      authStore,
-      user : computed(() => authStore.user)
-    }
-  },
-
-  data: () => ({
-    metaTitle: 'Profile',
-    form: useForm({
-      name: '',
-      email: ''
-    })
-  }),
-
-  created () {
-    // Fill the form with user data.
-    this.form.keys().forEach(key => {
-      this.form[key] = this.user[key]
-    })
-  },
-
-  methods: {
-    async update () {
-      const { data } = await this.form.patch('/api/settings/profile')
-
-      this.authStore.updateUser(data)
-    }
-  }
+const update = () => {
+  form.patch('/settings/profile').then((response) => {
+    authStore.updateUser(response)
+    useAlert().success('Your info has been updated!')
+  })
 }
+
+onBeforeMount(() => {
+  // Fill the form with user data.
+  form.keys().forEach(key => {
+    form[key] = user.value[key]
+  })
+})
 </script>

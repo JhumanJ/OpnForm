@@ -77,7 +77,7 @@ class Form {
     Object.keys(this)
       .filter(key => !Form.ignore.includes(key))
       .forEach((key) => {
-        this[key] = deepCopy(this.originalData[key]);
+        this[key] = JSON.parse(JSON.stringify(this.originalData[key]));
       });
   }
 
@@ -128,7 +128,7 @@ class Form {
           resolve(data);
         }).catch((error) => {
           this.handleErrors(error);
-          resolve(error)
+          reject(error)
         })
     });
   }

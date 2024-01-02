@@ -9,49 +9,34 @@
     </p>
 
     <!-- Submit Button -->
-    <v-button :loading="loading" class="mt-4" color="red" @click="alertConfirm('Do you really want to delete your account?',deleteAccount)">
+    <v-button :loading="loading" class="mt-4" color="red" @click="useAlert().confirm('Do you really want to delete your account?',deleteAccount)">
       Delete account
     </v-button>
   </div>
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
+import { useRouter } from 'vue-router';
 
-export default {
-  scrollToTop: false,
+const router = useRouter()
+const authStore = useAuthStore()
+const metaTitle = 'Account'
+let loading = false
 
-  setup () {
-    const authStore = useAuthStore()
-    return {
-      authStore
-    }
-  },
+const deleteAccount = () => {
+  loading = true
+  opnFetch('/user', {method:'DELETE'}).then(async (data) => {
+    loading = false
+    useAlert().success(data.message)
+    
+    // Log out the user.
+    await authStore.logout()
 
-  data: () => ({
-    metaTitle: 'Account',
-    form: useForm({
-      identifier: ''
-    }),
-    loading: false
-  }),
-
-  methods: {
-    async deleteAccount () {
-      this.loading = true
-      axios.delete('/api/user').then(async (response) => {
-        this.loading = false
-        useAlert().success(response.data.message)
-        // Log out the user.
-        await this.authStore.logout()
-
-        // Redirect to login.
-        this.$router.push({ name: 'login' })
-      }).catch((error) => {
-        useAlert().error(error.response.data.message)
-        this.loading = false
-      })
-    }
-  }
+    // Redirect to login.
+    router.push({ name: 'login' })
+  }).catch((error) => {
+    useAlert().error(error.response.data.message)
+    loading = false
+  })
 }
 </script>

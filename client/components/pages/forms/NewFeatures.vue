@@ -63,7 +63,6 @@
 
 <script>
 import { computed } from 'vue'
-import axios from 'axios'
 import { useAuthStore } from '../../../stores/auth';
 import VTransition from '~/components/global/transitions/VTransition.vue'
 
@@ -98,8 +97,8 @@ export default {
 
   methods: {
     loadChangelogEntries () {
-      axios.get('/api/content/changelog/entries').then(response => {
-        this.changelogEntries = response.data.splice(0, 3)
+      opnFetch('/content/changelog/entries').then(data => {
+        this.changelogEntries = data.splice(0, 3)
       })
     }
   }

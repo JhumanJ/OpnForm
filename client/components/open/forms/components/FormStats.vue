@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { Line as LineChart } from 'vue-chartjs'
 import {
   Chart as ChartJS,
