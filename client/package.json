@@ -27,7 +27,6 @@
     "@vueuse/motion": "^2.0.0",
     "@vueuse/nuxt": "^10.7.0",
     "amplitude-js": "^8.21.9",
-    "axios": "^0.21.1",
     "chart.js": "^4.4.0",
     "clone-deep": "^4.0.1",
     "crisp-sdk-web": "^1.0.21",
