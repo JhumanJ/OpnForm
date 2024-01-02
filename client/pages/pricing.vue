@@ -238,27 +238,26 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth';
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import PricingTable from '../components/pages/pricing/PricingTable.vue'
-import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {OpenFormFooter, PricingTable},
-  mixins: [SeoMeta],
+  components: {PricingTable},
   layout: 'default',
 
-  props: {},
-
-  beforeRouteEnter(to, from, next) {
-    if (!this.$config.paid_plans_enabled) {  // If no paid plan so no need this page
-      next({name: 'home'})
-      return
-    }
-    next()
-  },
-
   setup () {
+    definePageMeta({
+      middleware: [
+        function (to, from) {
+          // Custom inline middleware
+          if (!useAppConfig().paid_plans_enabled) {  // If no paid plan so no need this page
+            return navigateTo('/', { redirectCode: 301 })
+          }
+        },
+      ],
+    });
+
     const authStore = useAuthStore()
+
     return {
       user : computed(() => authStore.user),
       authenticated : computed(() => authStore.check)

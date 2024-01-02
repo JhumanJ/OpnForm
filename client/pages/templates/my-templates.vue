@@ -13,17 +13,15 @@
       </div>
     </section>
 
-    <templates-list :only-my="true" />
+<!--    <templates-list :only-my="true" />-->
   </div>
 </template>
 
 <script>
 import TemplatesList from '../../components/pages/templates/TemplatesList.vue'
-import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { TemplatesList },
-  mixins: [SeoMeta],
   middleware: 'auth',
 
   props: {

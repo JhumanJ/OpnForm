@@ -18,12 +18,9 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import OpenFormFooter from '../../components/pages/OpenFormFooter.vue'
 import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
-  components: { OpenFormFooter },
-  mixins: [SeoMeta],
   layout: 'default',
   middleware: 'auth',
 

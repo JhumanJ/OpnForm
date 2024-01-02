@@ -13,13 +13,9 @@
 </template>
 
 <script>
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
-import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: { OpenFormFooter},
   layout: 'default',
-  mixins: [SeoMeta],
 
   data: () => ({
     metaTitle: 'Privacy Policy',

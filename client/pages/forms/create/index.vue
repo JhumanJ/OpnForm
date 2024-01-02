@@ -26,6 +26,10 @@ import {initForm} from "~/composables/forms/initForm.js"
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 
+definePageMeta({
+  middleware: "auth"
+})
+
 // metaTitle: 'Create a new Form',
 
 // beforeRouteLeave (to, from, next) {

@@ -496,16 +496,18 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {OpenFormFooter},
   layout: 'default',
   mixins: [SeoMeta],
 
   setup () {
     const authStore = useAuthStore()
+    defineRouteRules({
+      prerender: true
+    })
+
     return {
       authenticated : computed(() => authStore.check),
     }

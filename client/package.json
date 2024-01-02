@@ -13,6 +13,7 @@
     "@nuxt/devtools": "latest",
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.8.2",
+    "nuxt-simple-sitemap": "^4.2.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
     "vue": "^3.3.10",
@@ -35,6 +36,7 @@
     "fuse.js": "^6.4.6",
     "js-sha256": "^0.9.0",
     "libphonenumber-js": "^1.10.44",
+    "nuxt3-notifications": "^1.1.9",
     "object-to-formdata": "^4.5.1",
     "pinia": "^2.1.7",
     "prismjs": "^1.24.1",
@@ -49,7 +51,6 @@
     "vue-notion": "^3.0.0-beta.1",
     "vue-signature-pad": "^3.0.2",
     "vue3-editor": "^0.1.1",
-    "nuxt3-notifications": "^1.1.9",
     "vuedraggable": "next"
   }
 }
