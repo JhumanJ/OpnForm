@@ -6,7 +6,7 @@
       </p>
     </div>
     <div class="w-full sm:w-40 sm:ml-2 mt-2 sm:mt-0 shrink-0">
-      <v-button color="light-gray" class="w-full" @click="copyToClipboard(content)">
+      <v-button color="light-gray" class="w-full" @click="copyToClipboard">
         <slot name="icon">
           <svg class="h-4 w-4 -mt-1 text-blue-600 inline mr-1" viewBox="0 0 20 20" fill="none"
                xmlns="http://www.w3.org/2000/svg">
@@ -21,47 +21,28 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'CopyContent',
-  props: {
-    content: {
-      type: String,
-      required: true
-    },
-    isDraft: {
-      type: Boolean,
-      default: false
-    },
+<script setup>
+import { defineProps } from 'vue'
+const { copy } = useClipboard()
+
+const props = defineProps({
+  content: {
+    type: String,
+    required: true
   },
+  isDraft: {
+    type: Boolean,
+    default: false
+  }
+})
 
-  data() {
-    return {}
-  },
-
-  computed: {},
-
-  watch: {},
-
-  mounted() {
-  },
-
-  methods: {
-    copyToClipboard(str) {
-      if (process.server) return
-      const el = document.createElement('textarea')
-      el.value = str
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      if(this.isDraft){
-        useAlert().warning('Copied! But other people won\'t be able to see the form since it\'s currently in draft mode')
-      } else {
-        useAlert().success('Copied!')
-      }
-
-    }
+const copyToClipboard = () => {
+  if (process.server) return
+  copy(props.content)
+  if(props.isDraft){
+    useAlert().warning('Copied! But other people won\'t be able to see the form since it\'s currently in draft mode')
+  } else {
+    useAlert().success('Copied!')
   }
 }
 </script>

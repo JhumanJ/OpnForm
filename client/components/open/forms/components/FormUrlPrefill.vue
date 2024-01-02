@@ -17,72 +17,50 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'FormUrlPrefill',
-  props: {
-    form: {
-      type: Object,
-      required: true
-    },
-    formData: {
-      type: Object,
-      required: true
-    },
-    extraQueryParam: {
-      type: String,
-      default: ''
-    }
+<script setup>
+import { defineProps, computed } from 'vue'
+const { copy } = useClipboard()
+
+const props = defineProps({
+  form: {
+    type: Object,
+    required: true
   },
-
-  data () {
-    return {}
+  formData: {
+    type: Object,
+    required: true
   },
-
-  computed: {
-    preFillUrl () {
-      const url = this.form.share_url
-      const uriComponents = new URLSearchParams()
-      this.form.properties.filter((property) => {
-        return this.formData.hasOwnProperty(property.id) && this.formData[property.id] !== null
-      }).forEach((property) => {
-        if (Array.isArray(this.formData[property.id])) {
-          this.formData[property.id].forEach((value) => {
-            uriComponents.append(property.id + '[]', value)
-          })
-        } else {
-          uriComponents.append(property.id, this.formData[property.id])
-        }
-      })
-
-      if(uriComponents.toString() !== ""){
-        return (this.extraQueryParam) ? url + '?' + uriComponents + '&' + this.extraQueryParam : url + '?' + uriComponents
-      }else{
-        return (this.extraQueryParam) ? url + '?' + this.extraQueryParam : url
-      }
-    }
-  },
-
-  watch: {},
-
-  mounted () {
-  },
-
-  methods: {
-    getPropertyUriComponent (property) {
-      const prefillValue = encodeURIComponent(this.formData[property.id])
-      return encodeURIComponent(property.id) + '=' + prefillValue
-    },
-    copyToClipboard () {
-      if (process.server) return
-      const str = this.preFillUrl
-      const el = document.createElement('textarea')
-      el.value = str
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
+  extraQueryParam: {
+    type: String,
+    default: ''
   }
+})
+
+const preFillUrl = computed(() => {
+  const url = props.form.share_url
+  const uriComponents = new URLSearchParams()
+  props.form.properties.filter((property) => {
+    return props.formData.hasOwnProperty(property.id) && props.formData[property.id] !== null
+  }).forEach((property) => {
+    if (Array.isArray(props.formData[property.id])) {
+      props.formData[property.id].forEach((value) => {
+        uriComponents.append(property.id + '[]', value)
+      })
+    } else {
+      uriComponents.append(property.id, props.formData[property.id])
+    }
+  })
+
+  if(uriComponents.toString() !== ""){
+    return (props.extraQueryParam) ? url + '?' + uriComponents + '&' + props.extraQueryParam : url + '?' + uriComponents
+  }else{
+    return (props.extraQueryParam) ? url + '?' + props.extraQueryParam : url
+  }
+})
+
+const copyToClipboard = () => {
+  if (process.server) return
+  copy(preFillUrl.value)
+  useAlert().success('Copied!')
 }
 </script>
