@@ -5,30 +5,25 @@
         <h1 class="sm:text-5xl mb-4">
           Integrations
         </h1>
-        <NotionPage class="mb-8 integration-page" page-id="492c2bbb31404481b9faaaf407e59640" />
+        <NotionPage :block-map="blockMap" :loading="loading"  />
       </div>
     </div>
-    <open-form-footer />
+    <open-form-footer/>
   </div>
 </template>
 
-<script>
-export default {
-  layout: 'default',
+<script setup>
+// metaTitle: { type: String, default: 'Integrations' },
+// metaDescription: { type: String, default: 'You can connect your OpnForms to other services via our two integrations: Zapier and Webhooks. Use our integrations to automate your various workflows.' }
 
-  props: {
-    metaTitle: { type: String, default: 'Integrations' },
-    metaDescription: { type: String, default: 'You can connect your OpnForms to other services via our two integrations: Zapier and Webhooks. Use our integrations to automate your various workflows.' }
-  },
+import {useNotionPagesStore} from "~/stores/notion_pages.js";
+import {computed} from "vue";
 
-  data: () => ({
-  }),
+const notionPageStore = useNotionPagesStore()
+await notionPageStore.load('492c2bbb31404481b9faaaf407e59640')
 
-  computed: {},
-
-  mounted () {
-  }
-}
+const loading = computed(() => notionPageStore.loading)
+const blockMap = computed(() => notionPageStore.getByKey('492c2bbb31404481b9faaaf407e59640'))
 </script>
 
 <style lang="scss">

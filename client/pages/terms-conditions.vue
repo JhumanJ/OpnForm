@@ -5,24 +5,22 @@
         <h1 class="sm:text-5xl">
           Terms & Conditions
         </h1>
-        <NotionPage page-id="246420da2834480ca04047b0c5a00929" />
+        <NotionPage :block-map="blockMap" :loading="loading"  />
       </div>
     </div>
-    <open-form-footer />
+    <open-form-footer/>
   </div>
 </template>
 
-<script>
-export default {
-  layout: 'default',
+<script setup>
+// metaTitle: 'Terms & Conditions',
 
-  data: () => ({
-    metaTitle: 'Terms & Conditions',
-  }),
+import {useNotionPagesStore} from "~/stores/notion_pages.js";
+import {computed} from "vue";
 
-  computed: {},
+const notionPageStore = useNotionPagesStore()
+await notionPageStore.load('246420da2834480ca04047b0c5a00929')
 
-  mounted () {
-  }
-}
+const loading = computed(() => notionPageStore.loading)
+const blockMap = computed(() => notionPageStore.getByKey('246420da2834480ca04047b0c5a00929'))
 </script>
