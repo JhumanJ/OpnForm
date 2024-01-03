@@ -1,11 +1,13 @@
 <template>
+  <div class="fixed top-0 bottom-24 right-0 flex gap-y-4 items-start justify-end z-50 pointer-events-auto">
     <NuxtNotifications>
       <template #body="props">
-          <div class="p-2">
+        <div class="p-2">
           <div
             class="flex max-w-sm w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden relative"
           >
-            <div class="flex justify-center items-center w-12" :class="notifTypes[props.item.type].background" v-html="notifTypes[props.item.type].svg"/>
+            <div class="flex justify-center items-center w-12" :class="notifTypes[props.item.type].background"
+                 v-html="notifTypes[props.item.type].svg"/>
 
             <div class="-mx-3 py-2 px-4">
               <div class="mx-3">
@@ -35,9 +37,10 @@
               </svg>
             </button>
           </div>
-          </div>
+        </div>
       </template>
     </NuxtNotifications>
+  </div>
 </template>
 
 <script>

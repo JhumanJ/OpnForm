@@ -42,7 +42,7 @@
           <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
             All Types
           </h4>
-          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
+          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true" v-if="$route.name !== 'templates'">
             View All Templates
           </v-button>
         </div>
@@ -65,7 +65,7 @@
           <h4 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
             All Industries
           </h4>
-          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true">
+          <v-button :to="{name:'templates'}" color="white" size="small" :arrow="true" v-if="$route.name !== 'templates'">
             View All Templates
           </v-button>
         </div>
