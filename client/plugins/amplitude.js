@@ -1,6 +1,4 @@
 
-const {logEvent} = useAmplitude()
-
 // Hook function used by event listener
 function hookLogEvent (binding) {
   const modifiers = Object.keys(binding.modifiers)
@@ -9,7 +7,7 @@ function hookLogEvent (binding) {
   }
   const eventName = modifiers[0]
 
-  logEvent(eventName, binding.value)
+  useAmplitude().logEvent(eventName, binding.value)
 }
 
 export default defineNuxtPlugin(nuxtApp => {

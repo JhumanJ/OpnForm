@@ -1,10 +1,10 @@
 import amplitude from 'amplitude-js'
-import config from '~/opnform.config.js'
 
-export default () => {
-  const amplitudeClient = config.amplitude_code ? amplitude.getInstance() : null;
+export const useAmplitude = () => {
+  const amplitudeCode = useRuntimeConfig().public.amplitudeCode
+  const amplitudeClient = amplitudeCode ? amplitude.getInstance() : null;
   if (amplitudeClient) {
-    amplitudeClient.init(config.amplitude_code)
+    amplitudeClient.init(amplitudeCode)
   }
 
   const logEvent = function (eventName, eventData) {

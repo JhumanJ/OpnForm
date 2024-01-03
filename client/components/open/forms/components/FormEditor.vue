@@ -96,6 +96,7 @@ import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
 import FormAccess from './form-components/FormAccess.vue'
 import {validatePropertiesLogic} from "~/composables/forms/validatePropertiesLogic.js"
+import opnformConfig from "~/opnform.config.js";
 
 export default {
   name: 'FormEditor',
@@ -145,10 +146,11 @@ export default {
       appStore: useAppStore(),
       crisp: useCrisp(),
       amplitude: useAmplitude(),
+      opnformConfig,
       workspace,
       formsStore,
       form,
-      user,
+      user
     }
   },
 
@@ -200,7 +202,9 @@ export default {
         }
       ]
     },
-    helpUrl: () => useAppConfig().links.help
+    helpUrl () {
+      return this.opnformConfig.links.help
+    }
   },
 
   watch: {},

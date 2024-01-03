@@ -91,14 +91,14 @@
 </template>
 
 <script>
-
 export default {
   props: {
     show: { type: Boolean, required: true }
   },
   setup () {
     return {
-      useAlert: useAlert()
+      useAlert: useAlert(),
+      runtimeConfig: useRuntimeConfig()
     }
   },
   data: () => ({
@@ -111,7 +111,7 @@ export default {
 
   computed: {
     aiFeaturesEnabled () {
-      return useAppConfig().ai_features_enabled
+      return this.runtimeConfig.public.aiFeaturesEnabled
     }
   },
 

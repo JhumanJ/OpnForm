@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import runtimeConfig from "./runtimeConfig";
 import opnformConfig from "./opnform.config";
 import sitemap from "./sitemap";
 
@@ -49,5 +50,6 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    sitemap
+    sitemap,
+    runtimeConfig
 })

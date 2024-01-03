@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import { useWorkingFormStore } from '../../../../../stores/working_form'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import FormNotificationsOption from './components/FormNotificationsOption.vue'
 import FormNotificationsSlack from './components/FormNotificationsSlack.vue'
 import FormNotificationsDiscord from './components/FormNotificationsDiscord.vue'
 import FormNotificationsSubmissionConfirmation from './components/FormNotificationsSubmissionConfirmation.vue'
 import FormNotificationsWebhook from './components/FormNotificationsWebhook.vue'
+import opnformConfig from "~/opnform.config.js";
 
 export default {
   components: { FormNotificationsSubmissionConfirmation, FormNotificationsSlack, FormNotificationsDiscord, FormNotificationsOption, EditorOptionsPanel, FormNotificationsWebhook },
@@ -47,22 +47,15 @@ export default {
     const {content: form} = storeToRefs(workingFormStore)
     return {
       workingFormStore,
-      form
-    }
-  },
-  data () {
-    return {
+      form,
+      opnformConfig
     }
   },
 
   computed: {
-    zapierUrl: () => useAppConfig().links.zapier_integration
-  },
-
-  watch: {
-  },
-
-  mounted () {
+    zapierUrl () {
+      opnformConfig.links.zapier_integration
+    }
   },
 }
 </script>

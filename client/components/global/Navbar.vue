@@ -3,7 +3,8 @@
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
-          <NuxtLink :to="{ name: user ? 'home' : 'index' }" class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
+          <NuxtLink :to="{ name: user ? 'home' : 'index' }"
+                    class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
             <img src="/img/logo.svg" alt="notion tools logo" class="w-8 h-8">
 
             <span
@@ -11,37 +12,41 @@
             >
               OpnForm</span>
           </NuxtLink>
-          <workspace-dropdown class="ml-6" />
+          <workspace-dropdown class="ml-6"/>
         </div>
         <div v-if="showAuth" class="hidden md:block ml-auto relative">
           <NuxtLink v-if="$route.name !== 'templates'" :to="{name:'templates'}"
-                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+                    class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             Templates
           </NuxtLink>
           <NuxtLink v-if="$route.name !== 'ai-form-builder'" :to="{name:'ai-form-builder'}"
-                       class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
+                    class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             AI Form Builder
           </NuxtLink>
-          <NuxtLink v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'" :to="{name:'pricing'}"
-                       class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+          <NuxtLink
+            v-if="paidPlansEnabled && (user===null || (user && workspace && !workspace.is_pro)) && $route.name !== 'pricing'"
+            :to="{name:'pricing'}"
+            class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
           </NuxtLink>
           <a v-if="hasCrisp" href="#"
-             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" @click.prevent="openCrisp"
+             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+             @click.prevent="openCrisp"
           >
             Help
           </a>
           <NuxtLink v-else :href="helpUrl"
-             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1" target="_blank"
+                    class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+                    target="_blank"
           >
             Help
           </NuxtLink>
         </div>
-        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5" />
+        <div v-if="showAuth" class="hidden md:block pl-5 border-gray-300 border-r h-5"/>
         <div v-if="showAuth" class="block">
           <div class="flex items-center">
             <div class="ml-3 mr-4 relative">
@@ -60,7 +65,7 @@
                   </template>
 
                   <NuxtLink v-if="userOnboarded" :to="{ name: 'home' }"
-                               class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                            class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
                          stroke="currentColor"
@@ -73,16 +78,18 @@
                   </NuxtLink>
 
                   <NuxtLink v-if="userOnboarded" :to="{ name: 'templates-my-templates' }"
-                               class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                            class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
+                         stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                     </svg>
                     My Templates
                   </NuxtLink>
 
                   <NuxtLink :to="{ name: 'settings-profile' }"
-                               class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                            class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                          stroke="currentColor"
@@ -113,13 +120,14 @@
                 </dropdown>
                 <div v-else class="flex gap-2">
                   <NuxtLink v-if="$route.name !== 'login'" :to="{ name: 'login' }"
-                               class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
-                               active-class="text-gray-800 dark:text-white"
+                            class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
+                            active-class="text-gray-800 dark:text-white"
                   >
                     Login
                   </NuxtLink>
 
-                  <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms-create-guest' }" color="outline-blue" :arrow="true">
+                  <v-button v-track.nav_create_form_click size="small" :to="{ name: 'forms-create-guest' }"
+                            color="outline-blue" :arrow="true">
                     Create a form
                   </v-button>
                 </div>
@@ -133,9 +141,10 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import {computed} from 'vue'
 import Dropdown from '~/components/global/Dropdown.vue'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
+import opnformConfig from "~/opnform.config.js";
 
 export default {
   components: {
@@ -143,39 +152,42 @@ export default {
     Dropdown
   },
 
-  setup () {
+  async setup() {
     const {openCrisp} = useCrisp()
     const authStore = useAuthStore()
     return {
       authStore,
       openCrisp,
+      opnformConfig,
       appStore: useAppStore(),
       formsStore: useFormsStore(),
       workspacesStore: useWorkspacesStore(),
-      config: useAppConfig(),
+      config: useRuntimeConfig(),
       user: computed(() => authStore.user),
       isIframe: useIsIframe(),
     }
   },
 
   computed: {
-    helpUrl: () => this.config.links.help_url,
-    form () {
+    helpUrl() {
+      return this.opnformConfig.links.help_url
+    },
+    form() {
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
         return this.formsStore.getByKey(this.$route.params.slug)
       }
       return null
     },
-    workspace () {
+    workspace() {
       return this.workspacesStore.getCurrent
     },
-    paidPlansEnabled () {
-      return this.config.paid_plans_enabled
+    paidPlansEnabled() {
+      return this.config.public.paidPlansEnabled
     },
-    showAuth () {
+    showAuth() {
       return this.$route.name && !this.$route.name.startsWith('forms.show_public')
     },
-    hasNavbar () {
+    hasNavbar() {
       if (this.isIframe) return false
 
       if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
@@ -190,16 +202,16 @@ export default {
       }
       return !this.appStore.navbarHidden
     },
-    userOnboarded () {
+    userOnboarded() {
       return this.user && this.user.workspaces_count > 0
     },
-    hasCrisp () {
-      return this.config.crisp_website_id
+    hasCrisp() {
+      return this.config.crispWebsiteId
     }
   },
 
   methods: {
-    async logout () {
+    async logout() {
       // Log out the user.
       await this.authStore.logout()
 
@@ -209,7 +221,7 @@ export default {
 
       // Redirect to login.
       const router = useRouter()
-      router.push({ name: 'login' })
+      router.push({name: 'login'})
     },
   }
 }

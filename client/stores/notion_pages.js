@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {useContentStore} from "~/composables/stores/useContentStore.js";
-
+import opnformConfig from "~/opnform.config.js";
 export const useNotionPagesStore = defineStore('notion_pages', () => {
 
   const contentStore = useContentStore()
@@ -8,7 +8,7 @@ export const useNotionPagesStore = defineStore('notion_pages', () => {
   const load = (pageId) => {
     contentStore.startLoading()
 
-    const apiUrl = useAppConfig().notion.worker
+    const apiUrl = opnformConfig.notion.worker
     return useOpnApi(`${apiUrl}/page/${pageId}`)
       .then(({data})=> {
         const val = data.value

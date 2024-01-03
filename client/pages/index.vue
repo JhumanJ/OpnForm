@@ -192,6 +192,7 @@ import AiFeature from '~/components/pages/welcome/AiFeature.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
 import TemplatesSlider from '../components/pages/welcome/TemplatesSlider.vue'
 import SeoMeta from '../mixins/seo-meta.js'
+import opnformConfig from "~/opnform.config.js";
 
 export default {
   components: {Testimonials, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider},
@@ -206,7 +207,8 @@ export default {
 
     return {
       authenticated: computed(() => authStore.check),
-      config: useAppConfig()
+      config: opnformConfig,
+      runtimeConfig: useRuntimeConfig()
     }
   },
 
@@ -220,7 +222,7 @@ export default {
       return this.config.links
     },
     paidPlansEnabled() {
-      return this.config.paid_plans_enabled
+      return this.runtimeConfig.public.paidPlansEnabled
     },
   }
 }

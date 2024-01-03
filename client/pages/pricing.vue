@@ -249,7 +249,7 @@ export default {
       middleware: [
         function (to, from) {
           // Custom inline middleware
-          if (!useAppConfig().paid_plans_enabled) {  // If no paid plan so no need this page
+          if (!useRuntimeConfig().public.paidPlansEnabled) {  // If no paid plan so no need this page
             return navigateTo('/', { redirectCode: 301 })
           }
         },

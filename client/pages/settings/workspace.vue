@@ -116,7 +116,6 @@
 
 <script setup>
 import {watch} from "vue";
-import opnformConfig from "~/opnform.config.js";
 import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
 const crisp = useCrisp()
@@ -133,7 +132,7 @@ let customDomains = ''
 let customDomainsLoading = ref(false)
 
 let workspace = computed(() => workspacesStore.getCurrent)
-let customDomainsEnabled = computed(() => opnformConfig.custom_domains_enabled)
+let customDomainsEnabled = computed(() => useRuntimeConfig().public.customDomainsEnabled)
 
 watch(() => workspace, () => {
   initCustomDomains()

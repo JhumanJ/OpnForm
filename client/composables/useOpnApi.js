@@ -1,4 +1,3 @@
-import config from "~/opnform.config.js";
 
 function addAuthHeader(request, options) {
   const authStore = useAuthStore()
@@ -24,8 +23,10 @@ export function getOpnRequestsOptions(request, opts) {
   addAuthHeader(request, opts)
   addPasswordToFormRequest(request, opts)
 
+  const config = useRuntimeConfig()
+
   return {
-    baseURL: config.api_url,
+    baseURL: config.public.apiBase,
     onResponseError({response}) {
       const authStore = useAuthStore()
       const {status} = response

@@ -124,7 +124,9 @@ export default {
   },
 
   computed: {
-    hCaptchaSiteKey: () => useAppConfig().hCaptchaSiteKey,
+    hCaptchaSiteKey () {
+      return useRuntimeConfig().public.hCaptchaSiteKey
+    },
     /**
      * Create field groups (or Page) using page breaks if any
      */
