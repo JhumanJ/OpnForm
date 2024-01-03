@@ -1,15 +1,17 @@
 import amplitude from 'amplitude-js'
 
 export const useAmplitude = () => {
-  const amplitudeCode = useRuntimeConfig().public.amplitudeCode
+  const config = useRuntimeConfig()
+  const amplitudeCode = config.public.amplitudeCode
   const amplitudeClient = amplitudeCode ? amplitude.getInstance() : null;
   if (amplitudeClient) {
     amplitudeClient.init(amplitudeCode)
   }
 
   const logEvent = function (eventName, eventData) {
-    if (!config.production || !amplitudeClient) {
+    if (!config.public.env === 'production' || !amplitudeClient) {
       console.log('[DEBUG] Amplitude logged event:', eventName, eventData)
+      return
     }
 
     if (eventData && typeof eventData !== 'object') {

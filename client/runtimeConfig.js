@@ -3,6 +3,7 @@ export default {
   public: {
     apiBase: '',
     appUrl: '',
+    env: 'local',
     hCaptchaSiteKey: null,
     googleAnalyticsCode: null,
     amplitudeCode: null,

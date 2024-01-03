@@ -1,25 +1,43 @@
 id: 34225
 name: OpnForm
 ignore:
-  - 'storage/clockwork'
-  - 'storage/logs'
+    - storage/clockwork
+    - storage/logs
+    - client
 environments:
-  production:
-    warm: 5
-    memory: 1024
-    cli-memory: 512
-    cli-timeout: 900
-    runtime: 'php-8.2:al2-arm'
-    storage: 'opnforms-prod'
-    database: 'JuPersoDb'
-    domain: 'opnform.com'
-    build:
-      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
-      - 'php artisan event:cache'
-      - 'php artisan disposable:update'
-      - 'npm ci && npm run build && rm -rf node_modules'
-    deploy:
-      - 'php artisan migrate --force'
-    firewall:
-      rate-limit: 1000
-    timeout: 30
+    production:
+        warm: 5
+        memory: 1024
+        cli-memory: 512
+        cli-timeout: 900
+        runtime: 'php-8.2:al2-arm'
+        storage: opnforms-prod
+        database: JuPersoDb
+        domain: opnform.com
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+            - 'php artisan event:cache'
+            - 'php artisan disposable:update'
+            - 'npm ci && npm run build && rm -rf node_modules'
+        deploy:
+            - 'php artisan migrate --force'
+        firewall:
+            rate-limit: 1000
+        timeout: 30
+    staging:
+      memory: 1024
+      cli-memory: 512
+      cli-timeout: 900
+      runtime: 'php-8.2:al2-arm'
+      storage: opnforms-staging
+      database: JuPersoDb
+      domain: stg.opnform.com
+      build:
+        - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+        - 'php artisan event:cache'
+        - 'php artisan disposable:update'
+      deploy:
+        - 'php artisan migrate --force'
+      firewall:
+        rate-limit: 1000
+      timeout: 30
