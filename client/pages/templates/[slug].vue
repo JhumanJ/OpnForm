@@ -18,7 +18,7 @@
           Copy Template URL
         </v-button>
         <v-button v-track.use_template_button_clicked size="small" class="mr-5"
-                  :to="{path: createFormWithTemplateUrl}"
+                  :to="createFormWithTemplateUrl"
         >
           Use this template
         </v-button>
@@ -71,7 +71,7 @@
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
               <v-button v-track.use_template_button_clicked class="mx-auto w-full max-w-[300px]"
-                        :to="{path: createFormWithTemplateUrl}">
+                        :to="createFormWithTemplateUrl">
                 Use this template
               </v-button>
             </div>
@@ -156,7 +156,7 @@
                   Copy the template and change it the way you like
                 </h5>
                 <p class="mt-2 text-sm font-normal text-gray-600">
-                  <NuxtLink :to="{path:createFormWithTemplateUrl}">
+                  <NuxtLink :to="createFormWithTemplateUrl">
                     Click here to copy this template
                   </NuxtLink>
                   and start customizing it. Change the questions, add new ones, choose colors and
@@ -243,12 +243,9 @@ const breadcrumbs = computed(() => {
   return [{route: {name: 'templates'}, label: 'Templates'}, {label: template.value.name}]
 })
 const relatedTemplates = computed(() => templatesStore.getByKey(template?.value?.related_templates))
-const canEditTemplate = computed(() => authStore.authenticated && template.value && (authStore.user.admin || authStore.user.template_editor || template.creator_id === authStore.user.id))
+const canEditTemplate = computed(() => authStore.check && template.value && (authStore.user.admin || authStore.user.template_editor || template.creator_id === authStore.user.id))
 const createFormWithTemplateUrl = computed(() => {
-  if (authStore.authenticated) {
-    return '/forms/create?template=' + template?.value?.slug
-  }
-  return '/forms/create/guest?template=' + template?.value?.slug
+  return {name: (authStore.check) ? 'forms-create' : 'forms-create-guest', query: {template: template?.value?.slug}}
 })
 
 // methods

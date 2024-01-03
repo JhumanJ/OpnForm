@@ -28,18 +28,20 @@ import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import QuickRegister from '~/components/pages/auth/components/QuickRegister.vue'
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 import {initForm} from "~/composables/forms/initForm.js"
-import {loadAllTemplates} from "~/stores/templates.js";
+import {fetchTemplate} from "~/stores/templates.js"
 import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
-definePageMeta({
-  middleware: "auth"
-})
 
 const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
 const route = useRoute()
-loadAllTemplates(templatesStore)
+
+// Fetch the template
+if (route.query.template !== undefined && route.query.template) {
+  const {data} = await fetchTemplate(route.query.template)
+  templatesStore.save(data.value)
+}
 
 // Store values
 const workspace = computed(() => workspacesStore.getCurrent)
@@ -69,15 +71,14 @@ onMounted(() => {
 
   form.value = initForm()
   if (route.query.template !== undefined && route.query.template) {
-    const template = this.templatesStore.getByKey(route.query.template)
+    const template = templatesStore.getByKey(route.query.template)
     if (template && template.structure) {
-      form.value = useForm({...this.form.data(), ...template.structure})
+      form.value = useForm({...form.value.data(), ...template.structure})
     }
   } else {
     // No template loaded, ask how to start
     showInitialFormModal.value = true
   }
-  // this.closeAlert()
   stateReady.value = true
 })
 
@@ -87,7 +88,7 @@ const afterLogin = () => {
   fetchAllWorkspaces()
   setTimeout(() => {
     if (editor) {
-      editor.saveFormCreate()
+      editor.value.saveFormCreate()
     }
   }, 500)
 }
