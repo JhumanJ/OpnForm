@@ -5,29 +5,23 @@
         <h1 class="sm:text-5xl">
           Privacy Policy
         </h1>
-        <NotionPage page-id="9c97349ceda7455aab9b341d1ff70f79" />
+        <NotionPage :block-map="blockMap" :loading="loading"  />
       </div>
     </div>
     <open-form-footer />
   </div>
 </template>
 
-<script>
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
-import SeoMeta from '../mixins/seo-meta.js'
+<script setup>
 
-export default {
-  components: { OpenFormFooter},
-  layout: 'default',
-  mixins: [SeoMeta],
+// metaTitle: 'Privacy Policy',
 
-  data: () => ({
-    metaTitle: 'Privacy Policy',
-  }),
+import {useNotionPagesStore} from "~/stores/notion_pages.js";
+import {computed} from "vue";
 
-  computed: {},
+const notionPageStore = useNotionPagesStore()
+await notionPageStore.load('9c97349ceda7455aab9b341d1ff70f79')
 
-  mounted () {
-  }
-}
+const loading = computed(() => notionPageStore.loading)
+const blockMap = computed(() => notionPageStore.getByKey('9c97349ceda7455aab9b341d1ff70f79'))
 </script>

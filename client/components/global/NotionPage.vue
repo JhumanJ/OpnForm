@@ -1,5 +1,8 @@
 <template>
-  <notion-renderer :block-map="blockMap"/>
+  <notion-renderer v-if="!loading" :block-map="blockMap"/>
+  <div class="p-6 flex items-center justify-center" v-else>
+    <loader class="w-6 h-6"/>
+  </div>
 </template>
 
 <script>
@@ -9,21 +12,14 @@ export default {
   name: 'NotionPage',
   components: {NotionRenderer},
   props: {
-    pageId: {
-      type: String,
+    blockMap: {
+      type: Object
+    },
+    loading: {
+      type: Boolean,
       required: true
     }
   },
-
-  async setup(props) {
-    const apiUrl = useAppConfig().notion.worker
-    const {data} = await useFetch(`${apiUrl}/page/${props.pageId}`)
-
-    return {
-      apiUrl: useAppConfig().notion.worker,
-      blockMap: data,
-    }
-  }
 }
 </script>
 

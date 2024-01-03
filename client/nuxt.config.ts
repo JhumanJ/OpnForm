@@ -1,37 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
 import opnformConfig from "./opnform.config";
-
-const modules = [
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-    '@vueuse/motion/nuxt'
-]
-
-if (opnformConfig.sentry_dsn) {
-    modules.push('@nuxtjs/sentry')
-}
-
-const preRenderedRoutes = [
-    '/',
-    '/ai-form-builder',
-    '/login',
-    '/register',
-    // '/privacy-policy',
-    // '/terms-conditions',
-    '/templates',
-    '/templates/*',
-].reduce((acc, curr) => (acc[curr] = {prerender: true}, acc), {});
+import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
+    site: {
+        url: opnformConfig.app_url
+    },
     devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@vueuse/motion/nuxt',
-        'nuxt3-notifications'
+        'nuxt3-notifications',
+        'nuxt-simple-sitemap',
+        // ... opnformConfig.sentry_dsn ? ['@nuxtjs/sentry'] : [],
     ],
+    build: {
+        transpile: ["vue-notion"],
+    },
     postcss: {
         plugins: {
             'postcss-import': {},
@@ -39,6 +26,9 @@ export default defineNuxtConfig({
             tailwindcss: {},
             autoprefixer: {},
         },
+    },
+    experimental: {
+        inlineRouteRules: true
     },
     sentry: {
         dsn: opnformConfig.sentry_dsn,
@@ -59,5 +49,5 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    routeRules: { ... preRenderedRoutes}
+    sitemap
 })

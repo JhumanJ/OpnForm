@@ -54,17 +54,23 @@
 </template>
 
 <script>
-import OpenFormFooter from '~/components/pages/OpenFormFooter.vue'
 import RegisterForm from "~/components/pages/auth/components/RegisterForm.vue"
 import AppSumoRegister from "~/components/vendor/appsumo/AppSumoRegister.vue"
 
 export default {
   components: {
     AppSumoRegister,
-    OpenFormFooter,
     RegisterForm
   },
 
+  setup() {
+    definePageMeta({
+      middleware: "guest"
+    })
+    defineRouteRules({
+      prerender: true
+    })
+  },
 
   middleware: 'guest',
 

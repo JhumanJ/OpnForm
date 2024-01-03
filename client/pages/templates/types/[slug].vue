@@ -46,6 +46,10 @@ import OpenFormFooter from '../../../components/pages/OpenFormFooter.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import {loadAllTemplates} from "~/stores/templates.js";
 
+defineRouteRules({
+  prerender: true
+})
+
 const route = useRoute()
 const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()

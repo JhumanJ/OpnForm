@@ -118,7 +118,6 @@ import {useFormsStore} from '../stores/forms'
 import {useWorkspacesStore} from '../stores/workspaces'
 import Fuse from 'fuse.js'
 import TextInput from '../components/forms/TextInput.vue'
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import ExtraMenu from '../components/pages/forms/show/ExtraMenu.vue'
 import {refDebounced} from "@vueuse/core"
 

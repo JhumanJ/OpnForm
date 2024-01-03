@@ -31,7 +31,9 @@ import {initForm} from "~/composables/forms/initForm.js"
 import {loadAllTemplates} from "~/stores/templates.js";
 import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
-//  middleware: 'guest',
+definePageMeta({
+  middleware: "auth"
+})
 
 const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()

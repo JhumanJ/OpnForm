@@ -53,18 +53,19 @@
 </template>
 
 <script>
-import OpenFormFooter from '~/components/pages/OpenFormFooter.vue'
 import LoginForm from "~/components/pages/auth/components/LoginForm.vue"
 
 export default {
   components: {
-    OpenFormFooter,
     LoginForm
   },
 
   setup() {
     definePageMeta({
       middleware: "guest"
+    })
+    defineRouteRules({
+      prerender: true
     })
   },
 

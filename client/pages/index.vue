@@ -189,18 +189,21 @@ import Features from '~/components/pages/welcome/Features.vue'
 import MoreFeatures from '~/components/pages/welcome/MoreFeatures.vue'
 import PricingTable from '../components/pages/pricing/PricingTable.vue'
 import AiFeature from '~/components/pages/welcome/AiFeature.vue'
-import OpenFormFooter from '../components/pages/OpenFormFooter.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
 import TemplatesSlider from '../components/pages/welcome/TemplatesSlider.vue'
 import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
-  components: {Testimonials, OpenFormFooter, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider},
+  components: {Testimonials, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider},
   mixins: [SeoMeta],
   layout: 'default',
 
   setup() {
     const authStore = useAuthStore()
+    defineRouteRules({
+      prerender: true
+    })
+
     return {
       authenticated: computed(() => authStore.check),
       config: useAppConfig()
