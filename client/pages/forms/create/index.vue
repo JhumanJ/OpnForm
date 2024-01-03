@@ -25,6 +25,8 @@ import {watch} from 'vue'
 import {initForm} from "~/composables/forms/initForm.js"
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
+import {fetchTemplate} from "~/stores/templates.js"
+import {hash} from "~/lib/utils.js"
 
 definePageMeta({
   middleware: "auth"
@@ -48,6 +50,12 @@ const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
 const formStore = useFormsStore()
+
+// Fetch the template
+if (route.query.template !== undefined && route.query.template) {
+  const {data} = await fetchTemplate(route.query.template)
+  templatesStore.save(data.value)
+}
 
 const {
   getCurrent: workspace,
@@ -77,22 +85,21 @@ onMounted(() => {
   }
 
   if (!formStore.allLoaded) {
-    formStore.load(workspace.value.id)
+    formStore.loadAll(workspace.value.id)
   }
 
   form.value = initForm({workspace_id: workspace.value?.id})
-  formInitialHash.value = hashString(JSON.stringify(form.value.data()))
-  // if (this.$route.query.template !== undefined && this.$route.query.template) {
-  //   const template = this.templatesStore.getByKey(this.$route.query.template)
-  //   if (template && template.structure) {
-  //     this.form = new Form({...this.form.data(), ...template.structure})
-  //   }
-  // } else {
-  //   // No template loaded, ask how to start
-  //   this.showInitialFormModal = true
-  // }
-  // this.closeAlert()
-  // this.workspacesStore.loadIfEmpty()
+  formInitialHash.value = hash(JSON.stringify(form.value.data()))
+  if (route.query.template !== undefined && route.query.template) {
+    const template = templatesStore.getByKey(route.query.template)
+    if (template && template.structure) {
+      form.value = useForm({...form.value.data(), ...template.structure})
+    }
+  } else {
+    // No template loaded, ask how to start
+    showInitialFormModal.value = true
+  }
+  // workspacesStore.loadIfEmpty()
 })
 
 // Methods
@@ -101,21 +108,6 @@ const formGenerated = (newForm) => {
 }
 
 const isDirty = () => {
-  return !loading.value && formInitialHash.value && formInitialHash.value !== hashString(JSON.stringify(form.value.data()))
-}
-
-const hashString = (str, seed = 0) => {
-  let h1 = 0xdeadbeef ^ seed
-  let h2 = 0x41c6ce57 ^ seed
-  for (let i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i)
-    h1 = Math.imul(h1 ^ ch, 2654435761)
-    h2 = Math.imul(h2 ^ ch, 1597334677)
-  }
-
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0)
+  return !loading.value && formInitialHash.value && formInitialHash.value !== hash(JSON.stringify(form.value.data()))
 }
 </script>

@@ -246,7 +246,7 @@ export default {
     },
     init () {
       if (this.route.name === 'forms-create' || this.route.name === 'forms-create-guest') { // Set Default fields
-        if (!this.form.properties) {
+        if (!this.form.properties || this.form.properties.length===0) {
           this.form.properties = this.getDefaultFields()
         }
       } else {
