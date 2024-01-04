@@ -13,3 +13,8 @@ export const hash = (str, seed = 0) => {
 
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
+
+export const asset = (path) => {
+  const assetUrl = import.meta.env.VITE_VAPOR_ASSET_URL ? import.meta.env.VITE_VAPOR_ASSET_URL : ''
+  return assetUrl + '/' + path
+}
