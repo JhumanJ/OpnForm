@@ -22,8 +22,8 @@
     </transition>
 
 
+    <NuxtLoadingIndicator color="#2563eb"/>
     <NuxtLayout>
-      <NuxtLoadingIndicator color="#2563eb"/>
       <NuxtPage/>
     </NuxtLayout>
     <ToolsStopImpersonation/>
