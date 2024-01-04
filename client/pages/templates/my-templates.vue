@@ -24,9 +24,11 @@ export default {
   components: { TemplatesList },
   middleware: 'auth',
 
-  props: {
-    metaTitle: { type: String, default: 'My Templates' },
-    metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
+  setup () {
+    useSeoMeta({
+      title: 'My Templates',
+      description: 'Our collection of beautiful templates to create your own forms!'
+    })
   },
 
   data () {

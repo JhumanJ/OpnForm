@@ -245,6 +245,11 @@ export default {
   layout: 'default',
 
   setup () {
+    useSeoMeta({
+      title: 'Pricing',
+      description: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized forms with OpnForms Pro.'
+    })
+
     definePageMeta({
       middleware: [
         function (to, from) {
@@ -265,8 +270,7 @@ export default {
   },
 
   data: () => ({
-    metaTitle: 'Pricing',
-    metaDescription: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized forms with OpnForms Pro.',
+    
   }),
 
   mounted() {},

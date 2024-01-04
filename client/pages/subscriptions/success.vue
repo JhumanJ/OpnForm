@@ -18,13 +18,16 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   layout: 'default',
   middleware: 'auth',
 
   setup () {
+    useSeoMeta({
+      title: 'Subscription Success'
+    })
+
     const authStore = useAuthStore()
     return {
       authStore,
@@ -34,7 +37,6 @@ export default {
   },
 
   data: () => ({
-    metaTitle: 'Subscription Success',
     interval: null
   }),
 

@@ -44,6 +44,10 @@
   definePageMeta({
     middleware: "auth"
   })
+
+  useSeoMeta({
+    title: 'Settings'
+  })
   
   const authStore = useAuthStore()
   const user = computed(() => authStore.user)

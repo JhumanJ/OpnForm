@@ -44,6 +44,16 @@ export default {
   components: {},
 
   setup() {
+    useSeoMeta({
+      title: 'OpnForm',
+      description: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.'
+    })
+    useHead({
+      titleTemplate: (titleChunk) => {
+        return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm';
+      }
+    })
+
     const appStore = useAppStore()
 
     return {
@@ -57,8 +67,6 @@ export default {
   },
 
   data: () => ({
-    metaTitle: 'OpnForm',
-    metaDescription: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
     announcement: false,
     alert: {
       type: null,

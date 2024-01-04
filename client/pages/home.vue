@@ -125,11 +125,10 @@ definePageMeta({
   middleware: "auth"
 })
 
-// metaTitle: {type: String, default: 'Your Forms'},
-// metaDescription: {
-//   type: String,
-//   default: 'All of your OpnForm are here. Create new forms, or update your existing one!'
-// }
+useSeoMeta({
+  title: 'Your Forms',
+  description: 'All of your OpnForm are here. Create new forms, or update your existing one!'
+})
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()

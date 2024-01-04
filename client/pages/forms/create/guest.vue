@@ -48,7 +48,10 @@ const workspace = computed(() => workspacesStore.getCurrent)
 const workspacesLoading = computed(() => workspacesStore.loading)
 const form = storeToRefs(workingFormStore).content
 
-// metaTitle: 'Create a new Form as Guest',
+useSeoMeta({
+  title: 'Create a new Form as Guest'
+})
+
 // Data
 const stateReady = ref(false)
 const loading = ref(false)

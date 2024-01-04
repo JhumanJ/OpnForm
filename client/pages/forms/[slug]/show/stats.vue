@@ -9,7 +9,6 @@
 
 <script>
 import FormStats from '../../../../components/open/forms/components/FormStats.vue'
-import SeoMeta from '../../../../mixins/seo-meta.js'
 
 export default {
   components: {FormStats},
@@ -18,10 +17,13 @@ export default {
     form: {type: Object, required: true},
   },
 
+  setup (props) {
+    useSeoMeta({
+      title: (props.form) ? 'Form Analytics - '+props.form.title : 'Form Analytics'
+    })
+  },
+
   computed: {
-    metaTitle() {
-      return (this.form ? ('Form Analytics - ' + this.form.title) : 'Form Analytics')
-    }
   }
 }
 </script>

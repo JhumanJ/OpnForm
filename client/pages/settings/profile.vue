@@ -23,7 +23,11 @@
 <script setup>
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
-const metaTitle = 'Profile'
+
+useSeoMeta({
+  title: 'Profile'
+})
+
 let form = useForm({
   name: '',
   email: ''

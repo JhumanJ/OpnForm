@@ -113,32 +113,36 @@ onMounted(() => {
 
 await loadForm(slug)
 
-// metaTitle () {
-//   if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
-//     return this.form.seo_meta.page_title
-//   }
-//   return this.form ? this.form.title : 'Create beautiful forms'
-// },
-// metaTemplate () {
-//   if (this.form && this.form.is_pro && this.form.seo_meta.page_title) {
-//     // Disable template if custom SEO title
-//     return '%s'
-//   }
-//   return null
-// },
-// metaDescription () {
-//   if (this.form && this.form.is_pro && this.form.seo_meta.page_description) {
-//     return this.form.seo_meta.page_description
-//   }
-//   return (this.form && this.form.description) ? this.form.description.substring(0, 160) : null
-// },
-// metaImage () {
-//   if (this.form && this.form.is_pro && this.form.seo_meta.page_thumbnail) {
-//     return this.form.seo_meta.page_thumbnail
-//   }
-//   return (this.form && this.form.cover_picture) ? this.form.cover_picture : null
-// },
-// metaTags () {
-//   return (this.form && this.form.can_be_indexed) ? [] : [{ name: 'robots', content: 'noindex' }]
-// }
+useSeoMeta({
+  title: () => {
+    if (form && form.value.is_pro && form.value.seo_meta.page_title) {
+      return form.value.seo_meta.page_title
+    }
+    return form.value ? form.value.title : 'Create beautiful forms'
+  },
+  description () {
+    if (form && form.value.is_pro && form.value.seo_meta.page_description) {
+      return form.value.seo_meta.page_description
+    }
+    return (form && form.value.description) ? form.value.description.substring(0, 160) : null
+  },
+  ogImage () {
+    if (form && form.value.is_pro && form.value.seo_meta.page_thumbnail) {
+      return form.value.seo_meta.page_thumbnail
+    }
+    return (form && form.value.cover_picture) ? form.value.cover_picture : null
+  },
+  robots () {
+    return (form && form.value.can_be_indexed) ? null : 'noindex'
+  }
+})
+useHead({
+  titleTemplate: (titleChunk) => {
+    if (form && form.value.is_pro && form.value.seo_meta.page_title) {
+      // Disable template if custom SEO title
+      return titleChunk
+    }
+    return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm';
+  }
+})
 </script>

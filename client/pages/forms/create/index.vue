@@ -33,7 +33,9 @@ definePageMeta({
   middleware: "auth"
 })
 
-const metaTitle = 'Create a new Form'
+useSeoMeta({
+  title: 'Create a new Form'
+})
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty()) {

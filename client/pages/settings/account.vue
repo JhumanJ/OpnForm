@@ -20,8 +20,11 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const authStore = useAuthStore()
-const metaTitle = 'Account'
 let loading = false
+
+useSeoMeta({
+  title: 'Account'
+})
 
 const deleteAccount = () => {
   loading = true

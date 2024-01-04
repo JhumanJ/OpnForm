@@ -13,11 +13,12 @@
 </template>
 
 <script setup>
-
-// metaTitle: 'Privacy Policy',
-
 import {useNotionPagesStore} from "~/stores/notion_pages.js";
 import {computed} from "vue";
+
+useSeoMeta({
+  title: 'Privacy Policy'
+})
 
 const notionPageStore = useNotionPagesStore()
 await notionPageStore.load('9c97349ceda7455aab9b341d1ff70f79')
