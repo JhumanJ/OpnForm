@@ -27,22 +27,23 @@ import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from '../../../components/pages/forms/create/CreateFormBaseModal.vue'
 import {fetchTemplate} from "~/stores/templates.js"
 import {hash} from "~/lib/utils.js"
+import {onBeforeRouteLeave} from 'vue-router'
 
 definePageMeta({
   middleware: "auth"
 })
 
-// metaTitle: 'Create a new Form',
+const metaTitle = 'Create a new Form'
 
-// beforeRouteLeave (to, from, next) {
-//   if (this.isDirty()) {
-//     return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
-//       window.onbeforeunload = null
-//       next()
-//     }, () => {})
-//   }
-//   next()
-// },
+onBeforeRouteLeave((to, from, next) => {
+  if (isDirty()) {
+    return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
+      window.onbeforeunload = null
+      next()
+    }, () => {})
+  }
+  next()
+})
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -78,9 +79,10 @@ watch(() => workspace, () => {
 
 onMounted(() => {
   if (process.client) {
-    // window.onbeforeunload = () => {
-    if (isDirty()) {
-      return false
+    window.onbeforeunload = () => {
+      if (isDirty()) {
+        return false
+      }
     }
   }
 
