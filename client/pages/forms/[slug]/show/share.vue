@@ -45,8 +45,8 @@ export default {
   },
 
   setup (props) {
-    useSeoMeta({
-      title: (props.form) ? 'Form Share - '+props.form.title : 'Form Share'
+    useOpnSeoMeta({
+      title: (props.form) ? 'Share Form - '+props.form.title : 'Share Form'
     })
   },
 

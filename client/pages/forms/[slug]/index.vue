@@ -113,7 +113,7 @@ onMounted(() => {
 
 await loadForm(slug)
 
-useSeoMeta({
+useOpnSeoMeta({
   title: () => {
     if (form && form.value.is_pro && form.value.seo_meta.page_title) {
       return form.value.seo_meta.page_title
@@ -133,7 +133,7 @@ useSeoMeta({
     return (form && form.value.cover_picture) ? form.value.cover_picture : null
   },
   robots () {
-    return (form && form.value.can_be_indexed) ? null : 'noindex'
+    return (form && form.value.can_be_indexed) ? null : 'noindex, nofollow'
   }
 })
 useHead({

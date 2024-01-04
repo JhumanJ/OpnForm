@@ -41,7 +41,7 @@ definePageMeta({
   middleware: "admin"
 })
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Admin'
 })
 

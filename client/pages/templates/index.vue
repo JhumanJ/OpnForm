@@ -26,8 +26,8 @@ defineRouteRules({
   prerender: true
 })
 
-useSeoMeta({
-  title: 'Templates',
+useOpnSeoMeta({
+  title: 'Form Templates',
   description: 'Our collection of beautiful templates to create your own forms!'
 })
 

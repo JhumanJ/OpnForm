@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Password'
 })
 

@@ -501,8 +501,9 @@ export default {
   layout: 'default',
 
   setup () {
-    useSeoMeta({
-      title: 'AI form builder for free'
+    useOpnSeoMeta({
+      title: 'Free AI form builder',
+      description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
     })
 
     const authStore = useAuthStore()

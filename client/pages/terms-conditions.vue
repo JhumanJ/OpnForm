@@ -16,7 +16,7 @@
 import {useNotionPagesStore} from "~/stores/notion_pages.js";
 import {computed} from "vue";
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Terms & Conditions'
 })
 

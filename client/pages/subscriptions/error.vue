@@ -10,7 +10,7 @@ export default {
   middleware: 'auth',
 
   setup () {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'Error'
     })
 

@@ -198,10 +198,6 @@ export default {
   layout: 'default',
 
   setup() {
-    useSeoMeta({
-      title: 'Create beautiful & open-source forms for free'
-    })
-
     const authStore = useAuthStore()
     defineRouteRules({
       prerender: true

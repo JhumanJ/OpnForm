@@ -52,7 +52,7 @@ export default {
       }
     })
 
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
     })
 

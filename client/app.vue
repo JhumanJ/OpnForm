@@ -44,9 +44,10 @@ export default {
   components: {},
 
   setup() {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'OpnForm',
-      description: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.'
+      description: 'Create beautiful forms for free. Unlimited fields, unlimited submissions. It\'s free and it takes less than 1 minute to create your first form.',
+      ogImage: '/img/social-preview.jpg',
     })
     useHead({
       titleTemplate: (titleChunk) => {

@@ -24,7 +24,7 @@ export default {
   middleware: 'auth',
 
   setup () {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'Subscription Success'
     })
 

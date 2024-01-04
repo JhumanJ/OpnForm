@@ -18,7 +18,7 @@ export default {
   },
 
   setup (props) {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: (props.form) ? 'Form Analytics - '+props.form.title : 'Form Analytics'
     })
   },

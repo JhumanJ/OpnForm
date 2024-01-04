@@ -265,7 +265,7 @@ const copyTemplateUrl = () => {
   useAlert().success('Copied!')
 }
 
-useSeoMeta({
+useOpnSeoMeta({
   title: () => {
     return template ? template.value.name : 'Form Template'
   },

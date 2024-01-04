@@ -33,7 +33,7 @@ definePageMeta({
   middleware: "auth"
 })
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Create a new Form'
 })
 

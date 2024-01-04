@@ -61,7 +61,7 @@ definePageMeta({
 defineRouteRules({
   prerender: true
 })
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Login'
 })
 </script>

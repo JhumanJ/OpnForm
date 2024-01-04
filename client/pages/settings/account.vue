@@ -22,7 +22,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 let loading = false
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Account'
 })
 
@@ -31,7 +31,7 @@ const deleteAccount = () => {
   opnFetch('/user', {method:'DELETE'}).then(async (data) => {
     loading = false
     useAlert().success(data.message)
-    
+
     // Log out the user.
     await authStore.logout()
 

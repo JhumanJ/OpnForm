@@ -27,7 +27,7 @@ export default {
   middleware: 'guest',
 
   setup () {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'Reset Password'
     })
   },

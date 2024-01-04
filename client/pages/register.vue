@@ -64,7 +64,7 @@ export default {
   },
 
   setup() {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'Register'
     })
 

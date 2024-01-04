@@ -25,7 +25,7 @@ export default {
   middleware: 'auth',
 
   setup () {
-    useSeoMeta({
+    useOpnSeoMeta({
       title: 'My Templates',
       description: 'Our collection of beautiful templates to create your own forms!'
     })

@@ -123,7 +123,7 @@ const workspacesStore = useWorkspacesStore()
 const workspaces = computed(() => workspacesStore.getAll)
 let loading = computed(() => workspacesStore.loading)
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Workspaces'
 })
 

@@ -24,7 +24,7 @@ import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
 
-useSeoMeta({
+useOpnSeoMeta({
   title: 'Billing'
 })
 
