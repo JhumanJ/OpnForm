@@ -64,6 +64,10 @@ export default {
   },
 
   setup() {
+    useOpnSeoMeta({
+      title: 'Register'
+    })
+
     definePageMeta({
       middleware: "guest"
     })
@@ -75,7 +79,6 @@ export default {
   middleware: 'guest',
 
   data: () => ({
-    metaTitle: 'Register'
   }),
 
   computed: {},

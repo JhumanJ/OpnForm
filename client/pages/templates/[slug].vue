@@ -265,24 +265,24 @@ const copyTemplateUrl = () => {
   useAlert().success('Copied!')
 }
 
-// metaTitle() {
-//   return this.template ? this.template.name : 'Form Template'
-// },
-// metaDescription() {
-//   if (!this.template) return null
-//   // take the first 140 characters of the description
-//   return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
-// },
-// metaImage() {
-//   if (!this.template) return null
-//   return this.template.image_url
-// },
-// metaTags() {
-//   if (!this.template) {
-//     return [];
-//   }
-//   return this.template.publicly_listed ? [] : [{name: 'robots', content: 'noindex'}]
-// },
+useOpnSeoMeta({
+  title: () => {
+    return template ? template.value.name : 'Form Template'
+  },
+  description () {
+    if (!template || !template.value) return null
+    // take the first 140 characters of the description
+    return template.value.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
+  },
+  ogImage () {
+    if (!template || !template.value) return null
+    return template.value.image_url
+  },
+  robots () {
+    if (!template || !template.value) return null
+    return template.value.publicly_listed ? null : 'noindex'
+  }
+})
 </script>
 
 <style lang='scss'>

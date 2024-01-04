@@ -496,13 +496,16 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import SeoMeta from '../mixins/seo-meta.js'
 
 export default {
   layout: 'default',
-  mixins: [SeoMeta],
 
   setup () {
+    useOpnSeoMeta({
+      title: 'Free AI form builder',
+      description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
+    })
+
     const authStore = useAuthStore()
     defineRouteRules({
       prerender: true
@@ -514,8 +517,6 @@ export default {
   },
 
   data: () => ({
-    title: 'OpnForm',
-    metaTitle: 'AI form builder for free',
   }),
 
   mounted() {},

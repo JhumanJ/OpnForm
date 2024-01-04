@@ -122,7 +122,11 @@ const crisp = useCrisp()
 const workspacesStore = useWorkspacesStore()
 const workspaces = computed(() => workspacesStore.getAll)
 let loading = computed(() => workspacesStore.loading)
-const metaTitle = 'Workspaces'
+
+useOpnSeoMeta({
+  title: 'Workspaces'
+})
+
 let form = useForm({
   name: '',
   emoji: ''

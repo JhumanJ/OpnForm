@@ -36,8 +36,13 @@
 export default {
   middleware: 'guest',
 
+  setup () {
+    useOpnSeoMeta({
+      title: 'Reset Password'
+    })
+  },
+
   data: () => ({
-    metaTitle: 'Reset Password',
     status: '',
     form: useForm({
       token: '',

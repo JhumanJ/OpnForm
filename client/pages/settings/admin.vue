@@ -41,7 +41,10 @@ definePageMeta({
   middleware: "admin"
 })
 
-const  metaTitle = 'Admin'
+useOpnSeoMeta({
+  title: 'Admin'
+})
+
 const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
 const router = useRouter()

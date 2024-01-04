@@ -20,15 +20,18 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const authStore = useAuthStore()
-const metaTitle = 'Account'
 let loading = false
+
+useOpnSeoMeta({
+  title: 'Account'
+})
 
 const deleteAccount = () => {
   loading = true
   opnFetch('/user', {method:'DELETE'}).then(async (data) => {
     loading = false
     useAlert().success(data.message)
-    
+
     // Log out the user.
     await authStore.logout()
 

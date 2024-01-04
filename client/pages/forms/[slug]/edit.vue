@@ -52,6 +52,10 @@ export default {
       }
     })
 
+    useOpnSeoMeta({
+      title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
+    })
+
     return {
       formsStore,
       workingFormStore,
@@ -70,9 +74,6 @@ export default {
   },
 
   computed: {
-    metaTitle () {
-      return 'Edit ' + (this.form ? this.form.title : 'Your Form')
-    }
   },
 
   async beforeMount() {

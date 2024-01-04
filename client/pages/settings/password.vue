@@ -25,7 +25,10 @@
 </template>
 
 <script setup>
-const metaTitle = 'Password'
+useOpnSeoMeta({
+  title: 'Password'
+})
+
 let form = useForm({
   password: '',
   password_confirmation: ''

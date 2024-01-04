@@ -144,6 +144,10 @@ export default {
   middleware: 'auth',
 
   setup () {
+    useOpnSeoMeta({
+      title: 'Home'
+    })
+
     const authStore = useAuthStore()
     const formsStore = useFormsStore()
     const workingFormStore = useWorkingFormStore()
@@ -167,7 +171,6 @@ export default {
 
   data () {
     return {
-      metaTitle: 'Home',
       tabsList: [
         {
           name: 'Submissions',

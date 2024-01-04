@@ -24,7 +24,10 @@ import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
 
-const metaTitle = 'Billing'
+useOpnSeoMeta({
+  title: 'Billing'
+})
+
 const authStore = useAuthStore()
 let user = computed(() => authStore.user)
 let billingLoading = false

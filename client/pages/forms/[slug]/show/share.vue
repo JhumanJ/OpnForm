@@ -26,7 +26,6 @@ import EmbedCode from '../../../../components/pages/forms/show/EmbedCode.vue'
 import FormQrCode from '../../../../components/pages/forms/show/FormQrCode.vue'
 import UrlFormPrefill from '../../../../components/pages/forms/show/UrlFormPrefill.vue'
 import RegenerateFormLink from '../../../../components/pages/forms/show/RegenerateFormLink.vue'
-import SeoMeta from '../../../../mixins/seo-meta.js'
 import AdvancedFormUrlSettings from '../../../../components/open/forms/components/AdvancedFormUrlSettings.vue'
 import EmbedFormAsPopupModal from '../../../../components/pages/forms/show/EmbedFormAsPopupModal.vue'
 
@@ -45,6 +44,12 @@ export default {
     form: {type: Object, required: true},
   },
 
+  setup (props) {
+    useOpnSeoMeta({
+      title: (props.form) ? 'Share Form - '+props.form.title : 'Share Form'
+    })
+  },
+
   data: () => ({
     shareFormConfig: {
       hide_title: false,
@@ -53,9 +58,6 @@ export default {
   }),
 
   computed: {
-    metaTitle() {
-      return (this.form) ? 'Form Share - '+this.form.title : 'Form Share'
-    },
     shareUrlForQueryParams () {
       let queryStr = ''
       for (const [key, value] of Object.entries(this.shareFormConfig)) {
