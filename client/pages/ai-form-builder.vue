@@ -493,39 +493,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import SeoMeta from '../mixins/seo-meta.js'
 
-export default {
-  layout: 'default',
-  mixins: [SeoMeta],
+const authStore = useAuthStore()
 
-  setup () {
-    const authStore = useAuthStore()
-    defineRouteRules({
-      prerender: true
-    })
+useOpnSeoMeta({
+  title: 'Free AI form builder',
+  description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
+})
+defineRouteRules({
+  prerender: true
+})
 
-    return {
-      authenticated : computed(() => authStore.check),
-    }
-  },
-
-  data: () => ({
-    title: 'OpnForm',
-    metaTitle: 'AI form builder for free',
-  }),
-
-  mounted() {},
-
-  methods: {},
-
-  computed: {
-    configLinks: () => this.$config.links
-  }
-}
+let authenticated = computed(() => authStore.check)
 </script>
 
 <style lang="scss" scoped>

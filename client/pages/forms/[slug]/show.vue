@@ -141,9 +141,14 @@ export default {
     FormCleanings
   },
 
-  middleware: 'auth',
-
   setup () {
+    definePageMeta({
+      middleware: "auth"
+    })
+    useOpnSeoMeta({
+      title: 'Home'
+    })
+
     const authStore = useAuthStore()
     const formsStore = useFormsStore()
     const workingFormStore = useWorkingFormStore()
@@ -167,7 +172,6 @@ export default {
 
   data () {
     return {
-      metaTitle: 'Home',
       tabsList: [
         {
           name: 'Submissions',

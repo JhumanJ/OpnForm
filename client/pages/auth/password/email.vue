@@ -24,10 +24,16 @@
 
 <script>
 export default {
-  middleware: 'guest',
+  setup () {
+    definePageMeta({
+      middleware: "guest"
+    })
+    useOpnSeoMeta({
+      title: 'Reset Password'
+    })
+  },
 
   data: () => ({
-    metaTitle: 'Reset Password',
     status: '',
     form: useForm({
       email: ''

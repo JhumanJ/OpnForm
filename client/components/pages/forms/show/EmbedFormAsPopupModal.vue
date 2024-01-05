@@ -59,7 +59,7 @@
           </div>
         </div>
 
-        <collapse class="py-5 w-full border rounded-md px-4" :model-value="false">
+        <collapse class="py-5 w-full border rounded-md px-4" :model-value="true">
           <template #title>
             <div class="flex">
               <h3 class="font-semibold block text-lg">
@@ -101,99 +101,87 @@
   </div>
 </template>
 
-<script>
-import Collapse from '~/components/global/Collapse.vue'
+<script setup>
+import { ref, defineProps, computed } from 'vue'
 
-export default {
-  name: 'EmbedFormAsPopupModal',
-  components: { Collapse },
-  props: {
-    form: { type: Object, required: true }
-  },
+const { copy } = useClipboard()
+const crisp = useCrisp()
+const props = defineProps({
+  form: { type: Object, required: true }
+})
 
-  data: () => ({
-    showEmbedFormAsPopupModal: false,
-    embedScriptUrl: 'widgets/embed-min.js',
-    advancedOptions: {
-      hide_title: false,
-      emoji: '💬',
-      position: 'right',
-      bgcolor: '#3B82F6',
-      width: '500'
-    }
-  }),
+const embedScriptUrl = '/widgets/embed-min.js'
+let showEmbedFormAsPopupModal = ref(false)
+let advancedOptions = ref({
+  hide_title: false,
+  emoji: '💬',
+  position: 'right',
+  bgcolor: '#3B82F6',
+  width: '500'
+})
 
-  computed: {
-    hideTitleHelp () {
-      return this.form.hide_title ? 'This option is disabled because the form title is already hidden' : null
-    },
-    shareUrl () {
-      return (this.advancedOptions.hide_title) ? this.form.share_url + '?hide_title=true' : this.form.share_url
-    },
-    embedPopupCode () {
-      const nfData = {
-        formurl: this.shareUrl,
-        emoji: this.advancedOptions.emoji,
-        position: this.advancedOptions.position,
-        bgcolor: this.advancedOptions.bgcolor,
-        width: this.advancedOptions.width
-      }
-      this.previewPopup(nfData)
-      return '<script async data-nf=\'' + JSON.stringify(nfData) + '\' src=\'' + this.asset(this.embedScriptUrl) + '\'></scrip' + 't>'
-    }
-  },
-
-  mounted () {
-    this.advancedOptions.bgcolor = this.form.color
-  },
-
-  methods: {
-    onClose () {
-      this.removePreview()
-      this.$crisp.push(['do', 'chat:show'])
-      this.showEmbedFormAsPopupModal = false
-    },
-    copyToClipboard () {
-      if (process.server) return
-      const str = this.embedPopupCode
-      const el = document.createElement('textarea')
-      el.value = str
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    },
-    removePreview () {
-      if (process.server) return
-      const oldP = document.head.querySelector('#nf-popup-preview')
-      if (oldP) {
-        oldP.remove()
-      }
-      const oldM = document.body.querySelector('.nf-main')
-      if (oldM) {
-        oldM.remove()
-      }
-    },
-    previewPopup (nfData) {
-      if (process.server) return
-      if (!this.showEmbedFormAsPopupModal) {
-        return
-      }
-
-      // Remove old preview, if there
-      this.removePreview()
-
-      // Hide crisp
-      this.$crisp.push(['do', 'chat:hide'])
-
-      // Add new preview
-      const el = document.createElement('script')
-      el.id = 'nf-popup-preview'
-      el.async = true
-      el.src = this.asset(this.embedScriptUrl)
-      el.setAttribute('data-nf', JSON.stringify(nfData))
-      document.head.appendChild(el)
-    }
+let hideTitleHelp = computed(() => {
+  return props.form.hide_title ? 'This option is disabled because the form title is already hidden' : null
+})
+let shareUrl = computed(() => {
+  return (advancedOptions.value.hide_title) ? props.form.share_url + '?hide_title=true' : props.form.share_url
+})
+let embedPopupCode = computed(() => {
+  const nfData = {
+    formurl: shareUrl.value,
+    emoji: advancedOptions.value.emoji,
+    position: advancedOptions.value.position,
+    bgcolor: advancedOptions.value.bgcolor,
+    width: advancedOptions.value.width
   }
+  previewPopup(nfData)
+  return '<script async data-nf=\'' + JSON.stringify(nfData) + '\' src=\'' + embedScriptUrl + '\'></scrip' + 't>'
+})
+
+onMounted(() => {
+  advancedOptions.value.bgcolor = props.form.color
+})
+
+
+const onClose = () => {
+  removePreview()
+  crisp.showChat()
+  showEmbedFormAsPopupModal.value = false
+}
+const copyToClipboard = () => {
+  if (process.server) return
+  copy(embedPopupCode.value)
+  useAlert().success('Copied!')
+}
+const removePreview = () => {
+  if (process.server) return
+  const oldP = document.head.querySelector('#nf-popup-preview')
+  if (oldP) {
+    oldP.remove()
+  }
+  const oldM = document.body.querySelector('.nf-main')
+  if (oldM) {
+    oldM.remove()
+  }
+}
+const previewPopup = (nfData) => {
+  if (process.server) return
+  if (!showEmbedFormAsPopupModal.value) {
+    return
+  }
+
+  // Remove old preview, if there
+  removePreview()
+
+  // Hide crisp
+  crisp.hideChat()
+
+  // Add new preview
+  const el = document.createElement('script')
+  el.id = 'nf-popup-preview'
+  el.async = true
+  el.src = embedScriptUrl
+  el.setAttribute('data-nf', JSON.stringify(nfData))
+  document.head.appendChild(el)
 }
 </script>

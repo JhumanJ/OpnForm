@@ -23,7 +23,14 @@
 <script setup>
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
-const metaTitle = 'Profile'
+
+useOpnSeoMeta({
+  title: 'Profile'
+})
+definePageMeta({
+  middleware: "auth"
+})
+
 let form = useForm({
   name: '',
   email: ''

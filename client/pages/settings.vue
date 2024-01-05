@@ -11,7 +11,7 @@
             <ul class="flex text-gray-500">
               <li>{{ user.email }}</li>
             </ul>
-  
+
             <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
               <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                 <li v-for="(tab, i) in tabsList" :key="i+1" class="mr-6">
@@ -36,15 +36,19 @@
       </div>
     </div>
   </template>
-  
+
   <script setup>
   import { computed } from 'vue'
   import { useAuthStore } from '../stores/auth'
-  
+
   definePageMeta({
     middleware: "auth"
   })
-  
+
+  useOpnSeoMeta({
+    title: 'Settings'
+  })
+
   const authStore = useAuthStore()
   const user = computed(() => authStore.user)
   const tabsList = computed(() => {
@@ -66,22 +70,21 @@
         route: 'settings-account'
       }
     ]
-  
+
     if (user.value.is_subscribed) {
       tabs.splice(1, 0, {
         name: 'Billing',
         route: 'settings-billing'
       })
     }
-  
+
     if (user.value.admin) {
       tabs.push({
         name: 'Admin',
         route: 'settings-admin'
       })
     }
-  
+
     return tabs
   })
   </script>
-  

@@ -3,15 +3,17 @@
 <script>
 import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import SeoMeta from '../../mixins/seo-meta.js'
 
 export default {
   components: { },
   layout: 'default',
   middleware: 'auth',
-  mixins: [SeoMeta],
 
   setup () {
+    useOpnSeoMeta({
+      title: 'Error'
+    })
+
     const authStore = useAuthStore()
     return {
       authenticated : computed(() => authStore.check),
@@ -19,7 +21,6 @@ export default {
   },
 
   data: () => ({
-    metaTitle: 'Error',
   }),
 
   mounted () {
