@@ -28,6 +28,9 @@
 useOpnSeoMeta({
   title: 'Password'
 })
+definePageMeta({
+  middleware: "auth"
+})
 
 let form = useForm({
   password: '',

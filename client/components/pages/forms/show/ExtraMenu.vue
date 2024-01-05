@@ -138,70 +138,51 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import { ref, defineProps, computed } from 'vue'
 import Dropdown from '~/components/global/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
 
-export default {
-  name: 'ExtraMenu',
-  components: { Dropdown, FormTemplateModal },
-  props: {
-    form: { type: Object, required: true },
-    isMainPage: { type: Boolean, required: false, default: false }
-  },
+const { copy } = useClipboard()
+const router = useRouter()
 
-  setup () {
-    const authStore = useAuthStore()
-    const formsStore = useFormsStore()
-    return {
-      formsStore,
-      user: computed(() => authStore.user),
-      useAlert: useAlert()
-    }
-  },
+const props = defineProps({
+  form: { type: Object, required: true },
+  isMainPage: { type: Boolean, required: false, default: false }
+})
 
-  data: () => ({
-    loadingDuplicate: false,
-    loadingDelete: false,
-    showDeleteFormModal: false,
-    showFormTemplateModal: false
-  }),
+const authStore = useAuthStore()
+const formsStore = useFormsStore()
+const formEndpoint = '/open/forms/{id}'
+let user = computed(() => authStore.user)
 
-  computed: {
-    formEndpoint: () => '/open/forms/{id}'
-  },
+let loadingDuplicate = ref(false)
+let loadingDelete = ref(false)
+let showDeleteFormModal = ref(false)
+let showFormTemplateModal = ref(false)
 
-  methods: {
-    copyLink () {
-      const el = document.createElement('textarea')
-      el.value = this.form.share_url
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      this.useAlert.success('Copied!')
-    },
-    duplicateForm () {
-      if (this.loadingDuplicate) return
-      this.loadingDuplicate = true
-      opnFetch(this.formEndpoint.replace('{id}', this.form.id) + '/duplicate',{method: 'POST'}).then((data) => {
-        this.formsStore.save(data.new_form)
-        this.$router.push({ name: 'forms-show', params: { slug: data.new_form.slug } })
-        this.useAlert.success('Form was successfully duplicated.')
-        this.loadingDuplicate = false
-      })
-    },
-    deleteForm () {
-      if (this.loadingDelete) return
-      this.loadingDelete = true
-      opnFetch(this.formEndpoint.replace('{id}', this.form.id),{method:'DELETE'}).then(() => {
-        this.formsStore.remove(this.form)
-        this.$router.push({ name: 'home' })
-        this.useAlert.success('Form was deleted.')
-        this.loadingDelete = false
-      })
-    }
-  }
+const copyLink = () => {
+  copy(props.form.share_url)
+  useAlert().success('Copied!')
+}
+const duplicateForm = () => {
+  if (loadingDuplicate.value) return
+  loadingDuplicate.value = true
+  opnFetch(formEndpoint.replace('{id}', props.form.id) + '/duplicate',{method: 'POST'}).then((data) => {
+    formsStore.save(data.new_form)
+    router.push({ name: 'forms-slug-show', params: { slug: data.new_form.slug } })
+    useAlert().success('Form was successfully duplicated.')
+    loadingDuplicate.value = false
+  })
+}
+const deleteForm = () => {
+  if (loadingDelete.value) return
+  loadingDelete.value = true
+  opnFetch(formEndpoint.replace('{id}', props.form.id),{method:'DELETE'}).then(() => {
+    formsStore.remove(props.form)
+    router.push({ name: 'home' })
+    useAlert().success('Form was deleted.')
+    loadingDelete.value = false
+  })
 }
 </script>

@@ -51,6 +51,9 @@ const form = storeToRefs(workingFormStore).content
 useOpnSeoMeta({
   title: 'Create a new Form for free',
 })
+definePageMeta({
+  middleware: "guest"
+})
 
 // Data
 const stateReady = ref(false)

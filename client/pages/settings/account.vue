@@ -25,6 +25,9 @@ let loading = false
 useOpnSeoMeta({
   title: 'Account'
 })
+definePageMeta({
+  middleware: "auth"
+})
 
 const deleteAccount = () => {
   loading = true

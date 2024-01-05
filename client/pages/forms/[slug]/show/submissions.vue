@@ -14,6 +14,9 @@ export default {
   },
 
   setup (props) {
+    definePageMeta({
+      middleware: "auth"
+    })
     useOpnSeoMeta({
       title: (props.form) ? 'Form Submissions - '+props.form.title : 'Form Submissions'
     })

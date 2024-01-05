@@ -27,6 +27,9 @@ import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
 useOpnSeoMeta({
   title: 'Billing'
 })
+definePageMeta({
+  middleware: "auth"
+})
 
 const authStore = useAuthStore()
 let user = computed(() => authStore.user)
