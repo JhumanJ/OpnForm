@@ -32,7 +32,7 @@ class CustomDomainRequest extends FormRequest
                     $domains = collect($value)->filter(function ($domain) {
                         return !empty( trim($domain) );
                     })->each(function($domain) use (&$errors) {
-                        if (!preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,12}$/', $domain)) {
+                        if (!preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,20}$/', $domain)) {
                             $errors[] = 'Invalid domain: ' . $domain;
                         }
                     });
