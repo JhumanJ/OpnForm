@@ -84,8 +84,8 @@
       </div>
       <div class="w-full md:w-1/2 lg:w-7/12 flex items-center justify-center relative w-full"
            :class="{'md:pr-8':index%2==1, 'md:pl-8':index%2==0}">
-        <img loading="lazy" class="block rounded-2xl w-full"
-             :src="step.img" alt="cover-product">
+        <NuxtImg loading="lazy" class="block rounded-2xl w-full"
+             :src="step.img" alt="cover-product"/>
       </div>
     </div>
 

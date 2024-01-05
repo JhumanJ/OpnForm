@@ -33,9 +33,9 @@
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex flex-col items-center justify-center max-w-4xl gap-8 mx-auto md:gap-12 md:flex-row">
             <div class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group max-w-xs">
-              <img class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110"
+              <NuxtImg class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110"
                    :src="template.image_url" alt="Template cover image"
-              >
+              />
             </div>
 
             <div class="flex-1 text-center md:text-left relative">

@@ -71,7 +71,7 @@
           <div v-if="!field.image_block" class="p-4 border border-dashed">
             Open <b>{{ field.name }}'s</b> block settings to upload image.
           </div>
-          <img v-else :alt="field.name" :src="field.image_block" class="max-w-full">
+          <NuxtImg v-else :alt="field.name" :src="field.image_block" class="max-w-full"/>
         </div>
       </template>
     </div>

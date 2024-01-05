@@ -22,7 +22,7 @@
         </div>
         <div v-else class="h-6 text-gray-600 dark:text-gray-400 flex">
           <div class="flex-grow">
-            <img :src="currentUrl" class="h-6 rounded shadow-md">
+            <NuxtImg :src="currentUrl" class="h-6 rounded shadow-md"/>
           </div>
           <a href="#" class="hover:text-nt-blue flex" @click.prevent="clearUrl">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
