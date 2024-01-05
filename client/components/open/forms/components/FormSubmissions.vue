@@ -101,7 +101,8 @@ export default {
   setup () {
     const workingFormStore = useWorkingFormStore()
     return {
-      workingFormStore
+      workingFormStore,
+      runtimeConfig: useRuntimeConfig()
     }
   },
 
@@ -134,7 +135,7 @@ export default {
       if (!this.form) {
         return ''
       }
-      return '/api/open/forms/' + this.form.id + '/submissions/export'
+      return this.runtimeConfig.public.apiBase + '/open/forms/' + this.form.id + '/submissions/export'
     },
     filteredData () {
       if (!this.tableData) return []

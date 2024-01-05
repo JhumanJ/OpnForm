@@ -206,7 +206,6 @@ export default {
     form () {
       return this.formsStore.getByKey(this.$route.params.slug)
     },
-    formEndpoint: () => '/api/open/forms/{id}',
     loading () {
       return this.formsLoading || this.workspacesLoading
     },
