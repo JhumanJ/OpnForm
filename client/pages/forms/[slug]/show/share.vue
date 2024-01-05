@@ -45,6 +45,9 @@ export default {
   },
 
   setup (props) {
+    definePageMeta({
+      middleware: "auth"
+    })
     useOpnSeoMeta({
       title: (props.form) ? 'Share Form - '+props.form.title : 'Share Form'
     })

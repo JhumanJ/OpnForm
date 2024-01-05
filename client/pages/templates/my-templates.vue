@@ -22,9 +22,11 @@ import TemplatesList from '../../components/pages/templates/TemplatesList.vue'
 
 export default {
   components: { TemplatesList },
-  middleware: 'auth',
 
   setup () {
+    definePageMeta({
+      middleware: "auth"
+    })
     useOpnSeoMeta({
       title: 'My Templates',
       description: 'Our collection of beautiful templates to create your own forms!'

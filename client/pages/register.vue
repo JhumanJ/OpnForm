@@ -76,8 +76,6 @@ export default {
     })
   },
 
-  middleware: 'guest',
-
   data: () => ({
   }),
 

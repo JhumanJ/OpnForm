@@ -126,6 +126,9 @@ let loading = computed(() => workspacesStore.loading)
 useOpnSeoMeta({
   title: 'Workspaces'
 })
+definePageMeta({
+  middleware: "auth"
+})
 
 let form = useForm({
   name: '',

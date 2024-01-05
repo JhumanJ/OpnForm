@@ -493,40 +493,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 
-export default {
-  layout: 'default',
+const authStore = useAuthStore()
 
-  setup () {
-    useOpnSeoMeta({
-      title: 'Free AI form builder',
-      description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
-    })
+useOpnSeoMeta({
+  title: 'Free AI form builder',
+  description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
+})
+defineRouteRules({
+  prerender: true
+})
 
-    const authStore = useAuthStore()
-    defineRouteRules({
-      prerender: true
-    })
-
-    return {
-      authenticated : computed(() => authStore.check),
-    }
-  },
-
-  data: () => ({
-  }),
-
-  mounted() {},
-
-  methods: {},
-
-  computed: {
-    configLinks: () => this.$config.links
-  }
-}
+let authenticated = computed(() => authStore.check)
 </script>
 
 <style lang="scss" scoped>

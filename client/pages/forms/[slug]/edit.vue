@@ -22,7 +22,6 @@ import {hash} from "~/lib/utils.js";
 export default {
   name: 'EditForm',
   components: { Breadcrumb, FormEditor },
-  middleware: 'auth',
 
   beforeRouteLeave (to, from, next) {
     if (this.isDirty()) {
@@ -54,6 +53,9 @@ export default {
 
     useOpnSeoMeta({
       title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
+    })
+    definePageMeta({
+      middleware: "auth"
     })
 
     return {

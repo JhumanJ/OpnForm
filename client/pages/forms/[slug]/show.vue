@@ -141,9 +141,10 @@ export default {
     FormCleanings
   },
 
-  middleware: 'auth',
-
   setup () {
+    definePageMeta({
+      middleware: "auth"
+    })
     useOpnSeoMeta({
       title: 'Home'
     })
