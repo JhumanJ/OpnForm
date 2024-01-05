@@ -126,7 +126,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
             // Custom SEO
             'seo_meta' => 'nullable|array',
-            'custom_domain' => 'sometimes|nullable|regex:/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}$/'
+            'custom_domain' => 'sometimes|nullable|regex:/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,20}$/'
         ];
     }
 

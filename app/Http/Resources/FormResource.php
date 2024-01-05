@@ -50,7 +50,8 @@ class FormResource extends JsonResource
             'notification_settings' => $this->notification_settings,
             'removed_properties' => $this->removed_properties,
             'last_edited_human' => $this->updated_at?->diffForHumans(),
-            'seo_meta' => $this->seo_meta
+            'seo_meta' => $this->seo_meta,
+            'max_file_size' => $this->max_file_size / 1000000,
         ] : [];
 
         $baseData = $this->getFilteredFormData(parent::toArray($request), $this->userIsFormOwner());
