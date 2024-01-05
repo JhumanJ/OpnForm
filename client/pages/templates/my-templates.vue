@@ -13,34 +13,28 @@
       </div>
     </section>
 
-<!--    <templates-list :only-my="true" />-->
+   <templates-list :templates="templates" :loading="loading" :show-types="false" :show-industries="false"/>
   </div>
 </template>
 
-<script>
-import TemplatesList from '../../components/pages/templates/TemplatesList.vue'
+<script setup>
+definePageMeta({
+  middleware: "auth"
+})
 
-export default {
-  components: { TemplatesList },
+useOpnSeoMeta({
+  title: 'My Templates',
+  description: 'Our collection of beautiful templates to create your own forms!'
+})
 
-  setup () {
-    definePageMeta({
-      middleware: "auth"
-    })
-    useOpnSeoMeta({
-      title: 'My Templates',
-      description: 'Our collection of beautiful templates to create your own forms!'
-    })
-  },
+let loading = ref(false)
+let templates = ref([])
 
-  data () {
-    return {}
-  },
-
-  mounted () {},
-
-  computed: {},
-
-  methods: {}
-}
+onMounted(() => {
+  loading.value = true
+  opnFetch('templates',{query: {onlymy: true}}).then((data) => {
+    loading.value = false
+    templates.value = data
+  })
+})
 </script>
