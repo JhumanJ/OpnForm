@@ -60,7 +60,7 @@ class AnswerFormRequest extends FormRequest
                 if(isset($data[$field['id']]) && is_array($data[$field['id']])){
                     $data[$field['id']] = array_map(function ($val) use ($field) {
                         $tmpop = collect($field[$field['type']]['options'])->first(function ($op) use ($val) {
-                            return ($op['id'] === $val);
+                            return ($op['id'] ?? $op['value'] === $val);
                         });
                         return isset($tmpop['name']) ? $tmpop['name'] : "";
                     }, $data[$field['id']]);
