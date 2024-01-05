@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
+        '@nuxt/image'
         // ... opnformConfig.sentry_dsn ? ['@nuxtjs/sentry'] : [],
     ],
     build: {

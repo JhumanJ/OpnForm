@@ -5,12 +5,8 @@
         <div class="flex items-center">
           <NuxtLink :to="{ name: user ? 'home' : 'index' }"
                     class="flex-shrink-0 font-semibold hover:no-underline flex items-center">
-            <img src="/img/logo.svg" alt="notion tools logo" class="w-8 h-8">
-
-            <span
-              class="ml-2 text-md hidden sm:inline text-black dark:text-white"
-            >
-              OpnForm</span>
+            <NuxtImg src="/img/logo.svg" alt="notion tools logo" class="w-8 h-8"/>
+            <span class="ml-2 text-md hidden sm:inline text-black dark:text-white">OpnForm</span>
           </NuxtLink>
           <workspace-dropdown class="ml-6"/>
         </div>
@@ -57,7 +53,7 @@
                             class="flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
                             dusk="nav-dropdown-button" @click.stop="toggle()"
                     >
-                      <img :src="user.photo_url" class="rounded-full w-6 h-6">
+                      <NuxtImg :src="user.photo_url" class="rounded-full w-6 h-6"/>
                       <p class="ml-2 hidden sm:inline">
                         {{ user.name }}
                       </p>

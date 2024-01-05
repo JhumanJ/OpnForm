@@ -40,9 +40,9 @@
             </div>
           </div>
           <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
-            <img loading="lazy" class="w-56"
+            <NuxtImg loading="lazy" class="w-56"
                  src="/img/pages/forms/search_notfound.png" alt="search-not-found"
-            >
+            />
 
             <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">
               No forms found

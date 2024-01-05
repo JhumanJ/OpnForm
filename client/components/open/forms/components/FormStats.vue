@@ -13,10 +13,10 @@
           </p>
         </div>
       </div>
-      <img src="/img/pages/forms/blurred_graph.png"
+      <NuxtImg src="/img/pages/forms/blurred_graph.png"
            alt="Sample Graph"
            class="mx-auto filter blur-md z-0"
-      >
+      />
 
     </div>
     <Loader v-else-if="isLoading" class="h-6 w-6 text-nt-blue mx-auto" />

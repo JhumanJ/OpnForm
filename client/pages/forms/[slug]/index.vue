@@ -3,16 +3,16 @@
     <div v-if="form && !isIframe && (form.logo_picture || form.cover_picture)">
       <div v-if="form.cover_picture">
         <div id="cover-picture" class="max-h-56 w-full overflow-hidden flex items-center justify-center">
-          <img alt="Form Cover Picture" :src="form.cover_picture" class="w-full">
+          <NuxtImg alt="Form Cover Picture" :src="form.cover_picture" class="w-full"/>
         </div>
       </div>
       <div v-if="form.logo_picture" class="w-full p-5 relative mx-auto"
            :class="{'pt-20':!form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }"
       >
-        <img alt="Logo Picture" :src="form.logo_picture"
+        <NuxtImg alt="Logo Picture" :src="form.logo_picture"
              :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
              class="w-20 h-20 object-contain absolute left-5 transition-all"
-        >
+        />
       </div>
     </div>
     <div class="w-full mx-auto px-4"

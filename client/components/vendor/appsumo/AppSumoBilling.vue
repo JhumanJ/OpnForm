@@ -1,9 +1,9 @@
 <template>
   <div v-if="user.active_license" class="border p-5 shadow-md rounded-md">
     <div class="w-auto flex flex-col items-center">
-      <img src="/img/appsumo/as-taco-white-bg.png" class="max-w-[60px]" alt="AppSumo">
+      <NuxtImg src="/img/appsumo/as-taco-white-bg.png" class="max-w-[60px]" alt="AppSumo"/>
 
-      <img src="/img/appsumo/as-Select-dark.png" class="max-w-[150px]" alt="AppSumo">
+      <NuxtImg src="/img/appsumo/as-Select-dark.png" class="max-w-[150px]" alt="AppSumo"/>
 
     </div>
     <p class="mt-6">
