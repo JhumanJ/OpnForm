@@ -52,6 +52,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'logo_picture' => 'url|nullable',
             'dark_mode' => ['required',Rule::in(Form::DARK_MODE_VALUES)],
             'color' => 'required|string',
+            'secondary_color' => 'required|string',
             'hide_title' => 'required|boolean',
             'uppercase_labels' => 'required|boolean',
             'no_branding' => 'required|boolean',
