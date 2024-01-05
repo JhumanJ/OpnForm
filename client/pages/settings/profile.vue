@@ -27,6 +27,9 @@ const user = computed(() => authStore.user)
 useOpnSeoMeta({
   title: 'Profile'
 })
+definePageMeta({
+  middleware: "auth"
+})
 
 let form = useForm({
   name: '',

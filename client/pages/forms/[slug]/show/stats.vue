@@ -18,6 +18,9 @@ export default {
   },
 
   setup (props) {
+    definePageMeta({
+      middleware: "auth"
+    })
     useOpnSeoMeta({
       title: (props.form) ? 'Form Analytics - '+props.form.title : 'Form Analytics'
     })
