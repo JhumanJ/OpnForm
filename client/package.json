@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt build",
+    "build": "nuxt build",
     "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev",
     "generate": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt generate",
     "preview": "nuxt preview",
