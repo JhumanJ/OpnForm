@@ -205,6 +205,7 @@ defineRouteRules({
   prerender: true
 })
 
+const { copy } = useClipboard()
 const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 
@@ -255,13 +256,7 @@ const cleanQuotes = (str) => {
 }
 
 const copyTemplateUrl = () => {
-  const str = template.value.share_url
-  const el = document.createElement('textarea')
-  el.value = str
-  document.body.appendChild(el)
-  el.select()
-  document.execCommand('copy')
-  document.body.removeChild(el)
+  copy(template.value.share_url)
   useAlert().success('Copied!')
 }
 
