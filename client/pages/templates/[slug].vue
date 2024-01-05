@@ -6,9 +6,9 @@
           <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
             Edit Template
           </v-button>
-          <!--          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"-->
-          <!--                               @close="showFormTemplateModal=false"-->
-          <!--          />-->
+          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
+                              @close="showFormTemplateModal=false"
+          />
         </div>
       </template>
       <template #right>
@@ -199,7 +199,8 @@ import {computed} from 'vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import SingleTemplate from '../../components/pages/templates/SingleTemplate.vue'
-import {fetchTemplate} from "~/stores/templates.js";
+import {fetchTemplate} from "~/stores/templates.js"
+import FormTemplateModal from '~/components/open/forms/components/templates/FormTemplateModal.vue'
 
 defineRouteRules({
   prerender: true
@@ -267,7 +268,8 @@ const copyTemplateUrl = () => {
 
 useOpnSeoMeta({
   title: () => {
-    return template ? template.value.name : 'Form Template'
+    if (!template || !template.value) return 'Form Template'
+    return template.value.name
   },
   description () {
     if (!template || !template.value) return null

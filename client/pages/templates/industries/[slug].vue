@@ -23,7 +23,7 @@
       </section>
 
 
-      <templates-list :templates="templates" :filter-industries="false" :show-industrys="false">
+      <templates-list :templates="templates" :filter-industries="false" :show-industries="false">
         <template #before-lists>
           <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
             <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">

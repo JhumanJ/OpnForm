@@ -203,7 +203,7 @@ export default {
       return !this.appStore.navbarHidden
     },
     userOnboarded() {
-      return this.user && this.user.workspaces_count > 0
+      return this.user && this.user.has_forms === true
     },
     hasCrisp() {
       return this.config.crispWebsiteId
