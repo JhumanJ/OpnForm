@@ -203,7 +203,7 @@ import {fetchTemplate} from "~/stores/templates.js"
 import FormTemplateModal from '~/components/open/forms/components/templates/FormTemplateModal.vue'
 
 defineRouteRules({
-  prerender: true
+  prerender: false
 })
 
 const { copy } = useClipboard()
