@@ -4,6 +4,7 @@
 .nuxt
 .nitro
 .cache
+.amplify-hosting
 dist
 
 # Node dependencies

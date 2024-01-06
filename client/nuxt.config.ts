@@ -4,9 +4,7 @@ import opnformConfig from "./opnform.config";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
-    site: {
-        url: opnformConfig.app_url
-    },
+    loglevel: process.env.NUXT_LOG_LEVEL || 'info',
     devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
