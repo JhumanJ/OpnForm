@@ -49,6 +49,9 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
+    image: {
+        dangerouslyAllowSVG: true,
+    },
     sitemap,
     runtimeConfig
 })
