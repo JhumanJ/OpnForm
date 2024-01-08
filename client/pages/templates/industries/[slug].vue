@@ -46,7 +46,7 @@ import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import {loadAllTemplates} from "~/stores/templates.js";
 
 defineRouteRules({
-  prerender: false
+  swr: 3600
 })
 
 const route = useRoute()

@@ -500,7 +500,7 @@ useOpnSeoMeta({
   description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
 })
 defineRouteRules({
-  prerender: false
+  swr: 3600
 })
 
 let authenticated = computed(() => authStore.check)

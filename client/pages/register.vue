@@ -73,7 +73,7 @@ export default {
     })
 
     defineRouteRules({
-      prerender: false
+      swr: 3600
     })
   },
 

@@ -200,7 +200,7 @@ export default {
   setup() {
     const authStore = useAuthStore()
     defineRouteRules({
-      prerender: false
+      swr: 3600
     })
 
     return {

@@ -59,7 +59,7 @@ definePageMeta({
   middleware: "guest"
 })
 defineRouteRules({
-  prerender: false
+  swr: 3600
 })
 useOpnSeoMeta({
   title: 'Login'
