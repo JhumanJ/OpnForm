@@ -52,9 +52,13 @@ export default defineNuxtConfig({
     nitro: {
         awsAmplify: {
             imageSettings: {
-                dangerouslyAllowSVG: true
+                dangerouslyAllowSVG: true,
+                minumumCacheTTL: 120
             }
         }
+    },
+    image: {
+        quality: 90,
     },
     sitemap,
     runtimeConfig
