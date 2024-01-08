@@ -25,6 +25,8 @@ export function getOpnRequestsOptions(request, opts) {
 
   const config = useRuntimeConfig()
 
+  console.log('getOpnRequestsOptions', config, request, opts)
+
   return {
     baseURL: config.public.apiBase,
     onResponseError({response}) {
