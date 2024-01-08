@@ -10,8 +10,6 @@ frontend:
         - touch .env
         - env | grep -e NUXT_LOG_LEVEL >> .env
         - env | grep -e NEXT_PUBLIC_ >> .env
-        - echo "env file created"
-        - cat .env
         - npm run build
   artifacts:
     baseDirectory: client/.amplify-hosting
