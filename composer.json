@@ -1,22 +1,16 @@
 {
-  "name": "humanj/notionforms",
-  "description": "A beautiful form builder for Notion",
+  "name": "jhumanj/opnform",
+  "description": "A beautiful open-source form builder ",
   "keywords": [
-    "notion",
     "form",
     "api",
     "laravel",
     "vue",
+    "nuxt",
     "Tailwind"
   ],
   "license": "MIT",
   "type": "project",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/JhumanJ/laravel-notion-api.git"
-    }
-  ],
   "require": {
     "php": "^8.2",
     "ext-json": "*",
