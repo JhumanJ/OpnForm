@@ -49,8 +49,12 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    image: {
-        dangerouslyAllowSVG: true,
+    nitro: {
+        awsAmplify: {
+            imageSettings: {
+                dangerouslyAllowSVG: true
+            }
+        }
     },
     sitemap,
     runtimeConfig
