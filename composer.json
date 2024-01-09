@@ -1,12 +1,12 @@
 {
-  "name": "humanj/notionforms",
-  "description": "A beautiful form builder for Notion",
+  "name": "jhumanj/opnform",
+  "description": "A beautiful open-source form builder ",
   "keywords": [
-    "notion",
     "form",
     "api",
     "laravel",
     "vue",
+    "nuxt",
     "Tailwind"
   ],
   "license": "MIT",
