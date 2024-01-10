@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class CustomDomainRequest extends FormRequest
 {
+    const CUSTOM_DOMAINS_REGEX = '/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,20}$/';
 
     public Workspace $workspace;
     public array $customDomains = [];
@@ -32,7 +33,7 @@ class CustomDomainRequest extends FormRequest
                     $domains = collect($value)->filter(function ($domain) {
                         return !empty( trim($domain) );
                     })->each(function($domain) use (&$errors) {
-                        if (!preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,20}$/', $domain)) {
+                        if (!preg_match(self::CUSTOM_DOMAINS_REGEX, $domain)) {
                             $errors[] = 'Invalid domain: ' . $domain;
                         }
                     });
