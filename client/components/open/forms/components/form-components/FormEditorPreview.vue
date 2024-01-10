@@ -16,13 +16,13 @@
             <div id="cover-picture"
                  class="max-h-56 rounded-t-lg w-full overflow-hidden flex items-center justify-center"
             >
-              <NuxtImg alt="Cover Picture" :src="coverPictureSrc(form.cover_picture)" class="w-full"/>
+              <img alt="Cover Picture" :src="coverPictureSrc(form.cover_picture)" class="w-full"/>
             </div>
           </div>
           <div v-if="form.logo_picture" class="w-full mx-auto p-5 relative"
                :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered')}"
           >
-            <NuxtImg alt="Logo Picture" :src="coverPictureSrc(form.logo_picture)"
+            <img alt="Logo Picture" :src="coverPictureSrc(form.logo_picture)"
                  :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
                  class="w-20 h-20 object-contain absolute left-5 transition-all"
             />

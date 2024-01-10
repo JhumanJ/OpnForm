@@ -25,7 +25,7 @@
     <div v-else-if="workspace">
       <div class="mt-4 flex group bg-white items-center">
         <div class="flex space-x-4 flex-grow items-center">
-          <NuxtImg v-if="isUrl(workspace.icon)" :src="workspace.icon" :alt="workspace.name + ' icon'"
+          <img v-if="isUrl(workspace.icon)" :src="workspace.icon" :alt="workspace.name + ' icon'"
                class="rounded-full h-12 w-12"
           />
           <div v-else class="rounded-2xl bg-gray-100 h-12 w-12 text-2xl pt-2 text-center overflow-hidden"

@@ -6,7 +6,7 @@
     <template v-if="workspace" #trigger="{toggle}">
       <div class="flex items-center cursor group" role="button" @click.stop="toggle()">
         <div class="rounded-full h-8 8">
-          <NuxtImg v-if="isUrl(workspace.icon)"
+          <img v-if="isUrl(workspace.icon)"
                :src="workspace.icon"
                :alt="workspace.name + ' icon'" class="flex-shrink-0 h-8 w-8 rounded-full shadow"
           />
@@ -26,7 +26,7 @@
          :class="{'bg-blue-100 dark:bg-blue-900':workspace.id === worksp.id}" @click.prevent="switchWorkspace(worksp)"
       >
         <div class="rounded-full h-8 w-8 flex-shrink-0" role="button">
-          <NuxtImg v-if="isUrl(worksp.icon)"
+          <img v-if="isUrl(worksp.icon)"
                :src="worksp.icon"
                :alt="worksp.name + ' icon'" class="flex-shrink-0 h-8 w-8 rounded-full shadow"
           />

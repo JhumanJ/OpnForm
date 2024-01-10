@@ -53,7 +53,7 @@
                             class="flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
                             dusk="nav-dropdown-button" @click.stop="toggle()"
                     >
-                      <NuxtImg :src="user.photo_url" class="rounded-full w-6 h-6"/>
+                      <img :src="user.photo_url" class="rounded-full w-6 h-6"/>
                       <p class="ml-2 hidden sm:inline">
                         {{ user.name }}
                       </p>

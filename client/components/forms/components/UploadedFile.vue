@@ -4,7 +4,7 @@
     :title="file.file.name"
   >
     <div v-if="file.src && !isImageHide" class="h-20 overflow-hidden flex">
-      <NuxtImg class="block object-cover object-center w-full" :src="file.src" @error="isImageHide=true"/>
+      <img class="block object-cover object-center w-full" :src="file.src" @error="isImageHide=true"/>
     </div>
     <div v-else class="h-20 flex items-center justify-center">
       <svg class="w-10 h-10 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

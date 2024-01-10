@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { computed } from 'vue'
 import { useTemplatesStore } from '../../../stores/templates'
 import TemplateTags from './TemplateTags.vue'
 

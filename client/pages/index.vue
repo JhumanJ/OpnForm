@@ -2,7 +2,7 @@
   <div>
     <section class="bg-gradient-to-b relative from-white to-gray-100 py-8 sm:py-16 ">
       <div class="absolute inset-0">
-        <NuxtImg class="w-full h-full object-cover object-top"
+        <img class="w-full h-full object-cover object-top"
              src="/img/pages/ai_form_builder/background-pattern.svg" alt="Page abstract background"
         />
       </div>
