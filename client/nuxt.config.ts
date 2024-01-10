@@ -58,7 +58,7 @@ export default defineNuxtConfig({
         }
     },
     image: {
-        quality: 90,
+        quality: 95,
     },
     sitemap,
     runtimeConfig
