@@ -47,13 +47,13 @@
         <p class="text-gray-500 text-sm">
           Read our <a href="#"
                       @click.prevent="crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')"
-          >custom
-            domain instructions</a> to learn how to use your own domain.
+        >custom domain instructions</a> to learn how to use your own domain.
         </p>
       </template>
 
       <div class="flex flex-wrap justify-between gap-2 mt-4">
-        <v-button v-if="customDomainsEnabled" class="w-full sm:w-auto" :loading="customDomainsLoading" @click="saveChanges">
+        <v-button v-if="customDomainsEnabled" class="w-full sm:w-auto" :loading="customDomainsLoading"
+                  @click="saveChanges">
           <svg class="w-4 h-4 text-white inline mr-1 -mt-1" viewBox="0 0 24 24" fill="none"
                xmlns="http://www.w3.org/2000/svg"
           >
@@ -155,9 +155,9 @@ const saveChanges = () => {
   customDomainsLoading.value = true
   // Update the workspace custom domain
   opnFetch('/open/workspaces/' + workspace.value.id + '/custom-domains', {
-    method:'PUT',
+    method: 'PUT',
     custom_domains: customDomains.split('\n')
-      .map(domain => domain.trim())
+      .map(domain => domain ? domain.trim() : null)
       .filter(domain => domain && domain.length > 0)
   }).then((data) => {
     workspacesStore.addOrUpdate(data)
@@ -180,7 +180,7 @@ const deleteWorkspace = (workspaceId) => {
     return
   }
   useAlert().confirm('Do you really want to delete this workspace? All forms created in this workspace will be removed.', () => {
-    opnFetch('/open/workspaces/' + workspaceId, {method:'DELETE'}).then((data) => {
+    opnFetch('/open/workspaces/' + workspaceId, {method: 'DELETE'}).then((data) => {
       useAlert().success('Workspace successfully removed.')
       workspacesStore.remove(workspaceId)
     })

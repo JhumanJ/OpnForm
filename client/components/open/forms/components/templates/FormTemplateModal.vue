@@ -105,7 +105,12 @@ onMounted(() => {
     related_templates: null,
     questions: []
   })
-  loadAllTemplates(templatesStore)
+})
+
+watch(() => props.show, () => {
+  if (props.show) {
+    loadAllTemplates(templatesStore)
+  }
 })
 
 let typesOptions = computed(() => {
