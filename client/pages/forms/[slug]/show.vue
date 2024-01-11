@@ -20,7 +20,7 @@
                 {{ form.title }}
               </h2>
               <div class="flex">
-                <extra-menu :form="form" />
+                <extra-menu :form="form"/>
 
                 <v-button v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
                           :href="form.share_url" color="white"
@@ -38,7 +38,7 @@
                     />
                   </svg>
                 </v-button>
-                <v-button class="text-white" @click="openEdit">
+                <v-button class="text-white" :to="{name: 'forms-slug-edit', params: {slug: slug}}">
                   <svg class="inline mr-1 -mt-1" width="18" height="17" viewBox="0 0 18 17" fill="none"
                        xmlns="http://www.w3.org/2000/svg"
                   >
@@ -81,25 +81,25 @@
 
             <p v-if="form.closes_at" class="text-yellow-500">
               <span v-if="form.is_closed"> This form stopped accepting submissions on the  {{
-                displayClosesDate
-              }} </span>
+                  displayClosesDate
+                }} </span>
               <span v-else> This form will stop accepting submissions on the {{ displayClosesDate }} </span>
             </p>
             <p v-if="form.max_submissions_count > 0" class="text-yellow-500">
               <span v-if="form.max_number_of_submissions_reached"> The form is now closed because it reached its limit of {{
-                form.max_submissions_count
-              }} submissions. </span>
+                  form.max_submissions_count
+                }} submissions. </span>
               <span v-else> This form will stop accepting submissions after {{ form.max_submissions_count }} submissions. </span>
             </p>
 
-            <form-cleanings class="mt-4" :form="form" />
+            <form-cleanings class="mt-4" :form="form"/>
 
             <div class="border-b border-gray-200 dark:border-gray-700">
               <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                 <li v-for="(tab, i) in tabsList" :key="i+1" class="mr-6">
                   <nuxt-link :to="{ name: tab.route }"
-                               class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                               active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
+                             class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
+                             active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
                   >
                     {{ tab.name }}
                   </nuxt-link>
@@ -118,7 +118,7 @@
       </div>
     </template>
     <div v-else-if="loading" class="text-center w-full p-5">
-      <Loader class="h-6 w-6 mx-auto" />
+      <Loader class="h-6 w-6 mx-auto"/>
     </div>
     <div v-else class="text-center w-full p-5">
       Form not found.
@@ -126,126 +126,74 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import {computed} from 'vue'
 import ProTag from '~/components/global/ProTag.vue'
 import VButton from '~/components/global/VButton.vue'
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
 import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
-export default {
-  name: 'ShowForm',
-  components: {
-    VButton,
-    ProTag,
-    ExtraMenu,
-    FormCleanings
-  },
 
-  setup () {
-    definePageMeta({
-      middleware: "auth"
-    })
-    useOpnSeoMeta({
-      title: 'Home'
-    })
+definePageMeta({
+  middleware: "auth"
+})
+useOpnSeoMeta({
+  title: 'Home'
+})
 
-    const authStore = useAuthStore()
-    const formsStore = useFormsStore()
-    const workingFormStore = useWorkingFormStore()
-    const workspacesStore = useWorkspacesStore()
-    const route = useRoute()
+const authStore = useAuthStore()
+const formsStore = useFormsStore()
+const workingFormStore = useWorkingFormStore()
+const workspacesStore = useWorkspacesStore()
 
-    if (!formsStore.getByKey(route.params.slug)) {
-      formsStore.loadAll(useWorkspacesStore().currentId)
-    }
-    workingFormStore.set(null) // Reset old working form
+const slug = useRoute().params.slug
 
-    return {
-      formsStore,
-      workingFormStore,
-      workspacesStore,
-      user: computed(() => authStore.user),
-      formsLoading: computed(() => formsStore.loading),
-      workspacesLoading: computed(() => workspacesStore.loading)
-    }
-  },
-
-  data () {
-    return {
-      tabsList: [
-        {
-          name: 'Submissions',
-          route: 'forms-slug-show-submissions'
-        },
-        {
-          name: 'Analytics',
-          route: 'forms-slug-show-stats'
-        },
-        {
-          name: 'Share',
-          route: 'forms-slug-show-share'
-        }
-      ]
-    }
-  },
-
-  computed: {
-    workingForm: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
-    workspace () {
-      if (!this.form) return null
-      return this.workspacesStore.getByKey(this.form.workspace_id)
-    },
-    form () {
-      return this.formsStore.getByKey(this.$route.params.slug)
-    },
-    formEndpoint: () => '/api/open/forms/{id}',
-    loading () {
-      return this.formsLoading || this.workspacesLoading
-    },
-    displayClosesDate () {
-      if (this.form.closes_at) {
-        const dateObj = new Date(this.form.closes_at)
-        return dateObj.getFullYear() + '-' +
-          String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-          String(dateObj.getDate()).padStart(2, '0') + ' ' +
-          String(dateObj.getHours()).padStart(2, '0') + ':' +
-          String(dateObj.getMinutes()).padStart(2, '0')
-      }
-      return ''
-    }
-  },
-
-  watch: {
-    form () {
-      this.workingForm = useForm(this.form)
-    }
-  },
-
-  mounted () {
-    if (this.form) {
-      this.workingForm = useForm(this.form)
-    }
-  },
-
-  methods: {
-    openCrisp () {
-      window.$crisp.push(['do', 'chat:show'])
-      window.$crisp.push(['do', 'chat:open'])
-    },
-    goBack () {
-      this.$router.push({ name: 'home' })
-    },
-    openEdit () {
-      this.$router.push({ name: 'forms-slug-edit', params: { slug: this.form.slug } })
-    }
+const user = computed(() => authStore.user)
+const form = computed(() => formsStore.getByKey(slug))
+const workspace = computed(() => workspacesStore.getByKey(form?.value?.workspace_id))
+const loading = computed(() => formsStore.loading || workspacesStore.loading)
+const displayClosesDate = computed(() => {
+  if (form.value && form.value.closes_at) {
+    const dateObj = new Date(form.value.closes_at)
+    return dateObj.getFullYear() + '-' +
+      String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+      String(dateObj.getDate()).padStart(2, '0') + ' ' +
+      String(dateObj.getHours()).padStart(2, '0') + ':' +
+      String(dateObj.getMinutes()).padStart(2, '0')
   }
+  return ''
+})
+
+const tabsList = [
+  {
+    name: 'Submissions',
+    route: 'forms-slug-show-submissions'
+  },
+  {
+    name: 'Analytics',
+    route: 'forms-slug-show-stats'
+  },
+  {
+    name: 'Share',
+    route: 'forms-slug-show-share'
+  }
+]
+
+onMounted(() => {
+  workingFormStore.set(null) // Reset old working form
+  if (form.value) {
+    workingFormStore.set(form.value)
+  } else {
+    formsStore.loadAll(useWorkspacesStore().currentId)
+  }
+})
+
+watch(() => form?.value?.id, (id) => {
+  if (id) {
+    workingFormStore.set(form)
+  }
+})
+
+const goBack = () => {
+  useRouter().push({name: 'home'})
 }
 </script>
