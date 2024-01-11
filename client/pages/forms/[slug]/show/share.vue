@@ -2,20 +2,20 @@
   <div class="mb-20">
 
     <div class="mb-6 pb-6 border-b w-full flex flex-col sm:flex-row gap-2">
-      <regenerate-form-link class="sm:w-1/2 flex" :form="form"/>
+      <regenerate-form-link class="sm:w-1/2 flex" :form="props.form"/>
 
-      <url-form-prefill class="sm:w-1/2" :form="form" :extra-query-param="shareUrlForQueryParams"/>
+      <url-form-prefill class="sm:w-1/2" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
 
-      <embed-form-as-popup-modal class="sm:w-1/2 flex" :form="form"/>
+      <embed-form-as-popup-modal class="sm:w-1/2 flex" :form="props.form"/>
     </div>
 
-    <share-link class="mt-4" :form="form" :extra-query-param="shareUrlForQueryParams"/>
+    <share-link class="mt-4" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
 
-    <embed-code class="mt-6" :form="form" :extra-query-param="shareUrlForQueryParams"/>
+    <embed-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
 
-    <form-qr-code class="mt-6" :form="form" :extra-query-param="shareUrlForQueryParams"/>
+    <form-qr-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
 
-    <advanced-form-url-settings :form="form" v-model="shareFormConfig"/>
+    <advanced-form-url-settings :form="props.form" v-model="shareFormConfig"/>
 
   </div>
 </template>
@@ -29,7 +29,7 @@ import RegenerateFormLink from '../../../../components/pages/forms/show/Regenera
 import AdvancedFormUrlSettings from '../../../../components/open/forms/components/AdvancedFormUrlSettings.vue'
 import EmbedFormAsPopupModal from '../../../../components/pages/forms/show/EmbedFormAsPopupModal.vue'
 
-const props = {form: {type: Object, required: true}}
+const props = defineProps({form: {type: Object, required: true}})
 
 definePageMeta({
   middleware: "auth"
@@ -37,7 +37,6 @@ definePageMeta({
 useOpnSeoMeta({
   title: (props.form) ? 'Share Form - ' + props.form.title : 'Share Form'
 })
-
 
 const shareFormConfig = ref({
   hide_title: false,
