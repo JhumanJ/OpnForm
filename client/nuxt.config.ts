@@ -51,9 +51,12 @@ export default defineNuxtConfig({
     ],
     nitro: {
         awsAmplify: {
+            imageOptimization: {
+                cacheControl: "public, max-age=600, immutable" // 10 minutes
+            },
             imageSettings: {
+                formats: ['image/webp'],
                 dangerouslyAllowSVG: true,
-                minumumCacheTTL: 120
             }
         }
     },

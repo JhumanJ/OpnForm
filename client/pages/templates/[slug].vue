@@ -1,28 +1,28 @@
 <template>
   <div class="flex flex-col min-h-full">
     <breadcrumb :path="breadcrumbs" v-if="template">
-      <template #left>
-        <div v-if="canEditTemplate" class="ml-5">
-          <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
-            Edit Template
+        <template #left>
+          <div v-if="canEditTemplate" class="ml-5">
+            <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
+              Edit Template
+            </v-button>
+            <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
+                                 @close="showFormTemplateModal=false"
+            />
+          </div>
+        </template>
+        <template #right>
+          <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
+                    @click.prevent="copyTemplateUrl"
+          >
+            Copy Template URL
           </v-button>
-          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
-                              @close="showFormTemplateModal=false"
-          />
-        </div>
-      </template>
-      <template #right>
-        <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
-                  @click.prevent="copyTemplateUrl"
-        >
-          Copy Template URL
-        </v-button>
-        <v-button v-track.use_template_button_clicked size="small" class="mr-5"
-                  :to="createFormWithTemplateUrl"
-        >
-          Use this template
-        </v-button>
-      </template>
+          <v-button v-track.use_template_button_clicked size="small" class="mr-5"
+                    :to="createFormWithTemplateUrl"
+          >
+            Use this template
+          </v-button>
+        </template>
     </breadcrumb>
 
     <p v-if="template === null || !template" class="text-center my-4">
@@ -206,7 +206,7 @@ defineRouteRules({
   swr: 3600
 })
 
-const { copy } = useClipboard()
+const {copy} = useClipboard()
 const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 
@@ -266,16 +266,16 @@ useOpnSeoMeta({
     if (!template || !template.value) return 'Form Template'
     return template.value.name
   },
-  description () {
+  description() {
     if (!template || !template.value) return null
     // take the first 140 characters of the description
     return template.value.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
   },
-  ogImage () {
+  ogImage() {
     if (!template || !template.value) return null
     return template.value.image_url
   },
-  robots () {
+  robots() {
     if (!template || !template.value) return null
     return template.value.publicly_listed ? null : 'noindex'
   }
