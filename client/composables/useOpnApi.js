@@ -18,12 +18,17 @@ function addPasswordToFormRequest(request, options) {
 }
 
 export function getOpnRequestsOptions(request, opts) {
+  const config = useRuntimeConfig()
+
   opts.headers = {accept: 'application/json', ...opts.headers}
+
+  // Authenticate requests coming from the server
+  if (process.server && config.apiSecret) {
+    opts.headers['x-api-secret'] = config.apiSecret
+  }
 
   addAuthHeader(request, opts)
   addPasswordToFormRequest(request, opts)
-
-  const config = useRuntimeConfig()
 
   return {
     baseURL: config.public.apiBase,

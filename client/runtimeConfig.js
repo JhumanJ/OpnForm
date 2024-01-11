@@ -13,5 +13,10 @@ export default {
     s3Enabled: process.env.NUXT_PUBLIC_S3_ENABLED || false,
     paidPlansEnabled: process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED || false,
     customDomainsEnabled: process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED || false,
-  }
+  },
+
+  /**
+   * Used to authenticate that the requests are coming from the server - not from a client.
+   */
+  apiSecret: process.env.NUXT_API_SECRET || '',
 }

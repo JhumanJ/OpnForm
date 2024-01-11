@@ -36,6 +36,6 @@ class FailedPaymentNotification extends Notification implements ShouldQueue
             ->line(__('Please go to OpenForm, click on your name on the top right corner, and click on "Billing".
             You will then be able to update your card details. To avoid any service disruption, you can reply to this email whenever
             you updated your card details, and we\'ll manually attempt to charge your card.'))
-            ->action(__('Go to OpenForm'), url('/'));
+            ->action(__('Go to OpenForm'), front_url('/'));
     }
 }

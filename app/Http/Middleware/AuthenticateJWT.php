@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthenticateJWT
 {
+    const API_SERVER_SECRET_HEADER_NAME = 'x-api-secret';
 
     /**
      * Verifies the JWT token and validates the IP and User Agent
@@ -24,6 +25,13 @@ class AuthenticateJWT
 
         // Validate IP and User Agent
         if ($payload) {
+            if ($frontApiSecret = $request->header(self::API_SERVER_SECRET_HEADER_NAME)) {
+                // If it's a trusted SSR request, skip the rest
+                if ($frontApiSecret === config('app.front_api_secret')) {
+                    return $next($request);
+                }
+            }
+
             $error = null;
             if (!\Hash::check($request->ip(), $payload->get('ip'))) {
                 $error = 'Origin IP is invalid';

@@ -13,3 +13,21 @@ export const hash = (str, seed = 0) => {
 
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
+
+export const appUrl = (path = '/') => {
+  let baseUrl = useRuntimeConfig().public.appUrl
+  if (!baseUrl) {
+    console.warn('appUrl not set in runtimeConfig')
+    return path
+  }
+
+  if (path.startsWith('/')) {
+    path = path.substring(1)
+  }
+
+  if (!baseUrl.endsWith('/')) {
+    baseUrl += '/'
+  }
+
+  return baseUrl + path
+}

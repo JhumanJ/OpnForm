@@ -48,7 +48,7 @@ class Template extends Model
 
     public function getShareUrlAttribute()
     {
-        return url('/form-templates/'.$this->slug);
+        return front_url('/form-templates/'.$this->slug);
     }
 
     public function setDescriptionAttribute($value)

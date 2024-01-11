@@ -45,8 +45,8 @@ class SubscriptionController extends Controller
         $checkout = $checkoutBuilder
             ->collectTaxIds()
             ->checkout([
-                'success_url' => url('/subscriptions/success'),
-                'cancel_url' => url('/subscriptions/error'),
+                'success_url' => front_url('/subscriptions/success'),
+                'cancel_url' => front_url('/subscriptions/error'),
                 'billing_address_collection' => 'required',
                 'customer_update' => [
                     'address' => 'auto',

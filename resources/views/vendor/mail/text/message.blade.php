@@ -2,7 +2,7 @@
     {{-- Header --}}
     @slot('header')
         @if (!(isset($noBranding) && $noBranding))
-            @component('mail::header', ['url' => config('app.url')])
+            @component('mail::header', ['url' => front_url()])
                 {{ config('app.name') }}
             @endcomponent
         @endif
