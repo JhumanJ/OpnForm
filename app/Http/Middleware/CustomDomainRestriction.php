@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Models\Workspace;
 use Closure;
@@ -22,7 +23,7 @@ class CustomDomainRestriction
         }
 
         $customDomain = $request->header(self::CUSTOM_DOMAIN_HEADER);
-        if (!preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}$/', $customDomain)) {
+        if (!preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $customDomain)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid domain',
