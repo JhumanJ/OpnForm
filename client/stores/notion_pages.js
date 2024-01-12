@@ -9,8 +9,8 @@ export const useNotionPagesStore = defineStore('notion_pages', () => {
     contentStore.startLoading()
 
     const apiUrl = opnformConfig.notion.worker
-    return useOpnApi(`${apiUrl}/page/${pageId}`)
-      .then(({data})=> {
+    return useFetch(`${apiUrl}/page/${pageId}`)
+      .then(({data, error})=> {
         const val = data.value
         val['id'] = pageId
         contentStore.save(val)

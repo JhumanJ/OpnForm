@@ -103,6 +103,7 @@
 
 <script setup>
 import { ref, defineProps, computed } from 'vue'
+import {appUrl} from "~/lib/utils.js";
 
 const { copy } = useClipboard()
 const crisp = useCrisp()
@@ -135,7 +136,7 @@ let embedPopupCode = computed(() => {
     width: advancedOptions.value.width
   }
   previewPopup(nfData)
-  return '<script async data-nf=\'' + JSON.stringify(nfData) + '\' src=\'' + embedScriptUrl + '\'></scrip' + 't>'
+  return '<script async data-nf=\'' + JSON.stringify(nfData) + '\' src=\'' + appUrl(embedScriptUrl) + '\'></scrip' + 't>'
 })
 
 onMounted(() => {

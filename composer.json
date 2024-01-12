@@ -1,12 +1,12 @@
 {
-  "name": "humanj/notionforms",
-  "description": "A beautiful form builder for Notion",
+  "name": "jhumanj/opnform",
+  "description": "A beautiful open-source form builder ",
   "keywords": [
-    "notion",
     "form",
     "api",
     "laravel",
     "vue",
+    "nuxt",
     "Tailwind"
   ],
   "license": "MIT",
@@ -80,7 +80,10 @@
       "App\\": "app/",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/"
-    }
+    },
+    "files": [
+      "app/helpers.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

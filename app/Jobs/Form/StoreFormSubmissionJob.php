@@ -164,14 +164,14 @@ class StoreFormSubmissionJob implements ShouldQueue
             return null;
         }
 
-        if(filter_var($value, FILTER_VALIDATE_URL) !== FALSE && str_contains($value, parse_url(config('app.url'))['host'])) {  // In case of prefill we have full url so convert to s3
+        if(filter_var($value, FILTER_VALIDATE_URL) !== false && str_contains($value, parse_url(config('app.url'))['host'])) {  // In case of prefill we have full url so convert to s3
             $fileName = basename($value);
             $path = FormController::ASSETS_UPLOAD_PATH . '/' . $fileName;
             $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
             Storage::move($path, $newPath.'/'.$fileName);
             return $fileName;
         }
-        
+
         if($this->isSkipForUpload($value)) {
             return $value;
         }

@@ -4,9 +4,7 @@ import opnformConfig from "./opnform.config";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
-    site: {
-        url: opnformConfig.app_url
-    },
+    loglevel: process.env.NUXT_LOG_LEVEL || 'info',
     devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
@@ -15,8 +13,8 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
-        '@nuxt/image'
-        // ... opnformConfig.sentry_dsn ? ['@nuxtjs/sentry'] : [],
+        '@nuxt/image',
+        ... process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     ],
     build: {
         transpile: ["vue-notion"],
@@ -33,7 +31,7 @@ export default defineNuxtConfig({
         inlineRouteRules: true
     },
     sentry: {
-        dsn: opnformConfig.sentry_dsn,
+        dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
     },
     components: [
         {
@@ -51,6 +49,20 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
+    nitro: {
+        awsAmplify: {
+            imageOptimization: {
+                cacheControl: "public, max-age=600, immutable" // 10 minutes
+            },
+            imageSettings: {
+                formats: ['image/webp'],
+                dangerouslyAllowSVG: true,
+            }
+        }
+    },
+    image: {
+        quality: 95,
+    },
     sitemap,
     runtimeConfig
 })

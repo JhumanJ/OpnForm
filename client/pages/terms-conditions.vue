@@ -19,6 +19,9 @@ import {computed} from "vue";
 useOpnSeoMeta({
   title: 'Terms & Conditions'
 })
+defineRouteRules({
+  swr: 3600
+})
 
 const notionPageStore = useNotionPagesStore()
 await notionPageStore.load('246420da2834480ca04047b0c5a00929')

@@ -3,7 +3,7 @@
     <h3 class="font-semibold text-xl">QR Code</h3>
     <p>Scan the QR code to open the form (Right click to copy the image)</p>
     <div class="flex items-center">
-      <NuxtImg v-if="QrUrl" :src="QrUrl" class="m-auto w-56" />
+      <img v-if="QrUrl" :src="QrUrl" class="m-auto" />
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default {
   },
 
   data () {
-    return { 
+    return {
       QrUrl: null
     }
   },

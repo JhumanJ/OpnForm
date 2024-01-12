@@ -71,8 +71,9 @@ export default {
     definePageMeta({
       middleware: "guest"
     })
+
     defineRouteRules({
-      prerender: true
+      swr: 3600
     })
   },
 

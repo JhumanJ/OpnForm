@@ -14,3 +14,7 @@ export default async (to, from, next) => {
 function getDomain (url) {
   return (new URL(url)).hostname
 }
+
+function isCustomDomain (url) {
+  return getDomain(url) !== getDomain(window.config.app_url)
+}

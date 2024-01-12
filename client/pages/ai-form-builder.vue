@@ -3,7 +3,7 @@
     <!-- START HERO -->
     <section class="bg-gradient-to-b relative from-white to-gray-100 py-12 sm:py-16 lg:py-20 xl:py-24">
         <div class="absolute inset-0">
-          <NuxtImg class="w-full h-full object-cover object-top" src="/img/pages/ai_form_builder/background-pattern.svg" alt=""/>
+          <img class="w-full h-full object-cover object-top" src="/img/pages/ai_form_builder/background-pattern.svg" alt=""/>
 
         </div>
 
@@ -500,7 +500,7 @@ useOpnSeoMeta({
   description: 'Transform your ideas into fully functional forms with OpnForm AI Builder – quick, accurate, and tailored to fit any requirement.'
 })
 defineRouteRules({
-  prerender: true
+  swr: 3600
 })
 
 let authenticated = computed(() => authStore.check)

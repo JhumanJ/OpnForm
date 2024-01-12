@@ -76,8 +76,8 @@
             </div>
 
             <div
-              class="relative px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
-              <NuxtImg class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none"
+              class="relative w-full px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
+              <img class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none w-full"
               src="/img/pages/ai_form_builder/ai-feature-illustration.svg" alt="App screenshot"/>
 
             </div>

@@ -2,8 +2,8 @@
   <div>
     <section class="bg-gradient-to-b relative from-white to-gray-100 py-8 sm:py-16 ">
       <div class="absolute inset-0">
-        <NuxtImg class="w-full h-full object-cover object-top"
-             src="/img/pages/ai_form_builder/background-pattern.svg" alt=""
+        <img class="w-full h-full object-cover object-top"
+             src="/img/pages/ai_form_builder/background-pattern.svg" alt="Page abstract background"
         />
       </div>
 
@@ -86,10 +86,11 @@
           class="w-full mt-12 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center"
         >
           <div
-            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4"
+            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
             <NuxtImg src="/img/pages/welcome/product-cover.jpg"
-                 alt="Product screenshot" loading="lazy" class="rounded-md shadow-2xl ring-1 ring-gray-900/10"
+                     sizes="320px sm:650px lg:896px"
+                 alt="Product screenshot" loading="lazy" class="rounded-md w-full shadow-2xl ring-1 ring-gray-900/10"
             />
           </div>
         </div>
@@ -200,7 +201,7 @@ export default {
   setup() {
     const authStore = useAuthStore()
     defineRouteRules({
-      prerender: true
+      swr: 3600
     })
 
     return {
