@@ -8,12 +8,12 @@
       Tools
     </h3>
     <div class="flex flex-wrap mb-5">
-      <a href="/stats">
+      <a :href="statsUrl" target="_blank">
         <v-button class="mx-1" color="gray" shade="lighter">
           Stats
         </v-button>
       </a>
-      <a href="/horizon">
+      <a :href="horizonUrl" target="_blank">
         <v-button class="mx-1" color="gray" shade="lighter">
           Horizon
         </v-button>
@@ -52,6 +52,10 @@ let form = useForm({
   identifier: ''
 })
 let loading = false
+
+const runtimeConfig = useRuntimeConfig()
+const statsUrl = runtimeConfig.public.apiBase + '/stats'
+const horizonUrl = runtimeConfig.public.apiBase + '/horizon'
 
 const impersonate = () => {
   loading = true

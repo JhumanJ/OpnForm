@@ -95,7 +95,7 @@ export default {
   }),
 
   computed: {
-    formEndpoint: () => '/api/open/forms/{id}',
+    formEndpoint: () => '/open/forms/{id}',
   },
 
   methods: {
