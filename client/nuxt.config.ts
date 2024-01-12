@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
         '@nuxt/image',
-        // ... opnformConfig.sentry_dsn ? ['@nuxtjs/sentry'] : [],
+        ... process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     ],
     build: {
         transpile: ["vue-notion"],

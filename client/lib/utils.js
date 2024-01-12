@@ -47,7 +47,7 @@ export const appUrl = (path = '/') => {
  */
 export const getHost = function () {
   if (process.server) {
-    return useNuxtApp().ssrContext?.event.context.siteConfigNitroOrigin || useNuxtApp().ssrContext?.event.node.req.headers.host
+    return getDomain(useNuxtApp().ssrContext?.event.context.siteConfigNitroOrigin) || useNuxtApp().ssrContext?.event.node.req.headers.host
   } else {
     return window.location.host
   }
@@ -59,6 +59,7 @@ export const getHost = function () {
  * @returns {*}
  */
 export const getDomain = function (url) {
+  if (url.includes('localhost')) return 'localhost'
   return (new URL(url)).hostname
 }
 
@@ -68,7 +69,8 @@ export const getDomain = function (url) {
  */
 export const customDomainUsed = function() {
   const config = useRuntimeConfig()
-  const appUrl = config.public.appUrl
+  const appDomain = getDomain(config.public.appUrl)
+  const host = getHost()
 
-  return getDomain(getHost()) !== getDomain(appUrl)
+  return host !== appDomain && getDomain(host) !== appDomain
 }

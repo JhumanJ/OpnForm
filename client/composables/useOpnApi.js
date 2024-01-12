@@ -42,26 +42,20 @@ export function getOpnRequestsOptions(request, opts) {
 
   return {
     baseURL: config.public.apiBase,
-    onResponseError({response}) {
+    async onResponseError({response}) {
       const authStore = useAuthStore()
-      console.log(response)
+
       const {status} = response
-
       if (status === 401) {
-        if (response.body.error && response.body.error === 'invalid_domain' && process.client) {
-          // If invalid domain, redirect to main domain
-          window.location.href = config.public.appUrl + '?utm_source=failed_custom_domain_redirect'
-          return
-        }
-
         if (authStore.check) {
           console.log("Logging out due to 401")
           authStore.logout()
           useRouter().push({name: 'login'})
         }
-      }
-
-      if (status >= 500) {
+      } else if (status === 420) {
+        // If invalid domain, redirect to main domain
+        window.location.href = config.public.appUrl + '?utm_source=failed_custom_domain_redirect'
+      } else if (status >= 500) {
         console.error('Request error', status)
       }
     },

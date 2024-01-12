@@ -28,7 +28,7 @@ class CustomDomainRestriction
                 'success' => false,
                 'message' => 'Invalid domain',
                 'error' => 'invalid_domain',
-            ], 401);
+            ], 420);
         }
 
         // Check if domain is different from current domain
@@ -43,7 +43,7 @@ class CustomDomainRestriction
                 'success' => false,
                 'message' => 'Unknown domain',
                 'error' => 'invalid_domain',
-            ], 400);
+            ], 420);
         }
 
         Workspace::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspace) {
