@@ -4,7 +4,6 @@ namespace App\Http;
 
 use App\Http\Middleware\AuthenticateJWT;
 use App\Http\Middleware\CustomDomainRestriction;
-use App\Http\Middleware\EmbeddableForms;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsNotSubscribed;
 use App\Http\Middleware\IsSubscribed;
@@ -46,12 +45,10 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            EmbeddableForms::class
         ],
 
         'spa' => [
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            EmbeddableForms::class
         ],
 
         'api' => [
