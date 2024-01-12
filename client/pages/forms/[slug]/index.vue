@@ -132,7 +132,7 @@ useOpnSeoMeta({
     }
     return (form && form.value.cover_picture) ? form.value.cover_picture : null
   },
-  robots () {
+  robots: () => {
     return (form && form.value.can_be_indexed) ? null : 'noindex, nofollow'
   }
 })

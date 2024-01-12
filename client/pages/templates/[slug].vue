@@ -275,7 +275,7 @@ useOpnSeoMeta({
     if (!template || !template.value) return null
     return template.value.image_url
   },
-  robots() {
+  robots: () => {
     if (!template || !template.value) return null
     return template.value.publicly_listed ? null : 'noindex'
   }
