@@ -1,4 +1,3 @@
-
 export const hash = (str, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -14,6 +13,15 @@ export const hash = (str, seed = 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
+/*
+ * Url and domain related utils
+ */
+
+/**
+ * Returns the appUrl with the given path appended.
+ * @param path
+ * @returns {string}
+ */
 export const appUrl = (path = '/') => {
   let baseUrl = useRuntimeConfig().public.appUrl
   if (!baseUrl) {
@@ -30,4 +38,37 @@ export const appUrl = (path = '/') => {
   }
 
   return baseUrl + path
+}
+
+/**
+ * SSR compatible function to get current host
+ * @param path
+ * @returns {string}
+ */
+export const getHost = function () {
+  if (process.server) {
+    return useNuxtApp().ssrContext?.event.context.siteConfigNitroOrigin || useNuxtApp().ssrContext?.event.node.req.headers.host
+  } else {
+    return window.location.host
+  }
+}
+
+/**
+ * Extract domain from url
+ * @param url
+ * @returns {*}
+ */
+export const getDomain = function (url) {
+  return (new URL(url)).hostname
+}
+
+/**
+ * Returns true if the app is running on a custom domain, false otherwise.
+ * @returns {boolean}
+ */
+export const customDomainUsed = function() {
+  const config = useRuntimeConfig()
+  const appUrl = config.public.appUrl
+
+  return getDomain(getHost()) !== getDomain(appUrl)
 }

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CustomDomainRestriction
 {
-    const CUSTOM_DOMAIN_HEADER = "User-Custom-Domain";
+    const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
 
     /**
      * Handle an incoming request.
@@ -27,7 +27,8 @@ class CustomDomainRestriction
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid domain',
-            ], 400);
+                'error' => 'invalid_domain',
+            ], 401);
         }
 
         // Check if domain is different from current domain
@@ -41,6 +42,7 @@ class CustomDomainRestriction
             return response()->json([
                 'success' => false,
                 'message' => 'Unknown domain',
+                'error' => 'invalid_domain',
             ], 400);
         }
 
