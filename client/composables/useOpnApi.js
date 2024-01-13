@@ -47,8 +47,9 @@ export function getOpnRequestsOptions(request, opts) {
   addPasswordToFormRequest(request, opts)
   addCustomDomainHeader(request, opts)
 
+  if (!opts.baseURL) opts.baseURL = config.public.apiBase
+
   return {
-    baseURL: config.public.apiBase,
     async onResponseError({response}) {
       const authStore = useAuthStore()
 

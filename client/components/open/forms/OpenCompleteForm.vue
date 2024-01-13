@@ -117,6 +117,7 @@ import VButton from '~/components/global/VButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
+import clonedeep from "clone-deep";
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
@@ -176,29 +177,24 @@ export default {
       this.loading = true
       // this.closeAlert()
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
-        this.$logEvent('form_submission', {
+        useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
         })
 
-        if (this.isIframe) {
-          window.parent.postMessage({
-            type: 'form-submitted',
-            form: {
-              slug: this.form.slug,
-              id: this.form.id
-            },
-            submission_data: form.data()
-          }, '*')
-        }
-        window.postMessage({
+        const payload = clonedeep({
           type: 'form-submitted',
           form: {
             slug: this.form.slug,
             id: this.form.id
           },
           submission_data: form.data()
-        }, '*')
+        })
+
+        if (this.isIframe) {
+          window.parent.postMessage(payload, '*')
+        }
+        window.postMessage(payload, '*')
 
         try {
           this.pendingSubmission.remove()
@@ -221,7 +217,7 @@ export default {
           this.confetti.play()
         }
       }).catch((error) => {
-        console.log('here')
+        console.error(error)
         if (error.response && error.data && error.data.message) {
           useAlert().error(error.data.message)
         }

@@ -57,7 +57,7 @@ export default {
     },
     redirectIfSubscribed () {
       if (this.user.is_subscribed) {
-        this.$logEvent('subscribed', { plan: this.user.has_enterprise_subscription ? 'enterprise' : 'pro' })
+        useAmplitude().logEvent('subscribed', { plan: this.user.has_enterprise_subscription ? 'enterprise' : 'pro' })
         this.$crisp.push(['set', 'session:event', [[['subscribed', { plan: this.user.has_enterprise_subscription ? 'enterprise' : 'pro' }, 'blue']]]])
         this.$router.push({ name: 'home' })
 

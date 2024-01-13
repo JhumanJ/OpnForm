@@ -86,7 +86,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
-            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])->name('submissions.file');
+            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
+                ->middleware('signed')
+                ->withoutMiddleware(['auth:api'])
+                ->name('submissions.file');
 
             Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
 

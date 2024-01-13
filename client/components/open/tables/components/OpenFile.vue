@@ -1,20 +1,20 @@
 <template>
   <p class="text-xs">
-    <span v-for="file in value" :key="file.file_url"
+    <span v-for="file in parsedFiles" :key="file.file_url"
           class="whitespace-nowrap rounded-md transition-colors hover:decoration-none"
-          :class="{'open-file text-gray-700 dark:text-gray-300 truncate':!isImage(file.file_url), 'open-file-img':isImage(file.file_url)}"
+          :class="{'open-file text-gray-700 dark:text-gray-300 truncate':!file.is_image, 'open-file-img':file.is_image}"
     >
       <a class="text-gray-700 dark:text-gray-300" :href="file.file_url" target="_blank"
          rel="nofollow"
       >
-  <div v-if="isImage(file.file_url)" class="w-8 h-8">
-    <img class="object-cover h-full w-full rounded" :src="file.file_url"/>
+  <div v-if="file.is_image" class="w-8 h-8">
+    <img class="object-cover h-full w-full rounded" :src="file.file_url" @error="failedImages.push(file.file_url)"/>
   </div>
   <span v-else
         class="py-1 px-2"
   >
-          <a :href="file.file_url" target="_blank" download>{{ displayedFileName(file.file_name) }}</a>
-        </span>
+      <a :href="file.file_url" target="_blank" download>{{ file.displayed_file_name }}</a>
+    </span>
   </a>
   </span>
   </p>
@@ -31,25 +31,36 @@ export default {
   },
 
   data() {
-    return {}
+    return {
+      failedImages: []
+    }
   },
 
-  computed: {},
-  mounted() {
+  computed: {
+    parsedFiles() {
+      return this.value.map((file) => {
+        return {
+          file_name: file.file_name,
+          file_url: file.file_url,
+          displayed_file_name: this.displayedFileName(file.file_name),
+          is_image: !this.failedImages.includes(file.file_url) && this.isImage(file.file_name)
+        }
+      })
+    }
   },
 
   methods: {
-    isImage(url) {
+    isImage(fileName) {
       return ['png', 'gif', 'jpg', 'jpeg', 'tif'].some((suffix) => {
-        return url && url.endsWith(suffix)
+        return fileName && fileName.endsWith(suffix)
       })
     },
     displayedFileName(fileName) {
       const extension = fileName.substr(fileName.lastIndexOf(".") + 1)
       const filename = fileName.substr(0, fileName.lastIndexOf("."))
 
-      if (filename.length > 12) {
-        return filename.substr(0, 12) + '(...).' + extension
+      if (filename.length > 10) {
+        return filename.substr(0, 10) + '[...].' + extension
       }
       return filename + '.' + extension
     }

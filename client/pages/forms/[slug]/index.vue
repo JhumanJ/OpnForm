@@ -138,7 +138,7 @@ useOpnSeoMeta({
 })
 useHead({
   titleTemplate: (titleChunk) => {
-    if (form && form.value.is_pro && form.value.seo_meta.page_title) {
+    if (form && form.value?.is_pro && form.value?.seo_meta.page_title) {
       // Disable template if custom SEO title
       return titleChunk
     }

@@ -50,7 +50,11 @@ class FormSubmissionResource extends JsonResource
                     return $file !== null && $file;
                 })->map(function ($file) {
                     return [
-                        'file_url' => route('open.forms.submissions.file', [$this->form_id, $file]),
+                        'file_url' => \URL::signedRoute(
+                            'open.forms.submissions.file',
+                            [$this->form_id, $file],
+                            now()->addMinutes(10)
+                        ),
                         'file_name' => $file,
                     ];
                 });
