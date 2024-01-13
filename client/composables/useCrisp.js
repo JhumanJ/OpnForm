@@ -58,7 +58,7 @@ export const useCrisp = () => {
     });
 
     if (user?.is_subscribed ?? false) {
-      setSegments([['subscribed', user?.has_enterprise_subscription ? 'enterprise' : 'pro']])
+      setSegments(['subscribed', user?.has_enterprise_subscription ? 'enterprise' : 'pro'])
     }
   }
 

@@ -6,9 +6,6 @@ export const storeFile = async (file, options = {}) => {
     formData.append('file', file)
     const response = await useOpnApi('/upload-file', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
       body: formData
     })
     response.data.extension = file.name.split('.').pop()
@@ -26,7 +23,8 @@ export const storeFile = async (file, options = {}) => {
     headers: options.headers || {},
     ...options.options
   })
-  console.log("response.data",response.data)
+
+  console.log(response)
 
   const headers = response.data.headers
 
@@ -38,17 +36,11 @@ export const storeFile = async (file, options = {}) => {
     options.progress = () => {}
   }
 
-  const cancelToken = options.cancelToken || ''
-
-  // Remove authorization headers
-  const cleanAxios = axios.create()
-  cleanAxios.defaults.headers.common = {}
-  await cleanAxios.put(response.data.url, file, {
-    cancelToken: cancelToken,
+  // Upload to S3
+  await useFetch(response.data.url,{
+    method: 'PUT',
+    body: file,
     headers: headers,
-    onUploadProgress: (progressEvent) => {
-      options.progress(progressEvent.loaded / progressEvent.total)
-    }
   })
 
   response.data.extension = file.name.split('.').pop()

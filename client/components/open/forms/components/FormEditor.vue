@@ -221,7 +221,6 @@ export default {
   methods: {
     displayFormModificationAlert (responseData) {
       const alert = useAlert()
-      console.log("in okd ----.", responseData)
       if (responseData.form && responseData.form.cleanings && Object.keys(responseData.form.cleanings).length > 0) {
         alert.warning(responseData.message)
       } else if (responseData.message) {

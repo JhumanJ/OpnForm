@@ -181,8 +181,6 @@ Route::prefix('templates')->group(function () {
     Route::delete('/{id}', [TemplateController::class, 'destroy'])->name('templates.destroy');
 });
 
-
-
 Route::post(
     '/stripe/webhook',
     [\App\Http\Controllers\Webhook\StripeController::class, 'handleWebhook']

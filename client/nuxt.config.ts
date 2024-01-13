@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     },
     sentry: {
         dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
+        lazy: true,
     },
     components: [
         {

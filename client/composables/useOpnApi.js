@@ -9,7 +9,7 @@ function addAuthHeader(request, options) {
 
 function addPasswordToFormRequest(request, options) {
   const url = request.url
-  if (!url || !url.startsWith('/api/forms/')) return
+  if (!url || !url.startsWith('/forms/')) return
 
   const slug = url.split('/')[3]
   const passwordCookie = useCookie('password-' + slug, {maxAge: 60 * 60 * 24 * 30}) // 30 days
@@ -28,6 +28,13 @@ function addCustomDomainHeader(request, options) {
 
 export function getOpnRequestsOptions(request, opts) {
   const config = useRuntimeConfig()
+
+  if (opts.body && opts.body instanceof FormData) {
+    opts.headers = {
+      'charset': 'utf-8',
+      ...opts.headers,
+    }
+  }
 
   opts.headers = {accept: 'application/json', ...opts.headers}
 
