@@ -34,10 +34,16 @@
 
 <script>
 export default {
-  middleware: 'guest',
+  setup () {
+    definePageMeta({
+      middleware: "guest"
+    })
+    useOpnSeoMeta({
+      title: 'Reset Password'
+    })
+  },
 
   data: () => ({
-    metaTitle: 'Reset Password',
     status: '',
     form: useForm({
       token: '',
@@ -54,7 +60,7 @@ export default {
 
   methods: {
     async reset () {
-      const { data } = await this.form.post('/api/password/reset')
+      const { data } = await this.form.post('/password/reset')
 
       this.status = data.status
 

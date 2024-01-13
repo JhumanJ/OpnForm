@@ -3,7 +3,7 @@
     <breadcrumb :path="breadcrumbs"/>
 
     <p v-if="industry === null || !industry" class="text-center my-4">
-      We could not find this type.
+      We could not find this industry.
     </p>
     <template v-else>
       <section class="py-12 sm:py-16 bg-gray-50 border-b border-gray-200">
@@ -23,7 +23,7 @@
       </section>
 
 
-      <templates-list :templates="templates" :filter-industries="false" :show-types="false">
+      <templates-list :templates="templates" :filter-industries="false" :show-industries="false">
         <template #before-lists>
           <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
             <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
@@ -46,7 +46,7 @@ import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import {loadAllTemplates} from "~/stores/templates.js";
 
 defineRouteRules({
-  prerender: true
+  swr: 3600
 })
 
 const route = useRoute()
@@ -69,6 +69,29 @@ const breadcrumbs = computed(() => {
 })
 
 const industry = computed(() => templatesStore.industries.get(route.params.slug))
+
+useOpnSeoMeta({
+  title: () => {
+    if (!industry.value) return 'Form Templates'
+    if (industry.value.meta_title.length > 60) {
+      return industry.value.meta_title
+    }
+    return industry.value.meta_title
+  },
+  description: () => industry.value ? industry.value.meta_description: 'Our collection of beautiful templates to create your own forms!'
+})
+useHead({
+  titleTemplate: (titleChunk) => {
+    // Disable title template for longer titles
+    if (industry.value
+      && industry.value.meta_title.length < 60
+      && !industry.value.meta_title.toLowerCase().includes('opnform')
+    ) {
+      return titleChunk ? `${titleChunk} - OpnForm` : 'Form Templates - OpnForm'
+    }
+    return titleChunk ? titleChunk : 'Form Templates - OpnForm'
+  }
+})
 
 </script>
 

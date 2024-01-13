@@ -51,7 +51,7 @@
       </div>
       <component :is="getFieldComponents" v-if="getFieldComponents"
                  v-bind="inputProperties(field)" :required="isFieldRequired"
-                 :disabled="isFieldDisabled?true:null"
+                 :disabled="isFieldDisabled"
       />
       <template v-else>
         <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
@@ -79,10 +79,9 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useWorkingFormStore } from '../../../stores/working_form'
 import FormLogicPropertyResolver from '../../../forms/FormLogicPropertyResolver.js'
 import FormPendingSubmissionKey from '../../../mixins/forms/form-pending-submission-key.js'
+import { mapState } from 'vuex'
 
 export default {
   name: 'OpenFormField',
@@ -115,21 +114,15 @@ export default {
     },
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
-
-  setup () {
-    const workingFormStore = useWorkingFormStore()
-    return {
-      workingFormStore,
-      selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
-      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar)
-    }
-  },
-
   data () {
     return {}
   },
 
   computed: {
+    ...mapState({
+      selectedFieldIndex: state => state['open/working_form'].selectedFieldIndex,
+      showEditFieldSidebar: state => state['open/working_form'].showEditFieldSidebar
+    }),
     fieldComponents () {
       return {
         text: 'TextInput',
@@ -222,10 +215,10 @@ export default {
 
   methods: {
     editFieldOptions () {
-      this.workingFormStore.openSettingsForField(this.field)
+      this.$store.commit('open/working_form/openSettingsForField', this.field)
     },
     openAddFieldSidebar () {
-      this.workingFormStore.openAddFieldSidebar(this.field)
+      this.$store.commit('open/working_form/openAddFieldSidebar', this.field)
     },
     /**
      * Get the right input component for the field/options combination
@@ -309,7 +302,7 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = 5
+        inputProperties.mbLimit = this.form.max_file_size
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)

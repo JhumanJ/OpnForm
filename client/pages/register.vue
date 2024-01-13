@@ -64,18 +64,20 @@ export default {
   },
 
   setup() {
+    useOpnSeoMeta({
+      title: 'Register'
+    })
+
     definePageMeta({
       middleware: "guest"
     })
+
     defineRouteRules({
-      prerender: true
+      swr: 3600
     })
   },
 
-  middleware: 'guest',
-
   data: () => ({
-    metaTitle: 'Register'
   }),
 
   computed: {},

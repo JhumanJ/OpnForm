@@ -8,7 +8,7 @@
          rel="nofollow"
       >
   <div v-if="isImage(file.file_url)" class="w-8 h-8">
-    <img class="object-cover h-full w-full rounded" :src="file.file_url">
+    <img class="object-cover h-full w-full rounded" :src="file.file_url"/>
   </div>
   <span v-else
         class="py-1 px-2"

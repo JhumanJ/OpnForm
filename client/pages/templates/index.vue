@@ -23,13 +23,13 @@
 import {loadAllTemplates} from "~/stores/templates.js";
 
 defineRouteRules({
-  prerender: true
+  swr: 3600
 })
 
-// props: {
-//   metaTitle: { type: String, default: 'Templates' },
-//   metaDescription: { type: String, default: 'Our collection of beautiful templates to create your own forms!' }
-// },
+useOpnSeoMeta({
+  title: 'Form Templates',
+  description: 'Our collection of beautiful templates to create your own forms!'
+})
 
 const templatesStore = useTemplatesStore()
 loadAllTemplates(templatesStore)

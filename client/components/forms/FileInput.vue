@@ -116,6 +116,7 @@ export default {
       return this.accept
         .split(',')
         .map((i) => {
+          if (!i) return null
           return '.' + i.trim()
         })
         .join(',')

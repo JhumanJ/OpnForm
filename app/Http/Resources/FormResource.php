@@ -50,12 +50,10 @@ class FormResource extends JsonResource
             'notification_settings' => $this->notification_settings,
             'removed_properties' => $this->removed_properties,
             'last_edited_human' => $this->updated_at?->diffForHumans(),
-            'seo_meta' => $this->seo_meta
+            'seo_meta' => $this->seo_meta,
         ] : [];
 
-        $baseData = $this->getFilteredFormData(parent::toArray($request), $this->userIsFormOwner());
-
-        return array_merge($baseData, $ownerData, [
+        return array_merge(parent::toArray($request), $ownerData, [
             'is_pro' => $this->workspaceIsPro(),
             'workspace_id' => $this->workspace_id,
             'workspace' => new WorkspaceResource($this->getWorkspace()),
@@ -63,30 +61,9 @@ class FormResource extends JsonResource
             'is_password_protected' => false,
             'has_password' => $this->has_password,
             'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached,
-            'form_pending_submission_key' => $this->form_pending_submission_key
+            'form_pending_submission_key' => $this->form_pending_submission_key,
+            'max_file_size' => $this->max_file_size / 1000000,
         ]);
-    }
-
-    /**
-     * Filter form data to hide properties from users.
-     * - For relation fields, hides the relation information
-     */
-    private function getFilteredFormData(array $data, bool $userIsFormOwner)
-    {
-        if ($userIsFormOwner) return $data;
-
-        $properties = collect($data['properties'])->map(function($property){
-            // Remove database details from relation
-            if ($property['type'] === 'relation') {
-                if (isset($property['relation'])) {
-                    unset($property['relation']);
-                }
-            }
-            return $property;
-        });
-
-        $data['properties'] = $properties->toArray();
-        return $data;
     }
 
     public function setCleanings(array $cleanings)

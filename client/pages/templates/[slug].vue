@@ -1,28 +1,28 @@
 <template>
   <div class="flex flex-col min-h-full">
     <breadcrumb :path="breadcrumbs" v-if="template">
-      <template #left>
-        <div v-if="canEditTemplate" class="ml-5">
-          <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
-            Edit Template
+        <template #left>
+          <div v-if="canEditTemplate" class="ml-5">
+            <v-button color="gray" size="small" @click.prevent="showFormTemplateModal=true">
+              Edit Template
+            </v-button>
+            <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"
+                                 @close="showFormTemplateModal=false"
+            />
+          </div>
+        </template>
+        <template #right>
+          <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
+                    @click.prevent="copyTemplateUrl"
+          >
+            Copy Template URL
           </v-button>
-          <!--          <form-template-modal v-if="form" :form="form" :template="template" :show="showFormTemplateModal"-->
-          <!--                               @close="showFormTemplateModal=false"-->
-          <!--          />-->
-        </div>
-      </template>
-      <template #right>
-        <v-button v-if="canEditTemplate" v-track.copy_template_button_clicked size="small" color="white" class="mr-5"
-                  @click.prevent="copyTemplateUrl"
-        >
-          Copy Template URL
-        </v-button>
-        <v-button v-track.use_template_button_clicked size="small" class="mr-5"
-                  :to="createFormWithTemplateUrl"
-        >
-          Use this template
-        </v-button>
-      </template>
+          <v-button v-track.use_template_button_clicked size="small" class="mr-5"
+                    :to="createFormWithTemplateUrl"
+          >
+            Use this template
+          </v-button>
+        </template>
     </breadcrumb>
 
     <p v-if="template === null || !template" class="text-center my-4">
@@ -35,7 +35,7 @@
             <div class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group max-w-xs">
               <img class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110"
                    :src="template.image_url" alt="Template cover image"
-              >
+              />
             </div>
 
             <div class="flex-1 text-center md:text-left relative">
@@ -199,12 +199,14 @@ import {computed} from 'vue'
 import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
 import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import SingleTemplate from '../../components/pages/templates/SingleTemplate.vue'
-import {fetchTemplate} from "~/stores/templates.js";
+import {fetchTemplate} from "~/stores/templates.js"
+import FormTemplateModal from '~/components/open/forms/components/templates/FormTemplateModal.vue'
 
 defineRouteRules({
-  prerender: true
+  swr: 3600
 })
 
+const {copy} = useClipboard()
 const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 
@@ -255,34 +257,29 @@ const cleanQuotes = (str) => {
 }
 
 const copyTemplateUrl = () => {
-  const str = template.value.share_url
-  const el = document.createElement('textarea')
-  el.value = str
-  document.body.appendChild(el)
-  el.select()
-  document.execCommand('copy')
-  document.body.removeChild(el)
+  copy(template.value.share_url)
   useAlert().success('Copied!')
 }
 
-// metaTitle() {
-//   return this.template ? this.template.name : 'Form Template'
-// },
-// metaDescription() {
-//   if (!this.template) return null
-//   // take the first 140 characters of the description
-//   return this.template.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
-// },
-// metaImage() {
-//   if (!this.template) return null
-//   return this.template.image_url
-// },
-// metaTags() {
-//   if (!this.template) {
-//     return [];
-//   }
-//   return this.template.publicly_listed ? [] : [{name: 'robots', content: 'noindex'}]
-// },
+useOpnSeoMeta({
+  title: () => {
+    if (!template || !template.value) return 'Form Template'
+    return template.value.name
+  },
+  description() {
+    if (!template || !template.value) return null
+    // take the first 140 characters of the description
+    return template.value.short_description?.substring(0, 140) + '... | Customize any template and create your own form in minutes.'
+  },
+  ogImage() {
+    if (!template || !template.value) return null
+    return template.value.image_url
+  },
+  robots: () => {
+    if (!template || !template.value) return null
+    return template.value.publicly_listed ? null : 'noindex'
+  }
+})
 </script>
 
 <style lang='scss'>

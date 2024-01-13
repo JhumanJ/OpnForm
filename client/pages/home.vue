@@ -40,9 +40,9 @@
             </div>
           </div>
           <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
-            <img loading="lazy" class="w-56"
+            <NuxtImg class="w-56"
                  src="/img/pages/forms/search_notfound.png" alt="search-not-found"
-            >
+            />
 
             <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">
               No forms found
@@ -125,11 +125,10 @@ definePageMeta({
   middleware: "auth"
 })
 
-// metaTitle: {type: String, default: 'Your Forms'},
-// metaDescription: {
-//   type: String,
-//   default: 'All of your OpnForm are here. Create new forms, or update your existing one!'
-// }
+useOpnSeoMeta({
+  title: 'Your Forms',
+  description: 'All of your OpnForm are here. Create new forms, or update your existing forms.'
+})
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()

@@ -19,7 +19,7 @@
     <div class="aspect-[4/3] rounded-lg shadow-sm overflow-hidden">
       <img class="group-hover:scale-110 transition-all duration-200 h-full object-cover w-full"
            :src="template.image_url" alt=""
-      >
+      />
     </div>
     <p
       class="text-lg font-semibold leading-tight tracking-tight text-gray-900 mt-4 group-hover:text-blue-500 transition-all duration-150"

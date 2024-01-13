@@ -1,4 +1,3 @@
-
 export const hash = (str, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -14,7 +13,64 @@ export const hash = (str, seed = 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
-export const asset = (path) => {
-  const assetUrl = import.meta.env.VITE_VAPOR_ASSET_URL ? import.meta.env.VITE_VAPOR_ASSET_URL : ''
-  return assetUrl + '/' + path
+/*
+ * Url and domain related utils
+ */
+
+/**
+ * Returns the appUrl with the given path appended.
+ * @param path
+ * @returns {string}
+ */
+export const appUrl = (path = '/') => {
+  let baseUrl = useRuntimeConfig().public.appUrl
+  if (!baseUrl) {
+    console.warn('appUrl not set in runtimeConfig')
+    return path
+  }
+
+  if (path.startsWith('/')) {
+    path = path.substring(1)
+  }
+
+  if (!baseUrl.endsWith('/')) {
+    baseUrl += '/'
+  }
+
+  return baseUrl + path
+}
+
+/**
+ * SSR compatible function to get current host
+ * @param path
+ * @returns {string}
+ */
+export const getHost = function () {
+  if (process.server) {
+    return getDomain(useNuxtApp().ssrContext?.event.context.siteConfigNitroOrigin) || useNuxtApp().ssrContext?.event.node.req.headers.host
+  } else {
+    return window.location.host
+  }
+}
+
+/**
+ * Extract domain from url
+ * @param url
+ * @returns {*}
+ */
+export const getDomain = function (url) {
+  if (url.includes('localhost')) return 'localhost'
+  return (new URL(url)).hostname
+}
+
+/**
+ * Returns true if the app is running on a custom domain, false otherwise.
+ * @returns {boolean}
+ */
+export const customDomainUsed = function() {
+  const config = useRuntimeConfig()
+  const appDomain = getDomain(config.public.appUrl)
+  const host = getHost()
+
+  return host !== appDomain && getDomain(host) !== appDomain
 }

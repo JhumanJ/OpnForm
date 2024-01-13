@@ -3,8 +3,8 @@
     <section class="bg-gradient-to-b relative from-white to-gray-100 py-8 sm:py-16 ">
       <div class="absolute inset-0">
         <img class="w-full h-full object-cover object-top"
-             src="/img/pages/ai_form_builder/background-pattern.svg" alt=""
-        >
+             src="/img/pages/ai_form_builder/background-pattern.svg" alt="Page abstract background"
+        />
       </div>
 
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72">
@@ -86,11 +86,12 @@
           class="w-full mt-12 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center"
         >
           <div
-            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4"
+            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
-            <img src="/img/pages/welcome/product-cover.jpg"
-                 alt="Product screenshot" loading="lazy" class="rounded-md shadow-2xl ring-1 ring-gray-900/10"
-            >
+            <NuxtImg src="/img/pages/welcome/product-cover.jpg"
+                     sizes="320px sm:650px lg:896px"
+                 alt="Product screenshot" loading="lazy" class="rounded-md w-full shadow-2xl ring-1 ring-gray-900/10"
+            />
           </div>
         </div>
       </div>
@@ -191,18 +192,16 @@ import PricingTable from '../components/pages/pricing/PricingTable.vue'
 import AiFeature from '~/components/pages/welcome/AiFeature.vue'
 import Testimonials from '../components/pages/welcome/Testimonials.vue'
 import TemplatesSlider from '../components/pages/welcome/TemplatesSlider.vue'
-import SeoMeta from '../mixins/seo-meta.js'
 import opnformConfig from "~/opnform.config.js";
 
 export default {
   components: {Testimonials, Features, MoreFeatures, PricingTable, AiFeature, TemplatesSlider},
-  mixins: [SeoMeta],
   layout: 'default',
 
   setup() {
     const authStore = useAuthStore()
     defineRouteRules({
-      prerender: true
+      swr: 3600
     })
 
     return {
@@ -213,8 +212,6 @@ export default {
   },
 
   data: () => ({
-    title: 'OpnForm',
-    metaTitle: 'Create beautiful & open-source forms for free'
   }),
 
   computed: {

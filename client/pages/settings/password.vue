@@ -25,7 +25,13 @@
 </template>
 
 <script setup>
-const metaTitle = 'Password'
+useOpnSeoMeta({
+  title: 'Password'
+})
+definePageMeta({
+  middleware: "auth"
+})
+
 let form = useForm({
   password: '',
   password_confirmation: ''

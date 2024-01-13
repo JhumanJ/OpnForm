@@ -47,7 +47,7 @@ import Breadcrumb from '~/components/global/Breadcrumb.vue'
 import {loadAllTemplates} from "~/stores/templates.js";
 
 defineRouteRules({
-  prerender: true
+  swr: 3600
 })
 
 const route = useRoute()
@@ -70,6 +70,29 @@ const breadcrumbs = computed(() => {
 })
 
 const type = computed(() => templatesStore.types.get(route.params.slug))
+
+useOpnSeoMeta({
+  title: () => {
+    if (!type.value) return 'Form Templates'
+    if (type.value.meta_title.length > 60) {
+      return type.value.meta_title
+    }
+    return type.value.meta_title
+  },
+  description: () => type.value ? type.value.meta_description: 'Our collection of beautiful templates to create your own forms!'
+})
+useHead({
+  titleTemplate: (titleChunk) => {
+    // Disable title template for longer titles
+    if (type.value
+      && type.value.meta_title.length < 60
+      && !type.value.meta_title.toLowerCase().includes('opnform')
+    ) {
+      return titleChunk ? `${titleChunk} - OpnForm` : 'Form Templates - OpnForm'
+    }
+    return titleChunk ? titleChunk : 'Form Templates - OpnForm'
+  }
+})
 
 </script>
 

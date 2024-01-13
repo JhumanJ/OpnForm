@@ -18,7 +18,7 @@ export default {
   },
 
   data () {
-    return { 
+    return {
       QrUrl: null
     }
   },

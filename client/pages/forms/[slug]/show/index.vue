@@ -1,9 +1,7 @@
 <script setup>
-const route = useRoute()
-useRouter().push({
-  name: 'forms-slug-show-submissions',
-  params: {
-    slug: route.params.slug
+definePageMeta({
+  redirect: to => {
+    return { name: 'forms-slug-show-submissions'}
   }
 })
 </script>

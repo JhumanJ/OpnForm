@@ -5,8 +5,7 @@
           <div
             class="relative px-4 pt-16 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:pt-0 sm:shadow-gray-600/10">
             <div class="absolute inset-0">
-              <img class="object-cover object-top w-full h-full" src="/img/pages/ai_form_builder/background-pattern-ai.svg" alt="">
-
+              <NuxtImg class="object-cover object-top w-full h-full" src="/img/pages/ai_form_builder/background-pattern-ai.svg" alt=""/>
             </div>
 
             <div class="relative max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:flex-auto lg:py-16 lg:text-left">
@@ -77,9 +76,9 @@
             </div>
 
             <div
-              class="relative px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
-              <img class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none"
-              src="/img/pages/ai_form_builder/ai-feature-illustration.svg" alt="App screenshot">
+              class="relative w-full px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
+              <img class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none w-full"
+              src="/img/pages/ai_form_builder/ai-feature-illustration.svg" alt="App screenshot"/>
 
             </div>
           </div>

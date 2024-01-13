@@ -120,7 +120,7 @@ export default {
       if (this.loading) return
 
       this.loading = true
-      this.aiForm.post('/api/forms/ai/generate').then(response => {
+      this.aiForm.post('/forms/ai/generate').then(response => {
         this.useAlert.success(response.data.message)
         this.fetchGeneratedForm(response.data.ai_form_completion_id)
       }).catch(error => {

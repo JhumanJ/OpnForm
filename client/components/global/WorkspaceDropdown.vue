@@ -9,7 +9,7 @@
           <img v-if="isUrl(workspace.icon)"
                :src="workspace.icon"
                :alt="workspace.name + ' icon'" class="flex-shrink-0 h-8 w-8 rounded-full shadow"
-          >
+          />
           <div v-else class="rounded-full pt-2 text-xs truncate bg-nt-blue-lighter h-8 w-8 text-center shadow"
                v-text="workspace.icon"
           />
@@ -29,7 +29,7 @@
           <img v-if="isUrl(worksp.icon)"
                :src="worksp.icon"
                :alt="worksp.name + ' icon'" class="flex-shrink-0 h-8 w-8 rounded-full shadow"
-          >
+          />
           <div v-else class="rounded-full flex-shrink-0 pt-1 text-xs truncate bg-nt-blue-lighter h-8 w-8 text-center shadow"
                v-text="worksp.icon"
           />

@@ -13,10 +13,15 @@
 </template>
 
 <script setup>
-// metaTitle: 'Terms & Conditions',
-
 import {useNotionPagesStore} from "~/stores/notion_pages.js";
 import {computed} from "vue";
+
+useOpnSeoMeta({
+  title: 'Terms & Conditions'
+})
+defineRouteRules({
+  swr: 3600
+})
 
 const notionPageStore = useNotionPagesStore()
 await notionPageStore.load('246420da2834480ca04047b0c5a00929')

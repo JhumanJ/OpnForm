@@ -133,6 +133,7 @@ class Form extends Model implements CachableAttributes
     protected $cachableAttributes = [
         'is_pro',
         'views_count',
+        'max_file_size'
     ];
 
     /**
@@ -156,12 +157,12 @@ class Form extends Model implements CachableAttributes
         if ($this->custom_domain) {
             return 'https://' . $this->custom_domain . '/forms/' . $this->slug;
         }
-        return '/forms/' . $this->slug;
+        return front_url('/forms/' . $this->slug);
     }
 
     public function getEditUrlAttribute()
     {
-        return url('/forms/' . $this->slug . '/show');
+        return front_url('/forms/' . $this->slug . '/show');
     }
 
     public function getSubmissionsCountAttribute()
@@ -232,6 +233,13 @@ class Form extends Model implements CachableAttributes
     public function getHasPasswordAttribute()
     {
         return !empty($this->password);
+    }
+
+    public function getMaxFileSizeAttribute()
+    {
+        return $this->remember('max_file_size', 15 * 60, function(): int {
+            return $this->workspace->max_file_size;
+        });
     }
 
     protected function removedProperties(): Attribute

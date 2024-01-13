@@ -1,5 +1,7 @@
 <script setup>
-useRouter().push({
-  name: 'settings-profile'
+definePageMeta({
+  redirect: to => {
+    return { name: 'settings-profile'}
+  }
 })
 </script>

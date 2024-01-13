@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Models\Workspace;
 use Closure;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CustomDomainRestriction
 {
-    const CUSTOM_DOMAIN_HEADER = "User-Custom-Domain";
+    const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
 
     /**
      * Handle an incoming request.
@@ -22,11 +23,12 @@ class CustomDomainRestriction
         }
 
         $customDomain = $request->header(self::CUSTOM_DOMAIN_HEADER);
-        if (!preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}$/', $customDomain)) {
+        if (!preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $customDomain)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid domain',
-            ], 400);
+                'error' => 'invalid_domain',
+            ], 420);
         }
 
         // Check if domain is different from current domain
@@ -40,7 +42,8 @@ class CustomDomainRestriction
             return response()->json([
                 'success' => false,
                 'message' => 'Unknown domain',
-            ], 400);
+                'error' => 'invalid_domain',
+            ], 420);
         }
 
         Workspace::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspace) {

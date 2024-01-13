@@ -1,5 +1,5 @@
 <template>
-  <modal :show="show" @close="$emit('close')">
+  <modal :show="show" @close="emit('close')">
     <template #icon>
       <svg class="w-10 h-10 text-blue" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -57,11 +57,11 @@
               </template>
             </v-button>
             <v-button v-if="template" color="red" class="mr-2"
-                      @click.prevent="alertConfirm('Do you really want to delete this template?', deleteFormTemplate)"
+                      @click.prevent="useAlert().confirm('Do you really want to delete this template?', deleteFormTemplate)"
             >
               Delete
             </v-button>
-            <v-button color="white" @click.prevent="$emit('close')">
+            <v-button color="white" @click.prevent="emit('close')">
               Close
             </v-button>
           </div>
@@ -71,118 +71,109 @@
   </modal>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import { ref, defineProps, defineEmits, computed } from 'vue'
 import QuestionsEditor from './QuestionsEditor.vue'
 
-export default {
-  name: 'FormTemplateModal',
-  components: { QuestionsEditor },
-  props: {
-    show: { type: Boolean, required: true },
-    form: { type: Object, required: true },
-    template: { type: Object, required: false, default: () => {} }
-  },
+const props = defineProps({
+  show: { type: Boolean, required: true },
+  form: { type: Object, required: true },
+  template: { type: Object, required: false, default: () => {} }
+})
 
-  setup () {
-    const authStore = useAuthStore()
-    const templatesStore = useTemplatesStore()
-    return {
-      templatesStore,
-      user : computed(() => authStore.user),
-      templates : computed(() => templatesStore.content),
-      industries : computed(() => templatesStore.industries),
-      types : computed(() => templatesStore.types),
-      useAlert: useAlert()
-    }
-  },
+const authStore = useAuthStore()
+const templatesStore = useTemplatesStore()
+const router = useRouter()
+let user = computed(() => authStore.user)
+let templates = computed(() => [...templatesStore.content.values()])
+let industries = computed(() => [...templatesStore.industries.values()])
+let types = computed(() => [...templatesStore.types.values()])
 
-  data: () => ({
-    templateForm: null
-  }),
+let templateForm = ref(null)
+const emit = defineEmits(['close'])
 
-  mounted () {
-    this.templateForm = useForm(this.template ?? {
-      publicly_listed: false,
-      name: '',
-      slug: '',
-      short_description: '',
-      description: '',
-      image_url: '',
-      types: null,
-      industries: null,
-      related_templates: null,
-      questions: []
-    })
-    loadAllTemplates(this.templatesStore)
-  },
+onMounted(() => {
+  templateForm.value = useForm(props.template ?? {
+    publicly_listed: false,
+    name: '',
+    slug: '',
+    short_description: '',
+    description: '',
+    image_url: '',
+    types: null,
+    industries: null,
+    related_templates: null,
+    questions: []
+  })
+})
 
-  computed: {
-    typesOptions () {
-      return Object.values(this.types).map((type) => {
-        return {
-          name: type.name,
-          value: type.slug
-        }
-      })
-    },
-    industriesOptions () {
-      return Object.values(this.industries).map((industry) => {
-        return {
-          name: industry.name,
-          value: industry.slug
-        }
-      })
-    },
-    templatesOptions () {
-      return this.templates.map((template) => {
-        return {
-          name: template.name,
-          value: template.slug
-        }
-      })
-    }
-  },
-
-  methods: {
-    onSubmit () {
-      if (this.template) {
-        this.updateFormTemplate()
-      } else {
-        this.createFormTemplate()
-      }
-    },
-    async createFormTemplate () {
-      this.templateForm.form = this.form
-      await this.templateForm.post('/api/templates').then((response) => {
-        if (response.data.message) {
-          this.useAlert.success(response.data.message)
-        }
-        this.templatesStore.save(response.data.data)
-        this.$emit('close')
-      })
-    },
-    async updateFormTemplate () {
-      this.templateForm.form = this.form
-      await this.templateForm.put('/api/templates/' + this.template.id).then((response) => {
-        if (response.data.message) {
-          this.useAlert.success(response.data.message)
-        }
-        this.templatesStore.save(response.data.data)
-        this.$emit('close')
-      })
-    },
-    async deleteFormTemplate () {
-      if (!this.template) return
-      opnFetch('/templates/' + this.template.id, {method:'DELETE'}).then((data) => {
-        if (data.message) {
-          this.useAlert.success(data.message)
-        }
-        this.$router.push({ name: 'templates' })
-        this.templatesStore.remove(this.template)
-        this.$emit('close')
-      })
-    }
+watch(() => props.show, () => {
+  if (props.show) {
+    loadAllTemplates(templatesStore)
   }
+})
+
+let typesOptions = computed(() => {
+  return Object.values(types.value).map((type) => {
+    return {
+      name: type.name,
+      value: type.slug
+    }
+  })
+})
+let industriesOptions = computed(() => {
+  return Object.values(industries.value).map((industry) => {
+    return {
+      name: industry.name,
+      value: industry.slug
+    }
+  })
+})
+let templatesOptions = computed(() => {
+  return Object.values(templates.value).map((template) => {
+    return {
+      name: template.name,
+      value: template.slug
+    }
+  })
+})
+
+const onSubmit = () => {
+  if (props.template) {
+    updateFormTemplate()
+  } else {
+    createFormTemplate()
+  }
+}
+const createFormTemplate = async () => {
+  templateForm.value.form = props.form
+  await templateForm.value.post('/templates').then((data) => {
+    if (data.message) {
+      useAlert().success(data.message)
+    }
+    templatesStore.save(data.data)
+    emit('close')
+  })
+}
+const updateFormTemplate = async () => {
+  templateForm.value.form = props.form
+  await templateForm.value.put('/templates/' + props.template.id).then((data) => {
+    if (data.message) {
+      useAlert().success(data.message)
+    }
+    templatesStore.save(data.data)
+    emit('close')
+  })
+}
+const deleteFormTemplate = async () => {
+  if (!props.template) return
+  opnFetch('/templates/' + props.template.id, {method:'DELETE'}).then((data) => {
+    if (data.message) {
+      useAlert().success(data.message)
+    }
+    router.push({ name: 'templates' })
+    templatesStore.remove(props.template)
+    emit('close')
+  })
 }
 </script>

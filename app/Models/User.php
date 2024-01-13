@@ -194,7 +194,10 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'ip' => \Hash::make(request()->ip()),
+            'ua' => \Hash::make(request()->userAgent()),
+        ];
     }
 
     public function getIsRiskyAttribute()

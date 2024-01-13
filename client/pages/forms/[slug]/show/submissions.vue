@@ -4,28 +4,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import FormSubmissions from '../../../../components/open/forms/components/FormSubmissions.vue'
-import SeoMeta from '../../../../mixins/seo-meta.js'
 
-export default {
-  components: {FormSubmissions},
-  props: {
-    form: {type: Object, required: true}
-  },
-  mixins: [SeoMeta],
-
-  data: () => ({}),
-
-  mounted() {
-  },
-
-  computed: {
-    metaTitle() {
-      return (this.form) ? 'Form Submissions - ' + this.form.title : 'Form Submissions'
-    },
-  },
-
-  methods: {}
+const props = {
+  form: {type: Object, required: true}
 }
+
+definePageMeta({
+  middleware: "auth"
+})
+useOpnSeoMeta({
+  title: (props.form) ? 'Form Submissions - ' + props.form.title : 'Form Submissions'
+})
+
 </script>

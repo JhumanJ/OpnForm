@@ -52,29 +52,16 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import LoginForm from "~/components/pages/auth/components/LoginForm.vue"
 
-export default {
-  components: {
-    LoginForm
-  },
-
-  setup() {
-    definePageMeta({
-      middleware: "guest"
-    })
-    defineRouteRules({
-      prerender: true
-    })
-  },
-
-  data: () => ({
-    metaTitle: 'Login',
-  }),
-
-  methods: {
-
-  }
-}
+definePageMeta({
+  middleware: "guest"
+})
+defineRouteRules({
+  swr: 3600
+})
+useOpnSeoMeta({
+  title: 'Login'
+})
 </script>
