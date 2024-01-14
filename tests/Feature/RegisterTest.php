@@ -5,7 +5,7 @@ use Tests\TestCase;
 use function Pest\Faker\faker;
 
 it('can register', function () {
-    $this->postJson('/api/register', [
+    $this->postJson('/register', [
         'name' => 'Test User',
         'email' => 'test@test.app',
         'hear_about_us' => 'google',
@@ -24,7 +24,7 @@ it('can register', function () {
 it('cannot register with existing email', function () {
     User::factory()->create(['email' => 'test@test.app']);
 
-    $this->postJson('/api/register', [
+    $this->postJson('/register', [
         'name' => 'Test User',
         'email' => 'test@test.app',
         'password' => 'secret',
@@ -37,13 +37,13 @@ it('cannot register with existing email', function () {
 it('cannot register with disposable email', function () {
     // Select random email
     $email = faker()->randomElement([
-        'dumliyupse@gufum.com', 
-        'kcs79722@zslsz.com', 
-        'pfizexwxtdifxupdhr@tpwlb.com', 
+        'dumliyupse@gufum.com',
+        'kcs79722@zslsz.com',
+        'pfizexwxtdifxupdhr@tpwlb.com',
         'qvj86ypqfm@email.edu.pl'
     ]);
 
-    $this->postJson('/api/register', [
+    $this->postJson('/register', [
             'name' => 'Test disposable',
             'email' => $email,
             'hear_about_us' => 'google',

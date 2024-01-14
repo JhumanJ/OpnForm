@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 it('update profile info',function() {
         $this->actingAs($user = User::factory()->create())
-            ->patchJson('/api/settings/profile', [
+            ->patchJson('/settings/profile', [
                 'name' => 'Test User',
                 'email' => 'test@test.app',
             ])
@@ -22,7 +22,7 @@ it('update profile info',function() {
 
 it('update password',function() {
         $this->actingAs($user = User::factory()->create())
-            ->patchJson('/api/settings/password', [
+            ->patchJson('/settings/password', [
                 'password' => 'updated',
                 'password_confirmation' => 'updated',
             ])

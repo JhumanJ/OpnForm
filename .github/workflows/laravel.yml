@@ -128,6 +128,27 @@ jobs:
           path: storage/logs/laravel.log
           retention-days: 3
 
+  build-nuxt-app:
+    runs-on: ubuntu-latest
+    name: Build the Nuxt app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get into client folder
+        run: cd client
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Prepare the environment
+        run: cp .env.example .env
+
       - name: Install npm dependencies
         run: npm install --no-audit --no-progress --silent
 

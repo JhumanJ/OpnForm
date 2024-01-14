@@ -14,6 +14,7 @@ export default defineNuxtConfig({
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
         '@nuxt/image',
+        ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
         ... process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     ],
     build: {
@@ -33,6 +34,9 @@ export default defineNuxtConfig({
     sentry: {
         dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
         lazy: true,
+    },
+    gtag: {
+        id: process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE,
     },
     components: [
         {

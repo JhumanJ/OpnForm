@@ -13,6 +13,7 @@
     "@nuxt/devtools": "latest",
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.8.2",
+    "nuxt-gtag": "^1.1.2",
     "nuxt-simple-sitemap": "^4.2.3",
     "postcss": "^8.4.32",
     "sass": "^1.69.6",
