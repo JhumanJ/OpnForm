@@ -224,7 +224,6 @@ export default {
       if (responseData.form && responseData.form.cleanings && Object.keys(responseData.form.cleanings).length > 0) {
         alert.warning(responseData.message)
       } else if (responseData.message) {
-        console.log(responseData.message)
         alert.success(responseData.message)
       }
     },
@@ -256,7 +255,6 @@ export default {
         this.amplitude.logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {
-        console.log(error)
         if (error.response.status === 422) {
           this.validationErrorResponse = error.response.data
           this.showValidationErrors()
