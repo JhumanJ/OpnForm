@@ -18,7 +18,9 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
             - 'php artisan disposable:update'
+            - 'cd client'
             - 'npm ci && npm run build && rm -rf node_modules'
+            - 'cd ..'
         deploy:
             - 'php artisan migrate --force'
         firewall:
@@ -36,6 +38,9 @@ environments:
         - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
         - 'php artisan event:cache'
         - 'php artisan disposable:update'
+        - 'cd client'
+        - 'npm ci && npm run build && rm -rf node_modules'
+        - 'cd ..'
       deploy:
         - 'php artisan migrate --force'
       firewall:
