@@ -212,6 +212,6 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Deploy to production
-        run: php vendor/bin/vapor deploy production --commit="${GITHUB_SHA}" --message="${GITHUB_REF}"
+        run: php vendor/bin/vapor deploy api-production --commit="${GITHUB_SHA}" --message="${GITHUB_REF}"
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}

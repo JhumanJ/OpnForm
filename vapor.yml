@@ -5,7 +5,7 @@ ignore:
     - storage/logs
     - client
 environments:
-    production:
+    api-production:
         warm: 5
         memory: 1024
         cli-memory: 512
@@ -23,20 +23,20 @@ environments:
         firewall:
             rate-limit: 1000
         timeout: 30
-    staging:
-      memory: 1024
-      cli-memory: 512
-      cli-timeout: 900
-      runtime: 'php-8.2:al2-arm'
-      storage: opnforms-staging
-      database: JuPersoDb
-      domain: stg.opnform.com
-      build:
-        - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
-        - 'php artisan event:cache'
-        - 'php artisan disposable:update'
-      deploy:
-        - 'php artisan migrate --force'
-      firewall:
-        rate-limit: 1000
-      timeout: 30
+    api-staging:
+        memory: 1024
+        cli-memory: 512
+        cli-timeout: 900
+        runtime: 'php-8.2:al2-arm'
+        storage: opnforms-staging
+        database: JuPersoDb
+        domain: api.stg.opnform.com
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+            - 'php artisan event:cache'
+            - 'php artisan disposable:update'
+        deploy:
+            - 'php artisan migrate --force'
+        firewall:
+            rate-limit: 1000
+        timeout: 30

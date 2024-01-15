@@ -63,8 +63,5 @@ return [
         'api_key' => env('APPSUMO_API_KEY'),
     ],
 
-    'google_analytics_code' => env('GOOGLE_ANALYTICS_CODE'),
-    'amplitude_code' => env('AMPLITUDE_CODE'),
     'crisp_website_id' => env('CRISP_WEBSITE_ID'),
-    'sentry_vue_dsn' => env('SENTRY_VUE_DSN'),
 ];
