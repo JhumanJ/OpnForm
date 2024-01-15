@@ -30,6 +30,11 @@ ln -sf /persist/storage /app/storage
     . /app/.env
 }
 
+[ "x$FRONT_API_SECRET" != "x" ] || {
+	generate-api-secret.sh
+    . /app/.env
+}
+
 /usr/sbin/php-fpm8.1
 
 tail -f /var/log/opnform.log
