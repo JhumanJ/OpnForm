@@ -61,10 +61,10 @@ export const getHost = function () {
 export const getDomain = function (url) {
   if (url.includes('localhost')) return 'localhost'
   try {
+    if (!url.startsWith('http')) url = 'https://' + url
     return (new URL(url)).hostname
   } catch (e) {
-    console.error('Error extracting domai from: ',url,e)
-    return null
+    return url
   }
 }
 
