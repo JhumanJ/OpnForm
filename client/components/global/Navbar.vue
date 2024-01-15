@@ -31,7 +31,7 @@
           </NuxtLink>
           <a v-if="hasCrisp" href="#"
              class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-             @click.prevent="openCrisp"
+             @click.prevent="openHelpdesk"
           >
             Help
           </a>
@@ -141,6 +141,7 @@ import {computed} from 'vue'
 import Dropdown from '~/components/global/Dropdown.vue'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
 import opnformConfig from "~/opnform.config.js";
+import {useRuntimeConfig} from "#app";
 
 export default {
   components: {
@@ -149,11 +150,11 @@ export default {
   },
 
   async setup() {
-    const {openCrisp} = useCrisp()
+    const {openHelpdesk} = useCrisp()
     const authStore = useAuthStore()
     return {
       authStore,
-      openCrisp,
+      openHelpdesk,
       opnformConfig,
       appStore: useAppStore(),
       formsStore: useFormsStore(),
@@ -202,7 +203,7 @@ export default {
       return this.user && this.user.has_forms === true
     },
     hasCrisp() {
-      return this.config.crispWebsiteId
+      return this.config.public.crispWebsiteId && this.config.public.crispWebsiteId !== ''
     }
   },
 
