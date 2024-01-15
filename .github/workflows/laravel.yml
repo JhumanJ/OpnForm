@@ -86,13 +86,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -135,6 +128,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20'
 
       - name: Get into client folder
         run: cd client
