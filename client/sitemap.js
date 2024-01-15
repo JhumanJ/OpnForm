@@ -1,9 +1,7 @@
-import opnformConfig from "./opnform.config.js";
-
 export default {
   exclude: ['/settings/**', '/subscriptions/**', '/templates/my-templates'],
   sources: [
-    opnformConfig.api_url + '/sitemap-urls'
+    process.env.NUXT_PUBLIC_API_BASE + '/sitemap-urls'
   ],
   cacheMaxAgeSeconds: 3600
 }
