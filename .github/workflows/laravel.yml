@@ -124,7 +124,9 @@ jobs:
   build-nuxt-app:
     runs-on: ubuntu-latest
     name: Build the Nuxt app
-
+    defaults:
+        run:
+            working-directory: ./client
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -133,9 +135,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '20'
-
-      - name: Get into client folder
-        run: cd client
 
       - uses: actions/cache@v2
         with:
