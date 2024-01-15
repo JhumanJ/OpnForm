@@ -13,7 +13,7 @@ environments:
         runtime: 'php-8.2:al2-arm'
         storage: opnforms-prod
         database: JuPersoDb
-        domain: opnform.com
+        domain: api.opnform.com
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
