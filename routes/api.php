@@ -18,6 +18,9 @@ use App\Http\Controllers\Forms\RecordController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,7 +86,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
-            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])->name('submissions.file');
+            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
+                ->middleware('signed')
+                ->withoutMiddleware(['auth:api'])
+                ->name('submissions.file');
 
             Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
 
@@ -167,6 +173,8 @@ Route::prefix('content')->name('content.')->group(function () {
     Route::get('changelog/entries', [\App\Http\Controllers\Content\ChangelogController::class, 'index'])->name('changelog.entries');
 });
 
+Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
+
 // Templates
 Route::prefix('templates')->group(function () {
     Route::get('/', [TemplateController::class, 'index'])->name('templates.index');
@@ -175,3 +183,29 @@ Route::prefix('templates')->group(function () {
     Route::put('/{id}', [TemplateController::class, 'update'])->name('templates.update');
     Route::delete('/{id}', [TemplateController::class, 'destroy'])->name('templates.destroy');
 });
+
+Route::post(
+    '/stripe/webhook',
+    [\App\Http\Controllers\Webhook\StripeController::class, 'handleWebhook']
+)->name('cashier.webhook');
+
+Route::post(
+    '/vapor/signed-storage-url',
+    [\App\Http\Controllers\Content\SignedStorageUrlController::class, 'store']
+)->middleware([]);
+Route::post(
+    '/upload-file',
+    [\App\Http\Controllers\Content\FileUploadController::class, 'upload']
+)->middleware([]);
+
+Route::get('local/temp/{path}', function (Request $request, string $path){
+    if (!$request->hasValidSignature()) {
+        abort(401);
+    }
+    $response = Response::make(Storage::get($path), 200);
+    $response->header("Content-Type", Storage::mimeType($path));
+    return $response;
+})->where('path', '(.*)')->name('local.temp');
+
+Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
+    ->name('caddy.ask')->middleware(\App\Http\Middleware\CaddyRequestMiddleware::class);

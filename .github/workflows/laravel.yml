@@ -86,13 +86,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -127,6 +120,31 @@ jobs:
           name: log results
           path: storage/logs/laravel.log
           retention-days: 3
+
+  build-nuxt-app:
+    runs-on: ubuntu-latest
+    name: Build the Nuxt app
+    defaults:
+        run:
+            working-directory: ./client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20'
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Prepare the environment
+        run: cp .env.example .env
 
       - name: Install npm dependencies
         run: npm install --no-audit --no-progress --silent

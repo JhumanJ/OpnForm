@@ -15,7 +15,8 @@ class FormSubmissionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['submissionFile']]);
+        $this->middleware('signed', ['only' => ['submissionFile']]);
     }
 
     public function submissions(string $id)
@@ -51,9 +52,6 @@ class FormSubmissionController extends Controller
 
     public function submissionFile($id, $fileName)
     {
-        $form = Form::findOrFail((int) $id);
-        $this->authorize('view', $form);
-
         $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id).'/'
             .urldecode($fileName);
 
@@ -63,8 +61,12 @@ class FormSubmissionController extends Controller
             ], 404);
         }
 
+        if (config('filesystems.default') !== 's3') {
+            return response()->file(Storage::path($fileName));
+        }
+
         return redirect(
-            Storage::temporaryUrl($fileName, now()->addMinute())
+             Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
 }

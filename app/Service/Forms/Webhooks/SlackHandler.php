@@ -27,7 +27,7 @@ class SlackHandler extends AbstractWebhookHandler
             $externalLinks[] = '*<' . $this->form->share_url . '|🔗 Open Form>*';
         }
         if(Arr::get($settings, 'link_edit_form', true)){
-            $editFormURL = url('forms/' . $this->form->slug . '/show');
+            $editFormURL = front_url('forms/' . $this->form->slug . '/show');
             $externalLinks[] = '*<' . $editFormURL . '|✍️ Edit Form>*';
         }
         if (Arr::get($settings, 'link_edit_submission', true) && $this->form->editable_submissions) {

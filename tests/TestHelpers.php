@@ -161,7 +161,7 @@ trait TestHelpers
             $user = $this->createUser();
         }
 
-        $this->postJson('/api/login', [
+        $this->postJson('/login', [
             'email' => $user->email,
             'password' => 'password',
         ])->assertSuccessful();

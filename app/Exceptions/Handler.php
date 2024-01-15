@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
     {
         return $request->expectsJson()
             ? response()->json(['message' => $exception->getMessage()], 401)
-            : redirect()->guest(url('/login'));
+            : redirect(front_url('login'));
     }
 
     public function report(Throwable $exception)

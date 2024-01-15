@@ -28,10 +28,10 @@ class AppSumoAuthController extends Controller
 
         // otherwise start login flow by passing the encrypted license key id
         if (is_null($license->user_id)) {
-            return redirect(url('/register?appsumo_license='.encrypt($license->id)));
+            return redirect(front_url('/register?appsumo_license='.encrypt($license->id)));
         }
 
-        return redirect(url('/register?appsumo_error=1'));
+        return redirect(front_url('/register?appsumo_error=1'));
     }
 
     private function retrieveAccessToken(string $requestCode): string
@@ -82,11 +82,11 @@ class AppSumoAuthController extends Controller
         if (is_null($license->user_id)) {
             $license->user_id = Auth::id();
             $license->save();
-            return redirect(url('/home?appsumo_connect=1'));
+            return redirect(front_url('/home?appsumo_connect=1'));
         }
 
         // Licensed already attached
-        return redirect(url('/home?appsumo_error=1'));
+        return redirect(front_url('/home?appsumo_error=1'));
     }
 
     /**

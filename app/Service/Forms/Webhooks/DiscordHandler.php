@@ -27,7 +27,7 @@ class DiscordHandler extends AbstractWebhookHandler
             $externalLinks[] = '[**🔗 Open Form**](' . $this->form->share_url . ')';
         }
         if(Arr::get($settings, 'link_edit_form', true)){
-            $editFormURL = url('forms/' . $this->form->slug . '/show');
+            $editFormURL = front_url('forms/' . $this->form->slug . '/show');
             $externalLinks[] = '[**✍️ Edit Form**](' . $editFormURL . ')';
         }
         if (Arr::get($settings, 'link_edit_submission', true) && $this->form->editable_submissions) {

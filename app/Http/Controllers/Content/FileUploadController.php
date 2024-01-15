@@ -17,6 +17,7 @@ class FileUploadController extends Controller
      */
     public function upload(Request $request)
     {
+        $request->validate(['file' => 'required|file']);
         $uuid = (string) Str::uuid();
         $path = $request->file('file')->storeAs(PublicFormController::TMP_FILE_UPLOAD_PATH, $uuid);
 

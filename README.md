@@ -67,7 +67,7 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Docker installation 🐳
 
-There's a `Dockerfile` for building a self-contained docker image including databases, webservers etc.
+> ⚠️ **Warning**: the Docker setup is currently not working as we're migrating the front-end to Nuxt. [Track progress here](https://github.com/JhumanJ/OpnForm/issues/283).
 
 This can be built and run locally but is also hosted publicly on docker hub at `jhumanj/opnform` and is generally best run directly from there.
 
@@ -154,8 +154,11 @@ First, let's work with the codebase and its dependencies.
 # Get the code!
 git clone git@github.com:JhumanJ/OpnForm.git && cd OpnForm
 
-# Install PHP and JS dependencies
-composer install && npm install
+# Install PHP dependencies
+composer install 
+ 
+ # Install JS dependencies
+cd client && npm install
 
 # Compile assets (see the scripts section in package.json)
 npm run dev # or build
@@ -186,7 +189,8 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 
 OpnForm is a standard web application built with:
 - [Laravel](https://laravel.com/) PHP framework
-- [Vue.js](https://vuejs.org/) front-end framework
+- [NuxtJs](https://nuxt.com/) Front-end SSR framework
+- [Vue.js 3](https://vuejs.org/) Front-end framework
 - [TailwindCSS](https://tailwindcss.com/)
 
 ## Contribute
