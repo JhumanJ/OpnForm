@@ -40,7 +40,7 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto"/>
           </p>
         </div>
-        <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"
+        <open-complete-form v-show="!recordLoading" ref="openCompleteForm" :form="form" class="mb-10"
                             @password-entered="passwordEntered"
         />
       </template>
@@ -66,6 +66,8 @@ const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
 const submitted = ref(false)
 
+const openCompleteForm = ref(null)
+
 crisp.hideChat()
 onBeforeRouteLeave((to, from) => {
   crisp.showChat()
@@ -73,26 +75,35 @@ onBeforeRouteLeave((to, from) => {
 })
 
 const passwordEntered = function (password) {
+  console.log('passwordEntered', password, sha256(password))
   useCookie('password-' + slug, {
-    maxAge: {expires: 60 * 60 * 7},
+    maxAge: 60 * 60 * 7,
     sameSite: false,
     secure: true
   }).value = sha256(password)
-  loadForm(slug).then(() => {
+  loadForm().then(() => {
     if (form.value?.is_password_protected) {
-      this.$refs['open-complete-form'].addPasswordError('Invalid password.')
+      console.log(openCompleteForm.value)
+      openCompleteForm.value.addPasswordError('Invalid password.')
     }
   })
 }
 
-const loadForm = async () => {
-  if (formsStore.loading || form.value) return Promise.resolve()
-  const {data, error} = await formsStore.publicLoad(slug)
-  if (error.value) {
-    formsStore.stopLoading()
-    return
+const loadForm = async (setup=false) => {
+  console.log('loadForm',setup)
+  if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
+
+  if (setup) {
+    const {data, error} = await formsStore.publicLoad(slug)
+    if (error.value) {
+      formsStore.stopLoading()
+      return
+    }
+    formsStore.save(data.value)
+  } else {
+    const data = await formsStore.publicFetch(slug)
+    formsStore.save(data)
   }
-  formsStore.save(data.value)
   formsStore.stopLoading()
 
   // Adapt page to form: colors, custom code etc
@@ -108,10 +119,10 @@ const loadForm = async () => {
 }
 
 onMounted(() => {
-  loadForm(slug)
+  loadForm()
 })
 
-await loadForm(slug)
+await loadForm(true)
 
 useOpnSeoMeta({
   title: () => {

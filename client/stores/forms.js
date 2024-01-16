@@ -50,6 +50,11 @@ export const useFormsStore = defineStore('forms', () => {
     return useOpnApi('/forms/' + slug)
   }
 
+  const publicFetch = (slug) => {
+    contentStore.startLoading()
+    return opnFetch('/forms/' + slug)
+  }
+
   const allTags = computed(() => {
     let tags = []
     contentStore.getAll.value.forEach((form) => {
@@ -69,6 +74,7 @@ export const useFormsStore = defineStore('forms', () => {
     allLoaded,
     allTags,
     publicLoad,
+    publicFetch,
     loadAll,
     load,
   }
