@@ -98,8 +98,13 @@ const loadForm = async (setup=false) => {
     }
     formsStore.save(data.value)
   } else {
-    const data = await formsStore.publicFetch(slug)
-    formsStore.save(data)
+    try {
+      const data = await formsStore.publicFetch(slug)
+      formsStore.save(data)
+    } catch (e) {
+      formsStore.stopLoading()
+      return
+    }
   }
   formsStore.stopLoading()
 
