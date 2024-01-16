@@ -390,7 +390,7 @@
 import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
-import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
+import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.client.vue'
 
 export default {
   name: 'FieldOptions',

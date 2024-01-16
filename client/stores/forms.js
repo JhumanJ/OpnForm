@@ -54,7 +54,11 @@ export const useFormsStore = defineStore('forms', () => {
     let tags = []
     contentStore.getAll.value.forEach((form) => {
       if (form.tags && form.tags.length) {
-        tags = tags.concat(form.tags.split(','))
+        if (typeof form.tags === 'string' || form.tags instanceof String ) {
+          tags = tags.concat(form.tags.split(','))
+        } else if (Array.isArray(form.tags)) {
+          tags = tags.concat(form.tags)
+        }
       }
     })
     return [...new Set(tags)]

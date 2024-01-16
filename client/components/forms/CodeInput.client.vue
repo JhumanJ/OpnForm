@@ -14,8 +14,8 @@
       :class="[theme.CodeInput.input,{ '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
     >
       <codemirror :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
-                  :options="cmOptions"
-                  :style="inputStyle" :name="name"
+                  :extensions="extensions"
+                  :style="inputStyle" :name="name" :tab-size="4"
                   :placeholder="placeholder"
       />
     </div>
@@ -27,36 +27,24 @@
 </template>
 
 <script>
-import { codemirror } from 'vue-codemirror'
-import 'codemirror/lib/codemirror.css'
+import { Codemirror } from 'vue-codemirror'
 
-import 'codemirror/mode/htmlmixed/htmlmixed.js'
+import {html} from '@codemirror/lang-html'
 
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 
 export default {
-  components: { InputWrapper, codemirror },
+  components: { InputWrapper, Codemirror },
   props: {
     ...inputProps
   },
 
   setup (props, context) {
+    const extensions = [html()]
     return {
-      ...useFormInput(props, context)
-    }
-  },
-
-  data () {
-    return {
-      cmOptions: {
-        // codemirror options
-        tabSize: 4,
-        mode: 'text/html',
-        theme: 'default',
-        lineNumbers: true,
-        line: true
-      }
+      ...useFormInput(props, context),
+      extensions
     }
   }
 }

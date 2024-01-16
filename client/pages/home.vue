@@ -30,8 +30,8 @@
             <div v-for="tag in allTags" :key="tag"
                  :class="[
                    'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
-                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.includes(tag),
-                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.includes(tag)}
+                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.has(tag),
+                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.has(tag)}
                  ]"
                  title="Click for filter by tag(s)"
                  @click="onTagClick(tag)"
@@ -177,7 +177,7 @@ const enrichedForms = computed(() => {
     if (selectedTags.value.size === 0) {
       return true
     }
-    return form.tags && form.tags.length ? [...selectedTags].every(r => form.tags.includes(r)) : false
+    return form.tags && form.tags.length ? [...selectedTags.value].every(r => form.tags.includes(r)) : false
   })
 
   if (!isFilteringForms || search.value === '' || search.value === null) {
