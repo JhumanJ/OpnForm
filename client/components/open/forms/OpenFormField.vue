@@ -166,7 +166,7 @@ export default {
       }[field.type]
     },
     isPublicFormPage () {
-      return this.$route.name === 'forms.show_public'
+      return this.$route.name === 'forms-slug'
     },
     isFieldHidden () {
       return !this.showHidden && this.shouldBeHidden

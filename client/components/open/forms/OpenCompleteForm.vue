@@ -158,7 +158,7 @@ export default {
       return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
     },
     isPublicFormPage () {
-      return this.$route.name === 'forms.show_public'
+      return this.$route.name === 'forms-slug'
     },
     isHideTitle () {
       return this.form.hide_title || (process.client && window.location.href.includes('hide_title=true'))

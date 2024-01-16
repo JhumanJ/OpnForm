@@ -170,7 +170,7 @@ export default {
       return this.opnformConfig.links.help_url
     },
     form() {
-      if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
+      if (this.$route.name && this.$route.name.startsWith('forms-slug')) {
         return this.formsStore.getByKey(this.$route.params.slug)
       }
       return null
@@ -182,12 +182,12 @@ export default {
       return this.config.public.paidPlansEnabled
     },
     showAuth() {
-      return this.$route.name && !this.$route.name.startsWith('forms.show_public')
+      return this.$route.name && !this.$route.name.startsWith('forms-slug')
     },
     hasNavbar() {
       if (this.isIframe) return false
 
-      if (this.$route.name && this.$route.name.startsWith('forms.show_public')) {
+      if (this.$route.name && this.$route.name.startsWith('forms-slug')) {
         if (this.form) {
           // If there is a cover, or if branding is hidden remove nav
           if (this.form.cover_picture || this.form.no_branding) {
