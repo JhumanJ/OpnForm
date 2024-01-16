@@ -68,12 +68,6 @@ const submitted = ref(false)
 
 const openCompleteForm = ref(null)
 
-crisp.hideChat()
-onBeforeRouteLeave((to, from) => {
-  crisp.showChat()
-  disableDarkMode()
-})
-
 const passwordEntered = function (password) {
   const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
@@ -125,14 +119,20 @@ const loadForm = async (setup=false) => {
   if (!isIframe) focusOnFirstFormElement()
 }
 
+await loadForm(true)
+
 onMounted(() => {
+  crisp.hideChat()
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
   }
 })
 
-await loadForm(true)
+onBeforeRouteLeave((to, from) => {
+  crisp.showChat()
+  disableDarkMode()
+})
 
 useOpnSeoMeta({
   title: () => {
