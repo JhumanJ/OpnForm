@@ -117,8 +117,10 @@ const loadForm = async (setup=false) => {
 
 onMounted(() => {
   loadForm()
-  handleDarkMode(form.value.dark_mode)
-  handleTransparentMode(form.value.transparent_background)
+  if (form.value) {
+    handleDarkMode(form.value?.dark_mode)
+    handleTransparentMode(form.value?.transparent_background)
+  }
 })
 
 await loadForm(true)
