@@ -75,15 +75,20 @@ onBeforeRouteLeave((to, from) => {
 })
 
 const passwordEntered = function (password) {
-  useCookie('password-' + slug, {
+  const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
     sameSite: false,
     secure: true
-  }).value = sha256(password)
-  loadForm().then(() => {
-    if (form.value?.is_password_protected) {
-      openCompleteForm.value.addPasswordError('Invalid password.')
-    }
+  })
+  cookie.value = sha256(password)
+  nextTick(() => {
+    console.log('cookie value:',cookie.value)
+    loadForm().then(() => {
+      if (form.value?.is_password_protected) {
+        openCompleteForm.value.addPasswordError('Invalid password.')
+      }
+    })
+    openCompleteForm.value.submit()
   })
 }
 
@@ -121,7 +126,6 @@ const loadForm = async (setup=false) => {
 }
 
 onMounted(() => {
-  loadForm()
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
