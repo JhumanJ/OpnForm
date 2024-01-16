@@ -4,7 +4,7 @@ import {customDomainUsed, getDomain, getHost} from "~/lib/utils.js";
  * Added by Caddy when proxying to the app
  * @type {string}
  */
-const customDomainHeaderName = 'CUSTOM_DOMAIN_HEADER'
+const customDomainHeaderName = 'User-Custom-Domain'
 
 /**
  * List of routes that can be used with a custom domain
