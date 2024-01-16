@@ -17,18 +17,14 @@ function redirectToMainDomain() {
 }
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  if (process.client) return
+  if (!customDomainUsed()) return
 
   const config = useRuntimeConfig()
 
-  if (!customDomainUsed()) return
-
-  console.info('loadedConfig',useRuntimeConfig())
-  console.log(useRequestHeaders(),customDomainHeaderName)
   const customDomainHeaderValue = useRequestHeaders()[customDomainHeaderName]
   if (!customDomainHeaderValue || customDomainHeaderValue !== getDomain(getHost())) {
     // If custom domain header doesn't match, redirect
-    console.info('Custom domain header does not match, redirecting',{
+    console.error('Custom domain header does not match, redirecting',{
       'customDomainHeaderValue': customDomainHeaderValue,
       'host': getDomain(getHost()),
     })
