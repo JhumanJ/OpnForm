@@ -60,9 +60,9 @@
               href="javascript:void(0);" class="text-gray-500" @click="showColumnsModal=true"
             >Display columns</a>
           </p>
-          <p class="text-right text-xs uppercase">
+          <p class="text-right cursor-pointer text-xs uppercase">
             <a
-              :href="exportUrl" target="_blank"
+              @click.prevent="downloadAsCsv" href="#"
             >Export as CSV</a>
           </p>
         </div>
@@ -248,6 +248,15 @@ export default {
       this.fullyLoaded = false
       this.tableData = []
       this.getSubmissionsData()
+    },
+    downloadAsCsv() {
+      opnFetch(this.exportUrl, { responseType: "blob" })
+        .then( blob => {
+          var file = window.URL.createObjectURL(blob);
+          window.location.assign(file);
+        }).catch((error)=>{
+        console.error(error)
+      })
     }
   }
 }
