@@ -23,7 +23,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const config = useRuntimeConfig()
 
   const customDomainHeaderValue = useRequestHeaders()[customDomainHeaderName]
-  if (!customDomainHeaderValue || customDomainHeaderValue !== getDomain(getHost())) {
+  if (process.server && (!customDomainHeaderValue || customDomainHeaderValue !== getDomain(getHost()))) {
     return redirectToMainDomain( {
       reason: 'header_mismatch',
       customDomainHeaderValue: customDomainHeaderValue,
