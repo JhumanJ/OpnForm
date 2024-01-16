@@ -30,6 +30,7 @@ class FormSubmissionController extends Controller
     public function export(string $id)
     {
         $form = Form::findOrFail((int) $id);
+        $this->authorize('view', $form);
 
         $allRows = [];
         foreach ($form->submissions->toArray() as $row) {
