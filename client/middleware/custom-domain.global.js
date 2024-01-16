@@ -23,6 +23,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   if (!customDomainUsed()) return
 
+  console.info('loadedConfig',useRuntimeConfig())
+  console.log(useRequestHeaders(),customDomainHeaderName)
   const customDomainHeaderValue = useRequestHeaders()[customDomainHeaderName]
   if (!customDomainHeaderValue || customDomainHeaderValue !== getDomain(getHost())) {
     // If custom domain header doesn't match, redirect
