@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AcceptsJsonMiddleware;
 use App\Http\Middleware\AuthenticateJWT;
 use App\Http\Middleware\CustomDomainRestriction;
 use App\Http\Middleware\IsAdmin;
@@ -29,6 +30,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\SetLocale::class,
         AuthenticateJWT::class,
         CustomDomainRestriction::class,
+        AcceptsJsonMiddleware::class
     ];
 
     /**

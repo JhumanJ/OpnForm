@@ -39,16 +39,10 @@ class Handler extends ExceptionHandler
 
     /**
      * Convert an authentication exception into a response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return $request->expectsJson()
-            ? response()->json(['message' => $exception->getMessage()], 401)
-            : redirect(front_url('login'));
+        return response()->json(['message' => $exception->getMessage()], 401);
     }
 
     public function report(Throwable $exception)

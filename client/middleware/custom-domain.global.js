@@ -24,27 +24,26 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const customDomainHeaderValue = useRequestHeaders()[customDomainHeaderName]
   if (!customDomainHeaderValue || customDomainHeaderValue !== getDomain(getHost())) {
-    // If custom domain header doesn't match, redirect
-    console.error('Custom domain header does not match, redirecting',{
-      'customDomainHeaderValue': customDomainHeaderValue,
-      'host': getDomain(getHost()),
-    })
-    return redirectToMainDomain('header_mismatch', {
-      customDomainHeaderValue,
+    return redirectToMainDomain( {
+      reason: 'header_mismatch',
+      customDomainHeaderValue: customDomainHeaderValue,
       host: getDomain(getHost()),
     })
   }
 
   if (!config.public.customDomainsEnabled) {
     // If custom domain not allowed, redirect
-    return redirectToMainDomain('custom_domains_disabled')
+    return redirectToMainDomain({
+      reason: 'custom_domains_disabled'
+    })
   }
 
   if (!customDomainAllowedRoutes.includes(to.name)) {
     // Custom domain only allowed for form url
-    return redirectToMainDomain('route_not_allowed', {
+    return redirectToMainDomain({
+      reason: 'route_not_allowed',
       route: to.name,
-      customDomainAllowedRoutes
+      customDomainAllowedRoutes: customDomainAllowedRoutes
     })
   }
 })
