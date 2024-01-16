@@ -21,7 +21,7 @@
       <div v-if="!formLoading && !form">
         <h1 class="mt-6" v-text="'Whoops'"/>
         <p class="mt-6">
-          Unfortunately we could not find this form. It may have been deleted by it's author.
+          Unfortunately we could not find this form. It may have been deleted.
         </p>
         <p class="mb-10 mt-4">
           <router-link :to="{name:'index'}">
@@ -115,25 +115,25 @@ await loadForm(slug)
 
 useOpnSeoMeta({
   title: () => {
-    if (form && form.value.is_pro && form.value.seo_meta.page_title) {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_title) {
       return form.value.seo_meta.page_title
     }
     return form.value ? form.value.title : 'Create beautiful forms'
   },
-  description () {
-    if (form && form.value.is_pro && form.value.seo_meta.page_description) {
+  description: () => {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_description) {
       return form.value.seo_meta.page_description
     }
-    return (form && form.value.description) ? form.value.description.substring(0, 160) : null
+    return (form && form.value?.description) ? form.value?.description.substring(0, 160) : null
   },
-  ogImage () {
-    if (form && form.value.is_pro && form.value.seo_meta.page_thumbnail) {
+  ogImage: () => {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_thumbnail) {
       return form.value.seo_meta.page_thumbnail
     }
-    return (form && form.value.cover_picture) ? form.value.cover_picture : null
+    return (form && form.value?.cover_picture) ? form.value?.cover_picture : null
   },
   robots: () => {
-    return (form && form.value.can_be_indexed) ? null : 'noindex, nofollow'
+    return (form && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
   }
 })
 useHead({
