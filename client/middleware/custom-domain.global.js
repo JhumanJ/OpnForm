@@ -12,7 +12,8 @@ const customDomainHeaderName = 'user-custom-domain'
  */
 const customDomainAllowedRoutes = ['forms-slug']
 
-function redirectToMainDomain() {
+function redirectToMainDomain(reason = 'unknown') {
+  console.warn('Redirecting to main domain', { reason })
   return navigateTo(useRuntimeConfig().public.appUrl + '?utm_source=failed_custom_domain_redirect', { redirectCode: 301, external: true })
 }
 
@@ -28,17 +29,17 @@ export default defineNuxtRouteMiddleware((to, from) => {
       'customDomainHeaderValue': customDomainHeaderValue,
       'host': getDomain(getHost()),
     })
-    return redirectToMainDomain()
+    return redirectToMainDomain('header_mismatch')
   }
 
   if (!config.public.customDomainsEnabled) {
     // If custom domain not allowed, redirect
-    return redirectToMainDomain()
+    return redirectToMainDomain('custom_domains_disabled')
   }
 
   if (!customDomainAllowedRoutes.includes(to.name)) {
     // Custom domain only allowed for form url
-    return redirectToMainDomain()
+    return redirectToMainDomain('route_not_allowed')
   }
 })
 
