@@ -23,7 +23,7 @@
            class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 border-yellow-500"
       >
         <div class="flex flex-grow">
-          <p class="mb-0 py-2 px-4 text-yellow-600">
+          <p class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600">
             We disabled the password protection for this form because you are an owner of it.
           </p>
           <v-button color="yellow" @click="hidePasswordDisabledMsg=true">

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {useDark} from "@vueuse/core";
+import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
 
@@ -21,7 +21,7 @@ export default {
   data: () => ({}),
 
   setup () {
-    const isDark = useDark()
+    const isDark = darkModeEnabled()
     return {
       isDark
     }

@@ -65,8 +65,9 @@ import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
-import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js";
+import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
   name: 'OpenForm',
@@ -104,7 +105,7 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: useDark(),
+      darkModeEnabled: darkModeEnabled(),
       pendingSubmission: pendingSubmission(props.form)
     }
   },

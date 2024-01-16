@@ -75,7 +75,6 @@ onBeforeRouteLeave((to, from) => {
 })
 
 const passwordEntered = function (password) {
-  console.log('passwordEntered', password, sha256(password))
   useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
     sameSite: false,
@@ -83,14 +82,12 @@ const passwordEntered = function (password) {
   }).value = sha256(password)
   loadForm().then(() => {
     if (form.value?.is_password_protected) {
-      console.log(openCompleteForm.value)
       openCompleteForm.value.addPasswordError('Invalid password.')
     }
   })
 }
 
 const loadForm = async (setup=false) => {
-  console.log('loadForm',setup)
   if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
 
   if (setup) {
@@ -107,8 +104,8 @@ const loadForm = async (setup=false) => {
   formsStore.stopLoading()
 
   // Adapt page to form: colors, custom code etc
-  handleDarkMode(form.value)
-  handleTransparentMode(form.value)
+  handleDarkMode(form.value.dark_mode)
+  handleTransparentMode(form.value.transparent_background)
 
   if (process.server) return
   if (form.value.custom_code) {
@@ -120,6 +117,8 @@ const loadForm = async (setup=false) => {
 
 onMounted(() => {
   loadForm()
+  handleDarkMode(form.value.dark_mode)
+  handleTransparentMode(form.value.transparent_background)
 })
 
 await loadForm(true)

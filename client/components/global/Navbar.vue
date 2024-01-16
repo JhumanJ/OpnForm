@@ -182,12 +182,12 @@ export default {
       return this.config.public.paidPlansEnabled
     },
     showAuth() {
-      return this.$route.name && !this.$route.name.startsWith('forms-slug')
+      return this.$route.name && this.$route.name !== 'forms-slug'
     },
     hasNavbar() {
       if (this.isIframe) return false
 
-      if (this.$route.name && this.$route.name.startsWith('forms-slug')) {
+      if (this.$route.name && this.$route.name === 'forms-slug') {
         if (this.form) {
           // If there is a cover, or if branding is hidden remove nav
           if (this.form.cover_picture || this.form.no_branding) {

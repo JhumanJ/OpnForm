@@ -35,6 +35,7 @@ export default {
   setup () {
     const workingFormStore = useWorkingFormStore()
     return {
+      workspacesStore: useWorkspacesStore(),
       workingFormStore
     }
   },
@@ -53,7 +54,7 @@ export default {
       }
     },
     workspace () {
-      return this.$store.getters['open/workspaces/getCurrent']()
+      return this.workspacesStore.getCurrent
     },
     customDomainOptions () {
       return this.workspace.custom_domains.map((domain) => {
