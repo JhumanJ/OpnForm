@@ -64,7 +64,7 @@ export default {
       })
     },
     customDomainAllowed () {
-      return this.$config.custom_domains_enabled
+      return useRuntimeConfig.public.customDomainsEnabled
     }
   },
   watch: {},
