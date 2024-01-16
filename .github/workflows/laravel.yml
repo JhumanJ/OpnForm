@@ -153,14 +153,9 @@ jobs:
         run: npm run build
 
   production-deploy:
-    needs: [ tests ]
+    needs: [ tests, build-nuxt-app ]
     if: success() && github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [ 8.2 ]
-
     name: Triggers Deployment (Vapor & Amplify)
 
     steps:
@@ -189,7 +184,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.2
           extensions: dom, curl, mbstring, pdo, sqlite, pdo_sqlite
           tools: composer:v2
           coverage: none
