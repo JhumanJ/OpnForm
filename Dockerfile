@@ -75,13 +75,12 @@ ADD docker/postgres-wrapper.sh docker/php-fpm-wrapper.sh docker/redis-wrapper.sh
 ADD docker/php-fpm.conf /etc/php/8.1/fpm/pool.d/
 ADD docker/nginx.conf /etc/nginx/sites-enabled/default
 ADD docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+ADD . .
 ADD .env.docker .env
 ADD client/.env.docker client/.env
 
-ADD . .
-
 COPY --from=javascript-builder /app/.output/ ./nuxt/
-ADD client/.env.docker nuxt/.env
 RUN cp -r nuxt/public .
 COPY --from=php-dependency-installer /app/vendor/ ./vendor/
 
