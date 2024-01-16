@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import ConditionEditor from './ConditionEditor.vue'
+import ConditionEditor from './ConditionEditor.client.vue'
 import Modal from '../../../../global/Modal.vue'
 import clonedeep from 'clone-deep'
 

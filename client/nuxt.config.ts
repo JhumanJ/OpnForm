@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         ... process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     ],
     build: {
-        transpile: ["vue-notion"],
+        transpile: ["vue-notion", "query-builder-vue-3"],
     },
     postcss: {
         plugins: {

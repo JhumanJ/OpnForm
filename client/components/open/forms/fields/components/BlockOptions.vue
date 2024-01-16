@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.client.vue'
+import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 
 export default {
   name: 'BlockOptions',
