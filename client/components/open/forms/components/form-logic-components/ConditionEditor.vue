@@ -30,6 +30,7 @@
   </query-builder>
 </template>
 
+<style src="query-builder-vue-3/dist/style.css" />
 <script>
 import { defineComponent } from 'vue'
 import QueryBuilder from 'query-builder-vue-3'
