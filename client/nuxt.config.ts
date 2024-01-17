@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import runtimeConfig from "./runtimeConfig";
-import opnformConfig from "./opnform.config";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
@@ -15,7 +15,6 @@ export default defineNuxtConfig({
         'nuxt-simple-sitemap',
         '@nuxt/image',
         ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
-        ... process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     ],
     build: {
         transpile: ["vue-notion", "query-builder-vue-3"],
@@ -67,6 +66,17 @@ export default defineNuxtConfig({
     },
     image: {
         quality: 95,
+    },
+    sourcemap: true,
+    vite: {
+        plugins: [
+            // Put the Sentry vite plugin after all other plugins
+            sentryVitePlugin({
+                authToken: process.env.SENTRY_AUTH_TOKEN,
+                org: "opnform",
+                project: "opnform-vue",
+            }),
+        ],
     },
     sitemap,
     runtimeConfig
