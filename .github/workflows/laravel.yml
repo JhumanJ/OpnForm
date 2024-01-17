@@ -151,6 +151,8 @@ jobs:
 
       - name: Build client
         run: npm run build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   production-deploy:
     needs: [ tests, build-nuxt-app ]
