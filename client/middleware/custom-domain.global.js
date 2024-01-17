@@ -42,7 +42,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // Custom domain only allowed for form url
     return redirectToMainDomain({
       reason: 'route_not_allowed',
-      route: to.name,
+      route: to,
+      from: from,
       customDomainAllowedRoutes: customDomainAllowedRoutes
     })
   }
