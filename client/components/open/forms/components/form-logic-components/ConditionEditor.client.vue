@@ -47,12 +47,12 @@ export default {
 
   props: {
     form: { type: Object, required: true },
-    value: { required: false }
+    modelValue: { required: false }
   },
 
   data () {
     return {
-      query: this.value
+      query: this.modelValue
     }
   },
 
@@ -106,8 +106,8 @@ export default {
   },
 
   watch: {
-    value () {
-      this.query = this.value
+    modelValue () {
+      this.query = this.modelValue
     }
   },
 
