@@ -70,7 +70,7 @@ export default {
 
   computed: {
     replayToEmailField () {
-      const emailFields = this.form.value.properties.filter((field) => {
+      const emailFields = this.form.properties.filter((field) => {
         return field.type === 'email' && !field.hidden
       })
       if (emailFields.length === 1) return emailFields[0]
