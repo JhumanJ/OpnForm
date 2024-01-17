@@ -55,7 +55,7 @@
       />
       <template v-else>
         <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
-             class="nf-text w-full px-2 mb-3" :class="[getFieldAlignClasses(field)]"
+             class="nf-text w-full mb-3" :class="[getFieldAlignClasses(field)]"
              v-html="field.content"
         />
         <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"

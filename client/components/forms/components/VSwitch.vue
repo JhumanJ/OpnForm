@@ -13,10 +13,10 @@ const { modelValue, disabled } = defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false }
 })
-const emit = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue'])
 
 const onClick = () => {
   if (disabled) return
-  emit('update:modelValue', !modelValue)
+  emits('update:modelValue', !modelValue)
 }
 </script>

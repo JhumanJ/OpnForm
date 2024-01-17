@@ -48,7 +48,7 @@
 
       <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
       <open-form-button v-else native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
-                        @click="nextPage"
+                        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -171,6 +171,7 @@ export default {
      * Returns the page break block for the current group of fields
      */
     currentFieldsPageBreak () {
+      // Last block from current group
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
@@ -376,11 +377,13 @@ export default {
       this.dataForm = useForm(formData)
     },
     previousPage () {
+      console.log('preivousPage', this.currentFieldGroupIndex)
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
     nextPage () {
+      console.log('nextPage',this.currentFieldGroupIndex)
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
