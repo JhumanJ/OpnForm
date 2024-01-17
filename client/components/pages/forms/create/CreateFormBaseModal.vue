@@ -121,10 +121,10 @@ export default {
 
       this.loading = true
       this.aiForm.post('/forms/ai/generate').then(response => {
-        this.useAlert.success(response.data.message)
-        this.fetchGeneratedForm(response.data.ai_form_completion_id)
+        this.useAlert.success(response.message)
+        this.fetchGeneratedForm(response.ai_form_completion_id)
       }).catch(error => {
-        this.useAlert.error(error.response.data.message)
+        console.error(error)
         this.loading = false
         this.state = 'default'
       })
