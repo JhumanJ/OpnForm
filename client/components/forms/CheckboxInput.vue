@@ -40,7 +40,9 @@ export default {
   },
 
   mounted () {
-    this.compVal = !!this.compVal
+    if (!this.compVal) {
+      this.compVal = false
+    }
   }
 }
 </script>
