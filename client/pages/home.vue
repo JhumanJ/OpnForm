@@ -21,12 +21,12 @@
       </div>
     </div>
     <div class="flex bg-white">
-      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
+      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl">
         <div class="mt-8 pb-0">
-          <text-input v-if="forms.length > 0" class="mb-6" v-model="search" name="search" label="Search a form"
+          <text-input v-if="forms.length > 0" class="mb-6 px-4" v-model="search" name="search" label="Search a form"
                       placeholder="Name of form to search"
           />
-          <div v-if="allTags.length > 0" class="mb-4">
+          <div v-if="allTags.length > 0" class="mb-4 px-6">
             <div v-for="tag in allTags" :key="tag"
                  :class="[
                    'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',

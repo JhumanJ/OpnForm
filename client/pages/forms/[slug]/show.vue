@@ -20,7 +20,7 @@
                 {{ form.title }}
               </h2>
               <div class="flex">
-                <extra-menu :form="form"/>
+                <extra-menu class="mr-2" :form="form"/>
 
                 <v-button v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
                           :href="form.share_url" color="white"
