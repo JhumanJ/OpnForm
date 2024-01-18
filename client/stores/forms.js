@@ -50,11 +50,20 @@ export const useFormsStore = defineStore('forms', () => {
     return useOpnApi('/forms/' + slug)
   }
 
+  const publicFetch = (slug) => {
+    contentStore.startLoading()
+    return opnFetch('/forms/' + slug)
+  }
+
   const allTags = computed(() => {
     let tags = []
     contentStore.getAll.value.forEach((form) => {
       if (form.tags && form.tags.length) {
-        tags = tags.concat(form.tags.split(','))
+        if (typeof form.tags === 'string' || form.tags instanceof String ) {
+          tags = tags.concat(form.tags.split(','))
+        } else if (Array.isArray(form.tags)) {
+          tags = tags.concat(form.tags)
+        }
       }
     })
     return [...new Set(tags)]
@@ -65,6 +74,7 @@ export const useFormsStore = defineStore('forms', () => {
     allLoaded,
     allTags,
     publicLoad,
+    publicFetch,
     loadAll,
     load,
   }

@@ -130,7 +130,7 @@ export default {
       }) ?? null
     },
     onInput (event) {
-      this.inputVal = event.target.value.replace(/[^0-9]/g, '')
+      this.inputVal = event?.target?.value.replace(/[^0-9]/g, '')
     },
     onChangeCountryCode () {
       if (!this.selectedCountryCode && this.countries.length > 0) {

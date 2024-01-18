@@ -55,7 +55,7 @@
       />
       <template v-else>
         <div v-if="field.type === 'nf-text' && field.content" :id="field.id" :key="field.id"
-             class="nf-text w-full px-2 mb-3" :class="[getFieldAlignClasses(field)]"
+             class="nf-text w-full mb-3" :class="[getFieldAlignClasses(field)]"
              v-html="field.content"
         />
         <div v-if="field.type === 'nf-code' && field.content" :id="field.id" :key="field.id"
@@ -166,7 +166,7 @@ export default {
       }[field.type]
     },
     isPublicFormPage () {
-      return this.$route.name === 'forms.show_public'
+      return this.$route.name === 'forms-slug'
     },
     isFieldHidden () {
       return !this.showHidden && this.shouldBeHidden
@@ -299,7 +299,7 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = 5
+        inputProperties.mbLimit = this.form.max_file_size
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'number' && field.is_rating) {
         inputProperties.numberOfStars = parseInt(field.rating_max_value)

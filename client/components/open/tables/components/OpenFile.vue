@@ -38,14 +38,14 @@ export default {
 
   computed: {
     parsedFiles() {
-      return this.value.map((file) => {
+      return this.value ? this.value.map((file) => {
         return {
           file_name: file.file_name,
           file_url: file.file_url,
           displayed_file_name: this.displayedFileName(file.file_name),
           is_image: !this.failedImages.includes(file.file_url) && this.isImage(file.file_name)
         }
-      })
+      }): []
     }
   },
 

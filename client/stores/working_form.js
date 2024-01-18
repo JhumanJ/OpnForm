@@ -45,6 +45,12 @@ export const useWorkingFormStore = defineStore('working_form', {
       this.selectedFieldIndex = null
       this.showAddFieldSidebar = false
       this.showEditFieldSidebar = false
+    },
+    reset() {
+      this.content = null
+      this.selectedFieldIndex = null
+      this.showEditFieldSidebar = null
+      this.showAddFieldSidebar = null
     }
   }
 })

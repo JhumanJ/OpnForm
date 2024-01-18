@@ -12,12 +12,12 @@
           <text-input name="email" :form="form" label="Email" :required="true" />
 
           <!-- Password -->
-          <text-input class="mt-8" native-type="password"
+          <text-input native-type="password"
                       name="password" :form="form" label="Password" :required="true"
           />
 
           <!-- Password Confirmation-->
-          <text-input class="mt-8" native-type="password"
+          <text-input native-type="password" class="mb-5"
                       name="password_confirmation" :form="form" label="Confirm Password" :required="true"
           />
 

@@ -30,6 +30,7 @@
   </query-builder>
 </template>
 
+<style src="query-builder-vue-3/dist/style.css" />
 <script>
 import { defineComponent } from 'vue'
 import QueryBuilder from 'query-builder-vue-3'
@@ -46,12 +47,12 @@ export default {
 
   props: {
     form: { type: Object, required: true },
-    value: { required: false }
+    modelValue: { required: false }
   },
 
   data () {
     return {
-      query: this.value
+      query: this.modelValue
     }
   },
 
@@ -105,8 +106,8 @@ export default {
   },
 
   watch: {
-    value () {
-      this.query = this.value
+    modelValue () {
+      this.query = this.modelValue
     }
   },
 

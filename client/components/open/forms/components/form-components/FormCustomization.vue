@@ -23,6 +23,16 @@
       </small>
     </div>
 
+    <select-input name="dark_mode" class="mt-4"
+                  help="To see changes, save your form and open it"
+                  :options="[
+                    {name:'Auto - use Device System Preferences',value:'auto'},
+                    {name:'Light Mode',value:'light'},
+                    {name:'Dark Mode',value:'dark'}
+                  ]"
+                  :form="form" label="Dark Mode"
+    />
+
     <select-input name="width" class="mt-4"
                   :options="[
                     {name:'Centered',value:'centered'},
@@ -41,15 +51,6 @@
                  :required="false"
     />
 
-    <select-input name="dark_mode" class="mt-4"
-                  help="To see changes, save your form and open it"
-                  :options="[
-                    {name:'Auto - use Device System Preferences',value:'auto'},
-                    {name:'Light Mode',value:'light'},
-                    {name:'Dark Mode',value:'dark'}
-                  ]"
-                  :form="form" label="Dark Mode"
-    />
     <color-input name="color" class="mt-4"
                  :form="form"
                  label="Color (for buttons & inputs border)"

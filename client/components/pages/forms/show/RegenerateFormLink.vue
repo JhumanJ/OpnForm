@@ -103,7 +103,7 @@ export default {
       if (this.loadingNewLink) return
       this.loadingNewLink = true
       opnFetch(this.formEndpoint.replace('{id}', this.form.id) + '/regenerate-link/' + option, {method:'PUT'}).then((data) => {
-        this.formsStore.addOrUpdate(data.form)
+        this.formsStore.save(data.form)
         this.$router.push({name: 'forms-slug-show-share', params: {slug: data.form.slug}})
         useAlert().success(data.message)
         this.loadingNewLink = false

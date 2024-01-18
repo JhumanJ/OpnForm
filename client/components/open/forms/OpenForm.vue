@@ -48,7 +48,7 @@
 
       <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
       <open-form-button v-else native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
-                        @click="nextPage"
+                        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -65,8 +65,9 @@ import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
-import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js";
+import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
   name: 'OpenForm',
@@ -104,7 +105,7 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: useDark(),
+      darkModeEnabled: darkModeEnabled(),
       pendingSubmission: pendingSubmission(props.form)
     }
   },
@@ -170,6 +171,7 @@ export default {
      * Returns the page break block for the current group of fields
      */
     currentFieldsPageBreak () {
+      // Last block from current group
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
@@ -375,11 +377,13 @@ export default {
       this.dataForm = useForm(formData)
     },
     previousPage () {
+      console.log('preivousPage', this.currentFieldGroupIndex)
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
     nextPage () {
+      console.log('nextPage',this.currentFieldGroupIndex)
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false

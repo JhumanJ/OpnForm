@@ -69,9 +69,12 @@ class AnswerFormRequest extends FormRequest
             if (FormLogicPropertyResolver::isRequired($property, $data)) {
                 $rules[] = 'required';
 
-                // Required for checkboxes means true
                 if ($property['type'] == 'checkbox') {
+                    // Required for checkboxes means true
                     $rules[] = 'accepted';
+                } else if ($property['type'] == 'number' && isset($property['is_rating']) && $property['is_rating']) {
+                    // For star rating, needs a minimum of 1 star
+                    $rules[] = 'min:1';
                 }
             } else {
                 $rules[] = 'nullable';
@@ -148,7 +151,7 @@ class AnswerFormRequest extends FormRequest
                 return ['string'];
             case 'number':
                 if ($property['is_rating'] ?? false) {
-                    return ['numeric', 'min:1'];
+                    return ['numeric'];
                 }
                 return ['numeric'];
             case 'select':

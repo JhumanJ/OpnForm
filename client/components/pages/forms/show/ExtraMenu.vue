@@ -5,7 +5,7 @@
     </div>
     <dropdown v-else class="inline">
       <template #trigger="{toggle}">
-        <v-button color="white" class="mr-2" @click="toggle">
+        <v-button color="white" @click="toggle">
           <svg class="w-4 h-4 inline -mt-1" viewBox="0 0 16 4" fill="none"
                xmlns="http://www.w3.org/2000/svg"
           >

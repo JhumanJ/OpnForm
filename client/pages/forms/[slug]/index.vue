@@ -21,7 +21,7 @@
       <div v-if="!formLoading && !form">
         <h1 class="mt-6" v-text="'Whoops'"/>
         <p class="mt-6">
-          Unfortunately we could not find this form. It may have been deleted by it's author.
+          Unfortunately we could not find this form. It may have been deleted.
         </p>
         <p class="mb-10 mt-4">
           <router-link :to="{name:'index'}">
@@ -40,7 +40,7 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto"/>
           </p>
         </div>
-        <open-complete-form v-show="!recordLoading" ref="open-complete-form" :form="form" class="mb-10"
+        <open-complete-form v-show="!recordLoading" ref="openCompleteForm" :form="form" class="mb-10"
                             @password-entered="passwordEntered"
         />
       </template>
@@ -66,38 +66,50 @@ const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
 const submitted = ref(false)
 
-crisp.hideChat()
-onBeforeRouteLeave((to, from) => {
-  crisp.showChat()
-  disableDarkMode()
-})
+const openCompleteForm = ref(null)
 
 const passwordEntered = function (password) {
-  useCookie('password-' + slug, {
-    maxAge: {expires: 60 * 60 * 7},
+  const cookie = useCookie('password-' + slug, {
+    maxAge: 60 * 60 * 7,
     sameSite: false,
     secure: true
-  }).value = sha256(password)
-  loadForm(slug).then(() => {
-    if (form.value?.is_password_protected) {
-      this.$refs['open-complete-form'].addPasswordError('Invalid password.')
-    }
+  })
+  cookie.value = sha256(password)
+  nextTick(() => {
+    console.log('cookie value:',cookie.value)
+    loadForm().then(() => {
+      if (form.value?.is_password_protected) {
+        openCompleteForm.value.addPasswordError('Invalid password.')
+      }
+    })
+    openCompleteForm.value.submit()
   })
 }
 
-const loadForm = async () => {
-  if (formsStore.loading || form.value) return Promise.resolve()
-  const {data, error} = await formsStore.publicLoad(slug)
-  if (error.value) {
-    formsStore.stopLoading()
-    return
+const loadForm = async (setup=false) => {
+  if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
+
+  if (setup) {
+    const {data, error} = await formsStore.publicLoad(slug)
+    if (error.value) {
+      formsStore.stopLoading()
+      return
+    }
+    formsStore.save(data.value)
+  } else {
+    try {
+      const data = await formsStore.publicFetch(slug)
+      formsStore.save(data)
+    } catch (e) {
+      formsStore.stopLoading()
+      return
+    }
   }
-  formsStore.save(data.value)
   formsStore.stopLoading()
 
   // Adapt page to form: colors, custom code etc
-  handleDarkMode(form.value)
-  handleTransparentMode(form.value)
+  handleDarkMode(form.value.dark_mode)
+  handleTransparentMode(form.value.transparent_background)
 
   if (process.server) return
   if (form.value.custom_code) {
@@ -107,33 +119,42 @@ const loadForm = async () => {
   if (!isIframe) focusOnFirstFormElement()
 }
 
+await loadForm(true)
+
 onMounted(() => {
-  loadForm(slug)
+  crisp.hideChat()
+  if (form.value) {
+    handleDarkMode(form.value?.dark_mode)
+    handleTransparentMode(form.value?.transparent_background)
+  }
 })
 
-await loadForm(slug)
+onBeforeRouteLeave((to, from) => {
+  crisp.showChat()
+  disableDarkMode()
+})
 
 useOpnSeoMeta({
   title: () => {
-    if (form && form.value.is_pro && form.value.seo_meta.page_title) {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_title) {
       return form.value.seo_meta.page_title
     }
     return form.value ? form.value.title : 'Create beautiful forms'
   },
-  description () {
-    if (form && form.value.is_pro && form.value.seo_meta.page_description) {
+  description: () => {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_description) {
       return form.value.seo_meta.page_description
     }
-    return (form && form.value.description) ? form.value.description.substring(0, 160) : null
+    return (form && form.value?.description) ? form.value?.description.substring(0, 160) : null
   },
-  ogImage () {
-    if (form && form.value.is_pro && form.value.seo_meta.page_thumbnail) {
+  ogImage: () => {
+    if (form && form.value?.is_pro && form.value.seo_meta.page_thumbnail) {
       return form.value.seo_meta.page_thumbnail
     }
-    return (form && form.value.cover_picture) ? form.value.cover_picture : null
+    return (form && form.value?.cover_picture) ? form.value?.cover_picture : null
   },
   robots: () => {
-    return (form && form.value.can_be_indexed) ? null : 'noindex, nofollow'
+    return (form && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
   }
 })
 useHead({

@@ -1,6 +1,6 @@
 <template>
   <!--   Form Preview (desktop only)   -->
-  <div
+  <div ref="parent"
     class="bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll"
   >
     <div class="border rounded-lg bg-white dark:bg-notion-dark w-full block transition-all max-w-5xl">
@@ -59,9 +59,9 @@
 </template>
 
 <script>
-import { useWorkingFormStore } from '../../../../../stores/working_form'
 import VSwitch from '../../../../forms/components/VSwitch.vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
+import {handleDarkMode} from "~/lib/forms/public-page.js"
 
 export default {
   components: { OpenCompleteForm, VSwitch },
@@ -93,9 +93,16 @@ export default {
     }
   },
 
-  watch: {},
+  watch: {
+    'form.dark_mode': {
+      handler () {
+        this.handleDarkMode()
+      }
+    }
+  },
 
   mounted () {
+    this.handleDarkMode()
   },
 
   methods: {
@@ -108,7 +115,10 @@ export default {
         return URL.createObjectURL(val)
       }
       return val
+    },
+    handleDarkMode () {
+      handleDarkMode(this.form.dark_mode, this.$refs.parent)
     }
-  }
+  },
 }
 </script>

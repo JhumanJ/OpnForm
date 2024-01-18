@@ -21,17 +21,17 @@
       </div>
     </div>
     <div class="flex bg-white">
-      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
+      <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl">
         <div class="mt-8 pb-0">
-          <text-input v-if="forms.length > 0" class="mb-6" v-model="search" name="search" label="Search a form"
+          <text-input v-if="forms.length > 0" class="mb-6 px-4" v-model="search" name="search" label="Search a form"
                       placeholder="Name of form to search"
           />
-          <div v-if="allTags.length > 0" class="mb-4">
+          <div v-if="allTags.length > 0" class="mb-4 px-6">
             <div v-for="tag in allTags" :key="tag"
                  :class="[
                    'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
-                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.includes(tag),
-                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.includes(tag)}
+                   {'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':selectedTags.has(tag),
+                    'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':!selectedTags.has(tag)}
                  ]"
                  title="Click for filter by tag(s)"
                  @click="onTagClick(tag)"
@@ -177,7 +177,7 @@ const enrichedForms = computed(() => {
     if (selectedTags.value.size === 0) {
       return true
     }
-    return form.tags && form.tags.length ? [...selectedTags].every(r => form.tags.includes(r)) : false
+    return form.tags && form.tags.length ? [...selectedTags.value].every(r => form.tags.includes(r)) : false
   })
 
   if (!isFilteringForms || search.value === '' || search.value === null) {

@@ -17,10 +17,10 @@ class AppSumoAuthController extends Controller
 
     public function handleCallback(Request $request)
     {
-        $this->validate($request, [
-            'code' => 'required',
-        ]);
-        $accessToken = $this->retrieveAccessToken($request->code);
+        if (!$code = $request->code) {
+            return response()->json(['message' => 'Healthy'], 200);
+        }
+        $accessToken = $this->retrieveAccessToken($code);
         $license = $this->fetchOrCreateLicense($accessToken);
 
         // If user connected, attach license

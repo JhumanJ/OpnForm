@@ -20,7 +20,7 @@
                 {{ form.title }}
               </h2>
               <div class="flex">
-                <extra-menu :form="form"/>
+                <extra-menu class="mr-2" :form="form"/>
 
                 <v-button v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
                           :href="form.share_url" color="white"
@@ -179,7 +179,7 @@ const tabsList = [
 ]
 
 onMounted(() => {
-  workingFormStore.set(null) // Reset old working form
+  workingFormStore.reset()
   if (form.value) {
     workingFormStore.set(form.value)
   } else {
@@ -189,7 +189,7 @@ onMounted(() => {
 
 watch(() => form?.value?.id, (id) => {
   if (id) {
-    workingFormStore.set(form)
+    workingFormStore.set(form.value)
   }
 })
 

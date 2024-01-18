@@ -8,10 +8,10 @@ function addAuthHeader(request, options) {
 }
 
 function addPasswordToFormRequest(request, options) {
-  const url = request.url
-  if (!url || !url.startsWith('/forms/')) return
+  if (!request || !request.startsWith('/forms/')) return
 
-  const slug = url.split('/')[3]
+  const slug = request.split('/')[2]
+
   const passwordCookie = useCookie('password-' + slug, {maxAge: 60 * 60 * 24 * 30}) // 30 days
   if (slug !== undefined && slug !== '' && passwordCookie.value !== undefined) {
     options.headers['form-password'] = passwordCookie.value

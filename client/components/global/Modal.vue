@@ -82,8 +82,8 @@ useHead({
 })
 
 const closeOnEscape = (e) => {
-  if (e.key === 'Escape' && this.show) {
-    this.close()
+  if (e.key === 'Escape' && props.show) {
+    close()
   }
 }
 

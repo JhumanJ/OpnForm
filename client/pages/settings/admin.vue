@@ -36,6 +36,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import {opnFetch} from "~/composables/useOpnApi.js";
+import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
 definePageMeta({
   middleware: "admin"
@@ -51,30 +53,31 @@ const router = useRouter()
 let form = useForm({
   identifier: ''
 })
-let loading = false
+const loading = ref(false)
 
 const runtimeConfig = useRuntimeConfig()
 const statsUrl = runtimeConfig.public.apiBase + '/stats'
 const horizonUrl = runtimeConfig.public.apiBase + '/horizon'
 
 const impersonate = () => {
-  loading = true
+  loading.value = true
   authStore.startImpersonating()
   opnFetch('/admin/impersonate/' + encodeURI(form.identifier)).then(async (data) => {
-    loading = false
-
     // Save the token.
-    authStore.saveToken(data.token, false)
+    authStore.setToken(data.token, false)
 
     // Fetch the user.
-    await authStore.fetchUser()
+    const userData = await opnFetch('user')
+    authStore.setUser(userData)
+    const workspaces = await fetchAllWorkspaces()
+    workspacesStore.set(workspaces.data.value)
+    loading.value = false
 
-    // Redirect to the dashboard.
-    workspacesStore.set([])
     router.push({ name: 'home' })
   }).catch((error) => {
+    console.error(error)
     useAlert().error(error.response.data.message)
-    loading = false
+    loading.value = false
   })
 }
 </script>

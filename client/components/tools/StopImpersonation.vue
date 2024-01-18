@@ -16,7 +16,7 @@
       </template>
       <template v-else>
         <div class="px-6">
-          <Loader class="h-4 w-4 inline" />
+          <Loader class="h-4 w-4 inline"/>
         </div>
       </template>
     </button>
@@ -24,18 +24,18 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth.js';
-import { useWorkspacesStore } from '../../stores/workspaces.js';
+import {computed} from 'vue'
+import {useAuthStore} from '../../stores/auth.js';
+import {useWorkspacesStore} from '../../stores/workspaces.js';
 
 export default {
-  setup () {
+  setup() {
     const authStore = useAuthStore()
     const workspacesStore = useWorkspacesStore()
     return {
       authStore,
       workspacesStore,
-      isImpersonating : computed(() => authStore.isImpersonating),
+      isImpersonating: computed(() => authStore.isImpersonating),
     }
   },
 
@@ -45,16 +45,21 @@ export default {
 
   computed: {},
 
-  mounted () {},
+  mounted() {
+  },
 
   methods: {
-    reverseImpersonation () {
+    async reverseImpersonation() {
       this.loading = true
-      this.authStore.stopImpersonating().then(() => {
-          this.workspacesStore.set([])
-          this.$router.push({ name: 'settings.admin' })
-          this.loading = false
-        })
+      this.authStore.stopImpersonating()
+
+      // Fetch the user.
+      const userData = await opnFetch('user')
+      this.authStore.setUser(userData)
+      const workspaces = await fetchAllWorkspaces()
+      this.workspacesStore.set(workspaces.data.value)
+      this.$router.push({name: 'settings-admin'})
+      this.loading = false
     }
   }
 }

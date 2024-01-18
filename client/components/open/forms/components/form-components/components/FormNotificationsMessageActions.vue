@@ -26,11 +26,11 @@ export default {
   name: 'FormNotificationsMessageActions',
   components: { },
   props: {
-    value: { required: false }
+    modelValue: { required: false }
   },
   data () {
     return {
-      content: this.value ?? {}
+      content: this.modelValue ?? {}
     }
   },
 
@@ -46,7 +46,11 @@ export default {
     }
   },
 
-  watch: {},
+  watch: {
+    modelValue (val) {
+      this.content = val
+    }
+  },
 
   created () {
     if(this.compVal === undefined || this.compVal === null){

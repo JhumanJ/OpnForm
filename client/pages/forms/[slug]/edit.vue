@@ -8,99 +8,90 @@
       {{ error }}
     </div>
     <div v-else class="text-center mt-4 py-6">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
     </div>
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
-import Breadcrumb from '~/components/global/Breadcrumb.vue'
+<script setup>
+import {computed} from 'vue'
 import FormEditor from "~/components/open/forms/components/FormEditor.vue";
 import {hash} from "~/lib/utils.js";
 
-export default {
-  name: 'EditForm',
-  components: { Breadcrumb, FormEditor },
+const formsStore = useFormsStore()
+const workingFormStore = useWorkingFormStore()
+const workspacesStore = useWorkspacesStore()
 
-  beforeRouteLeave (to, from, next) {
-    if (this.isDirty()) {
-      return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
-        window.onbeforeunload = null
-        next()
-      }, () => {})
-    }
-    next()
-  },
+if (!formsStore.allLoaded) {
+  formsStore.startLoading()
+}
+const updatedForm = storeToRefs(workingFormStore).content
+const form = computed(() => formsStore.getByKey(useRoute().params.slug))
+const formsLoading = computed(() => formsStore.loading)
 
-  setup () {
-    const formsStore = useFormsStore()
-    const workingFormStore = useWorkingFormStore()
-    const workspacesStore = useWorkspacesStore()
+const error = ref(null)
+const formInitialHash = ref(null)
 
-    if (!formsStore.allLoaded) {
-      formsStore.startLoading()
-    }
-    const updatedForm = storeToRefs(workingFormStore).content
-    const form = computed(() => formsStore.getByKey(useRoute().params.slug))
+function isDirty() {
+  return formInitialHash.value && updatedForm.value && formInitialHash.value !== hash(JSON.stringify(updatedForm.value.data() ?? null))
+}
 
-    // Create a form.id watcher that updates working form
-    watch(form, (form) => {
-      if (form) {
-        updatedForm.value = useForm(form)
-      }
+function initUpdatedForm() {
+  if (!form || !form.value) {
+    return
+  }
+
+  updatedForm.value = useForm(form.value)
+  if (!updatedForm.value) {
+    return
+  }
+  formInitialHash.value = hash(JSON.stringify(updatedForm.value.data()))
+
+  if (updatedForm.value && (!updatedForm.value.notification_settings || Array.isArray(updatedForm.value.notification_settings))) {
+    updatedForm.value.notification_settings = {}
+  }
+}
+
+// Create a form.id watcher that updates working form
+watch(form, (form) => {
+  if (form.value) {
+    initUpdatedForm()
+  }
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  if (isDirty()) {
+    return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
+      window.onbeforeunload = null
+      next()
+    }, () => {
     })
+  }
+  next()
+})
 
-    useOpnSeoMeta({
-      title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
-    })
-    definePageMeta({
-      middleware: "auth"
-    })
-
-    return {
-      formsStore,
-      workingFormStore,
-      workspacesStore,
-      updatedForm,
-      form,
-      formsLoading: computed(() => formsStore.loading),
-    }
-  },
-
-  data () {
-    return {
-      error: null,
-      formInitialHash: null
-    }
-  },
-
-  computed: {
-  },
-
-  async beforeMount() {
+onBeforeMount(() => {
+  if (process.client) {
     window.onbeforeunload = () => {
-      if (this.isDirty()) {
+      if (isDirty()) {
         return false
       }
     }
-
-    if (!this.form && !this.formsStore.allLoaded) {
-      await this.formsStore.loadAll(this.workspacesStore.currentId)
-    }
-
-    this.updatedForm = useForm(this.form)
-    this.formInitialHash = hash(JSON.stringify(this.updatedForm.data()))
-
-    if (this.updatedForm && (!this.updatedForm.notification_settings || Array.isArray(this.updatedForm.notification_settings))) {
-      this.updatedForm.notification_settings = {}
-    }
-  },
-
-  methods: {
-    isDirty () {
-      return this.formInitialHash && this.formInitialHash !== hash(JSON.stringify(this.updatedForm.data()))
-    }
   }
-}
+
+  if (!form.value && !formsStore.allLoaded) {
+    formsStore.loadAll(workspacesStore.currentId).then(()=>{
+      initUpdatedForm()
+    })
+  } else {
+    initUpdatedForm()
+  }
+})
+
+useOpnSeoMeta({
+  title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
+})
+definePageMeta({
+  middleware: "auth"
+})
 </script>

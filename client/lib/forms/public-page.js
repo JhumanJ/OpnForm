@@ -1,9 +1,13 @@
+
+let darkModeNodeParent = process.client ? document.body : null
+
 /**
  * Handle form public pages dark mode and transparent mode
  */
 export function handleDarkMode (darkMode, elem = null) {
   if (process.server) return
-  const darkModeNodeParent = elem ?? document.body
+
+  darkModeNodeParent = elem ?? document.body
 
   // Dark mode
   if (['dark', 'light'].includes(darkMode)) {
@@ -11,14 +15,19 @@ export function handleDarkMode (darkMode, elem = null) {
   }
 
   // Case auto
-  handleDarkModeToggle(window.matchMedia('(prefers-color-scheme: dark)').matches, darkModeNodeParent)
+  handleDarkModeToggle(window.matchMedia('(prefers-color-scheme: dark)').matches)
 
   // Create listener
   window.matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', handleDarkModeToggle)
 }
 
-function handleDarkModeToggle (enabled, darkModeNodeParent) {
+export function darkModeEnabled() {
+  if (process.server) return false
+  return computed(() => document.body.classList.contains('dark'))
+}
+
+function handleDarkModeToggle (enabled) {
   if (enabled !== false && enabled !== true) {
     // if we received an event
     enabled = enabled.matches

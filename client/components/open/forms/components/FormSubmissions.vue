@@ -19,12 +19,12 @@
       </template>
 
       <div class="px-4">
-        <template v-if="properties.length > 0">
+        <template v-if="form.properties.length > 0">
           <h4 class="font-bold mb-2">
             Form Fields
           </h4>
           <div class="border border-gray-300 rounded-md">
-            <div v-for="(field,index) in properties" :key="field.id" class="p-2 border-gray-300 flex items-center" :class="{'border-t':index!=0}">
+            <div v-for="(field,index) in form.properties" :key="field.id" class="p-2 border-gray-300 flex items-center" :class="{'border-t':index!=0}">
               <p class="flex-grow truncate">
               {{ field.name }}
               </p>
@@ -60,9 +60,9 @@
               href="javascript:void(0);" class="text-gray-500" @click="showColumnsModal=true"
             >Display columns</a>
           </p>
-          <p class="text-right text-xs uppercase">
+          <p class="text-right cursor-pointer text-xs uppercase">
             <a
-              :href="exportUrl" target="_blank"
+              @click.prevent="downloadAsCsv" href="#"
             >Export as CSV</a>
           </p>
         </div>
@@ -77,10 +77,12 @@
         <open-table
           ref="table"
           class="max-h-full"
+          :columns="properties"
           :data="filteredData"
           :loading="isLoading"
           @resize="dataChanged()"
           @deleted="onDeleteRecord()"
+          @update-columns="onColumnUpdated"
         />
       </scroll-shadow>
     </div>
@@ -148,7 +150,7 @@ export default {
 
       // Fuze search
       const fuzeOptions = {
-        keys: this.form.properties.map((field) => field.id)
+        keys: this.properties.map((field) => field.id)
       }
       const fuse = new Fuse(filteredData, fuzeOptions)
       return fuse.search(this.searchForm.search).map((res) => {
@@ -176,27 +178,21 @@ export default {
       }
 
       // check if form properties already has a created_at column
-      let hasCreatedAt = false
-      this.form.properties.forEach((property) => {
+      this.properties = clonedeep(this.form.properties)
+      if (!this.properties.find((property) => {
         if (property.id === 'created_at') {
-          hasCreatedAt = true
+          return true
         }
-      })
-
-      if (!hasCreatedAt) {
+      }) ) {
         // Add a "created at" column
-        const columns = clonedeep(this.form.properties)
-        columns.push({
+        this.properties.push({
           name: 'Created at',
           id: 'created_at',
           type: 'date',
           width: 140
         })
-        this.form.properties = columns
       }
       this.formInitDone = true
-
-      this.properties = clonedeep(this.form.properties)
       this.removed_properties = (this.form.removed_properties) ? clonedeep(this.form.removed_properties) : []
 
       // Get display columns from local storage
@@ -205,7 +201,7 @@ export default {
         this.displayColumns = JSON.parse(tmpColumns)
         this.onChangeDisplayColumns()
       } else {
-        this.form.properties.forEach((field) => {
+        this.properties.forEach((field) => {
           this.displayColumns[field.id] = true
         })
       }
@@ -237,10 +233,13 @@ export default {
         this.$refs.shadows.calcDimensions()
       }
     },
+    onColumnUpdated(columns) {
+      this.properties = columns
+    },
     onChangeDisplayColumns () {
-      if (process.client)
+      if (!process.client) return
       window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
-      this.form.properties = this.properties.concat(this.removed_properties).filter((field) => {
+      this.properties = clonedeep(this.form.properties).concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true
       })
     },
@@ -248,6 +247,15 @@ export default {
       this.fullyLoaded = false
       this.tableData = []
       this.getSubmissionsData()
+    },
+    downloadAsCsv() {
+      opnFetch(this.exportUrl, { responseType: "blob" })
+        .then( blob => {
+          var file = window.URL.createObjectURL(blob);
+          window.location.assign(file);
+        }).catch((error)=>{
+        console.error(error)
+      })
     }
   }
 }
