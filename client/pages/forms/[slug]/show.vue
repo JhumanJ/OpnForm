@@ -189,7 +189,7 @@ onMounted(() => {
 
 watch(() => form?.value?.id, (id) => {
   if (id) {
-    workingFormStore.set(form)
+    workingFormStore.set(form.value)
   }
 })
 

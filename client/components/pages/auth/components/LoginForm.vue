@@ -1,10 +1,10 @@
 <template>
   <div>
-    <forgot-password-modal :show="showForgotModal" @close="showForgotModal=false" />
+    <forgot-password-modal :show="showForgotModal" @close="showForgotModal=false"/>
 
     <form class="mt-4" @submit.prevent="login" @keydown="form.onKeydown($event)">
       <!-- Email -->
-      <text-input name="email" :form="form" label="Email" :required="true" placeholder="Your email address" />
+      <text-input name="email" :form="form" label="Email" :required="true" placeholder="Your email address"/>
 
       <!-- Password -->
       <text-input native-type="password" placeholder="Your password"
@@ -18,7 +18,8 @@
         </v-checkbox>
 
         <div class="w-full md:w-1/2 text-right">
-          <a href="#" class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700" @click.prevent="showForgotModal=true">
+          <a href="#" class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700"
+             @click.prevent="showForgotModal=true">
             Forgot your password?
           </a>
         </div>
@@ -58,7 +59,7 @@ export default {
     }
   },
 
-  setup () {
+  setup() {
     return {
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
@@ -76,27 +77,29 @@ export default {
   }),
 
   methods: {
-    async login () {
+    login() {
       // Submit the form.
-      const data = await this.form.post('login')
+      this.form.post('login').then(async (data) => {
+        // Save the token.
+        this.authStore.setToken(data.token)
 
-      // Save the token.
-      this.authStore.setToken(data.token)
+        const userData = await opnFetch('user')
+        this.authStore.setUser(userData)
 
-      const userData = await opnFetch('user')
-      this.authStore.setUser(userData)
+        const workspaces = await fetchAllWorkspaces()
+        this.workspaceStore.set(workspaces.data.value)
 
-      const workspaces = await fetchAllWorkspaces()
-      this.workspaceStore.set(workspaces.data.value)
+        // Load forms
+        this.formsStore.loadAll(this.workspaceStore.currentId)
 
-      // Load forms
-      this.formsStore.loadAll(this.workspaceStore.currentId)
+        // Redirect home.
+        this.redirect()
+      }).catch(() => {
 
-      // Redirect home.
-      this.redirect()
+      })
     },
 
-    redirect () {
+    redirect() {
       if (this.isQuick) {
         this.$emit('afterQuickLogin')
         return
@@ -106,10 +109,10 @@ export default {
       const router = useRouter()
 
       if (intendedUrlCookie.value) {
-        router.push({ path: intendedUrlCookie.value })
+        router.push({path: intendedUrlCookie.value})
         useCookie('intended_url').value = null
       } else {
-        router.push({ name: 'home' })
+        router.push({name: 'home'})
       }
     }
   }
