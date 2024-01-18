@@ -84,7 +84,7 @@ class SubscriptionController extends Controller
             ]);
         }
         return $this->success([
-            'portal_url' => Auth::user()->billingPortalUrl(url('/home'))
+            'portal_url' => Auth::user()->billingPortalUrl(front_url('/home'))
         ]);
     }
 

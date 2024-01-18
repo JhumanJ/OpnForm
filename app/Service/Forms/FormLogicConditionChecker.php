@@ -83,6 +83,10 @@ class FormLogicConditionChecker
     private function checkListContains ($condition, $fieldValue): bool {
         if (is_null($fieldValue)) return false;
 
+        if (!is_array($fieldValue)) {
+            return $this->checkEquals($condition, $fieldValue);
+        }
+
         if (is_array($condition['value'])) {
             return count(array_intersect($condition['value'], $fieldValue)) === count($condition['value']);
         } else {

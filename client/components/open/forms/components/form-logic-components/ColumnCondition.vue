@@ -1,6 +1,6 @@
 
 <template>
-  <div v-if="isMounted" class="flex flex-wrap">
+  <div v-if="content" class="flex flex-wrap">
     <div class="w-full font-semibold text-gray-700 dark:text-gray-300 mb-2">
       {{ property.name }}
     </div>
@@ -9,7 +9,7 @@
                  @update:model-value="operatorChanged()"
     />
 
-    <template v-if="hasInput">
+    <template v-if="needsInput">
       <component v-bind="inputComponentData" :is="inputComponentData.component" v-model="content.value" class="w-full"
                  :name="'value_'+property.id" placeholder="Filter Value"
                  @update:model-value="emitInput()"
@@ -24,14 +24,13 @@ import OpenFilters from '../../../../../data/open_filters.json'
 export default {
   components: { },
   props: {
-    value: { required: true }
+    modelValue: { required: true }
   },
 
   data () {
     return {
-      content: { ...this.value },
+      content: { ...this.modelValue },
       available_filters: OpenFilters,
-      isMounted: false,
       hasInput: false,
       inputComponent: {
         text: 'TextInput',
@@ -84,22 +83,45 @@ export default {
           name: this.optionFilterNames(key, this.property.type)
         }
       })
-    }
+    },
+    needsInput () {
+      const operator = this.selectedOperator()
+      if (!operator) {
+        return false
+      }
+      const operatorFormat = operator.format
+      if (!operatorFormat) return true
+
+      if (operator.expected_type === 'boolean' && operatorFormat.type === 'enum' && operatorFormat.values.length === 1) {
+        return false
+      } else if (operator.expected_type === 'object' && operatorFormat.type === 'empty' && operatorFormat.values === '{}') {
+        return false
+      }
+
+      return true
+    },
   },
 
-  mounted () {
-    if (!this.content.operator) {
-      this.content.operator = this.operators[0].value
-      this.operatorChanged()
-    } else {
-      this.hasInput = this.needsInput()
+  watch: {
+    modelValue() {
+      if (this.modelValue) {
+        console.log(this.modelValue)
+        this.content = {
+          operator: this.operators[0].value,
+          ...this.modelValue,
+          property_meta: {
+            id: this.property.id,
+            type: this.property.type
+          }
+        }
+      }
+    },
+    'content.operator': function (val) {
+      if (val) {
+        console.log(val,'operatorChanged')
+        this.operatorChanged()
+      }
     }
-
-    this.content.property_meta = {
-      id: this.property.id,
-      type: this.property.type
-    }
-    this.isMounted = true
   },
 
   methods: {
@@ -122,7 +144,6 @@ export default {
 
       const operator = this.selectedOperator()
       const operatorFormat = operator.format
-      this.hasInput = this.needsInput()
 
       if (operator.expected_type === 'boolean' && operatorFormat.type === 'enum' && operatorFormat.values.length === 1) {
         this.content.value = operator.format.values[0]
@@ -132,22 +153,6 @@ export default {
         this.content.value = null
       }
       this.emitInput()
-    },
-    needsInput () {
-      const operator = this.selectedOperator()
-      if (!operator) {
-        return false
-      }
-      const operatorFormat = operator.format
-      if (!operatorFormat) return true
-
-      if (operator.expected_type === 'boolean' && operatorFormat.type === 'enum' && operatorFormat.values.length === 1) {
-        return false
-      } else if (operator.expected_type === 'object' && operatorFormat.type === 'empty' && operatorFormat.values === '{}') {
-        return false
-      }
-
-      return true
     },
     selectedOperator () {
       if (!this.content.operator) {

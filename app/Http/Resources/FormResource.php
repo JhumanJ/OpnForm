@@ -85,6 +85,7 @@ class FormResource extends JsonResource
             'is_password_protected' => true,
             'has_password' => $this->has_password,
             'width' => 'centered',
+            'no_branding' => $this->no_branding,
             'properties' => []
         ];
     }

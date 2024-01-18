@@ -160,7 +160,7 @@ const saveChanges = () => {
       .map(domain => domain ? domain.trim() : null)
       .filter(domain => domain && domain.length > 0)
   }).then((data) => {
-    workspacesStore.addOrUpdate(data)
+    workspacesStore.save(data)
     useAlert().success('Custom domains saved.')
   }).catch((error) => {
     useAlert().error('Failed to update custom domains: ' + error.response.data.message)

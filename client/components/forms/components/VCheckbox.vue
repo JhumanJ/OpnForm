@@ -3,12 +3,11 @@
     <input
       :id="id || name"
       :name="name"
-      :checked="internalValue"
+      v-model="internalValue"
       type="checkbox"
       :class="sizeClasses"
       class="rounded border-gray-500 cursor-pointer"
       :disabled="disabled?true:null"
-      @click="handleClick"
     >
     <label :for="id || name" class="text-gray-700 dark:text-gray-300 ml-2" :class="{'!cursor-not-allowed':disabled}">
       <slot />
@@ -27,7 +26,6 @@ const props = defineProps({
   id: { type: String, default: null },
   name: { type: String, default: 'checkbox' },
   modelValue: { type: [Boolean, String], default: false },
-  checked: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   sizeClasses: { type: String, default: 'w-4 h-4' }
 })
@@ -53,20 +51,9 @@ watch(() => internalValue.value, (val, oldVal) => {
   }
 })
 
-if ('checked' in props) {
-  internalValue.value = props.checked
-}
-
 onMounted(() => {
-  emit('update:modelValue', internalValue.value)
-})
-
-const handleClick = (e) => {
-  emit('click', e)
-
-  if (!e.isPropagationStopped) {
-    internalValue.value = e.target.checked
-    emit('update:modelValue', internalValue.value)
+  if (internalValue.value === null) {
+    internalValue.value = false
   }
-}
+})
 </script>

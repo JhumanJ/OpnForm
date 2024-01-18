@@ -15,6 +15,7 @@ export default {
     "twitter": "https://twitter.com/OpnForm",
     "zapier_integration": "https://zapier.com/developer/public-invite/146950/58db583730cc46b821614468d94c35de/",
     "book_onboarding": "https://zcal.co/i/YQVGEULQ",
-    "feature_requests": "https://opnform.canny.io/feature-requests"
+    "feature_requests": "https://opnform.featurebase.app/",
+    "roadmap": "https://opnform.featurebase.app/roadmap",
   }
 }

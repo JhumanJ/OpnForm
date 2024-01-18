@@ -58,9 +58,6 @@ import LoginForm from "~/components/pages/auth/components/LoginForm.vue"
 definePageMeta({
   middleware: "guest"
 })
-defineRouteRules({
-  swr: 3600
-})
 useOpnSeoMeta({
   title: 'Login'
 })
