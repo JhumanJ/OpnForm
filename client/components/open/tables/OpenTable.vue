@@ -8,13 +8,13 @@
            style="will-change: transform; transform: translate3d(0px, 0px, 0px)"
     >
       <tr class="n-table-row overflow-x-hidden">
-        <resizable-th v-for="col, index in form.properties" :id="'table-head-cell-' + col.id" :key="col.id"
+        <resizable-th v-for="col, index in columns" :id="'table-head-cell-' + col.id" :key="col.id"
                       scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
                       class="n-table-cell p-0 relative"
                       @resize-width="resizeCol(col, $event)"
         >
           <p
-            :class="{'border-r': index < form.properties.length - 1 || hasActions}"
+            :class="{'border-r': index < columns.length - 1 || hasActions}"
             class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
           >
             {{ col.name }}
@@ -36,16 +36,16 @@
           class="action-row absolute w-full"
           style="will-change: transform; transform: translate3d(0px, 32px, 0px)"
       >
-        <td :colspan="form.properties.length" class="p-1">
+        <td :colspan="columns.length" class="p-1">
           <slot name="actions" />
         </td>
       </tr>
       <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
-        <td v-for="col, colIndex in form.properties"
+        <td v-for="col, colIndex in columns"
             :key="col.id"
             :style="{width: col.cell_width + 'px'}"
             class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
-            :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== form.properties.length - 1 || hasActions},
+            :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== columns.length - 1 || hasActions},
                      colClasses(col)]"
         >
           <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
@@ -55,18 +55,18 @@
         <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
             style="width: 100px"
         >
-          <record-operations :form="form" :structure="form.properties" :rowid="row.id" @deleted="$emit('deleted')" />
+          <record-operations :form="form" :structure="columns" :rowid="row.id" @deleted="$emit('deleted')" />
         </td>
       </tr>
       <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
-        <td :colspan="form.properties.length" class="p-8 w-full">
+        <td :colspan="columns.length" class="p-8 w-full">
           <Loader class="w-4 h-4 mx-auto" />
         </td>
       </tr>
     </tbody>
     <tbody v-else key="body-content" class="n-table-body">
       <tr class="n-table-row loader w-full">
-        <td :colspan="form.properties.length" class="n-table-cell w-full p-8">
+        <td :colspan="columns.length" class="n-table-cell w-full p-8">
           <Loader v-if="loading" class="w-4 h-4 mx-auto" />
           <p v-else class="text-gray-500 text-center">
             No data found.
@@ -92,6 +92,10 @@ import {hash} from "~/lib/utils.js";
 export default {
   components: { ResizableTh, RecordOperations },
   props: {
+    columns: {
+      type: Array,
+      default: () => []
+    },
     data: {
       type: Array,
       default: () => []
@@ -153,7 +157,7 @@ export default {
   },
 
   watch: {
-    'form.properties': {
+    'columns': {
       handler () {
         this.onStructureChange()
       },
@@ -212,11 +216,11 @@ export default {
       return [colAlign, colColor, colWrap, colFontWeight]
     },
     onStructureChange () {
-      if (this.form && this.form.properties) {
+      if (this.columns) {
         this.$nextTick(() => {
-          this.form.properties.forEach(col => {
+          this.columns.forEach(col => {
             if (!col.hasOwnProperty('cell_width')) {
-              if (this.allowResize && this.form !== null && document.getElementById('table-head-cell-' + col.id)) {
+              if (this.allowResize && this.columns.length && document.getElementById('table-head-cell-' + col.id)) {
                 // Within editor
                 this.resizeCol(col, document.getElementById('table-head-cell-' + col.id).offsetWidth)
               }
@@ -227,10 +231,10 @@ export default {
     },
     resizeCol (col, width) {
       if (!this.form) return
-      const columns = clonedeep(this.form.properties)
-      const index = this.form.properties.findIndex(c => c.id === col.id)
+      const columns = clonedeep(this.columns)
+      const index = this.columns.findIndex(c => c.id === col.id)
       columns[index].cell_width = width
-      this.form.properties = columns
+      this.setColumns(columns)
       this.$nextTick(() => {
         this.$emit('resize')
       })
@@ -263,6 +267,9 @@ export default {
           }
         }
       }
+    },
+    setColumns(val) {
+      this.$emit('update-columns',val)
     }
   }
 }
