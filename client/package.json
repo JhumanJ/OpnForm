@@ -36,6 +36,7 @@
     "amplitude-js": "^8.21.9",
     "chart.js": "^4.4.0",
     "clone-deep": "^4.0.1",
+    "codemirror": "^6.0.1",
     "crisp-sdk-web": "^1.0.21",
     "date-fns": "^2.28.0",
     "debounce": "^1.2.1",
