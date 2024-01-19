@@ -40,7 +40,7 @@ import {opnFetch} from "~/composables/useOpnApi.js";
 import {fetchAllWorkspaces} from "~/stores/workspaces.js";
 
 definePageMeta({
-  middleware: "admin"
+  middleware: "moderator"
 })
 
 useOpnSeoMeta({

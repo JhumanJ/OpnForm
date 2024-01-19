@@ -102,6 +102,11 @@ class User extends Authenticatable implements JWTSubject
         return in_array($this->email, config('opnform.admin_emails'));
     }
 
+    public function getModeratorAttribute()
+    {
+        return in_array($this->email, config('opnform.moderator_emails')) || $this->admin;
+    }
+
     public function getTemplateEditorAttribute()
     {
         return $this->admin || in_array($this->email, config('opnform.template_editor_emails'));

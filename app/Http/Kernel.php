@@ -5,7 +5,9 @@ namespace App\Http;
 use App\Http\Middleware\AcceptsJsonMiddleware;
 use App\Http\Middleware\AuthenticateJWT;
 use App\Http\Middleware\CustomDomainRestriction;
+use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsModerator;
 use App\Http\Middleware\IsNotSubscribed;
 use App\Http\Middleware\IsSubscribed;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -58,6 +60,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            ImpersonationMiddleware::class,
         ],
     ];
 
@@ -72,6 +75,7 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'admin' => IsAdmin::class,
+        'moderator' => IsModerator::class,
         'subscribed' => IsSubscribed::class,
         'not-subscribed' => IsNotSubscribed::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
