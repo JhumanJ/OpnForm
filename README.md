@@ -84,12 +84,18 @@ The `-v` argument creates a local directory called `my-opnform-data` which will 
 The `--name` argument names the running container so that you can refer back to it later, with e.g. `docker stop opnform`.  You can use any name you'd like.
 
 
-#### Using a custom .env file
+#### Using custom .env files
 
-If you have a custom env file you can use this like so:
+If you have custom env file you can use them like so:
 
+Custom Laravel .env file:
 ```
-docker run --name opnform -v $PWD/my-custom-env-file.env:/app/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
+docker run --name opnform -v $PWD/custom-laravel-env-file.env:/app/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
+```
+
+Custom Nuxt .env file:
+```
+docker run --name opnform -v $PWD/custom-nuxt-env-file.env:/app/client/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
 This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.docker.env` example file as there are slightly different defaults for the dockerized setup.
