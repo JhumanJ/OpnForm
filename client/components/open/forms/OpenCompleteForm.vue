@@ -73,7 +73,7 @@
                    @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
-            <open-form-button :loading="loading" :theme="theme" color="green" class="mt-2 px-8 mx-1"
+            <open-form-button :loading="loading" :theme="theme" :color="form.color" class="mt-2 px-8 mx-1"
                               :class="submitButtonClass" @click.prevent="submitForm"
             >
               {{ form.submit_button_text }}
@@ -162,9 +162,6 @@ export default {
     },
     isHideTitle () {
       return this.form.hide_title || (process.client && window.location.href.includes('hide_title=true'))
-    },
-    isHideDescription () {
-      return this.form.hide_description || (process.client && window.location.href.includes('hide_description=true'))
     }
   },
 
