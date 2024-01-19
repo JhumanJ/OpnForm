@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ImpersonationMiddleware
 {
@@ -64,10 +65,14 @@ class ImpersonationMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() ||
-            !auth()->payload()->get('impersonating')) {
+        try {
+            if (!auth()->check() || !auth()->payload()->get('impersonating')) {
+                return $next($request);
+            }
+        } catch (JWTException $e) {
             return $next($request);
         }
+
         // Check that route is allowed
         $routeName = $request->route()->getName();
         if (!in_array($routeName, self::ALLOWED_ROUTES)) {
