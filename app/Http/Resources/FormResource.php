@@ -90,6 +90,7 @@ class FormResource extends JsonResource
             'no_branding' => $this->no_branding,
             'properties' => [],
             'logo_picture' => $this->logo_picture,
+            'seo_meta' => $this->seo_meta,
             'cover_picture' => $this->cover_picture,
 
         ];
