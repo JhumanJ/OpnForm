@@ -26,7 +26,7 @@
       </template>
       <span v-if="form.visibility === 'draft'"
         class="block px-4 py-2 text-md text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-        @click="showDraftFormWarningModal=true"
+        @click="showDraftFormWarningNotification"
       >
                 <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"
              xmlns="http://www.w3.org/2000/svg"
@@ -151,11 +151,6 @@
         </div>
       </div>
     </modal>
-
-    <modal :show="showDraftFormWarningModal" max-width="lg" @close="showDraftFormWarningModal=false">
-        <draft-form-preview-warning :to="{name: 'forms-slug-edit', params: {slug: form.slug}}"/>
-      </modal>
-
     <form-template-modal v-if="!isMainPage && user" :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false" />
   </div>
 </template>
@@ -164,7 +159,6 @@
 import { ref, defineProps, computed } from 'vue'
 import Dropdown from '~/components/global/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
-import DraftFormPreviewWarning from '~/components/global/DraftFormPreviewWarning.vue'
 
 const { copy } = useClipboard()
 const router = useRouter()
@@ -208,5 +202,9 @@ const deleteForm = () => {
     useAlert().success('Form was deleted.')
     loadingDelete.value = false
   })
+}
+
+const showDraftFormWarningNotification = () => {
+  useAlert().warning('This form is currently in Draft mode and is not publicly accessible, You can change the form status on the edit form page.')
 }
 </script>

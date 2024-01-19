@@ -23,7 +23,7 @@
                 <extra-menu class="mr-2" :form="form"/>
 
                 <v-button v-if="form.visibility === 'draft'" color="white"
-                          class="mr-2 text-blue-600 hidden sm:block" @click="showDraftFormWarningModal=true"
+                          class="mr-2 text-blue-600 hidden sm:block" @click="showDraftFormWarningNotification"
                 >
                   <svg class="w-6 h-6 inline -mt-1" viewBox="0 0 24 24" fill="none"
                        xmlns="http://www.w3.org/2000/svg"
@@ -131,9 +131,6 @@
           </div>
         </div>
       </div>
-      <modal :show="showDraftFormWarningModal" max-width="lg" @close="showDraftFormWarningModal=false">
-        <draft-form-preview-warning :to="{name: 'forms-slug-edit', params: {slug: slug}}"/>
-      </modal>
     </template>
     <div v-else-if="loading" class="text-center w-full p-5">
       <Loader class="h-6 w-6 mx-auto"/>
@@ -148,7 +145,6 @@
 import {computed} from 'vue'
 import ProTag from '~/components/global/ProTag.vue'
 import VButton from '~/components/global/VButton.vue'
-import DraftFormPreviewWarning from '~/components/global/DraftFormPreviewWarning.vue'
 import ExtraMenu from '../../../components/pages/forms/show/ExtraMenu.vue'
 import FormCleanings from '../../../components/pages/forms/show/FormCleanings.vue'
 
@@ -216,5 +212,9 @@ watch(() => form?.value?.id, (id) => {
 
 const goBack = () => {
   useRouter().push({name: 'home'})
+}
+
+const showDraftFormWarningNotification = () => {
+  useAlert().warning('This form is currently in Draft mode and is not publicly accessible, You can change the form status on the edit form page.')
 }
 </script>
