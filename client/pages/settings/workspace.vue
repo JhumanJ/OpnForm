@@ -201,10 +201,11 @@ const isUrl = (str) => {
   return !!pattern.test(str)
 }
 const createWorkspace = () => {
-  form.post('/open/workspaces/create').then((response) => {
-    fetchAllWorkspaces()
+  form.post('/open/workspaces/create').then((data) => {
+    workspacesStore.save(data.workspace)
+    workspacesStore.currentId = data.workspace.id
     workspaceModal.value = false
-    useAlert().success('Workspace successfully created.')
+    useAlert().success('Workspace successfully created! You are now editing settings for your new workspace.')
   })
 }
 

@@ -73,7 +73,8 @@ class WorkspaceController extends Controller
 
         return $this->success([
             'message' => 'Workspace created.',
-            'workspace_id' => $workspace->id
+            'workspace_id' => $workspace->id,
+            'workspace' => new WorkspaceResource($workspace)
         ]);
     }
 }
