@@ -11,7 +11,7 @@
                 :data="countries"
                 :disabled="(disabled || countries.length===1)?true:null" :searchable="true" :search-keys="['name']" :option-key="'code'" :color="color"
                 :has-error="hasValidation && form.errors.has(name)"
-                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @update:model-value="onChangeCountryCode"
+                :placeholder="'Select a country'" :uppercase-labels="true" :theme="theme" @change="onChangeCountryCode"
       >
         <template #option="props">
           <div class="flex items-center space-x-2 hover:text-white">
@@ -29,7 +29,7 @@
       </v-select>
       <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled?true:null"
              :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-             :placeholder="placeholder" :style="inputStyle" @update:model-value="onInput"
+             :placeholder="placeholder" :style="inputStyle" @input="onInput"
       >
     </div>
 
