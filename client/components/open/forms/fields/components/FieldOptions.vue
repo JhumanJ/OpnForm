@@ -100,7 +100,30 @@
         />
         <text-input name="scale_step_value" native-type="number" :min="1" class="mt-4"
                     :form="field" required
-                    label="Scale step svalue"
+                    label="Scale steps value"
+        />
+      </template>
+
+      <v-checkbox v-model="field.is_slider" class="mt-4"
+                  :name="field.id+'_is_slider'" @update:model-value="initSlider"
+      >
+        Slider
+      </v-checkbox>
+      <p class="text-gray-400 text-xs mb-5">
+        Transform this field into a slider input.
+      </p>
+      <template v-if="field.is_slider">
+        <text-input name="slider_min_value" native-type="number" class="mt-4"
+                    :form="field" required
+                    label="Min slider value"
+        />
+        <text-input name="slider_max_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Max slider value"
+        />
+        <text-input name="slider_step_value" native-type="number" :min="1" class="mt-4"
+                    :form="field" required
+                    label="Slider steps value"
         />
       </template>
     </div>
@@ -535,6 +558,7 @@ export default {
     initRating () {
       if (this.field.is_rating) {
         this.field.is_scale = false
+        this.field.is_slider = false
         if (!this.field.rating_max_value) {
           this.field.rating_max_value = 5
         }
@@ -543,6 +567,7 @@ export default {
     initScale () {
       if (this.field.is_scale) {
         this.field.is_rating = false
+        this.field.is_slider = false
         if (!this.field.scale_min_value) {
           this.field.scale_min_value = 1
         }
@@ -551,6 +576,22 @@ export default {
         }
         if (!this.field.scale_step_value) {
           this.field.scale_step_value = 1
+        }
+      }
+    },
+
+    initSlider () {
+      if (this.field.is_slider) {
+        this.field.is_rating = false
+        this.field.is_scale = false
+        if (!this.field.slider_min_value) {
+          this.field.slider_min_value = 0
+        }
+        if (!this.field.slider_max_value) {
+          this.field.slider_max_value = 50
+        }
+        if (!this.field.slider_step_value) {
+          this.field.slider_step_value = 5
         }
       }
     },
