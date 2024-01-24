@@ -155,8 +155,6 @@ useOpnSeoMeta({
   title: 'Home'
 })
 
-let showDraftFormWarningModal = ref(false)
-
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
