@@ -145,7 +145,7 @@ export default {
             this.fetchGeneratedForm(generationId)
           }
         }).catch(error => {
-          this.useAlert.error(error.response.data.message)
+          this.useAlert.error(error.data.message)
           this.state = 'default'
           this.loading = false
         })
