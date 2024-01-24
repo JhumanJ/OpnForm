@@ -76,7 +76,7 @@ const impersonate = () => {
     router.push({ name: 'home' })
   }).catch((error) => {
     console.error(error)
-    useAlert().error(error.response.data.message)
+    useAlert().error(error.data.message)
     loading.value = false
   })
 }

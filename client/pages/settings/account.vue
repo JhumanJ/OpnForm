@@ -41,7 +41,7 @@ const deleteAccount = () => {
     // Redirect to login.
     router.push({ name: 'login' })
   }).catch((error) => {
-    useAlert().error(error.response.data.message)
+    useAlert().error(error.data.message)
     loading = false
   })
 }
