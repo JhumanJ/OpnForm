@@ -24,6 +24,10 @@ class CustomDomainRestriction
 
         $customDomain = $request->header(self::CUSTOM_DOMAIN_HEADER);
         if (!preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $customDomain)) {
+            \Log::warning('Invalid domain', [
+                'domain' => $customDomain,
+                'ip' => $request->ip(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid domain',
@@ -39,6 +43,10 @@ class CustomDomainRestriction
 
         // Check if domain is known
         if (!$workspace = Workspace::whereJsonContains('custom_domains',$customDomain)->first()) {
+            \Log::warning('Unknown domain', [
+                'domain' => $customDomain,
+                'ip' => $request->ip(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Unknown domain',

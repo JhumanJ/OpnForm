@@ -377,13 +377,11 @@ export default {
       this.dataForm = useForm(formData)
     },
     previousPage () {
-      console.log('preivousPage', this.currentFieldGroupIndex)
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
     nextPage () {
-      console.log('nextPage',this.currentFieldGroupIndex)
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
