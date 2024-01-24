@@ -78,7 +78,7 @@ export default {
     },
     saveDetails () {
       if (this.form.busy) return
-      this.form.put('api/subscription/update-customer-details').then(() => {
+      this.form.put('subscription/update-customer-details').then(() => {
         this.loading = true
         opnFetch('/subscription/new/' + this.plan + '/' + (!this.yearly ? 'monthly' : 'yearly') + '/checkout/with-trial').then((data) => {
           window.location = data.checkout_url
