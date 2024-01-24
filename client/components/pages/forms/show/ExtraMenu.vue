@@ -177,7 +177,6 @@ let loadingDuplicate = ref(false)
 let loadingDelete = ref(false)
 let showDeleteFormModal = ref(false)
 let showFormTemplateModal = ref(false)
-let showDraftFormWarningModal = ref(false)
 
 const copyLink = () => {
   copy(props.form.share_url)
