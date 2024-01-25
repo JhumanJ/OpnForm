@@ -1,16 +1,16 @@
 import {fetchAllWorkspaces} from "~/stores/workspaces.js";
+import {opnFetch} from "~/composables/useOpnApi.js";
 
 export default defineNuxtRouteMiddleware(async(to, from) => {
   const authStore = useAuthStore()
   authStore.initStore(useCookie('token').value, useCookie('admin_token').value)
 
   if (authStore.token && !authStore.user) {
-    const {data, error} = await useOpnApi('user')
-    authStore.setUser(data.value)
-
-    // Load workspaces
     const workspaceStore = useWorkspacesStore()
-    const {data: workspacesData, error: workspacesError} = await fetchAllWorkspaces()
-    workspaceStore.save(workspacesData.value)
+
+    // Load user data and workspaces
+    const [userDataResponse, workspacesResponse] = await Promise.all([useOpnApi('user'), fetchAllWorkspaces()]);
+    authStore.setUser(userDataResponse.data.value)
+    workspaceStore.save(workspacesResponse.data.value)
   }
 })

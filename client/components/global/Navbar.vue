@@ -219,7 +219,7 @@ export default {
   methods: {
     async logout() {
       // Log out the user.
-      await this.authStore.logout()
+      this.authStore.logout()
 
       // Reset store
       this.workspacesStore.resetState()

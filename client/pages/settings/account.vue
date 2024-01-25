@@ -35,10 +35,7 @@ const deleteAccount = () => {
     loading = false
     useAlert().success(data.message)
 
-    // Log out the user.
-    await authStore.logout()
-
-    // Redirect to login.
+    authStore.logout()
     router.push({ name: 'login' })
   }).catch((error) => {
     useAlert().error(error.data.message)
