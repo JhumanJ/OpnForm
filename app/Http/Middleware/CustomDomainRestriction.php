@@ -24,7 +24,7 @@ class CustomDomainRestriction
 
         $customDomain = $request->header(self::CUSTOM_DOMAIN_HEADER);
         if (!preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $customDomain)) {
-            \Log::warning('Invalid domain', [
+            \Log::info('[CUSTOM_DOMAIN]: Invalid domain', [
                 'domain' => $customDomain,
                 'ip' => $request->ip(),
             ]);
@@ -43,7 +43,7 @@ class CustomDomainRestriction
 
         // Check if domain is known
         if (!$workspace = Workspace::whereJsonContains('custom_domains',$customDomain)->first()) {
-            \Log::warning('Unknown domain', [
+            \Log::info('[CUSTOM_DOMAIN]: Unknown domain', [
                 'domain' => $customDomain,
                 'ip' => $request->ip(),
             ]);
@@ -54,6 +54,11 @@ class CustomDomainRestriction
             ], 420);
         }
 
+        \Log::info('[CUSTOM_DOMAIN]: Applying scopes', [
+            'domain' => $customDomain,
+            'ip' => $request->ip(),
+            'workspace' => $workspace->id,
+        ]);
         Workspace::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspace) {
             $builder->where('workspaces.id', $workspace->id);
         });
