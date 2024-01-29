@@ -59,7 +59,7 @@ export default {
           this.useAlert.error('Something went wrong!')
         }
       }).catch((error) => {
-        this.useAlert.error(error.response.data.message)
+        this.useAlert.error(error.data.message)
       })
     }
   }

@@ -29,7 +29,7 @@
       </v-select>
       <input v-model="inputVal" type="text" class="inline-flex-grow !border-l-0 !rounded-l-none" :disabled="disabled?true:null"
              :class="[theme.default.input, { '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200': disabled }]"
-             :placeholder="placeholder" :style="inputStyle" @update:model-value="onInput"
+             :placeholder="placeholder" :style="inputStyle" @input="onInput"
       >
     </div>
 
@@ -46,7 +46,7 @@
 <script>
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
-import countryCodes from '../../../data/country_codes.json'
+import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
 

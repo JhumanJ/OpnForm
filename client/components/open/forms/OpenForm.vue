@@ -238,7 +238,7 @@ export default {
 
   mounted () {
     this.initForm()
-    if (window.client && window.location.href.includes('auto_submit=true')) {
+    if (process.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
     }
@@ -316,7 +316,7 @@ export default {
       }
       if (this.isPublicFormPage && this.form.auto_save) {
         let pendingData = this.pendingSubmission.get()
-        if (pendingData !== null && pendingData) {
+        if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
               const dateObj = new Date()
@@ -377,13 +377,11 @@ export default {
       this.dataForm = useForm(formData)
     },
     previousPage () {
-      console.log('preivousPage', this.currentFieldGroupIndex)
       this.currentFieldGroupIndex -= 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false
     },
     nextPage () {
-      console.log('nextPage',this.currentFieldGroupIndex)
       this.currentFieldGroupIndex += 1
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return false

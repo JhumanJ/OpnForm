@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
-    Route::get('user', [UserController::class, 'current']);
+    Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);
 
     Route::patch('settings/profile', [ProfileController::class, 'update']);
@@ -116,7 +116,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
     });
 
-    Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
+    Route::group(['middleware' => 'moderator', 'prefix' => 'admin'], function () {
         Route::get('impersonate/{identifier}',
             [\App\Http\Controllers\Admin\ImpersonationController::class, 'impersonate']);
     });

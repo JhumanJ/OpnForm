@@ -41,7 +41,7 @@ const openBillingDashboard = () => {
     const url = data.portal_url
     window.location = url
   }).catch((error) => {
-    useAlert().error(error.response.data.message)
+    useAlert().error(error.data.message)
   }).finally(() => {
     billingLoading = false
   })
