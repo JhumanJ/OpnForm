@@ -64,7 +64,7 @@ export const useCrisp = () => {
 
   function pushEvent(event, data = {}) {
     if (!crisp) return
-    crisp.pushEvent(event, data)
+    crisp.session.pushEvent(event, data)
   }
 
   function setSegments(segments, overwrite = false) {
