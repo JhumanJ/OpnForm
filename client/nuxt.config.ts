@@ -17,7 +17,7 @@ export default defineNuxtConfig({
         ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
-        transpile: ["vue-notion", "query-builder-vue-3"],
+        transpile: ["vue-notion", "query-builder-vue-3","vue-signature-pad"],
     },
     postcss: {
         plugins: {

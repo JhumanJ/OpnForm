@@ -32,6 +32,11 @@ export const themes = {
       unselectedButton: 'bg-white hover:bg-gray-50 border',
       help: 'text-gray-400 dark:text-gray-500'
     },
+    SliderInput: {
+      label: 'text-gray-700 dark:text-gray-300 font-semibold',
+      stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs',
+      help: 'text-gray-400 dark:text-gray-500'
+    },
     fileInput: {
       input: 'min-h-40 border border-dashed border-gray-300 p-4 rounded-lg',
       inputHover: {
@@ -69,6 +74,11 @@ export const themes = {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
       button: 'flex-1 appearance-none border-gray-300 dark:border-gray-600 w-full py-2 px-2 bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 text-center',
       unselectedButton: 'bg-white hover:bg-gray-50 border -mx-4',
+      help: 'text-gray-400 dark:text-gray-500'
+    },
+    SliderInput: {
+      label: 'text-gray-700 dark:text-gray-300 font-semibold',
+      stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs',
       help: 'text-gray-400 dark:text-gray-500'
     },
     fileInput: {
@@ -109,6 +119,11 @@ export const themes = {
       button: 'rounded border-transparent flex-1 appearance-none shadow-inner-notion w-full py-2 px-2 bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 text-center',
       unselectedButton: 'bg-notion-input-background dark:bg-notion-dark-light hover:bg-gray-50 border',
       help: 'text-notion-input-help dark:text-gray-500'
+    },
+    SliderInput: {
+      label: 'text-gray-700 dark:text-gray-300 font-semibold',
+      stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs',
+      help: 'text-gray-400 dark:text-gray-500'
     },
     fileInput: {
       input: 'min-h-40 border border-dashed border-gray-300 p-4 rounded bg-notion-input-background',

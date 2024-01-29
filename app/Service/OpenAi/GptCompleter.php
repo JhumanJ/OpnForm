@@ -14,13 +14,14 @@ use OpenAI\Exceptions\ErrorException;
  */
 class GptCompleter
 {
-    const AI_MODEL = 'gpt-4';
+    const AI_MODEL = 'gpt-4-turbo-preview';
 
     protected Client $openAi;
     protected mixed $result;
     protected array $completionInput;
     protected ?string $systemMessage;
 
+    protected bool $expectsJson = false;
     protected int $tokenUsed = 0;
     protected bool $useStreaming = false;
 
@@ -47,8 +48,23 @@ class GptCompleter
         return $this;
     }
 
-    public function completeChat(array $messages, int $maxTokens = 4096, float $temperature = 0.81): self
+    public function expectsJson(): self
     {
+        $this->expectsJson = true;
+        return $this;
+    }
+
+    public function doesNotExpectJson(): self
+    {
+        $this->expectsJson = false;
+        return $this;
+    }
+
+    public function completeChat(array $messages, int $maxTokens = 4096, float $temperature = 0.81, ?bool $exceptJson = null): self
+    {
+        if (!is_null($exceptJson)) {
+            $this->expectsJson = $exceptJson;
+        }
         $this->computeChatCompletion($messages, $maxTokens, $temperature)
             ->queryCompletion();
 
@@ -128,6 +144,12 @@ class GptCompleter
             'max_tokens' => $maxTokens,
             'temperature' => $temperature
         ];
+
+        if ($this->expectsJson) {
+            $completionInput['response_format'] = [
+                'type' => 'json_object'
+            ];
+        }
 
         $this->completionInput = $completionInput;
         return $this;

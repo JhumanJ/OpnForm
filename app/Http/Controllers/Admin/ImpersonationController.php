@@ -12,7 +12,7 @@ class ImpersonationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('admin');
+        $this->middleware('moderator');
     }
 
     public function impersonate($identifier) {
@@ -29,12 +29,28 @@ class ImpersonationController extends Controller
             }
         }
 
-        if (!$user) return $this->error([
-            'message'=> 'User not found.'
+        if (!$user) {
+            return $this->error([
+                'message'=> 'User not found.'
+            ]);
+        } else if ($user->admin) {
+            return $this->error([
+                'message' => 'You cannot impersonate an admin.',
+            ]);
+        }
+
+        \Log::warning('Impersonation started',[
+            'from_id' => auth()->id(),
+            'from_email' => auth()->user()->email,
+            'target_id' => $user->id,
+            'target_email' => $user->id,
         ]);
 
-        // Be this user
-        $token = auth()->login($user);
+        $token = auth()->claims(auth()->user()->admin ? [] : [
+            'impersonating' => true,
+            'impersonator_id' => auth()->id(),
+        ])->login($user);
+
         return $this->success([
             'token' => $token
         ]);

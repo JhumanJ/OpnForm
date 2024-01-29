@@ -104,21 +104,10 @@ export default {
 
   watch: {
     modelValue() {
-      if (this.modelValue) {
-        console.log(this.modelValue)
-        this.content = {
-          operator: this.operators[0].value,
-          ...this.modelValue,
-          property_meta: {
-            id: this.property.id,
-            type: this.property.type
-          }
-        }
-      }
+      this.refreshContent()
     },
     'content.operator': function (val) {
       if (val) {
-        console.log(val,'operatorChanged')
         this.operatorChanged()
       }
     }
@@ -173,7 +162,21 @@ export default {
     },
     emitInput () {
       this.$emit('update:modelValue', this.castContent(this.content))
+    },
+    refreshContent() {
+      this.content = {
+        operator: this.operators[0].value,
+        ...this.modelValue,
+        property_meta: {
+          id: this.property.id,
+          type: this.property.type
+        }
+      }
     }
+  },
+
+  mounted() {
+    this.refreshContent()
   }
 }
 </script>

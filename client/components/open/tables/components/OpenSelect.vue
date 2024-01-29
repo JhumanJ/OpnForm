@@ -13,10 +13,7 @@ import OpenTag from './OpenTag.vue'
 export default {
   components: { OpenTag },
   props: {
-    value: {
-      type: Object
-    }
-
+    value: {}
   },
 
   data () {
@@ -31,8 +28,5 @@ export default {
       return false
     }
   },
-  mounted () {
-  },
-  methods: {}
 }
 </script>
