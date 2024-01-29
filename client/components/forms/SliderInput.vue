@@ -4,16 +4,23 @@
       <slot name="label" />
     </template>
     <div class="flex space-x-2">
-      <div class="flex-1">
+      <div class="flex-1 relative">
+        <div class="font-medium text-sm absolute -top-[6px]"
+             :style="labelStyle"
+        >
+          <div class="">
+            {{ compVal }}
+          </div>
+        </div>
         <input
           type="range"
-          class="w-full"
+          class="w-full mt-3"
           :min="minSlider"
           :max="maxSlider"
           :step="stepSlider"
           v-model="compVal"
         />
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-3 gap-2 -mt-1">
           <div
             v-for="i in sliderLabelsList"
             :key="i"
@@ -26,7 +33,6 @@
           </div>
         </div>
       </div>
-      <span class="w-8 font-semibold text-lg px-2">{{ compVal }}</span>
     </div>
 
     <template #help>
@@ -59,11 +65,18 @@ export default {
     };
   },
   computed: {
+    labelStyle() {
+      const ratio = ((this.compVal-this.minSlider) / (this.maxSlider-this.minSlider)) * 100
+      return {
+        left: `${ratio}%`,
+        marginLeft: `-${ratio/100*15}px`
+      }
+    },
     sliderLabelsList() {
       const midPoint = (this.maxSlider - this.minSlider) / 2 + this.minSlider;
       const labels = [
         {
-          label: `Min(${this.minSlider})`,
+          label: `${this.minSlider}`,
           style: "flex items-center justify-start",
         },
         {
@@ -71,7 +84,7 @@ export default {
           style: "flex items-center justify-center",
         },
         {
-          label: `Max(${this.maxSlider})`,
+          label: `${this.maxSlider}`,
           style: "flex items-center justify-end",
         },
       ];
@@ -82,6 +95,6 @@ export default {
     this.compVal = parseInt(this.compVal ?? this.minSlider);
   },
 
- 
+
 };
 </script>

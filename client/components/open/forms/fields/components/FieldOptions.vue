@@ -591,7 +591,7 @@ export default {
           this.field.slider_max_value = 50
         }
         if (!this.field.slider_step_value) {
-          this.field.slider_step_value = 5
+          this.field.slider_step_value = 1
         }
       }
     },
