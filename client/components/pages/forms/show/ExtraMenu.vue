@@ -24,7 +24,25 @@
           </svg>
         </v-button>
       </template>
-      <a v-if="isMainPage && user" v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" :href="form.share_url"
+      <span v-if="form.visibility === 'draft'"
+        class="block px-4 py-2 text-md text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+        @click="showDraftFormWarningNotification"
+      >
+                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          />
+          <path
+            d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          />
+        </svg>
+        View form
+      </span>
+
+      <a v-else-if="isMainPage && user" v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" :href="form.share_url"
          target="_blank"
          class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
       >
@@ -133,7 +151,6 @@
         </div>
       </div>
     </modal>
-
     <form-template-modal v-if="!isMainPage && user" :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false" />
   </div>
 </template>
@@ -184,5 +201,9 @@ const deleteForm = () => {
     useAlert().success('Form was deleted.')
     loadingDelete.value = false
   })
+}
+
+const showDraftFormWarningNotification = () => {
+  useAlert().warning('This form is currently in Draft mode and is not publicly accessible, You can change the form status on the edit form page.')
 }
 </script>
