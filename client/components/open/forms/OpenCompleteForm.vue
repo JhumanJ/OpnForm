@@ -1,6 +1,8 @@
 <template>
   <div v-if="form" class="open-complete-form">
     <h1 v-if="!isHideTitle" class="mb-4 px-2" :class="{'mt-4':isEmbedPopup}" v-text="form.title" />
+    <div v-if="form.description" v-html="form.description"
+           class="form-description mb-4 text-gray-700 dark:text-gray-300 whitespace-pre-wrap px-2"/>
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -8,13 +10,13 @@
       </p>
       <div class="form-group flex flex-wrap w-full">
         <div class="relative mb-3 w-full px-2">
-          <text-input :form="passwordForm" name="password" native-type="password" label="Password" />
+          <text-input :theme="theme" :form="passwordForm" name="password" native-type="password" label="Password" />
         </div>
       </div>
       <div class="flex flex-wrap justify-center w-full text-center">
-        <v-button @click="passwordEntered">
+        <open-form-button :theme="theme" :color="form.color" class="my-4" @click="passwordEntered">
           Submit
-        </v-button>
+        </open-form-button>
       </div>
     </div>
 
@@ -62,8 +64,6 @@
       mode="out-in"
     >
       <div v-if="!submitted" key="form">
-        <div v-if="form.description" v-html="form.description"
-           class="form-description mb-4 text-gray-700 dark:text-gray-300 whitespace-pre-wrap px-2"/>
         <open-form v-if="form"
                    :form="form"
                    :loading="loading"

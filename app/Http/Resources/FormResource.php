@@ -77,16 +77,22 @@ class FormResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'description' => $this->description,
             'slug' => $this->slug,
             'custom_code' => $this->custom_code,
             'dark_mode' => $this->dark_mode,
             'transparent_background' => $this->transparent_background,
             'color' => $this->color,
+            'theme' => $this->theme,
             'is_password_protected' => true,
             'has_password' => $this->has_password,
             'width' => 'centered',
             'no_branding' => $this->no_branding,
-            'properties' => []
+            'properties' => [],
+            'logo_picture' => $this->logo_picture,
+            'seo_meta' => $this->seo_meta,
+            'cover_picture' => $this->cover_picture,
+
         ];
     }
 
