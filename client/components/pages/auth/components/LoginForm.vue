@@ -26,7 +26,7 @@
       </div>
 
       <!-- Submit Button -->
-      <v-button dusk="btn_login" :loading="form.busy">
+      <v-button dusk="btn_login" :loading="form.busy || loading">
         Log in to continue
       </v-button>
 
@@ -72,6 +72,7 @@ export default {
       email: '',
       password: ''
     }),
+    loading: false,
     remember: false,
     showForgotModal: false
   }),
@@ -79,23 +80,24 @@ export default {
   methods: {
     login() {
       // Submit the form.
+      this.loading = true
       this.form.post('login').then(async (data) => {
         // Save the token.
         this.authStore.setToken(data.token)
 
-        const userData = await opnFetch('user')
-        this.authStore.setUser(userData)
-
-        const workspaces = await fetchAllWorkspaces()
-        this.workspaceStore.set(workspaces.data.value)
+        const [userDataResponse, workspacesResponse] = await Promise.all([opnFetch('user'), fetchAllWorkspaces()]);
+        this.authStore.setUser(userDataResponse)
+        this.workspaceStore.set(workspacesResponse.data.value)
 
         // Load forms
         this.formsStore.loadAll(this.workspaceStore.currentId)
 
         // Redirect home.
         this.redirect()
-      }).catch(() => {
-
+      }).catch((error) => {
+        console.error(error)
+      }).finally(() => {
+        this.loading = false
       })
     },
 

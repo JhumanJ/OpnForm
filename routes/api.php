@@ -116,7 +116,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
     });
 
-    Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
+    Route::group(['middleware' => 'moderator', 'prefix' => 'admin'], function () {
         Route::get('impersonate/{identifier}',
             [\App\Http\Controllers\Admin\ImpersonationController::class, 'impersonate']);
     });

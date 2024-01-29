@@ -280,14 +280,9 @@ export default {
           form_slug: response.form.slug
         })
         this.displayFormModificationAlert(response)
-        useRouter().push({
-          name: 'forms-show',
-          params: {
-            slug: this.createdForm.slug,
-            new_form: response.users_first_form
-          }
-        })
+        useRouter().push({ name: 'forms-slug-show-share', params: { slug: this.createdFormSlug, new_form: response.users_first_form } })
       }).catch((error) => {
+        console.error(error)
         if (error.response && error.response.status === 422) {
           this.validationErrorResponse = error.response
           this.showValidationErrors()

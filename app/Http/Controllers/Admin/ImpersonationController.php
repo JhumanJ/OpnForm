@@ -39,7 +39,6 @@ class ImpersonationController extends Controller
             ]);
         }
 
-
         \Log::warning('Impersonation started',[
             'from_id' => auth()->id(),
             'from_email' => auth()->user()->email,
@@ -47,15 +46,11 @@ class ImpersonationController extends Controller
             'target_email' => $user->id,
         ]);
 
-        // Be this user
-        if (auth()->user()->moderator) {
-            $token = auth()->claims([
-                'impersonating' => true,
-                'impersonator_id' => auth()->id(),
-            ])->login($user);
-        } else {
-            $token = auth()->login($user);
-        }
+        $token = auth()->claims(auth()->user()->admin ? [] : [
+            'impersonating' => true,
+            'impersonator_id' => auth()->id(),
+        ])->login($user);
+
         return $this->success([
             'token' => $token
         ]);

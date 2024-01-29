@@ -40,7 +40,7 @@
       </div>
 
       <template v-if="customDomainsEnabled">
-        <text-area-input v-model="customDomains" name="custom_domain" class="mt-4" :required="false"
+        <text-area-input :form="customDomainsForm" name="custom_domains" class="mt-4" :required="false"
                          :disabled="!workspace.is_pro"
                          label="Workspace Custom Domains" wrapper-class="" placeholder="yourdomain.com - 1 per line"
         />
@@ -135,7 +135,9 @@ let form = useForm({
   emoji: ''
 })
 let workspaceModal = ref(false)
-let customDomains = ''
+let customDomainsForm = useForm({
+  custom_domain: ''
+})
 let customDomainsLoading = ref(false)
 
 let workspace = computed(() => workspacesStore.getCurrent)
@@ -153,12 +155,14 @@ onMounted(() => {
 const saveChanges = () => {
   if (customDomainsLoading.value) return
   customDomainsLoading.value = true
+
   // Update the workspace custom domain
-  opnFetch('/open/workspaces/' + workspace.value.id + '/custom-domains', {
-    method: 'PUT',
-    custom_domains: customDomains.split('\n')
-      .map(domain => domain ? domain.trim() : null)
-      .filter(domain => domain && domain.length > 0)
+  customDomainsForm.put('/open/workspaces/' + workspace.value.id + '/custom-domains', {
+    data: {
+      custom_domains: customDomainsForm.custom_domains.split('\n')
+        .map(domain => domain ? domain.trim() : null)
+        .filter(domain => domain && domain.length > 0)
+    }
   }).then((data) => {
     workspacesStore.save(data)
     useAlert().success('Custom domains saved.')
@@ -171,7 +175,7 @@ const saveChanges = () => {
 
 const initCustomDomains = () => {
   if (!workspace || !workspace.value.custom_domains) return
-  customDomains = workspace.value.custom_domains.join('\n')
+  customDomainsForm.custom_domains = workspace.value.custom_domains.join('\n')
 }
 
 const deleteWorkspace = (workspaceId) => {
@@ -197,10 +201,11 @@ const isUrl = (str) => {
   return !!pattern.test(str)
 }
 const createWorkspace = () => {
-  form.post('/open/workspaces/create').then((response) => {
-    fetchAllWorkspaces()
+  form.post('/open/workspaces/create').then((data) => {
+    workspacesStore.save(data.workspace)
+    workspacesStore.currentId = data.workspace.id
     workspaceModal.value = false
-    useAlert().success('Workspace successfully created.')
+    useAlert().success('Workspace successfully created! You are now editing settings for your new workspace.')
   })
 }
 

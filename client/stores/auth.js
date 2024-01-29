@@ -75,11 +75,8 @@ export const useAuthStore = defineStore('auth', {
       // })
     },
 
-    async logout() {
-      try {
-        await useOpnApi('logout', {method: 'POST'})
-      } catch (e) {
-      }
+    logout() {
+      opnFetch('logout', {method: 'POST'}).catch((error) => {})
 
       this.user = null
       this.setToken(null)

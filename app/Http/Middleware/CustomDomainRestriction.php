@@ -38,7 +38,7 @@ class CustomDomainRestriction
         }
 
         // Check if domain is known
-        if (!$workspace = Workspace::whereJsonContains('custom_domains',$customDomain)->first()) {
+        if (!$workspaces = Workspace::whereJsonContains('custom_domains',$customDomain)->get()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unknown domain',
@@ -46,11 +46,12 @@ class CustomDomainRestriction
             ], 420);
         }
 
-        Workspace::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspace) {
-            $builder->where('workspaces.id', $workspace->id);
+        $workspacesIds = $workspaces->pluck('id')->toArray();
+        Workspace::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspacesIds) {
+            $builder->whereIn('id', $workspacesIds);
         });
-        Form::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspace) {
-            $builder->where('forms.workspace_id', $workspace->id);
+        Form::addGlobalScope('domain-restricted', function (Builder $builder) use ($workspacesIds) {
+            $builder->whereIn('workspace_id', $workspacesIds);
         });
 
         return $next($request);

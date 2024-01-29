@@ -39,7 +39,8 @@ class GenerateAiForm implements ShouldQueue
 
         $completer = (new GptCompleter(config('services.openai.api_key')))
             ->useStreaming()
-            ->setSystemMessage('You are a robot helping to generate forms.');
+            ->setSystemMessage('You are a robot helping to generate forms.')
+            ->expectsJson();
 
         try {
             $completer->completeChat([

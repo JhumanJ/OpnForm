@@ -7,72 +7,70 @@
            :class="{'absolute': data.length !== 0}"
            style="will-change: transform; transform: translate3d(0px, 0px, 0px)"
     >
-      <tr class="n-table-row overflow-x-hidden">
-        <resizable-th v-for="col, index in columns" :id="'table-head-cell-' + col.id" :key="col.id"
-                      scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
-                      class="n-table-cell p-0 relative"
-                      @resize-width="resizeCol(col, $event)"
+    <tr class="n-table-row overflow-x-hidden">
+      <resizable-th v-for="col, index in columns" :id="'table-head-cell-' + col.id" :key="col.id"
+                    scope="col" :allow-resize="allowResize" :width="(col.cell_width ? col.cell_width + 'px':'auto')"
+                    class="n-table-cell p-0 relative"
+                    @resize-width="resizeCol(col, $event)"
+      >
+        <p class="bg-gray-50 border-r dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
         >
-          <p
-            :class="{'border-r': index < columns.length - 1 || hasActions}"
-            class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
-          >
-            {{ col.name }}
-          </p>
-        </resizable-th>
-        <th v-if="hasActions" class="n-table-cell p-0 relative" style="width: 100px">
-          <p
-            class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
-          >
-            Actions
-          </p>
-        </th>
-      </tr>
+          {{ col.name }}
+        </p>
+      </resizable-th>
+      <th class="n-table-cell p-0 relative" style="width: 100px">
+        <p
+          class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
+        >
+          Actions
+        </p>
+      </th>
+    </tr>
     </thead>
     <tbody v-if="data.length > 0" class="n-table-body bg-white dark:bg-notion-dark-light">
-      <tr v-if="$slots.hasOwnProperty('actions')"
-          :id="'table-actions-'+tableHash"
-          ref="actions-row"
-          class="action-row absolute w-full"
-          style="will-change: transform; transform: translate3d(0px, 32px, 0px)"
-      >
-        <td :colspan="columns.length" class="p-1">
-          <slot name="actions" />
-        </td>
-      </tr>
-      <tr v-for="row, index in data" :key="index" class="n-table-row" :class="{'first':index===0}">
-        <td v-for="col, colIndex in columns"
-            :key="col.id"
-            :style="{width: col.cell_width + 'px'}"
-            class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
-            :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== columns.length - 1 || hasActions},
+    <tr v-if="$slots.hasOwnProperty('actions')"
+        :id="'table-actions-'+tableHash"
+        ref="actions-row"
+        class="action-row absolute w-full"
+        style="will-change: transform; transform: translate3d(0px, 32px, 0px)"
+    >
+      <td :colspan="columns.length" class="p-1">
+        <slot name="actions"/>
+      </td>
+    </tr>
+    <tr v-for="row, index in data" :key="row.id" class="n-table-row" :class="{'first':index===0}">
+      <td v-for="col, colIndex in columns"
+          :key="col.id"
+          :style="{width: col.cell_width + 'px'}"
+          class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
+          :class="[{'border-b': index !== data.length - 1, 'border-r': colIndex !== columns.length - 1 || hasActions},
                      colClasses(col)]"
-        >
-          <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
-                     :property="col" :value="row[col.id]"
-          />
-        </td>
-        <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
-            style="width: 100px"
-        >
-          <record-operations :form="form" :structure="columns" :rowid="row.id" @deleted="$emit('deleted')" />
-        </td>
-      </tr>
-      <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
-        <td :colspan="columns.length" class="p-8 w-full">
-          <Loader class="w-4 h-4 mx-auto" />
-        </td>
-      </tr>
+      >
+        <component :is="fieldComponents[col.type]" class="border-gray-100 dark:border-gray-900"
+                   :property="col" :value="row[col.id]"
+        />
+      </td>
+      <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
+          style="width: 100px"
+      >
+        <record-operations :form="form" :structure="columns" :rowid="row.id" @deleted="$emit('deleted')"/>
+      </td>
+    </tr>
+    <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
+      <td :colspan="columns.length" class="p-8 w-full">
+        <Loader class="w-4 h-4 mx-auto"/>
+      </td>
+    </tr>
     </tbody>
     <tbody v-else key="body-content" class="n-table-body">
-      <tr class="n-table-row loader w-full">
-        <td :colspan="columns.length" class="n-table-cell w-full p-8">
-          <Loader v-if="loading" class="w-4 h-4 mx-auto" />
-          <p v-else class="text-gray-500 text-center">
-            No data found.
-          </p>
-        </td>
-      </tr>
+    <tr class="n-table-row loader w-full">
+      <td :colspan="columns.length" class="n-table-cell w-full p-8">
+        <Loader v-if="loading" class="w-4 h-4 mx-auto"/>
+        <p v-else class="text-gray-500 text-center">
+          No data found.
+        </p>
+      </td>
+    </tr>
     </tbody>
   </table>
 </template>
@@ -90,7 +88,7 @@ import clonedeep from 'clone-deep'
 import {hash} from "~/lib/utils.js";
 
 export default {
-  components: { ResizableTh, RecordOperations },
+  components: {ResizableTh, RecordOperations},
   props: {
     columns: {
       type: Array,
@@ -111,77 +109,64 @@ export default {
     }
   },
 
-  setup () {
+  setup() {
     const workingFormStore = useWorkingFormStore()
     return {
-      workingFormStore
+      workingFormStore,
+      form: storeToRefs(workingFormStore).content,
     }
   },
 
-  data () {
+  data() {
     return {
       tableHash: null,
-      skip: false
-    }
-  },
-
-  computed: {
-    form: {
-      get () {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set (value) {
-        this.workingFormStore.set(value)
-      }
-    },
-    hasActions () {
-      // In future if want to hide based on condition
-      return true
-    },
-    fieldComponents () {
-      return {
-        text: OpenText,
-        number: OpenText,
-        select: OpenSelect,
-        multi_select: OpenSelect,
-        date: OpenDate,
-        files: OpenFile,
-        checkbox: OpenCheckbox,
-        url: OpenUrl,
-        email: OpenText,
-        phone_number: OpenText,
-        signature: OpenFile
+      skip: false,
+      hasActions: true,
+      internalColumns: [],
+      fieldComponents: {
+        text: shallowRef(OpenText),
+        number: shallowRef(OpenText),
+        select: shallowRef(OpenSelect),
+        multi_select: shallowRef(OpenSelect),
+        date: shallowRef(OpenDate),
+        files: shallowRef(OpenFile),
+        checkbox: shallowRef(OpenCheckbox),
+        url: shallowRef(OpenUrl),
+        email: shallowRef(OpenText),
+        phone_number: shallowRef(OpenText),
+        signature: shallowRef(OpenFile)
       }
     }
   },
 
   watch: {
     'columns': {
-      handler () {
+      handler() {
+        this.internalColumns = clonedeep(this.columns)
         this.onStructureChange()
       },
       deep: true
     },
-    data () {
+    data() {
       this.$nextTick(() => {
         this.handleScroll()
       })
     }
   },
 
-  mounted () {
+  mounted() {
+    this.internalColumns = clonedeep(this.columns)
     const parent = document.getElementById('table-page')
     this.tableHash = hash(JSON.stringify(this.form.properties))
     if (parent) {
-      parent.addEventListener('scroll', this.handleScroll, { passive: true })
+      parent.addEventListener('scroll', this.handleScroll, {passive: true})
     }
     window.addEventListener('resize', this.handleScroll)
     this.onStructureChange()
     this.handleScroll()
   },
 
-  beforeUnmount () {
+  beforeUnmount() {
     const parent = document.getElementById('table-page')
     if (parent) {
       parent.removeEventListener('scroll', this.handleScroll)
@@ -190,7 +175,7 @@ export default {
   },
 
   methods: {
-    colClasses (col) {
+    colClasses(col) {
       let colAlign, colColor, colFontWeight, colWrap
 
       // Column align
@@ -215,12 +200,12 @@ export default {
 
       return [colAlign, colColor, colWrap, colFontWeight]
     },
-    onStructureChange () {
-      if (this.columns) {
+    onStructureChange() {
+      if (this.internalColumns) {
         this.$nextTick(() => {
-          this.columns.forEach(col => {
+          this.internalColumns.forEach(col => {
             if (!col.hasOwnProperty('cell_width')) {
-              if (this.allowResize && this.columns.length && document.getElementById('table-head-cell-' + col.id)) {
+              if (this.allowResize && this.internalColumns.length && document.getElementById('table-head-cell-' + col.id)) {
                 // Within editor
                 this.resizeCol(col, document.getElementById('table-head-cell-' + col.id).offsetWidth)
               }
@@ -229,17 +214,16 @@ export default {
         })
       }
     },
-    resizeCol (col, width) {
+    resizeCol(col, width) {
       if (!this.form) return
-      const columns = clonedeep(this.columns)
-      const index = this.columns.findIndex(c => c.id === col.id)
-      columns[index].cell_width = width
-      this.setColumns(columns)
+      const index = this.internalColumns.findIndex(c => c.id === col.id)
+      this.internalColumns[index].cell_width = width
+      this.setColumns(this.internalColumns)
       this.$nextTick(() => {
         this.$emit('resize')
       })
     },
-    handleScroll () {
+    handleScroll() {
       const parent = document.getElementById('table-page')
       const posTop = parent.getBoundingClientRect().top
       const tablePosition = Math.max(0, posTop - this.$refs.table.getBoundingClientRect().top)
@@ -269,7 +253,7 @@ export default {
       }
     },
     setColumns(val) {
-      this.$emit('update-columns',val)
+      this.$emit('update-columns', val)
     }
   }
 }
@@ -297,89 +281,6 @@ export default {
 
   .n-table-cell {
     min-width: 80px;
-  }
-}
-
-.notion-table {
-
-  td {
-    &.text-gray {
-      color: #787774;
-    }
-
-    &.text-brown {
-      color: #9f6b53;
-    }
-
-    &.text-orange {
-      color: #d9730d;
-    }
-
-    &.text-yellow {
-      color: #cb912f;
-    }
-
-    &.text-green {
-      color: #448361;
-    }
-
-    &.text-blue {
-      color: #337ea9;
-    }
-
-    &.text-purple {
-      color: #9065b0;
-    }
-
-    &.text-pink {
-      color: #c14c8a;
-    }
-
-    &.text-red {
-      color: #d44c47;
-    }
-  }
-}
-
-.dark {
-  .notion-table {
-    td {
-      &.text-gray {
-        color: #9b9b9b;
-      }
-
-      &.text-brown {
-        color: #ba856f;
-      }
-
-      &.text-orange {
-        color: #c77d48;
-      }
-
-      &.text-yellow {
-        color: #ca9849;
-      }
-
-      &.text-green {
-        color: #529e72;
-      }
-
-      &.text-blue {
-        color: #5e87c9;
-      }
-
-      &.text-purple {
-        color: #9d68d3;
-      }
-
-      &.text-pink {
-        color: #d15796;
-      }
-
-      &.text-red {
-        color: #df5452;
-      }
-    }
   }
 }
 </style>

@@ -92,6 +92,7 @@ const loadForm = async (setup=false) => {
   if (setup) {
     const {data, error} = await formsStore.publicLoad(slug)
     if (error.value) {
+      console.error(`Error loading form [${slug}]:`,error.value)
       formsStore.stopLoading()
       return
     }

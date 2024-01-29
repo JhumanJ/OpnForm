@@ -227,11 +227,12 @@ class GenerateTemplate extends Command
             ->setAiModel('gpt-3.5-turbo-16k')
             ->useStreaming()
             ->setSystemMessage('You are an assistant helping to generate forms.');
-        $completer->completeChat([
+        $completer->expectsJson()->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
         ], 6000);
         $formData = $completer->getArray();
 
+        $completer->doesNotExpectJson();
         $formDescriptionPrompt = Str::of(self::FORM_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString();
         $formShortDescription = $completer->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_SHORT_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
@@ -240,6 +241,7 @@ class GenerateTemplate extends Command
         $formShortDescription = Str::of($formShortDescription)->replaceMatches('/^"(.*)"$/', '$1')->toString();
 
         // Get industry & types
+        $completer->expectsJson();
         $industry = $this->getIndustries($completer, $this->argument('prompt'));
         $types = $this->getTypes($completer, $this->argument('prompt'));
 
@@ -247,10 +249,12 @@ class GenerateTemplate extends Command
         $relatedTemplates = $this->getRelatedTemplates($industry, $types);
 
         // Now get description and QAs
+        $completer->doesNotExpectJson();
         $formDescription = $completer->completeChat([
             ["role" => "user", "content" => $formDescriptionPrompt]
         ])->getHtml();
 
+        $completer->expectsJson();
         $formCoverKeywords = $completer->completeChat([
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
@@ -263,6 +267,7 @@ class GenerateTemplate extends Command
             ["role" => "assistant", "content" => $formDescription],
             ["role" => "user", "content" => self::FORM_QAS_PROMPT]
         ])->getArray();
+        $completer->doesNotExpectJson();
         $formTitle = $completer->completeChat([
             ["role" => "user", "content" => $formDescriptionPrompt],
             ["role" => "assistant", "content" => $formDescription],
@@ -306,7 +311,6 @@ class GenerateTemplate extends Command
     private function getIndustries(GptCompleter $completer, string $formPrompt): array
     {
         $industriesString = Template::getAllIndustries()->pluck('slug')->join(', ');
-
         return $completer->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_INDUSTRY_PROMPT)
                 ->replace('[REPLACE]', $formPrompt)
@@ -318,7 +322,6 @@ class GenerateTemplate extends Command
     private function getTypes(GptCompleter $completer, string $formPrompt): array
     {
         $typesString = Template::getAllTypes()->pluck('slug')->join(', ');
-
         return $completer->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_TYPES_PROMPT)
                 ->replace('[REPLACE]', $formPrompt)
