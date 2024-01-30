@@ -24,6 +24,6 @@ As a reminder, here are your answers:
 @endforeach
 @endif
 
-<p style="text-align:center"><small>You are receiving this email because you answered the form: <a href="{{url("forms/".$form->slug)}}">"{{$form->title}}"</a>.</small></p>
+<p style="text-align:center"><small>You are receiving this email because you answered the form: <a href="{{front_url("forms/".$form->slug)}}">"{{$form->title}}"</a>.</small></p>
 
 @endcomponent
