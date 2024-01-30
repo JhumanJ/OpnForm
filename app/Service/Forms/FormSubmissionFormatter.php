@@ -196,7 +196,7 @@ class FormSubmissionFormatter
                                 'open.forms.submissions.file',
                                 [$formId, $file]
                             ),
-                            "label" => \Str::substr($file, 0, 20) . '[...].' . end($splitText)
+                            "label" => \Str::limit($file, 20, '[...].'.end($splitText))
                         ];
                     })->toArray();
                 } else {
