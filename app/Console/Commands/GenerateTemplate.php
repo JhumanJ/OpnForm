@@ -224,7 +224,6 @@ class GenerateTemplate extends Command
     {
         // Get form structure
         $completer = (new GptCompleter(config('services.openai.api_key')))
-            ->setAiModel('gpt-3.5-turbo-16k')
             ->useStreaming()
             ->setSystemMessage('You are an assistant helping to generate forms.');
         $completer->expectsJson()->completeChat([
