@@ -18,6 +18,7 @@ As a reminder, here are your answers:
 
 **{{$field['name']}}**
 @if($field['type'] == 'files')
+<br/>
 @foreach($field['email_data'] as $link)
 <a href="{{$link['signed_url']}}">{{$link['label']}}</a> <br/>
 @endforeach
