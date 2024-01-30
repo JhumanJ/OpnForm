@@ -188,6 +188,17 @@ class FormSubmissionFormatter
                             return route('open.forms.submissions.file', [$formId, $file]);
                         })->toArray()
                     );
+                    $field['email_data'] = collect($data[$field['id']])->map(function ($file) use ($formId) {
+                        $splitText = explode('.', $file);
+                        return [
+                            "unsigned_url" => route('open.forms.submissions.file', [$formId, $file]),
+                            "signed_url" => \URL::signedRoute(
+                                'open.forms.submissions.file',
+                                [$formId, $file]
+                            ),
+                            "label" => \Str::substr($file, 0, 20) . '[...].' . end($splitText)
+                        ];
+                    })->toArray();
                 } else {
                     $formId = $this->form->id;
                     $field['value'] = collect($data[$field['id']])->map(function ($file) use ($formId) {
