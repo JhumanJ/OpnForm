@@ -181,8 +181,8 @@ class GenerateTemplate extends Command
         Here are the only industries you can choose from: [INDUSTRIES]
         Do no make up any new type, only use the ones listed above.
 
-        Reply only with a valid JSON, being an array of string. Order assigned industries from the most relevant to the less relevant.
-        Ex: ["banking_forms","customer_service_forms"]
+        Reply only with a valid JSON array, being an array of string. Order assigned industries from the most relevant to the less relevant.
+        Ex: { "industries": ["banking_forms","customer_service_forms"]}
     EOD;
 
     const FORM_TYPES_PROMPT = <<<EOD
@@ -192,8 +192,8 @@ class GenerateTemplate extends Command
         Here are the only types you can choose from: [TYPES]
         Do no make up any new type, only use the ones listed above.
 
-        Reply only with a valid JSON, being an array of string. Order assigned types from the most relevant to the less relevant.
-        Ex: ["consent_forms","award_forms"]
+        Reply only with a valid JSON array, being an array of string. Order assigned types from the most relevant to the less relevant.
+        Ex: { "types": ["consent_forms","award_forms"]}
     EOD;
 
     const FORM_QAS_PROMPT = <<<EOD
@@ -224,12 +224,11 @@ class GenerateTemplate extends Command
     {
         // Get form structure
         $completer = (new GptCompleter(config('services.openai.api_key')))
-            ->setAiModel('gpt-3.5-turbo-16k')
             ->useStreaming()
             ->setSystemMessage('You are an assistant helping to generate forms.');
         $completer->expectsJson()->completeChat([
             ["role" => "user", "content" => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
-        ], 6000);
+        ]);
         $formData = $completer->getArray();
 
         $completer->doesNotExpectJson();
@@ -316,7 +315,7 @@ class GenerateTemplate extends Command
                 ->replace('[REPLACE]', $formPrompt)
                 ->replace('[INDUSTRIES]', $industriesString)
                 ->toString()]
-        ])->getArray();
+        ])->getArray()['industries'];
     }
 
     private function getTypes(GptCompleter $completer, string $formPrompt): array
@@ -327,11 +326,12 @@ class GenerateTemplate extends Command
                 ->replace('[REPLACE]', $formPrompt)
                 ->replace('[TYPES]', $typesString)
                 ->toString()]
-        ])->getArray();
+        ])->getArray()['types'];
     }
 
     private function getRelatedTemplates(array $industries, array $types): array
     {
+        ray($industries, $types);
         $templateScore = [];
         Template::chunk(100, function ($otherTemplates) use ($industries, $types, &$templateScore) {
             foreach ($otherTemplates as $otherTemplate) {

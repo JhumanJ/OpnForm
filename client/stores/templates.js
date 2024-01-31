@@ -13,11 +13,13 @@ export const useTemplatesStore = defineStore('templates', () => {
   const types = ref(new Map)
 
   const getTemplateTypes = (slugs) => {
+    if (!slugs) return []
     return slugs.map((slug) => {
       return types.value.get(slug)
     }).filter((item) => item !== undefined)
   }
   const getTemplateIndustries = (slugs) => {
+    if (!slugs) return []
     return slugs.map((slug) => {
       return industries.value.get(slug)
     }).filter((item) => item !== undefined)

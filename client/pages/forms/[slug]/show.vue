@@ -22,7 +22,22 @@
               <div class="flex">
                 <extra-menu class="mr-2" :form="form"/>
 
-                <v-button v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
+                <v-button v-if="form.visibility === 'draft'" color="white"
+                          class="mr-2 text-blue-600 hidden sm:block" @click="showDraftFormWarningNotification"
+                >
+                  <svg class="w-6 h-6 inline -mt-1" viewBox="0 0 24 24" fill="none"
+                       xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    />
+                    <path
+                      d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    />
+                  </svg>
+                </v-button>
+                <v-button v-else v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" target="_blank"
                           :href="form.share_url" color="white"
                           class="mr-2 text-blue-600 hidden sm:block"
                 >
@@ -195,5 +210,9 @@ watch(() => form?.value?.id, (id) => {
 
 const goBack = () => {
   useRouter().push({name: 'home'})
+}
+
+const showDraftFormWarningNotification = () => {
+  useAlert().warning('This form is currently in Draft mode and is not publicly accessible, You can change the form status on the edit form page.')
 }
 </script>
