@@ -77,8 +77,7 @@ export default {
 
   methods: {
     openChat() {
-      window.$crisp.push(['do', 'chat:show'])
-      window.$crisp.push(['do', 'chat:open'])
+      useCrisp().openAndShowChat()
     },
   }
 }
