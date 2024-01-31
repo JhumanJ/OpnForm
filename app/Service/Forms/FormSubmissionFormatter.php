@@ -29,6 +29,8 @@ class FormSubmissionFormatter
 
     private $showRemovedFields = false;
 
+    private $useSignedUrlForFiles = false;
+
     /**
      * Logic resolver needs an array id => value, so we create it here
      */
@@ -66,6 +68,12 @@ class FormSubmissionFormatter
     public function showRemovedFields()
     {
         $this->showRemovedFields = true;
+        return $this;
+    }
+
+    public function useSignedUrlForFiles()
+    {
+        $this->useSignedUrlForFiles = true;
         return $this;
     }
 
@@ -117,14 +125,14 @@ class FormSubmissionFormatter
                     $formId = $this->form->id;
                     $returnArray[$field['name']] = implode(', ',
                         collect($data[$field['id']])->map(function ($file) use ($formId) {
-                            return route('open.forms.submissions.file', [$formId, $file]);
+                            return $this->getFileUrl($formId, $file);
                         })->toArray()
                     );
                 } else {
                     $formId = $this->form->id;
                     $returnArray[$field['name']] = collect($data[$field['id']])->map(function ($file) use ($formId) {
                             return [
-                                'file_url' => route('open.forms.submissions.file', [$formId, $file]),
+                                'file_url' => $this->getFileUrl($formId, $file),
                                 'file_name' => $file,
                             ];
                         });
@@ -185,17 +193,14 @@ class FormSubmissionFormatter
                     $formId = $this->form->id;
                     $field['value'] = implode(', ',
                         collect($data[$field['id']])->map(function ($file) use ($formId) {
-                            return route('open.forms.submissions.file', [$formId, $file]);
+                            return $this->getFileUrl($formId,  $file);
                         })->toArray()
                     );
                     $field['email_data'] = collect($data[$field['id']])->map(function ($file) use ($formId) {
                         $splitText = explode('.', $file);
                         return [
                             "unsigned_url" => route('open.forms.submissions.file', [$formId, $file]),
-                            "signed_url" => \URL::signedRoute(
-                                'open.forms.submissions.file',
-                                [$formId, $file]
-                            ),
+                            "signed_url" => $this->getFileUrl($formId, $file),
                             "label" => \Str::limit($file, 20, '[...].'.end($splitText))
                         ];
                     })->toArray();
@@ -203,7 +208,7 @@ class FormSubmissionFormatter
                     $formId = $this->form->id;
                     $field['value'] = collect($data[$field['id']])->map(function ($file) use ($formId) {
                         return [
-                            'file_url' => route('open.forms.submissions.file', [$formId, $file]),
+                            'file_url' => $this->getFileUrl($formId, $file),
                             'file_name' => $file,
                         ];
                     });
@@ -231,6 +236,13 @@ class FormSubmissionFormatter
                 $this->idFormData[$property['id']] = $value;
             }
         }
+    }
+
+    private function getFileUrl($formId, $file)
+    {
+        return $this->useSignedUrlForFiles ? \URL::signedRoute(
+            'open.forms.submissions.file',
+            [$formId, $file]) : route('open.forms.submissions.file', [$formId, $file]);
     }
 
 }

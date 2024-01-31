@@ -37,7 +37,8 @@ class FormSubmissionController extends Controller
             $formatter = (new FormSubmissionFormatter($form, $row['data']))
                 ->outputStringsOnly()
                 ->setEmptyForNoValue()
-                ->showRemovedFields();
+                ->showRemovedFields()
+                ->useSignedUrlForFiles();
             $tmp = $formatter->getCleanKeyValue();
             $tmp['Create Date'] = date("Y-m-d H:i", strtotime($row['created_at']));
             $allRows[] = $tmp;
