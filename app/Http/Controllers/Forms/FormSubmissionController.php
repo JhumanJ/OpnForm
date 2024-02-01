@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FormSubmissionResource;
 use App\Models\Forms\Form;
 use App\Exports\FormSubmissionExport;
+use App\Http\Requests\AnswerFormRequest;
+use App\Jobs\Form\StoreFormSubmissionJob;
+use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormSubmissionFormatter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -25,6 +29,14 @@ class FormSubmissionController extends Controller
         $this->authorize('view', $form);
 
         return FormSubmissionResource::collection($form->submissions()->paginate(100));
+    }
+
+    public function  update(AnswerFormRequest $request, $id, $submissionId)
+    {
+        $job = new StoreFormSubmissionJob($request->form, $request->validated());
+        $job->setSubmissionId($submissionId)->handle();
+
+        return  new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
     }
 
     public function export(string $id)

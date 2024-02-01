@@ -93,6 +93,7 @@ export default {
       type: Array,
       required: true
     },
+    defaultDataForm:{},
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
@@ -303,6 +304,11 @@ export default {
       return this.recordsStore.getById(this.form.submission_id)
     },
     async initForm () {
+      if(this.defaultDataForm){
+        this.dataForm = useForm(this.defaultDataForm)
+        return;
+      }
+
       if (this.isPublicFormPage && this.form.editable_submissions) {
         const urlParam = new URLSearchParams(window.location.search)
         if (urlParam && urlParam.get('submission_id')) {

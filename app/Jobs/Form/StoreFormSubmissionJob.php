@@ -56,6 +56,12 @@ class StoreFormSubmissionJob implements ShouldQueue
         return $this->submissionId;
     }
 
+    public function setSubmissionId(int $id)
+    {
+        $this->submissionId = $id;
+        return $this;
+    }
+
     private function storeSubmission(array $formData)
     {
         // Create or update record
@@ -76,6 +82,9 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     private function submissionToUpdate(): ?FormSubmission
     {
+        if($this->submissionId){
+            return $this->form->submissions()->findOrFail($this->submissionId);
+        }
         if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
             $submissionId = $this->submissionData['submission_id'] ? Hashids::decode($this->submissionData['submission_id']) : false;
             $submissionId = $submissionId[0] ?? null;
