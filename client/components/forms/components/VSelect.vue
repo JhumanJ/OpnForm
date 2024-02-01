@@ -1,5 +1,5 @@
 <template>
-  <div class="v-select relative" ref="select">
+  <div class="v-select relative" :class="[{'w-0': multiple, 'min-w-full':multiple}]" ref="select">
     <span class="inline-block w-full rounded-md">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
               class="cursor-pointer"
