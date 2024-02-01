@@ -42,7 +42,7 @@ export default {
     },
     iframeCode() {
       const share_url = (this.extraQueryParam) ? this.form.share_url + "?" + this.extraQueryParam : this.form.share_url + this.extraQueryParam
-      return '<iframe style="border:none;width:100%;" frameborder="0" width="100%" frameborder="0" id="' + this.iframeId + '" src="' + share_url + '"></iframe>'
+      return '<iframe style="border:none;width:100%;" id="' + this.iframeId + '" src="' + share_url + '"></iframe>'
     },
     iframeId() {
       return 'form-' + this.form.slug
