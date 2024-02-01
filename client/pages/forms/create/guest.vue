@@ -75,7 +75,7 @@ onMounted(() => {
     is_pro: false
   }])
 
-  form.value = initForm()
+  form.value = initForm({}, true)
   if (route.query.template !== undefined && route.query.template) {
     const template = templatesStore.getByKey(route.query.template)
     if (template && template.structure) {

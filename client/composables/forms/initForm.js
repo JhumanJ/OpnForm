@@ -1,11 +1,12 @@
+import {generateUUID} from "~/lib/utils.js";
 
-export const initForm = (defaultValue = {}) => {
+export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
   return useForm({
     title: 'My Form',
     description: null,
     visibility: 'public',
     workspace_id: null,
-    properties: [],
+    properties: withDefaultProperties ? getDefaultProperties() :[],
 
     notifies: false,
     slack_notifies: false,
@@ -51,4 +52,29 @@ export const initForm = (defaultValue = {}) => {
 
     ...defaultValue
   })
+}
+
+function getDefaultProperties () {
+  return [
+    {
+      name: 'Name',
+      type: 'text',
+      hidden: false,
+      required: true,
+      id: generateUUID()
+    },
+    {
+      name: 'Email',
+      type: 'email',
+      hidden: false,
+      id: generateUUID()
+    },
+    {
+      name: 'Message',
+      type: 'text',
+      hidden: false,
+      multi_lines: true,
+      id: generateUUID()
+    }
+  ]
 }

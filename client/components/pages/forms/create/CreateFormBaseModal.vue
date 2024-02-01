@@ -27,7 +27,7 @@
       </template>
     </template>
     <div v-if="state=='default'" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-      <div v-track.select_form_base="{base:'contact-form'}"
+      <div v-track.select_form_base="{base:'contact-form'}" role="button"
            class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50" @click="$emit('close')"
       >
         <div class="p-4">
@@ -41,7 +41,7 @@
         </p>
       </div>
       <div v-if="aiFeaturesEnabled" v-track.select_form_base="{base:'ai'}"
-           class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50" @click="state='ai'"
+           class="rounded-md border p-4 flex flex-col items-center cursor-pointer hover:bg-gray-50" role="button" @click="state='ai'"
       >
         <div class="p-4 relative">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-blue-500">
@@ -71,7 +71,7 @@
       </div>
     </div>
     <div v-else-if="state=='ai'">
-      <a class="absolute top-4 left-4" href="#" @click.prevent="state='default'">
+      <a class="absolute top-4 left-4" href="#" role="button" @click.prevent="state='default'">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 inline -mt-1">
           <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clip-rule="evenodd" />
         </svg>
