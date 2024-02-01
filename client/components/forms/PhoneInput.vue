@@ -93,6 +93,9 @@ export default {
         }
       }
     },
+    compVal(newVal,  oldVal){
+        this.initState()
+    },
     selectedCountryCode (newVal, oldVal) {
       if (this.compVal && newVal && oldVal) {
         this.compVal = this.compVal.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
@@ -102,17 +105,7 @@ export default {
 
   mounted () {
     if (this.compVal) {
-      if (!this.compVal.startsWith('+')) {
-        this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
-      }
-
-      const phoneObj = parsePhoneNumber(this.compVal)
-      if (phoneObj !== undefined && phoneObj) {
-        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
-          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
-        }
-        this.inputVal = phoneObj.nationalNumber
-      }
+      this.initState()
     }
     if (!this.selectedCountryCode) {
       this.selectedCountryCode = this.getCountryBy()
@@ -131,6 +124,7 @@ export default {
     },
     onInput (event) {
       this.inputVal = event?.target?.value.replace(/[^0-9]/g, '')
+
     },
     onChangeCountryCode () {
       if (!this.selectedCountryCode && this.countries.length > 0) {
@@ -138,6 +132,22 @@ export default {
       }
       if (this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)) {
         this.compVal = this.selectedCountryCode.code + this.selectedCountryCode.dial_code
+      }
+    },
+    initState() {
+      if(this.compVal  === null){
+        return;
+      }
+      if (!this.compVal.startsWith('+')) {
+        this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
+      }
+
+      const phoneObj = parsePhoneNumber(this.compVal)
+      if (phoneObj !== undefined && phoneObj) {
+        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
+          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
+        }
+        this.inputVal = phoneObj.nationalNumber
       }
     }
   }

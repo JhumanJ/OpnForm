@@ -32,9 +32,7 @@ export default {
 
   methods: {
     customPlanClick () {
-      window.$crisp.push(['do', 'chat:show'])
-      window.$crisp.push(['do', 'chat:open'])
-      window.$crisp.push(['do', 'message:send', ['text', 'Hi, I would like to discuss about a custom plan']])
+      useCrisp().sendTextMessage('Hi, I would like to discuss about a custom plan')
     }
   }
 }
