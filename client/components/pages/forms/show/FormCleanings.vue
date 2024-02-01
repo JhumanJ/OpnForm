@@ -99,8 +99,7 @@ export default {
   },
   methods: {
     openCrisp () {
-      this.$crisp.push(['do', 'chat:show'])
-      this.$crisp.push(['do', 'chat:open'])
+      useCrisp().openAndShowChat()
     }
   }
 }

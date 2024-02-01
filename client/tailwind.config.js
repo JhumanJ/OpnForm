@@ -12,9 +12,10 @@ module.exports = {
   ],
   safelist: [
     {
-      pattern:  /.*bg-(blue|gray|red|yellow|green).*/,
+      pattern: /.*bg-(blue|gray|red|yellow|green).*/,
     },
-    ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat() // Alerts
+    ...['green', 'red', 'blue', 'yellow'].map((color) => ['bg-' + color + '-100', 'border-' + color + '-500']).flat(), // Alerts
+    ...['dark:hover:bg-notion-dark-light']
   ],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
@@ -26,8 +27,8 @@ module.exports = {
           '16%': {transform: 'translateY(+10%)'}
         },
         'infinite-scroll': {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(-100%)' },
+          from: {transform: 'translateX(0)'},
+          to: {transform: 'translateX(-100%)'},
         }
       },
       animation: {
@@ -84,7 +85,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
-    plugin(function({ addVariant }) {
+    plugin(function ({addVariant}) {
       addVariant('between', '&:not(:first-child):not(:last-child)')
       addVariant('hocus', ['&:hover', '&:focus'])
     })
