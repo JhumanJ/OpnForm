@@ -230,7 +230,7 @@ export default {
         classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
 
         if (this.beingEdited) {
-          classes += ' bg-blue-50 rounded-md'
+          classes += ' bg-blue-50 dark:bg-gray-800 rounded-md'
         }
       }
       return classes
