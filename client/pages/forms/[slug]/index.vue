@@ -82,7 +82,6 @@ const passwordEntered = function (password) {
         openCompleteForm.value.addPasswordError('Invalid password.')
       }
     })
-    openCompleteForm.value.submit()
   })
 }
 
