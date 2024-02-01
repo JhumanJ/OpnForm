@@ -166,8 +166,6 @@ useHead({
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm';
   },
-  ... form.value.custom_code ? {
-    script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
-  } : {}
+  script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>
