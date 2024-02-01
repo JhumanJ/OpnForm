@@ -36,7 +36,11 @@ class FormSubmissionController extends Controller
         $job = new StoreFormSubmissionJob($request->form, $request->validated());
         $job->setSubmissionId($submissionId)->handle();
 
-        return  new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $data =  new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        return $this->success([
+            'message' => 'Record successfully updated.',
+            'data'  => $data
+        ]);
     }
 
     public function export(string $id)

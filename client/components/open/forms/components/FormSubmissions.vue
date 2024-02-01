@@ -90,6 +90,7 @@
           :loading="isLoading"
           @resize="dataChanged()"
           @deleted="onDeleteRecord()"
+          @updated="onUpdateRecord()"
           @update-columns="onColumnUpdated"
         />
       </scroll-shadow>
@@ -251,6 +252,11 @@ export default {
       this.properties = clonedeep(this.form.properties).concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true
       })
+    },
+    onUpdateRecord(){
+      this.fullyLoaded = false
+      this.tableData = []
+      this.getSubmissionsData()
     },
     onDeleteRecord() {
       this.fullyLoaded = false

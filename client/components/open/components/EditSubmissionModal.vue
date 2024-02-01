@@ -2,7 +2,7 @@
     <modal :show="show" max-width="lg" @close="emit('close')">
         <open-form :theme="theme" :loading="false" :show-hidden="true" :form="form" :fields="form.properties" @submit="updateForm" :default-data-form="submission">
         <template #submit-btn="{submitForm}">
-                <v-button class="mt-2 px-8 mx-1" @click.prevent="submitForm">
+                <v-button :loading="loading" class="mt-2 px-8 mx-1" @click.prevent="submitForm">
                 Update Submission
                 </v-button>
             </template>
@@ -22,19 +22,19 @@ const props = defineProps({
 
 let loading = ref(false)
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'updated'])
 const updateForm =  (form, onFailure) =>{
-    loading = true
-
+    loading.value  = true
     form.put('/open/forms/' + props.form.id + '/submissions/'+props.submission.id).then((data) => {
-        // Update store
+        useAlert().success(data.message)
+        loading.value  = false
+        emit('close')
+        emit('updated')
 
-        // Closemodal and sussmsg
-        
       }).catch((error) => {
         console.error(error)
         loading = false
-        // onFailure()
+        onFailure()
       })
     
 }

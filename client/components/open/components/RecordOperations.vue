@@ -21,7 +21,7 @@
       </svg>
     </button>
   </div>
-  <EditSubmissionModal :show="showEditSubmissionModal" :form="form" :submission="submission" @close="showEditSubmissionModal=false"/>
+  <EditSubmissionModal :show="showEditSubmissionModal" :form="form" :submission="submission" @close="showEditSubmissionModal=false" @updated="$emit('updated')"/>
 </template>
 
 <script>

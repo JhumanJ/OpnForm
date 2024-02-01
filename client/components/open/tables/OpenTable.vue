@@ -53,7 +53,7 @@
       <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
           style="width: 100px"
       >
-        <record-operations :form="form" :structure="columns" :submission="row" @deleted="$emit('deleted')"/>
+        <record-operations :form="form" :structure="columns" :submission="row" @deleted="$emit('deleted')" @updated="$emit('updated')"/>
       </td>
     </tr>
     <tr v-if="loading" class="n-table-row border-t bg-gray-50 dark:bg-gray-900">
