@@ -33,6 +33,8 @@ class FormSubmissionController extends Controller
 
     public function  update(AnswerFormRequest $request, $id, $submissionId)
     {
+        $form  = $request->form;
+        $this->authorize('update', $form);
         $job = new StoreFormSubmissionJob($request->form, $request->validated());
         $job->setSubmissionId($submissionId)->handle();
 
