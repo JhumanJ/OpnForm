@@ -56,7 +56,7 @@
       </div>
     </modal>
 
-    <Loader v-if="!form || !formInitDone" class="h-6 w-6 text-nt-blue mx-auto"/>
+    <Loader v-if="!form" class="h-6 w-6 text-nt-blue mx-auto"/>
     <div v-else>
       <div v-if="form && tableData.length > 0" class="flex flex-wrap items-end">
         <div class="flex-grow">
@@ -103,7 +103,6 @@ import Fuse from 'fuse.js'
 import clonedeep from 'clone-deep'
 import VSwitch from '../../../forms/components/VSwitch.vue'
 import OpenTable from '../../tables/OpenTable.vue'
-import {now} from "@vueuse/core";
 
 export default {
   name: 'FormSubmissions',
@@ -116,14 +115,15 @@ export default {
     return {
       workingFormStore,
       recordStore,
+      form: storeToRefs(workingFormStore).content,
       tableData:storeToRefs(recordStore).getAll,
-      runtimeConfig: useRuntimeConfig()
+      runtimeConfig: useRuntimeConfig(),
+      slug: useRoute().params.slug
     }
   },
 
   data() {
     return {
-      formInitDone: false,
       currentPage: 1,
       fullyLoaded: false,
       showColumnsModal: false,
@@ -136,14 +136,6 @@ export default {
     }
   },
   computed: {
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      set(value) {
-        this.workingFormStore.set(value)
-      }
-    },
     exportUrl() {
       if (!this.form) {
         return ''
@@ -174,23 +166,22 @@ export default {
   },
   watch: {
     'form.id'() {
-      if (this.form === null) {
-        return
-      }
-      this.initFormStructure()
-      this.getSubmissionsData()
+      this.onFormChange()
     }
   },
   mounted() {
-    this.initFormStructure()
-    this.getSubmissionsData()
+    this.onFormChange()
   },
   methods: {
-    initFormStructure() {
-      if (!this.form || !this.form.properties || this.formInitDone) {
+    onFormChange() {
+      if (this.form === null || this.form.slug !== this.slug) {
         return
       }
-
+      this.fullyLoaded = false
+      this.initFormStructure()
+      this.getSubmissionsData()
+    },
+    initFormStructure() {
       // check if form properties already has a created_at column
       this.properties = clonedeep(this.form.properties)
       if (!this.properties.find((property) => {
@@ -206,7 +197,6 @@ export default {
           width: 140
         })
       }
-      this.formInitDone = true
       this.removed_properties = (this.form.removed_properties) ? clonedeep(this.form.removed_properties) : []
 
       // Get display columns from local storage
@@ -221,8 +211,7 @@ export default {
       }
     },
     getSubmissionsData() {
-      console.log("fetching fresh data")
-      if (!this.form || this.fullyLoaded) {
+      if (this.fullyLoaded) {
         return
       }
       this.recordStore.startLoading()
@@ -237,7 +226,6 @@ export default {
           this.fullyLoaded = true
         }
       }).catch((error) => {
-        console.error(error)
         this.recordStore.startLoading()
       })
     },
