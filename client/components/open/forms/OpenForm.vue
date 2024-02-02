@@ -301,7 +301,7 @@ export default {
           return { submission_id: this.form.submission_id, ...data.data }
         })
       )
-      return this.recordsStore.getById(this.form.submission_id)
+      return this.recordsStore.getByKey(this.form.submission_id)
     },
     async initForm () {
       if(this.defaultDataForm){

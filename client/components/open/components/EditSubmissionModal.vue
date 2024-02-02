@@ -25,15 +25,15 @@ let loading = ref(false)
 const emit = defineEmits(['close', 'updated'])
 const updateForm =  (form, onFailure) =>{
     loading.value  = true
-    form.put('/open/forms/' + props.form.id + '/submissions/'+props.submission.id).then((data) => {
-        useAlert().success(data.message)
+    form.put('/open/forms/' + props.form.id + '/submissions/'+props.submission.id).then((res) => {
+        useAlert().success(res.message)
         loading.value  = false
         emit('close')
-        emit('updated')
+        emit('updated', res.data.data)
 
       }).catch((error) => {
         console.error(error)
-        loading = false
+        loading.value = false
         onFailure()
       })
     

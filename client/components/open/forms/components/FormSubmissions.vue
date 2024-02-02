@@ -89,8 +89,8 @@
           :data="filteredData"
           :loading="isLoading"
           @resize="dataChanged()"
-          @deleted="onDeleteRecord()"
-          @updated="onUpdateRecord()"
+          @deleted="onDeleteRecord"
+          @updated="(submission)=>onUpdateRecord(submission)"
           @update-columns="onColumnUpdated"
         />
       </scroll-shadow>
@@ -112,8 +112,11 @@ export default {
 
   setup() {
     const workingFormStore = useWorkingFormStore()
+    const recordStore = useRecordsStore()
     return {
       workingFormStore,
+      recordStore,
+      tableData:storeToRefs(recordStore).getAll,
       runtimeConfig: useRuntimeConfig()
     }
   },
@@ -121,8 +124,6 @@ export default {
   data() {
     return {
       formInitDone: false,
-      isLoading: false,
-      tableData: [],
       currentPage: 1,
       fullyLoaded: false,
       showColumnsModal: false,
@@ -148,6 +149,9 @@ export default {
         return ''
       }
       return this.runtimeConfig.public.apiBase + '/open/forms/' + this.form.id + '/submissions/export'
+    },
+    isLoading(){
+      return this.recordStore.loading
     },
     filteredData() {
       if (!this.tableData) return []
@@ -217,24 +221,24 @@ export default {
       }
     },
     getSubmissionsData() {
+      console.log("fetching fresh data")
       if (!this.form || this.fullyLoaded) {
         return
       }
-      this.isLoading = true
+      this.recordStore.startLoading()
       opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((resData) => {
-        this.tableData = this.tableData.concat(resData.data.map((record) => record.data))
+        this.recordStore.save(resData.data.map((record) => record.data))
         this.dataChanged()
-
         if (this.currentPage < resData.meta.last_page) {
           this.currentPage += 1
           this.getSubmissionsData()
         } else {
-          this.isLoading = false
+          this.recordStore.stopLoading()
           this.fullyLoaded = true
         }
       }).catch((error) => {
         console.error(error)
-        this.isLoading = false
+        this.recordStore.startLoading()
       })
     },
     dataChanged() {
@@ -253,15 +257,13 @@ export default {
         return this.displayColumns[field.id] === true
       })
     },
-    onUpdateRecord(){
-      this.fullyLoaded = false
-      this.tableData = []
-      this.getSubmissionsData()
+    onUpdateRecord(submission){
+      this.recordStore.save(submission);
+      this.dataChanged()
     },
-    onDeleteRecord() {
-      this.fullyLoaded = false
-      this.tableData = []
-      this.getSubmissionsData()
+    onDeleteRecord(submission) {
+      this.recordStore.remove(submission);
+      this.dataChanged()
     },
     downloadAsCsv() {
       opnFetch(this.exportUrl, {responseType: "blob"})
