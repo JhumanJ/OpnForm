@@ -195,10 +195,7 @@ export default {
           window.parent.postMessage(payload, '*')
         }
         window.postMessage(payload, '*')
-
-        try {
-          this.pendingSubmission.remove()
-        } catch (e) {}
+        this.pendingSubmission.remove()
 
         if (data.redirect && data.redirect_url) {
           window.location.href = data.redirect_url
