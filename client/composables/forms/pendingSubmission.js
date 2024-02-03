@@ -13,7 +13,7 @@ export const pendingSubmission = (form) => {
 
   const set = (value) => {
     if (process.server || !enabled.value) return
-    useStorage(formPendingSubmissionKey.value).value = JSON.stringify(value)
+    useStorage(formPendingSubmissionKey.value).value = value === null ? value : JSON.stringify(value)
   }
 
   const remove = () => {
@@ -29,6 +29,7 @@ export const pendingSubmission = (form) => {
   return {
     enabled,
     set,
-    get
+    get,
+    remove
   }
 }

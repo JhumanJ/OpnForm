@@ -93,6 +93,7 @@ export default {
       type: Array,
       required: true
     },
+    defaultDataForm:{},
     adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
@@ -297,12 +298,17 @@ export default {
       }
       await this.recordsStore.loadRecord(
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
-          return { submission_id: this.form.submission_id, ...data.data }
+          return { submission_id: this.form.submission_id, id: this.form.submission_id,...data.data }
         })
       )
-      return this.recordsStore.getById(this.form.submission_id)
+      return this.recordsStore.getByKey(this.form.submission_id)
     },
     async initForm () {
+      if(this.defaultDataForm){
+        this.dataForm = useForm(this.defaultDataForm)
+        return;
+      }
+
       if (this.isPublicFormPage && this.form.editable_submissions) {
         const urlParam = new URLSearchParams(window.location.search)
         if (urlParam && urlParam.get('submission_id')) {
