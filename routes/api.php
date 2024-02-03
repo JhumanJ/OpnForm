@@ -18,6 +18,7 @@ use App\Http\Controllers\Forms\RecordController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
+use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -85,6 +86,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
 
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
+            Route::put('/{id}/submissions/{submission_id}', [FormSubmissionController::class, 'update'])->name('submissions.update')->middleware([ResolveFormMiddleware::class]);
             Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
             Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
                 ->middleware('signed')

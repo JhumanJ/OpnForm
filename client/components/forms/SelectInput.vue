@@ -5,7 +5,6 @@
     <template #label>
       <slot name="label" />
     </template>
-
     <v-select v-model="compVal"
               :data="finalOptions"
               :label="label"
@@ -26,14 +25,14 @@
               :help-position="helpPosition"
 
               @update-options="updateOptions"
+              @update:model-value="updateModelValue"
     >
       <template #selected="{option}">
         <slot name="selected" :option="option" :optionName="getOptionName(option)">
           <template v-if="multiple">
             <div class="flex items-center truncate mr-6">
-              <span v-for="(item,index) in option" :key="item" class="truncate">
-                <span v-if="index!==0">, </span>
-                {{ getOptionName(item) }}
+              <span class="truncate">
+                {{ selectedValues.join(', ') }}
               </span>
             </div>
           </template>
@@ -104,7 +103,8 @@ export default {
 
   data () {
     return {
-      additionalOptions: []
+      additionalOptions: [],
+      selectedValues:[],
     }
   },
 
@@ -120,6 +120,9 @@ export default {
       })
       if (option) return option[this.displayKey]
       return null
+    },
+    updateModelValue(newValues){
+      this.selectedValues = newValues
     },
     updateOptions (newItem) {
       if (newItem) {

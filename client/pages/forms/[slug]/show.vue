@@ -162,6 +162,7 @@ const workspacesStore = useWorkspacesStore()
 
 const slug = useRoute().params.slug
 
+formsStore.startLoading()
 const user = computed(() => authStore.user)
 const form = computed(() => formsStore.getByKey(slug))
 const workspace = computed(() => workspacesStore.getByKey(form?.value?.workspace_id))

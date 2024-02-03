@@ -18,4 +18,9 @@ useOpnSeoMeta({
   title: (props.form) ? 'Form Submissions - ' + props.form.title : 'Form Submissions'
 })
 
+onBeforeRouteLeave(()=>{
+  console.log('Clearing  store state')
+  useRecordsStore().resetState()
+})
+
 </script>
