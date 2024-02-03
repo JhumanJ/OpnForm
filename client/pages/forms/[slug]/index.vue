@@ -82,7 +82,6 @@ const passwordEntered = function (password) {
         openCompleteForm.value.addPasswordError('Invalid password.')
       }
     })
-    openCompleteForm.value.submit()
   })
 }
 
@@ -111,13 +110,6 @@ const loadForm = async (setup=false) => {
   // Adapt page to form: colors, custom code etc
   handleDarkMode(form.value.dark_mode)
   handleTransparentMode(form.value.transparent_background)
-
-  if (process.server) return
-  if (form.value.custom_code) {
-    const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
-    document.head.append(scriptEl)
-  }
-  if (!isIframe) focusOnFirstFormElement()
 }
 
 await loadForm(true)
@@ -127,6 +119,14 @@ onMounted(() => {
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
+
+    if (process.client) {
+      if (form.value.custom_code) {
+        const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
+        document.head.append(scriptEl)
+      }
+      if (!isIframe) focusOnFirstFormElement()
+    }
   }
 })
 
@@ -165,6 +165,7 @@ useHead({
       return titleChunk
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm';
-  }
+  },
+  script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>

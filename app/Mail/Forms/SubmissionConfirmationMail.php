@@ -35,7 +35,8 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
 
         $formatter = (new FormSubmissionFormatter($form, $this->event->data))
             ->createLinks()
-            ->outputStringsOnly();
+            ->outputStringsOnly()
+            ->useSignedUrlForFiles();
 
         return $this
             ->replyTo($this->getReplyToEmail($form->creator->email))

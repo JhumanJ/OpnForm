@@ -92,7 +92,7 @@ onMounted(() => {
     formStore.loadAll(workspace.value.id)
   }
 
-  form.value = initForm({workspace_id: workspace.value?.id})
+  form.value = initForm({workspace_id: workspace.value?.id}, true)
   formInitialHash.value = hash(JSON.stringify(form.value.data()))
   if (route.query.template !== undefined && route.query.template) {
     const template = templatesStore.getByKey(route.query.template)

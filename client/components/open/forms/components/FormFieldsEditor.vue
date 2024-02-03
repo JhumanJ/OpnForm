@@ -98,7 +98,7 @@
                     </g>
                     <defs>
                       <clipPath id="clip0_1027_7292">
-                        <rect width="24" height="24" fill="white" />
+                        <rect width="24" height="24" fill="white"/>
                       </clipPath>
                     </defs>
                   </svg>
@@ -138,7 +138,7 @@
                   </g>
                   <defs>
                     <clipPath id="clip0_1027_7210">
-                      <rect width="24" height="24" fill="white" />
+                      <rect width="24" height="24" fill="white"/>
                     </clipPath>
                   </defs>
                 </svg>
@@ -172,7 +172,7 @@ import clonedeep from 'clone-deep'
 import EditableDiv from '~/components/global/EditableDiv.vue'
 import VButton from '~/components/global/VButton.vue'
 
-draggable.compatConfig = { MODE: 3 }
+draggable.compatConfig = {MODE: 3}
 export default {
   name: 'FormFieldsEditor',
   components: {
@@ -182,7 +182,7 @@ export default {
     EditableDiv
   },
 
-  setup () {
+  setup() {
     const workingFormStore = useWorkingFormStore()
     return {
       route: useRoute(),
@@ -191,21 +191,21 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       removing: null
     }
   },
 
-  mounted () {
+  mounted() {
     this.init()
   },
 
   methods: {
-    onChangeName (field, newName) {
+    onChangeName(field, newName) {
       field.name = newName
     },
-    toggleHidden (field) {
+    toggleHidden(field) {
       field.hidden = !field.hidden
       if (field.hidden) {
         field.required = false
@@ -214,69 +214,27 @@ export default {
         field.generates_auto_increment_id = false
       }
     },
-    toggleRequired (field) {
+    toggleRequired(field) {
       field.required = !field.required
       if (field.required) {
         field.hidden = false
       }
     },
-    getDefaultFields () {
-      return [
-        {
-          name: 'Name',
-          type: 'text',
-          hidden: false,
-          required: true,
-          id: this.generateUUID()
-        },
-        {
-          name: 'Email',
-          type: 'email',
-          hidden: false,
-          id: this.generateUUID()
-        },
-        {
-          name: 'Message',
-          type: 'text',
-          hidden: false,
-          multi_lines: true,
-          id: this.generateUUID()
-        }
-      ]
-    },
-    init () {
-      if (this.route.name === 'forms-create' || this.route.name === 'forms-create-guest') { // Set Default fields
-        if (!this.form.properties || this.form.properties.length===0) {
-          this.form.properties = this.getDefaultFields()
-        }
-      } else {
-        this.form.properties = this.form.properties.map((field) => {
-          // Add more field properties
-          field.placeholder = field.placeholder || null
-          field.prefill = field.prefill || null
-          field.help = field.help || null
-          field.help_position = field.help_position || 'below_input'
-
-          return field
-        })
+    init() {
+      if (!this.form.properties) {
+        return
       }
-    },
-    generateUUID () {
-      let d = new Date().getTime()// Timestamp
-      let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0// Time in microseconds since page-load or 0 if unsupported
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16// random number between 0 and 16
-        if (d > 0) { // Use timestamp until depleted
-          r = (d + r) % 16 | 0
-          d = Math.floor(d / 16)
-        } else { // Use microseconds since page-load if supported
-          r = (d2 + r) % 16 | 0
-          d2 = Math.floor(d2 / 16)
-        }
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+      this.form.properties = this.form.properties.map((field) => {
+        // Add more field properties
+        field.placeholder = field.placeholder || null
+        field.prefill = field.prefill || null
+        field.help = field.help || null
+        field.help_position = field.help_position || 'below_input'
+
+        return field
       })
     },
-    formatType (field) {
+    formatType(field) {
       let type = field.type.replace('_', ' ')
       if (!type.startsWith('nf')) {
         type = type + ' Input'
@@ -288,17 +246,17 @@ export default {
       }
       return type
     },
-    editOptions (index) {
+    editOptions(index) {
       this.workingFormStore.openSettingsForField(index)
     },
-    removeBlock (blockIndex) {
+    removeBlock(blockIndex) {
       this.form.properties.splice(blockIndex, 1)
       this.closeSidebar()
     },
-    closeSidebar () {
+    closeSidebar() {
       this.workingFormStore.closeEditFieldSidebar()
     },
-    openAddFieldSidebar () {
+    openAddFieldSidebar() {
       this.workingFormStore.openAddFieldSidebar(null)
     }
   }

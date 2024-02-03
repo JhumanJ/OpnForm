@@ -49,7 +49,8 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
         $formatter = (new FormSubmissionFormatter($this->event->form, $this->event->data))
             ->showHiddenFields()
             ->createLinks()
-            ->outputStringsOnly();
+            ->outputStringsOnly()
+            ->useSignedUrlForFiles();
 
         return (new MailMessage)
             ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
