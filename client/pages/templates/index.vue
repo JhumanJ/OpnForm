@@ -23,7 +23,7 @@
 import {loadAllTemplates} from "~/stores/templates.js";
 
 defineRouteRules({
-  // swr: 3600
+  swr: 3600
 })
 
 useOpnSeoMeta({
