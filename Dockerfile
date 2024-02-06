@@ -14,6 +14,7 @@ ADD client/package.json client/package-lock.json ./
 RUN npm install
 
 ADD client /app/
+RUN cp .env.docker .env
 RUN npm run build
 
 # syntax=docker/dockerfile:1.3-labs
