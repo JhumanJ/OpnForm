@@ -5,11 +5,11 @@
 </template>
 
 <script setup>
-import FormSubmissions from '../../../../components/open/forms/components/FormSubmissions.vue'
+import FormSubmissions from '~/components/open/forms/components/FormSubmissions.vue'
 
-const props = {
+const props = defineProps({
   form: {type: Object, required: true}
-}
+})
 
 definePageMeta({
   middleware: "auth"

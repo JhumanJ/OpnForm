@@ -7,26 +7,17 @@
   </div>
 </template>
 
-<script>
-import FormStats from '../../../../components/open/forms/components/FormStats.vue'
+<script setup>
+import FormStats from '~/components/open/forms/components/FormStats.vue'
 
-export default {
-  components: {FormStats},
+const props = defineProps({
+  form: {type: Object, required: true}
+})
 
-  props: {
-    form: {type: Object, required: true},
-  },
-
-  setup (props) {
-    definePageMeta({
-      middleware: "auth"
-    })
-    useOpnSeoMeta({
-      title: (props.form) ? 'Form Analytics - '+props.form.title : 'Form Analytics'
-    })
-  },
-
-  computed: {
-  }
-}
+definePageMeta({
+  middleware: "auth"
+})
+useOpnSeoMeta({
+  title: (props.form) ? 'Form Analytics - ' + props.form.title : 'Form Analytics'
+})
 </script>
