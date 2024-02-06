@@ -3,7 +3,7 @@
       <section>
         <div class="mx-auto max-w-7xl isolate sm:px-6 lg:px-8">
           <div
-            class="relative px-4 pt-16 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:pt-0 sm:shadow-gray-600/10">
+            class="relative px-4 py-8 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:py-0 sm:shadow-gray-600/10">
             <div class="absolute inset-0">
               <NuxtImg class="object-cover object-top w-full h-full" src="/img/pages/ai_form_builder/background-pattern-ai.svg" alt=""/>
             </div>
@@ -29,8 +29,14 @@
                 Easily generate a fully working form in seconds with just a simple description.
               </p>
 
+              <div class="flex justify-center lg:justify-start mt-4">
+              <v-button class="block" v-track.welcome_ai_builder_click :to="{ name: 'forms-create-guest' }" :arrow="true" color="blue">
+                Try our AI form builder
+              </v-button>
+              </div>
+
               <ul
-                class="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm font-medium text-gray-900 lg:justify-start sm:mt-8">
+                class="flex flex-wrap items-center justify-center mt-4 gap-4 text-sm font-medium text-gray-900 lg:justify-start">
                 <li class="flex items-center gap-2">
                   <svg aria-hidden="true" class="w-5 h-5 text-gray-400 shrink-0" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20" fill="currentColor">
@@ -76,7 +82,7 @@
             </div>
 
             <div
-              class="relative w-full px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:right-0 lg:absolute lg:max-w-md xl:max-w-none">
+              class="relative hidden lg:block w-full px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:absolute lg:-right-16 xl:right-0 lg:max-w-lg">
               <img class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none w-full"
               src="/img/pages/ai_form_builder/ai-feature-illustration.svg" alt="App screenshot"/>
 
