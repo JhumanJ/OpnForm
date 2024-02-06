@@ -64,9 +64,18 @@ export default defineNuxtConfig({
             }
         }
     },
-    image: {
-        quality: 95,
-    },
+    image: (
+        runtimeConfig.public.useNullImageProvider ? {
+            provider: 'null',
+            providers: {
+                null: {
+                    provider: '~/lib/null-image-provider.js',
+                }
+            }
+        } : {
+            quality: 95,
+        }
+    ),
     sourcemap: true,
     vite: {
         plugins: [

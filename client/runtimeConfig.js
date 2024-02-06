@@ -12,7 +12,10 @@ export default {
     s3Enabled: process.env.NUXT_PUBLIC_S3_ENABLED || false,
     paidPlansEnabled: process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED || false,
     customDomainsEnabled: process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED || false,
-
+    useNullImageProvider: (
+      process.env.NUXT_PUBLIC_USE_NULL_IMAGE_PROVIDER == 'yes'
+    ),
+    
     // Config within public will be also exposed to the client
     SENTRY_DSN_PUBLIC: process.env.SENTRY_DSN_PUBLIC,
     SENTRY_TRACES_SAMPLE_RATE: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE ?? '0'),
