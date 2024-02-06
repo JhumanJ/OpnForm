@@ -36,49 +36,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue'
-import Modal from './Modal.vue'
-import { useAuthStore } from '../../stores/auth';
-import { useWorkspacesStore } from '../../stores/workspaces';
-import PricingTable from "../pages/pricing/PricingTable.vue";
 
-export default {
-  name: 'ProTag',
-  components: {PricingTable, Modal},
-  props: {},
+const authStore = useAuthStore()
+const workspacesStore = useWorkspacesStore()
+const user = computed(() => authStore.user)
+const workspace = computed(() => workspacesStore.getCurrent)
+const showPremiumModal = ref(false)
 
-  setup () {
-    const authStore = useAuthStore()
-    const workspacesStore = useWorkspacesStore()
-    return {
-      user : computed(() => authStore.user),
-      currentWorkSpace : computed(() => workspacesStore.getCurrent())
-    }
-  },
-
-  data() {
-    return {
-      showPremiumModal: false,
-      checkoutLoading: false
-    }
-  },
-
-  computed: {
-    shouldDisplayProTag() {
-      if (!this.$config.paid_plans_enabled) return false
-      if (!this.user || !this.currentWorkSpace) return true
-      return !(this.currentWorkSpace.is_pro)
-    },
-  },
-
-  mounted() {
-  },
-
-  methods: {
-    openChat() {
-      useCrisp().openAndShowChat()
-    },
-  }
-}
+const shouldDisplayProTag = computed(() => {
+  if (!useRuntimeConfig().public.paidPlansEnabled) return false
+  if (!user.value || !workspace.value) return true
+  return !(workspace.value.is_pro)
+})
 </script>
