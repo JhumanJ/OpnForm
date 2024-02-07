@@ -9,6 +9,7 @@ module.exports = {
     "./plugins/**/*.{js,ts}",
     "./app.vue",
     "./error.vue",
+    "./lib/forms/form-themes.js"
   ],
   safelist: [
     {
