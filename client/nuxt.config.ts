@@ -68,7 +68,7 @@ export default defineNuxtConfig({
         provider: 'dummy',
         providers: {
             dummy: {
-                provider: '~/lib/dummy-image-provider.js',
+                provider: '~/lib/images/dummy-image-provider.js',
             }
         }
     } :{
