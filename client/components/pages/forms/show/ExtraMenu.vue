@@ -24,7 +24,7 @@
           </svg>
         </v-button>
       </template>
-      <span v-if="form.visibility === 'draft'"
+      <span v-if="isMainPage && form.visibility === 'draft'"
         class="block px-4 py-2 text-md text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
         @click="showDraftFormWarningNotification"
       >
@@ -42,7 +42,7 @@
         View form
       </span>
 
-      <a v-else-if="isMainPage && user" v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" :href="form.share_url"
+      <a v-else-if="isMainPage" v-track.view_form_click="{form_id:form.id, form_slug:form.slug}" :href="form.share_url"
          target="_blank"
          class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
       >
