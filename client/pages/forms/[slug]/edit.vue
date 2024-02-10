@@ -56,7 +56,7 @@ function initUpdatedForm() {
 
 // Create a form.id watcher that updates working form
 watch(form, (form) => {
-  if (form.value) {
+  if (form?.value) {
     initUpdatedForm()
   }
 })

@@ -138,7 +138,7 @@ export default {
       if(this.compVal  === null){
         return;
       }
-      if (!this.compVal.startsWith('+')) {
+      if (!this.compVal?.startsWith('+')) {
         this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
       }
 

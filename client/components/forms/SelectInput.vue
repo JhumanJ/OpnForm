@@ -32,7 +32,7 @@
           <template v-if="multiple">
             <div class="flex items-center truncate mr-6">
               <span class="truncate">
-                {{ selectedValues.join(', ') }}
+                {{ selectedValues?.join(', ') }}
               </span>
             </div>
           </template>
@@ -122,6 +122,7 @@ export default {
       return null
     },
     updateModelValue(newValues){
+      if (newValues === null) newValues = []
       this.selectedValues = newValues
     },
     updateOptions (newItem) {

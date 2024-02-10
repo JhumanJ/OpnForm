@@ -53,7 +53,7 @@ export default {
       if (this.disabled) {
         this.$refs.signaturePad.clearSignature()
       } else {
-        const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+        const { isEmpty, data } = this.$refs.signaturePad?.saveSignature()
         this.form[this.name] = (!isEmpty && data) ? data : null
       }
     }

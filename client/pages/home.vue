@@ -157,7 +157,7 @@ const editForm = (form) => {
   showEditFormModal.value = true
 }
 const onTagClick = (tag) => {
-  if (selectedTags.value.has(tag)) {
+  if (selectedTags?.value?.has(tag)) {
     selectedTags.value.remove(tag)
   } else {
     selectedTags.value.add(tag)

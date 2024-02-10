@@ -159,7 +159,7 @@ const saveChanges = () => {
   // Update the workspace custom domain
   customDomainsForm.put('/open/workspaces/' + workspace.value.id + '/custom-domains', {
     data: {
-      custom_domains: customDomainsForm.custom_domains.split('\n')
+      custom_domains: customDomainsForm?.custom_domains?.split('\n')
         .map(domain => domain ? domain.trim() : null)
         .filter(domain => domain && domain.length > 0)
     }
@@ -175,7 +175,7 @@ const saveChanges = () => {
 
 const initCustomDomains = () => {
   if (!workspace || !workspace.value.custom_domains) return
-  customDomainsForm.custom_domains = workspace.value.custom_domains.join('\n')
+  customDomainsForm.custom_domains = workspace.value?.custom_domains.join('\n')
 }
 
 const deleteWorkspace = (workspaceId) => {
