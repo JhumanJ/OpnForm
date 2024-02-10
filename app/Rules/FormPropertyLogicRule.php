@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Support\Str;
 
-class FormPropertyLogicRule implements Rule, DataAwareRule 
+class FormPropertyLogicRule implements Rule, DataAwareRule
 {
 
     const ACTIONS_VALUES = [
@@ -52,7 +52,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
                         'type' => 'enum',
                         'values' => [true]
                     ]
-                ], 
+                ],
                 'content_length_equals' => [
                     'expected_type' => 'number'
                 ],
@@ -478,7 +478,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
     private $field = [];
     private $data = [];
 
-    private function checkBaseCondition($condition) 
+    private function checkBaseCondition($condition)
     {
 
         if (!isset($condition['value'])) {
@@ -498,7 +498,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
             $this->conditionErrors[] = 'missing condition property type';
             return;
         }
-        
+
         if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition operator';
@@ -526,8 +526,6 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
             $this->conditionErrors[] = 'configuration not found for condition operator';
             return;
         }
-
-        // TODO: find what's causing the issue when saving this validation rule :(
 
         $type = self::CONDITION_MAPPING[$typeField]['comparators'][$operator]['expected_type'];
 
@@ -562,7 +560,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         return true;
     }
 
-    private function checkConditions($conditions) 
+    private function checkConditions($conditions)
     {
         if (array_key_exists('operatorIdentifier', $conditions)) {
             if (($conditions['operatorIdentifier'] !== 'and') && ($conditions['operatorIdentifier'] !== 'or')) {
@@ -591,14 +589,14 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
         }
     }
 
-    private function checkActions($conditions) 
+    private function checkActions($actions)
     {
-        if (is_array($conditions) && count($conditions) > 0) {
-            foreach($conditions as $val){
-                if (!in_array($val, static::ACTIONS_VALUES) || 
-                    (in_array($this->field["type"], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block'])) ||
-                    (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block', 'require-answer'])) || 
-                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block', 'disable-block'])) || 
+        if (is_array($actions) && count($actions) > 0) {
+            foreach($actions as $val){
+                if (!in_array($val, static::ACTIONS_VALUES) ||
+                    (in_array($this->field["type"], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block', 'show-block'])) ||
+                    (isset($this->field["hidden"]) && $this->field["hidden"] && !in_array($val, ['show-block', 'require-answer'])) ||
+                    (isset($this->field["required"]) && $this->field["required"] && !in_array($val, ['make-it-optional', 'hide-block', 'disable-block'])) ||
                     (isset($this->field["disabled"]) && $this->field["disabled"] && !in_array($val, ['enable-block', 'require-answer', 'make-it-optional']))
                 ) {
                     $this->isActionCorrect = false;
@@ -617,7 +615,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value) 
+    public function passes($attribute, $value)
     {
         $this->setProperty($attribute);
         if(isset($value["conditions"])){
@@ -632,7 +630,7 @@ class FormPropertyLogicRule implements Rule, DataAwareRule
      * Get the validation error message.
      *
      */
-    public function message() 
+    public function message()
     {
         $message = null;
         if (! $this->isConditionCorrect) {
