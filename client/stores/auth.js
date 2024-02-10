@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {setUser as sentrySetUser} from "@sentry/vue";
+import * as Sentry from "@sentry/vue";
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -66,7 +66,7 @@ export const useAuthStore = defineStore('auth', {
       useCrisp().setUser(this.user)
 
       // Init sentry
-      sentrySetUser({
+      Sentry.setUser({
         id: this.user.id,
         email: this.user.email,
         subscription: this.user?.is_subscribed
