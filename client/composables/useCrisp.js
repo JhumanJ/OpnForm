@@ -25,7 +25,6 @@ export const useCrisp = () => {
 
   function openAndShowChat(message = null) {
     if (!crisp) return
-    showChat()
     openChat()
     if (message) sendTextMessage(message)
   }

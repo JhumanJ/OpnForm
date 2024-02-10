@@ -65,7 +65,7 @@ function checkContains (condition, fieldValue) {
 
 function checkListContains (condition, fieldValue) {
   if (!fieldValue) return false
-  
+
   if (Array.isArray(condition.value)) {
     return condition.value.every(r => fieldValue.includes(r))
   } else {
@@ -74,11 +74,11 @@ function checkListContains (condition, fieldValue) {
 }
 
 function checkStartsWith (condition, fieldValue) {
-  return fieldValue.startsWith(condition.value)
+  return fieldValue?.startsWith(condition.value)
 }
 
 function checkendsWith (condition, fieldValue) {
-  return fieldValue && fieldValue.endsWith(condition.value)
+  return fieldValue?.endsWith(condition.value)
 }
 
 function checkIsEmpty (condition, fieldValue) {

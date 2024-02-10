@@ -71,14 +71,14 @@
       }
     ]
 
-    if (user.value.is_subscribed) {
+    if (user?.value?.is_subscribed) {
       tabs.splice(1, 0, {
         name: 'Billing',
         route: 'settings-billing'
       })
     }
 
-    if (user.value.admin) {
+    if (user?.value?.admin) {
       tabs.push({
         name: 'Admin',
         route: 'settings-admin'

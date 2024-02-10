@@ -17,11 +17,6 @@
                   ]"
                   :form="form" label="Form Theme"
     />
-    <div class="-mt-3 mb-3 text-gray-400 dark:text-gray-500">
-      <small>
-        Need another theme? <a href="#" @click.prevent="crisp.openAndShowChat">Send us some suggestions!</a>
-      </small>
-    </div>
 
     <select-input name="dark_mode" class="mt-4"
                   help="To see changes, save your form and open it"

@@ -53,8 +53,8 @@
       <td v-if="hasActions" class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
           style="width: 100px"
       >
-        <record-operations :form="form" :structure="columns" :submission="row" 
-                            @deleted="(submission)=>$emit('deleted',submission)" 
+        <record-operations :form="form" :structure="columns" :submission="row"
+                            @deleted="(submission)=>$emit('deleted',submission)"
                             @updated="(submission)=>$emit('updated', submission)"/>
       </td>
     </tr>
@@ -91,7 +91,7 @@ import {hash} from "~/lib/utils.js";
 
 export default {
   components: {ResizableTh, RecordOperations},
-  emits: ["updated",  "deleted"],
+  emits: ["updated",  "deleted", "resize"],
   props: {
     columns: {
       type: Array,

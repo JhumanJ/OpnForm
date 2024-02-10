@@ -97,6 +97,7 @@ import FormCustomSeo from './form-components/FormCustomSeo.vue'
 import FormAccess from './form-components/FormAccess.vue'
 import {validatePropertiesLogic} from "~/composables/forms/validatePropertiesLogic.js"
 import opnformConfig from "~/opnform.config.js";
+import {captureException} from "@sentry/vue";
 
 export default {
   name: 'FormEditor',
@@ -255,9 +256,12 @@ export default {
         this.amplitude.logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {
-        if (error.response.status === 422) {
+        if (error?.response.status === 422) {
           this.validationErrorResponse = error.response.data
           this.showValidationErrors()
+        } else {
+          useAlert().error('An error occurred while saving the form, please try again.')
+          captureException(error)
         }
       }).finally(() => {
         this.updateFormLoading = false
@@ -282,10 +286,12 @@ export default {
         this.displayFormModificationAlert(response)
         useRouter().push({ name: 'forms-slug-show-share', params: { slug: this.createdFormSlug, new_form: response.users_first_form } })
       }).catch((error) => {
-        console.error(error)
-        if (error.response && error.response.status === 422) {
+        if (error?.response?.status === 422) {
           this.validationErrorResponse = error.response
           this.showValidationErrors()
+        } else {
+          useAlert().error('An error occurred while saving the form, please try again.')
+          captureException(error)
         }
       }).finally(() => {
         this.updateFormLoading = false

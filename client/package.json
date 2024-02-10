@@ -43,6 +43,7 @@
     "fuse.js": "^6.4.6",
     "js-sha256": "^0.10.0",
     "libphonenumber-js": "^1.10.44",
+    "lodash.throttle": "^4.1.1",
     "nuxt3-notifications": "^1.1.9",
     "object-to-formdata": "^4.5.1",
     "pinia": "^2.1.7",

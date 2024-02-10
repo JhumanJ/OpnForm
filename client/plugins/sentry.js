@@ -1,16 +1,5 @@
 import * as Sentry from "@sentry/vue";
 
-async function lazyLoadSentryIntegrations() {
-  // don't load on server
-  if (!process.client) return;
-
-  const {Replay} = await import("@sentry/vue");
-  Sentry.addIntegration(new Replay({
-    maskAllText: false,
-    blockAllMedia: false,
-  }));
-}
-
 function getSentryIntegrations() {
   // don't load on server
   if (!process.client) return [];
@@ -65,8 +54,5 @@ export default defineNuxtPlugin({
         return event;
       },
     })
-
-    // Lazy-load the replay integration to reduce bundle size
-    lazyLoadSentryIntegrations()
   }
 });

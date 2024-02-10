@@ -4,7 +4,7 @@
       ref="scrollContainer"
       :class="[$style['scroll-container'],{'no-scrollbar':hideScrollbar}]"
       :style="{ width: width?width:'auto', height }"
-      @scroll.passive="toggleShadow"
+      @scroll.passive="throttled.toggleShadow"
     >
       <slot />
       <span :class="[$style['shadow-top'], shadow.top && $style['is-active']]" :style="{
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import throttle from 'lodash.throttle'
 function newResizeObserver (callback) {
   // Skip this feature for browsers which
   // do not support ResizeObserver.
@@ -50,28 +51,31 @@ export default {
         bottom: false,
         left: false
       },
-      debounceTimeout: null,
       scrollContainerObserver: null,
-      wrapObserver: null
+      wrapObserver: null,
+      throttled: {}
     }
   },
   mounted () {
-    window.addEventListener('resize', this.calcDimensions)
+    this.throttled.toggleShadow = throttle(this.toggleShadow, 100);
+    this.throttled.calcDimensions = throttle(this.calcDimensions, 100);
+
+    window.addEventListener('resize', this.throttled.calcDimensions)
 
     // Check if shadows are necessary after the element is resized.
-    const scrollContainerObserver = newResizeObserver(this.toggleShadow)
+    const scrollContainerObserver = newResizeObserver(this.throttled.toggleShadow)
     if (scrollContainerObserver) {
       scrollContainerObserver.observe(this.$refs.scrollContainer)
     }
 
     // Recalculate the container dimensions when the wrapper is resized.
-    this.wrapObserver = newResizeObserver(this.calcDimensions)
+    this.wrapObserver = newResizeObserver(this.throttled.calcDimensions)
     if (this.wrapObserver) {
       this.wrapObserver.observe(this.$el)
     }
   },
   unmounted () {
-    window.removeEventListener('resize', this.calcDimensions)
+    window.removeEventListener('resize', this.throttled.calcDimensions)
     // Cleanup when the component is unmounted.
     this.wrapObserver.disconnect()
     if (this.scrollContainerObserver) {

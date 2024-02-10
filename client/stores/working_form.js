@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 
-
-
 export const useWorkingFormStore = defineStore('working_form', {
   state: () => ({
     content: null,

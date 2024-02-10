@@ -173,6 +173,7 @@ export default {
      */
     currentFieldsPageBreak () {
       // Last block from current group
+      if (!this.currentFields?.length) return null
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null

@@ -468,6 +468,7 @@ export default {
       return true
     },
     optionsText () {
+      if (this.field[this.field.type]) return []
       return this.field[this.field.type].options.map(option => {
         return option.name
       }).join('\n')
