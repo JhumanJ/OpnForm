@@ -331,7 +331,6 @@ class GenerateTemplate extends Command
 
     private function getRelatedTemplates(array $industries, array $types): array
     {
-        ray($industries, $types);
         $templateScore = [];
         Template::chunk(100, function ($otherTemplates) use ($industries, $types, &$templateScore) {
             foreach ($otherTemplates as $otherTemplate) {

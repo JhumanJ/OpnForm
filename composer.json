@@ -22,6 +22,7 @@
     "laravel/cashier": "^13.4",
     "laravel/framework": "^9.19.0",
     "laravel/horizon": "^5.7",
+    "laravel/octane": "^1.5",
     "laravel/socialite": "^5.2",
     "laravel/tinker": "^2.6",
     "laravel/ui": "^3.2",
@@ -36,6 +37,7 @@
     "spatie/laravel-sitemap": "^6.0",
     "spatie/laravel-sluggable": "^3.0",
     "spatie/laravel-webhook-server": "^3.1.2",
+    "spiral/roadrunner": "^2.8.2",
     "stevebauman/purify": "^4.0",
     "tymon/jwt-auth": "^1.0.2",
     "vinkla/hashids": "^10.0"

@@ -30,3 +30,5 @@ public/.DS_Store
 _ide_helper.php
 
 /.make.*
+rr
+.rr.yaml
