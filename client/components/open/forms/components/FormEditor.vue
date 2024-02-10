@@ -256,7 +256,7 @@ export default {
         this.amplitude.logEvent('form_saved', { form_id: this.form.id, form_slug: this.form.slug })
         this.displayFormModificationAlert(data)
       }).catch((error) => {
-        if (error?.response.status === 422) {
+        if (error?.response?.status === 422) {
           this.validationErrorResponse = error.response.data
           this.showValidationErrors()
         } else {
