@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import * as Sentry from "@sentry/vue";
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -65,12 +64,7 @@ export const useAuthStore = defineStore('auth', {
       useAmplitude().setUser(this.user)
       useCrisp().setUser(this.user)
 
-      // Init sentry
-      Sentry.setUser({
-        id: this.user.id,
-        email: this.user.email,
-        subscription: this.user?.is_subscribed
-      })
+      // todo: set sentry user
     },
 
     logout() {
