@@ -12,7 +12,7 @@ environments:
         cli-timeout: 900
         runtime: 'php-8.2:al2-arm'
         storage: opnforms-prod
-        database: JuPersoDb
+        database: OpnForm
         domain: api.opnform.com
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
@@ -32,7 +32,7 @@ environments:
         cli-timeout: 900
         runtime: 'php-8.2:al2-arm'
         storage: opnforms-staging
-        database: JuPersoDb
+        database: OpnForm
         domain: api.stg.opnform.com
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
