@@ -15,6 +15,7 @@
         <input
           type="range"
           class="w-full mt-3"
+          :disabled="disabled"
           :min="minSlider"
           :max="maxSlider"
           :step="stepSlider"
