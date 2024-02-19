@@ -132,10 +132,10 @@ class GenerateTaxExport extends Command
 
         $aggregatedReport = $this->aggregateReport($processedInvoices);
 
-        $filePath = 'tax-export-per-invoice_' . $startDate . '_' . $endDate . '.xlsx';
+        $filePath = 'opnform-tax-export-per-invoice_' . $startDate . '_' . $endDate . '.xlsx';
         $this->exportAsXlsx($processedInvoices, $filePath);
 
-        $aggregatedReportFilePath = 'tax-export-aggregated_' . $startDate . '_' . $endDate . '.xlsx';
+        $aggregatedReportFilePath = 'opnform-tax-export-aggregated_' . $startDate . '_' . $endDate . '.xlsx';
         $this->exportAsXlsx($aggregatedReport, $aggregatedReportFilePath);
 
         // Display the results
