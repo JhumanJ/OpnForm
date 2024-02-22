@@ -25,7 +25,10 @@ abstract class AbstractWebhookHandler
      */
     protected function getWebhookData(): array
     {
-        $formatter = (new FormSubmissionFormatter($this->form, $this->data))->showHiddenFields();
+        $formatter = (new FormSubmissionFormatter($this->form, $this->data))
+        ->useSignedUrlForFiles()
+        ->showHiddenFields()
+        ;
 
         $formattedData = [];
         foreach ($formatter->getFieldsWithValue() as $field) {
