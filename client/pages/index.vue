@@ -7,7 +7,11 @@
         />
       </div>
 
+
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72">
+        <div class="flex justify-center mb-6 -mt-6">
+          <a href="https://www.producthunt.com/posts/opnform?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-opnform" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=440745&theme=light" alt="OpnForm - Create&#0032;beautiful&#0032;forms&#0032;and&#0032;share&#0032;them&#0032;anywhere | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+        </div>
         <div class="flex justify-center mb-5">
           <div
             class="relative flex items-center shadow-sm bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
