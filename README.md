@@ -23,6 +23,9 @@
 
 > An open-source form builder. It's an alternative to products like Typeform, JotForm, Tally etc.
 
+We're live on ProductHunt! Thank you for your support 🙏
+
+<a href="https://www.producthunt.com/posts/opnform?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-opnform" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=440745&theme=light" alt="OpnForm - Create&#0032;beautiful&#0032;forms&#0032;and&#0032;share&#0032;them&#0032;anywhere | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 ## Features
 
 - No-code form builder, with infinite number of fields & submissions
