@@ -1,22 +1,24 @@
 <template>
-  <div class="mb-20">
+  <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
+    <div class="mb-20">
 
-    <div class="mb-6 pb-6 border-b w-full flex flex-col sm:flex-row gap-2">
-      <regenerate-form-link class="sm:w-1/2 flex" :form="props.form"/>
+      <div class="mb-6 pb-6 border-b w-full flex flex-col sm:flex-row gap-2">
+        <regenerate-form-link class="sm:w-1/2 flex" :form="props.form"/>
 
-      <url-form-prefill class="sm:w-1/2" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
+        <url-form-prefill class="sm:w-1/2" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
 
-      <embed-form-as-popup-modal class="sm:w-1/2 flex" :form="props.form"/>
+        <embed-form-as-popup-modal class="sm:w-1/2 flex" :form="props.form"/>
+      </div>
+
+      <share-link class="mt-4" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
+
+      <embed-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
+
+      <form-qr-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
+
+      <advanced-form-url-settings :form="props.form" v-model="shareFormConfig"/>
+
     </div>
-
-    <share-link class="mt-4" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
-
-    <embed-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
-
-    <form-qr-code class="mt-6" :form="props.form" :extra-query-param="shareUrlForQueryParams"/>
-
-    <advanced-form-url-settings :form="props.form" v-model="shareFormConfig"/>
-
   </div>
 </template>
 

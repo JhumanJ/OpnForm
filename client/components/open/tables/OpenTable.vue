@@ -91,7 +91,7 @@ import {hash} from "~/lib/utils.js";
 
 export default {
   components: {ResizableTh, RecordOperations},
-  emits: ["updated",  "deleted", "resize"],
+  emits: ["updated",  "deleted", "resize", "update-columns"],
   props: {
     columns: {
       type: Array,
@@ -109,7 +109,8 @@ export default {
       required: false,
       default: true,
       type: Boolean
-    }
+    },
+    scrollParent: {},
   },
 
   setup() {
@@ -126,6 +127,7 @@ export default {
       skip: false,
       hasActions: true,
       internalColumns: [],
+      rafId: null,
       fieldComponents: {
         text: shallowRef(OpenText),
         number: shallowRef(OpenText),
@@ -159,10 +161,10 @@ export default {
 
   mounted() {
     this.internalColumns = clonedeep(this.columns)
-    const parent = document.getElementById('table-page')
+    const parent = this.scrollParent ?? document.getElementById('table-page')
     this.tableHash = hash(JSON.stringify(this.form.properties))
     if (parent) {
-      parent.addEventListener('scroll', this.handleScroll, {passive: true})
+      parent.addEventListener('scroll', this.handleScroll, {passive: false})
     }
     window.addEventListener('resize', this.handleScroll)
     this.onStructureChange()
@@ -170,7 +172,7 @@ export default {
   },
 
   beforeUnmount() {
-    const parent = document.getElementById('table-page')
+    const parent = this.scrollParent ?? document.getElementById('table-page')
     if (parent) {
       parent.removeEventListener('scroll', this.handleScroll)
     }
@@ -227,33 +229,44 @@ export default {
       })
     },
     handleScroll() {
-      const parent = document.getElementById('table-page')
-      const posTop = parent.getBoundingClientRect().top
-      const tablePosition = Math.max(0, posTop - this.$refs.table.getBoundingClientRect().top)
-      const tableHeader = document.getElementById('table-header-' + this.tableHash)
 
-      // Set position of table header
-      if (tableHeader) {
-        tableHeader.style.transform = `translate3d(0px, ${tablePosition}px, 0px)`
-        if (tablePosition > 0) {
-          tableHeader.classList.add('border-t')
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+      }
+
+      this.rafId = requestAnimationFrame(() => {
+        const table = this.$refs.table;
+        const tableHeader = document.getElementById('table-header-' + this.tableHash);
+        const tableActionsRow = document.getElementById('table-actions-' + this.tableHash);
+
+        if (!table || !tableHeader) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const tableRect = table.getBoundingClientRect();
+
+        // The starting point of the table relative to the viewport
+        const tableStart = tableRect.top + scrollTop;
+        // The end point of the table relative to the viewport
+        const tableEnd = tableStart + tableRect.height;
+
+        let headerY = scrollTop - tableStart;
+        let actionsY = scrollTop + window.innerHeight - tableEnd;
+
+        if (headerY < 0) headerY = 0;
+        if (scrollTop + window.innerHeight > tableEnd) {
+          actionsY = tableRect.height - (scrollTop + window.innerHeight - tableEnd);
         } else {
-          tableHeader.classList.remove('border-t')
+          actionsY = tableRect.height;
         }
-      }
 
-      // Set position of actions row
-      if (this.$slots.hasOwnProperty('actions')) {
-        const tableActionsRow = document.getElementById('table-actions-' + this.tableHash)
-        if (tableActionsRow) {
-          if (tablePosition > 100) {
-            tableActionsRow.style.transform = `translate3d(0px, ${tablePosition + 33}px, 0px)`
-          } else {
-            const parentContainer = document.getElementById('table-page')
-            tableActionsRow.style.transform = `translate3d(0px, ${parentContainer.offsetHeight + (posTop - this.$refs.table.getBoundingClientRect().top) - 35}px, 0px)`
-          }
+        if (tableHeader) {
+          tableHeader.style.transform = `translate3d(0px, ${headerY}px, 0px)`;
         }
-      }
+
+        if (tableActionsRow) {
+          tableActionsRow.style.transform = `translate3d(0px, ${actionsY}px, 0px)`;
+        }
+      });
     },
     setColumns(val) {
       this.$emit('update-columns', val)

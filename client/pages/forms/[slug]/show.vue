@@ -124,12 +124,8 @@
           </div>
         </div>
       </div>
-      <div class="flex bg-white">
-        <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
-          <div class="py-4">
-            <NuxtPage :form="form"/>
-          </div>
-        </div>
+      <div class="flex flex-col bg-white">
+        <NuxtPage :form="form"/>
       </div>
     </template>
     <div v-else-if="loading" class="text-center w-full p-5">

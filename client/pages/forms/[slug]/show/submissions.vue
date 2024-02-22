@@ -1,7 +1,5 @@
 <template>
-  <div id="table-page">
-    <form-submissions/>
-  </div>
+  <form-submissions/>
 </template>
 
 <script setup>
@@ -18,7 +16,7 @@ useOpnSeoMeta({
   title: (props.form) ? 'Form Submissions - ' + props.form.title : 'Form Submissions'
 })
 
-onBeforeRouteLeave(()=>{
+onBeforeRouteLeave(() => {
   console.log('Clearing  store state')
   useRecordsStore().resetState()
 })
