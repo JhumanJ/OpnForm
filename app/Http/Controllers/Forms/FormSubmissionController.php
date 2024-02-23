@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Vinkla\Hashids\Facades\Hashids;
 
 class FormSubmissionController extends Controller
 {
@@ -25,29 +26,29 @@ class FormSubmissionController extends Controller
 
     public function submissions(string $id)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
         return FormSubmissionResource::collection($form->submissions()->paginate(100));
     }
 
-    public function  update(AnswerFormRequest $request, $id, $submissionId)
+    public function update(AnswerFormRequest $request, $id, $submissionId)
     {
-        $form  = $request->form;
+        $form = $request->form;
         $this->authorize('update', $form);
         $job = new StoreFormSubmissionJob($request->form, $request->validated());
         $job->setSubmissionId($submissionId)->handle();
 
-        $data =  new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $data = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
         return $this->success([
             'message' => 'Record successfully updated.',
-            'data'  => $data
+            'data' => $data
         ]);
     }
 
     public function export(string $id)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
         $allRows = [];
@@ -56,23 +57,26 @@ class FormSubmissionController extends Controller
                 ->outputStringsOnly()
                 ->setEmptyForNoValue()
                 ->showRemovedFields()
+                ->showHiddenFields()
                 ->useSignedUrlForFiles();
-            $tmp = $formatter->getCleanKeyValue();
-            $tmp['Create Date'] = date("Y-m-d H:i", strtotime($row['created_at']));
-            $allRows[] = $tmp;
+            $allRows[] = [
+                'id' => Hashids::encode($row['id']),
+                'created_at' => date("Y-m-d H:i", strtotime($row['created_at'])),
+                ...$formatter->getCleanKeyValue()
+            ];
         }
         $csvExport = (new FormSubmissionExport($allRows));
         return Excel::download(
             $csvExport,
-            $form->slug.'-submission-data.csv',
+            $form->slug . '-submission-data.csv',
             \Maatwebsite\Excel\Excel::CSV
         );
     }
 
     public function submissionFile($id, $fileName)
     {
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id).'/'
-            .urldecode($fileName);
+        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id) . '/'
+            . urldecode($fileName);
 
         if (!Storage::exists($fileName)) {
             return $this->error([
@@ -85,7 +89,7 @@ class FormSubmissionController extends Controller
         }
 
         return redirect(
-             Storage::temporaryUrl($fileName, now()->addMinute())
+            Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
 }

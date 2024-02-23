@@ -16,7 +16,7 @@ class FormSubmissionExport implements FromArray, WithHeadingRow
         $contentRow = [];
         foreach ($submissionData as $i => $row) {
             if($i==0){
-                $headingRow[] = array_keys($row);
+                $headingRow[] = $this->cleanColumnNames(array_keys($row));
             }
             $contentRow[] = array_values($row);
         }
@@ -25,6 +25,13 @@ class FormSubmissionExport implements FromArray, WithHeadingRow
             $headingRow,
             $contentRow
         ];
+    }
+
+    private function cleanColumnNames(array $columnNames): array
+    {
+        return collect($columnNames)->map(function ($columnName) {
+            return preg_replace('/\s\(.*\)/', '', $columnName);
+        })->toArray();
     }
 
     public function array(): array

@@ -71,9 +71,10 @@
               >Display columns</a>
             </p>
             <p class="text-right cursor-pointer text-xs uppercase">
-              <a
+              <a v-if="!exportLoading"
                 @click.prevent="downloadAsCsv" href="#"
               >Export as CSV</a>
+              <p v-else><loader class="w-3 h-3 text-blue-500" /></p>
             </p>
           </div>
         </div>
@@ -136,6 +137,7 @@ export default {
       properties: [],
       removed_properties: [],
       displayColumns: {},
+      exportLoading: false,
       searchForm: useForm({
         search: ''
       }),
@@ -184,6 +186,9 @@ export default {
   watch: {
     'form.id'() {
       this.onFormChange()
+    },
+    'searchForm.search'() {
+      this.dataChanged()
     }
   },
   mounted() {
@@ -271,6 +276,10 @@ export default {
       this.dataChanged()
     },
     downloadAsCsv() {
+      if (this.exportLoading) {
+        return
+      }
+      this.exportLoading = true
       opnFetch(this.exportUrl, {responseType: "blob"})
         .then(blob => {
           const filename = `${this.form.slug}-${Date.now()}-submissions.csv`
@@ -284,6 +293,8 @@ export default {
           window.URL.revokeObjectURL(url)
         }).catch((error) => {
         console.error(error)
+      }).finally(() => {
+        this.exportLoading = false
       })
     }
   }

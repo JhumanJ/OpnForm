@@ -85,14 +85,34 @@ class FormSubmissionFormatter
     public function getCleanKeyValue()
     {
         $data = $this->formData;
-        $fields = ($this->showRemovedFields) ? array_merge($this->form->properties, $this->form->removed_properties) : $this->form->properties;
+
+        $fields = collect($this->form->properties);
+        $removeFields = collect($this->form->removed_properties)->map(function ($field) {
+            return [
+                ...$field,
+                'removed' => true
+            ];
+        });
+        if ($this->showRemovedFields) {
+            $fields = $fields->merge($removeFields);
+        }
+        $fields = $fields->filter(function ($field) {
+            return !in_array($field['type'],['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']);
+        })->values();
 
         $returnArray = [];
-        foreach ($fields as &$field) {
-            $isRemoved = in_array($field['id'], array_column($this->form->removed_properties, 'id')) ?? false;
-            if($isRemoved){
+        foreach ($fields as $field) {
+
+            if (in_array($field['id'],['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'])) {
+                continue;
+            }
+
+            if($field['removed'] ?? false) {
                 $field['name'] = $field['name']." (deleted)";
             }
+
+            // Add ID to avoid name clashes
+            $field['name'] = $field['name'].' ('.\Str::of($field['id']).')';
 
             // If not present skip
             if (!isset($data[$field['id']])) {
