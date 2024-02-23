@@ -1,6 +1,7 @@
 <?php
-use Tests\Helpers\FormSubmissionDataFactory;
+
 use App\Models\User;
+use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can validate Update Workspace Select Option Job', function () {
     $user = $this->actingAsUser();
@@ -12,7 +13,7 @@ it('can validate Update Workspace Select Option Job', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 
     $formData = FormSubmissionDataFactory::generateSubmissionData($form);
@@ -20,7 +21,7 @@ it('can validate Update Workspace Select Option Job', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 });
 
@@ -30,6 +31,6 @@ it('can validate scope with active subscription', function () {
     $this->createProUser();
     $this->createProUser();
     $this->createUser();
-    
+
     expect(User::WithActiveSubscription()->count())->toBe(3);
 });

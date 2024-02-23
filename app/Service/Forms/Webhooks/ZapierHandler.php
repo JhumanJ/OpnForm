@@ -22,6 +22,6 @@ class ZapierHandler extends AbstractWebhookHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl());
+        return ! is_null($this->getWebhookUrl());
     }
 }

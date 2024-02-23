@@ -6,8 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,12 +15,12 @@ return new class extends Migration
     public function up()
     {
         $driver = DB::getDriverName();
-        
+
         Schema::table('forms', function (Blueprint $table) use ($driver) {
             if ($driver === 'mysql') {
-                $table->json('seo_meta')->default(new Expression("(JSON_OBJECT())"));
+                $table->json('seo_meta')->default(new Expression('(JSON_OBJECT())'));
             } else {
-                $table->json('seo_meta')->default("{}");
+                $table->json('seo_meta')->default('{}');
             }
         });
     }

@@ -24,8 +24,7 @@ class VerificationController extends Controller
     /**
      * Mark the user's email address as verified.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\User $user
+     * @param  \App\User  $user
      * @return \Illuminate\Http\JsonResponse
      */
     public function verify(Request $request, User $user)
@@ -54,7 +53,6 @@ class VerificationController extends Controller
     /**
      * Resend the email verification notification.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function resend(Request $request)

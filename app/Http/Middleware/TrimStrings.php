@@ -18,10 +18,11 @@ class TrimStrings extends Middleware
 
     /**
      * The route name where this shouldn't be applied
+     *
      * @var string[]
      */
     protected $exceptUrls = [
-        '/\/api\/forms\/(.*)\/answer/'
+        '/\/api\/forms\/(.*)\/answer/',
     ];
 
     public function handle($request, \Closure $next)

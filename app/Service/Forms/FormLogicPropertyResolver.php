@@ -2,13 +2,12 @@
 
 namespace App\Service\Forms;
 
-use App\Service\Forms\FormLogicConditionChecker;
-
 class FormLogicPropertyResolver
 {
-
     private $property = [];
+
     private $formData = [];
+
     private $logic = false;
 
     public function __construct(private array $prop, private array $values)
@@ -30,18 +29,18 @@ class FormLogicPropertyResolver
 
     public function shouldBeRequired(): bool
     {
-        if(!isset($this->property['required'])){
+        if (! isset($this->property['required'])) {
             return false;
         }
 
-        if (!$this->logic) {
+        if (! $this->logic) {
             return $this->property['required'];
         }
 
         $conditionsMet = FormLogicConditionChecker::conditionsMet($this->logic['conditions'], $this->formData);
         if ($conditionsMet && $this->property['required'] && count($this->logic['actions']) > 0 && (in_array('make-it-optional', $this->logic['actions']) || in_array('hide-block', $this->logic['actions']))) {
             return false;
-        } else if ($conditionsMet && !$this->property['required'] && count($this->logic['actions']) > 0 && in_array('require-answer', $this->logic['actions'])) {
+        } elseif ($conditionsMet && ! $this->property['required'] && count($this->logic['actions']) > 0 && in_array('require-answer', $this->logic['actions'])) {
             return true;
         } else {
             return $this->property['required'];
@@ -54,14 +53,14 @@ class FormLogicPropertyResolver
             return false;
         }
 
-        if (!$this->logic) {
+        if (! $this->logic) {
             return $this->property['hidden'];
         }
 
         $conditionsMet = FormLogicConditionChecker::conditionsMet($this->logic['conditions'], $this->formData);
         if ($conditionsMet && $this->property['hidden'] && count($this->logic['actions']) > 0 && in_array('show-block', $this->logic['actions'])) {
             return false;
-        } elseif ($conditionsMet && !$this->property['hidden'] && count($this->logic['actions']) > 0 && in_array('hide-block', $this->logic['actions'])) {
+        } elseif ($conditionsMet && ! $this->property['hidden'] && count($this->logic['actions']) > 0 && in_array('hide-block', $this->logic['actions'])) {
             return true;
         } else {
             return $this->property['hidden'];

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AiGenerateFormRequest;
 use App\Models\Forms\AI\AiFormCompletion;
-use App\Service\OpenAi\GptCompleter;
-use Illuminate\Support\Str;
 
 class AiFormController extends Controller
 {
@@ -18,8 +16,8 @@ class AiFormController extends Controller
             'message' => 'We\'re working on your form, please wait ~1 min.',
             'ai_form_completion_id' => AiFormCompletion::create([
                 'form_prompt' => $request->input('form_prompt'),
-                'ip' => $request->ip()
-            ])->id
+                'ip' => $request->ip(),
+            ])->id,
         ]);
     }
 
@@ -30,7 +28,7 @@ class AiFormController extends Controller
         }
 
         return $this->success([
-            'ai_form_completion' => $aiFormCompletion
+            'ai_form_completion' => $aiFormCompletion,
         ]);
     }
 }

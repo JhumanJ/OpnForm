@@ -3,10 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Http\Middleware\Form\ProtectedForm;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class FormResource extends JsonResource
 {
@@ -20,7 +18,7 @@ class FormResource extends JsonResource
      */
     public function toArray($request)
     {
-        if(!$this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)){
+        if (! $this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)) {
             return $this->getProtectedForm();
         }
 
@@ -69,6 +67,7 @@ class FormResource extends JsonResource
     public function setCleanings(array $cleanings)
     {
         $this->cleanings = $cleanings;
+
         return $this;
     }
 
@@ -96,15 +95,18 @@ class FormResource extends JsonResource
         ];
     }
 
-    private function getWorkspace() {
+    private function getWorkspace()
+    {
         return $this->extra?->loadedWorkspace ?? $this->workspace;
     }
 
-    private function workspaceIsPro() {
+    private function workspaceIsPro()
+    {
         return $this->extra?->workspaceIsPro ?? $this->getWorkspace()->is_pro ?? $this->is_pro;
     }
 
-    private function userIsFormOwner() {
+    private function userIsFormOwner()
+    {
         return $this->extra?->userIsOwner ??
             (
                 Auth::check() && Auth::user()->ownsForm($this->resource)

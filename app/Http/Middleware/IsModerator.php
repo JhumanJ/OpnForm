@@ -10,13 +10,11 @@ class IsModerator
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && !$request->user()->moderator) {
+        if ($request->user() && ! $request->user()->moderator) {
             // This user is not a paying customer...
             if ($request->expectsJson()) {
                 return response([
@@ -24,6 +22,7 @@ class IsModerator
                     'type' => 'error',
                 ], 403);
             }
+
             return redirect('home');
         }
 

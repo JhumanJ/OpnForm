@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
-use Illuminate\Http\Request;
 use App\Service\WorkspaceHelper;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WorkspaceController extends Controller
@@ -19,6 +19,7 @@ class WorkspaceController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Workspace::class);
+
         return WorkspaceResource::collection(Auth::user()->workspaces);
     }
 
@@ -34,6 +35,7 @@ class WorkspaceController extends Controller
     {
         $request->workspace->custom_domains = $request->customDomains;
         $request->workspace->save();
+
         return new WorkspaceResource($request->workspace);
     }
 
@@ -44,9 +46,10 @@ class WorkspaceController extends Controller
 
         $id = $workspace->id;
         $workspace->delete();
+
         return $this->success([
             'message' => 'Workspace deleted.',
-            'workspace_id' => $id
+            'workspace_id' => $id,
         ]);
     }
 
@@ -55,7 +58,7 @@ class WorkspaceController extends Controller
         $user = $request->user();
 
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
         ]);
 
         // Create workspace
@@ -67,14 +70,14 @@ class WorkspaceController extends Controller
         // Add relation with user
         $user->workspaces()->sync([
             $workspace->id => [
-                'role' => 'admin'
-            ]
+                'role' => 'admin',
+            ],
         ], false);
 
         return $this->success([
             'message' => 'Workspace created.',
             'workspace_id' => $workspace->id,
-            'workspace' => new WorkspaceResource($workspace)
+            'workspace' => new WorkspaceResource($workspace),
         ]);
     }
 }

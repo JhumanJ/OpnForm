@@ -27,34 +27,34 @@ class GenerateTaxExport extends Command
      */
     protected $description = 'Compute Stripe VAT per country';
 
-    const EU_TAX_RATES = [
-        "AT" => 20,
-        "BE" => 21,
-        "BG" => 20,
-        "HR" => 25,
-        "CY" => 19,
-        "CZ" => 21,
-        "DK" => 25,
-        "EE" => 20,
-        "FI" => 24,
-        "FR" => 20,
-        "DE" => 19,
-        "GR" => 24,
-        "HU" => 27,
-        "IE" => 23,
-        "IT" => 22,
-        "LV" => 21,
-        "LT" => 21,
-        "LU" => 17,
-        "MT" => 18,
-        "NL" => 21,
-        "PL" => 23,
-        "PT" => 23,
-        "RO" => 19,
-        "SK" => 20,
-        "SI" => 22,
-        "ES" => 21,
-        "SE" => 25
+    public const EU_TAX_RATES = [
+        'AT' => 20,
+        'BE' => 21,
+        'BG' => 20,
+        'HR' => 25,
+        'CY' => 19,
+        'CZ' => 21,
+        'DK' => 25,
+        'EE' => 20,
+        'FI' => 24,
+        'FR' => 20,
+        'DE' => 19,
+        'GR' => 24,
+        'HU' => 27,
+        'IE' => 23,
+        'IT' => 22,
+        'LV' => 21,
+        'LT' => 21,
+        'LU' => 17,
+        'MT' => 18,
+        'NL' => 21,
+        'PL' => 23,
+        'PT' => 23,
+        'RO' => 19,
+        'SK' => 20,
+        'SI' => 22,
+        'ES' => 21,
+        'SE' => 25,
     ];
 
     /**
@@ -69,20 +69,22 @@ class GenerateTaxExport extends Command
         $endDate = $this->option('end-date');
 
         // Validate the date format
-        if ($startDate && !Carbon::createFromFormat('Y-m-d', $startDate)) {
+        if ($startDate && ! Carbon::createFromFormat('Y-m-d', $startDate)) {
             $this->error('Invalid start date format. Use YYYY-MM-DD.');
+
             return Command::FAILURE;
         }
 
-        if ($endDate && !Carbon::createFromFormat('Y-m-d', $endDate)) {
+        if ($endDate && ! Carbon::createFromFormat('Y-m-d', $endDate)) {
             $this->error('Invalid end date format. Use YYYY-MM-DD.');
+
             return Command::FAILURE;
-        } else if (!$endDate && $this->option('full-month')) {
+        } elseif (! $endDate && $this->option('full-month')) {
             $endDate = Carbon::parse($startDate)->endOfMonth()->endOfDay()->format('Y-m-d');
         }
 
-        $this->info('Start date: ' . $startDate);
-        $this->info('End date: ' . $endDate);
+        $this->info('Start date: '.$startDate);
+        $this->info('End date: '.$endDate);
 
         $processedInvoices = [];
 
@@ -111,6 +113,7 @@ class GenerateTaxExport extends Command
                 // Ignore if payment was refunded
                 if (($invoice->payment_intent->status ?? null) !== 'succeeded') {
                     $paymentNotSuccessfulCount++;
+
                     continue;
                 }
 
@@ -132,14 +135,14 @@ class GenerateTaxExport extends Command
 
         $aggregatedReport = $this->aggregateReport($processedInvoices);
 
-        $filePath = 'opnform-tax-export-per-invoice_' . $startDate . '_' . $endDate . '.xlsx';
+        $filePath = 'opnform-tax-export-per-invoice_'.$startDate.'_'.$endDate.'.xlsx';
         $this->exportAsXlsx($processedInvoices, $filePath);
 
-        $aggregatedReportFilePath = 'opnform-tax-export-aggregated_' . $startDate . '_' . $endDate . '.xlsx';
+        $aggregatedReportFilePath = 'opnform-tax-export-aggregated_'.$startDate.'_'.$endDate.'.xlsx';
         $this->exportAsXlsx($aggregatedReport, $aggregatedReportFilePath);
 
         // Display the results
-        $this->info('Total invoices: ' . $totalInvoice . ' (with ' . $paymentNotSuccessfulCount . ' payment not successful or trial free invoice)');
+        $this->info('Total invoices: '.$totalInvoice.' (with '.$paymentNotSuccessfulCount.' payment not successful or trial free invoice)');
 
         return Command::SUCCESS;
     }
@@ -151,7 +154,7 @@ class GenerateTaxExport extends Command
         foreach ($invoices as $invoice) {
             $country = $invoice['cust_country'];
             $customerType = is_null($invoice['cust_vat_id']) && $this->isEuropeanCountry($country) ? 'individual' : 'business';
-            if (!isset($aggregatedReport[$country])) {
+            if (! isset($aggregatedReport[$country])) {
                 $defaultVal = [
                     'count' => 0,
                     'total_usd' => 0,
@@ -163,7 +166,7 @@ class GenerateTaxExport extends Command
                 ];
                 $aggregatedReport[$country] = [
                     'individual' => $defaultVal,
-                    'business' => $defaultVal
+                    'business' => $defaultVal,
                 ];
             }
             $aggregatedReport[$country][$customerType]['count']++;
@@ -181,10 +184,11 @@ class GenerateTaxExport extends Command
                 $finalReport[] = [
                     'country' => $country,
                     'customer_type' => $customerType,
-                    ...$aggData
+                    ...$aggData,
                 ];
             }
         }
+
         return $finalReport;
     }
 
@@ -226,7 +230,9 @@ class GenerateTaxExport extends Command
 
         if ($taxRate = (self::EU_TAX_RATES[$countryCode] ?? null)) {
             // If VAT ID is provided, then TAX is 0%
-            if (!$vatId) return $taxRate;
+            if (! $vatId) {
+                return $taxRate;
+            }
         }
 
         return 0;
@@ -241,12 +247,11 @@ class GenerateTaxExport extends Command
     {
         if (count($data) == 0) {
             $this->info('Empty data. No file generated.');
+
             return;
         }
 
         (new ArrayExport($data))->store($filename, 'local', \Maatwebsite\Excel\Excel::XLSX);
-        $this->line('File generated: ' . storage_path('app/' . $filename));
+        $this->line('File generated: '.storage_path('app/'.$filename));
     }
-
-
 }

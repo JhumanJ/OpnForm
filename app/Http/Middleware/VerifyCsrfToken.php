@@ -14,6 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'stripe/webhook',
         'vapor/signed-storage-url',
-        'upload-file'
+        'upload-file',
     ];
 }

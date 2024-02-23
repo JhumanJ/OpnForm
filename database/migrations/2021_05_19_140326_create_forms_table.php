@@ -19,7 +19,7 @@ class CreateFormsTable extends Migration
 
         Schema::create('forms', function (Blueprint $table) use ($driver) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Workspace::class,'workspace_id');
+            $table->foreignIdFor(\App\Models\Workspace::class, 'workspace_id');
             $table->string('title');
             $table->string('slug');
             $table->json('properties');
@@ -48,13 +48,13 @@ class CreateFormsTable extends Migration
             $table->boolean('transparent_background')->default(false);
             $table->timestamp('closes_at')->nullable();
             $table->text('closed_text')->nullable();
-            $table->string('notification_subject')->default("We saved your answers");
+            $table->string('notification_subject')->default('We saved your answers');
             $table->text('notification_body')->default(new Expression("('<p>Hello there 👋 <br>This is a confirmation that your submission was successfully saved.</p>')"));
             $table->boolean('notifications_include_submission')->default(true);
             $table->boolean('use_captcha')->default(false);
             $table->boolean('can_be_indexed')->default(true);
             $table->string('password')->nullable()->default(null);
-            $table->string('notification_sender')->default("OpenForm");
+            $table->string('notification_sender')->default('OpenForm');
             if ($driver === 'mysql') {
                 $table->jsonb('tags')->default(new Expression('(JSON_ARRAY())'));
             } else {

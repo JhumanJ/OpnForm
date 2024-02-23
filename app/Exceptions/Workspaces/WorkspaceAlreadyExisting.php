@@ -14,7 +14,7 @@ class WorkspaceAlreadyExisting extends Exception
     public function getErrorMessage()
     {
         $owner = $this->workspace->users()->first();
-        if (!$owner) {
+        if (! $owner) {
             return 'A user already connected that workspace to another NotionForms account. You or the current workspace
              owner must have a NotionForms Enterprise subscription for you to add this Notion workspace. Please upgrade
              with an Enterprise subscription, or contact us to get help.';

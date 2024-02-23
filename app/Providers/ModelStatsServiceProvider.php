@@ -12,8 +12,6 @@ class ModelStatsServiceProvider extends Provider
      * Register the LaravelModelStats gate.
      *
      * This gate determines who can access ModelStats in non-local environments.
-     *
-     * @return void
      */
     protected function gate(): void
     {

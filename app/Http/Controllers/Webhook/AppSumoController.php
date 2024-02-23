@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
 use App\Models\License;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
 
 class AppSumoController extends Controller
@@ -16,6 +16,7 @@ class AppSumoController extends Controller
 
         if ($request->test) {
             Log::info('[APPSUMO] test request received', $request->toArray());
+
             return $this->success([
                 'message' => 'Webhook received.',
                 'event' => $request->event,
@@ -69,11 +70,13 @@ class AppSumoController extends Controller
         $license->user_id = $licenseData['user_id'] ?? null;
         $license->save();
 
-        Log::info('[APPSUMO] creating new license',
+        Log::info(
+            '[APPSUMO] creating new license',
             [
                 'license_key' => $license->license_key,
                 'license_id' => $license->id,
-            ]);
+            ]
+        );
 
         return $license;
     }

@@ -8,8 +8,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class FormSubmissionNotification extends Notification implements ShouldQueue
 {
@@ -52,7 +52,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
             ->outputStringsOnly()
             ->useSignedUrlForFiles();
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
             ->from($this->getFromEmail(), config('app.name'))
             ->subject('New form submission for "'.$this->event->form->title.'"')
@@ -65,15 +65,17 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
     private function getFromEmail()
     {
         $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
-        return $originalFromAddress->first(). '+' . time() . '@' . $originalFromAddress->last();
+
+        return $originalFromAddress->first().'+'.time().'@'.$originalFromAddress->last();
     }
 
     private function getReplyToEmail($default)
     {
-        $replyTo = Arr::get((array)$this->event->form->notification_settings, 'notification_reply_to', null);
+        $replyTo = Arr::get((array) $this->event->form->notification_settings, 'notification_reply_to', null);
         if ($replyTo && $this->validateEmail($replyTo)) {
             return $replyTo;
         }
+
         return $this->getRespondentEmail() ?? $default;
     }
 
@@ -83,7 +85,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
         $emailFields = collect($this->event->form->properties)->filter(function ($field) {
             $hidden = $field['hidden'] ?? false;
 
-            return !$hidden && $field['type'] == 'email';
+            return ! $hidden && $field['type'] == 'email';
         });
         if ($emailFields->count() != 1) {
             return null;
@@ -101,7 +103,6 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
 
     public static function validateEmail($email): bool
     {
-        return (bool)filter_var($email, FILTER_VALIDATE_EMAIL);
+        return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
     }
-
 }

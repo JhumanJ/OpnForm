@@ -24,4 +24,3 @@ class ArrayExport implements FromArray, WithHeadings
         return array_keys($this->data[0]);
     }
 }
-

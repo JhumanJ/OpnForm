@@ -6,6 +6,47 @@ on:
   pull_request:
 
 jobs:
+
+  code_lint:
+    runs-on: ubuntu-latest
+    name: Run code linters
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: dom, curl, mbstring, pdo, sqlite, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Prepare the environment
+        run: cp .env.example .env
+
+      - name: Install composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --ignore-platform-reqs --optimize-autoloader
+
+      - name: Directory permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Run PHP lint check
+        run: ./vendor/bin/pint --test
+
   tests:
     runs-on: ubuntu-latest
 
@@ -155,7 +196,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   production-deploy:
-    needs: [ tests, build-nuxt-app ]
+    needs: [ code_lint, tests, build-nuxt-app ]
     if: success() && github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     name: Triggers Deployment (Vapor & Amplify)

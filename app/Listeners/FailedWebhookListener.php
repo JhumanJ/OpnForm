@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Notifications\Forms\FailedWebhookNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 
 class FailedWebhookListener
@@ -12,7 +10,7 @@ class FailedWebhookListener
     /**
      * Handle the event.
      *
-     * @param object $event
+     * @param  object  $event
      * @return void
      */
     public function handle(WebhookCallFailedEvent $event)
@@ -24,15 +22,16 @@ class FailedWebhookListener
                 'webhook_url' => $event->webhookUrl,
                 'exception' => $event->errorType,
                 'message' => $event->errorMessage,
-                'form_id' => $event->meta['form']->id
+                'form_id' => $event->meta['form']->id,
             ]);
+
             return;
         }
 
         \Log::error('Failed webhook', [
             'webhook_url' => $event->webhookUrl,
             'exception' => $event->errorType,
-            'message' => $event->errorMessage
+            'message' => $event->errorMessage,
         ]);
     }
 }

@@ -19,11 +19,11 @@ class CreateFormSubmissionsTable extends Migration
 
         Schema::create('form_submissions', function (Blueprint $table) use ($driver) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Forms\Form::class,'form_id');
+            $table->foreignIdFor(\App\Models\Forms\Form::class, 'form_id');
             if ($driver === 'mysql') {
-                $table->jsonb('data')->default(new Expression("(JSON_OBJECT())"));
+                $table->jsonb('data')->default(new Expression('(JSON_OBJECT())'));
             } else {
-                $table->jsonb('data')->default("{}");
+                $table->jsonb('data')->default('{}');
             }
             $table->timestamps();
         });

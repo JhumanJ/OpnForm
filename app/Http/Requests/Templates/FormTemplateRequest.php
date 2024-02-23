@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FormTemplateRequest extends FormRequest
 {
-    const IGNORED_KEYS = [
+    public const IGNORED_KEYS = [
         'id',
         'creator',
         'cleanings',
@@ -49,9 +49,10 @@ class FormTemplateRequest extends FormRequest
     public function rules()
     {
         $slugRule = '';
-        if($this->id){
+        if ($this->id) {
             $slugRule = ','.$this->id;
         }
+
         return [
             'form' => 'required|array',
             'publicly_listed' => 'boolean',
@@ -88,7 +89,7 @@ class FormTemplateRequest extends FormRequest
             'types' => $this->types ?? [],
             'industries' => $this->industries ?? [],
             'related_templates' => $this->related_templates ?? [],
-            'questions' => $this->questions ?? []
+            'questions' => $this->questions ?? [],
         ]);
     }
 }

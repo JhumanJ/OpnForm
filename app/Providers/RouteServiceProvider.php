@@ -48,7 +48,8 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerGlobalRouteParamConstraints() {
+    protected function registerGlobalRouteParamConstraints()
+    {
         Route::pattern('workspaceId', '[0-9]+');
     }
 }

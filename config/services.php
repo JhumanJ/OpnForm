@@ -45,7 +45,7 @@ return [
     ],
 
     'notion' => [
-        'worker' => env('NOTION_WORKER', 'https://notion-forms-worker.notionforms.workers.dev/v1')
+        'worker' => env('NOTION_WORKER', 'https://notion-forms-worker.notionforms.workers.dev/v1'),
     ],
 
     'openai' => [

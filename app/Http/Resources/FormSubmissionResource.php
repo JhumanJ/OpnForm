@@ -6,7 +6,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class FormSubmissionResource extends JsonResource
 {
-
     /**
      * Transform the resource into an array.
      *
@@ -28,13 +27,14 @@ class FormSubmissionResource extends JsonResource
     private function addExtraData()
     {
         $this->data = array_merge($this->data, [
-            "created_at" => $this->created_at->toDateTimeString(),
-            'id' => $this->id
+            'created_at' => $this->created_at->toDateTimeString(),
+            'id' => $this->id,
         ]);
     }
 
     /**
      * Link to the file (generating signed s3 URL)
+     *
      * @return void
      */
     private function generateFileLinks()
@@ -45,7 +45,7 @@ class FormSubmissionResource extends JsonResource
             return in_array($field['type'], ['files', 'signature']);
         });
         foreach ($fileFields as $field) {
-            if (isset($data[$field['id']]) && !empty($data[$field['id']])) {
+            if (isset($data[$field['id']]) && ! empty($data[$field['id']])) {
                 $data[$field['id']] = collect($data[$field['id']])->filter(function ($file) {
                     return $file !== null && $file;
                 })->map(function ($file) {

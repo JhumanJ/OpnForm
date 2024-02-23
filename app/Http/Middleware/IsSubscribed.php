@@ -10,13 +10,11 @@ class IsSubscribed
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && !$request->user()->subscribed()) {
+        if ($request->user() && ! $request->user()->subscribed()) {
             // This user is not a paying customer...
             if ($request->expectsJson()) {
                 return response([
@@ -24,6 +22,7 @@ class IsSubscribed
                     'type' => 'error',
                 ], 401);
             }
+
             return redirect('billing');
         }
 

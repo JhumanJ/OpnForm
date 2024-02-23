@@ -1,10 +1,10 @@
 <?php
+
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Helpers\FormSubmissionDataFactory;
 
-
 beforeEach(function () {
-    $this->password = "12345";
+    $this->password = '12345';
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $this->form = $this->createForm($user, $workspace, [
@@ -12,7 +12,6 @@ beforeEach(function () {
     ]);
     $this->formData = FormSubmissionDataFactory::generateSubmissionData($this->form);
 });
-
 
 it('can allow form owner to access and submit form without password', function () {
     // As Form Owner so can access form without password
@@ -30,7 +29,7 @@ it('can allow form owner to access and submit form without password', function (
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 });
 
@@ -54,26 +53,26 @@ it('can not submit form without password for guest user', function () {
         ->assertStatus(403)
         ->assertJson([
             'status' => 'Unauthorized',
-            'message' => 'Form is protected.'
+            'message' => 'Form is protected.',
         ]);
 });
 
 it('can not submit form with wrong password for guest user', function () {
     $this->actingAsGuest();
 
-    $this->withHeaders(['form-password'=>hash('sha256', 'WRONGPASSWORD')])
+    $this->withHeaders(['form-password' => hash('sha256', 'WRONGPASSWORD')])
         ->postJson(route('forms.answer', $this->form->slug), $this->formData)
         ->assertStatus(403)
         ->assertJson([
             'status' => 'Unauthorized',
-            'message' => 'Form is protected.'
+            'message' => 'Form is protected.',
         ]);
 });
 
 it('can access form with right password for guest user', function () {
     $this->actingAsGuest();
 
-    $this->withHeaders(['form-password'=>hash('sha256', $this->password)])
+    $this->withHeaders(['form-password' => hash('sha256', $this->password)])
         ->getJson(route('forms.show', $this->form->slug))
         ->assertSuccessful()
         ->assertJson(function (AssertableJson $json) {
@@ -87,11 +86,11 @@ it('can access form with right password for guest user', function () {
 it('can submit form with right password for guest user', function () {
     $this->actingAsGuest();
 
-    $this->withHeaders(['form-password'=>hash('sha256', $this->password)])
+    $this->withHeaders(['form-password' => hash('sha256', $this->password)])
         ->postJson(route('forms.answer', $this->form->slug), $this->formData)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 });

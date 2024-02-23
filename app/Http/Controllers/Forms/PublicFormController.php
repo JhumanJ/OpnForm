@@ -11,15 +11,15 @@ use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Vinkla\Hashids\Facades\Hashids;
 
 class PublicFormController extends Controller
 {
+    public const FILE_UPLOAD_PATH = 'forms/?/submissions';
 
-    const FILE_UPLOAD_PATH = 'forms/?/submissions';
-    const TMP_FILE_UPLOAD_PATH = 'tmp/';
+    public const TMP_FILE_UPLOAD_PATH = 'tmp/';
 
     public function show(Request $request, string $slug)
     {
@@ -27,21 +27,22 @@ class PublicFormController extends Controller
         if ($form->workspace == null) {
             // Workspace deleted
             return $this->error([
-                'message' => 'Form not found.'
+                'message' => 'Form not found.',
             ], 404);
         }
 
         $formCleaner = new FormCleaner();
 
         // Disable pro features if needed
-        $form->fill($formCleaner
+        $form->fill(
+            $formCleaner
             ->processForm($request, $form)
             ->performCleaning($form->workspace)
             ->getData()
         );
 
         // Increase form view counter if not login
-        if(!Auth::check()){
+        if (! Auth::check()) {
             $form->views()->create();
         }
 
@@ -53,25 +54,26 @@ class PublicFormController extends Controller
     {
         // Check that form has user field
         $form = $request->form;
-        if (!$form->has_user_field) {
+        if (! $form->has_user_field) {
             return [];
         }
 
         // Use serializer
         $workspace = $form->workspace;
+
         return (new WorkspaceHelper($workspace))->getAllUsers();
     }
 
     public function showAsset($assetFileName)
     {
         $path = FormController::ASSETS_UPLOAD_PATH.'/'.$assetFileName;
-        if (!Storage::exists($path)) {
+        if (! Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.',
-                'file_name' => $assetFileName
+                'file_name' => $assetFileName,
             ]);
         }
-        
+
         return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
     }
 
@@ -84,18 +86,18 @@ class PublicFormController extends Controller
             $job = new StoreFormSubmissionJob($form, $request->validated());
             $job->handle();
             $submissionId = Hashids::encode($job->getSubmissionId());
-        }else{
+        } else {
             StoreFormSubmissionJob::dispatch($form, $request->validated());
         }
 
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
-            'submission_id' => $submissionId
+            'submission_id' => $submissionId,
         ], $request->form->is_pro && $request->form->redirect_url ? [
             'redirect' => true,
-            'redirect_url' => $request->form->redirect_url
+            'redirect_url' => $request->form->redirect_url,
         ] : [
-            'redirect' => false
+            'redirect' => false,
         ]));
     }
 
@@ -104,7 +106,7 @@ class PublicFormController extends Controller
         $submissionId = ($submissionId) ? Hashids::decode($submissionId) : false;
         $submissionId = isset($submissionId[0]) ? $submissionId[0] : false;
         $form = Form::whereSlug($slug)->whereVisibility('public')->firstOrFail();
-        if ($form->workspace == null || !$form->editable_submissions || !$submissionId) {
+        if ($form->workspace == null || ! $form->editable_submissions || ! $submissionId) {
             return $this->error([
                 'message' => 'Not allowed.',
             ]);
@@ -120,5 +122,4 @@ class PublicFormController extends Controller
 
         return $this->success(['data' => ($submission) ? $submission->data : []]);
     }
-
 }

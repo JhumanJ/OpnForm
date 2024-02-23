@@ -10,7 +10,6 @@ it('can answer a form', function () {
     // TODO: generate random response given a form and un-skip
 })->skip('Need to finish writing a class to generated random responses');
 
-
 it('can submit form if close date is in future', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
@@ -23,7 +22,7 @@ it('can submit form if close date is in future', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 });
 
@@ -48,12 +47,12 @@ it('can submit form till max submissions count is not reached at limit', functio
     $formData = FormSubmissionDataFactory::generateSubmissionData($form);
 
     // Can submit form
-    for($i=1;$i<=3;$i++){
+    for ($i = 1; $i <= 3; $i++) {
         $this->postJson(route('forms.answer', $form->slug), $formData)
             ->assertSuccessful()
             ->assertJson([
                 'type' => 'success',
-                'message' => 'Form submission saved.'
+                'message' => 'Form submission saved.',
             ]);
     }
 
@@ -66,7 +65,7 @@ it('can not open draft form', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'visibility' => 'draft'
+        'visibility' => 'draft',
     ]);
 
     $this->getJson(route('forms.show', $form->slug))
@@ -77,7 +76,7 @@ it('can not submit draft form', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'visibility' => 'draft'
+        'visibility' => 'draft',
     ]);
     $formData = FormSubmissionDataFactory::generateSubmissionData($form);
 
@@ -89,7 +88,7 @@ it('can not submit visibility closed form', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'visibility' => 'closed'
+        'visibility' => 'closed',
     ]);
     $formData = FormSubmissionDataFactory::generateSubmissionData($form);
 
@@ -104,10 +103,11 @@ it('can not submit form with past dates', function () {
 
     $submissionData = [];
     $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData) {
-        if(in_array($property['type'], ['date'])){
-            $property["disable_past_dates"] = true;
+        if (in_array($property['type'], ['date'])) {
+            $property['disable_past_dates'] = true;
             $submissionData[$property['id']] = now()->subDays(4)->format('Y-m-d');
         }
+
         return $property;
     })->toArray();
     $form->update();
@@ -117,7 +117,7 @@ it('can not submit form with past dates', function () {
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
         ->assertJson([
-            'message' => 'The Date must be a date after or equal to today.'
+            'message' => 'The Date must be a date after or equal to today.',
         ]);
 });
 
@@ -128,10 +128,11 @@ it('can not submit form with future dates', function () {
 
     $submissionData = [];
     $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData) {
-        if(in_array($property['type'], ['date'])){
-            $property["disable_future_dates"] = true;
+        if (in_array($property['type'], ['date'])) {
+            $property['disable_future_dates'] = true;
             $submissionData[$property['id']] = now()->addDays(4)->format('Y-m-d');
         }
+
         return $property;
     })->toArray();
     $form->update();
@@ -141,6 +142,6 @@ it('can not submit form with future dates', function () {
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
         ->assertJson([
-            'message' => 'The Date must be a date before or equal to today.'
+            'message' => 'The Date must be a date before or equal to today.',
         ]);
 });

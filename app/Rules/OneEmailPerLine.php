@@ -25,13 +25,16 @@ class OneEmailPerLine implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($value === null || empty(trim($value))) return true;
+        if ($value === null || empty(trim($value))) {
+            return true;
+        }
         foreach (preg_split("/\r\n|\n|\r/", $value) as $email) {
             $email = trim($email);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 return false;
             }
         }
+
         return true;
     }
 

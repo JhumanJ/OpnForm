@@ -17,12 +17,14 @@ class StoreFormZapierWebhookRequest extends FormRequest
     {
         return [
             'form_slug' => 'required|exists:forms,slug',
-            'hook_url' => 'required|string|url'
+            'hook_url' => 'required|string|url',
         ];
     }
 
-    public function instanciateHook() {
+    public function instanciateHook()
+    {
         $form = Form::whereSlug($this->form_slug)->firstOrFail();
+
         return new FormZapierWebhook([
             'form_id' => $form->id,
             'hook_url' => $this->hook_url,

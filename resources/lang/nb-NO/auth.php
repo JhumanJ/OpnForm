@@ -15,6 +15,5 @@ return [
 
     'failed' => 'Brukernavn og passord stemmer ikke.',
     'throttle' => 'For mange påloggingsforsøk. Vennligst prøv igjen om :seconds sekunder.',
-    
 
 ];

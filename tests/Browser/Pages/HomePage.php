@@ -19,7 +19,6 @@ class HomePage extends Page
     /**
      * Assert that the browser is on the page.
      *
-     * @param  \Laravel\Dusk\Browser  $browser
      * @return void
      */
     public function assert(Browser $browser)

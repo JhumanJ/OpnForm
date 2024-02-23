@@ -11,7 +11,7 @@ it('can update form with existing record', function () {
 
     $nameProperty = collect($form->properties)->filter(function ($property) {
         return $property['name'] == 'Name';
-        })->first();
+    })->first();
 
     $response = $this->postJson(route('forms.answer', $form->slug), [$nameProperty['id'] => 'Testing'])
         ->assertSuccessful()
@@ -22,8 +22,8 @@ it('can update form with existing record', function () {
     $submissionId = $response->json('submission_id');
     expect($submissionId)->toBeString();
 
-    if($submissionId){
-        $formData = FormSubmissionDataFactory::generateSubmissionData($form, ['submission_id'=>$submissionId, $nameProperty['id'] => 'Testing Updated']);
+    if ($submissionId) {
+        $formData = FormSubmissionDataFactory::generateSubmissionData($form, ['submission_id' => $submissionId, $nameProperty['id'] => 'Testing Updated']);
         $response = $this->postJson(route('forms.answer', $form->slug), $formData)
             ->assertSuccessful()
             ->assertJson([
@@ -35,7 +35,7 @@ it('can update form with existing record', function () {
         expect($submissionId2)->toBe($submissionId);
 
         $response = $this->getJson(route('forms.fetchSubmission', [$form->slug, $submissionId]))
-                ->assertSuccessful();
+            ->assertSuccessful();
         expect($response->json('data.'.$nameProperty['id']))->toBe('Testing Updated');
     }
 });

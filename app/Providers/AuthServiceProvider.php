@@ -6,12 +6,10 @@ use App\Models\Forms\Form;
 use App\Models\Integration\FormZapierWebhook;
 use App\Models\Template;
 use App\Models\Workspace;
-use App\Models\User;
 use App\Policies\FormPolicy;
 use App\Policies\Integration\FormZapierWebhookPolicy;
 use App\Policies\TemplatePolicy;
 use App\Policies\WorkspacePolicy;
-use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

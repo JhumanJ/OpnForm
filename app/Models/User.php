@@ -7,14 +7,15 @@ use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, HasFactory, Billable;
+    use Billable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'hear_about_us'
+        'hear_about_us',
     ];
 
     /**
@@ -36,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        'hear_about_us'
+        'hear_about_us',
     ];
 
     /**
@@ -59,12 +60,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function ownsForm(Form $form)
     {
-        return $this->workspaces()->where('workspaces.id',$form->workspace_id)->exists();
+        return $this->workspaces()->where('workspaces.id', $form->workspace_id)->exists();
     }
 
     public function ownsWorkspace(Workspace $workspace)
     {
-        return $this->workspaces()->where('workspaces.id',$workspace->id)->exists();
+        return $this->workspaces()->where('workspaces.id', $workspace->id)->exists();
     }
 
     /**
@@ -89,12 +90,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->subscribed()
             || in_array($this->email, config('opnform.extra_pro_users_emails'))
-            || !is_null($this->activeLicense());
+            || ! is_null($this->activeLicense());
     }
 
     public function getHasCustomerIdAttribute()
     {
-        return !is_null($this->stripe_id);
+        return ! is_null($this->stripe_id);
     }
 
     public function getAdminAttribute()
@@ -121,7 +122,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Send the password reset notification.
      *
-     * @param string $token
+     * @param  string  $token
      * @return void
      */
     public function sendPasswordResetNotification($token)
@@ -136,7 +137,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new VerifyEmail);
+        $this->notify(new VerifyEmail());
     }
 
     /**
@@ -144,7 +145,6 @@ class User extends Authenticatable implements JWTSubject
      *  Relationship
      * =================================
      */
-
     public function workspaces()
     {
         return $this->belongsToMany(Workspace::class);
@@ -246,5 +246,4 @@ class User extends Authenticatable implements JWTSubject
             });
         });
     }
-
 }

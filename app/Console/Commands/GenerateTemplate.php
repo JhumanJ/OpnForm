@@ -24,9 +24,9 @@ class GenerateTemplate extends Command
      */
     protected $description = 'Generates a new form template from a prompt';
 
-    const MAX_RELATED_TEMPLATES = 8;
+    public const MAX_RELATED_TEMPLATES = 8;
 
-    const FORM_STRUCTURE_PROMPT = <<<EOD
+    public const FORM_STRUCTURE_PROMPT = <<<'EOD'
         You are an AI assistant for OpnForm, a form builder and your job is to build a form for our user.
 
         Forms are represented as Json objects. Here's an example form:
@@ -157,7 +157,7 @@ class GenerateTemplate extends Command
         Do not ask me for more information about required properties or types, only suggest me a form structure.
     EOD;
 
-    const FORM_DESCRIPTION_PROMPT = <<<EOD
+    public const FORM_DESCRIPTION_PROMPT = <<<'EOD'
         You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
         Give me some valid html code (using only h2, p, ul, li html tags) for the following form template page: "[REPLACE]".
 
@@ -169,12 +169,12 @@ class GenerateTemplate extends Command
         Each paragraph (except for the first one) MUST start with with a h2 tag containing a title for this paragraph.
     EOD;
 
-    const FORM_SHORT_DESCRIPTION_PROMPT = <<<EOD
+    public const FORM_SHORT_DESCRIPTION_PROMPT = <<<'EOD'
         I own a form builder online named OpnForm. It's free to use.
         Give me a 1 sentence description for the following form template page: "[REPLACE]". It should be short and concise, but still explain what the form is about.
     EOD;
 
-    const FORM_INDUSTRY_PROMPT = <<<EOD
+    public const FORM_INDUSTRY_PROMPT = <<<'EOD'
         You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
         I am creating a form template: "[REPLACE]". You must assign the template to industries. Return a list of industries (minimum 1, maximum 3 but only if very relevant) and order them by relevance (most relevant first).
 
@@ -185,7 +185,7 @@ class GenerateTemplate extends Command
         Ex: { "industries": ["banking_forms","customer_service_forms"]}
     EOD;
 
-    const FORM_TYPES_PROMPT = <<<EOD
+    public const FORM_TYPES_PROMPT = <<<'EOD'
         You are an AI assistant for OpnForm, a form builder and your job is to help us build form templates for our users.
         I am creating a form template: "[REPLACE]". You must assign the template to one or more types. Return a list of types (minimum 1, maximum 3 but only if very accurate) and order them by relevance (most relevant first).
 
@@ -196,17 +196,17 @@ class GenerateTemplate extends Command
         Ex: { "types": ["consent_forms","award_forms"]}
     EOD;
 
-    const FORM_QAS_PROMPT = <<<EOD
+    public const FORM_QAS_PROMPT = <<<'EOD'
         Now give me 4 to 6 question and answers to put on the form template page. The questions should be about the reasons for this template (when to use, why, target audience, goal etc.).
         The questions should also explain why OpnForm is the best option to create this form (open-source, free to use, integrations etc).
         Reply only with a valid JSON, being an array of object containing the keys "question" and "answer".
     EOD;
 
-    const FORM_TITLE_PROMPT = <<<EOD
+    public const FORM_TITLE_PROMPT = <<<'EOD'
         Finally give me a title for the template. It must contain or end with "template". It should be short and to the point, without any quotes.
     EOD;
 
-    const FORM_IMG_KEYWORDS_PROMPT = <<<EOD
+    public const FORM_IMG_KEYWORDS_PROMPT = <<<'EOD'
         I want to add an image to illustrate this form template page. Give me a relevant search query for unsplash. Reply only with a valid JSON like this:
         ```json
         {
@@ -227,14 +227,14 @@ class GenerateTemplate extends Command
             ->useStreaming()
             ->setSystemMessage('You are an assistant helping to generate forms.');
         $completer->expectsJson()->completeChat([
-            ["role" => "user", "content" => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
+            ['role' => 'user', 'content' => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()],
         ]);
         $formData = $completer->getArray();
 
         $completer->doesNotExpectJson();
         $formDescriptionPrompt = Str::of(self::FORM_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString();
         $formShortDescription = $completer->completeChat([
-            ["role" => "user", "content" => Str::of(self::FORM_SHORT_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()]
+            ['role' => 'user', 'content' => Str::of(self::FORM_SHORT_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()],
         ])->getString();
         // If description is between quotes, remove quotes
         $formShortDescription = Str::of($formShortDescription)->replaceMatches('/^"(.*)"$/', '$1')->toString();
@@ -250,29 +250,28 @@ class GenerateTemplate extends Command
         // Now get description and QAs
         $completer->doesNotExpectJson();
         $formDescription = $completer->completeChat([
-            ["role" => "user", "content" => $formDescriptionPrompt]
+            ['role' => 'user', 'content' => $formDescriptionPrompt],
         ])->getHtml();
 
         $completer->expectsJson();
         $formCoverKeywords = $completer->completeChat([
-            ["role" => "user", "content" => $formDescriptionPrompt],
-            ["role" => "assistant", "content" => $formDescription],
-            ["role" => "user", "content" => self::FORM_IMG_KEYWORDS_PROMPT]
+            ['role' => 'user', 'content' => $formDescriptionPrompt],
+            ['role' => 'assistant', 'content' => $formDescription],
+            ['role' => 'user', 'content' => self::FORM_IMG_KEYWORDS_PROMPT],
         ])->getArray();
         $imageUrl = $this->getImageCoverUrl($formCoverKeywords['search_query']);
 
         $formQAs = $completer->completeChat([
-            ["role" => "user", "content" => $formDescriptionPrompt],
-            ["role" => "assistant", "content" => $formDescription],
-            ["role" => "user", "content" => self::FORM_QAS_PROMPT]
+            ['role' => 'user', 'content' => $formDescriptionPrompt],
+            ['role' => 'assistant', 'content' => $formDescription],
+            ['role' => 'user', 'content' => self::FORM_QAS_PROMPT],
         ])->getArray();
         $completer->doesNotExpectJson();
         $formTitle = $completer->completeChat([
-            ["role" => "user", "content" => $formDescriptionPrompt],
-            ["role" => "assistant", "content" => $formDescription],
-            ["role" => "user", "content" => self::FORM_TITLE_PROMPT]
+            ['role' => 'user', 'content' => $formDescriptionPrompt],
+            ['role' => 'assistant', 'content' => $formDescription],
+            ['role' => 'user', 'content' => self::FORM_TITLE_PROMPT],
         ])->getString();
-
 
         $template = $this->createFormTemplate(
             $formData,
@@ -285,7 +284,7 @@ class GenerateTemplate extends Command
             $types,
             $relatedTemplates
         );
-        $this->info('/form-templates/' . $template->slug);
+        $this->info('/form-templates/'.$template->slug);
 
         // Set reverse related Templates
         $this->setReverseRelatedTemplates($template);
@@ -298,34 +297,37 @@ class GenerateTemplate extends Command
      */
     private function getImageCoverUrl($searchQuery): ?string
     {
-        $url = 'https://api.unsplash.com/search/photos?query=' . urlencode($searchQuery) . '&client_id=' . config('services.unsplash.access_key');
+        $url = 'https://api.unsplash.com/search/photos?query='.urlencode($searchQuery).'&client_id='.config('services.unsplash.access_key');
         $response = Http::get($url)->json();
         $photoIndex = rand(0, max(count($response['results']) - 1, 10));
         if (isset($response['results'][$photoIndex]['urls']['regular'])) {
             return Str::of($response['results'][$photoIndex]['urls']['regular'])->replace('w=1080', 'w=600')->toString();
         }
+
         return null;
     }
 
     private function getIndustries(GptCompleter $completer, string $formPrompt): array
     {
         $industriesString = Template::getAllIndustries()->pluck('slug')->join(', ');
+
         return $completer->completeChat([
-            ["role" => "user", "content" => Str::of(self::FORM_INDUSTRY_PROMPT)
+            ['role' => 'user', 'content' => Str::of(self::FORM_INDUSTRY_PROMPT)
                 ->replace('[REPLACE]', $formPrompt)
                 ->replace('[INDUSTRIES]', $industriesString)
-                ->toString()]
+                ->toString()],
         ])->getArray()['industries'];
     }
 
     private function getTypes(GptCompleter $completer, string $formPrompt): array
     {
         $typesString = Template::getAllTypes()->pluck('slug')->join(', ');
+
         return $completer->completeChat([
-            ["role" => "user", "content" => Str::of(self::FORM_TYPES_PROMPT)
+            ['role' => 'user', 'content' => Str::of(self::FORM_TYPES_PROMPT)
                 ->replace('[REPLACE]', $formPrompt)
                 ->replace('[TYPES]', $typesString)
-                ->toString()]
+                ->toString()],
         ])->getArray()['types'];
     }
 
@@ -344,21 +346,21 @@ class GenerateTemplate extends Command
             }
         });
         arsort($templateScore); // Sort by Score
+
         return array_slice(array_keys($templateScore), 0, self::MAX_RELATED_TEMPLATES);
     }
 
     private function createFormTemplate(
-        array   $formData,
-        string  $formTitle,
-        string  $formDescription,
-        string  $formShortDescription,
-        array   $formQAs,
+        array $formData,
+        string $formTitle,
+        string $formDescription,
+        string $formShortDescription,
+        array $formQAs,
         ?string $imageUrl,
-        array   $industry,
-        array   $types,
-        array   $relatedTemplates
-    )
-    {
+        array $industry,
+        array $types,
+        array $relatedTemplates
+    ) {
         // Add property uuids, improve form with options
         foreach ($formData['properties'] as &$property) {
             $property['id'] = Str::uuid()->toString(); // Column ID
@@ -387,13 +389,15 @@ class GenerateTemplate extends Command
             'publicly_listed' => true,
             'industries' => $industry,
             'types' => $types,
-            'related_templates' => $relatedTemplates
+            'related_templates' => $relatedTemplates,
         ]);
     }
 
     private function setReverseRelatedTemplates(Template $newTemplate)
     {
-        if (!$newTemplate || count($newTemplate->related_templates) === 0) return;
+        if (! $newTemplate || count($newTemplate->related_templates) === 0) {
+            return;
+        }
 
         $templates = Template::whereIn('slug', $newTemplate->related_templates)->get();
         foreach ($templates as $template) {

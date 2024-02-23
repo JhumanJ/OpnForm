@@ -16,7 +16,7 @@ trait PadsJson
 {
     public function pad($tmpJson)
     {
-        if (!$this->inStr) {
+        if (! $this->inStr) {
             $tmpJson = \rtrim($tmpJson, ',');
             while ($this->lastToken() === ',') {
                 $this->popToken();
@@ -37,11 +37,11 @@ trait PadsJson
 
         $match = \preg_match('/(tr?u?e?|fa?l?s?e?|nu?l?l?)$/', $tmpJson, $matches);
 
-        if (!$match || null === $literal = $this->maybeLiteral($matches[1])) {
+        if (! $match || null === $literal = $this->maybeLiteral($matches[1])) {
             return $tmpJson;
         }
 
-        return \substr($tmpJson, 0, 0 - \strlen($matches[1])) . $literal;
+        return \substr($tmpJson, 0, 0 - \strlen($matches[1])).$literal;
     }
 
     protected function padStack($tmpJson)
@@ -57,7 +57,7 @@ trait PadsJson
 
     protected function padObject($tmpJson)
     {
-        if (!$this->objectNeedsPadding($tmpJson)) {
+        if (! $this->objectNeedsPadding($tmpJson)) {
             return $tmpJson;
         }
 
@@ -71,7 +71,7 @@ trait PadsJson
         }
 
         $tmpJson = $this->padIf($tmpJson, ':');
-        $tmpJson = $tmpJson . $this->missingValue;
+        $tmpJson = $tmpJson.$this->missingValue;
 
         if ($this->lastToken() === '"') {
             $this->popToken();
@@ -82,19 +82,19 @@ trait PadsJson
 
     protected function objectNeedsPadding($tmpJson)
     {
-        $last  = \substr($tmpJson, -1);
-        $empty = $last === '{' && !$this->inStr;
+        $last = \substr($tmpJson, -1);
+        $empty = $last === '{' && ! $this->inStr;
 
-        return !$empty && $this->arrayPos < $this->objectPos;
+        return ! $empty && $this->arrayPos < $this->objectPos;
     }
 
     protected function padString($string)
     {
-        $last  = \substr($string, -1);
+        $last = \substr($string, -1);
         $last2 = \substr($string, -2);
 
         if ($last2 === '\"' || $last !== '"') {
-            return $string . '"';
+            return $string.'"';
         }
 
         // @codeCoverageIgnoreStart
@@ -105,7 +105,7 @@ trait PadsJson
     protected function padIf($string, $substr)
     {
         if (\substr($string, 0 - \strlen($substr)) !== $substr) {
-            return $string . $substr;
+            return $string.$substr;
         }
 
         return $string;

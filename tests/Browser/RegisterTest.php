@@ -22,7 +22,7 @@ class RegisterTest extends DuskTestCase
 
     /**
      * Pick Random option from custom select
-     * @param  Browser  $browser
+     *
      * @throws \Facebook\WebDriver\Exception\TimeOutException
      */
     public function selectHearAboutUsReason(Browser $browser)
@@ -39,7 +39,7 @@ class RegisterTest extends DuskTestCase
     public function register_with_valid_data()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit(new Register);
+            $browser->visit(new Register());
             $this->selectHearAboutUsReason($browser);
             $browser->submit([
                 'name' => 'Test User',
@@ -57,7 +57,7 @@ class RegisterTest extends DuskTestCase
         $user = User::factory()->create();
 
         $this->browse(function (Browser $browser) use ($user) {
-            $browser->visit(new Register);
+            $browser->visit(new Register());
             $this->selectHearAboutUsReason($browser);
             $browser->submit([
                 'name' => 'Test User',

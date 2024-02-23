@@ -2,16 +2,13 @@
 
 namespace App\Listeners\Forms;
 
-use App\Models\Forms\Form;
 use App\Events\Forms\FormSubmitted;
-use Illuminate\Support\Facades\Http;
-use Spatie\WebhookServer\WebhookCall;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Notification;
-use App\Service\Forms\FormSubmissionFormatter;
-use App\Service\Forms\Webhooks\WebhookHandlerProvider;
+use App\Models\Forms\Form;
 use App\Notifications\Forms\FormSubmissionNotification;
+use App\Service\Forms\Webhooks\WebhookHandlerProvider;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
 
 class NotifyFormSubmission implements ShouldQueue
 {
@@ -46,12 +43,14 @@ class NotifyFormSubmission implements ShouldQueue
 
     /**
      * Sends an email to each email address in the form's notification_emails field
-     * @param FormSubmitted $event
+     *
      * @return void
      */
     private function sendEmailNotifications(FormSubmitted $event)
     {
-        if (!$event->form->is_pro || !$event->form->notifies) return;
+        if (! $event->form->is_pro || ! $event->form->notifies) {
+            return;
+        }
 
         $subscribers = collect(preg_split("/\r\n|\n|\r/", $event->form->notification_emails))->filter(function (
             $email

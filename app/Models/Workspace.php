@@ -10,11 +10,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Workspace extends Model implements CachableAttributes
 {
-    use HasFactory, CachesAttributes;
+    use CachesAttributes;
+    use HasFactory;
 
-    const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
-    const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
-    const MAX_DOMAIN_PRO = 1;
+    public const MAX_FILE_SIZE_FREE = 5000000; // 5 MB
+
+    public const MAX_FILE_SIZE_PRO = 50000000; // 50 MB
+
+    public const MAX_DOMAIN_PRO = 1;
+
     protected $fillable = [
         'name',
         'icon',
@@ -24,7 +28,7 @@ class Workspace extends Model implements CachableAttributes
 
     protected $appends = [
         'is_pro',
-        'is_enterprise'
+        'is_enterprise',
     ];
 
     protected $casts = [
@@ -37,16 +41,16 @@ class Workspace extends Model implements CachableAttributes
         'is_risky',
         'submissions_count',
         'max_file_size',
-        'custom_domain_count'
+        'custom_domain_count',
     ];
 
     public function getMaxFileSizeAttribute()
     {
-        if(is_null(config('cashier.key'))){
+        if (is_null(config('cashier.key'))) {
             return self::MAX_FILE_SIZE_PRO;
         }
 
-        return $this->remember('max_file_size', 15 * 60, function(): int {
+        return $this->remember('max_file_size', 15 * 60, function (): int {
             // Return max file size depending on subscription
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
@@ -55,6 +59,7 @@ class Workspace extends Model implements CachableAttributes
                         return $license->max_file_size;
                     }
                 }
+
                 return self::MAX_FILE_SIZE_PRO;
             }
 
@@ -64,17 +69,18 @@ class Workspace extends Model implements CachableAttributes
 
     public function getCustomDomainCountLimitAttribute()
     {
-        if(is_null(config('cashier.key'))){
+        if (is_null(config('cashier.key'))) {
             return null;
         }
 
-        return $this->remember('custom_domain_count', 15 * 60, function(): ?int {
+        return $this->remember('custom_domain_count', 15 * 60, function (): ?int {
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
                     if ($license = $owner->activeLicense()) {
                         // In case of special License
                         return $license->custom_domain_limit_count;
                     }
+
                     return self::MAX_DOMAIN_PRO;
                 }
             }
@@ -85,44 +91,46 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsProAttribute()
     {
-        if(is_null(config('cashier.key'))){
+        if (is_null(config('cashier.key'))) {
             return true;    // If no paid plan so TRUE for ALL
         }
 
-        return $this->remember('is_pro', 15 * 60, function(): bool {
+        return $this->remember('is_pro', 15 * 60, function (): bool {
             // Make sure at least one owner is pro
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
                     return true;
                 }
             }
+
             return false;
         });
     }
 
     public function getIsEnterpriseAttribute()
     {
-        if(is_null(config('cashier.key'))){
+        if (is_null(config('cashier.key'))) {
             return true;    // If no paid plan so TRUE for ALL
         }
 
-        return $this->remember('is_enterprise', 15 * 60, function(): bool {
+        return $this->remember('is_enterprise', 15 * 60, function (): bool {
             // Make sure at least one owner is pro
             foreach ($this->owners as $owner) {
                 if ($owner->has_enterprise_subscription) {
                     return true;
                 }
             }
+
             return false;
         });
     }
 
     public function getIsRiskyAttribute()
     {
-        return $this->remember('is_risky', 15 * 60, function(): bool {
+        return $this->remember('is_risky', 15 * 60, function (): bool {
             // A workspace is risky if all of his users are risky
             foreach ($this->owners as $owner) {
-                if (!$owner->is_risky) {
+                if (! $owner->is_risky) {
                     return false;
                 }
             }
@@ -133,7 +141,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->remember('submissions_count', 15 * 60, function(): int {
+        return $this->remember('submissions_count', 15 * 60, function (): int {
             $total = 0;
             foreach ($this->forms as $form) {
                 $total += $form->submissions_count;
@@ -146,7 +154,6 @@ class Workspace extends Model implements CachableAttributes
     /**
      * Relationships
      */
-
     public function users()
     {
         return $this->belongsToMany(User::class);

@@ -12,7 +12,6 @@ class FileUploadController extends Controller
     /**
      * Upload file to local temp
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
@@ -23,7 +22,7 @@ class FileUploadController extends Controller
 
         return response()->json([
             'uuid' => $uuid,
-            'key' => $path
+            'key' => $path,
         ], 201);
     }
 }

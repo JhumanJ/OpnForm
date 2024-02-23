@@ -84,7 +84,7 @@ trait CachesAttributes
             $this->getTable(),
             $this->getKey(),
             $attribute,
-            $this->updated_at?->timestamp ?? '0'
+            $this->updated_at?->timestamp ?? '0',
         ]);
     }
 

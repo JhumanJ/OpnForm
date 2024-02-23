@@ -6,9 +6,9 @@ it('can login to Forms', function () {
     $user = User::factory()->create();
 
     $this->postJson('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ])
+        'email' => $user->email,
+        'password' => 'password',
+    ])
         ->assertSuccessful()
         ->assertJsonStructure(['token', 'expires_in'])
         ->assertJson(['token_type' => 'bearer']);
@@ -28,11 +28,10 @@ it('can log out', function () {
     ])->assertSuccessful();
 
     $this->assertAuthenticated();
-    $this->postJson("/logout")
+    $this->postJson('/logout')
         ->assertSuccessful();
 
     $this->assertGuest();
-    $this->getJson("/user")
+    $this->getJson('/user')
         ->assertStatus(401);
 });
-

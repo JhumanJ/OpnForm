@@ -6,8 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -25,7 +24,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('image_url');
             if ($driver === 'mysql') {
-                $table->jsonb('structure')->default(new Expression("(JSON_OBJECT())"));
+                $table->jsonb('structure')->default(new Expression('(JSON_OBJECT())'));
             } else {
                 $table->jsonb('structure')->default('{}');
             }

@@ -15,7 +15,7 @@ class FormTemplateResource extends JsonResource
     public function toArray($request)
     {
         return array_merge(parent::toArray($request), [
-            'is_new' => $this->created_at->isAfter(now()->subDays(7))
+            'is_new' => $this->created_at->isAfter(now()->subDays(7)),
         ]);
     }
 }

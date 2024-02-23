@@ -10,7 +10,6 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)

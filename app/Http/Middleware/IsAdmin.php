@@ -10,13 +10,11 @@ class IsAdmin
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && !$request->user()->admin) {
+        if ($request->user() && ! $request->user()->admin) {
             // This user is not a paying customer...
             if ($request->expectsJson()) {
                 return response([
@@ -24,6 +22,7 @@ class IsAdmin
                     'type' => 'error',
                 ], 403);
             }
+
             return redirect('home');
         }
 

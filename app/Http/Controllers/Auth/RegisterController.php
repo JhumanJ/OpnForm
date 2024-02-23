@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\Workspace;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -31,8 +31,7 @@ class RegisterController extends Controller
     /**
      * The user has been registered.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\User $user
+     * @param  \App\User  $user
      * @return \Illuminate\Http\JsonResponse
      */
     protected function registered(Request $request, User $user)
@@ -45,13 +44,13 @@ class RegisterController extends Controller
             (new UserResource($user))->toArray($request),
             [
                 'appsumo_license' => $this->appsumoLicense,
-            ]));
+            ]
+        ));
     }
 
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -64,14 +63,13 @@ class RegisterController extends Controller
             'agree_terms' => ['required', Rule::in([true])],
             'appsumo_license' => ['nullable'],
         ], [
-            'agree_terms' => 'Please agree with the terms and conditions.'
+            'agree_terms' => 'Please agree with the terms and conditions.',
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param array $data
      * @return \App\User
      */
     protected function create(array $data)
@@ -85,14 +83,14 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => strtolower($data['email']),
             'password' => bcrypt($data['password']),
-            'hear_about_us' => $data['hear_about_us']
+            'hear_about_us' => $data['hear_about_us'],
         ]);
 
         // Add relation with user
         $user->workspaces()->sync([
             $workspace->id => [
-                'role' => 'admin'
-            ]
+                'role' => 'admin',
+            ],
         ], false);
 
         $this->appsumoLicense = AppSumoAuthController::registerWithLicense($user, $data['appsumo_license'] ?? null);

@@ -13,7 +13,9 @@ use Illuminate\Support\Str;
 class StorageFileNameParser
 {
     public ?string $uuid = null;
+
     public ?string $fileName = null;
+
     public ?string $extension = null;
 
     public function __construct(string $fileName)
@@ -24,15 +26,16 @@ class StorageFileNameParser
     /**
      * If we have parsed a file name and an extension, we keep the same and append uuid to avoid collisions
      * Otherwise we just return the uuid
-     * @return string
      */
     public function getMovedFileName(): ?string
     {
         if ($this->fileName && $this->extension) {
             $fileName = substr($this->fileName, 0, 50).'_'.$this->uuid.'.'.$this->extension;
             $fileName = preg_replace('#\p{C}+#u', '', $fileName); // avoid CorruptedPathDetected exceptions
+
             return mb_convert_encoding($fileName, 'UTF-8', 'UTF-8');
         }
+
         return $this->uuid;
     }
 
@@ -40,16 +43,17 @@ class StorageFileNameParser
     {
         if (Str::isUuid($fileName)) {
             $this->uuid = $fileName;
+
             return;
         }
 
-        if (!str_contains($fileName, '_')) {
+        if (! str_contains($fileName, '_')) {
             return;
         }
 
         $candidateString = substr($fileName, strrpos($fileName, '_') + 1);
-        if (!str_contains($candidateString, '.')
-            || !Str::isUuid(substr($candidateString, 0, strpos($candidateString, '.')))) {
+        if (! str_contains($candidateString, '.')
+            || ! Str::isUuid(substr($candidateString, 0, strpos($candidateString, '.')))) {
             return;
         }
 
@@ -67,5 +71,4 @@ class StorageFileNameParser
     {
         return new self($fileName);
     }
-
 }

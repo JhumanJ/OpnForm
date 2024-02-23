@@ -43,7 +43,7 @@ return [
     | This can be used to ensure a read-only connection, by using a custom connection with a read-only user.
     |
     */
-    'query_database_connection'         => env('MODEL_STATS_DB_CONNECTION', env('DB_CONNECTION')),
+    'query_database_connection' => env('MODEL_STATS_DB_CONNECTION', env('DB_CONNECTION')),
 
     /*
     |--------------------------------------------------------------------------

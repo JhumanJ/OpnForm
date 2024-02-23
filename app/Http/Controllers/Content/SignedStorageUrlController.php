@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\Content;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Vapor\Http\Controllers\SignedStorageUrlController as Controller;
-use Illuminate\Http\Request;
 
 class SignedStorageUrlController extends Controller
 {
     /**
      * Create a new signed URL.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)

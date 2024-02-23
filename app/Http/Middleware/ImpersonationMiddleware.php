@@ -9,14 +9,15 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class ImpersonationMiddleware
 {
     public const ADMIN_LOG_PREFIX = '[admin_action] ';
-    const LOG_ROUTES = [
+
+    public const LOG_ROUTES = [
         'open.forms.store',
         'open.forms.update',
         'open.forms.duplicate',
         'open.forms.regenerate-link',
     ];
 
-    const ALLOWED_ROUTES = [
+    public const ALLOWED_ROUTES = [
         'logout',
 
         // Forms
@@ -59,14 +60,13 @@ class ImpersonationMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
     {
         try {
-            if (!auth()->check() || !auth()->payload()->get('impersonating')) {
+            if (! auth()->check() || ! auth()->payload()->get('impersonating')) {
                 return $next($request);
             }
         } catch (JWTException $e) {
@@ -75,22 +75,22 @@ class ImpersonationMiddleware
 
         // Check that route is allowed
         $routeName = $request->route()->getName();
-        if (!in_array($routeName, self::ALLOWED_ROUTES)) {
+        if (! in_array($routeName, self::ALLOWED_ROUTES)) {
             return response([
                 'message' => 'Unauthorized when impersonating',
                 'route' => $routeName,
                 'impersonator' => auth()->payload()->get('impersonator_id'),
                 'impersonated_account' => auth()->id(),
                 'url' => $request->fullUrl(),
-                'payload' => $request->all()
+                'payload' => $request->all(),
             ], 403);
-        } else if (in_array($routeName, self::LOG_ROUTES)) {
-            \Log::warning(self::ADMIN_LOG_PREFIX . 'Impersonator action', [
+        } elseif (in_array($routeName, self::LOG_ROUTES)) {
+            \Log::warning(self::ADMIN_LOG_PREFIX.'Impersonator action', [
                 'route' => $routeName,
                 'url' => $request->fullUrl(),
                 'impersonated_account' => auth()->id(),
                 'impersonator' => auth()->payload()->get('impersonator_id'),
-                'payload' => $request->all()
+                'payload' => $request->all(),
             ]);
         }
 

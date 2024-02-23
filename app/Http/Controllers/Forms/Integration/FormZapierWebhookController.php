@@ -5,35 +5,38 @@ namespace App\Http\Controllers\Forms\Integration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Integration\StoreFormZapierWebhookRequest;
 use App\Models\Integration\FormZapierWebhook;
-use Illuminate\Http\Request;
-use Spatie\WebhookServer\WebhookCall;
 
 class FormZapierWebhookController extends Controller
 {
     /**
      * Controller for Zappier webhook subscriptions.
      */
-    public function __construct() {
-//        $this->middleware('subscribed');
+    public function __construct()
+    {
+        //        $this->middleware('subscribed');
         $this->middleware('auth');
     }
 
-    public function store(StoreFormZapierWebhookRequest $request) {
+    public function store(StoreFormZapierWebhookRequest $request)
+    {
         $hook = $request->instanciateHook();
         $this->authorize('store', $hook);
 
         $hook->save();
+
         return $this->success([
             'message' => 'Webhook created.',
-            'hook' => $hook
+            'hook' => $hook,
         ]);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $hook = FormZapierWebhook::findOrFail($id);
         $this->authorize('store', $hook);
 
         $hook->delete();
+
         return $this->success([
             'message' => 'Webhook deleted.',
         ]);

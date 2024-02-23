@@ -14,7 +14,10 @@ use Illuminate\Support\Str;
 
 class GenerateAiForm implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
@@ -34,7 +37,7 @@ class GenerateAiForm implements ShouldQueue
     public function handle()
     {
         $this->completion->update([
-           'status' => AiFormCompletion::STATUS_PROCESSING
+            'status' => AiFormCompletion::STATUS_PROCESSING,
         ]);
 
         $completer = (new GptCompleter(config('services.openai.api_key')))
@@ -44,13 +47,13 @@ class GenerateAiForm implements ShouldQueue
 
         try {
             $completer->completeChat([
-                ["role" => "user", "content" => Str::of(GenerateTemplate::FORM_STRUCTURE_PROMPT)
-                    ->replace('[REPLACE]', $this->completion->form_prompt)->toString()]
+                ['role' => 'user', 'content' => Str::of(GenerateTemplate::FORM_STRUCTURE_PROMPT)
+                    ->replace('[REPLACE]', $this->completion->form_prompt)->toString()],
             ], 3000);
 
             $this->completion->update([
                 'status' => AiFormCompletion::STATUS_COMPLETED,
-                'result' => $this->cleanOutput($completer->getArray())
+                'result' => $this->cleanOutput($completer->getArray()),
             ]);
         } catch (\Exception $e) {
             $this->onError($e);
@@ -76,10 +79,11 @@ class GenerateAiForm implements ShouldQueue
         $this->onError($exception);
     }
 
-    private function onError(\Throwable $e) {
+    private function onError(\Throwable $e)
+    {
         $this->completion->update([
             'status' => AiFormCompletion::STATUS_FAILED,
-            'result' => ['error' => $e->getMessage()]
+            'result' => ['error' => $e->getMessage()],
         ]);
     }
 }

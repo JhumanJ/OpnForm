@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Artisan;
 
 it('check formstat chart data', function () {
@@ -9,7 +10,7 @@ it('check formstat chart data', function () {
     $views = [];
     $submissions = [];
     // Create 10 views & submissions for past days
-    for($i=1;$i<=10;$i++){
+    for ($i = 1; $i <= 10; $i++) {
         $date = now()->subDays($i);
         $dateString = $date->format('d-m-Y');
 
@@ -28,7 +29,7 @@ it('check formstat chart data', function () {
     Artisan::call('forms:database-cleanup');
 
     // Create 5 views & submissions
-    for($i=1;$i<=5;$i++){
+    for ($i = 1; $i <= 5; $i++) {
         $form->views()->create();
         $form->submissions()->create();
 
@@ -43,20 +44,22 @@ it('check formstat chart data', function () {
         ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) use ($views, $submissions) {
             return $json->whereType('views', 'array')
                 ->whereType('submissions', 'array')
-                ->where('views', function($values) use ($views) {
-                    foreach($values as $date=>$count){
-                        if((isset($views[$date]) && $views[$date] != $count) || (!isset($views[$date]) && $count != 0)){
+                ->where('views', function ($values) use ($views) {
+                    foreach ($values as $date => $count) {
+                        if ((isset($views[$date]) && $views[$date] != $count) || (! isset($views[$date]) && $count != 0)) {
                             return false;
                         }
                     }
+
                     return true;
                 })
-                ->where('submissions', function($values) use ($submissions) {
-                    foreach($values as $date=>$count){
-                        if((isset($submissions[$date]) && $submissions[$date] != $count) || (!isset($submissions[$date]) && $count != 0)){
+                ->where('submissions', function ($values) use ($submissions) {
+                    foreach ($values as $date => $count) {
+                        if ((isset($submissions[$date]) && $submissions[$date] != $count) || (! isset($submissions[$date]) && $count != 0)) {
                             return false;
                         }
                     }
+
                     return true;
                 })
                 ->etc();

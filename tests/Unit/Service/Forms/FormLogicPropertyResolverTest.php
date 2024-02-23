@@ -1,4 +1,5 @@
 <?php
+
 use App\Service\Forms\FormLogicPropertyResolver;
 
 it('can validate form logic property resolver', function ($property, $formData, $expectedResult) {
@@ -7,103 +8,103 @@ it('can validate form logic property resolver', function ($property, $formData, 
 })->with([
     [
         [
-            'id' => "title",
-            'name' => "Name",
+            'id' => 'title',
+            'name' => 'Name',
             'type' => 'text',
             'hidden' => false,
             'required' => true,
             'logic' => [
-                "conditions" => [
-                    "operatorIdentifier"=> "and",
-                    "children"=> [
+                'conditions' => [
+                    'operatorIdentifier' => 'and',
+                    'children' => [
                         [
-                            "identifier"=> "user",
-                            "value"=> [
-                                "operator"=> "is_not_empty",
-                                "property_meta"=> [
-                                    'id'=> "93ea3198-353f-440b-8dc9-2ac9a7bee124",
-                                    "type"=> "select",
+                            'identifier' => 'user',
+                            'value' => [
+                                'operator' => 'is_not_empty',
+                                'property_meta' => [
+                                    'id' => '93ea3198-353f-440b-8dc9-2ac9a7bee124',
+                                    'type' => 'select',
                                 ],
-                                "value"=> true
-                            ]
-                        ]
-                    ]
+                                'value' => true,
+                            ],
+                        ],
+                    ],
                 ],
-                "actions" => ['make-it-optional']
-            ]
+                'actions' => ['make-it-optional'],
+            ],
         ],
-        ['93ea3198-353f-440b-8dc9-2ac9a7bee124'=>["One"]],
-        false
+        ['93ea3198-353f-440b-8dc9-2ac9a7bee124' => ['One']],
+        false,
     ],
     [
         [
-            'id' => "title",
-            'name' => "Name",
+            'id' => 'title',
+            'name' => 'Name',
             'type' => 'text',
             'hidden' => false,
             'required' => true,
             'logic' => [
-                "conditions" => [
-                    "operatorIdentifier"=> "and",
-                    "children"=> [
+                'conditions' => [
+                    'operatorIdentifier' => 'and',
+                    'children' => [
                         [
-                            "identifier"=> "user",
-                            "value"=> [
-                                "operator"=> "is_not_empty",
-                                "property_meta"=> [
-                                    'id'=> "93ea3198-353f-440b-8dc9-2ac9a7bee124",
-                                    "type"=> "select",
+                            'identifier' => 'user',
+                            'value' => [
+                                'operator' => 'is_not_empty',
+                                'property_meta' => [
+                                    'id' => '93ea3198-353f-440b-8dc9-2ac9a7bee124',
+                                    'type' => 'select',
                                 ],
-                                "value"=> true
-                            ]
-                        ]
-                    ]
+                                'value' => true,
+                            ],
+                        ],
+                    ],
                 ],
-                "actions" => ['make-it-optional']
-            ]
+                'actions' => ['make-it-optional'],
+            ],
         ],
-        ['93ea3198-353f-440b-8dc9-2ac9a7bee124'=>[]],
-        true
+        ['93ea3198-353f-440b-8dc9-2ac9a7bee124' => []],
+        true,
     ],
     [
         [
-            'id' => "title",
-            'name' => "Name",
+            'id' => 'title',
+            'name' => 'Name',
             'type' => 'text',
             'hidden' => false,
             'required' => true,
             'logic' => [
-                "conditions" => [
-                    "operatorIdentifier"=> "or",
-                    "children"=> [
+                'conditions' => [
+                    'operatorIdentifier' => 'or',
+                    'children' => [
                         [
-                            "identifier"=> "user",
-                            "value"=> [
-                                "operator"=> "is_not_empty",
-                                "property_meta"=> [
-                                    'id'=> "93ea3198-353f-440b-8dc9-2ac9a7bee124",
-                                    "type"=> "select",
+                            'identifier' => 'user',
+                            'value' => [
+                                'operator' => 'is_not_empty',
+                                'property_meta' => [
+                                    'id' => '93ea3198-353f-440b-8dc9-2ac9a7bee124',
+                                    'type' => 'select',
                                 ],
-                                "value"=> true
-                            ]
+                                'value' => true,
+                            ],
                         ],
                         [
-                            "identifier"=> "email",
-                            "value"=> [
-                                "operator"=> "contains",
-                                "property_meta"=> [
-                                    'id'=> "93ea3198-353f-440b-8dc9-2ac9a7bee222",
-                                    "type"=> "email",
+                            'identifier' => 'email',
+                            'value' => [
+                                'operator' => 'contains',
+                                'property_meta' => [
+                                    'id' => '93ea3198-353f-440b-8dc9-2ac9a7bee222',
+                                    'type' => 'email',
                                 ],
-                                "value"=> "abc"
-                            ]
-                        ]
-                    ]
+                                'value' => 'abc',
+                            ],
+                        ],
+                    ],
                 ],
-                "actions" => ['make-it-optional']
-            ]
+                'actions' => ['make-it-optional'],
+            ],
         ],
-        ['93ea3198-353f-440b-8dc9-2ac9a7bee124'=>[], '93ea3198-353f-440b-8dc9-2ac9a7bee222'=>['abc']],
-        false
-    ]
+        ['93ea3198-353f-440b-8dc9-2ac9a7bee124' => [], '93ea3198-353f-440b-8dc9-2ac9a7bee222' => ['abc']],
+        false,
+    ],
 ]);

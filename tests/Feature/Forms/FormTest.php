@@ -12,7 +12,7 @@ it('can create a contact form', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form created.'
+            'message' => 'Form created.',
         ]);
 
     expect($workspace->forms()->count())->toBe(1);
@@ -47,7 +47,7 @@ it('can update a form', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form updated.'
+            'message' => 'Form updated.',
         ]);
 
     $this->assertDatabaseHas('forms', [
@@ -73,10 +73,13 @@ it('can regenerate a form url', function () {
         ->assertJson(function (AssertableJson $json) {
             return $json->where('type', 'success')
                 ->where('form.slug', function ($value) {
-                    if (!is_string($value) || (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
-                                $value) !== 1)) {
+                    if (! is_string($value) || (preg_match(
+                        '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+                        $value
+                    ) !== 1)) {
                         return false;
                     }
+
                     return true;
                 })
                 ->etc();
@@ -103,7 +106,7 @@ it('can duplicate a form', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form successfully duplicated.'
+            'message' => 'Form successfully duplicated.',
         ]);
 
     expect($user->forms()->count())->toBe(2);
@@ -124,7 +127,7 @@ it('can delete a form', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form was deleted.'
+            'message' => 'Form was deleted.',
         ]);
     expect($user->forms()->count())->toBe(0);
     expect($workspace->forms()->count())->toBe(0);
@@ -134,7 +137,7 @@ it('can create form with dark mode', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'dark_mode' => "dark",
+        'dark_mode' => 'dark',
     ]);
     $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
 
@@ -142,7 +145,7 @@ it('can create form with dark mode', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form created.'
+            'message' => 'Form created.',
         ]);
 
     $this->getJson(route('forms.show', $form->slug))

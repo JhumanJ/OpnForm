@@ -15,29 +15,30 @@ class CaddyController extends Controller
         ]);
         // make sure domain is valid
         $domain = $request->input('domain');
-        if (!preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $domain)) {
+        if (! preg_match(CustomDomainRequest::CUSTOM_DOMAINS_REGEX, $domain)) {
             return $this->error([
                 'success' => false,
                 'message' => 'Invalid domain',
             ]);
         }
 
-        \Log::info('Caddy request received',[
+        \Log::info('Caddy request received', [
             'domain' => $domain,
         ]);
 
-        if ($workspace = Workspace::whereJsonContains('custom_domains',$domain)->first()) {
-            \Log::info('Caddy request successful',[
+        if ($workspace = Workspace::whereJsonContains('custom_domains', $domain)->first()) {
+            \Log::info('Caddy request successful', [
                 'domain' => $domain,
                 'workspace' => $workspace->id,
             ]);
+
             return $this->success([
                 'success' => true,
                 'message' => 'OK',
             ]);
         }
 
-        \Log::info('Caddy request failed',[
+        \Log::info('Caddy request failed', [
             'domain' => $domain,
             'workspace' => $workspace?->id,
         ]);

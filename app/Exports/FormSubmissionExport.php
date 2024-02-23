@@ -7,7 +7,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class FormSubmissionExport implements FromArray, WithHeadingRow
 {
-
     protected array $submissionData;
 
     public function __construct(array $submissionData)
@@ -15,7 +14,7 @@ class FormSubmissionExport implements FromArray, WithHeadingRow
         $headingRow = [];
         $contentRow = [];
         foreach ($submissionData as $i => $row) {
-            if($i==0){
+            if ($i == 0) {
                 $headingRow[] = $this->cleanColumnNames(array_keys($row));
             }
             $contentRow[] = array_values($row);
@@ -23,7 +22,7 @@ class FormSubmissionExport implements FromArray, WithHeadingRow
 
         $this->submissionData = [
             $headingRow,
-            $contentRow
+            $contentRow,
         ];
     }
 

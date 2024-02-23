@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Forms\Form;
-use App\Models\Workspace;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -97,8 +97,6 @@ class FormFactory extends Factory
      * - Adds id
      * - Adds placeholder, prefill, help
      * - Adds notion_name
-     * @param $properties
-     * @return array
      */
     public static function formatProperties($properties): array
     {

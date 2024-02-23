@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Forms\Form;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ImpersonationController extends Controller
 {
@@ -15,7 +13,8 @@ class ImpersonationController extends Controller
         $this->middleware('moderator');
     }
 
-    public function impersonate($identifier) {
+    public function impersonate($identifier)
+    {
         $user = null;
         if (is_numeric($identifier)) {
             $user = User::find($identifier);
@@ -29,17 +28,17 @@ class ImpersonationController extends Controller
             }
         }
 
-        if (!$user) {
+        if (! $user) {
             return $this->error([
-                'message'=> 'User not found.'
+                'message' => 'User not found.',
             ]);
-        } else if ($user->admin) {
+        } elseif ($user->admin) {
             return $this->error([
                 'message' => 'You cannot impersonate an admin.',
             ]);
         }
 
-        \Log::warning('Impersonation started',[
+        \Log::warning('Impersonation started', [
             'from_id' => auth()->id(),
             'from_email' => auth()->user()->email,
             'target_id' => $user->id,
@@ -52,7 +51,7 @@ class ImpersonationController extends Controller
         ])->login($user);
 
         return $this->success([
-            'token' => $token
+            'token' => $token,
         ]);
     }
 }

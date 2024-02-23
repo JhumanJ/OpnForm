@@ -16,5 +16,5 @@ it('create form with captcha and raise validation issue', function () {
                     'Please complete the captcha.',
                 ],
             ],
-         ]);
+        ]);
 });

@@ -11,7 +11,8 @@ use Stevebauman\Purify\Facades\Purify;
 
 class Template extends Model
 {
-    use HasFactory, HasSlug;
+    use HasFactory;
+    use HasSlug;
 
     protected $fillable = [
         'creator_id',
@@ -25,7 +26,7 @@ class Template extends Model
         'publicly_listed',
         'industries',
         'types',
-        'related_templates'
+        'related_templates',
     ];
 
     protected $casts = [
@@ -93,7 +94,8 @@ class Template extends Model
             array_values(
                 json_decode(
                     file_get_contents(resource_path('data/forms/templates/types.json')),
-                    true)
+                    true
+                )
             )
         )->values();
     }
@@ -104,7 +106,8 @@ class Template extends Model
             array_values(
                 json_decode(
                     file_get_contents(resource_path('data/forms/templates/industries.json')),
-                    true)
+                    true
+                )
             )
         )->values();
     }

@@ -8,8 +8,8 @@ return [
             'pricing' => [
                 'monthly' => env('STRIPE_PROD_DEFAULT_PRICING_MONTHLY'),
                 'yearly' => env('STRIPE_PROD_DEFAULT_PRICING_YEARLY'),
-            ]
-        ]
+            ],
+        ],
     ],
 
     'test' => [
@@ -18,8 +18,8 @@ return [
             'pricing' => [
                 'monthly' => env('STRIPE_TEST_DEFAULT_PRICING_MONTHLY'),
                 'yearly' => env('STRIPE_TEST_DEFAULT_PRICING_YEARLY'),
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 
 ];

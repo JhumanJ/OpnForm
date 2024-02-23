@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Mail;
 use App\Mail\Forms\SubmissionConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 
 it('creates confirmation emails with the submitted data', function () {
     $user = $this->actingAsUser();
@@ -17,7 +17,7 @@ it('creates confirmation emails with the submitted data', function () {
     $formData = [
         collect($form->properties)->first(function ($property) {
             return $property['type'] == 'email';
-        })["id"] => "test@test.com",
+        })['id'] => 'test@test.com',
     ];
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new SubmissionConfirmationMail($event);
@@ -40,7 +40,7 @@ it('creates confirmation emails without the submitted data', function () {
     $formData = [
         collect($form->properties)->first(function ($property) {
             return $property['type'] == 'email';
-        })["id"] => "test@test.com",
+        })['id'] => 'test@test.com',
     ];
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new SubmissionConfirmationMail($event);
@@ -61,7 +61,7 @@ it('sends a confirmation email if needed', function () {
         return $property['type'] == 'email';
     });
     $formData = [
-        $emailProperty["id"] => "test@test.com",
+        $emailProperty['id'] => 'test@test.com',
     ];
 
     Mail::fake();
@@ -70,13 +70,15 @@ it('sends a confirmation email if needed', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 
-    Mail::assertQueued(SubmissionConfirmationMail::class,
-        function (SubmissionConfirmationMail $mail) use ($formData, $emailProperty) {
-            return $mail->hasTo("test@test.com");
-        });
+    Mail::assertQueued(
+        SubmissionConfirmationMail::class,
+        function (SubmissionConfirmationMail $mail) {
+            return $mail->hasTo('test@test.com');
+        }
+    );
 });
 
 it('does not send a confirmation email if not needed', function () {
@@ -89,7 +91,7 @@ it('does not send a confirmation email if not needed', function () {
         return $property['type'] == 'email';
     });
     $formData = [
-        $emailProperty["id"] => "test@test.com",
+        $emailProperty['id'] => 'test@test.com',
     ];
 
     Mail::fake();
@@ -98,12 +100,13 @@ it('does not send a confirmation email if not needed', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form submission saved.'
+            'message' => 'Form submission saved.',
         ]);
 
-    Mail::assertNotQueued(SubmissionConfirmationMail::class,
-        function (SubmissionConfirmationMail $mail) use ($formData, $emailProperty) {
-            return $mail->hasTo("test@test.com");
-        });
+    Mail::assertNotQueued(
+        SubmissionConfirmationMail::class,
+        function (SubmissionConfirmationMail $mail) {
+            return $mail->hasTo('test@test.com');
+        }
+    );
 });
-

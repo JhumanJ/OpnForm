@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -127,7 +125,8 @@ return [
     */
 
     'cookie' => env(
-        'SESSION_COOKIE','OpnForm_session'
+        'SESSION_COOKIE',
+        'OpnForm_session'
     ),
 
     /*

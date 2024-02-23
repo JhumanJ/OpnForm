@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Forms\FormStatistic;
-use Illuminate\Console\Command;
-use App\Models\Forms\FormView;
 use App\Models\Forms\FormSubmission;
+use App\Models\Forms\FormView;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 class CleanDatabase extends Command
@@ -51,13 +51,13 @@ class CleanDatabase extends Command
             ->orderBy('date')
             ->groupBy('form_id', 'date')
             ->get()->each(function ($row) use (&$finalData) {
-                $finalData[$row->form_id."-".$row->date] = [
+                $finalData[$row->form_id.'-'.$row->date] = [
                     'form_id' => $row->form_id,
                     'date' => $row->date,
                     'data' => [
                         'views' => $row->views,
-                        'submissions' => 0
-                    ]
+                        'submissions' => 0,
+                    ],
                 ];
             });
 
@@ -68,7 +68,7 @@ class CleanDatabase extends Command
             ->orderBy('date')
             ->groupBy('form_id', 'date')
             ->get()->each(function ($row) use (&$finalData) {
-                $key = $row->form_id."-".$row->date;
+                $key = $row->form_id.'-'.$row->date;
                 if (isset($finalData[$key])) {
                     $finalData[$key]['data']['submissions'] = $row->submissions;
                 } else {
@@ -77,8 +77,8 @@ class CleanDatabase extends Command
                         'date' => $row->date,
                         'data' => [
                             'views' => 0,
-                            'submissions' => $row->submissions
-                        ]
+                            'submissions' => $row->submissions,
+                        ],
                     ];
                 }
 

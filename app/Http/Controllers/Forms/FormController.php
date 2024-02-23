@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 class FormController extends Controller
 {
-    const ASSETS_UPLOAD_PATH = 'assets/forms';
+    public const ASSETS_UPLOAD_PATH = 'assets/forms';
 
     private FormCleaner $formCleaner;
 
@@ -36,26 +36,28 @@ class FormController extends Controller
         $workspaceIsPro = $workspace->is_pro;
         $forms = $workspace->forms()
             ->orderByDesc('updated_at')
-            ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro){
+            ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro) {
 
-            // Add attributes for faster loading
-            $form->extra = (object) [
-                'loadedWorkspace' => $workspace,
-                'workspaceIsPro' => $workspaceIsPro,
-                'userIsOwner' => true,
-                'cleanings' => $this->formCleaner
-                    ->processForm(request(), $form)
-                    ->simulateCleaning($workspace)
-                    ->getPerformedCleanings()
-            ];
+                // Add attributes for faster loading
+                $form->extra = (object) [
+                    'loadedWorkspace' => $workspace,
+                    'workspaceIsPro' => $workspaceIsPro,
+                    'userIsOwner' => true,
+                    'cleanings' => $this->formCleaner
+                        ->processForm(request(), $form)
+                        ->simulateCleaning($workspace)
+                        ->getPerformedCleanings(),
+                ];
 
-            return $form;
-        });
+                return $form;
+            });
+
         return FormResource::collection($forms);
     }
 
     /**
      * Return all user forms, used for zapier
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function indexAll()
@@ -66,18 +68,20 @@ class FormController extends Controller
             $this->authorize('viewAny', Form::class);
 
             $workspaceIsPro = $workspace->is_pro;
-            $newForms = $workspace->forms()->get()->map(function (Form $form) use ($workspace, $workspaceIsPro){
+            $newForms = $workspace->forms()->get()->map(function (Form $form) use ($workspace, $workspaceIsPro) {
                 // Add attributes for faster loading
                 $form->extra = (object) [
                     'loadedWorkspace' => $workspace,
                     'workspaceIsPro' => $workspaceIsPro,
                     'userIsOwner' => true,
                 ];
+
                 return $form;
             });
 
             $forms = $forms->merge($newForms);
         }
+
         return FormResource::collection($forms);
     }
 
@@ -94,13 +98,13 @@ class FormController extends Controller
             ->getData();
 
         $form = Form::create(array_merge($formData, [
-            'creator_id' => $request->user()->id
+            'creator_id' => $request->user()->id,
         ]));
 
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
+            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.'.($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
-            'users_first_form' => $request->user()->forms()->count() == 1
+            'users_first_form' => $request->user()->forms()->count() == 1,
         ]);
     }
 
@@ -116,13 +120,13 @@ class FormController extends Controller
 
         // Set Removed Properties
         $formData['removed_properties'] = array_merge($form->removed_properties, collect($form->properties)->filter(function ($field) use ($formData) {
-            return (!Str::of($field['type'])->startsWith('nf-') && !in_array($field['id'], collect($formData['properties'])->pluck("id")->toArray()));
+            return ! Str::of($field['type'])->startsWith('nf-') && ! in_array($field['id'], collect($formData['properties'])->pluck('id')->toArray());
         })->toArray());
 
         $form->update($formData);
 
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
+            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.'.($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }
@@ -133,8 +137,9 @@ class FormController extends Controller
         $this->authorize('delete', $form);
 
         $form->delete();
+
         return $this->success([
-            'message' => 'Form was deleted.'
+            'message' => 'Form was deleted.',
         ]);
     }
 
@@ -150,7 +155,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => 'Form successfully duplicated.',
-            'new_form' => new FormResource($formCopy)
+            'new_form' => new FormResource($formCopy),
         ]);
     }
 
@@ -159,7 +164,7 @@ class FormController extends Controller
         $form = Form::findOrFail($id);
         $this->authorize('update', $form);
 
-        if ( $option == 'slug') {
+        if ($option == 'slug') {
             $form->generateSlug();
         } elseif ($option == 'uuid') {
             $form->slug = Str::uuid();
@@ -168,7 +173,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => 'Form url successfully updated. Your new form url now is: '.$form->share_url.'.',
-            'form' => new FormResource($form)
+            'form' => new FormResource($form),
         ]);
     }
 
@@ -182,8 +187,8 @@ class FormController extends Controller
         $fileNameParser = StorageFileNameParser::parse($request->url);
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
-        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;;
-        if (!Storage::exists($fileName)) {
+        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;
+        if (! Storage::exists($fileName)) {
             // File not found, we skip
             return null;
         }
@@ -192,7 +197,7 @@ class FormController extends Controller
 
         return $this->success([
             'message' => 'File uploaded.',
-            'url' => route("forms.assets.show", [$fileNameParser->getMovedFileName()])
+            'url' => route('forms.assets.show', [$fileNameParser->getMovedFileName()]),
         ]);
     }
 
@@ -205,9 +210,9 @@ class FormController extends Controller
         $this->authorize('view', $form);
 
         $path = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id).'/'.$fileName;
-        if (!Storage::exists($path)) {
+        if (! Storage::exists($path)) {
             return $this->error([
-                'message' => 'File not found.'
+                'message' => 'File not found.',
             ]);
         }
 

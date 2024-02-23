@@ -4,8 +4,6 @@ namespace App\Service\Forms\Webhooks;
 
 use App\Models\Forms\Form;
 use App\Service\Forms\FormSubmissionFormatter;
-use GuzzleHttp\Exception\ClientException;
-use Illuminate\Support\Str;
 use Spatie\WebhookServer\WebhookCall;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -21,14 +19,12 @@ abstract class AbstractWebhookHandler
 
     /**
      * Default webhook payload. Can be changed in child classes.
-     * @return array
      */
     protected function getWebhookData(): array
     {
         $formatter = (new FormSubmissionFormatter($this->form, $this->data))
-        ->useSignedUrlForFiles()
-        ->showHiddenFields()
-        ;
+            ->useSignedUrlForFiles()
+            ->showHiddenFields();
 
         $formattedData = [];
         foreach ($formatter->getFieldsWithValue() as $field) {
@@ -41,7 +37,7 @@ abstract class AbstractWebhookHandler
             'submission' => $formattedData,
         ];
         if ($this->form->is_pro && $this->form->editable_submissions) {
-            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode($this->data['submission_id']);
+            $data['edit_link'] = $this->form->share_url.'?submission_id='.Hashids::encode($this->data['submission_id']);
         }
 
         return $data;
@@ -51,8 +47,10 @@ abstract class AbstractWebhookHandler
 
     public function handle()
     {
-        if (!$this->shouldRun()) return;
-        
+        if (! $this->shouldRun()) {
+            return;
+        }
+
         WebhookCall::create()
             // Add context on error, used to notify form owner
             ->meta([

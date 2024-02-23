@@ -13,7 +13,6 @@ class TemplatePolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -24,8 +23,6 @@ class TemplatePolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Template  $template
      * @return mixed
      */
     public function update(User $user, Template $template)
@@ -36,8 +33,6 @@ class TemplatePolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Template  $template
      * @return mixed
      */
     public function delete(User $user, Template $template)

@@ -2,20 +2,19 @@
 
 namespace App\Models\Forms;
 
-use App\Models\Forms\Form;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class FormStatistic extends Model
 {
     use HasFactory;
-    
+
     public $timestamps = false;
 
     protected $fillable = [
         'form_id',
         'data',
-        'date'
+        'date',
     ];
 
     /**
@@ -34,5 +33,4 @@ class FormStatistic extends Model
     {
         return $this->belongsTo(Form::class);
     }
-
 }

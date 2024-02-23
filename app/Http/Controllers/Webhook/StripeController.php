@@ -5,13 +5,11 @@ namespace App\Http\Controllers\Webhook;
 use App\Notifications\Subscription\FailedPaymentNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Stripe\Subscription as StripeSubscription;
 
 class StripeController extends WebhookController
 {
-
     public function handleCustomerSubscriptionCreated(array $payload)
     {
         return parent::handleCustomerSubscriptionCreated($payload);
@@ -19,7 +17,7 @@ class StripeController extends WebhookController
 
     /**
      * Override to add a sleep, and to detect plan upgrades
-     * @param  array  $payload
+     *
      * @return \Symfony\Component\HttpFoundation\Response|void
      */
     protected function handleCustomerSubscriptionUpdated(array $payload)
@@ -59,7 +57,7 @@ class StripeController extends WebhookController
             if (isset($data['trial_end'])) {
                 $trialEnd = Carbon::createFromTimestamp($data['trial_end']);
 
-                if (!$subscription->trial_ends_at || $subscription->trial_ends_at->ne($trialEnd)) {
+                if (! $subscription->trial_ends_at || $subscription->trial_ends_at->ne($trialEnd)) {
                     $subscription->trial_ends_at = $trialEnd;
                 }
             }
@@ -125,7 +123,7 @@ class StripeController extends WebhookController
                 return $plan;
             }
         }
+
         return 'default';
     }
-
 }

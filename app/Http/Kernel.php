@@ -22,7 +22,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-//         \App\Http\Middleware\TrustHosts::class,
+        //         \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
@@ -32,7 +32,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\SetLocale::class,
         AuthenticateJWT::class,
         CustomDomainRestriction::class,
-        AcceptsJsonMiddleware::class
+        AcceptsJsonMiddleware::class,
     ];
 
     /**

@@ -37,8 +37,10 @@ class CreateUsersWorkspacesTable extends Migration
                     echo '.';
 
                     // Make sure user wasn't deleted
-                    if (!DB::table('users')->where('id',
-                        $workspace->user_id)->exists()) {
+                    if (! DB::table('users')->where(
+                        'id',
+                        $workspace->user_id
+                    )->exists()) {
                         continue;
                     }
 
@@ -50,19 +52,19 @@ class CreateUsersWorkspacesTable extends Migration
                         'user_id' => $workspace->user_id,
                         'is_owner' => true,
                         'created_at' => $now,
-                        'updated_at' => $now
+                        'updated_at' => $now,
                     ]);
 
                     // Set form creator id
-                    foreach (\App\Models\Forms\Form::withTrashed()->where('workspace_id',$workspace->id)->get() as $form) {
-                        $form->update(['creator_id'=>$workspace->user_id]);
+                    foreach (\App\Models\Forms\Form::withTrashed()->where('workspace_id', $workspace->id)->get() as $form) {
+                        $form->update(['creator_id' => $workspace->user_id]);
                     }
                 }
             });
 
         // Drop column
         Schema::table('workspaces', function (Blueprint $table) {
-            $table->dropColumn(['user_id','access_token']);
+            $table->dropColumn(['user_id', 'access_token']);
         });
 
         Schema::table('user_workspace', function (Blueprint $table) {

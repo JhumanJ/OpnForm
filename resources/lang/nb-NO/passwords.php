@@ -18,5 +18,5 @@ return [
     'throttled' => 'Vennligst vent før du prøver igjen.',
     'token' => 'Denne tilbakestillingskoden for passordet er ugyldig.',
     'user' => 'Vi finner ingen bruker med den e-postadressen.',
-    
+
 ];

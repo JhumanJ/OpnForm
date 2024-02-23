@@ -25,7 +25,7 @@ class SeoMetaResolver
 {
     private array $patternData = [];
 
-    const URL_PATTERNS = [
+    public const URL_PATTERNS = [
         'welcome' => '/',
         'form_show' => '/forms/{slug}',
         'login' => '/login',
@@ -43,7 +43,7 @@ class SeoMetaResolver
     /**
      * Metas for simple route (without needing to access DB)
      */
-    const PATTERN_STATIC_META = [
+    public const PATTERN_STATIC_META = [
         'login' => [
             'title' => 'Login',
         ],
@@ -64,13 +64,13 @@ class SeoMetaResolver
         ],
         'templates' => [
             'title' => 'Templates',
-            'description' => 'Our collection of beautiful templates to create your own forms!'
+            'description' => 'Our collection of beautiful templates to create your own forms!',
         ],
     ];
 
-    const META_CACHE_DURATION = 60 * 60 * 12; // 12 hours
+    public const META_CACHE_DURATION = 60 * 60 * 12; // 12 hours
 
-    const META_CACHE_KEY_PREFIX = 'seo_meta_';
+    public const META_CACHE_KEY_PREFIX = 'seo_meta_';
 
     public function __construct(private Request $request)
     {
@@ -78,12 +78,10 @@ class SeoMetaResolver
 
     /**
      * Returns the right metas for a given route, caches meta for 1 hour.
-     *
-     * @return array
      */
     public function getMetas(): array
     {
-        $cacheKey = self::META_CACHE_KEY_PREFIX . urlencode($this->request->path());
+        $cacheKey = self::META_CACHE_KEY_PREFIX.urlencode($this->request->path());
 
         return Cache::remember($cacheKey, now()->addSeconds(self::META_CACHE_DURATION), function () {
             $pattern = $this->resolvePattern();
@@ -91,7 +89,7 @@ class SeoMetaResolver
             if ($this->hasPatternMetaGetter($pattern)) {
                 // Custom function for pattern
                 try {
-                    return array_merge($this->getDefaultMeta(), $this->{'get' . Str::studly($pattern) . 'Meta'}());
+                    return array_merge($this->getDefaultMeta(), $this->{'get'.Str::studly($pattern).'Meta'}());
                 } catch (\Exception $e) {
                     return $this->getDefaultMeta();
                 }
@@ -122,7 +120,7 @@ class SeoMetaResolver
         foreach (self::URL_PATTERNS as $patternName => $patternData) {
             $path = rtrim($this->request->getPathInfo(), '/') ?: '/';
 
-            $route = (new Route('GET', $patternData, fn() => ''))->bind($this->request);
+            $route = (new Route('GET', $patternData, fn () => ''))->bind($this->request);
             if (preg_match($route->getCompiled()->getRegex(), rawurldecode($path))) {
                 $this->patternData = $route->parameters();
 
@@ -136,23 +134,23 @@ class SeoMetaResolver
     /**
      * Determine if a get mutator exists for a pattern.
      *
-     * @param string $key
+     * @param  string  $key
      * @return bool
      */
     private function hasPatternMetaGetter($key)
     {
-        return method_exists($this, 'get' . Str::studly($key) . 'Meta');
+        return method_exists($this, 'get'.Str::studly($key).'Meta');
     }
 
     private function titleSuffix()
     {
-        return ' · ' . config('app.name');
+        return ' · '.config('app.name');
     }
 
     private function getDefaultMeta(): array
     {
         return [
-            'title' => 'Create beautiful forms for free' . $this->titleSuffix(),
+            'title' => 'Create beautiful forms for free'.$this->titleSuffix(),
             'description' => "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
             'image' => asset('/img/social-preview.jpg'),
         ];
@@ -166,21 +164,21 @@ class SeoMetaResolver
         if ($form->is_pro && $form->seo_meta->page_title) {
             $meta['title'] = $form->seo_meta->page_title;
         } else {
-            $meta['title'] = $form->title . $this->titleSuffix();
+            $meta['title'] = $form->title.$this->titleSuffix();
         }
 
         if ($form->is_pro && $form->seo_meta->page_description) {
             $meta['description'] = $form->seo_meta->page_description;
-        } else if ($form->description) {
+        } elseif ($form->description) {
             $meta['description'] = Str::of($form->description)->limit(160);
         }
 
         if ($form->is_pro && $form->seo_meta->page_thumbnail) {
             $meta['image'] = $form->seo_meta->page_thumbnail;
-        } else if ($form->cover_picture) {
+        } elseif ($form->cover_picture) {
             $meta['image'] = $form->cover_picture;
         }
-        
+
         return $meta;
     }
 
@@ -189,9 +187,9 @@ class SeoMetaResolver
         $template = Template::whereSlug($this->patternData['slug'])->firstOrFail();
 
         return [
-            'title' => $template->name . $this->titleSuffix(),
-            'description' => Str::of($template->short_description)->limit(140) . ' | Customize any template and create your own form in minutes.',
-            'image' => $template->image_url
+            'title' => $template->name.$this->titleSuffix(),
+            'description' => Str::of($template->short_description)->limit(140).' | Customize any template and create your own form in minutes.',
+            'image' => $template->image_url,
         ];
     }
 

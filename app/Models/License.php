@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class License extends Model
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-
     use HasFactory;
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_INACTIVE = 'inactive';
 
     protected $fillable = [
         'license_key',
         'user_id',
         'license_provider',
         'status',
-        'meta'
+        'meta',
     ];
 
     protected $casts = [

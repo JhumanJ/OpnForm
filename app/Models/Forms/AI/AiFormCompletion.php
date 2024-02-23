@@ -10,10 +10,13 @@ class AiFormCompletion extends Model
 {
     use HasFactory;
 
-    const STATUS_PENDING = 'pending';
-    const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETED = 'completed';
-    const STATUS_FAILED = 'failed';
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_PROCESSING = 'processing';
+
+    public const STATUS_COMPLETED = 'completed';
+
+    public const STATUS_FAILED = 'failed';
 
     protected $table = 'ai_form_completions';
 
@@ -21,11 +24,11 @@ class AiFormCompletion extends Model
         'form_prompt',
         'status',
         'result',
-        'ip'
+        'ip',
     ];
 
     protected $attributes = [
-        'status' => self::STATUS_PENDING
+        'status' => self::STATUS_PENDING,
     ];
 
     protected static function booted()

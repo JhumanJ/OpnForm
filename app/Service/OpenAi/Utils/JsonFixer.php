@@ -53,13 +53,12 @@ class JsonFixer
     /**
      * Set/unset silent mode.
      *
-     * @param bool $silent
-     *
+     * @param  bool  $silent
      * @return $this
      */
     public function silent($silent = true)
     {
-        $this->silent = (bool)$silent;
+        $this->silent = (bool) $silent;
 
         return $this;
     }
@@ -67,8 +66,7 @@ class JsonFixer
     /**
      * Set missing value.
      *
-     * @param mixed $value
-     *
+     * @param  mixed  $value
      * @return $this
      */
     public function missingValue($value)
@@ -87,16 +85,15 @@ class JsonFixer
     /**
      * Fix the truncated JSON.
      *
-     * @param string $json The JSON string to fix.
-     *
+     * @param  string  $json  The JSON string to fix.
      * @return string Fixed JSON. If failed with silent then original JSON.
-     * @throws InvalidJsonException When fixing fails.
      *
+     * @throws InvalidJsonException When fixing fails.
      */
     public function fix($json)
     {
         $json = preg_replace('/(?<!\\\\)(?:\\\\{2})*\p{C}+/u', '', $json);
-        list($head, $json, $tail) = $this->trim($json);
+        [$head, $json, $tail] = $this->trim($json);
 
         if (empty($json) || $this->isValid($json)) {
             return $json;
@@ -108,7 +105,7 @@ class JsonFixer
 
         $this->reset();
 
-        return $head . $this->doFix($json) . $tail;
+        return $head.$this->doFix($json).$tail;
     }
 
     protected function trim($json)
@@ -125,15 +122,15 @@ class JsonFixer
 
     protected function isValid($json)
     {
-        \json_decode($json,true,512,JSON_INVALID_UTF8_SUBSTITUTE);
+        \json_decode($json, true, 512, JSON_INVALID_UTF8_SUBSTITUTE);
 
-        return \JSON_ERROR_NONE === \json_last_error();
+        return \json_last_error() === \JSON_ERROR_NONE;
     }
 
     protected function quickFix($json)
     {
         if (\strlen($json) === 1 && isset($this->pairs[$json])) {
-            return $json . $this->pairs[$json];
+            return $json.$this->pairs[$json];
         }
 
         if ($json[0] !== '"') {
@@ -153,7 +150,7 @@ class JsonFixer
 
     protected function maybeLiteral($json)
     {
-        if (!\in_array($json[0], ['t', 'f', 'n'])) {
+        if (! \in_array($json[0], ['t', 'f', 'n'])) {
             return null;
         }
 
@@ -170,14 +167,14 @@ class JsonFixer
 
     protected function doFix($json)
     {
-        list($index, $char) = [-1, ''];
+        [$index, $char] = [-1, ''];
 
         while (isset($json[++$index])) {
-            list($prev, $char) = [$char, $json[$index]];
+            [$prev, $char] = [$char, $json[$index]];
 
             $next = isset($json[$index + 1]) ? $json[$index + 1] : '';
 
-            if (!\in_array($char, [' ', "\n", "\r"])) {
+            if (! \in_array($char, [' ', "\n", "\r"])) {
                 $this->stack($prev, $char, $index, $next);
             }
         }
@@ -212,7 +209,7 @@ class JsonFixer
     protected function popToken($token = null)
     {
         // Last one
-        if (null === $token) {
+        if ($token === null) {
             return \array_pop($this->stack);
         }
 
@@ -228,7 +225,7 @@ class JsonFixer
     protected function maybeStr($prev, $char, $index)
     {
         if ($prev !== '\\' && $char === '"') {
-            $this->inStr = !$this->inStr;
+            $this->inStr = ! $this->inStr;
         }
 
         if ($this->inStr && $this->lastToken() !== '"') {
@@ -267,7 +264,7 @@ class JsonFixer
         }
 
         \Log::debug('Broken json received: ', [
-            'json' => $json
+            'json' => $json,
         ]);
 
         throw new InvalidJsonException(

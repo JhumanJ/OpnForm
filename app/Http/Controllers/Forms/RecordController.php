@@ -17,8 +17,7 @@ class RecordController extends Controller
         $record->delete();
 
         return $this->success([
-            'message' => 'Record successfully removed.'
+            'message' => 'Record successfully removed.',
         ]);
     }
-
 }

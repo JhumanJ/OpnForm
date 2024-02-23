@@ -3,9 +3,9 @@
 function front_url($path = '')
 {
     $baseUrl = config('app.front_url');
-    if (!$baseUrl) {
+    if (! $baseUrl) {
         return $path;
     }
 
-    return rtrim($baseUrl, '/'). '/' . ltrim($path, '/');
+    return rtrim($baseUrl, '/').'/'.ltrim($path, '/');
 }

@@ -149,7 +149,7 @@ return [
             'mailto' => true,
             'tel' => true,
             'notion' => true,
-        ]
+        ],
 
     ],
 

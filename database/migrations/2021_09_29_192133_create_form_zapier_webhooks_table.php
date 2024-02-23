@@ -15,7 +15,7 @@ class CreateFormZapierWebhooksTable extends Migration
     {
         Schema::create('form_zapier_webhooks', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Forms\Form::class,'form_id');
+            $table->foreignIdFor(\App\Models\Forms\Form::class, 'form_id');
             $table->string('hook_url');
             $table->softDeletes();
             $table->timestamps();

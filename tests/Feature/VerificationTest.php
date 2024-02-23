@@ -1,12 +1,9 @@
 <?php
 
 use App\Models\User;
-use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
-use Tests\TestCase;
 
 it('can verify email', function () {
     $user = User::factory()->create(['email_verified_at' => null]);

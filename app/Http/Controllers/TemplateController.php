@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Templates\FormTemplateRequest;
 use App\Http\Resources\FormTemplateResource;
 use App\Models\Template;
@@ -13,20 +12,20 @@ class TemplateController extends Controller
 {
     public function index(Request $request)
     {
-        $limit = (int)$request->get('limit', 0);
-        $onlyMy = (bool)$request->get('onlymy', false);
+        $limit = (int) $request->get('limit', 0);
+        $onlyMy = (bool) $request->get('onlymy', false);
 
         $templates = Template::when(Auth::check(), function ($query) use ($onlyMy) {
-                if ($onlyMy) {
-                    $query->where('creator_id', Auth::id());
-                } else {
-                    $query->where(function ($query) {
-                        $query->where('publicly_listed', true)
-                            ->orWhere('creator_id', Auth::id());
-                    });
-                }
-            })
-            ->when(!Auth::check(), function ($query) {
+            if ($onlyMy) {
+                $query->where('creator_id', Auth::id());
+            } else {
+                $query->where(function ($query) {
+                    $query->where('publicly_listed', true)
+                        ->orWhere('creator_id', Auth::id());
+                });
+            }
+        })
+            ->when(! Auth::check(), function ($query) {
                 $query->where('publicly_listed', true);
             })
             ->when($limit > 0, function ($query) use ($limit) {
@@ -49,7 +48,7 @@ class TemplateController extends Controller
         return $this->success([
             'message' => 'Template was created.',
             'template_id' => $template->id,
-            'data' => new FormTemplateResource($template)
+            'data' => new FormTemplateResource($template),
         ]);
     }
 
@@ -63,7 +62,7 @@ class TemplateController extends Controller
         return $this->success([
             'message' => 'Template was updated.',
             'template_id' => $template->id,
-            'data' => new FormTemplateResource($template)
+            'data' => new FormTemplateResource($template),
         ]);
     }
 

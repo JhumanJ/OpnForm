@@ -47,7 +47,7 @@ return [
         'array' => ':attribute 的最大个数为 :max 个',
     ],
     'mimes' => ':attribute 的文件类型必须是:values',
-    'mimetypes'            => ':attribute 的文件类型必须是: :values.',
+    'mimetypes' => ':attribute 的文件类型必须是: :values.',
     'min' => [
         'numeric' => ':attribute 的最小长度为 :min 位',
         'string' => ':attribute 的最小长度为 :min 字符',

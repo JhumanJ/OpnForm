@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Tests;
 
-
 use App\Models\Forms\Form;
-use App\Models\Workspace;
 use App\Models\User;
+use App\Models\Workspace;
 use Database\Factories\FormFactory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -15,11 +13,12 @@ trait TestHelpers
 {
     /**
      * Creates a workspace for a user
-     * @param  User  $user
      */
     public function createUserWorkspace(User $user)
     {
-        if(!$user){ return null; }
+        if (! $user) {
+            return null;
+        }
 
         $workspace = Workspace::create([
             'name' => 'Form Testing',
@@ -28,8 +27,8 @@ trait TestHelpers
 
         $user->workspaces()->sync([
             $workspace->id => [
-                'role' => 'admin'
-            ]
+                'role' => 'admin',
+            ],
         ], false);
 
         return $workspace;
@@ -37,8 +36,7 @@ trait TestHelpers
 
     /**
      * Generates a Form instance (not saved)
-     * @param  User  $user
-     * @param  Workspace  $workspace
+     *
      * @return array
      */
     public function makeForm(User $user, Workspace $workspace, array $data = [])
@@ -48,20 +46,20 @@ trait TestHelpers
                 'name' => 'Name',
                 'type' => 'text',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Message',
                 'type' => 'text',
                 'hidden' => false,
                 'required' => false,
-                'multi_lines' => true
+                'multi_lines' => true,
             ],
             [
                 'name' => 'Number',
                 'type' => 'number',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Select',
@@ -70,8 +68,8 @@ trait TestHelpers
                 'required' => false,
                 'allow_creation' => false,
                 'select' => [
-                    'options' => [['id' => 'First','name' => 'First'], ['id' => 'Second','name' => 'Second']]
-                ]
+                    'options' => [['id' => 'First', 'name' => 'First'], ['id' => 'Second', 'name' => 'Second']],
+                ],
             ],
             [
                 'name' => 'Multi Select',
@@ -80,45 +78,45 @@ trait TestHelpers
                 'required' => false,
                 'allow_creation' => false,
                 'multi_select' => [
-                    'options' => [['id' => 'One','name' => 'One'], ['id' => 'Two','name' => 'Two'], ['id' => 'Three','name' => 'Three']]
-                ]
+                    'options' => [['id' => 'One', 'name' => 'One'], ['id' => 'Two', 'name' => 'Two'], ['id' => 'Three', 'name' => 'Three']],
+                ],
             ],
             [
                 'name' => 'Date',
                 'type' => 'date',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Checkbox',
                 'type' => 'checkbox',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'URL',
                 'type' => 'url',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Email',
                 'type' => 'email',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Phone Number',
                 'type' => 'phone_number',
                 'hidden' => false,
-                'required' => false
+                'required' => false,
             ],
             [
                 'name' => 'Files',
                 'type' => 'files',
                 'hidden' => false,
                 'required' => false,
-            ]
+            ],
         ];
 
         return Form::factory()
@@ -132,6 +130,7 @@ trait TestHelpers
     {
         $form = $this->makeForm($user, $workspace, $data);
         $form->save();
+
         return $form;
     }
 
@@ -155,7 +154,7 @@ trait TestHelpers
         return $user;
     }
 
-    public function actingAsUser(User $user = null)
+    public function actingAsUser(?User $user = null)
     {
         if ($user == null) {
             $user = $this->createUser();
@@ -172,10 +171,9 @@ trait TestHelpers
     /**
      * Creates a user with a Pro subscription
      *
-     * @param  User|null  $user
      * @return User|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
      */
-    public function actingAsProUser(User $user = null)
+    public function actingAsProUser(?User $user = null)
     {
         if ($user == null) {
             $user = $this->createProUser();
@@ -191,5 +189,4 @@ trait TestHelpers
         }
         $this->assertGuest();
     }
-
 }
