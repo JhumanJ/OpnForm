@@ -81,14 +81,14 @@
 
       </div>
     </div>
-    <div class="px-4 pb-4">
+    <div class="px-4 pb-4 flex justify-center">
       <scroll-shadow
         ref="shadows"
         class="border h-full notion-database-renderer"
         :shadow-top-offset="0"
         :hide-scrollbar="true"
       >
-        <open-table
+        <open-table v-if="form"
           ref="table"
           class="max-h-full"
           :columns="properties"
