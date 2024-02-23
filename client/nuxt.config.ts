@@ -5,7 +5,7 @@ import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: {enabled: true},
+    devtools: { enabled: true },
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
@@ -14,10 +14,10 @@ export default defineNuxtConfig({
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
         '@nuxt/image',
-        ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
+        ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
-        transpile: ["vue-notion", "query-builder-vue-3","vue-signature-pad"],
+        transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
     },
     postcss: {
         plugins: {
@@ -51,6 +51,11 @@ export default defineNuxtConfig({
             path: '~/components/pages',
             pathPrefix: false,
         },
+        {
+            path: '~/components/open/integrations',
+            pathPrefix: false,
+            global: true,
+        },
         '~/components',
     ],
     nitro: {
@@ -71,7 +76,7 @@ export default defineNuxtConfig({
                 provider: '~/lib/images/dummy-image-provider.js',
             }
         }
-    } :{
+    } : {
         quality: 95,
         format: 'webp',
         domains: ['images.unsplash.com']
