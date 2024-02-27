@@ -114,7 +114,7 @@ it('does not send a confirmation email if not needed', function () {
 it('does send a confirmation email even when reply to is broken', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
-    $form = $this->createForm($user, $workspace,[
+    $form = $this->createForm($user, $workspace, [
         'send_submission_confirmation' => true,
         'notifications_include_submission' => true,
         'notification_sender' => 'Custom Sender',
