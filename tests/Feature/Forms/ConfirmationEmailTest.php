@@ -110,3 +110,30 @@ it('does not send a confirmation email if not needed', function () {
         }
     );
 });
+
+it('does send a confirmation email even when reply to is broken', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createFormForDatabase($user, $workspace, env('TEST_CONTACT_TABLE_ID'), [
+        'send_submission_confirmation' => true,
+        'notifications_include_submission' => true,
+        'notification_sender' => 'Custom Sender',
+        'notification_subject' => 'Test subject',
+        'notification_body' => 'Test body',
+        'notification_settings' => [
+            'confirmation_reply_to' => 'invalid-email',
+        ]
+    ]);
+
+    $formData = [
+        collect($form->properties)->first(function ($property) {
+            return $property['type'] == 'email';
+        })['nf_id'] => 'test@test.com',
+    ];
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new SubmissionConfirmationMail($event);
+    $mailable->assertSeeInHtml('Test body')
+        ->assertSeeInHtml('As a reminder, here are your answers:')
+        ->assertSeeInHtml('You are receiving this email because you answered the form:')
+        ->assertHasReplyTo($user->email); // Even though reply to is wrong, it should use the user's email
+});
