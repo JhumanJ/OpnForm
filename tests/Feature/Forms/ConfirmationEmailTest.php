@@ -114,7 +114,7 @@ it('does not send a confirmation email if not needed', function () {
 it('does send a confirmation email even when reply to is broken', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
-    $form = $this->createFormForDatabase($user, $workspace, env('TEST_CONTACT_TABLE_ID'), [
+    $form = $this->createForm($user, $workspace,[
         'send_submission_confirmation' => true,
         'notifications_include_submission' => true,
         'notification_sender' => 'Custom Sender',
@@ -125,10 +125,11 @@ it('does send a confirmation email even when reply to is broken', function () {
         ]
     ]);
 
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
     $formData = [
-        collect($form->properties)->first(function ($property) {
-            return $property['type'] == 'email';
-        })['nf_id'] => 'test@test.com',
+        $emailProperty['id'] => 'test@test.com',
     ];
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new SubmissionConfirmationMail($event);
