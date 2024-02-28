@@ -9,6 +9,20 @@
         <a class="cursor-pointer ml-1" @click.prevent="crisp.openHelpdesk()">Need Help?</a>
       </div>
 
+      <div v-if="integrationsList.length" class="my-6">
+        <h3 class="font-semibold mt-4 text-xl">
+          Your connections
+        </h3>
+        <div v-for="(row) in integrationsList" :key="row.id" class="space-y-4 pr-7">
+          <div
+            class="hover:bg-gray-50 bg-white transition shadow-md cursor-pointer border border-gray-200 rounded-lg py-5 pr-10 pl-7 items-center flex w-full group justify-between relative">
+            <div class="flex space-x-3">{{ row.integration_id }}</div>
+            <NuxtLink :to="{ name: 'forms-slug-show-integrations-id', params: { id: row.id } }"
+              class="absolute inset-0" />
+          </div>
+        </div>
+      </div>
+
       <div v-for="(section, sectionName) in sectionsList" :key="sectionName" class="my-6">
         <h3 class="mb-1 text-xl text-gray-600">
           {{ sectionName }}
@@ -49,9 +63,11 @@ useOpnSeoMeta({
 
 const crisp = useCrisp()
 const route = useRoute()
+const sectionsList = computed(() => integrations)
+const formIntegrationsStore = useFormIntegrationsStore()
+const integrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
 
-const sectionsList = computed(() => {
-  return integrations
+onMounted(() => {
+  formIntegrationsStore.fetchIntegrations(props.form.id)
 })
-
 </script>

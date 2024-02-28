@@ -5,14 +5,13 @@ namespace App\Models\Integration;
 use App\Models\Forms\Form;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormIntegrations extends Model
 {
     const STATUS_ACTIVE = 1;
     const STATUS_PAUSED = 0;
 
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'form_integrations';
 

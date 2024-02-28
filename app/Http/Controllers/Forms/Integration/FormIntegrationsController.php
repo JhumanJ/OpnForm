@@ -16,6 +16,14 @@ class FormIntegrationsController extends Controller
         $this->middleware('auth');
     }
 
+    public function index(string $id)
+    {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('view', $form);
+
+        return FormIntegrations::where('form_id', $form->id)->get();
+    }
+
     public function create(FormIntegrationsRequest $request, string $id)
     {
         $form = Form::findOrFail((int) $id);

@@ -135,6 +135,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                 '/webhooks/zapier/{id}',
                 [FormZapierWebhookController::class, 'delete']
             )->name('integrations.zapier-hooks.delete');
+            Route::get(
+                '/{id}/integrations',
+                [FormIntegrationsController::class, 'index']
+            )->name('integrations');
             Route::post(
                 '/{id}/integration/create',
                 [FormIntegrationsController::class, 'create']
