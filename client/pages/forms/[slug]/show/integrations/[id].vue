@@ -1,8 +1,9 @@
 <template>
   <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
     <div class="mb-20">
-      <component v-if="service && getComponentName" :is="getComponentName" :form="form" :service="service"
-        :servicekey="serviceKey" />
+      <component v-if="integrationProperty.service && integrationProperty.component"
+                 :is="integrationProperty.component" :form="form" :service="integrationProperty.service"
+        :servicekey="integrationProperty.serviceKey" />
     </div>
   </div>
 </template>
@@ -36,19 +37,28 @@ function findBySecondKey(obj, secondKey) {
 }
 
 const crisp = useCrisp()
-const route = useRoute()
 const router = useRouter()
 const formIntegrationsStore = useFormIntegrationsStore()
-const integrationId = route.params.id
-const integration = computed(() => formIntegrationsStore.getByKey(integrationId))
-const integrationProperty = computed(() => {
-  return (!integration) ? {} : [serviceKey, integration.integration_id]
+
+const integrationId = computed(() => {
+  try {
+    return parseInt(useRoute().params.id)
+  } catch (error) {
+    return null
+    console.error("Error getting integrationId", error)
+  }
 })
-const serviceKey = ref(integration?.integration_id)
-const service = (serviceKey) ? findBySecondKey(integrations, serviceKey) : null
-if (!service) {
-  // router.push({name:'home'})
-}
+
+const integration = computed(() => formIntegrationsStore.getByKey(integrationId.value))
+const integrationProperty = computed(() => {
+  if (!integration.value || formIntegrationsStore.loading) return {}
+  const service = integration.value?.integration_id ? findBySecondKey(integrations, integration.value.integration_id): null
+  return {
+    service,
+    serviceKey: integration.value.integration_id,
+    component: resolveComponent(service?.file_name)
+  }
+})
 
 onMounted(() => {
   console.log("integration.value", integration.value)
@@ -56,9 +66,4 @@ onMounted(() => {
     formIntegrationsStore.fetchIntegrations(props.form.id)
   }
 })
-
-const getComponentName = computed(() => {
-  return resolveComponent(service?.file_name)
-})
-
 </script>
