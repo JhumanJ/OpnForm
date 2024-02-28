@@ -39,10 +39,6 @@ class FormIntegrations extends Model
 
     public static function getAllIntegrations()
     {
-        $integrations = [];
-        foreach (json_decode(file_get_contents(base_path('client/data/forms/integrations.json')), true) as $services) {
-            $integrations = array_merge($integrations, $services);
-        }
-        return $integrations;
+        return json_decode(file_get_contents(resource_path('data/forms/integrations.json')), true);
     }
 }

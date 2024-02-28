@@ -9,11 +9,11 @@
         <a class="cursor-pointer ml-1" @click.prevent="crisp.openHelpdesk()">Need Help?</a>
       </div>
 
-      <div v-if="integrationsList.length" class="my-6">
+      <div v-if="formIntegrationsList.length" class="my-6">
         <h3 class="font-semibold mt-4 text-xl">
           Your connections
         </h3>
-        <div v-for="(row) in integrationsList" :key="row.id" class="space-y-4 pr-7">
+        <div v-for="(row) in formIntegrationsList" :key="row.id" class="space-y-4 pr-7">
           <div
             class="hover:bg-gray-50 bg-white transition shadow-md cursor-pointer border border-gray-200 rounded-lg py-5 pr-10 pl-7 items-center flex w-full group justify-between relative">
             <div class="flex space-x-3">{{ row.integration_id }}</div>
@@ -48,7 +48,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import integrations from '~/data/forms/integrations.json'
 
 const props = defineProps({
   form: { type: Object, required: true }
@@ -63,11 +62,12 @@ useOpnSeoMeta({
 
 const crisp = useCrisp()
 const route = useRoute()
-const sectionsList = computed(() => integrations)
 const formIntegrationsStore = useFormIntegrationsStore()
-const integrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
+formIntegrationsStore.initIntegrations()
+const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
+const formIntegrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
 
 onMounted(() => {
-  formIntegrationsStore.fetchIntegrations(props.form.id)
+  formIntegrationsStore.fetchFormIntegrations(props.form.id)
 })
 </script>

@@ -51,6 +51,7 @@ const save = () => {
     body: integration.value
   }).then(data => {
     alert.success(data.message)
+    router.push({ name: 'forms-slug-show-integrations' })
   }).catch((error) => {
     alert.error(error.data.message)
   })

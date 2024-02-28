@@ -1,16 +1,36 @@
 import { defineStore } from 'pinia'
 import { useContentStore } from "~/composables/stores/useContentStore.js";
+import integrationsList from '~/data/forms/integrations.json'
 
-export const integrationsEndpoint = '/open/forms/{id}/integrations'
+export const formIntegrationsEndpoint = '/open/forms/{id}/integrations'
 
 export const useFormIntegrationsStore = defineStore('form_integrations', () => {
 
   const contentStore = useContentStore()
+  const integrations = ref(new Map)
 
-  const fetchIntegrations = (formId) => {
+  const initIntegrations = () => {
+    if (integrations.value.size === 0) {
+      integrations.value = new Map(Object.entries(integrationsList))
+    }
+  }
+
+  const integrationsBySection = computed(() => {
+    const groupedObject = {};
+    for (const [key, integration] of integrations.value) {
+      const sectionName = integration.section_name;
+      if (!groupedObject[sectionName]) {
+        groupedObject[sectionName] = {};
+      }
+      groupedObject[sectionName][key] = integration
+    }
+    return groupedObject;
+  })
+
+  const fetchFormIntegrations = (formId) => {
     contentStore.resetState()
     contentStore.startLoading()
-    return useOpnApi(integrationsEndpoint.replace('{id}', formId)).then((response) => {
+    return useOpnApi(formIntegrationsEndpoint.replace('{id}', formId)).then((response) => {
       contentStore.save(response.data.value)
       contentStore.stopLoading()
     })
@@ -24,7 +44,10 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
 
   return {
     ...contentStore,
-    fetchIntegrations,
-    getAllByFormId
+    integrations,
+    initIntegrations,
+    integrationsBySection,
+    fetchFormIntegrations,
+    getAllByFormId,
   }
 })
