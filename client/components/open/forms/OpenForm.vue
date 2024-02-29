@@ -9,7 +9,7 @@
       <div :key="currentFieldGroupIndex" class="form-group flex flex-wrap w-full">
         <draggable v-model="currentFields"
                    item-key="id"
-                   class="flex flex-wrap transition-all"
+                   class="flex flex-wrap transition-all w-full"
                    :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
                    ghost-class="ghost-item"
                    handle=".draggable" :animation="200"
