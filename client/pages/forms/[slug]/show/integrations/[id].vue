@@ -40,8 +40,8 @@ const integrationProperty = computed(() => {
 const integrationData = computed(() => {
   return {
     integration_id: integration.value.integration_id,
-    settings: integration.value.data,
-    logic: integration.value.logic
+    settings: integration.value.data ?? {},
+    logic: integration.value.logic ?? null
   }
 })
 
