@@ -2,7 +2,7 @@
   <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
     <div class="mb-20">
       <component v-if="integrationProperty.service && integrationProperty.component" :is="integrationProperty.component"
-        :form="form" :service="integrationProperty.service" :servicekey="integrationProperty.serviceKey" />
+        :form="form" :service="integrationProperty.service" :integrationData="integrationData" />
     </div>
   </div>
 </template>
@@ -35,6 +35,13 @@ const integrationProperty = computed(() => {
     service,
     serviceKey: integration.value.integration_id,
     component: resolveComponent(service.file_name)
+  }
+})
+const integrationData = computed(() => {
+  return {
+    integration_id: integration.value.integration_id,
+    settings: integration.value.data,
+    logic: integration.value.logic
   }
 })
 

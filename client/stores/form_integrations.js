@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useContentStore } from "~/composables/stores/useContentStore.js";
 import integrationsList from '~/data/forms/integrations.json'
 
-export const formIntegrationsEndpoint = '/open/forms/{id}/integrations'
+export const formIntegrationsEndpoint = '/open/forms/{formid}/integrations'
 
 export const useFormIntegrationsStore = defineStore('form_integrations', () => {
 
@@ -30,7 +30,7 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
   const fetchFormIntegrations = (formId) => {
     contentStore.resetState()
     contentStore.startLoading()
-    return useOpnApi(formIntegrationsEndpoint.replace('{id}', formId)).then((response) => {
+    return useOpnApi(formIntegrationsEndpoint.replace('{formid}', formId)).then((response) => {
       contentStore.save(response.data.value)
       contentStore.stopLoading()
     })

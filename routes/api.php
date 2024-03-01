@@ -140,17 +140,17 @@ Route::group(['middleware' => 'auth:api'], function () {
                 [FormIntegrationsController::class, 'index']
             )->name('integrations');
             Route::post(
-                '/{id}/integration/create',
+                '/{id}/integration',
                 [FormIntegrationsController::class, 'create']
             )->name('integration.create');
             Route::put(
-                '/{id}/integration/{integrationid}/update',
+                '/{id}/integration/{integrationid}',
                 [FormIntegrationsController::class, 'update']
             )->name('integration.update');
             Route::delete(
-                '/{id}/integration/{integrationid}/delete',
-                [FormIntegrationsController::class, 'delete']
-            )->name('integration.delete');
+                '/{id}/integration/{integrationid}',
+                [FormIntegrationsController::class, 'destroy']
+            )->name('integration.destroy');
         });
     });
 

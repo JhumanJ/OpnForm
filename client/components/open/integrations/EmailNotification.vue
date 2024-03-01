@@ -1,5 +1,5 @@
 <template>
-  <IntegrationWrapper :form="form" v-model="integration">
+  <IntegrationWrapper :service="service" :form="form" v-model="integration">
     <text-input name="notification_reply_to" v-model="integration.settings.notification_reply_to" class="mt-4"
       label="Notification Reply To" :help="notifiesHelp" />
     <text-area-input name="notification_emails" v-model="integration.settings.notification_emails" class="mt-4"
@@ -16,19 +16,16 @@
 import IntegrationWrapper from './IntegrationWrapper.vue'
 
 const props = defineProps({
-  servicekey: { type: String, required: true },
-  form: { type: Object, required: false }
+  service: { type: Object, required: true },
+  form: { type: Object, required: true },
+  integrationData: { type: Object, required: true }
 })
 
 const alert = useAlert()
 const router = useRouter()
-const authStore = useAuthStore()
-let user = computed(() => authStore.user)
-const integration = ref({
-  integration_id: props.servicekey,
-  settings: {},
-  logic: null
-})
+const formIntegrationsStore = useFormIntegrationsStore()
+const formIntegrationId = computed(() => parseInt(useRoute().params.id) ?? null)
+const integration = ref(props.integrationData)
 
 const replayToEmailField = computed(() => {
   const emailFields = props.form.properties.filter((field) => {
@@ -46,11 +43,12 @@ const notifiesHelp = computed(() => {
 })
 
 const save = () => {
-  opnFetch('/open/forms/{id}/integration/create'.replace('{id}', props.form.id), {
-    method: 'POST',
+  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((formIntegrationId.value) ? '/' + formIntegrationId.value : ''), {
+    method: (formIntegrationId.value) ? 'PUT' : 'POST',
     body: integration.value
   }).then(data => {
     alert.success(data.message)
+    formIntegrationsStore.save(data.form_integration)
     router.push({ name: 'forms-slug-show-integrations' })
   }).catch((error) => {
     alert.error(error.data.message)

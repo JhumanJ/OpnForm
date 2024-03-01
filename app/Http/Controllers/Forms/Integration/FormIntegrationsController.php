@@ -29,31 +29,47 @@ class FormIntegrationsController extends Controller
         $form = Form::findOrFail((int) $id);
         $this->authorize('update', $form);
 
-        $integration = FormIntegrations::create([
+        $formIntegration = FormIntegrations::create([
             'form_id' => $form->id,
             'status' => FormIntegrations::STATUS_ACTIVE,
             'integration_id' => $request->get('integration_id'),
-            'logic' => $request->get('logic') ?? [],
-            'data' => $request->get('data') ?? []
+            'data' => $request->get('settings') ?? [],
+            'logic' => $request->get('logic') ?? []
         ]);
 
         return $this->success([
-            'message' => 'Integration created.',
-            'integration' => $integration
+            'message' => 'Form Integration was created.',
+            'form_integration' => $formIntegration
         ]);
     }
 
     public function update(FormIntegrationsRequest $request, string $id, string $integrationid)
     {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('update', $form);
+
+        $formIntegration = FormIntegrations::findOrFail((int) $integrationid);
+        $formIntegration->update([
+            'data' => $request->get('settings') ?? [],
+            'logic' => $request->get('logic') ?? []
+        ]);
+
         return $this->success([
-            'message' => 'Integration updated.',
+            'message' => 'Form Integration was updated.',
+            'form_integration' => $formIntegration
         ]);
     }
 
-    public function delete(FormIntegrationsRequest $request, string $id, string $integrationid)
+    public function destroy(string $id, string $integrationid)
     {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('update', $form);
+
+        $formIntegrations = FormIntegrations::findOrFail((int) $integrationid);
+        $formIntegrations->delete();
+
         return $this->success([
-            'message' => 'Integration deleted.',
+            'message' => 'Form Integration was deleted.'
         ]);
     }
 }
