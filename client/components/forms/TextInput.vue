@@ -10,7 +10,7 @@
            :type="nativeType" :autocomplete="autocomplete"
            :pattern="pattern"
            :style="inputStyle"
-           :class="[theme.default.input, { '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200': disabled }]"
+           :class="[theme.default.input, { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }]"
            :name="name" :accept="accept"
            :placeholder="placeholder" :min="min" :max="max" :maxlength="maxCharLimit"
            @change="onChange" @keydown.enter.prevent="onEnterPress"
