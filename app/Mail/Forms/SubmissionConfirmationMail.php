@@ -63,6 +63,9 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     {
         $replyTo = Arr::get((array) $this->event->form->notification_settings, 'confirmation_reply_to', null);
 
-        return $replyTo ?? $default;
+        if ($replyTo && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+            return $replyTo;
+        }
+        return $default;
     }
 }
