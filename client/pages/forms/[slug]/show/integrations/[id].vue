@@ -41,7 +41,7 @@ const integrationData = computed(() => {
   return {
     integration_id: integration.value.integration_id,
     settings: integration.value.data ?? {},
-    logic: integration.value.logic ?? null
+    logic: (!Array.isArray(integration.value.logic) && integration.value.logic) ? integration.value.logic : null
   }
 })
 

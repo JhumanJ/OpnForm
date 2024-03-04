@@ -17,7 +17,7 @@
           class="mt-4 flex group bg-white hover:bg-gray-50 dark:bg-notion-dark items-center relative">
           <div
             class="hover:bg-gray-50 bg-white transition shadow-md cursor-pointer border border-gray-200 rounded-lg py-5 pr-10 pl-7 items-center flex w-full group justify-between relative">
-            <div class="flex space-x-3">{{ row.integration_id }}</div>
+            <div class="flex space-x-3">{{ integrations.get(row.integration_id).name }}</div>
             <NuxtLink :to="{ name: 'forms-slug-show-integrations-id', params: { id: row.id } }"
               class="absolute inset-0" />
           </div>
@@ -110,6 +110,7 @@ const route = useRoute()
 let loadingDelete = ref(false)
 const formIntegrationsStore = useFormIntegrationsStore()
 formIntegrationsStore.initIntegrations()
+const integrations = computed(() => formIntegrationsStore.integrations)
 const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
 const formIntegrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
 
