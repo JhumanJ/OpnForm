@@ -303,6 +303,7 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
+        inputProperties.cameraUpload = (field.camera_upload !== undefined && field.camera_upload)
         inputProperties.mbLimit = this.form?.max_file_size ?? this.currentWorkspace?.max_file_size
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'number' && field.is_rating) {

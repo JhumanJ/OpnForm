@@ -56,6 +56,11 @@
       >
         Allow multiple files
       </v-checkbox>
+      <v-checkbox v-model="field.camera_upload" class="mt-3"
+                  :name="field.id+'_camera_upload'"
+      >
+        Allow Camera uploads
+      </v-checkbox>
       <text-input name="allowed_file_types" class="mt-3" :form="field"
                   label="Allowed file types" placeholder="jpg,jpeg,png,gif"
                   help="Comma separated values, leave blank to allow all file types"
