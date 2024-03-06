@@ -76,7 +76,7 @@
             <div
               class="bg-gray-50 border border-gray-200 rounded cursor-pointer hover:bg-gray-100 relative w-[180px] h-[150px] p-4 pb-2 items-center justify-center">
               <div v-html="sectionItem.icon"></div>
-              <div class="text-gray-400 font-medium mt-4 text-base whitespace-nowrap">
+              <div class="text-gray-400 font-medium mt-2 text-base">
                 {{ sectionItem.name }}
               </div>
               <pro-tag v-if="sectionItem?.is_pro === true" />
