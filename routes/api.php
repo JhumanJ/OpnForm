@@ -227,10 +227,8 @@ Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (! $request->hasValidSignature()) {
         abort(401);
     }
-    $response = Response::make(Storage::get($path), 200);
-    $response->header('Content-Type', Storage::mimeType($path));
 
-    return $response;
+    return response()->file(Storage::path($path), ['Content-Type' => Storage::mimeType($path)]);
 })->where('path', '(.*)')->name('local.temp');
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
