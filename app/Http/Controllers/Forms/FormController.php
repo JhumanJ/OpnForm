@@ -233,7 +233,7 @@ class FormController extends Controller
         $form->workspace_id = $workspace_id;
         $form->creator_id = auth()->user()->id;
         $form->save();
-        
+
         return $this->success([
             'message' => 'Form workspace updated successfully.',
         ]);
