@@ -107,6 +107,17 @@
         </svg>
         Create Template
       </a>
+
+      <a v-track.change_workspace_click="{form_id:form.id, form_slug:form.slug}" href="#"
+         class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+         @click.prevent="showFormWorkspaceModal=true"
+      >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+      </svg>
+
+        Change workspace
+      </a>
       <a v-track.delete_form_click="{form_id:form.id, form_slug:form.slug}"
          href="#"
          class="block block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
@@ -152,6 +163,8 @@
       </div>
     </modal>
     <form-template-modal v-if="!isMainPage && user" :form="form" :show="showFormTemplateModal" @close="showFormTemplateModal=false" />
+    <form-workspace-modal v-if="user" :form="form" :show="showFormWorkspaceModal" @close="showFormWorkspaceModal=false" />
+
   </div>
 </template>
 
@@ -159,6 +172,7 @@
 import { ref, defineProps, computed } from 'vue'
 import Dropdown from '~/components/global/Dropdown.vue'
 import FormTemplateModal from '../../../open/forms/components/templates/FormTemplateModal.vue'
+import FormWorkspaceModal from '../../../open/forms/components/FormWorkspaceModal.vue'
 
 const { copy } = useClipboard()
 const router = useRouter()
@@ -177,6 +191,7 @@ let loadingDuplicate = ref(false)
 let loadingDelete = ref(false)
 let showDeleteFormModal = ref(false)
 let showFormTemplateModal = ref(false)
+let showFormWorkspaceModal = ref(false)
 
 const copyLink = () => {
   copy(props.form.share_url)

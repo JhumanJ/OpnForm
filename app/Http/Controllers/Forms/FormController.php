@@ -218,4 +218,24 @@ class FormController extends Controller
 
         return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
     }
+
+    /**
+     * Updates a form's workspace
+     */
+    public function updateWorkspace($id, $workspace_id)
+    {
+        $form =  Form::findOrFail($id);
+        $workspace =  Workspace::findOrFail($workspace_id);
+
+        $this->authorize('update', $form);
+        $this->authorize('view', $workspace);
+
+        $form->workspace_id = $workspace_id;
+        $form->creator_id = auth()->user()->id;
+        $form->save();
+        
+        return $this->success([
+            'message' => 'Form workspace updated successfully.',
+        ]);
+    }
 }
