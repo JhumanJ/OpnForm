@@ -87,7 +87,7 @@ const onSubmit = () => {
         }
         formsStore.loadAll(selectedWorkspace.value)
     }).catch((error) => {
-        useAlert().error(err?.data?.message ??   'Something went wrong, please try again!') 
+        useAlert().error(error?.data?.message ??   'Something went wrong, please try again!') 
         loading.value = false;
     })
 }
