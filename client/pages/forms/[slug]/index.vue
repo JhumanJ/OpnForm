@@ -166,6 +166,6 @@ useHead({
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm';
   },
-  script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
+  script: [ { src: `${useRuntimeConfig().public.appUrl}/widgets/iframeResizer.contentWindow.min.js` } ]
 })
 </script>

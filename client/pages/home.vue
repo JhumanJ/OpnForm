@@ -41,7 +41,7 @@
           </div>
           <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
             <NuxtImg class="w-56"
-                 src="/img/pages/forms/search_notfound.png" alt="search-not-found"
+                 :src="`${useRuntimeConfig().public.appUrl}/img/pages/forms/search_notfound.png`" alt="search-not-found"
             />
 
             <h3 class="w-full mt-4 text-center text-gray-900 font-semibold">

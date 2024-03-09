@@ -13,7 +13,7 @@
           </p>
         </div>
       </div>
-      <NuxtImg src="/img/pages/forms/blurred_graph.png"
+      <NuxtImg :src="`${useRuntimeConfig().public.appUrl}/img/pages/forms/blurred_graph.png`"
            alt="Sample Graph"
            class="mx-auto filter blur-md z-0"
       />

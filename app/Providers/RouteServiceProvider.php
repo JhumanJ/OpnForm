@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->registerGlobalRouteParamConstraints();
 
         $this->routes(function () {
-            Route::middleware('api')
+            Route::middleware($_ENV['APP_API_PREFIX'] ?? 'api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
         });
@@ -43,7 +43,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-        RateLimiter::for('api', function (Request $request) {
+        RateLimiter::for($_ENV['APP_API_PREFIX'] ?? 'api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
     }
