@@ -14,7 +14,7 @@ class VerifyEmailException extends ValidationException
     {
         return static::withMessages([
             'email' => [__('You must :linkOpen verify :linkClose your email first.', [
-                'linkOpen' => '<a href="'.env("APP_URL").'/email/resend?email='.urlencode($user->email).'">',
+                'linkOpen' => '<a href="'.config('app.url').'/email/resend?email='.urlencode($user->email).'">',
                 'linkClose' => '</a>',
             ])],
         ]);
