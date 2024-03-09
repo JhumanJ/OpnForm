@@ -39,7 +39,7 @@
             'Easily export submissions as CSV',
             'Views & Submissions Analytics'
           ],
-          img: `/img/pages/welcome/step-3.jpg`
+          img: `${useRuntimeConfig().public.appUrl}/img/pages/welcome/step-3.jpg`
         }
       ]" :key="step.title">
       <div class="w-full md:w-1/2 lg:w-5/12" :class="{'md:pl-4':index%2==1, 'md:pr-4':index%2==0}">
