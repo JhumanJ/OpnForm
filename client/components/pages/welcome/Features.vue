@@ -29,7 +29,7 @@
             'Share the link to your form',
             'Embed the form on your website'
           ],
-          img: `/img/pages/welcome/step-2.jpg`
+          img: `${useRuntimeConfig().public.appUrl}/img/pages/welcome/step-2.jpg`
         },
         {
           title: 'Get Results',
