@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->registerGlobalRouteParamConstraints();
 
         $this->routes(function () {
-            Route::middleware($_ENV['APP_API_PREFIX'] ?? 'api')
+            Route::middleware(env('APP_API_PREFIX', 'api'))
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
         });
