@@ -69,16 +69,20 @@
                   <NuxtLink :to="{name:'forms-slug-show-submissions', params: {slug:form.slug}}"
                             class="absolute inset-0"/>
                   <span class="font-semibold text-gray-900 dark:text-white">{{ form.title }}</span>
-                  <ul class="flex text-gray-500">
-                    <li class="pr-1">
+                  <ul class="flex text-gray-500 text-sm gap-4">
+                    <li class="pr-1 mr-3">
                       {{ form.views_count }} view{{ form.views_count > 0 ? 's' : '' }}
                     </li>
-                    <li class="list-disc ml-6 pr-1">
+                    <li class="list-disc mr-3">
                       {{ form.submissions_count }}
                       submission{{ form.submissions_count > 0 ? 's' : '' }}
                     </li>
-                    <li class="list-disc ml-6">
+                    <li class="list-disc mr-3">
                       Edited {{ form.last_edited_human }}
+                    </li>
+                    <li class='list-disc hidden lg:list-item'>
+                      By
+                      {{ form.creator.name }}
                     </li>
                   </ul>
                   <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)"
