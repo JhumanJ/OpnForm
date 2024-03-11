@@ -54,7 +54,7 @@ export default {
 
   computed: {
     zapierUrl () {
-      opnformConfig.links.zapier_integration
+      return opnformConfig.links.zapier_integration
     }
   },
 }
