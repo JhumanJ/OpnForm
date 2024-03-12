@@ -18,7 +18,7 @@
               :placeholder="placeholder"
               :uppercase-labels="uppercaseLabels"
               :theme="theme"
-              :has-error="hasValidation && form.errors.has(name)"
+              :has-error="hasError"
               :allow-creation="allowCreation"
               :disabled="disabled?true:null"
               :help="help"

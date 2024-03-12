@@ -15,7 +15,7 @@
 <a href="https://github.com/JhumanJ/OpnForm/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-purple" alt="License">
 <a href="https://github.com/JhumanJ/OpnForm/issues/new"><img src="https://img.shields.io/badge/Report a bug-Github-%231F80C0" alt="Report a bug"></a>
 <a href="https://github.com/JhumanJ/OpnForm/discussions/new?category=q-a"><img src="https://img.shields.io/badge/Ask a question-Github-%231F80C0" alt="Ask a question"></a>
-<a href="https://opnform.featurebase.app/"><img src="https://img.shields.io/badge/Feature request-Featurebase-%231F80C0" alt="Ask a question"></a>
+<a href="https://feedback.opnform.com"><img src="https://img.shields.io/badge/Feature request-Featurebase-%231F80C0" alt="Ask a question"></a>
 <a href="https://discord.gg/YTSjU2a9TS"><img src="https://dcbadge.vercel.app/api/server/YTSjU2a9TS?style=flat" alt="Ask a question"></a>
 <a href="https://console.algora.io/org/OpnForm/bounties?status=open"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2FOpnForm%2Fbounties%3Fstatus%3Dopen" alt="Open Bounties"></a>
 <a href="https://console.algora.io/org/OpnForm/bounties?status=completed"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2FOpnForm%2Fbounties%3Fstatus%3Dcompleted" alt="Rewarded Bounties"></a>
@@ -69,8 +69,6 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Docker installation 🐳
 
-> ⚠️ **Warning**: the Docker setup is currently not working as we're migrating the front-end to Nuxt. [Track progress here](https://github.com/JhumanJ/OpnForm/issues/283).
-
 This can be built and run locally but is also hosted publicly on docker hub at `jhumanj/opnform` and is generally best run directly from there.
 
 #### Running from docker hub
@@ -79,7 +77,10 @@ This can be built and run locally but is also hosted publicly on docker hub at `
 docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
-You should now be able to access the application by visiting  http://localhost in a web browser.
+You should now be able to access the application by visiting  http://localhost in a web browser. 
+
+> 👀 **Server Deployment**: If you are deploying OpnForm on a server (not locally), then you will [need to use 2 .env files](https://github.com/JhumanJ/opnform?tab=readme-ov-file#using-custom-env-files) to configure the app URLs (`APP_URL` in `.env` and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`).
+
 
 The `-v` argument creates a local directory called `my-opnform-data` which will store your database and files so that your work is not lost when you restart the container.
 

@@ -11,26 +11,15 @@ use Illuminate\Support\Str;
 
 class StorageFile implements Rule
 {
-    public int $maxSize;
-
     public string $error = 'Invalid file.';
 
-    /** @var string[] */
-    public array $fileTypes;
-
-    /**
-     * @param  string[]  $fileTypes
-     */
-    public function __construct(int $maxSize, array $fileTypes = [], public ?Form $form = null)
+    public function __construct(public int $maxSize, public array $fileTypes = [], public ?Form $form = null)
     {
-        $this->maxSize = $maxSize;
-
-        $this->fileTypes = $fileTypes;
     }
 
     /**
      * File can have 2 formats:
-     * - file_name-{uuid}.{ext}
+     * - file-name_{uuid}.{ext}
      * - {uuid}
      *
      * @param  string  $attribute
@@ -69,8 +58,9 @@ class StorageFile implements Rule
 
         if (count($this->fileTypes) > 0) {
             $this->error = 'Incorrect file type. Allowed only: '.implode(',', $this->fileTypes);
-
-            return in_array($fileNameParser->extension, $this->fileTypes);
+            return collect($this->fileTypes)->map(function ($type) {
+                return strtolower($type);
+            })->contains(strtolower($fileNameParser->extension));
         }
 
         return true;

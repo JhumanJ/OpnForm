@@ -8,7 +8,7 @@
 
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
-              class="cursor-pointer relative w-full" :class="[theme.default.input,{'ring-red-500 ring-2': hasValidation && form.errors.has(name)}]"
+              class="cursor-pointer relative w-full" :class="[theme.default.input,{'ring-red-500 ring-2': hasError}]"
               :style="inputStyle" @click.prevent="showUploadModal=true"
       >
         <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400">

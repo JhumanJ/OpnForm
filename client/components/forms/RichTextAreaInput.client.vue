@@ -7,7 +7,7 @@
     </template>
 
     <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled?true:null"
-                :placeholder="placeholder" :class="[{ '!ring-red-500 !ring-2': hasValidation && form.errors.has(name), '!cursor-not-allowed !bg-gray-200':disabled }, theme.RichTextAreaInput.input]"
+                :placeholder="placeholder" :class="[{ '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200':disabled }, theme.RichTextAreaInput.input]"
                 :editor-toolbar="editorToolbar" class="rich-editor resize-y"
                 :style="inputStyle"
     />

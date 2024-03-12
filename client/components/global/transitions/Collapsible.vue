@@ -17,7 +17,7 @@ const props = defineProps({
   modelValue: {type: Boolean},
   maxHeight: {type: Number, default: 200},
 })
-const emits = defineEmits(['click-away'])
+const emit = defineEmits(['click-away'])
 
 const motion = ref(null)
 const collapsible = ref(null)
@@ -47,6 +47,6 @@ const onLeave = (el, done) => {
 }
 
 const onClickAway = (event) => {
-  emits('click-away', event)
+  emit('click-away', event)
 }
 </script>
