@@ -123,7 +123,11 @@ onMounted(() => {
     if (process.client) {
       if (form.value.custom_code) {
         const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
-        document.head.append(scriptEl)
+        try {
+          document.head.append(scriptEl)
+        } catch (e) {
+          console.error('Error appending custom code', e)
+        }
       }
       if (!isIframe) focusOnFirstFormElement()
     }
@@ -135,22 +139,28 @@ onBeforeRouteLeave((to, from) => {
   disableDarkMode()
 })
 
+const pageMeta = computed(() => {
+  if (form.value && form.value.is_pro && form.value.seo_meta) {
+    return form.value.seo_meta
+  }
+  return {}
+})
 useOpnSeoMeta({
   title: () => {
-    if (form && form.value?.is_pro && form.value.seo_meta.page_title) {
-      return form.value.seo_meta.page_title
+    if (pageMeta.value.page_title) {
+      return pageMeta.value.page_title
     }
     return form.value ? form.value.title : 'Create beautiful forms'
   },
   description: () => {
-    if (form && form.value?.is_pro && form.value.seo_meta.page_description) {
-      return form.value.seo_meta.page_description
+    if (pageMeta.value.description) {
+      return pageMeta.value.description
     }
     return (form && form.value?.description) ? form.value?.description.substring(0, 160) : null
   },
   ogImage: () => {
-    if (form && form.value?.is_pro && form.value.seo_meta.page_thumbnail) {
-      return form.value.seo_meta.page_thumbnail
+    if (pageMeta.value.page_thumbnail) {
+      return pageMeta.value.page_thumbnail
     }
     return (form && form.value?.cover_picture) ? form.value?.cover_picture : null
   },
@@ -160,7 +170,7 @@ useOpnSeoMeta({
 })
 useHead({
   titleTemplate: (titleChunk) => {
-    if (form && form.value?.is_pro && form.value?.seo_meta.page_title) {
+    if (pageMeta.value.page_title) {
       // Disable template if custom SEO title
       return titleChunk
     }
