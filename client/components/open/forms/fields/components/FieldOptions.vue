@@ -61,11 +61,11 @@
                   help="Comma separated values, leave blank to allow all file types"
       />
 
-      <text-input name="max_file_size" class="mt-3" :form="field" native-type="number" 
-                  :min="1"  
+      <text-input name="max_file_size" class="mt-3" :form="field" native-type="number"
+                  :min="1"
                   :max="mbLimit"
-                  label="Maximum file size" :placeholder="`1MB - ${mbLimit}MB`"
-                  help="Set the maximum file size that can be uploaded in MB."
+                  label="Maximum file size (in MB)" :placeholder="`1MB - ${mbLimit}MB`"
+                  help="Set the maximum file size that can be uploaded"
       />
     </div>
 
