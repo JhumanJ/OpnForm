@@ -40,6 +40,7 @@ const integrationProperty = computed(() => {
 const integrationData = computed(() => {
   return {
     integration_id: integrationId.value,
+    status: true,
     settings: {},
     logic: null
   }

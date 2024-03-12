@@ -18,6 +18,10 @@
           <div
             class="hover:bg-gray-50 bg-white transition shadow-md cursor-pointer border border-gray-200 rounded-lg py-5 pr-10 pl-7 items-center flex w-full group justify-between relative">
             <div class="flex space-x-3">{{ integrations.get(row.integration_id).name }}</div>
+            <span v-if="row.status != '1'"
+              class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700">
+              In-Active
+            </span>
             <NuxtLink :to="{ name: 'forms-slug-show-integrations-id', params: { id: row.id } }"
               class="absolute inset-0" />
           </div>

@@ -8,6 +8,13 @@
       <a class="cursor-pointer" @click.prevent="crisp.openHelpdesk()">Need help setting up?</a>
     </slot>
 
+    <slot name="logic">
+      <div class="my-4">
+        <toggle-switch-input name="status" v-model="modelValue.status" class="mt-4" label="Status"
+          help="Only run integration when a status is enabled" />
+      </div>
+    </slot>
+
     <slot />
 
     <slot name="logic">

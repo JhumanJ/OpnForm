@@ -29,7 +29,7 @@ class FormIntegrationsController extends Controller
 
         $formIntegration = FormIntegration::create([
             'form_id' => $form->id,
-            'status' => FormIntegration::STATUS_ACTIVE,
+            'status' => ($request->get('status')) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_PAUSED,
             'integration_id' => $request->get('integration_id'),
             'data' => $request->get('settings') ?? [],
             'logic' => $request->get('logic') ?? []
@@ -48,6 +48,7 @@ class FormIntegrationsController extends Controller
 
         $formIntegration = FormIntegration::findOrFail((int) $integrationid);
         $formIntegration->update([
+            'status' => ($request->get('status')) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_PAUSED,
             'data' => $request->get('settings') ?? [],
             'logic' => $request->get('logic') ?? []
         ]);

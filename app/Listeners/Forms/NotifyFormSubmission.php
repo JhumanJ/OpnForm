@@ -19,7 +19,7 @@ class NotifyFormSubmission implements ShouldQueue
      */
     public function handle(FormSubmitted $event)
     {
-        $formIntegrations = FormIntegration::where('form_id', $event->form->id)->get();
+        $formIntegrations = FormIntegration::where([['form_id', $event->form->id], ['status', FormIntegration::STATUS_ACTIVE]])->get();
         foreach ($formIntegrations as $formIntegration) {
             $this->integrationHandler(
                 $event,
