@@ -7,7 +7,7 @@
     </template>
 
     <textarea :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
-              :class="[theme.default.input,{ '!ring-red-500 !ring-2': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
+              :class="[theme.default.input,{ '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
               class="resize-y"
               :name="name" :style="inputStyle"
               :placeholder="placeholder"
