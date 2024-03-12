@@ -175,7 +175,7 @@ export default {
       }
     },
     openFileUpload () {
-      if (this.disabled) return
+      if (this.disabled || !this.$refs['actual-input']) return
       this.$refs['actual-input'].click()
     },
     manualFileUpload (e) {

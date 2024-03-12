@@ -97,7 +97,7 @@ import FormCustomSeo from './form-components/FormCustomSeo.vue'
 import FormAccess from './form-components/FormAccess.vue'
 import {validatePropertiesLogic} from "~/composables/forms/validatePropertiesLogic.js"
 import opnformConfig from "~/opnform.config.js";
-import {captureException} from "@sentry/vue";
+import {captureException} from "@sentry/core";
 
 export default {
   name: 'FormEditor',

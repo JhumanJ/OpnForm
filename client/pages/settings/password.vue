@@ -41,6 +41,8 @@ const update = () => {
   form.patch('/settings/password').then((response) => {
     form.reset()
     useAlert().success('Password updated.')
+  }).catch((error) => {
+    console.error(error)
   })
 }
 </script>
