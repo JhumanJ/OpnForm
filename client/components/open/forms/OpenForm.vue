@@ -170,7 +170,7 @@ export default {
       if (requiredFields.length === 0) {
         return 100
       }
-      const completedFields = requiredFields.filter(field => ![null, undefined, ''].includes(this.dataFormValue[field.nf_id]))
+      const completedFields = requiredFields.filter(field => ![null, undefined, ''].includes(this.dataFormValue[field.id]))
       const progress = (completedFields.length / requiredFields.length) * 100
       return Math.round(progress)
     },

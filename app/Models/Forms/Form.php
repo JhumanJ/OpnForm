@@ -92,6 +92,7 @@ class Form extends Model implements CachableAttributes
         'editable_submissions',
         'editable_submissions_button_text',
         'confetti_on_submission',
+        'show_progress_bar',
         'auto_save',
 
         // Security & Privacy
