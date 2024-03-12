@@ -20,7 +20,6 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -227,10 +226,8 @@ Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (! $request->hasValidSignature()) {
         abort(401);
     }
-    $response = Response::make(Storage::get($path), 200);
-    $response->header('Content-Type', Storage::mimeType($path));
 
-    return $response;
+    return response()->file(Storage::path($path), ['Content-Type' => Storage::mimeType($path)]);
 })->where('path', '(.*)')->name('local.temp');
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
