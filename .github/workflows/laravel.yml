@@ -87,9 +87,6 @@ jobs:
           # Maps tcp port 3306 on service container to the host
           - 3306:3306
 
-    concurrency:
-      group: 'run-tests'
-
     strategy:
       fail-fast: true
       matrix:
