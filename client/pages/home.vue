@@ -80,9 +80,9 @@
                     <li class="list-disc mr-3">
                       Edited {{ form.last_edited_human }}
                     </li>
-                    <li class='list-disc hidden lg:list-item'>
+                    <li class='list-disc hidden lg:list-item' v-if="form.creator">
                       By
-                      {{ form.creator.name }}
+                      {{ form?.creator?.name }}
                     </li>
                   </ul>
                   <div v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)"
