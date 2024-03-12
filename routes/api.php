@@ -20,7 +20,6 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
