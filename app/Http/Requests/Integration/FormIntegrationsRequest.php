@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Integration;
 
-use App\Models\Integration\FormIntegrations;
+use App\Models\Integration\FormIntegration;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +16,7 @@ class FormIntegrationsRequest extends FormRequest
     public function rules()
     {
         return [
-            'integration_id' => ['required', Rule::in(array_keys(FormIntegrations::getAllIntegrations()))],
+            'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
             'settings' => 'required'
         ];
     }

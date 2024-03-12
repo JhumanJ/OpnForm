@@ -6,14 +6,12 @@ use App\Models\Forms\Form;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FormIntegrations extends Model
+class FormIntegration extends Model
 {
     const STATUS_ACTIVE = 1;
     const STATUS_PAUSED = 0;
 
     use HasFactory;
-
-    protected $table = 'form_integrations';
 
     protected $fillable = [
         'form_id',
@@ -40,5 +38,10 @@ class FormIntegrations extends Model
     public static function getAllIntegrations()
     {
         return json_decode(file_get_contents(resource_path('data/forms/integrations.json')), true);
+    }
+
+    public static function getIntegration($key)
+    {
+        return self::getAllIntegrations()[$key] ?? null;
     }
 }
