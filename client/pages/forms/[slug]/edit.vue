@@ -33,9 +33,11 @@ const error = ref(null)
 const formInitialHash = ref(null)
 
 function isDirty() {
-  return formInitialHash.value &&
-    updatedForm.value &&
-    formInitialHash.value !== hash(JSON.stringify(updatedForm?.value?.data() ?? null))
+  try {
+    return formInitialHash.value && updatedForm.value && formInitialHash.value !== hash(JSON.stringify(updatedForm?.value?.data() ?? null))
+  } catch (e) {
+    return false
+  }
 }
 
 function initUpdatedForm() {

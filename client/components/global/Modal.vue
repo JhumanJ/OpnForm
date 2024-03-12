@@ -71,7 +71,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 useHead({
   bodyAttrs: {
@@ -152,7 +152,7 @@ const onLeave = (el, done) => {
 
 const close = () => {
   if (props.closeable) {
-    emits('close')
+    emit('close')
   }
 }
 
