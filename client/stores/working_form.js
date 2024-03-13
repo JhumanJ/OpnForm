@@ -14,7 +14,7 @@ export const useWorkingFormStore = defineStore('working_form', {
       this.content = form
     },
     setProperties (properties) {
-      this.content.properties = properties
+      this.content.properties = [...properties]
     },
     openSettingsForField (index) {
       // If field is passed, compute index
@@ -44,7 +44,7 @@ export const useWorkingFormStore = defineStore('working_form', {
       this.showAddFieldSidebar = false
       this.showEditFieldSidebar = false
     },
-    reset() {
+    reset () {
       this.content = null
       this.selectedFieldIndex = null
       this.showEditFieldSidebar = null

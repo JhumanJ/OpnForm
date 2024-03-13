@@ -29,19 +29,21 @@
     <ToolsStopImpersonation/>
 
     <Notifications />
+    <feature-base/>
   </div>
 </template>
 
 <script>
 import {computed} from 'vue'
 import {useAppStore} from '~/stores/app'
+import FeatureBase from "~/components/vendor/FeatureBase.vue";
 
 export default {
   el: '#app',
 
   name: 'OpnForm',
 
-  components: {},
+  components: {FeatureBase},
 
   setup() {
     const config = useRuntimeConfig()
