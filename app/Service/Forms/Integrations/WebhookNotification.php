@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
 class WebhookNotification extends AbstractIntegrationHandler
 {
@@ -11,6 +11,6 @@ class WebhookNotification extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl()) && $this->form->is_pro;
+        return !is_null($this->getWebhookUrl()) && $this->form->is_pro && parent::shouldRun();
     }
 }

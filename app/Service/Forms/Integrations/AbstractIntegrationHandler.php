@@ -1,21 +1,49 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
-use App\Models\Forms\Form;
+use App\Models\Integration\FormIntegration;
+use App\Events\Forms\FormSubmitted;
 use App\Service\Forms\FormSubmissionFormatter;
+use App\Service\Forms\FormLogicConditionChecker;
 use Spatie\WebhookServer\WebhookCall;
 use Vinkla\Hashids\Facades\Hashids;
 
-abstract class AbstractWebhookHandler
+abstract class AbstractIntegrationHandler
 {
-    public function __construct(protected Form $form, protected array $data)
+    protected $form = null;
+    protected $data = null;
+    protected $formIntegrationData = null;
+
+    public function __construct(protected FormSubmitted $event, protected FormIntegration $formIntegration, protected array $integration)
     {
+        $this->form = $event->form;
+        $this->data = $event->data;
+        $this->formIntegrationData = $formIntegration->data;
     }
 
-    abstract protected function getProviderName(): ?string;
+    protected function getProviderName(): string
+    {
+        return $this->integration['name'] ?? '';
+    }
 
-    abstract protected function getWebhookUrl(): ?string;
+    protected function logicConditionsMet(): bool
+    {
+        if (!$this->formIntegration->logic) {
+            return true;
+        }
+        return FormLogicConditionChecker::conditionsMet(json_decode(json_encode($this->formIntegration->logic), true), $this->data);
+    }
+
+    protected function shouldRun(): bool
+    {
+        return $this->logicConditionsMet();
+    }
+
+    protected function getWebhookUrl(): ?string
+    {
+        return '';
+    }
 
     /**
      * Default webhook payload. Can be changed in child classes.
@@ -37,17 +65,18 @@ abstract class AbstractWebhookHandler
             'submission' => $formattedData,
         ];
         if ($this->form->is_pro && $this->form->editable_submissions) {
-            $data['edit_link'] = $this->form->share_url.'?submission_id='.Hashids::encode($this->data['submission_id']);
+            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode($this->data['submission_id']);
         }
 
         return $data;
     }
 
-    abstract protected function shouldRun(): bool;
-
+    /**
+     * Default handle. Can be changed in child classes.
+     */
     public function handle()
     {
-        if (! $this->shouldRun()) {
+        if (!$this->shouldRun()) {
             return;
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
@@ -17,7 +17,8 @@ class SlackNotification extends AbstractIntegrationHandler
     {
         return !is_null($this->getWebhookUrl())
             && str_contains($this->getWebhookUrl(), 'https://hooks.slack.com/')
-            && $this->form->is_pro;
+            && $this->form->is_pro
+            && parent::shouldRun();
     }
 
     protected function getWebhookData(): array

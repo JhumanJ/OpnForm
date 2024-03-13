@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
 use App\Mail\Forms\SubmissionConfirmationMail;
 use Illuminate\Support\Facades\Mail;
@@ -15,12 +15,12 @@ class SubmissionConfirmation extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !(!$this->form->is_pro);
+        return !(!$this->form->is_pro) && parent::shouldRun() && !$this->riskLimitReached();
     }
 
     public function handle()
     {
-        if (!$this->shouldRun() || !$this->isValidLogic() || $this->riskLimitReached()) {
+        if (!$this->shouldRun()) {
             return;
         }
 

@@ -4,6 +4,7 @@ namespace App\Listeners\Forms;
 
 use App\Events\Forms\FormSubmitted;
 use App\Models\Integration\FormIntegration;
+use App\Service\Forms\Integrations\AbstractIntegrationHandler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -21,7 +22,7 @@ class NotifyFormSubmission implements ShouldQueue
     {
         $formIntegrations = FormIntegration::where([['form_id', $event->form->id], ['status', FormIntegration::STATUS_ACTIVE]])->get();
         foreach ($formIntegrations as $formIntegration) {
-            $this->integrationHandler(
+            $this->getIntegrationHandler(
                 $event,
                 $formIntegration
             )->handle();
@@ -37,7 +38,7 @@ class NotifyFormSubmission implements ShouldQueue
         */
     }
 
-    public static function integrationHandler(FormSubmitted $event, FormIntegration $formIntegration)
+    public static function getIntegrationHandler(FormSubmitted $event, FormIntegration $formIntegration): AbstractIntegrationHandler
     {
         $integration = FormIntegration::getIntegration($formIntegration->integration_id);
         if ($integration && isset($integration['file_name']) && class_exists('App\Service\Forms\Webhooks\\' . $integration['file_name'])) {
