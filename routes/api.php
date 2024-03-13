@@ -89,6 +89,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('forms')->name('forms.')->group(function () {
             Route::post('/', [FormController::class, 'store'])->name('store');
+            Route::post('/{id}/workspace/{workspace_id}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
             Route::put('/{id}', [FormController::class, 'update'])->name('update');
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
 

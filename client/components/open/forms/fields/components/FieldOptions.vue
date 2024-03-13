@@ -60,6 +60,13 @@
                   label="Allowed file types" placeholder="jpg,jpeg,png,gif"
                   help="Comma separated values, leave blank to allow all file types"
       />
+
+      <text-input name="max_file_size" class="mt-3" :form="field" native-type="number"
+                  :min="1"
+                  :max="mbLimit"
+                  label="Maximum file size (in MB)" :placeholder="`1MB - ${mbLimit}MB`"
+                  help="Set the maximum file size that can be uploaded"
+      />
     </div>
 
     <!--   Number Options   -->
@@ -428,6 +435,9 @@ export default {
       required: false
     }
   },
+  setup() {
+    return { currentWorkspace: computed(() => useWorkspacesStore().getCurrent), }
+  },
   data () {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
@@ -441,6 +451,9 @@ export default {
   computed: {
     hasPlaceholder () {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
+    },
+    mbLimit() {
+      return this.form?.max_file_size ?? this.currentWorkspace?.max_file_size
     },
     prefillSelectsOptions () {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
@@ -503,6 +516,9 @@ export default {
   mounted () {
     if (['text', 'number', 'url', 'email'].includes(this.field?.type) && !this.field?.max_char_limit) {
       this.field.max_char_limit = 2000
+    }
+    if (this.field.type == 'files') {
+      this.field.max_file_size = Math.min((this.field.max_file_size ?? this.mbLimit), this.mbLimit)
     }
   },
 
