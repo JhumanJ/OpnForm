@@ -5,10 +5,10 @@
     <template #label>
       <slot name="label" />
     </template>
-    <div v-if="cameraUpload && isInWebcam" class="flex w-full items-center justify-center transition-colors duration-40 min-h-40">
-      <camera-upload  v-if="cameraUpload" @uploadImage="cameraFileUpload" @stopWebcam="isInWebcam=false"/>
+    <div v-if="cameraUpload && isInWebcam" class="hidden sm:block w-full min-h-40">
+      <camera-upload  v-if="cameraUpload" @uploadImage="cameraFileUpload" @stopWebcam="isInWebcam=false" :theme="theme"/>
     </div>
-    <div v-else class="flex w-full items-center justify-center transition-colors duration-40"
+    <div v-else class="flex flex-col w-full items-center justify-center transition-colors duration-40"
          :class="[{'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
                    [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
                    ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading}, theme.fileInput.input]"
@@ -17,6 +17,7 @@
          @drop.prevent="onUploadDropEvent"
          @click="openFileUpload"
     >
+    <div class="flex w-full items-center justify-center">
       <div
         v-if="loading"
         class="text-gray-600 dark:text-gray-400"
@@ -63,17 +64,18 @@
             <p class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none">
               Size limit: {{ mbLimit }}MB per file
             </p>
-            <div class="my-2">
-              <button type="button" class="text-white cursor-pointer py-2 p-1 px-2 rounded-full bg-blue-900 text-xs" @click.stop="openWebcam" v-if="cameraUpload">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-                  </svg>
-              </button>
-            </div>
           </template>
         </div>
       </template>
+    </div>
+      <div class="w-full items-center justify-center mt-2  hidden sm:flex">
+        <open-form-button native-typ="buttom" :loading="loading" :theme="theme" :color="color" class="py-2 p-1 px-2" @click.stop="openWebcam" v-if="cameraUpload">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>
+        </open-form-button>
+      </div>
     </div>
 
     <template #help>
@@ -89,12 +91,13 @@
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
+import OpenFormButton from '../open/forms/OpenFormButton.vue'
 import CameraUpload from './components/CameraUpload.vue'
 import {storeFile} from "~/lib/file-uploads.js"
 
 export default {
   name: 'FileInput',
-  components: { InputWrapper, UploadedFile },
+  components: { InputWrapper, UploadedFile, OpenFormButton },
   mixins: [],
   props: {
     ...inputProps,

@@ -1,45 +1,17 @@
 <template>
     <div class="relative">
-        <video id="webcam" autoplay playsinline :class="{ 'hidden': !isCapturing }"></video>
+        <video id="webcam" autoplay playsinline :class="[{ 'hidden': !isCapturing },theme.fileInput.cameraInput]"></video>
         <canvas id="canvas" :class="{ 'hidden': !capturedImage }"></canvas>
         <div v-if="cameraPermissionStatus === 'allowed'" class="absolute inset-x-0 grid place-content-center bottom-2">
             <div class=" p-2 px-4 flex items-center justify-center text-xs space-x-2" v-if="isCapturing">
                 <span class="cursor-pointer  rounded-full w-14 h-14 border-2 grid place-content-center"
-                    @click="takeSnapshot">
+                    @click="processCapturedImage">
                     <span class="cursor-pointer bg-gray-100 rounded-full w-10 h-10 grid place-content-center">
                     </span>
                 </span>
                 <span class="text-white cursor-pointer" @click="cancelCamera">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-8 h-8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                </span>
-            </div>
-
-            <div class="bg-black rounded-full p-1 px-2 flex items-center justify-center text-xs space-x-4"
-                v-if="capturedImage">
-                <span class="text-amsber-600 cursor-pointer" @click="openCameraUpload">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                    </svg>
-
-                </span>
-
-
-                <span class="text-lime-600 cursor-pointer w-8 h-8 rounded-full bg-gray-100 grid place-content-center"
-                    @click="processCapturedImage">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
-                </span>
-
-                <span class="text-resd-600 cursor-pointer" @click="cancelCamera">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </span>
@@ -88,8 +60,12 @@
 
 <script>
 import Webcam from 'webcam-easy';
+import { themes } from '~/lib/forms/form-themes.js'
 export default {
     name: 'FileInput',
+    props:{
+        theme: { type: Object, default: () => themes.default }
+    },
     data: () => ({
         webcam: null,
         isCapturing: false,
@@ -128,13 +104,6 @@ export default {
                     this.cameraPermissionStatus = 'unknown';
                 });
         },
-
-        takeSnapshot() {
-            var picture = this.webcam.snap();
-            this.isCapturing = false;
-            this.webcam.stop()
-            this.capturedImage = picture;
-        },
         cancelCamera() {
             this.isCapturing = false;
             this.capturedImage = null;
@@ -142,6 +111,9 @@ export default {
             this.$emit('stopWebcam')
         },
         processCapturedImage() {
+            this.capturedImage = this.webcam.snap();
+            this.isCapturing = false;
+            this.webcam.stop()
             const byteCharacters = atob(this.capturedImage.split(',')[1]);
             const byteArrays = [];
             for (let offset = 0; offset < byteCharacters.length; offset += 512) {
