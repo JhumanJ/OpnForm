@@ -11,7 +11,7 @@ class DiscordNotification extends AbstractIntegrationHandler
 
     protected function getWebhookUrl(): ?string
     {
-        return $this->formIntegrationData->discord_webhook_url;
+        return $this->integrationData->discord_webhook_url;
     }
 
     protected function shouldRun(): bool
@@ -23,7 +23,7 @@ class DiscordNotification extends AbstractIntegrationHandler
 
     protected function getWebhookData(): array
     {
-        $settings = (array) $this->formIntegrationData ?? [];
+        $settings = (array) $this->integrationData ?? [];
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
             $externalLinks[] = '[**🔗 Open Form**](' . $this->form->share_url . ')';

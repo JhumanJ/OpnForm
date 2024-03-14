@@ -13,13 +13,13 @@ abstract class AbstractIntegrationHandler
 {
     protected $form = null;
     protected $data = null;
-    protected $formIntegrationData = null;
+    protected $integrationData = null;
 
     public function __construct(protected FormSubmitted $event, protected FormIntegration $formIntegration, protected array $integration)
     {
         $this->form = $event->form;
         $this->data = $event->data;
-        $this->formIntegrationData = $formIntegration->data;
+        $this->integrationData = $formIntegration->data;
     }
 
     protected function getProviderName(): string

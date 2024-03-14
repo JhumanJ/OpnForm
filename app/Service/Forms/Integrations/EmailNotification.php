@@ -10,7 +10,7 @@ class EmailNotification extends AbstractIntegrationHandler
 {
     protected function shouldRun(): bool
     {
-        return !(!$this->form->is_pro || !$this->formIntegrationData->notification_emails) && parent::shouldRun();
+        return !(!$this->form->is_pro || !$this->integrationData->notification_emails) && parent::shouldRun();
     }
 
     public function handle()
@@ -19,7 +19,7 @@ class EmailNotification extends AbstractIntegrationHandler
             return;
         }
 
-        $subscribers = collect(preg_split("/\r\n|\n|\r/", $this->formIntegrationData->notification_emails))
+        $subscribers = collect(preg_split("/\r\n|\n|\r/", $this->integrationData->notification_emails))
             ->filter(function ($email) {
                 return filter_var($email, FILTER_VALIDATE_EMAIL);
             });

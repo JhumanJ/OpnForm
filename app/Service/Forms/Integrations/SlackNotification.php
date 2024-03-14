@@ -10,7 +10,7 @@ class SlackNotification extends AbstractIntegrationHandler
 {
     protected function getWebhookUrl(): ?string
     {
-        return $this->formIntegrationData->slack_webhook_url;
+        return $this->integrationData->slack_webhook_url;
     }
 
     protected function shouldRun(): bool
@@ -23,7 +23,7 @@ class SlackNotification extends AbstractIntegrationHandler
 
     protected function getWebhookData(): array
     {
-        $settings = (array) $this->formIntegrationData ?? [];
+        $settings = (array) $this->integrationData ?? [];
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
             $externalLinks[] = '*<' . $this->form->share_url . '|🔗 Open Form>*';

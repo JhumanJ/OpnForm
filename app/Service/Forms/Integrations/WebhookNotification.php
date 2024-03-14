@@ -6,7 +6,7 @@ class WebhookNotification extends AbstractIntegrationHandler
 {
     protected function getWebhookUrl(): ?string
     {
-        return $this->formIntegrationData->webhook_url;
+        return $this->integrationData->webhook_url;
     }
 
     protected function shouldRun(): bool
