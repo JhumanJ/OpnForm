@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class FormIntegration extends Model
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_PAUSED = 0;
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
 
     use HasFactory;
 
