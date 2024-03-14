@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Forms\FormSubmissionNotification;
 
-class EmailNotification extends AbstractIntegrationHandler
+class EmailIntegration extends AbstractIntegrationHandler
 {
     protected function shouldRun(): bool
     {

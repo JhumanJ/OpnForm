@@ -6,7 +6,7 @@ use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
 use Vinkla\Hashids\Facades\Hashids;
 
-class DiscordNotification extends AbstractIntegrationHandler
+class DiscordIntegration extends AbstractIntegrationHandler
 {
 
     protected function getWebhookUrl(): ?string
@@ -33,7 +33,7 @@ class DiscordNotification extends AbstractIntegrationHandler
             $externalLinks[] = '[**✍️ Edit Form**](' . $editFormURL . ')';
         }
         if (Arr::get($settings, 'link_edit_submission', true) && $this->form->editable_submissions) {
-            $submissionId = Hashids::encode($this->data['submission_id']);
+            $submissionId = Hashids::encode($this->submissionData['submission_id']);
             $externalLinks[] = '[**✍️ ' . $this->form->editable_submissions_button_text . '**](' . $this->form->share_url . '?submission_id=' . $submissionId . ')';
         }
 
@@ -41,7 +41,7 @@ class DiscordNotification extends AbstractIntegrationHandler
         $blocks = [];
         if (Arr::get($settings, 'include_submission_data', true)) {
             $submissionString = '';
-            $formatter = (new FormSubmissionFormatter($this->form, $this->data))->outputStringsOnly();
+            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
             foreach ($formatter->getFieldsWithValue() as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
                 $submissionString .= '**' . ucfirst($field['name']) . '**: ' . $tmpVal . "\n";

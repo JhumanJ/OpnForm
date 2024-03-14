@@ -12,13 +12,13 @@ use Vinkla\Hashids\Facades\Hashids;
 abstract class AbstractIntegrationHandler
 {
     protected $form = null;
-    protected $data = null;
+    protected $submissionData = null;
     protected $integrationData = null;
 
     public function __construct(protected FormSubmitted $event, protected FormIntegration $formIntegration, protected array $integration)
     {
         $this->form = $event->form;
-        $this->data = $event->data;
+        $this->submissionData = $event->data;
         $this->integrationData = $formIntegration->data;
     }
 
@@ -32,7 +32,7 @@ abstract class AbstractIntegrationHandler
         if (!$this->formIntegration->logic) {
             return true;
         }
-        return FormLogicConditionChecker::conditionsMet(json_decode(json_encode($this->formIntegration->logic), true), $this->data);
+        return FormLogicConditionChecker::conditionsMet(json_decode(json_encode($this->formIntegration->logic), true), $this->submissionData);
     }
 
     protected function shouldRun(): bool
@@ -50,7 +50,7 @@ abstract class AbstractIntegrationHandler
      */
     protected function getWebhookData(): array
     {
-        $formatter = (new FormSubmissionFormatter($this->form, $this->data))
+        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))
             ->useSignedUrlForFiles()
             ->showHiddenFields();
 
@@ -65,7 +65,7 @@ abstract class AbstractIntegrationHandler
             'submission' => $formattedData,
         ];
         if ($this->form->is_pro && $this->form->editable_submissions) {
-            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode($this->data['submission_id']);
+            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode($this->submissionData['submission_id']);
         }
 
         return $data;
@@ -84,7 +84,7 @@ abstract class AbstractIntegrationHandler
             // Add context on error, used to notify form owner
             ->meta([
                 'type' => 'form_submission',
-                'data' => $this->data,
+                'data' => $this->submissionData,
                 'form' => $this->form,
                 'provider' => $this->getProviderName(),
             ])

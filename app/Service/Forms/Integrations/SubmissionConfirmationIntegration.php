@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 /**
  * Sends a confirmation to form respondant that form was submitted
  */
-class SubmissionConfirmation extends AbstractIntegrationHandler
+class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
 {
     public const RISKY_USERS_LIMIT = 120;
 
@@ -49,8 +49,8 @@ class SubmissionConfirmation extends AbstractIntegrationHandler
             return null;
         }
 
-        if (isset($this->data[$emailFields->first()['id']])) {
-            $email = $this->data[$emailFields->first()['id']];
+        if (isset($this->submissionData[$emailFields->first()['id']])) {
+            $email = $this->submissionData[$emailFields->first()['id']];
             if ($this->validateEmail($email)) {
                 return $email;
             }

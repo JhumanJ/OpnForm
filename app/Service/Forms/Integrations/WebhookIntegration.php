@@ -2,7 +2,7 @@
 
 namespace App\Service\Forms\Integrations;
 
-class WebhookNotification extends AbstractIntegrationHandler
+class WebhookIntegration extends AbstractIntegrationHandler
 {
     protected function getWebhookUrl(): ?string
     {

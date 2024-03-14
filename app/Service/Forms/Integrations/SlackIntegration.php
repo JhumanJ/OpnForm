@@ -6,7 +6,7 @@ use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
 use Vinkla\Hashids\Facades\Hashids;
 
-class SlackNotification extends AbstractIntegrationHandler
+class SlackIntegration extends AbstractIntegrationHandler
 {
     protected function getWebhookUrl(): ?string
     {
@@ -33,7 +33,7 @@ class SlackNotification extends AbstractIntegrationHandler
             $externalLinks[] = '*<' . $editFormURL . '|✍️ Edit Form>*';
         }
         if (Arr::get($settings, 'link_edit_submission', true) && $this->form->editable_submissions) {
-            $submissionId = Hashids::encode($this->data['submission_id']);
+            $submissionId = Hashids::encode($this->submissionData['submission_id']);
             $externalLinks[] = '*<' . $this->form->share_url . '?submission_id=' . $submissionId . '|✍️ ' . $this->form->editable_submissions_button_text . '>*';
         }
 
@@ -49,7 +49,7 @@ class SlackNotification extends AbstractIntegrationHandler
 
         if (Arr::get($settings, 'include_submission_data', true)) {
             $submissionString = '';
-            $formatter = (new FormSubmissionFormatter($this->form, $this->data))->outputStringsOnly();
+            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
             foreach ($formatter->getFieldsWithValue() as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
                 $submissionString .= '>*' . ucfirst($field['name']) . '*: ' . $tmpVal . " \n";
