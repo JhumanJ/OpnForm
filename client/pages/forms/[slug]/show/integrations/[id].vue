@@ -1,6 +1,9 @@
 <template>
   <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
-    <div class="mb-20">
+    <div v-if="integrationsLoading" class="my-6">
+      <Loader class="h-6 w-6 mx-auto" />
+    </div>
+    <div v-else class="mb-20">
       <component v-if="integrationProperty.service && integrationProperty.component" :is="integrationProperty.component"
         :form="form" :service="integrationProperty.service" :integrationData="integrationData" />
     </div>
@@ -25,6 +28,7 @@ const crisp = useCrisp()
 const router = useRouter()
 const formIntegrationsStore = useFormIntegrationsStore()
 formIntegrationsStore.initIntegrations()
+const integrationsLoading = computed(() => formIntegrationsStore.loading)
 const integrations = computed(() => formIntegrationsStore.integrations)
 const integrationId = computed(() => parseInt(useRoute().params.id) ?? null)
 const integration = computed(() => formIntegrationsStore.getByKey(integrationId.value))

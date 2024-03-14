@@ -9,7 +9,10 @@
         <a class="cursor-pointer ml-1" @click.prevent="crisp.openHelpdesk()">Need Help?</a>
       </div>
 
-      <div v-if="formIntegrationsList.length" class="my-6">
+      <div v-if="integrationsLoading" class="my-6">
+        <Loader class="h-6 w-6 mx-auto" />
+      </div>
+      <div v-else-if="formIntegrationsList.length" class="my-6">
         <h3 class="font-semibold mt-4 text-xl">
           Your connections
         </h3>
@@ -114,6 +117,7 @@ const route = useRoute()
 let loadingDelete = ref(false)
 const formIntegrationsStore = useFormIntegrationsStore()
 formIntegrationsStore.initIntegrations()
+const integrationsLoading = computed(() => formIntegrationsStore.loading)
 const integrations = computed(() => formIntegrationsStore.integrations)
 const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
 const formIntegrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
