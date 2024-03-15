@@ -42,6 +42,8 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
     })
   }
 
+  initIntegrations()
+
   return {
     ...contentStore,
     integrations,

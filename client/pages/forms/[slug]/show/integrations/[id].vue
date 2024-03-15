@@ -27,7 +27,6 @@ useOpnSeoMeta({
 const crisp = useCrisp()
 const router = useRouter()
 const formIntegrationsStore = useFormIntegrationsStore()
-formIntegrationsStore.initIntegrations()
 const integrationsLoading = computed(() => formIntegrationsStore.loading)
 const integrations = computed(() => formIntegrationsStore.integrations)
 const integrationId = computed(() => parseInt(useRoute().params.id) ?? null)

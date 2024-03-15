@@ -14,6 +14,7 @@ export const useContentStore = (mapKey = 'id') => {
     if (Array.isArray(key)) {
       return key.map((k) => content.value.get(k)).filter((item) => item !== undefined)
     }
+    console.log(key, content.value)
     return content.value.get(key)
   }
 
