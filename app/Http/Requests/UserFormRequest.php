@@ -72,6 +72,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'editable_submissions' => 'boolean|nullable',
             'editable_submissions_button_text' => 'string|min:1|max:50',
             'confetti_on_submission' => 'boolean',
+            'show_progress_bar' => 'boolean',
             'auto_save' => 'boolean',
 
             // Properties
