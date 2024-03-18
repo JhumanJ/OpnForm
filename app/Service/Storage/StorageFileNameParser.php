@@ -30,10 +30,10 @@ class StorageFileNameParser
     public function getMovedFileName(): ?string
     {
         if ($this->fileName && $this->extension) {
-            $fileName = substr($this->fileName, 0, 50).'_'.$this->uuid.'.'.$this->extension;
+            $fileName = substr($this->fileName, 0, 50) . '_' . $this->uuid . '.' . $this->extension;
             $fileName = preg_replace('#\p{C}+#u', '', $fileName); // avoid CorruptedPathDetected exceptions
 
-            return mb_convert_encoding($fileName, 'UTF-8', 'UTF-8');
+            return S3KeyCleaner::sanitize($fileName);
         }
 
         return $this->uuid;
@@ -47,13 +47,15 @@ class StorageFileNameParser
             return;
         }
 
-        if (! str_contains($fileName, '_')) {
+        if (!str_contains($fileName, '_')) {
             return;
         }
 
         $candidateString = substr($fileName, strrpos($fileName, '_') + 1);
-        if (! str_contains($candidateString, '.')
-            || ! Str::isUuid(substr($candidateString, 0, strpos($candidateString, '.')))) {
+        if (
+            !str_contains($candidateString, '.')
+            || !Str::isUuid(substr($candidateString, 0, strpos($candidateString, '.')))
+        ) {
             return;
         }
 

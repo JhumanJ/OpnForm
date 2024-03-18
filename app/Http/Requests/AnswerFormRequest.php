@@ -27,6 +27,12 @@ class AnswerFormRequest extends FormRequest
         $this->maxFileSize = $this->form->workspace->max_file_size;
     }
 
+    private function getFieldMaxFileSize($fieldProps)
+    {
+        return array_key_exists('max_file_size', $fieldProps) ?
+            min($fieldProps['max_file_size'] * 1000000, $this->maxFileSize) : $this->maxFileSize;
+    }
+
     /**
      * Validate form before use it
      *
@@ -180,7 +186,7 @@ class AnswerFormRequest extends FormRequest
                 if (! empty($property['allowed_file_types'])) {
                     $allowedFileTypes = explode(',', $property['allowed_file_types']);
                 }
-                $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, $allowedFileTypes, $this->form)];
+                $this->requestRules[$property['id'] . '.*'] = [new StorageFile($this->getFieldMaxFileSize($property), $allowedFileTypes, $this->form)];
 
                 return ['array'];
             case 'email':

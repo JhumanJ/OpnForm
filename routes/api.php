@@ -20,7 +20,6 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -90,6 +89,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('forms')->name('forms.')->group(function () {
             Route::post('/', [FormController::class, 'store'])->name('store');
+            Route::post('/{id}/workspace/{workspace_id}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
             Route::put('/{id}', [FormController::class, 'update'])->name('update');
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
 
@@ -227,10 +227,8 @@ Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (! $request->hasValidSignature()) {
         abort(401);
     }
-    $response = Response::make(Storage::get($path), 200);
-    $response->header('Content-Type', Storage::mimeType($path));
 
-    return $response;
+    return response()->file(Storage::path($path), ['Content-Type' => Storage::mimeType($path)]);
 })->where('path', '(.*)')->name('local.temp');
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])

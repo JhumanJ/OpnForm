@@ -46,7 +46,7 @@ export default defineNuxtPlugin({
         if (event.exception.values.length) {
           // Don't send validation exceptions to Sentry
           if (event.exception.values[0].type === 'FetchError' &&
-            event.exception.values[0].value.includes('422')
+            (event.exception.values[0].value.includes('422') || event.exception.values[0].value.includes('401'))
           ) {
             return null
           }

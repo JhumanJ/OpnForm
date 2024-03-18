@@ -119,6 +119,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.generates_uuid' => 'boolean|nullable',
             'properties.*.generates_auto_increment_id' => 'boolean|nullable',
 
+            // For file (min and max)
+            'properties.*.max_file_size' => 'min:1|numeric',
+
             // Security & Privacy
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
