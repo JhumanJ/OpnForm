@@ -1,6 +1,6 @@
 <template>
-    <div class="relative">
-        <video id="webcam" autoplay playsinline :class="[{ 'hidden': !isCapturing },theme.fileInput.cameraInput]"></video>
+    <div class="relative border">
+        <video id="webcam" autoplay playsinline :class="[{ 'hidden': !isCapturing },theme.fileInput.cameraInput]" width="1280" height="720"></video>
         <canvas id="canvas" :class="{ 'hidden': !capturedImage }"></canvas>
         <div v-if="cameraPermissionStatus === 'allowed'" class="absolute inset-x-0 grid place-content-center bottom-2">
             <div class=" p-2 px-4 flex items-center justify-center text-xs space-x-2" v-if="isCapturing">
@@ -85,7 +85,6 @@ export default {
         const canvasElement = document.getElementById('canvas');
         this.webcam = new Webcam(webcamElement, 'user', canvasElement);
         this.openCameraUpload()
-
     },
 
     methods: {
@@ -97,6 +96,7 @@ export default {
                     this.cameraPermissionStatus = 'allowed';
                 })
                 .catch(err => {
+                    console.log(err)
                     if(err.toString()  === 'NotAllowedError: Permission denied'){
                         this.cameraPermissionStatus = 'blocked';
                         return;
