@@ -125,12 +125,11 @@ class GenerateTemplate extends Command
         }
         ```
 
-        For numerical rating inputs, use a "number" type input and set the property "is_rating" to "true" to turn it into a star rating input. Ex:
+        For numerical rating inputs, use a "rating" type input to turn it into a star rating input. Ex:
         ```json
         {
             "name":"How would you rate your overall experience?",
-            "type":"number",
-            "is_rating": true
+            "type":"rating"
         }
         ```
 
@@ -284,7 +283,7 @@ class GenerateTemplate extends Command
             $types,
             $relatedTemplates
         );
-        $this->info('/form-templates/'.$template->slug);
+        $this->info('/form-templates/' . $template->slug);
 
         // Set reverse related Templates
         $this->setReverseRelatedTemplates($template);
@@ -297,7 +296,7 @@ class GenerateTemplate extends Command
      */
     private function getImageCoverUrl($searchQuery): ?string
     {
-        $url = 'https://api.unsplash.com/search/photos?query='.urlencode($searchQuery).'&client_id='.config('services.unsplash.access_key');
+        $url = 'https://api.unsplash.com/search/photos?query=' . urlencode($searchQuery) . '&client_id=' . config('services.unsplash.access_key');
         $response = Http::get($url)->json();
         $photoIndex = rand(0, max(count($response['results']) - 1, 10));
         if (isset($response['results'][$photoIndex]['urls']['regular'])) {
@@ -366,12 +365,13 @@ class GenerateTemplate extends Command
             $property['id'] = Str::uuid()->toString(); // Column ID
 
             // Fix ratings
-            if ($property['type'] == 'number' && ($property['is_rating'] ?? false)) {
+            if ($property['type'] == 'rating') {
                 $property['rating_max_value'] = 5;
             }
 
             if (($property['type'] == 'select' && count($property['select']['options']) <= 4)
-                || ($property['type'] == 'multi_select' && count($property['multi_select']['options']) <= 4)) {
+                || ($property['type'] == 'multi_select' && count($property['multi_select']['options']) <= 4)
+            ) {
                 $property['without_dropdown'] = true;
             }
         }
@@ -395,7 +395,7 @@ class GenerateTemplate extends Command
 
     private function setReverseRelatedTemplates(Template $newTemplate)
     {
-        if (! $newTemplate || count($newTemplate->related_templates) === 0) {
+        if (!$newTemplate || count($newTemplate->related_templates) === 0) {
             return;
         }
 

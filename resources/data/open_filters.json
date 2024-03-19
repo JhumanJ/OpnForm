@@ -289,6 +289,180 @@
       }
     }
   },
+  "rating": {
+    "comparators": {
+      "equals": {
+        "expected_type": "number"
+      },
+      "does_not_equal": {
+        "expected_type": "number"
+      },
+      "greater_than": {
+        "expected_type": "number"
+      },
+      "less_than": {
+        "expected_type": "number"
+      },
+      "greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "less_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "scale": {
+    "comparators": {
+      "equals": {
+        "expected_type": "number"
+      },
+      "does_not_equal": {
+        "expected_type": "number"
+      },
+      "greater_than": {
+        "expected_type": "number"
+      },
+      "less_than": {
+        "expected_type": "number"
+      },
+      "greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "less_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
+  "slider": {
+    "comparators": {
+      "equals": {
+        "expected_type": "number"
+      },
+      "does_not_equal": {
+        "expected_type": "number"
+      },
+      "greater_than": {
+        "expected_type": "number"
+      },
+      "less_than": {
+        "expected_type": "number"
+      },
+      "greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "less_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "is_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "is_not_empty": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [
+            true
+          ]
+        }
+      },
+      "content_length_equals": {
+        "expected_type": "number"
+      },
+      "content_length_does_not_equal": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than": {
+        "expected_type": "number"
+      },
+      "content_length_greater_than_or_equal_to": {
+        "expected_type": "number"
+      },
+      "content_length_less_than": {
+        "expected_type": "number"
+      },
+      "content_length_less_than_or_equal_to": {
+        "expected_type": "number"
+      }
+    }
+  },
   "checkbox": {
     "comparators": {
       "equals": {
