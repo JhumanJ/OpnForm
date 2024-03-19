@@ -40,7 +40,7 @@
             </div>
           </div>
           <div v-if="!formsLoading && enrichedForms.length === 0" class="flex flex-wrap justify-center max-w-4xl">
-            <NuxtImg class="w-56"
+            <img class="w-56"
                  src="/img/pages/forms/search_notfound.png" alt="search-not-found"
             />
 

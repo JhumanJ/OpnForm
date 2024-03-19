@@ -42,7 +42,7 @@
           <div
             class="grid lg:grid-cols-3 grid-cols-1 sm:max-w-lg lg:max-w-5xl sm:mx-auto gap-8 sm:gap-10 mt-12 sm:mt-16">
             <div class="flex items-start gap-4">
-              <NuxtImg class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-fast.svg" alt=""/>
+              <img class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-fast.svg" alt=""/>
 
               <div>
                 <p class="text-md font-semibold text-gray-900">
@@ -55,7 +55,7 @@
             </div>
 
             <div class="flex items-start gap-4">
-              <NuxtImg class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-customization.svg" alt=""/>
+              <img class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-customization.svg" alt=""/>
 
               <div>
                 <p class="text-md font-semibold text-gray-900">
@@ -68,7 +68,7 @@
             </div>
 
             <div class="flex items-start gap-4">
-              <NuxtImg class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-browser.svg" alt=""/>
+              <img class="w-12 h-12 shrink-0" src="/img/pages/ai_form_builder/icon-browser.svg" alt=""/>
 
               <div>
                 <p class="text-md font-semibold text-gray-900">
@@ -103,7 +103,7 @@
           <div
             class="space-y-16 text-center lg:text-left sm:max-w-md sm:mx-auto lg:max-w-none lg:space-y-20 xl:space-y-24 mt-8 sm:mt-12 lg:mt-16">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
-              <NuxtImg class="w-full lg:flex-1 bg-gray-300 lg:shrink-0 rounded-2xl ring-1 ring-gray-200 shadow-sm"
+              <img class="w-full lg:flex-1 bg-gray-300 lg:shrink-0 rounded-2xl ring-1 ring-gray-200 shadow-sm"
               src="/img/pages/ai_form_builder/step-1.svg" alt=""/>
 
 
@@ -113,7 +113,7 @@
               </div>
 
               <div class="lg:flex-1 lg:shrink-0">
-                <NuxtImg class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-create.svg" alt=""/>
+                <img class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-create.svg" alt=""/>
 
                 <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 lg:mt-8">
                   Building forms made easy
@@ -129,7 +129,7 @@
             </div>
 
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
-              <NuxtImg
+              <img
                 class="w-full lg:flex-1 bg-gray-300 lg:shrink-0 rounded-2xl ring-1 ring-gray-200 shadow-sm lg:order-3"
                 src="/img/pages/ai_form_builder/step-2.svg" alt=""/>
               <div
@@ -138,7 +138,7 @@
               </div>
 
               <div class="lg:flex-1 lg:shrink-0 lg:order-1">
-                <NuxtImg class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-customization.svg" alt=""/>
+                <img class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-customization.svg" alt=""/>
 
                 <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 lg:mt-8">
                   Customized forms work wonders
@@ -152,7 +152,7 @@
             </div>
 
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
-              <NuxtImg class="w-full lg:flex-1 bg-gray-300 lg:shrink-0 rounded-2xl ring-1 ring-gray-200 shadow-sm"
+              <img class="w-full lg:flex-1 bg-gray-300 lg:shrink-0 rounded-2xl ring-1 ring-gray-200 shadow-sm"
               src="/img/pages/ai_form_builder/step-3.svg" alt=""/>
               <div
                 class="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-200 hidden xl:inline-flex items-center justify-center text-blue-600 text-2xl font-semibold leading-none">
@@ -160,7 +160,7 @@
               </div>
 
               <div class="lg:flex-1 lg:shrink-0">
-                <NuxtImg class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-share.svg" alt=""/>
+                <img class="w-auto h-16 hidden lg:block" src="/img/pages/ai_form_builder/icon-share.svg" alt=""/>
 
                 <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 lg:mt-8">
                   Share your forms anywhere
@@ -200,7 +200,7 @@
 <!--          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 sm:mt-12 lg:mt-16">-->
 <!--            <div-->
 <!--              class="bg-white overflow-hidden rounded-2xl ring-1 ring-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-150">-->
-<!--              <NuxtImg class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
+<!--              <img class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
 -->
 <!--              <div class="px-4 py-5 sm:p-6">-->
 <!--                <h3 class="text-lg font-semibold text-gray-900">-->
@@ -214,7 +214,7 @@
 
 <!--            <div-->
 <!--              class="bg-white overflow-hidden rounded-2xl ring-1 ring-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-150">-->
-<!--              <NuxtImg class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
+<!--              <img class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
 -->
 <!--              <div class="px-4 py-5 sm:p-6">-->
 <!--                <h3 class="text-lg font-semibold text-gray-900">-->
@@ -228,7 +228,7 @@
 
 <!--            <div-->
 <!--              class="bg-white overflow-hidden rounded-2xl ring-1 ring-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-150">-->
-<!--              <NuxtImg class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
+<!--              <img class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
 -->
 <!--              <div class="px-4 py-5 sm:p-6">-->
 <!--                <h3 class="text-lg font-semibold text-gray-900">-->
@@ -242,7 +242,7 @@
 
 <!--            <div-->
 <!--              class="bg-white overflow-hidden rounded-2xl ring-1 ring-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-150">-->
-<!--              <NuxtImg class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
+<!--              <img class="w-full" src="/img/pages/ai_form_builder/examples-placeholder.png" alt=""/>
 -->
 <!--              <div class="px-4 py-5 sm:p-6">-->
 <!--                <h3 class="text-lg font-semibold text-gray-900">-->
@@ -422,11 +422,11 @@
     <section class="bg-gradient-to-b from-gray-100 to-white py-12 sm:py-16 lg:pt-20 xl:pt-24">
       <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div class="flex items-center justify-center gap-8">
-          <NuxtImg class="w-auto h-12" src="/img/pages/ai_form_builder/icon-email-input.svg" alt=""/>
+          <img class="w-auto h-12" src="/img/pages/ai_form_builder/icon-email-input.svg" alt=""/>
 
-          <NuxtImg class="w-auto h-12" src="/img/pages/ai_form_builder/icon-radio-buttons.svg" alt=""/>
+          <img class="w-auto h-12" src="/img/pages/ai_form_builder/icon-radio-buttons.svg" alt=""/>
 
-          <NuxtImg class="w-auto h-12" src="/img/pages/ai_form_builder/icon-textarea.svg" alt=""/>
+          <img class="w-auto h-12" src="/img/pages/ai_form_builder/icon-textarea.svg" alt=""/>
 
         </div>
 
