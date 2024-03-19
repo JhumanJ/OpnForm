@@ -2,7 +2,7 @@ const { notify } = useNotification()
 
 export const useAlert = () => {
 
-  function success(message, autoClose = 10000) {
+  function success(message, autoClose = 10000,  options = {}) {
     notify({
       title: 'Success',
       text: message,
@@ -11,7 +11,7 @@ export const useAlert = () => {
     })
   }
 
-  function error(message, autoClose = 10000) {
+  function error(message, autoClose = 10000,  options = {}) {
     notify({
       title: 'Error',
       text: message,
@@ -20,7 +20,7 @@ export const useAlert = () => {
     })
   }
 
-  function warning(message, autoClose = 10000) {
+  function warning(message, autoClose = 10000,  options = {}) {
     notify({
       title: 'Warning',
       text: message,
@@ -29,7 +29,7 @@ export const useAlert = () => {
     })
   }
 
-  function confirm(message, success, failure = ()=>{}, autoClose = 10000) {
+  function confirm(message, success, failure = () => { }, autoClose = 10000,  options = {}) {
     notify({
       title: 'Confirm',
       text: message,

@@ -19,7 +19,7 @@ export const inputProps = {
   wrapperClass: { type: String, default: 'relative mb-3' }
 }
 
-export function useFormInput (props, context, formPrefixKey = null) {
+export function useFormInput (props, context, formPrefixKey = null, newValCallback = null) {
   const content = ref(props.modelValue)
 
   const inputStyle = computed(() => {
@@ -77,6 +77,20 @@ export function useFormInput (props, context, formPrefixKey = null) {
       }
     }
   )
+
+  if (props.form) {
+    watch(
+      () => props.form[(formPrefixKey || '') + props.name],
+      (newValue) => {
+        if (content.value !== newValue) {
+          content.value = newValue
+          if (newValCallback) {
+            newValCallback(newValue)
+          }
+        }
+      }
+    )
+  }
 
   return {
     compVal,
