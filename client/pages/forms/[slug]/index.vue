@@ -116,6 +116,7 @@ await loadForm(true)
 
 onMounted(() => {
   crisp.hideChat()
+  document.body.classList.add('public-page')
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
@@ -135,6 +136,7 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave((to, from) => {
+  document.body.classList.remove('public-page')
   crisp.showChat()
   disableDarkMode()
 })
