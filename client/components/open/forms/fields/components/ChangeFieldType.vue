@@ -1,5 +1,5 @@
 <template>
-  <dropdown v-if="changeTypeOptions.length > 0" dusk="nav-dropdown">
+  <dropdown ref="newTypeDropdown" v-if="changeTypeOptions.length > 0" dusk="nav-dropdown">
     <template #trigger="{toggle}">
       <v-button class="relative" :class="btnClasses" size="small" color="light-gray" @click.stop="toggle">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4 text-blue-600 inline mr-1 -mt-1">
@@ -41,12 +41,15 @@ export default {
   computed: {
     changeTypeOptions () {
       let newTypes = []
-      if (['text', 'email', 'phone_number', 'number'].includes(this.field.type)) {
+      if (['text', 'email', 'phone_number', 'number','slider','rating','scale'].includes(this.field.type)) {
         newTypes = [
           { name: 'Text Input', value: 'text' },
           { name: 'Email Input', value: 'email' },
           { name: 'Phone Input', value: 'phone_number' },
-          { name: 'Number Input', value: 'number' }
+          { name: 'Number Input', value: 'number' },
+          { name: 'Slider Input', value: 'slider' },
+          { name: 'Rating Input', value: 'rating' },
+          { name: 'Scale Input', value: 'scale' },
         ]
       }
       if (['select', 'multi_select'].includes(this.field.type)) {
@@ -75,6 +78,7 @@ export default {
     changeType (newType) {
       if (newType) {
         this.$emit('changeType', newType)
+        this.$refs.newTypeDropdown.close()
       }
     }
   }

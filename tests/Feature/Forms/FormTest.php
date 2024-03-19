@@ -73,7 +73,7 @@ it('can regenerate a form url', function () {
         ->assertJson(function (AssertableJson $json) {
             return $json->where('type', 'success')
                 ->where('form.slug', function ($value) {
-                    if (! is_string($value) || (preg_match(
+                    if (!is_string($value) || (preg_match(
                         '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
                         $value
                     ) !== 1)) {
@@ -94,7 +94,6 @@ it('can regenerate a form url', function () {
                 })
                 ->etc();
         });
-
 });
 
 it('can duplicate a form', function () {
@@ -106,14 +105,14 @@ it('can duplicate a form', function () {
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Form successfully duplicated.',
+            'message' => 'Form successfully duplicated. You are now editing the duplicated version of the form.',
         ]);
 
     expect($user->forms()->count())->toBe(2);
     expect($workspace->forms()->count())->toBe(2);
     $this->assertDatabaseHas('forms', [
         'id' => $response->json('new_form.id'),
-        'title' => 'Copy of '.$form->title,
+        'title' => 'Copy of ' . $form->title,
         'description' => $form->description,
     ]);
 });

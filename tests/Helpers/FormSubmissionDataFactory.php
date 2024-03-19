@@ -39,6 +39,13 @@ class FormSubmissionDataFactory
                 case 'number':
                     $value = $this->faker->numberBetween();
                     break;
+                case 'rating':
+                case 'scale':
+                    $value = $this->faker->numberBetween(1, 5);
+                    break;
+                case 'slider':
+                    $value = $this->faker->numberBetween(0, 50);
+                    break;
                 case 'url':
                     $value = $this->faker->url();
                     break;
