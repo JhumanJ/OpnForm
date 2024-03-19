@@ -64,18 +64,6 @@ export default defineNuxtConfig({
             }
         }
     },
-    image: runtimeConfig.public.useDummyImageProvider ? {
-        provider: 'dummy',
-        providers: {
-            dummy: {
-                provider: '~/lib/images/dummy-image-provider.js',
-            }
-        }
-    } :{
-        quality: 95,
-        format: 'webp',
-        domains: ['images.unsplash.com']
-    },
     sourcemap: true,
     vite: {
         plugins: [
