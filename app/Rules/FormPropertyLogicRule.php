@@ -288,6 +288,168 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
                 ],
             ],
         ],
+        'rating' => [
+            'comparators' => [
+                'equals' => [
+                    'expected_type' => 'number',
+                ],
+                'does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'is_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'is_not_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+            ],
+        ],
+        'scale' => [
+            'comparators' => [
+                'equals' => [
+                    'expected_type' => 'number',
+                ],
+                'does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'is_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'is_not_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+            ],
+        ],
+        'slider' => [
+            'comparators' => [
+                'equals' => [
+                    'expected_type' => 'number',
+                ],
+                'does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'is_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'is_not_empty' => [
+                    'expected_type' => 'boolean',
+                    'format' => [
+                        'type' => 'enum',
+                        'values' => [true],
+                    ],
+                ],
+                'content_length_equals' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_does_not_equal' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_greater_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than' => [
+                    'expected_type' => 'number',
+                ],
+                'content_length_less_than_or_equal_to' => [
+                    'expected_type' => 'number',
+                ],
+            ],
+        ],
         'checkbox' => [
             'comparators' => [
                 'equals' => [
@@ -484,35 +646,35 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
     private function checkBaseCondition($condition)
     {
 
-        if (! isset($condition['value'])) {
+        if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition body';
 
             return;
         }
 
-        if (! isset($condition['value']['property_meta'])) {
+        if (!isset($condition['value']['property_meta'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property';
 
             return;
         }
 
-        if (! isset($condition['value']['property_meta']['type'])) {
+        if (!isset($condition['value']['property_meta']['type'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property type';
 
             return;
         }
 
-        if (! isset($condition['value']['operator'])) {
+        if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition operator';
 
             return;
         }
 
-        if (! isset($condition['value']['value'])) {
+        if (!isset($condition['value']['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition value';
 
@@ -523,14 +685,14 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
         $operator = $condition['value']['operator'];
         $value = $condition['value']['value'];
 
-        if (! isset(self::CONDITION_MAPPING[$typeField])) {
+        if (!isset(self::CONDITION_MAPPING[$typeField])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition type';
 
             return;
         }
 
-        if (! isset(self::CONDITION_MAPPING[$typeField]['comparators'][$operator])) {
+        if (!isset(self::CONDITION_MAPPING[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition operator';
 
@@ -546,11 +708,11 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
                     $foundCorrectType = true;
                 }
             }
-            if (! $foundCorrectType) {
+            if (!$foundCorrectType) {
                 $this->isConditionCorrect = false;
             }
         } else {
-            if (! $this->valueHasCorrectType($type, $value)) {
+            if (!$this->valueHasCorrectType($type, $value)) {
                 $this->isConditionCorrect = false;
                 $this->conditionErrors[] = 'wrong type of condition value';
             }
@@ -561,9 +723,9 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
     {
         if (
             ($type === 'string' && gettype($value) !== 'string') ||
-            ($type === 'boolean' && ! is_bool($value)) ||
-            ($type === 'number' && ! is_numeric($value)) ||
-            ($type === 'object' && ! is_array($value))
+            ($type === 'boolean' && !is_bool($value)) ||
+            ($type === 'number' && !is_numeric($value)) ||
+            ($type === 'object' && !is_array($value))
         ) {
             return false;
         }
@@ -588,7 +750,7 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
                 return;
             }
 
-            if (! is_array($conditions['children'])) {
+            if (!is_array($conditions['children'])) {
                 $this->conditionErrors[] = 'wrong sub-condition type';
                 $this->isConditionCorrect = false;
 
@@ -607,11 +769,12 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
     {
         if (is_array($actions) && count($actions) > 0) {
             foreach ($actions as $val) {
-                if (! in_array($val, static::ACTIONS_VALUES) ||
-                    (in_array($this->field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && ! in_array($val, ['hide-block', 'show-block'])) ||
-                    (isset($this->field['hidden']) && $this->field['hidden'] && ! in_array($val, ['show-block', 'require-answer'])) ||
-                    (isset($this->field['required']) && $this->field['required'] && ! in_array($val, ['make-it-optional', 'hide-block', 'disable-block'])) ||
-                    (isset($this->field['disabled']) && $this->field['disabled'] && ! in_array($val, ['enable-block', 'require-answer', 'make-it-optional']))
+                if (
+                    !in_array($val, static::ACTIONS_VALUES) ||
+                    (in_array($this->field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']) && !in_array($val, ['hide-block', 'show-block'])) ||
+                    (isset($this->field['hidden']) && $this->field['hidden'] && !in_array($val, ['show-block', 'require-answer'])) ||
+                    (isset($this->field['required']) && $this->field['required'] && !in_array($val, ['make-it-optional', 'hide-block', 'disable-block'])) ||
+                    (isset($this->field['disabled']) && $this->field['disabled'] && !in_array($val, ['enable-block', 'require-answer', 'make-it-optional']))
                 ) {
                     $this->isActionCorrect = false;
                     break;
@@ -646,13 +809,13 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
     public function message()
     {
         $message = null;
-        if (! $this->isConditionCorrect) {
-            $message = 'The logic conditions for '.$this->field['name'].' are not complete.';
-        } elseif (! $this->isActionCorrect) {
-            $message = 'The logic actions for '.$this->field['name'].' are not valid.';
+        if (!$this->isConditionCorrect) {
+            $message = 'The logic conditions for ' . $this->field['name'] . ' are not complete.';
+        } elseif (!$this->isActionCorrect) {
+            $message = 'The logic actions for ' . $this->field['name'] . ' are not valid.';
         }
         if (count($this->conditionErrors) > 0) {
-            return $message.' Error detail(s): '.implode(', ', $this->conditionErrors);
+            return $message . ' Error detail(s): ' . implode(', ', $this->conditionErrors);
         }
 
         return $message;

@@ -15,19 +15,19 @@ class FormLogicConditionChecker
 
     private function conditionsAreMet(?array $conditions, array $formData): bool
     {
-        if (! $conditions) {
+        if (!$conditions) {
             return false;
         }
 
         // If it's not a group, just a single condition
-        if (! isset($conditions['operatorIdentifier'])) {
+        if (!isset($conditions['operatorIdentifier'])) {
             return $this->propertyConditionMet($conditions['value'], $formData[$conditions['value']['property_meta']['id']] ?? null);
         }
 
         if ($conditions['operatorIdentifier'] === 'and') {
             $isvalid = true;
             foreach ($conditions['children'] as $childrenCondition) {
-                if (! $this->conditionsMet($childrenCondition, $formData)) {
+                if (!$this->conditionsMet($childrenCondition, $formData)) {
                     $isvalid = false;
                     break;
                 }
@@ -46,7 +46,7 @@ class FormLogicConditionChecker
             return $isvalid;
         }
 
-        throw new \Exception('Unexcepted operatorIdentifier:'.$conditions['operatorIdentifier']);
+        throw new \Exception('Unexcepted operatorIdentifier:' . $conditions['operatorIdentifier']);
     }
 
     private function propertyConditionMet(array $propertyCondition, $value): bool
@@ -58,6 +58,9 @@ class FormLogicConditionChecker
             case 'phone_number':
                 return $this->textConditionMet($propertyCondition, $value);
             case 'number':
+            case 'rating':
+            case 'scale':
+            case 'slider':
                 return $this->numberConditionMet($propertyCondition, $value);
             case 'checkbox':
                 return $this->checkboxConditionMet($propertyCondition, $value);
@@ -90,7 +93,7 @@ class FormLogicConditionChecker
             return false;
         }
 
-        if (! is_array($fieldValue)) {
+        if (!is_array($fieldValue)) {
             return $this->checkEquals($condition, $fieldValue);
         }
 
@@ -117,7 +120,7 @@ class FormLogicConditionChecker
             return count($fieldValue) === 0;
         }
 
-        return $fieldValue == '' || $fieldValue == null || ! $fieldValue;
+        return $fieldValue == '' || $fieldValue == null || !$fieldValue;
     }
 
     private function checkGreaterThan($condition, $fieldValue): bool
@@ -162,7 +165,7 @@ class FormLogicConditionChecker
 
     private function checkPastWeek($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -172,7 +175,7 @@ class FormLogicConditionChecker
 
     private function checkPastMonth($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -182,7 +185,7 @@ class FormLogicConditionChecker
 
     private function checkPastYear($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -192,7 +195,7 @@ class FormLogicConditionChecker
 
     private function checkNextWeek($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -202,7 +205,7 @@ class FormLogicConditionChecker
 
     private function checkNextMonth($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -212,7 +215,7 @@ class FormLogicConditionChecker
 
     private function checkNextYear($condition, $fieldValue): bool
     {
-        if (! $fieldValue) {
+        if (!$fieldValue) {
             return false;
         }
         $fieldDate = date('Y-m-d', strtotime($fieldValue));
@@ -222,7 +225,7 @@ class FormLogicConditionChecker
 
     private function checkLength($condition, $fieldValue, $operator = '==='): bool
     {
-        if (! $fieldValue || strlen($fieldValue) === 0) {
+        if (!$fieldValue || strlen($fieldValue) === 0) {
             return false;
         }
         switch ($operator) {
@@ -249,11 +252,11 @@ class FormLogicConditionChecker
             case 'equals':
                 return $this->checkEquals($propertyCondition, $value);
             case 'does_not_equal':
-                return ! $this->checkEquals($propertyCondition, $value);
+                return !$this->checkEquals($propertyCondition, $value);
             case 'contains':
                 return $this->checkContains($propertyCondition, $value);
             case 'does_not_contain':
-                return ! $this->checkContains($propertyCondition, $value);
+                return !$this->checkContains($propertyCondition, $value);
             case 'starts_with':
                 return $this->checkStartsWith($propertyCondition, $value);
             case 'ends_with':
@@ -261,7 +264,7 @@ class FormLogicConditionChecker
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
-                return ! $this->checkIsEmpty($propertyCondition, $value);
+                return !$this->checkIsEmpty($propertyCondition, $value);
             case 'content_length_equals':
                 return $this->checkLength($propertyCondition, $value, '===');
             case 'content_length_does_not_equal':
@@ -285,7 +288,7 @@ class FormLogicConditionChecker
             case 'equals':
                 return $this->checkEquals($propertyCondition, $value);
             case 'does_not_equal':
-                return ! $this->checkEquals($propertyCondition, $value);
+                return !$this->checkEquals($propertyCondition, $value);
             case 'greater_than':
                 return $this->checkGreaterThan($propertyCondition, $value);
             case 'less_than':
@@ -297,7 +300,7 @@ class FormLogicConditionChecker
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
-                return ! $this->checkIsEmpty($propertyCondition, $value);
+                return !$this->checkIsEmpty($propertyCondition, $value);
             case 'content_length_equals':
                 return $this->checkLength($propertyCondition, $value, '===');
             case 'content_length_does_not_equal':
@@ -321,7 +324,7 @@ class FormLogicConditionChecker
             case 'equals':
                 return $this->checkEquals($propertyCondition, $value);
             case 'does_not_equal':
-                return ! $this->checkEquals($propertyCondition, $value);
+                return !$this->checkEquals($propertyCondition, $value);
         }
 
         return false;
@@ -333,11 +336,11 @@ class FormLogicConditionChecker
             case 'equals':
                 return $this->checkEquals($propertyCondition, $value);
             case 'does_not_equal':
-                return ! $this->checkEquals($propertyCondition, $value);
+                return !$this->checkEquals($propertyCondition, $value);
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
-                return ! $this->checkIsEmpty($propertyCondition, $value);
+                return !$this->checkIsEmpty($propertyCondition, $value);
         }
 
         return false;
@@ -381,11 +384,11 @@ class FormLogicConditionChecker
             case 'contains':
                 return $this->checkListContains($propertyCondition, $value);
             case 'does_not_contain':
-                return ! $this->checkListContains($propertyCondition, $value);
+                return !$this->checkListContains($propertyCondition, $value);
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
-                return ! $this->checkIsEmpty($propertyCondition, $value);
+                return !$this->checkIsEmpty($propertyCondition, $value);
         }
 
         return false;
@@ -397,7 +400,7 @@ class FormLogicConditionChecker
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
-                return ! $this->checkIsEmpty($propertyCondition, $value);
+                return !$this->checkIsEmpty($propertyCondition, $value);
         }
 
         return false;
