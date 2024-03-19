@@ -108,7 +108,7 @@ class GenerateTemplate extends Command
                 "color": "#64748b"
             }
         ```
-        The form properties can only have one of the following types: 'text', 'number', 'select', 'multi_select', 'date', 'files', 'checkbox', 'url', 'email', 'phone_number', 'signature'.
+        The form properties can only have one of the following types: 'text', 'number', 'rating', 'scale','slider', 'select', 'multi_select', 'date', 'files', 'checkbox', 'url', 'email', 'phone_number', 'signature'.
         All form properties objects need to have the keys 'help', 'name', 'type', 'hidden', 'placeholder', 'prefill'.
         The placeholder property is optional (can be "null") and is used to display a placeholder text in the input field.
         The help property is optional (can be "null") and is used to display extra information about the field.
@@ -125,13 +125,9 @@ class GenerateTemplate extends Command
         }
         ```
 
-        For numerical rating inputs, use a "rating" type input to turn it into a star rating input. Ex:
-        ```json
-        {
-            "name":"How would you rate your overall experience?",
-            "type":"rating"
-        }
-        ```
+        For "rating" you can set the field property "rating_max_value" to set the maximum value of the rating.
+        For "scale" you can set the field property "scale_min_value", "scale_max_value" and "scale_step_value" to set the minimum, maximum and step value of the scale.
+        For "slider" you can set the field property "slider_min_value", "slider_max_value" and "slider_step_value" to set the minimum, maximum and step value of the slider.
 
         If the form is too long, you can paginate it by adding a page break block in the list of properties:
         ```json
@@ -229,6 +225,7 @@ class GenerateTemplate extends Command
             ['role' => 'user', 'content' => Str::of(self::FORM_STRUCTURE_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString()],
         ]);
         $formData = $completer->getArray();
+        $formData = self::cleanAiOutput($formData);
 
         $completer->doesNotExpectJson();
         $formDescriptionPrompt = Str::of(self::FORM_DESCRIPTION_PROMPT)->replace('[REPLACE]', $this->argument('prompt'))->toString();
@@ -332,7 +329,6 @@ class GenerateTemplate extends Command
 
     private function getRelatedTemplates(array $industries, array $types): array
     {
-        ray($industries, $types);
         $templateScore = [];
         Template::chunk(100, function ($otherTemplates) use ($industries, $types, &$templateScore) {
             foreach ($otherTemplates as $otherTemplate) {
@@ -360,25 +356,6 @@ class GenerateTemplate extends Command
         array $types,
         array $relatedTemplates
     ) {
-        // Add property uuids, improve form with options
-        foreach ($formData['properties'] as &$property) {
-            $property['id'] = Str::uuid()->toString(); // Column ID
-
-            // Fix ratings
-            if ($property['type'] == 'rating') {
-                $property['rating_max_value'] = 5;
-            }
-
-            if (($property['type'] == 'select' && count($property['select']['options']) <= 4)
-                || ($property['type'] == 'multi_select' && count($property['multi_select']['options']) <= 4)
-            ) {
-                $property['without_dropdown'] = true;
-            }
-        }
-
-        // Clean data
-        $formTitle = Str::of($formTitle)->replace('"', '')->toString();
-
         return Template::create([
             'name' => $formTitle,
             'description' => $formDescription,
@@ -405,5 +382,37 @@ class GenerateTemplate extends Command
                 $template->update(['related_templates' => array_merge($template->related_templates, [$newTemplate->slug])]);
             }
         }
+    }
+
+    public static function cleanAiOutput(array $formData): array
+    {
+        // Add property uuids, improve form with options
+        foreach ($formData['properties'] as &$property) {
+            $property['id'] = Str::uuid()->toString(); // Column ID
+
+            // Fix types
+            if ($property['type'] == 'rating') {
+                $property['rating_max_value'] = $property['rating_max_value'] ?? 5;
+            } else if ($property['type'] == 'scale') {
+                $property['scale_min_value'] = $property['scale_min_value'] ?? 1;
+                $property['scale_max_value'] = $property['scale_max_value'] ?? 5;
+                $property['scale_step_value'] = $property['scale_step_value'] ?? 1;
+            } else if ($property['type'] == 'slider') {
+                $property['slider_min_value'] = $property['slider_min_value'] ?? 0;
+                $property['slider_max_value'] = $property['slider_max_value'] ?? 100;
+                $property['slider_step_value'] = $property['slider_step_value'] ?? 1;
+            }
+
+            if (($property['type'] == 'select' && count($property['select']['options']) <= 4)
+                || ($property['type'] == 'multi_select' && count($property['multi_select']['options']) <= 4)
+            ) {
+                $property['without_dropdown'] = true;
+            }
+        }
+
+        // Clean data
+        $formData['title'] = Str::of($formData['title'])->replace('"', '')->toString();
+
+        return $formData;
     }
 }

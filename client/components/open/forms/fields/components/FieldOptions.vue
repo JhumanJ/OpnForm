@@ -394,7 +394,13 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+    'field.type': {
+      handler() {
+        this.setDefaultFieldValues()
+      },
+      immediate: true
+    },
   },
 
   created() {
@@ -404,12 +410,7 @@ export default {
   },
 
   mounted() {
-    if (['text', 'number', 'url', 'email'].includes(this.field?.type) && !this.field?.max_char_limit) {
-      this.field.max_char_limit = 2000
-    }
-    if (this.field.type == 'files') {
-      this.field.max_file_size = Math.min((this.field.max_file_size ?? this.mbLimit), this.mbLimit)
-    }
+    this.setDefaultFieldValues()
   },
 
   methods: {
@@ -518,6 +519,43 @@ export default {
       this.field.unavailable_countries = this.allCountries.map(item => {
         return item.code
       })
+    },
+    setDefaultFieldValues() {
+      const defaultFieldValues = {
+        slider: {
+          slider_min_value: 0,
+          slider_max_value: 100,
+          slider_step_value: 1
+        },
+        scale: {
+          scale_min_value: 1,
+          scale_max_value: 5,
+          scale_step_value: 1
+        },
+        rating: {
+          rating_max_value: 5
+        },
+        files: {
+          max_file_size: Math.min((this.field.max_file_size ?? this.mbLimit), this.mbLimit)
+        },
+        text: {
+          multi_lines: false,
+          max_char_limit: 2000
+        },
+        email: {
+          max_char_limit: 2000
+        },
+        url: {
+          max_char_limit: 2000
+        },
+      }
+      if (this.field.type in defaultFieldValues) {
+        Object.keys(defaultFieldValues[this.field.type]).forEach(key => {
+          if (!Object.hasOwn(this.field,key)) {
+            this.field[key] = defaultFieldValues[this.field.type][key]
+          }
+        })
+      }
     }
   }
 }
