@@ -2,10 +2,10 @@
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="title">
       <h3 class="font-semibold mt-4 text-xl">
-        Connect your form to {{ service.name }}
-        <pro-tag v-if="service?.is_pro === true" />
+        Setup "{{ integration.name }}"
+        <pro-tag v-if="integration?.is_pro === true" />
       </h3>
-      <a class="cursor-pointer" @click.prevent="crisp.openHelpdesk()">Need help setting up?</a>
+      <a class="cursor-pointer" @click.prevent="crisp.openHelpdesk()">Need help with this integration?</a>
     </slot>
 
     <slot name="logic">
@@ -49,7 +49,7 @@
 import ConditionEditor from '~/components/open/forms/components/form-logic-components/ConditionEditor.client.vue'
 
 const props = defineProps({
-  service: { type: Object, required: true },
+  integration: { type: Object, required: true },
   modelValue: { required: false },
   wrapperClass: { type: String, required: false },
   inputStyle: { type: Object, required: false },

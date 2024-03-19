@@ -93,7 +93,7 @@
               <pro-tag v-if="sectionItem?.is_pro === true"/>
             </div>
             <NuxtLink v-track.new_integration_click="{ name: sectionItemKey }" class="absolute inset-0"
-                      :to="{ name: 'forms-slug-show-integrations-new', query: { 'service': sectionItemKey } }"/>
+                      :to="{ name: 'forms-slug-show-integrations-new', query: { 'integration': sectionItemKey } }"/>
           </div>
         </div>
       </div>

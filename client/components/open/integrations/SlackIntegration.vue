@@ -1,5 +1,5 @@
 <template>
-  <IntegrationWrapper :service="service" :form="form" v-model="integration">
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
     <text-input name="slack_webhook_url" v-model="integration.settings.slack_webhook_url" class="mt-4"
       label="Slack webhook url" help="help">
       <template #help>
@@ -18,24 +18,24 @@
 </template>
 
 <script setup>
-import IntegrationWrapper from "./IntegrationWrapper.vue"
+import IntegrationWrapper from "./components/IntegrationWrapper.vue"
 import FormNotificationsMessageActions from "~/components/open/forms/components/form-components/components/FormNotificationsMessageActions.vue"
 
 const props = defineProps({
-  service: { type: Object, required: true },
+  integration: { type: Object, required: true },
   form: { type: Object, required: true },
   integrationData: { type: Object, required: true },
+  formIntegrationId: { type: Number, required: false, default: null }
 });
 
 const alert = useAlert()
 const router = useRouter()
 const formIntegrationsStore = useFormIntegrationsStore()
-const formIntegrationId = computed(() => parseInt(useRoute().params.id) ?? null)
 const integration = ref(props.integrationData)
 
 const save = () => {
-  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((formIntegrationId.value) ? '/' + formIntegrationId.value : ''), {
-    method: (formIntegrationId.value) ? 'PUT' : 'POST',
+  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((props.formIntegrationId) ? '/' + props.formIntegrationId : ''), {
+    method: (props.formIntegrationId) ? 'PUT' : 'POST',
     body: integration.value
   }).then(data => {
     alert.success(data.message)
