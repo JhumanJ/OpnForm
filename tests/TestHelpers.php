@@ -66,18 +66,25 @@ trait TestHelpers
                 'type' => 'rating',
                 'hidden' => false,
                 'required' => false,
+                'rating_max_value' => 5
             ],
             [
                 'name' => 'Scale',
                 'type' => 'scale',
                 'hidden' => false,
                 'required' => false,
+                'scale_min_value' => 1,
+                'scale_max_value' => 10,
+                'scale_step_value' => 1,
             ],
             [
                 'name' => 'Slider',
                 'type' => 'slider',
                 'hidden' => false,
                 'required' => false,
+                'slider_min_value' => 1,
+                'slider_max_value' => 100,
+                'slider_step_value' => 1,
             ],
             [
                 'name' => 'Select',
