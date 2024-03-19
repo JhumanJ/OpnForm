@@ -16,7 +16,7 @@ trait TestHelpers
      */
     public function createUserWorkspace(User $user)
     {
-        if (! $user) {
+        if (!$user) {
             return null;
         }
 
@@ -58,6 +58,24 @@ trait TestHelpers
             [
                 'name' => 'Number',
                 'type' => 'number',
+                'hidden' => false,
+                'required' => false,
+            ],
+            [
+                'name' => 'Rating',
+                'type' => 'rating',
+                'hidden' => false,
+                'required' => false,
+            ],
+            [
+                'name' => 'Scale',
+                'type' => 'scale',
+                'hidden' => false,
+                'required' => false,
+            ],
+            [
+                'name' => 'Slider',
+                'type' => 'slider',
                 'hidden' => false,
                 'required' => false,
             ],
