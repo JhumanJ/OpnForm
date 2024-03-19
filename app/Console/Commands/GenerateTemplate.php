@@ -393,11 +393,11 @@ class GenerateTemplate extends Command
             // Fix types
             if ($property['type'] == 'rating') {
                 $property['rating_max_value'] = $property['rating_max_value'] ?? 5;
-            } else if ($property['type'] == 'scale') {
+            } elseif ($property['type'] == 'scale') {
                 $property['scale_min_value'] = $property['scale_min_value'] ?? 1;
                 $property['scale_max_value'] = $property['scale_max_value'] ?? 5;
                 $property['scale_step_value'] = $property['scale_step_value'] ?? 1;
-            } else if ($property['type'] == 'slider') {
+            } elseif ($property['type'] == 'slider') {
                 $property['slider_min_value'] = $property['slider_min_value'] ?? 0;
                 $property['slider_max_value'] = $property['slider_max_value'] ?? 100;
                 $property['slider_step_value'] = $property['slider_step_value'] ?? 1;
