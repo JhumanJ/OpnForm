@@ -7,7 +7,7 @@
     </template>
 
     <div class="stars-outer">
-      <div v-for="i in numberOfStars" :key="i"
+      <div v-for="i in starsCount" :key="i"
            class="cursor-pointer inline-block text-gray-200 dark:text-gray-800"
            :class="{'!text-yellow-400 active-star':i<=compVal, '!text-yellow-200 !dark:text-yellow-800 hover-star':i>compVal && i<=hoverRating, '!cursor-not-allowed':disabled}"
            role="button" @click="setRating(i)"
@@ -63,6 +63,15 @@ export default {
   updated () {
     if (!this.compVal) {
       this.compVal = 0
+    }
+  },
+
+  computed: {
+    starsCount() {
+      if (!this.numberOfStars || this.numberOfStars < 1) {
+        return 5
+      }
+      return this.numberOfStars
     }
   },
 
