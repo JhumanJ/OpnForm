@@ -13,7 +13,6 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
-        '@nuxt/image',
         ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
@@ -53,17 +52,6 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    nitro: {
-        awsAmplify: {
-            imageOptimization: {
-                cacheControl: "public, max-age=600, immutable" // 10 minutes
-            },
-            imageSettings: {
-                formats: ['image/webp'],
-                dangerouslyAllowSVG: true,
-            }
-        }
-    },
     sourcemap: true,
     vite: {
         plugins: [
