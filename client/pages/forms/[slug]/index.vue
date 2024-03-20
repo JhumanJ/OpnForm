@@ -50,7 +50,7 @@
 
 <script setup>
 import {computed} from 'vue'
-import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
+import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import sha256 from 'js-sha256'
 import {onBeforeRouteLeave} from 'vue-router'
 import {disableDarkMode, handleDarkMode, handleTransparentMode, focusOnFirstFormElement} from '~/lib/forms/public-page'
