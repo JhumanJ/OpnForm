@@ -14,6 +14,7 @@ export default defineNuxtConfig({
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
         '@nuxt/image',
+        'nuxt-icon',
         ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
