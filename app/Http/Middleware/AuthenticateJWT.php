@@ -32,6 +32,11 @@ class AuthenticateJWT
                 }
             }
 
+            // If it's impersonating, skip the rest
+            if ($payload->get('impersonating')) {
+                return $next($request);
+            }
+
             $error = null;
             if (! \Hash::check($request->ip(), $payload->get('ip'))) {
                 $error = 'Origin IP is invalid';
