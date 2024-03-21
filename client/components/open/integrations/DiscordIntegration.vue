@@ -10,10 +10,6 @@
     </text-input>
     <h4 class="font-bold mt-4">Discord message actions</h4>
     <form-notifications-message-actions v-model="integration.settings" />
-
-    <template #submit>
-      <v-button @click.prevent="save"> Save </v-button>
-    </template>
   </IntegrationWrapper>
 </template>
 
@@ -28,21 +24,5 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 });
 
-const alert = useAlert()
-const router = useRouter()
-const formIntegrationsStore = useFormIntegrationsStore()
 const integration = ref(props.integrationData)
-
-const save = () => {
-  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((props.formIntegrationId) ? '/' + props.formIntegrationId : ''), {
-    method: (props.formIntegrationId) ? 'PUT' : 'POST',
-    body: integration.value
-  }).then(data => {
-    alert.success(data.message)
-    formIntegrationsStore.save(data.form_integration)
-    router.push({ name: 'forms-slug-show-integrations' })
-  }).catch((error) => {
-    alert.error(error.data.message)
-  })
-}
 </script>

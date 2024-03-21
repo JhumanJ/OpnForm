@@ -1,14 +1,10 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="title">
-      <h3 class="font-semibold mt-4 text-xl">
-        Setup "{{ integration.name }}"
-        <pro-tag v-if="integration?.is_pro === true" />
-      </h3>
       <a class="cursor-pointer" @click.prevent="crisp.openHelpdesk()">Need help with this integration?</a>
     </slot>
 
-    <slot name="logic">
+    <slot name="status">
       <div class="my-4">
         <toggle-switch-input name="status" v-model="modelValue.status" class="mt-4" label="Status"
           help="Only run integration when a status is enabled" />
@@ -29,19 +25,6 @@
           :form="form" />
       </div>
     </slot>
-
-    <div class="flex">
-      <slot name="back">
-        <v-button class="mr-1" color="gray" :to="{ name: 'forms-slug-show-integrations' }">
-          <svg class="inline w-3 h-3" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-          Back
-        </v-button>
-      </slot>
-      <slot name="submit" class="flex-grow"></slot>
-    </div>
   </div>
 </template>
 
@@ -57,7 +40,5 @@ const props = defineProps({
 })
 
 const crisp = useCrisp()
-// const emit = defineEmits(['update:modelValue'])
-
-// const logic = props.modelValue.logic || ref({})
+const emit = defineEmits(['close'])
 </script>

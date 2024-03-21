@@ -10,10 +10,10 @@
       </div>
 
       <div v-if="integrationsLoading" class="my-6">
-        <Loader class="h-6 w-6 mx-auto"/>
+        <Loader class="h-6 w-6 mx-auto" />
       </div>
       <div v-else-if="formIntegrationsList.length" class="my-6">
-        <IntegrationCard v-for="(row) in formIntegrationsList" :key="row.id" :integration="row" :form="form"/>
+        <IntegrationCard v-for="(row) in formIntegrationsList" :key="row.id" :integration="row" :form="form" />
       </div>
       <div class="text-gray-500 border shadow rounded-md p-5 mt-4" v-else>
         No integration yet form this form.
@@ -29,32 +29,36 @@
         </h3>
         <div class="flex flex-wrap mt-2 gap-4">
           <div v-for="(sectionItem, sectionItemKey) in section" :key="sectionItemKey"
-               class="bg-gray-50 border border-gray-200 group rounded-md cursor-pointer hover:bg-white transition-colors relative p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col">
+            class="bg-gray-50 border border-gray-200 group rounded-md cursor-pointer hover:bg-white transition-colors relative p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col">
             <div class="flex justify-center">
               <div class="h-10 w-10 text-gray-500 group-hover:text-blue-500 transition-colors flex items-center">
-                <Icon :name="sectionItem.icon" size="40px"/>
+                <Icon :name="sectionItem.icon" size="40px" />
               </div>
             </div>
             <div class="flex-grow flex items-center">
               <div class="text-gray-400 font-medium text-sm text-center">
                 {{ sectionItem.name }}
               </div>
-              <pro-tag v-if="sectionItem?.is_pro === true"/>
+              <pro-tag v-if="sectionItem?.is_pro === true" />
             </div>
-            <NuxtLink v-track.new_integration_click="{ name: sectionItemKey }" class="absolute inset-0"
-                      :to="{ name: 'forms-slug-show-integrations-new', query: { 'integration': sectionItemKey } }"/>
+            <a v-track.new_integration_click="{ name: sectionItemKey }" href="#" class="absolute inset-0"
+              @click.prevent="openIntegrationModal(sectionItemKey)" />
           </div>
         </div>
       </div>
+      <IntegrationModal v-if="form && selectedIntegrationKey && selectedIntegration" :form="form"
+        :integration="selectedIntegration" :integrationKey="selectedIntegrationKey" :show="showIntegrationModal"
+        @close="closeIntegrationModal" />
     </div>
   </div>
 </template>
 
 <script setup>
-import {computed} from 'vue'
+import { computed } from 'vue'
+import IntegrationModal from '~/components/open/integrations/components/IntegrationModal.vue'
 
 const props = defineProps({
-  form: {type: Object, required: true}
+  form: { type: Object, required: true }
 })
 
 definePageMeta({
@@ -74,7 +78,22 @@ const integrations = computed(() => formIntegrationsStore.integrations)
 const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
 const formIntegrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
 
+let showIntegrationModal = ref(false)
+let selectedIntegrationKey = ref(null)
+let selectedIntegration = ref(null)
+
 onMounted(() => {
   formIntegrationsStore.fetchFormIntegrations(props.form.id)
 })
+
+const openIntegrationModal = (itemKey) => {
+  selectedIntegrationKey.value = itemKey
+  selectedIntegration.value = integrations.value.get(selectedIntegrationKey.value)
+  showIntegrationModal.value = true
+}
+const closeIntegrationModal = () => {
+  selectedIntegrationKey.value = null
+  selectedIntegration.value = null
+  showIntegrationModal.value = false
+}
 </script>

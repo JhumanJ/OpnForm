@@ -16,6 +16,7 @@
           <span class="bg-gray-500 h-[6px] w-[6px] rounded-full inline-block mr-1" />
           Paused
         </div>
+        <pro-tag v-if="integrationTypeInfo.is_pro === true" class="ml-2" />
       </div>
     </div>
 
@@ -38,8 +39,8 @@
           </svg>
         </v-button>
       </template>
-      <nuxt-link v-track.edit_form_integration_click="{ form_slug: form.slug, form_integration_id: integration.id }"
-        :to="{ name: 'forms-slug-show-integrations-id', params: { id: integration.id } }"
+      <a v-track.edit_form_integration_click="{ form_slug: form.slug, form_integration_id: integration.id }" href="#"
+        @click.prevent="showIntegrationModal = true"
         class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex items-center">
         <svg class="w-4 h-4 mr-2" width="18" height="17" viewBox="0 0 18 17" fill="none"
           xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +49,7 @@
             stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         Edit
-      </nuxt-link>
+      </a>
       <a v-track.delete_form_integration_click="{ form_integration_id: integration.id }" href="#"
         class="block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
         @click.prevent="deleteFormIntegration(integration.id)">
@@ -60,6 +61,9 @@
         Delete Integration
       </a>
     </dropdown>
+    <IntegrationModal v-if="form && integration && integrationTypeInfo" :form="form" :integration="integrationTypeInfo"
+      :integrationKey="integration.integration_id" :formIntegrationId="integration.id" :show="showIntegrationModal"
+      @close="showIntegrationModal = false" />
   </div>
 </template>
 
@@ -81,7 +85,10 @@ const alert = useAlert()
 const formIntegrationsStore = useFormIntegrationsStore()
 const integrations = computed(() => formIntegrationsStore.integrations)
 const integrationTypeInfo = computed(() => integrations.value.get(props.integration.integration_id))
+
+let showIntegrationModal = ref(false)
 let loadingDelete = ref(false)
+
 const deleteFormIntegration = (integrationid) => {
   alert.confirm('Do you really want to delete this form integration?', () => {
     opnFetch('/open/forms/{formid}/integration/{integrationid}'.replace('{formid}', props.form.id).replace('{integrationid}', integrationid), { method: 'DELETE' }).then((data) => {

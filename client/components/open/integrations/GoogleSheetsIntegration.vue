@@ -3,11 +3,6 @@
     <div class="my-5">
       Coming Soon...
     </div>
-    <template #submit>
-      <v-button @click.prevent="save">
-        Save
-      </v-button>
-    </template>
   </IntegrationWrapper>
 </template>
 
@@ -21,13 +16,5 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 });
 
-const alert = useAlert()
-const router = useRouter()
-const formIntegrationsStore = useFormIntegrationsStore()
 const integration = ref(props.integrationData)
-
-const save = () => {
-  console.log("Save clicked!")
-  alert.warning("Coming Soon...")
-}
 </script>

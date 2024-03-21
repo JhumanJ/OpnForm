@@ -20,10 +20,6 @@
         v-model="integration.settings.notifications_include_submission" class="mt-4" label="Include submission data"
         help="If enabled the confirmation email will contain form submission answers" />
     </div>
-
-    <template #submit v-if="emailSubmissionConfirmationField">
-      <v-button @click.prevent="save"> Save </v-button>
-    </template>
   </IntegrationWrapper>
 </template>
 
@@ -37,9 +33,6 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 });
 
-const alert = useAlert()
-const router = useRouter()
-const formIntegrationsStore = useFormIntegrationsStore()
 const integration = ref(props.integrationData)
 
 const emailSubmissionConfirmationField = computed(() => {
@@ -56,17 +49,4 @@ const emailSubmissionConfirmationHelp = computed(() => {
   }
   return 'Only available if your form contains 1 email field.'
 })
-
-const save = () => {
-  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((props.formIntegrationId) ? '/' + props.formIntegrationId : ''), {
-    method: (props.formIntegrationId) ? 'PUT' : 'POST',
-    body: integration.value
-  }).then(data => {
-    alert.success(data.message)
-    formIntegrationsStore.save(data.form_integration)
-    router.push({ name: 'forms-slug-show-integrations' })
-  }).catch((error) => {
-    alert.error(error.data.message)
-  })
-}
 </script>
