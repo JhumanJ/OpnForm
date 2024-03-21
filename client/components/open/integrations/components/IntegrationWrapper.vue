@@ -1,7 +1,7 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
     <slot name="title">
-      <a class="cursor-pointer" @click.prevent="crisp.openHelpdesk()">Need help with this integration?</a>
+      <a class="cursor-pointer" @click.prevent="openHelp">Need help with this integration?</a>
     </slot>
 
     <slot name="status">
@@ -41,4 +41,12 @@ const props = defineProps({
 
 const crisp = useCrisp()
 const emit = defineEmits(['close'])
+
+const openHelp = () => {
+  if (props.integration && props.integration?.crisp_help_page_slug) {
+    crisp.openHelpdeskArticle(props.integration?.crisp_help_page_slug)
+    return
+  }
+  crisp.openHelpdesk()
+}
 </script>

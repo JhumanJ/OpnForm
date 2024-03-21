@@ -4,7 +4,8 @@
     "icon": "heroicons:envelope-20-solid",
     "section_name": "Notifications",
     "file_name": "EmailIntegration",
-    "is_pro": false
+    "is_pro": false,
+    "crisp_help_page_slug": "can-i-receive-notifications-on-form-submissions-134svqv"
   },
   "submission_confirmation": {
     "name": "Send Submission Confirmation",
