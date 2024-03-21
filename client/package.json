@@ -14,6 +14,7 @@
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.9.1",
     "nuxt-gtag": "^1.1.2",
+    "nuxt-icon": "^0.6.10",
     "nuxt-simple-sitemap": "^4.2.3",
     "postcss": "^8.4.32",
     "sass": "^1.69.6",
