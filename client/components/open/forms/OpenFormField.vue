@@ -306,7 +306,7 @@ export default {
         let maxFileSize = (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
         if (field?.max_file_size > 0) {
           maxFileSize = Math.min(field.max_file_size, maxFileSize)
-        } 
+        }
         inputProperties.mbLimit = maxFileSize
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'number' && field.is_rating) {
