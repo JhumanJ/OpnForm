@@ -14,16 +14,23 @@
     <slot />
 
     <slot name="logic">
-      <div class="my-4">
-        <h5 class="font-semibold mt-3">
-          Logic
-        </h5>
-        <p class="text-gray-400 text-xs mb-3">
-          Only run integration when a condition is met
-        </p>
+      <collapse class="my-5 w-full border-b" v-model="showLogic">
+        <template #title>
+          <div class="flex items-center pr-8">
+            <div class="mr-1 mb-3" :class="{ 'text-blue-600': showLogic, 'text-gray-500': !showLogic }">
+              <Icon name="material-symbols:settings" size="30px" />
+            </div>
+            <h3 class="font-semibold flex-grow">
+              Logic
+              <p class="text-gray-400 text-xs mb-3">
+                Only run integration when a condition is met
+              </p>
+            </h3>
+          </div>
+        </template>
         <condition-editor ref="filter-editor" v-model="modelValue.logic" class="mt-1 border-t border rounded-md"
           :form="form" />
-      </div>
+      </collapse>
     </slot>
   </div>
 </template>
@@ -41,6 +48,7 @@ const props = defineProps({
 
 const crisp = useCrisp()
 const emit = defineEmits(['close'])
+let showLogic = ref(props.modelValue.logic ? true : false)
 
 const openHelp = () => {
   if (props.integration && props.integration?.crisp_help_page_slug) {
