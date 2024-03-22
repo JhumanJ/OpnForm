@@ -71,7 +71,7 @@ const openCompleteForm = ref(null)
 const passwordEntered = function (password) {
   const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
-    sameSite: false,
+    sameSite: 'none',
     secure: true
   })
   cookie.value = sha256(password)
