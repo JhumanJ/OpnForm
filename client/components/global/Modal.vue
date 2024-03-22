@@ -7,7 +7,7 @@
            @click.self="close"
       >
         <div ref="content"
-             class="self-start bg-white dark:bg-notion-dark w-full relative p-4 md:p-6 my-6 rounded-xl shadow-xl"
+             class="self-start bg-white dark:bg-notion-dark w-full relative my-6 rounded-xl shadow-xl"
              :class="maxWidthClass"
         >
           <div v-if="closeable" class="absolute top-4 right-4">
@@ -19,15 +19,15 @@
               </svg>
             </button>
           </div>
-          <div class="sm:flex sm:flex-col sm:items-start">
-            <div v-if="$slots.hasOwnProperty('icon')" class="flex w-full justify-center mb-4">
+          <div class="flex border-b pb-4 p-6" :class="{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader}">
+            <div v-if="$slots.hasOwnProperty('icon')" :class="{'w-full mb-4 flex justify-center':!compactHeader}">
               <div class="w-14 h-14 rounded-full flex justify-center items-center"
                    :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'"
               >
                 <slot name="icon"/>
               </div>
             </div>
-            <div class="mt-3 text-center sm:mt-0 w-full">
+            <div class="mt-3 text-center sm:mt-0" :class="{'w-full':!compactHeader}">
               <h2 v-if="$slots.hasOwnProperty('title')"
                   class="text-2xl font-semibold text-center text-gray-900"
               >
@@ -36,11 +36,11 @@
             </div>
           </div>
 
-          <div class="w-full">
+          <div class="w-full p-6">
             <slot/>
           </div>
 
-          <div v-if="$slots.hasOwnProperty('footer')" class="px-6 py-4 bg-gray-100 text-right">
+          <div v-if="$slots.hasOwnProperty('footer')" class="p-6 bg-gray-50 border-t rounded-b-xl text-right">
             <slot name="footer"/>
           </div>
         </div>
@@ -68,7 +68,11 @@ const props = defineProps({
   },
   closeable: {
     default: true
-  }
+  },
+  compactHeader: {
+    default: false,
+    type: Boolean
+  },
 })
 
 const emit = defineEmits(['close'])

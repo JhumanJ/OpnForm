@@ -1,7 +1,7 @@
 <template>
   <div class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center">
     <div class="flex-grow flex items-center">
-      <div class="mr-4" :class="{ 'text-blue-500': integration.status === 'active' }">
+      <div class="mr-4" :class="{ 'text-blue-500': integration.status === 'active', 'text-gray-400': integration.status !== 'active' }">
         <Icon :name="integrationTypeInfo.icon" size="32px" />
       </div>
       <div>

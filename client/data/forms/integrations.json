@@ -8,7 +8,7 @@
     "crisp_help_page_slug": "can-i-receive-notifications-on-form-submissions-134svqv"
   },
   "submission_confirmation": {
-    "name": "Send Submission Confirmation",
+    "name": "Submission Confirmation",
     "icon": "heroicons:paper-airplane-20-solid",
     "section_name": "Notifications",
     "file_name": "SubmissionConfirmationIntegration",
@@ -41,6 +41,6 @@
     "section_name": "Databases",
     "file_name": "GoogleSheetsIntegration",
     "is_pro": true,
-    "soon": true
+    "coming_soon": true
   }
 }

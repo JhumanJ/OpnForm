@@ -1,36 +1,43 @@
 <template>
   <div :class="wrapperClass" :style="inputStyle">
-    <slot name="title">
-      <a class="cursor-pointer" @click.prevent="openHelp">Need help with this integration?</a>
-    </slot>
+    <div class="flex justify-between">
+      <slot name="status">
+        <toggle-switch-input name="status" v-model="modelValue.status" label="Enabled"/>
+      </slot>
+      <slot name="help">
+        <v-button class="flex" color="white" size="small" @click="openHelp">
+          <Icon name="heroicons:question-mark-circle-16-solid" class="w-4 h-4 text-gray-500 -mt-[3px]"/>
+          <span class="text-gray-500">
+          Help
+            </span>
+        </v-button>
+      </slot>
+    </div>
 
-    <slot name="status">
-      <div class="my-4">
-        <toggle-switch-input name="status" v-model="modelValue.status" class="mt-4" label="Status"
-          help="Only run integration when a status is enabled" />
-      </div>
-    </slot>
-
-    <slot />
+    <slot/>
 
     <slot name="logic">
-      <collapse class="my-5 w-full border-b" v-model="showLogic">
-        <template #title>
-          <div class="flex items-center pr-8">
-            <div class="mr-1 mb-3" :class="{ 'text-blue-600': showLogic, 'text-gray-500': !showLogic }">
-              <Icon name="material-symbols:settings" size="30px" />
+      <div class="-mx-6 px-6 border-t pt-6">
+        <collapse class="w-full" v-model="showLogic">
+          <template #title>
+            <div class="flex gap-x-3 items-start pr-8">
+              <div :class="{ 'text-blue-600': showLogic, 'text-gray-300': !showLogic }">
+                <Icon name="material-symbols:settings" size="30px"/>
+              </div>
+              <div class="flex-grow">
+                <h3 class="font-semibold">
+                  Logic
+                </h3>
+                <p class="text-gray-400 text-xs">
+                  Only run integration when a condition is met
+                </p>
+              </div>
             </div>
-            <h3 class="font-semibold flex-grow">
-              Logic
-              <p class="text-gray-400 text-xs mb-3">
-                Only run integration when a condition is met
-              </p>
-            </h3>
-          </div>
-        </template>
-        <condition-editor ref="filter-editor" v-model="modelValue.logic" class="mt-1 border-t border rounded-md"
-          :form="form" />
-      </collapse>
+          </template>
+          <condition-editor ref="filter-editor" v-model="modelValue.logic" class="mt-4 border-t border rounded-md"
+                            :form="form"/>
+        </collapse>
+      </div>
     </slot>
   </div>
 </template>
@@ -39,11 +46,11 @@
 import ConditionEditor from '~/components/open/forms/components/form-logic-components/ConditionEditor.client.vue'
 
 const props = defineProps({
-  integration: { type: Object, required: true },
-  modelValue: { required: false },
-  wrapperClass: { type: String, required: false },
-  inputStyle: { type: Object, required: false },
-  form: { type: Object, required: false }
+  integration: {type: Object, required: true},
+  modelValue: {required: false},
+  wrapperClass: {type: String, required: false},
+  inputStyle: {type: Object, required: false},
+  form: {type: Object, required: false}
 })
 
 const crisp = useCrisp()

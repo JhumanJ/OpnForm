@@ -1,9 +1,9 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
-    <text-input name="notification_reply_to" v-model="integration.settings.notification_reply_to" class="mt-4"
-      label="Notification Reply To" :help="notifiesHelp" />
-    <text-area-input name="notification_emails" v-model="integration.settings.notification_emails" class="mt-4"
+    <text-area-input name="notification_emails" v-model="integration.settings.notification_emails"
       label="Notification Emails" help="Add one email per line" />
+    <text-input name="notification_reply_to" v-model="integration.settings.notification_reply_to"
+                label="Notification Reply To" :help="notifiesHelp" />
   </IntegrationWrapper>
 </template>
 

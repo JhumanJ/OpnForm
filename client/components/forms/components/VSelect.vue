@@ -1,22 +1,49 @@
 <template>
-  <div class="v-select relative" :class="[{'w-0': multiple, 'min-w-full':multiple}]" ref="select">
+  <div
+    ref="select"
+    class="v-select relative"
+    :class="[{ 'w-0': multiple, 'min-w-full': multiple }]"
+  >
     <span class="inline-block w-full rounded-md">
-      <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
-              class="cursor-pointer"
-              :style="inputStyle"
-              :class="[theme.SelectInput.input,{'py-2': !multiple || loading,'py-1': multiple, '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled}, inputClass]"
-              @click="toggleDropdown"
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded="true"
+        aria-labelledby="listbox-label"
+        class="cursor-pointer"
+        :style="inputStyle"
+        :class="[theme.SelectInput.input, { 'py-2': !multiple || loading, 'py-1': multiple, '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }, inputClass]"
+        @click="toggleDropdown"
       >
-        <div :class="{'h-6': !multiple, 'min-h-8': multiple && !loading}">
-          <transition name="fade" mode="out-in">
-            <Loader v-if="loading" key="loader" class="h-6 w-6 text-nt-blue mx-auto" />
-            <div v-else-if="modelValue" key="value" class="flex" :class="{'min-h-8': multiple}">
-              <slot name="selected" :option="modelValue" />
+        <div :class="{ 'h-6': !multiple, 'min-h-8': multiple && !loading }">
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <Loader
+              v-if="loading"
+              key="loader"
+              class="h-6 w-6 text-nt-blue mx-auto"
+            />
+            <div
+              v-else-if="modelValue"
+              key="value"
+              class="flex"
+              :class="{ 'min-h-8': multiple }"
+            >
+              <slot
+                name="selected"
+                :option="modelValue"
+              />
             </div>
-            <div v-else key="placeholder">
+            <div
+              v-else
+              key="placeholder"
+            >
               <slot name="placeholder">
-                <div class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
-                     :class="{'py-1': multiple && !loading}"
+                <div
+                  class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
+                  :class="{ 'py-1': multiple && !loading }"
                 >
                   {{ placeholder }}
                 </div>
@@ -25,44 +52,82 @@
           </transition>
         </div>
         <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-          <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <svg
+            class="h-5 w-5 text-gray-400"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M7 7l3-3 3 3m0 6l-3 3-3-3"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </span>
       </button>
     </span>
-    <collapsible v-model="isOpen" @click-away="onClickAway"
-                 class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10"
-                 :class="dropdownClass"
+    <collapsible
+      v-model="isOpen"
+      class="absolute mt-1 bg-white dark:bg-notion-dark-light shadow-xl z-10"
+      :class="dropdownClass"
+      @click-away="onClickAway"
     >
-      <ul tabindex="-1" role="listbox"
-          class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
-          :class="{'max-h-42 py-1': !isSearchable,'max-h-48 pb-1': isSearchable}"
+      <ul
+        tabindex="-1"
+        role="listbox"
+        class="text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
+        :class="{ 'max-h-42 py-1': !isSearchable, 'max-h-48 pb-1': isSearchable }"
       >
-        <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark-bg-notion-dark-light z-10">
-          <text-input v-model="searchTerm" name="search" :color="color" :theme="theme"
-                      placeholder="Search..."
+        <div
+          v-if="isSearchable"
+          class="px-2 pt-2 sticky top-0 bg-white dark:bg-notion-dark-light z-10"
+        >
+          <text-input
+            v-model="searchTerm"
+            name="search"
+            :color="color"
+            :theme="theme"
+            placeholder="Search..."
           />
         </div>
-        <div v-if="loading" class="w-full py-2 flex justify-center">
+        <div
+          v-if="loading"
+          class="w-full py-2 flex justify-center"
+        >
           <Loader class="h-6 w-6 text-nt-blue mx-auto" />
         </div>
         <template v-if="filteredOptions.length > 0">
-          <li v-for="item in filteredOptions" :key="item[optionKey]" role="option" :style="optionStyle"
-              :class="{'px-3 pr-9': multiple, 'px-3': !multiple}"
-              class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-              @click="select(item)"
+          <li
+            v-for="item in filteredOptions"
+            :key="item[optionKey]"
+            role="option"
+            :style="optionStyle"
+            :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
+            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
+            @click="select(item)"
           >
-            <slot name="option" :option="item" :selected="isSelected(item)" />
+            <slot
+              name="option"
+              :option="item"
+              :selected="isSelected(item)"
+            />
           </li>
         </template>
-        <p v-else-if="!loading && !(allowCreation && searchTerm)" class="w-full text-gray-500 text-center py-2">
+        <p
+          v-else-if="!loading && !(allowCreation && searchTerm)"
+          class="w-full text-gray-500 text-center py-2"
+        >
           {{ (allowCreation ? 'Type something to add an option' : 'No option available') }}.
         </p>
-        <li v-if="allowCreation && searchTerm" role="option" :style="optionStyle"
-            :class="{'px-3 pr-9': multiple, 'px-3': !multiple}"
-            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-            @click="createOption(searchTerm)"
+        <li
+          v-if="allowCreation && searchTerm"
+          role="option"
+          :style="optionStyle"
+          :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
+          class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white dark:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
+          @click="createOption(searchTerm)"
         >
           Create <b class="px-1 bg-gray-300 rounded group-hover-text-black">{{ searchTerm }}</b>
         </li>
@@ -84,7 +149,7 @@ export default {
   directives: {},
   props: {
     data: Array,
-    modelValue: { default: null },
+    modelValue: { default: null, type: [String, Number, Array, Object] },
     inputClass: { type: String, default: null },
     dropdownClass: { type: String, default: 'w-full' },
     loading: { type: Boolean, default: false },
@@ -103,6 +168,7 @@ export default {
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false }
   },
+  emits: ['update:modelValue', 'update-options'],
   data () {
     return {
       isOpen: false,
@@ -176,8 +242,9 @@ export default {
     toggleDropdown () {
       if (this.disabled) {
         this.isOpen = false
+      } else {
+        this.isOpen = !this.isOpen
       }
-      this.isOpen = !this.isOpen
       if (!this.isOpen) {
         this.searchTerm = ''
       }
@@ -219,10 +286,12 @@ export default {
       if (newOption) {
         const newItem = {
           name: newOption,
-          value: newOption
+          value: newOption,
+          id: newOption
         }
         this.$emit('update-options', newItem)
         this.select(newItem)
+        this.searchTerm = ''
       }
     }
   }

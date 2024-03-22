@@ -1,14 +1,10 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
-    <div class="mt-5">{{ emailSubmissionConfirmationHelp }}</div>
+    <div>{{ emailSubmissionConfirmationHelp }}</div>
 
     <div v-if="emailSubmissionConfirmationField">
       <text-input name="confirmation_reply_to" v-model="integration.settings.confirmation_reply_to" class="mt-4"
-        label="Confirmation Reply To" help="help">
-        <template #help>
-          If empty, Reply-to will be your own email.
-        </template>
-      </text-input>
+        label="Confirmation Reply To" help="If empty, Reply-to will be your own email."/>
       <text-input name="notification_sender" v-model="integration.settings.notification_sender" class="mt-4"
         label="Confirmation Email Sender Name"
         help="Emails will be sent from our email address but you can customize the name of the Sender" />

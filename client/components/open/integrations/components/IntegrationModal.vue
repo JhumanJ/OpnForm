@@ -1,38 +1,38 @@
 <template>
-  <modal :show="show" @close="emit('close')">
+  <modal :show="show" @close="emit('close')" compact-header>
     <template #icon>
-      <Icon :name="integration?.icon" size="40px" />
+      <Icon :name="integration?.icon" size="40px"/>
     </template>
     <template #title>
       {{ integration?.name }}
-      <pro-tag v-if="integration?.is_pro === true" />
+      <pro-tag v-if="integration?.is_pro === true"/>
     </template>
 
-    <div class="p-4">
-      <component v-if="integration && component" :is="component" :form="form" :integration="integration"
-        :integrationData="integrationData" />
-    </div>
+    <component v-if="integration && component" :is="component" :form="form" :integration="integration"
+               :integrationData="integrationData"/>
 
-    <div class="flex justify-end mt-4 pb-5 px-6">
-      <v-button class="mr-2" @click.prevent="save">
-        Save
-      </v-button>
-      <v-button color="white" @click.prevent="emit('close')">
-        Close
-      </v-button>
-    </div>
+    <template #footer>
+      <div class="flex justify-center gap-x-2">
+        <v-button class="px-8" @click.prevent="save">
+          Save
+        </v-button>
+        <v-button color="white" @click.prevent="emit('close')">
+          Close
+        </v-button>
+      </div>
+    </template>
   </modal>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import {computed} from 'vue'
 
 const props = defineProps({
-  show: { type: Boolean, required: true },
-  form: { type: Object, required: true },
-  integrationKey: { type: String, required: true },
-  integration: { type: Object, required: true },
-  formIntegrationId: { type: Number, required: false, default: null }
+  show: {type: Boolean, required: true},
+  form: {type: Object, required: true},
+  integrationKey: {type: String, required: true},
+  integration: {type: Object, required: true},
+  formIntegrationId: {type: Number, required: false, default: null}
 })
 
 const alert = useAlert()
