@@ -453,7 +453,7 @@ export default {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
     mbLimit() {
-      return this.form?.max_file_size ?? this.currentWorkspace?.max_file_size
+      return (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
     },
     prefillSelectsOptions () {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
