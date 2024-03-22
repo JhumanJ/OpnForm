@@ -272,7 +272,11 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
-        inputProperties.mbLimit = Math.min(Math.max(field.max_file_size, 1), this.form?.max_file_size ?? this.currentWorkspace?.max_file_size)
+        let maxFileSize = (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
+        if (field?.max_file_size > 0) {
+          maxFileSize = Math.min(field.max_file_size, maxFileSize)
+        }
+        inputProperties.mbLimit = maxFileSize
         inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
       } else if (field.type === 'rating') {
         inputProperties.numberOfStars = parseInt(field.rating_max_value) ?? 5
