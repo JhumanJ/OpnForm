@@ -13,7 +13,6 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
-        '@nuxt/image',
         'nuxt-icon',
         ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
@@ -59,29 +58,6 @@ export default defineNuxtConfig({
         },
         '~/components',
     ],
-    nitro: {
-        awsAmplify: {
-            imageOptimization: {
-                cacheControl: "public, max-age=600, immutable" // 10 minutes
-            },
-            imageSettings: {
-                formats: ['image/webp'],
-                dangerouslyAllowSVG: true,
-            }
-        }
-    },
-    image: runtimeConfig.public.useDummyImageProvider ? {
-        provider: 'dummy',
-        providers: {
-            dummy: {
-                provider: '~/lib/images/dummy-image-provider.js',
-            }
-        }
-    } : {
-        quality: 95,
-        format: 'webp',
-        domains: ['images.unsplash.com']
-    },
     sourcemap: true,
     vite: {
         plugins: [

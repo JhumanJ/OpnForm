@@ -59,6 +59,9 @@
         <pro-tag class="ml-1" />
       </template>
     </toggle-switch-input>
+    <toggle-switch-input name="show_progress_bar" :form="form" class="mt-4"
+                         label="Show progress bar"
+    />
     <toggle-switch-input name="uppercase_labels" :form="form" class="mt-4"
                          label="Uppercase Input Labels"
     />

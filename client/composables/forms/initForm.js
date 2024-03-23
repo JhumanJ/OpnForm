@@ -37,8 +37,6 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     notification_body: 'Hello there 👋 <br>This is a confirmation that your submission was successfully saved.',
     notifications_include_submission: true,
     use_captcha: false,
-    is_rating: false,
-    rating_max_value: 5,
     max_submissions_count: null,
     max_submissions_reached_text: 'This form has now reached the maximum number of allowed submissions and is now closed.',
     editable_submissions_button_text: 'Edit submission',

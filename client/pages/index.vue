@@ -88,7 +88,7 @@
           <div
             class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
-            <NuxtImg src="/img/pages/welcome/product-cover.jpg"
+            <img src="/img/pages/welcome/product-cover.jpg"
                      sizes="320px sm:650px lg:896px"
                  alt="Product screenshot" loading="lazy" class="rounded-md w-full shadow-2xl ring-1 ring-gray-900/10"
             />

@@ -1,8 +1,11 @@
+<template></template>
 <script setup>
 import {onMounted} from "vue";
 
 const scriptLoaded = ref(false);
-const user = computed(() => useAuthStore().user);
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
+const isImpersonating = computed(() => authStore.isImpersonating)
 const featureBaseOrganization = useRuntimeConfig().public.featureBaseOrganization;
 
 const loadScript = () => {
@@ -15,7 +18,7 @@ const loadScript = () => {
 };
 
 const setupForUser = () => {
-  if (process.server || !user.value || !featureBaseOrganization) return
+  if (process.server || !user.value || !featureBaseOrganization ||isImpersonating.value) return
   window.Featurebase(
     "identify",
     {
@@ -68,4 +71,9 @@ watch(user, (val) => {
 });
 
 </script>
-<template></template>
+
+<style>
+.fb-feedback-widget-feedback-button {
+  z-index: 20 !important;
+}
+</style>

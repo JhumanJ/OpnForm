@@ -50,7 +50,7 @@
 
 <script setup>
 import {computed} from 'vue'
-import OpenCompleteForm from '../../components/open/forms/OpenCompleteForm.vue'
+import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import sha256 from 'js-sha256'
 import {onBeforeRouteLeave} from 'vue-router'
 import {disableDarkMode, handleDarkMode, handleTransparentMode, focusOnFirstFormElement} from '~/lib/forms/public-page'
@@ -71,7 +71,7 @@ const openCompleteForm = ref(null)
 const passwordEntered = function (password) {
   const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
-    sameSite: false,
+    sameSite: 'none',
     secure: true
   })
   cookie.value = sha256(password)

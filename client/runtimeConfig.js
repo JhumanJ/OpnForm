@@ -12,7 +12,6 @@ export default {
     s3Enabled: process.env.NUXT_PUBLIC_S3_ENABLED || false,
     paidPlansEnabled: process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED || false,
     customDomainsEnabled: process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED || false,
-    useDummyImageProvider: process.env.NUXT_PUBLIC_IMAGE_OPTIMIZATION_DISABLED || false,
     featureBaseOrganization: process.env.NUXT_PUBLIC_FEATURE_BASE_ORGANISATION || null,
 
     // Config within public will be also exposed to the client

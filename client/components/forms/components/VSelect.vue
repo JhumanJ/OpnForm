@@ -43,8 +43,7 @@
               <slot name="placeholder">
                 <div
                   class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
-                  :class="{ 'py-1': multiple && !loading }"
-                >
+                  :class="{ 'py-1': multiple && !loading }">
                   {{ placeholder }}
                 </div>
               </slot>
@@ -68,29 +67,13 @@
         </span>
       </button>
     </span>
-    <collapsible
-      v-model="isOpen"
-      class="absolute mt-1 bg-white dark:bg-notion-dark-light shadow-xl z-10"
-      :class="dropdownClass"
-      @click-away="onClickAway"
-    >
-      <ul
-        tabindex="-1"
-        role="listbox"
-        class="text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
-        :class="{ 'max-h-42 py-1': !isSearchable, 'max-h-48 pb-1': isSearchable }"
-      >
-        <div
-          v-if="isSearchable"
-          class="px-2 pt-2 sticky top-0 bg-white dark:bg-notion-dark-light z-10"
-        >
-          <text-input
-            v-model="searchTerm"
-            name="search"
-            :color="color"
-            :theme="theme"
-            placeholder="Search..."
-          />
+    <collapsible v-model="isOpen" @click-away="onClickAway"
+      class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10" :class="dropdownClass">
+      <ul tabindex="-1" role="listbox"
+        class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
+        :class="{ 'max-h-42 py-1': !isSearchable, 'max-h-48 pb-1': isSearchable }">
+        <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark-bg-notion-dark-light z-10">
+          <text-input v-model="searchTerm" name="search" :color="color" :theme="theme" placeholder="Search..." />
         </div>
         <div
           v-if="loading"
@@ -106,8 +89,7 @@
             :style="optionStyle"
             :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
             class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-            @click="select(item)"
-          >
+            @click="select(item)">
             <slot
               name="option"
               :option="item"
@@ -127,8 +109,7 @@
           :style="optionStyle"
           :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
           class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white dark:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-          @click="createOption(searchTerm)"
-        >
+          @click="createOption(searchTerm)">
           Create <b class="px-1 bg-gray-300 rounded group-hover-text-black">{{ searchTerm }}</b>
         </li>
       </ul>
@@ -169,7 +150,7 @@ export default {
     disabled: { type: Boolean, default: false }
   },
   emits: ['update:modelValue', 'update-options'],
-  data () {
+  data() {
     return {
       isOpen: false,
       searchTerm: '',
@@ -177,23 +158,23 @@ export default {
     }
   },
   computed: {
-    optionStyle () {
+    optionStyle() {
       return {
         '--bg-form-color': this.color
       }
     },
-    inputStyle () {
+    inputStyle() {
       return {
         '--tw-ring-color': this.color
       }
     },
-    debouncedRemote () {
+    debouncedRemote() {
       if (this.remote) {
         return debounce(this.remote, 300)
       }
       return null
     },
-    filteredOptions () {
+    filteredOptions() {
       if (!this.data) return []
       if (!this.searchable || this.remote || this.searchTerm === '') {
         return this.data
@@ -208,12 +189,12 @@ export default {
         return res.item
       })
     },
-    isSearchable () {
+    isSearchable() {
       return this.searchable || this.remote !== null || this.allowCreation
     }
   },
   watch: {
-    searchTerm (val) {
+    searchTerm(val) {
       if (!this.debouncedRemote) return
       if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
         return this.debouncedRemote(val)
@@ -221,13 +202,13 @@ export default {
     }
   },
   methods: {
-    onClickAway (event) {
+    onClickAway(event) {
       // Check that event target isn't children of dropdown
       if (this.$refs.select && !this.$refs.select.contains(event.target)) {
         this.isOpen = false
       }
     },
-    isSelected (value) {
+    isSelected(value) {
       if (!this.modelValue) return false
 
       if (this.emitKey && value[this.emitKey]) {
@@ -239,7 +220,7 @@ export default {
       }
       return this.modelValue === value
     },
-    toggleDropdown () {
+    toggleDropdown() {
       if (this.disabled) {
         this.isOpen = false
       } else {
@@ -249,7 +230,7 @@ export default {
         this.searchTerm = ''
       }
     },
-    select (value) {
+    select(value) {
       if (!this.multiple) {
         // Close after select
         this.toggleDropdown()
@@ -282,7 +263,7 @@ export default {
         }
       }
     },
-    createOption (newOption) {
+    createOption(newOption) {
       if (newOption) {
         const newItem = {
           name: newOption,
