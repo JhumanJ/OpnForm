@@ -21,7 +21,7 @@
         <collapse class="w-full" v-model="showLogic">
           <template #title>
             <div class="flex gap-x-3 items-start pr-8">
-              <div :class="{ 'text-blue-600': showLogic, 'text-gray-300': !showLogic }">
+              <div class="transition-colors" :class="{ 'text-blue-600': showLogic, 'text-gray-300': !showLogic }">
                 <Icon name="material-symbols:settings" size="30px"/>
               </div>
               <div class="flex-grow">

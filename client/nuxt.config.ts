@@ -1,11 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import runtimeConfig from "./runtimeConfig";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import {sentryVitePlugin} from "@sentry/vite-plugin";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: { enabled: true },
+    devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
@@ -13,11 +13,11 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
-        'nuxt-icon',
+        '@nuxt/ui',
         ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
-        transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
+        transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
     },
     postcss: {
         plugins: {

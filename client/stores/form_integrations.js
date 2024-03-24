@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { useContentStore } from "~/composables/stores/useContentStore.js";
+import {defineStore} from 'pinia'
+import {useContentStore} from "~/composables/stores/useContentStore.js";
 import integrationsList from '~/data/forms/integrations.json'
 
 export const formIntegrationsEndpoint = '/open/forms/{formid}/integrations'
@@ -9,15 +9,24 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
   const contentStore = useContentStore()
   const integrations = ref(new Map)
 
-  const initIntegrations = () => {
-    if (integrations.value.size === 0) {
-      integrations.value = new Map(Object.entries(integrationsList))
+  const availableIntegrations = computed(() => {
+    const user = useAuthStore().user.value
+    if (!user) return integrations.value
+
+    const enrichedIntegrations = new Map()
+    for (const [key, integration] of integrations.value.entries()) {
+      enrichedIntegrations.set(key, {
+        ...integration,
+        requires_subscription: !user.is_subscribed && integration.is_pro
+      })
     }
-  }
+
+    return enrichedIntegrations
+  })
 
   const integrationsBySection = computed(() => {
     const groupedObject = {};
-    for (const [key, integration] of integrations.value) {
+    for (const [key, integration] of availableIntegrations.value.entries()) {
       const sectionName = integration.section_name;
       if (!groupedObject[sectionName]) {
         groupedObject[sectionName] = {};
@@ -42,11 +51,16 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
     })
   }
 
+  const initIntegrations = () => {
+    if (integrations.value.size === 0) {
+      integrations.value = new Map(Object.entries(integrationsList))
+    }
+  }
+
   initIntegrations()
 
   return {
     ...contentStore,
-    integrations,
     initIntegrations,
     integrationsBySection,
     fetchFormIntegrations,

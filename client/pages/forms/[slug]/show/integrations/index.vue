@@ -32,7 +32,7 @@
                :key="sectionItemKey" role="button" @click="openIntegrationModal(sectionItemKey)"
                v-track.new_integration_click="{ name: sectionItemKey }"
                :class="{'hover:bg-white group': !sectionItem.coming_soon, 'cursor-not-allowed': sectionItem.coming_soon}"
-               class="bg-gray-50 border border-gray-200 rounded-md cursor-pointer transition-colors relative p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col">
+               class="bg-gray-50 border border-gray-200 rounded-md cursor-pointer transition-colors relative p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative">
             <div class="flex justify-center">
               <div class="h-10 w-10 text-gray-500 group-hover:text-blue-500 transition-colors flex items-center">
                 <Icon :name="sectionItem.icon" size="40px"/>
@@ -42,8 +42,8 @@
               <div class="text-gray-400 font-medium text-sm text-center">
                 {{ sectionItem.name }}<span v-if="sectionItem.coming_soon"> (coming soon)</span>
               </div>
-              <pro-tag v-if="sectionItem?.is_pro === true"/>
             </div>
+            <pro-tag v-if="sectionItem?.is_pro === true" class="absolute top-0 right-1"/>
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ const route = useRoute()
 
 const formIntegrationsStore = useFormIntegrationsStore()
 const integrationsLoading = computed(() => formIntegrationsStore.loading)
-const integrations = computed(() => formIntegrationsStore.integrations)
+const integrations = computed(() => formIntegrationsStore.availableIntegrations)
 const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
 const formIntegrationsList = computed(() => formIntegrationsStore.getAllByFormId(props.form.id))
 
@@ -91,7 +91,6 @@ onMounted(() => {
 const openIntegrationModal = (itemKey) => {
   if (!itemKey || !integrations.value.has(itemKey)) return alert.error('Integration not found')
   if (integrations.value.get(itemKey).coming_soon) return alert.warning('This integration is not available yet')
-  console.log(integrations.value.get(selectedIntegrationKey.value))
   selectedIntegrationKey.value = itemKey
   selectedIntegration.value = integrations.value.get(selectedIntegrationKey.value)
   showIntegrationModal.value = true

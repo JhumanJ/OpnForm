@@ -83,7 +83,7 @@ const props = defineProps({
 
 const alert = useAlert()
 const formIntegrationsStore = useFormIntegrationsStore()
-const integrations = computed(() => formIntegrationsStore.integrations)
+const integrations = computed(() => formIntegrationsStore.availableIntegrations)
 const integrationTypeInfo = computed(() => integrations.value.get(props.integration.integration_id))
 
 let showIntegrationModal = ref(false)

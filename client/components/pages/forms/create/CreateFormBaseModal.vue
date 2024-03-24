@@ -89,6 +89,7 @@
 
 <script>
 export default {
+  emits: ['close', 'form-generated'],
   props: {
     show: { type: Boolean, required: true }
   },
