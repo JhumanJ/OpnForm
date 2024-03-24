@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "1.0.8",
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.9.1",
     "nuxt-gtag": "^1.1.2",

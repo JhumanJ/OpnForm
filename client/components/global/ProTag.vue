@@ -1,6 +1,6 @@
 <template>
   <div class="inline" v-if="shouldDisplayProTag">
-    <UTooltip text="Click to subscribe and use this feature">
+    <UTooltip text="Upgrade to use this feature">
       <div role="button" class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold cursor-pointer"
            @click="showPremiumModal=true">
         PRO
