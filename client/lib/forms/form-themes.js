@@ -39,6 +39,7 @@ export const themes = {
     },
     fileInput: {
       input: 'min-h-40 border border-dashed border-gray-300 p-4 rounded-lg',
+      cameraInput: 'min-h-40 rounded-lg',
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'
@@ -83,6 +84,7 @@ export const themes = {
     },
     fileInput: {
       input: 'min-h-40 border border-dashed border-gray-300 p-4',
+      cameraInput: 'min-h-40',
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'
@@ -127,6 +129,7 @@ export const themes = {
     },
     fileInput: {
       input: 'min-h-40 border border-dashed border-gray-300 p-4 rounded bg-notion-input-background',
+      cameraInput: 'min-h-40 rounded',
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'

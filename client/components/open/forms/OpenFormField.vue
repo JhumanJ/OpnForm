@@ -272,6 +272,7 @@ export default {
         }
       } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
         inputProperties.multiple = (field.multiple !== undefined && field.multiple)
+        inputProperties.cameraUpload = (field.camera_upload !== undefined && field.camera_upload)
         let maxFileSize = (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
         if (field?.max_file_size > 0) {
           maxFileSize = Math.min(field.max_file_size, maxFileSize)
