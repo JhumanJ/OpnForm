@@ -36,7 +36,7 @@
     </h5>
     <select-input :key="resetKey" v-model="logic.actions" name="actions"
                   :multiple="true" class="mt-1" placeholder="Actions..."
-                  help="Action(s) triggerred when above conditions are true"
+                  help="Action(s) triggered when above conditions are true"
                   :options="actionOptions"
                   @update:model-value="onActionInput"
     />

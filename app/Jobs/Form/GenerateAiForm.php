@@ -53,22 +53,12 @@ class GenerateAiForm implements ShouldQueue
 
             $this->completion->update([
                 'status' => AiFormCompletion::STATUS_COMPLETED,
-                'result' => $this->cleanOutput($completer->getArray()),
+                'result' => GenerateTemplate::cleanAiOutput($completer->getArray())
             ]);
         } catch (\Exception $e) {
             $this->onError($e);
         }
 
-    }
-
-    private function cleanOutput($formData)
-    {
-        // Add property uuids
-        foreach ($formData['properties'] as &$property) {
-            $property['id'] = Str::uuid()->toString();
-        }
-
-        return $formData;
     }
 
     /**

@@ -72,6 +72,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'editable_submissions' => 'boolean|nullable',
             'editable_submissions_button_text' => 'string|min:1|max:50',
             'confetti_on_submission' => 'boolean',
+            'show_progress_bar' => 'boolean',
             'auto_save' => 'boolean',
 
             // Properties
@@ -117,6 +118,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Advanced Options
             'properties.*.generates_uuid' => 'boolean|nullable',
             'properties.*.generates_auto_increment_id' => 'boolean|nullable',
+
+            // For file (min and max)
+            'properties.*.max_file_size' => 'min:1|numeric',
 
             // Security & Privacy
             'can_be_indexed' => 'boolean',

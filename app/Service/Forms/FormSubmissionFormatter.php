@@ -140,7 +140,7 @@ class FormSubmissionFormatter
                 $returnArray[$field['name']] = '<a href="mailto:'.$data[$field['id']].'">'.$data[$field['id']].'</a>';
             } elseif ($field['type'] == 'multi_select') {
                 $val = $data[$field['id']];
-                if ($this->outputStringsOnly) {
+                if ($this->outputStringsOnly && is_array($val)) {
                     $returnArray[$field['name']] = implode(', ', $val);
                 } else {
                     $returnArray[$field['name']] = $val;
@@ -164,7 +164,7 @@ class FormSubmissionFormatter
                     });
                 }
             } else {
-                if (is_array($data[$field['id']])) {
+                if (is_array($data[$field['id']]) && $this->outputStringsOnly) {
                     $data[$field['id']] = implode(', ', $data[$field['id']]);
                 }
                 $returnArray[$field['name']] = $data[$field['id']];

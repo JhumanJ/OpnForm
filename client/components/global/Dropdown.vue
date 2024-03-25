@@ -46,4 +46,10 @@ const onClickAway = (event) => {
     close(event)
   }
 }
+
+defineExpose({
+  open,
+  close,
+  toggle
+})
 </script>

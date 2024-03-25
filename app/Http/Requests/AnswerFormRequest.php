@@ -27,6 +27,12 @@ class AnswerFormRequest extends FormRequest
         $this->maxFileSize = $this->form->workspace->max_file_size;
     }
 
+    private function getFieldMaxFileSize($fieldProps)
+    {
+        return array_key_exists('max_file_size', $fieldProps) ?
+            min($fieldProps['max_file_size'] * 1000000, $this->maxFileSize) : $this->maxFileSize;
+    }
+
     /**
      * Validate form before use it
      *
@@ -34,7 +40,7 @@ class AnswerFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return ! $this->form->is_closed && ! $this->form->max_number_of_submissions_reached && $this->form->visibility === 'public';
+        return !$this->form->is_closed && !$this->form->max_number_of_submissions_reached && $this->form->visibility === 'public';
     }
 
     /**
@@ -73,7 +79,7 @@ class AnswerFormRequest extends FormRequest
                 if ($property['type'] == 'checkbox') {
                     // Required for checkboxes means true
                     $rules[] = 'accepted';
-                } elseif ($property['type'] == 'number' && isset($property['is_rating']) && $property['is_rating']) {
+                } elseif ($property['type'] == 'rating') {
                     // For star rating, needs a minimum of 1 star
                     $rules[] = 'min:1';
                 }
@@ -85,7 +91,7 @@ class AnswerFormRequest extends FormRequest
             $propertyId = $property['id'];
             if (in_array($property['type'], ['multi_select'])) {
                 $rules[] = 'array';
-                $this->requestRules[$propertyId.'.*'] = $this->getPropertyRules($property);
+                $this->requestRules[$propertyId . '.*'] = $this->getPropertyRules($property);
             } else {
                 $rules = array_merge($rules, $this->getPropertyRules($property));
             }
@@ -131,12 +137,12 @@ class AnswerFormRequest extends FormRequest
         $messages = [];
         foreach ($this->form->properties as $property) {
             if ($property['type'] == 'date' && isset($property['date_range']) && $property['date_range']) {
-                $messages[$property['id'].'.0.required_with'] = 'From date is required';
-                $messages[$property['id'].'.1.required_with'] = 'To date is required';
-                $messages[$property['id'].'.0.before_or_equal'] = 'From date must be before or equal To date';
+                $messages[$property['id'] . '.0.required_with'] = 'From date is required';
+                $messages[$property['id'] . '.1.required_with'] = 'To date is required';
+                $messages[$property['id'] . '.0.before_or_equal'] = 'From date must be before or equal To date';
             }
-            if ($property['type'] == 'number' && isset($property['is_rating']) && $property['is_rating']) {
-                $messages[$property['id'].'.min'] = 'A rating must be selected';
+            if ($property['type'] == 'rating') {
+                $messages[$property['id'] . '.min'] = 'A rating must be selected';
             }
         }
 
@@ -153,10 +159,9 @@ class AnswerFormRequest extends FormRequest
             case 'signature':
                 return ['string'];
             case 'number':
-                if ($property['is_rating'] ?? false) {
-                    return ['numeric'];
-                }
-
+            case 'rating':
+            case 'scale':
+            case 'slider':
                 return ['numeric'];
             case 'select':
             case 'multi_select':
@@ -169,7 +174,7 @@ class AnswerFormRequest extends FormRequest
                 return ['boolean'];
             case 'url':
                 if (isset($property['file_upload']) && $property['file_upload']) {
-                    $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, [], $this->form)];
+                    $this->requestRules[$property['id'] . '.*'] = [new StorageFile($this->maxFileSize, [], $this->form)];
 
                     return ['array'];
                 }
@@ -177,19 +182,19 @@ class AnswerFormRequest extends FormRequest
                 return [new ValidUrl()];
             case 'files':
                 $allowedFileTypes = [];
-                if (! empty($property['allowed_file_types'])) {
+                if (!empty($property['allowed_file_types'])) {
                     $allowedFileTypes = explode(',', $property['allowed_file_types']);
                 }
-                $this->requestRules[$property['id'].'.*'] = [new StorageFile($this->maxFileSize, $allowedFileTypes, $this->form)];
+                $this->requestRules[$property['id'] . '.*'] = [new StorageFile($this->getFieldMaxFileSize($property), $allowedFileTypes, $this->form)];
 
                 return ['array'];
             case 'email':
                 return ['email:filter'];
             case 'date':
                 if (isset($property['date_range']) && $property['date_range']) {
-                    $this->requestRules[$property['id'].'.*'] = $this->getRulesForDate($property);
-                    $this->requestRules[$property['id'].'.0'] = ['required_with:'.$property['id'].'.1', 'before_or_equal:'.$property['id'].'.1'];
-                    $this->requestRules[$property['id'].'.1'] = ['required_with:'.$property['id'].'.0'];
+                    $this->requestRules[$property['id'] . '.*'] = $this->getRulesForDate($property);
+                    $this->requestRules[$property['id'] . '.0'] = ['required_with:' . $property['id'] . '.1', 'before_or_equal:' . $property['id'] . '.1'];
+                    $this->requestRules[$property['id'] . '.1'] = ['required_with:' . $property['id'] . '.0'];
 
                     return ['array', 'min:2'];
                 }
@@ -220,7 +225,7 @@ class AnswerFormRequest extends FormRequest
     private function getSelectPropertyOptions($property): array
     {
         $type = $property['type'];
-        if (! isset($property[$type])) {
+        if (!isset($property[$type])) {
             return [];
         }
 
@@ -236,7 +241,7 @@ class AnswerFormRequest extends FormRequest
             $receivedValue = $receivedData[$property['id']] ?? null;
 
             // Escape all '\' in select options
-            if (in_array($property['type'], ['select', 'multi_select']) && ! is_null($receivedValue)) {
+            if (in_array($property['type'], ['select', 'multi_select']) && !is_null($receivedValue)) {
                 if (is_array($receivedValue)) {
                     $mergeData[$property['id']] = collect($receivedValue)->map(function ($value) {
                         $value = Str::of($value);
@@ -255,7 +260,7 @@ class AnswerFormRequest extends FormRequest
                 }
             }
 
-            if ($property['type'] === 'phone_number' && (! isset($property['use_simple_text_input']) || ! $property['use_simple_text_input']) && $receivedValue && in_array($receivedValue, $countryCodeMapper)) {
+            if ($property['type'] === 'phone_number' && (!isset($property['use_simple_text_input']) || !$property['use_simple_text_input']) && $receivedValue && in_array($receivedValue, $countryCodeMapper)) {
                 $mergeData[$property['id']] = null;
             }
         });

@@ -1,19 +1,14 @@
-
 <template>
   <div v-if="content" class="flex flex-wrap">
     <div class="w-full font-semibold text-gray-700 dark:text-gray-300 mb-2">
       {{ property.name }}
     </div>
-    <SelectInput v-model="content.operator" class="w-full" :options="operators"
-                 :name="'operator_'+property.id" placeholder="Comparison operator"
-                 @update:model-value="operatorChanged()"
-    />
+    <SelectInput v-model="content.operator" class="w-full" :options="operators" :name="'operator_' + property.id"
+      placeholder="Comparison operator" @update:model-value="operatorChanged()" />
 
     <template v-if="needsInput">
       <component v-bind="inputComponentData" :is="inputComponentData.component" v-model="content.value" class="w-full"
-                 :name="'value_'+property.id" placeholder="Filter Value"
-                 @update:model-value="emitInput()"
-      />
+        :name="'value_' + property.id" placeholder="Filter Value" @update:model-value="emitInput()" />
     </template>
   </div>
 </template>
@@ -22,12 +17,12 @@
 import OpenFilters from '../../../../../data/open_filters.json'
 
 export default {
-  components: { },
+  components: {},
   props: {
     modelValue: { required: true }
   },
 
-  data () {
+  data() {
     return {
       content: { ...this.modelValue },
       available_filters: OpenFilters,
@@ -35,6 +30,9 @@ export default {
       inputComponent: {
         text: 'TextInput',
         number: 'TextInput',
+        rating: 'TextInput',
+        scale: 'TextInput',
+        slider: 'TextInput',
         select: 'SelectInput',
         multi_select: 'SelectInput',
         date: 'DateInput',
@@ -49,7 +47,7 @@ export default {
 
   computed: {
     // Return type of input, and props for that input
-    inputComponentData () {
+    inputComponentData() {
       const componentData = {
         component: this.inputComponent[this.property.type],
         name: this.property.id,
@@ -76,7 +74,7 @@ export default {
 
       return componentData
     },
-    operators () {
+    operators() {
       return Object.keys(this.available_filters[this.property.type].comparators).map(key => {
         return {
           value: key,
@@ -84,7 +82,7 @@ export default {
         }
       })
     },
-    needsInput () {
+    needsInput() {
       const operator = this.selectedOperator()
       if (!operator) {
         return false
@@ -114,8 +112,8 @@ export default {
   },
 
   methods: {
-    castContent (content) {
-      if (this.property.type === 'number' && content.value) {
+    castContent(content) {
+      if (['number', 'rating', 'scale', 'slider'].includes(this.property.type) && content.value) {
         content.value = Number(content.value)
       }
 
@@ -126,7 +124,7 @@ export default {
 
       return content
     },
-    operatorChanged () {
+    operatorChanged() {
       if (!this.content.operator) {
         return
       }
@@ -143,13 +141,13 @@ export default {
       }
       this.emitInput()
     },
-    selectedOperator () {
+    selectedOperator() {
       if (!this.content.operator) {
         return null
       }
       return this.available_filters[this.property.type].comparators[this.content.operator]
     },
-    optionFilterNames (key, propertyType) {
+    optionFilterNames(key, propertyType) {
       if (propertyType === 'checkbox') {
         return {
           equals: 'Is checked',
@@ -160,7 +158,7 @@ export default {
         return item.charAt(0).toUpperCase() + item.substring(1)
       }).join(' ')
     },
-    emitInput () {
+    emitInput() {
       this.$emit('update:modelValue', this.castContent(this.content))
     },
     refreshContent() {

@@ -1,7 +1,5 @@
 <template>
-  <input-wrapper
-    v-bind="inputWrapperProps"
-  >
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
@@ -29,32 +27,18 @@
       </div>
       <template v-else>
         <div class="text-center">
-          <input
-            ref="actual-input"
-            class="hidden"
-            :multiple="multiple"
-            type="file"
-            :name="name"
-            :accept="acceptExtensions"
-            @change="manualFileUpload"
-          >
+          <input ref="actual-input" class="hidden" :multiple="multiple" type="file" :name="name"
+            :accept="acceptExtensions" @change="manualFileUpload">
           <div v-if="files.length" class="flex flex-wrap items-center justify-center gap-4">
-            <uploaded-file
-              v-for="file in files"
-              :key="file.url"
-              :file="file"
-              :theme="theme"
-              @remove="clearFile(file)"
-            />
+            <uploaded-file v-for="file in files" :key="file.url" :file="file" :theme="theme"
+              @remove="clearFile(file)" />
           </div>
           <template v-else>
             <div class="text-gray-500 w-full flex justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" class="w-6 h-6"
-              >
+                stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                />
+                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
               </svg>
             </div>
 
@@ -93,7 +77,7 @@ import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
 import OpenFormButton from '../open/forms/OpenFormButton.vue'
 import CameraUpload from './components/CameraUpload.vue'
-import {storeFile} from "~/lib/file-uploads.js"
+import { storeFile } from "~/lib/file-uploads.js"
 
 export default {
   name: 'FileInput',
@@ -108,7 +92,7 @@ export default {
     moveToFormAssets: { type: Boolean, default: false }
   },
 
-  setup (props, context) {
+  setup(props, context) {
     return {
       ...useFormInput(props, context)
     }
@@ -122,10 +106,10 @@ export default {
   }),
 
   computed: {
-    currentUrl () {
+    currentUrl() {
       return this.form[this.name]
     },
-    acceptExtensions () {
+    acceptExtensions() {
       if (!this.accept) {
         return null
       }
@@ -142,13 +126,13 @@ export default {
   watch: {
     files: {
       deep: true,
-      handler (files) {
+      handler(files) {
         this.compVal = files.map((file) => file.url)
       }
     }
   },
 
-  async created () {
+  async created() {
     if (typeof this.compVal === 'string' || this.compVal instanceof String) {
       await this.getFileFromUrl(this.compVal).then((fileObj) => {
         this.files = [{
@@ -173,28 +157,28 @@ export default {
   },
 
   methods: {
-    clearAll () {
+    clearAll() {
       this.files = []
     },
-    clearFile (index) {
+    clearFile(index) {
       this.files.splice(index, 1)
     },
-    onUploadDropEvent (e) {
+    onUploadDropEvent(e) {
       this.uploadDragoverEvent = false
       this.droppedFiles(e.dataTransfer.files)
     },
-    droppedFiles (droppedFiles) {
+    droppedFiles(droppedFiles) {
       if (!droppedFiles || this.disabled) return
 
       for (let i = 0; i < droppedFiles.length; i++) {
         this.uploadFileToServer(droppedFiles.item(i))
       }
     },
-    openFileUpload () {
-      if (this.disabled) return
+    openFileUpload() {
+      if (this.disabled || !this.$refs['actual-input']) return
       this.$refs['actual-input'].click()
     },
-    manualFileUpload (e) {
+    manualFileUpload(e) {
       const files = e.target.files
       for (let i = 0; i < files.length; i++) {
         this.uploadFileToServer(files.item(i))
@@ -211,7 +195,7 @@ export default {
       this.isUploading = false;
       this.uploadFileToServer(file)
     },
-    uploadFileToServer (file) {
+    uploadFileToServer(file) {
       if (this.disabled) return
       this.loading = true
       storeFile(file)
@@ -251,7 +235,10 @@ export default {
           this.loading = false
         })
     },
-    async getFileFromUrl (url, defaultType = 'image/jpeg') {
+    async getFileFromUrl(url, defaultType = 'image/jpeg') {
+      if (typeof url === 'object') {
+        url = url?.file_url
+      }
       const response = await fetch(url)
       const data = await response.blob()
       const name = url.replace(/^.*(\\|\/|\:)/, '')
@@ -259,7 +246,7 @@ export default {
         type: data.type || defaultType
       })
     },
-    getFileSrc (file) {
+    getFileSrc(file) {
       if (file.type && file.type.split('/')[0] === 'image') {
         return URL.createObjectURL(file)
       }

@@ -17,7 +17,7 @@
     </div>
 
     <div class="aspect-[4/3] rounded-lg shadow-sm overflow-hidden">
-      <NuxtImg class="group-hover:scale-110 transition-all duration-200 h-full object-cover w-full" v-if="template.image_url"
+      <img class="group-hover:scale-110 transition-all duration-200 h-full object-cover w-full" v-if="template.image_url"
            :src="template.image_url" alt="" width="450px"
       />
     </div>

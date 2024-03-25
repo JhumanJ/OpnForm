@@ -40,6 +40,9 @@ function propertyConditionMet (propertyCondition, value) {
     case 'phone_number':
       return textConditionMet(propertyCondition, value)
     case 'number':
+    case 'rating':
+    case 'scale':
+    case 'slider':
       return numberConditionMet(propertyCondition, value)
     case 'checkbox':
       return checkboxConditionMet(propertyCondition, value)
