@@ -55,6 +55,26 @@ class FormController extends Controller
         return FormResource::collection($forms);
     }
 
+    public function show($slug)
+    {
+        $form = Form::whereSlug($slug)->firstOrFail();
+        $this->authorize('view', $form);
+
+        // Add attributes for faster loading
+        $workspace = $form->workspace;
+        $form->extra = (object)[
+            'loadedWorkspace' => $workspace,
+            'workspaceIsPro' => $workspace->is_pro,
+            'userIsOwner' => true,
+            'cleanings' => $this->formCleaner
+                ->processForm(request(), $form)
+                ->simulateCleaning($workspace)
+                ->getPerformedCleanings(),
+        ];
+
+        return new FormResource($form);
+    }
+
     /**
      * Return all user forms, used for zapier
      *

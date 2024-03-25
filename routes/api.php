@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::prefix('open')->name('open.')->group(function () {
         Route::get('/forms', [FormController::class, 'indexAll'])->name('forms.index-all');
+        Route::get('/forms/{slug}', [FormController::class, 'show'])->name('forms.show');
 
         Route::prefix('workspaces')->name('workspaces.')->group(function () {
             Route::get('/', [WorkspaceController::class, 'index'])->name('index');

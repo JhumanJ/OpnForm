@@ -34,6 +34,19 @@ it('can fetch forms', function () {
         ->assertJsonPath('data.0.title', $form->title);
 });
 
+it('can fetch a form', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $response = $this->getJson(route('open.forms.show', $form->slug))
+        ->assertSuccessful()
+        ->assertJson([
+            'id' => $form->id,
+            'title' => $form->title
+        ]);
+});
+
 it('can update a form', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);

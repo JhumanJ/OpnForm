@@ -151,6 +151,7 @@ useOpnSeoMeta({
   title: 'Home'
 })
 
+const route = useRoute()
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
@@ -195,7 +196,7 @@ onMounted(() => {
   if (form.value) {
     workingFormStore.set(form.value)
   } else {
-    formsStore.loadAll(useWorkspacesStore().currentId)
+    formsStore.loadForm(route.params.slug)
   }
 })
 
