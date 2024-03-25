@@ -30,7 +30,6 @@ class FormStatsController extends Controller
 
             if ($dateObj->toDateString() === now()->toDateString()) {
                 $periodStats['views'][$date] += $form->views()->count();
-                $periodStats['submissions'][$date] += $form->submissions()->whereDate('created_at', '>=', now()->startOfDay())->count();
             }
         }
 
