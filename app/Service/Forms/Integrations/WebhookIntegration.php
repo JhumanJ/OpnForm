@@ -11,6 +11,6 @@ class WebhookIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl()) && $this->form->is_pro && parent::shouldRun();
+        return !is_null($this->getWebhookUrl()) && parent::shouldRun();
     }
 }

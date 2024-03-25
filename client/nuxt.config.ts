@@ -5,7 +5,7 @@ import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: {enabled: true},
+    devtools: {enabled: false},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
@@ -18,14 +18,6 @@ export default defineNuxtConfig({
     ],
     build: {
         transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
-    },
-    postcss: {
-        plugins: {
-            'postcss-import': {},
-            'tailwindcss/nesting': {},
-            tailwindcss: {},
-            autoprefixer: {},
-        },
     },
     experimental: {
         inlineRouteRules: true

@@ -12,7 +12,7 @@
     "icon": "heroicons:paper-airplane-20-solid",
     "section_name": "Notifications",
     "file_name": "SubmissionConfirmationIntegration",
-    "is_pro": false
+    "is_pro": true
   },
   "slack": {
     "name": "Slack Notifications",
@@ -33,7 +33,7 @@
     "icon": "material-symbols:webhook",
     "section_name": "Notifications",
     "file_name": "WebhookIntegration",
-    "is_pro": true
+    "is_pro": false
   },
   "google_sheets": {
     "name": "Google Sheets",

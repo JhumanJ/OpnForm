@@ -16,7 +16,6 @@
           <span class="bg-gray-500 h-[6px] w-[6px] rounded-full inline-block mr-1" />
           Paused
         </div>
-        <pro-tag v-if="integrationTypeInfo.is_pro === true" class="ml-2" />
       </div>
     </div>
 

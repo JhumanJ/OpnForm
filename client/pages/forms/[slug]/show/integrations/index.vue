@@ -13,7 +13,7 @@
         <Loader class="h-6 w-6 mx-auto"/>
       </div>
       <div v-else-if="formIntegrationsList.length" class="my-6">
-        <IntegrationCard v-for="(row) in formIntegrationsList" :key="row.id" :integration="row" :form="form"/>
+          <IntegrationCard v-for="(row) in formIntegrationsList" :key="row.id" :integration="row" :form="form"/>
       </div>
       <div class="text-gray-500 border shadow rounded-md p-5 mt-4" v-else>
         No integration yet form this form.
@@ -28,23 +28,9 @@
           {{ sectionName }}
         </h3>
         <div class="flex flex-wrap mt-2 gap-4">
-          <div v-for="(sectionItem, sectionItemKey) in section"
-               :key="sectionItemKey" role="button" @click="openIntegrationModal(sectionItemKey)"
-               v-track.new_integration_click="{ name: sectionItemKey }"
-               :class="{'hover:bg-blue-50 group': !sectionItem.coming_soon, 'cursor-not-allowed': sectionItem.coming_soon}"
-               class="bg-gray-50 border border-gray-200 rounded-md cursor-pointer transition-colors p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative">
-            <div class="flex justify-center">
-              <div class="h-10 w-10 text-gray-500 group-hover:text-blue-500 transition-colors flex items-center">
-                <Icon :name="sectionItem.icon" size="40px"/>
-              </div>
-            </div>
-            <div class="flex-grow flex items-center">
-              <div class="text-gray-400 font-medium text-sm text-center">
-                {{ sectionItem.name }}<span v-if="sectionItem.coming_soon"> (coming soon)</span>
-              </div>
-            </div>
-            <pro-tag v-if="sectionItem?.is_pro === true" class="absolute top-0 right-1"/>
-          </div>
+          <IntegrationListOption v-for="(sectionItem, sectionItemKey) in section"
+                                 @select="openIntegrationModal"
+                                 :key="sectionItemKey" :integration="sectionItem"/>
         </div>
       </div>
       <IntegrationModal v-if="form && selectedIntegrationKey && selectedIntegration" :form="form"

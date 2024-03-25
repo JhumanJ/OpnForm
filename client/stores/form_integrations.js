@@ -10,13 +10,14 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
   const integrations = ref(new Map)
 
   const availableIntegrations = computed(() => {
-    const user = useAuthStore().user.value
+    const user = useAuthStore().user
     if (!user) return integrations.value
 
     const enrichedIntegrations = new Map()
     for (const [key, integration] of integrations.value.entries()) {
       enrichedIntegrations.set(key, {
         ...integration,
+        id: key,
         requires_subscription: !user.is_subscribed && integration.is_pro
       })
     }
@@ -62,6 +63,7 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
   return {
     ...contentStore,
     initIntegrations,
+    availableIntegrations,
     integrationsBySection,
     fetchFormIntegrations,
     getAllByFormId,

@@ -19,7 +19,9 @@
               </svg>
             </button>
           </div>
-          <div class="flex border-b pb-4 p-6" :class="{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader}">
+          <div class="flex border-b pb-4 p-6"
+               v-if="$slots.hasOwnProperty('icon') || $slots.hasOwnProperty('title')"
+               :class="{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader}">
             <div v-if="$slots.hasOwnProperty('icon')" :class="{'w-full mb-4 flex justify-center':!compactHeader}">
               <div class="w-14 h-14 rounded-full flex justify-center items-center"
                    :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'"
