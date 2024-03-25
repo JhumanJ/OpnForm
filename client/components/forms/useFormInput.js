@@ -1,5 +1,7 @@
 import { ref, computed, watch } from 'vue'
 import { themes } from '~/lib/forms/form-themes.js'
+import {default as _get} from 'lodash/get'
+import {default as _set} from 'lodash/set'
 
 export const inputProps = {
   id: { type: String, default: null },
@@ -39,13 +41,14 @@ export function useFormInput (props, context, formPrefixKey = null) {
   const compVal = computed({
     get: () => {
       if (props.form) {
-        return props.form[(formPrefixKey || '') + props.name]
+        return _get(props.form, (formPrefixKey || '') + props.name)
       }
       return content.value
     },
     set: (val) => {
       if (props.form) {
-        props.form[(formPrefixKey || '') + props.name] = val
+        console.log('setting form',val, props.form)
+        _set(props.form, (formPrefixKey || '') + props.name, val)
       } else {
         content.value = val
       }

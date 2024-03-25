@@ -79,4 +79,11 @@ class DiscordIntegration extends AbstractIntegrationHandler
             'embeds' => $blocks,
         ];
     }
+
+    public static function getValidationRules(): array
+    {
+        return [
+            'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks'
+        ];
+    }
 }

@@ -76,7 +76,6 @@ const passwordEntered = function (password) {
   })
   cookie.value = sha256(password)
   nextTick(() => {
-    console.log('cookie value:',cookie.value)
     loadForm().then(() => {
       if (form.value?.is_password_protected) {
         openCompleteForm.value.addPasswordError('Invalid password.')

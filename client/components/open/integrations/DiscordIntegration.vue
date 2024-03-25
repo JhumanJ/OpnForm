@@ -1,6 +1,6 @@
 <template>
-  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
-    <text-input name="discord_webhook_url" v-model="integration.settings.discord_webhook_url" class="mt-4"
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
+    <text-input :form="integrationData" name="settings.discord_webhook_url"
                 label="Discord webhook url" help="help">
       <template #help>
         <InputHelp>
@@ -30,6 +30,4 @@ const props = defineProps({
   integrationData: {type: Object, required: true},
   formIntegrationId: {type: Number, required: false, default: null}
 });
-
-const integration = ref(props.integrationData)
 </script>

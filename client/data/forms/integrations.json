@@ -1,6 +1,6 @@
 {
   "email": {
-    "name": "Email Notifications",
+    "name": "Email Notification",
     "icon": "heroicons:envelope-20-solid",
     "section_name": "Notifications",
     "file_name": "EmailIntegration",
@@ -15,21 +15,21 @@
     "is_pro": true
   },
   "slack": {
-    "name": "Slack Notifications",
+    "name": "Slack Notification",
     "icon": "mdi:slack",
     "section_name": "Notifications",
     "file_name": "SlackIntegration",
     "is_pro": false
   },
   "discord": {
-    "name": "Discord Notifications",
+    "name": "Discord Notification",
     "icon": "ic:baseline-discord",
     "section_name": "Notifications",
     "file_name": "DiscordIntegration",
     "is_pro": true
   },
   "webhook": {
-    "name": "Webhook Notifications",
+    "name": "Webhook Notification",
     "icon": "material-symbols:webhook",
     "section_name": "Notifications",
     "file_name": "WebhookIntegration",

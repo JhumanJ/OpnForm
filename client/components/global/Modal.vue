@@ -80,11 +80,13 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 useHead({
-  bodyAttrs: {
-    class: {
-      'overflow-hidden': props.show
+  bodyAttrs: computed(() => {
+    return {
+      class: {
+        'overflow-hidden': props.show
+      }
     }
-  }
+  })
 })
 
 const closeOnEscape = (e) => {
@@ -152,7 +154,8 @@ const motionSlideBottom = {
 }
 
 const onLeave = (el, done) => {
-  contentMotion.value.leave(()=>{})
+  contentMotion.value.leave(() => {
+  })
   backdropMotion.value.leave(done)
 }
 

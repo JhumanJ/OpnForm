@@ -46,25 +46,37 @@ const component = computed(() => {
   return resolveComponent(props.integration.file_name)
 })
 
-const integrationData = ref(computed(() => {
-  return {
+const integrationData = ref(null)
+
+watch(() => props.integrationKey, () => {
+  initIntegrationData()
+})
+
+const initIntegrationData = () => {
+  integrationData.value = useForm({
     integration_id: (props.formIntegrationId) ? formIntegration.value.integration_id : props.integrationKey,
     status: (props.formIntegrationId) ? formIntegration.value.status === 'active' : true,
     settings: (props.formIntegrationId) ? formIntegration.value.data ?? {} : {},
     logic: (props.formIntegrationId) ? (!Array.isArray(formIntegration.value.logic) && formIntegration.value.logic) ? formIntegration.value.logic : null : null
-  }
-}))
+  })
+}
+initIntegrationData()
 
 const save = () => {
-  opnFetch('/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((props.formIntegrationId) ? '/' + props.formIntegrationId : ''), {
-    method: (props.formIntegrationId) ? 'PUT' : 'POST',
-    body: integrationData.value
-  }).then(data => {
+  if (!integrationData.value) return
+  integrationData.value.submit(
+    (props.formIntegrationId) ? 'PUT' : 'POST',
+    '/open/forms/{formid}/integration'.replace('{formid}', props.form.id) + ((props.formIntegrationId) ? '/' + props.formIntegrationId : '')
+  ).then(data => {
     alert.success(data.message)
     formIntegrationsStore.save(data.form_integration)
     emit('close')
   }).catch((error) => {
-    alert.error(error.data.message)
+    try {
+      alert.error(error.data.message)
+    } catch (e) {
+      alert.error('An error occurred while saving the integration')
+    }
   })
 }
 </script>

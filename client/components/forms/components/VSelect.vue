@@ -119,9 +119,9 @@
 
 <script>
 import Collapsible from '~/components/global/transitions/Collapsible.vue'
-import { themes } from '../../../lib/forms/form-themes.js'
+import { themes} from "~/lib/forms/form-themes.js"
 import TextInput from '../TextInput.vue'
-import debounce from 'debounce'
+import debounce from 'lodash/debounce'
 import Fuse from 'fuse.js'
 
 export default {

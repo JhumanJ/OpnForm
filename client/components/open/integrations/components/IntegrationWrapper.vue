@@ -55,7 +55,7 @@ const props = defineProps({
 
 const crisp = useCrisp()
 const emit = defineEmits(['close'])
-let showLogic = ref(props.modelValue.logic ? true : false)
+const showLogic = ref(!!props.modelValue.logic)
 
 const openHelp = () => {
   if (props.integration && props.integration?.crisp_help_page_slug) {

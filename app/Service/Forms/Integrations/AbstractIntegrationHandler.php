@@ -93,4 +93,6 @@ abstract class AbstractIntegrationHandler
             ->payload($this->getWebhookData())
             ->dispatchSync();
     }
+
+    public abstract static function getValidationRules(): array;
 }
