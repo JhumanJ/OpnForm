@@ -26,11 +26,10 @@ class FormStatsController extends Controller
 
             $statisticData = $formStats->where('date', $dateObj->format('Y-m-d'))->first();
             $periodStats['views'][$date] = $statisticData->data['views'] ?? 0;
-            $periodStats['submissions'][$date] = $statisticData->data['submissions'] ?? 0;
+            $periodStats['submissions'][$date] = $form->submissions()->whereDate('created_at', $dateObj)->count();
 
             if ($dateObj->toDateString() === now()->toDateString()) {
                 $periodStats['views'][$date] += $form->views()->count();
-                $periodStats['submissions'][$date] += $form->submissions()->whereDate('created_at', '>=', now()->startOfDay())->count();
             }
         }
 
