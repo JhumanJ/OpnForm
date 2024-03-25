@@ -41,8 +41,8 @@ class NotifyFormSubmission implements ShouldQueue
     public static function getIntegrationHandler(FormSubmitted $event, FormIntegration $formIntegration): AbstractIntegrationHandler
     {
         $integration = FormIntegration::getIntegration($formIntegration->integration_id);
-        if ($integration && isset($integration['file_name']) && class_exists('App\Service\Forms\Webhooks\\' . $integration['file_name'])) {
-            $className = 'App\Service\Forms\Webhooks\\' . $integration['file_name'];
+        if ($integration && isset($integration['file_name']) && class_exists('App\Service\Forms\Integrations\\' . $integration['file_name'])) {
+            $className = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
             return new $className($event, $formIntegration, $integration);
         }
         throw new \Exception('Unknown Integration!!');
