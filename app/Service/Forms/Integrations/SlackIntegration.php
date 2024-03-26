@@ -11,7 +11,12 @@ class SlackIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
-            'slack_webhook_url' => 'required|url|starts_with:https://hooks.slack.com/'
+            'slack_webhook_url' => 'required|url|starts_with:https://hooks.slack.com/',
+            'include_submission_data' => 'boolean',
+            'link_open_form' => 'boolean',
+            'link_edit_form' => 'boolean',
+            'views_submissions_count' => 'boolean',
+            'link_edit_submission' => 'boolean'
         ];
     }
 

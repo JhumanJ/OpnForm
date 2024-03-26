@@ -12,7 +12,12 @@ class DiscordIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
-            'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks'
+            'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks',
+            'include_submission_data' => 'boolean',
+            'link_open_form' => 'boolean',
+            'link_edit_form' => 'boolean',
+            'views_submissions_count' => 'boolean',
+            'link_edit_submission' => 'boolean'
         ];
     }
 
