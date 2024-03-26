@@ -35,6 +35,14 @@
     "file_name": "WebhookIntegration",
     "is_pro": false
   },
+  "zapier": {
+    "name": "Zapier Integration",
+    "icon": "logos:zapier",
+    "section_name": "Notifications",
+    "file_name": "ZapierIntegration",
+    "is_pro": true,
+    "coming_soon": true
+  },
   "google_sheets": {
     "name": "Google Sheets",
     "icon": "mdi:google-spreadsheet",
