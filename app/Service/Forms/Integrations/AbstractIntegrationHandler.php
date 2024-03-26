@@ -7,6 +7,7 @@ use App\Events\Forms\FormSubmitted;
 use App\Models\Integration\FormIntegrationsEvent;
 use App\Service\Forms\FormSubmissionFormatter;
 use App\Service\Forms\FormLogicConditionChecker;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -82,15 +83,16 @@ abstract class AbstractIntegrationHandler
 
     final public function run(): void
     {
-        ray('running integration', $this->getProviderName());
         try {
             $this->handle();
             $this->formIntegration->events()->create([
                 'status' => FormIntegrationsEvent::STATUS_SUCCESS,
             ]);
         } catch (\Exception $e) {
-            dd($e);
-            ray($e);
+            $this->formIntegration->events()->create([
+                'status' => FormIntegrationsEvent::STATUS_ERROR,
+                'data' => $this->extractEventDataFromException($e),
+            ]);
         }
     }
 
@@ -103,7 +105,7 @@ abstract class AbstractIntegrationHandler
             return;
         }
 
-        Http::post($this->getWebhookUrl(), $this->getWebhookData());
+        Http::throw()->post($this->getWebhookUrl(), $this->getWebhookData());
     }
 
     abstract public static function getValidationRules(): array;
@@ -111,5 +113,19 @@ abstract class AbstractIntegrationHandler
     public static function formatData(array $data): array
     {
         return $data;
+    }
+
+    public function extractEventDataFromException(\Exception $e): array
+    {
+        if ($e instanceof RequestException) {
+            return [
+                'message' => $e->getMessage(),
+                'response' => $e->response->json(),
+                'status' => $e->response->status(),
+            ];
+        }
+        return [
+            'message' => $e->getMessage()
+        ];
     }
 }
