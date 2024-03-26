@@ -1,8 +1,8 @@
 <template>
-  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
-    <text-area-input name="notification_emails" v-model="integration.settings.notification_emails"
-      label="Notification Emails" help="Add one email per line" />
-    <text-input name="notification_reply_to" v-model="integration.settings.notification_reply_to"
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
+    <text-area-input :form="integrationData" name="settings.notification_emails" 
+                      label="Notification Emails" help="Add one email per line" />
+    <text-input :form="integrationData" name="settings.notification_reply_to" 
                 label="Notification Reply To" :help="notifiesHelp" />
   </IntegrationWrapper>
 </template>
@@ -16,8 +16,6 @@ const props = defineProps({
   integrationData: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null }
 })
-
-const integration = ref(props.integrationData)
 
 const replayToEmailField = computed(() => {
   const emailFields = props.form.properties.filter((field) => {

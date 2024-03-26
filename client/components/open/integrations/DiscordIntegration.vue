@@ -15,7 +15,7 @@
       </template>
     </text-input>
     <h4 class="font-bold mt-4">Discord message options</h4>
-    <form-notifications-message-actions v-model="integration.settings"/>
+    <form-notifications-message-actions v-model="integrationData.settings"/>
   </IntegrationWrapper>
 </template>
 
@@ -29,5 +29,5 @@ const props = defineProps({
   form: {type: Object, required: true},
   integrationData: {type: Object, required: true},
   formIntegrationId: {type: Number, required: false, default: null}
-});
+})
 </script>

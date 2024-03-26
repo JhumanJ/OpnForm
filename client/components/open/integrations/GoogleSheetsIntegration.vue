@@ -1,5 +1,5 @@
 <template>
-  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
     <div class="my-5">
       Coming Soon...
     </div>
@@ -14,7 +14,5 @@ const props = defineProps({
   form: { type: Object, required: true },
   integrationData: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null }
-});
-
-const integration = ref(props.integrationData)
+})
 </script>

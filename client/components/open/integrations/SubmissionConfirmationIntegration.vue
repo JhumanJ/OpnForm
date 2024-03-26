@@ -1,20 +1,19 @@
 <template>
-  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
     <div>{{ emailSubmissionConfirmationHelp }}</div>
 
     <div v-if="emailSubmissionConfirmationField">
-      <text-input name="confirmation_reply_to" v-model="integration.settings.confirmation_reply_to" class="mt-4"
+      <text-input :form="integrationData" name="settings.confirmation_reply_to" class="mt-4"
         label="Confirmation Reply To" help="If empty, Reply-to will be your own email."/>
-      <text-input name="notification_sender" v-model="integration.settings.notification_sender" class="mt-4"
+      <text-input :form="integrationData" name="settings.notification_sender" class="mt-4"
         label="Confirmation Email Sender Name"
         help="Emails will be sent from our email address but you can customize the name of the Sender" />
-      <text-input name="notification_subject" v-model="integration.settings.notification_subject" class="mt-4"
+      <text-input :form="integrationData" name="settings.notification_subject" class="mt-4"
         label="Confirmation email subject" help="Subject of the confirmation email that will be sent" />
-      <rich-text-area-input name="notification_body" v-model="integration.settings.notification_body" class="mt-4"
+      <rich-text-area-input :form="integrationData" name="settings.notification_body" class="mt-4"
         label="Confirmation email content" help="Content of the confirmation email that will be sent" />
-      <toggle-switch-input name="notifications_include_submission"
-        v-model="integration.settings.notifications_include_submission" class="mt-4" label="Include submission data"
-        help="If enabled the confirmation email will contain form submission answers" />
+      <toggle-switch-input :form="integrationData" name="settings.notifications_include_submission" class="mt-4" 
+        label="Include submission data" help="If enabled the confirmation email will contain form submission answers" />
     </div>
   </IntegrationWrapper>
 </template>
@@ -27,9 +26,7 @@ const props = defineProps({
   form: { type: Object, required: true },
   integrationData: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null }
-});
-
-const integration = ref(props.integrationData)
+})
 
 const emailSubmissionConfirmationField = computed(() => {
   if (!props.form.properties || !Array.isArray(props.form.properties)) return null

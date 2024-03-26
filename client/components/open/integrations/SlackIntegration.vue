@@ -1,7 +1,7 @@
 <template>
-  <IntegrationWrapper :integration="props.integration" :form="form" v-model="integration">
-    <text-input name="slack_webhook_url" v-model="integration.settings.slack_webhook_url"
-                label="Slack webhook url">
+  <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
+    <text-input :form="integrationData" name="settings.slack_webhook_url"
+                label="Slack webhook url" help="help">
       <template #help>
         <InputHelp>
           <template #help>
@@ -14,7 +14,7 @@
       </template>
     </text-input>
     <h4 class="font-bold mt-4">Slack message actions</h4>
-    <form-notifications-message-actions v-model="integration.settings"/>
+    <form-notifications-message-actions v-model="integrationData.settings"/>
   </IntegrationWrapper>
 </template>
 
@@ -28,7 +28,5 @@ const props = defineProps({
   form: {type: Object, required: true},
   integrationData: {type: Object, required: true},
   formIntegrationId: {type: Number, required: false, default: null}
-});
-
-const integration = ref(props.integrationData)
+})
 </script>
