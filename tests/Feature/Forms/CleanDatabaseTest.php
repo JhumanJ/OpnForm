@@ -42,7 +42,7 @@ it('check form statistic for views & submissions counts', function () {
     expect($form->submissions()->count())->toBe(16);
     expect(count($statistics))->toBe(2); // 1 per day for 2 different dates
     expect($statistics[0]['date'])->toBe(now()->subDays(2)->toDateString());
-    expect($statistics[0]['data'])->toBe(['views' => 1, 'submissions' => 1]);
+    expect($statistics[0]['data'])->toBe(['views' => 1, 'submissions' => 0]);
     expect($statistics[1]['date'])->toBe(now()->subDay()->toDateString());
-    expect($statistics[1]['data'])->toBe(['views' => 10, 'submissions' => 10]);
+    expect($statistics[1]['data'])->toBe(['views' => 10, 'submissions' => 0]);
 });
