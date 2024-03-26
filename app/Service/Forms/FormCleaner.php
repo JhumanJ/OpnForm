@@ -28,12 +28,8 @@ class FormCleaner
     private array $customKeys = ['seo_meta'];
 
     private array $formDefaults = [
-        'notifies' => false,
         'no_branding' => false,
-        'webhook_url' => null,
         'database_fields_update' => null,
-        'slack_webhook_url' => null,
-        'discord_webhook_url' => null,
         'editable_submissions' => false,
         'custom_code' => null,
         'seo_meta' => [],
@@ -46,12 +42,8 @@ class FormCleaner
 
     private array $cleaningMessages = [
         // For form
-        'notifies' => 'Email notification were disabled.',
         'no_branding' => 'OpenForm branding is not hidden.',
-        'webhook_url' => 'Webhook disabled.',
         'database_fields_update' => 'Form submission will only create new records (no updates).',
-        'slack_webhook_url' => 'Slack webhook disabled.',
-        'discord_webhook_url' => 'Discord webhook disabled.',
         'editable_submissions' => 'Users will not be able to edit their submissions.',
         'custom_code' => 'Custom code was disabled',
         'seo_meta' => 'Custom SEO was disabled',
@@ -126,7 +118,7 @@ class FormCleaner
      */
     public function simulateCleaning(Workspace $workspace): FormCleaner
     {
-        if (! $this->isPro($workspace)) {
+        if (!$this->isPro($workspace)) {
             $this->data = $this->removeProFeatures($this->data, true);
         }
 
@@ -141,7 +133,7 @@ class FormCleaner
      */
     public function performCleaning(Workspace $workspace): FormCleaner
     {
-        if (! $this->isPro($workspace)) {
+        if (!$this->isPro($workspace)) {
             $this->data = $this->removeProFeatures($this->data);
         }
 
@@ -217,14 +209,14 @@ class FormCleaner
             $formVal = (($formVal === 0 || $formVal === '0') ? false : $formVal);
             $formVal = (($formVal === 1 || $formVal === '1') ? true : $formVal);
 
-            if (! is_null($formVal) && $formVal !== $value) {
-                if (! isset($this->cleanings['form'])) {
+            if (!is_null($formVal) && $formVal !== $value) {
+                if (!isset($this->cleanings['form'])) {
                     $this->cleanings['form'] = [];
                 }
                 $this->cleanings['form'][] = $key;
 
                 // If not a simulation, do the cleaning
-                if (! $simulation) {
+                if (!$simulation) {
                     Arr::set($data, $key, $value);
                 }
             }
@@ -236,7 +228,7 @@ class FormCleaner
         foreach ($defaults as $key => $value) {
             if (isset($data[$key]) && Arr::get($data, $key) !== $value) {
                 $this->cleanings[$data['name']][] = $key;
-                if (! $simulation) {
+                if (!$simulation) {
                     Arr::set($data, $key, $value);
                 }
             }
