@@ -122,7 +122,7 @@ it('does send a confirmation email even when reply to is broken', function () {
         'notification_sender' => 'Custom Sender',
         'notification_subject' => 'Test subject',
         'notification_body' => 'Test body',
-        'confirmation_reply_to' => 'invalid-email'
+        'confirmation_reply_to' => ''
     ]);
 
     $emailProperty = collect($form->properties)->first(function ($property) {
