@@ -22,10 +22,11 @@ class NotifyFormSubmission implements ShouldQueue
     {
         $formIntegrations = FormIntegration::where([['form_id', $event->form->id], ['status', FormIntegration::STATUS_ACTIVE]])->get();
         foreach ($formIntegrations as $formIntegration) {
+            ray($formIntegration, $formIntegration->integration_id);
             $this->getIntegrationHandler(
                 $event,
                 $formIntegration
-            )->handle();
+            )->run();
         }
 
         /* $this->sendEmailNotifications($event);
@@ -45,6 +46,6 @@ class NotifyFormSubmission implements ShouldQueue
             $className = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
             return new $className($event, $formIntegration, $integration);
         }
-        throw new \Exception('Unknown Integration!!');
+        throw new \Exception('Unknown Integration!');
     }
 }

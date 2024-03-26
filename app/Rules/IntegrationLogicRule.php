@@ -4,11 +4,9 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Str;
 
 class IntegrationLogicRule implements DataAwareRule, Rule
 {
-
     private $isConditionCorrect = true;
 
     private $conditionErrors = [];

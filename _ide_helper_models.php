@@ -1,6 +1,7 @@
 <?php
 
 // @formatter:off
+// phpcs:ignoreFile
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -9,6 +10,57 @@
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 
+
+namespace App\Models\Billing{
+/**
+ * App\Models\Billing\Subscription
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property string $stripe_id
+ * @property string $stripe_status
+ * @property string|null $stripe_price
+ * @property int|null $quantity
+ * @property \Illuminate\Support\Carbon|null $trial_ends_at
+ * @property \Illuminate\Support\Carbon|null $ends_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Cashier\SubscriptionItem> $items
+ * @property-read int|null $items_count
+ * @property-read \App\Models\User|null $owner
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription active()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription canceled()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription cancelled()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription ended()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription expiredTrial()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription incomplete()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription notCanceled()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription notCancelled()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription notOnGracePeriod()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription notOnTrial()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription onGracePeriod()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription onTrial()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription pastDue()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription recurring()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereEndsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereStripeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereStripePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereStripeStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereTrialEndsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereUserId($value)
+ */
+	class Subscription extends \Eloquent {}
+}
 
 namespace App\Models\Forms\AI{
 /**
@@ -77,10 +129,10 @@ namespace App\Models\Forms{
  * @property bool $can_be_indexed
  * @property string|null $password
  * @property string $notification_sender
- * @property array $tags
+ * @property array|null $tags
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int $creator_id
- * @property array $removed_properties
+ * @property-read array|null $removed_properties
  * @property int|null $max_submissions_count
  * @property string|null $max_submissions_reached_text
  * @property string|null $slack_webhook_url
@@ -92,12 +144,15 @@ namespace App\Models\Forms{
  * @property object $seo_meta
  * @property object|null $notification_settings
  * @property bool $auto_save
+ * @property string|null $custom_domain
+ * @property bool $show_progress_bar
  * @property-read \App\Models\User $creator
  * @property-read mixed $edit_url
  * @property-read mixed $form_pending_submission_key
  * @property-read mixed $has_password
  * @property-read mixed $is_closed
  * @property-read mixed $is_pro
+ * @property-read mixed $max_file_size
  * @property-read mixed $max_number_of_submissions_reached
  * @property-read mixed $notifies_discord
  * @property-read mixed $notifies_slack
@@ -127,6 +182,7 @@ namespace App\Models\Forms{
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereCreatorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereCustomCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Form whereCustomDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereDarkMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereDatabaseFieldsUpdate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereDeletedAt($value)
@@ -155,6 +211,7 @@ namespace App\Models\Forms{
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereRemovedProperties($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereSendSubmissionConfirmation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereSeoMeta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Form whereShowProgressBar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereSlackWebhookUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Form whereSubmitButtonText($value)
@@ -173,7 +230,7 @@ namespace App\Models\Forms{
  * @method static \Illuminate\Database\Eloquent\Builder|Form withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Form withoutTrashed()
  */
-	class Form extends \Eloquent {}
+	class Form extends \Eloquent implements \App\Models\Traits\CachableAttributes {}
 }
 
 namespace App\Models\Forms{
@@ -240,6 +297,62 @@ namespace App\Models\Forms{
 
 namespace App\Models\Integration{
 /**
+ * App\Models\Integration\FormIntegration
+ *
+ * @property int $id
+ * @property int $form_id
+ * @property string $status
+ * @property string $integration_id
+ * @property object $logic
+ * @property object $data
+ * @property string|null $oauth_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Integration\FormIntegrationsEvent> $events
+ * @property-read int|null $events_count
+ * @property-read \App\Models\Forms\Form|null $form
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration query()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereFormId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereIntegrationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereLogic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereOauthId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegration whereUpdatedAt($value)
+ */
+	class FormIntegration extends \Eloquent {}
+}
+
+namespace App\Models\Integration{
+/**
+ * App\Models\Integration\FormIntegrationsEvent
+ *
+ * @property int $id
+ * @property int $integration_id
+ * @property string $status
+ * @property object $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Integration\FormIntegration|null $integration
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent query()
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereIntegrationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FormIntegrationsEvent whereUpdatedAt($value)
+ */
+	class FormIntegrationsEvent extends \Eloquent {}
+}
+
+namespace App\Models\Integration{
+/**
  * App\Models\Integration\FormZapierWebhook
  *
  * @property int $id
@@ -277,8 +390,8 @@ namespace App\Models{
  * @property array $meta
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $custom_domain_limit_count
- * @property-read mixed $max_file_size
+ * @property-read int|null $custom_domain_limit_count
+ * @property-read int $max_file_size
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|License active()
  * @method static \Illuminate\Database\Eloquent\Builder|License newModelQuery()
@@ -393,6 +506,7 @@ namespace App\Models{
  * @property-read mixed $has_forms
  * @property-read mixed $is_risky
  * @property-read mixed $is_subscribed
+ * @property-read mixed $moderator
  * @property-read string $photo_url
  * @property-read mixed $template_editor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\License> $licenses
@@ -401,7 +515,7 @@ namespace App\Models{
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthProvider> $oauthProviders
  * @property-read int|null $oauth_providers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Cashier\Subscription> $subscriptions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Billing\Subscription> $subscriptions
  * @property-read int|null $subscriptions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workspace> $workspaces
  * @property-read int|null $workspaces_count
@@ -436,7 +550,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $name
  * @property string|null $icon
- * @property mixed|null $custom_domains
+ * @property array|null $custom_domains
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Forms\Form> $forms
  * @property-read int|null $forms_count
  * @property-read mixed $custom_domain_count_limit
@@ -457,6 +571,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Workspace whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Workspace whereUpdatedAt($value)
  */
-	class Workspace extends \Eloquent {}
+	class Workspace extends \Eloquent implements \App\Models\Traits\CachableAttributes {}
 }
 

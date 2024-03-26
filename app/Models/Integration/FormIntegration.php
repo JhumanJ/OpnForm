@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class FormIntegration extends Model
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-
     use HasFactory;
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     protected $fillable = [
         'form_id',
@@ -33,6 +32,11 @@ class FormIntegration extends Model
     public function form()
     {
         return $this->belongsTo(Form::class);
+    }
+
+    public function events()
+    {
+        return $this->hasMany(FormIntegrationsEvent::class, 'integration_id');
     }
 
     public static function getAllIntegrations()
