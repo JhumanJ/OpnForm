@@ -16,7 +16,7 @@ class FormIntegrationsController extends Controller
 
     public function index(string $id)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
         return FormIntegration::where('form_id', $form->id)->get();
@@ -24,16 +24,14 @@ class FormIntegrationsController extends Controller
 
     public function create(FormIntegrationsRequest $request, string $id)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('update', $form);
 
-        $formIntegration = FormIntegration::create([
-            'form_id' => $form->id,
-            'status' => ($request->get('status')) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_INACTIVE,
-            'integration_id' => $request->get('integration_id'),
-            'data' => $request->get('settings') ?? [],
-            'logic' => $request->get('logic') ?? []
-        ]);
+        $formIntegration = FormIntegration::create(
+            array_merge([
+                'form_id' => $form->id,
+            ], $request->toIntegrationData())
+        );
 
         return $this->success([
             'message' => 'Form Integration was created.',
@@ -43,15 +41,11 @@ class FormIntegrationsController extends Controller
 
     public function update(FormIntegrationsRequest $request, string $id, string $integrationid)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('update', $form);
 
-        $formIntegration = FormIntegration::findOrFail((int) $integrationid);
-        $formIntegration->update([
-            'status' => ($request->get('status')) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_INACTIVE,
-            'data' => $request->get('settings') ?? [],
-            'logic' => $request->get('logic') ?? []
-        ]);
+        $formIntegration = FormIntegration::findOrFail((int)$integrationid);
+        $formIntegration->update($request->toIntegrationData());
 
         return $this->success([
             'message' => 'Form Integration was updated.',
@@ -61,10 +55,10 @@ class FormIntegrationsController extends Controller
 
     public function destroy(string $id, string $integrationid)
     {
-        $form = Form::findOrFail((int) $id);
+        $form = Form::findOrFail((int)$id);
         $this->authorize('update', $form);
 
-        $formIntegration = FormIntegration::findOrFail((int) $integrationid);
+        $formIntegration = FormIntegration::findOrFail((int)$integrationid);
         $formIntegration->delete();
 
         return $this->success([

@@ -5,6 +5,7 @@ namespace App\Service\Forms\Integrations;
 use App\Mail\Forms\SubmissionConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Stevebauman\Purify\Facades\Purify;
 
 /**
  * Sends a confirmation to form respondant that form was submitted
@@ -16,7 +17,7 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
-            'confirmation_reply_to' => 'present|email|nullable',
+            'confirmation_reply_to' => 'email|nullable',
             'notification_sender' => 'required',
             'notification_subject' => 'required',
             'notification_body' => 'required',
@@ -90,6 +91,13 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
 
     public static function validateEmail($email): bool
     {
-        return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
+        return (bool)filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+
+    public static function formatData(array $data): array
+    {
+        return array_merge(parent::formatData($data), [
+            'notification_body' => Purify::clean($data['notification_body'] ?? ''),
+        ]);
     }
 }

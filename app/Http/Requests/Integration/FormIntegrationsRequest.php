@@ -14,10 +14,21 @@ class FormIntegrationsRequest extends FormRequest
 
     public array $integrationRules = [];
 
+    private ?string $integrationClassName = null;
+
     public function __construct(Request $request)
     {
         if ($request->integration_id) {
-            $this->loadIntegrationRules($request->integration_id);
+            // Load integration class, and get rules
+            $integration = FormIntegration::getIntegration($request->integration_id);
+            if ($integration && isset($integration['file_name']) && class_exists(
+                    'App\Service\Forms\Integrations\\' . $integration['file_name']
+                )) {
+                $this->integrationClassName = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
+                $this->loadIntegrationRules();
+                return;
+            }
+            throw new \Exception('Unknown Integration!');
         }
     }
 
@@ -31,6 +42,7 @@ class FormIntegrationsRequest extends FormRequest
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
             'settings' => 'present|array',
+            'status' => 'required|boolean',
             'logic' => [new IntegrationLogicRule()]
         ], $this->integrationRules);
     }
@@ -52,18 +64,22 @@ class FormIntegrationsRequest extends FormRequest
         return $fields;
     }
 
-    private function loadIntegrationRules(string $integrationId)
+    private function loadIntegrationRules()
     {
-        $integration = FormIntegration::getIntegration($integrationId);
-        if ($integration && isset($integration['file_name']) && class_exists(
-                'App\Service\Forms\Integrations\\' . $integration['file_name']
-            )) {
-            $className = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
-            foreach ($className::getValidationRules() as $key => $value) {
-                $this->integrationRules['settings.' . $key] = $value;
-            }
-            return;
+        foreach ($this->integrationClassName::getValidationRules() as $key => $value) {
+            $this->integrationRules['settings.' . $key] = $value;
         }
-        throw new \Exception('Unknown Integration!');
+    }
+
+    public function toIntegrationData(): array
+    {
+        return $this->integrationClassName::formatData([
+            'status' => ($this->validated(
+                'status'
+            )) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_INACTIVE,
+            'integration_id' => $this->validated('integration_id'),
+            'data' => $this->validated('settings') ?? [],
+            'logic' => $this->validated('logic') ?? []
+        ]);
     }
 }
