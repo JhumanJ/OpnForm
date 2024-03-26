@@ -3,16 +3,16 @@
     <div>{{ emailSubmissionConfirmationHelp }}</div>
 
     <div v-if="emailSubmissionConfirmationField">
-      <text-input :form="integrationData" name="settings.confirmation_reply_to" class="mt-4"
-        label="Confirmation Reply To" help="If empty, Reply-to will be your own email."/>
-      <text-input :form="integrationData" name="settings.notification_sender" class="mt-4"
+      <text-input :form="integrationData" name="settings.notification_sender" class="mt-4" required
         label="Confirmation Email Sender Name"
         help="Emails will be sent from our email address but you can customize the name of the Sender" />
-      <text-input :form="integrationData" name="settings.notification_subject" class="mt-4"
+      <text-input :form="integrationData" name="settings.notification_subject" class="mt-4" required
         label="Confirmation email subject" help="Subject of the confirmation email that will be sent" />
-      <rich-text-area-input :form="integrationData" name="settings.notification_body" class="mt-4"
+      <rich-text-area-input :form="integrationData" name="settings.notification_body" class="mt-4" required
         label="Confirmation email content" help="Content of the confirmation email that will be sent" />
-      <toggle-switch-input :form="integrationData" name="settings.notifications_include_submission" class="mt-4" 
+      <text-input :form="integrationData" name="settings.confirmation_reply_to" class="mt-4"
+                  label="Confirmation Reply To" help="If empty, Reply-to will be your own email."/>
+      <toggle-switch-input :form="integrationData" name="settings.notifications_include_submission" class="mt-4"
         label="Include submission data" help="If enabled the confirmation email will contain form submission answers" />
     </div>
   </IntegrationWrapper>

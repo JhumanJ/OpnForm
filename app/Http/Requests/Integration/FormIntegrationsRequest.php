@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Integration;
 
 use App\Models\Integration\FormIntegration;
+use App\Rules\IntegrationLogicRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -30,6 +31,7 @@ class FormIntegrationsRequest extends FormRequest
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
             'settings' => 'present|array',
+            'logic' => [new IntegrationLogicRule()]
         ], $this->integrationRules);
     }
 

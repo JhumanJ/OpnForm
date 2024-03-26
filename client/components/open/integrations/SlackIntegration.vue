@@ -1,7 +1,7 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
     <text-input :form="integrationData" name="settings.slack_webhook_url"
-                label="Slack webhook url" help="help">
+                label="Slack webhook url" help="help" required>
       <template #help>
         <InputHelp>
           <template #help>

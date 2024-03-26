@@ -34,7 +34,7 @@
               </div>
             </div>
           </template>
-          <condition-editor ref="filter-editor" v-model="modelValue.logic" class="mt-4 border-t border rounded-md"
+          <condition-editor ref="filter-editor" v-model="modelValue.logic" class="mt-4 border-t border rounded-md integration-logic"
                             :form="form"/>
         </collapse>
       </div>
@@ -65,3 +65,11 @@ const openHelp = () => {
   crisp.openHelpdesk()
 }
 </script>
+
+<style lang="scss">
+.integration-logic {
+  .query-builder-group__group-children {
+    margin: 4px 0px 0px 0px !important;
+  }
+}
+</style>

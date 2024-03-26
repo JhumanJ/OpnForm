@@ -1,8 +1,8 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
-    <text-area-input :form="integrationData" name="settings.notification_emails" 
+    <text-area-input :form="integrationData" name="settings.notification_emails" required
                       label="Notification Emails" help="Add one email per line" />
-    <text-input :form="integrationData" name="settings.notification_reply_to" 
+    <text-input :form="integrationData" name="settings.notification_reply_to"
                 label="Notification Reply To" :help="notifiesHelp" />
   </IntegrationWrapper>
 </template>

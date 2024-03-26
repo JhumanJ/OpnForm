@@ -1,7 +1,7 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
     <text-input :form="integrationData" name="settings.discord_webhook_url"
-                label="Discord webhook url" help="help">
+                label="Discord webhook url" help="help" required>
       <template #help>
         <InputHelp>
           <template #help>

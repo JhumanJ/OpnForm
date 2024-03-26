@@ -1,7 +1,7 @@
 <template>
   <IntegrationWrapper :integration="props.integration" :form="form" v-model="props.integrationData">
     <text-input :form="integrationData" name="settings.webhook_url" class="mt-4" label="Webhook url"
-                help="We will post form submissions to this endpoint" />
+                help="We will post form submissions to this endpoint" required />
   </IntegrationWrapper>
 </template>
 
