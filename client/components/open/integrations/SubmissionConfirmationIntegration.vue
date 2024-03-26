@@ -42,4 +42,17 @@ const emailSubmissionConfirmationHelp = computed(() => {
   }
   return 'Only available if your form contains 1 email field.'
 })
+
+onBeforeMount(() => {
+  for (const [keyname, defaultValue] of Object.entries({
+    'notification_sender': 'OpnForm',
+    'notification_subject': 'We saved your answers',
+    'notification_body': 'Hello there 👋 <br>This is a confirmation that your submission was successfully saved.',
+    'notifications_include_submission': true,
+  })) {
+    if (props.integrationData.settings[keyname] === undefined) {
+      props.integrationData.settings[keyname] = defaultValue
+    }
+  }
+})
 </script>
