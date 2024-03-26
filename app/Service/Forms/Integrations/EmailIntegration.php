@@ -8,6 +8,13 @@ use App\Notifications\Forms\FormSubmissionNotification;
 
 class EmailIntegration extends AbstractIntegrationHandler
 {
+    public static function getValidationRules(): array
+    {
+        return [
+            'notification_emails' => 'required'
+        ];
+    }
+
     protected function shouldRun(): bool
     {
         return !(!$this->form->is_pro || !$this->integrationData->notification_emails) && parent::shouldRun();
@@ -29,7 +36,7 @@ class EmailIntegration extends AbstractIntegrationHandler
             'form_slug' => $this->form->slug,
         ]);
         $subscribers->each(function ($subscriber) {
-            Notification::route('mail', $subscriber)->notify(new FormSubmissionNotification($this->event));
+            Notification::route('mail', $subscriber)->notify(new FormSubmissionNotification($this->event, $this->integrationData));
         });
     }
 }

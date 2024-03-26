@@ -9,6 +9,13 @@ use Vinkla\Hashids\Facades\Hashids;
 class DiscordIntegration extends AbstractIntegrationHandler
 {
 
+    public static function getValidationRules(): array
+    {
+        return [
+            'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks'
+        ];
+    }
+
     protected function getWebhookUrl(): ?string
     {
         return $this->integrationData->discord_webhook_url;
@@ -16,9 +23,7 @@ class DiscordIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl())
-            && str_contains($this->getWebhookUrl(), 'https://discord.com/api/webhooks')
-            && $this->form->is_pro && parent::shouldRun();
+        return !is_null($this->getWebhookUrl()) && $this->form->is_pro && parent::shouldRun();
     }
 
     protected function getWebhookData(): array
@@ -77,13 +82,6 @@ class DiscordIntegration extends AbstractIntegrationHandler
             'username' => config('app.name'),
             'avatar_url' => asset('img/logo.png'),
             'embeds' => $blocks,
-        ];
-    }
-
-    public static function getValidationRules(): array
-    {
-        return [
-            'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks'
         ];
     }
 }

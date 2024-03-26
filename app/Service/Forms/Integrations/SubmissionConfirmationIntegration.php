@@ -13,6 +13,16 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
 {
     public const RISKY_USERS_LIMIT = 120;
 
+    public static function getValidationRules(): array
+    {
+        return [
+            'notification_sender' => 'required',
+            'notification_subject' => 'required',
+            'notification_body' => 'required',
+            'notifications_include_submission' => 'boolean'
+        ];
+    }
+
     protected function shouldRun(): bool
     {
         return !(!$this->form->is_pro) && parent::shouldRun() && !$this->riskLimitReached();
@@ -34,7 +44,7 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
             'form_id' => $this->form->id,
             'form_slug' => $this->form->slug,
         ]);
-        Mail::to($email)->send(new SubmissionConfirmationMail($this->event));
+        Mail::to($email)->send(new SubmissionConfirmationMail($this->event, $this->integrationData));
     }
 
     private function getRespondentEmail()

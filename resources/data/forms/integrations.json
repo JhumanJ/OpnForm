@@ -1,6 +1,6 @@
 {
   "email": {
-    "name": "Email Notifications",
+    "name": "Email Notification",
     "icon": "heroicons:envelope-20-solid",
     "section_name": "Notifications",
     "file_name": "EmailIntegration",
@@ -8,32 +8,32 @@
     "crisp_help_page_slug": "can-i-receive-notifications-on-form-submissions-134svqv"
   },
   "submission_confirmation": {
-    "name": "Send Submission Confirmation",
+    "name": "Submission Confirmation",
     "icon": "heroicons:paper-airplane-20-solid",
     "section_name": "Notifications",
     "file_name": "SubmissionConfirmationIntegration",
-    "is_pro": false
-  },
-  "webhook": {
-    "name": "Webhook Notifications",
-    "icon": "material-symbols:webhook",
-    "section_name": "Notifications",
-    "file_name": "WebhookIntegration",
     "is_pro": true
   },
   "slack": {
-    "name": "Slack Notifications",
+    "name": "Slack Notification",
     "icon": "mdi:slack",
     "section_name": "Notifications",
     "file_name": "SlackIntegration",
     "is_pro": false
   },
   "discord": {
-    "name": "Discord Notifications",
+    "name": "Discord Notification",
     "icon": "ic:baseline-discord",
     "section_name": "Notifications",
     "file_name": "DiscordIntegration",
     "is_pro": true
+  },
+  "webhook": {
+    "name": "Webhook Notification",
+    "icon": "material-symbols:webhook",
+    "section_name": "Notifications",
+    "file_name": "WebhookIntegration",
+    "is_pro": false
   },
   "google_sheets": {
     "name": "Google Sheets",
@@ -41,6 +41,6 @@
     "section_name": "Databases",
     "file_name": "GoogleSheetsIntegration",
     "is_pro": true,
-    "soon": true
+    "coming_soon": true
   }
 }

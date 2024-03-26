@@ -22,7 +22,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(FormSubmitted $event)
+    public function __construct(FormSubmitted $event, private $integrationData)
     {
         $this->event = $event;
     }
@@ -55,7 +55,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
         return (new MailMessage())
             ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
             ->from($this->getFromEmail(), config('app.name'))
-            ->subject('New form submission for "'.$this->event->form->title.'"')
+            ->subject('New form submission for "' . $this->event->form->title . '"')
             ->markdown('mail.form.submission-notification', [
                 'fields' => $formatter->getFieldsWithValue(),
                 'form' => $this->event->form,
@@ -66,12 +66,12 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
     {
         $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
 
-        return $originalFromAddress->first().'+'.time().'@'.$originalFromAddress->last();
+        return $originalFromAddress->first() . '+' . time() . '@' . $originalFromAddress->last();
     }
 
     private function getReplyToEmail($default)
     {
-        $replyTo = Arr::get((array) $this->event->form->notification_settings, 'notification_reply_to', null);
+        $replyTo = $this->integrationData->notification_reply_to ?? null;
         if ($replyTo && $this->validateEmail($replyTo)) {
             return $replyTo;
         }
@@ -85,7 +85,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
         $emailFields = collect($this->event->form->properties)->filter(function ($field) {
             $hidden = $field['hidden'] ?? false;
 
-            return ! $hidden && $field['type'] == 'email';
+            return !$hidden && $field['type'] == 'email';
         });
         if ($emailFields->count() != 1) {
             return null;

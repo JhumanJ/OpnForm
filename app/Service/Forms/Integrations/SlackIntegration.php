@@ -8,6 +8,13 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class SlackIntegration extends AbstractIntegrationHandler
 {
+    public static function getValidationRules(): array
+    {
+        return [
+            'slack_webhook_url' => 'required|url|starts_with:https://hooks.slack.com/'
+        ];
+    }
+
     protected function getWebhookUrl(): ?string
     {
         return $this->integrationData->slack_webhook_url;
@@ -15,10 +22,7 @@ class SlackIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl())
-            && str_contains($this->getWebhookUrl(), 'https://hooks.slack.com/')
-            && $this->form->is_pro
-            && parent::shouldRun();
+        return !is_null($this->getWebhookUrl()) && $this->form->is_pro && parent::shouldRun();
     }
 
     protected function getWebhookData(): array
