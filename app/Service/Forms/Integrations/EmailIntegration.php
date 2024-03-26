@@ -2,6 +2,7 @@
 
 namespace App\Service\Forms\Integrations;
 
+use App\Rules\OneEmailPerLine;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Forms\FormSubmissionNotification;
@@ -11,7 +12,7 @@ class EmailIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
-            'notification_emails' => 'required'
+            'notification_emails' => ['required', new OneEmailPerLine()],
         ];
     }
 
@@ -36,7 +37,9 @@ class EmailIntegration extends AbstractIntegrationHandler
             'form_slug' => $this->form->slug,
         ]);
         $subscribers->each(function ($subscriber) {
-            Notification::route('mail', $subscriber)->notify(new FormSubmissionNotification($this->event, $this->integrationData));
+            Notification::route('mail', $subscriber)->notify(
+                new FormSubmissionNotification($this->event, $this->integrationData)
+            );
         });
     }
 }

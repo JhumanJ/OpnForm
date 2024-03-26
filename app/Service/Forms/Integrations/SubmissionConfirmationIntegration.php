@@ -16,6 +16,7 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
+            'confirmation_reply_to' => 'present|email',
             'notification_sender' => 'required',
             'notification_subject' => 'required',
             'notification_body' => 'required',

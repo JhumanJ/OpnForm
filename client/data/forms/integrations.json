@@ -37,7 +37,7 @@
   },
   "zapier": {
     "name": "Zapier Integration",
-    "icon": "logos:zapier",
+    "icon": "cib:zapier",
     "section_name": "Notifications",
     "file_name": "ZapierIntegration",
     "is_pro": true,

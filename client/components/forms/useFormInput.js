@@ -47,7 +47,6 @@ export function useFormInput (props, context, formPrefixKey = null) {
     },
     set: (val) => {
       if (props.form) {
-        console.log('setting form',val, props.form)
         _set(props.form, (formPrefixKey || '') + props.name, val)
       } else {
         content.value = val
