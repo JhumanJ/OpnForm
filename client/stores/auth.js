@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     setCookie(name, value) {
-      if (process.client) {
+      if (import.meta.client) {
         useCookie(name).value = value
       }
     },

@@ -75,7 +75,7 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 onBeforeMount(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.onbeforeunload = () => {
       if (isDirty()) {
         return false

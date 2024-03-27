@@ -1,6 +1,6 @@
 export const useCrisp = () => {
 
-  let crisp = process.client ? window.Crisp : null
+  let crisp = import.meta.client ? window.Crisp : null
 
   function openChat() {
     if (!crisp) return

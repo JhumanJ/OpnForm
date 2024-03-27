@@ -80,7 +80,7 @@ watch(() => workspace, () => {
 })
 
 onMounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.onbeforeunload = () => {
       if (isDirty()) {
         return false

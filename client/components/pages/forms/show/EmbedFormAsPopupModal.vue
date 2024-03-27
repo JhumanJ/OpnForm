@@ -150,12 +150,12 @@ const onClose = () => {
   showEmbedFormAsPopupModal.value = false
 }
 const copyToClipboard = () => {
-  if (process.server) return
+  if (import.meta.server) return
   copy(embedPopupCode.value)
   useAlert().success('Copied!')
 }
 const removePreview = () => {
-  if (process.server) return
+  if (import.meta.server) return
   const oldP = document.head.querySelector('#nf-popup-preview')
   if (oldP) {
     oldP.remove()
@@ -166,7 +166,7 @@ const removePreview = () => {
   }
 }
 const previewPopup = (nfData) => {
-  if (process.server) return
+  if (import.meta.server) return
   if (!showEmbedFormAsPopupModal.value) {
     return
   }

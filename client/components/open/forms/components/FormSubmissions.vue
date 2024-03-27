@@ -145,7 +145,7 @@ export default {
   },
   computed: {
     parentPage() {
-      if (process.server) {
+      if (import.meta.server) {
         return null
       }
       return window
@@ -261,7 +261,7 @@ export default {
       this.properties = columns
     },
     onChangeDisplayColumns() {
-      if (!process.client) return
+      if (!import.meta.client) return
       window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
       this.properties = clonedeep(this.form.properties).concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true

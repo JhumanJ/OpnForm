@@ -62,7 +62,7 @@ export const appUrl = (path = '/') => {
  * @returns {string}
  */
 export const getHost = function () {
-  if (process.server) {
+  if (import.meta.server) {
     return getDomain(useNuxtApp().ssrContext?.event.context.siteConfigNitroOrigin) || useNuxtApp().ssrContext?.event.node.req.headers.host
   } else {
     return window.location.host

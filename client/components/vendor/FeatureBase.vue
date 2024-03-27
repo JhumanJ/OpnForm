@@ -18,7 +18,7 @@ const loadScript = () => {
 };
 
 const setupForUser = () => {
-  if (process.server || !user.value || !featureBaseOrganization ||isImpersonating.value) return
+  if (import.meta.server || !user.value || !featureBaseOrganization ||isImpersonating.value) return
   window.Featurebase(
     "identify",
     {
@@ -49,7 +49,7 @@ const setupForUser = () => {
 }
 
 onMounted(() => {
-  if (process.server) return
+  if (import.meta.server) return
 
   // Setup base
   if (!window.hasOwnProperty('Featurebase') || typeof window.Featurebase !== "function") {
@@ -64,7 +64,7 @@ onMounted(() => {
 })
 
 watch(user, (val) => {
-  if (process.server || !val) return
+  if (import.meta.server || !val) return
 
   loadScript()
   setupForUser()

@@ -33,7 +33,7 @@ export default {
 
   methods: {
     loadScript () {
-      if (process.server) return
+      if (import.meta.server) return
       const script = document.createElement('script')
       script.setAttribute('src', 'https://testimonial.to/js/iframeResizer.min.js')
       document.head.appendChild(script)

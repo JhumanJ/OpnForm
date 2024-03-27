@@ -121,7 +121,7 @@ onMounted(() => {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
 
-    if (process.client) {
+    if (import.meta.client) {
       if (form.value.custom_code) {
         const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
         try {

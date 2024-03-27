@@ -12,7 +12,7 @@ export const pendingSubmission = (form) => {
   })
 
   const set = (value) => {
-    if (process.server || !enabled.value) return
+    if (import.meta.server || !enabled.value) return
     useStorage(formPendingSubmissionKey.value).value = value === null ? value : JSON.stringify(value)
   }
 
@@ -21,7 +21,7 @@ export const pendingSubmission = (form) => {
   }
 
   const get = (defaultValue = {}) => {
-    if (process.server || !enabled.value) return
+    if (import.meta.server || !enabled.value) return
     const pendingSubmission = useStorage(formPendingSubmissionKey.value).value
     return pendingSubmission ? JSON.parse(pendingSubmission) : defaultValue
   }

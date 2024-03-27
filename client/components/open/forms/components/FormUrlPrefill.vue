@@ -59,7 +59,7 @@ const preFillUrl = computed(() => {
 })
 
 const copyToClipboard = () => {
-  if (process.server) return
+  if (import.meta.server) return
   copy(preFillUrl.value)
   useAlert().success('Copied!')
 }
