@@ -1,5 +1,5 @@
 export const useIsIframe = () => {
-  if (process.client) {
+  if (import.meta.client) {
     return window.location !== window.parent.location || window.frameElement
   }
   return false

@@ -32,7 +32,7 @@ export default {
 
   methods: {
     mouseDownHandler(e) {
-      if (process.server) return
+      if (import.meta.server) return
       // Get the current mouse position
       this.x = e.clientX
 

@@ -235,7 +235,7 @@ export default {
 
   methods: {
     openChangelog() {
-      if (process.server) return
+      if (import.meta.server) return
       window.Featurebase('manually_open_changelog_popup')
     },
     async logout() {
