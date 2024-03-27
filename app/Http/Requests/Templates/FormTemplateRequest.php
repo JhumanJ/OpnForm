@@ -20,14 +20,6 @@ class FormTemplateRequest extends FormRequest
         'is_password_protected',
         'last_edited_human',
         'max_number_of_submissions_reached',
-        'notifies',
-        'notification_body',
-        'notification_emails',
-        'notification_sender',
-        'notification_subject',
-        'notifications_include_submission',
-        'notifies_slack',
-        'slack_webhook_url',
         'removed_properties',
         'creator_id',
         'extra',
@@ -50,14 +42,14 @@ class FormTemplateRequest extends FormRequest
     {
         $slugRule = '';
         if ($this->id) {
-            $slugRule = ','.$this->id;
+            $slugRule = ',' . $this->id;
         }
 
         return [
             'form' => 'required|array',
             'publicly_listed' => 'boolean',
             'name' => 'required|string|max:60',
-            'slug' => 'required|string|alpha_dash|unique:templates,slug'.$slugRule,
+            'slug' => 'required|string|alpha_dash|unique:templates,slug' . $slugRule,
             'short_description' => 'required|string|max:1000',
             'description' => 'required|string',
             'image_url' => 'required|string',
