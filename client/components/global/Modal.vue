@@ -105,13 +105,13 @@ const closeOnEscape = (e) => {
 }
 
 onMounted(() => {
-  if (process.server) return
+  if (import.meta.server) return
   document.addEventListener('keydown', closeOnEscape)
   initMotions()
 })
 
 onBeforeUnmount(() => {
-  if (process.server) return
+  if (import.meta.server) return
   document.removeEventListener('keydown', closeOnEscape)
 })
 

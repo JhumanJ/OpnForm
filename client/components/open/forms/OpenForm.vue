@@ -267,7 +267,7 @@ export default {
 
   mounted () {
     this.initForm()
-    if (process.client && window.location.href.includes('auto_submit=true')) {
+    if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
     }
@@ -279,7 +279,7 @@ export default {
         return
       }
 
-      if (this.form.use_captcha && process.client) {
+      if (this.form.use_captcha && import.meta.client) {
         this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
         this.$refs.hcaptcha.reset()
       }
@@ -311,7 +311,7 @@ export default {
       }
 
       // Scroll to error
-      if (process.server) return
+      if (import.meta.server) return
       const elements = document.getElementsByClassName('has-error')
       if (elements.length > 0) {
         window.scroll({

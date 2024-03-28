@@ -37,7 +37,7 @@ const props = defineProps({
 })
 
 const copyToClipboard = () => {
-  if (process.server) return
+  if (import.meta.server) return
   copy(props.content)
   if(props.isDraft){
     useAlert().warning('Copied! But other people won\'t be able to see the form since it\'s currently in draft mode')

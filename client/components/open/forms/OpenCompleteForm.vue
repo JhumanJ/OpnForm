@@ -152,7 +152,7 @@ export default {
 
   computed: {
     isEmbedPopup () {
-      return process.client && window.location.href.includes('popup=true')
+      return import.meta.client && window.location.href.includes('popup=true')
     },
     theme () {
       return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
@@ -161,7 +161,7 @@ export default {
       return this.$route.name === 'forms-slug'
     },
     isHideTitle () {
-      return this.form.hide_title || (process.client && window.location.href.includes('hide_title=true'))
+      return this.form.hide_title || (import.meta.client && window.location.href.includes('hide_title=true'))
     }
   },
 
