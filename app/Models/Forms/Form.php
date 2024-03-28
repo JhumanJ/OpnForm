@@ -3,6 +3,7 @@
 namespace App\Models\Forms;
 
 use App\Events\Models\FormCreated;
+use App\Models\Integration\FormIntegration;
 use App\Models\Integration\FormZapierWebhook;
 use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
@@ -265,6 +266,11 @@ class Form extends Model implements CachableAttributes
     public function zappierHooks()
     {
         return $this->hasMany(FormZapierWebhook::class);
+    }
+
+    public function integrations()
+    {
+        return $this->hasMany(FormIntegration::class);
     }
 
     /**

@@ -15,14 +15,13 @@ class NotifyFormSubmission implements ShouldQueue
     /**
      * Sends notification to pre-defined emails on form submissions
      *
-     * @param  object  $event
+     * @param object $event
      * @return void
      */
     public function handle(FormSubmitted $event)
     {
-        $formIntegrations = FormIntegration::where([['form_id', $event->form->id], ['status', FormIntegration::STATUS_ACTIVE]])->get();
+        $formIntegrations = $event->form->integrations()->where('status', FormIntegration::STATUS_ACTIVE)->get();
         foreach ($formIntegrations as $formIntegration) {
-            ray($formIntegration, $formIntegration->integration_id);
             $this->getIntegrationHandler(
                 $event,
                 $formIntegration
@@ -30,10 +29,14 @@ class NotifyFormSubmission implements ShouldQueue
         }
     }
 
-    public static function getIntegrationHandler(FormSubmitted $event, FormIntegration $formIntegration): AbstractIntegrationHandler
-    {
+    public static function getIntegrationHandler(
+        FormSubmitted $event,
+        FormIntegration $formIntegration
+    ): AbstractIntegrationHandler {
         $integration = FormIntegration::getIntegration($formIntegration->integration_id);
-        if ($integration && isset($integration['file_name']) && class_exists('App\Service\Forms\Integrations\\' . $integration['file_name'])) {
+        if ($integration && isset($integration['file_name']) && class_exists(
+                'App\Service\Forms\Integrations\\' . $integration['file_name']
+            )) {
             $className = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
             return new $className($event, $formIntegration, $integration);
         }
