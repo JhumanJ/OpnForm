@@ -1,5 +1,5 @@
 <template>
-  <modal :show="show" @close="emit('close')" compact-header>
+  <modal :show="show" @close="emit('close')" compact-header inner-padding="">
     <template #icon>
       <Icon name="material-symbols:list" size="40px"/>
     </template>
@@ -9,7 +9,9 @@
 
     <UTable :loading="integrationEventsLoading" :columns="columns" :rows="integrationEvents">
       <template #status-data="{ row }">
-        <UBadge size="xs" :label="row.status" :color="(row.status==='Success') ? 'emerald' : 'red'" variant="subtle" />
+        <Badge :color="(row.status==='Success') ? 'green' : 'red'">
+          {{row.status}}
+        </Badge>
       </template>
       <template #data-data="{ row }">
         <vue-json-pretty v-if="row.data && Object.keys(row.data).length > 0" :data="row.data" :collapsedNodeLength="0" :showLength="true" :showIcon="true" />

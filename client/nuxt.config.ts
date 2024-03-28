@@ -5,7 +5,7 @@ import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: {enabled: false},
+    devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
