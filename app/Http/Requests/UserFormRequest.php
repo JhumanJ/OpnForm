@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Rules\FormPropertyLogicRule;
-use App\Rules\OneEmailPerLine;
 use Illuminate\Validation\Rule;
 
 /**
