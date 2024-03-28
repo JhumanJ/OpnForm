@@ -154,9 +154,9 @@ Route::group(['middleware' => 'auth:api'], function () {
                 [FormIntegrationsController::class, 'destroy']
             )->name('integration.destroy');
             Route::get(
-                '/{id}/integration/{integrationid}',
+                '/{id}/integration/{integrationid}/events',
                 [FormIntegrationsEventController::class, 'index']
-            )->name('integrations');
+            )->name('integrations.events');
         });
     });
 

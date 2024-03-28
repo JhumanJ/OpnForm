@@ -40,7 +40,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
-const formIntegrationEventEndpoint = '/open/forms/{formid}/integration/{integrationid}'
+const formIntegrationEventEndpoint = '/open/forms/{formid}/integration/{integrationid}/events'
 const columns = [
   { key: 'date', label: 'Date', sortable: true },
   { key: 'status', label: 'Status', sortable: true },

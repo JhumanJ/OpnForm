@@ -26,6 +26,8 @@ it('can CRUD form integration', function () {
         ->assertSuccessful()
         ->assertJsonCount(1);
 
+    ray($response->json('form_integration.id'),$response->json());
+
     $this->putJson(route('open.forms.integration.update', [$form->id, $response->json('form_integration.id')]), $data)
         ->assertSuccessful()
         ->assertJson([
