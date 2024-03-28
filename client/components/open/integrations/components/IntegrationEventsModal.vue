@@ -1,7 +1,7 @@
 <template>
   <modal :show="show" @close="emit('close')" compact-header inner-padding="">
     <template #icon>
-      <Icon name="material-symbols:list" size="40px"/>
+      <Icon name="heroicons:clock" size="40px"/>
     </template>
     <template #title>
       Past Events
