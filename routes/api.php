@@ -11,6 +11,7 @@ use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormStatsController;
 use App\Http\Controllers\Forms\FormSubmissionController;
 use App\Http\Controllers\Forms\Integration\FormIntegrationsController;
+use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
@@ -152,6 +153,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                 '/{id}/integration/{integrationid}',
                 [FormIntegrationsController::class, 'destroy']
             )->name('integration.destroy');
+            Route::get(
+                '/{id}/integration/{integrationid}',
+                [FormIntegrationsEventController::class, 'index']
+            )->name('integrations');
         });
     });
 

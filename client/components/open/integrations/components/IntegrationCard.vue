@@ -49,6 +49,14 @@
         </svg>
         Edit
       </a>
+      <a v-track.past_events_form_integration_click="{ form_slug: form.slug, form_integration_id: integration.id }" href="#"
+        @click.prevent="showIntegrationEventsModal = true"
+        class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex items-center">
+        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+        Past Events
+      </a>
       <a v-track.delete_form_integration_click="{ form_integration_id: integration.id }" href="#"
         class="block px-4 py-2 text-md text-red-600 hover:bg-red-50 flex items-center"
         @click.prevent="deleteFormIntegration(integration.id)">
@@ -63,6 +71,9 @@
     <IntegrationModal v-if="form && integration && integrationTypeInfo" :form="form" :integration="integrationTypeInfo"
       :integrationKey="integration.integration_id" :formIntegrationId="integration.id" :show="showIntegrationModal"
       @close="showIntegrationModal = false" />
+
+    <IntegrationEventsModal v-if="form && integration" :form="form" :formIntegrationId="integration.id" :show="showIntegrationEventsModal"
+      @close="showIntegrationEventsModal = false" />
   </div>
 </template>
 
@@ -86,6 +97,7 @@ const integrations = computed(() => formIntegrationsStore.availableIntegrations)
 const integrationTypeInfo = computed(() => integrations.value.get(props.integration.integration_id))
 
 let showIntegrationModal = ref(false)
+let showIntegrationEventsModal = ref(false)
 let loadingDelete = ref(false)
 
 const deleteFormIntegration = (integrationid) => {
