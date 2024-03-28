@@ -53,6 +53,7 @@
     "vue-codemirror": "^6.1.1",
     "vue-confetti": "^2.3.0",
     "vue-country-flag-next": "^2.3.2",
+    "vue-json-pretty": "^2.4.0",
     "vue-notion": "^3.0.0-beta.1",
     "vue-signature-pad": "^3.0.2",
     "vue3-editor": "^0.1.1",

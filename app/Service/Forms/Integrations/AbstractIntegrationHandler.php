@@ -4,9 +4,11 @@ namespace App\Service\Forms\Integrations;
 
 use App\Models\Integration\FormIntegration;
 use App\Events\Forms\FormSubmitted;
+use App\Models\Integration\FormIntegrationsEvent;
 use App\Service\Forms\FormSubmissionFormatter;
 use App\Service\Forms\FormLogicConditionChecker;
-use Spatie\WebhookServer\WebhookCall;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Vinkla\Hashids\Facades\Hashids;
 
 abstract class AbstractIntegrationHandler
@@ -15,8 +17,11 @@ abstract class AbstractIntegrationHandler
     protected $submissionData = null;
     protected $integrationData = null;
 
-    public function __construct(protected FormSubmitted $event, protected FormIntegration $formIntegration, protected array $integration)
-    {
+    public function __construct(
+        protected FormSubmitted $event,
+        protected FormIntegration $formIntegration,
+        protected array $integration
+    ) {
         $this->form = $event->form;
         $this->submissionData = $event->data;
         $this->integrationData = $formIntegration->data;
@@ -32,7 +37,10 @@ abstract class AbstractIntegrationHandler
         if (!$this->formIntegration->logic) {
             return true;
         }
-        return FormLogicConditionChecker::conditionsMet(json_decode(json_encode($this->formIntegration->logic), true), $this->submissionData);
+        return FormLogicConditionChecker::conditionsMet(
+            json_decode(json_encode($this->formIntegration->logic), true),
+            $this->submissionData
+        );
     }
 
     protected function shouldRun(): bool
@@ -65,39 +73,59 @@ abstract class AbstractIntegrationHandler
             'submission' => $formattedData,
         ];
         if ($this->form->is_pro && $this->form->editable_submissions) {
-            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode($this->submissionData['submission_id']);
+            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode(
+                $this->submissionData['submission_id']
+            );
         }
 
         return $data;
+    }
+
+    final public function run(): void
+    {
+        try {
+            $this->handle();
+            $this->formIntegration->events()->create([
+                'status' => FormIntegrationsEvent::STATUS_SUCCESS,
+            ]);
+        } catch (\Exception $e) {
+            $this->formIntegration->events()->create([
+                'status' => FormIntegrationsEvent::STATUS_ERROR,
+                'data' => $this->extractEventDataFromException($e),
+            ]);
+        }
     }
 
     /**
      * Default handle. Can be changed in child classes.
      */
-    public function handle()
+    public function handle(): void
     {
         if (!$this->shouldRun()) {
             return;
         }
 
-        WebhookCall::create()
-            // Add context on error, used to notify form owner
-            ->meta([
-                'type' => 'form_submission',
-                'data' => $this->submissionData,
-                'form' => $this->form,
-                'provider' => $this->getProviderName(),
-            ])
-            ->url($this->getWebhookUrl())
-            ->doNotSign()
-            ->payload($this->getWebhookData())
-            ->dispatchSync();
+        Http::throw()->post($this->getWebhookUrl(), $this->getWebhookData());
     }
 
-    public abstract static function getValidationRules(): array;
+    abstract public static function getValidationRules(): array;
 
     public static function formatData(array $data): array
     {
         return $data;
+    }
+
+    public function extractEventDataFromException(\Exception $e): array
+    {
+        if ($e instanceof RequestException) {
+            return [
+                'message' => $e->getMessage(),
+                'response' => $e->response->json(),
+                'status' => $e->response->status(),
+            ];
+        }
+        return [
+            'message' => $e->getMessage()
+        ];
     }
 }

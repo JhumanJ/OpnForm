@@ -8,7 +8,6 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class DiscordIntegration extends AbstractIntegrationHandler
 {
-
     public static function getValidationRules(): array
     {
         return [

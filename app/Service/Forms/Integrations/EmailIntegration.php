@@ -22,7 +22,7 @@ class EmailIntegration extends AbstractIntegrationHandler
         return !(!$this->form->is_pro || !$this->integrationData->notification_emails) && parent::shouldRun();
     }
 
-    public function handle()
+    public function handle(): void
     {
         if (!$this->shouldRun()) {
             return;

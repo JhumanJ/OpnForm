@@ -144,7 +144,7 @@ export default {
   watch: {
     showUploadModal: {
       handler (val) {
-        if (process.server) return
+        if (import.meta.server) return
         document.removeEventListener('paste', this.onUploadPasteEvent)
         if (this.showUploadModal) {
           document.addEventListener('paste', this.onUploadPasteEvent)

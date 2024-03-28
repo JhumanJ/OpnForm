@@ -6,8 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -19,7 +18,7 @@ return new class extends Migration
 
         Schema::create('form_integrations_events', function (Blueprint $table) use ($driver) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Forms\Form::class, 'integration_id');
+            $table->foreignIdFor(\App\Models\Integration\FormIntegration::class, 'integration_id');
             $table->string('status');
             if ($driver === 'mysql') {
                 $table->jsonb('data')->default(new Expression("(JSON_OBJECT())"));

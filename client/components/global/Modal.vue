@@ -19,9 +19,9 @@
               </svg>
             </button>
           </div>
-          <div class="flex border-b pb-4 p-6"
+          <div class="flex border-b pb-4"
                v-if="$slots.hasOwnProperty('icon') || $slots.hasOwnProperty('title')"
-               :class="{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader}">
+               :class="[{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader},headerInnerPadding]">
             <div v-if="$slots.hasOwnProperty('icon')" :class="{'w-full mb-4 flex justify-center':!compactHeader}">
               <div class="w-14 h-14 rounded-full flex justify-center items-center"
                    :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'"
@@ -38,11 +38,11 @@
             </div>
           </div>
 
-          <div class="w-full p-6">
+          <div class="w-full" :class="innerPadding">
             <slot/>
           </div>
 
-          <div v-if="$slots.hasOwnProperty('footer')" class="p-6 bg-gray-50 border-t rounded-b-xl text-right">
+          <div v-if="$slots.hasOwnProperty('footer')" class="bg-gray-50 border-t rounded-b-xl text-right" :class="footerInnerPadding">
             <slot name="footer"/>
           </div>
         </div>
@@ -67,6 +67,15 @@ const props = defineProps({
   },
   maxWidth: {
     default: '2xl'
+  },
+  innerPadding: {
+    default: 'p-6'
+  },
+  headerInnerPadding: {
+    default: 'p-6'
+  },
+  footerInnerPadding: {
+    default: 'p-6'
   },
   closeable: {
     default: true
@@ -96,13 +105,13 @@ const closeOnEscape = (e) => {
 }
 
 onMounted(() => {
-  if (process.server) return
+  if (import.meta.server) return
   document.addEventListener('keydown', closeOnEscape)
   initMotions()
 })
 
 onBeforeUnmount(() => {
-  if (process.server) return
+  if (import.meta.server) return
   document.removeEventListener('keydown', closeOnEscape)
 })
 

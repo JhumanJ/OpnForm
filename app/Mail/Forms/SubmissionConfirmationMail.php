@@ -8,7 +8,6 @@ use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
 

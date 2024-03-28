@@ -11,7 +11,6 @@ use Illuminate\Validation\Rule;
 
 class FormIntegrationsRequest extends FormRequest
 {
-
     public array $integrationRules = [];
 
     private ?string $integrationClassName = null;
@@ -22,8 +21,8 @@ class FormIntegrationsRequest extends FormRequest
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);
             if ($integration && isset($integration['file_name']) && class_exists(
-                    'App\Service\Forms\Integrations\\' . $integration['file_name']
-                )) {
+                'App\Service\Forms\Integrations\\' . $integration['file_name']
+            )) {
                 $this->integrationClassName = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
                 $this->loadIntegrationRules();
                 return;
