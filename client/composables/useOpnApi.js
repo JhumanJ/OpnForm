@@ -39,7 +39,7 @@ export function getOpnRequestsOptions(request, opts) {
   opts.headers = {accept: 'application/json', ...opts.headers}
 
   // Authenticate requests coming from the server
-  if (process.server && config.apiSecret) {
+  if (import.meta.server && config.apiSecret) {
     opts.headers['x-api-secret'] = config.apiSecret
   }
 
