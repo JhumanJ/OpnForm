@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
 class SimpleWebhookHandler extends AbstractWebhookHandler
 {

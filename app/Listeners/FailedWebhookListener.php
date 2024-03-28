@@ -15,6 +15,7 @@ class FailedWebhookListener
      */
     public function handle(WebhookCallFailedEvent $event)
     {
+        ray('in faieled', $event);
         // Notify form owner
         if ($event->meta['type'] == 'form_submission') {
             $event->meta['form']->creator->notify(new FailedWebhookNotification($event));

@@ -36,7 +36,7 @@
     "spatie/laravel-sitemap": "^6.0",
     "spatie/laravel-sluggable": "^3.0",
     "spatie/laravel-webhook-server": "^3.1.2",
-    "stevebauman/purify": "^4.0",
+    "stevebauman/purify": "^v6.2.0",
     "tymon/jwt-auth": "^1.0.2",
     "vinkla/hashids": "^10.0"
   },

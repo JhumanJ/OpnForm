@@ -96,7 +96,7 @@ export default {
                     this.cameraPermissionStatus = 'allowed';
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.error(err)
                     if(err.toString()  === 'NotAllowedError: Permission denied'){
                         this.cameraPermissionStatus = 'blocked';
                         return;

@@ -214,4 +214,23 @@ trait TestHelpers
         }
         $this->assertGuest();
     }
+
+    public function createFormIntegration($integrationId, $formId, $settings = [])
+    {
+        $data = [
+            'status' => true,
+            'integration_id' => $integrationId,
+            'logic' => null,
+            'settings' => $settings
+        ];
+
+        $response = $this->postJson(route('open.forms.integration.create', $formId), $data)
+            ->assertSuccessful()
+            ->assertJson([
+                'type' => 'success',
+                'message' => 'Form Integration was created.'
+            ]);
+
+        return (object) $response->json('form_integration.data');
+    }
 }

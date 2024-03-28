@@ -5,18 +5,18 @@
                         help="With form submission answers"
     />
     <toggle-switch-input name="link_open_form" v-model="compVal.link_open_form" class="mt-4"
-                        label="Open Form"
+                        label="'Open Form' Link"
                         help="Link to the form public page"
     />
     <toggle-switch-input name="link_edit_form" v-model="compVal.link_edit_form" class="mt-4"
-                        label="Edit Form"
+                        label="'Edit Form' Link"
                         help="Link to the form admin page"
     />
     <toggle-switch-input name="views_submissions_count" v-model="compVal.views_submissions_count" class="mt-4"
-                        label="Analytics (views & submissions)"
+                        label="Form Analytics" help="Form views and submissions count"
     />
     <toggle-switch-input name="link_edit_submission" v-model="compVal.link_edit_submission" class="mt-4"
-                        label="Link to the Edit Submission Record"
+                        label="Edit Submission Link"
     />
   </div>
 </template>

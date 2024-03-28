@@ -17,7 +17,6 @@ useOpnSeoMeta({
 })
 
 onBeforeRouteLeave(() => {
-  console.log('Clearing  store state')
   useRecordsStore().resetState()
 })
 

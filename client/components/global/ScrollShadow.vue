@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import throttle from 'lodash.throttle'
+import throttle from 'lodash/throttle'
 function newResizeObserver (callback) {
   // Skip this feature for browsers which
   // do not support ResizeObserver.

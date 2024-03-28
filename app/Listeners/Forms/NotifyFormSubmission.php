@@ -3,12 +3,10 @@
 namespace App\Listeners\Forms;
 
 use App\Events\Forms\FormSubmitted;
-use App\Models\Forms\Form;
-use App\Notifications\Forms\FormSubmissionNotification;
-use App\Service\Forms\Webhooks\WebhookHandlerProvider;
+use App\Models\Integration\FormIntegration;
+use App\Service\Forms\Integrations\AbstractIntegrationHandler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyFormSubmission implements ShouldQueue
 {
@@ -22,48 +20,32 @@ class NotifyFormSubmission implements ShouldQueue
      */
     public function handle(FormSubmitted $event)
     {
-        $this->sendEmailNotifications($event);
+        $formIntegrations = FormIntegration::where([['form_id', $event->form->id], ['status', FormIntegration::STATUS_ACTIVE]])->get();
+        foreach ($formIntegrations as $formIntegration) {
+            ray($formIntegration, $formIntegration->integration_id);
+            $this->getIntegrationHandler(
+                $event,
+                $formIntegration
+            )->run();
+        }
 
+        /* $this->sendEmailNotifications($event);
         $this->sendWebhookNotification($event, WebhookHandlerProvider::SIMPLE_WEBHOOK_PROVIDER);
         $this->sendWebhookNotification($event, WebhookHandlerProvider::SLACK_PROVIDER);
         $this->sendWebhookNotification($event, WebhookHandlerProvider::DISCORD_PROVIDER);
         foreach ($event->form->zappierHooks as $hook) {
             $hook->triggerHook($event->data);
         }
+        */
     }
 
-    private function sendWebhookNotification(FormSubmitted $event, string $provider)
+    public static function getIntegrationHandler(FormSubmitted $event, FormIntegration $formIntegration): AbstractIntegrationHandler
     {
-        WebhookHandlerProvider::getProvider(
-            $event->form,
-            $event->data,
-            $provider
-        )->handle();
-    }
-
-    /**
-     * Sends an email to each email address in the form's notification_emails field
-     *
-     * @return void
-     */
-    private function sendEmailNotifications(FormSubmitted $event)
-    {
-        if (! $event->form->is_pro || ! $event->form->notifies) {
-            return;
+        $integration = FormIntegration::getIntegration($formIntegration->integration_id);
+        if ($integration && isset($integration['file_name']) && class_exists('App\Service\Forms\Integrations\\' . $integration['file_name'])) {
+            $className = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
+            return new $className($event, $formIntegration, $integration);
         }
-
-        $subscribers = collect(preg_split("/\r\n|\n|\r/", $event->form->notification_emails))->filter(function (
-            $email
-        ) {
-            return filter_var($email, FILTER_VALIDATE_EMAIL);
-        });
-        \Log::debug('Sending email notification', [
-            'recipients' => $subscribers->toArray(),
-            'form_id' => $event->form->id,
-            'form_slug' => $event->form->slug,
-        ]);
-        $subscribers->each(function ($subscriber) use ($event) {
-            Notification::route('mail', $subscriber)->notify(new FormSubmissionNotification($event));
-        });
+        throw new \Exception('Unknown Integration!');
     }
 }
