@@ -2,6 +2,7 @@
 
 namespace App\Models\Integration;
 
+use App\Events\Models\FormIntegrationsEventCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,15 @@ class FormIntegrationsEvent extends Model
 
     protected $casts = [
         'data' => 'object'
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => FormIntegrationsEventCreated::class,
     ];
 
     public function integration()

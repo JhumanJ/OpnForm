@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Events\Forms\FormSubmitted;
 use App\Events\Models\FormCreated;
+use App\Events\Models\FormIntegrationsEventCreated;
 use App\Listeners\FailedWebhookListener;
 use App\Listeners\Forms\FormCreationConfirmation;
+use App\Listeners\Forms\FormIntegrationsEventListener;
 use App\Listeners\Forms\NotifyFormSubmission;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -31,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         WebhookCallFailedEvent::class => [
             FailedWebhookListener::class,
+        ],
+        FormIntegrationsEventCreated::class => [
+            FormIntegrationsEventListener::class,
         ],
     ];
 
