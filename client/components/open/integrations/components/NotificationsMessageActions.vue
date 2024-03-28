@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'FormNotificationsMessageActions',
+  name: 'NotificationsMessageActions',
   components: { },
   props: {
     modelValue: { required: false }

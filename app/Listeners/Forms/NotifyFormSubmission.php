@@ -28,15 +28,6 @@ class NotifyFormSubmission implements ShouldQueue
                 $formIntegration
             )->run();
         }
-
-        /* $this->sendEmailNotifications($event);
-        $this->sendWebhookNotification($event, WebhookHandlerProvider::SIMPLE_WEBHOOK_PROVIDER);
-        $this->sendWebhookNotification($event, WebhookHandlerProvider::SLACK_PROVIDER);
-        $this->sendWebhookNotification($event, WebhookHandlerProvider::DISCORD_PROVIDER);
-        foreach ($event->form->zappierHooks as $hook) {
-            $hook->triggerHook($event->data);
-        }
-        */
     }
 
     public static function getIntegrationHandler(FormSubmitted $event, FormIntegration $formIntegration): AbstractIntegrationHandler

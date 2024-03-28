@@ -18,34 +18,21 @@ class FormResource extends JsonResource
      */
     public function toArray($request)
     {
-        if (! $this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)) {
+        if (!$this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)) {
             return $this->getProtectedForm();
         }
 
         $ownerData = $this->userIsFormOwner() ? [
             'views_count' => $this->views_count,
             'submissions_count' => $this->submissions_count,
-            'notifies' => $this->notifies,
-            'notifies_webhook' => $this->notifies_webhook,
-            'notifies_slack' => $this->notifies_slack,
-            'notifies_discord' => $this->notifies_discord,
             'send_submission_confirmation' => $this->send_submission_confirmation,
-            'webhook_url' => $this->webhook_url,
             'redirect_url' => $this->redirect_url,
             'database_fields_update' => $this->database_fields_update,
             'cleanings' => $this->getCleanigns(),
-            'notification_sender' => $this->notification_sender,
-            'notification_subject' => $this->notification_subject,
-            'notification_body' => $this->notification_body,
-            'notifications_include_submission' => $this->notifications_include_submission,
             'can_be_indexed' => $this->can_be_indexed,
             'password' => $this->password,
             'tags' => $this->tags,
             'visibility' => $this->visibility,
-            'notification_emails' => $this->notification_emails,
-            'slack_webhook_url' => $this->slack_webhook_url,
-            'discord_webhook_url' => $this->discord_webhook_url,
-            'notification_settings' => $this->notification_settings,
             'removed_properties' => $this->removed_properties,
             'last_edited_human' => $this->updated_at?->diffForHumans(),
             'seo_meta' => $this->seo_meta,

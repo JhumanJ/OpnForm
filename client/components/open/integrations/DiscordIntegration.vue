@@ -15,14 +15,13 @@
       </template>
     </text-input>
     <h4 class="font-bold mt-4">Discord message options</h4>
-    <form-notifications-message-actions v-model="integrationData.settings"/>
+    <notifications-message-actions v-model="integrationData.settings"/>
   </IntegrationWrapper>
 </template>
 
 <script setup>
 import IntegrationWrapper from "./components/IntegrationWrapper.vue"
-import FormNotificationsMessageActions
-  from "~/components/open/forms/components/form-components/components/FormNotificationsMessageActions.vue"
+import NotificationsMessageActions from "./components/NotificationsMessageActions.vue"
 
 const props = defineProps({
   integration: {type: Object, required: true},

@@ -50,10 +50,6 @@ function initUpdatedForm() {
     return
   }
   formInitialHash.value = hash(JSON.stringify(updatedForm.value.data()))
-
-  if (updatedForm.value && (!updatedForm.value.notification_settings || Array.isArray(updatedForm.value.notification_settings))) {
-    updatedForm.value.notification_settings = {}
-  }
 }
 
 // Create a form.id watcher that updates working form

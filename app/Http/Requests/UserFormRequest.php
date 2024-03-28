@@ -29,20 +29,6 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'tags' => 'nullable|array',
             'visibility' => ['required', Rule::in(Form::VISIBILITY)],
 
-            // Notifications
-            'notifies' => 'boolean',
-            'notification_emails' => ['required_if:notifies,1', new OneEmailPerLine()],
-            'send_submission_confirmation' => 'boolean',
-            'notification_sender' => 'string|max:64',
-            'notification_subject' => 'string|max:200',
-            'notification_body' => 'string|nullable',
-            'notifications_include_submission' => 'boolean',
-            'webhook_url' => 'url|nullable',
-            'use_captcha' => 'boolean',
-            'slack_webhook_url' => 'url|nullable',
-            'discord_webhook_url' => 'url|nullable',
-            'notification_settings' => 'nullable',
-
             // Customization
             'theme' => ['required', Rule::in(Form::THEMES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],
@@ -125,10 +111,11 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Security & Privacy
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
+            'use_captcha' => 'boolean',
 
             // Custom SEO
             'seo_meta' => 'nullable|array',
-            'custom_domain' => 'sometimes|nullable|regex:'.CustomDomainRequest::CUSTOM_DOMAINS_REGEX,
+            'custom_domain' => 'sometimes|nullable|regex:' . CustomDomainRequest::CUSTOM_DOMAINS_REGEX,
         ];
     }
 
