@@ -16,7 +16,14 @@
            @change="onChange" @keydown.enter.prevent="onEnterPress"
     >
 
-    <template v-if="maxCharLimit && showCharLimit" #bottom_after_help>
+    <template #help>
+      <slot name="help" />
+    </template>
+
+    <template
+      v-if="maxCharLimit && showCharLimit"
+      #bottom_after_help
+    >
       <small :class="theme.default.help">
         {{ charCount }}/{{ maxCharLimit }}
       </small>

@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import runtimeConfig from "./runtimeConfig";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import {sentryVitePlugin} from "@sentry/vite-plugin";
 import sitemap from "./sitemap";
 
 export default defineNuxtConfig({
@@ -13,18 +13,11 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt3-notifications',
         'nuxt-simple-sitemap',
-        ... process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
+        '@nuxt/ui',
+        ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
     ],
     build: {
-        transpile: ["vue-notion", "query-builder-vue-3","vue-signature-pad"],
-    },
-    postcss: {
-        plugins: {
-            'postcss-import': {},
-            'tailwindcss/nesting': {},
-            tailwindcss: {},
-            autoprefixer: {},
-        },
+        transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
     },
     experimental: {
         inlineRouteRules: true
@@ -49,6 +42,11 @@ export default defineNuxtConfig({
         {
             path: '~/components/pages',
             pathPrefix: false,
+        },
+        {
+            path: '~/components/open/integrations',
+            pathPrefix: false,
+            global: true,
         },
         '~/components',
     ],

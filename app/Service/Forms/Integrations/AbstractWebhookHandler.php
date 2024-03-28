@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Webhooks;
+namespace App\Service\Forms\Integrations;
 
 use App\Models\Forms\Form;
 use App\Service\Forms\FormSubmissionFormatter;

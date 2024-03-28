@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormStatsController;
 use App\Http\Controllers\Forms\FormSubmissionController;
+use App\Http\Controllers\Forms\Integration\FormIntegrationsController;
+use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
@@ -47,8 +49,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::put('/update-customer-details', [SubscriptionController::class, 'updateStripeDetails'])->name('update-stripe-details');
         Route::get('/new/{subscription}/{plan}/checkout/{trial?}', [SubscriptionController::class, 'checkout'])
             ->name('checkout')
-            ->where('subscription', '('.implode('|', SubscriptionController::SUBSCRIPTION_NAMES).')')
-            ->where('plan', '('.implode('|', SubscriptionController::SUBSCRIPTION_PLANS).')');
+            ->where('subscription', '(' . implode('|', SubscriptionController::SUBSCRIPTION_NAMES) . ')')
+            ->where('plan', '(' . implode('|', SubscriptionController::SUBSCRIPTION_PLANS) . ')');
         Route::get('/billing-portal', [SubscriptionController::class, 'billingPortal'])->name('billing-portal');
     });
 
@@ -135,7 +137,26 @@ Route::group(['middleware' => 'auth:api'], function () {
                 '/webhooks/zapier/{id}',
                 [FormZapierWebhookController::class, 'delete']
             )->name('integrations.zapier-hooks.delete');
-
+            Route::get(
+                '/{id}/integrations',
+                [FormIntegrationsController::class, 'index']
+            )->name('integrations');
+            Route::post(
+                '/{id}/integration',
+                [FormIntegrationsController::class, 'create']
+            )->name('integration.create');
+            Route::put(
+                '/{id}/integration/{integrationid}',
+                [FormIntegrationsController::class, 'update']
+            )->name('integration.update');
+            Route::delete(
+                '/{id}/integration/{integrationid}',
+                [FormIntegrationsController::class, 'destroy']
+            )->name('integration.destroy');
+            Route::get(
+                '/{id}/integration/{integrationid}/events',
+                [FormIntegrationsEventController::class, 'index']
+            )->name('integrations.events');
         });
     });
 
@@ -225,7 +246,7 @@ Route::post(
 )->middleware([]);
 
 Route::get('local/temp/{path}', function (Request $request, string $path) {
-    if (! $request->hasValidSignature()) {
+    if (!$request->hasValidSignature()) {
         abort(401);
     }
 
