@@ -1,11 +1,11 @@
 
-let darkModeNodeParent = process.client ? document.body : null
+let darkModeNodeParent = import.meta.client ? document.body : null
 
 /**
  * Handle form public pages dark mode and transparent mode
  */
 export function handleDarkMode (darkMode, elem = null) {
-  if (process.server) return
+  if (import.meta.server) return
 
   darkModeNodeParent = elem ?? document.body
 
@@ -23,7 +23,7 @@ export function handleDarkMode (darkMode, elem = null) {
 }
 
 export function darkModeEnabled() {
-  if (process.server) return false
+  if (import.meta.server) return false
   return computed(() => document.body.classList.contains('dark'))
 }
 
@@ -36,7 +36,7 @@ function handleDarkModeToggle (enabled) {
 }
 
 export function disableDarkMode () {
-  if (process.server) return
+  if (import.meta.server) return
   const body = document.body
   body.classList.remove('dark')
   // Remove event listener
@@ -44,7 +44,7 @@ export function disableDarkMode () {
 }
 
 export function handleTransparentMode (transparentModeEnabled) {
-  if (process.server) return
+  if (import.meta.server) return
   if (!useIsIframe() || !transparentModeEnabled) return
 
   const app = document.getElementById('app')
@@ -54,7 +54,7 @@ export function handleTransparentMode (transparentModeEnabled) {
 }
 
 export function focusOnFirstFormElement() {
-  if (process.server) return
+  if (import.meta.server) return
   for (const ele of document.querySelectorAll('input,button,textarea,[role="button"]')) {
     if (ele.offsetWidth !== 0 || ele.offsetHeight !== 0) {
       ele.focus()

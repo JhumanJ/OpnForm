@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/vue";
 
 function getSentryIntegrations() {
   // don't load on server
-  if (!process.client) return [];
+  if (!import.meta.client) return [];
 
   const router = useRouter();
   const browserTracing = new Sentry.BrowserTracing({
