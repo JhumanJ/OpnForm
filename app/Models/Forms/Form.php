@@ -3,6 +3,7 @@
 namespace App\Models\Forms;
 
 use App\Events\Models\FormCreated;
+use App\Models\Integration\FormIntegration;
 use App\Models\Integration\FormZapierWebhook;
 use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
@@ -40,21 +41,6 @@ class Form extends Model implements CachableAttributes
         'creator_id',
         'properties',
         'removed_properties',
-
-        // Notifications
-        'notifies',
-        'notification_emails',
-        'send_submission_confirmation',
-        'notification_sender',
-        'notification_subject',
-        'notification_body',
-        'notifications_include_submission',
-        'slack_webhook_url',
-        'discord_webhook_url',
-        'notification_settings',
-
-        // integrations
-        'webhook_url',
 
         'title',
         'description',
@@ -109,8 +95,7 @@ class Form extends Model implements CachableAttributes
         'closes_at' => 'datetime',
         'tags' => 'array',
         'removed_properties' => 'array',
-        'seo_meta' => 'object',
-        'notification_settings' => 'object',
+        'seo_meta' => 'object'
     ];
 
     protected $appends = [
@@ -119,20 +104,10 @@ class Form extends Model implements CachableAttributes
 
     protected $hidden = [
         'workspace_id',
-        'notifies',
-        'slack_webhook_url',
-        'discord_webhook_url',
-        'webhook_url',
-        'send_submission_confirmation',
         'redirect_url',
         'database_fields_update',
-        'notification_sender',
-        'notification_subject',
-        'notification_body',
-        'notifications_include_submission',
         'password',
         'tags',
-        'notification_emails',
         'removed_properties',
     ];
 
@@ -161,15 +136,15 @@ class Form extends Model implements CachableAttributes
     public function getShareUrlAttribute()
     {
         if ($this->custom_domain) {
-            return 'https://'.$this->custom_domain.'/forms/'.$this->slug;
+            return 'https://' . $this->custom_domain . '/forms/' . $this->slug;
         }
 
-        return front_url('/forms/'.$this->slug);
+        return front_url('/forms/' . $this->slug);
     }
 
     public function getEditUrlAttribute()
     {
-        return front_url('/forms/'.$this->slug.'/show');
+        return front_url('/forms/' . $this->slug . '/show');
     }
 
     public function getSubmissionsCountAttribute()
@@ -218,7 +193,7 @@ class Form extends Model implements CachableAttributes
     public function getFormPendingSubmissionKeyAttribute()
     {
         if ($this->updated_at?->timestamp) {
-            return 'openform-'.$this->id.'-pending-submission-'.substr($this->updated_at?->timestamp, -6);
+            return 'openform-' . $this->id . '-pending-submission-' . substr($this->updated_at?->timestamp, -6);
         }
 
         return null;
@@ -241,7 +216,7 @@ class Form extends Model implements CachableAttributes
 
     public function getHasPasswordAttribute()
     {
-        return ! empty($this->password);
+        return !empty($this->password);
     }
 
     public function getMaxFileSizeAttribute()
@@ -293,6 +268,11 @@ class Form extends Model implements CachableAttributes
         return $this->hasMany(FormZapierWebhook::class);
     }
 
+    public function integrations()
+    {
+        return $this->hasMany(FormIntegration::class);
+    }
+
     /**
      * Config/options
      */
@@ -301,7 +281,7 @@ class Form extends Model implements CachableAttributes
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
             ->generateSlugsFrom(function (Form $form) {
-                return $form->title.' '.Str::random(6);
+                return $form->title . ' ' . Str::random(6);
             })
             ->saveSlugsTo('slug');
     }
@@ -309,20 +289,5 @@ class Form extends Model implements CachableAttributes
     public static function newFactory()
     {
         return FormFactory::new();
-    }
-
-    public function getNotifiesWebhookAttribute()
-    {
-        return ! empty($this->webhook_url);
-    }
-
-    public function getNotifiesDiscordAttribute()
-    {
-        return ! empty($this->discord_webhook_url);
-    }
-
-    public function getNotifiesSlackAttribute()
-    {
-        return ! empty($this->slack_webhook_url);
     }
 }

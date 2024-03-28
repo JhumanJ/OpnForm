@@ -58,7 +58,6 @@
         <form-information />
         <form-structure />
         <form-customization />
-        <form-notifications />
         <form-about-submission />
         <form-access />
         <form-security-privacy />
@@ -90,7 +89,6 @@ import FormStructure from './form-components/FormStructure.vue'
 import FormCustomization from './form-components/FormCustomization.vue'
 import FormCustomCode from './form-components/FormCustomCode.vue'
 import FormAboutSubmission from './form-components/FormAboutSubmission.vue'
-import FormNotifications from './form-components/FormNotifications.vue'
 import FormEditorPreview from './form-components/FormEditorPreview.vue'
 import FormSecurityPrivacy from './form-components/FormSecurityPrivacy.vue'
 import FormCustomSeo from './form-components/FormCustomSeo.vue'
@@ -104,7 +102,6 @@ export default {
   components: {
     FormEditorSidebar,
     FormEditorPreview,
-    FormNotifications,
     FormAboutSubmission,
     FormCustomCode,
     FormCustomization,

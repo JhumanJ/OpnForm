@@ -8,12 +8,6 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     workspace_id: null,
     properties: withDefaultProperties ? getDefaultProperties() :[],
 
-    notifies: false,
-    slack_notifies: false,
-    send_submission_confirmation: false,
-    webhook_url: null,
-    notification_settings: {},
-
     // Customization
     theme: 'default',
     width: 'centered',
@@ -32,10 +26,6 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     re_fillable: false,
     re_fill_button_text: 'Fill Again',
     submitted_text: 'Amazing, we saved your answers. Thank you for your time and have a great day!',
-    notification_sender: 'OpnForm',
-    notification_subject: 'We saved your answers',
-    notification_body: 'Hello there 👋 <br>This is a confirmation that your submission was successfully saved.',
-    notifications_include_submission: true,
     use_captcha: false,
     max_submissions_count: null,
     max_submissions_reached_text: 'This form has now reached the maximum number of allowed submissions and is now closed.',
