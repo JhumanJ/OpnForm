@@ -19,7 +19,7 @@
     "icon": "mdi:slack",
     "section_name": "Notifications",
     "file_name": "SlackIntegration",
-    "is_pro": false
+    "is_pro": true
   },
   "discord": {
     "name": "Discord Notification",
