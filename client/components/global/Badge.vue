@@ -1,16 +1,25 @@
 <template>
   <div :class="classes">
-    <slot name="before"/>
+    <Icon v-if="beforeIcon" :name="beforeIcon" :class="iconClasses"/>
     <slot></slot>
-    <slot name="after"/>
+    <Icon v-if="afterIcon" :name="afterIcon" :class="iconClasses"/>
   </div>
 </template>
 
 <script setup>
+
 const props = defineProps({
   color: {
     type: String,
     default: 'green'
+  },
+  beforeIcon: {
+    type: String,
+    default: null
+  },
+  afterIcon: {
+    type: String,
+    default: null
   }
 })
 
@@ -20,9 +29,22 @@ const baseClasses = {
   'gray': ['bg-gray-100', 'border', 'border-gray-300', 'text-gray-700'],
 }
 
+const iconBaseClasses = {
+  'green': ['text-green-500'],
+  'red': ['text-red-500'],
+  'gray': ['text-gray-500'],
+}
+
+const activeColor = computed(() => {
+  return Object.hasOwn(baseClasses, props.color) ? props.color : 'gray'
+})
+
 const classes = computed(() => {
-  const activeColor = Object.hasOwn(baseClasses, props.color) ? props.color : 'green'
-  const classes = ['border', 'text-xs', 'px-2', 'inline-flex', 'items-center', 'rounded-full'].concat(baseClasses[activeColor])
+  const classes = ['border', 'text-xs', 'px-2', 'inline-flex', 'items-center', 'rounded-full'].concat(baseClasses[activeColor.value])
   return classes.join(' ')
+})
+
+const iconClasses = computed(() => {
+  return iconBaseClasses[activeColor.value].concat(['w-2 h-2 mr-1']).join(' ')
 })
 </script>

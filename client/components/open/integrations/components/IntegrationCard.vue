@@ -7,11 +7,9 @@
       </div>
       <div>
         <div class="flex space-x-3 font-semibold mr-2">{{ integrationTypeInfo.name }}</div>
-        <Badge :color="integration.status === 'active' ? 'green' : 'gray'">
-          <template #before>
-          <span v-if="integration.status === 'active'" class="bg-green-500 h-[6px] w-[6px] rounded-full inline-block mr-1"/>
-            <span v-else-if="integration.status === 'inactive'" class="bg-gray-500 rounded-[1px] h-[6px] w-[6px] inline-block mr-1"/>
-          </template>
+        <Badge :color="integration.status === 'active' ? 'green' : 'gray'"
+               :before-icon="integration.status === 'active' ? 'solar:play-bold' : 'solar:pause-bold'"
+        >
           {{ integration.status === 'active' ? 'Active' : 'Paused' }}
         </Badge>
       </div>
