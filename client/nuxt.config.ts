@@ -61,6 +61,9 @@ export default defineNuxtConfig({
             }),
         ],
     },
+    tailwindcss: {
+        cssPath: ['~/scss/app.scss']
+    },
     colorMode: {
         preference: 'light',
         fallback: 'light',
