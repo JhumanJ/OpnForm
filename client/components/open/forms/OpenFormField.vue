@@ -56,6 +56,7 @@
 <script>
 import { computed } from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import { default as _has } from 'lodash/has'
 
 export default {
   name: 'OpenFormField',
@@ -248,7 +249,7 @@ export default {
       }
 
       if (['select', 'multi_select'].includes(field.type)) {
-        inputProperties.options = (field.hasOwnProperty(field.type))
+        inputProperties.options = (_has(field, field.type))
           ? field[field.type].options.map(option => {
             return {
               name: option.name,

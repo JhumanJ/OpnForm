@@ -20,9 +20,9 @@
             </button>
           </div>
           <div class="flex border-b pb-4"
-               v-if="$slots.hasOwnProperty('icon') || $slots.hasOwnProperty('title')"
+               v-if="_has($slots,'icon') || _has($slots,'title')"
                :class="[{'flex-col sm:items-start':!compactHeader, 'items-center justify-center py-6 gap-x-4':compactHeader},headerInnerPadding]">
-            <div v-if="$slots.hasOwnProperty('icon')" :class="{'w-full mb-4 flex justify-center':!compactHeader}">
+            <div v-if="_has($slots,'icon')" :class="{'w-full mb-4 flex justify-center':!compactHeader}">
               <div class="w-14 h-14 rounded-full flex justify-center items-center"
                    :class="'bg-'+iconColor+'-100 text-'+iconColor+'-600'"
               >
@@ -30,7 +30,7 @@
               </div>
             </div>
             <div class="mt-3 text-center sm:mt-0" :class="{'w-full':!compactHeader}">
-              <h2 v-if="$slots.hasOwnProperty('title')"
+              <h2 v-if="_has($slots,'title')"
                   class="text-2xl font-semibold text-center text-gray-900"
               >
                 <slot name="title"/>
@@ -42,7 +42,7 @@
             <slot/>
           </div>
 
-          <div v-if="$slots.hasOwnProperty('footer')" class="bg-gray-50 border-t rounded-b-xl text-right" :class="footerInnerPadding">
+          <div v-if="_has($slots,'footer')" class="bg-gray-50 border-t rounded-b-xl text-right" :class="footerInnerPadding">
             <slot name="footer"/>
           </div>
         </div>
@@ -53,6 +53,7 @@
 
 <script setup>
 import {watch} from "vue";
+import { default as _has } from 'lodash/has'
 
 const props = defineProps({
   show: {

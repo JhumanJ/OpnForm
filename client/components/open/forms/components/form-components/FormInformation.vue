@@ -66,10 +66,10 @@
 </template>
 
 <script>
-import { computed } from 'vue'
 import clonedeep from 'clone-deep'
 import EditorOptionsPanel from '../../../editors/EditorOptionsPanel.vue'
 import SelectInput from '../../../../forms/SelectInput.vue'
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { SelectInput, EditorOptionsPanel },
@@ -152,7 +152,7 @@ export default {
       ['title', 'description', 'properties', 'cleanings', 'views_count', 'submissions_count', 'workspace', 'workspace_id', 'updated_at',
         'share_url', 'slug', 'notion_database_url', 'id', 'database_id', 'database_fields_update', 'creator',
         'created_at', 'deleted_at', 'last_edited_human'].forEach((property) => {
-        if (copyForm.hasOwnProperty(property)) {
+        if (_has(copyForm, property)) {
           delete copyForm[property]
         }
       })

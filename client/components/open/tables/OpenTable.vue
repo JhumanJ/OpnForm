@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody v-if="data.length > 0" class="n-table-body bg-white dark:bg-notion-dark-light">
-      <tr v-if="$slots.hasOwnProperty('actions')" :id="'table-actions-' + tableHash" ref="actions-row"
+      <tr v-if="_has($slots,'actions')" :id="'table-actions-' + tableHash" ref="actions-row"
         class="action-row absolute w-full" style="will-change: transform; transform: translate3d(0px, 32px, 0px)">
         <td :colspan="columns.length" class="p-1">
           <slot name="actions" />
@@ -71,6 +71,7 @@ import ResizableTh from './components/ResizableTh.vue'
 import RecordOperations from '../components/RecordOperations.vue'
 import clonedeep from 'clone-deep'
 import { hash } from "~/lib/utils.js";
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { ResizableTh, RecordOperations },
@@ -174,18 +175,18 @@ export default {
 
       // Column color
       colColor = null
-      if (!col.hasOwnProperty('color') || col.color === 'default') {
+      if (!_has(col, 'color') || col.color === 'default') {
         colColor = 'text-gray-700 dark:text-gray-300'
       }
       colColor = `text-${col.color}`
 
       // Column font weight
-      if (col.hasOwnProperty('bold') && col.bold) {
+      if (_has(col, 'bold') && col.bold) {
         colFontWeight = 'font-semibold'
       }
 
       // Column wrapping
-      if (!col.hasOwnProperty('wrap_text') || !col.wrap_text) {
+      if (!_has(col, 'wrap_text') || !col.wrap_text) {
         colWrap = 'truncate'
       }
 
@@ -195,7 +196,7 @@ export default {
       if (this.internalColumns) {
         this.$nextTick(() => {
           this.internalColumns.forEach(col => {
-            if (!col.hasOwnProperty('cell_width')) {
+            if (!_has(col, 'cell_width')) {
               if (this.allowResize && this.internalColumns.length && document.getElementById('table-head-cell-' + col.id)) {
                 // Within editor
                 this.resizeCol(col, document.getElementById('table-head-cell-' + col.id).offsetWidth)

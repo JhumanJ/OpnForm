@@ -118,6 +118,7 @@ import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js";
 import clonedeep from "clone-deep";
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
@@ -155,7 +156,7 @@ export default {
       return import.meta.client && window.location.href.includes('popup=true')
     },
     theme () {
-      return this.themes[this.themes.hasOwnProperty(this.form.theme) ? this.form.theme : 'default']
+      return this.themes[_has(this.themes, this.form.theme) ? this.form.theme : 'default']
     },
     isPublicFormPage () {
       return this.$route.name === 'forms-slug'

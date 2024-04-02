@@ -316,6 +316,7 @@ import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
+import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
@@ -556,7 +557,7 @@ export default {
       }
       if (this.field.type in defaultFieldValues) {
         Object.keys(defaultFieldValues[this.field.type]).forEach(key => {
-          if (!Object.hasOwn(this.field,key)) {
+          if (!_has(this.field,key)) {
             this.field[key] = defaultFieldValues[this.field.type][key]
           }
         })

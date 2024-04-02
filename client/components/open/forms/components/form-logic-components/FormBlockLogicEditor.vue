@@ -70,6 +70,7 @@
 import ConditionEditor from './ConditionEditor.client.vue'
 import Modal from '../../../../global/Modal.vue'
 import clonedeep from 'clone-deep'
+import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FormBlockLogicEditor',
@@ -100,7 +101,7 @@ export default {
   computed: {
     copyFromOptions () {
       return this.form.properties.filter((field) => {
-        return field.id !== this.field.id && field.hasOwnProperty('logic') && field.logic !== null && field.logic !== {}
+        return field.id !== this.field.id && _has(field, 'logic') && field.logic !== null && field.logic !== {}
       }).map((field) => {
         return { name: field.name, value: field.id }
       })
@@ -166,7 +167,7 @@ export default {
   },
 
   mounted () {
-    if (!this.field.hasOwnProperty('logic')) {
+    if (!_has(this.field, 'logic')) {
       this.field.logic = this.logic
     }
   },
