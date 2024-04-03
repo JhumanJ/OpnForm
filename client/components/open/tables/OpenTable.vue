@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody v-if="data.length > 0" class="n-table-body bg-white dark:bg-notion-dark-light">
-      <tr v-if="_has($slots,'actions')" :id="'table-actions-' + tableHash" ref="actions-row"
+      <tr v-if="objectHas($slots,'actions')" :id="'table-actions-' + tableHash" ref="actions-row"
         class="action-row absolute w-full" style="will-change: transform; transform: translate3d(0px, 32px, 0px)">
         <td :colspan="columns.length" class="p-1">
           <slot name="actions" />
@@ -257,6 +257,9 @@ export default {
     },
     setColumns(val) {
       this.$emit('update-columns', val)
+    },
+    objectHas(object, key) {
+      return _has(object, key)
     }
   }
 }
