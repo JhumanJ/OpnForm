@@ -62,6 +62,7 @@
 import VSwitch from '../../../../forms/components/VSwitch.vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
 import {handleDarkMode} from "~/lib/forms/public-page.js"
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { OpenCompleteForm, VSwitch },
@@ -89,7 +90,7 @@ export default {
       }
     },
     creating () { // returns true if we are creating a form
-      return !this.form.hasOwnProperty('id')
+      return !_has(this.form, 'id')
     }
   },
 

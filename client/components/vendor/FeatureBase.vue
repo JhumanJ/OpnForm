@@ -1,6 +1,7 @@
 <template></template>
 <script setup>
 import {onMounted} from "vue";
+import { default as _has } from 'lodash/has'
 
 const scriptLoaded = ref(false);
 const authStore = useAuthStore()
@@ -52,7 +53,7 @@ onMounted(() => {
   if (import.meta.server) return
 
   // Setup base
-  if (!window.hasOwnProperty('Featurebase') || typeof window.Featurebase !== "function") {
+  if (!_has(window, 'Featurebase') || typeof window.Featurebase !== "function") {
     window.Featurebase = function () {
       (window.Featurebase.q = window.Featurebase.q || []).push(arguments);
     };

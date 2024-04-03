@@ -2,6 +2,7 @@ import { ref, computed, watch } from 'vue'
 import { themes } from '~/lib/forms/form-themes.js'
 import {default as _get} from 'lodash/get'
 import {default as _set} from 'lodash/set'
+import { default as _has } from 'lodash/has'
 
 export const inputProps = {
   id: { type: String, default: null },
@@ -31,7 +32,7 @@ export function useFormInput (props, context, formPrefixKey = null) {
   })
 
   const hasValidation = computed(() => {
-    return props.form !== null && props.form !== undefined && props.form.hasOwnProperty('errors')
+    return props.form !== null && props.form !== undefined && _has(props.form, 'errors')
   })
 
   const hasError = computed(() => {

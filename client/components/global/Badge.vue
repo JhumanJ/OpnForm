@@ -7,6 +7,7 @@
 </template>
 
 <script setup>
+import { default as _has } from 'lodash/has'
 
 const props = defineProps({
   color: {
@@ -36,7 +37,7 @@ const iconBaseClasses = {
 }
 
 const activeColor = computed(() => {
-  return Object.hasOwn(baseClasses, props.color) ? props.color : 'gray'
+  return _has(baseClasses, props.color) ? props.color : 'gray'
 })
 
 const classes = computed(() => {

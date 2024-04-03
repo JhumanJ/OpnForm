@@ -19,6 +19,7 @@
 
 <script setup>
 import { defineProps, computed } from 'vue'
+import { default as _has } from 'lodash/has'
 const { copy } = useClipboard()
 
 const props = defineProps({
@@ -40,7 +41,7 @@ const preFillUrl = computed(() => {
   const url = props.form.share_url
   const uriComponents = new URLSearchParams()
   props.form.properties.filter((property) => {
-    return props.formData.hasOwnProperty(property.id) && props.formData[property.id] !== null
+    return _has(props.formData, property.id) && props.formData[property.id] !== null
   }).forEach((property) => {
     if (Array.isArray(props.formData[property.id])) {
       props.formData[property.id].forEach((value) => {

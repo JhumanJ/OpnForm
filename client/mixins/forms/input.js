@@ -1,4 +1,5 @@
 import { themes } from '~/lib/forms/form-themes.js'
+import { default as _has } from 'lodash/has'
 
 export default {
   props: {
@@ -31,7 +32,7 @@ export default {
       }
     },
     hasValidation () {
-      return this.form !== null && this.form !== undefined && this.form.hasOwnProperty('errors')
+      return this.form !== null && this.form !== undefined && _has(this.form, 'errors')
     },
     compVal: {
       set (val) {
