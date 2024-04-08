@@ -17,7 +17,7 @@ touch /var/log/opnform.log
 chown opnform /var/log/opnform.log
 
 echo "Linking persistent storage into app"
-ln -sf /persist/storage /app/storage
+ln -t /app -sf /persist/storage
 
 . /app/.env
 
