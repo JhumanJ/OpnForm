@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 main() {
     ( flock -n 100 || wait_for_other_instance; generate_api_secrets) 100> /var/lock/api_secret.lock

@@ -57,8 +57,7 @@ FROM --platform=linux/amd64 ubuntu:23.04
 
 # supervisord is a process manager which will be responsible for managing the
 # various server processes.  These are configured in docker/supervisord.conf
-
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 WORKDIR /app
 
