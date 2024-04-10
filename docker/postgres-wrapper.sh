@@ -43,6 +43,6 @@ EOF
 fi
 
 wait_for_database_to_be_ready
-artisan migrate --force
+sudo -u opnform artisan migrate --force
 
 wait

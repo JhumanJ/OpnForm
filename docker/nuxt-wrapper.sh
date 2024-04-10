@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-echo + . /root/.nvm/nvm.sh
-. /root/.nvm/nvm.sh
+echo + . ~nuxt/.nvm/nvm.sh
+. ~nuxt/.nvm/nvm.sh
 
 echo + nvm install --no-progress 20
 nvm install --no-progress 20
@@ -11,7 +11,7 @@ nvm use 20
 cd /app/nuxt/server/
 
 echo + . /app/client/.env
-. /app/client/.env
+[ -f /app/client/.env ] && . /app/client/.env || echo "Environment file missing!"
 
 [ "x$NUXT_API_SECRET" != "x" ] || (
   echo + generate-api-secret.sh
