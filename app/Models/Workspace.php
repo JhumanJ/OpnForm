@@ -28,6 +28,7 @@ class Workspace extends Model implements CachableAttributes
 
     protected $appends = [
         'is_pro',
+        'is_trialing',
         'is_enterprise',
     ];
 
@@ -99,6 +100,24 @@ class Workspace extends Model implements CachableAttributes
             // Make sure at least one owner is pro
             foreach ($this->owners as $owner) {
                 if ($owner->is_subscribed) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
+    public function getIsTrialingAttribute()
+    {
+        if (is_null(config('cashier.key'))) {
+            return true;    // If no paid plan so TRUE for ALL
+        }
+
+        return $this->remember('is_trialing', 15 * 60, function (): bool {
+            // Make sure at least one owner is pro
+            foreach ($this->owners as $owner) {
+                if ($owner->onTrial()) {
                     return true;
                 }
             }

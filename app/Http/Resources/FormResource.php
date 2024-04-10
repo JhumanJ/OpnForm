@@ -40,6 +40,7 @@ class FormResource extends JsonResource
 
         return array_merge(parent::toArray($request), $ownerData, [
             'is_pro' => $this->workspaceIsPro(),
+            'is_trialing' => $this->workspaceIsTrialing(),
             'workspace_id' => $this->workspace_id,
             'workspace' => new WorkspaceResource($this->getWorkspace()),
             'is_closed' => $this->is_closed,
@@ -90,6 +91,11 @@ class FormResource extends JsonResource
     private function workspaceIsPro()
     {
         return $this->extra?->workspaceIsPro ?? $this->getWorkspace()->is_pro ?? $this->is_pro;
+    }
+
+    private function workspaceIsTrialing()
+    {
+        return $this->getWorkspace()->is_trialing;
     }
 
     private function userIsFormOwner()

@@ -179,6 +179,21 @@ trait TestHelpers
         return $user;
     }
 
+    public function createTrialingUser()
+    {
+        $user = $this->createUser();
+        $user->subscriptions()->create([
+            'name' => 'default',
+            'stripe_id' => Str::random(),
+            'stripe_status' => 'trialing',
+            'stripe_price' => Str::random(),
+            'trial_ends_at' => now()->addDays(5),
+            'quantity' => 1,
+        ]);
+
+        return $user;
+    }
+
     public function actingAsUser(?User $user = null)
     {
         if ($user == null) {
@@ -202,6 +217,15 @@ trait TestHelpers
     {
         if ($user == null) {
             $user = $this->createProUser();
+        }
+
+        return $this->actingAsUser($user);
+    }
+
+    public function actingAsTrialingUser(User $user = null)
+    {
+        if ($user == null) {
+            $user = $this->createTrialingUser();
         }
 
         return $this->actingAsUser($user);

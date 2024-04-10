@@ -35,6 +35,10 @@ class FormCleaner
         'seo_meta' => [],
     ];
 
+    private array $formNonTrialingDefaults = [
+        'custom_code' => null,
+    ];
+
     private array $fieldDefaults = [
         // 'name' => '' TODO: prevent name changing, use alias for column and keep original name as it is
         'file_upload' => false,
@@ -111,6 +115,10 @@ class FormCleaner
         return $workspace->is_pro;
     }
 
+    private function isTrialing(Workspace $workspace)
+    {
+        return $workspace->is_trialing;
+    }
     /**
      * Dry run celanings
      *
@@ -118,6 +126,10 @@ class FormCleaner
      */
     public function simulateCleaning(Workspace $workspace): FormCleaner
     {
+        if ($this->isTrialing($workspace)) {
+            $this->data = $this->removeNonTrialingFeatures($this->data, true);
+        }
+
         if (!$this->isPro($workspace)) {
             $this->data = $this->removeProFeatures($this->data, true);
         }
@@ -133,6 +145,10 @@ class FormCleaner
      */
     public function performCleaning(Workspace $workspace): FormCleaner
     {
+        if ($this->isTrialing($workspace)) {
+            $this->data = $this->removeNonTrialingFeatures($this->data, true);
+        }
+
         if (!$this->isPro($workspace)) {
             $this->data = $this->removeProFeatures($this->data);
         }
@@ -152,6 +168,12 @@ class FormCleaner
             }
         }
 
+        return $data;
+    }
+
+    private function removeNonTrialingFeatures(array $data, $simulation = false)
+    {
+        $this->clean($data, $this->formNonTrialingDefaults);
         return $data;
     }
 
