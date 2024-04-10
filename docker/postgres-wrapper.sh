@@ -43,6 +43,6 @@ EOF
 fi
 
 wait_for_database_to_be_ready
-artisan migrate
+artisan migrate --force
 
 wait
