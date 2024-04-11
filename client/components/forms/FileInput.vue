@@ -129,34 +129,45 @@ export default {
       handler(files) {
         this.compVal = files.map((file) => file.url)
       }
+    },
+    'compVal': {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (!oldVal) {
+          this.handleCompValChange();
+        }
+      }
     }
   },
 
-  async created() {
-    if (typeof this.compVal === 'string' || this.compVal instanceof String) {
-      await this.getFileFromUrl(this.compVal).then((fileObj) => {
-        this.files = [{
-          file: fileObj,
-          url: this.compVal,
-          src: this.getFileSrc(fileObj)
-        }]
-      })
-    } else if (this.compVal && this.compVal.length > 0) {
-      const tmpFiles = []
-      for (let i = 0; i < this.compVal.length; i++) {
-        await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
-          tmpFiles.push({
-            file: fileObj,
-            url: this.compVal[i],
-            src: this.getFileSrc(fileObj)
-          })
-        })
-      }
-      this.files = tmpFiles
-    }
+  mounted() {
+    this.handleCompValChange();
   },
 
   methods: {
+    async handleCompValChange() {
+      if (typeof this.compVal === 'string' || this.compVal instanceof String) {
+        await this.getFileFromUrl(this.compVal).then((fileObj) => {
+          this.files = [{
+            file: fileObj,
+            url: this.compVal,
+            src: this.getFileSrc(fileObj)
+          }]
+        })
+      } else if (this.compVal && this.compVal.length > 0) {
+        const tmpFiles = []
+        for (let i = 0; i < this.compVal.length; i++) {
+          await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
+            tmpFiles.push({
+              file: fileObj,
+              url: (typeof this.compVal[i] === 'object') ? this.compVal[i]?.file_url : this.compVal[i],
+              src: this.getFileSrc(fileObj)
+            })
+          })
+        }
+        this.files = tmpFiles
+      }
+    },
     clearAll() {
       this.files = []
     },
