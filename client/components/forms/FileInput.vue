@@ -146,6 +146,7 @@ export default {
 
   methods: {
     async handleCompValChange() {
+      this.loading = true
       if (typeof this.compVal === 'string' || this.compVal instanceof String) {
         await this.getFileFromUrl(this.compVal).then((fileObj) => {
           this.files = [{
@@ -167,6 +168,7 @@ export default {
         }
         this.files = tmpFiles
       }
+      this.loading = false
     },
     clearAll() {
       this.files = []
