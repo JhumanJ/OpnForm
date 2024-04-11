@@ -1,22 +1,30 @@
 <template>
   <div class="w-full flex flex-col">
-    <form-editor v-if="!formsLoading || form" ref="editor"
-                 :is-edit="true"
-                 @on-save="formInitialHash=null"
+    <form-editor
+      v-if="!formsLoading || form"
+      ref="editor"
+      :is-edit="true"
+      @on-save="formInitialHash = null"
     />
-    <div v-else-if="!formsLoading && error" class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500">
+    <div
+      v-else-if="!formsLoading && error"
+      class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500"
+    >
       {{ error }}
     </div>
-    <div v-else class="text-center mt-4 py-6">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto"/>
+    <div
+      v-else
+      class="text-center mt-4 py-6"
+    >
+      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
   </div>
 </template>
 
 <script setup>
-import {computed} from 'vue'
-import FormEditor from "~/components/open/forms/components/FormEditor.vue";
-import {hash} from "~/lib/utils.js";
+import { computed } from "vue"
+import FormEditor from "~/components/open/forms/components/FormEditor.vue"
+import { hash } from "~/lib/utils.js"
 
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
@@ -34,14 +42,19 @@ const formInitialHash = ref(null)
 
 function isDirty() {
   try {
-    return formInitialHash.value && updatedForm.value && formInitialHash.value !== hash(JSON.stringify(updatedForm?.value?.data() ?? null))
+    return (
+      formInitialHash.value &&
+      updatedForm.value &&
+      formInitialHash.value !==
+        hash(JSON.stringify(updatedForm?.value?.data() ?? null))
+    )
   } catch (e) {
     return false
   }
 }
 
 function initUpdatedForm() {
-  if (!form || !form.value) {
+  if (!form.value || !form.value) {
     return
   }
 
@@ -61,11 +74,14 @@ watch(form, (form) => {
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty()) {
-    return useAlert().confirm('Changes you made may not be saved. Are you sure want to leave?', () => {
-      window.onbeforeunload = null
-      next()
-    }, () => {
-    })
+    return useAlert().confirm(
+      "Changes you made may not be saved. Are you sure want to leave?",
+      () => {
+        window.onbeforeunload = null
+        next()
+      },
+      () => {},
+    )
   }
   next()
 })
@@ -80,7 +96,7 @@ onBeforeMount(() => {
   }
 
   if (!form.value && !formsStore.allLoaded) {
-    formsStore.loadAll(workspacesStore.currentId).then(()=>{
+    formsStore.loadAll(workspacesStore.currentId).then(() => {
       initUpdatedForm()
     })
   } else {
@@ -89,9 +105,9 @@ onBeforeMount(() => {
 })
 
 useOpnSeoMeta({
-  title: 'Edit ' + ((form && form.value) ? form.value.title : 'Your Form')
+  title: "Edit " + (form.value && form.value ? form.value.title : "Your Form"),
 })
 definePageMeta({
-  middleware: "auth"
+  middleware: "auth",
 })
 </script>

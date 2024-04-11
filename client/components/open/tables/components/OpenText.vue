@@ -9,8 +9,8 @@ export default {
   components: {},
   props: {
     value: {
-      required: true
-    }
+      required: true,
+    },
   },
 }
 </script>

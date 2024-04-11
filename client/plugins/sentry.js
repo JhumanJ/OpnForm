@@ -1,25 +1,24 @@
-import * as Sentry from "@sentry/vue";
+import * as Sentry from "@sentry/vue"
 
 function getSentryIntegrations() {
   // don't load on server
-  if (!import.meta.client) return [];
+  if (!import.meta.client) return []
 
-  const router = useRouter();
+  const router = useRouter()
   const browserTracing = new Sentry.BrowserTracing({
     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-  });
+  })
 
-  return [browserTracing];
+  return [browserTracing]
 }
 
-
 export default defineNuxtPlugin({
-  name: 'sentry',
+  name: "sentry",
   parallel: true,
   async setup(nuxtApp) {
-    const vueApp = nuxtApp.vueApp;
+    const vueApp = nuxtApp.vueApp
 
-    const config = useRuntimeConfig();
+    const config = useRuntimeConfig()
 
     Sentry.init({
       app: vueApp,
@@ -45,14 +44,16 @@ export default defineNuxtPlugin({
       beforeSend(event) {
         if (event.exception.values.length) {
           // Don't send validation exceptions to Sentry
-          if (event.exception.values[0].type === 'FetchError' &&
-            (event.exception.values[0].value.includes('422') || event.exception.values[0].value.includes('401'))
+          if (
+            event.exception.values[0].type === "FetchError" &&
+            (event.exception.values[0].value.includes("422") ||
+              event.exception.values[0].value.includes("401"))
           ) {
             return null
           }
         }
-        return event;
+        return event
       },
     })
-  }
-});
+  },
+})

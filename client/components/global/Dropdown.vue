@@ -1,28 +1,42 @@
 <template>
-  <div class="relative" ref="dropdown">
-    <slot name="trigger"
-          :toggle="toggle"
-          :open="open"
-          :close="close"
+  <div
+    ref="dropdown"
+    class="relative"
+  >
+    <slot
+      name="trigger"
+      :toggle="toggle"
+      :open="open"
+      :close="close"
     />
 
-    <collapsible v-model="isOpen" :class="dropdownClass" @click-away="onClickAway">
-      <div class="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-        <slot/>
+    <collapsible
+      v-model="isOpen"
+      :class="dropdownClass"
+      @click-away="onClickAway"
+    >
+      <div
+        class="py-1"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="options-menu"
+      >
+        <slot />
       </div>
     </collapsible>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import Collapsible from './transitions/Collapsible.vue'
+import { ref } from "vue"
+import Collapsible from "./transitions/Collapsible.vue"
 
 const props = defineProps({
   dropdownClass: {
     type: String,
-    default: 'origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20'
-  }
+    default:
+      "origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20",
+  },
 })
 
 const isOpen = ref(false)
@@ -50,6 +64,6 @@ const onClickAway = (event) => {
 defineExpose({
   open,
   close,
-  toggle
+  toggle,
 })
 </script>

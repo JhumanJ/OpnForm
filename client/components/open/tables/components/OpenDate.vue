@@ -13,23 +13,21 @@ export default {
   components: {},
   props: {
     value: {
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {}
   },
   computed: {
-    valueIsObject () {
-      if (typeof this.value === 'object' && this.value !== null) {
+    valueIsObject() {
+      if (typeof this.value === "object" && this.value !== null) {
         return true
       }
       return false
-    }
+    },
   },
-  mounted () {
-  },
-  methods: {
-  }
+  mounted() {},
+  methods: {},
 }
 </script>

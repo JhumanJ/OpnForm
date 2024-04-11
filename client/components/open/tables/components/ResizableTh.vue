@@ -1,9 +1,16 @@
 <template>
-  <th ref="th" :style="{width: width}">
-    <slot/>
-    <div v-if="allowResize" class="absolute right-0 top-0 w-0 z-10">
-      <div class="resize-handler bg-transparent cursor-move	 hover:bg-blue-500 opacity-80 transition-colors"
-           @mousedown="mouseDownHandler"
+  <th
+    ref="th"
+    :style="{ width: width }"
+  >
+    <slot />
+    <div
+      v-if="allowResize"
+      class="absolute right-0 top-0 w-0 z-10"
+    >
+      <div
+        class="resize-handler bg-transparent cursor-move hover:bg-blue-500 opacity-80 transition-colors"
+        @mousedown="mouseDownHandler"
       />
     </div>
   </th>
@@ -14,11 +21,11 @@ export default {
   components: {},
   props: {
     allowResize: {
-      required: true
+      required: true,
     },
     width: {
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
@@ -26,7 +33,7 @@ export default {
       x: 0,
       w: 0,
       lastEmit: Date.now(),
-      throttlePeriod: 50 // milliseconds
+      throttlePeriod: 50, // milliseconds
     }
   },
 
@@ -41,22 +48,22 @@ export default {
       this.w = parseInt(styles.width, 10)
 
       // Attach the listeners to `document`
-      document.addEventListener('mousemove', this.mouseMoveHandler)
-      document.addEventListener('mouseup', this.mouseUpHandler)
+      document.addEventListener("mousemove", this.mouseMoveHandler)
+      document.addEventListener("mouseup", this.mouseUpHandler)
     },
     mouseMoveHandler(e) {
       const now = Date.now()
       if (now - this.lastEmit > this.throttlePeriod) {
         const dx = e.clientX - this.x
-        this.$emit('resize-width', this.w + dx)
+        this.$emit("resize-width", this.w + dx)
         this.lastEmit = now
       }
     },
     mouseUpHandler() {
       // Remove the handlers of `mousemove` and `mouseup`
-      document.removeEventListener('mousemove', this.mouseMoveHandler)
-      document.removeEventListener('mouseup', this.mouseUpHandler)
-    }
-  }
+      document.removeEventListener("mousemove", this.mouseMoveHandler)
+      document.removeEventListener("mouseup", this.mouseUpHandler)
+    },
+  },
 }
 </script>

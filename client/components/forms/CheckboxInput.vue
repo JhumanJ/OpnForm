@@ -4,9 +4,18 @@
       <span />
     </template>
 
-    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled?true:null" :name="name">
+    <v-checkbox
+      :id="id ? id : name"
+      v-model="compVal"
+      :disabled="disabled ? true : null"
+      :name="name"
+    >
       <slot name="label">
-        {{ label }} <span v-if="required" class="text-red-500 required-dot">*</span>
+        {{ label }}
+        <span
+          v-if="required"
+          class="text-red-500 required-dot"
+        >*</span>
       </slot>
     </v-checkbox>
 
@@ -21,28 +30,28 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import VCheckbox from './components/VCheckbox.vue'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from "./useFormInput.js"
+import VCheckbox from "./components/VCheckbox.vue"
+import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
-  name: 'CheckboxInput',
+  name: "CheckboxInput",
 
   components: { InputWrapper, VCheckbox },
   props: {
-    ...inputProps
+    ...inputProps,
   },
 
-  setup (props, context) {
+  setup(props, context) {
     return {
-      ...useFormInput(props, context)
+      ...useFormInput(props, context),
     }
   },
 
-  mounted () {
+  mounted() {
     if (!this.compVal) {
       this.compVal = false
     }
-  }
+  },
 }
 </script>

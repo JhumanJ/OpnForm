@@ -5,7 +5,10 @@
         <h1 class="sm:text-5xl">
           Privacy Policy
         </h1>
-        <NotionPage :block-map="blockMap" :loading="loading"  />
+        <NotionPage
+          :block-map="blockMap"
+          :loading="loading"
+        />
       </div>
     </div>
     <open-form-footer />
@@ -13,19 +16,21 @@
 </template>
 
 <script setup>
-import {useNotionPagesStore} from "~/stores/notion_pages.js";
-import {computed} from "vue";
+import { useNotionPagesStore } from "~/stores/notion_pages.js"
+import { computed } from "vue"
 
 useOpnSeoMeta({
-  title: 'Privacy Policy'
+  title: "Privacy Policy",
 })
 defineRouteRules({
-  swr: 3600
+  swr: 3600,
 })
 
 const notionPageStore = useNotionPagesStore()
-await notionPageStore.load('9c97349ceda7455aab9b341d1ff70f79')
+await notionPageStore.load("9c97349ceda7455aab9b341d1ff70f79")
 
 const loading = computed(() => notionPageStore.loading)
-const blockMap = computed(() => notionPageStore.getByKey('9c97349ceda7455aab9b341d1ff70f79'))
+const blockMap = computed(() =>
+  notionPageStore.getByKey("9c97349ceda7455aab9b341d1ff70f79"),
+)
 </script>

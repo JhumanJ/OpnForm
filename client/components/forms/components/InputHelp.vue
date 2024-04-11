@@ -8,19 +8,19 @@
         <span
           v-if="help"
           class="field-help"
-          v-html="help"/>
+          v-html="help"
+        />
       </slot>
     </small>
     <slot name="after-help">
-      <small class="flex-grow"/>
+      <small class="flex-grow" />
     </slot>
   </div>
 </template>
 
 <script setup>
-
 defineProps({
-  helpClasses: {type: String, default: 'text-gray-400 dark:text-gray-500'},
-  help: {type: String, required: false}
+  helpClasses: { type: String, default: "text-gray-400 dark:text-gray-500" },
+  help: { type: String, required: false },
 })
 </script>

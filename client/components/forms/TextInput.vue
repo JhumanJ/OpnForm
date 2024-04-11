@@ -1,19 +1,32 @@
 <template>
-  <input-wrapper
-    v-bind="inputWrapperProps"
-  >
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
 
-    <input :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
-           :type="nativeType" :autocomplete="autocomplete"
-           :pattern="pattern"
-           :style="inputStyle"
-           :class="[theme.default.input, { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }]"
-           :name="name" :accept="accept"
-           :placeholder="placeholder" :min="min" :max="max" :maxlength="maxCharLimit"
-           @change="onChange" @keydown.enter.prevent="onEnterPress"
+    <input
+      :id="id ? id : name"
+      v-model="compVal"
+      :disabled="disabled ? true : null"
+      :type="nativeType"
+      :autocomplete="autocomplete"
+      :pattern="pattern"
+      :style="inputStyle"
+      :class="[
+        theme.default.input,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-200': disabled,
+        },
+      ]"
+      :name="name"
+      :accept="accept"
+      :placeholder="placeholder"
+      :min="min"
+      :max="max"
+      :maxlength="maxCharLimit"
+      @change="onChange"
+      @keydown.enter.prevent="onEnterPress"
     >
 
     <template #help>
@@ -36,28 +49,28 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from "./useFormInput.js"
+import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
-  name: 'TextInput',
+  name: "TextInput",
   components: { InputWrapper },
 
   props: {
     ...inputProps,
-    nativeType: { type: String, default: 'text' },
+    nativeType: { type: String, default: "text" },
     accept: { type: String, default: null },
     min: { type: Number, required: false, default: null },
     max: { type: Number, required: false, default: null },
     autocomplete: { default: null },
     maxCharLimit: { type: Number, required: false, default: null },
     showCharLimit: { type: Boolean, required: false, default: false },
-    pattern: { type: String, default: null }
+    pattern: { type: String, default: null },
   },
 
-  setup (props, context) {
+  setup(props, context) {
     const onChange = (event) => {
-      if (props.nativeType !== 'file') return
+      if (props.nativeType !== "file") return
 
       const file = event.target.files[0]
       // eslint-disable-next-line vue/no-mutating-props
@@ -70,15 +83,19 @@ export default {
     }
 
     return {
-      ...useFormInput(props, context, props.nativeType === 'file' ? 'file-' : null),
+      ...useFormInput(
+        props,
+        context,
+        props.nativeType === "file" ? "file-" : null,
+      ),
       onEnterPress,
-      onChange
+      onChange,
     }
   },
   computed: {
-    charCount () {
-      return (this.compVal) ? this.compVal.length : 0
-    }
-  }
+    charCount() {
+      return this.compVal ? this.compVal.length : 0
+    },
+  },
 }
 </script>
