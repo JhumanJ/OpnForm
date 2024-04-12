@@ -90,13 +90,12 @@
 </template>
 
 <script>
-import VSwitch from "../../../../forms/components/VSwitch.vue"
 import OpenCompleteForm from "../../OpenCompleteForm.vue"
 import { handleDarkMode } from "~/lib/forms/public-page.js"
 import { default as _has } from "lodash/has"
 
 export default {
-  components: { OpenCompleteForm, VSwitch },
+  components: { OpenCompleteForm },
   props: {},
   setup() {
     const workingFormStore = useWorkingFormStore()

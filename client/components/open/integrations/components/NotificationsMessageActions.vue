@@ -42,8 +42,9 @@ export default {
   name: "NotificationsMessageActions",
   components: {},
   props: {
-    modelValue: { required: false },
+    modelValue: { type: Object, required: false },
   },
+  emits:  ['modelValue',  'input'],
   data() {
     return {
       content: this.modelValue ?? {},

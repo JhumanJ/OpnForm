@@ -69,15 +69,15 @@ export const useAuthStore = defineStore("auth", {
     },
 
     logout() {
-      opnFetch("logout", { method: "POST" }).catch((error) => {})
+      opnFetch("logout", { method: "POST" }).catch(() => {})
 
       this.user = null
       this.setToken(null)
     },
 
-    async fetchOauthUrl(provider) {
+    // async fetchOauthUrl() {
       // const {data} = await axios.post(`/api/oauth/${provider}`)
       // return data.url
-    },
+    // },
   },
 })

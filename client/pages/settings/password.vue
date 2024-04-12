@@ -55,7 +55,7 @@ const form = useForm({
 const update = () => {
   form
     .patch("/settings/password")
-    .then((response) => {
+    .then(() => {
       form.reset()
       useAlert().success("Password updated.")
     })

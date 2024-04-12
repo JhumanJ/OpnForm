@@ -98,6 +98,7 @@ import { default as _has } from "lodash/has"
 
 const props = defineProps({
   show: {
+    type: Boolean,
     default: false,
   },
   backdropBlur: {
@@ -105,21 +106,27 @@ const props = defineProps({
     default: false,
   },
   iconColor: {
+    type: String,
     default: "blue",
   },
   maxWidth: {
+    type: String,
     default: "2xl",
   },
   innerPadding: {
+    type: String,
     default: "p-6",
   },
   headerInnerPadding: {
+    type: String,
     default: "p-6",
   },
   footerInnerPadding: {
+    type: String,
     default: "p-6",
   },
   closeable: {
+    type: Boolean,
     default: true,
   },
   compactHeader: {

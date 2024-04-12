@@ -32,7 +32,7 @@ import { defineEmits, defineProps } from "vue"
 defineProps({
   modelValue: { type: Boolean, required: true },
 })
-const emit = defineEmits()
+const emit = defineEmits(['update:modelValue'])
 
 const set = (value) => {
   emit("update:modelValue", value)

@@ -1,31 +1,26 @@
 <template>
   <div class="flex flex-wrap flex-col">
-    <transition
-      name="fade"
-      mode="out-in"
-    >
-      <div key="2">
-        <create-form-base-modal
-          :show="showInitialFormModal"
-          @form-generated="formGenerated"
-          @close="showInitialFormModal = false"
-        />
+    <div key="2">
+      <create-form-base-modal
+        :show="showInitialFormModal"
+        @form-generated="formGenerated"
+        @close="showInitialFormModal = false"
+      />
 
-        <form-editor
-          v-if="form && !workspacesLoading"
-          ref="editor"
-          class="w-full flex flex-grow"
-          :error="error"
-          @on-save="formInitialHash = null"
-        />
-        <div
-          v-else
-          class="text-center mt-4 py-6"
-        >
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-        </div>
+      <form-editor
+        v-if="form && !workspacesLoading"
+        ref="editor"
+        class="w-full flex flex-grow"
+        :error="error"
+        @on-save="formInitialHash = null"
+      />
+      <div
+        v-else
+        class="text-center mt-4 py-6"
+      >
+        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
@@ -61,7 +56,6 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 const route = useRoute()
-const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
@@ -75,7 +69,6 @@ if (route.query.template !== undefined && route.query.template) {
 
 const {
   getCurrent: workspace,
-  getAll: workspaces,
   workspacesLoading: workspacesLoading,
 } = storeToRefs(workspacesStore)
 const { content: form } = storeToRefs(workingFormStore)

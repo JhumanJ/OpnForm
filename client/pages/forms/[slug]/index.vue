@@ -80,7 +80,6 @@
 
 <script setup>
 import { computed } from "vue"
-import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import sha256 from "js-sha256"
 import { onBeforeRouteLeave } from "vue-router"
 import {
@@ -99,7 +98,6 @@ const formLoading = computed(() => formsStore.loading)
 const recordLoading = computed(() => recordsStore.loading)
 const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
-const submitted = ref(false)
 
 const openCompleteForm = ref(null)
 
@@ -172,7 +170,7 @@ onMounted(() => {
   }
 })
 
-onBeforeRouteLeave((to, from) => {
+onBeforeRouteLeave(() => {
   document.body.classList.remove("public-page")
   crisp.showChat()
   disableDarkMode()

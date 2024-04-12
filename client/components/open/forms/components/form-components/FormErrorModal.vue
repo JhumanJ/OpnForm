@@ -47,6 +47,7 @@ export default {
     show: { type: Boolean, required: true },
     form: { type: Object, required: false },
   },
+  emits: ['close'],
   data: () => ({}),
 
   computed: {},

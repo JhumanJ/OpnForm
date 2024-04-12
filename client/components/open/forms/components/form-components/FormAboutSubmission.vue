@@ -229,15 +229,6 @@ export default {
   },
 
   computed: {
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set(value) {
-        this.workingFormStore.set(value)
-      },
-    },
     /**
      * Used for the update record on submission. Lists all visible fields on which you can filter records to update
      * on submission instead of creating

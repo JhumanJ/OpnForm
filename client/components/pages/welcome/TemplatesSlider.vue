@@ -41,7 +41,7 @@
         class="flex justify-center md:justify-start animate-infinite-scroll"
       >
         <li
-          v-for="(template, i) in sliderTemplates"
+          v-for="(template) in sliderTemplates"
           :key="template.id"
           class="mx-4 w-72 h-auto"
         >

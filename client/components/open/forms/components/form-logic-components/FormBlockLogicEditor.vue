@@ -233,7 +233,7 @@ export default {
       deep: true,
     },
     "field.id": {
-      handler(field, oldField) {
+      handler() {
         // On field change, reset logic
         this.logic = this.field.logic || {
           conditions: null,

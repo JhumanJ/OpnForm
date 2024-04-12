@@ -30,6 +30,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import CopyContent from "../../../open/forms/components/CopyContent.vue"
 import { appUrl } from "~/lib/utils.js"
 
@@ -47,6 +48,7 @@ export default {
 
   computed: {
     embedCode() {
+      // eslint-disable no-useless-escape
       return `
         <script type="text/javascript" src="${appUrl("/widgets/iframeResize.min.js")}"><\/script>
         ${this.iframeCode}

@@ -108,7 +108,7 @@ const onSubmit = () => {
     return
   }
   opnFetch(endpoint, { method: "POST" })
-    .then((data) => {
+    .then(() => {
       loading.value = false
       emit("close")
       useAlert().success("Form workspace updated successfully.")

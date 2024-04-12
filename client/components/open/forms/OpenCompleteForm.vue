@@ -45,7 +45,6 @@
     <v-transition>
       <div
         v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
-        "
         class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 border-yellow-500"
       >
         <div class="flex flex-grow">
@@ -122,7 +121,7 @@
           :fields="form.properties"
           :theme="theme"
           :admin-preview="adminPreview"
-          @submit="submitForm"
+          @submit="onFormSubmitted"
         >
           <template #submit-btn="{ submitForm }">
             <open-form-button
@@ -217,7 +216,7 @@ export default {
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
     submitButtonClass: { type: String, default: "" },
   },
-
+  emits: ['submitted', 'restarted', 'password-entered'],
   setup(props) {
     return {
       isIframe: useIsIframe(),
@@ -260,7 +259,7 @@ export default {
   },
 
   methods: {
-    submitForm(form, onFailure) {
+    onFormSubmitted(form, onFailure) {
       if (this.creating) {
         this.submitted = true
         this.$emit("submitted", true)

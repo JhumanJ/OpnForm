@@ -15,6 +15,6 @@
 <script>
 export default {
   name: "VTransition",
-  props: { name: { default: "slideInUp" } },
+  props: { name: {type: String,  default: "slideInUp" } },
 }
 </script>

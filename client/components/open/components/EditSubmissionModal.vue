@@ -26,7 +26,7 @@
   </modal>
 </template>
 <script setup>
-import { ref, defineProps, defineEmits, onMounted } from "vue"
+import { ref, defineProps, defineEmits } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import { themes } from "~/lib/forms/form-themes.js"
 const props = defineProps({

@@ -404,7 +404,7 @@ export default {
 
     definePageMeta({
       middleware: [
-        function (to, from) {
+        function () {
           // Custom inline middleware
           if (!useRuntimeConfig().public.paidPlansEnabled) {
             // If no paid plan so no need this page

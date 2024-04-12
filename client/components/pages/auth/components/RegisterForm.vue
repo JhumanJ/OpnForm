@@ -115,6 +115,7 @@ export default {
       default: false,
     },
   },
+  emits: ['afterQuickLogin', 'openLogin'],
 
   setup() {
     return {

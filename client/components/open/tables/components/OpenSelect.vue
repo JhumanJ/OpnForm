@@ -23,7 +23,9 @@ import OpenTag from "./OpenTag.vue"
 export default {
   components: { OpenTag },
   props: {
-    value: {},
+    value: {
+      type: Object,
+    },
   },
 
   data() {

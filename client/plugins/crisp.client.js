@@ -1,7 +1,6 @@
 import { Crisp } from "crisp-sdk-web"
-import config from "~/opnform.config.js"
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   const isIframe = useIsIframe()
   const crispWebsiteId = useRuntimeConfig().public.crispWebsiteId
   if (crispWebsiteId && !isIframe) {

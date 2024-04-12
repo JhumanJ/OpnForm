@@ -67,10 +67,10 @@ export default {
   name: "UploadedFile",
 
   props: {
-    file: { default: null },
+    file: { type:Object, default: null },
     theme: { type: Object },
   },
-
+  emits: ['remove'],
   data: () => ({
     isImageHide: false,
   }),

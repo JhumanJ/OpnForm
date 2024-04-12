@@ -13,6 +13,7 @@ export default {
   components: {},
   props: {
     value: {
+      type: [Object,  String],
       required: true,
     },
   },

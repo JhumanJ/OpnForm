@@ -1,4 +1,4 @@
-!(function (n, e) {
+!(function (n,) {
   if (typeof document !== "undefined") {
     const e = document.head || document.getElementsByTagName("head")[0]
     const t = document.createElement("style");

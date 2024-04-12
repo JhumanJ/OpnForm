@@ -138,7 +138,7 @@ export default {
         }
       },
     },
-    compVal(newVal, oldVal) {
+    compVal() {
       this.initState()
     },
     selectedCountryCode(newVal, oldVal) {

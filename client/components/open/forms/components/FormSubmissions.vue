@@ -113,15 +113,17 @@
                 @click="showColumnsModal=true"
               >Display columns</a>
             </p>
-            <p class="text-right cursor-pointer text-xs uppercase">
+            <p
+              v-if="!exportLoading"
+              class="text-right cursor-pointer text-xs uppercase"
+            >
               <a
-                v-if="!exportLoading"
                 href="#"
                 @click.prevent="downloadAsCsv"
               >Export as CSV</a>
-            </p><p v-else>
-              <loader class="w-3 h-3 text-blue-500" />
             </p>
+            <p v-else>
+              <loader class="w-3 h-3 text-blue-500" />
             </p>
           </div>
         </div>
@@ -294,7 +296,7 @@ export default {
           this.recordStore.stopLoading()
           this.fullyLoaded = true
         }
-      }).catch((error) => {
+      }).catch(() => {
         this.recordStore.startLoading()
       })
     },

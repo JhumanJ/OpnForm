@@ -1,13 +1,13 @@
 <template>
   <div class="w-full flex flex-col">
     <form-editor
-      v-if="!formsLoading || form"
+      v-if="(!formsLoading || form ) && !error "
       ref="editor"
       :is-edit="true"
       @on-save="formInitialHash = null"
     />
     <div
-      v-else-if="!formsLoading && error"
+      v-else-if="error && !formsLoading"
       class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500"
     >
       {{ error }}

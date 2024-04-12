@@ -31,7 +31,7 @@
 import { ref } from "vue"
 import Collapsible from "./transitions/Collapsible.vue"
 
-const props = defineProps({
+defineProps({
   dropdownClass: {
     type: String,
     default:
@@ -42,15 +42,15 @@ const props = defineProps({
 const isOpen = ref(false)
 const dropdown = ref(null)
 
-const open = (event) => {
+const open = () => {
   isOpen.value = true
 }
 
-const close = (event) => {
+const close = () => {
   isOpen.value = false
 }
 
-const toggle = (event) => {
+const toggle = () => {
   isOpen.value = !isOpen.value
 }
 

@@ -141,6 +141,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close'],
   data: () => ({
     isMailSent: false,
     form: useForm({
@@ -149,7 +150,7 @@ export default {
   }),
   methods: {
     async send() {
-      const { data } = await this.form.post("/password/email")
+      await this.form.post("/password/email")
       this.isMailSent = true
     },
     close() {

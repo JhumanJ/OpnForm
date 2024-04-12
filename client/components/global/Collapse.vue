@@ -46,7 +46,7 @@ const props = defineProps({
 })
 
 const showContent = ref(props.modelValue)
-const emit = defineEmits()
+const emit = defineEmits(['update:modelValue'])
 
 const trigger = () => {
   showContent.value = !showContent.value

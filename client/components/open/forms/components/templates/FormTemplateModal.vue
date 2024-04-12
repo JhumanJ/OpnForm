@@ -114,7 +114,6 @@
               name="questions"
               :questions="templateForm.questions"
               class="mt-4"
-              class="mt-4"
               label="Frequently asked questions"
             />
           </div>

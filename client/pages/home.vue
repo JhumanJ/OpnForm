@@ -123,7 +123,6 @@
                 >
                   <NuxtLink
                     :to="{name:'forms-slug-show-submissions', params: {slug:form.slug}}"
-                    }"
                     class="absolute inset-0"
                   />
                   <span class="font-semibold text-gray-900 dark:text-white">{{
@@ -152,7 +151,6 @@
                   </ul>
                   <div
                     v-if="['draft','closed'].includes(form.visibility) || (form.tags && form.tags.length > 0)"
-                    "
                     class="mt-1 flex items-center flex-wrap gap-3"
                   >
                     <span
@@ -168,7 +166,7 @@
                       Closed
                     </span>
                     <span
-                      v-for="(tag,i) in form.tags"
+                      v-for="(tag) in form.tags"
                       :key="tag"
                       class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
                     >
@@ -197,7 +195,6 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "../stores/auth"
 import { useFormsStore } from "../stores/forms"
 import { useWorkspacesStore } from "../stores/workspaces"
 import Fuse from "fuse.js"
@@ -215,7 +212,6 @@ useOpnSeoMeta({
     "All of your OpnForm are here. Create new forms, or update your existing forms.",
 })
 
-const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 formsStore.startLoading()
@@ -234,17 +230,12 @@ const {
   loading: formsLoading,
   allTags,
 } = storeToRefs(formsStore)
-const showEditFormModal = ref(false)
-const selectedForm = ref(null)
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
 const selectedTags = ref(new Set())
 
 // Methods
-const editForm = (form) => {
-  selectedForm.value = form
-  showEditFormModal.value = true
-}
+
 const onTagClick = (tag) => {
   if (selectedTags?.value?.has(tag)) {
     selectedTags.value.remove(tag)

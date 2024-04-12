@@ -276,7 +276,7 @@ const deleteWorkspace = (workspaceId) => {
     "Do you really want to delete this workspace? All forms created in this workspace will be removed.",
     () => {
       opnFetch("/open/workspaces/" + workspaceId, { method: "DELETE" }).then(
-        (data) => {
+        () => {
           useAlert().success("Workspace successfully removed.")
           workspacesStore.remove(workspaceId)
         },

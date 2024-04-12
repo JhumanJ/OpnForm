@@ -286,8 +286,6 @@
 
 <script>
 import draggable from "vuedraggable"
-import ProTag from "~/components/global/ProTag.vue"
-import clonedeep from "clone-deep"
 import EditableDiv from "~/components/global/EditableDiv.vue"
 import VButton from "~/components/global/VButton.vue"
 
@@ -296,7 +294,6 @@ export default {
   name: "FormFieldsEditor",
   components: {
     VButton,
-    ProTag,
     draggable,
     EditableDiv,
   },

@@ -35,9 +35,10 @@ import OpenFilters from "../../../../../data/open_filters.json"
 export default {
   components: {},
   props: {
-    modelValue: { required: true },
+    modelValue: { type: Object, required: true },
   },
 
+  emits: ['update:modelValue'],
   data() {
     return {
       content: { ...this.modelValue },

@@ -53,6 +53,7 @@ export default {
       default: true,
     },
   },
+  emits: ['close'],
 
   setup() {
     const authStore = useAuthStore()

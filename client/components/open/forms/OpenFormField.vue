@@ -180,7 +180,7 @@ export default {
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
   },
 
-  setup(props) {
+  setup() {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
@@ -422,7 +422,7 @@ export default {
         field.type === "number" ||
         (field.type === "phone_number" && field.use_simple_text_input)
       ) {
-        inputProperties.pattern = "/\d*"
+        inputProperties.pattern = "/*"
       } else if (
         field.type === "phone_number" &&
         !field.use_simple_text_input

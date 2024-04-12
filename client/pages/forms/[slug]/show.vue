@@ -152,7 +152,7 @@
                 Closed - won't accept new submissions
               </span>
               <span
-                v-for="(tag, i) in form.tags"
+                v-for="(tag) in form.tags"
                 :key="tag"
                 class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
               >
@@ -233,7 +233,6 @@
 
 <script setup>
 import { computed } from "vue"
-import ProTag from "~/components/global/ProTag.vue"
 import VButton from "~/components/global/VButton.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
@@ -246,7 +245,6 @@ useOpnSeoMeta({
 })
 
 const route = useRoute()
-const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
@@ -254,11 +252,8 @@ const workspacesStore = useWorkspacesStore()
 const slug = useRoute().params.slug
 
 formsStore.startLoading()
-const user = computed(() => authStore.user)
 const form = computed(() => formsStore.getByKey(slug))
-const workspace = computed(() =>
-  workspacesStore.getByKey(form?.value?.workspace_id),
-)
+
 const loading = computed(() => formsStore.loading || workspacesStore.loading)
 const displayClosesDate = computed(() => {
   if (form.value && form.value.closes_at) {

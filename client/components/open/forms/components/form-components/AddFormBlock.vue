@@ -34,7 +34,7 @@
         </p>
         <div class="grid grid-cols-2 gap-2">
           <div
-            v-for="(block, i) in inputBlocks"
+            v-for="(block) in inputBlocks"
             :key="block.name"
             class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
             role="button"
@@ -65,7 +65,7 @@
         </p>
         <div class="grid grid-cols-2 gap-2">
           <div
-            v-for="(block, i) in layoutBlocks"
+            v-for="(block) in layoutBlocks"
             :key="block.name"
             class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
             role="button"

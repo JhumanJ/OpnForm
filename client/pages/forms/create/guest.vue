@@ -1,32 +1,26 @@
 <template>
   <div class="flex flex-wrap flex-col">
-    <transition
-      v-if="stateReady"
-      name="fade"
-      mode="out-in"
-    >
-      <div key="2">
-        <create-form-base-modal
-          :show="showInitialFormModal"
-          @form-generated="formGenerated"
-          @close="showInitialFormModal = false"
-        />
-        <form-editor
-          v-if="!workspacesLoading"
-          ref="editor"
-          class="w-full flex flex-grow"
-          :error="error"
-          :is-guest="isGuest"
-          @open-register="registerModal = true"
-        />
-        <div
-          v-else
-          class="text-center mt-4 py-6"
-        >
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-        </div>
+    <div key="2">
+      <create-form-base-modal
+        :show="showInitialFormModal"
+        @form-generated="formGenerated"
+        @close="showInitialFormModal = false"
+      />
+      <form-editor
+        v-if="!workspacesLoading"
+        ref="editor"
+        class="w-full flex flex-grow"
+        :error="error"
+        :is-guest="isGuest"
+        @open-register="registerModal = true"
+      />
+      <div
+        v-else
+        class="text-center mt-4 py-6"
+      >
+        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
       </div>
-    </transition>
+    </div>
 
     <quick-register
       :show-register-modal="registerModal"
@@ -57,7 +51,6 @@ if (route.query.template !== undefined && route.query.template) {
 }
 
 // Store values
-const workspace = computed(() => workspacesStore.getCurrent)
 const workspacesLoading = computed(() => workspacesStore.loading)
 const form = storeToRefs(workingFormStore).content
 
@@ -70,7 +63,6 @@ definePageMeta({
 
 // Data
 const stateReady = ref(false)
-const loading = ref(false)
 const error = ref("")
 const registerModal = ref(false)
 const isGuest = ref(true)

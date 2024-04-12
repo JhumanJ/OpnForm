@@ -21,7 +21,7 @@ function redirectToMainDomain(details = {}) {
   )
 }
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   if (!customDomainUsed()) return
 
   const config = useRuntimeConfig()

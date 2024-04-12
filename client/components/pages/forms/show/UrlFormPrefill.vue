@@ -108,13 +108,12 @@
 
 <script>
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
-import ProTag from "~/components/global/ProTag.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { themes } from "~/lib/forms/form-themes.js"
 
 export default {
   name: "UrlFormPrefill",
-  components: { FormUrlPrefill, ProTag, OpenForm },
+  components: { FormUrlPrefill, OpenForm },
   props: {
     form: { type: Object, required: true },
     extraQueryParam: { type: String, default: "" },
@@ -129,7 +128,7 @@ export default {
   computed: {},
 
   methods: {
-    generateUrl(formData, onFailure) {
+    generateUrl(formData) {
       this.prefillFormData = formData
       this.$nextTick().then(() => {
         if (this.$refs.content) {

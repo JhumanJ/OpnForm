@@ -83,8 +83,6 @@ useOpnSeoMeta({
 })
 
 const alert = useAlert()
-const crisp = useCrisp()
-const route = useRoute()
 
 const formIntegrationsStore = useFormIntegrationsStore()
 const integrationsLoading = computed(() => formIntegrationsStore.loading)

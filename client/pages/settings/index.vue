@@ -1,6 +1,6 @@
 <script setup>
 definePageMeta({
-  redirect: (to) => {
+  redirect: () => {
     return { name: "settings-profile" }
   },
 })

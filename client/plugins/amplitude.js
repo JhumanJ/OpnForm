@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Doing something with nuxtApp
   const registeredListeners = {}
   nuxtApp.vueApp.directive("track", {
-    beforeMount(el, binding, vnode) {
+    beforeMount(el, binding) {
       registeredListeners[el] = () => {
         hookLogEvent(binding)
       }

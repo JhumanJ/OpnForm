@@ -45,7 +45,7 @@ const props = defineProps({
   contentClass: { type: String, default: "" },
 })
 
-const emit = defineEmits()
+const emit = defineEmits(['update:modelValue'])
 const content = ref(props.modelValue)
 const editing = ref(false)
 const divHeight = ref(0)

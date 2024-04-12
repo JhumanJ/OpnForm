@@ -53,16 +53,6 @@ export default {
     return {}
   },
 
-  computed: {
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set(value) {
-        this.workingFormStore.set(value)
-      },
-    },
-  },
+  computed: {},
 }
 </script>

@@ -13,7 +13,7 @@
     >
       <tr class="n-table-row overflow-x-hidden">
         <resizable-th
-          v-for="(col, index) in columns"
+          v-for="(col) in columns"
           :id="'table-head-cell-' + col.id"
           :key="col.id"
           scope="col"
@@ -169,7 +169,9 @@ export default {
       default: true,
       type: Boolean,
     },
-    scrollParent: {},
+    scrollParent: {
+      type: [Boolean]
+    },
   },
   emits: ["updated", "deleted", "resize", "update-columns"],
 
@@ -244,10 +246,10 @@ export default {
 
   methods: {
     colClasses(col) {
-      let colAlign, colColor, colFontWeight, colWrap
+      let  colColor, colFontWeight, colWrap
 
       // Column align
-      colAlign = `text-${col.alignment ? col.alignment : "left"}`
+      const colAlign = `text-${col.alignment ? col.alignment : "left"}`
 
       // Column color
       colColor = null

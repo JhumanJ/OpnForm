@@ -152,7 +152,7 @@ import { storeFile } from "~/lib/file-uploads.js"
 
 export default {
   name: "FileInput",
-  components: { InputWrapper, UploadedFile, OpenFormButton },
+  components: { InputWrapper, UploadedFile, OpenFormButton, CameraUpload },
   mixins: [],
   props: {
     ...inputProps,
@@ -298,7 +298,7 @@ export default {
                 })
                 this.loading = false
               })
-              .catch((error) => {
+              .catch(() => {
                 this.loading = false
               })
           } else {
@@ -315,7 +315,7 @@ export default {
             this.loading = false
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.clearAll()
           this.loading = false
         })
@@ -326,7 +326,7 @@ export default {
       }
       const response = await fetch(url)
       const data = await response.blob()
-      const name = url.replace(/^.*(\\|\/|\:)/, "")
+      const name = url.replace(/^.*(\\|\/|)/, "")
       return new File([data], name, {
         type: data.type || defaultType,
       })

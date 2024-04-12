@@ -1,4 +1,4 @@
-async function storeLocalFile(file, options = {}) {
+async function storeLocalFile(file) {
   let formData = new FormData()
   formData.append("file", file)
   const response = await opnFetch("/upload-file", {

@@ -97,6 +97,7 @@ export default {
     },
   },
 
+  emits: ['afterQuickLogin', 'openRegister'],
   setup() {
     return {
       authStore: useAuthStore(),

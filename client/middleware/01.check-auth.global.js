@@ -1,7 +1,6 @@
 import { fetchAllWorkspaces } from "~/stores/workspaces.js"
-import { opnFetch } from "~/composables/useOpnApi.js"
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
   authStore.initStore(useCookie("token").value, useCookie("admin_token").value)
 

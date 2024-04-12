@@ -142,6 +142,7 @@ export default {
   props: {
     theme: { type: Object, default: () => themes.default },
   },
+  emits: ['stopWebcam', 'uploadImage'],
   data: () => ({
     webcam: null,
     isCapturing: false,
@@ -169,7 +170,7 @@ export default {
       this.capturedImage = null
       this.webcam
         .start()
-        .then((result) => {
+        .then(() => {
           this.cameraPermissionStatus = "allowed"
         })
         .catch((err) => {

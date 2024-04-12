@@ -62,7 +62,7 @@ export default {
     accept: { type: String, default: null },
     min: { type: Number, required: false, default: null },
     max: { type: Number, required: false, default: null },
-    autocomplete: { default: null },
+    autocomplete: { type:[Boolean, String, Object], default: null },
     maxCharLimit: { type: Number, required: false, default: null },
     showCharLimit: { type: Boolean, required: false, default: false },
     pattern: { type: String, default: null },

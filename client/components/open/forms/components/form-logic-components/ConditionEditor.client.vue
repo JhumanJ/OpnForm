@@ -38,6 +38,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/one-component-per-file */
 import { defineComponent } from "vue"
 import QueryBuilder from "query-builder-vue-3"
 import ColumnCondition from "./ColumnCondition.vue"
@@ -52,8 +53,9 @@ export default {
 
   props: {
     form: { type: Object, required: true },
-    modelValue: { required: false },
+    modelValue: { type: Object, required: false },
   },
+  emits:  ['update:modelValue'],
 
   data() {
     return {

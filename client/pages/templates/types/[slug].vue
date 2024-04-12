@@ -59,14 +59,11 @@ defineRouteRules({
 })
 
 const route = useRoute()
-const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 
 loadAllTemplates(templatesStore)
 
 // Computed
-const authenticated = computed(() => authStore.check)
-const user = computed(() => authStore.user)
 const templates = computed(() =>
   templatesStore.getAll.filter((item) => {
     return item.types && item.types.length > 0

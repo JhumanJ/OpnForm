@@ -9,6 +9,7 @@ export default {
   components: {},
   props: {
     value: {
+      type: String,
       required: true,
     },
   },

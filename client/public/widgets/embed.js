@@ -3,7 +3,7 @@
  * All changes to this file should be followed by an update of the minified version (embed-min.js)
  */
 !(function () {
-  !(function (e, t) {
+  !(function (e) {
     if (e && typeof document !== "undefined") {
       const head = document.head || document.getElementsByTagName("head")[0]
       const styleEl = document.createElement("style");

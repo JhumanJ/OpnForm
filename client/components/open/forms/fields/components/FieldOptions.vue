@@ -389,7 +389,7 @@
           :placeholder="'Select a country'"
           help="Remove countries from the phone input"
         >
-          <template #selected="{ option, selected }">
+          <template #selected="{ option }">
             <div
               class="flex items-center space-x-2 justify-center overflow-hidden"
             >

@@ -76,14 +76,14 @@ import ConditionEditor from "~/components/open/forms/components/form-logic-compo
 
 const props = defineProps({
   integration: { type: Object, required: true },
-  modelValue: { required: false },
+  modelValue: { type: Object, required: false },
   wrapperClass: { type: String, required: false },
   inputStyle: { type: Object, required: false },
   form: { type: Object, required: false },
 })
 
 const crisp = useCrisp()
-const emit = defineEmits(["close"])
+defineEmits(["close"])
 const showLogic = ref(!!props.modelValue.logic)
 
 const openHelp = () => {

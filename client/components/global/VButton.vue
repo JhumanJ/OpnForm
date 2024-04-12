@@ -194,8 +194,11 @@ export default {
           "ring-offset": "focus:ring-offset-white-200",
           text: "text-gray-700",
         }
+      }else{
+
+        console.error("Unknown color")
+        return null
       }
-      console.error("Unknown color")
     },
     sizes() {
       if (this.size === "small") {

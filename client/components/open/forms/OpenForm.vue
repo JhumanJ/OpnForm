@@ -157,10 +157,11 @@ export default {
       type: Array,
       required: true,
     },
-    defaultDataForm: {},
+    defaultDataForm: {type: Object},
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
   },
 
+  emits: ['submit'],
   setup(props) {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()

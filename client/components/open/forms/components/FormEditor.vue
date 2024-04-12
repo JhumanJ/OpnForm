@@ -171,6 +171,8 @@ export default {
     },
   },
 
+  emits: ['mounted', 'on-save', 'openRegister'],
+
   setup() {
     const { user } = storeToRefs(useAuthStore())
     const formsStore = useFormsStore()

@@ -114,7 +114,7 @@ export default {
   props: {
     loading: { type: Boolean, default: false },
     addNew: { type: Boolean, default: true },
-    questions: { type: Array, default: [] },
+    questions: { type: Array, default: ()=>[] },
   },
 
   data() {

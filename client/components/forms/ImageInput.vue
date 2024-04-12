@@ -194,7 +194,7 @@ export default {
 
   watch: {
     showUploadModal: {
-      handler(val) {
+      handler() {
         if (import.meta.server) return
         document.removeEventListener("paste", this.onUploadPasteEvent)
         if (this.showUploadModal) {
@@ -208,7 +208,7 @@ export default {
     clearUrl() {
       this.form[this.name] = null
     },
-    onUploadDragoverEvent(e) {
+    onUploadDragoverEvent() {
       this.uploadDragoverEvent = true
       this.uploadDragoverTracking = true
     },
@@ -261,13 +261,13 @@ export default {
               this.showUploadModal = false
               this.loading = false
             })
-            .catch((error) => {
+            .catch(() => {
               this.compVal = null
               this.showUploadModal = false
               this.loading = false
             })
         })
-        .catch((error) => {
+        .catch(() => {
           this.compVal = null
           this.showUploadModal = false
           this.loading = false

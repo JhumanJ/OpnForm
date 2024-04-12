@@ -21,12 +21,15 @@ export default {
   components: {},
   props: {
     allowResize: {
+      type: Boolean,
       required: true,
     },
     width: {
+      type: [String, Number],
       required: true,
     },
   },
+  emits: ['resize-width'],
 
   data() {
     return {

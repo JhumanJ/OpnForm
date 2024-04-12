@@ -58,6 +58,7 @@ export default {
       required: true,
     },
   },
+  emits:  ['changeType'],
   data() {
     return {}
   },

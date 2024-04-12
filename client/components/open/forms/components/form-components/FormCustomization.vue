@@ -161,7 +161,6 @@ import ProTag from "~/components/global/ProTag.vue"
 const workingFormStore = useWorkingFormStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
-const crisp = useCrisp()
 const confetti = useConfetti()
 
 onMounted(() => {
