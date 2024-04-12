@@ -111,13 +111,6 @@ To run on port 8080
 docker run --name opnform -v $PWD/my-opnform-data:/persist -p 8080:80 jhumanj/opnform
 ```
 
-You will also need to customise the Nuxt .env file (see custom.env files above) to change the nuxt urls to match the new setting, e.g.:
-
-```
-NUXT_PUBLIC_APP_URL=http://localhost:8080/
-NUXT_PUBLIC_API_BASE=http://localhost:8080/api
-```
-
 #### Building a custom docker image
 
 To build a custom docker image from your local source code use this command from the root of the source repository:
