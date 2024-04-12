@@ -57,8 +57,7 @@ FROM --platform=linux/amd64 ubuntu:23.04
 
 # supervisord is a process manager which will be responsible for managing the
 # various server processes.  These are configured in docker/supervisord.conf
-
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 WORKDIR /app
 
@@ -69,8 +68,10 @@ RUN apt-get update \
         supervisor nginx sudo postgresql-15 redis\
         $PHP_PACKAGES php8.1-fpm wget\
     && apt-get clean
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.39.3/install.sh | bash
-RUN . /root/.nvm/nvm.sh && nvm install 20
+
+RUN useradd nuxt && mkdir ~nuxt && chown nuxt ~nuxt
+RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.39.3/install.sh | sudo -u nuxt bash
+RUN sudo -u nuxt bash -c ". ~nuxt/.nvm/nvm.sh && nvm install --no-progress 20"
 
 ADD docker/postgres-wrapper.sh docker/php-fpm-wrapper.sh docker/redis-wrapper.sh docker/nuxt-wrapper.sh docker/generate-api-secret.sh /usr/local/bin/
 ADD docker/php-fpm.conf /etc/php/8.1/fpm/pool.d/

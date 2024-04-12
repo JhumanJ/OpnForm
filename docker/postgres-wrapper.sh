@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 DATA_DIR=/persist/pgsql/data
 CONFIG_FILE=/etc/postgresql/postgresql.conf
@@ -10,7 +10,9 @@ mkdir -p $DATA_DIR
 chown postgres -R $DATA_DIR
 chmod 0700 $DATA_DIR
 
+set +x
 . /app/.env
+set -x
 
 test -f $DATA_DIR/postgresql.conf || NEW_DB=true
 
@@ -41,6 +43,6 @@ EOF
 fi
 
 wait_for_database_to_be_ready
-artisan migrate
+sudo -u opnform artisan migrate --force
 
 wait
