@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 main() {
     ( flock -n 100 || wait_for_other_instance; generate_api_secrets) 100> /var/lock/api_secret.lock
@@ -6,9 +6,9 @@ main() {
 
 generate_api_secrets() {
 	if ! is_configured; then
-		SECRET=$(random_string)
-		add_secret_to_env_file /app/client/.env NUXT_API_SECRET $SECRET
-		add_secret_to_env_file /app/.env FRONT_API_SECRET $SECRET
+		SECRET="$(random_string)"
+		add_secret_to_env_file /app/client/.env NUXT_API_SECRET "$SECRET"
+		add_secret_to_env_file /app/.env FRONT_API_SECRET "$SECRET"
 	fi
 }
 
@@ -27,7 +27,7 @@ add_secret_to_env_file() {
 	VAR=$2
 	VAL=$3
 
-	grep "^$VAR=" $FILE || ( echo $VAR= >> $FILE )
+	grep "^$VAR=" "$FILE" || ( echo "$VAR=" >> "$FILE" )
 
 	cp $FILE $TEMP_FILE
 	sed "s/^$VAR=.*$/$VAR=$VAL/" -i $TEMP_FILE

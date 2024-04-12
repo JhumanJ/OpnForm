@@ -101,7 +101,7 @@ Custom Nuxt .env file:
 docker run --name opnform -v $PWD/custom-nuxt-env-file.env:/app/client/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
 ```
 
-This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.docker.env` example file as there are slightly different defaults for the dockerized setup.
+This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.env.docker` example file as there are slightly different defaults for the dockerized setup.
 
 #### Using a custom HTTP port
 
