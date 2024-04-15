@@ -42,17 +42,12 @@
       <p class="text-gray-400 mb-3 text-xs">
         Advanced options for checkbox.
       </p>
-      <v-checkbox
-        v-model="field.use_toggle_switch"
-        class="mt-3"
+      <toggle-switch-input
+        :form="field"
         name="use_toggle_switch"
-        help=""
-      >
-        Use toggle switch
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        If enabled, checkbox will be replaced with a toggle switch
-      </p>
+        label="Use toggle switch"
+        help="If enabled, checkbox will be replaced with a toggle switch"
+      />
     </div>
 
     <!-- File Uploads -->
@@ -60,23 +55,19 @@
       v-if="field.type === 'files'"
       class="border-b py-2 px-4"
     >
-      <h3 class="font-semibold block text-lg">
+      <h3 class="font-semibold block text-lg mb-3">
         File uploads
       </h3>
-      <v-checkbox
-        v-model="field.multiple"
-        class="mt-3"
-        :name="field.id + '_multiple'"
-      >
-        Allow multiple files
-      </v-checkbox>
-      <v-checkbox
-        v-model="field.camera_upload"
-        class="mt-3"
-        :name="field.id+'_camera_upload'"
-      >
-        Allow Camera uploads
-      </v-checkbox>
+      <toggle-switch-input
+        :form="field"
+        name="multiple"
+        label="Allow multiple files"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="camera_upload"
+        label="Allow Camera uploads"
+      />
       <text-input
         name="allowed_file_types"
         class="mt-3"
@@ -207,14 +198,12 @@
       <p class="text-gray-400 mb-3 text-xs">
         Keep it simple or make it a multi-lines input.
       </p>
-      <v-checkbox
-        v-model="field.multi_lines"
-        class="mb-2"
-        :name="field.id + '_multi_lines'"
+      <toggle-switch-input
+        :form="field"
+        name="multi_lines"
+        label="Multi-lines input"
         @update:model-value="field.multi_lines = $event"
-      >
-        Multi-lines input
-      </v-checkbox>
+      />
     </div>
 
     <!--   Date Options   -->
@@ -293,26 +282,19 @@
         help="Add one option per line"
         @update:model-value="onFieldOptionsChange"
       />
-      <v-checkbox
-        v-model="field.allow_creation"
+      <toggle-switch-input
+        :form="field"
         name="allow_creation"
-        help=""
+        label="Allow respondent to create new options"
         @update:model-value="onFieldAllowCreationChange"
-      >
-        Allow respondent to create new options
-      </v-checkbox>
-      <v-checkbox
-        v-model="field.without_dropdown"
-        class="mt-3"
+      />
+      <toggle-switch-input
+        :form="field"
         name="without_dropdown"
-        help=""
+        label="Always show all select options"
+        help="Options won't be in a dropdown anymore, but will all be visible"
         @update:model-value="onFieldWithoutDropdownChange"
-      >
-        Always show all select options
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        Options won't be in a dropdown anymore, but will all be visible
-      </p>
+      />
     </div>
 
     <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
@@ -336,22 +318,18 @@
         label="Field Name"
       />
 
-      <v-checkbox
-        v-model="field.hide_field_name"
-        class="mt-3"
-        :name="field.id + '_hide_field_name'"
-      >
-        Hide field name
-      </v-checkbox>
+      <toggle-switch-input
+        :form="field"
+        name="hide_field_name"
+        label="Hide field name"
+      />
 
-      <v-checkbox
+      <toggle-switch-input
         v-if="field.type === 'phone_number'"
-        v-model="field.use_simple_text_input"
-        class="mt-3"
-        :name="field.id + '_use_simple_text_input'"
-      >
-        Use simple text input
-      </v-checkbox>
+        :form="field"
+        name="use_simple_text_input"
+        label="Use simple text input"
+      />
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
         <select-input
           v-model="field.unavailable_countries"
@@ -414,15 +392,13 @@
       </template>
 
       <!-- Pre-fill depends on type -->
-      <v-checkbox
+      <toggle-switch-input
         v-if="field.type == 'checkbox'"
-        v-model="field.prefill"
-        class="mt-3"
-        :name="field.id + '_prefill'"
+        :form="field"
+        name="prefill"
+        label="Pre-filled value"
         @update:model-value="field.prefill = $event"
-      >
-        Pre-filled value
-      </v-checkbox>
+      />
       <select-input
         v-else-if="['select', 'multi_select'].includes(field.type)"
         name="prefill"
@@ -559,29 +535,20 @@
       <h3 class="font-semibold block text-lg mb-3">
         Advanced Options
       </h3>
-
-      <v-checkbox
-        v-model="field.generates_uuid"
-        :name="field.id + '_generates_uuid'"
+      <toggle-switch-input
+        :form="field"
+        name="generates_uuid"
+        label="Generates a unique id"
+        help="If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form submission"
         @update:model-value="onFieldGenUIdChange"
-      >
-        Generates a unique id
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form
-        submission
-      </p>
-
-      <v-checkbox
-        v-model="field.generates_auto_increment_id"
-        :name="field.id + '_generates_auto_increment_id'"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="generates_auto_increment_id"
+        label="Generates an auto-incremented id"
+        help="If you enable this, we will hide this field and fill it a unique incrementing number on each new form submission"
         @update:model-value="onFieldGenAutoIdChange"
-      >
-        Generates an auto-incremented id
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it a unique incrementing number on each new form submission
-      </p>
+      />
     </div>
 
     <!--  Logic Block -->
