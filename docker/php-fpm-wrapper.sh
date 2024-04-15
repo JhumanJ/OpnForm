@@ -1,4 +1,4 @@
-#!/bin/bash +ex
+#!/bin/bash -ex
 
 [ -L /app/storage ] || {
     echo "Backing up initial storage directory"
@@ -17,22 +17,27 @@ touch /var/log/opnform.log
 chown opnform /var/log/opnform.log
 
 echo "Linking persistent storage into app"
-ln -sf /persist/storage /app/storage
+ln -t /app -sf /persist/storage
 
-. /app/.env
+read_env() {
+    set +x
+    . /app/.env
+    set -x
+}
+read_env
 
 [ "x$APP_KEY" != "x" ] || {
     artisan key:generate
-    . /app/.env
+    read_env
 }
 [ "x$JWT_SECRET" != "x" ] || {
     artisan jwt:secret -f
-    . /app/.env
+    read_env
 }
 
 [ "x$FRONT_API_SECRET" != "x" ] || {
 	generate-api-secret.sh
-    . /app/.env
+    read_env
 }
 
 /usr/sbin/php-fpm8.1
