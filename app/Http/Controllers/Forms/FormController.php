@@ -121,8 +121,15 @@ class FormController extends Controller
             'creator_id' => $request->user()->id,
         ]));
 
+        if ($this->formCleaner->hasCleaned()) {
+            $formStatus = $form->workspace->is_trialing ? 'Non-trial' : 'Pro';
+            $message =  'Form successfully created, but the ' . $formStatus . ' features you used will be disabled when sharing your form:';
+        } else {
+            $message =  'Form created.';
+        }
+
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully created, but the Pro features you used will be disabled when sharing your form:' : 'Form created.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
+            'message' => $message . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
             'users_first_form' => $request->user()->forms()->count() == 1,
         ]);
@@ -145,8 +152,16 @@ class FormController extends Controller
 
         $form->update($formData);
 
+        if ($this->formCleaner->hasCleaned()) {
+            $formSubscription = $form->is_pro ? 'Enterprise' : 'Pro';
+            $formStatus = $form->workspace->is_trialing ? 'Non-trial' : $formSubscription;
+            $message = 'Form successfully updated, but the ' . $formStatus . ' features you used will be disabled when sharing your form.';
+        } else {
+            $message = 'Form updated.';
+        }
+
         return $this->success([
-            'message' => $this->formCleaner->hasCleaned() ? 'Form successfully updated, but the Pro features you used will be disabled when sharing your form:' : 'Form updated.' . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
+            'message' => $message . ($form->visibility == 'draft' ? ' But other people won\'t be able to see the form since it\'s currently in draft mode' : ''),
             'form' => (new FormResource($form))->setCleanings($this->formCleaner->getPerformedCleanings()),
         ]);
     }

@@ -168,3 +168,26 @@ it('can create form with dark mode', function () {
                 ->etc();
         });
 });
+
+it('can create form with custom scripts', function () {
+    $user = $this->actingAsTrialingUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'custom_code' => "<script>console.log('Hello')</script>",
+    ]);
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+    $this->postJson(route('open.forms.store', $formData))
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form successfully created, but the Non-trial features you used will be disabled when sharing your form:',
+            'form' => ['custom_code' => null]
+        ]);
+
+    $this->getJson(route('forms.show', $form->slug))
+        ->assertSuccessful()->assertJson([
+            'id' => $form->id,
+            'title' => $form->title,
+            'custom_code'  => null
+        ]);
+});
