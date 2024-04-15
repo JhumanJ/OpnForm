@@ -11,18 +11,12 @@
       >
         <div
           class="flex flex-col bg-white rounded-md"
-          :class="{
-            'lg:flex-row': !fieldSideBarOpened,
-            'xl:flex-row': fieldSideBarOpened,
-          }"
+          :class="{ 'lg:flex-row': !fieldSideBarOpened, 'xl:flex-row': fieldSideBarOpened }"
         >
           <div
             class="p-2 -mr-3 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer hidden xl:block"
             role="button"
-            :class="{
-              'lg:block': !fieldSideBarOpened,
-              'xl:block': fieldSideBarOpened,
-            }"
+            :class="{ 'lg:block': !fieldSideBarOpened, 'xl:block': fieldSideBarOpened }"
             @click.prevent="openAddFieldSidebar"
           >
             <svg
@@ -43,10 +37,7 @@
           <div
             class="p-2 text-gray-300 hover:text-blue-500 cursor-pointer"
             role="button"
-            :class="{
-              'lg:-mr-2': !fieldSideBarOpened,
-              'xl:-mr-2': fieldSideBarOpened,
-            }"
+            :class="{ 'lg:-mr-2': !fieldSideBarOpened, 'xl:-mr-2': fieldSideBarOpened }"
             @click.prevent="editFieldOptions"
           >
             <svg
@@ -64,10 +55,7 @@
           </div>
           <div
             class="px-2 xl:pl-0 lg:pr-1 lg:pt-2 pb-2 bg-white rounded-md text-gray-300 hover:text-gray-500 cursor-grab draggable"
-            :class="{
-              'lg:pr-1 lg:pl-0': !fieldSideBarOpened,
-              'xl:-mr-2': fieldSideBarOpened,
-            }"
+            :class="{ 'lg:pr-1 lg:pl-0': !fieldSideBarOpened, 'xl:-mr-2': fieldSideBarOpened }"
             role="button"
           >
             <svg
@@ -117,10 +105,7 @@
           class="border-b my-4 w-full mx-2"
         />
         <div
-          v-if="
-            field.type === 'nf-image' &&
-              (field.image_block || !isPublicFormPage)
-          "
+          v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)"
           :id="field.id"
           :key="field.id"
           class="my-4 w-full px-2"
@@ -145,50 +130,52 @@
 </template>
 
 <script>
-import { computed } from "vue"
+import { computed } from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import { default as _has } from "lodash/has"
+import { default as _has } from 'lodash/has'
 
 export default {
-  name: "OpenFormField",
+  name: 'OpenFormField',
   components: {},
   props: {
     form: {
       type: Object,
-      required: true,
+      required: true
     },
     dataForm: {
       type: Object,
-      required: true,
+      required: true
     },
     dataFormValue: {
       type: Object,
-      required: true,
+      required: true
     },
     theme: {
       type: Object,
-      required: true,
+      required: true
     },
     showHidden: {
       type: Boolean,
-      default: false,
+      default: false
+    },
+    darkMode: {
+      type: Boolean,
+      default: false
     },
     field: {
       type: Object,
-      required: true,
+      required: true
     },
-    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
   },
 
-  setup() {
+  setup(props) {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
       currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
-      showEditFieldSidebar: computed(
-        () => workingFormStore.showEditFieldSidebar,
-      ),
+      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar)
     }
   },
 
@@ -198,81 +185,65 @@ export default {
      */
     getFieldComponents() {
       const field = this.field
-      if (field.type === "text" && field.multi_lines) {
-        return "TextAreaInput"
+      if (field.type === 'text' && field.multi_lines) {
+        return 'TextAreaInput'
       }
-      if (field.type === "url" && field.file_upload) {
-        return "FileInput"
+      if (field.type === 'url' && field.file_upload) {
+        return 'FileInput'
       }
-      if (
-        ["select", "multi_select"].includes(field.type) &&
-        field.without_dropdown
-      ) {
-        return "FlatSelectInput"
+      if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
+        return 'FlatSelectInput'
       }
-      if (field.type === "checkbox" && field.use_toggle_switch) {
-        return "ToggleSwitchInput"
+      if (field.type === 'checkbox' && field.use_toggle_switch) {
+        return 'ToggleSwitchInput'
       }
-      if (field.type === "signature") {
-        return "SignatureInput"
+      if (field.type === 'signature') {
+        return 'SignatureInput'
       }
-      if (field.type === "phone_number" && !field.use_simple_text_input) {
-        return "PhoneInput"
+      if (field.type === 'phone_number' && !field.use_simple_text_input) {
+        return 'PhoneInput'
       }
       return {
-        text: "TextInput",
-        number: "TextInput",
-        rating: "RatingInput",
-        scale: "ScaleInput",
-        slider: "SliderInput",
-        select: "SelectInput",
-        multi_select: "SelectInput",
-        date: "DateInput",
-        files: "FileInput",
-        checkbox: "CheckboxInput",
-        url: "TextInput",
-        email: "TextInput",
-        phone_number: "TextInput",
+        text: 'TextInput',
+        number: 'TextInput',
+        rating: 'RatingInput',
+        scale: 'ScaleInput',
+        slider: 'SliderInput',
+        select: 'SelectInput',
+        multi_select: 'SelectInput',
+        date: 'DateInput',
+        files: 'FileInput',
+        checkbox: 'CheckboxInput',
+        url: 'TextInput',
+        email: 'TextInput',
+        phone_number: 'TextInput'
       }[field.type]
     },
     isPublicFormPage() {
-      return this.$route.name === "forms-slug"
+      return this.$route.name === 'forms-slug'
     },
     isFieldHidden() {
       return !this.showHidden && this.shouldBeHidden
     },
     shouldBeHidden() {
-      return new FormLogicPropertyResolver(
-        this.field,
-        this.dataFormValue,
-      ).isHidden()
+      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isHidden()
     },
     isFieldRequired() {
-      return new FormLogicPropertyResolver(
-        this.field,
-        this.dataFormValue,
-      ).isRequired()
+      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isRequired()
     },
     isFieldDisabled() {
-      return new FormLogicPropertyResolver(
-        this.field,
-        this.dataFormValue,
-      ).isDisabled()
+      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
     },
     beingEdited() {
-      return (
-        this.adminPreview &&
-        this.showEditFieldSidebar &&
-        this.form.properties.findIndex((item) => {
-          return item.id === this.field.id
-        }) === this.selectedFieldIndex
-      )
+      return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {
+        return item.id === this.field.id
+      }) === this.selectedFieldIndex
     },
     selectionFieldsOptions() {
       // For auto update hidden options
       let fieldsOptions = []
 
-      if (["select", "multi_select", "status"].includes(this.field.type)) {
+      if (['select', 'multi_select', 'status'].includes(this.field.type)) {
         fieldsOptions = [...this.field[this.field.type].options]
         if (this.field.hidden_options && this.field.hidden_options.length > 0) {
           fieldsOptions = fieldsOptions.filter((option) => {
@@ -284,16 +255,14 @@ export default {
       return fieldsOptions
     },
     fieldSideBarOpened() {
-      return this.adminPreview && this.form && this.selectedFieldIndex !== null
-        ? this.form.properties[this.selectedFieldIndex] &&
-            this.showEditFieldSidebar
-        : false
-    },
+      return this.adminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
+    }
   },
 
   watch: {},
 
-  mounted() {},
+  mounted() {
+  },
 
   methods: {
     editFieldOptions() {
@@ -306,39 +275,38 @@ export default {
      * Get the right input component for the field/options combination
      */
     getFieldClasses() {
-      let classes = ""
+      let classes = ''
       if (this.adminPreview) {
-        classes +=
-          "-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors"
+        classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
 
         if (this.beingEdited) {
-          classes += " bg-blue-50 dark:bg-gray-800 rounded-md"
+          classes += ' bg-blue-50 dark:bg-gray-800 rounded-md'
         }
       }
       return classes
     },
     getFieldWidthClasses(field) {
-      if (!field.width || field.width === "full") return "w-full px-2"
-      else if (field.width === "1/2") {
-        return "w-full sm:w-1/2 px-2"
-      } else if (field.width === "1/3") {
-        return "w-full sm:w-1/3 px-2"
-      } else if (field.width === "2/3") {
-        return "w-full sm:w-2/3 px-2"
-      } else if (field.width === "1/4") {
-        return "w-full sm:w-1/4 px-2"
-      } else if (field.width === "3/4") {
-        return "w-full sm:w-3/4 px-2"
+      if (!field.width || field.width === 'full') return 'w-full px-2'
+      else if (field.width === '1/2') {
+        return 'w-full sm:w-1/2 px-2'
+      } else if (field.width === '1/3') {
+        return 'w-full sm:w-1/3 px-2'
+      } else if (field.width === '2/3') {
+        return 'w-full sm:w-2/3 px-2'
+      } else if (field.width === '1/4') {
+        return 'w-full sm:w-1/4 px-2'
+      } else if (field.width === '3/4') {
+        return 'w-full sm:w-3/4 px-2'
       }
     },
     getFieldAlignClasses(field) {
-      if (!field.align || field.align === "left") return "text-left"
-      else if (field.align === "right") {
-        return "text-right"
-      } else if (field.align === "center") {
-        return "text-center"
-      } else if (field.align === "justify") {
-        return "text-justify"
+      if (!field.align || field.align === 'left') return 'text-left'
+      else if (field.align === 'right') {
+        return 'text-right'
+      } else if (field.align === 'center') {
+        return 'text-center'
+      } else if (field.align === 'justify') {
+        return 'text-justify'
       }
     },
     /**
@@ -349,38 +317,36 @@ export default {
         key: field.id,
         name: field.id,
         form: this.dataForm,
-        label: field.hide_field_name
-          ? null
-          : field.name + (this.shouldBeHidden ? " (Hidden Field)" : ""),
+        label: (field.hide_field_name) ? null : field.name + ((this.shouldBeHidden) ? ' (Hidden Field)' : ''),
         color: this.form.color,
         placeholder: field.placeholder,
         help: field.help,
-        helpPosition: field.help_position ? field.help_position : "below_input",
-        uppercaseLabels:
-          this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
+        helpPosition: (field.help_position) ? field.help_position : 'below_input',
+        uppercaseLabels: this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
         theme: this.theme,
-        maxCharLimit: field.max_char_limit
-          ? parseInt(field.max_char_limit)
-          : 2000,
+        maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
         showCharLimit: field.show_char_limit || false,
+        isDark: this.darkMode
       }
 
-      if (["select", "multi_select"].includes(field.type)) {
-        inputProperties.options = _has(field, field.type)
-          ? field[field.type].options.map((option) => {
-              return {
-                name: option.name,
-                value: option.name,
-              }
-            })
+      if (['select', 'multi_select'].includes(field.type)) {
+        inputProperties.options = (_has(field, field.type))
+          ? field[field.type].options.map(option => {
+            return {
+              name: option.name,
+              value: option.name
+            }
+          })
           : []
-        inputProperties.multiple = field.type === "multi_select"
-        inputProperties.allowCreation = field.allow_creation === true
-        inputProperties.searchable = inputProperties.options.length > 4
-      } else if (field.type === "date") {
+        inputProperties.multiple = (field.type === 'multi_select')
+        inputProperties.allowCreation = (field.allow_creation === true)
+        inputProperties.searchable = (inputProperties.options.length > 4)
+      } else if (field.type === 'date') {
+        inputProperties.dateFormat = field.date_format
         if (field.with_time) {
           inputProperties.withTime = true
-        } else if (field.date_range) {
+        }
+        if (field.date_range) {
           inputProperties.dateRange = true
         }
         if (field.disable_past_dates) {
@@ -388,56 +354,38 @@ export default {
         } else if (field.disable_future_dates) {
           inputProperties.disableFutureDates = true
         }
-      } else if (
-        field.type === "files" ||
-        (field.type === "url" && field.file_upload)
-      ) {
-        inputProperties.multiple =
-          field.multiple !== undefined && field.multiple
-        inputProperties.cameraUpload =
-          field.camera_upload !== undefined && field.camera_upload
-        let maxFileSize =
-          this.form?.workspace && this.form?.workspace.max_file_size
-            ? this.form?.workspace?.max_file_size
-            : 10
+      } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
+        inputProperties.multiple = (field.multiple !== undefined && field.multiple)
+        inputProperties.cameraUpload = (field.camera_upload !== undefined && field.camera_upload)
+        let maxFileSize = (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
         if (field?.max_file_size > 0) {
           maxFileSize = Math.min(field.max_file_size, maxFileSize)
         }
         inputProperties.mbLimit = maxFileSize
-        inputProperties.accept =
-          this.form.is_pro && field.allowed_file_types
-            ? field.allowed_file_types
-            : ""
-      } else if (field.type === "rating") {
+        inputProperties.accept = (this.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
+      } else if (field.type === 'rating') {
         inputProperties.numberOfStars = parseInt(field.rating_max_value) ?? 5
-      } else if (field.type === "scale") {
+      } else if (field.type === 'scale') {
         inputProperties.minScale = parseInt(field.scale_min_value) ?? 1
         inputProperties.maxScale = parseInt(field.scale_max_value) ?? 5
         inputProperties.stepScale = parseInt(field.scale_step_value) ?? 1
-      } else if (field.type === "slider") {
+      } else if (field.type === 'slider') {
         inputProperties.minSlider = parseInt(field.slider_min_value) ?? 0
         inputProperties.maxSlider = parseInt(field.slider_max_value) ?? 50
         inputProperties.stepSlider = parseInt(field.slider_step_value) ?? 5
-      } else if (
-        field.type === "number" ||
-        (field.type === "phone_number" && field.use_simple_text_input)
-      ) {
-        inputProperties.pattern = "/*"
-      } else if (
-        field.type === "phone_number" &&
-        !field.use_simple_text_input
-      ) {
-        inputProperties.unavailableCountries =
-          field.unavailable_countries ?? []
+      } else if (field.type === 'number' || (field.type === 'phone_number' && field.use_simple_text_input)) {
+        inputProperties.pattern = '/d*'
+      } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
+        inputProperties.unavailableCountries = field.unavailable_countries ?? []
       }
 
       return inputProperties
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .nf-text {
   ol {
     @apply list-decimal list-inside;

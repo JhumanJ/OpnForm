@@ -4,9 +4,7 @@
     ref="parent"
     class="bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-5 flex-col items-center overflow-y-scroll"
   >
-    <div
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block transition-all max-w-5xl"
-    >
+    <div class="border rounded-lg bg-white dark:bg-notion-dark w-full block transition-all max-w-5xl">
       <transition
         enter-active-class="linear duration-100 overflow-hidden"
         enter-from-class="max-h-0"
@@ -15,7 +13,7 @@
         leave-from-class="max-h-56"
         leave-to-class="max-h-0"
       >
-        <div v-if="form.logo_picture || form.cover_picture">
+        <div v-if="(form.logo_picture || form.cover_picture)">
           <div v-if="form.cover_picture">
             <div
               id="cover-picture"
@@ -31,18 +29,12 @@
           <div
             v-if="form.logo_picture"
             class="w-full mx-auto p-5 relative"
-            :class="{
-              'pt-20': !form.cover_picture,
-              'max-w-lg': form && form.width === 'centered',
-            }"
+            :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered')}"
           >
             <img
               alt="Logo Picture"
               :src="coverPictureSrc(form.logo_picture)"
-              :class="{
-                'top-5': !form.cover_picture,
-                '-top-10': form.cover_picture,
-              }"
+              :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
               class="max-w-60 h-20 object-contain absolute left-5 transition-all"
             >
           </div>
@@ -51,17 +43,17 @@
       <open-complete-form
         ref="form-preview"
         class="w-full mx-auto py-5 px-3"
-        :class="{ 'max-w-lg': form && form.width === 'centered' }"
+        :class="{'max-w-lg': form && (form.width === 'centered')}"
         :creating="creating"
         :form="form"
+        :dark-mode="darkMode"
         :admin-preview="true"
-        @restarted="previewFormSubmitted = false"
-        @submitted="previewFormSubmitted = true"
+        @restarted="previewFormSubmitted=false"
+        @submitted="previewFormSubmitted=true"
       />
     </div>
     <p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">
-      Form Preview
-      <span
+      Form Preview <span
         v-if="creating"
         class="font-normal text-gray-400 dark:text-gray-600 text-xs"
       >- Answers won't be saved</span>
@@ -90,55 +82,57 @@
 </template>
 
 <script>
-import OpenCompleteForm from "../../OpenCompleteForm.vue"
-import { handleDarkMode } from "~/lib/forms/public-page.js"
-import { default as _has } from "lodash/has"
+import OpenCompleteForm from '../../OpenCompleteForm.vue'
+import {handleDarkMode, useDarkMode} from "~/lib/forms/public-page.js"
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { OpenCompleteForm },
   props: {},
-  setup() {
+  setup () {
     const workingFormStore = useWorkingFormStore()
+    const parent = ref(null)
     return {
       workingFormStore,
+      parent: parent,
+      darkMode: useDarkMode(parent)
     }
   },
-  data() {
+  data () {
     return {
-      previewFormSubmitted: false,
+      previewFormSubmitted: false
     }
   },
 
   computed: {
     form: {
-      get() {
+      get () {
         return this.workingFormStore.content
       },
       /* We add a setter */
-      set(value) {
+      set (value) {
         this.workingFormStore.set(value)
-      },
+      }
     },
-    creating() {
-      // returns true if we are creating a form
-      return !_has(this.form, "id")
-    },
+    creating () { // returns true if we are creating a form
+      return !_has(this.form, 'id')
+    }
   },
 
   watch: {
-    "form.dark_mode": {
-      handler() {
+    'form.dark_mode': {
+      handler () {
         this.handleDarkMode()
-      },
-    },
+      }
+    }
   },
 
-  mounted() {
+  mounted () {
     this.handleDarkMode()
   },
 
   methods: {
-    coverPictureSrc(val) {
+    coverPictureSrc (val) {
       try {
         // Is valid url
         new URL(val)
@@ -148,9 +142,9 @@ export default {
       }
       return val
     },
-    handleDarkMode() {
+    handleDarkMode () {
       handleDarkMode(this.form.dark_mode, this.$refs.parent)
-    },
+    }
   },
 }
 </script>

@@ -11,30 +11,24 @@
       <p class="text-gray-400 mb-2 text-xs">
         Exclude this field or make it required.
       </p>
-      <v-checkbox
-        v-model="field.hidden"
-        class="mb-3"
-        :name="field.id + '_hidden'"
-        @update:model-value="onFieldHiddenChange"
-      >
-        Hidden
-      </v-checkbox>
-      <v-checkbox
-        v-model="field.required"
-        class="mb-3"
-        :name="field.id + '_required'"
+      <toggle-switch-input
+        :form="field"
+        name="required"
+        label="Required"
         @update:model-value="onFieldRequiredChange"
-      >
-        Required
-      </v-checkbox>
-      <v-checkbox
-        v-model="field.disabled"
-        class="mb-3"
-        :name="field.id + '_disabled'"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="hidden"
+        label="Hidden"
+        @update:model-value="onFieldHiddenChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="disabled"
+        label="Disabled"
         @update:model-value="onFieldDisabledChange"
-      >
-        Disabled
-      </v-checkbox>
+      />
     </div>
 
     <!-- Checkbox -->
@@ -79,7 +73,7 @@
       <v-checkbox
         v-model="field.camera_upload"
         class="mt-3"
-        :name="field.id + '_camera_upload'"
+        :name="field.id+'_camera_upload'"
       >
         Allow Camera uploads
       </v-checkbox>
@@ -231,67 +225,53 @@
       <h3 class="font-semibold block text-lg">
         Date Options
       </h3>
-      <v-checkbox
-        v-model="field.date_range"
+      <toggle-switch-input
+        :form="field"
         class="mt-3"
-        :name="field.id + '_date_range'"
+        name="date_range"
+        label="End date"
         @update:model-value="onFieldDateRangeChange"
-      >
-        Date Range
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        Adds an end date. This cannot be used with the time option yet.
-      </p>
-      <v-checkbox
-        v-model="field.with_time"
-        :name="field.id + '_with_time'"
-        @update:model-value="onFieldWithTimeChange"
-      >
-        Date with time
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        Include time. Or not. This cannot be used with the date range option
-        yet.
-      </p>
-
+      />
+      <toggle-switch-input
+        :form="field"
+        name="prefill_today"
+        label="Prefill with 'today'"
+        @update:model-value="onFieldPrefillTodayChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="disable_past_dates"
+        label="Disable past dates"
+        @update:model-value="onFieldDisablePastDatesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="disable_future_dates"
+        label="Disable future dates"
+        @update:model-value="onFieldDisableFutureDatesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="with_time"
+        label="Include time"
+      />
       <select-input
         v-if="field.with_time"
         name="timezone"
-        class="mt-3"
+        class="mt-4"
         :form="field"
         :options="timezonesOptions"
         label="Timezone"
         :searchable="true"
-        help="Make sure to select correct timezone. Leave blank otherwise."
+        help="Make sure to select the same timezone you're using in Notion. Leave blank otherwise."
       />
-      <v-checkbox
-        v-model="field.prefill_today"
-        name="prefill_today"
-        @update:model-value="onFieldPrefillTodayChange"
-      >
-        Prefill with 'today'
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        if enabled we will pre-fill this field with the current date
-      </p>
-
-      <v-checkbox
-        v-model="field.disable_past_dates"
-        name="disable_past_dates"
-        class="mb-3"
-        @update:model-value="onFieldDisablePastDatesChange"
-      >
-        Disable past dates
-      </v-checkbox>
-
-      <v-checkbox
-        v-model="field.disable_future_dates"
-        name="disable_future_dates"
-        class="mb-3"
-        @update:model-value="onFieldDisableFutureDatesChange"
-      >
-        Disable future dates
-      </v-checkbox>
+      <flat-select-input
+        name="date_format"
+        class="mt-4"
+        :form="field"
+        :options="dateFormatOptions"
+        label="Date format"
+      />
     </div>
 
     <!-- select/multiselect Options   -->
@@ -372,9 +352,7 @@
       >
         Use simple text input
       </v-checkbox>
-      <template
-        v-if="field.type === 'phone_number' && !field.use_simple_text_input"
-      >
+      <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
         <select-input
           v-model="field.unavailable_countries"
           class="mt-4"
@@ -390,9 +368,7 @@
           help="Remove countries from the phone input"
         >
           <template #selected="{ option }">
-            <div
-              class="flex items-center space-x-2 justify-center overflow-hidden"
-            >
+            <div class="flex items-center space-x-2 justify-center overflow-hidden">
               {{ option.length }} selected
             </div>
           </template>
@@ -466,9 +442,7 @@
         label="Pre-filled value"
       />
       <phone-input
-        v-else-if="
-          field.type === 'phone_number' && !field.use_simple_text_input
-        "
+        v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
         name="prefill"
         class="mt-3"
         :form="field"
@@ -504,8 +478,7 @@
         class="-mt-3 mb-3 text-gray-400 dark:text-gray-500"
       >
         <small>
-          A problem?
-          <a
+          A problem? <a
             href="#"
             @click.prevent="field.prefill = null"
           >Click here to clear your pre-fill</a>
@@ -543,7 +516,7 @@
         :form="field"
         :editor-toolbar="editorToolbarCustom"
         label="Field Help"
-        help="Your field help will be shown below/above the field, just like this message."
+        help="Your field help will be shown below/above the field, just like this text."
         :help-position="field.help_position"
       />
       <select-input
@@ -595,8 +568,8 @@
         Generates a unique id
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it with a unique id
-        (UUID format) on each new form submission
+        If you enable this, we will hide this field and fill it with a unique id (UUID format) on each new form
+        submission
       </p>
 
       <v-checkbox
@@ -607,8 +580,7 @@
         Generates an auto-incremented id
       </v-checkbox>
       <p class="text-gray-400 mb-3 text-xs">
-        If you enable this, we will hide this field and fill it a unique
-        incrementing number on each new form submission
+        If you enable this, we will hide this field and fill it a unique incrementing number on each new form submission
       </p>
     </div>
 
@@ -622,35 +594,36 @@
 </template>
 
 <script>
-import timezones from "~/data/timezones.json"
-import countryCodes from "~/data/country_codes.json"
-import CountryFlag from "vue-country-flag-next"
-import FormBlockLogicEditor from "../../components/form-logic-components/FormBlockLogicEditor.vue"
-import { default as _has } from "lodash/has"
+import timezones from '~/data/timezones.json'
+import countryCodes from '~/data/country_codes.json'
+import CountryFlag from 'vue-country-flag-next'
+import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
+import { format } from 'date-fns'
+import { default as _has } from 'lodash/has'
 
 export default {
-  name: "FieldOptions",
+  name: 'FieldOptions',
   components: { CountryFlag, FormBlockLogicEditor },
   props: {
     field: {
       type: Object,
-      required: false,
+      required: false
     },
     form: {
       type: Object,
-      required: false,
-    },
+      required: false
+    }
   },
   setup() {
-    return {
-      currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
-    }
+    return { currentWorkspace: computed(() => useWorkspacesStore().getCurrent), }
   },
   data() {
     return {
-      typesWithoutPlaceholder: ["date", "checkbox", "files"],
-      editorToolbarCustom: [["bold", "italic", "underline", "link"]],
-      allCountries: countryCodes,
+      typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
+      editorToolbarCustom: [
+        ['bold', 'italic', 'underline', 'link']
+      ],
+      allCountries: countryCodes
     }
   },
 
@@ -659,26 +632,33 @@ export default {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
     mbLimit() {
-      return this.form?.workspace && this.form?.workspace.max_file_size
-        ? this.form?.workspace?.max_file_size
-        : 10
+      return  (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
     },
     prefillSelectsOptions() {
-      if (!["select", "multi_select"].includes(this.field.type)) return {}
+      if (!['select', 'multi_select'].includes(this.field.type)) return {}
 
-      return this.field[this.field.type].options.map((option) => {
+      return this.field[this.field.type].options.map(option => {
         return {
           name: option.name,
-          value: option.id,
+          value: option.id
         }
       })
     },
     timezonesOptions() {
-      if (this.field.type !== "date") return []
+      if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
         return {
           name: timezone.text,
-          value: timezone.utc[0],
+          value: timezone.utc[0]
+        }
+      })
+    },
+    dateFormatOptions () {
+      const date = new Date()
+      return ['dd/MM/yyyy', 'MM-dd-yyyy'].map(dateFormat => {
+        return {
+          name: format(date, dateFormat),
+          value: dateFormat
         }
       })
     },
@@ -689,43 +669,41 @@ export default {
       return true
     },
     optionsText() {
-      if (!this.field[this.field.type]) return ""
-      return this.field[this.field.type].options
-        .map((option) => {
-          return option.name
-        })
-        .join("\n")
-    },
+      if (!this.field[this.field.type]) return ''
+      return this.field[this.field.type].options.map(option => {
+        return option.name
+      }).join('\n')
+    }
   },
 
   watch: {
-    "field.width": {
+    'field.width': {
       handler(val) {
         if (val === undefined || val === null) {
-          this.field.width = "full"
+          this.field.width = 'full'
         }
       },
-      immediate: true,
+      immediate: true
     },
-    "field.align": {
+    'field.align': {
       handler(val) {
         if (val === undefined || val === null) {
-          this.field.align = "left"
+          this.field.align = 'left'
         }
       },
-      immediate: true,
+      immediate: true
     },
-    "field.type": {
+    'field.type': {
       handler() {
         this.setDefaultFieldValues()
       },
-      immediate: true,
+      immediate: true
     },
   },
 
   created() {
     if (this.field?.width === undefined || this.field?.width === null) {
-      this.field.width = "full"
+      this.field.width = 'full'
     }
   },
 
@@ -759,14 +737,7 @@ export default {
     onFieldDateRangeChange(val) {
       this.field.date_range = val
       if (this.field.date_range) {
-        this.field.with_time = false
         this.field.prefill_today = false
-      }
-    },
-    onFieldWithTimeChange(val) {
-      this.field.with_time = val
-      if (this.field.with_time) {
-        this.field.date_range = false
       }
     },
     onFieldGenUIdChange(val) {
@@ -784,11 +755,11 @@ export default {
       }
     },
     onFieldOptionsChange(val) {
-      const vals = val ? val.trim().split("\n") : []
-      const tmpOpts = vals.map((name) => {
+      const vals = (val) ? val.trim().split('\n') : []
+      const tmpOpts = vals.map(name => {
         return {
           name: name,
-          id: name,
+          id: name
         }
       })
       this.field[this.field.type] = { options: tmpOpts }
@@ -796,7 +767,7 @@ export default {
     onFieldPrefillTodayChange(val) {
       this.field.prefill_today = val
       if (this.field.prefill_today) {
-        this.field.prefill = "Pre-filled with current date"
+        this.field.prefill = 'Pre-filled with current date'
         this.field.date_range = false
         this.field.disable_future_dates = false
         this.field.disable_past_dates = false
@@ -832,11 +803,11 @@ export default {
     },
     onFieldHelpPositionChange(val) {
       if (!val) {
-        this.field.help_position = "below_input"
+        this.field.help_position = 'below_input'
       }
     },
     selectAllCountries() {
-      this.field.unavailable_countries = this.allCountries.map((item) => {
+      this.field.unavailable_countries = this.allCountries.map(item => {
         return item.code
       })
     },
@@ -845,41 +816,41 @@ export default {
         slider: {
           slider_min_value: 0,
           slider_max_value: 100,
-          slider_step_value: 1,
+          slider_step_value: 1
         },
         scale: {
           scale_min_value: 1,
           scale_max_value: 5,
-          scale_step_value: 1,
+          scale_step_value: 1
         },
         rating: {
-          rating_max_value: 5,
+          rating_max_value: 5
         },
         files: {
-          max_file_size: Math.min(
-            this.field.max_file_size ?? this.mbLimit,
-            this.mbLimit,
-          ),
+          max_file_size: Math.min((this.field.max_file_size ?? this.mbLimit), this.mbLimit)
         },
         text: {
           multi_lines: false,
-          max_char_limit: 2000,
+          max_char_limit: 2000
         },
         email: {
-          max_char_limit: 2000,
+          max_char_limit: 2000
         },
         url: {
-          max_char_limit: 2000,
+          max_char_limit: 2000
         },
+        date: {
+          date_format: this.dateFormatOptions[0].value
+        }
       }
       if (this.field.type in defaultFieldValues) {
-        Object.keys(defaultFieldValues[this.field.type]).forEach((key) => {
-          if (!_has(this.field, key)) {
+        Object.keys(defaultFieldValues[this.field.type]).forEach(key => {
+          if (!_has(this.field,key)) {
             this.field[key] = defaultFieldValues[this.field.type][key]
           }
         })
       }
-    },
-  },
+    }
+  }
 }
 </script>

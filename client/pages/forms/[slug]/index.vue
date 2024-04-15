@@ -16,30 +16,19 @@
       <div
         v-if="form.logo_picture"
         class="w-full p-5 relative mx-auto"
-        :class="{
-          'pt-20': !form.cover_picture,
-          'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered',
-          'max-w-7xl': form.width === 'full' && !isIframe,
-        }"
+        :class="{'pt-20':!form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }"
       >
         <img
           alt="Logo Picture"
           :src="form.logo_picture"
-          :class="{
-            'top-5': !form.cover_picture,
-            '-top-10': form.cover_picture,
-          }"
+          :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
           class="w-20 h-20 object-contain absolute left-5 transition-all"
         >
       </div>
     </div>
     <div
       class="w-full mx-auto px-4"
-      :class="{
-        'mt-6': !isIframe,
-        'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && form.width === 'centered',
-        'max-w-7xl': form && form.width === 'full' && !isIframe,
-      }"
+      :class="{'mt-6':!isIframe, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && (form.width === 'centered'), 'max-w-7xl': (form && form.width === 'full' && !isIframe)}"
     >
       <div v-if="!formLoading && !form">
         <h1
@@ -50,7 +39,7 @@
           Unfortunately we could not find this form. It may have been deleted.
         </p>
         <p class="mb-10 mt-4">
-          <router-link :to="{ name: 'index' }">
+          <router-link :to="{name:'index'}">
             Create your form for free with OpnForm
           </router-link>
         </p>
@@ -66,11 +55,12 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto" />
           </p>
         </div>
-        <open-complete-form
+        <OpenCompleteForm
           v-show="!recordLoading"
           ref="openCompleteForm"
           :form="form"
           class="mb-10"
+          :dark-mode="darkMode"
           @password-entered="passwordEntered"
         />
       </template>
@@ -79,20 +69,22 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import sha256 from "js-sha256"
-import { onBeforeRouteLeave } from "vue-router"
+import {computed} from 'vue'
+import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
+import sha256 from 'js-sha256'
+import { onBeforeRouteLeave } from 'vue-router'
 import {
   disableDarkMode,
   handleDarkMode,
   handleTransparentMode,
   focusOnFirstFormElement,
-} from "~/lib/forms/public-page"
+  useDarkMode
+} from '~/lib/forms/public-page'
 
 const crisp = useCrisp()
 const formsStore = useFormsStore()
 const recordsStore = useRecordsStore()
-
+const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const formLoading = computed(() => formsStore.loading)
 const recordLoading = computed(() => recordsStore.loading)
@@ -102,29 +94,28 @@ const form = computed(() => formsStore.getByKey(slug))
 const openCompleteForm = ref(null)
 
 const passwordEntered = function (password) {
-  const cookie = useCookie("password-" + slug, {
+  const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
-    sameSite: "none",
-    secure: true,
+    sameSite: 'none',
+    secure: true
   })
   cookie.value = sha256(password)
   nextTick(() => {
     loadForm().then(() => {
       if (form.value?.is_password_protected) {
-        openCompleteForm.value.addPasswordError("Invalid password.")
+        openCompleteForm.value.addPasswordError('Invalid password.')
       }
     })
   })
 }
 
-const loadForm = async (setup = false) => {
-  if (formsStore.loading || (form.value && !form.value.is_password_protected))
-    return Promise.resolve()
+const loadForm = async (setup=false) => {
+  if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
 
   if (setup) {
-    const { data, error } = await formsStore.publicLoad(slug)
+    const {data, error} = await formsStore.publicLoad(slug)
     if (error.value) {
-      console.error(`Error loading form [${slug}]:`, error.value)
+      console.error(`Error loading form [${slug}]:`,error.value)
       formsStore.stopLoading()
       return
     }
@@ -147,22 +138,25 @@ const loadForm = async (setup = false) => {
 
 await loadForm(true)
 
+// Start loader if record needs to be loaded
+if (useRoute().query?.submission_id) {
+  recordsStore.startLoading()
+}
+
 onMounted(() => {
   crisp.hideChat()
-  document.body.classList.add("public-page")
+  document.body.classList.add('public-page')
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
 
     if (import.meta.client) {
       if (form.value.custom_code) {
-        const scriptEl = document
-          .createRange()
-          .createContextualFragment(form.value.custom_code)
+        const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
         try {
           document.head.append(scriptEl)
         } catch (e) {
-          console.error("Error appending custom code", e)
+          console.error('Error appending custom code', e)
         }
       }
       if (!isIframe) focusOnFirstFormElement()
@@ -171,7 +165,7 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave(() => {
-  document.body.classList.remove("public-page")
+  document.body.classList.remove('public-page')
   crisp.showChat()
   disableDarkMode()
 })
@@ -187,29 +181,23 @@ useOpnSeoMeta({
     if (pageMeta.value.page_title) {
       return pageMeta.value.page_title
     }
-    return form.value ? form.value.title : "Create beautiful forms"
+    return form.value ? form.value.title : 'Create beautiful forms'
   },
   description: () => {
     if (pageMeta.value.description) {
       return pageMeta.value.description
     }
-    return form.value && form.value?.description
-      ? form.value?.description.substring(0, 160)
-      : null
+    return (form.value && form.value?.description) ? form.value?.description.substring(0, 160) : null
   },
   ogImage: () => {
     if (pageMeta.value.page_thumbnail) {
       return pageMeta.value.page_thumbnail
     }
-    return form.value && form.value?.cover_picture
-      ? form.value?.cover_picture
-      : null
+    return (form.value && form.value?.cover_picture) ? form.value?.cover_picture : null
   },
   robots: () => {
-    return form.value && form.value?.can_be_indexed
-      ? null
-      : "noindex, nofollow"
-  },
+    return (form.value && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
+  }
 })
 useHead({
   titleTemplate: (titleChunk) => {
@@ -217,8 +205,8 @@ useHead({
       // Disable template if custom SEO title
       return titleChunk
     }
-    return titleChunk ? `${titleChunk} - OpnForm` : "OpnForm"
+    return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm'
   },
-  script: [{ src: "/widgets/iframeResizer.contentWindow.min.js" }],
+  script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>

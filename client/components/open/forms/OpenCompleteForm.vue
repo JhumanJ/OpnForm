@@ -6,7 +6,7 @@
     <h1
       v-if="!isHideTitle"
       class="mb-4 px-2"
-      :class="{ 'mt-4': isEmbedPopup }"
+      :class="{'mt-4':isEmbedPopup}"
       v-text="form.title"
     />
     <div
@@ -49,12 +49,11 @@
       >
         <div class="flex flex-grow">
           <p class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600">
-            We disabled the password protection for this form because you are an
-            owner of it.
+            We disabled the password protection for this form because you are an owner of it.
           </p>
           <v-button
             color="yellow"
-            @click="hidePasswordDisabledMsg = true"
+            @click="hidePasswordDisabledMsg=true"
           >
             OK
           </v-button>
@@ -95,13 +94,7 @@
     />
 
     <transition
-      v-if="
-        !form.is_password_protected &&
-          (!isPublicFormPage ||
-            (!form.is_closed &&
-              !form.max_number_of_submissions_reached &&
-              form.visibility != 'closed'))
-      "
+      v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
       enter-active-class="duration-500 ease-out"
       enter-from-class="translate-x-full opacity-0"
       enter-to-class="translate-x-0 opacity-100"
@@ -120,10 +113,11 @@
           :loading="loading"
           :fields="form.properties"
           :theme="theme"
+          :dark-mode="darkMode"
           :admin-preview="adminPreview"
-          @submit="onFormSubmitted"
+          @submit="submitForm"
         >
-          <template #submit-btn="{ submitForm }">
+          <template #submit-btn="{submitForm}">
             <open-form-button
               :loading="loading"
               :theme="theme"
@@ -156,7 +150,7 @@
       >
         <p
           class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
-          v-html="form.submitted_text"
+          v-html="form.submitted_text "
         />
         <open-form-button
           v-if="form.re_fillable"
@@ -173,7 +167,7 @@
         >
           <a
             target="_parent"
-            :href="form.share_url + '?submission_id=' + submissionId"
+            :href="form.share_url+'?submission_id='+submissionId"
             class="text-nt-blue hover:underline"
           >
             {{ form.editable_submissions_button_text }}
@@ -197,15 +191,15 @@
 </template>
 
 <script>
-import OpenForm from "./OpenForm.vue"
-import OpenFormButton from "./OpenFormButton.vue"
-import { themes } from "~/lib/forms/form-themes.js"
-import VButton from "~/components/global/VButton.vue"
-import FormCleanings from "../../pages/forms/show/FormCleanings.vue"
-import VTransition from "~/components/global/transitions/VTransition.vue"
-import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
+import OpenForm from './OpenForm.vue'
+import OpenFormButton from './OpenFormButton.vue'
+import { themes } from '~/lib/forms/form-themes.js'
+import VButton from '~/components/global/VButton.vue'
+import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
+import VTransition from '~/components/global/transitions/VTransition.vue'
+import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import clonedeep from "clone-deep"
-import { default as _has } from "lodash/has"
+import { default as _has } from 'lodash/has'
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
@@ -214,135 +208,127 @@ export default {
     form: { type: Object, required: true },
     creating: { type: Boolean, default: false }, // If true, fake form submit
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
-    submitButtonClass: { type: String, default: "" },
+    submitButtonClass: { type: String, default: '' },
+    darkMode: {
+      type: Boolean,
+      default: false
+    }
   },
-  emits: ['submitted', 'restarted', 'password-entered'],
+
   setup(props) {
     return {
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
-      confetti: useConfetti(),
+      confetti: useConfetti()
     }
   },
 
-  data() {
+  data () {
     return {
       loading: false,
       submitted: false,
       themes: themes,
       passwordForm: useForm({
-        password: null,
+        password: null
       }),
       hidePasswordDisabledMsg: false,
-      submissionId: false,
+      submissionId: false
     }
   },
 
   computed: {
-    isEmbedPopup() {
-      return import.meta.client && window.location.href.includes("popup=true")
+    isEmbedPopup () {
+      return import.meta.client && window.location.href.includes('popup=true')
     },
-    theme() {
-      return this.themes[
-        _has(this.themes, this.form.theme) ? this.form.theme : "default"
-      ]
+    theme () {
+      return this.themes[_has(this.themes, this.form.theme) ? this.form.theme : 'default']
     },
-    isPublicFormPage() {
-      return this.$route.name === "forms-slug"
+    isPublicFormPage () {
+      return this.$route.name === 'forms-slug'
     },
-    isHideTitle() {
-      return (
-        this.form.hide_title ||
-        (import.meta.client && window.location.href.includes("hide_title=true"))
-      )
-    },
+    isHideTitle () {
+      return this.form.hide_title || (import.meta.client && window.location.href.includes('hide_title=true'))
+    }
   },
 
   methods: {
-    onFormSubmitted(form, onFailure) {
+    submitForm (form, onFailure) {
       if (this.creating) {
         this.submitted = true
-        this.$emit("submitted", true)
+        this.$emit('submitted', true)
         return
       }
 
       if (form.busy) return
       this.loading = true
       // this.closeAlert()
-      form
-        .post("/forms/" + this.form.slug + "/answer")
-        .then((data) => {
-          useAmplitude().logEvent("form_submission", {
-            workspace_id: this.form.workspace_id,
-            form_id: this.form.id,
-          })
-
-          const payload = clonedeep({
-            type: "form-submitted",
-            form: {
-              slug: this.form.slug,
-              id: this.form.id,
-            },
-            submission_data: form.data(),
-          })
-
-          if (this.isIframe) {
-            window.parent.postMessage(payload, "*")
-          }
-          window.postMessage(payload, "*")
-          this.pendingSubmission.remove()
-
-          if (data.redirect && data.redirect_url) {
-            window.location.href = data.redirect_url
-          }
-
-          if (data.submission_id) {
-            this.submissionId = data.submission_id
-          }
-
-          this.loading = false
-          this.submitted = true
-          this.$emit("submitted", true)
-
-          // If enabled display confetti
-          if (this.form.confetti_on_submission) {
-            this.confetti.play()
-          }
+      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
+        useAmplitude().logEvent('form_submission', {
+          workspace_id: this.form.workspace_id,
+          form_id: this.form.id
         })
-        .catch((error) => {
-          console.error(error)
-          if (error.response && error.data && error.data.message) {
-            useAlert().error(error.data.message)
-          }
-          this.loading = false
-          onFailure()
+
+        const payload = clonedeep({
+          type: 'form-submitted',
+          form: {
+            slug: this.form.slug,
+            id: this.form.id
+          },
+          submission_data: form.data()
         })
+
+        if (this.isIframe) {
+          window.parent.postMessage(payload, '*')
+        }
+        window.postMessage(payload, '*')
+        this.pendingSubmission.remove()
+
+        if (data.redirect && data.redirect_url) {
+          window.location.href = data.redirect_url
+        }
+
+        if (data.submission_id) {
+          this.submissionId = data.submission_id
+        }
+
+        this.loading = false
+        this.submitted = true
+        this.$emit('submitted', true)
+
+        // If enabled display confetti
+        if (this.form.confetti_on_submission) {
+          this.confetti.play()
+        }
+      }).catch((error) => {
+        console.error(error)
+        if (error.response && error.data && error.data.message) {
+          useAlert().error(error.data.message)
+        }
+        this.loading = false
+        onFailure()
+      })
     },
-    restart() {
+    restart () {
       this.submitted = false
-      this.$emit("restarted", true)
+      this.$emit('restarted', true)
     },
-    passwordEntered() {
-      if (
-        this.passwordForm.password !== "" &&
-        this.passwordForm.password !== null
-      ) {
-        this.$emit("password-entered", this.passwordForm.password)
+    passwordEntered () {
+      if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {
+        this.$emit('password-entered', this.passwordForm.password)
       } else {
-        this.addPasswordError("The Password field is required.")
+        this.addPasswordError('The Password field is required.')
       }
     },
-    addPasswordError(msg) {
-      this.passwordForm.errors.set("password", msg)
-    },
-  },
+    addPasswordError (msg) {
+      this.passwordForm.errors.set('password', msg)
+    }
+  }
 }
 </script>
 
 <style lang="scss">
 .open-complete-form {
-  .form-description,
-  .nf-text {
+  .form-description, .nf-text {
     ol {
       @apply list-decimal list-inside;
       margin-left: 10px;

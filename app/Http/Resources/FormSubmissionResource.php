@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class FormSubmissionResource extends JsonResource
 {
+    public bool $publiclyAccessed = false;
+
     /**
      * Transform the resource into an array.
      *
@@ -15,13 +17,23 @@ class FormSubmissionResource extends JsonResource
     public function toArray($request)
     {
         $this->generateFileLinks();
-        $this->addExtraData();
 
-        return [
-            'data' => $this->data,
+        if (!$this->publiclyAccessed) {
+            $this->addExtraData();
+        }
+
+        return array_merge([
+            'data' => $this->data
+        ], ($this->publiclyAccessed) ? [] : [
             'form_id' => $this->form_id,
-            'id' => $this->id,
-        ];
+            'id' => $this->id
+        ]);
+    }
+
+    public function publiclyAccessed($publiclyAccessed = true)
+    {
+        $this->publiclyAccessed = $publiclyAccessed;
+        return $this;
     }
 
     private function addExtraData()
@@ -45,7 +57,7 @@ class FormSubmissionResource extends JsonResource
             return in_array($field['type'], ['files', 'signature']);
         });
         foreach ($fileFields as $field) {
-            if (isset($data[$field['id']]) && ! empty($data[$field['id']])) {
+            if (isset($data[$field['id']]) && !empty($data[$field['id']])) {
                 $data[$field['id']] = collect($data[$field['id']])->filter(function ($file) {
                     return $file !== null && $file;
                 })->map(function ($file) {

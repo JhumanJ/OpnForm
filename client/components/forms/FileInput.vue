@@ -11,28 +11,17 @@
         v-if="cameraUpload"
         :theme="theme"
         @upload-image="cameraFileUpload"
-        @stop-webcam="isInWebcam = false"
+        @stop-webcam="isInWebcam=false"
       />
     </div>
     <div
       v-else
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
-      :class="[
-        {
-          '!cursor-not-allowed': disabled,
-          'cursor-pointer': !disabled,
-          [theme.fileInput.inputHover.light +
-            ' dark:' +
-            theme.fileInput.inputHover.dark]: uploadDragoverEvent,
-          ['hover:' +
-            theme.fileInput.inputHover.light +
-            ' dark:hover:' +
-            theme.fileInput.inputHover.dark]: !loading,
-        },
-        theme.fileInput.input,
-      ]"
-      @dragover.prevent="uploadDragoverEvent = true"
-      @dragleave.prevent="uploadDragoverEvent = false"
+      :class="[{'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
+                [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
+                ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading}, theme.fileInput.input]"
+      @dragover.prevent="uploadDragoverEvent=true"
+      @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
       @click="openFileUpload"
     >
@@ -88,19 +77,16 @@
               </div>
 
               <p class="mt-2 text-sm text-gray-500 font-semibold select-none">
-                Click to choose {{ multiple ? "file(s)" : "a file" }} or drag
-                here
+                Click to choose {{ multiple ? 'file(s)' : 'a file' }} or drag here
               </p>
-              <p
-                class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none"
-              >
+              <p class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none">
                 Size limit: {{ mbLimit }}MB per file
               </p>
             </template>
           </div>
         </template>
       </div>
-      <div class="w-full items-center justify-center mt-2 hidden sm:flex">
+      <div class="w-full items-center justify-center mt-2  hidden sm:flex">
         <open-form-button
           v-if="cameraUpload"
           native-type="button"
@@ -143,29 +129,29 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import UploadedFile from "./components/UploadedFile.vue"
-import OpenFormButton from "../open/forms/OpenFormButton.vue"
-import CameraUpload from "./components/CameraUpload.vue"
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
+import UploadedFile from './components/UploadedFile.vue'
+import OpenFormButton from '../open/forms/OpenFormButton.vue'
+import CameraUpload from './components/CameraUpload.vue'
 import { storeFile } from "~/lib/file-uploads.js"
 
 export default {
-  name: "FileInput",
-  components: { InputWrapper, UploadedFile, OpenFormButton, CameraUpload },
+  name: 'FileInput',
+  components: { InputWrapper, UploadedFile, OpenFormButton },
   mixins: [],
   props: {
     ...inputProps,
     multiple: { type: Boolean, default: true },
     cameraUpload: { type: Boolean, default: false },
     mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: "" },
-    moveToFormAssets: { type: Boolean, default: false },
+    accept: { type: String, default: '' },
+    moveToFormAssets: { type: Boolean, default: false }
   },
 
   setup(props, context) {
     return {
-      ...useFormInput(props, context),
+      ...useFormInput(props, context)
     }
   },
 
@@ -173,7 +159,7 @@ export default {
     files: [],
     uploadDragoverEvent: false,
     loading: false,
-    isInWebcam: false,
+    isInWebcam:false
   }),
 
   computed: {
@@ -185,13 +171,13 @@ export default {
         return null
       }
       return this.accept
-        .split(",")
+        .split(',')
         .map((i) => {
           if (!i) return null
-          return "." + i.trim()
+          return '.' + i.trim()
         })
-        .join(",")
-    },
+        .join(',')
+    }
   },
 
   watch: {
@@ -199,37 +185,48 @@ export default {
       deep: true,
       handler(files) {
         this.compVal = files.map((file) => file.url)
-      },
-    },
-  },
-
-  async created() {
-    if (typeof this.compVal === "string" || this.compVal instanceof String) {
-      await this.getFileFromUrl(this.compVal).then((fileObj) => {
-        this.files = [
-          {
-            file: fileObj,
-            url: this.compVal,
-            src: this.getFileSrc(fileObj),
-          },
-        ]
-      })
-    } else if (this.compVal && this.compVal.length > 0) {
-      const tmpFiles = []
-      for (let i = 0; i < this.compVal.length; i++) {
-        await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
-          tmpFiles.push({
-            file: fileObj,
-            url: this.compVal[i],
-            src: this.getFileSrc(fileObj),
-          })
-        })
       }
-      this.files = tmpFiles
+    },
+    'compVal': {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (!oldVal) {
+          this.handleCompValChange()
+        }
+      }
     }
   },
 
+  mounted() {
+    this.handleCompValChange()
+  },
+
   methods: {
+    async handleCompValChange() {
+      this.loading = true
+      if (typeof this.compVal === 'string' || this.compVal instanceof String) {
+        await this.getFileFromUrl(this.compVal).then((fileObj) => {
+          this.files = [{
+            file: fileObj,
+            url: this.compVal,
+            src: this.getFileSrc(fileObj)
+          }]
+        })
+      } else if (this.compVal && this.compVal.length > 0) {
+        const tmpFiles = []
+        for (let i = 0; i < this.compVal.length; i++) {
+          await this.getFileFromUrl(this.compVal[i]).then((fileObj) => {
+            tmpFiles.push({
+              file: fileObj,
+              url: (typeof this.compVal[i] === 'object') ? this.compVal[i]?.file_url : this.compVal[i],
+              src: this.getFileSrc(fileObj)
+            })
+          })
+        }
+        this.files = tmpFiles
+      }
+      this.loading = false
+    },
     clearAll() {
       this.files = []
     },
@@ -248,8 +245,8 @@ export default {
       }
     },
     openFileUpload() {
-      if (this.disabled || !this.$refs["actual-input"]) return
-      this.$refs["actual-input"].click()
+      if (this.disabled || !this.$refs['actual-input']) return
+      this.$refs['actual-input'].click()
     },
     manualFileUpload(e) {
       const files = e.target.files
@@ -257,13 +254,13 @@ export default {
         this.uploadFileToServer(files.item(i))
       }
     },
-    openWebcam() {
-      if (!this.cameraUpload) {
+    openWebcam(){
+      if(!this.cameraUpload){
         return
       }
       this.isInWebcam = true
     },
-    cameraFileUpload(file) {
+    cameraFileUpload(file){
       this.isInWebcam = false
       this.isUploading = false
       this.uploadFileToServer(file)
@@ -278,65 +275,53 @@ export default {
           }
           if (this.moveToFormAssets) {
             // Move file to permanent storage for form assets
-            opnFetch("/open/forms/assets/upload", {
-              method: "POST",
+            opnFetch('/open/forms/assets/upload', {
+              method: 'POST',
               body: {
-                type: "files",
-                url:
-                  file.name.split(".").slice(0, -1).join(".") +
-                  "_" +
-                  response.uuid +
-                  "." +
-                  response.extension,
-              },
+                type: 'files',
+                url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
+              }
+            }).then(moveFileResponseData => {
+              this.files.push({
+                file: file,
+                url: moveFileResponseData.url,
+                src: this.getFileSrc(file)
+              })
+              this.loading = false
+            }).catch((error) => {
+              this.loading = false
             })
-              .then((moveFileResponseData) => {
-                this.files.push({
-                  file: file,
-                  url: moveFileResponseData.url,
-                  src: this.getFileSrc(file),
-                })
-                this.loading = false
-              })
-              .catch(() => {
-                this.loading = false
-              })
           } else {
             this.files.push({
               file: file,
-              url:
-                file.name.split(".").slice(0, -1).join(".") +
-                "_" +
-                response.uuid +
-                "." +
-                response.extension,
-              src: this.getFileSrc(file),
+              url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension,
+              src: this.getFileSrc(file)
             })
             this.loading = false
           }
         })
-        .catch(() => {
+        .catch((error) => {
           this.clearAll()
           this.loading = false
         })
     },
-    async getFileFromUrl(url, defaultType = "image/jpeg") {
-      if (typeof url === "object") {
+    async getFileFromUrl(url, defaultType = 'image/jpeg') {
+      if (typeof url === 'object') {
         url = url?.file_url
       }
       const response = await fetch(url)
       const data = await response.blob()
-      const name = url.replace(/^.*(\\|\/|)/, "")
+      const name = url.replace(/^.*(\\|\/|:)/, '')
       return new File([data], name, {
-        type: data.type || defaultType,
+        type: data.type || defaultType
       })
     },
     getFileSrc(file) {
-      if (file.type && file.type.split("/")[0] === "image") {
+      if (file.type && file.type.split('/')[0] === 'image') {
         return URL.createObjectURL(file)
       }
       return null
-    },
-  },
+    }
+  }
 }
 </script>
