@@ -10,6 +10,8 @@ nvm use 20
 
 cd /app/nuxt/server/
 
+export NUXT_PRIVATE_API_BASE=http://localhost/api
+
 echo + . /app/client/.env
 [ -f /app/client/.env ] && . /app/client/.env || echo "Environment file missing!"
 
