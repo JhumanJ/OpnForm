@@ -32,6 +32,7 @@
       <open-complete-form ref="form-preview" class="w-full mx-auto py-5 px-3" :class="{'max-w-lg': form && (form.width === 'centered')}"
                           :creating="creating"
                           :form="form"
+                          :dark-mode="darkMode"
                           :admin-preview="true"
                           @restarted="previewFormSubmitted=false"
                           @submitted="previewFormSubmitted=true"
@@ -61,7 +62,7 @@
 <script>
 import VSwitch from '../../../../forms/components/VSwitch.vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
-import {handleDarkMode} from "~/lib/forms/public-page.js"
+import {handleDarkMode, useDarkMode} from "~/lib/forms/public-page.js"
 import { default as _has } from 'lodash/has'
 
 export default {
@@ -69,8 +70,11 @@ export default {
   props: {},
   setup () {
     const workingFormStore = useWorkingFormStore()
+    const parent = ref(null)
     return {
-      workingFormStore
+      workingFormStore,
+      parent: parent,
+      darkMode: useDarkMode(parent)
     }
   },
   data () {
