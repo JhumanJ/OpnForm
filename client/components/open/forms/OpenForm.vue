@@ -338,9 +338,8 @@ export default {
       }
 
       if (this.isPublicFormPage && this.form.editable_submissions) {
-        const urlParam = new URLSearchParams(window.location.search)
-        if (urlParam && urlParam.get('submission_id')) {
-          this.form.submission_id = urlParam.get('submission_id')
+        if (useRoute().query?.submission_id) {
+          this.form.submission_id = useRoute().query?.submission_id
           const data = await this.getSubmissionData()
           if (data !== null && data) {
             this.dataForm = useForm(data)
@@ -353,15 +352,7 @@ export default {
         if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-              const dateObj = new Date()
-              let currentDate = dateObj.getFullYear() + '-' +
-                String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                String(dateObj.getDate()).padStart(2, '0')
-              if (field.with_time === true) {
-                currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-                  String(dateObj.getMinutes()).padStart(2, '0')
-              }
-              pendingData[field.id] = currentDate
+              pendingData[field.id] = new Date().toISOString()
             }
           })
           this.dataForm = useForm(pendingData)
@@ -395,15 +386,7 @@ export default {
           // Array url prefills
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-          const dateObj = new Date()
-          let currentDate = dateObj.getFullYear() + '-' +
-            String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-            String(dateObj.getDate()).padStart(2, '0')
-          if (field.with_time === true) {
-            currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-              String(dateObj.getMinutes()).padStart(2, '0')
-          }
-          formData[field.id] = currentDate
+          formData[field.id] = new Date().toISOString()
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }

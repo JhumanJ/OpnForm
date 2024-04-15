@@ -1,38 +1,82 @@
 <template>
-  <input-wrapper
-    v-bind="inputWrapperProps"
-  >
+  <InputWrapper v-bind="props">
     <template #label>
       <slot name="label" />
     </template>
 
-    <div v-if="!dateRange" class="flex">
-      <input :id="id?id:name" v-model="fromDate" :type="useTime ? 'datetime-local' : 'date'" :class="inputClasses"
-             :disabled="disabled?true:null"
-             :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
-             :min="setMinDate" :max="setMaxDate"
+    <UPopover
+      v-model:open="pickerOpen"
+      :disabled="props.disabled"
+      :popper="{ placement: 'bottom-start' }"
+    >
+      <button
+        class="cursor-pointer overflow-hidden"
+        :class="inputClasses"
+        :disabled="props.disabled"
       >
-    </div>
-    <div v-else :class="inputClasses">
-      <div class="flex -mx-2">
-        <p class="text-gray-900 px-4">
-          From
-        </p>
-        <input :id="id?id:name" v-model="fromDate" :type="useTime ? 'datetime-local' : 'date'" :disabled="disabled?true:null"
-               :style="inputStyle" :name="name" data-date-format="YYYY-MM-DD"
-               class="flex-grow border-transparent focus:outline-none "
-               :min="setMinDate" :max="setMaxDate"
-        >
-        <p class="text-gray-900 px-4">
-          To
-        </p>
-        <input v-if="dateRange" :id="id?id:name" v-model="toDate" :type="useTime ? 'datetime-local' : 'date'"
-               :disabled="disabled?true:null"
-               :style="inputStyle" :name="name" class="flex-grow border-transparent focus:outline-none"
-               :min="setMinDate" :max="setMaxDate"
-        >
-      </div>
-    </div>
+        <div class="flex items-center min-w-0">
+          <div
+            class="flex-grow min-w-0 flex items-center gap-x-2"
+            :class="[
+              props.theme.default.inputSpacing.vertical,
+              props.theme.default.inputSpacing.horizontal,
+              {'hover:bg-gray-50 dark:hover:bg-gray-900': !props.disabled}
+            ]"
+          >
+            <Icon
+              name="heroicons:calendar-20-solid"
+              class="w-4 h-4 flex-shrink-0"
+              dynamic
+            />
+            <div class="flex-grow truncate overflow-hidden">
+              <p class="flex-grow truncate h-[24px]">
+                {{ formattedDatePreview }}
+              </p>
+            </div>
+          </div>
+          <button
+            v-if="fromDate && !props.disabled"
+            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
+            :class="[props.theme.default.inputSpacing.vertical]"
+            @click.prevent="clear()"
+          >
+            <Icon
+              name="heroicons:x-mark-20-solid"
+              class="w-5 h-5 text-gray-500"
+              width="2em"
+              dynamic
+            />
+          </button>
+        </div>
+      </button>
+
+      <template #panel="{ close }">
+        <DatePicker
+          v-if="props.dateRange"
+          v-model.range="modeledValue"
+          :mode="props.withTime ? 'dateTime' : 'date'"
+          is-required
+          borderless
+          :min-date="minDate"
+          :max-date="maxDate"
+          :is-dark="props.isDark"
+          color="form-color"
+          @close="close"
+        />
+        <DatePicker
+          v-else
+          v-model="modeledValue"
+          :mode="props.withTime ? 'dateTime' : 'date'"
+          is-required
+          borderless
+          :min-date="minDate"
+          :max-date="maxDate"
+          :is-dark="props.isDark"
+          color="form-color"
+          @close="close"
+        />
+      </template>
+    </UPopover>
 
     <template #help>
       <slot name="help" />
@@ -40,148 +84,173 @@
     <template #error>
       <slot name="error" />
     </template>
-  </input-wrapper>
+  </InputWrapper>
 </template>
 
-<script>
+<script setup>
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
+import { getCurrentInstance } from 'vue'
+import { DatePicker } from 'v-calendar'
+import 'v-calendar/dist/style.css'
+import { format } from 'date-fns'
+import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
 
-export default {
-  name: 'DateInput',
-  components: { InputWrapper },
-  mixins: [],
+const props = defineProps({
+  ...inputProps,
+  withTime: { type: Boolean, default: false },
+  dateRange: { type: Boolean, default: false },
+  disablePastDates: { type: Boolean, default: false },
+  disableFutureDates: { type: Boolean, default: false },
+  dateFormat: { type: String, default: 'dd/MM/yyyy' },
+  outputDateFormat: { type: String, default: 'yyyy-MM-dd\'T\'HH:mm:ssXXX' },
+  isDark: { type: Boolean, default: false }
+})
 
-  props: {
-    ...inputProps,
-    withTime: { type: Boolean, default: false },
-    dateRange: { type: Boolean, default: false },
-    disablePastDates: { type: Boolean, default: false },
-    disableFutureDates: { type: Boolean, default: false }
+const input = useFormInput(props, getCurrentInstance())
+const fromDate = ref(null)
+const toDate = ref(null)
+const datepicker = ref(null)
+const pickerOpen = ref(false)
+
+const twColors = computed(() => {
+  return tailwindcssPaletteGenerator(props.color).primary
+})
+
+const modeledValue = computed({
+  get () {
+    return props.dateRange ? { start: fromDate.value, end: toDate.value } : fromDate.value
   },
-
-  setup (props, context) {
-    return {
-      ...useFormInput(props, context)
+  set (value) {
+    if (props.dateRange) {
+      fromDate.value = format(value.start, props.outputDateFormat)
+      toDate.value = format(value.end, props.outputDateFormat)
+    } else {
+      fromDate.value = format(value, props.outputDateFormat)
     }
-  },
+  }
+})
 
-  data: () => ({
-    fromDate: null,
-    toDate: null
-  }),
+const inputClasses = computed(() => {
+  const classes = [props.theme.DateInput.input, 'w-full']
+  if (props.disabled) {
+    classes.push('!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200')
+  }
+  if (input.hasError.value) {
 
-  computed: {
-    inputClasses () {
-      let str = 'border border-gray-300 dark:bg-notion-dark-light dark:border-gray-600 dark:placeholder-gray-500 dark:text-gray-300 flex-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-opacity-100 placeholder-gray-400 px-4 py-2 rounded-lg shadow-sm text-base text-black text-gray-700'
-      str += this.dateRange ? ' w-50' : ' w-full'
-      str += this.disabled ? ' !cursor-not-allowed !bg-gray-200' : ''
-      return str
-    },
-    useTime () {
-      return this.withTime && !this.dateRange
-    },
-    setMinDate () {
-      if (this.disablePastDates) {
-        return new Date().toISOString().split('T')[0]
-      }
-      return false
-    },
-    setMaxDate () {
-      if (this.disableFutureDates) {
-        return new Date().toISOString().split('T')[0]
-      }
-      return false
-    }
-  },
+    classes.push('!ring-red-500 !ring-2 !border-transparent')
+  }
+  return classes.join(' ')
+})
 
-  watch: {
-    color: {
-      handler () {
-        this.setInputColor()
-      },
-      immediate: true
-    },
-    fromDate: {
-      handler (val) {
-        if (this.dateRange) {
-          if (!Array.isArray(this.compVal)) {
-            this.compVal = []
-          }
-          this.compVal[0] = this.dateToUTC(val)
-        } else {
-          this.compVal = this.dateToUTC(val)
-        }
-      },
-      immediate: false
-    },
-    toDate: {
-      handler (val) {
-        if (this.dateRange) {
-          if (!Array.isArray(this.compVal)) {
-            this.compVal = [null]
-          }
-          this.compVal[1] = this.dateToUTC(val)
-        } else {
-          this.compVal = null
-        }
-      },
-      immediate: false
-    }
-  },
-
-  mounted () {
-    if (this.compVal) {
-      if (Array.isArray(this.compVal)) {
-        this.fromDate = this.compVal[0] ?? null
-        this.toDate = this.compVal[1] ?? null
-      } else {
-        this.fromDate = this.dateToLocal(this.compVal)
-      }
-    }
-
-    this.setInputColor()
-  },
-
-  methods: {
-    /**
-     * Pressing enter won't submit form
-     * @param event
-     * @returns {boolean}
-     */
-    onEnterPress (event) {
-      event.preventDefault()
-      return false
-    },
-    setInputColor () {
-      if (this.$refs.datepicker) {
-        const dateInput = this.$refs.datepicker.$el.getElementsByTagName('input')[0]
-        dateInput.style.setProperty('--tw-ring-color', this.color)
-      }
-    },
-    dateToUTC (val) {
-      if (!val) {
-        return null
-      }
-      if (!this.useTime) {
-        return val
-      }
-      return new Date(val).toISOString()
-    },
-    dateToLocal (val) {
-      if (!val) {
-        return null
-      }
-      const dateObj = new Date(val)
-      let dateStr = dateObj.getFullYear() + '-' +
-        String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-        String(dateObj.getDate()).padStart(2, '0')
-      if (this.useTime) {
-        dateStr += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-          String(dateObj.getMinutes()).padStart(2, '0')
-      }
-      return dateStr
+const minDate = computed(() => {
+  if (props.disablePastDates) {
+    return new Date()
+  }
+  return undefined
+})
+const maxDate = computed(() => {
+  if (props.disableFutureDates) {
+    return new Date()
+  }
+  return undefined
+})
+const handleCompValChange = () => {
+  if (input.compVal.value) {
+    if (Array.isArray(input.compVal.value)) {
+      fromDate.value = input.compVal.value[0] ?? null
+      toDate.value = input.compVal.value[1] ?? null
+    } else {
+      fromDate.value = input.compVal.value
     }
   }
 }
+
+const setInputColor = () => {
+  if (datepicker.value) {
+    const dateInput = datepicker.value.$el.getElementsByTagName('input')[0]
+    dateInput.style.setProperty('--tw-ring-color', props.color)
+  }
+}
+
+const clear = () => {
+  fromDate.value = null
+  toDate.value = null
+  pickerOpen.value = false
+}
+
+const formattedDate = (value) => {
+  if (props.withTime) {
+    try {
+      return format(new Date(value), props.dateFormat + ' HH:mm')
+    } catch (e) {
+      return ''
+    }
+  }
+  try {
+    return format(new Date(value), props.dateFormat)
+  } catch (e) {
+    return ''
+  }
+}
+
+const formattedDatePreview = computed(() => {
+  if (!fromDate.value) return ''
+  if (props.dateRange) {
+    if (!toDate.value) return formattedDate(fromDate.value)
+    return `${formattedDate(fromDate.value)} - ${formattedDate(toDate.value)}`
+  }
+  return formattedDate(fromDate.value)
+})
+
+watch(() => props.color, () => {
+  setInputColor()
+}, { immediate: true })
+
+watch(() => props.dateRange, () => {
+  fromDate.value = null
+  toDate.value = null
+}, { immediate: true })
+
+watch(() => fromDate.value, (val) => {
+  if (props.dateRange) {
+    if (!Array.isArray(input.compVal.value)) input.compVal.value = []
+    input.compVal.value[0] = val
+  } else {
+    input.compVal.value = val
+  }
+}, { immediate: false })
+
+watch(() => toDate.value, (val) => {
+  if (props.dateRange) {
+    if (!Array.isArray(input.compVal.value)) input.compVal.value = [null]
+    input.compVal.value[1] = val
+  } else {
+    input.compVal.value = null
+  }
+}, { immediate: false })
+
+watch(() => input.compVal.value, (val, oldVal) => {
+  if (!oldVal) handleCompValChange()
+}, { immediate: false })
+
+onMounted(() => {
+  handleCompValChange()
+  setInputColor()
+})
 </script>
+
+<style>
+.vc-form-color {
+  --vc-accent-50: v-bind('twColors[50]');
+  --vc-accent-100: v-bind('twColors[100]');
+  --vc-accent-200: v-bind('twColors[200]');
+  --vc-accent-300: v-bind('twColors[300]');
+  --vc-accent-400: v-bind('twColors[400]');
+  --vc-accent-500: v-bind('twColors[500]');
+  --vc-accent-600: v-bind('twColors[600]');
+  --vc-accent-700: v-bind('twColors[700]');
+  --vc-accent-800: v-bind('twColors[800]');
+  --vc-accent-900: v-bind('twColors[900]');
+}
+</style>
