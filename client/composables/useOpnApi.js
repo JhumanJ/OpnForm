@@ -52,7 +52,7 @@ export function getOpnRequestsOptions(request, opts) {
   addPasswordToFormRequest(request, opts)
   addCustomDomainHeader(request, opts)
 
-  if (!opts.baseURL) opts.baseURL = config.public.apiBase
+  if (!opts.baseURL) opts.baseURL = config.privateApiBase || config.public.apiBase
 
   return {
     async onResponseError({ response }) {
