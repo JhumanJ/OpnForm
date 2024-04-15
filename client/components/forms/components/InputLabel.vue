@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: 'InputLabel',
+  name: "InputLabel",
 
   props: {
     nativeFor: { type: String, default: null },

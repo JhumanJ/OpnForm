@@ -12,7 +12,16 @@
         aria-labelledby="listbox-label"
         class="cursor-pointer"
         :style="inputStyle"
-        :class="[theme.SelectInput.input, { 'py-2': !multiple || loading, 'py-1': multiple, '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }, inputClass]"
+        :class="[
+          theme.SelectInput.input,
+          {
+            'py-2': !multiple || loading,
+            'py-1': multiple,
+            '!ring-red-500 !ring-2 !border-transparent': hasError,
+            '!cursor-not-allowed !bg-gray-200': disabled,
+          },
+          inputClass,
+        ]"
         @click="toggleDropdown"
       >
         <div :class="{ 'h-6': !multiple, 'min-h-8': multiple && !loading }">
@@ -43,14 +52,17 @@
               <slot name="placeholder">
                 <div
                   class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
-                  :class="{ 'py-1': multiple && !loading }">
+                  :class="{ 'py-1': multiple && !loading }"
+                >
                   {{ placeholder }}
                 </div>
               </slot>
             </div>
           </transition>
         </div>
-        <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+        <span
+          class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
+        >
           <svg
             class="h-5 w-5 text-gray-400"
             viewBox="0 0 20 20"
@@ -67,13 +79,32 @@
         </span>
       </button>
     </span>
-    <collapsible v-model="isOpen" @click-away="onClickAway"
-      class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10" :class="dropdownClass">
-      <ul tabindex="-1" role="listbox"
+    <collapsible
+      v-model="isOpen"
+      class="absolute mt-1 rounded-md bg-white dark:bg-notion-dark-light shadow-xl z-10"
+      :class="dropdownClass"
+      @click-away="onClickAway"
+    >
+      <ul
+        tabindex="-1"
+        role="listbox"
         class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
-        :class="{ 'max-h-42 py-1': !isSearchable, 'max-h-48 pb-1': isSearchable }">
-        <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark-bg-notion-dark-light z-10">
-          <text-input v-model="searchTerm" name="search" :color="color" :theme="theme" placeholder="Search..." />
+        :class="{
+          'max-h-42 py-1': !isSearchable,
+          'max-h-48 pb-1': isSearchable,
+        }"
+      >
+        <div
+          v-if="isSearchable"
+          class="px-2 pt-2 sticky top-0 bg-white dark-bg-notion-dark-light z-10"
+        >
+          <text-input
+            v-model="searchTerm"
+            name="search"
+            :color="color"
+            :theme="theme"
+            placeholder="Search..."
+          />
         </div>
         <div
           v-if="loading"
@@ -89,7 +120,8 @@
             :style="optionStyle"
             :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
             class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-            @click="select(item)">
+            @click="select(item)"
+          >
             <slot
               name="option"
               :option="item"
@@ -101,7 +133,11 @@
           v-else-if="!loading && !(allowCreation && searchTerm)"
           class="w-full text-gray-500 text-center py-2"
         >
-          {{ (allowCreation ? 'Type something to add an option' : 'No option available') }}.
+          {{
+            allowCreation
+              ? "Type something to add an option"
+              : "No option available"
+          }}.
         </p>
         <li
           v-if="allowCreation && searchTerm"
@@ -109,8 +145,12 @@
           :style="optionStyle"
           :class="{ 'px-3 pr-9': multiple, 'px-3': !multiple }"
           class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:text-white dark:text-white hover:bg-form-color focus:outline-none focus-text-white focus-nt-blue"
-          @click="createOption(searchTerm)">
-          Create <b class="px-1 bg-gray-300 rounded group-hover-text-black">{{ searchTerm }}</b>
+          @click="createOption(searchTerm)"
+        >
+          Create
+          <b class="px-1 bg-gray-300 rounded group-hover-text-black">{{
+            searchTerm
+          }}</b>
         </li>
       </ul>
     </collapsible>
@@ -118,54 +158,54 @@
 </template>
 
 <script>
-import Collapsible from '~/components/global/transitions/Collapsible.vue'
-import { themes} from "~/lib/forms/form-themes.js"
-import TextInput from '../TextInput.vue'
-import debounce from 'lodash/debounce'
-import Fuse from 'fuse.js'
+import Collapsible from "~/components/global/transitions/Collapsible.vue"
+import { themes } from "~/lib/forms/form-themes.js"
+import TextInput from "../TextInput.vue"
+import debounce from "lodash/debounce"
+import Fuse from "fuse.js"
 
 export default {
-  name: 'VSelect',
+  name: "VSelect",
   components: { Collapsible, TextInput },
   directives: {},
   props: {
     data: Array,
     modelValue: { default: null, type: [String, Number, Array, Object] },
     inputClass: { type: String, default: null },
-    dropdownClass: { type: String, default: 'w-full' },
+    dropdownClass: { type: String, default: "w-full" },
     loading: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
     multiple: { type: Boolean, default: false },
     searchable: { type: Boolean, default: false },
     hasError: { type: Boolean, default: false },
     remote: { type: Function, default: null },
-    searchKeys: { type: Array, default: () => ['name'] },
-    optionKey: { type: String, default: 'id' },
+    searchKeys: { type: Array, default: () => ["name"] },
+    optionKey: { type: String, default: "id" },
     emitKey: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' },
+    color: { type: String, default: "#3B82F6" },
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     theme: { type: Object, default: () => themes.default },
     allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
   },
-  emits: ['update:modelValue', 'update-options'],
+  emits: ["update:modelValue", "update-options"],
   data() {
     return {
       isOpen: false,
-      searchTerm: '',
-      defaultValue: this.modelValue ?? null
+      searchTerm: "",
+      defaultValue: this.modelValue ?? null,
     }
   },
   computed: {
     optionStyle() {
       return {
-        '--bg-form-color': this.color
+        "--bg-form-color": this.color,
       }
     },
     inputStyle() {
       return {
-        '--tw-ring-color': this.color
+        "--tw-ring-color": this.color,
       }
     },
     debouncedRemote() {
@@ -176,13 +216,13 @@ export default {
     },
     filteredOptions() {
       if (!this.data) return []
-      if (!this.searchable || this.remote || this.searchTerm === '') {
+      if (!this.searchable || this.remote || this.searchTerm === "") {
         return this.data
       }
 
       // Fuse search
       const fuzeOptions = {
-        keys: this.searchKeys
+        keys: this.searchKeys,
       }
       const fuse = new Fuse(this.data, fuzeOptions)
       return fuse.search(this.searchTerm).map((res) => {
@@ -191,15 +231,19 @@ export default {
     },
     isSearchable() {
       return this.searchable || this.remote !== null || this.allowCreation
-    }
+    },
   },
   watch: {
     searchTerm(val) {
       if (!this.debouncedRemote) return
-      if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
+      if (
+        (this.remote && val) ||
+        (val === "" && !this.modelValue) ||
+        (val === "" && this.isOpen)
+      ) {
         return this.debouncedRemote(val)
       }
-    }
+    },
   },
   methods: {
     onClickAway(event) {
@@ -227,7 +271,7 @@ export default {
         this.isOpen = !this.isOpen
       }
       if (!this.isOpen) {
-        this.searchTerm = ''
+        this.searchTerm = ""
       }
     },
     select(value) {
@@ -241,25 +285,33 @@ export default {
       }
 
       if (this.multiple) {
-        const emitValue = Array.isArray(this.modelValue) ? [...this.modelValue] : []
+        const emitValue = Array.isArray(this.modelValue)
+          ? [...this.modelValue]
+          : []
 
         if (this.isSelected(value)) {
-          this.$emit('update:modelValue', emitValue.filter((item) => {
-            if (this.emitKey) {
-              return item !== value
-            }
-            return item[this.optionKey] !== value && item[this.optionKey] !== value[this.optionKey]
-          }))
+          this.$emit(
+            "update:modelValue",
+            emitValue.filter((item) => {
+              if (this.emitKey) {
+                return item !== value
+              }
+              return (
+                item[this.optionKey] !== value &&
+                item[this.optionKey] !== value[this.optionKey]
+              )
+            }),
+          )
           return
         }
 
         emitValue.push(value)
-        this.$emit('update:modelValue', emitValue)
+        this.$emit("update:modelValue", emitValue)
       } else {
         if (this.modelValue === value) {
-          this.$emit('update:modelValue', this.defaultValue ?? null)
+          this.$emit("update:modelValue", this.defaultValue ?? null)
         } else {
-          this.$emit('update:modelValue', value)
+          this.$emit("update:modelValue", value)
         }
       }
     },
@@ -268,13 +320,13 @@ export default {
         const newItem = {
           name: newOption,
           value: newOption,
-          id: newOption
+          id: newOption,
         }
-        this.$emit('update-options', newItem)
+        this.$emit("update-options", newItem)
         this.select(newItem)
-        this.searchTerm = ''
+        this.searchTerm = ""
       }
-    }
-  }
+    },
+  },
 }
 </script>

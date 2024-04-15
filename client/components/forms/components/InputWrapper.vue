@@ -50,8 +50,8 @@
 </template>
 
 <script setup>
-import InputLabel from './InputLabel.vue'
-import InputHelp from './InputHelp.vue'
+import InputLabel from "./InputLabel.vue"
+import InputHelp from "./InputHelp.vue"
 
 defineProps({
   id: { type: String, required: false },
@@ -62,7 +62,7 @@ defineProps({
   wrapperClass: { type: String, required: false },
   inputStyle: { type: Object, required: false },
   help: { type: String, required: false },
-  helpPosition: { type: String, default: 'below_input' },
+  helpPosition: { type: String, default: "below_input" },
   uppercaseLabels: { type: Boolean, default: true },
   hideFieldName: { type: Boolean, default: true },
   required: { type: Boolean, default: false },

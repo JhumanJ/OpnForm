@@ -4,34 +4,54 @@
       <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </p>
   </div>
-  <form v-else-if="dataForm" @submit.prevent="">
-    <template v-if='form.show_progress_bar'>
-      <div v-if='isIframe' class='mb-4 p-2'>
-        <div class='w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden'>
-          <div class='h-full transition-all duration-300 rounded-r-full'
-               :class="{ 'w-0': formProgress === 0 }"
-               :style="{ width: formProgress + '%', background: form.color }"
+  <form
+    v-else-if="dataForm"
+    @submit.prevent=""
+  >
+    <template v-if="form.show_progress_bar">
+      <div
+        v-if="isIframe"
+        class="mb-4 p-2"
+      >
+        <div class="w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden">
+          <div
+            class="h-full transition-all duration-300 rounded-r-full"
+            :class="{ 'w-0': formProgress === 0 }"
+            :style="{ width: formProgress + '%', background: form.color }"
           />
         </div>
       </div>
-      <div v-else class='fixed top-0 left-0 right-0 z-50'>
-        <div class='w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden'>
-          <div class='h-full transition-all duration-300'
-               :class="{ 'w-0': formProgress === 0 }"
-               :style="{ width: formProgress + '%', background: form.color }"
+      <div
+        v-else
+        class="fixed top-0 left-0 right-0 z-50"
+      >
+        <div class="w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden">
+          <div
+            class="h-full transition-all duration-300"
+            :class="{ 'w-0': formProgress === 0 }"
+            :style="{ width: formProgress + '%', background: form.color }"
           />
         </div>
       </div>
     </template>
-    <transition name="fade" mode="out-in">
-      <div :key="currentFieldGroupIndex" class="form-group flex flex-wrap w-full">
-        <draggable v-model="currentFields"
-                   item-key="id"
-                   class="flex flex-wrap transition-all w-full"
-                   :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
-                   ghost-class="ghost-item"
-                   handle=".draggable" :animation="200"
-                   @start="onDragStart" @end="onDragEnd"
+    <transition
+      name="fade"
+      mode="out-in"
+    >
+      <div
+        :key="currentFieldGroupIndex"
+        class="form-group flex flex-wrap w-full"
+      >
+        <draggable
+          v-model="currentFields"
+          item-key="id"
+          class="flex flex-wrap transition-all w-full"
+          :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
+          ghost-class="ghost-item"
+          handle=".draggable"
+          :animation="200"
+          @start="onDragStart"
+          @end="onDragEnd"
         >
           <template #item="{element}">
             <open-form-field
@@ -52,22 +72,43 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkMode?'dark':'light'" />
-        <has-error :form="dataForm" field="h-captcha-response" />
+        <vue-hcaptcha
+          ref="hcaptcha"
+          :sitekey="hCaptchaSiteKey"
+          :theme="darkMode?'dark':'light'"
+        />
+        <has-error
+          :form="dataForm"
+          field="h-captcha-response"
+        />
       </div>
     </template>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
-      <open-form-button v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading" native-type="button"
-                        :color="form.color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
+      <open-form-button
+        v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading"
+        native-type="button"
+        :color="form.color"
+        :theme="theme"
+        class="mt-2 px-8 mx-1"
+        @click="previousPage"
       >
         {{ previousFieldsPageBreak.previous_btn_text }}
       </open-form-button>
 
-      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
-      <open-form-button v-else-if="currentFieldsPageBreak" native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
-                        @click.stop="nextPage"
+      <slot
+        v-if="isLastPage"
+        name="submit-btn"
+        :submit-form="submitForm"
+      />
+      <open-form-button
+        v-else-if="currentFieldsPageBreak"
+        native-type="button"
+        :color="form.color"
+        :theme="theme"
+        class="mt-2 px-8 mx-1"
+        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -337,7 +378,7 @@ export default {
     async initForm () {
       if(this.defaultDataForm){
         this.dataForm = useForm(this.defaultDataForm)
-        return;
+        return
       }
 
       if (this.isPublicFormPage && this.form.editable_submissions) {
@@ -351,7 +392,7 @@ export default {
         }
       }
       if (this.isPublicFormPage && this.form.auto_save) {
-        let pendingData = this.pendingSubmission.get()
+        const pendingData = this.pendingSubmission.get()
         if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'

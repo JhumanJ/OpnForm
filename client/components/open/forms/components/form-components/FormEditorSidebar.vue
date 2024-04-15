@@ -1,49 +1,59 @@
 <template>
-  <editor-right-sidebar :show="form && (showEditFieldSidebar || showAddFieldSidebar)">
+  <editor-right-sidebar
+    :show="form && (showEditFieldSidebar || showAddFieldSidebar)"
+  >
     <transition mode="out-in">
-      <form-field-edit v-if="showEditFieldSidebar" :key="editFieldIndex" v-motion-fade="'fade'" />
-      <add-form-block v-else-if="showAddFieldSidebar" v-motion-fade="'fade'" />
+      <form-field-edit
+        v-if="showEditFieldSidebar"
+        :key="editFieldIndex"
+        v-motion-fade="'fade'"
+      />
+      <add-form-block
+        v-else-if="showAddFieldSidebar"
+        v-motion-fade="'fade'"
+      />
     </transition>
   </editor-right-sidebar>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useWorkingFormStore } from '../../../../../stores/working_form'
-import EditorRightSidebar from '../../../editors/EditorRightSidebar.vue'
-import FormFieldEdit from '../../fields/FormFieldEdit.vue'
-import AddFormBlock from './AddFormBlock.vue'
+import { computed } from "vue"
+import { useWorkingFormStore } from "../../../../../stores/working_form"
+import EditorRightSidebar from "../../../editors/EditorRightSidebar.vue"
+import FormFieldEdit from "../../fields/FormFieldEdit.vue"
+import AddFormBlock from "./AddFormBlock.vue"
 
 export default {
-  name: 'FormEditorSidebar',
+  name: "FormEditorSidebar",
   components: { EditorRightSidebar, AddFormBlock, FormFieldEdit },
   props: {},
-  setup () {
+  setup() {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
       editFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
-      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
-      showAddFieldSidebar: computed(() => workingFormStore.showAddFieldSidebar)
+      showEditFieldSidebar: computed(
+        () => workingFormStore.showEditFieldSidebar,
+      ),
+      showAddFieldSidebar: computed(() => workingFormStore.showAddFieldSidebar),
     }
   },
-  data () {
+  data() {
     return {}
   },
   computed: {
     form: {
-      get () {
+      get() {
         return this.workingFormStore.content
       },
       /* We add a setter */
-      set (value) {
+      set(value) {
         this.workingFormStore.set(value)
-      }
-    }
+      },
+    },
   },
   watch: {},
-  mounted () {
-  },
-  methods: {}
+  mounted() {},
+  methods: {},
 }
 </script>

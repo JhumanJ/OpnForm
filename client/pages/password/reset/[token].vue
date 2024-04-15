@@ -5,24 +5,48 @@
         <h1 class="my-6">
           Reset Password
         </h1>
-        <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
-          <alert-success class="mb-4" :form="form" :message="status" />
+        <form
+          @submit.prevent="reset"
+          @keydown="form.onKeydown($event)"
+        >
+          <alert-success
+            class="mb-4"
+            :form="form"
+            :message="status"
+          />
 
           <!-- Email -->
-          <text-input name="email" :form="form" label="Email" :required="true" />
+          <text-input
+            name="email"
+            :form="form"
+            label="Email"
+            :required="true"
+          />
 
           <!-- Password -->
-          <text-input native-type="password"
-                      name="password" :form="form" label="Password" :required="true"
+          <text-input
+            native-type="password"
+            name="password"
+            :form="form"
+            label="Password"
+            :required="true"
           />
 
           <!-- Password Confirmation-->
-          <text-input native-type="password" class="mb-5"
-                      name="password_confirmation" :form="form" label="Confirm Password" :required="true"
+          <text-input
+            native-type="password"
+            class="mb-5"
+            name="password_confirmation"
+            :form="form"
+            label="Confirm Password"
+            :required="true"
           />
 
           <!-- Submit Button -->
-          <v-button class="w-full" :loading="form.busy">
+          <v-button
+            class="w-full"
+            :loading="form.busy"
+          >
             Reset Password
           </v-button>
         </form>
@@ -34,38 +58,38 @@
 
 <script>
 export default {
-  setup () {
+  setup() {
     definePageMeta({
-      middleware: "guest"
+      middleware: "guest",
     })
     useOpnSeoMeta({
-      title: 'Reset Password'
+      title: "Reset Password",
     })
   },
 
   data: () => ({
-    status: '',
+    status: "",
     form: useForm({
-      token: '',
-      email: '',
-      password: '',
-      password_confirmation: ''
-    })
+      token: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    }),
   }),
 
-  created () {
+  created() {
     this.form.email = this.$route.query.email
     this.form.token = this.$route.params.token
   },
 
   methods: {
-    async reset () {
-      const { data } = await this.form.post('/password/reset')
+    async reset() {
+      const { data } = await this.form.post("/password/reset")
 
       this.status = data.status
 
       this.form.reset()
-    }
-  }
+    },
+  },
 }
 </script>

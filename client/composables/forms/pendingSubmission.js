@@ -1,10 +1,11 @@
-import {hash} from "~/lib/utils.js"
-import {useStorage} from "@vueuse/core"
+import { hash } from "~/lib/utils.js"
+import { useStorage } from "@vueuse/core"
 
 export const pendingSubmission = (form) => {
-
   const formPendingSubmissionKey = computed(() => {
-    return (form) ? form.form_pending_submission_key + '-' + hash(window.location.href) : ''
+    return form
+      ? form.form_pending_submission_key + "-" + hash(window.location.href)
+      : ""
   })
 
   const enabled = computed(() => {
@@ -13,7 +14,8 @@ export const pendingSubmission = (form) => {
 
   const set = (value) => {
     if (import.meta.server || !enabled.value) return
-    useStorage(formPendingSubmissionKey.value).value = value === null ? value : JSON.stringify(value)
+    useStorage(formPendingSubmissionKey.value).value =
+      value === null ? value : JSON.stringify(value)
   }
 
   const remove = () => {
@@ -30,6 +32,6 @@ export const pendingSubmission = (form) => {
     enabled,
     set,
     get,
-    remove
+    remove,
   }
 }
