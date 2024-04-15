@@ -56,7 +56,6 @@
 <script>
 import { computed } from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import { darkModeEnabled } from '~/lib/forms/public-page.js'
 import { default as _has } from 'lodash/has'
 
 export default {
@@ -80,6 +79,10 @@ export default {
       required: true
     },
     showHidden: {
+      type: Boolean,
+      default: false
+    },
+    darkMode: {
       type: Boolean,
       default: false
     },
@@ -177,9 +180,6 @@ export default {
     },
     fieldSideBarOpened() {
       return this.adminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
-    },
-    isDark () {
-      return this.form.dark_mode === 'dark' || this.form.dark_mode === 'auto' && darkModeEnabled()
     }
   },
 
@@ -250,7 +250,7 @@ export default {
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
         showCharLimit: field.show_char_limit || false,
-        isDark: this.isDark
+        isDark: this.darkMode
       }
 
       if (['select', 'multi_select'].includes(field.type)) {

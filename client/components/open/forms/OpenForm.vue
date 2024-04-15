@@ -41,6 +41,7 @@
               :data-form="dataForm"
               :data-form-value="dataFormValue"
               :theme="theme"
+              :dark-mode="darkMode"
               :admin-preview="adminPreview"
             />
           </template>
@@ -51,7 +52,7 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'" />
+        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkMode?'dark':'light'" />
         <has-error :form="dataForm" field="h-captcha-response" />
       </div>
     </template>
@@ -85,7 +86,6 @@ import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
   name: 'OpenForm',
@@ -112,7 +112,11 @@ export default {
       required: true
     },
     defaultDataForm:{},
-    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    darkMode: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup (props) {
@@ -124,7 +128,6 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: darkModeEnabled(),
       pendingSubmission: pendingSubmission(props.form)
     }
   },
