@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerFormRequest;
 use App\Http\Resources\FormResource;
+use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
@@ -36,13 +37,13 @@ class PublicFormController extends Controller
         // Disable pro features if needed
         $form->fill(
             $formCleaner
-            ->processForm($request, $form)
-            ->performCleaning($form->workspace)
-            ->getData()
+                ->processForm($request, $form)
+                ->performCleaning($form->workspace)
+                ->getData()
         );
 
         // Increase form view counter if not login
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             $form->views()->create();
         }
 
@@ -54,7 +55,7 @@ class PublicFormController extends Controller
     {
         // Check that form has user field
         $form = $request->form;
-        if (! $form->has_user_field) {
+        if (!$form->has_user_field) {
             return [];
         }
 
@@ -66,8 +67,8 @@ class PublicFormController extends Controller
 
     public function showAsset($assetFileName)
     {
-        $path = FormController::ASSETS_UPLOAD_PATH.'/'.$assetFileName;
-        if (! Storage::exists($path)) {
+        $path = FormController::ASSETS_UPLOAD_PATH . '/' . $assetFileName;
+        if (!Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.',
                 'file_name' => $assetFileName,
@@ -106,13 +107,14 @@ class PublicFormController extends Controller
         $submissionId = ($submissionId) ? Hashids::decode($submissionId) : false;
         $submissionId = isset($submissionId[0]) ? $submissionId[0] : false;
         $form = Form::whereSlug($slug)->whereVisibility('public')->firstOrFail();
-        if ($form->workspace == null || ! $form->editable_submissions || ! $submissionId) {
+        if ($form->workspace == null || !$form->editable_submissions || !$submissionId) {
             return $this->error([
                 'message' => 'Not allowed.',
             ]);
         }
 
-        $submission = FormSubmission::findOrFail($submissionId);
+        $submission = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $submission->publiclyAccessed();
 
         if ($submission->form_id != $form->id) {
             return $this->error([
@@ -120,6 +122,6 @@ class PublicFormController extends Controller
             ], 403);
         }
 
-        return $this->success(['data' => ($submission) ? $submission->data : []]);
+        return $this->success($submission->toArray($request));
     }
 }

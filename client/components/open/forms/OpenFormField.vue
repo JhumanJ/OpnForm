@@ -266,9 +266,11 @@ export default {
         inputProperties.allowCreation = (field.allow_creation === true)
         inputProperties.searchable = (inputProperties.options.length > 4)
       } else if (field.type === 'date') {
+        inputProperties.dateFormat = field.date_format
         if (field.with_time) {
           inputProperties.withTime = true
-        } else if (field.date_range) {
+        }
+        if (field.date_range) {
           inputProperties.dateRange = true
         }
         if (field.disable_past_dates) {
