@@ -41,6 +41,7 @@
               :data-form="dataForm"
               :data-form-value="dataFormValue"
               :theme="theme"
+              :dark-mode="darkMode"
               :admin-preview="adminPreview"
             />
           </template>
@@ -51,7 +52,7 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'" />
+        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkMode?'dark':'light'" />
         <has-error :form="dataForm" field="h-captcha-response" />
       </div>
     </template>
@@ -85,7 +86,6 @@ import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
   name: 'OpenForm',
@@ -112,7 +112,11 @@ export default {
       required: true
     },
     defaultDataForm:{},
-    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    darkMode: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup (props) {
@@ -124,7 +128,6 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: darkModeEnabled(),
       pendingSubmission: pendingSubmission(props.form)
     }
   },
@@ -338,9 +341,8 @@ export default {
       }
 
       if (this.isPublicFormPage && this.form.editable_submissions) {
-        const urlParam = new URLSearchParams(window.location.search)
-        if (urlParam && urlParam.get('submission_id')) {
-          this.form.submission_id = urlParam.get('submission_id')
+        if (useRoute().query?.submission_id) {
+          this.form.submission_id = useRoute().query?.submission_id
           const data = await this.getSubmissionData()
           if (data !== null && data) {
             this.dataForm = useForm(data)
@@ -353,15 +355,7 @@ export default {
         if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-              const dateObj = new Date()
-              let currentDate = dateObj.getFullYear() + '-' +
-                String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                String(dateObj.getDate()).padStart(2, '0')
-              if (field.with_time === true) {
-                currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-                  String(dateObj.getMinutes()).padStart(2, '0')
-              }
-              pendingData[field.id] = currentDate
+              pendingData[field.id] = new Date().toISOString()
             }
           })
           this.dataForm = useForm(pendingData)
@@ -395,15 +389,7 @@ export default {
           // Array url prefills
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-          const dateObj = new Date()
-          let currentDate = dateObj.getFullYear() + '-' +
-            String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-            String(dateObj.getDate()).padStart(2, '0')
-          if (field.with_time === true) {
-            currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-              String(dateObj.getMinutes()).padStart(2, '0')
-          }
-          formData[field.id] = currentDate
+          formData[field.id] = new Date().toISOString()
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }

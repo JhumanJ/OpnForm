@@ -8,18 +8,12 @@
       <p class="text-gray-400 mb-2 text-xs">
         Exclude this field or make it required.
       </p>
-      <v-checkbox v-model="field.hidden" class="mb-3" :name="field.id + '_hidden'"
-        @update:model-value="onFieldHiddenChange">
-        Hidden
-      </v-checkbox>
-      <v-checkbox v-model="field.required" class="mb-3" :name="field.id + '_required'"
-        @update:model-value="onFieldRequiredChange">
-        Required
-      </v-checkbox>
-      <v-checkbox v-model="field.disabled" class="mb-3" :name="field.id + '_disabled'"
-        @update:model-value="onFieldDisabledChange">
-        Disabled
-      </v-checkbox>
+      <toggle-switch-input :form="field" name="required" label="Required"
+        @update:model-value="onFieldRequiredChange"/>
+      <toggle-switch-input :form="field" name="hidden" label="Hidden"
+        @update:model-value="onFieldHiddenChange"/>
+      <toggle-switch-input :form="field" name="disabled" label="Disabled"
+        @update:model-value="onFieldDisabledChange"/>
     </div>
 
     <!-- Checkbox -->
@@ -119,38 +113,53 @@
       <h3 class="font-semibold block text-lg">
         Date Options
       </h3>
-      <v-checkbox v-model="field.date_range" class="mt-3" :name="field.id + '_date_range'"
-        @update:model-value="onFieldDateRangeChange">
-        Date Range
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        Adds an end date. This cannot be used with the time option yet.
-      </p>
-      <v-checkbox v-model="field.with_time" :name="field.id + '_with_time'" @update:model-value="onFieldWithTimeChange">
-        Date with time
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        Include time. Or not. This cannot be used with the date range option yet.
-      </p>
-
-      <select-input v-if="field.with_time" name="timezone" class="mt-3" :form="field" :options="timezonesOptions"
-        label="Timezone" :searchable="true" help="Make sure to select correct timezone. Leave blank otherwise." />
-      <v-checkbox v-model="field.prefill_today" name="prefill_today" @update:model-value="onFieldPrefillTodayChange">
-        Prefill with 'today'
-      </v-checkbox>
-      <p class="text-gray-400 mb-3 text-xs">
-        if enabled we will pre-fill this field with the current date
-      </p>
-
-      <v-checkbox v-model="field.disable_past_dates" name="disable_past_dates" class="mb-3"
-        @update:model-value="onFieldDisablePastDatesChange">
-        Disable past dates
-      </v-checkbox>
-
-      <v-checkbox v-model="field.disable_future_dates" name="disable_future_dates" class="mb-3"
-        @update:model-value="onFieldDisableFutureDatesChange">
-        Disable future dates
-      </v-checkbox>
+      <toggle-switch-input
+        :form="field"
+        class="mt-3"
+        name="date_range"
+        label="End date"
+        @update:model-value="onFieldDateRangeChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="prefill_today"
+        label="Prefill with 'today'"
+        @update:model-value="onFieldPrefillTodayChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="disable_past_dates"
+        label="Disable past dates"
+        @update:model-value="onFieldDisablePastDatesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="disable_future_dates"
+        label="Disable future dates"
+        @update:model-value="onFieldDisableFutureDatesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="with_time"
+        label="Include time"
+      />
+      <select-input
+        v-if="field.with_time"
+        name="timezone"
+        class="mt-4"
+        :form="field"
+        :options="timezonesOptions"
+        label="Timezone"
+        :searchable="true"
+        help="Make sure to select the same timezone you're using in Notion. Leave blank otherwise."
+      />
+      <flat-select-input
+        name="date_format"
+        class="mt-4"
+        :form="field"
+        :options="dateFormatOptions"
+        label="Date format"
+      />
     </div>
 
     <!-- select/multiselect Options   -->
@@ -268,7 +277,7 @@
 
       <!--   Help  -->
       <rich-text-area-input name="help" class="mt-3" :form="field" :editor-toolbar="editorToolbarCustom"
-        label="Field Help" help="Your field help will be shown below/above the field, just like this message."
+        label="Field Help" help="Your field help will be shown below/above the field, just like this text."
         :help-position="field.help_position" />
       <select-input name="help_position" class="mt-3" :options="[
     { name: 'Below input', value: 'below_input' },
@@ -316,6 +325,7 @@ import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
+import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
@@ -367,6 +377,15 @@ export default {
         return {
           name: timezone.text,
           value: timezone.utc[0]
+        }
+      })
+    },
+    dateFormatOptions () {
+      const date = new Date()
+      return ['dd/MM/yyyy', 'MM-dd-yyyy'].map(dateFormat => {
+        return {
+          name: format(date, dateFormat),
+          value: dateFormat
         }
       })
     },
@@ -445,14 +464,7 @@ export default {
     onFieldDateRangeChange(val) {
       this.field.date_range = val
       if (this.field.date_range) {
-        this.field.with_time = false
         this.field.prefill_today = false
-      }
-    },
-    onFieldWithTimeChange(val) {
-      this.field.with_time = val
-      if (this.field.with_time) {
-        this.field.date_range = false
       }
     },
     onFieldGenUIdChange(val) {
@@ -554,6 +566,9 @@ export default {
         url: {
           max_char_limit: 2000
         },
+        date: {
+          date_format: this.dateFormatOptions[0].value
+        }
       }
       if (this.field.type in defaultFieldValues) {
         Object.keys(defaultFieldValues[this.field.type]).forEach(key => {

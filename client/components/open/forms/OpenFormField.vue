@@ -82,6 +82,10 @@ export default {
       type: Boolean,
       default: false
     },
+    darkMode: {
+      type: Boolean,
+      default: false
+    },
     field: {
       type: Object,
       required: true
@@ -245,7 +249,8 @@ export default {
         uppercaseLabels: this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
-        showCharLimit: field.show_char_limit || false
+        showCharLimit: field.show_char_limit || false,
+        isDark: this.darkMode
       }
 
       if (['select', 'multi_select'].includes(field.type)) {
@@ -261,9 +266,11 @@ export default {
         inputProperties.allowCreation = (field.allow_creation === true)
         inputProperties.searchable = (inputProperties.options.length > 4)
       } else if (field.type === 'date') {
+        inputProperties.dateFormat = field.date_format
         if (field.with_time) {
           inputProperties.withTime = true
-        } else if (field.date_range) {
+        }
+        if (field.date_range) {
           inputProperties.dateRange = true
         }
         if (field.disable_past_dates) {

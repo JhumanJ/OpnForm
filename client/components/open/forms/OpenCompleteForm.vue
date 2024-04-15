@@ -69,6 +69,7 @@
                    :loading="loading"
                    :fields="form.properties"
                    :theme="theme"
+                   :dark-mode="darkMode"
                    :admin-preview="adminPreview"
                    @submit="submitForm"
         >
@@ -127,7 +128,11 @@ export default {
     form: { type: Object, required: true },
     creating: { type: Boolean, default: false }, // If true, fake form submit
     adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
-    submitButtonClass: { type: String, default: '' }
+    submitButtonClass: { type: String, default: '' },
+    darkMode: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {

@@ -40,7 +40,7 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto"/>
           </p>
         </div>
-        <open-complete-form v-show="!recordLoading" ref="openCompleteForm" :form="form" class="mb-10"
+        <open-complete-form v-show="!recordLoading" ref="openCompleteForm" :form="form" class="mb-10" :dark-mode="darkMode"
                             @password-entered="passwordEntered"
         />
       </template>
@@ -52,13 +52,19 @@
 import {computed} from 'vue'
 import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import sha256 from 'js-sha256'
-import {onBeforeRouteLeave} from 'vue-router'
-import {disableDarkMode, handleDarkMode, handleTransparentMode, focusOnFirstFormElement} from '~/lib/forms/public-page'
+import { onBeforeRouteLeave } from 'vue-router'
+import {
+  disableDarkMode,
+  handleDarkMode,
+  handleTransparentMode,
+  focusOnFirstFormElement,
+  useDarkMode
+} from '~/lib/forms/public-page'
 
 const crisp = useCrisp()
 const formsStore = useFormsStore()
 const recordsStore = useRecordsStore()
-
+const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const formLoading = computed(() => formsStore.loading)
 const recordLoading = computed(() => recordsStore.loading)
@@ -112,6 +118,11 @@ const loadForm = async (setup=false) => {
 }
 
 await loadForm(true)
+
+// Start loader if record needs to be loaded
+if (useRoute().query?.submission_id) {
+  recordsStore.startLoading()
+}
 
 onMounted(() => {
   crisp.hideChat()
