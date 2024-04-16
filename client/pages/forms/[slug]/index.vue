@@ -207,6 +207,10 @@ useHead({
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm'
   },
+  link: [
+    { rel: 'icon', type: 'image/x-icon', href: pageMeta.value.page_favicon },
+    { rel: 'shortcut icon', href: pageMeta.value.page_favicon }
+  ],
   script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>

@@ -55,6 +55,13 @@
       label="Page Thumbnail Image"
       help="Also know as og:image - 1200 X 630"
     />
+    <image-input
+        v-model="form.seo_meta.page_favicon"
+        name="page_favicon"
+        class="mt-4"
+        label="Page Favicon Image"
+        help="96 X 96 pixels"
+    />
   </editor-options-panel>
 </template>
 
@@ -104,7 +111,7 @@ export default {
   },
   watch: {},
   mounted() {
-    ["page_title", "page_description", "page_thumbnail"].forEach((keyname) => {
+    ["page_title", "page_description", "page_thumbnail", "page_favicon"].forEach((keyname) => {
       if (this.form.seo_meta[keyname] === undefined) {
         this.form.seo_meta[keyname] = null
       }
