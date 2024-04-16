@@ -10,7 +10,7 @@
         v-if="backButton"
         href="#"
         class="ml-2 flex text-blue font-semibold text-sm"
-        @click.prevent="$router.back()"
+        @click.prevent="goBack"
       >
         <svg
           class="w-3 h-3 text-blue mt-1 mr-1"
@@ -257,6 +257,13 @@ export default {
   },
 
   methods: {
+    goBack() {
+      if (this.isEdit) {
+        useRouter().push({ name: 'forms-slug-show-submissions', params: {slug:this.form.slug} })
+      } else {
+        useRouter().push({ name: 'home' })
+      }
+    },
     displayFormModificationAlert(responseData) {
       const alert = useAlert()
       if (
