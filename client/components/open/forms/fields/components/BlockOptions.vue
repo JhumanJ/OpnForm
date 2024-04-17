@@ -8,14 +8,12 @@
       <p class="text-gray-400 mb-3 text-xs">
         Exclude this field or make it required.
       </p>
-      <v-checkbox
-        v-model="field.hidden"
-        class="mb-3"
-        :name="field.id + '_hidden'"
+      <toggle-switch-input
+        :form="field"
+        name="hidden"
+        label="Hidden"
         @update:model-value="onFieldHiddenChange"
-      >
-        Hidden
-      </v-checkbox>
+      />
       <select-input
         name="width"
         class="mt-3"
