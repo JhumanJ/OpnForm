@@ -60,7 +60,7 @@
         name="page_favicon"
         class="mt-4"
         label="Page Favicon Image"
-        help="96 X 96 pixels"
+        help="Upload favicon image to be displayed on the form page"
     />
   </editor-options-panel>
 </template>
