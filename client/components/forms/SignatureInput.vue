@@ -1,21 +1,30 @@
 <template>
-  <input-wrapper
-    v-bind="inputWrapperProps"
-  >
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
 
-    <VueSignaturePad ref="signaturePad"
-                     :class="[theme.default.input,{ '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200':disabled }]"
-                     height="150px"
-                     :name="name"
-                     :options="{ onEnd }"
+    <VueSignaturePad
+      ref="signaturePad"
+      :class="[
+        theme.default.input,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-200': disabled,
+        },
+      ]"
+      height="150px"
+      :name="name"
+      :options="{ onEnd }"
     />
 
     <template #bottom_after_help>
       <small :class="theme.default.help">
-        <a :class="theme.default.help" href="#" @click.prevent="clear">Clear</a>
+        <a
+          :class="theme.default.help"
+          href="#"
+          @click.prevent="clear"
+        >Clear</a>
       </small>
     </template>
 
@@ -26,37 +35,38 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
-import { VueSignaturePad } from 'vue-signature-pad'
+import { inputProps, useFormInput } from "./useFormInput.js"
+import InputWrapper from "./components/InputWrapper.vue"
+import { VueSignaturePad } from "vue-signature-pad"
 
 export default {
-  name: 'SignatureInput',
+  name: "SignatureInput",
   components: { InputWrapper, VueSignaturePad },
 
   props: {
-    ...inputProps
+    ...inputProps,
   },
 
-  setup (props, context) {
+  setup(props, context) {
     return {
-      ...useFormInput(props, context)
+      ...useFormInput(props, context),
     }
   },
 
   methods: {
-    clear () {
+    clear() {
       this.$refs.signaturePad.clearSignature()
       this.onEnd()
     },
-    onEnd () {
+    onEnd() {
       if (this.disabled) {
         this.$refs.signaturePad.clearSignature()
       } else {
+        /* eslint-disable-next-line */
         const { isEmpty, data } = this.$refs.signaturePad?.saveSignature()
-        this.form[this.name] = (!isEmpty && data) ? data : null
+        this.form[this.name] = !isEmpty && data ? data : null
       }
-    }
-  }
+    },
+  },
 }
 </script>

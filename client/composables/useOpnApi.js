@@ -1,20 +1,25 @@
-import {getDomain, getHost, customDomainUsed} from "~/lib/utils.js";
+import { getDomain, getHost, customDomainUsed } from "~/lib/utils.js"
 
 function addAuthHeader(request, options) {
   const authStore = useAuthStore()
   if (authStore.token) {
-    options.headers = {Authorization: `Bearer ${authStore.token}`, ...options.headers}
+    options.headers = {
+      Authorization: `Bearer ${authStore.token}`,
+      ...options.headers,
+    }
   }
 }
 
 function addPasswordToFormRequest(request, options) {
-  if (!request || !request.startsWith('/forms/')) return
+  if (!request || !request.startsWith("/forms/")) return
 
-  const slug = request.split('/')[2]
+  const slug = request.split("/")[2]
 
-  const passwordCookie = useCookie('password-' + slug, {maxAge: 60 * 60 * 24 * 30}) // 30 days
-  if (slug !== undefined && slug !== '' && passwordCookie.value !== undefined) {
-    options.headers['form-password'] = passwordCookie.value
+  const passwordCookie = useCookie("password-" + slug, {
+    maxAge: 60 * 60 * 24 * 30,
+  }) // 30 days
+  if (slug !== undefined && slug !== "" && passwordCookie.value !== undefined) {
+    options.headers["form-password"] = passwordCookie.value
   }
 }
 
@@ -23,7 +28,7 @@ function addPasswordToFormRequest(request, options) {
  */
 function addCustomDomainHeader(request, options) {
   if (!customDomainUsed()) return
-  options.headers['x-custom-domain'] = getDomain(getHost())
+  options.headers["x-custom-domain"] = getDomain(getHost())
 }
 
 export function getOpnRequestsOptions(request, opts) {
@@ -31,16 +36,16 @@ export function getOpnRequestsOptions(request, opts) {
 
   if (opts.body && opts.body instanceof FormData) {
     opts.headers = {
-      'charset': 'utf-8',
+      charset: "utf-8",
       ...opts.headers,
     }
   }
 
-  opts.headers = {accept: 'application/json', ...opts.headers}
+  opts.headers = { accept: "application/json", ...opts.headers }
 
   // Authenticate requests coming from the server
   if (import.meta.server && config.apiSecret) {
-    opts.headers['x-api-secret'] = config.apiSecret
+    opts.headers["x-api-secret"] = config.apiSecret
   }
 
   addAuthHeader(request, opts)
@@ -50,24 +55,25 @@ export function getOpnRequestsOptions(request, opts) {
   if (!opts.baseURL) opts.baseURL = config.privateApiBase || config.public.apiBase
 
   return {
-    async onResponseError({response}) {
+    async onResponseError({ response }) {
       const authStore = useAuthStore()
 
-      const {status} = response
+      const { status } = response
       if (status === 401) {
         if (authStore.check) {
           console.log("Logging out due to 401")
           authStore.logout()
-          useRouter().push({name: 'login'})
+          useRouter().push({ name: "login" })
         }
       } else if (status === 420) {
         // If invalid domain, redirect to main domain
-        window.location.href = config.public.appUrl + '?utm_source=failed_custom_domain_redirect'
+        window.location.href =
+          config.public.appUrl + "?utm_source=failed_custom_domain_redirect"
       } else if (status >= 500) {
-        console.error('Request error', status)
+        console.error("Request error", status)
       }
     },
-    ...opts
+    ...opts,
   }
 }
 

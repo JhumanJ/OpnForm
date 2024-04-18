@@ -16,17 +16,16 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from 'vue'
+import { defineEmits, defineProps } from "vue"
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"])
 
 function onClick() {
-  if (props.disabled)
-    return
-  emit('update:modelValue', !props.modelValue)
+  if (props.disabled) return
+  emit("update:modelValue", !props.modelValue)
 }
 </script>

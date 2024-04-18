@@ -1,24 +1,30 @@
 <template>
-  <notion-renderer v-if="!loading" :block-map="blockMap"/>
-  <div class="p-6 flex items-center justify-center" v-else>
-    <loader class="w-6 h-6"/>
+  <notion-renderer
+    v-if="!loading"
+    :block-map="blockMap"
+  />
+  <div
+    v-else
+    class="p-6 flex items-center justify-center"
+  >
+    <loader class="w-6 h-6" />
   </div>
 </template>
 
 <script>
-import {NotionRenderer} from 'vue-notion'
+import { NotionRenderer } from "vue-notion"
 
 export default {
-  name: 'NotionPage',
-  components: {NotionRenderer},
+  name: "NotionPage",
+  components: { NotionRenderer },
   props: {
     blockMap: {
-      type: Object
+      type: Object,
     },
     loading: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
 }
 </script>

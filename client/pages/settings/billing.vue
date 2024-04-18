@@ -5,11 +5,16 @@
     </h3>
 
     <template v-if="user.has_customer_id">
-      <small class="text-gray-600">Manage your billing. Download invoices, update your plan, or cancel it at any
-        time.</small>
+      <small class="text-gray-600">Manage your billing. Download invoices, update your plan, or cancel it
+        at any time.</small>
 
       <div class="mt-4">
-        <v-button color="gray" shade="light" :loading="billingLoading" @click.prevent="openBillingDashboard">
+        <v-button
+          color="gray"
+          shade="light"
+          :loading="billingLoading"
+          @click.prevent="openBillingDashboard"
+        >
           Manage Subscription
         </v-button>
       </div>
@@ -20,30 +25,33 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useAuthStore } from '../../stores/auth'
-import AppSumoBilling from '../../components/vendor/appsumo/AppSumoBilling.vue'
+import { computed } from "vue"
+import { useAuthStore } from "../../stores/auth"
+import AppSumoBilling from "../../components/vendor/appsumo/AppSumoBilling.vue"
 
 useOpnSeoMeta({
-  title: 'Billing'
+  title: "Billing",
 })
 definePageMeta({
-  middleware: "auth"
+  middleware: "auth",
 })
 
 const authStore = useAuthStore()
-let user = computed(() => authStore.user)
+const user = computed(() => authStore.user)
 let billingLoading = false
 
 const openBillingDashboard = () => {
   billingLoading = true
-  opnFetch('/subscription/billing-portal').then((data) => {
-    const url = data.portal_url
-    window.location = url
-  }).catch((error) => {
-    useAlert().error(error.data.message)
-  }).finally(() => {
-    billingLoading = false
-  })
+  opnFetch("/subscription/billing-portal")
+    .then((data) => {
+      const url = data.portal_url
+      window.location = url
+    })
+    .catch((error) => {
+      useAlert().error(error.data.message)
+    })
+    .finally(() => {
+      billingLoading = false
+    })
 }
 </script>

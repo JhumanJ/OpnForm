@@ -1,75 +1,74 @@
-
 function arrayWrap(value) {
-  return Array.isArray(value) ? value : [value];
+  return Array.isArray(value) ? value : [value]
 }
 
 export default class Errors {
   constructor() {
-    this.errors = {};
+    this.errors = {}
   }
 
   set(field, messages = undefined) {
-    if (typeof field === 'object') {
-      this.errors = field;
+    if (typeof field === "object") {
+      this.errors = field
     } else {
-      this.set({ ...this.errors, [field]: arrayWrap(messages) });
+      this.set({ ...this.errors, [field]: arrayWrap(messages) })
     }
   }
 
   all() {
-    return this.errors;
+    return this.errors
   }
 
   has(field) {
-    return Object.prototype.hasOwnProperty.call(this.errors, field);
+    return Object.prototype.hasOwnProperty.call(this.errors, field)
   }
 
   hasAny(...fields) {
-    return fields.some(field => this.has(field));
+    return fields.some((field) => this.has(field))
   }
 
   any() {
-    return Object.keys(this.errors).length > 0;
+    return Object.keys(this.errors).length > 0
   }
 
   get(field) {
     if (this.has(field)) {
-      return this.getAll(field)[0];
+      return this.getAll(field)[0]
     }
   }
 
   getAll(field) {
-    return arrayWrap(this.errors[field] || []);
+    return arrayWrap(this.errors[field] || [])
   }
 
   only(...fields) {
-    const messages = [];
+    const messages = []
 
     fields.forEach((field) => {
-      const message = this.get(field);
+      const message = this.get(field)
       if (message) {
-        messages.push(message);
+        messages.push(message)
       }
-    });
+    })
 
-    return messages;
+    return messages
   }
 
   flatten() {
-    return Object.values(this.errors).reduce((a, b) => a.concat(b), []);
+    return Object.values(this.errors).reduce((a, b) => a.concat(b), [])
   }
 
   clear(field = undefined) {
-    const errors = {};
+    const errors = {}
 
     if (field) {
       Object.keys(this.errors).forEach((key) => {
         if (key !== field) {
-          errors[key] = this.errors[key];
+          errors[key] = this.errors[key]
         }
-      });
+      })
     }
 
-    this.set(errors);
+    this.set(errors)
   }
 }

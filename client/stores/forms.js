@@ -1,18 +1,19 @@
-import {defineStore} from 'pinia'
-import {useContentStore} from "~/composables/stores/useContentStore.js";
+import { defineStore } from "pinia"
+import { useContentStore } from "~/composables/stores/useContentStore.js"
 
-export const formsEndpoint = '/open/workspaces/{workspaceId}/forms'
-export const singleFormEndpoint = '/open/forms/{slug}'
+export const formsEndpoint = "/open/workspaces/{workspaceId}/forms"
+export const singleFormEndpoint = "/open/forms/{slug}"
 
-export const useFormsStore = defineStore('forms', () => {
-
-  const contentStore = useContentStore('slug')
+export const useFormsStore = defineStore("forms", () => {
+  const contentStore = useContentStore("slug")
   const allLoaded = ref(false)
   const currentPage = ref(1)
 
   const loadAll = (workspaceId) => {
     contentStore.startLoading()
-    return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId),{query: {page: currentPage.value}})
+    return opnFetch(formsEndpoint.replace("{workspaceId}", workspaceId), {
+      query: { page: currentPage.value },
+    })
       .then((response) => {
         if (currentPage.value === 1) {
           contentStore.resetState()
@@ -28,7 +29,8 @@ export const useFormsStore = defineStore('forms', () => {
           contentStore.stopLoading()
           currentPage.value = 1
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         contentStore.stopLoading()
         currentPage.value = 1
         throw error
@@ -36,8 +38,8 @@ export const useFormsStore = defineStore('forms', () => {
   }
   const loadForm = (slug) => {
     contentStore.startLoading()
-    return opnFetch(singleFormEndpoint.replace('{slug}', slug))
-      .then(response => {
+    return opnFetch(singleFormEndpoint.replace("{slug}", slug))
+      .then((response) => {
         contentStore.save(response)
       })
       .finally(() => {
@@ -47,10 +49,11 @@ export const useFormsStore = defineStore('forms', () => {
 
   const load = (workspaceId, slug) => {
     contentStore.startLoading()
-    return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId) + '/' + slug)
-      .finally(() => {
-        contentStore.stopLoading()
-      })
+    return opnFetch(
+      formsEndpoint.replace("{workspaceId}", workspaceId) + "/" + slug,
+    ).finally(() => {
+      contentStore.stopLoading()
+    })
   }
 
   /**
@@ -58,20 +61,20 @@ export const useFormsStore = defineStore('forms', () => {
    */
   const publicLoad = (slug) => {
     contentStore.startLoading()
-    return useOpnApi('/forms/' + slug)
+    return useOpnApi("/forms/" + slug)
   }
 
   const publicFetch = (slug) => {
     contentStore.startLoading()
-    return opnFetch('/forms/' + slug)
+    return opnFetch("/forms/" + slug)
   }
 
   const allTags = computed(() => {
     let tags = []
     contentStore.getAll.value.forEach((form) => {
       if (form.tags && form.tags.length) {
-        if (typeof form.tags === 'string' || form.tags instanceof String ) {
-          tags = tags.concat(form.tags.split(','))
+        if (typeof form.tags === "string" || form.tags instanceof String) {
+          tags = tags.concat(form.tags.split(","))
         } else if (Array.isArray(form.tags)) {
           tags = tags.concat(form.tags)
         }

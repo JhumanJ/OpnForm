@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import { useDarkMode } from '~/lib/forms/public-page.js'
-
 export default {
   props: {
     featuresOnly: {

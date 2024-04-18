@@ -1,5 +1,5 @@
-import VueConfetti from 'vue-confetti'
+import VueConfetti from "vue-confetti"
 
-export default defineNuxtPlugin(nuxtApp => {
+export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(VueConfetti)
 })

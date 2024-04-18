@@ -1,12 +1,10 @@
-import {defineStore} from 'pinia'
-import {useStorage} from "@vueuse/core"
-import {useContentStore} from "~/composables/stores/useContentStore.js";
+import { defineStore } from "pinia"
+import { useContentStore } from "~/composables/stores/useContentStore.js"
 
-export const workspaceEndpoint = 'open/workspaces/'
+export const workspaceEndpoint = "open/workspaces/"
 
-export const useWorkspacesStore = defineStore('workspaces', () => {
-
-  const storedWorkspaceId = useCookie('currentWorkspace')
+export const useWorkspacesStore = defineStore("workspaces", () => {
+  const storedWorkspaceId = useCookie("currentWorkspace")
 
   const contentStore = useContentStore()
   const currentId = ref(storedWorkspaceId)
@@ -21,13 +19,13 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
   }
 
   const set = (items) => {
-    contentStore.content.value = new Map
+    contentStore.content.value = new Map()
     save(items)
   }
 
   const save = (items) => {
     contentStore.save(items)
-    if ((getCurrent.value == null) && contentStore.length.value) {
+    if (getCurrent.value == null && contentStore.length.value) {
       setCurrentId(items[0].id)
     }
   }
@@ -35,7 +33,9 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
   const remove = (itemId) => {
     contentStore.remove(itemId)
     if (currentId.value === itemId) {
-      setCurrentId(contentStore.length.value > 0 ? contentStore.getAll.value[0].id : null)
+      setCurrentId(
+        contentStore.length.value > 0 ? contentStore.getAll.value[0].id : null,
+      )
     }
   }
 
@@ -46,7 +46,7 @@ export const useWorkspacesStore = defineStore('workspaces', () => {
     setCurrentId,
     set,
     save,
-    remove
+    remove,
   }
 })
 

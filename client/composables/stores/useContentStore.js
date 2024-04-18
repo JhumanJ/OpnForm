@@ -1,8 +1,6 @@
-
 // Composable with all the logic to encapsulate a default content store
 
-export const useContentStore = (mapKey = 'id') => {
-
+export const useContentStore = (mapKey = "id") => {
   const content = ref(new Map())
   const loading = ref(false)
 
@@ -12,7 +10,9 @@ export const useContentStore = (mapKey = 'id') => {
   })
   const getByKey = (key) => {
     if (Array.isArray(key)) {
-      return key.map((k) => content.value.get(k)).filter((item) => item !== undefined)
+      return key
+        .map((k) => content.value.get(k))
+        .filter((item) => item !== undefined)
     }
     return content.value.get(key)
   }
@@ -21,7 +21,7 @@ export const useContentStore = (mapKey = 'id') => {
 
   // Actions
   function set(items) {
-    content.value = new Map
+    content.value = new Map()
     save(items)
   }
 
@@ -33,7 +33,7 @@ export const useContentStore = (mapKey = 'id') => {
     })
   }
   function remove(item) {
-    content.value.delete( typeof item === 'object' ? item[mapKey] : item)
+    content.value.delete(typeof item === "object" ? item[mapKey] : item)
   }
 
   function startLoading() {
@@ -60,6 +60,6 @@ export const useContentStore = (mapKey = 'id') => {
     remove,
     startLoading,
     stopLoading,
-    resetState
+    resetState,
   }
 }

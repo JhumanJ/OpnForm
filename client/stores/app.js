@@ -1,10 +1,9 @@
+import { defineStore } from "pinia"
+import { nextTick } from "vue"
 
-import { defineStore } from 'pinia'
-import { nextTick } from 'vue'
-
-export const useAppStore = defineStore('app', {
+export const useAppStore = defineStore("app", {
   state: () => ({
-    layout: 'default',
+    layout: "default",
     navbarHidden: false,
 
     // App Loader
@@ -14,36 +13,36 @@ export const useAppStore = defineStore('app', {
       canSuccess: true,
       duration: 3000,
       _timer: null,
-      _cut: null
-    }
+      _cut: null,
+    },
   }),
   actions: {
-    hideNavbar () {
+    hideNavbar() {
       this.navbarHidden = true
     },
-    showNavbar () {
+    showNavbar() {
       this.navbarHidden = false
     },
-    setLayout (layout) {
-      this.layout = layout ?? 'default'
+    setLayout(layout) {
+      this.layout = layout ?? "default"
     },
-    loaderIncrease (num) {
+    loaderIncrease(num) {
       this.loader.percent = this.loader.percent + Math.floor(num)
     },
-    loaderDecrease (num) {
+    loaderDecrease(num) {
       this.loader.percent = this.loader.percent - Math.floor(num)
     },
-    loaderFinish () {
+    loaderFinish() {
       this.loader.percent = 100
       this.loaderHide()
     },
-    loaderSetTimer (timerVal) {
+    loaderSetTimer(timerVal) {
       this.loader._timer = timerVal
     },
-    loaderPause () {
+    loaderPause() {
       clearInterval(this.loader._timer)
     },
-    loaderHide () {
+    loaderHide() {
       this.loaderPause()
       this.loader._timer = null
       setTimeout(() => {
@@ -55,10 +54,10 @@ export const useAppStore = defineStore('app', {
         })
       }, 500)
     },
-    loaderFail () {
+    loaderFail() {
       this.loader.canSuccess = false
     },
-    loaderStart () {
+    loaderStart() {
       this.loader.show = true
       this.loader.canSuccess = true
       if (this.loader._timer) {
@@ -67,12 +66,14 @@ export const useAppStore = defineStore('app', {
       }
       this.loader._cut = 10000 / Math.floor(this.loader.duration)
 
-      this.loaderSetTimer(setInterval(() => {
-        this.loaderIncrease(this.loader._cut * Math.random())
-        if (this.loader.percent > 95) {
-          this.loaderFinish()
-        }
-      }, 100))
-    }
-  }
+      this.loaderSetTimer(
+        setInterval(() => {
+          this.loaderIncrease(this.loader._cut * Math.random())
+          if (this.loader.percent > 95) {
+            this.loaderFinish()
+          }
+        }, 100),
+      )
+    },
+  },
 })
