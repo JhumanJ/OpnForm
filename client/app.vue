@@ -79,6 +79,23 @@ export default {
       titleTemplate: (titleChunk) => {
         return titleChunk ? `${titleChunk} - OpnForm` : "OpnForm"
       },
+      meta: [
+        {
+          name: 'apple-mobile-web-app-capable',
+          content: 'yes'
+        },
+        {
+          name: 'apple-mobile-web-app-status-bar-style',
+          content: 'black-translucent'
+        },
+      ],
+      link: [
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/png',
+          href: '/favicon.ico'
+        }
+      ]
     })
 
     const appStore = useAppStore()
