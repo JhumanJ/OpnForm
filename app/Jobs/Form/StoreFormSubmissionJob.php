@@ -144,7 +144,7 @@ class StoreFormSubmissionJob implements ShouldQueue
             }
 
             // For Singrature
-            if ($this->form->is_pro && $field['type'] == 'signature') {
+            if ($field['type'] == 'signature') {
                 $finalData[$field['id']] = $this->storeSignature($answerValue);
             }
 
