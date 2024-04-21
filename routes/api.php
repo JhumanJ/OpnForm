@@ -160,10 +160,26 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
     });
 
-    Route::group(['middleware' => 'moderator', 'prefix' => 'admin'], function () {
+    Route::group(['middleware' => 'moderator', 'prefix' => 'moderator'], function () {
         Route::get(
-            'impersonate/{identifier}',
+            'fetch-user/{identifier}',
+            [\App\Http\Controllers\Admin\AdminController::class, 'fetchUser']
+        );
+        Route::get(
+            'impersonate/{userId}',
             [\App\Http\Controllers\Admin\ImpersonationController::class, 'impersonate']
+        );
+        Route::patch(
+            'apply-discount',
+            [\App\Http\Controllers\Admin\AdminController::class, 'applyDiscount']
+        );
+        Route::patch(
+            'extend-trial',
+            [\App\Http\Controllers\Admin\AdminController::class, 'extendTrial']
+        );
+        Route::patch(
+            'cancellation-subscription',
+            [\App\Http\Controllers\Admin\AdminController::class, 'cancelSubscription']
         );
     });
 });
