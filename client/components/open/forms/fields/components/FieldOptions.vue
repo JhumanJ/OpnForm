@@ -417,6 +417,15 @@
         :date-range="field.date_range === true"
         label="Pre-filled value"
       />
+      <text-input
+        v-else-if="field.type==='date' && field.prefill_today===true"
+        name="prefill"
+        class="mt-4"
+        disabled
+        :form="field"
+        label="Pre-filled value"
+        placeholder="Pre-filled with current date"
+      />
       <phone-input
         v-else-if="field.type === 'phone_number' && !field.use_simple_text_input"
         name="prefill"
@@ -734,7 +743,7 @@ export default {
     onFieldPrefillTodayChange(val) {
       this.field.prefill_today = val
       if (this.field.prefill_today) {
-        this.field.prefill = 'Pre-filled with current date'
+        this.field.prefill = null
         this.field.date_range = false
         this.field.disable_future_dates = false
         this.field.disable_past_dates = false
