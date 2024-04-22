@@ -1,5 +1,8 @@
 <template>
-  <div class="flex mb-1 input-help">
+  <div
+    v-if="shouldRender"
+    class="flex mb-1 input-help"
+  >
     <small
       :class="helpClasses"
       class="grow flex"
@@ -19,8 +22,13 @@
 </template>
 
 <script setup>
-defineProps({
+const slots = useSlots()
+const props = defineProps({
   helpClasses: { type: String, default: "text-gray-400 dark:text-gray-500" },
   help: { type: String, required: false },
+})
+
+const shouldRender = computed(() => {
+  return props.help || !!slots.help || !!slots['after-help']
 })
 </script>
