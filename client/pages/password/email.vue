@@ -5,14 +5,29 @@
         <h1 class="my-6">
           Reset password
         </h1>
-        <form @submit.prevent="send" @keydown="form.onKeydown($event)">
-          <alert-success :form="form" :message="status" class="mb-4" />
+        <form
+          @submit.prevent="send"
+          @keydown="form.onKeydown($event)"
+        >
+          <alert-success
+            :form="form"
+            :message="status"
+            class="mb-4"
+          />
 
           <!-- Email -->
-          <text-input name="email" :form="form" label="Email" :required="true" />
+          <text-input
+            name="email"
+            :form="form"
+            label="Email"
+            :required="true"
+          />
 
           <!-- Submit Button -->
-          <v-button class="w-full" :loading="form.busy">
+          <v-button
+            class="w-full"
+            :loading="form.busy"
+          >
             Send Password Reset Link
           </v-button>
         </form>
@@ -24,30 +39,30 @@
 
 <script>
 export default {
-  setup () {
+  setup() {
     definePageMeta({
-      middleware: "guest"
+      middleware: "guest",
     })
     useOpnSeoMeta({
-      title: 'Reset Password'
+      title: "Reset Password",
     })
   },
 
   data: () => ({
-    status: '',
+    status: "",
     form: useForm({
-      email: ''
-    })
+      email: "",
+    }),
   }),
 
   methods: {
-    async send () {
-      const { data } = await this.form.post('/password/email')
+    async send() {
+      const { data } = await this.form.post("/password/email")
 
       this.status = data.status
 
       this.form.reset()
-    }
-  }
+    },
+  },
 }
 </script>

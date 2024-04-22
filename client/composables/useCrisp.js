@@ -1,5 +1,4 @@
 export const useCrisp = () => {
-
   let crisp = import.meta.client ? window.Crisp : null
 
   function openChat() {
@@ -35,29 +34,32 @@ export const useCrisp = () => {
     crisp.chat.setHelpdeskView()
   }
 
-  function openHelpdeskArticle(articleSlug, locale = 'en') {
+  function openHelpdeskArticle(articleSlug, locale = "en") {
     if (!crisp) return
-    crisp.chat.openHelpdeskArticle(locale, articleSlug);
+    crisp.chat.openHelpdeskArticle(locale, articleSlug)
   }
 
   function sendTextMessage(message) {
     if (!crisp) return
-    crisp.message.send('text', message)
+    crisp.message.send("text", message)
   }
 
   function setUser(user) {
     if (!crisp) return
-    crisp.user.setEmail(user.email);
-    crisp.user.setNickname(user.name);
+    crisp.user.setEmail(user.email)
+    crisp.user.setNickname(user.name)
     crisp.session.setData({
       user_id: user.id,
-      'pro-subscription': user?.is_subscribed ?? false,
-      'stripe-id': user?.stripe_id ?? '',
-      'subscription': user?.has_enterprise_subscription ? 'enterprise' : 'pro'
-    });
+      "pro-subscription": user?.is_subscribed ?? false,
+      "stripe-id": user?.stripe_id ?? "",
+      subscription: user?.has_enterprise_subscription ? "enterprise" : "pro",
+    })
 
     if (user?.is_subscribed ?? false) {
-      setSegments(['subscribed', user?.has_enterprise_subscription ? 'enterprise' : 'pro'])
+      setSegments([
+        "subscribed",
+        user?.has_enterprise_subscription ? "enterprise" : "pro",
+      ])
     }
   }
 
@@ -82,6 +84,6 @@ export const useCrisp = () => {
     openHelpdeskArticle,
     sendTextMessage,
     pushEvent,
-    setUser
+    setUser,
   }
 }

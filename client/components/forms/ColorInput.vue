@@ -5,12 +5,20 @@
     </template>
 
     <div class="flex items-center">
-      <input :id="id?id:name" v-model="compVal" :disabled="disabled?true:null"
-             type="color" class="mr-2"
-             :name="name"
+      <input
+        :id="id ? id : name"
+        v-model="compVal"
+        :disabled="disabled ? true : null"
+        type="color"
+        class="mr-2"
+        :name="name"
       >
       <slot name="label">
-        <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
+        <span>{{ label }}
+          <span
+            v-if="required"
+            class="text-red-500 required-dot"
+          >*</span></span>
       </slot>
     </div>
 
@@ -25,21 +33,21 @@
 </template>
 
 <script>
-import InputWrapper from './components/InputWrapper.vue'
-import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from "./components/InputWrapper.vue"
+import { inputProps, useFormInput } from "./useFormInput.js"
 
 export default {
-  name: 'ColorInput',
+  name: "ColorInput",
   components: { InputWrapper },
 
   props: {
-    ...inputProps
+    ...inputProps,
   },
 
-  setup (props, context) {
+  setup(props, context) {
     return {
-      ...useFormInput(props, context)
+      ...useFormInput(props, context),
     }
-  }
+  },
 }
 </script>

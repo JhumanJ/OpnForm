@@ -1,6 +1,6 @@
-import {defineStore} from 'pinia'
+import { defineStore } from "pinia"
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => {
     return {
       token: null,
@@ -9,8 +9,9 @@ export const useAuthStore = defineStore('auth', {
     }
   },
   getters: {
-    check: (state) => (state.user !== null && state.user !== undefined),
-    isImpersonating: (state) => (state.admin_token !== null && state.admin_token !== undefined)
+    check: (state) => state.user !== null && state.user !== undefined,
+    isImpersonating: (state) =>
+      state.admin_token !== null && state.admin_token !== undefined,
   },
   actions: {
     // Stores admin token temporarily for impersonation
@@ -24,12 +25,12 @@ export const useAuthStore = defineStore('auth', {
     },
 
     setToken(token) {
-      this.setCookie('token', token)
+      this.setCookie("token", token)
       this.token = token
     },
 
     setAdminToken(token) {
-      this.setCookie('admin_token', token)
+      this.setCookie("admin_token", token)
       this.admin_token = token
     },
 
@@ -46,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
 
     setUser(user) {
       if (!user) {
-        console.error('No user, logging out.')
+        console.error("No user, logging out.")
         this.setToken(null)
       }
 
@@ -68,16 +69,15 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
-      opnFetch('logout', {method: 'POST'}).catch((error) => {
-      })
+      opnFetch("logout", { method: "POST" }).catch(() => {})
 
       this.user = null
       this.setToken(null)
     },
 
-    async fetchOauthUrl(provider) {
+    // async fetchOauthUrl() {
       // const {data} = await axios.post(`/api/oauth/${provider}`)
       // return data.url
-    }
-  }
+    // },
+  },
 })

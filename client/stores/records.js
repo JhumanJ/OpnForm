@@ -1,14 +1,13 @@
-import { defineStore } from 'pinia'
-import { useContentStore } from '~/composables/stores/useContentStore'
+import { defineStore } from "pinia"
+import { useContentStore } from "~/composables/stores/useContentStore"
 
 /**
  * Loads records from database
  */
-export const useRecordsStore = defineStore('records', ()=>{
-
+export const useRecordsStore = defineStore("records", () => {
   const contentStore = useContentStore()
 
-  const loadRecord = (request)=> {
+  const loadRecord = (request) => {
     contentStore.resetState()
     contentStore.startLoading()
     return request.then((data) => {
@@ -16,6 +15,5 @@ export const useRecordsStore = defineStore('records', ()=>{
       contentStore.stopLoading()
     })
   }
-  return {...contentStore, loadRecord}
-
+  return { ...contentStore, loadRecord }
 })

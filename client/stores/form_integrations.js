@@ -1,13 +1,12 @@
-import {defineStore} from 'pinia'
-import {useContentStore} from "~/composables/stores/useContentStore.js";
-import integrationsList from '~/data/forms/integrations.json'
+import { defineStore } from "pinia"
+import { useContentStore } from "~/composables/stores/useContentStore.js"
+import integrationsList from "~/data/forms/integrations.json"
 
-export const formIntegrationsEndpoint = '/open/forms/{formid}/integrations'
+export const formIntegrationsEndpoint = "/open/forms/{formid}/integrations"
 
-export const useFormIntegrationsStore = defineStore('form_integrations', () => {
-
+export const useFormIntegrationsStore = defineStore("form_integrations", () => {
   const contentStore = useContentStore()
-  const integrations = ref(new Map)
+  const integrations = ref(new Map())
 
   const availableIntegrations = computed(() => {
     const user = useAuthStore().user
@@ -18,7 +17,7 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
       enrichedIntegrations.set(key, {
         ...integration,
         id: key,
-        requires_subscription: !user.is_subscribed && integration.is_pro
+        requires_subscription: !user.is_subscribed && integration.is_pro,
       })
     }
 
@@ -26,29 +25,31 @@ export const useFormIntegrationsStore = defineStore('form_integrations', () => {
   })
 
   const integrationsBySection = computed(() => {
-    const groupedObject = {};
+    const groupedObject = {}
     for (const [key, integration] of availableIntegrations.value.entries()) {
-      const sectionName = integration.section_name;
+      const sectionName = integration.section_name
       if (!groupedObject[sectionName]) {
-        groupedObject[sectionName] = {};
+        groupedObject[sectionName] = {}
       }
       groupedObject[sectionName][key] = integration
     }
-    return groupedObject;
+    return groupedObject
   })
 
   const fetchFormIntegrations = (formId) => {
     contentStore.resetState()
     contentStore.startLoading()
-    return useOpnApi(formIntegrationsEndpoint.replace('{formid}', formId)).then((response) => {
-      contentStore.save(response.data.value)
-      contentStore.stopLoading()
-    })
+    return useOpnApi(formIntegrationsEndpoint.replace("{formid}", formId)).then(
+      (response) => {
+        contentStore.save(response.data.value)
+        contentStore.stopLoading()
+      },
+    )
   }
 
   const getAllByFormId = (formId) => {
     return contentStore.getAll.value.filter((item) => {
-      return (item.form_id) ? item.form_id === formId : false
+      return item.form_id ? item.form_id === formId : false
     })
   }
 

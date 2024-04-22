@@ -4,34 +4,54 @@
       <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </p>
   </div>
-  <form v-else-if="dataForm" @submit.prevent="">
-    <template v-if='form.show_progress_bar'>
-      <div v-if='isIframe' class='mb-4 p-2'>
-        <div class='w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden'>
-          <div class='h-full transition-all duration-300 rounded-r-full'
-               :class="{ 'w-0': formProgress === 0 }"
-               :style="{ width: formProgress + '%', background: form.color }"
+  <form
+    v-else-if="dataForm"
+    @submit.prevent=""
+  >
+    <template v-if="form.show_progress_bar">
+      <div
+        v-if="isIframe"
+        class="mb-4 p-2"
+      >
+        <div class="w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden">
+          <div
+            class="h-full transition-all duration-300 rounded-r-full"
+            :class="{ 'w-0': formProgress === 0 }"
+            :style="{ width: formProgress + '%', background: form.color }"
           />
         </div>
       </div>
-      <div v-else class='fixed top-0 left-0 right-0 z-50'>
-        <div class='w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden'>
-          <div class='h-full transition-all duration-300'
-               :class="{ 'w-0': formProgress === 0 }"
-               :style="{ width: formProgress + '%', background: form.color }"
+      <div
+        v-else
+        class="fixed top-0 left-0 right-0 z-50"
+      >
+        <div class="w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden">
+          <div
+            class="h-full transition-all duration-300"
+            :class="{ 'w-0': formProgress === 0 }"
+            :style="{ width: formProgress + '%', background: form.color }"
           />
         </div>
       </div>
     </template>
-    <transition name="fade" mode="out-in">
-      <div :key="currentFieldGroupIndex" class="form-group flex flex-wrap w-full">
-        <draggable v-model="currentFields"
-                   item-key="id"
-                   class="flex flex-wrap transition-all w-full"
-                   :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
-                   ghost-class="ghost-item"
-                   handle=".draggable" :animation="200"
-                   @start="onDragStart" @end="onDragEnd"
+    <transition
+      name="fade"
+      mode="out-in"
+    >
+      <div
+        :key="currentFieldGroupIndex"
+        class="form-group flex flex-wrap w-full"
+      >
+        <draggable
+          v-model="currentFields"
+          item-key="id"
+          class="flex flex-wrap transition-all w-full"
+          :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
+          ghost-class="ghost-item"
+          handle=".draggable"
+          :animation="200"
+          @start="onDragStart"
+          @end="onDragEnd"
         >
           <template #item="{element}">
             <open-form-field
@@ -41,6 +61,7 @@
               :data-form="dataForm"
               :data-form-value="dataFormValue"
               :theme="theme"
+              :dark-mode="darkMode"
               :admin-preview="adminPreview"
             />
           </template>
@@ -51,22 +72,43 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha ref="hcaptcha" :sitekey="hCaptchaSiteKey" :theme="darkModeEnabled?'dark':'light'" />
-        <has-error :form="dataForm" field="h-captcha-response" />
+        <vue-hcaptcha
+          ref="hcaptcha"
+          :sitekey="hCaptchaSiteKey"
+          :theme="darkMode?'dark':'light'"
+        />
+        <has-error
+          :form="dataForm"
+          field="h-captcha-response"
+        />
       </div>
     </template>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
-      <open-form-button v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading" native-type="button"
-                        :color="form.color" :theme="theme" class="mt-2 px-8 mx-1" @click="previousPage"
+      <open-form-button
+        v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading"
+        native-type="button"
+        :color="form.color"
+        :theme="theme"
+        class="mt-2 px-8 mx-1"
+        @click="previousPage"
       >
         {{ previousFieldsPageBreak.previous_btn_text }}
       </open-form-button>
 
-      <slot v-if="isLastPage" name="submit-btn" :submitForm="submitForm" />
-      <open-form-button v-else-if="currentFieldsPageBreak" native-type="button" :color="form.color" :theme="theme" class="mt-2 px-8 mx-1"
-                        @click.stop="nextPage"
+      <slot
+        v-if="isLastPage"
+        name="submit-btn"
+        :submit-form="submitForm"
+      />
+      <open-form-button
+        v-else-if="currentFieldsPageBreak"
+        native-type="button"
+        :color="form.color"
+        :theme="theme"
+        class="mt-2 px-8 mx-1"
+        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -85,7 +127,6 @@ import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {darkModeEnabled} from "~/lib/forms/public-page.js"
 
 export default {
   name: 'OpenForm',
@@ -112,7 +153,11 @@ export default {
       required: true
     },
     defaultDataForm:{},
-    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
+    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    darkMode: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup (props) {
@@ -124,7 +169,6 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
-      darkModeEnabled: darkModeEnabled(),
       pendingSubmission: pendingSubmission(props.form)
     }
   },
@@ -334,13 +378,12 @@ export default {
     async initForm () {
       if(this.defaultDataForm){
         this.dataForm = useForm(this.defaultDataForm)
-        return;
+        return
       }
 
       if (this.isPublicFormPage && this.form.editable_submissions) {
-        const urlParam = new URLSearchParams(window.location.search)
-        if (urlParam && urlParam.get('submission_id')) {
-          this.form.submission_id = urlParam.get('submission_id')
+        if (useRoute().query?.submission_id) {
+          this.form.submission_id = useRoute().query?.submission_id
           const data = await this.getSubmissionData()
           if (data !== null && data) {
             this.dataForm = useForm(data)
@@ -349,19 +392,11 @@ export default {
         }
       }
       if (this.isPublicFormPage && this.form.auto_save) {
-        let pendingData = this.pendingSubmission.get()
+        const pendingData = this.pendingSubmission.get()
         if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
           this.fields.forEach((field) => {
             if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-              const dateObj = new Date()
-              let currentDate = dateObj.getFullYear() + '-' +
-                String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-                String(dateObj.getDate()).padStart(2, '0')
-              if (field.with_time === true) {
-                currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-                  String(dateObj.getMinutes()).padStart(2, '0')
-              }
-              pendingData[field.id] = currentDate
+              pendingData[field.id] = new Date().toISOString()
             }
           })
           this.dataForm = useForm(pendingData)
@@ -395,15 +430,7 @@ export default {
           // Array url prefills
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-          const dateObj = new Date()
-          let currentDate = dateObj.getFullYear() + '-' +
-            String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
-            String(dateObj.getDate()).padStart(2, '0')
-          if (field.with_time === true) {
-            currentDate += 'T' + String(dateObj.getHours()).padStart(2, '0') + ':' +
-              String(dateObj.getMinutes()).padStart(2, '0')
-          }
-          formData[field.id] = currentDate
+          formData[field.id] = new Date().toISOString()
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }

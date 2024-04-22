@@ -27,21 +27,21 @@ import {
   onMounted,
   ref,
   watch,
-} from 'vue'
+} from "vue"
 
 defineOptions({
-  name: 'VCheckbox',
+  name: "VCheckbox",
 })
 
 const props = defineProps({
   id: { type: String, default: null },
-  name: { type: String, default: 'checkbox' },
+  name: { type: String, default: "checkbox" },
   modelValue: { type: [Boolean, String], default: false },
   disabled: { type: Boolean, default: false },
-  sizeClasses: { type: String, default: 'w-4 h-4' },
+  sizeClasses: { type: String, default: "w-4 h-4" },
 })
 
-const emit = defineEmits(['update:modelValue', 'click'])
+const emit = defineEmits(["update:modelValue", "click"])
 
 const internalValue = ref(props.modelValue)
 
@@ -62,18 +62,14 @@ watch(
 watch(
   () => internalValue.value,
   (val, oldVal) => {
-    if (val === 0 || val === '0')
-      val = false
-    if (val === 1 || val === '1')
-      val = true
+    if (val === 0 || val === "0") val = false
+    if (val === 1 || val === "1") val = true
 
-    if (val !== oldVal)
-      emit('update:modelValue', val)
+    if (val !== oldVal) emit("update:modelValue", val)
   },
 )
 
 onMounted(() => {
-  if (internalValue.value === null)
-    internalValue.value = false
+  if (internalValue.value === null) internalValue.value = false
 })
 </script>

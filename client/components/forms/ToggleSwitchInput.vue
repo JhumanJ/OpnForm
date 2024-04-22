@@ -5,9 +5,18 @@
     </template>
 
     <div class="flex">
-      <v-switch :id="id?id:name" v-model="compVal" class="inline-block mr-2" :disabled="disabled?true:null" />
+      <v-switch
+        :id="id ? id : name"
+        v-model="compVal"
+        class="inline-block mr-2"
+        :disabled="disabled ? true : null"
+      />
       <slot name="label">
-        <span>{{ label }} <span v-if="required" class="text-red-500 required-dot">*</span></span>
+        <span>{{ label }}
+          <span
+            v-if="required"
+            class="text-red-500 required-dot"
+          >*</span></span>
       </slot>
     </div>
 
@@ -22,25 +31,25 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import VSwitch from './components/VSwitch.vue'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from "./useFormInput.js"
+import VSwitch from "./components/VSwitch.vue"
+import InputWrapper from "./components/InputWrapper.vue"
 export default {
-  name: 'ToggleSwitchInput',
+  name: "ToggleSwitchInput",
 
   components: { InputWrapper, VSwitch },
   props: {
-    ...inputProps
+    ...inputProps,
   },
 
-  setup (props, context) {
+  setup(props, context) {
     return {
-      ...useFormInput(props, context)
+      ...useFormInput(props, context),
     }
   },
 
-  mounted () {
+  mounted() {
     this.compVal = !!this.compVal
-  }
+  },
 }
 </script>

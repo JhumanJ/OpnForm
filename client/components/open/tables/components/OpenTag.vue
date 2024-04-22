@@ -1,6 +1,7 @@
 <template>
-  <span :id="opt"
-        class="py-1 px-2 mb-1 open-tag default mr-2 text-gray-700 dark:text-gray-300 text-xs whitespace-nowrap rounded-md transition-colors"
+  <span
+    :id="opt"
+    class="py-1 px-2 mb-1 open-tag default mr-2 text-gray-700 dark:text-gray-300 text-xs whitespace-nowrap rounded-md transition-colors"
   >
     {{ opt }}
   </span>
@@ -12,20 +13,18 @@ export default {
   props: {
     opt: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 
-  data () {
+  data() {
     return {}
   },
 
-  computed: {
-  },
-  mounted () {
-  },
+  computed: {},
+  mounted() {},
 
-  methods: {}
+  methods: {},
 }
 </script>
 
@@ -35,7 +34,8 @@ export default {
   &.gray {
     background-color: #e3e2e0;
   }
-  &.light-gray,&.default {
+  &.light-gray,
+  &.default {
     background-color: #e3e2e080;
   }
   &.brown {
@@ -69,7 +69,8 @@ export default {
     &.gray {
       background-color: #5a5a5a;
     }
-    &.light-gray,&.default {
+    &.light-gray,
+    &.default {
       background-color: #ffffff21;
     }
     &.brown {

@@ -1,44 +1,43 @@
 const { notify } = useNotification()
 
 export const useAlert = () => {
-
   function success(message, autoClose = 10000) {
     notify({
-      title: 'Success',
+      title: "Success",
       text: message,
-      type: 'success',
-      duration: autoClose
+      type: "success",
+      duration: autoClose,
     })
   }
 
   function error(message, autoClose = 10000) {
     notify({
-      title: 'Error',
+      title: "Error",
       text: message,
-      type: 'error',
-      duration: autoClose
+      type: "error",
+      duration: autoClose,
     })
   }
 
   function warning(message, autoClose = 10000) {
     notify({
-      title: 'Warning',
+      title: "Warning",
       text: message,
-      type: 'warning',
-      duration: autoClose
+      type: "warning",
+      duration: autoClose,
     })
   }
 
-  function confirm(message, success, failure = ()=>{}, autoClose = 10000) {
+  function confirm(message, success, failure = () => {}, autoClose = 10000) {
     notify({
-      title: 'Confirm',
+      title: "Confirm",
       text: message,
-      type: 'confirm',
+      type: "confirm",
       duration: autoClose,
       data: {
         success,
-        failure
-      }
+        failure,
+      },
     })
   }
 
@@ -46,6 +45,6 @@ export const useAlert = () => {
     success,
     error,
     warning,
-    confirm
+    confirm,
   }
 }

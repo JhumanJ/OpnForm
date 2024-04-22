@@ -1,5 +1,5 @@
-import { themes } from '~/lib/forms/form-themes.js'
-import { default as _has } from 'lodash/has'
+import { themes } from "~/lib/forms/form-themes.js"
+import { default as _has } from "lodash/has"
 
 export default {
   props: {
@@ -13,29 +13,33 @@ export default {
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: false },
     help: { type: String, default: null },
-    helpPosition: { type: String, default: 'below_input' },
+    helpPosition: { type: String, default: "below_input" },
     theme: { type: Object, default: () => themes.default },
-    color: { type: String, default: '#3B82F6' },
-    wrapperClass: { type: String, default: 'relative mb-3' }
+    color: { type: String, default: "#3B82F6" },
+    wrapperClass: { type: String, default: "relative mb-3" },
   },
 
-  data () {
+  data() {
     return {
-      content: this.value
+      content: this.value,
     }
   },
 
   computed: {
-    inputStyle () {
+    inputStyle() {
       return {
-        '--tw-ring-color': this.color
+        "--tw-ring-color": this.color,
       }
     },
-    hasValidation () {
-      return this.form !== null && this.form !== undefined && _has(this.form, 'errors')
+    hasValidation() {
+      return (
+        this.form !== null &&
+        this.form !== undefined &&
+        _has(this.form, "errors")
+      )
     },
     compVal: {
-      set (val) {
+      set(val) {
         if (this.form) {
           this.form[this.name] = val
         } else {
@@ -44,22 +48,22 @@ export default {
         if (this.hasValidation) {
           this.form.errors.clear(this.name)
         }
-        this.$emit('input', this.compVal)
+        this.$emit("input", this.compVal)
       },
-      get () {
+      get() {
         if (this.form) {
           return this.form[this.name]
         }
         return this.content
-      }
-    }
+      },
+    },
   },
 
   watch: {
-    value (val) {
+    value(val) {
       if (val !== this.compVal) {
         this.compVal = val
       }
-    }
-  }
+    },
+  },
 }

@@ -101,7 +101,7 @@ class FormSubmissionFormatter
             $fields = $fields->merge($removeFields);
         }
         $fields = $fields->filter(function ($field) {
-            return ! in_array($field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']);
+            return !in_array($field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']);
         })->values();
 
         $returnArray = [];
@@ -112,14 +112,14 @@ class FormSubmissionFormatter
             }
 
             if ($field['removed'] ?? false) {
-                $field['name'] = $field['name'].' (deleted)';
+                $field['name'] = $field['name'] . ' (deleted)';
             }
 
             // Add ID to avoid name clashes
-            $field['name'] = $field['name'].' ('.\Str::of($field['id']).')';
+            $field['name'] = $field['name'] . ' (' . \Str::of($field['id']) . ')';
 
             // If not present skip
-            if (! isset($data[$field['id']])) {
+            if (!isset($data[$field['id']])) {
                 if ($this->setEmptyForNoValue) {
                     $returnArray[$field['name']] = '';
                 }
@@ -128,16 +128,16 @@ class FormSubmissionFormatter
             }
 
             // If hide hidden fields
-            if (! $this->showHiddenFields) {
+            if (!$this->showHiddenFields) {
                 if (FormLogicPropertyResolver::isHidden($field, $this->idFormData ?? [])) {
                     continue;
                 }
             }
 
             if ($this->createLinks && $field['type'] == 'url') {
-                $returnArray[$field['name']] = '<a href="'.$data[$field['id']].'">'.$data[$field['id']].'</a>';
+                $returnArray[$field['name']] = '<a href="' . $data[$field['id']] . '">' . $data[$field['id']] . '</a>';
             } elseif ($this->createLinks && $field['type'] == 'email') {
-                $returnArray[$field['name']] = '<a href="mailto:'.$data[$field['id']].'">'.$data[$field['id']].'</a>';
+                $returnArray[$field['name']] = '<a href="mailto:' . $data[$field['id']] . '">' . $data[$field['id']] . '</a>';
             } elseif ($field['type'] == 'multi_select') {
                 $val = $data[$field['id']];
                 if ($this->outputStringsOnly && is_array($val)) {
@@ -184,29 +184,31 @@ class FormSubmissionFormatter
         $fields = $this->form->properties;
         $transformedFields = [];
         foreach ($fields as $field) {
-            if (! isset($field['id']) || ! isset($data[$field['id']])) {
+            if (!isset($field['id']) || !isset($data[$field['id']])) {
                 continue;
             }
 
             // If hide hidden fields
-            if (! $this->showHiddenFields) {
+            if (!$this->showHiddenFields) {
                 if (FormLogicPropertyResolver::isHidden($field, $this->idFormData)) {
                     continue;
                 }
             }
 
             if ($this->createLinks && $field['type'] == 'url') {
-                $field['value'] = '<a href="'.$data[$field['id']].'">'.$data[$field['id']].'</a>';
+                $field['value'] = '<a href="' . $data[$field['id']] . '">' . $data[$field['id']] . '</a>';
             } elseif ($this->createLinks && $field['type'] == 'email') {
-                $field['value'] = '<a href="mailto:'.$data[$field['id']].'">'.$data[$field['id']].'</a>';
+                $field['value'] = '<a href="mailto:' . $data[$field['id']] . '">' . $data[$field['id']] . '</a>';
             } elseif ($field['type'] == 'checkbox') {
                 $field['value'] = $data[$field['id']] ? 'Yes' : 'No';
             } elseif ($field['type'] == 'date') {
+                $dateFormat = ($field['date_format'] ?? 'dd/MM/yyyy') == 'dd/MM/yyyy' ? 'd/m/Y' : 'm/d/Y';
+                $dateFormat .= (isset($field['with_time']) && $field['with_time']) ? ' H:i' : '';
                 if (is_array($data[$field['id']])) {
-                    $field['value'] = isset($data[$field['id']][1]) ? (new Carbon($data[$field['id']][0]))->format('d/m/Y')
-                        .' - '.(new Carbon($data[$field['id']][1]))->format('d/m/Y') : (new Carbon($data[$field['id']][0]))->format('d/m/Y');
+                    $field['value'] = isset($data[$field['id']][1]) ? (new Carbon($data[$field['id']][0]))->format($dateFormat)
+                        . ' - ' . (new Carbon($data[$field['id']][1]))->format($dateFormat) : (new Carbon($data[$field['id']][0]))->format($dateFormat);
                 } else {
-                    $field['value'] = (new Carbon($data[$field['id']]))->format((isset($field['with_time']) && $field['with_time']) ? 'd/m/Y H:i' : 'd/m/Y');
+                    $field['value'] = (new Carbon($data[$field['id']]))->format($dateFormat);
                 }
             } elseif ($field['type'] == 'multi_select') {
                 $val = $data[$field['id']];
@@ -230,7 +232,7 @@ class FormSubmissionFormatter
                         return [
                             'unsigned_url' => route('open.forms.submissions.file', [$formId, $file]),
                             'signed_url' => $this->getFileUrl($formId, $file),
-                            'label' => \Str::limit($file, 20, '[...].'.end($splitText)),
+                            'label' => \Str::limit($file, 20, '[...].' . end($splitText)),
                         ];
                     })->toArray();
                 } else {
@@ -241,7 +243,6 @@ class FormSubmissionFormatter
                             'file_name' => $file,
                         ];
                     });
-
                 }
             } else {
                 if (is_array($data[$field['id']]) && $this->outputStringsOnly) {

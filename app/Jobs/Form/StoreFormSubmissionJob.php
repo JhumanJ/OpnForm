@@ -115,13 +115,14 @@ class StoreFormSubmissionJob implements ShouldQueue
         // Do required transformation per type (e.g. file uploads)
         foreach ($data as $answerKey => $answerValue) {
             $field = $properties->where('id', $answerKey)->first();
-            if (! $field) {
+            if (!$field) {
                 continue;
             }
 
             if (
                 ($field['type'] == 'url' && isset($field['file_upload']) && $field['file_upload'])
-                || $field['type'] == 'files') {
+                || $field['type'] == 'files'
+            ) {
                 if (is_array($answerValue)) {
                     $finalData[$field['id']] = [];
                     foreach ($answerValue as $file) {
@@ -143,12 +144,12 @@ class StoreFormSubmissionJob implements ShouldQueue
             }
 
             // For Singrature
-            if ($this->form->is_pro && $field['type'] == 'signature') {
+            if ($field['type'] == 'signature') {
                 $finalData[$field['id']] = $this->storeSignature($answerValue);
             }
 
             // For Phone
-            if ($field['type'] == 'phone_number' && $answerValue && ctype_alpha(substr($answerValue, 0, 2)) && (! isset($field['use_simple_text_input']) || ! $field['use_simple_text_input'])) {
+            if ($field['type'] == 'phone_number' && $answerValue && ctype_alpha(substr($answerValue, 0, 2)) && (!isset($field['use_simple_text_input']) || !$field['use_simple_text_input'])) {
                 $finalData[$field['id']] = substr($answerValue, 2);
             }
         }
@@ -161,7 +162,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     {
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
 
-        return Storage::exists($newPath.'/'.$value);
+        return Storage::exists($newPath . '/' . $value);
     }
 
     /**
@@ -179,10 +180,10 @@ class StoreFormSubmissionJob implements ShouldQueue
         }
 
         if (filter_var($value, FILTER_VALIDATE_URL) !== false && str_contains($value, parse_url(config('app.url'))['host'])) {  // In case of prefill we have full url so convert to s3
-            $fileName = basename($value);
-            $path = FormController::ASSETS_UPLOAD_PATH.'/'.$fileName;
+            $fileName = explode('?', basename($value))[0];
+            $path = FormController::ASSETS_UPLOAD_PATH . '/' . $fileName;
             $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
-            Storage::move($path, $newPath.'/'.$fileName);
+            Storage::move($path, $newPath . '/' . $fileName);
 
             return $fileName;
         }
@@ -194,13 +195,13 @@ class StoreFormSubmissionJob implements ShouldQueue
         $fileNameParser = StorageFileNameParser::parse($value);
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
-        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH.'/'.$fileNameParser->uuid;
-        if (! Storage::exists($fileName)) {
+        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . '/' . $fileNameParser->uuid;
+        if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;
         }
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
-        $completeNewFilename = $newPath.'/'.$fileNameParser->getMovedFileName();
+        $completeNewFilename = $newPath . '/' . $fileNameParser->getMovedFileName();
 
         \Log::debug('Moving file to permanent storage.', [
             'uuid' => $fileNameParser->uuid,
@@ -215,13 +216,13 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     private function storeSignature(?string $value)
     {
-        if ($value == null || ! isset(explode(',', $value)[1])) {
+        if ($value == null || !isset(explode(',', $value)[1])) {
             return null;
         }
 
-        $fileName = 'sign_'.(string) Str::uuid().'.png';
+        $fileName = 'sign_' . (string) Str::uuid() . '.png';
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
-        $completeNewFilename = $newPath.'/'.$fileName;
+        $completeNewFilename = $newPath . '/' . $fileName;
 
         Storage::put($completeNewFilename, base64_decode(explode(',', $value)[1]));
 
@@ -240,9 +241,9 @@ class StoreFormSubmissionJob implements ShouldQueue
             return isset($property['hidden'])
                 && isset($property['prefill'])
                 && FormLogicPropertyResolver::isHidden($property, $this->submissionData)
-                && ! is_null($property['prefill'])
-                && ! in_array($property['type'], ['files'])
-                && ! ($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
+                && !is_null($property['prefill'])
+                && !in_array($property['type'], ['files'])
+                && !($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
         })->each(function (array $property) use (&$formData) {
             if ($property['type'] === 'date' && isset($property['prefill_today']) && $property['prefill_today']) {
                 $formData[$property['id']] = now()->format((isset($property['with_time']) && $property['with_time']) ? 'Y-m-d H:i' : 'Y-m-d');

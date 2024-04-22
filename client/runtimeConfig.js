@@ -25,4 +25,5 @@ export default {
    * Used to authenticate that the requests are coming from the server - not from a client.
    */
   apiSecret: process.env.NUXT_API_SECRET || '',
+  privateApiBase: process.env.NUXT_PRIVATE_API_BASE || null,
 }
