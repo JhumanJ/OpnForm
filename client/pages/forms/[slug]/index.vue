@@ -207,6 +207,31 @@ useHead({
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm'
   },
-  script: [ { src: '/widgets/iframeResizer.contentWindow.min.js' } ]
+  link: pageMeta.value.page_favicon ? [
+    {
+      rel: 'icon', type: 'image/x-icon',
+      href: pageMeta.value.page_favicon
+    },
+    {
+      rel: 'apple-touch-icon',
+      type: 'image/png',
+      href: pageMeta.value.page_favicon
+    },
+    {
+      rel: 'shortcut icon',
+      href: pageMeta.value.page_favicon
+    }
+  ] : {},
+  meta: pageMeta.value.page_favicon ? [
+    {
+      name: 'apple-mobile-web-app-capable',
+      content: 'yes'
+    },
+    {
+      name: 'apple-mobile-web-app-status-bar-style',
+      content: 'black-translucent'
+    },
+  ] : {},
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>
