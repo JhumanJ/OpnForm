@@ -18,10 +18,13 @@
       name="help"
     >
       <InputHelp
-        v-if="help"
         :help="help"
         :help-classes="theme.default.help"
-      />
+      >
+        <template #after-help>
+          <slot name="bottom_after_help" />
+        </template>
+      </InputHelp>
     </slot>
     <slot />
 
@@ -30,7 +33,6 @@
       name="help"
     >
       <InputHelp
-        v-if="help"
         :help="help"
         :help-classes="theme.default.help"
       >

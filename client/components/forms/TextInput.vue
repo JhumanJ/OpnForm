@@ -29,7 +29,10 @@
       @keydown.enter.prevent="onEnterPress"
     >
 
-    <template #help>
+    <template
+      v-if="$slots.help"
+      #help
+    >
       <slot name="help" />
     </template>
 
@@ -42,7 +45,10 @@
       </small>
     </template>
 
-    <template #error>
+    <template
+      v-if="$slots.error"
+      #error
+    >
       <slot name="error" />
     </template>
   </input-wrapper>

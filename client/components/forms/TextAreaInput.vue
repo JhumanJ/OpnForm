@@ -23,6 +23,13 @@
     />
 
     <template
+      v-if="$slots.help"
+      #help
+    >
+      <slot name="help" />
+    </template>
+
+    <template
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
@@ -31,7 +38,10 @@
       </small>
     </template>
 
-    <template #error>
+    <template
+      v-if="$slots.error"
+      #error
+    >
       <slot name="error" />
     </template>
   </input-wrapper>

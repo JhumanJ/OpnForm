@@ -1,11 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import runtimeConfig from "./runtimeConfig";
-import {sentryVitePlugin} from "@sentry/vite-plugin";
-import sitemap from "./sitemap";
+import runtimeConfig from "./runtimeConfig"
+import {sentryVitePlugin} from "@sentry/vite-plugin"
+import sitemap from "./sitemap"
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: {enabled: true},
+    devtools: {enabled: false},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
