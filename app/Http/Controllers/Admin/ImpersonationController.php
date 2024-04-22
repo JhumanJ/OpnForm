@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Forms\Form;
 use App\Models\User;
 
 class ImpersonationController extends Controller
@@ -13,22 +12,10 @@ class ImpersonationController extends Controller
         $this->middleware('moderator');
     }
 
-    public function impersonate($identifier)
+    public function impersonate($userId)
     {
-        $user = null;
-        if (is_numeric($identifier)) {
-            $user = User::find($identifier);
-        } elseif (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-            $user = User::whereEmail($identifier)->first();
-        } else {
-            // Find by form slug
-            $form = Form::whereSlug($identifier)->first();
-            if ($form) {
-                $user = $form->creator;
-            }
-        }
-
-        if (! $user) {
+        $user = User::find($userId);
+        if (!$user) {
             return $this->error([
                 'message' => 'User not found.',
             ]);
@@ -38,7 +25,7 @@ class ImpersonationController extends Controller
             ]);
         }
 
-        \Log::warning('Impersonation started', [
+        \Log::warning(AdminController::ADMIN_LOG_PREFIX . 'Impersonation started', [
             'from_id' => auth()->id(),
             'from_email' => auth()->user()->email,
             'target_id' => $user->id,
