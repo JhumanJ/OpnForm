@@ -22,4 +22,5 @@ return [
         ],
     ],
 
+    'discount_coupon_id' => env('STRIPE_DISCOUNT_COUPON_ID', null),
 ];

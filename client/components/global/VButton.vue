@@ -146,6 +146,14 @@ export default {
           "ring-offset": "focus:ring-offset-gray-200",
           text: "text-gray-500 hover:text-white",
         }
+      } else if (this.color === "outline-red") {
+        return {
+          main: "bg-white border border-gray-300 text-red-700",
+          hover: "hover:bg-gray-100 hover:text-red-500",
+          ring: "focus:ring-gray-500",
+          "ring-offset": "focus:ring-offset-gray-200",
+          text: "text-gray-500",
+        }
       } else if (this.color === "red") {
         return {
           main: "bg-red-600",

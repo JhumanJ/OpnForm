@@ -75,7 +75,7 @@
     <h5 class="font-semibold mt-3">
       2. Actions
     </h5>
-    <select-input
+    <flat-select-input
       :key="resetKey"
       v-model="logic.actions"
       name="actions"
