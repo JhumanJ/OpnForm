@@ -190,4 +190,4 @@ it('can create form with custom scripts', function () {
             'title' => $form->title,
             'custom_code'  => null
         ]);
-});
+})->skip(true, 'Trialing custom script form cleaning disabled for now.');

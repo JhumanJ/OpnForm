@@ -21,7 +21,7 @@ export const useAuthStore = defineStore("auth", {
     // Stop admin impersonation
     stopImpersonating() {
       this.setToken(this.admin_token)
-      this.admin_token = null
+      this.setAdminToken(null)
     },
 
     setToken(token) {

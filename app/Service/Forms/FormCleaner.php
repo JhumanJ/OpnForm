@@ -36,7 +36,8 @@ class FormCleaner
     ];
 
     private array $formNonTrialingDefaults = [
-        'custom_code' => null,
+        // Custom code protection disabled for now
+        // 'custom_code' => null,
     ];
 
     private array $fieldDefaults = [
