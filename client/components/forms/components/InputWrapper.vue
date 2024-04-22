@@ -18,10 +18,14 @@
       name="help"
     >
       <InputHelp
-        v-if="help"
+        v-if="help || showCharLimit"
         :help="help"
         :help-classes="theme.default.help"
-      />
+      >
+      <template #after-help>
+          <slot name="bottom_after_help" />
+        </template>
+    </InputHelp>
     </slot>
     <slot />
 
@@ -30,7 +34,7 @@
       name="help"
     >
       <InputHelp
-        v-if="help"
+        v-if="help || showCharLimit"
         :help="help"
         :help-classes="theme.default.help"
       >
@@ -61,6 +65,7 @@ defineProps({
   theme: { type: Object, required: true },
   wrapperClass: { type: String, required: false },
   inputStyle: { type: Object, required: false },
+  showCharLimit: { type: Boolean, default: false },
   help: { type: String, required: false },
   helpPosition: { type: String, default: "below_input" },
   uppercaseLabels: { type: Boolean, default: true },

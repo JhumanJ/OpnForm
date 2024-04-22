@@ -16,6 +16,7 @@ export const inputProps = {
   placeholder: { type: String, default: null },
   uppercaseLabels: { type: Boolean, default: false },
   hideFieldName: { type: Boolean, default: false },
+  showCharLimit: { type: Boolean, default: false },
   help: { type: String, default: null },
   helpPosition: { type: String, default: "below_input" },
   color: { type: String, default: "#3B82F6" },
