@@ -80,6 +80,9 @@
         <cancel-subscription
           :user="userInfo"
         />
+        <billing-email
+          :user="userInfo"
+        />
       </div>
     </div>
   </div>

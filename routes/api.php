@@ -181,7 +181,13 @@ Route::group(['middleware' => 'auth:api'], function () {
             'cancellation-subscription',
             [\App\Http\Controllers\Admin\AdminController::class, 'cancelSubscription']
         );
+
+        Route::group(['prefix'  => 'billing'], function(){
+            Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
+            Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
+        });
     });
+
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
