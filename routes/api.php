@@ -185,6 +185,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::group(['prefix'  => 'billing'], function(){
             Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
             Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
+            Route::get('{userId}/subscriptions', [\App\Http\Controllers\Admin\BillingController::class, 'getSubscriptions']);
         });
     });
 

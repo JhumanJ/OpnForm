@@ -37,6 +37,7 @@ onMounted(() => {
     loadingBillingEmail.value = true
     opnFetch("/moderator/billing/" + props.user.id + "/email",).then(data => {
         loadingBillingEmail.value = false
+        userCreated.value = true
         form.billing_email = data.billing_email
     }).catch(error => {
         console.log(error)

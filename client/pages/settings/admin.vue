@@ -83,7 +83,10 @@
         <billing-email
           :user="userInfo"
         />
-      </div>
+        <user-subscriptions :user="userInfo" class="col-span-2"/>
+      </div>   
+      
+      
     </div>
   </div>
 </template>
