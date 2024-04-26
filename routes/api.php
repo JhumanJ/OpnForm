@@ -187,19 +187,18 @@ Route::group(['middleware' => 'auth:api'], function () {
             [\App\Http\Controllers\Admin\AdminController::class, 'sendPasswordResetEmail']
         );
 
-        Route::group(['prefix'  => 'billing'], function(){
+        Route::group(['prefix'  => 'billing'], function () {
             Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
             Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
             Route::get('{userId}/subscriptions', [\App\Http\Controllers\Admin\BillingController::class, 'getSubscriptions']);
             Route::get('{userId}/payments', [\App\Http\Controllers\Admin\BillingController::class, 'getPayments']);
         });
-        
-        Route::group(['prefix' => 'forms'], function(){
+
+        Route::group(['prefix' => 'forms'], function () {
             Route::get('{userId}/deleted-forms', [\App\Http\Controllers\Admin\FormController::class, 'getDeletedForms']);
             Route::patch('{slug}/restore', [\App\Http\Controllers\Admin\FormController::class, 'restoreDeletedForm']);
         });
     });
-
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

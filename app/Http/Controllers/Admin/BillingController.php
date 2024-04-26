@@ -62,7 +62,7 @@ class BillingController extends Controller
                 "billing_email" => null
             ]);
         }
-        $subscriptions = $user->subscriptions()->latest()->take(100)->get()->map(function($subscription) use ($user){
+        $subscriptions = $user->subscriptions()->latest()->take(100)->get()->map(function ($subscription) use ($user) {
             return  [
                 "id" => $subscription->id,
                 "stripe_id" => $subscription->stripe_id,
@@ -87,7 +87,7 @@ class BillingController extends Controller
             ]);
         }
         $payments = $user->invoices();
-        $payments = $payments->map(function($payment) use ($user){
+        $payments = $payments->map(function ($payment) use ($user) {
             return  [
                 "id" => $payment->id,
                 "amount_paid" => ($payment->amount_paid),
