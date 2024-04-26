@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BillingController extends Controller
@@ -61,7 +62,7 @@ class BillingController extends Controller
                 "billing_email" => null
             ]);
         }
-        $subscriptions = $user->subscriptions->map(function($subscription) use ($user){
+        $subscriptions = $user->subscriptions()->latest()->take(100)->get()->map(function($subscription) use ($user){
             return  [
                 "id" => $subscription->id,
                 "stripe_id" => $subscription->stripe_id,
@@ -73,6 +74,31 @@ class BillingController extends Controller
         });
         return $this->success([
             'subscriptions'  =>  $subscriptions,
+        ]);
+    }
+
+    public function getPayments($userId)
+    {
+        $user  = User::find($userId);
+        if (!$user->hasStripeId()) {
+            return $this->error([
+                "message" => "Stripe user not created",
+                "billing_email" => null
+            ]);
+        }
+        $payments = $user->invoices();
+        $payments = $payments->map(function($payment) use ($user){
+            return  [
+                "id" => $payment->id,
+                "amount_paid" => ($payment->amount_paid),
+                "name" => ucfirst($payment->account_name),
+                "creation_date" => Carbon::parse($payment->created)->format("Y-m-d H:i:s"),
+                "status" => $payment->status,
+            ];
+        });
+        return $this->success([
+            'payments'  =>  $payments,
+            'i' => $user->invoices()
         ]);
     }
 

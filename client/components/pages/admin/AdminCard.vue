@@ -2,7 +2,7 @@
   <div class="w-full bg-white border border-gray-200 rounded-lg shadow flex flex-col">
    <collapse
     v-model="show"
-    class="p-2 w-full border-b"
+    class="p-2 w-full"
   >
   <template  #title>
     <div class="w-full flex  px-4 py-2">

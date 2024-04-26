@@ -67,6 +67,7 @@
         class="flex gap-1 my-4"
       >
         <impersonate-user :user="userInfo" />
+        <send-password-reset-email :user="userInfo" />
       </div>
       <div
         class="w-full grid gap-2 grid-cols-1 lg:grid-cols-2"
@@ -84,6 +85,8 @@
           :user="userInfo"
         />
         <user-subscriptions :user="userInfo" class="col-span-2"/>
+        <user-payments :user="userInfo" class="col-span-2"/>
+        <deleted-forms :user="userInfo" class="col-span-2"/>
       </div>   
       
       

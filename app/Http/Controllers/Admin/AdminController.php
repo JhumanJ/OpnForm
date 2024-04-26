@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Forms\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
 
 class AdminController extends Controller
@@ -150,6 +151,23 @@ class AdminController extends Controller
 
         return $this->success([
             "message" => "The subscription cancellation has been successfully completed."
+        ]);
+    }
+
+    public function sendPasswordResetEmail(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+
+        $status = Password::sendResetLink(['email' => $user->email]);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return $this->success([
+                'message' => " nnn Password reset email has been sent to the user's email address"
+            ]);
+        }
+
+        return $this->success([
+            'message' => "Password reset email has been sent to the user's email address"
         ]);
     }
 }
