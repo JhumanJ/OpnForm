@@ -84,12 +84,19 @@
         <billing-email
           :user="userInfo"
         />
-        <user-subscriptions :user="userInfo" class="col-span-2"/>
-        <user-payments :user="userInfo" class="col-span-2"/>
-        <deleted-forms :user="userInfo" class="col-span-2"/>
-      </div>   
-      
-      
+        <user-subscriptions
+          :user="userInfo"
+          class="col-span-2"
+        />
+        <user-payments
+          :user="userInfo"
+          class="col-span-2"
+        />
+        <deleted-forms
+          :user="userInfo"
+          class="col-span-2"
+        />
+      </div>
     </div>
   </div>
 </template>

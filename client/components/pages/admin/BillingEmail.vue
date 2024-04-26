@@ -1,23 +1,45 @@
 <template>
-    <AdminCard title="Billing  email" icon="heroicons:envelope-16-solid">
-        <p class="text-xs text-gray-500">
-            You can update the billing email of the subscriber.
-        </p>
-        <div v-if="loading" class="text-gray-600 dark:text-gray-400">
-            <Loader class="h-6 w-6 mx-auto m-10" />
-        </div>
-        <form 
-            v-else
-            class="mt-6 space-y-6 flex flex-col justify-between" @submit.prevent="updateUserBillingEmail">
-            <div>
-                <text-input name="billing_email" :form="form" label="Billing email" native-type="email" :required="true"
-                    help="Billing email" placeholder="Billing email" :disabled="!userCreated"/>
-                <v-button :loading="loading" type="success" class="w-full" color="white" :disabled="!userCreated">
-                    Update billing email
-                </v-button>
-            </div>
-        </form>
-    </AdminCard>
+  <AdminCard
+    title="Billing  email"
+    icon="heroicons:envelope-16-solid"
+  >
+    <p class="text-xs text-gray-500">
+      You can update the billing email of the subscriber.
+    </p>
+    <div
+      v-if="loading"
+      class="text-gray-600 dark:text-gray-400"
+    >
+      <Loader class="h-6 w-6 mx-auto m-10" />
+    </div>
+    <form 
+      v-else
+      class="mt-6 space-y-6 flex flex-col justify-between"
+      @submit.prevent="updateUserBillingEmail"
+    >
+      <div>
+        <text-input
+          name="billing_email"
+          :form="form"
+          label="Billing email"
+          native-type="email"
+          :required="true"
+          help="Billing email"
+          placeholder="Billing email"
+          :disabled="!userCreated"
+        />
+        <v-button
+          :loading="loading"
+          type="success"
+          class="w-full"
+          color="white"
+          :disabled="!userCreated"
+        >
+          Update billing email
+        </v-button>
+      </div>
+    </form>
+  </AdminCard>
 </template>
 
 <script setup>

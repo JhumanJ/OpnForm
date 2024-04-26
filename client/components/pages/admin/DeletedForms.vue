@@ -1,21 +1,43 @@
 <template>
-    <AdminCard title="Deleted forms" icon="heroicons:trash-16-solid">
-        <span class="cursor-pointer text-xs p-1 px-2 border rounded shadow" @click="getDeletedForms">
-            test
-        </span>
-        <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-            :progress="{ color: 'primary', animation: 'carousel' }"
-            :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }" :columns="columns"
-            :rows="rows" class="-mx-6">
-            <template #actions-data="{ row }">
-                <VButton :loading="restoringForm" native-type="button" @click.prevent="restoreForm(row.slug)"
-                    size="small" color="white">Restore</VButton>
-            </template>
-        </UTable>
-        <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-            <UPagination v-model="page" :page-count="pageCount" :total="forms.length" />
-        </div>
-    </AdminCard>
+  <AdminCard
+    title="Deleted forms"
+    icon="heroicons:trash-16-solid"
+  >
+    <span
+      class="cursor-pointer text-xs p-1 px-2 border rounded shadow"
+      @click="getDeletedForms"
+    >
+      test
+    </span>
+    <UTable
+      :loading="loading"
+      :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      :progress="{ color: 'primary', animation: 'carousel' }"
+      :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
+      :columns="columns"
+      :rows="rows"
+      class="-mx-6"
+    >
+      <template #actions-data="{ row }">
+        <VButton
+          :loading="restoringForm"
+          native-type="button"
+          size="small"
+          color="white"
+          @click.prevent="restoreForm(row.slug)"
+        >
+          Restore
+        </VButton>
+      </template>
+    </UTable>
+    <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+      <UPagination
+        v-model="page"
+        :page-count="pageCount"
+        :total="forms.length"
+      />
+    </div>
+  </AdminCard>
 </template>
 
 <script setup>
