@@ -160,9 +160,9 @@ class AdminController extends Controller
 
         $status = Password::sendResetLink(['email' => $user->email]);
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return $this->success([
-                'message' => "Password reset email has been sent to the user's email address"
+        if ($status !== Password::RESET_LINK_SENT) {
+            return $this->error([
+                'message' => "Password reset email failed to send"
             ]);
         }
 

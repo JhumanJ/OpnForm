@@ -25,7 +25,7 @@ class FormController extends Controller
 
     public function restoreDeletedForm(string $slug)
     {
-        $form = Form::withTrashed()->whereSlug($slug)->firstOrFail();
+        $form = Form::onlyTrashed()->whereSlug($slug)->firstOrFail();
         $form->restore();
         return  $this->success(['message' => 'Form restored successfully']);
     }

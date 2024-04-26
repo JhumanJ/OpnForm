@@ -22,7 +22,6 @@ class BillingController extends Controller
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
-                "billing_email" => null
             ]);
         }
 
@@ -45,7 +44,6 @@ class BillingController extends Controller
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
-                "billing_email" => null
             ]);
         }
         $user->updateStripeCustomer(['email' => $request->billing_email]);
@@ -59,7 +57,6 @@ class BillingController extends Controller
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
-                "billing_email" => null
             ]);
         }
         $subscriptions = $user->subscriptions()->latest()->take(100)->get()->map(function ($subscription) use ($user) {
@@ -83,7 +80,6 @@ class BillingController extends Controller
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
-                "billing_email" => null
             ]);
         }
         $payments = $user->invoices();
@@ -98,19 +94,6 @@ class BillingController extends Controller
         });
         return $this->success([
             'payments'  =>  $payments,
-            'i' => $user->invoices()
         ]);
-    }
-
-    private function getSubscriptionName(string $stripeProductId)
-    {
-        $config = App::environment() == 'production' ? config('pricing.production') : config('pricing.test');
-        foreach ($config as $plan => $data) {
-            if ($stripeProductId == $config[$plan]['product_id']) {
-                return $plan;
-            }
-        }
-
-        return 'default';
     }
 }
