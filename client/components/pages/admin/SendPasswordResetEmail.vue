@@ -28,12 +28,12 @@ const resetPassword = ()=>{
             form
                 .patch('/moderator/send-password-reset-email')
                 .then(async (data) => {
-                    loading = false
+                    loading.value = false
                     useAlert().success(data.message)
                 })
                 .catch((error) => {
                     useAlert().error(error.data.message)
-                    loading = false
+                    loading.value = false
                 })
         })
 }
