@@ -3,12 +3,6 @@
     title="Deleted forms"
     icon="heroicons:trash-16-solid"
   >
-    <span
-      class="cursor-pointer text-xs p-1 px-2 border rounded shadow"
-      @click="getDeletedForms"
-    >
-      test
-    </span>
     <UTable
       :loading="loading"
       :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
