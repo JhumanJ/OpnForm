@@ -16,7 +16,8 @@
         <input
           v-model="compVal"
           type="range"
-          class="w-full mt-3"
+          class="w-full mt-3 slider"
+          :style="{ '--thumb-color': color }"
           :disabled="disabled"
           :min="minSlider"
           :max="maxSlider"
@@ -97,3 +98,29 @@ export default {
   },
 }
 </script>
+
+<style>
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height:  5px;
+  margin: 20px 0px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+/* Styles for the thumb using CSS variable */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--thumb-color);
+  cursor: pointer;
+}
+
+</style>
