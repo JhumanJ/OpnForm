@@ -47,7 +47,7 @@
     </NuxtLayout>
     <ToolsStopImpersonation />
 
-    <Notifications />
+    <NotificationsWrapper />
     <feature-base />
   </div>
 </template>

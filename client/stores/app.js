@@ -5,6 +5,10 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     layout: "default",
     navbarHidden: false,
+    crisp: {
+      chatOpened: false,
+      hidden: false
+    },
 
     // App Loader
     loader: {
