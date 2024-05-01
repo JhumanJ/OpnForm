@@ -14,7 +14,7 @@
     >
       <template #id-data="{ row }">
         <a
-          :href="'https://dashboard.stripe.com/in/' + row.id"
+          :href="'https://dashboard.stripe.com/invoices/' + row.id"
           target="_blank"
           class="text-xs select-all bg-purple-50 border-purple-200 text-purple-500 rounded-md px-2 py-1 border"
         >
@@ -37,7 +37,9 @@
         </span>
       </template>
     </UTable>
-    <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <div 
+    v-if="payments?.length > pageCount"
+    class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
       <UPagination
         v-model="page"
         :page-count="pageCount"

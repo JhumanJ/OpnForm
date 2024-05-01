@@ -28,5 +28,5 @@ const props = defineProps({
   icon: { type: String, required: true }
 })
 
-const show = ref(false)
+const show = ref(true)
 </script>

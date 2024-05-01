@@ -42,9 +42,30 @@ class AdminController extends Controller
                 'message' => 'You cannot fetch an admin.'
             ]);
         }
-
+        $workspaces = $user->workspaces()
+            ->withCount('forms')
+            ->get()
+            ->map(function ($workspace) {
+                $plan = 'free';
+                if ($workspace->is_trialing) {
+                    $plan = 'trialing';
+                }
+                if ($workspace->is_pro) {
+                    $plan = 'pro';
+                }
+                if ($workspace->is_enterprise) {
+                    $plan = 'enterprise';
+                }
+                return [
+                    'id' => $workspace->id,
+                    'name' => $workspace->name,
+                    'plan' => $plan,
+                    'forms_count' => $workspace->forms_count
+                ];
+            });
         return $this->success([
-            'user' => $user
+            'user' => $user,
+            'workspaces' => $workspaces
         ]);
     }
 
