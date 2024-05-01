@@ -15,7 +15,7 @@ const props = defineProps({
     user: { type: Object, required: true }
 })
 
-let loading = ref(false)
+const loading = ref(false)
 const form = useForm({
   user_id: props.user.id
 })
