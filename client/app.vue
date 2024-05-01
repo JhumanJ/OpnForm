@@ -125,6 +125,7 @@ export default {
   },
 
   mounted() {
+    useCrisp().onCrispInit()
     useCrisp().showChat()
   },
 
