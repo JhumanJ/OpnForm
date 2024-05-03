@@ -188,12 +188,10 @@ export default {
     },
 
     getUserPlan(workspaces) {
-      if (workspaces.filter(w => w.plan == 'pro').length) {
-        this.userPlan = 'pro'
-      }
-
-      if (workspaces.filter(w => w.plan == 'enterprise').length) {
-        this.userPlan = 'enterprise'
+      if (workspaces.some(w => w.plan === 'enterprise')) {
+        this.userPlan = 'enterprise';
+      } else if (workspaces.some(w => w.plan === 'pro')) {
+        this.userPlan = 'pro';
       }
     }
   }
