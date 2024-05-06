@@ -13,6 +13,7 @@
         class="cursor-pointer overflow-hidden"
         :class="inputClasses"
         :disabled="props.disabled"
+        ref="datepicker"
       >
         <div class="flex items-center min-w-0">
           <div
@@ -93,7 +94,7 @@ import InputWrapper from './components/InputWrapper.vue'
 import { getCurrentInstance } from 'vue'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
-import { format } from 'date-fns'
+import { format, startOfDay, endOfDay } from 'date-fns'
 import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
 
 const props = defineProps({
@@ -145,13 +146,13 @@ const inputClasses = computed(() => {
 
 const minDate = computed(() => {
   if (props.disablePastDates) {
-    return new Date()
+    return startOfDay(new Date())
   }
   return undefined
 })
 const maxDate = computed(() => {
   if (props.disableFutureDates) {
-    return new Date()
+    return endOfDay(new Date())
   }
   return undefined
 })
@@ -168,8 +169,7 @@ const handleCompValChange = () => {
 
 const setInputColor = () => {
   if (datepicker.value) {
-    const dateInput = datepicker.value.$el.getElementsByTagName('input')[0]
-    dateInput.style.setProperty('--tw-ring-color', props.color)
+    datepicker.value.style.setProperty('--tw-ring-color', props.color)
   }
 }
 
