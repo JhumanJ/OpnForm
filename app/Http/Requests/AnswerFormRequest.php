@@ -214,9 +214,9 @@ class AnswerFormRequest extends FormRequest
     private function getRulesForDate($property)
     {
         if (isset($property['disable_past_dates']) && $property['disable_past_dates']) {
-            return ['date', 'after_or_equal:today'];
+            return ['date', 'after:yesterday'];
         } elseif (isset($property['disable_future_dates']) && $property['disable_future_dates']) {
-            return ['date', 'before_or_equal:today'];
+            return ['date', 'before:tomorrow'];
         }
 
         return ['date'];
