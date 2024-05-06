@@ -45,7 +45,7 @@ class BillingController extends Controller
                 "message" => "Stripe user not created",
             ]);
         }
-        AdminController::log('Update billing email',[
+        AdminController::log('Update billing email', [
             'user_id' => $user->id,
             'stripe_id' => $user->stripe_id,
             'moderator_id' => auth()->id()
