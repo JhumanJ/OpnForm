@@ -1,5 +1,6 @@
 <template>
   <AdminCard
+    v-if="props.user.stripe_id"
     title="Extend trial"
     icon="heroicons:calendar-16-solid"
   >
@@ -47,6 +48,7 @@ const form = useForm({
 })
 
 const extendTrial = () => {
+  if (!props.user.stripe_id) return
   loading = true
   form
     .patch('/moderator/extend-trial')

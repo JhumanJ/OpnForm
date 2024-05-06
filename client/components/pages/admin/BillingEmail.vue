@@ -1,6 +1,7 @@
 <template>
   <AdminCard
-    title="Billing  email"
+    v-if="props.user.stripe_id"
+    title="Billing email"
     icon="heroicons:envelope-16-solid"
   >
     <p class="text-xs text-gray-500">
@@ -12,7 +13,7 @@
     >
       <Loader class="h-6 w-6 mx-auto m-10" />
     </div>
-    <form 
+    <form
       v-else
       class="mt-6 space-y-6 flex flex-col justify-between"
       @submit.prevent="updateUserBillingEmail"
@@ -56,6 +57,7 @@ const form = useForm({
 })
 
 onMounted(() => {
+  if (!props.user.stripe_id) return
     loadingBillingEmail.value = true
     opnFetch("/moderator/billing/" + props.user.id + "/email",).then(data => {
         loadingBillingEmail.value = false

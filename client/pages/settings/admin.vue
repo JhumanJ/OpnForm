@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-8">
     <div
       v-if="userInfo"
       class="flex gap-2 items-center flex-wrap"
@@ -140,9 +140,6 @@ export default {
   }),
 
   computed: {
-    isAdmin() {
-      return this.user.admin
-    },
     userPlanStyles() {
       switch (this.userPlan) {
         case 'pro':
@@ -164,6 +161,10 @@ export default {
     }
     if (params.user_id) {
       this.fetchUserForm.identifier = params.user_id
+    }
+    console.log(this.fetchUserForm)
+    if (this.fetchUserForm.identifier) {
+      this.fetchUser()
     }
   },
 
@@ -189,9 +190,9 @@ export default {
 
     getUserPlan(workspaces) {
       if (workspaces.some(w => w.plan === 'enterprise')) {
-        this.userPlan = 'enterprise';
+        this.userPlan = 'enterprise'
       } else if (workspaces.some(w => w.plan === 'pro')) {
-        this.userPlan = 'pro';
+        this.userPlan = 'pro'
       }
     }
   }

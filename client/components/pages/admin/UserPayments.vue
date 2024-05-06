@@ -1,5 +1,6 @@
 <template>
   <AdminCard
+    v-if="props.user.stripe_id"
     title="Payments"
     icon="heroicons:currency-dollar-16-solid"
   >
@@ -26,7 +27,7 @@
         </a>
       </template>
       <template #amount_paid-data="{ row }">
-        <span class="font-semibold">${{ parseFloat(row.amount_paid/100).toFixed(2) }}</span>
+        <span class="font-semibold">${{ parseFloat(row.amount_paid / 100).toFixed(2) }}</span>
       </template>
       <template #status-data="{ row }">
         <span
@@ -37,9 +38,10 @@
         </span>
       </template>
     </UTable>
-    <div 
-    v-if="payments?.length > pageCount"
-    class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <div
+      v-if="payments?.length > pageCount"
+      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+    >
       <UPagination
         v-model="page"
         :page-count="pageCount"
@@ -52,7 +54,7 @@
 <script setup>
 
 const props = defineProps({
-    user: { type: Object, required: true }
+  user: {type: Object, required: true}
 })
 
 const loading = ref(true)
@@ -64,40 +66,41 @@ const rows = computed(() => {
   return payments.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
 })
 onMounted(() => {
-    getPayments()
+  getPayments()
 })
 
 const getPayments = () => {
-    loading.value = true
-    opnFetch("/moderator/billing/" + props.user.id + "/payments",).then(data => {
-        loading.value = false
-        payments.value = data.payments
-    }).catch(error => {
-        useAlert().error(error.data.message)
-        loading.value = false
-    })
+  if (!props.user.stripe_id) return
+  loading.value = true
+  opnFetch("/moderator/billing/" + props.user.id + "/payments",).then(data => {
+    loading.value = false
+    payments.value = data.payments
+  }).catch(error => {
+    useAlert().error(error.data.message)
+    loading.value = false
+  })
 }
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+  key: 'id',
+  label: 'ID'
 }, {
-    key: 'amount_paid',
-    label: 'Amount paid',
-    sortable: true
+  key: 'amount_paid',
+  label: 'Amount paid',
+  sortable: true
 }, {
-    key: 'name',
-    label: 'Name',
-    sortable: true
+  key: 'name',
+  label: 'Name',
+  sortable: true
 }, {
-    key: 'status',
-    label: 'Status',
-    sortable: true
+  key: 'status',
+  label: 'Status',
+  sortable: true
 }, {
-    key: 'creation_date',
-    label: 'Creation date',
-    sortable: true
+  key: 'creation_date',
+  label: 'Creation date',
+  sortable: true
 }]
 
 </script>

@@ -1,5 +1,6 @@
 <template>
   <AdminCard
+    v-if="props.user.stripe_id"
     title="Subscriptions"
     icon="heroicons:credit-card-16-solid"
   >
@@ -34,9 +35,10 @@
         </span>
       </template>
     </UTable>
-    <div 
+    <div
       v-if="subscriptions?.length > pageCount"
-      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+    >
       <UPagination
         v-model="page"
         :page-count="pageCount"
@@ -65,6 +67,7 @@ onMounted(() => {
 })
 
 const getSubscriptions = () => {
+    if (!props.user.stripe_id) return
     loading.value = true
     opnFetch("/moderator/billing/" + props.user.id + "/subscriptions",).then(data => {
         loading.value = false
