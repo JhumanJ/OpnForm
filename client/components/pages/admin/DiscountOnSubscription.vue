@@ -1,5 +1,6 @@
 <template>
   <AdminCard
+    v-if="props.user.stripe_id"
     title="Apply discount"
     icon="heroicons:tag-20-solid"
   >
@@ -36,6 +37,7 @@ const form = useForm({
 })
 
 const applyDiscount = () => {
+  if (!props.user.stripe_id) return
   loading = true
   form
     .patch('/moderator/apply-discount')

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="mb-8">
     <div
       v-if="userInfo"
-      class="flex gap-2 items-center"
+      class="flex gap-2 items-center flex-wrap"
     >
       <h1 class="text-xl">
         {{ userInfo.name }}
@@ -25,6 +25,12 @@
         />
         {{ userInfo.stripe_id }}
       </a>
+      <div
+        v-if="userPlan"
+        :class="userPlanStyles"
+      >
+        {{ userPlan }}
+      </div>
     </div>
     <h3
       v-else
@@ -67,6 +73,7 @@
         class="flex gap-1 my-4"
       >
         <impersonate-user :user="userInfo" />
+        <send-password-reset-email :user="userInfo" />
       </div>
       <div
         class="w-full grid gap-2 grid-cols-1 lg:grid-cols-2"
@@ -80,6 +87,24 @@
         <cancel-subscription
           :user="userInfo"
         />
+        <billing-email
+          :user="userInfo"
+        />
+        <user-workspaces
+          :user="userInfo"
+        />
+        <user-subscriptions
+          :user="userInfo"
+          class="lg:col-span-2"
+        />
+        <user-payments
+          :user="userInfo"
+          class="lg:col-span-2"
+        />
+        <deleted-forms
+          :user="userInfo"
+          class="lg:col-span-2"
+        />
       </div>
     </div>
   </div>
@@ -89,7 +114,7 @@
 import { computed } from 'vue'
 
 export default {
-  setup () {
+  setup() {
     useOpnSeoMeta({
       title: 'Admin'
     })
@@ -107,6 +132,7 @@ export default {
 
   data: () => ({
     userInfo: null,
+    userPlan: 'free',
     fetchUserForm: useForm({
       identifier: ''
     }),
@@ -114,12 +140,19 @@ export default {
   }),
 
   computed: {
-    isAdmin () {
-      return this.user.admin
+    userPlanStyles() {
+      switch (this.userPlan) {
+        case 'pro':
+          return 'capitalize text-xs select-all bg-green-50 rounded-md px-2 py-1 border border-green-200 text-green-500'
+        case 'enterprise':
+          return 'capitalize text-xs select-all bg-blue-50 rounded-md px-2 py-1 border border-blue-200  text-blue-500'
+        default:
+          return 'capitalize text-xs select-all bg-gray-50 rounded-md px-2 py-1 border'
+      }
     }
   },
 
-  mounted () {
+  mounted() {
     // Shortcut link to impersonate users
     const urlSearchParams = new URLSearchParams(window.location.search)
     const params = Object.fromEntries(urlSearchParams.entries())
@@ -129,10 +162,13 @@ export default {
     if (params.user_id) {
       this.fetchUserForm.identifier = params.user_id
     }
+    if (this.fetchUserForm.identifier) {
+      this.fetchUser()
+    }
   },
 
   methods: {
-    async fetchUser () {
+    async fetchUser() {
       if (!this.fetchUserForm.identifier) {
         this.useAlert.error('Identifier is required.')
         return
@@ -141,13 +177,22 @@ export default {
       this.loading = true
       opnFetch(`/moderator/fetch-user/${encodeURI(this.fetchUserForm.identifier)}`).then(async (data) => {
         this.loading = false
-        this.userInfo = data.user
+        this.userInfo = { ...data.user, workspaces: data.workspaces }
+        this.getUserPlan(data.workspaces)
         this.useAlert.success(`User Fetched: ${this.userInfo.name}`)
       })
         .catch((error) => {
           this.useAlert.error(error.data.message)
           this.loading = false
         })
+    },
+
+    getUserPlan(workspaces) {
+      if (workspaces.some(w => w.plan === 'enterprise')) {
+        this.userPlan = 'enterprise'
+      } else if (workspaces.some(w => w.plan === 'pro')) {
+        this.userPlan = 'pro'
+      }
     }
   }
 }
