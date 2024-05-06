@@ -162,7 +162,6 @@ export default {
     if (params.user_id) {
       this.fetchUserForm.identifier = params.user_id
     }
-    console.log(this.fetchUserForm)
     if (this.fetchUserForm.identifier) {
       this.fetchUser()
     }

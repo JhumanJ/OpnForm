@@ -64,7 +64,6 @@ onMounted(() => {
         userCreated.value = true
         form.billing_email = data.billing_email
     }).catch(error => {
-        console.log(error)
         loadingBillingEmail.value = false
         userCreated.value = false
     })
