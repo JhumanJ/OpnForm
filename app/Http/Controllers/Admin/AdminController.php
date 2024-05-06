@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Forms\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
 
 class AdminController extends Controller
@@ -41,9 +42,30 @@ class AdminController extends Controller
                 'message' => 'You cannot fetch an admin.'
             ]);
         }
-
+        $workspaces = $user->workspaces()
+            ->withCount('forms')
+            ->get()
+            ->map(function ($workspace) {
+                $plan = 'free';
+                if ($workspace->is_trialing) {
+                    $plan = 'trialing';
+                }
+                if ($workspace->is_pro) {
+                    $plan = 'pro';
+                }
+                if ($workspace->is_enterprise) {
+                    $plan = 'enterprise';
+                }
+                return [
+                    'id' => $workspace->id,
+                    'name' => $workspace->name,
+                    'plan' => $plan,
+                    'forms_count' => $workspace->forms_count
+                ];
+            });
         return $this->success([
-            'user' => $user
+            'user' => $user,
+            'workspaces' => $workspaces
         ]);
     }
 
@@ -77,7 +99,7 @@ class AdminController extends Controller
             'coupon' => $couponId
         ]);
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Applying NGO/Student discount to sub', [
+        self::log('Applying NGO/Student discount to sub', [
             'user_id' => $user->id,
             'subcription_id' => $subscription->id,
             'coupon_id' => $couponId,
@@ -105,7 +127,7 @@ class AdminController extends Controller
         $trialEndDate = now()->addDays($request->get('number_of_day'));
         $subscription->extendTrial($trialEndDate);
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Trial extended', [
+        self::log('Trial extended', [
             'user_id' => $user->id,
             'subcription_id' => $subscription->id,
             'nb_days' => $request->get('number_of_day'),
@@ -140,7 +162,7 @@ class AdminController extends Controller
         $subscription = $activeSubscriptions->first();
         $subscription->cancel();
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Cancel Subscription', [
+        self::log('Cancel Subscription', [
             'user_id' => $user->id,
             'cancel_reason' => $request->get('cancellation_reason'),
             'moderator_id' => auth()->id(),
@@ -151,5 +173,32 @@ class AdminController extends Controller
         return $this->success([
             "message" => "The subscription cancellation has been successfully completed."
         ]);
+    }
+
+    public function sendPasswordResetEmail(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+
+        $status = Password::sendResetLink(['email' => $user->email]);
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            return $this->error([
+                'message' => "Password reset email failed to send"
+            ]);
+        }
+
+        self::log('Sent password reset email', [
+            'user_id' => $user->id,
+            'moderator_id' => auth()->id(),
+        ]);
+
+        return $this->success([
+            'message' => "Password reset email has been sent to the user's email address"
+        ]);
+    }
+
+    public static function log($message, $data = [])
+    {
+        \Log::warning(self::ADMIN_LOG_PREFIX . $message, $data);
     }
 }
