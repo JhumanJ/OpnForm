@@ -25,17 +25,19 @@ class ImpersonationController extends Controller
             ]);
         }
 
-        \Log::warning(AdminController::ADMIN_LOG_PREFIX . 'Impersonation started', [
+        AdminController::log('Impersonation started', [
             'from_id' => auth()->id(),
             'from_email' => auth()->user()->email,
             'target_id' => $user->id,
             'target_email' => $user->id,
         ]);
 
-        $token = auth()->claims(auth()->user()->admin ? [] : [
-            'impersonating' => true,
-            'impersonator_id' => auth()->id(),
-        ])->login($user);
+        $token = auth()->claims(
+            auth()->user()->admin ? [] : [
+                'impersonating' => true,
+                'impersonator_id' => auth()->id(),
+            ]
+        )->login($user);
 
         return $this->success([
             'token' => $token,

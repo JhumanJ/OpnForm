@@ -99,7 +99,7 @@ class AdminController extends Controller
             'coupon' => $couponId
         ]);
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Applying NGO/Student discount to sub', [
+        self::log( 'Applying NGO/Student discount to sub', [
             'user_id' => $user->id,
             'subcription_id' => $subscription->id,
             'coupon_id' => $couponId,
@@ -127,7 +127,7 @@ class AdminController extends Controller
         $trialEndDate = now()->addDays($request->get('number_of_day'));
         $subscription->extendTrial($trialEndDate);
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Trial extended', [
+        self::log( 'Trial extended', [
             'user_id' => $user->id,
             'subcription_id' => $subscription->id,
             'nb_days' => $request->get('number_of_day'),
@@ -162,7 +162,7 @@ class AdminController extends Controller
         $subscription = $activeSubscriptions->first();
         $subscription->cancel();
 
-        \Log::warning(self::ADMIN_LOG_PREFIX . 'Cancel Subscription', [
+        self::log( 'Cancel Subscription', [
             'user_id' => $user->id,
             'cancel_reason' => $request->get('cancellation_reason'),
             'moderator_id' => auth()->id(),
@@ -187,8 +187,17 @@ class AdminController extends Controller
             ]);
         }
 
+        self::log( 'Sent password reset email', [
+            'user_id' => $user->id,
+            'moderator_id' => auth()->id(),
+        ]);
+
         return $this->success([
             'message' => "Password reset email has been sent to the user's email address"
         ]);
+    }
+
+    public static function log($message, $data = []) {
+        \Log::warning(self::ADMIN_LOG_PREFIX . $message, $data);
     }
 }

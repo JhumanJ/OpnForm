@@ -38,13 +38,18 @@ class BillingController extends Controller
             'billing_email' => 'required|email'
         ]);
 
-        $user = User::find($request->get("user_id"));
+        $user = User::findOrFail($request->get("user_id"));
 
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
             ]);
         }
+        AdminController::log('Update billing email',[
+            'user_id' => $user->id,
+            'stripe_id' => $user->stripe_id,
+            'moderator_id' => auth()->id()
+        ]);
         $user->updateStripeCustomer(['email' => $request->billing_email]);
 
         return $this->success(['message' => 'Billing email updated successfully']);
