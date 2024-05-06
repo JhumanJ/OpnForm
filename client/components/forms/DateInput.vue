@@ -93,7 +93,7 @@ import InputWrapper from './components/InputWrapper.vue'
 import { getCurrentInstance } from 'vue'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
-import { format } from 'date-fns'
+import { format, startOfDay, endOfDay } from 'date-fns'
 import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
 
 const props = defineProps({
@@ -145,13 +145,13 @@ const inputClasses = computed(() => {
 
 const minDate = computed(() => {
   if (props.disablePastDates) {
-    return new Date()
+    return startOfDay(new Date())
   }
   return undefined
 })
 const maxDate = computed(() => {
   if (props.disableFutureDates) {
-    return new Date()
+    return endOfDay(new Date())
   }
   return undefined
 })
