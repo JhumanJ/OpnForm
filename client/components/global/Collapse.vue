@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full relative">
+    <div class="w-full relative flex items-center">
       <div
         class="cursor-pointer"
         @click="trigger"
@@ -8,7 +8,7 @@
         <slot name="title" />
       </div>
       <div
-        class="text-gray-400 hover:text-gray-600 absolute -right-2 -top-1 cursor-pointer p-2"
+        class="text-gray-400 hover:text-gray-600 absolute -right-2  cursor-pointer p-2"
         @click="trigger"
       >
         <svg

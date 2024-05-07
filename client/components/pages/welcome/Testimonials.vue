@@ -44,7 +44,6 @@ export default {
       script.setAttribute('defer', 'defer')
       document.head.appendChild(script)
       script.addEventListener('load', () => {
-        console.log('resizeing')
         window.iFrameResize(
           {
             log: false,

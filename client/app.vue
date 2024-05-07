@@ -47,7 +47,7 @@
     </NuxtLayout>
     <ToolsStopImpersonation />
 
-    <Notifications />
+    <NotificationsWrapper />
     <feature-base />
   </div>
 </template>
@@ -125,6 +125,7 @@ export default {
   },
 
   mounted() {
+    useCrisp().onCrispInit()
     useCrisp().showChat()
   },
 

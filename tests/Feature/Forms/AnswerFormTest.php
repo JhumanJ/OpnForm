@@ -117,7 +117,7 @@ it('can not submit form with past dates', function () {
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
         ->assertJson([
-            'message' => 'The Date must be a date after or equal to today.',
+            'message' => 'The Date must be a date after yesterday.',
         ]);
 });
 
@@ -142,6 +142,6 @@ it('can not submit form with future dates', function () {
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
         ->assertJson([
-            'message' => 'The Date must be a date before or equal to today.',
+            'message' => 'The Date must be a date before tomorrow.',
         ]);
 });
