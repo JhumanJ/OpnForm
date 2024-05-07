@@ -32,8 +32,8 @@
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2">
           Input Blocks
         </p>
-        <draggable 
-          :list="inputBlocks" 
+        <draggable
+          :list="inputBlocks"
           :group="{ name: 'form-elements', pull: 'clone', put: false }"
           class="grid grid-cols-2 gap-2"
           :sort="false"
@@ -71,8 +71,8 @@
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2 mt-6">
           Layout Blocks
         </p>
-        <draggable 
-          :list="layoutBlocks" 
+        <draggable
+          :list="layoutBlocks"
           :group="{ name: 'form-elements', pull: 'clone', put: false }"
           class="grid grid-cols-2 gap-2"
           :sort="false"
@@ -249,7 +249,6 @@ export default {
     addBlock(type) {
       this.workingFormStore.addBlock(type)
     },
-    
     handleInputClone(item) {
       return item.name
     }
@@ -259,6 +258,6 @@ export default {
 
 <style lang='scss' scoped>
 .ghost-item {
-  @apply bg-blue-100 dark:bg-blue-900 rounded-md;
+  @apply bg-blue-100 dark:bg-blue-900 rounded-md w-full;
 }
 </style>
