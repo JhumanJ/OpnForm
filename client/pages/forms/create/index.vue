@@ -42,7 +42,7 @@ useOpnSeoMeta({
 })
 
 onBeforeRouteLeave((to, from, next) => {
-  if (this.isDirty()) {
+  if (isDirty()) {
       if (window.confirm('Changes you made may not be saved. Are you sure want to leave?')) {
         window.onbeforeunload = null
         next()
