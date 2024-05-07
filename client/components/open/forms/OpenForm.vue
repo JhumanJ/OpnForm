@@ -43,13 +43,15 @@
         class="form-group flex flex-wrap w-full"
       >
         <draggable
-          v-model="currentFields"
+          :list="currentFields"
+          group="form-elements"
           item-key="id"
           class="flex flex-wrap transition-all w-full"
           :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
           ghost-class="ghost-item"
           handle=".draggable"
           :animation="200"
+          @change="handleDragDropped"
           @start="onDragStart"
           @end="onDragEnd"
         >
@@ -455,6 +457,10 @@ export default {
     },
     onDragEnd () {
       this.dragging = false
+    },
+    handleDragDropped(data)
+    {
+      this.workingFormStore.addBlock(data.added.element, data.added.newIndex)
     }
   }
 }
