@@ -46,9 +46,11 @@
           :list="currentFields"
           group="form-elements"
           item-key="id"
-          class="flex flex-wrap transition-all w-full"
+          class="flex flex-wrap relative transition-all w-full"
+          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
           ghost-class="ghost-item"
           :animation="200"
+          :disabled="!adminPreview"
           @change="handleDragDropped"
         >
           <template #item="{element}">
@@ -125,6 +127,7 @@ import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import {computed} from "vue"
 
 export default {
   name: 'OpenForm',
@@ -167,6 +170,7 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
+      draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: pendingSubmission(props.form)
     }
   },

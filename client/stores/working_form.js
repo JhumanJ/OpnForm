@@ -33,6 +33,7 @@ export const useWorkingFormStore = defineStore("working_form", {
     showEditFieldSidebar: null,
     showAddFieldSidebar: null,
     blockForm: null,
+    draggingNewBlock: false,
   }),
   actions: {
     set(form) {

@@ -2,24 +2,27 @@
   <div
     v-if="!isFieldHidden"
     :id="'block-' + field.id"
-    class="border border-transparent box-border hover:bg-gray-50 hover:border-gray-200 dark:hover:bg-gray-900 dark:border-blue-900 rounded-md cursor-grab border-dashed"
-    :class="getFieldWidthClasses(field)"
+    :class="[
+      getFieldWidthClasses(field),
+      {
+        'group/nffield hover:bg-gray-50 relative z-10 w-[calc(100%+30px)] mx-[-15px] px-[15px] transition-colors hover:border-gray-200 dark:hover:bg-gray-900 cursor-grab border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited
+      }]"
   >
     <div
-      class="-m-[1px]"
-      :class="getFieldClasses(field)"
+      class="-m-[1px] w-full max-w-full mx-auto"
+      :class="{'relative transition-colors':adminPreview}"
     >
       <div
         v-if="adminPreview"
-        class="absolute -translate-x-full top-0 bottom-0 opacity-0 group-hover/nffield:opacity-100 transition-opacity mb-4"
+        class="absolute -translate-x-full -left-1 top-1 bottom-0 hidden group-hover/nffield:block"
       >
         <div
-          class="flex flex-col bg-white rounded-md"
-          :class="{ 'lg:flex-row': !fieldSideBarOpened, 'xl:flex-row': fieldSideBarOpened }"
+          class="flex flex-col -space-1 bg-white rounded-md shadow -mt-1"
+          :class="{ 'lg:flex-row lg:-space-x-2': !fieldSideBarOpened, 'xl:flex-row xl:-space-x-1': fieldSideBarOpened }"
         >
           <div
-            class="p-2 pr-1 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer"
-            :class="{ 'lg:pr-2': !fieldSideBarOpened, 'xl:pr-2': fieldSideBarOpened }"
+            class="p-1 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
@@ -29,8 +32,7 @@
             />
           </div>
           <div
-            class="p-2 text-gray-300 hover:text-blue-500 cursor-pointer"
-            :class="{ 'lg:pl-0': !fieldSideBarOpened, 'xl:pl-0': fieldSideBarOpened }"
+            class="p-1 text-gray-300 hover:text-blue-500 cursor-pointer text-center"
             role="button"
             @click.prevent="editFieldOptions"
           >
@@ -91,14 +93,22 @@
           >
         </div>
       </template>
+      <div class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3">
+        <div class="bg-gray-100 dark:bg-gray-800 border rounded-md h-8 text-gray-500 dark:text-gray-400 dark:border-gray-500">
+          <Icon
+            name="clarity:drag-handle-line"
+            class="h-8"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import {computed} from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import { default as _has } from 'lodash/has'
+import {default as _has} from 'lodash/has'
 
 export default {
   name: 'OpenFormField',
@@ -132,7 +142,7 @@ export default {
       type: Object,
       required: true
     },
-    adminPreview: { type: Boolean, default: false } // If used in FormEditorPreview
+    adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
   },
 
   setup(props) {
@@ -236,20 +246,6 @@ export default {
     },
     openAddFieldSidebar() {
       this.workingFormStore.openAddFieldSidebar(this.field)
-    },
-    /**
-     * Get the right input component for the field/options combination
-     */
-    getFieldClasses() {
-      let classes = ''
-      if (this.adminPreview) {
-        classes += '-mx-4 px-4 -my-1 py-1 group/nffield relative transition-colors'
-
-        if (this.beingEdited) {
-          classes += ' bg-blue-50 dark:bg-gray-800 rounded-md'
-        }
-      }
-      return classes
     },
     getFieldWidthClasses(field) {
       if (!field.width || field.width === 'full') return 'w-full px-2'

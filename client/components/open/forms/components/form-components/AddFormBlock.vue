@@ -40,6 +40,8 @@
           :clone="handleInputClone"
           ghost-class="ghost-item"
           item-key="id"
+          @start="workingFormStore.draggingNewBlock=true"
+          @end="workingFormStore.draggingNewBlock=false"
         >
           <template #item="{element}">
             <div
