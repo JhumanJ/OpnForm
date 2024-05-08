@@ -5,7 +5,7 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-50 relative z-10 w-[calc(100%+30px)] mx-[-15px] px-[15px] transition-colors hover:border-gray-200 dark:hover:bg-gray-900 cursor-grab border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 w-[calc(100%+30px)] mx-[-15px] px-[15px] transition-colors hover:border-gray-200 dark:hover:bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited
       }]"
   >
@@ -94,10 +94,10 @@
         </div>
       </template>
       <div class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3">
-        <div class="bg-gray-100 dark:bg-gray-800 border rounded-md h-8 text-gray-500 dark:text-gray-400 dark:border-gray-500">
+        <div class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle">
           <Icon
             name="clarity:drag-handle-line"
-            class="h-8"
+            class="h-6 w-6 -ml-1 block shrink-0"
           />
         </div>
       </div>
@@ -248,17 +248,17 @@ export default {
       this.workingFormStore.openAddFieldSidebar(this.field)
     },
     getFieldWidthClasses(field) {
-      if (!field.width || field.width === 'full') return 'w-full px-2'
+      if (!field.width || field.width === 'full') return 'col-span-full'
       else if (field.width === '1/2') {
-        return 'w-full sm:w-1/2 px-2'
+        return 'w-full sm:col-span-6 col-span-full'
       } else if (field.width === '1/3') {
-        return 'w-full sm:w-1/3 px-2'
+        return 'w-full sm:col-span-4 col-span-full'
       } else if (field.width === '2/3') {
-        return 'w-full sm:w-2/3 px-2'
+        return 'w-full sm:col-span-8 col-span-full'
       } else if (field.width === '1/4') {
-        return 'w-full sm:w-1/4 px-2'
+        return 'w-full sm:col-span-3 col-span-full'
       } else if (field.width === '3/4') {
-        return 'w-full sm:w-3/4 px-2'
+        return 'w-full sm:col-span-9 col-span-full'
       }
     },
     getFieldAlignClasses(field) {

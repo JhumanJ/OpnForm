@@ -260,6 +260,6 @@ export default {
 
 <style lang='scss' scoped>
 .ghost-item {
-  @apply bg-blue-100 dark:bg-blue-900 rounded-md w-full;
+  @apply bg-blue-100 dark:bg-blue-900 rounded-md w-full col-span-full;
 }
 </style>

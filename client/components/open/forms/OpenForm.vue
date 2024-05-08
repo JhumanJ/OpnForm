@@ -46,11 +46,12 @@
           :list="currentFields"
           group="form-elements"
           item-key="id"
-          class="flex flex-wrap relative transition-all w-full"
+          class="grid grid-cols-12 gap-x-3 relative transition-all w-full"
           :class="{'rounded-md bg-blue-50':draggingNewBlock}"
           ghost-class="ghost-item"
           :animation="200"
           :disabled="!adminPreview"
+          handle=".handle"
           @change="handleDragDropped"
         >
           <template #item="{element}">
