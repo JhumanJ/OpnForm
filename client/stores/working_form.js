@@ -104,7 +104,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       return data
     },
 
-    addBlock(type, index=null) {
+    addBlock(type, index = null) {
       this.blockForm.type = type
       this.blockForm.name = defaultBlockNames[type]
       const newBlock = this.prefillDefault(this.blockForm.data())
@@ -138,12 +138,19 @@ export const useWorkingFormStore = defineStore("working_form", {
           this.form.properties.length - 1,
         )
       } else {
-        const fieldIndex = typeof index  === "number" ? index : this.selectedFieldIndex + 1
+        const fieldIndex = typeof index === "number" ? index : this.selectedFieldIndex + 1
         const newFields = clonedeep(this.content.properties)
         newFields.splice(fieldIndex, 0, newBlock)
         this.content.properties = newFields
         this.openSettingsForField(fieldIndex)
       }
+    },
+
+    moveField(field) {
+      const newFields = clonedeep(this.content.properties)
+      const fieldIndex = newFields.splice(field.oldIndex, 1)[0];
+      newFields.splice(field.newIndex, 0, fieldIndex);
+      this.content.properties = newFields
     }
   },
 })
