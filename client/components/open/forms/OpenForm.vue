@@ -52,6 +52,8 @@
           :animation="200"
           :disabled="!adminPreview"
           @change="handleDragDropped"
+          @start="workingFormStore.draggingNewBlock=true"
+          @end="workingFormStore.draggingNewBlock=false"
         >
           <template #item="{element}">
             <open-form-field
