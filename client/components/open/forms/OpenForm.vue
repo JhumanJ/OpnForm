@@ -53,6 +53,8 @@
           :disabled="!adminPreview"
           handle=".handle"
           @change="handleDragDropped"
+          @start="workingFormStore.draggingNewBlock=true"
+          @end="workingFormStore.draggingNewBlock=false"
         >
           <template #item="{element}">
             <open-form-field
@@ -450,7 +452,9 @@ export default {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
     handleDragDropped(data) {
-      this.workingFormStore.addBlock(data.added.element, data.added.newIndex)
+      if(data.added){
+        this.workingFormStore.addBlock(data.added.element, data.added.newIndex)
+      }
     }
   }
 }
