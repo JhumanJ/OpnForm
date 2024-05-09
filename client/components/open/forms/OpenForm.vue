@@ -451,10 +451,47 @@ export default {
     },
     handleDragDropped(data) {
       if(data.added){
-        this.workingFormStore.addBlock(data.added.element, data.added.newIndex)
+        let targetIndex = 0;
+        const newFields = clonedeep(this.workingFormStore.content.properties)
+        const groups = []
+        let currentArray = [];
+        // Group into pages by page break
+        newFields.forEach(item => {
+          if (item.type === 'nf-page-break') {
+            if (currentArray.length > 0) {
+              currentArray.push(item);
+              groups.push(currentArray);
+              currentArray = [];
+            }
+          } else {
+            currentArray.push(item);
+          }
+        });
+        if (currentArray.length > 0) {
+          groups.push(currentArray);
+        }
+
+        // Accumulate the indices of previous pages
+        for (let i = 0; i < this.currentFieldGroupIndex; i++) {
+          targetIndex += groups[i].length;
+        }
+        // Add the target index on the current page
+        targetIndex += data.added.newIndex;
+        this.workingFormStore.addBlock(data.added.element, targetIndex)
       }
-      if(data.moved){
-        this.workingFormStore.moveField(data.moved)
+      
+      if (data.moved) {
+        const newFields = clonedeep(this.workingFormStore.content.properties)
+        const fieldIndex = newFields.findIndex(f=>f.id == data.moved.element.id)
+        const offset = data.moved.newIndex  - data.moved.oldIndex
+        const newIndex = fieldIndex + offset;
+        if (newIndex >= 0 && newIndex < newFields.length) {
+          // Remove the element from its current position
+          const [removedItem] = newFields.splice(fieldIndex, 1);
+          // Insert the element at the new position
+          newFields.splice(newIndex, 0, removedItem);
+          this.workingFormStore.content.properties = newFields
+        }
       }
     }
   }
