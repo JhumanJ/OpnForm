@@ -11,7 +11,6 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@vueuse/motion/nuxt',
-        'nuxt3-notifications',
         'nuxt-simple-sitemap',
         '@nuxt/ui',
         ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],

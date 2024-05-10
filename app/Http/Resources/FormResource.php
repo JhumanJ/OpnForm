@@ -25,7 +25,6 @@ class FormResource extends JsonResource
         $ownerData = $this->userIsFormOwner() ? [
             'views_count' => $this->views_count,
             'submissions_count' => $this->submissions_count,
-            'send_submission_confirmation' => $this->send_submission_confirmation,
             'redirect_url' => $this->redirect_url,
             'database_fields_update' => $this->database_fields_update,
             'cleanings' => $this->getCleanigns(),

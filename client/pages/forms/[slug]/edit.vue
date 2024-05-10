@@ -74,14 +74,12 @@ watch(form, (form) => {
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty()) {
-    return useAlert().confirm(
-      "Changes you made may not be saved. Are you sure want to leave?",
-      () => {
-        window.onbeforeunload = null
-        next()
-      },
-      () => {},
-    )
+    if (window.confirm('Changes you made may not be saved. Are you sure want to leave?')) {
+      window.onbeforeunload = null
+      next()
+    } else {
+      next(false)
+    }
   }
   next()
 })

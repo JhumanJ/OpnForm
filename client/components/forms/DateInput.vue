@@ -13,6 +13,7 @@
         class="cursor-pointer overflow-hidden"
         :class="inputClasses"
         :disabled="props.disabled"
+        ref="datepicker"
       >
         <div class="flex items-center min-w-0">
           <div
@@ -168,8 +169,7 @@ const handleCompValChange = () => {
 
 const setInputColor = () => {
   if (datepicker.value) {
-    const dateInput = datepicker.value.$el.getElementsByTagName('input')[0]
-    dateInput.style.setProperty('--tw-ring-color', props.color)
+    datepicker.value.style.setProperty('--tw-ring-color', props.color)
   }
 }
 
