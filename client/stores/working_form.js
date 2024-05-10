@@ -146,10 +146,10 @@ export const useWorkingFormStore = defineStore("working_form", {
       }
     },
 
-    moveField(field) {
+    moveField(oldIndex, newIndex) {
       const newFields = clonedeep(this.content.properties)
-      const fieldIndex = newFields.splice(field.oldIndex, 1)[0];
-      newFields.splice(field.newIndex, 0, fieldIndex);
+      const field = newFields.splice(oldIndex, 1)[0];
+      newFields.splice(newIndex, 0, field);
       this.content.properties = newFields
     }
   },

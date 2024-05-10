@@ -449,49 +449,28 @@ export default {
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
-    handleDragDropped(data) {
-      if(data.added){
-        let targetIndex = 0;
-        const newFields = clonedeep(this.workingFormStore.content.properties)
-        const groups = []
-        let currentArray = [];
-        // Group into pages by page break
-        newFields.forEach(item => {
-          if (item.type === 'nf-page-break') {
-            if (currentArray.length > 0) {
-              currentArray.push(item);
-              groups.push(currentArray);
-              currentArray = [];
-            }
-          } else {
-            currentArray.push(item);
+    getTargetFieldIndex(currentFieldPageIndex){
+      let targetIndex = 0;
+        if (this.currentFieldGroupIndex > 0) {
+          for (let i = 0; i < this.currentFieldGroupIndex; i++) {
+            targetIndex += this.fieldGroups[i].length;
           }
-        });
-        if (currentArray.length > 0) {
-          groups.push(currentArray);
+          targetIndex += currentFieldPageIndex;
+        } else {
+          targetIndex = currentFieldPageIndex
         }
-
-        // Accumulate the indices of previous pages
-        for (let i = 0; i < this.currentFieldGroupIndex; i++) {
-          targetIndex += groups[i].length;
-        }
-        // Add the target index on the current page
-        targetIndex += data.added.newIndex;
+        return targetIndex
+    },
+    handleDragDropped(data) {
+      if (data.added) {
+        const targetIndex = this.getTargetFieldIndex(data.added.newIndex)
         this.workingFormStore.addBlock(data.added.element, targetIndex)
       }
-      
+
       if (data.moved) {
-        const newFields = clonedeep(this.workingFormStore.content.properties)
-        const fieldIndex = newFields.findIndex(f=>f.id == data.moved.element.id)
-        const offset = data.moved.newIndex  - data.moved.oldIndex
-        const newIndex = fieldIndex + offset;
-        if (newIndex >= 0 && newIndex < newFields.length) {
-          // Remove the element from its current position
-          const [removedItem] = newFields.splice(fieldIndex, 1);
-          // Insert the element at the new position
-          newFields.splice(newIndex, 0, removedItem);
-          this.workingFormStore.content.properties = newFields
-        }
+        const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
+        const newTargetIndex = this.getTargetFieldIndex(data.moved.newIndex)
+        this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
       }
     }
   }
