@@ -16,7 +16,8 @@
         <input
           v-model="compVal"
           type="range"
-          class="w-full mt-3"
+          class="w-full mt-3 slider"
+          :style="{ '--thumb-color': color }"
           :disabled="disabled"
           :min="minSlider"
           :max="maxSlider"
@@ -97,3 +98,9 @@ export default {
   },
 }
 </script>
+
+<style>
+  .slider {
+    accent-color: var(--thumb-color);
+  }
+</style>

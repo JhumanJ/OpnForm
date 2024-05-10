@@ -1,5 +1,6 @@
 <template>
   <AdminCard
+    v-if="props.user.stripe_id"
     title="Cancel subscription"
     icon="heroicons:trash-16-solid"
   >
@@ -55,6 +56,7 @@ const askCancel = () => {
 }
 
 const cancelSubscription = () => {
+  if (!props.user.stripe_id) return
   loading = true
   form
     .patch('/moderator/cancellation-subscription')
