@@ -32,7 +32,7 @@ export const themes = {
     },
     SelectInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'relative w-full rounded-lg border-gray-300 flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full px-4 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      input: 'relative w-full rounded-lg border-gray-300 flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
       help: 'text-gray-400 dark:text-gray-500'
     },
     ScaleInput: {
@@ -76,7 +76,7 @@ export const themes = {
     },
     SelectInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full px-2 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      input: 'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
       help: 'text-gray-400 dark:text-gray-500'
     },
     CodeInput: {
