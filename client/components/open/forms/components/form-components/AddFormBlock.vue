@@ -21,7 +21,7 @@
             />
           </svg>
         </button>
-        <div class="font-semibold inline ml-2 truncate flex-grow truncate">
+        <div class="font-semibold inline ml-2 flex-grow truncate">
           Add Block
         </div>
       </div>
@@ -32,75 +32,93 @@
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2">
           Input Blocks
         </p>
-        <div class="grid grid-cols-2 gap-2">
-          <div
-            v-for="(block) in inputBlocks"
-            :key="block.name"
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
-            role="button"
-            @click.prevent="addBlock(block.name)"
-          >
-            <div class="mx-auto">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                v-html="block.icon"
-              />
-            </div>
-            <p
-              class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1"
+        <draggable
+          :list="inputBlocks"
+          :group="{ name: 'form-elements', pull: 'clone', put: false }"
+          class="grid grid-cols-2 gap-2"
+          :sort="false"
+          :clone="handleInputClone"
+          ghost-class="ghost-item"
+          item-key="id"
+          @start="workingFormStore.draggingNewBlock=true"
+          @end="workingFormStore.draggingNewBlock=false"
+        >
+          <template #item="{element}">
+            <div
+              class="bg-gray-50 border cursor-grab hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
+              role="button"
+              @click.prevent="addBlock(element.name)"
             >
-              {{ block.title }}
-            </p>
-          </div>
-        </div>
+              <div class="mx-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  v-html="element.icon"
+                />
+              </div>
+              <p
+                class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1"
+              >
+                {{ element.title }}
+              </p>
+            </div>
+          </template>
+        </draggable>
       </div>
       <div class="border-t mt-6">
         <p class="text-gray-500 uppercase text-xs font-semibold mb-2 mt-6">
           Layout Blocks
         </p>
-        <div class="grid grid-cols-2 gap-2">
-          <div
-            v-for="(block) in layoutBlocks"
-            :key="block.name"
-            class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
-            role="button"
-            @click.prevent="addBlock(block.name)"
-          >
-            <div class="mx-auto">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                v-html="block.icon"
-              />
-            </div>
-            <p
-              class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1"
+        <draggable
+          :list="layoutBlocks"
+          :group="{ name: 'form-elements', pull: 'clone', put: false }"
+          class="grid grid-cols-2 gap-2"
+          :sort="false"
+          :clone="handleInputClone"
+          ghost-class="ghost-item"
+          item-key="id"
+        >
+          <template #item="{element}">
+            <div
+              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
+              role="button"
+              @click.prevent="addBlock(element.name)"
             >
-              {{ block.title }}
-            </p>
-          </div>
-        </div>
+              <div class="mx-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  v-html="element.icon"
+                />
+              </div>
+              <p
+                class="w-full text-xs text-gray-500 uppercase text-center font-semibold mt-1"
+              >
+                {{ element.title }}
+              </p>
+            </div>
+          </template>
+        </draggable>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import clonedeep from "clone-deep"
+import draggable from 'vuedraggable'
 import { computed } from "vue"
 
 export default {
   name: "AddFormBlock",
-  components: {},
+  components: {draggable},
   props: {},
 
   setup() {
@@ -115,7 +133,6 @@ export default {
 
   data() {
     return {
-      blockForm: null,
       inputBlocks: [
         {
           name: "text",
@@ -219,126 +236,30 @@ export default {
   },
 
   computed: {
-    defaultBlockNames() {
-      return {
-        text: "Your name",
-        date: "Date",
-        url: "Link",
-        phone_number: "Phone Number",
-        number: "Number",
-        rating: "Rating",
-        scale: "Scale",
-        slider: "Slider",
-        email: "Email",
-        checkbox: "Checkbox",
-        select: "Select",
-        multi_select: "Multi Select",
-        files: "Files",
-        signature: "Signature",
-        "nf-text": "Text Block",
-        "nf-page-break": "Page Break",
-        "nf-divider": "Divider",
-        "nf-image": "Image",
-        "nf-code": "Code Block",
-      }
-    },
   },
 
   watch: {},
 
   mounted() {
-    this.reset()
+    this.workingFormStore.resetBlockForm()
   },
 
   methods: {
     closeSidebar() {
       this.workingFormStore.closeAddFieldSidebar()
     },
-    reset() {
-      this.blockForm = useForm({
-        type: null,
-        name: null,
-      })
-    },
     addBlock(type) {
-      this.blockForm.type = type
-      this.blockForm.name = this.defaultBlockNames[type]
-      const newBlock = this.prefillDefault(this.blockForm.data())
-      newBlock.id = this.generateUUID()
-      newBlock.hidden = false
-      if (["select", "multi_select"].includes(this.blockForm.type)) {
-        newBlock[this.blockForm.type] = { options: [] }
-      }
-      if (this.blockForm.type === "rating") {
-        newBlock.rating_max_value = 5
-      }
-      if (this.blockForm.type === "scale") {
-        newBlock.scale_min_value = 1
-        newBlock.scale_max_value = 5
-        newBlock.scale_step_value = 1
-      }
-      if (this.blockForm.type === "slider") {
-        newBlock.slider_min_value = 0
-        newBlock.slider_max_value = 50
-        newBlock.slider_step_value = 1
-      }
-      newBlock.help_position = "below_input"
-      if (
-        this.selectedFieldIndex === null ||
-        this.selectedFieldIndex === undefined
-      ) {
-        const newFields = clonedeep(this.form.properties)
-        newFields.push(newBlock)
-        this.form.properties = newFields
-        this.workingFormStore.openSettingsForField(
-          this.form.properties.length - 1,
-        )
-      } else {
-        const newFields = clonedeep(this.form.properties)
-        newFields.splice(this.selectedFieldIndex + 1, 0, newBlock)
-        this.form.properties = newFields
-        this.workingFormStore.openSettingsForField(this.selectedFieldIndex + 1)
-      }
-      this.reset()
+      this.workingFormStore.addBlock(type)
     },
-    generateUUID() {
-      let d = new Date().getTime() // Timestamp
-      let d2 =
-        (typeof performance !== "undefined" &&
-          performance.now &&
-          performance.now() * 1000) ||
-        0 // Time in microseconds since page-load or 0 if unsupported
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-          let r = Math.random() * 16 // random number between 0 and 16
-          if (d > 0) {
-            // Use timestamp until depleted
-            r = (d + r) % 16 | 0
-            d = Math.floor(d / 16)
-          } else {
-            // Use microseconds since page-load if supported
-            r = (d2 + r) % 16 | 0
-            d2 = Math.floor(d2 / 16)
-          }
-          return (c === "x" ? r : (r & 0x3) | 0x8).toString(16)
-        },
-      )
-    },
-    prefillDefault(data) {
-      if (data.type === "nf-text") {
-        data.content = "<p>This is a text block.</p>"
-      } else if (data.type === "nf-page-break") {
-        data.next_btn_text = "Next"
-        data.previous_btn_text = "Previous"
-      } else if (data.type === "nf-code") {
-        data.content =
-          '<div class="text-blue-500 italic">This is a code block.</div>'
-      } else if (data.type === "signature") {
-        data.help = "Draw your signature above"
-      }
-      return data
-    },
+    handleInputClone(item) {
+      return item.name
+    }
   },
 }
 </script>
+
+<style lang='scss' scoped>
+.ghost-item {
+  @apply bg-blue-100 dark:bg-blue-900 rounded-md w-full col-span-full;
+}
+</style>
