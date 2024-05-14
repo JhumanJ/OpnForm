@@ -56,11 +56,11 @@
       help="Also know as og:image - 1200 X 630"
     />
     <image-input
-        v-model="form.seo_meta.page_favicon"
-        name="page_favicon"
-        class="mt-4"
-        label="Page Favicon Image"
-        help="Upload favicon image to be displayed on the form page"
+      v-model="form.seo_meta.page_favicon"
+      name="page_favicon"
+      class="mt-4"
+      label="Page Favicon Image"
+      help="Upload favicon image to be displayed on the form page"
     />
   </editor-options-panel>
 </template>
@@ -77,21 +77,13 @@ export default {
     return {
       workspacesStore: useWorkspacesStore(),
       workingFormStore,
+      form: storeToRefs(workingFormStore).content,
     }
   },
   data() {
     return {}
   },
   computed: {
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set(value) {
-        this.workingFormStore.set(value)
-      },
-    },
     workspace() {
       return this.workspacesStore.getCurrent
     },
@@ -111,6 +103,9 @@ export default {
   },
   watch: {},
   mounted() {
+    if (!this.form.seo_meta || Array.isArray(this.form.seo_meta))
+      this.form.seo_meta = {};
+    
     ["page_title", "page_description", "page_thumbnail", "page_favicon"].forEach((keyname) => {
       if (this.form.seo_meta[keyname] === undefined) {
         this.form.seo_meta[keyname] = null

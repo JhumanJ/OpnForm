@@ -21,7 +21,7 @@
             />
           </svg>
         </button>
-        <div class="font-semibold inline ml-2 truncate flex-grow truncate">
+        <div class="font-semibold inline ml-2 flex-grow truncate">
           Add Block
         </div>
       </div>
@@ -45,7 +45,7 @@
         >
           <template #item="{element}">
             <div
-              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
+              class="bg-gray-50 border cursor-grab hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
               role="button"
               @click.prevent="addBlock(element.name)"
             >

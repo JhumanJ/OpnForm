@@ -14,7 +14,7 @@ use OpenAI\Exceptions\ErrorException;
  */
 class GptCompleter
 {
-    public const AI_MODEL = 'gpt-4-turbo-preview';
+    public const AI_MODEL = 'gpt-4o';
 
     protected Client $openAi;
 
