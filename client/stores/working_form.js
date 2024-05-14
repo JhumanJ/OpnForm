@@ -135,7 +135,7 @@ export const useWorkingFormStore = defineStore("working_form", {
         newFields.push(newBlock)
         this.content.properties = newFields
         this.openSettingsForField(
-          this.form.properties.length - 1,
+          this.content.properties.length - 1,
         )
       } else {
         const fieldIndex = typeof index === "number" ? index : this.selectedFieldIndex + 1
