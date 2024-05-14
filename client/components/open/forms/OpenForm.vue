@@ -46,7 +46,7 @@
           :list="currentFields"
           group="form-elements"
           item-key="id"
-          class="grid grid-cols-12 gap-x-3 relative transition-all w-full"
+          class="grid grid-cols-12 relative transition-all w-full"
           :class="{'rounded-md bg-blue-50':draggingNewBlock}"
           ghost-class="ghost-item"
           :animation="200"
@@ -450,12 +450,12 @@ export default {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
     getTargetFieldIndex(currentFieldPageIndex){
-      let targetIndex = 0;
+      let targetIndex = 0
         if (this.currentFieldGroupIndex > 0) {
           for (let i = 0; i < this.currentFieldGroupIndex; i++) {
-            targetIndex += this.fieldGroups[i].length;
+            targetIndex += this.fieldGroups[i].length
           }
-          targetIndex += currentFieldPageIndex;
+          targetIndex += currentFieldPageIndex
         } else {
           targetIndex = currentFieldPageIndex
         }
