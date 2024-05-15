@@ -3,7 +3,7 @@ let darkModeNodeParent = import.meta.client ? document.body : null
 /**
  * Handle form public pages dark mode and transparent mode
  */
-export function handleDarkMode (darkMode, elem = null) {
+export function handleDarkMode(darkMode, elem = null) {
   if (import.meta.server)
     return
 
@@ -24,7 +24,7 @@ export function handleDarkMode (darkMode, elem = null) {
     .addEventListener('change', handleDarkModeToggle)
 }
 
-export function useClassWatcher (elem, className) {
+export function useClassWatcher(elem, className) {
   const hasClass = ref(false)
 
   const updateClassPresence = () => {
@@ -63,7 +63,7 @@ export function useClassWatcher (elem, className) {
   return computed(() => hasClass.value)
 }
 
-export function useDarkMode (elem = ref(null)) {
+export function useDarkMode(elem = ref(null)) {
   // Define a computed property to handle the element reference reactively
   const effectiveElem = computed(() => {
     return elem.value || (process.client ? document.body : null)
@@ -73,7 +73,7 @@ export function useDarkMode (elem = ref(null)) {
   return useClassWatcher(effectiveElem, 'dark')
 }
 
-export function darkModeEnabled (elem = ref(null)) {
+export function darkModeEnabled(elem = ref(null)) {
   if (import.meta.server)
     return ref(false)
 
@@ -118,7 +118,7 @@ export function darkModeEnabled (elem = ref(null)) {
   return computed(() => isDark.value)
 }
 
-function handleDarkModeToggle (enabled) {
+function handleDarkModeToggle(enabled) {
   if (enabled !== false && enabled !== true) {
     // if we received an event
     enabled = enabled.matches
@@ -128,7 +128,7 @@ function handleDarkModeToggle (enabled) {
     : darkModeNodeParent.classList.remove('dark')
 }
 
-export function disableDarkMode () {
+export function disableDarkMode() {
   if (import.meta.server)
     return
   const body = document.body
@@ -139,19 +139,23 @@ export function disableDarkMode () {
     .removeEventListener('change', handleDarkModeToggle)
 }
 
-export function handleTransparentMode (transparentModeEnabled) {
-  if (import.meta.server)
-    return
-  if (!useIsIframe() || !transparentModeEnabled)
+export function handleTransparentMode(transparentModeEnabled) {
+  // if (import.meta.server)
+  //   return
+  if ((!useIsIframe() && import.meta.client) || !transparentModeEnabled)
     return
 
-  const app = document.getElementById('app')
-  app.classList.remove('bg-white')
-  app.classList.remove('dark:bg-notion-dark')
-  app.classList.add('bg-transparent')
+  const appStore = useAppStore()
+  if (transparentModeEnabled) {
+    appStore.enableTransparentBackground()
+  }
+  else {
+    appStore.disableTransparentBackground()
+  }
+  console.log('transparent', appStore.transparentBackground)
 }
 
-export function focusOnFirstFormElement () {
+export function focusOnFirstFormElement() {
   if (import.meta.server)
     return
   for (const ele of document.querySelectorAll(

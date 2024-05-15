@@ -1,7 +1,6 @@
 <template>
   <div
     id="app"
-    class="bg-white dark:bg-notion-dark"
   >
     <transition
       enter-active-class="linear duration-200 overflow-hidden"

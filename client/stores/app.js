@@ -5,6 +5,7 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     layout: "default",
     navbarHidden: false,
+    transparentBackground: false,
     crisp: {
       chatOpened: false,
       hidden: false
@@ -26,6 +27,13 @@ export const useAppStore = defineStore("app", {
     },
     showNavbar() {
       this.navbarHidden = false
+    },
+    enableTransparentBackground() {
+      this.transparentBackground = true
+    },
+    
+    disableTransparentBackground() {
+      this.transparentBackground = false
     },
     setLayout(layout) {
       this.layout = layout ?? "default"
