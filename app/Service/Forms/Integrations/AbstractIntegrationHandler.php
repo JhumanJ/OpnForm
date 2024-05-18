@@ -96,6 +96,11 @@ abstract class AbstractIntegrationHandler
         }
     }
 
+    public function created(): void
+    {
+        //
+    }
+
     /**
      * Default handle. Can be changed in child classes.
      */

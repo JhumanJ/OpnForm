@@ -2,6 +2,7 @@
 
 namespace App\Models\Integration;
 
+use App\Events\Models\FormIntegrationCreated;
 use App\Models\Forms\Form;
 use App\Models\OAuthProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +26,10 @@ class FormIntegration extends Model
     protected $casts = [
         'data' => 'object',
         'logic' => 'object'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => FormIntegrationCreated::class,
     ];
 
     /**

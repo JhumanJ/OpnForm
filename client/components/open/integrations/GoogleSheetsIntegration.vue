@@ -8,7 +8,6 @@
       <select-input
         v-model="integrationData.oauth_id"
         name="provider"
-        class=""
         :options="providers"
         option-key="id"
         emit-key="id"

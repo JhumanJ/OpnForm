@@ -2,13 +2,27 @@
 
 namespace App\Service\Forms\Integrations;
 
+use App\Events\Forms\FormSubmitted;
 use App\Integrations\Google\Google;
+use App\Models\Integration\FormIntegration;
 use App\Service\Forms\FormSubmissionFormatter;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
 class GoogleSheetsIntegration extends AbstractIntegrationHandler
 {
+    protected Google $client;
+
+    public function __construct(
+        protected FormSubmitted $event,
+        protected FormIntegration $formIntegration,
+        protected array $integration
+    ) {
+        parent::__construct($event, $formIntegration, $integration);
+
+        $this->client = new Google($formIntegration->provider);
+    }
+
     public static function getValidationRules(): array
     {
         return [
@@ -35,8 +49,7 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
             $formatter->getFieldsWithValue()
         );
 
-        $client = new Google($this->formIntegration->provider);
-        $client->sheets()
+        $this->client->sheets()
             ->addRow(
                 $this->getSpreadsheetId(),
                 $row
