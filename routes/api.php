@@ -15,6 +15,8 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
+use App\Http\Controllers\Integrations\SpreadsheetsController;
+use App\Http\Controllers\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\SubscriptionController;
@@ -87,6 +89,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
+
+                Route::prefix('/providers')->name('providers.')->group(function () {
+                    Route::get('/', [OAuthProviderController::class, 'index'])->name('index');
+                });
             });
         });
 
@@ -288,3 +294,8 @@ Route::get('local/temp/{path}', function (Request $request, string $path) {
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
     ->name('caddy.ask')->middleware(\App\Http\Middleware\CaddyRequestMiddleware::class);
+
+Route::prefix('integrations')->middleware('auth:api')->group(function () {
+    Route::get('/spreadsheeds', [SpreadsheetsController::class, 'getRedirectUrl']);
+    Route::get('/spreadsheeds/redirect', [SpreadsheetsController::class, 'handleRedirect']);
+});

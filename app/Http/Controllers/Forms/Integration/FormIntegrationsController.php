@@ -19,7 +19,9 @@ class FormIntegrationsController extends Controller
         $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
-        return FormIntegration::where('form_id', $form->id)->get();
+        return FormIntegration::query()
+            ->where('form_id', $form->id)
+            ->get();
     }
 
     public function create(FormIntegrationsRequest $request, string $id)

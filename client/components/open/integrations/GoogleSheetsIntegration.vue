@@ -5,7 +5,16 @@
     :form="form"
   >
     <div class="my-5">
-      Coming Soon...
+      <select-input
+        v-model="integrationData.oauth_id"
+        name="provider"
+        class=""
+        :options="providers"
+        option-key="id"
+        emit-key="id"
+        :required="true"
+        label="Select Google Account"
+      />
     </div>
   </IntegrationWrapper>
 </template>
@@ -19,4 +28,7 @@ const props = defineProps({
   integrationData: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null },
 })
+
+const oAuthProvidersStore = useOAuthProvidersStore()
+const providers = computed(() => oAuthProvidersStore.getAll.filter(provider => provider.provider == 'google'))
 </script>

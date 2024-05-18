@@ -40,9 +40,10 @@ class FormIntegrationsRequest extends FormRequest
     {
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
+            'oauth_id' => ['nullable', Rule::exists('oauth_providers', 'id')],
             'settings' => 'present|array',
             'status' => 'required|boolean',
-            'logic' => [new IntegrationLogicRule()]
+            'logic' => [new IntegrationLogicRule()],
         ], $this->integrationRules);
     }
 
@@ -78,7 +79,8 @@ class FormIntegrationsRequest extends FormRequest
             )) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_INACTIVE,
             'integration_id' => $this->validated('integration_id'),
             'data' => $this->validated('settings') ?? [],
-            'logic' => $this->validated('logic') ?? []
+            'logic' => $this->validated('logic') ?? [],
+            'oauth_id' => $this->validated('oauth_id'),
         ]);
     }
 }
