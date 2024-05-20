@@ -37,6 +37,6 @@ class CustomFieldValidationRule implements Rule
      */
     public function message()
     {
-        return isset($this->validation['error_message']) ? $this->validation['error_message']: 'Logic validation failed';
+        return isset($this->validation['error_message']) ? $this->validation['error_message']: 'Invalid input';
     }
 }
