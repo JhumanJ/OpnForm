@@ -52,7 +52,6 @@ class AnswerFormRequest extends FormRequest
     {
         foreach ($this->form->properties as $property) {
             $rules = [];
-
             /*if (!$this->form->is_pro) {  // If not pro then not check logic
                 $property['logic'] = false;
             }*/
@@ -86,7 +85,6 @@ class AnswerFormRequest extends FormRequest
             } else {
                 $rules[] = 'nullable';
             }
-
             // Clean id to escape "."
             $propertyId = $property['id'];
             if (in_array($property['type'], ['multi_select'])) {
@@ -109,6 +107,8 @@ class AnswerFormRequest extends FormRequest
             $this->requestRules['submission_id'] = 'string';
         }
 
+
+        ray($this->requestRules);
         return $this->requestRules;
     }
 
