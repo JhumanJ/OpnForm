@@ -105,6 +105,7 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     addBlock(type, index = null) {
+      this.selectedFieldIndex = index
       this.blockForm.type = type
       this.blockForm.name = defaultBlockNames[type]
       const newBlock = this.prefillDefault(this.blockForm.data())
