@@ -5,7 +5,9 @@
   >
     <div
       class="inline-flex items-center h-6 w-12 p-1 bg-gray-300 border rounded-full cursor-pointer focus:outline-none transition-all transform ease-in-out duration-100"
-      :class="{ 'bg-nt-blue': props.modelValue }"
+      :class="{ 'toggle-switch': props.modelValue }"
+      :style="{ '--accent-color': props.color }"
+
     >
       <div
         class="inline-block h-4 w-4 rounded-full bg-white shadow transition-all transform ease-in-out duration-150 rounded-2xl scale-100"
@@ -21,7 +23,12 @@ import { defineEmits, defineProps } from "vue"
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
+  color: { type: String, default: null },
 })
+
+console.log(
+  props
+)
 const emit = defineEmits(["update:modelValue"])
 
 function onClick() {
@@ -29,3 +36,8 @@ function onClick() {
   emit("update:modelValue", !props.modelValue)
 }
 </script>
+<style>
+  .toggle-switch {
+    background-color: var(--accent-color);
+  }
+</style>
