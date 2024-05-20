@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Forms\Form;
+use App\Rules\CustomFieldValidationRule;
 use App\Rules\StorageFile;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
@@ -50,6 +51,9 @@ class AnswerFormRequest extends FormRequest
      */
     public function rules()
     {
+        $selectionFields = collect($this->form->properties)->filter(function ($pro) {
+            return in_array($pro['type'], ['select', 'multi_select']);
+        });
         foreach ($this->form->properties as $property) {
             $rules = [];
             /*if (!$this->form->is_pro) {  // If not pro then not check logic
@@ -58,9 +62,6 @@ class AnswerFormRequest extends FormRequest
 
             // For get values instead of Id for select/multi select options
             $data = $this->toArray();
-            $selectionFields = collect($this->form->properties)->filter(function ($pro) {
-                return in_array($pro['type'], ['select', 'multi_select']);
-            });
             foreach ($selectionFields as $field) {
                 if (isset($data[$field['id']]) && is_array($data[$field['id']])) {
                     $data[$field['id']] = array_map(function ($val) use ($field) {
@@ -85,6 +86,12 @@ class AnswerFormRequest extends FormRequest
             } else {
                 $rules[] = 'nullable';
             }
+
+            // User custom validation
+            if(!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])){
+                $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
+            }
+
             // Clean id to escape "."
             $propertyId = $property['id'];
             if (in_array($property['type'], ['multi_select'])) {
@@ -107,8 +114,6 @@ class AnswerFormRequest extends FormRequest
             $this->requestRules['submission_id'] = 'string';
         }
 
-
-        ray($this->requestRules);
         return $this->requestRules;
     }
 

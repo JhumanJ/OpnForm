@@ -22,8 +22,6 @@
             :form="field.validation"
             label="Error message"
             />
-
-            <v-button color="green" size="small" @click="test">test</v-button>
         </div>
     </collapse>
 </template>
@@ -61,11 +59,7 @@ export default {
                 error_message: this.error_message }
         }
     },
-    methods:{
-        test(){
-            console.log(this.form)
-        }
-    },
+    methods:{},
 
     watch: {
         logic: {
