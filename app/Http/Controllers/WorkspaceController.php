@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
+use App\Models\User;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserInvitationEmail;
 
 class WorkspaceController extends Controller
 {
@@ -29,6 +32,80 @@ class WorkspaceController extends Controller
         $this->authorize('view', $workspace);
 
         return (new WorkspaceHelper($workspace))->getAllUsers();
+    }
+
+    public function addUser(Request $request, $workspaceId)
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $this->authorize('workspaceAdmin', $workspace);
+
+        $this->validate($request, [
+            'email' => 'required|email',
+            'role' => 'required|in:admin,user',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            Mail::to($request->email)->send(new UserInvitationEmail($workspace->name));
+            return $this->success([
+                'message' => 'Registration invitation email sent to user.'
+            ]);
+        }
+
+        $workspace->users()->sync([
+            $user->id => [
+                'role' => $request->role,
+            ],
+        ], false);
+
+        return $this->success([
+            'message' => 'User has been successfully added to workspace.'
+        ]);
+    }
+
+    public function updateUserRole(Request $request, $workspaceId, $userId)
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $user = User::findOrFail($userId);
+        $this->authorize('workspaceAdmin', $workspace);
+
+        $this->validate($request, [
+            'role' => 'required|in:admin,user',
+        ]);
+
+        $workspace->users()->sync([
+            $user->id => [
+                'role' => $request->role,
+            ],
+        ], false);
+
+        return $this->success([
+            'message' => 'User role changed successfully.'
+        ]);
+    }
+
+    public function removeUser(Request $request, $workspaceId, $userId)
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $this->authorize('workspaceAdmin', $workspace);
+
+        $workspace->users()->detach($userId);
+
+        return $this->success([
+            'message' => 'User removed from workspace successfully.'
+        ]);
+    }
+
+    public function leaveWorkspace(Request $request, $workspaceId)
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $this->authorize('view', $workspace);
+
+        $workspace->users()->detach($request->user()->id);
+
+        return $this->success([
+            'message' => 'You have left the workspace successfully.'
+        ]);
     }
 
     public function saveCustomDomain(CustomDomainRequest $request)

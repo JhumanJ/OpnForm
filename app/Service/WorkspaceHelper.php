@@ -15,4 +15,10 @@ class WorkspaceHelper
     {
         return [];
     }
+
+
+    public function getAllUsers()
+    {
+        return $this->workspace->users;
+    }
 }

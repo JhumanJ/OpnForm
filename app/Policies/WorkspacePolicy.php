@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Workspace;
+use App\Models\UserWorkspace;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WorkspacePolicy
@@ -78,5 +79,19 @@ class WorkspacePolicy
     public function forceDelete(User $user, Workspace $workspace)
     {
         return false;
+    }
+
+    /**
+     * Determine whether the user is an admin in the workspace.
+     *
+     * @return mixed
+     */
+    public function workspaceAdmin(User $user, Workspace $workspace)
+    {
+        if(UserWorkspace::where('user_id', $user->id)->where('workspace_id', $workspace->id)->first()->role == 'admin') {
+            return true;
+        }else{
+            return false;
+        }
     }
 }
