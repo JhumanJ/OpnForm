@@ -25,10 +25,6 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   color: { type: String, default: null },
 })
-
-console.log(
-  props
-)
 const emit = defineEmits(["update:modelValue"])
 
 function onClick() {
