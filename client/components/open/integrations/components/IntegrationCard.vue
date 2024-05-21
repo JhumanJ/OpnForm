@@ -33,11 +33,10 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <!-- TODO -->
-      <GoogleSheetsIntegrationActions
-        v-if="false"
-        :form="form"
-        :integration-type-info="integrationTypeInfo"
+      <component
+        :is="actionsComponent"
+        v-if="actionsComponent"
+        :integration="integration"
       />
 
       <div
@@ -179,6 +178,14 @@ const integrationTypeInfo = computed(() =>
 const showIntegrationModal = ref(false)
 const showIntegrationEventsModal = ref(false)
 const loadingDelete = ref(false)
+
+const actionsComponent = computed(() => {
+  if(integrationTypeInfo.value.actions_file_name) {
+    return resolveComponent(integrationTypeInfo.value.actions_file_name)
+  }
+
+  return null
+})
 
 const deleteFormIntegration = (integrationid) => {
   alert.confirm("Do you really want to delete this form integration?", () => {

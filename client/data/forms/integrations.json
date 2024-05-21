@@ -48,6 +48,7 @@
     "icon": "mdi:google-spreadsheet",
     "section_name": "Databases",
     "file_name": "GoogleSheetsIntegration",
+    "actions_file_name": "GoogleSheetsIntegrationActions",
     "is_pro": false
   }
 }

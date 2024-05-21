@@ -6,6 +6,7 @@
   >
     <div class="my-5">
       <select-input
+        v-if="providers.length"
         v-model="integrationData.oauth_id"
         name="provider"
         :options="providers"
@@ -14,6 +15,15 @@
         :required="true"
         label="Select Google Account"
       />
+
+      <v-button
+        v-else
+        color="white"
+        :loading="providersStore.loading"
+        @click.prevent="connect"
+      >
+        Connect Google account
+      </v-button>
     </div>
   </IntegrationWrapper>
 </template>
@@ -28,6 +38,10 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null },
 })
 
-const oAuthProvidersStore = useOAuthProvidersStore()
-const providers = computed(() => oAuthProvidersStore.getAll.filter(provider => provider.provider == 'google'))
+const providersStore = useOAuthProvidersStore()
+const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
+
+function connect() {
+  providersStore.connect('google')
+}
 </script>

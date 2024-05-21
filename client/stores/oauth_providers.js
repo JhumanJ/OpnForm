@@ -5,6 +5,7 @@ export const providersEndpoint = "/open/providers"
 
 export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
+  const alert = useAlert()
 
   const fetchOAuthProviders = () => {
     contentStore.resetState()
@@ -18,11 +19,34 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     )
   }
 
+  const connect = (service) => {
+    contentStore.resetState()
+    contentStore.startLoading()
+
+    opnFetch(`/settings/providers/connect/${service}`, {
+      method: 'POST'
+    })
+      .then((data) => {
+        window.location.href = data.url
+      })
+      .catch((error) => {
+        try {
+          alert.error(error.data.message)
+        } catch (e) {
+          alert.error("An error occurred while connecting an account")
+        }
+      })
+      .finally(() => {
+        contentStore.stopLoading()
+      })
+  }
+
   const providers = computed(() => contentStore.getAll.value)
 
   return {
     ...contentStore,
     fetchOAuthProviders,
-    providers
+    providers,
+    connect
   }
 })

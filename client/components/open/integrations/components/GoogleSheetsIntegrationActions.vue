@@ -1,12 +1,15 @@
 <template>
-  <v-button color="white">
+  <v-button
+    :href="integration.data.url"
+    target="_blank"
+    color="white"
+  >
     Open spreadsheet
   </v-button>
 </template>
 
 <script setup>
-const props = defineProps({
-  integrationTypeInfo: Object,
-  form: Object,
+defineProps({
+  integration: Object,
 })
 </script>

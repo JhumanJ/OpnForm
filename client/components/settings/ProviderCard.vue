@@ -90,7 +90,7 @@ const providersStore = useOAuthProvidersStore()
 const alert = useAlert()
 
 function disconnect() {
-  alert.confirm("Do you really want to delete this form integration?", () => {
+  alert.confirm("Do you really want to disconnect this account?", () => {
   opnFetch(`/settings/providers/${props.provider.id}`, {
     method: 'DELETE'
   })
