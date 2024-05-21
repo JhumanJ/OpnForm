@@ -39,6 +39,10 @@ export const useWorkspacesStore = defineStore("workspaces", () => {
     }
   }
 
+  const getWorkspaceUsers = () => {
+    return useOpnApi(`${workspaceEndpoint}${currentId.value}/users/`)
+  }
+
   return {
     ...contentStore,
     currentId,
@@ -47,6 +51,7 @@ export const useWorkspacesStore = defineStore("workspaces", () => {
     set,
     save,
     remove,
+    getWorkspaceUsers,
   }
 })
 

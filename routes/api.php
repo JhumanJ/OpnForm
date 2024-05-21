@@ -73,12 +73,12 @@ Route::group(['middleware' => 'auth:api'], function () {
                     [WorkspaceController::class, 'addUser']
                 )->name('users.add');
 
-                Route::post(
+                Route::delete(
                     '/users/{userId}/remove',
                     [WorkspaceController::class, 'removeUser']
                 )->name('users.remove');
 
-                Route::post(
+                Route::put(
                     '/users/{userId}/update-role',
                     [WorkspaceController::class, 'updateUserRole']
                 )->name('users.update-role');
@@ -86,7 +86,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // leave workspace route
                 Route::post(
                     '/leave',
-                    [WorkspaceController::class, 'leave']
+                    [WorkspaceController::class, 'leaveWorkspace']
                 )->name('leave');
 
                 Route::prefix('/databases')->name('databases.')->group(function () {

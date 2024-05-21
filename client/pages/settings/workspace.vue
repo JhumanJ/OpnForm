@@ -58,6 +58,69 @@
         </div>
       </div>
 
+      <div class="mt-2">
+        <h4 class="font-bold">Members</h4>
+        <form v-if="isWorkspaceAdmin" @submit.prevent="addUser" class="">
+          <div class="flex flex-col gap-2 mt-2">
+            <label for="newUser" class="text-sm font-medium text-gray-700">Email</label>
+            <input
+              v-model="newUser"
+              type="text"
+              id="newUser"
+              class="w-full p-2 border border-gray-200 outline-none rounded"
+              placeholder="Add a new user by email"
+              required
+            />
+          </div>
+          <div class="flex flex-col gap-2 mt-2">
+            <label for="newUserRole" class="text-sm font-medium text-gray-700">Role</label>
+            <select
+              v-model="newUserRole"
+              id="newUserRole"
+              class="w-full p-2 border border-gray-200 outline-none rounded"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="flex justify-end mt-2">
+            <v-button
+            color="outline-blue"
+            :loading="loadingUsers"
+          >
+            Add User
+          </v-button>
+          </div>
+        </form>
+        <UTable
+          :loading="loadingUsers"
+          :rows="rows"
+          :columns="columns"
+        >
+        <template #actions-data="{ row }" v-if="isWorkspaceAdmin">
+          <UButton
+            @click="editUser(row.id)"
+            icon="i-heroicons-pencil"
+            size="2xs"
+            color="blue"
+            variant="outline"
+            :ui="{ rounded: 'rounded-full' }"
+            square
+          />
+
+          <UButton
+            @click="removeUser(row.id)"
+            icon="i-heroicons-trash"
+            size="2xs"
+            color="red"
+            variant="outline"
+            :ui="{ rounded: 'rounded-full' }"
+            square
+          />
+        </template>
+        </UTable>
+      </div>
+
       <template v-if="customDomainsEnabled">
         <text-area-input
           :form="customDomainsForm"
@@ -81,7 +144,7 @@
         </p>
       </template>
 
-      <div class="flex flex-wrap justify-between gap-2 mt-4">
+      <div class="flex flex-wrap justify-between gap-2 mt-4 mb-3">
         <v-button
           v-if="customDomainsEnabled"
           class="w-full sm:w-auto"
@@ -105,7 +168,17 @@
           Save Domains
         </v-button>
         <v-button
-          v-if="workspaces.length > 1"
+          v-if="users.length > 1"
+          color="white"
+          class="group w-full sm:w-auto"
+          :loading="leaveWorkspaceLoadingState"
+          @click="leaveWorkSpace(workspace.id)"
+        >
+          Leave Workspace
+        </v-button>
+
+        <v-button
+          v-if="isWorkspaceAdmin && workspaces.length > 1 && users.length == 1"
           color="white"
           class="group w-full sm:w-auto"
           :loading="loading"
@@ -129,6 +202,41 @@
         </v-button>
       </div>
     </div>
+
+    <modal
+      :show="showEditUserModal"
+      max-width="lg"
+      @close="showEditUserModal = false"
+    >
+    <template #title>
+        Edit User Role
+      </template>
+      <div class="px-4">
+        <form
+          @submit.prevent="updateUserRole"
+        >
+          <div>
+            <select
+              v-model="userNewRole"
+              id="newUserRole"
+              class="w-full p-2 border border-gray-200 outline-none rounded"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="w-full mt-6">
+            <v-button
+              :loading="updatingUserRoleState"
+              class="w-full my-3"
+            >
+              Update
+            </v-button>
+          </div>
+        </form>
+      </div>
+    </modal>
 
     <!--  Workspace modal  -->
     <modal
@@ -192,10 +300,11 @@
 </template>
 
 <script setup>
-import { watch } from "vue"
+import { watch, ref } from "vue"
 import { fetchAllWorkspaces } from "~/stores/workspaces.js"
 
 const crisp = useCrisp()
+const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
 const workspaces = computed(() => workspacesStore.getAll)
 const loading = computed(() => workspacesStore.loading)
@@ -222,6 +331,42 @@ const customDomainsEnabled = computed(
   () => useRuntimeConfig().public.customDomainsEnabled,
 )
 
+const users = ref([])
+const loadingUsers = ref(true)
+const leaveWorkspaceLoadingState = ref(false)
+const newUser = ref("")
+const newUserRole = ref("user")
+const showEditUserModal = ref(false)
+const selectedUser = ref(null)
+const userNewRole = ref("")
+const updatingUserRoleState = ref(false)
+
+const isWorkspaceAdmin = computed(() => {
+  let user = users.value.find((user) => user.id === authStore.user.id)
+  return user && user.pivot.role === "admin"
+})
+
+const rows = computed(() => {
+  return users.value.filter((user) => user.id !== authStore.user.id)
+})
+
+const columns = computed(()=>{
+  if(isWorkspaceAdmin.value){
+    return [
+      { key: 'name', label: 'Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'pivot.role', label: 'Role' },
+      { key: 'actions', label: 'Action' },
+    ]
+  }else{
+    return [
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'pivot.role', label: 'Role' },
+    ]
+  }
+})
+
 watch(
   () => workspace,
   () => {
@@ -232,7 +377,15 @@ watch(
 onMounted(() => {
   fetchAllWorkspaces()
   initCustomDomains()
+  getWorkspaceUsers()
 })
+
+const getWorkspaceUsers = async () => {
+  loadingUsers.value = true
+  let data = await workspacesStore.getWorkspaceUsers()
+  users.value = data.data.value
+  loadingUsers.value = false
+}
 
 const saveChanges = () => {
   if (customDomainsLoading.value) return
@@ -281,6 +434,109 @@ const deleteWorkspace = (workspaceId) => {
           workspacesStore.remove(workspaceId)
         },
       )
+    },
+  )
+}
+
+const leaveWorkSpace = (workspaceId) => {
+  useAlert().confirm(
+    "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
+    () => {
+      leaveWorkspaceLoadingState.value = true
+      opnFetch("/open/workspaces/" + workspaceId + "/leave", {
+        method: "POST",
+      }).then(() => {
+        useAlert().success("You have left the workspace.")
+        workspacesStore.remove(workspaceId)
+        getWorkspaceUsers()
+      }).catch((error) => {
+        useAlert().error("There was an error leaving the workspace.")
+      }).finally(() => {
+        leaveWorkspaceLoadingState.value = false
+      })
+    },
+  )
+}
+
+const addUser = () => {
+  if (!newUser.value) return
+  loadingUsers.value = true
+  opnFetch(
+    "/open/workspaces/" + workspacesStore.currentId + "/users/add",
+    {
+      method: "POST",
+      body: {
+        email: newUser.value,
+        role: newUserRole.value,
+      },
+    },
+    { showSuccess: false },
+  ).then((data) => {
+    newUser.value = ""
+    newUserRole.value = "user"
+
+    useAlert().success(data.message)
+
+    getWorkspaceUsers()
+  }).catch((error) => {
+    useAlert().error("There was an error adding user")
+  }).finally(() => {
+    loadingUsers.value = false
+  })
+}
+
+const editUser = (row) => {
+  selectedUser.value = users.value[row - 1]
+  userNewRole.value = selectedUser.value.pivot.role
+  showEditUserModal.value = true
+}
+
+const updateUserRole = () => {
+  updatingUserRoleState.value = true
+  opnFetch(
+    "/open/workspaces/" +
+      workspacesStore.currentId +
+      "/users/" +
+      selectedUser.value.id +
+      "/update-role",
+    {
+      method: "PUT",
+      body: {
+        role: userNewRole.value,
+      },
+    },
+    { showSuccess: false },
+  ).then(() => {
+    useAlert().success("User role updated.")
+    getWorkspaceUsers()
+    showEditUserModal.value = false
+  }).catch((error) => {
+    useAlert().error("There was an error updating user role")
+  }).finally(() => {
+    updatingUserRoleState.value = false
+  })
+}
+
+const removeUser = (row) => {
+  let user = users.value[row - 1]
+  useAlert().confirm(
+    "Do you really want to remove " + user.name + " from this workspace?",
+    () => {
+      loadingUsers.value = true
+      opnFetch(
+        "/open/workspaces/" + workspacesStore.currentId + "/users/" + user.id + "/remove",
+        {
+          method: "DELETE",
+        },
+        { showSuccess: false },
+      ).then(() => {
+        useAlert().success("User successfully Removed removed.")
+        getWorkspaceUsers()
+      }).catch((error) => {
+        useAlert().error("There was an error removing user")
+      }).finally(() => {
+        loadingUsers.value = false
+      })
     },
   )
 }

@@ -19,6 +19,6 @@ class WorkspaceHelper
 
     public function getAllUsers()
     {
-        return $this->workspace->users;
+        return $this->workspace->users()->withPivot('role')->get();
     }
 }

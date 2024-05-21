@@ -45,10 +45,17 @@ class WorkspaceController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+
         if (!$user) {
             Mail::to($request->email)->send(new UserInvitationEmail($workspace->name));
             return $this->success([
                 'message' => 'Registration invitation email sent to user.'
+            ]);
+        }
+
+        if ($workspace->users->contains($user->id)) {
+            return $this->success([
+                'message' => 'User is already in workspace.'
             ]);
         }
 
