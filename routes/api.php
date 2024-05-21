@@ -15,8 +15,7 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
-use App\Http\Controllers\Integrations\SpreadsheetsController;
-use App\Http\Controllers\OAuthProviderController;
+use App\Http\Controllers\OAuth\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\SubscriptionController;
@@ -44,8 +43,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);
 
-    Route::patch('settings/profile', [ProfileController::class, 'update']);
-    Route::patch('settings/password', [PasswordController::class, 'update']);
+    Route::prefix('/settings')->name('settings.')->group(function () {
+        Route::patch('/profile', [ProfileController::class, 'update']);
+        Route::patch('/password', [PasswordController::class, 'update']);
+
+        Route::prefix('/providers')->name('providers.')->group(function () {
+            Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
+            Route::post('/callback/{service}', [OAuthProviderController::class, 'handleRedirect'])->name('callback');
+            Route::delete('/{provider}', [OAuthProviderController::class, 'destroy'])->name('destroy');
+        });
+    });
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
         Route::put('/update-customer-details', [SubscriptionController::class, 'updateStripeDetails'])->name('update-stripe-details');
@@ -57,6 +64,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('open')->name('open.')->group(function () {
+        Route::get('/providers', [OAuthProviderController::class, 'index'])->name('index');
+
         Route::get('/forms', [FormController::class, 'indexAll'])->name('forms.index-all');
         Route::get('/forms/{slug}', [FormController::class, 'show'])->name('forms.show');
 
@@ -89,10 +98,6 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
-
-                Route::prefix('/providers')->name('providers.')->group(function () {
-                    Route::get('/', [OAuthProviderController::class, 'index'])->name('index');
-                });
             });
         });
 
@@ -294,8 +299,3 @@ Route::get('local/temp/{path}', function (Request $request, string $path) {
 
 Route::get('caddy/ask-certificate/{secret?}', [\App\Http\Controllers\CaddyController::class, 'ask'])
     ->name('caddy.ask')->middleware(\App\Http\Middleware\CaddyRequestMiddleware::class);
-
-Route::prefix('integrations')->middleware('auth:api')->group(function () {
-    Route::get('/spreadsheeds', [SpreadsheetsController::class, 'getRedirectUrl']);
-    Route::get('/spreadsheeds/redirect', [SpreadsheetsController::class, 'handleRedirect']);
-});

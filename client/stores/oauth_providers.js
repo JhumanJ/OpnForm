@@ -1,17 +1,18 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
 
-export const providersEndpoint = "/open/workspaces/{workspaceid}/providers"
+export const providersEndpoint = "/open/providers"
 
 export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
 
-  const fetchOAuthProviders = (workspaceId) => {
+  const fetchOAuthProviders = () => {
     contentStore.resetState()
     contentStore.startLoading()
-    return useOpnApi(providersEndpoint.replace('{workspaceid}', workspaceId)).then(
-      (response) => {
-        contentStore.save(response.data.value)
+
+    return opnFetch(providersEndpoint).then(
+      (data) => {
+        contentStore.save(data)
         contentStore.stopLoading()
       },
     )
