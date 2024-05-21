@@ -13,6 +13,6 @@ class AbstractIntegrationCreated
 
     public function handle(): void
     {
-
+        //
     }
 }

@@ -29,9 +29,9 @@ class FormIntegrationCreatedHandler implements ShouldQueue
             return;
         }
 
-        /** @var \App\Service\Forms\Integrations\Events\AbstractIntegrationCreated $eventHander */
+        /** @var \App\Service\Forms\Integrations\Events\AbstractIntegrationCreated $eventHandler */
         $eventHandler = new $className($event->formIntegration);
 
-        $eventHander->handle();
+        $eventHandler->handle();
     }
 }

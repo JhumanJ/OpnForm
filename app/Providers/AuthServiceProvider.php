@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\Forms\Form;
 use App\Models\Integration\FormZapierWebhook;
+use App\Models\OAuthProvider;
 use App\Models\Template;
 use App\Models\Workspace;
 use App\Policies\FormPolicy;
 use App\Policies\Integration\FormZapierWebhookPolicy;
+use App\Policies\OAuthProviderPolicy;
 use App\Policies\TemplatePolicy;
 use App\Policies\WorkspacePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         Workspace::class => WorkspacePolicy::class,
         FormZapierWebhook::class => FormZapierWebhookPolicy::class,
         Template::class => TemplatePolicy::class,
+        OAuthProvider::class => OAuthProviderPolicy::class,
     ];
 
     /**

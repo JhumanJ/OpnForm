@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Integrations\OAuth\OAuthProviderService;
 use Illuminate\Database\Eloquent\Model;
 
 class OAuthProvider extends Model
@@ -27,6 +28,10 @@ class OAuthProvider extends Model
      */
     protected $hidden = [
         'access_token', 'refresh_token',
+    ];
+
+    protected $casts = [
+        'provider' => OAuthProviderService::class,
     ];
 
     /**

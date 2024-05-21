@@ -3,6 +3,7 @@
 namespace App\Integrations\Google\Sheets;
 
 use App\Integrations\Google\Google;
+use App\Models\Forms\Form;
 use Google\Service\Sheets;
 use Google\Service\Sheets\BatchUpdateValuesRequest;
 use Google\Service\Sheets\Spreadsheet;
@@ -21,26 +22,38 @@ class SpreadsheetManager
     public function get(string $id): Spreadsheet
     {
         $spreadsheet = $this->driver
-        ->spreadsheets
-        ->get($id);
+            ->spreadsheets
+            ->get($id);
 
         return $spreadsheet;
     }
 
-    public function create(string $title): Spreadsheet
+    public function create(Form $form): Spreadsheet
     {
         $body = new Spreadsheet([
             'properties' => [
-                'title' => $title
+                'title' => $form->title
             ]
         ]);
 
         $spreadsheet = $this->driver->spreadsheets->create($body);
 
+        $this->updateHeaders($spreadsheet->spreadsheetId, $form);
+
         return $spreadsheet;
     }
 
-    public function setHeaders(string $id, array $headers): static
+    public function updateHeaders(string $id, Form $form): static
+    {
+        $headers = array_map(
+            fn (array $property) => $property['name'],
+            $form->properties
+        );
+
+        return $this->setHeaders($id, $headers);
+    }
+
+    protected function setHeaders(string $id, array $headers): static
     {
         $valueRange = new ValueRange([
             'values' => [$headers],

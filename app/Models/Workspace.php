@@ -188,8 +188,4 @@ class Workspace extends Model implements CachableAttributes
         return $this->hasMany(Form::class);
     }
 
-    public function providers()
-    {
-        return $this->hasMany(OAuthProvider::class);
-    }
 }
