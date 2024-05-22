@@ -129,8 +129,8 @@ export const useWorkingFormStore = defineStore("working_form", {
       }
       newBlock.help_position = "below_input"
       if (
-        this.selectedFieldIndex === null ||
-        this.selectedFieldIndex === undefined
+        (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) &&
+        (index === null || index === undefined)
       ) {
         const newFields = clonedeep(this.content.properties)
         newFields.push(newBlock)

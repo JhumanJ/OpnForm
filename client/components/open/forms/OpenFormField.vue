@@ -248,7 +248,7 @@ export default {
       this.workingFormStore.openAddFieldSidebar(this.field)
     },
     getFieldWidthClasses(field) {
-      if (!field.width || field.width === 'full') return 'col-span-full w-full'
+      if (!field.width || field.width === 'full') return 'col-span-full'
       else if (field.width === '1/2') {
         return 'w-full sm:col-span-6 col-span-full'
       } else if (field.width === '1/3') {
