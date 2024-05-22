@@ -6,7 +6,8 @@
       :name="name"
       type="checkbox"
       :class="sizeClasses"
-      class="rounded border-gray-500 cursor-pointer"
+      class="rounded border-gray-500 cursor-pointer checkbox"
+      :style="{ '--accent-color': color }"
       :disabled="disabled ? true : null"
     >
     <label
@@ -20,14 +21,7 @@
 </template>
 
 <script setup>
-import {
-  defineEmits,
-  defineOptions,
-  defineProps,
-  onMounted,
-  ref,
-  watch,
-} from "vue"
+import { defineEmits, defineOptions, defineProps, onMounted, ref, watch, } from "vue"
 
 defineOptions({
   name: "VCheckbox",
@@ -39,6 +33,7 @@ const props = defineProps({
   modelValue: { type: [Boolean, String], default: false },
   disabled: { type: Boolean, default: false },
   sizeClasses: { type: String, default: "w-4 h-4" },
+  color: { type: String, default: null },
 })
 
 const emit = defineEmits(["update:modelValue", "click"])
@@ -73,3 +68,8 @@ onMounted(() => {
   if (internalValue.value === null) internalValue.value = false
 })
 </script>
+<style>
+  .checkbox {
+    accent-color: var(--accent-color);
+  }
+</style>
