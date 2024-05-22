@@ -148,21 +148,67 @@ it('can not submit form with future dates', function () {
 });
 
 
-it('can not submit form with failed custom validation condition', function () {
+it('can submit form with passed custom validation condition', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Number')->first();
     $condition = [
         'actions' => [],
         'conditions' => [
             'operatorIdentifier' => 'or',
             'children' => [
                 [
-                    'identifier' => 'email',
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'greater_than',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'number',
+                        ],
+                        'value' => 20,
+                    ],
+                ],
+            ],
+        ],
+    ];
+    $submissionData = [];
+    $validationMessage = 'Number too low';
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$targetField['id']] = 100;
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $response = $this->postJson(route('forms.answer', $form->slug), $formData);
+    $response->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('can not submit form with failed custom validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
                     'value' => [
                         'operator' => 'equals',
                         'property_meta' => [
-                            'id' => 'email',
+                            'id' => $targetField['id'],
                             'type' => 'email',
                         ],
                         'value' => 'test@gmail.com',
@@ -172,12 +218,11 @@ it('can not submit form with failed custom validation condition', function () {
         ],
     ];
     $submissionData = [];
-    $validationMessage = 'Cannot use test@gmail.com';
-    $conditionEmail = 'test@gmail.com';
-    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $conditionEmail) {
+    $validationMessage = 'Can only use test@gmail.com';
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, &$targetField) {
         if (in_array($property['name'], ['Name'])) {
             $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
-            $submissionData[$property['id']] = $conditionEmail;
+            $submissionData[$targetField['id']] = 'fail@gmail.com';
         }
         return $property;
     })->toArray();
