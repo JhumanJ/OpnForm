@@ -20,6 +20,7 @@ use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -65,28 +66,28 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::prefix('/{workspaceId}')->group(function () {
                 Route::get(
                     '/users',
-                    [WorkspaceController::class, 'listUsers']
+                    [WorkspaceUserController::class, 'listUsers']
                 )->name('users.index');
 
                 Route::post(
                     '/users/add',
-                    [WorkspaceController::class, 'addUser']
+                    [WorkspaceUserController::class, 'addUser']
                 )->name('users.add');
 
                 Route::delete(
                     '/users/{userId}/remove',
-                    [WorkspaceController::class, 'removeUser']
+                    [WorkspaceUserController::class, 'removeUser']
                 )->name('users.remove');
 
                 Route::put(
                     '/users/{userId}/update-role',
-                    [WorkspaceController::class, 'updateUserRole']
+                    [WorkspaceUserController::class, 'updateUserRole']
                 )->name('users.update-role');
 
                 // leave workspace route
                 Route::post(
                     '/leave',
-                    [WorkspaceController::class, 'leaveWorkspace']
+                    [WorkspaceUserController::class, 'leaveWorkspace']
                 )->name('leave');
 
                 Route::prefix('/databases')->name('databases.')->group(function () {
