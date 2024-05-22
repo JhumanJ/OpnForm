@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Forms\Form;
 use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can answer a form', function () {
@@ -143,5 +144,51 @@ it('can not submit form with future dates', function () {
         ->assertStatus(422)
         ->assertJson([
             'message' => 'The Date must be a date before tomorrow.',
+        ]);
+});
+
+
+it('can not submit form with failed custom validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'or',
+            'children' => [
+                [
+                    'identifier' => 'email',
+                    'value' => [
+                        'operator' => 'equals',
+                        'property_meta' => [
+                            'id' => 'email',
+                            'type' => 'email',
+                        ],
+                        'value' => 'test@gmail.com',
+                    ],
+                ],
+            ],
+        ],
+    ];
+    $submissionData = [];
+    $validationMessage = 'Cannot use test@gmail.com';
+    $conditionEmail = 'test@gmail.com';
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $conditionEmail) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$property['id']] = $conditionEmail;
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
         ]);
 });
