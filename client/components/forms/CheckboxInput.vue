@@ -9,6 +9,7 @@
       v-model="compVal"
       :disabled="disabled ? true : null"
       :name="name"
+      :color="color"
     >
       <slot name="label">
         {{ label }}
