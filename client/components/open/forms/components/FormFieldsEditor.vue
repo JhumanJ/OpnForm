@@ -48,7 +48,7 @@
             class="flex items-center space-x-1 group py-2 pr-2 relative"
           >
             <!-- Drag handler -->
-            <div class="cursor-move draggable p-1 -mr-3">
+            <div class="cursor-grab draggable p-1 -mr-3">
               <Icon
                 name="clarity:drag-handle-line"
                 class="size-8 text-gray-400"
