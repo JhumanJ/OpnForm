@@ -88,7 +88,7 @@ class AnswerFormRequest extends FormRequest
             }
 
             // User custom validation
-            if(!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])){
+            if(!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
                 $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
             }
 

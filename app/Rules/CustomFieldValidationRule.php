@@ -2,13 +2,11 @@
 
 namespace App\Rules;
 
-use App\Models\Forms\Form;
 use App\Service\Forms\FormLogicConditionChecker;
 use Illuminate\Contracts\Validation\Rule;
 
 class CustomFieldValidationRule implements Rule
 {
-   private $message;
     /**
      * Create a new rule instance.
      *
@@ -37,6 +35,6 @@ class CustomFieldValidationRule implements Rule
      */
     public function message()
     {
-        return isset($this->validation['error_message']) ? $this->validation['error_message']: 'Invalid input';
+        return isset($this->validation['error_message']) ? $this->validation['error_message'] : 'Invalid input';
     }
 }
