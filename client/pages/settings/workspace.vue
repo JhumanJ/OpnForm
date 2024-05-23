@@ -219,9 +219,6 @@ const customDomainsEnabled = computed(
   () => useRuntimeConfig().public.customDomainsEnabled,
 )
 
-const users = ref([])
-const isWorkspaceAdmin = false
-
 watch(
   () => workspace,
   () => {
