@@ -46,7 +46,6 @@ export default {
   },
 
   setup(props, context) {
-    console.log(props,'props')
     return {
       ...useFormInput(props, context),
     }
