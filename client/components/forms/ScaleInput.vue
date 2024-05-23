@@ -59,7 +59,6 @@ export default {
   computed: {
     scaleList() {
       const list = []
-      console.log(this.stepScale)
       if (this.stepScale == 0) {
         list.push(this.minScale)
         return list
@@ -67,8 +66,6 @@ export default {
       for (let i = this.minScale; i <= this.maxScale; i += this.stepScale) {
         list.push(i)
       }
-
-      // console.log(list)
       return list
     },
     unselectedButtonClass() {
