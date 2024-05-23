@@ -17,7 +17,7 @@
         role="button"
         @click="setScale(i)"
       >
-        {{ i }}
+        {{ parseFloat(i).toFixed(2) }}
       </div>
     </div>
 
@@ -46,6 +46,7 @@ export default {
   },
 
   setup(props, context) {
+    console.log(props,'props')
     return {
       ...useFormInput(props, context),
     }
@@ -58,9 +59,16 @@ export default {
   computed: {
     scaleList() {
       const list = []
+      console.log(this.stepScale)
+      if (this.stepScale == 0) {
+        list.push(this.minScale)
+        return list
+      }
       for (let i = this.minScale; i <= this.maxScale; i += this.stepScale) {
         list.push(i)
       }
+
+      // console.log(list)
       return list
     },
     unselectedButtonClass() {
