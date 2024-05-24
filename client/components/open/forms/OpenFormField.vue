@@ -331,7 +331,7 @@ export default {
       } else if (field.type === 'scale') {
         inputProperties.minScale = parseInt(field.scale_min_value) ?? 1
         inputProperties.maxScale = parseInt(field.scale_max_value) ?? 5
-        inputProperties.stepScale = parseInt(field.scale_step_value) ?? 1
+        inputProperties.stepScale = parseFloat(field.scale_step_value) ?? 1
       } else if (field.type === 'slider') {
         inputProperties.minSlider = parseInt(field.slider_min_value) ?? 0
         inputProperties.maxSlider = parseInt(field.slider_max_value) ?? 50
