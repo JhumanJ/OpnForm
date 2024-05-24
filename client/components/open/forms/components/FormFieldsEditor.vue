@@ -45,24 +45,14 @@
         >
           <div
             v-if="element"
-            class="flex items-center space-x-1 group py-2 pr-4 relative"
+            class="flex items-center space-x-1 group py-2 pr-2 relative"
           >
             <!-- Drag handler -->
-            <div class="cursor-move draggable p-2 -mr-2">
-              <svg
-                class="h-4 w-4 text-gray-400"
-                viewBox="0 0 18 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.5 1.0835H16.5M1.5 6.91683H16.5"
-                  stroke="currentColor"
-                  stroke-width="1.67"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+            <div class="cursor-grab draggable p-1 -mr-3">
+              <Icon
+                name="clarity:drag-handle-line"
+                class="size-8 text-gray-400"
+              />
             </div>
             <!-- Field name and type -->
             <div class="flex flex-col flex-grow truncate">

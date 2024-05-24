@@ -105,7 +105,6 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     addBlock(type, index = null) {
-      this.selectedFieldIndex = index
       this.blockForm.type = type
       this.blockForm.name = defaultBlockNames[type]
       const newBlock = this.prefillDefault(this.blockForm.data())
@@ -129,8 +128,8 @@ export const useWorkingFormStore = defineStore("working_form", {
       }
       newBlock.help_position = "below_input"
       if (
-        this.selectedFieldIndex === null ||
-        this.selectedFieldIndex === undefined
+        (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) &&
+        (index === null || index === undefined)
       ) {
         const newFields = clonedeep(this.content.properties)
         newFields.push(newBlock)
@@ -149,8 +148,8 @@ export const useWorkingFormStore = defineStore("working_form", {
 
     moveField(oldIndex, newIndex) {
       const newFields = clonedeep(this.content.properties)
-      const field = newFields.splice(oldIndex, 1)[0];
-      newFields.splice(newIndex, 0, field);
+      const field = newFields.splice(oldIndex, 1)[0]
+      newFields.splice(newIndex, 0, field)
       this.content.properties = newFields
     }
   },
