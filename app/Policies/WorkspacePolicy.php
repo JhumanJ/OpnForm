@@ -88,6 +88,9 @@ class WorkspacePolicy
      */
     public function workspaceAdmin(User $user, Workspace $workspace)
     {
-        return UserWorkspace::where('user_id', $user->id)->where('workspace_id', $workspace->id)->first()->role == 'admin'; 
+        return UserWorkspace::where('user_id', $user->id)
+                            ->where('workspace_id', $workspace->id)
+                            ->first()
+                            ->role == 'admin';
     }
 }
