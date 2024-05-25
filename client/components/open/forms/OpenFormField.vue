@@ -2,11 +2,12 @@
   <div
     v-if="!isFieldHidden"
     :id="'block-' + field.id"
+    class="px-2"
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 mx-[-15px] px-[15px] transition-colors hover:border-gray-200 dark:hover:bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
-        'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
   >
     <div
@@ -248,17 +249,17 @@ export default {
       this.workingFormStore.openAddFieldSidebar(this.field)
     },
     getFieldWidthClasses(field) {
-      if (!field.width || field.width === 'full') return 'col-span-full w-full'
+      if (!field.width || field.width === 'full') return 'col-span-full'
       else if (field.width === '1/2') {
-        return 'w-full sm:col-span-6 col-span-full'
+        return 'sm:col-span-6 col-span-full'
       } else if (field.width === '1/3') {
-        return 'w-full sm:col-span-4 col-span-full'
+        return 'sm:col-span-4 col-span-full'
       } else if (field.width === '2/3') {
-        return 'w-full sm:col-span-8 col-span-full'
+        return 'sm:col-span-8 col-span-full'
       } else if (field.width === '1/4') {
-        return 'w-full sm:col-span-3 col-span-full'
+        return 'sm:col-span-3 col-span-full'
       } else if (field.width === '3/4') {
-        return 'w-full sm:col-span-9 col-span-full'
+        return 'sm:col-span-9 col-span-full'
       }
     },
     getFieldAlignClasses(field) {
