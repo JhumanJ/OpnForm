@@ -68,16 +68,8 @@
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
           </NuxtLink>
-          <a
-            v-if="hasCrisp"
-            href="#"
-            class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
-            @click.prevent="openHelpdesk"
-          >
-            Help
-          </a>
+          
           <NuxtLink
-            v-else
             :href="helpUrl"
             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
             target="_blank"
