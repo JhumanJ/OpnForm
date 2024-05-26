@@ -25,7 +25,17 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
-            //
+            'oauth_id' => [
+                'required',
+                'string',
+            ],
+        ];
+    }
+
+    public static function getValidationAttributes(): array
+    {
+        return [
+            'settings.oauth_id' => 'Google Account',
         ];
     }
 
@@ -46,11 +56,11 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
 
     protected function getSpreadsheetId(): string
     {
-        if(!isset($this->integrationData['spreadsheet_id'])) {
+        if(!isset($this->integrationData->spreadsheet_id)) {
             throw new Exception('The spreadsheed is not instantiated');
         }
 
-        return $this->integrationData['spreadsheet_id'];
+        return $this->integrationData->spreadsheet_id;
     }
 
     protected function shouldRun(): bool

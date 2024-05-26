@@ -115,6 +115,11 @@ abstract class AbstractIntegrationHandler
 
     abstract public static function getValidationRules(): array;
 
+    public static function getValidationAttributes(): array
+    {
+        return [];
+    }
+
     public static function formatData(array $data): array
     {
         return $data;

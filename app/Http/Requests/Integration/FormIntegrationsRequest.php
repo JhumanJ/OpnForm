@@ -54,11 +54,14 @@ class FormIntegrationsRequest extends FormRequest
      */
     public function attributes()
     {
+        $attributes = $this->integrationClassName::getValidationAttributes();
+
         $fields = [];
         foreach ($this->rules() as $key => $value) {
-            $fields[$key] = Str::of($key)
+            $fields[$key] = $attributes[$key] ?? Str::of($key)
                 ->replace('settings.', '')
-                ->headline();
+                ->headline()
+                ->toString();
         }
 
         return $fields;
