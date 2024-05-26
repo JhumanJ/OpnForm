@@ -24,7 +24,21 @@ class SpreadsheetManager
     ) {
         $this->driver = new Sheets($google->getClient());
 
-        $this->data = SpreadsheetData::from($this->integration->data);
+        $this->data = new SpreadsheetData(
+            url: $this->integration->data->url,
+            spreadsheet_id: $this->integration->data->spreadsheet_id,
+            columns: array_map(
+                fn ($column) => (array) $column,
+                $this->integration->data->columns
+            )
+        );
+    }
+
+    protected function convertToArray(mixed $object): array
+    {
+        return is_scalar($object) || is_null($object)
+            ? $object
+            : $this->convertToArray((array) $object);
     }
 
     public function get(string $id): Spreadsheet

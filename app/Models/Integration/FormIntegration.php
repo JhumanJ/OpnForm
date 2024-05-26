@@ -24,7 +24,7 @@ class FormIntegration extends Model
     ];
 
     protected $casts = [
-        'data' => 'array',
+        'data' => 'object',
         'logic' => 'object'
     ];
 
