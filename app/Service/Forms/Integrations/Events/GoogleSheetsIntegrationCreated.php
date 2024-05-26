@@ -14,20 +14,13 @@ class GoogleSheetsIntegrationCreated extends AbstractIntegrationCreated
     ) {
         parent::__construct($formIntegration);
 
-        $this->client = new Google($formIntegration->provider);
+        $this->client = new Google($formIntegration);
     }
 
     public function handle(): void
     {
         $manager = $this->client->sheets();
 
-        $spreadsheet = $manager->create($this->formIntegration->form);
-
-        $this->formIntegration->update([
-            'data' => [
-                'spreadsheet_id' => $spreadsheet->spreadsheetId,
-                'url' => $spreadsheet->spreadsheetUrl,
-            ],
-        ]);
+        $manager->create($this->formIntegration->form);
     }
 }

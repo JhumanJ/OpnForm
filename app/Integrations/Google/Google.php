@@ -3,7 +3,7 @@
 namespace App\Integrations\Google;
 
 use App\Integrations\Google\Sheets\SpreadsheetManager;
-use App\Models\OAuthProvider;
+use App\Models\Integration\FormIntegration;
 use Google\Client as Client;
 
 class Google
@@ -13,12 +13,12 @@ class Google
     protected ?string $refreshToken;
 
     public function __construct(
-        protected OAuthProvider $provider
+        protected FormIntegration $formIntegration
     ) {
         $this->client = new Client();
         $this->client->setClientId(config('services.google.client_id'));
         $this->client->setClientSecret(config('services.google.client_secret'));
-        $this->client->setAccessToken($this->provider->access_token);
+        $this->client->setAccessToken($this->formIntegration->provider->access_token);
     }
 
     public function getClient(): Client
@@ -28,9 +28,9 @@ class Google
 
     public function refreshToken(): static
     {
-        [$accessToken, $refreshToken] = $this->client->refreshToken($this->provider->refresh_token);
+        [$accessToken, $refreshToken] = $this->client->refreshToken($this->formIntegration->provider->refresh_token);
 
-        $this->provider->update([
+        $this->formIntegration->provider->update([
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
         ]);
@@ -40,6 +40,6 @@ class Google
 
     public function sheets(): SpreadsheetManager
     {
-        return new SpreadsheetManager($this);
+        return new SpreadsheetManager($this, $this->formIntegration);
     }
 }

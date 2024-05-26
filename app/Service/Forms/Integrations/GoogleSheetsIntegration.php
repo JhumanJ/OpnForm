@@ -5,7 +5,6 @@ namespace App\Service\Forms\Integrations;
 use App\Events\Forms\FormSubmitted;
 use App\Integrations\Google\Google;
 use App\Models\Integration\FormIntegration;
-use App\Service\Forms\FormSubmissionFormatter;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +19,7 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
     ) {
         parent::__construct($event, $formIntegration, $integration);
 
-        $this->client = new Google($formIntegration->provider);
+        $this->client = new Google($formIntegration);
     }
 
     public static function getValidationRules(): array
@@ -42,27 +41,16 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
             'form_slug' => $this->form->slug,
         ]);
 
-        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-
-        $row = array_map(
-            fn ($field) => $field['value'],
-            $formatter->getFieldsWithValue()
-        );
-
-        $this->client->sheets()
-            ->addRow(
-                $this->getSpreadsheetId(),
-                $row
-            );
+        $this->client->sheets()->submit($this->submissionData);
     }
 
     protected function getSpreadsheetId(): string
     {
-        if(!isset($this->integrationData->spreadsheet_id)) {
+        if(!isset($this->integrationData['spreadsheet_id'])) {
             throw new Exception('The spreadsheed is not instantiated');
         }
 
-        return $this->integrationData->spreadsheet_id;
+        return $this->integrationData['spreadsheet_id'];
     }
 
     protected function shouldRun(): bool

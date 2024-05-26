@@ -1,0 +1,4 @@
+{
+    "$schema": "/Applications/Tinkerwell.app/Contents/Resources/phpactor/phpactor.schema.json",
+    "language_server_phpstan.enabled": false
+}

@@ -2,21 +2,29 @@
 
 namespace App\Integrations\Google\Sheets;
 
+use App\Integrations\Data\SpreadsheetData;
 use App\Integrations\Google\Google;
 use App\Models\Forms\Form;
+use App\Models\Integration\FormIntegration;
+use App\Service\Forms\FormSubmissionFormatter;
 use Google\Service\Sheets;
 use Google\Service\Sheets\BatchUpdateValuesRequest;
 use Google\Service\Sheets\Spreadsheet;
 use Google\Service\Sheets\ValueRange;
+use Illuminate\Support\Arr;
 
 class SpreadsheetManager
 {
     protected Sheets $driver;
+    protected SpreadsheetData $data;
 
     public function __construct(
-        Google $google
+        protected Google $google,
+        protected FormIntegration $integration
     ) {
         $this->driver = new Sheets($google->getClient());
+
+        $this->data = SpreadsheetData::from($this->integration->data);
     }
 
     public function get(string $id): Spreadsheet
@@ -38,16 +46,47 @@ class SpreadsheetManager
 
         $spreadsheet = $this->driver->spreadsheets->create($body);
 
-        $this->updateHeaders($spreadsheet->spreadsheetId, $form);
+        $this->data->url = $spreadsheet->spreadsheetUrl;
+        $this->data->spreadsheet_id = $spreadsheet->spreadsheetId;
+
+        $this->updateHeaders($spreadsheet->spreadsheetId);
 
         return $spreadsheet;
     }
 
-    public function updateHeaders(string $id, Form $form): static
+    public function buildColumns(): array
     {
+        $properties = $this->integration->form->properties;
+
+        foreach ($properties as $property) {
+            $key = Arr::first(
+                array_keys($this->data->columns),
+                fn (int $key) => $this->data->columns[$key]['id'] === $property['id']
+            );
+
+            $column = Arr::only($property, ['id', 'name']);
+
+            if (!is_null($key)) {
+                $this->data->columns[$key] = $column;
+            } else {
+                $this->data->columns[] = $column;
+            }
+        }
+
+        $this->integration->update([
+            'data' => $this->data,
+        ]);
+
+        return $this->data->columns;
+    }
+
+    public function updateHeaders(string $id): static
+    {
+        $columns = $this->buildColumns();
+
         $headers = array_map(
-            fn (array $property) => $property['name'],
-            $form->properties
+            fn ($column) => $column['name'],
+            $columns
         );
 
         return $this->setHeaders($id, $headers);
@@ -71,6 +110,30 @@ class SpreadsheetManager
         $this->driver
             ->spreadsheets_values
             ->batchUpdate($id, $body);
+
+        return $this;
+    }
+
+    public function submit(array $submissionData): static
+    {
+        $this->updateHeaders($this->data->spreadsheet_id);
+
+        $formatter = (new FormSubmissionFormatter($this->integration->form, $submissionData))->outputStringsOnly();
+
+        $fields = $formatter->getFieldsWithValue();
+
+        $row = collect($this->data->columns)
+            ->map(function (array $column) use ($fields) {
+                $field = Arr::first($fields, fn ($field) => $field['id'] === $column['id']);
+
+                return $field ? $field['value'] : '';
+            })
+            ->toArray();
+
+        $this->addRow(
+            $this->data->spreadsheet_id,
+            $row
+        );
 
         return $this;
     }

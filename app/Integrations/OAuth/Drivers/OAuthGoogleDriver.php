@@ -20,7 +20,7 @@ class OAuthGoogleDriver implements OAuthDriver
     public function getRedirectUrl(): string
     {
         return $this->provider
-            ->scopes([Sheets::SPREADSHEETS])
+            ->scopes([Sheets::DRIVE_FILE])
             ->stateless()
             ->with([
                 'access_type' => 'offline',

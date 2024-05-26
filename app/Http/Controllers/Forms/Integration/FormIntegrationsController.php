@@ -37,7 +37,7 @@ class FormIntegrationsController extends Controller
 
         return $this->success([
             'message' => 'Form Integration was created.',
-            'form_integration' => $formIntegration
+            'form_integration' => $formIntegration->refresh()
         ]);
     }
 
