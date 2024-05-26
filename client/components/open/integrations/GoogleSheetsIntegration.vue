@@ -42,6 +42,6 @@ const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
 
 function connect() {
-  providersStore.connect('google')
+  providersStore.connect('google', true)
 }
 </script>

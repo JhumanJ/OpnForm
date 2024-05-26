@@ -90,7 +90,12 @@ function handleCallback() {
     }
   })
     .then((data) => {
-      //
+      if(!data.intention) {
+        router.push('/settings/connections')
+      }
+      else {
+        router.push(data.intention)
+      }
     })
     .catch((error) => {
       try {
@@ -98,8 +103,7 @@ function handleCallback() {
       } catch (e) {
         alert.error("An error occurred while connecting an account")
       }
-    })
-    .finally(() => {
+
       router.push('/settings/connections')
     })
 }

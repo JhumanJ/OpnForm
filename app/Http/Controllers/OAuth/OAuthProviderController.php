@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OAuthProviderResource;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\OAuthProvider;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OAuthProviderController extends Controller
@@ -20,8 +21,11 @@ class OAuthProviderController extends Controller
         return OAuthProviderResource::collection($providers);
     }
 
-    public function connect(OAuthProviderService $service)
+    public function connect(Request $request, OAuthProviderService $service)
     {
+        $userId = Auth::id();
+        cache()->put("oauth-intention:{$userId}", $request->input('intention'), 60 * 5);
+
         return response()->json([
             'url' => $service->getDriver()->getRedirectUrl(),
         ]);
