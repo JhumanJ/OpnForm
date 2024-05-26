@@ -19,8 +19,7 @@ class GoogleSheetsIntegrationCreated extends AbstractIntegrationCreated
 
     public function handle(): void
     {
-        $manager = $this->client->sheets();
-
-        $manager->create($this->formIntegration->form);
+        $this->client->sheets()
+            ->create($this->formIntegration->form);
     }
 }

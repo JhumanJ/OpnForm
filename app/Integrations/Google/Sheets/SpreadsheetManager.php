@@ -24,14 +24,16 @@ class SpreadsheetManager
     ) {
         $this->driver = new Sheets($google->getClient());
 
-        $this->data = new SpreadsheetData(
-            url: $this->integration->data->url,
-            spreadsheet_id: $this->integration->data->spreadsheet_id,
-            columns: array_map(
-                fn ($column) => (array) $column,
-                $this->integration->data->columns
-            )
-        );
+        $this->data = empty($this->integration->data)
+            ? new SpreadsheetData()
+            : new SpreadsheetData(
+                url: $this->integration->data->url,
+                spreadsheet_id: $this->integration->data->spreadsheet_id,
+                columns: array_map(
+                    fn ($column) => (array) $column,
+                    $this->integration->data->columns
+                )
+            );
     }
 
     protected function convertToArray(mixed $object): array
@@ -62,6 +64,7 @@ class SpreadsheetManager
 
         $this->data->url = $spreadsheet->spreadsheetUrl;
         $this->data->spreadsheet_id = $spreadsheet->spreadsheetId;
+        $this->data->columns = [];
 
         $this->updateHeaders($spreadsheet->spreadsheetId);
 
