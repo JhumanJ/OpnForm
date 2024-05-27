@@ -15,4 +15,5 @@ export default defineNuxtRouteMiddleware(async () => {
     authStore.setUser(userDataResponse.data.value)
     workspaceStore.save(workspacesResponse.data.value)
   }
+  authStore.initServiceClients()
 })
