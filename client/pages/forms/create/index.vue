@@ -11,6 +11,7 @@
         v-if="form && !workspacesLoading"
         ref="editor"
         class="w-full flex flex-grow"
+        :is-create="true"
         :error="error"
         @on-save="formInitialHash = null"
       />

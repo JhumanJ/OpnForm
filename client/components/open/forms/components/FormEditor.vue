@@ -154,6 +154,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    isCreate: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
     isGuest: {
       required: false,
       type: Boolean,
@@ -248,6 +253,9 @@ export default {
   watch: {},
 
   mounted() {
+    if (this.isCreate && this.workspace?.is_pro) {
+      this.form.no_branding = true
+    }
     this.$emit("mounted")
     this.appStore.hideNavbar()
   },
