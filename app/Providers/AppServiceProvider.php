@@ -15,6 +15,15 @@ use Laravel\Dusk\DuskServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * The path to your application's "home" route.
+     *
+     * Typically, users are redirected here after authentication.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -40,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Validator::includeUnvalidatedArrayKeys();
+
+        $this->bootAuth();
     }
 
     /**
@@ -52,5 +63,13 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local', 'testing') && class_exists(DuskServiceProvider::class)) {
             $this->app->register(DuskServiceProvider::class);
         }
+    }
+
+    public function bootAuth()
+    {
+
+        \Illuminate\Support\Facades\Gate::define('viewMailcoach', function ($user = null) {
+            return $user?->admin;
+        });
     }
 }
