@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::middleware('auth:api')->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
@@ -160,7 +160,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
     });
 
-    Route::group(['middleware' => 'moderator', 'prefix' => 'moderator'], function () {
+    Route::middleware('moderator')->prefix('moderator')->group(function () {
         Route::get(
             'fetch-user/{identifier}',
             [\App\Http\Controllers\Admin\AdminController::class, 'fetchUser']
@@ -187,21 +187,21 @@ Route::group(['middleware' => 'auth:api'], function () {
             [\App\Http\Controllers\Admin\AdminController::class, 'sendPasswordResetEmail']
         );
 
-        Route::group(['prefix'  => 'billing'], function () {
+        Route::prefix('billing')->group(function () {
             Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
             Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
             Route::get('{userId}/subscriptions', [\App\Http\Controllers\Admin\BillingController::class, 'getSubscriptions']);
             Route::get('{userId}/payments', [\App\Http\Controllers\Admin\BillingController::class, 'getPayments']);
         });
 
-        Route::group(['prefix' => 'forms'], function () {
+        Route::prefix('forms')->group(function () {
             Route::get('{userId}/deleted-forms', [\App\Http\Controllers\Admin\FormController::class, 'getDeletedForms']);
             Route::patch('{slug}/restore', [\App\Http\Controllers\Admin\FormController::class, 'restoreDeletedForm']);
         });
     });
 });
 
-Route::group(['middleware' => 'guest:api'], function () {
+Route::middleware('guest:api')->group(function () {
     Route::post('login', [LoginController::class, 'login']);
     Route::post('register', [RegisterController::class, 'register']);
 
@@ -215,7 +215,7 @@ Route::group(['middleware' => 'guest:api'], function () {
     Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
 });
 
-Route::group(['prefix' => 'appsumo'], function () {
+Route::prefix('appsumo')->group(function () {
     Route::get('oauth/callback', [\App\Http\Controllers\Auth\AppSumoAuthController::class, 'handleCallback'])->name('appsumo.callback');
     Route::post('webhook', [\App\Http\Controllers\Webhook\AppSumoController::class, 'handle'])->name('appsumo.webhook');
 });
