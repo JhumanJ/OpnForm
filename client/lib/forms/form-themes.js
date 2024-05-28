@@ -32,8 +32,10 @@ export const themes = {
     },
     SelectInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'relative w-full rounded-lg border-gray-300 flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full px-4 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
-      help: 'text-gray-400 dark:text-gray-500'
+      input: 'relative w-full rounded-lg border-gray-300 flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      help: 'text-gray-400 dark:text-gray-500',
+      dropdown: 'rounded-lg border border-gray-300 dark:border-gray-600',
+      option: 'rounded-md'
     },
     ScaleInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
@@ -76,8 +78,10 @@ export const themes = {
     },
     SelectInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
-      input: 'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full px-2 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
-      help: 'text-gray-400 dark:text-gray-500'
+      input: 'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      help: 'text-gray-400 dark:text-gray-500',
+      dropdown: 'border border-gray-300 dark:border-gray-600',
+      option: ''
     },
     CodeInput: {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
@@ -131,7 +135,9 @@ export const themes = {
     SelectInput: {
       label: 'text-gray-900 dark:text-gray-100 mb-2 block mt-4',
       input: 'rounded relative w-full border-transparent flex-1 appearance-none bg-notion-input-background shadow-inner-notion w-full px-2 text-gray-900 placeholder-gray-400 dark:bg-notion-dark-light dark:placeholder-gray-500 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
-      help: 'text-notion-input-help dark:text-gray-500'
+      help: 'text-notion-input-help dark:text-gray-500',
+      dropdown: 'rounded border border-gray-300 dark:border-gray-600',
+      option: 'rounded'
     },
     CodeInput: {
       label: 'text-gray-900 dark:text-gray-100 mb-2 block mt-4',

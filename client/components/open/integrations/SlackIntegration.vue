@@ -13,18 +13,16 @@
     >
       <template #help>
         <InputHelp>
-          <template #help>
-            <span>
-              Receive slack message on each form submission.
-              <a
-                href="https://api.slack.com/messaging/webhooks"
-                target="_blank"
-              >
-                Click here
-              </a>
-              to learn how to get a slack webhook url
-            </span>
-          </template>
+          <span>
+            Receive slack message on each form submission.
+            <a
+              href="https://api.slack.com/messaging/webhooks"
+              target="_blank"
+            >
+              Click here
+            </a>
+            to learn how to get a slack webhook url
+          </span>
         </InputHelp>
       </template>
     </text-input>

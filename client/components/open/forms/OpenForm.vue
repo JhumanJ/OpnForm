@@ -43,15 +43,16 @@
         class="form-group flex flex-wrap w-full"
       >
         <draggable
-          v-model="currentFields"
+          :list="currentFields"
+          group="form-elements"
           item-key="id"
-          class="flex flex-wrap transition-all w-full"
-          :class="{'-m-6 p-2 bg-gray-50 rounded-md':dragging}"
+          class="grid grid-cols-12 relative transition-all w-full"
+          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
           ghost-class="ghost-item"
-          handle=".draggable"
           :animation="200"
-          @start="onDragStart"
-          @end="onDragEnd"
+          :disabled="!adminPreview"
+          handle=".handle"
+          @change="handleDragDropped"
         >
           <template #item="{element}">
             <open-form-field
@@ -127,10 +128,11 @@ import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import {computed} from "vue"
 
 export default {
   name: 'OpenForm',
-  components: { draggable, OpenFormField, OpenFormButton, VueHcaptcha },
+  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha},
   props: {
     form: {
       type: Object,
@@ -152,15 +154,15 @@ export default {
       type: Array,
       required: true
     },
-    defaultDataForm:{},
-    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    defaultDataForm: {},
+    adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
     darkMode: {
       type: Boolean,
       default: false
     }
   },
 
-  setup (props) {
+  setup(props) {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
     const dataForm = ref(useForm())
@@ -169,32 +171,29 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
+      draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: pendingSubmission(props.form)
     }
   },
 
-  data () {
+  data() {
     return {
       currentFieldGroupIndex: 0,
       /**
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
-      /**
-       * If currently dragging a field
-       */
-      dragging: false
     }
   },
 
   computed: {
-    hCaptchaSiteKey () {
+    hCaptchaSiteKey() {
       return useRuntimeConfig().public.hCaptchaSiteKey
     },
     /**
      * Create field groups (or Page) using page breaks if any
      */
-    fieldGroups () {
+    fieldGroups() {
       if (!this.fields) return []
       const groups = []
       let currentGroup = []
@@ -209,7 +208,7 @@ export default {
       groups.push(currentGroup)
       return groups
     },
-    formProgress () {
+    formProgress() {
       const requiredFields = this.fields.filter(field => field.required)
       if (requiredFields.length === 0) {
         return 100
@@ -219,10 +218,10 @@ export default {
       return Math.round(progress)
     },
     currentFields: {
-      get () {
+      get() {
         return this.fieldGroups[this.currentFieldGroupIndex]
       },
-      set (val) {
+      set(val) {
         // On re-order from the form, set the new order
         // Add the previous groups and next to val, and set the properties on working form
         const newFields = []
@@ -242,14 +241,14 @@ export default {
     /**
      * Returns the page break block for the current group of fields
      */
-    currentFieldsPageBreak () {
+    currentFieldsPageBreak() {
       // Last block from current group
       if (!this.currentFields?.length) return null
       const block = this.currentFields[this.currentFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
     },
-    previousFieldsPageBreak () {
+    previousFieldsPageBreak() {
       if (this.currentFieldGroupIndex === 0) return null
       const previousFields = this.fieldGroups[this.currentFieldGroupIndex - 1]
       const block = previousFields[previousFields.length - 1]
@@ -260,13 +259,13 @@ export default {
      * Returns true if we're on the last page
      * @returns {boolean}xs
      */
-    isLastPage () {
+    isLastPage() {
       return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
     },
-    isPublicFormPage () {
+    isPublicFormPage() {
       return this.$route.name === 'forms-slug'
     },
-    dataFormValue () {
+    dataFormValue() {
       // For get values instead of Id for select/multi select options
       const data = this.dataForm.data()
       const selectionFields = this.fields.filter((field) => {
@@ -289,19 +288,19 @@ export default {
   watch: {
     form: {
       deep: true,
-      handler () {
+      handler() {
         this.initForm()
       }
     },
     fields: {
       deep: true,
-      handler () {
+      handler() {
         this.initForm()
       }
     },
     dataFormValue: {
       deep: true,
-      handler () {
+      handler() {
         if (this.isPublicFormPage && this.form && this.form.auto_save) {
           this.pendingSubmission.set(this.dataFormValue)
         }
@@ -309,7 +308,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     this.initForm()
     if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
@@ -318,7 +317,7 @@ export default {
   },
 
   methods: {
-    submitForm () {
+    submitForm() {
       if (this.currentFieldGroupIndex !== this.fieldGroups.length - 1) {
         return
       }
@@ -337,7 +336,7 @@ export default {
     /**
      * If more than one page, show first page with error
      */
-    onSubmissionFailure () {
+    onSubmissionFailure() {
       this.isAutoSubmit = false
       if (this.fieldGroups.length > 1) {
         // Find first mistake and show page
@@ -364,19 +363,19 @@ export default {
         })
       }
     },
-    async getSubmissionData () {
+    async getSubmissionData() {
       if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
         return null
       }
       await this.recordsStore.loadRecord(
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
-          return { submission_id: this.form.submission_id, id: this.form.submission_id,...data.data }
+          return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
         })
       )
       return this.recordsStore.getByKey(this.form.submission_id)
     },
-    async initForm () {
-      if(this.defaultDataForm){
+    async initForm() {
+      if (this.defaultDataForm) {
         this.dataForm = useForm(this.defaultDataForm)
         return
       }
@@ -437,24 +436,42 @@ export default {
       })
       this.dataForm = useForm(formData)
     },
-    previousPage () {
+    previousPage() {
       this.currentFieldGroupIndex -= 1
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({top: 0, behavior: 'smooth'})
       return false
     },
-    nextPage () {
+    nextPage() {
       this.currentFieldGroupIndex += 1
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({top: 0, behavior: 'smooth'})
       return false
     },
-    isFieldHidden (field) {
+    isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
-    onDragStart () {
-      this.dragging = true
+    getTargetFieldIndex(currentFieldPageIndex){
+      let targetIndex = 0
+        if (this.currentFieldGroupIndex > 0) {
+          for (let i = 0; i < this.currentFieldGroupIndex; i++) {
+            targetIndex += this.fieldGroups[i].length
+          }
+          targetIndex += currentFieldPageIndex
+        } else {
+          targetIndex = currentFieldPageIndex
+        }
+        return targetIndex
     },
-    onDragEnd () {
-      this.dragging = false
+    handleDragDropped(data) {
+      if (data.added) {
+        const targetIndex = this.getTargetFieldIndex(data.added.newIndex)
+        this.workingFormStore.addBlock(data.added.element, targetIndex)
+      }
+
+      if (data.moved) {
+        const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
+        const newTargetIndex = this.getTargetFieldIndex(data.moved.newIndex)
+        this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
+      }
     }
   }
 }
