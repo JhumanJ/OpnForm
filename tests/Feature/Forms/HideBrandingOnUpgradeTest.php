@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Str;
 
-it('can remove branding from forms on subscription', function () {
+it('can hide branding on upgrade', function () {
     $user = $this->actingAsUser();
     // Create workspaces and forms
     for ($i = 0; $i < 3; $i++) {
