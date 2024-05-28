@@ -29,16 +29,6 @@ class Template extends Model
         'related_templates',
     ];
 
-    protected $casts = [
-        'structure' => 'array',
-        'questions' => 'array',
-        'industries' => 'array',
-        'types' => 'array',
-        'related_templates' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
     protected $attributes = [
         'publicly_listed' => false,
     ];
@@ -46,6 +36,19 @@ class Template extends Model
     protected $appends = [
         'share_url',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'structure' => 'array',
+            'questions' => 'array',
+            'industries' => 'array',
+            'types' => 'array',
+            'related_templates' => 'array',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function getShareUrlAttribute()
     {

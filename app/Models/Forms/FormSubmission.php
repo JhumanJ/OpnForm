@@ -13,9 +13,12 @@ class FormSubmission extends Model
         'data',
     ];
 
-    protected $casts = [
-        'data' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+        ];
+    }
 
     /**
      * RelationShips

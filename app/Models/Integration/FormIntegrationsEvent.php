@@ -19,10 +19,6 @@ class FormIntegrationsEvent extends Model
         'data'
     ];
 
-    protected $casts = [
-        'data' => 'object'
-    ];
-
     /**
      * The event map for the model.
      *
@@ -31,6 +27,13 @@ class FormIntegrationsEvent extends Model
     protected $dispatchesEvents = [
         'created' => FormIntegrationsEventCreated::class,
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'data' => 'object'
+        ];
+    }
 
     public function integration()
     {

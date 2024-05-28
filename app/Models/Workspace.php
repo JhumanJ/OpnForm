@@ -32,10 +32,6 @@ class Workspace extends Model implements CachableAttributes
         'is_enterprise',
     ];
 
-    protected $casts = [
-        'custom_domains' => 'array',
-    ];
-
     protected $cachableAttributes = [
         'is_pro',
         'is_enterprise',
@@ -44,6 +40,13 @@ class Workspace extends Model implements CachableAttributes
         'max_file_size',
         'custom_domain_count',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'custom_domains' => 'array',
+        ];
+    }
 
     public function getMaxFileSizeAttribute()
     {

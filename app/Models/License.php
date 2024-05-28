@@ -20,9 +20,12 @@ class License extends Model
         'meta',
     ];
 
-    protected $casts = [
-        'meta' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'meta' => 'array',
+        ];
+    }
 
     public function user()
     {

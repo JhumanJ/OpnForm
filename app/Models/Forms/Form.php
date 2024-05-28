@@ -89,15 +89,6 @@ class Form extends Model implements CachableAttributes
         'seo_meta',
     ];
 
-    protected $casts = [
-        'properties' => 'array',
-        'database_fields_update' => 'array',
-        'closes_at' => 'datetime',
-        'tags' => 'array',
-        'removed_properties' => 'array',
-        'seo_meta' => 'object'
-    ];
-
     protected $appends = [
         'share_url',
     ];
@@ -125,6 +116,18 @@ class Form extends Model implements CachableAttributes
     protected $dispatchesEvents = [
         'created' => FormCreated::class,
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'properties' => 'array',
+            'database_fields_update' => 'array',
+            'closes_at' => 'datetime',
+            'tags' => 'array',
+            'removed_properties' => 'array',
+            'seo_meta' => 'object'
+        ];
+    }
 
     public function getIsProAttribute()
     {
