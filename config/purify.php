@@ -120,7 +120,7 @@ return [
     */
 
     'serializer' => [
-        'driver' => env('CACHE_DRIVER', 'file'),
+        'driver' => env('CACHE_STORE', 'file'),
         'cache' => \Stevebauman\Purify\Cache\CacheDefinitionCache::class,
     ],
 
