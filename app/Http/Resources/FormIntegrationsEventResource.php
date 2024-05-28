@@ -12,7 +12,7 @@ class FormIntegrationsEventResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'date' => date('Y-m-d H:i', strtotime($this->created_at)),

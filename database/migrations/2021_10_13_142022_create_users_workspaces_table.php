@@ -12,7 +12,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('user_workspace', function (Blueprint $table) {
             $table->id();
@@ -77,7 +77,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         \Illuminate\Support\Facades\DB::transaction(function () {
             Schema::table('workspaces', function (Blueprint $table) {

@@ -34,7 +34,7 @@ class GenerateAiForm implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->completion->update([
             'status' => AiFormCompletion::STATUS_PROCESSING,

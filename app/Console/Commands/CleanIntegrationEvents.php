@@ -26,7 +26,7 @@ class CleanIntegrationEvents extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $response = FormIntegrationsEvent::where('created_at', '<', now()->subDays(14))->delete();
         $this->line($response . ' Events Deleted');

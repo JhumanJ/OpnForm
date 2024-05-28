@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Form;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Forms\Form;
 use Closure;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class ProtectedForm
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if (! $request->route('slug')) {
             return $next($request);

@@ -16,7 +16,7 @@ class FormIntegrationsEventListener implements ShouldQueue
      * @param  object  $event
      * @return void
      */
-    public function handle(FormIntegrationsEventCreated $event)
+    public function handle(FormIntegrationsEventCreated $event): void
     {
         if ($event->formIntegrationsEvent->status === FormIntegrationsEvent::STATUS_ERROR) {
             $form = $event->formIntegrationsEvent->integration->form;

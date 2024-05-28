@@ -2,6 +2,7 @@
 
 namespace App\Models\Integration;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Forms\Form;
 use App\Service\Forms\Webhooks\WebhookHandlerProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +24,7 @@ class FormZapierWebhook extends Model
     /**
      * Relationships
      */
-    public function form()
+    public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }

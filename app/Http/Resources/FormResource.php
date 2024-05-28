@@ -16,7 +16,7 @@ class FormResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         if (!$this->userIsFormOwner() && ProtectedForm::isProtected($request, $this->resource)) {
             return $this->getProtectedForm();

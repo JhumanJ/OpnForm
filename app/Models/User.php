@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Forms\Form;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
@@ -148,22 +150,22 @@ class User extends Authenticatable implements JWTSubject
      *  Relationship
      * =================================
      */
-    public function workspaces()
+    public function workspaces(): BelongsToMany
     {
         return $this->belongsToMany(Workspace::class);
     }
 
-    public function forms()
+    public function forms(): HasMany
     {
         return $this->hasMany(Form::class, 'creator_id');
     }
 
-    public function formTemplates()
+    public function formTemplates(): HasMany
     {
         return $this->hasMany(Template::class, 'creator_id');
     }
 
-    public function licenses()
+    public function licenses(): HasMany
     {
         return $this->hasMany(License::class);
     }
@@ -184,7 +186,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function oauthProviders()
+    public function oauthProviders(): HasMany
     {
         return $this->hasMany(OAuthProvider::class);
     }

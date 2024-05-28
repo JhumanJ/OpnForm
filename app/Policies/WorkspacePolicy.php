@@ -15,7 +15,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return true;
     }
@@ -25,7 +25,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function view(User $user, Workspace $workspace)
+    public function view(User $user, Workspace $workspace): bool
     {
         return $user->ownsWorkspace($workspace);
     }
@@ -35,7 +35,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return false;
     }
@@ -45,7 +45,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function update(User $user, Workspace $workspace)
+    public function update(User $user, Workspace $workspace): bool
     {
         return false;
     }
@@ -55,7 +55,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Workspace $workspace)
+    public function delete(User $user, Workspace $workspace): bool
     {
         return ! $workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
     }
@@ -65,7 +65,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Workspace $workspace)
+    public function restore(User $user, Workspace $workspace): bool
     {
         return false;
     }
@@ -75,7 +75,7 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Workspace $workspace)
+    public function forceDelete(User $user, Workspace $workspace): bool
     {
         return false;
     }

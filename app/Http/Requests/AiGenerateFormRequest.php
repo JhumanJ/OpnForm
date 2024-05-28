@@ -11,7 +11,7 @@ class AiGenerateFormRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'form_prompt' => 'required|string|max:1000',

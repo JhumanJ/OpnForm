@@ -7,7 +7,7 @@ use Tests\DuskTestCase;
 class WelcomeTest extends DuskTestCase
 {
     /** @test */
-    public function basic_test()
+    public function basic_test(): void
     {
         $this->browse(function ($browser) {
             $browser->visit('/')

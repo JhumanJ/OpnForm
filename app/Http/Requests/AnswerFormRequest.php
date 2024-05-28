@@ -38,7 +38,7 @@ class AnswerFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return !$this->form->is_closed && !$this->form->max_number_of_submissions_reached && $this->form->visibility === 'public';
     }
@@ -48,7 +48,7 @@ class AnswerFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         foreach ($this->form->properties as $property) {
             $rules = [];
@@ -117,7 +117,7 @@ class AnswerFormRequest extends FormRequest
      *
      * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         $fields = [];
         foreach ($this->form->properties as $property) {
@@ -132,7 +132,7 @@ class AnswerFormRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         $messages = [];
         foreach ($this->form->properties as $property) {

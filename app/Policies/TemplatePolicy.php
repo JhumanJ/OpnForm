@@ -15,7 +15,7 @@ class TemplatePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user !== null;
     }
@@ -25,7 +25,7 @@ class TemplatePolicy
      *
      * @return mixed
      */
-    public function update(User $user, Template $template)
+    public function update(User $user, Template $template): bool
     {
         return $user->admin || $user->template_editor || $template->creator_id === $user->id;
     }
@@ -35,7 +35,7 @@ class TemplatePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Template $template)
+    public function delete(User $user, Template $template): bool
     {
         return $user->admin || $user->template_editor || $template->creator_id === $user->id;
     }

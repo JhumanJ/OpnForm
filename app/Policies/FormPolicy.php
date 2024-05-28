@@ -15,7 +15,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return true;
     }
@@ -25,7 +25,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Form $form)
+    public function view(User $user, Form $form): bool
     {
         return $user->ownsForm($form);
     }
@@ -35,7 +35,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return true;
     }
@@ -45,7 +45,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Form $form)
+    public function update(User $user, Form $form): bool
     {
         return $user->ownsForm($form);
     }
@@ -55,7 +55,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Form $form)
+    public function delete(User $user, Form $form): bool
     {
         return $user->ownsForm($form);
     }
@@ -65,7 +65,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Form $form)
+    public function restore(User $user, Form $form): bool
     {
         return $user->ownsForm($form);
     }
@@ -75,7 +75,7 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Form $form)
+    public function forceDelete(User $user, Form $form): bool
     {
         return $user->ownsForm($form);
     }

@@ -9,7 +9,7 @@ class StoreFormRequest extends UserFormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return array_merge(parent::rules(), [// Info about database
             'workspace_id' => 'required|exists:workspaces,id',

@@ -2,6 +2,8 @@
 
 namespace App\Models\Forms;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Events\Models\FormCreated;
 use App\Models\Integration\FormIntegration;
 use App\Models\Integration\FormZapierWebhook;
@@ -241,37 +243,37 @@ class Form extends Model implements CachableAttributes
     /**
      * Relationships
      */
-    public function workspace()
+    public function workspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function submissions()
+    public function submissions(): HasMany
     {
         return $this->hasMany(FormSubmission::class);
     }
 
-    public function views()
+    public function views(): HasMany
     {
         return $this->hasMany(FormView::class);
     }
 
-    public function statistics()
+    public function statistics(): HasMany
     {
         return $this->hasMany(FormStatistic::class);
     }
 
-    public function zappierHooks()
+    public function zappierHooks(): HasMany
     {
         return $this->hasMany(FormZapierWebhook::class);
     }
 
-    public function integrations()
+    public function integrations(): HasMany
     {
         return $this->hasMany(FormIntegration::class);
     }

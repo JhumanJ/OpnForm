@@ -10,7 +10,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('ai_form_completions', function (Blueprint $table) {
             $table->text('form_prompt')->change();
@@ -22,7 +22,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('ai_form_completions', function (Blueprint $table) {
             $table->string('form_prompt')->change();

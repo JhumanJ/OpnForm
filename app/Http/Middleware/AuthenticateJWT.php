@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use Closure;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -14,7 +15,7 @@ class AuthenticateJWT
      * Verifies the JWT token and validates the IP and User Agent
      * Invalidates token otherwise
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // Parse JWT Payload
         try {

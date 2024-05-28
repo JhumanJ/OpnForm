@@ -12,7 +12,7 @@ class PurifySetupProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         \HTMLPurifier_URISchemeRegistry::instance()->register('notion', new HTMLPurifier_URIScheme_notion());
     }

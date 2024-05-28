@@ -62,7 +62,7 @@ class GenerateTaxExport extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // iterate through all Stripe invoices
         $startDate = $this->option('start-date');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Models\Workspace;
@@ -16,7 +17,7 @@ class CustomDomainRestriction
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if (! $request->hasHeader(self::CUSTOM_DOMAIN_HEADER) || ! config('custom-domains.enabled')) {
             return $next($request);

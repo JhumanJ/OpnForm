@@ -2,6 +2,7 @@
 
 namespace App\Models\Integration;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Events\Models\FormIntegrationsEventCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,7 +36,7 @@ class FormIntegrationsEvent extends Model
         ];
     }
 
-    public function integration()
+    public function integration(): BelongsTo
     {
         return $this->belongsTo(FormIntegration::class, 'integration_id');
     }

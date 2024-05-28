@@ -12,7 +12,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $driver = DB::getDriverName();
 
@@ -48,7 +48,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('templates', function (Blueprint $table) {
             $table->dropColumn(['publicly_listed', 'industries', 'types', 'short_description', 'related_templates']);

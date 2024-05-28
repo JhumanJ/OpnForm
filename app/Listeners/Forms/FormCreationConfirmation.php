@@ -15,7 +15,7 @@ class FormCreationConfirmation implements ShouldQueue
      * @param  object  $event
      * @return void
      */
-    public function handle(FormCreated $event)
+    public function handle(FormCreated $event): void
     {
         Mail::to($event->form->creator)->send(new FormCreationConfirmationMail($event->form));
     }

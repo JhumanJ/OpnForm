@@ -12,7 +12,7 @@ class FormTemplateResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return array_merge(parent::toArray($request), [
             'is_new' => $this->created_at->isAfter(now()->subDays(7)),

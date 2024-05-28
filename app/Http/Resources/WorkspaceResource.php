@@ -14,7 +14,7 @@ class WorkspaceResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return array_merge(parent::toArray($request), [
             'max_file_size' => $this->max_file_size / 1000000,

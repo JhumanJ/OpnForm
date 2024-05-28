@@ -18,7 +18,7 @@ class NotifyFormSubmission implements ShouldQueue
      * @param object $event
      * @return void
      */
-    public function handle(FormSubmitted $event)
+    public function handle(FormSubmitted $event): void
     {
         $formIntegrations = $event->form->integrations()->where('status', FormIntegration::STATUS_ACTIVE)->get();
         foreach ($formIntegrations as $formIntegration) {

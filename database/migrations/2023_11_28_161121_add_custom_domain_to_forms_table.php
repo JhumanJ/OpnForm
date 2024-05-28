@@ -10,7 +10,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('forms', function (Blueprint $table) {
             $table->string('custom_domain')->nullable();
@@ -22,7 +22,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('forms', function (Blueprint $table) {
             $table->dropColumn(['custom_domain']);

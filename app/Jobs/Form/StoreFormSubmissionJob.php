@@ -42,7 +42,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $formData = $this->getFormData();
         $this->addHiddenPrefills($formData);

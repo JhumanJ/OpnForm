@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Forms\Form;
 use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
@@ -176,7 +178,7 @@ class Workspace extends Model implements CachableAttributes
     /**
      * Relationships
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
@@ -186,7 +188,7 @@ class Workspace extends Model implements CachableAttributes
         return $this->users()->wherePivot('role', 'admin');
     }
 
-    public function forms()
+    public function forms(): HasMany
     {
         return $this->hasMany(Form::class);
     }

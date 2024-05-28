@@ -19,7 +19,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             // Form Info
@@ -123,7 +123,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'properties.*.name.required' => 'The form block number :position is missing a name.',

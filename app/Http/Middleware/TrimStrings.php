@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
 class TrimStrings extends Middleware
@@ -25,7 +27,7 @@ class TrimStrings extends Middleware
         '/\/api\/forms\/(.*)\/answer/',
     ];
 
-    public function handle($request, \Closure $next)
+    public function handle(Request $request, \Closure $next): Response
     {
         // Check if URL matches
         foreach ($this->exceptUrls as $urlRegex) {

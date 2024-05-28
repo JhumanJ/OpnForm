@@ -38,7 +38,7 @@ class FormTemplateRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         $slugRule = '';
         if ($this->id) {

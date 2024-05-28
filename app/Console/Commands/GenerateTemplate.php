@@ -215,7 +215,7 @@ class GenerateTemplate extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // Get form structure
         $completer = (new GptCompleter(config('services.openai.api_key')))

@@ -36,7 +36,7 @@ class FormIntegrationsRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
@@ -51,7 +51,7 @@ class FormIntegrationsRequest extends FormRequest
      *
      * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         $fields = [];
         foreach ($this->rules() as $key => $value) {

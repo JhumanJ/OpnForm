@@ -23,7 +23,7 @@ class FormZapierWebhookPolicy
         return ($webhook?->form) ? $this->formPolicy->update($user, $webhook->form) : false; // && $user->is_subscribed;
     }
 
-    public function delete(User $user, FormZapierWebhook $webhook)
+    public function delete(User $user, FormZapierWebhook $webhook): bool
     {
         return ($webhook?->form) ? $this->formPolicy->update($user, $webhook->form) : false; // && $user->is_subscribed;
     }

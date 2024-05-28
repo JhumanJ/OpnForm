@@ -11,7 +11,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $driver = DB::getDriverName();
         Schema::table('workspaces', function (Blueprint $table) use ($driver) {
@@ -28,7 +28,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('workspaces', function (Blueprint $table) {
             $table->dropColumn('custom_domains');

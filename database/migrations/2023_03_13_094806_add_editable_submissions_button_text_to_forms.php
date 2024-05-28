@@ -11,7 +11,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('forms', function (Blueprint $table) {
             $table->text('editable_submissions_button_text')->default(new Expression("('Edit submission')"));
@@ -23,7 +23,7 @@ return new class () extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('forms', function (Blueprint $table) {
             $table->dropColumn('editable_submissions_button_text');

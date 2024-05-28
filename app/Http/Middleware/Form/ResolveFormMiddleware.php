@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Form;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Forms\Form;
 use Closure;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class ResolveFormMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, string $routeParamName = 'id')
+    public function handle(Request $request, Closure $next, string $routeParamName = 'id'): Response
     {
         $form = Form::where($routeParamName, $request->route($routeParamName))->firstOrFail();
         $request->merge([

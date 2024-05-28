@@ -2,6 +2,8 @@
 
 namespace App\Models\Integration;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Forms\Form;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,12 +34,12 @@ class FormIntegration extends Model
     /**
      * Relationships
      */
-    public function form()
+    public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }
 
-    public function events()
+    public function events(): HasMany
     {
         return $this->hasMany(FormIntegrationsEvent::class, 'integration_id');
     }
