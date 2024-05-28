@@ -11,7 +11,6 @@
         v-if="form && !workspacesLoading"
         ref="editor"
         class="w-full flex flex-grow"
-        :is-create="true"
         :error="error"
         @on-save="formInitialHash = null"
       />
@@ -100,7 +99,7 @@ onMounted(() => {
     formStore.loadAll(workspace.value.id)
   }
 
-  form.value = initForm({ workspace_id: workspace.value?.id }, true)
+  form.value = initForm({ workspace_id: workspace.value?.id, no_branding: workspace.value?.is_pro }, true)
   formInitialHash.value = hash(JSON.stringify(form.value.data()))
   if (route.query.template !== undefined && route.query.template) {
     const template = templatesStore.getByKey(route.query.template)
