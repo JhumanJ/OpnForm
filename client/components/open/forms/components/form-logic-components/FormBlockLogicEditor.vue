@@ -17,20 +17,7 @@
           size="small"
           @click="showCopyFormModal = true"
         >
-          <svg
-            class="h-4 w-4 text-blue-600 inline mr-1 -mt-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <Icon name="lucide:copy" class="w-4 h-4 text-blue-600 inline mr-1 -mt-1" />
           Copy from
         </v-button>
       </div>
@@ -42,21 +29,7 @@
           class="ml-1"
           @click="clearAll"
         >
-          <svg
-            class="text-red-600 h-4 w-4 inline -mt-1 mr-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M18 9L12 15M12 9L18 15M21 4H8L1 12L8 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
+          <Icon name="mdi:clear-outline" class="w-4 h-4 text-red-600 inline mr-1 -mt-1" />
           Clear All
         </v-button>
       </div>
