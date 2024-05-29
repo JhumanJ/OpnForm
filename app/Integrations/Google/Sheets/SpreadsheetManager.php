@@ -131,21 +131,26 @@ class SpreadsheetManager
         return $this;
     }
 
-    public function submit(array $submissionData): static
+    public function buildRow(array $submissionData): array
     {
-        $this->updateHeaders($this->data->spreadsheet_id);
-
         $formatter = (new FormSubmissionFormatter($this->integration->form, $submissionData))->outputStringsOnly();
 
         $fields = $formatter->getFieldsWithValue();
 
-        $row = collect($this->data->columns)
+        return collect($this->data->columns)
             ->map(function (array $column) use ($fields) {
                 $field = Arr::first($fields, fn ($field) => $field['id'] === $column['id']);
 
                 return $field ? $field['value'] : '';
             })
             ->toArray();
+    }
+
+    public function submit(array $submissionData): static
+    {
+        $this->updateHeaders($this->data->spreadsheet_id);
+
+        $row = $this->buildRow($submissionData);
 
         $this->addRow(
             $this->data->spreadsheet_id,
