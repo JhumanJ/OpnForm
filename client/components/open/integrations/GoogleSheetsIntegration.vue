@@ -14,7 +14,21 @@
         emit-key="id"
         :required="true"
         label="Select Google Account"
-      />
+      >
+        <template #help>
+          <InputHelp>
+            <span>
+              Add an entry to spreadsheets on each form submission.
+              <NuxtLink
+                :to="{ name: 'settings-connections' }"
+              >
+                Click here
+              </NuxtLink>
+              to connect another account.
+            </span>
+          </InputHelp>
+        </template>
+      </select-input>
 
       <v-button
         v-else
