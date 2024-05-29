@@ -40,7 +40,10 @@ class FormIntegrationsRequest extends FormRequest
     {
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
-            'oauth_id' => ['nullable', Rule::exists('oauth_providers', 'id')],
+            'oauth_id' => [
+                $this->isOAuthRequired() ? 'required' : 'nullable',
+                Rule::exists('oauth_providers', 'id')
+            ],
             'settings' => 'present|array',
             'status' => 'required|boolean',
             'logic' => [new IntegrationLogicRule()],
@@ -65,6 +68,11 @@ class FormIntegrationsRequest extends FormRequest
         }
 
         return $fields;
+    }
+
+    protected function isOAuthRequired(): bool
+    {
+        return $this->integrationClassName::isOAuthRequired();
     }
 
     private function loadIntegrationRules()

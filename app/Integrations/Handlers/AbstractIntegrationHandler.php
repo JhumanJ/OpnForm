@@ -115,6 +115,11 @@ abstract class AbstractIntegrationHandler
 
     abstract public static function getValidationRules(): array;
 
+    public static function isOAuthRequired(): bool
+    {
+        return false;
+    }
+
     public static function getValidationAttributes(): array
     {
         return [];
