@@ -21,9 +21,9 @@ class FormIntegrationsRequest extends FormRequest
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);
             if ($integration && isset($integration['file_name']) && class_exists(
-                'App\Service\Forms\Integrations\\' . $integration['file_name']
+                'App\Integrations\Handlers\\' . $integration['file_name']
             )) {
-                $this->integrationClassName = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
+                $this->integrationClassName = 'App\Integrations\Handlers\\' . $integration['file_name'];
                 $this->loadIntegrationRules();
                 return;
             }

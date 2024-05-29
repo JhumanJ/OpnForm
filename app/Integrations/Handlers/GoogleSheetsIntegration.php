@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Integrations;
+namespace App\Integrations\Handlers;
 
 use App\Events\Forms\FormSubmitted;
 use App\Integrations\Google\Google;

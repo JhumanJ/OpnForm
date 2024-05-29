@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Integrations;
+namespace App\Integrations\Handlers;
 
 use App\Rules\OneEmailPerLine;
 use Illuminate\Support\Facades\Log;

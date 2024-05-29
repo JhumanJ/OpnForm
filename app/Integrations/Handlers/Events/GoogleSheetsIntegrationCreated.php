@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Integrations\Events;
+namespace App\Integrations\Handlers\Events;
 
 use App\Integrations\Google\Google;
 use App\Models\Integration\FormIntegration;

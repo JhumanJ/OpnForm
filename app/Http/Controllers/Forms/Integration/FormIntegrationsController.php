@@ -33,15 +33,19 @@ class FormIntegrationsController extends Controller
         $form = Form::findOrFail((int)$id);
         $this->authorize('update', $form);
 
+        /** @var FormIntegration $formIntegration */
         $formIntegration = FormIntegration::create(
             array_merge([
                 'form_id' => $form->id,
             ], $request->toIntegrationData())
         );
 
+        $formIntegration->refresh();
+        $formIntegration->load('provider.user');
+
         return $this->success([
             'message' => 'Form Integration was created.',
-            'form_integration' => $formIntegration->refresh()
+            'form_integration' => FormIntegrationResource::make($formIntegration)
         ]);
     }
 
@@ -52,10 +56,11 @@ class FormIntegrationsController extends Controller
 
         $formIntegration = FormIntegration::findOrFail((int)$integrationid);
         $formIntegration->update($request->toIntegrationData());
+        $formIntegration->load('provider.user');
 
         return $this->success([
             'message' => 'Form Integration was updated.',
-            'form_integration' => $formIntegration
+            'form_integration' => FormIntegrationResource::make($formIntegration)
         ]);
     }
 
