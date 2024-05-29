@@ -566,6 +566,12 @@
       :form="form"
       :field="field"
     />
+
+    <custom-field-validation 
+      class="py-2 px-4 border-b"
+      :form="form"
+      :field="field"
+    />
   </div>
 </template>
 
@@ -574,12 +580,13 @@ import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
+import CustomFieldValidation from '../../components/CustomFieldValidation.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, FormBlockLogicEditor },
+  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation },
   props: {
     field: {
       type: Object,
