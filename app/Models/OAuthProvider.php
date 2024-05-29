@@ -35,6 +35,7 @@ class OAuthProvider extends Model
 
     protected $casts = [
         'provider' => OAuthProviderService::class,
+        'token_expires_at' => 'datetime',
     ];
 
     /**

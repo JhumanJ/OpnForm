@@ -18,11 +18,19 @@ class Google
         $this->client = new Client();
         $this->client->setClientId(config('services.google.client_id'));
         $this->client->setClientSecret(config('services.google.client_secret'));
-        $this->client->setAccessToken($this->formIntegration->provider->access_token);
+        $this->client->setAccessToken([
+            'access_token' => $this->formIntegration->provider->access_token,
+            'created' => $this->formIntegration->provider->updated_at->getTimestamp(),
+            'expires_in' => 3600,
+        ]);
     }
 
     public function getClient(): Client
     {
+        if($this->client->isAccessTokenExpired()) {
+            $this->refreshToken();
+        }
+
         return $this->client;
     }
 
