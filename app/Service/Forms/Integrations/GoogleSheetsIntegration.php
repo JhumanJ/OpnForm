@@ -25,10 +25,12 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
+            /*
             'oauth_id' => [
                 'required',
                 'string',
             ],
+            */
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Forms\Integration;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Integration\FormIntegrationsRequest;
+use App\Http\Resources\FormIntegrationResource;
 use App\Models\Forms\Form;
 use App\Models\Integration\FormIntegration;
 
@@ -19,9 +20,12 @@ class FormIntegrationsController extends Controller
         $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
-        return FormIntegration::query()
+        $integrations = FormIntegration::query()
             ->where('form_id', $form->id)
+            ->with('provider.user')
             ->get();
+
+        return FormIntegrationResource::collection($integrations);
     }
 
     public function create(FormIntegrationsRequest $request, string $id)

@@ -27,6 +27,11 @@ class OAuthProviderResource extends JsonResource
             'name' => $this->resource->name,
             'email' => $this->resource->email,
             'intention' => $intention,
+            'user' => $this->whenLoaded(
+                'user',
+                fn () => OAuthProviderUserResource::make($this->resource->user),
+                null,
+            ),
         ];
     }
 }

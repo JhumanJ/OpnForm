@@ -2,7 +2,7 @@
   <div
     class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center"
   >
-    <div class="flex-grow flex items-center">
+    <div class="flex items-center">
       <div
         class="mr-4"
         :class="{
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="grow flex items-center gap-4 pl-4">
       <component
         :is="actionsComponent"
         v-if="actionsComponent"
@@ -41,7 +41,7 @@
 
       <div
         v-if="loadingDelete"
-        class="pr-4 pt-2"
+        class="pr-4 pt-2 ml-auto"
       >
         <Loader class="h-6 w-6 mx-auto" />
       </div>
