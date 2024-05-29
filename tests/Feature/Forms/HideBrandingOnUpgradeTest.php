@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Str;
 
 it('can hide branding on upgrade', function () {
@@ -25,7 +26,7 @@ it('can hide branding on upgrade', function () {
         'stripe_price' => Str::random(),
         'quantity' => 1,
     ]);
-    
+
     // Forms have branding removed after subscription
     $forms = $user->workspaces()->with('forms')->get()->pluck('forms')->flatten();
     $forms->each(function ($form) {
