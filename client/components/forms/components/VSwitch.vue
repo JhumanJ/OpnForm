@@ -23,7 +23,7 @@ import { defineEmits, defineProps } from "vue"
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
-  color: { type: String, default: null },
+  color: { type: String, default: '#3B82F6' },
 })
 const emit = defineEmits(["update:modelValue"])
 

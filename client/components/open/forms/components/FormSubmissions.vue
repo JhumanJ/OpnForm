@@ -254,22 +254,21 @@ export default {
     },
     initFormStructure() {
       // check if form properties already has a created_at column
-      this.properties = this.candidatesProperties
       if (!this.properties.find((property) => {
         if (property.id === 'created_at') {
           return true
         }
       })) {
         // Add a "created at" column
-        this.properties.push({
+        this.candidatesProperties.push({
           name: 'Created at',
           id: 'created_at',
           type: 'date',
           width: 140
         })
       }
+      this.properties = this.candidatesProperties
       this.removed_properties = (this.form.removed_properties) ? clonedeep(this.form.removed_properties) : []
-
       // Get display columns from local storage
       const tmpColumns = window.localStorage.getItem('display-columns-formid-' + this.form.id)
       if (tmpColumns !== null && tmpColumns) {
@@ -312,7 +311,7 @@ export default {
     onChangeDisplayColumns() {
       if (!import.meta.client) return
       window.localStorage.setItem('display-columns-formid-' + this.form.id, JSON.stringify(this.displayColumns))
-      this.properties = clonedeep(this.form.properties).concat(this.removed_properties).filter((field) => {
+      this.properties = clonedeep(this.candidatesProperties).concat(this.removed_properties).filter((field) => {
         return this.displayColumns[field.id] === true
       })
     },

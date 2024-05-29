@@ -87,6 +87,11 @@ class AnswerFormRequest extends FormRequest
                 $rules[] = 'nullable';
             }
 
+            // User custom validation
+            if(!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
+                $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
+            }
+
             // Clean id to escape "."
             $propertyId = $property['id'];
             if (in_array($property['type'], ['multi_select'])) {
