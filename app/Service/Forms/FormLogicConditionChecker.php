@@ -84,7 +84,10 @@ class FormLogicConditionChecker
 
     private function checkContains($condition, $fieldValue): bool
     {
-        return ($fieldValue && is_array($fieldValue)) ? in_array($condition['value'], $fieldValue) : false;
+        if (is_array($fieldValue)) {
+            return in_array($condition['value'], $fieldValue);
+        }
+        return \Str::contains($fieldValue, $condition['value']);
     }
 
     private function checkListContains($condition, $fieldValue): bool
