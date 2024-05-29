@@ -17,7 +17,7 @@
         role="button"
         @click="setScale(i)"
       >
-        {{ i }}
+        {{ parseFloat(i).toFixed(2) }}
       </div>
     </div>
 
@@ -58,6 +58,10 @@ export default {
   computed: {
     scaleList() {
       const list = []
+      if (this.stepScale == 0) {
+        list.push(this.minScale)
+        return list
+      }
       for (let i = this.minScale; i <= this.maxScale; i += this.stepScale) {
         list.push(i)
       }

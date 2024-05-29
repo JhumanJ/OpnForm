@@ -10,6 +10,7 @@
         v-model="compVal"
         class="inline-block mr-2"
         :disabled="disabled ? true : null"
+        :color="color"
       />
       <slot name="label">
         <span>{{ label }}
