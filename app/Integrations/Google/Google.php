@@ -28,11 +28,13 @@ class Google
 
     public function refreshToken(): static
     {
-        [$accessToken, $refreshToken] = $this->client->refreshToken($this->formIntegration->provider->refresh_token);
+        $this->client->refreshToken($this->formIntegration->provider->refresh_token);
+
+        $token = $this->client->getAccessToken();
 
         $this->formIntegration->provider->update([
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken,
+            'access_token' => $token['access_token'],
+            'refresh_token' => $token['refresh_token'],
         ]);
 
         return $this;
