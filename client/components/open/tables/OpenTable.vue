@@ -41,7 +41,7 @@
       </tr>
     </thead>
     <tbody
-      v-if="data.length > 0"
+      v-if="formData.length > 0"
       class="n-table-body bg-white dark:bg-notion-dark-light"
     >
       <tr
@@ -59,7 +59,7 @@
         </td>
       </tr>
       <tr
-        v-for="(row, index) in data"
+        v-for="(row, index) in formData"
         :key="row.id"
         class="n-table-row"
         :class="{ first: index === 0 }"
@@ -209,19 +209,25 @@ export default {
     }
   },
 
+  computed: {
+    formData() {
+      return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+  },
+
   watch: {
     columns: {
       handler() {
         this.internalColumns = clonedeep(this.columns)
         this.onStructureChange()
       },
-      deep: true,
+      deep: true
     },
     data() {
       this.$nextTick(() => {
         this.handleScroll()
       })
-    },
+    }
   },
 
   mounted() {
@@ -235,7 +241,6 @@ export default {
     this.onStructureChange()
     this.handleScroll()
   },
-
   beforeUnmount() {
     const parent = this.scrollParent ?? document.getElementById("table-page")
     if (parent) {
