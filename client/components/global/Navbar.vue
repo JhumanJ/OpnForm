@@ -38,7 +38,11 @@
               class="text-sm text-gray-600 dark:text-white hidden sm:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
               @click.prevent="openChangelog"
             >
-              What's new? <span id="fb-update-badge" />
+              What's new? <span
+                v-if="hasNewChanges"
+                id="fb-update-badge"
+                class="bg-blue-500 rounded-full px-2 ml-1 text-white"
+              />
             </button>
             <a
               v-else
@@ -68,7 +72,7 @@
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
           </NuxtLink>
-          
+
           <NuxtLink
             :href="helpUrl"
             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
@@ -331,6 +335,10 @@ export default {
         this.config.public.crispWebsiteId &&
         this.config.public.crispWebsiteId !== ""
       )
+    },
+    hasNewChanges() {
+      if (import.meta.server) return false
+      return window.Featurebase("unviewed_changelog_count") > 0
     },
   },
 
