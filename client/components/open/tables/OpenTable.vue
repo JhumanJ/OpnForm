@@ -209,24 +209,24 @@ export default {
     }
   },
 
+  computed: {
+    formData() {
+      return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+  },
+
   watch: {
     columns: {
       handler() {
         this.internalColumns = clonedeep(this.columns)
         this.onStructureChange()
       },
-      deep: true,
+      deep: true
     },
     data() {
       this.$nextTick(() => {
         this.handleScroll()
       })
-    },
-  },
-
-  computed: {
-    formData(){
-      return this.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
   },
 

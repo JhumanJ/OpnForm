@@ -26,10 +26,10 @@ class CustomFieldValidationRule implements Rule
     public function passes($attribute, $value)
     {
         if (!($this->validation['error_conditions']['conditions'] ?? null) || is_null(
-                $this->validation['error_conditions']['conditions'] ?? null
-            )) {
-        return true;
-    }
+            $this->validation['error_conditions']['conditions'] ?? null
+        )) {
+            return true;
+        }
         return FormLogicConditionChecker::conditionsMet(
             $this->validation['error_conditions']['conditions'],
             $this->formData
