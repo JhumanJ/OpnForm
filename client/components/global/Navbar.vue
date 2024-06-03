@@ -337,14 +337,14 @@ export default {
       )
     },
     hasNewChanges() {
-      if (import.meta.server) return false
+      if (import.meta.server || !window.Featurebase) return false
       return window.Featurebase("unviewed_changelog_count") > 0
     },
   },
 
   methods: {
     openChangelog() {
-      if (import.meta.server) return
+      if (import.meta.server || !window.Featurebase) return
       window.Featurebase("manually_open_changelog_popup")
     },
     async logout() {
