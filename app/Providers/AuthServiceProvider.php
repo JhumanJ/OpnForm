@@ -33,8 +33,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         \Illuminate\Support\Facades\Gate::define('viewMailcoach', function ($user = null) {
             return optional($user)->admin;
         });
