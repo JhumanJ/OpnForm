@@ -3,10 +3,11 @@
 namespace App\Rules;
 
 use Closure;
+use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
 
-class ValidHCaptcha implements ValidationRule
+class ValidHCaptcha implements ImplicitRule
 {
     public const H_CAPTCHA_VERIFY_URL = 'https://hcaptcha.com/siteverify';
 
