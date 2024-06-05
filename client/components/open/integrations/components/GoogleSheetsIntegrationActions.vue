@@ -1,7 +1,12 @@
 <template>
   <div class="flex flex-1 items-center">
-    <div class="space-y-1">
-      <div class="font-medium mr-2">
+    <div
+      v-if="integration.provider"
+      class="space-y-1"
+    >
+      <div
+        class="font-medium mr-2"
+      >
         {{ integration.provider.user.name }}
       </div>
       <div class="text-sm">
