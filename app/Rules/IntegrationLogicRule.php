@@ -154,9 +154,9 @@ class IntegrationLogicRule implements DataAwareRule, ValidationRule
         return $this->isConditionCorrect;
     }
 
-    public function validate(string $attribute, mixed $value, Closure $fail) : void
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if(!$this->passes($attribute, $value)){
+        if(!$this->passes($attribute, $value)) {
             $fail($this->message());
         }
     }

@@ -4,7 +4,6 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ImplicitRule;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
 
 class ValidHCaptcha implements ImplicitRule
@@ -33,9 +32,9 @@ class ValidHCaptcha implements ImplicitRule
             'response' => $value,
         ])->json('success');
     }
-    public function validate(string $attribute, mixed $value, Closure $fail) : void
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if(!$this->passes($attribute, $value)){
+        if(!$this->passes($attribute, $value)) {
             $fail($this->message());
         }
     }

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
 class FormPropertyLogicRule implements DataAwareRule, ValidationRule
-
 {
     public const ACTIONS_VALUES = [
         'show-block',

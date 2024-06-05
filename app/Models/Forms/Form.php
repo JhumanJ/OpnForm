@@ -89,7 +89,7 @@ class Form extends Model implements CachableAttributes
         'seo_meta',
     ];
 
-    protected function casts() : array
+    protected function casts(): array
     {
         return [
             'properties' => 'array',
