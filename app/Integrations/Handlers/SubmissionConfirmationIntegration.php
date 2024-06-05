@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Integrations;
+namespace App\Integrations\Handlers;
 
 use App\Mail\Forms\SubmissionConfirmationMail;
 use Illuminate\Support\Facades\Mail;

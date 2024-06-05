@@ -84,6 +84,8 @@ useOpnSeoMeta({
 
 const alert = useAlert()
 
+const oAuthProvidersStore = useOAuthProvidersStore()
+
 const formIntegrationsStore = useFormIntegrationsStore()
 const integrationsLoading = computed(() => formIntegrationsStore.loading)
 const integrations = computed(
@@ -102,6 +104,7 @@ const selectedIntegration = ref(null)
 
 onMounted(() => {
   formIntegrationsStore.fetchFormIntegrations(props.form.id)
+  oAuthProvidersStore.fetchOAuthProviders(props.form.workspace_id)
 })
 
 const openIntegrationModal = (itemKey) => {

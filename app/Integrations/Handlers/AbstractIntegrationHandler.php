@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Forms\Integrations;
+namespace App\Integrations\Handlers;
 
 use App\Models\Integration\FormIntegration;
 use App\Events\Forms\FormSubmitted;
@@ -96,6 +96,11 @@ abstract class AbstractIntegrationHandler
         }
     }
 
+    public function created(): void
+    {
+        //
+    }
+
     /**
      * Default handle. Can be changed in child classes.
      */
@@ -109,6 +114,16 @@ abstract class AbstractIntegrationHandler
     }
 
     abstract public static function getValidationRules(): array;
+
+    public static function isOAuthRequired(): bool
+    {
+        return false;
+    }
+
+    public static function getValidationAttributes(): array
+    {
+        return [];
+    }
 
     public static function formatData(array $data): array
     {

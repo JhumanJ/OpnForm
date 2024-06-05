@@ -51,6 +51,7 @@ const props = defineProps({
   integrationKey: { type: String, required: true },
   integration: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null },
+  providers: { type: Array, required: true }
 })
 
 const alert = useAlert()
@@ -92,6 +93,7 @@ const initIntegrationData = () => {
         ? formIntegration.value.logic
         : null
       : null,
+    oauth_id: formIntegration.value?.oauth_id ?? null,
   })
 }
 initIntegrationData()
