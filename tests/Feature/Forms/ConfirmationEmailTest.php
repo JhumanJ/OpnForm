@@ -8,6 +8,7 @@ it('creates confirmation emails with the submitted data', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
     $integrationData = $this->createFormIntegration('submission_confirmation', $form->id, [
+        'respondent_email' => true,
         'notifications_include_submission' => true,
         'notification_sender' => 'Custom Sender',
         'notification_subject' => 'Test subject',
@@ -31,6 +32,7 @@ it('creates confirmation emails without the submitted data', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
     $integrationData = $this->createFormIntegration('submission_confirmation', $form->id, [
+        'respondent_email' => true,
         'notifications_include_submission' => false,
         'notification_sender' => 'Custom Sender',
         'notification_subject' => 'Test subject',
@@ -55,6 +57,7 @@ it('sends a confirmation email if needed', function () {
     $form = $this->createForm($user, $workspace);
 
     $this->createFormIntegration('submission_confirmation', $form->id, [
+        'respondent_email' => true,
         'notifications_include_submission' => true,
         'notification_sender' => 'Custom Sender',
         'notification_subject' => 'Test subject',
@@ -118,6 +121,7 @@ it('does send a confirmation email even when reply to is broken', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
     $integrationData = $this->createFormIntegration('submission_confirmation', $form->id, [
+        'respondent_email' => true,
         'notifications_include_submission' => true,
         'notification_sender' => 'Custom Sender',
         'notification_subject' => 'Test subject',

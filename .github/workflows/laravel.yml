@@ -243,6 +243,10 @@ jobs:
           URL="${{ secrets.AMPLIFY_DEPLOY_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type: application/json"
 
+      - name: Created encrypted .env file before deployment
+        run: |
+            echo "${{ secrets.ENCRYPTED_ENV_FILE }}" >> .env.production.encrypted
+
       - name: Deploy back-end to production
         run: php vendor/bin/vapor deploy api-production --commit="${GITHUB_SHA}" --message="${GITHUB_REF}"
         env:

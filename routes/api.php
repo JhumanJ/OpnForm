@@ -133,7 +133,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post(
                 '/assets/upload',
                 [FormController::class, 'uploadAsset']
-            )->name('assets.upload');
+            )->withoutMiddleware(['auth:api'])->name('assets.upload');
             Route::get(
                 '/{id}/uploaded-file/{filename}',
                 [FormController::class, 'viewFile']

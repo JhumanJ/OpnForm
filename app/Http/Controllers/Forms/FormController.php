@@ -23,7 +23,7 @@ class FormController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['uploadAsset']]);
         $this->formCleaner = new FormCleaner();
     }
 
@@ -217,8 +217,6 @@ class FormController extends Controller
      */
     public function uploadAsset(UploadAssetRequest $request)
     {
-        $this->authorize('viewAny', Form::class);
-
         $fileNameParser = StorageFileNameParser::parse($request->url);
 
         // Make sure we retrieve the file in tmp storage, move it to persistent

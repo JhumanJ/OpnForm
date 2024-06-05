@@ -17,6 +17,15 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(): array
     {
         return [
+            'respondent_email' => [
+                'required',
+                'boolean',
+                function ($attribute, $value, $fail) {
+                    if ($value !== true) {
+                        $fail('Need at least 1 email field.');
+                    }
+                },
+            ],
             'confirmation_reply_to' => 'email|nullable',
             'notification_sender' => 'required',
             'notification_subject' => 'required',

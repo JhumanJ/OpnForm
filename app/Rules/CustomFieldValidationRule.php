@@ -19,13 +19,21 @@ class CustomFieldValidationRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        return FormLogicConditionChecker::conditionsMet($this->validation['error_conditions']['conditions'], $this->formData);
+        if (!($this->validation['error_conditions']['conditions'] ?? null) || is_null(
+            $this->validation['error_conditions']['conditions'] ?? null
+        )) {
+            return true;
+        }
+        return FormLogicConditionChecker::conditionsMet(
+            $this->validation['error_conditions']['conditions'],
+            $this->formData
+        );
     }
 
     /**
