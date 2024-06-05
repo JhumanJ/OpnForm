@@ -21,17 +21,17 @@
         </include>
     </coverage>
     <php>
-        <server name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
-        <server name="APP_ENV" value="testing"/>
-        <server name="BCRYPT_ROUNDS" value="4"/>
-        <server name="CACHE_DRIVER" value="array"/>
-        <server name="DB_FOREIGN_KEYS" value="(false)"/>
-        <server name="MAIL_MAILER" value="log"/>
-        <server name="MAIL_FROM_ADDRESS" value="notifications@notionforms.io"/>
-        <server name="MAIL_FROM_NAME" value="NotionForms"/>
-        <server name="QUEUE_CONNECTION" value="sync"/>
-        <server name="SESSION_DRIVER" value="array"/>
-        <server name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
-        <server name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="DB_FOREIGN_KEYS" value="(false)"/>
+        <env name="MAIL_MAILER" value="log"/>
+        <env name="MAIL_FROM_ADDRESS" value="notifications@notionforms.io"/>
+        <env name="MAIL_FROM_NAME" value="NotionForms"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
+        <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
     </php>
 </phpunit>
