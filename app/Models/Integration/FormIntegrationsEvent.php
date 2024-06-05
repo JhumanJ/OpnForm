@@ -19,9 +19,12 @@ class FormIntegrationsEvent extends Model
         'data'
     ];
 
-    protected $casts = [
-        'data' => 'object'
-    ];
+    protected function casts()
+    {
+        return [
+            'data' => 'object'
+        ];
+    }
 
     /**
      * The event map for the model.

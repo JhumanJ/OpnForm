@@ -89,14 +89,17 @@ class Form extends Model implements CachableAttributes
         'seo_meta',
     ];
 
-    protected $casts = [
-        'properties' => 'array',
-        'database_fields_update' => 'array',
-        'closes_at' => 'datetime',
-        'tags' => 'array',
-        'removed_properties' => 'array',
-        'seo_meta' => 'object'
-    ];
+    protected function casts() : array
+    {
+        return [
+            'properties' => 'array',
+            'database_fields_update' => 'array',
+            'closes_at' => 'datetime',
+            'tags' => 'array',
+            'removed_properties' => 'array',
+            'seo_meta' => 'object'
+        ];
+    }
 
     protected $appends = [
         'share_url',
@@ -129,7 +132,7 @@ class Form extends Model implements CachableAttributes
     public function getIsProAttribute()
     {
         return $this->remember('is_pro', 15 * 60, function (): ?bool {
-            return optional($this->workspace)->is_pro === true;
+            return $this->workspace?->is_pro === true;
         });
     }
 
