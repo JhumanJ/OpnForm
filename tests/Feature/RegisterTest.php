@@ -2,8 +2,6 @@
 
 use App\Models\User;
 
-use function Pest\Faker\faker;
-
 it('can register', function () {
     $this->postJson('/register', [
         'name' => 'Test User',
