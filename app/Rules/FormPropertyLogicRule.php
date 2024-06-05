@@ -2,11 +2,13 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class FormPropertyLogicRule implements DataAwareRule, Rule
+class FormPropertyLogicRule implements DataAwareRule, ValidationRule
+
 {
     public const ACTIONS_VALUES = [
         'show-block',
@@ -801,6 +803,13 @@ class FormPropertyLogicRule implements DataAwareRule, Rule
         }
 
         return $this->isConditionCorrect && $this->isActionCorrect;
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!$this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 
     /**

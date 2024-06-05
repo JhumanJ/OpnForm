@@ -5,11 +5,12 @@ namespace App\Rules;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Models\Forms\Form;
 use App\Service\Storage\StorageFileNameParser;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class StorageFile implements Rule
+class StorageFile implements ValidationRule
 {
     public string $error = 'Invalid file.';
 
@@ -64,6 +65,13 @@ class StorageFile implements Rule
         }
 
         return true;
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail) : void
+    {
+        if(!$this->passes($attribute, $value)){
+            $fail($this->message());
+        }
     }
 
     public function message(): string

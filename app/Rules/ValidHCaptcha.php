@@ -2,10 +2,11 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\ImplicitRule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
 
-class ValidHCaptcha implements ImplicitRule
+class ValidHCaptcha implements ValidationRule
 {
     public const H_CAPTCHA_VERIFY_URL = 'https://hcaptcha.com/siteverify';
 
@@ -30,6 +31,12 @@ class ValidHCaptcha implements ImplicitRule
             'secret' => config('services.h_captcha.secret_key'),
             'response' => $value,
         ])->json('success');
+    }
+    public function validate(string $attribute, mixed $value, Closure $fail) : void
+    {
+        if(!$this->passes($attribute, $value)){
+            $fail($this->message());
+        }
     }
 
     /**

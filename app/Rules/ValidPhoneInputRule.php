@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ValidPhoneInputRule implements Rule
+class ValidPhoneInputRule implements ValidationRule
 {
     public ?int $reason = 0;
 
@@ -24,6 +25,13 @@ class ValidPhoneInputRule implements Rule
             return $this->reason === \libphonenumber\ValidationResult::IS_POSSIBLE;
         } catch (\Exception $e) {
             return false;
+        }
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!$this->passes($attribute, $value)) {
+            $fail($this->message());
         }
     }
 

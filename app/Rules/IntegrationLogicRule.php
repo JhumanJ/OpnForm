@@ -2,10 +2,11 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class IntegrationLogicRule implements DataAwareRule, Rule
+class IntegrationLogicRule implements DataAwareRule, ValidationRule
 {
     private $isConditionCorrect = true;
 
@@ -151,6 +152,13 @@ class IntegrationLogicRule implements DataAwareRule, Rule
         }
 
         return $this->isConditionCorrect;
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail) : void
+    {
+        if(!$this->passes($attribute, $value)){
+            $fail($this->message());
+        }
     }
 
     /**
