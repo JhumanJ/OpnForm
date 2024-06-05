@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Events\Forms\FormSubmitted;
 use App\Events\Models\FormCreated;
+use App\Events\Models\FormIntegrationCreated;
 use App\Events\Models\FormIntegrationsEventCreated;
 use App\Events\SubscriptionCreated;
 use App\Listeners\Forms\FormCreationConfirmation;
+use App\Listeners\Forms\FormIntegrationCreatedHandler;
 use App\Listeners\Forms\FormIntegrationsEventListener;
 use App\Listeners\Forms\NotifyFormSubmission;
 use App\Listeners\HandleSubscriptionCreated;
@@ -30,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         FormSubmitted::class => [
             NotifyFormSubmission::class
+        ],
+        FormIntegrationCreated::class => [
+            FormIntegrationCreatedHandler::class,
         ],
         FormIntegrationsEventCreated::class => [
             FormIntegrationsEventListener::class,

@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Integrations\OAuth\OAuthProviderService;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OAuthProvider extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -27,6 +31,11 @@ class OAuthProvider extends Model
      */
     protected $hidden = [
         'access_token', 'refresh_token',
+    ];
+
+    protected $casts = [
+        'provider' => OAuthProviderService::class,
+        'token_expires_at' => 'datetime',
     ];
 
     /**

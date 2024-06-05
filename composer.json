@@ -1,9 +1,16 @@
 {
-    "name": "laravel/laravel",
-    "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "name": "jhumanj/opnform",
+    "description": "A beautiful open-source form builder ",
+    "keywords": [
+      "form",
+      "api",
+      "laravel",
+      "vue",
+      "nuxt",
+      "Tailwind"
+    ],
     "license": "MIT",
+    "type": "project",
     "require": {
         "php": "^8.2",
         "ext-json": "*",
