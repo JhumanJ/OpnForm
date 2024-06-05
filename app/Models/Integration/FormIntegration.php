@@ -2,7 +2,9 @@
 
 namespace App\Models\Integration;
 
+use App\Events\Models\FormIntegrationCreated;
 use App\Models\Forms\Form;
+use App\Models\OAuthProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,6 +28,10 @@ class FormIntegration extends Model
         'logic' => 'object'
     ];
 
+    protected $dispatchesEvents = [
+        'created' => FormIntegrationCreated::class,
+    ];
+
     /**
      * Relationships
      */
@@ -37,6 +43,11 @@ class FormIntegration extends Model
     public function events()
     {
         return $this->hasMany(FormIntegrationsEvent::class, 'integration_id');
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(OAuthProvider::class, 'oauth_id');
     }
 
     public static function getAllIntegrations()
