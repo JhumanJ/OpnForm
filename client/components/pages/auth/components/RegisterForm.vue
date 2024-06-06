@@ -102,8 +102,8 @@
 </template>
 
 <script>
-import { opnFetch } from "~/composables/useOpnApi.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import {opnFetch} from "~/composables/useOpnApi.js"
+import {fetchAllWorkspaces} from "~/stores/workspaces.js"
 
 export default {
   name: "RegisterForm",
@@ -140,21 +140,21 @@ export default {
   computed: {
     hearAboutUsOptions() {
       const options = [
-        { name: "Facebook", value: "facebook" },
-        { name: "Twitter", value: "twitter" },
-        { name: "Reddit", value: "reddit" },
-        { name: "Github", value: "github" },
+        {name: "Facebook", value: "facebook"},
+        {name: "Twitter", value: "twitter"},
+        {name: "Reddit", value: "reddit"},
+        {name: "Github", value: "github"},
         {
           name: "Search Engine (Google, DuckDuckGo...)",
           value: "search_engine",
         },
-        { name: "Friend or Colleague", value: "friend_colleague" },
-        { name: "Blog/Article", value: "blog_article" },
+        {name: "Friend or Colleague", value: "friend_colleague"},
+        {name: "Blog/Article", value: "blog_article"},
       ]
-        .map((value) => ({ value, sort: Math.random() }))
+        .map((value) => ({value, sort: Math.random()}))
         .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value)
-      options.push({ name: "Other", value: "other" })
+        .map(({value}) => value)
+      options.push({name: "Other", value: "other"})
       return options
     },
   },
@@ -189,18 +189,26 @@ export default {
       // Load forms
       this.formsStore.loadAll(this.workspaceStore.currentId)
 
-      this.logEvent("register", { source: this.form.hear_about_us })
+      this.logEvent("register", {source: this.form.hear_about_us})
+      try {
+        useGtm().trackEvent({
+          event: 'register',
+          source: this.form.hear_about_us
+        })
+      } catch (error) {
+        console.error(error)
+      }
 
       // AppSumo License
       if (data.appsumo_license === false) {
         useAlert().error(
           "Invalid AppSumo license. This probably happened because this license was already" +
-            " attached to another OpnForm account. Please contact support.",
+          " attached to another OpnForm account. Please contact support.",
         )
       } else if (data.appsumo_license === true) {
         useAlert().success(
           "Your AppSumo license was successfully activated! You now have access to all the" +
-            " features of the AppSumo deal.",
+          " features of the AppSumo deal.",
         )
       }
 
@@ -208,7 +216,7 @@ export default {
       if (this.isQuick) {
         this.$emit("afterQuickLogin")
       } else {
-        this.$router.push({ name: "forms-create" })
+        this.$router.push({name: "forms-create"})
       }
     },
   },
