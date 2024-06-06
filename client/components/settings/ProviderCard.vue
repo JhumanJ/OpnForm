@@ -7,7 +7,7 @@
         class="mr-4 text-blue-500"
       >
         <Icon
-          name="mdi:google"
+          :name="service?.icon"
           size="32px"
         />
       </div>
@@ -87,6 +87,7 @@ const props = defineProps({
 })
 
 const providersStore = useOAuthProvidersStore()
+const service = computed(() => providersStore.getService(props.provider?.provider))
 const alert = useAlert()
 
 function disconnect() {
