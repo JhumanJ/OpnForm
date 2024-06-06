@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Integration\FormIntegration;
 use App\Models\OAuthProvider;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -57,6 +58,10 @@ class OAuthProviderPolicy
      */
     public function delete(User $user, OAuthProvider $provider)
     {
+        $integrations = FormIntegration::where('oauth_id', $provider->id)->get();
+        if ($integrations->count() > 0) {
+            return $this->denyWithStatus(400, 'This connection cannot be removed because there is already an integration using it.');
+        }
         return $provider->user()->is($user);
     }
 
