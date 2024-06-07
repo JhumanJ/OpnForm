@@ -37,6 +37,7 @@
         :is="actionsComponent"
         v-if="actionsComponent"
         :integration="integration"
+        :form="form"
       />
 
       <div

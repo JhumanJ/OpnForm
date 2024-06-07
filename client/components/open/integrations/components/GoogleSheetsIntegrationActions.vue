@@ -14,7 +14,10 @@
       </div>
     </div>
 
-    <div class="ml-auto">
+    <div
+      v-if="integration.data"
+      class="ml-auto"
+    >
       <v-button
         :href="integration.data.url"
         target="_blank"
@@ -27,7 +30,30 @@
 </template>
 
 <script setup>
-defineProps({
-  integration: Object,
+const props = defineProps({
+  integration: {
+    type: Object,
+    required: true,
+  },
+  form: {
+    type: Object,
+    required: true,
+  }
+})
+
+const formIntegrationsStore = useFormIntegrationsStore()
+let interval = null
+
+onMounted(() => {
+  if (!props.integration.data) {
+    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id), 3000)
+    setTimeout(() => { clearInterval(interval) }, 30000)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (interval) {
+    clearInterval(interval)
+  }
 })
 </script>
