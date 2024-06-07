@@ -17,7 +17,7 @@ return new class () extends Migration {
         Schema::table('forms', function (Blueprint $table) {
             $driver = DB::getDriverName();
             if ($driver === 'mysql') {
-                $table->text('max_submissions_reached_text')->nullable()->default(new Expression('This form has now reached the maximum number of allowed submissions and is now closed.'))->change();
+                $table->text('max_submissions_reached_text')->nullable()->default(new Expression("('This form has now reached the maximum number of allowed submissions and is now closed.')"))->change();
             } else {
                 $table->text('max_submissions_reached_text')->nullable()->default('This form has now reached the maximum number of allowed submissions and is now closed.')->change();
             }
