@@ -54,47 +54,13 @@
           />
         </template>
         </UTable>
-
-        <modal
-      :show="showEditUserModal"
-      max-width="lg"
-      @close="showEditUserModal = false"
-    >
-    <template #title>
-        Edit User Role
-      </template>
-      <div class="px-4">
-        <form
-          @submit.prevent="updateUserRole"
-        >
-          <div>
-            <FlatSelectInput
-              v-model="userNewRole"
-              :options="[
-                { name: 'User', value: 'user' },
-                { name: 'Admin', value: 'admin' }
-              ]"
-              optionKey="value"
-              displayKey="name"
-              :loading="loading"
-            >
-              <template #label>
-                <label for="newUserRole">New User Role</label>
-              </template>
-            </FlatSelectInput>
-          </div>
-
-          <div class="w-full mt-6">
-            <v-button
-              :loading="updatingUserRoleState"
-              class="w-full my-3"
-            >
-              Update
-            </v-button>
-          </div>
-        </form>
-      </div>
-    </modal>
+        
+        <EditWorkSpaceUser 
+          :user="selectedUser" 
+          :show-edit-user-modal="showEditUserModal" 
+          @close="showEditUserModal = false" 
+          @fetch-users="getWorkspaceUsers"
+        />
 
     <div class="flex flex-wrap justify-between gap-2 mt-4 mb-3">
         <v-button
@@ -136,7 +102,6 @@
 
 <script setup>
 import { watch, ref } from "vue"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
 
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
@@ -221,31 +186,7 @@ const editUser = (row) => {
   showEditUserModal.value = true
 }
 
-const updateUserRole = () => {
-  updatingUserRoleState.value = true
-  opnFetch(
-    "/open/workspaces/" +
-      workspacesStore.currentId +
-      "/users/" +
-      selectedUser.value.id +
-      "/update-role",
-    {
-      method: "PUT",
-      body: {
-        role: userNewRole.value,
-      },
-    },
-    { showSuccess: false },
-  ).then(() => {
-    useAlert().success("User role updated.")
-    getWorkspaceUsers()
-    showEditUserModal.value = false
-  }).catch((error) => {
-    useAlert().error("There was an error updating user role")
-  }).finally(() => {
-    updatingUserRoleState.value = false
-  })
-}
+
 
 const removeUser = (index) => {
   let user = rows.value[index]
