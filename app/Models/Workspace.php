@@ -32,9 +32,12 @@ class Workspace extends Model implements CachableAttributes
         'is_enterprise',
     ];
 
-    protected $casts = [
-        'custom_domains' => 'array',
-    ];
+    protected function casts()
+    {
+        return [
+            'custom_domains' => 'array',
+        ];
+    }
 
     protected $cachableAttributes = [
         'is_pro',
@@ -149,7 +152,7 @@ class Workspace extends Model implements CachableAttributes
         return $this->remember('is_risky', 15 * 60, function (): bool {
             // A workspace is risky if all of his users are risky
             foreach ($this->owners as $owner) {
-                if (! $owner->is_risky) {
+                if (!$owner->is_risky) {
                     return false;
                 }
             }
@@ -187,4 +190,5 @@ class Workspace extends Model implements CachableAttributes
     {
         return $this->hasMany(Form::class);
     }
+
 }

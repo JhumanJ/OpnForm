@@ -29,15 +29,18 @@ class Template extends Model
         'related_templates',
     ];
 
-    protected $casts = [
-        'structure' => 'array',
-        'questions' => 'array',
-        'industries' => 'array',
-        'types' => 'array',
-        'related_templates' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected function casts()
+    {
+        return [
+            'structure' => 'array',
+            'questions' => 'array',
+            'industries' => 'array',
+            'types' => 'array',
+            'related_templates' => 'array',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     protected $attributes = [
         'publicly_listed' => false,
@@ -49,7 +52,7 @@ class Template extends Model
 
     public function getShareUrlAttribute()
     {
-        return front_url('/form-templates/'.$this->slug);
+        return front_url('/form-templates/' . $this->slug);
     }
 
     public function setDescriptionAttribute($value)

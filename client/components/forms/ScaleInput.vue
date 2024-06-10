@@ -17,7 +17,7 @@
         role="button"
         @click="setScale(i)"
       >
-        {{ parseFloat(i).toFixed(2) }}
+        {{ formatNumber(i) }}
       </div>
     </div>
 
@@ -95,6 +95,15 @@ export default {
   },
 
   methods: {
+    formatNumber(num) {
+      if (Math.floor(num) === num) {
+        // return as Integer
+        return num
+      } else {
+        // Fformat to 2 decimal places
+        return parseFloat(num.toFixed(2))
+      }
+    },
     btnStyle(isSelected) {
       if (!isSelected) return {}
       return {

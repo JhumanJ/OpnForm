@@ -21,9 +21,9 @@ class FormIntegrationsRequest extends FormRequest
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);
             if ($integration && isset($integration['file_name']) && class_exists(
-                'App\Service\Forms\Integrations\\' . $integration['file_name']
+                'App\Integrations\Handlers\\' . $integration['file_name']
             )) {
-                $this->integrationClassName = 'App\Service\Forms\Integrations\\' . $integration['file_name'];
+                $this->integrationClassName = 'App\Integrations\Handlers\\' . $integration['file_name'];
                 $this->loadIntegrationRules();
                 return;
             }
@@ -40,9 +40,13 @@ class FormIntegrationsRequest extends FormRequest
     {
         return array_merge([
             'integration_id' => ['required', Rule::in(array_keys(FormIntegration::getAllIntegrations()))],
+            'oauth_id' => [
+                $this->isOAuthRequired() ? 'required' : 'nullable',
+                Rule::exists('oauth_providers', 'id')
+            ],
             'settings' => 'present|array',
             'status' => 'required|boolean',
-            'logic' => [new IntegrationLogicRule()]
+            'logic' => [new IntegrationLogicRule()],
         ], $this->integrationRules);
     }
 
@@ -53,14 +57,22 @@ class FormIntegrationsRequest extends FormRequest
      */
     public function attributes()
     {
+        $attributes = $this->integrationClassName::getValidationAttributes();
+
         $fields = [];
         foreach ($this->rules() as $key => $value) {
-            $fields[$key] = Str::of($key)
+            $fields[$key] = $attributes[$key] ?? Str::of($key)
                 ->replace('settings.', '')
-                ->headline();
+                ->headline()
+                ->toString();
         }
 
         return $fields;
+    }
+
+    protected function isOAuthRequired(): bool
+    {
+        return $this->integrationClassName::isOAuthRequired();
     }
 
     private function loadIntegrationRules()
@@ -78,7 +90,8 @@ class FormIntegrationsRequest extends FormRequest
             )) ? FormIntegration::STATUS_ACTIVE : FormIntegration::STATUS_INACTIVE,
             'integration_id' => $this->validated('integration_id'),
             'data' => $this->validated('settings') ?? [],
-            'logic' => $this->validated('logic') ?? []
+            'logic' => $this->validated('logic') ?? [],
+            'oauth_id' => $this->validated('oauth_id'),
         ]);
     }
 }
