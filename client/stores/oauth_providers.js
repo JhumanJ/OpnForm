@@ -7,6 +7,21 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
   const alert = useAlert()
 
+  const services = computed(() => {
+    return [
+      {
+        name: 'google',
+        title: 'Google',
+        icon: 'mdi:google',
+        enabled: true
+      }
+    ]
+  })
+
+  const getService = (service) => {
+    return services.value.find((item) => item.name === service)
+  }
+
   const fetchOAuthProviders = () => {
     contentStore.resetState()
     contentStore.startLoading()
@@ -50,6 +65,8 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
 
   return {
     ...contentStore,
+    services,
+    getService,
     fetchOAuthProviders,
     providers,
     connect

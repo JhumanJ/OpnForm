@@ -2,7 +2,10 @@
   <div
     class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center"
   >
-    <div class="flex items-center">
+    <div
+      class="flex items-center"
+      :class="{'flex-grow': !actionsComponent}"
+    >
       <div
         class="mr-4"
         :class="{
@@ -32,11 +35,15 @@
       </div>
     </div>
 
-    <div class="grow flex items-center gap-4 pl-4">
+    <div
+      class="flex items-center gap-4 pl-4"
+      :class="{'grow': actionsComponent}"
+    >
       <component
         :is="actionsComponent"
         v-if="actionsComponent"
         :integration="integration"
+        :form="form"
       />
 
       <div

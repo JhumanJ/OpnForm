@@ -65,15 +65,7 @@ defineProps({
 const emit = defineEmits(['close'])
 
 const providersStore = useOAuthProvidersStore()
-
-const services = [
-  {
-    name: 'google',
-    title: 'Google',
-    icon: 'mdi:google',
-    enabled: true
-  },
-]
+const services = computed(() => providersStore.services)
 
 function connect(service) {
   providersStore.connect(service.name)

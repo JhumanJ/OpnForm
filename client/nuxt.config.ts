@@ -2,6 +2,7 @@
 import runtimeConfig from "./runtimeConfig"
 import {sentryVitePlugin} from "@sentry/vite-plugin"
 import sitemap from "./sitemap"
+import gtm from "./gtm"
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
@@ -13,7 +14,7 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt-simple-sitemap',
         '@nuxt/ui',
-        ...process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE ? ['nuxt-gtag'] : [],
+        ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
     ],
     build: {
         transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
@@ -69,5 +70,6 @@ export default defineNuxtConfig({
         classPrefix: '',
     },
     sitemap,
-    runtimeConfig
+    runtimeConfig,
+    gtm
 })

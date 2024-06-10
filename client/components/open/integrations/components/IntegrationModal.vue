@@ -50,8 +50,7 @@ const props = defineProps({
   form: { type: Object, required: true },
   integrationKey: { type: String, required: true },
   integration: { type: Object, required: true },
-  formIntegrationId: { type: Number, required: false, default: null },
-  providers: { type: Array, required: true }
+  formIntegrationId: { type: Number, required: false, default: null }
 })
 
 const alert = useAlert()

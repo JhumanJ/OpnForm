@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useAuthStore } from "../../stores/auth"
+import {computed} from "vue"
+import {useAuthStore} from "../../stores/auth"
 
 export default {
   layout: "default",
@@ -63,22 +63,27 @@ export default {
     redirectIfSubscribed() {
       if (this.user.is_subscribed) {
         useAmplitude().logEvent("subscribed", {
-          plan: this.user.has_enterprise_subscription ? "enterprise" : "pro",
+          plan: "pro",
         })
         this.crisp.pushEvent("subscribed", {
-          plan: this.user.has_enterprise_subscription ? "enterprise" : "pro",
+          plan: "pro",
         })
-        this.$router.push({ name: "home" })
+        try {
+          useGtm().trackEvent({event: 'subscribed'})
+        } catch (error) {
+          console.error(error)
+        }
+        this.$router.push({name: "home"})
 
         if (this.user.has_enterprise_subscription) {
           useAlert().success(
             "Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Enterprise " +
-              "features. No need to invite your teammates, just ask them to create a OpnForm account and to connect the same Notion workspace. Feel free to contact us if you have any question 🙌",
+            "features. No need to invite your teammates, just ask them to create a OpnForm account and to connect the same Notion workspace. Feel free to contact us if you have any question 🙌",
           )
         } else {
           useAlert().success(
             "Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Pro " +
-              "features. Feel free to contact us if you have any question 🙌",
+            "features. Feel free to contact us if you have any question 🙌",
           )
         }
       }
