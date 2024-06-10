@@ -2,8 +2,6 @@
 
 use App\Models\User;
 
-use function Pest\Faker\faker;
-
 it('can register', function () {
     $this->postJson('/register', [
         'name' => 'Test User',
@@ -36,12 +34,12 @@ it('cannot register with existing email', function () {
 
 it('cannot register with disposable email', function () {
     // Select random email
-    $email = faker()->randomElement([
+    $email = [
         'dumliyupse@gufum.com',
         'kcs79722@zslsz.com',
         'pfizexwxtdifxupdhr@tpwlb.com',
         'qvj86ypqfm@email.edu.pl',
-    ]);
+    ][rand(0, 3)];
 
     $this->postJson('/register', [
         'name' => 'Test disposable',

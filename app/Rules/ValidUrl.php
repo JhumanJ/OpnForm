@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ValidUrl implements Rule
+class ValidUrl implements ValidationRule
 {
     /**
      * Determine if the validation rule passes.
@@ -19,6 +20,13 @@ class ValidUrl implements Rule
         $pattern = '/^(https?:\/\/)?(www\.)?[\w.-]+\.\w+(:\d+)?(\/[^\s]*)?$/';
 
         return preg_match($pattern, $value);
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!$this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 
     /**

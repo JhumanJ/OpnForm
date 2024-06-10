@@ -22,9 +22,12 @@ class FormStatistic extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'data' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+        ];
+    }
 
     /**
      * Relationships

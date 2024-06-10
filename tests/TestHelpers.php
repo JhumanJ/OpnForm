@@ -169,7 +169,7 @@ trait TestHelpers
         $user = $this->createUser();
 
         $user->subscriptions()->create([
-            'name' => 'default',
+            'type' => 'default',
             'stripe_id' => Str::random(),
             'stripe_status' => 'active',
             'stripe_price' => Str::random(),
