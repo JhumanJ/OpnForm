@@ -68,14 +68,20 @@
           @submit.prevent="updateUserRole"
         >
           <div>
-            <select
+            <FlatSelectInput
               v-model="userNewRole"
-              id="newUserRole"
-              class="w-full p-2 border border-gray-200 outline-none rounded"
+              :options="[
+                { name: 'User', value: 'user' },
+                { name: 'Admin', value: 'admin' }
+              ]"
+              optionKey="value"
+              displayKey="name"
+              :loading="loading"
             >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
+              <template #label>
+                <label for="newUserRole">New User Role</label>
+              </template>
+            </FlatSelectInput>
           </div>
 
           <div class="w-full mt-6">
