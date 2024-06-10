@@ -9,6 +9,13 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class CustomFieldValidationRule implements ValidationRule
 {
     /**
+     * Indicates whether the rule should be implicit.
+     *
+     * @var bool
+     */
+    public $implicit = true;
+
+    /**
      * Create a new rule instance.
      *
      * @return void
