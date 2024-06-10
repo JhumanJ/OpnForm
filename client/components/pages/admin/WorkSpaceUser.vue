@@ -1,32 +1,7 @@
 <template>
     <div>
         <h4 class="font-bold">Members</h4>
-        <form v-if="isWorkspaceAdmin" @submit.prevent="addUser" class="my-2">
-          <text-input
-            name="email"
-            v-model="newUser"
-            label="Email"
-            :required="true"
-            placeholder="Add a new user by email"
-          />
-          <select-input
-            name="newUserRole"
-            v-model="newUserRole"
-            :options="roleOptions"
-            placeholder="Select User Role"
-            label="Role"
-            :required="true"
-          />
-          <div class="flex justify-end mt-2">
-            <v-button
-            color="outline-blue"
-            :loading="loadingUsers"
-          >
-            Add User
-          </v-button>
-          </div>
-        </form>
-
+        <AddUserToWorkspace :isWorkspaceAdmin="isWorkspaceAdmin" @fetchUsers="getWorkspaceUsers" />
         <UTable
           :loading="loadingUsers"
           :rows="rows"
@@ -113,12 +88,8 @@ const workspaces = computed(() => workspacesStore.getAll)
 const users = ref([])
 const loadingUsers = ref(true)
 const leaveWorkspaceLoadingState = ref(false)
-const roleOptions = [
-  { name: "User", value: "user" },
-  { name: "Admin", value: "admin" }
-]
-const newUser = ref("")
-const newUserRole = ref("user")
+
+
 const showEditUserModal = ref(false)
 const selectedUser = ref(null)
 const userNewRole = ref("")
@@ -153,32 +124,7 @@ const columns = computed(()=>{
     ]
 })
 
-const addUser = () => {
-  if (!newUser.value) return
-  loadingUsers.value = true
-  opnFetch(
-    "/open/workspaces/" + workspacesStore.currentId + "/users/add",
-    {
-      method: "POST",
-      body: {
-        email: newUser.value,
-        role: newUserRole.value,
-      },
-    },
-    { showSuccess: false },
-  ).then((data) => {
-    newUser.value = ""
-    newUserRole.value = "user"
 
-    useAlert().success(data.message)
-
-    getWorkspaceUsers()
-  }).catch((error) => {
-    useAlert().error("There was an error adding user")
-  }).finally(() => {
-    loadingUsers.value = false
-  })
-}
 
 const editUser = (row) => {
   selectedUser.value = rows.value[row]
