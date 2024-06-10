@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class OneEmailPerLine implements Rule
+class OneEmailPerLine implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -36,6 +37,13 @@ class OneEmailPerLine implements Rule
         }
 
         return true;
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if(!$this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 
     /**

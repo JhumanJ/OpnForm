@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use App\Service\Forms\FormLogicConditionChecker;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class CustomFieldValidationRule implements Rule
+class CustomFieldValidationRule implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -34,6 +35,13 @@ class CustomFieldValidationRule implements Rule
             $this->validation['error_conditions']['conditions'],
             $this->formData
         );
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!$this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 
     /**

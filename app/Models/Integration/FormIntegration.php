@@ -23,10 +23,13 @@ class FormIntegration extends Model
         'oauth_id'
     ];
 
-    protected $casts = [
-        'data' => 'object',
-        'logic' => 'object'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'data' => 'object',
+            'logic' => 'object'
+        ];
+    }
 
     protected $dispatchesEvents = [
         'created' => FormIntegrationCreated::class,
