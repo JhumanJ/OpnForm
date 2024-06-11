@@ -68,7 +68,7 @@ export default {
         "field.id": {
             handler() {
                 // On field change, reset validation
-                this.validation = this.field.validation.error_conditions || {
+                this.validation = this.field?.validation?.error_conditions || {
                     conditions: null,
                     actions: [],
                 }
