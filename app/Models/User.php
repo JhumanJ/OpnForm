@@ -45,9 +45,12 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts()
+    {
+        return [
+            'email_verified_at' => 'datetime',
+        ];
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -90,12 +93,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->subscribed()
             || in_array($this->email, config('opnform.extra_pro_users_emails'))
-            || ! is_null($this->activeLicense());
+            || !is_null($this->activeLicense());
     }
 
     public function getHasCustomerIdAttribute()
     {
-        return ! is_null($this->stripe_id);
+        return !is_null($this->stripe_id);
     }
 
     public function getAdminAttribute()

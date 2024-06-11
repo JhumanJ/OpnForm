@@ -4,7 +4,7 @@
     class="p-4 w-full border-b"
   >
     <template #title>
-      <div class="flex items-center pr-8">
+      <div class="flex items-center pr-8 space-x-2">
         <div
           class="mr-3"
           :class="{ 'text-blue-600': show, 'text-gray-500': !show }"
@@ -13,7 +13,7 @@
         </div>
         <h3
           id="v-step-2"
-          class="font-semibold flex-grow"
+          class="font-semibold flex-grow mr-2"
         >
           {{ name }}
         </h3>

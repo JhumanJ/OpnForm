@@ -19,7 +19,7 @@
     "icon": "mdi:slack",
     "section_name": "Notifications",
     "file_name": "SlackIntegration",
-    "is_pro": false
+    "is_pro": true
   },
   "discord": {
     "name": "Discord Notification",
@@ -37,7 +37,7 @@
   },
   "zapier": {
     "name": "Zapier Integration",
-    "icon": "logos:zapier",
+    "icon": "cib:zapier",
     "section_name": "Notifications",
     "file_name": "ZapierIntegration",
     "is_pro": true,
@@ -48,7 +48,7 @@
     "icon": "mdi:google-spreadsheet",
     "section_name": "Databases",
     "file_name": "GoogleSheetsIntegration",
-    "is_pro": true,
-    "coming_soon": true
+    "actions_file_name": "GoogleSheetsIntegrationActions",
+    "is_pro": false
   }
 }

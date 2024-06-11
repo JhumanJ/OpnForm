@@ -194,6 +194,10 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 
 🎉 Done! Enjoy your personal OpnForm instance at: [http://opnform.test](http://opnform.test).
 
+## One-Click Deployment
+
+[![Deploy to RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/?app_id=294)
+
 ## Tech Stack
 
 OpnForm is a standard web application built with:

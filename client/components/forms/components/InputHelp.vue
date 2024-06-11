@@ -7,7 +7,7 @@
       :class="helpClasses"
       class="grow flex"
     >
-      <slot name="help">
+      <slot>
         <span
           v-if="help"
           class="field-help"
@@ -29,6 +29,6 @@ const props = defineProps({
 })
 
 const shouldRender = computed(() => {
-  return props.help || !!slots.help || !!slots['after-help']
+  return props.help || !!slots.default || !!slots['after-help']
 })
 </script>
