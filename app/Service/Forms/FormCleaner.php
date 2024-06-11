@@ -33,6 +33,7 @@ class FormCleaner
         'editable_submissions' => false,
         'custom_code' => null,
         'seo_meta' => [],
+        'redirect_url' => null
     ];
 
     private array $formNonTrialingDefaults = [
@@ -52,6 +53,7 @@ class FormCleaner
         'editable_submissions' => 'Users will not be able to edit their submissions.',
         'custom_code' => 'Custom code was disabled',
         'seo_meta' => 'Custom SEO was disabled',
+        'redirect_url' => 'Redirect Url was disabled',
 
         // For fields
         'file_upload' => 'Link field is not a file upload.',
