@@ -568,7 +568,7 @@
     />
 
     <custom-field-validation 
-      class="py-2 px-4 border-b"
+      class="py-2 px-4 border-b pb-16"
       :form="form"
       :field="field"
     />
