@@ -107,6 +107,7 @@ const getWorkspaceUsers = async () => {
 }
 
 const isWorkspaceAdmin = computed(() => {
+  if(!users.value) return false
   let user = users.value.find((user) => user.id === authStore.user.id)
   return user && user.pivot.role === "admin"
 })
