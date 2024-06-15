@@ -68,7 +68,7 @@ class BillingController extends Controller
                 "id" => $subscription->id,
                 "stripe_id" => $subscription->stripe_id,
                 "name" => ucfirst($user->name),
-                "plan" => $subscription->name,
+                "plan" => $subscription->type,
                 "status" => $subscription->stripe_status,
                 "creation_date" => $subscription->created_at->format('Y-m-d')
             ];
