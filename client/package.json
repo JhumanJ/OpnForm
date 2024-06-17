@@ -50,6 +50,7 @@
     "fuse.js": "^6.4.6",
     "js-sha256": "^0.10.0",
     "libphonenumber-js": "^1.10.44",
+    "lzutf8": "^0.6.3",
     "object-to-formdata": "^4.5.1",
     "pinia": "^2.1.7",
     "prismjs": "^1.24.1",
