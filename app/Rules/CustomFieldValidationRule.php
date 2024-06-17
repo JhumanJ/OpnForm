@@ -39,7 +39,7 @@ class CustomFieldValidationRule implements ValidationRule
         }
 
         return FormLogicConditionChecker::conditionsMet(
-            $this->validation['error_conditions']['conditions'],
+            $logicConditions,
             $this->formData
         );
     }
