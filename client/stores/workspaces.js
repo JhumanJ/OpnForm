@@ -39,8 +39,8 @@ export const useWorkspacesStore = defineStore("workspaces", () => {
     }
   }
 
-  const getWorkspaceUsers = () => {
-    return useOpnApi(`${workspaceEndpoint}${currentId.value}/users/`)
+  const getWorkspaceUsers = async() => {
+    return await opnFetch(`${workspaceEndpoint}${currentId.value}/users/`)
   }
 
   return {

@@ -102,7 +102,7 @@ onMounted(() => {
 const getWorkspaceUsers = async () => {
   loadingUsers.value = true
   let data = await workspacesStore.getWorkspaceUsers()
-  users.value = data.data.value
+  users.value = data
   loadingUsers.value = false
 }
 
@@ -113,7 +113,9 @@ const isWorkspaceAdmin = computed(() => {
 })
 
 const rows = computed(() => {
-  return users.value.filter((user) => user.id !== authStore.user.id)
+  if(users.value){
+    return users.value.filter((user) => user.id !== authStore.user.id)
+  }
 })
 
 const columns = computed(()=>{
