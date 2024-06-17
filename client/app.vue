@@ -67,7 +67,7 @@ export default {
   setup() {
     const config = useRuntimeConfig()
     useOpnSeoMeta({
-      title: "OpnForm",
+      title: "Beautiful forms & Surveys",
       description:
         "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
       ogImage: "/img/social-preview.jpg",
