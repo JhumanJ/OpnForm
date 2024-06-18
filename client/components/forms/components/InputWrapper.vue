@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="wrapperClass"
+    :class="[wrapperClass, theme.default.wrapper]"
     :style="inputStyle"
   >
     <slot name="label">

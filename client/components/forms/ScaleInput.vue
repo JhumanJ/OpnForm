@@ -11,6 +11,8 @@
         :class="[
           { 'font-semibold': compVal === i },
           theme.ScaleInput.button,
+          theme.ScaleInput.borderRadius,
+          theme.ScaleInput.size,
           compVal !== i ? unselectedButtonClass : '',
         ]"
         :style="btnStyle(i === compVal)"

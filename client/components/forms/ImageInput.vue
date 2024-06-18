@@ -11,7 +11,12 @@
         aria-expanded="true"
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
-        :class="[theme.default.input, { 'ring-red-500 ring-2': hasError }]"
+        :class="[
+          theme.default.input,
+          theme.default.size,
+          theme.default.borderRadius,
+          { 'ring-red-500 ring-2': hasError }
+        ]"
         :style="inputStyle"
         @click.prevent="showUploadModal = true"
       >

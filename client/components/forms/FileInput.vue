@@ -19,7 +19,8 @@
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
       :class="[{'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
                 [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
-                ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading}, theme.fileInput.input]"
+                ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
+               theme.fileInput.input, theme.fileInput.borderRadius, theme.fileInput.size]"
       @dragover.prevent="uploadDragoverEvent=true"
       @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
@@ -129,24 +130,24 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
+import {inputProps, useFormInput} from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
 import OpenFormButton from '../open/forms/OpenFormButton.vue'
 import CameraUpload from './components/CameraUpload.vue'
-import { storeFile } from "~/lib/file-uploads.js"
+import {storeFile} from "~/lib/file-uploads.js"
 
 export default {
   name: 'FileInput',
-  components: { InputWrapper, UploadedFile, OpenFormButton },
+  components: {InputWrapper, UploadedFile, OpenFormButton},
   mixins: [],
   props: {
     ...inputProps,
-    multiple: { type: Boolean, default: true },
-    cameraUpload: { type: Boolean, default: false },
-    mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: '' },
-    moveToFormAssets: { type: Boolean, default: false }
+    multiple: {type: Boolean, default: true},
+    cameraUpload: {type: Boolean, default: false},
+    mbLimit: {type: Number, default: 5},
+    accept: {type: String, default: ''},
+    moveToFormAssets: {type: Boolean, default: false}
   },
 
   setup(props, context) {
@@ -159,7 +160,7 @@ export default {
     files: [],
     uploadDragoverEvent: false,
     loading: false,
-    isInWebcam:false
+    isInWebcam: false
   }),
 
   computed: {
@@ -254,13 +255,13 @@ export default {
         this.uploadFileToServer(files.item(i))
       }
     },
-    openWebcam(){
-      if(!this.cameraUpload){
+    openWebcam() {
+      if (!this.cameraUpload) {
         return
       }
       this.isInWebcam = true
     },
-    cameraFileUpload(file){
+    cameraFileUpload(file) {
       this.isInWebcam = false
       this.isUploading = false
       this.uploadFileToServer(file)

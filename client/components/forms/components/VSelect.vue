@@ -7,7 +7,7 @@
     <div
       class="inline-block w-full flex overflow-hidden"
       :style="inputStyle"
-      :class="[theme.SelectInput.input, { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }, inputClass]"
+      :class="[theme.SelectInput.input, theme.SelectInput.borderRadius, { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }, inputClass]"
     >
       <button
         type="button"
@@ -78,8 +78,8 @@
     </div>
     <collapsible
       v-model="isOpen"
-      class="absolute mt-1 bg-white overflow-auto dark:bg-notion-dark-light shadow-xl z-10"
-      :class="[dropdownClass,theme.SelectInput.dropdown]"
+      class="absolute mt-1 bg-white overflow-auto dark:bg-notion-dark-light shadow-xl z-30"
+      :class="[dropdownClass,theme.SelectInput.dropdown, theme.SelectInput.borderRadius]"
       @click-away="onClickAway"
     >
       <ul
@@ -148,7 +148,8 @@
             class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
             @click="createOption(searchTerm)"
           >
-            Create <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{ searchTerm
+            Create <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{
+              searchTerm
             }}</span>
           </li>
         </div>
@@ -159,38 +160,38 @@
 
 <script>
 import Collapsible from '~/components/global/transitions/Collapsible.vue'
-import { themes } from '../../../lib/forms/form-themes.js'
+import {themes} from '../../../lib/forms/themes/form-themes.js'
 import debounce from 'debounce'
 import Fuse from 'fuse.js'
 
 export default {
   name: 'VSelect',
-  components: { Collapsible },
+  components: {Collapsible},
   directives: {},
   props: {
     data: Array,
-    modelValue: { default: null, type: [String, Number, Array, Object] },
-    inputClass: { type: String, default: null },
-    dropdownClass: { type: String, default: 'w-full' },
-    loading: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    multiple: { type: Boolean, default: false },
-    searchable: { type: Boolean, default: false },
-    clearable: { type: Boolean, default: false },
-    hasError: { type: Boolean, default: false },
-    remote: { type: Function, default: null },
-    searchKeys: { type: Array, default: () => ['name'] },
-    optionKey: { type: String, default: 'id' },
-    emitKey: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' },
-    placeholder: { type: String, default: null },
-    uppercaseLabels: { type: Boolean, default: true },
-    theme: { type: Object, default: () => themes.default },
-    allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    modelValue: {default: null, type: [String, Number, Array, Object]},
+    inputClass: {type: String, default: null},
+    dropdownClass: {type: String, default: 'w-full'},
+    loading: {type: Boolean, default: false},
+    required: {type: Boolean, default: false},
+    multiple: {type: Boolean, default: false},
+    searchable: {type: Boolean, default: false},
+    clearable: {type: Boolean, default: false},
+    hasError: {type: Boolean, default: false},
+    remote: {type: Function, default: null},
+    searchKeys: {type: Array, default: () => ['name']},
+    optionKey: {type: String, default: 'id'},
+    emitKey: {type: String, default: null},
+    color: {type: String, default: '#3B82F6'},
+    placeholder: {type: String, default: null},
+    uppercaseLabels: {type: Boolean, default: true},
+    theme: {type: Object, default: () => themes.default},
+    allowCreation: {type: Boolean, default: false},
+    disabled: {type: Boolean, default: false}
   },
   emits: ['update:modelValue', 'update-options'],
-  data () {
+  data() {
     return {
       isOpen: false,
       searchTerm: '',
@@ -198,23 +199,23 @@ export default {
     }
   },
   computed: {
-    optionStyle () {
+    optionStyle() {
       return {
         '--bg-form-color': this.color
       }
     },
-    inputStyle () {
+    inputStyle() {
       return {
         '--tw-ring-color': this.color
       }
     },
-    debouncedRemote () {
+    debouncedRemote() {
       if (this.remote) {
         return debounce(this.remote, 300)
       }
       return null
     },
-    filteredOptions () {
+    filteredOptions() {
       if (!this.data) return []
       if (!this.searchable || this.remote || this.searchTerm === '') {
         return this.data
@@ -229,15 +230,15 @@ export default {
         return res.item
       })
     },
-    isSearchable () {
+    isSearchable() {
       return this.searchable || this.remote !== null || this.allowCreation
     },
-    isEmpty () {
+    isEmpty() {
       return this.multiple ? !this.modelValue || this.modelValue.length === 0 : !this.modelValue
     }
   },
   watch: {
-    searchTerm (val) {
+    searchTerm(val) {
       if (!this.debouncedRemote) return
       if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
         return this.debouncedRemote(val)
@@ -245,13 +246,13 @@ export default {
     }
   },
   methods: {
-    onClickAway (event) {
+    onClickAway(event) {
       // Check that event target isn't children of dropdown
       if (this.$refs.select && !this.$refs.select.contains(event.target)) {
         this.isOpen = false
       }
     },
-    isSelected (value) {
+    isSelected(value) {
       if (!this.modelValue) return false
 
       if (this.emitKey && value[this.emitKey]) {
@@ -263,7 +264,7 @@ export default {
       }
       return this.modelValue === value
     },
-    toggleDropdown () {
+    toggleDropdown() {
       if (this.disabled) {
         this.isOpen = false
       } else {
@@ -273,7 +274,7 @@ export default {
         this.searchTerm = ''
       }
     },
-    select (value) {
+    select(value) {
       if (!this.multiple) {
         // Close after select
         this.toggleDropdown()
@@ -306,10 +307,10 @@ export default {
         }
       }
     },
-    clear () {
+    clear() {
       this.$emit('update:modelValue', this.multiple ? [] : null)
     },
-    createOption (newOption) {
+    createOption(newOption) {
       if (newOption) {
         const newItem = {
           name: newOption,

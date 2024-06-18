@@ -28,7 +28,7 @@
         @update:model-value="onChangeCountryCode"
       >
         <template #option="props">
-          <div class="flex items-center space-x-2 hover:text-white">
+          <div class="flex items-center space-x-2">
             <country-flag
               size="normal"
               class="!-mt-[9px]"
@@ -58,6 +58,8 @@
         :disabled="disabled ? true : null"
         :class="[
           theme.default.input,
+          theme.default.size,
+          theme.default.borderRadius,
           {
             '!ring-red-500 !ring-2': hasError,
             '!cursor-not-allowed !bg-gray-200': disabled,

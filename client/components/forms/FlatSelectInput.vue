@@ -16,6 +16,8 @@
       role="button"
       :class="[
         theme.default.input,
+        theme.default.size,
+        theme.default.borderRadius,
         'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex',
         {
           'mb-2': index !== options.length,
