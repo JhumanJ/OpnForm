@@ -39,7 +39,7 @@ class StripeController extends WebhookController
                 return;
             }
 
-            $subscription->name = $subscription->name ?? $data['metadata']['name'] ?? $this->newSubscriptionName($payload);
+            $subscription->type = $subscription->type ?? $data['metadata']['name'] ?? $this->newSubscriptionName($payload);
 
             $firstItem = $data['items']['data'][0];
             $isSinglePrice = count($data['items']['data']) === 1;
@@ -47,8 +47,8 @@ class StripeController extends WebhookController
             // Price...
             $subscription->stripe_price = $isSinglePrice ? $firstItem['price']['id'] : null;
 
-            // Name...
-            $subscription->name = $this->getSubscriptionName($data['plan']['product']);
+            // Type - previously (Name)
+            $subscription->type = $this->getSubscriptionName($data['plan']['product']);
 
             // Quantity...
             $subscription->quantity = $isSinglePrice && isset($firstItem['quantity']) ? $firstItem['quantity'] : null;
