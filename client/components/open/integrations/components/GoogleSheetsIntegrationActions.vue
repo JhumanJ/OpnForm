@@ -2,15 +2,15 @@
   <div class="flex flex-1 items-center">
     <div
       v-if="integration.provider"
-      class="space-y-1"
+      class="hidden md:block space-y-1"
     >
       <div
         class="font-medium mr-2"
       >
-        {{ integration.provider.user.name }}
+        {{ integration.provider.name }}
       </div>
       <div class="text-sm">
-        {{ integration.provider.user.email }}
+        {{ integration.provider.email }}
       </div>
     </div>
 
@@ -22,8 +22,17 @@
         :href="integration.data.url"
         target="_blank"
         color="white"
+        class="block"
       >
-        Open spreadsheet
+        <Icon
+          name="mdi:google-spreadsheet"
+          size="20px"
+        />
+        Open
+        <Icon
+          class="ml-1"
+          name="heroicons:arrow-top-right-on-square-20-solid"
+        />
       </v-button>
     </div>
   </div>
