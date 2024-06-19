@@ -8,15 +8,23 @@ export const themes = {
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
-      inputSpacing: {
-        vertical: 'py-2',
-        horizontal: 'px-4'
-      },
       help: 'text-gray-400 dark:text-gray-500',
-      size: {
-        lg: 'text-lg py-4 px-6',
-        md: 'text-base py-2 px-4',
-        sm: 'text-sm py-1.5 px-3'
+      spacing: {
+        horizontal: {
+          sm: 'px-2',
+          md: 'px-4',
+          lg: 'px-6'
+        },
+        vertical: {
+          sm: 'py-1.5',
+          md: 'py-2',
+          lg: 'py-4'
+        }
+      },
+      fontSize: {
+        sm: 'text-sm',
+        md: 'text-base',
+        lg: 'text-lg'
       },
       borderRadius: {
         none: 'rounded-none',
@@ -45,7 +53,16 @@ export const themes = {
       input:
         'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded'
+      option: 'rounded',
+      minHeight: {
+        sm: 'min-h-6',
+        md: 'min-h-8',
+        lg: 'min-h-10'
+      }
+    },
+    FlatSelectInput: {
+      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex space-x-2 border-t first:border-t-0 px-2',
+      unselectedIcon: 'text-gray-300 dark:text-gray-600'
     },
     DateInput: {
       input:
@@ -53,31 +70,50 @@ export const themes = {
     },
     fileInput: {
       input:
-        'min-h-40 border border-dashed border-gray-300 dark:border-gray-600 p-4 shadow-none',
-      cameraInput: 'min-h-40',
+        'border border-dashed border-gray-300 dark:border-gray-600 p-4 shadow-none',
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-58'
+      },
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light rounded-lg shadow-sm max-w-[10rem]'
+    },
+    SignatureInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
     }
   },
   simple: {
     default: {
       wrapper: 'relative mb-3',
-      label: 'text-gray-700 dark:text-gray-300 font-semibold',
+      label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
       help: 'text-gray-400 dark:text-gray-500',
-      inputSpacing: {
-        vertical: 'py-2',
-        horizontal: 'px-4'
+      spacing: {
+        horizontal: {
+          sm: 'px-2',
+          md: 'px-4',
+          lg: 'px-6'
+        },
+        vertical: {
+          sm: 'py-1.5',
+          md: 'py-2',
+          lg: 'py-4'
+        }
       },
-      size: {
-        lg: 'text-lg py-4 px-6',
-        md: 'text-base py-2 px-4',
-        sm: 'text-sm py-1 px-2'
+      fontSize: {
+        sm: 'text-sm',
+        md: 'text-base',
+        lg: 'text-lg'
       },
       borderRadius: {
         none: 'rounded-none',
@@ -106,37 +142,66 @@ export const themes = {
       input:
         'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded'
+      option: 'rounded',
+      minHeight: {
+        sm: 'min-h-6',
+        md: 'min-h-8',
+        lg: 'min-h-10'
+      }
+    },
+    FlatSelectInput: {
+      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex space-x-2 border-t first:border-t-0 px-2',
+      unselectedIcon: 'text-gray-300 dark:text-gray-600'
     },
     DateInput: {
       input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
     },
     fileInput: {
       input:
-        'min-h-40 border border-dashed border-gray-300 dark:border-gray-600 p-4 shadow-none',
-      cameraInput: 'min-h-40',
+        'border border-dashed border-gray-300 dark:border-gray-600 p-4 shadow-none',
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light shadow-sm max-w-[10rem]'
+    },
+    SignatureInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
     }
   },
   notion: {
     default: {
       wrapper: 'relative mb-3',
-      label: 'text-gray-900 dark:text-gray-100 mb-2 block mt-4',
+      label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:
         'rounded border-transparent flex-1 appearance-none shadow-inner-notion w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
       help: 'text-notion-input-help dark:text-gray-500',
-      inputSpacing: {
-        vertical: 'py-2',
-        horizontal: 'px-4'
+      spacing: {
+        horizontal: {
+          sm: 'px-2',
+          md: 'px-4',
+          lg: 'px-6'
+        },
+        vertical: {
+          sm: 'py-1.5',
+          md: 'py-2',
+          lg: 'py-4'
+        }
       },
-      size: {
-        md: 'text-base py-2 px-4',
-        sm: 'text-sm py-1 px-2'
+      fontSize: {
+        sm: 'text-sm',
+        md: 'text-base',
+        lg: 'text-lg'
       },
       borderRadius: {
         none: 'rounded-none',
@@ -165,21 +230,41 @@ export const themes = {
       input:
         'relative w-full border-transparent flex-1 appearance-none bg-notion-input-background shadow-inner-notion w-full text-gray-900 placeholder-gray-400 dark:bg-notion-dark-light dark:placeholder-gray-500 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded'
+      option: 'rounded',
+      minHeight: {
+        sm: 'min-h-6',
+        md: 'min-h-8',
+        lg: 'min-h-10'
+      }
+    },
+    FlatSelectInput: {
+      option: 'cursor-pointer hover:backdrop-brightness-95 flex space-x-2 border-t border-neutral-300 first:border-t-0 px-2',
+      unselectedIcon: 'text-neutral-300 dark:text-neutral-600'
     },
     DateInput: {
       input: 'shadow-inner-notion border-transparent focus:border-transparent flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion p-[1px]'
     },
     fileInput: {
       input:
-        'min-h-40 p-4 rounded bg-notion-input-background dark:bg-notion-dark',
-      cameraInput: 'min-h-40 rounded',
+        'p-4 rounded bg-notion-input-background dark:bg-notion-dark',
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
       inputHover: {
         light: 'bg-neutral-50',
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light rounded shadow-sm max-w-[10rem]'
+    },
+    SignatureInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
     }
   }
 }

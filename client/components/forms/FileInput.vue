@@ -5,7 +5,10 @@
     </template>
     <div
       v-if="cameraUpload && isInWebcam"
-      class="hidden sm:block w-full min-h-40"
+      class="hidden sm:block w-full"
+      :class="[
+        theme.fileInput.minHeight
+      ]"
     >
       <camera-upload
         v-if="cameraUpload"
@@ -17,10 +20,17 @@
     <div
       v-else
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
-      :class="[{'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
-                [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
-                ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
-               theme.fileInput.input, theme.fileInput.borderRadius, theme.fileInput.size]"
+      :class="[
+        {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
+         [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
+         ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
+        theme.fileInput.input,
+        theme.fileInput.borderRadius,
+        theme.fileInput.spacing.horizontal,
+        theme.fileInput.spacing.vertical,
+        theme.fileInput.fontSize,
+        theme.fileInput.minHeight
+      ]"
       @dragover.prevent="uploadDragoverEvent=true"
       @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
@@ -67,7 +77,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                 >
                   <path
                     stroke-linecap="round"

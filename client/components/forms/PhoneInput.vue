@@ -13,7 +13,7 @@
       <v-select
         v-model="selectedCountryCode"
         class="w-[130px]"
-        dropdown-class="w-[300px]"
+        dropdown-class="max-w-[300px]"
         input-class="rounded-r-none"
         :data="countries"
         :disabled="disabled || countries.length === 1 ? true : null"
@@ -28,13 +28,13 @@
         @update:model-value="onChangeCountryCode"
       >
         <template #option="props">
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2 max-w-full">
             <country-flag
               size="normal"
-              class="!-mt-[9px]"
+              class="!-mt-[9px] rounded"
               :country="props.option.code"
             />
-            <span class="grow">{{ props.option.name }}</span>
+            <span class="grow truncate">{{ props.option.name }}</span>
             <span>{{ props.option.dial_code }}</span>
           </div>
         </template>
@@ -44,7 +44,7 @@
           >
             <country-flag
               size="normal"
-              class="!-mt-[9px]"
+              class="!-mt-[9px] rounded"
               :country="props.option.code"
             />
             <span>{{ props.option.dial_code }}</span>
@@ -58,7 +58,9 @@
         :disabled="disabled ? true : null"
         :class="[
           theme.default.input,
-          theme.default.size,
+          theme.default.spacing.horizontal,
+          theme.default.spacing.vertical,
+          theme.default.fontSize,
           theme.default.borderRadius,
           {
             '!ring-red-500 !ring-2': hasError,

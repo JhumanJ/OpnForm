@@ -5,6 +5,7 @@ const CachedDefaultTheme = (function() {
 
   function createInstance() {
     const themeBuilder = new ThemeBuilder()
+    console.log(themeBuilder.getAllComponents())
     return themeBuilder.getAllComponents()
   }
 

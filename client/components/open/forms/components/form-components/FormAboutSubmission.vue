@@ -147,8 +147,8 @@
         </div>
       </template>
       <template #option="{ option, selected }">
-        <span class="flex hover:text-white">
-          <p class="flex-grow hover:text-white">
+        <span class="flex">
+          <p class="flex-grow">
             {{ option.name }}
             <template v-if="option.value === 'redirect'"><pro-tag /></template>
           </p>

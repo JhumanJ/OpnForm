@@ -12,7 +12,9 @@
           { 'font-semibold': compVal === i },
           theme.ScaleInput.button,
           theme.ScaleInput.borderRadius,
-          theme.ScaleInput.size,
+          theme.ScaleInput.spacing.horizontal,
+          theme.ScaleInput.spacing.vertical,
+          theme.ScaleInput.fontSize,
           compVal !== i ? unselectedButtonClass : '',
         ]"
         :style="btnStyle(i === compVal)"

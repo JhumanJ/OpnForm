@@ -4,7 +4,7 @@
       <span />
     </template>
 
-    <div class="flex">
+    <div class="flex items-center">
       <v-switch
         :id="id ? id : name"
         v-model="compVal"
@@ -13,7 +13,7 @@
         :color="color"
       />
       <slot name="label">
-        <span>{{ label }}
+        <span :class="theme.default.fontSize">{{ label }}
           <span
             v-if="required"
             class="text-red-500 required-dot"

@@ -7,18 +7,30 @@
     <div
       class="inline-block w-full flex overflow-hidden"
       :style="inputStyle"
-      :class="[theme.SelectInput.input, theme.SelectInput.borderRadius, { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled }, inputClass]"
+      :class="[
+        theme.SelectInput.input,
+        theme.SelectInput.borderRadius,
+        { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled },
+        inputClass
+      ]"
     >
       <button
         type="button"
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-pointer w-full flex-grow relative"
-        :class="[{'py-2': !multiple || loading, 'py-1': multiple},theme.default.inputSpacing.horizontal]"
+        class="cursor-pointer w-full flex-grow relative py-1"
+        :class="[
+          theme.SelectInput.spacing.horizontal
+        ]"
         @click="toggleDropdown"
       >
-        <div :class="{ 'h-6': !multiple, 'min-h-8': multiple && !loading }">
+        <div
+          class="min-h-8 flex items-center"
+          :class="[
+            theme.SelectInput.minHeight
+          ]"
+        >
           <transition
             name="fade"
             mode="out-in"
@@ -32,7 +44,6 @@
               v-else-if="modelValue"
               key="value"
               class="flex"
-              :class="{ 'min-h-8': multiple }"
             >
               <slot
                 name="selected"
@@ -47,7 +58,10 @@
               <slot name="placeholder">
                 <div
                   class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
-                  :class="{ 'py-1': multiple && !loading }"
+                  :class="[
+                    { 'py-1': multiple && !loading },
+                    theme.SelectInput.fontSize
+                  ]"
                 >
                   {{ placeholder }}
                 </div>
@@ -65,7 +79,7 @@
       <button
         v-if="clearable && !isEmpty"
         class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
-        :class="[theme.default.inputSpacing.vertical]"
+        :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
       >
         <Icon
@@ -85,8 +99,11 @@
       <ul
         tabindex="-1"
         role="listbox"
-        class="text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
-        :class="{ 'max-h-42': !isSearchable, 'max-h-48': isSearchable }"
+        class="leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
+        :class="[
+          { 'max-h-42': !isSearchable, 'max-h-48': isSearchable },
+          theme.SelectInput.fontSize
+        ]"
       >
         <div
           v-if="isSearchable"
@@ -95,12 +112,26 @@
           <input
             v-model="searchTerm"
             type="text"
-            class="flex-grow pl-3 pr-7 py-3 w-full focus:outline-none dark:text-white"
+            class="flex-grow pl-3 pr-7 py-2 w-full focus:outline-none dark:text-white"
             placeholder="Search"
           >
-          <div class="flex absolute right-0 inset-y-0 items-center px-2 justify-center pointer-events-none">
+          <div
+            v-if="!searchTerm"
+            class="flex absolute right-0 inset-y-0 items-center px-2 justify-center pointer-events-none"
+          >
             <Icon
               name="heroicons:magnifying-glass-solid"
+              class="h-5 w-5 text-gray-500 dark:text-gray-400"
+            />
+          </div>
+          <div
+            v-else
+            role="button"
+            class="flex absolute right-0 inset-y-0 items-center px-2 justify-center"
+            @click="searchTerm = ''"
+          >
+            <Icon
+              name="heroicons:backspace"
               class="h-5 w-5 text-gray-500 dark:text-gray-400"
             />
           </div>
@@ -120,8 +151,14 @@
             :key="item[optionKey]"
             role="option"
             :style="optionStyle"
-            :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            :class="[
+              dropdownClass,
+              theme.SelectInput.option,
+              theme.SelectInput.spacing.horizontal,
+              theme.SelectInput.spacing.vertical,
+              { 'pr-9': multiple},
+            ]"
+            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
             @click="select(item)"
           >
             <slot
@@ -222,11 +259,11 @@ export default {
       }
 
       // Fuse search
-      const fuzeOptions = {
-        keys: this.searchKeys
-      }
-      const fuse = new Fuse(this.data, fuzeOptions)
-      return fuse.search(this.searchTerm).map((res) => {
+      const fuse = new Fuse(this.data, {
+        keys: this.searchKeys,
+        includeScore: true
+      })
+      return fuse.search(this.searchTerm).filter((res) => res.score < 0.5).map((res) => {
         return res.item
       })
     },

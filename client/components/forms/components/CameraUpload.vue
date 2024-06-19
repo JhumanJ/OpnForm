@@ -4,7 +4,7 @@
       id="webcam"
       autoplay
       playsinline
-      :class="[{ hidden: !isCapturing }, theme.fileInput.cameraInput, theme.fileInput.borderRadius]"
+      :class="[{ hidden: !isCapturing }, theme.fileInput.minHeight, theme.fileInput.borderRadius]"
       width="1280"
       height="720"
     />

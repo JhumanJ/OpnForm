@@ -19,7 +19,9 @@
           <div
             class="flex-grow min-w-0 flex items-center gap-x-2"
             :class="[
-              props.theme.DateInput.size
+              props.theme.DateInput.spacing.horizontal,
+              props.theme.DateInput.spacing.vertical,
+              props.theme.DateInput.fontSize,
             ]"
           >
             <Icon

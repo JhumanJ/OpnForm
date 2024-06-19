@@ -1,11 +1,22 @@
 import {twMerge} from 'tailwind-merge'
 import {themes} from './form-themes.js'
 
+export const sizes = ['sm', 'md', 'lg']
+
 class ThemeBuilder {
   constructor(theme = 'default', options = {}) {
     this.theme = themes[theme] || themes.default
     this.size = options.size || 'sm'
     this.borderRadius = options.borderRadius || 'small'
+  }
+
+  extractSizedClasses(baseConfig) {
+    if (typeof baseConfig === 'object' &&
+      sizes.every((size) => baseConfig[size])) {
+      return baseConfig[this.size]
+    }
+
+    return baseConfig
   }
 
   mergeNestedClasses(baseConfig, componentConfig) {
@@ -17,16 +28,17 @@ class ThemeBuilder {
     ])
 
     allKeys.forEach((key) => {
-      const baseValue = baseConfig[key]
-      const componentValue = componentConfig[key]
+      const baseValue = this.extractSizedClasses(baseConfig[key])
+      const componentValue = this.extractSizedClasses(componentConfig[key])
 
-      if (key === 'size') {
-        const sizeClass = baseConfig.size?.[this.size] || ''
-        mergedConfig[key] = twMerge(sizeClass, componentValue)
-      } else if (key === 'borderRadius') {
+      if (key === 'borderRadius') {
+        // Special case for border radius
         const borderRadiusClass = baseConfig.borderRadius?.[this.borderRadius] || ''
         mergedConfig[key] = twMerge(borderRadiusClass, componentValue)
-      } else if (typeof baseValue === 'object' && baseValue !== null && !Array.isArray(baseValue)) {
+      } else if (
+        typeof baseValue === 'object' &&
+        baseValue !== null &&
+        !Array.isArray(baseValue)) {
         mergedConfig[key] = this.mergeNestedClasses(baseValue, componentValue || {})
       } else {
         mergedConfig[key] = twMerge(baseValue || '', componentValue || '')

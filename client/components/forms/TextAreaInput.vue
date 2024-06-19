@@ -11,7 +11,9 @@
       :class="[
         theme.default.input,
         theme.default.borderRadius,
-        theme.default.size,
+        theme.default.spacing.horizontal,
+        theme.default.spacing.vertical,
+        theme.default.fontSize,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
