@@ -43,6 +43,10 @@ export const useWorkspacesStore = defineStore("workspaces", () => {
     return await opnFetch(`${workspaceEndpoint}${currentId.value}/users/`)
   }
 
+  const getWorkspaceInvites = async() => {
+    return await opnFetch(`${workspaceEndpoint}${currentId.value}/invites/`)
+  }
+
   return {
     ...contentStore,
     currentId,
@@ -52,6 +56,7 @@ export const useWorkspacesStore = defineStore("workspaces", () => {
     save,
     remove,
     getWorkspaceUsers,
+    getWorkspaceInvites,
   }
 })
 

@@ -21,4 +21,9 @@ class WorkspaceHelper
     {
         return $this->workspace->users()->withPivot('role')->get();
     }
+
+    public function getAllInvites()
+    {
+        return $this->workspace->invites()->get();
+    }
 }

@@ -8,7 +8,7 @@ You have been invited to join the workspace "{{ $workspaceName }}" on OpnForm, a
 
 To join us, please click the button below.
 
-@component('mail::button', ['url' => 'https://opnform.com/register'])
+@component('mail::button', ['url' => $inviteLink])
 Accept Invitation
 @endcomponent
 

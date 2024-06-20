@@ -1,32 +1,79 @@
 <template>
-    <div>
+    <div class="mt-4">
+      <div class="flex items-center justify-between">
+
         <h4 class="font-bold">Members</h4>
-        <AddUserToWorkspace :isWorkspaceAdmin="isWorkspaceAdmin" @fetchUsers="getWorkspaceUsers" />
+        <v-button
+          color="outline-blue"
+          :loading="loading"
+          @click="userInviteModal = true"
+        >
+          <Icon name="heroicons:plus-16-solid" class="w-5 h-5"/>
+          Invite User
+        </v-button>
+      </div>
+        <!--  User invite modal  -->
+        <modal
+          :show="userInviteModal"
+          max-width="lg"
+          @close="userInviteModal = false"
+        >
+          <AddUserToWorkspace :isWorkspaceAdmin="isWorkspaceAdmin" @fetchUsers="getWorkspaceUsers" />
+        </modal>
         <UTable
           :loading="loadingUsers"
           :rows="rows"
           :columns="columns"
         >
-        <template #actions-data="{ row, index }" v-if="isWorkspaceAdmin">
-          <UButton
-            @click="editUser(index)"
-            icon="i-heroicons-pencil"
-            size="2xs"
-            color="blue"
-            variant="outline"
-            :ui="{ rounded: 'rounded-full' }"
-            square
-          />
+        <template #actions-data="{ row, index }" v-if="isWorkspaceAdmin" class="">
+          <div class="space-x-2">
 
-          <UButton
-            @click="removeUser(index)"
-            icon="i-heroicons-trash"
-            size="2xs"
-            color="red"
-            variant="outline"
-            :ui="{ rounded: 'rounded-full' }"
-            square
-          />
+            <UTooltip text="Edit user" v-if="row.type == 'user'">
+              <UButton
+                @click="editUser(index)"
+                icon="i-heroicons-pencil"
+                size="2xs"
+                color="blue"
+                variant="outline"
+                :ui="{ rounded: 'rounded-full' }"
+                square
+              />
+            </UTooltip>
+            <UTooltip text="Remove user" v-if="row.type == 'user'">
+              <UButton
+                v-if="row.type == 'user'"
+                @click="removeUser(index)"
+                icon="i-heroicons-trash"
+                size="2xs"
+                color="red"
+                variant="outline"
+                :ui="{ rounded: 'rounded-full' }"
+                square
+              />
+            </UTooltip>
+            <UTooltip text="Resend Invite" v-if="row.type == 'invitee'">
+              <UButton
+                @click="resendInvite(index)"
+                icon="i-heroicons-envelope"
+                size="2xs"
+                color="green"
+                variant="outline"
+                :ui="{ rounded: 'rounded-full' }"
+                square
+              />
+            </UTooltip>
+            <UTooltip text="Cancel Invite" v-if="row.type == 'invitee'">
+              <UButton
+                @click="cancelInvite(index)"
+                icon="i-heroicons-x-mark"
+                size="2xs"
+                color="red"
+                variant="outline"
+                :ui="{ rounded: 'rounded-full' }"
+                square
+              />
+            </UTooltip>
+          </div>
         </template>
         </UTable>
         
@@ -89,20 +136,40 @@ const users = ref([])
 const loadingUsers = ref(true)
 const leaveWorkspaceLoadingState = ref(false)
 
-
+const userInviteModal = ref(false)
 const showEditUserModal = ref(false)
 const selectedUser = ref(null)
 const userNewRole = ref("")
-const updatingUserRoleState = ref(false)
 
 onMounted(() => {
   getWorkspaceUsers()
 })
 
 const getWorkspaceUsers = async () => {
+  userInviteModal.value = false;
   loadingUsers.value = true
   let data = await workspacesStore.getWorkspaceUsers()
-  users.value = data
+  data = data.map(d => {
+    return { 
+      ...d,
+      name: d.name,
+      email:d.email,
+      status: 'accepted',
+      role:d.pivot.role,
+      type:'user'
+     }
+  })
+  let invites = await workspacesStore.getWorkspaceInvites()
+  invites = invites.filter(i=>i.status!== 'accepted').map(i=>{
+    return {
+      ...i,
+      name: 'Invitee',
+      email:i.email,
+      status:i.status,
+      type:'invitee'
+    }
+  })
+  users.value = [...data, ...invites]
   loadingUsers.value = false
 }
 
@@ -122,7 +189,7 @@ const columns = computed(()=>{
   return [
       { key: 'name', label: 'Name' },
       { key: 'email', label: 'Email' },
-      { key: 'pivot.role', label: 'Role' },
+      { key: 'role', label: 'Role' },
       ...(isWorkspaceAdmin.value ? [{ key: 'actions', label: 'Action' }] : [])
     ]
 })
@@ -197,6 +264,38 @@ const leaveWorkSpace = (workspaceId) => {
       })
     },
   )
+}
+
+const resendInvite = (id) => {
+  const inviteId = rows.value[id].id
+  useAlert().confirm(
+    "Do you really want to resend invite email to this user?",
+    () => {
+      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/resend", { method: "POST" }).then(
+        () => {
+          useAlert().success("Invitation resent successfully.")
+          getWorkspaceUsers()
+        },
+      ).catch(err => {
+        useAlert().error(err.response._data?.message)
+      })
+    })
+}
+
+const cancelInvite = (id) => {
+  const inviteId = rows.value[id].id
+  useAlert().confirm(
+    "Do you really want to cancel this user's invitation to this workspace?",
+    () => {
+      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/cancel", { method: "DELETE" }).then(
+        () => {
+          useAlert().success("Invitation cancelled successfully.")
+          getWorkspaceUsers()
+        },
+      ).catch(err => {
+        useAlert().error(err.response._data?.message)
+      })
+    })
 }
 
 </script>

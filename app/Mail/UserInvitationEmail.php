@@ -12,7 +12,6 @@ class UserInvitationEmail extends Mailable implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $workspaceName;
 
     /**
      * Create a new message instance.
@@ -20,9 +19,10 @@ class UserInvitationEmail extends Mailable implements ShouldQueue
      * @param string $workspaceName
      * @return void
      */
-    public function __construct(string $workspaceName)
+    public function __construct(public string $workspaceName, public string $inviteLink)
     {
         $this->workspaceName = $workspaceName;
+        $this->inviteLink = $inviteLink;
     }
 
     /**

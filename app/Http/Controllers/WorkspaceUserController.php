@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserInvite;
 use Illuminate\Http\Request;
 use App\Models\Workspace;
 use App\Models\User;
 use App\Service\WorkspaceHelper;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\UserInvitationEmail;
 
 class WorkspaceUserController extends Controller
 {
@@ -37,7 +36,17 @@ class WorkspaceUserController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            Mail::to($request->email)->send(new UserInvitationEmail($workspace->name));
+            if (UserInvite::where('email', $request->email)->where('workspace_id', $workspaceId)->exists()) {
+                // Invitation exists, but user hasn't registered.
+                return $this->success([
+                    'message' => 'User has already been invited.'
+                ]);
+            }
+
+            // Send new invite
+            $userInvite = new UserInvite();
+            $userInvite->inviteUser($request->email, $request->role, $workspace, now()->addDays(7));
+
             return $this->success([
                 'message' => 'Registration invitation email sent to user.'
             ]);
@@ -54,6 +63,7 @@ class WorkspaceUserController extends Controller
                 'role' => $request->role,
             ],
         ], false);
+
 
         return $this->success([
             'message' => 'User has been successfully added to workspace.'

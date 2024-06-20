@@ -20,6 +20,7 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\UserInviteController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
@@ -79,6 +80,10 @@ Route::group(['middleware' => 'auth:api'], function () {
                     '/users',
                     [WorkspaceUserController::class, 'listUsers']
                 )->name('users.index');
+                Route::get(
+                    '/invites',
+                    [UserInviteController::class, 'listInvites']
+                )->name('invites.index');
 
                 Route::post(
                     '/users/add',
@@ -89,6 +94,16 @@ Route::group(['middleware' => 'auth:api'], function () {
                     '/users/{userId}/remove',
                     [WorkspaceUserController::class, 'removeUser']
                 )->name('users.remove');
+
+                Route::post(
+                    '/invites/{inviteId}/resend',
+                    [UserInviteController::class, 'resendInvite']
+                )->name('invites.resend');
+
+                Route::delete(
+                    '/invites/{inviteId}/cancel',
+                    [UserInviteController::class, 'cancelInvite']
+                )->name('invites.cancel');
 
                 Route::put(
                     '/users/{userId}/update-role',
