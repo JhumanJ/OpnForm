@@ -13,12 +13,12 @@ export const themes = {
         horizontal: {
           sm: 'px-2',
           md: 'px-4',
-          lg: 'px-6'
+          lg: 'px-5'
         },
         vertical: {
           sm: 'py-1.5',
           md: 'py-2',
-          lg: 'py-4'
+          lg: 'py-3'
         }
       },
       fontSize: {
@@ -102,12 +102,12 @@ export const themes = {
         horizontal: {
           sm: 'px-2',
           md: 'px-4',
-          lg: 'px-6'
+          lg: 'px-5'
         },
         vertical: {
           sm: 'py-1.5',
           md: 'py-2',
-          lg: 'py-4'
+          lg: 'py-3'
         }
       },
       fontSize: {
@@ -190,12 +190,12 @@ export const themes = {
         horizontal: {
           sm: 'px-2',
           md: 'px-4',
-          lg: 'px-6'
+          lg: 'px-5'
         },
         vertical: {
           sm: 'py-1.5',
           md: 'py-2',
-          lg: 'py-4'
+          lg: 'py-3'
         }
       },
       fontSize: {
