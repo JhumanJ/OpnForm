@@ -37,7 +37,6 @@
         "spatie/laravel-sitemap": "*",
         "spatie/laravel-sluggable": "*",
         "stevebauman/purify": "*",
-        "tymon/jwt-auth": "*",
         "vinkla/hashids": "*"
     },
     "require-dev": {
@@ -102,8 +101,7 @@
           "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-          "@php artisan key:generate --ansi",
-          "@php artisan jwt:secret --force --ansi"
+          "@php artisan key:generate --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
