@@ -12,7 +12,7 @@
     >
       <!-- Email -->
       <text-input
-        name="email"
+        name="username"
         :form="form"
         label="Email"
         :required="true"
@@ -108,8 +108,10 @@ export default {
 
   data: () => ({
     form: useForm({
-      email: "",
+      username: "",
       password: "",
+      grant_type: 'password',
+      scope: '*',
     }),
     loading: false,
     remember: false,
@@ -121,15 +123,16 @@ export default {
       // Submit the form.
       this.loading = true
       this.form
-        .post("login")
+        .post("/oauth/token")
         .then(async (data) => {
           // Save the token.
-          this.authStore.setToken(data.token)
+          this.authStore.setToken(data.access_token)
 
           const [userDataResponse, workspacesResponse] = await Promise.all([
             opnFetch("user"),
             fetchAllWorkspaces(),
           ])
+
           this.authStore.setUser(userDataResponse)
           this.workspaceStore.set(workspacesResponse.data.value)
 
