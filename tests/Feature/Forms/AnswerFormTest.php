@@ -237,3 +237,69 @@ it('can not submit form with failed custom validation condition', function () {
             'message' => $validationMessage,
         ]);
 });
+
+
+it('can validate form answer with precognition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $properties = $form->properties;
+    $properties[0]['required'] = true;
+    $properties[3]['required'] = true;
+    $properties[6]['required'] = true;
+    $properties[9]['required'] = true;
+
+    $form->properties = $properties;
+    $form->update();
+
+    // Empty submission data should fail validation, with all 4 required fields
+    $response = $this->postJson(route('forms.answer', $form->slug), []);
+    $errors = $response->json()['errors'];
+    $this->assertEquals(sizeof($errors), 4);
+    $response->assertStatus(422);
+
+    // Fill in data for only Name.
+    $submissionData = [];
+    foreach ($properties as $property) {
+        if ($property['name'] == 'Name') {
+            $submissionData[$property['id']] = 'Name';
+        } else {
+            $submissionData[$property['id']] = null;
+        }
+    }
+
+    // Select only first 3 fields for precognition validation
+    $validateOnlyFields = [
+        $properties[0]['id'],
+        $properties[1]['id'],
+        $properties[2]['id']
+    ];
+
+    $precognitionValidateOnly = implode(',', $validateOnlyFields);
+
+    // Partial submission data should pass validation for the precognition only fields.
+    $response = $this->withPrecognition()->withHeaders([
+        'Precognition-Validate-Only' => $precognitionValidateOnly
+    ])
+        ->postJson(route('forms.answer', $form->slug), $submissionData);
+
+    $response->assertSuccessfulPrecognition();
+
+
+    // Select only next fields for precognition validation
+    $validateOnlyFields = $validateOnlyFields = [
+        $properties[3]['id'],
+        $properties[4]['id'],
+        $properties[5]['id']
+    ];
+    $precognitionValidateOnly = implode(',', $validateOnlyFields);
+
+    // Partial submission data should fail validation, but for only one required field specified for precognition validation.
+    $response = $this->withPrecognition()->withHeaders([
+        'Precognition-Validate-Only' => $precognitionValidateOnly
+    ])
+        ->postJson(route('forms.answer', $form->slug), $submissionData);
+    $errors = $response->json()['errors'];
+    $this->assertEquals(sizeof($errors), 1);
+    $response->assertStatus(422);
+});
