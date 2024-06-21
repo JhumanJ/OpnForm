@@ -22,6 +22,7 @@
         "laravel/cashier": "*",
         "laravel/framework": "^11.9",
         "laravel/horizon": "*",
+        "laravel/passport": "^12.0",
         "laravel/socialite": "*",
         "laravel/tinker": "^2.9",
         "laravel/ui": "*",
