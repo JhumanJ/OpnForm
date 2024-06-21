@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Billing\Subscription;
+use App\Models\Passport\Client;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
 use Laravel\Dusk\DuskServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Validator::includeUnvalidatedArrayKeys();
+
+        Passport::enablePasswordGrant();
+        Passport::useClientModel(Client::class);
     }
 
     /**

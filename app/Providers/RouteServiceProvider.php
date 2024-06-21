@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\InjectPasswordGrantCredentials;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -33,6 +35,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
+
+            // Override Passport `/oauth/token` route to inject password grant credentials
+            Route::middleware(InjectPasswordGrantCredentials::class)
+                ->post('oauth/token', [AccessTokenController::class, 'issueToken']);
         });
     }
 
