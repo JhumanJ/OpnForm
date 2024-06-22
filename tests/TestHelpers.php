@@ -6,8 +6,8 @@ use App\Models\Forms\Form;
 use App\Models\User;
 use App\Models\Workspace;
 use Database\Factories\FormFactory;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Passport\Passport;
 
 trait TestHelpers
 {
@@ -197,13 +197,11 @@ trait TestHelpers
     public function actingAsUser(?User $user = null)
     {
         if ($user == null) {
+            /** @var \App\Models\User $user */
             $user = $this->createUser();
         }
 
-        $this->postJson('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ])->assertSuccessful();
+        Passport::actingAs($user);
 
         return $user;
     }
@@ -233,9 +231,7 @@ trait TestHelpers
 
     public function actingAsGuest()
     {
-        if (Auth::check()) {
-            Auth::logout();
-        }
+        app('auth')->guard('api')->forgetUser();
         $this->assertGuest();
     }
 

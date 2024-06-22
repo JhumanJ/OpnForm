@@ -9,7 +9,11 @@ class LoginController extends Controller
 {
     public function logout()
     {
-        Auth::user()->token()->revoke();
+        $token = Auth::user()->token();
+
+        if($token->exists) {
+            $token->revoke();
+        }
 
         return response([]);
     }
