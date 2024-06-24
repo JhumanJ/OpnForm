@@ -15,7 +15,7 @@ return new class () extends Migration {
             $table->foreignIdFor(\App\Models\Workspace::class, 'workspace_id');
             $table->string('email');
             $table->string('role')->default('user');
-            $table->text('token')->unique();
+            $table->string('token', 191)->unique();
             $table->string('status')->default('pending');
             $table->dateTime('valid_until')->nullable();
             $table->timestamps();
