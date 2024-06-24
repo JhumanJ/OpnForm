@@ -1,39 +1,31 @@
 <template>
-  <div class="flex">
-    <v-button
-      v-if="canUndo"
-      size="small"
+  <UButtonGroup
+    v-if="canRedo || canUndo"
+    size="sm"
+    orientation="horizontal"
+  >
+    <UButton
+      :disabled="!canUndo"
       color="white"
-      class="flex-glow"
+      icon="i-material-symbols-undo"
       @click="undo"
-    >
-      <Icon
-        name="material-symbols:undo"
-        class="w-5 h-5"
-      /> Undo
-    </v-button>
-    <v-button
-      v-if="canRedo"
-      size="small"
+    />
+    <UButton
+      :disabled="!canRedo"
+      icon="i-material-symbols-redo"
       color="white"
-      class="ml-2"
       @click="redo"
-    >
-      <Icon
-        name="material-symbols:redo"
-        class="w-5 h-5"
-      /> Redo
-    </v-button>
-  </div>
+    />
+  </UButtonGroup>
 </template>
 
 <script setup>
 const workingFormStore = useWorkingFormStore()
 
-const { undo, redo, clear } = workingFormStore
+const { undo, redo, clearHistory } = workingFormStore
 const { canUndo, canRedo } = storeToRefs(workingFormStore)
 
 onMounted(() => {
-  setTimeout(() => { clear() }, 500)
+  setTimeout(() => { clearHistory() }, 500)
 })
 </script>
