@@ -76,6 +76,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         // Handle invitation
+        if (config('app.self_host_mode') && !array_key_exists('invite_token', $data)) {
+            response()->json(['message' => 'Registration is not allowed in self host mode'], 400)->throwResponse();
+        }
+
         if (array_key_exists('invite_token', $data)) {
             $userInvite = UserInvite::where('email', $data['email'])->where('token', $data['invite_token'])->first();
             if (!$userInvite) {
