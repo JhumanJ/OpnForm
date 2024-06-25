@@ -6,7 +6,7 @@ export const sizes = ['sm', 'md', 'lg']
 class ThemeBuilder {
   constructor(theme = 'default', options = {}) {
     this.theme = themes[theme] || themes.default
-    this.size = options.size || 'lg'
+    this.size = options.size || 'sm'
     this.borderRadius = options.borderRadius || 'small'
   }
 

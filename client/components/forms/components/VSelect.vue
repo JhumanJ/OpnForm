@@ -19,14 +19,15 @@
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-pointer w-full flex-grow relative py-1"
+        class="cursor-pointer w-full flex-grow relative"
         :class="[
-          theme.SelectInput.spacing.horizontal
+          theme.SelectInput.spacing.horizontal,
+          theme.SelectInput.spacing.vertical
         ]"
         @click="toggleDropdown"
       >
         <div
-          class="min-h-8 flex items-center"
+          class="flex items-center"
           :class="[
             theme.SelectInput.minHeight
           ]"
@@ -182,7 +183,7 @@
             role="option"
             :style="optionStyle"
             :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-            class="text-gray-900 cursor-default select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
             @click="createOption(searchTerm)"
           >
             Create <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{

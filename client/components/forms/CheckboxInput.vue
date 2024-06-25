@@ -10,6 +10,7 @@
       :disabled="disabled ? true : null"
       :name="name"
       :color="color"
+      :theme="theme"
     >
       <slot
         name="label"

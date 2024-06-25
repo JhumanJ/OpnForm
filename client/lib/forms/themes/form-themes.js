@@ -57,16 +57,35 @@ export const themes = {
       minHeight: {
         sm: 'min-h-6',
         md: 'min-h-8',
-        lg: 'min-h-10'
+        lg: 'min-h-[28px]'
       }
     },
     FlatSelectInput: {
-      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex space-x-2 border-t first:border-t-0 px-2',
-      unselectedIcon: 'text-gray-300 dark:text-gray-600'
+      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex items-center space-x-2 border-t first:border-t-0 px-2',
+      unselectedIcon: 'text-gray-300 dark:text-gray-600',
+      icon: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-6 h-6 mx-1'
+      }
     },
     DateInput: {
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+    },
+    CheckboxInput:{
+      size: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-5 h-5'
+      },
+    },
+    RatingInput:{
+      size: {
+        sm: 'w-6 h-6',
+        md: 'w-8 h-8',
+        lg: 'w-10 h-10'
+      },
     },
     fileInput: {
       input:
@@ -146,15 +165,27 @@ export const themes = {
       minHeight: {
         sm: 'min-h-6',
         md: 'min-h-8',
-        lg: 'min-h-10'
+        lg: 'min-h-[28px]'
       }
     },
     FlatSelectInput: {
-      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex space-x-2 border-t first:border-t-0 px-2',
-      unselectedIcon: 'text-gray-300 dark:text-gray-600'
+      option: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex items-center space-x-2 border-t first:border-t-0 px-2',
+      unselectedIcon: 'text-gray-300 dark:text-gray-600',
+      icon: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-6 h-6 mx-1'
+      }
     },
     DateInput: {
       input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+    },
+    RatingInput:{
+      size: {
+        sm: 'w-6 h-6',
+        md: 'w-8 h-8',
+        lg: 'w-10 h-10'
+      },
     },
     fileInput: {
       input:
@@ -234,15 +265,27 @@ export const themes = {
       minHeight: {
         sm: 'min-h-6',
         md: 'min-h-8',
-        lg: 'min-h-10'
+        lg: 'min-h-[28px]'
       }
     },
     FlatSelectInput: {
-      option: 'cursor-pointer hover:backdrop-brightness-95 flex space-x-2 border-t border-neutral-300 first:border-t-0 px-2',
-      unselectedIcon: 'text-neutral-300 dark:text-neutral-600'
+      option: 'cursor-pointer hover:backdrop-brightness-95 flex items-center space-x-2 border-t border-neutral-300 first:border-t-0 px-2',
+      unselectedIcon: 'text-neutral-300 dark:text-neutral-600',
+      icon: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-6 h-6 mx-1'
+      }
     },
     DateInput: {
       input: 'shadow-inner-notion border-transparent focus:border-transparent flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion p-[1px]'
+    },
+    RatingInput:{
+      size: {
+        sm: 'w-6 h-6',
+        md: 'w-8 h-8',
+        lg: 'w-10 h-10'
+      },
     },
     fileInput: {
       input:

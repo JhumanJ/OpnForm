@@ -8,7 +8,7 @@
       :id="id ? id : name"
       :name="name"
       :style="inputStyle"
-      class="flex items-start"
+      class="flex items-stretch"
     >
       <v-select
         v-model="selectedCountryCode"

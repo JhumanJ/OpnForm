@@ -24,38 +24,60 @@
     >
       <div
         v-for="(option, index) in options"
+        v-if="options && options.length"
         :key="option[optionKey]"
+        :role="multiple?'checkbox':'radio'"
+        :aria-checked="isSelected(option[optionKey])"
         :class="[
           theme.FlatSelectInput.spacing.vertical,
           theme.FlatSelectInput.fontSize,
           theme.FlatSelectInput.option,
         ]"
-        role="button"
         @click="onSelect(option[optionKey])"
       >
-        <div
-          v-if="isSelected(option[optionKey])"
-          class="flex items-center"
-        >
+        <template v-if="multiple">
           <Icon
-            name="ri:checkbox-circle-fill"
-            class="text-inherit h-5 w-5"
+            v-if="isSelected(option[optionKey])"
+            name="material-symbols:check-box"
+            class="text-inherit"
             :color="color"
+            :class="[theme.FlatSelectInput.icon]"
           />
-        </div>
-        <div
-          v-else
-          class="flex items-center"
-        >
           <Icon
-            name="mdi:checkbox-blank-circle-outline"
-            class="h-5 w-5"
-            :class="theme.FlatSelectInput.unselectedIcon"
+            v-else
+            name="material-symbols:check-box-outline-blank"
+            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
           />
-        </div>
+        </template>
+        <template v-else>
+          <Icon
+            v-if="isSelected(option[optionKey])"
+            name="material-symbols:radio-button-checked-outline"
+            class="text-inherit"
+            :color="color"
+            :class="[theme.FlatSelectInput.icon]"
+          />
+          <Icon
+            v-else
+            name="material-symbols:radio-button-unchecked"
+            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
+          />
+        </template>
         <p class="flex-grow">
           {{ option[displayKey] }}
         </p>
+      </div>
+      <div
+        v-else
+        :class="[
+          theme.FlatSelectInput.spacing.horizontal,
+          theme.FlatSelectInput.spacing.vertical,
+          theme.FlatSelectInput.fontSize,
+          theme.FlatSelectInput.option,
+          '!text-gray-500 !cursor-not-allowed'
+        ]"
+      >
+        No options available.
       </div>
     </div>
 
@@ -69,7 +91,7 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 
 /**
@@ -77,16 +99,16 @@ import InputWrapper from "./components/InputWrapper.vue"
  */
 export default {
   name: "FlatSelectInput",
-  components: { InputWrapper },
+  components: {InputWrapper},
 
   props: {
     ...inputProps,
-    options: { type: Array, required: true },
-    optionKey: { type: String, default: "value" },
-    emitKey: { type: String, default: "value" },
-    displayKey: { type: String, default: "name" },
-    loading: { type: Boolean, default: false },
-    multiple: { type: Boolean, default: false },
+    options: {type: Array, required: true},
+    optionKey: {type: String, default: "value"},
+    emitKey: {type: String, default: "value"},
+    displayKey: {type: String, default: "name"},
+    loading: {type: Boolean, default: false},
+    multiple: {type: Boolean, default: false},
   },
   setup(props, context) {
     return {
