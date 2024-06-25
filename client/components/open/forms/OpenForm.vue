@@ -453,7 +453,7 @@ export default {
         }).catch(err => {
           this.dataForm.busy = false
         })
-      return false;
+      return false
     },
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
