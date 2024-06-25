@@ -28,6 +28,9 @@
         </svg>
         Go back
       </a>
+
+      <UndoRedo />
+
       <div class="hidden md:flex items-center ml-3">
         <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
           {{ form.title }}
@@ -118,6 +121,7 @@
 </template>
 
 <script>
+import UndoRedo from "../../editors/UndoRedo.vue"
 import FormEditorSidebar from "./form-components/FormEditorSidebar.vue"
 import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormInformation from "./form-components/FormInformation.vue"
@@ -136,6 +140,7 @@ import { captureException } from "@sentry/core"
 export default {
   name: "FormEditor",
   components: {
+    UndoRedo,
     FormEditorSidebar,
     FormEditorPreview,
     FormAboutSubmission,
