@@ -320,6 +320,9 @@ export default {
 
   setup() {
     const authStore = useAuthStore()
+    definePageMeta({
+      middleware: ["self-hosted",]
+    })
     defineRouteRules({
       swr: 3600,
     })
