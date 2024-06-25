@@ -83,14 +83,14 @@ class RegisterController extends Controller
         if (array_key_exists('invite_token', $data)) {
             $userInvite = UserInvite::where('email', $data['email'])->where('token', $data['invite_token'])->first();
             if (!$userInvite) {
-                response()->json(['message' => 'Invite link is invalid.'], 400)->throwResponse();
+                response()->json(['message' => 'Invite token is invalid.'], 400)->throwResponse();
             }
             if ($userInvite->hasExpired()) {
-                response()->json(['message' => 'Invite link has expired.'], 400)->throwResponse();
+                response()->json(['message' => 'Invite token has expired.'], 400)->throwResponse();
             }
 
             if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
-                response()->json(['message' => 'Invite link is already accepted.'], 400)->throwResponse();
+                response()->json(['message' => 'Invite is already accepted.'], 400)->throwResponse();
             }
 
             $workspace = $userInvite->workspace;
