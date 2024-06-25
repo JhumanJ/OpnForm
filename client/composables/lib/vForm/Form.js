@@ -146,6 +146,43 @@ class Form {
     })
   }
 
+  validate(method, url, config = {}, fieldsToValidate = {}) {
+    this.startProcessing()
+    const headers = {
+      'Precognition': true,
+      'Precognition-Validate-Only': Array.from(fieldsToValidate).join(),
+      ...config.headers
+    }
+    config = {
+      body: {},
+      params: {},
+      url: url,
+      method: method,
+      headers,
+      ...config,
+    }
+    if (method.toLowerCase() === "get") {
+      config.params = { ...this.data(), ...config.params }
+    } else {
+      config.body = { ...this.data(), ...config.data }
+
+      if (hasFiles(config.data) && !config.transformRequest) {
+        config.transformRequest = [(data) => serialize(data)]
+      }
+    }
+    return new Promise((resolve, reject) => {
+      opnFetch(config.url, config)
+        .then((data) => {
+          this.finishProcessing()
+          resolve(data)
+        })
+        .catch((error) => {
+          this.handleErrors(error)
+          reject(error)
+        })
+    })
+  }
+
   handleErrors(error) {
     this.busy = false
 
