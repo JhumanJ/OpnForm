@@ -10,7 +10,7 @@ import {hash} from "~/lib/utils.js"
  */
 function mergeOptions(options) {
   const defaults = {
-    max: 10,
+    max: 30,
     persistent: false,
     persistentStrategy: {
       get: function (store, type) {

@@ -153,7 +153,5 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.content.properties = newFields
     }
   },
-  history: {
-    max: 20, // Max history states to keep
-  }
+  history: {}
 })
