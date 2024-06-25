@@ -110,6 +110,7 @@
         :theme="theme"
         class="mt-2 px-8 mx-1"
         @click.stop="nextPage"
+        :loading="dataForm.busy"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -442,9 +443,17 @@ export default {
       return false
     },
     nextPage() {
-      this.currentFieldGroupIndex += 1
-      window.scrollTo({top: 0, behavior: 'smooth'})
-      return false
+      const fieldsToValidate = this.currentFields.map(f => f.id)
+      this.dataForm.busy = true
+      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
+        .then((data) => {
+          this.currentFieldGroupIndex += 1
+          this.dataForm.busy = false
+          window.scrollTo({top: 0, behavior: 'smooth'})
+        }).catch(err => {
+          this.dataForm.busy = false
+        })
+      return false;
     },
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
