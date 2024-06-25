@@ -1,6 +1,7 @@
 import {computed, reactive} from 'vue'
 import {compress, decompress} from 'lzutf8'
 import debounce from 'debounce'
+import {hash} from "~/lib/utils.js"
 
 /**
  * Merges the user-provided options with the default plugin options.
@@ -67,6 +68,9 @@ const PiniaHistory = (context) => {
   })
 
   const debouncedStoreUpdate = debounce((state) => {
+    if (hash($history.current) === hash(JSON.stringify(state))) { // Not a real change here
+      return
+    }
     if ($history.done.length >= max) $history.done.shift() // Remove oldest state if needed
 
     $history.done.push($history.current)
@@ -87,6 +91,7 @@ const PiniaHistory = (context) => {
       return
     }
 
+    debouncedStoreUpdate.clear()
     const state = $history.done.pop()
     if (state === undefined) {
       return
@@ -95,19 +100,22 @@ const PiniaHistory = (context) => {
     $history.undone.push($history.current) // Save current state for redo
     $history.trigger = false
     store.$patch(JSON.parse(state))
-    $history.current = state
-    $history.trigger = true
+    nextTick(() => {
+      $history.current = state
+      $history.trigger = true
+      if (persistent) {
+        persistentStrategy.set(store, 'undo', $history.done)
+        persistentStrategy.set(store, 'redo', $history.undone)
+      }
+    })
 
-    if (persistent) {
-      persistentStrategy.set(store, 'undo', $history.done)
-      persistentStrategy.set(store, 'redo', $history.undone)
-    }
   }
 
   store.redo = () => {
     if (!store.canRedo) {
       return
     }
+    debouncedStoreUpdate.clear()
     const state = $history.undone.pop()
     if (state === undefined) {
       return
@@ -116,12 +124,14 @@ const PiniaHistory = (context) => {
     $history.done.push($history.current) // Save current state for undo
     $history.trigger = false
     store.$patch(JSON.parse(state))
-    $history.current = state
-    $history.trigger = true
-    if (persistent) {
-      persistentStrategy.set(store, 'undo', $history.done)
-      persistentStrategy.set(store, 'redo', $history.undone)
-    }
+    nextTick(() => {
+      $history.current = state
+      $history.trigger = true
+      if (persistent) {
+        persistentStrategy.set(store, 'undo', $history.done)
+        persistentStrategy.set(store, 'redo', $history.undone)
+      }
+    })
   }
 
   store.clearHistory = () => {
