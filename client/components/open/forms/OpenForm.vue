@@ -443,6 +443,11 @@ export default {
       return false
     },
     nextPage() {
+      if (this.adminPreview) {
+        this.currentFieldGroupIndex += 1
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return false
+      }
       const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.busy = true
       this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
@@ -453,7 +458,7 @@ export default {
         }).catch(err => {
           this.dataForm.busy = false
         })
-      return false;
+      return false
     },
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
