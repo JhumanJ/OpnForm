@@ -12,23 +12,35 @@
         :color="color"
         :theme="theme"
       />
-      <slot name="label">
-        <label
-          :aria-label="id ? id : name"
-          :for="id ? id : name"
-          :class="theme.default.fontSize"
-        >
-          {{ label }}
-          <span
-            v-if="required"
-            class="text-red-500 required-dot"
-          >*</span>
-        </label>
-      </slot>
+      <div>
+        <slot name="label">
+          <label
+            :aria-label="id ? id : name"
+            :for="id ? id : name"
+            :class="theme.default.fontSize"
+          >
+            {{ label }}
+            <span
+              v-if="required"
+              class="text-red-500 required-dot"
+            >*</span>
+          </label>
+        </slot>
+        <slot name="help">
+          <InputHelp
+            :help="help"
+            :help-classes="theme.default.help"
+          >
+            <template #after-help>
+              <slot name="bottom_after_help" />
+            </template>
+          </InputHelp>
+        </slot>
+      </div>
     </div>
 
     <template #help>
-      <slot name="help" />
+      <span class="hidden" />
     </template>
 
     <template #error>
@@ -38,13 +50,15 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import VSwitch from "./components/VSwitch.vue"
 import InputWrapper from "./components/InputWrapper.vue"
+import InputHelp from "~/components/forms/components/InputHelp.vue"
+
 export default {
   name: "ToggleSwitchInput",
 
-  components: { InputWrapper, VSwitch },
+  components: {InputHelp, InputWrapper, VSwitch},
   props: {
     ...inputProps,
   },
