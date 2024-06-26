@@ -2,17 +2,22 @@
   <editor-right-sidebar
     :show="form && (showEditFieldSidebar || showAddFieldSidebar)"
   >
-    <transition mode="out-in">
-      <form-field-edit
-        v-if="showEditFieldSidebar"
-        :key="editFieldIndex"
-        v-motion-fade="'fade'"
-      />
-      <add-form-block
-        v-else-if="showAddFieldSidebar"
-        v-motion-fade="'fade'"
-      />
-    </transition>
+    <VForm
+      size="sm"
+      @submit.prevent=""
+    >
+      <transition mode="out-in">
+        <form-field-edit
+          v-if="showEditFieldSidebar"
+          :key="editFieldIndex"
+          v-motion-fade="'fade'"
+        />
+        <add-form-block
+          v-else-if="showAddFieldSidebar"
+          v-motion-fade="'fade'"
+        />
+      </transition>
+    </VForm>
   </editor-right-sidebar>
 </template>
 

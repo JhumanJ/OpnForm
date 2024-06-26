@@ -35,8 +35,10 @@
       help="Gives user a unique url to update their submission"
     >
       <template #label>
-        Editable submissions
-        <pro-tag class="ml-1" />
+        <span class="text-sm">
+          Editable submissions
+        </span>
+        <pro-tag class="-mt-1 ml-1" />
       </template>
     </toggle-switch-input>
     <text-input

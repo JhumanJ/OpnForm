@@ -4,8 +4,12 @@
 export const themes = {
   default: {
     default: {
-      wrapper: 'relative mb-3',
-      label: 'text-gray-700 dark:text-gray-300 font-semibold',
+      wrapper: {
+        sm: 'relative mb-2',
+        md: 'relative mb-3',
+        lg: 'relative mb-3',
+      },
+      label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
       help: 'text-gray-400 dark:text-gray-500',
@@ -56,7 +60,7 @@ export const themes = {
       option: 'rounded',
       minHeight: {
         sm: 'min-h-6',
-        md: 'min-h-8',
+        md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
     },
@@ -79,6 +83,23 @@ export const themes = {
         md: 'w-5 h-5',
         lg: 'w-5 h-5'
       },
+    },
+    SwitchInput:{
+      containerSize: {
+        sm: 'h-5 w-10 p-0.5',
+        md: 'h-6 w-12 p-1',
+        lg: 'h-6 w-12 p-1'
+      },
+      circleSize: {
+        sm: 'h-4 w-4',
+        md: 'h-4 w-4',
+        lg: 'h-4 w-4'
+      },
+      translatedClass: {
+        sm: 'translate-x-5',
+        md: 'translate-x-6',
+        lg: 'translate-x-6'
+      }
     },
     RatingInput:{
       size: {
@@ -112,7 +133,11 @@ export const themes = {
   },
   simple: {
     default: {
-      wrapper: 'relative mb-3',
+      wrapper: {
+        sm: 'relative mb-2',
+        md: 'relative mb-3',
+        lg: 'relative mb-3',
+      },
       label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
@@ -142,7 +167,7 @@ export const themes = {
     },
     ScaleInput: {
       button: 'flex-1 appearance-none border-gray-300 dark:border-gray-600 w-full bg-gray-50 text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 text-center',
-      unselectedButton: 'bg-white border -mx-4'
+      unselectedButton: 'bg-white border'
     },
     SliderInput: {
       stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs'
@@ -164,7 +189,7 @@ export const themes = {
       option: 'rounded',
       minHeight: {
         sm: 'min-h-6',
-        md: 'min-h-8',
+        md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
     },
@@ -179,6 +204,25 @@ export const themes = {
     },
     DateInput: {
       input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+    },
+    CheckboxInput:{
+      size: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-5 h-5'
+      },
+    },
+    SwitchInput:{
+      containerSize: {
+        sm: 'h-5 w-10',
+        md: 'h-6 w-12',
+        lg: 'h-6 w-12'
+      },
+      circleSize: {
+        sm: 'h-4 w-4',
+        md: 'h-4 w-4',
+        lg: 'h-4 w-4'
+      },
     },
     RatingInput:{
       size: {
@@ -212,7 +256,11 @@ export const themes = {
   },
   notion: {
     default: {
-      wrapper: 'relative mb-3',
+      wrapper: {
+        sm: 'relative mb-2',
+        md: 'relative mb-3',
+        lg: 'relative mb-3',
+      },
       label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:
         'rounded border-transparent flex-1 appearance-none shadow-inner-notion w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
@@ -264,7 +312,7 @@ export const themes = {
       option: 'rounded',
       minHeight: {
         sm: 'min-h-6',
-        md: 'min-h-8',
+        md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
     },
@@ -279,6 +327,25 @@ export const themes = {
     },
     DateInput: {
       input: 'shadow-inner-notion border-transparent focus:border-transparent flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion p-[1px]'
+    },
+    CheckboxInput:{
+      size: {
+        sm: 'w-4 h-4',
+        md: 'w-5 h-5',
+        lg: 'w-5 h-5'
+      },
+    },
+    SwitchInput:{
+      containerSize: {
+        sm: 'h-5 w-10',
+        md: 'h-6 w-12',
+        lg: 'h-6 w-12'
+      },
+      circleSize: {
+        sm: 'h-4 w-4',
+        md: 'h-4 w-4',
+        lg: 'h-4 w-4'
+      },
     },
     RatingInput:{
       size: {

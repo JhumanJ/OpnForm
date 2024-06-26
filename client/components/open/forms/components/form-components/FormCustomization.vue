@@ -54,6 +54,30 @@
     />
 
     <select-input
+      name="size"
+      class="mt-4"
+      :options="[
+        { name: 'Small', value: 'sm' },
+        { name: 'Medium', value: 'md' },
+        { name: 'Large', value: 'lg' },
+      ]"
+      :form="form"
+      label="Input Size"
+    />
+
+    <select-input
+      name="border_radius"
+      class="mt-4"
+      :options="[
+        { name: 'None', value: 'none' },
+        { name: 'Small', value: 'small' },
+        { name: 'Full', value: 'full' },
+      ]"
+      :form="form"
+      label="Input Roundness"
+    />
+
+    <select-input
       name="dark_mode"
       class="mt-4"
       help="To see changes, save your form and open it"
@@ -114,8 +138,10 @@
       class="mt-4"
     >
       <template #label>
-        Remove OpnForm Branding
-        <pro-tag class="ml-1" />
+        <span class="text-sm">
+          Remove OpnForm Branding
+        </span>
+        <pro-tag class="-mt-1" />
       </template>
     </toggle-switch-input>
     <toggle-switch-input

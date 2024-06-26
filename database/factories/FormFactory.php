@@ -60,6 +60,8 @@ class FormFactory extends Factory
             'description' => $this->faker->randomHtml(1),
             'visibility' => 'public',
             'theme' => $this->faker->randomElement(Form::THEMES),
+            'size' => $this->faker->randomElement(Form::SIZES),
+            'border_radius' => $this->faker->randomElement(Form::BORDER_RADIUS),
             'width' => $this->faker->randomElement(Form::WIDTHS),
             'dark_mode' => $this->faker->randomElement(Form::DARK_MODE_VALUES),
             'color' => '#3B82F6',

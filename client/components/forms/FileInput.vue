@@ -87,7 +87,7 @@
                 </svg>
               </div>
 
-              <p class="mt-2 text-sm text-gray-500 font-semibold select-none">
+              <p class="mt-2 text-sm text-gray-500 font-medium select-none">
                 Click to choose {{ multiple ? 'file(s)' : 'a file' }} or drag here
               </p>
               <p class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none">

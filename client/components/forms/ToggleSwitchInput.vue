@@ -4,20 +4,26 @@
       <span />
     </template>
 
-    <div class="flex items-center">
+    <div class="flex space-x-2 items-center">
       <v-switch
         :id="id ? id : name"
         v-model="compVal"
-        class="inline-block mr-2"
         :disabled="disabled ? true : null"
         :color="color"
+        :theme="theme"
       />
       <slot name="label">
-        <span :class="theme.default.fontSize">{{ label }}
+        <label
+          :aria-label="id ? id : name"
+          :for="id ? id : name"
+          :class="theme.default.fontSize"
+        >
+          {{ label }}
           <span
             v-if="required"
             class="text-red-500 required-dot"
-          >*</span></span>
+          >*</span>
+        </label>
       </slot>
     </div>
 

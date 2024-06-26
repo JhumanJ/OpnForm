@@ -30,6 +30,10 @@ class Form extends Model implements CachableAttributes
 
     public const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
 
+    public const SIZES = ['sm','md','lg'];
+
+    public const BORDER_RADIUS = ['none','small','full'];
+
     public const THEMES = ['default', 'simple', 'notion'];
 
     public const WIDTHS = ['centered', 'full'];
@@ -49,6 +53,8 @@ class Form extends Model implements CachableAttributes
 
         // Customization
         'custom_domain',
+        'size',
+        'border_radius',
         'theme',
         'width',
         'cover_picture',

@@ -11,6 +11,10 @@ export const inputProps = {
   form: {type: Object, required: false},
   theme: {
     type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
       return CachedDefaultTheme.getInstance()
     }
   },
