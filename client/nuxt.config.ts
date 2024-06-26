@@ -69,6 +69,9 @@ export default defineNuxtConfig({
         fallback: 'light',
         classPrefix: '',
     },
+    ui: {
+      icons: ['heroicons','material-symbols'],
+    },
     sitemap,
     runtimeConfig,
     gtm

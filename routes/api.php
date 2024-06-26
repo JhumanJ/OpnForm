@@ -24,6 +24,7 @@ use App\Http\Controllers\UserInviteController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -273,7 +274,7 @@ Route::group(['prefix' => 'appsumo'], function () {
  */
 Route::prefix('forms')->name('forms.')->group(function () {
     Route::middleware('protected-form')->group(function () {
-        Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer');
+        Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer')->middleware(HandlePrecognitiveRequests::class);
 
         // Form content endpoints (user lists, relation lists etc.)
         Route::get(
