@@ -14,7 +14,10 @@
             <template v-if="!isSelfHosted || isInvited">
               <register-form />
             </template>
-            <div v-else class="my-6 p-3 rounded-lg border border-yellow-600 bg-yellow-200 text-yellow-600">
+            <div
+              v-else
+              class="my-6 p-3 rounded-lg border border-yellow-600 bg-yellow-200 text-yellow-600"
+            >
               Registration is not allowed in self host mode.
             </div>
           </div>
@@ -115,7 +118,7 @@ export default {
 
   computed: {
     isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
+      return useRuntimeConfig().public.selfHosted
     },
 
     isInvited(){
