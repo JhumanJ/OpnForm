@@ -59,7 +59,7 @@ export const themes = {
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {
-        sm: 'min-h-6',
+        sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
@@ -188,7 +188,7 @@ export const themes = {
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {
-        sm: 'min-h-6',
+        sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
@@ -311,7 +311,7 @@ export const themes = {
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {
-        sm: 'min-h-6',
+        sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
         lg: 'min-h-[28px]'
       }
