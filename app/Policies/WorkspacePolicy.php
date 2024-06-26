@@ -86,11 +86,11 @@ class WorkspacePolicy
      *
      * @return mixed
      */
-    public function workspaceAdmin(User $user, Workspace $workspace)
+    public function adminAction(User $user, Workspace $workspace)
     {
-        return UserWorkspace::where('user_id', $user->id)
+        $userWorkspace = UserWorkspace::where('user_id', $user->id)
                             ->where('workspace_id', $workspace->id)
-                            ->first()
-                            ->role == 'admin';
+                            ->first();
+        return $userWorkspace && $userWorkspace->role === 'admin';
     }
 }

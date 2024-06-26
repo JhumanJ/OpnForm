@@ -1,125 +1,147 @@
 <template>
-    <div class="mt-4">
-      <div class="flex items-center justify-between">
-
-        <h4 class="font-bold">Members</h4>
-        <v-button
-          color="outline-blue"
-          :loading="loading"
-          @click="userInviteModal = true"
-        >
-          <Icon name="heroicons:plus-16-solid" class="w-5 h-5"/>
-          Invite User
-        </v-button>
-      </div>
-        <!--  User invite modal  -->
-        <modal
-          :show="userInviteModal"
-          max-width="lg"
-          @close="userInviteModal = false"
-        >
-          <AddUserToWorkspace :isWorkspaceAdmin="isWorkspaceAdmin" @fetchUsers="getWorkspaceUsers" />
-        </modal>
-        <UTable
-          :loading="loadingUsers"
-          :rows="rows"
-          :columns="columns"
-        >
-        <template #actions-data="{ row, index }" v-if="isWorkspaceAdmin" class="">
-          <div class="space-x-2">
-
-            <UTooltip text="Edit user" v-if="row.type == 'user'">
-              <UButton
-                @click="editUser(index)"
-                icon="i-heroicons-pencil"
-                size="2xs"
-                color="blue"
-                variant="outline"
-                :ui="{ rounded: 'rounded-full' }"
-                square
-              />
-            </UTooltip>
-            <UTooltip text="Remove user" v-if="row.type == 'user'">
-              <UButton
-                v-if="row.type == 'user'"
-                @click="removeUser(index)"
-                icon="i-heroicons-trash"
-                size="2xs"
-                color="red"
-                variant="outline"
-                :ui="{ rounded: 'rounded-full' }"
-                square
-              />
-            </UTooltip>
-            <UTooltip text="Resend Invite" v-if="row.type == 'invitee'">
-              <UButton
-                @click="resendInvite(index)"
-                icon="i-heroicons-envelope"
-                size="2xs"
-                color="green"
-                variant="outline"
-                :ui="{ rounded: 'rounded-full' }"
-                square
-              />
-            </UTooltip>
-            <UTooltip text="Cancel Invite" v-if="row.type == 'invitee'">
-              <UButton
-                @click="cancelInvite(index)"
-                icon="i-heroicons-x-mark"
-                size="2xs"
-                color="red"
-                variant="outline"
-                :ui="{ rounded: 'rounded-full' }"
-                square
-              />
-            </UTooltip>
-          </div>
-        </template>
-        </UTable>
-        
-        <EditWorkSpaceUser 
-          :user="selectedUser" 
-          :show-edit-user-modal="showEditUserModal" 
-          @close="showEditUserModal = false" 
-          @fetch-users="getWorkspaceUsers"
+  <div class="mt-4">
+    <div class="flex items-center justify-between">
+      <h4 class="font-bold">
+        Members
+      </h4>
+      <v-button
+        color="outline-blue"
+        :loading="loading"
+        @click="userInviteModal = true"
+      >
+        <Icon
+          name="heroicons:plus-16-solid"
+          class="w-5 h-5"
         />
+        Invite User
+      </v-button>
+    </div>
+    <!--  User invite modal  -->
+    <modal
+      :show="userInviteModal"
+      max-width="lg"
+      @close="userInviteModal = false"
+    >
+      <AddUserToWorkspace
+        :is-workspace-admin="isWorkspaceAdmin"
+        @fetch-users="getWorkspaceUsers"
+      />
+    </modal>
+    <UTable
+      :loading="loadingUsers"
+      :rows="rows"
+      :columns="columns"
+    >
+      <template
+        v-if="isWorkspaceAdmin"
+        #actions-data="{ row, index }"
+        class=""
+      >
+        <div class="space-x-2">
+          <UTooltip
+            v-if="row.type == 'user'"
+            text="Edit user"
+          >
+            <UButton
+              icon="i-heroicons-pencil"
+              size="2xs"
+              color="blue"
+              variant="outline"
+              :ui="{ rounded: 'rounded-full' }"
+              square
+              @click="editUser(index)"
+            />
+          </UTooltip>
+          <UTooltip
+            v-if="row.type == 'user'"
+            text="Remove user"
+          >
+            <UButton
+              v-if="row.type == 'user'"
+              icon="i-heroicons-trash"
+              size="2xs"
+              color="red"
+              variant="outline"
+              :ui="{ rounded: 'rounded-full' }"
+              square
+              @click="removeUser(index)"
+            />
+          </UTooltip>
+          <UTooltip
+            v-if="row.type == 'invitee'"
+            text="Resend Invite"
+          >
+            <UButton
+              icon="i-heroicons-envelope"
+              size="2xs"
+              color="green"
+              variant="outline"
+              :ui="{ rounded: 'rounded-full' }"
+              square
+              @click="resendInvite(index)"
+            />
+          </UTooltip>
+          <UTooltip
+            v-if="row.type == 'invitee'"
+            text="Cancel Invite"
+          >
+            <UButton
+              icon="i-heroicons-x-mark"
+              size="2xs"
+              color="red"
+              variant="outline"
+              :ui="{ rounded: 'rounded-full' }"
+              square
+              @click="cancelInvite(index)"
+            />
+          </UTooltip>
+        </div>
+      </template>
+    </UTable>
+
+    <EditWorkSpaceUser
+      :user="selectedUser"
+      :show-edit-user-modal="showEditUserModal"
+      @close="showEditUserModal = false"
+      @fetch-users="getWorkspaceUsers"
+    />
 
     <div class="flex flex-wrap justify-between gap-2 mt-4 mb-3">
-        <v-button
-          v-if="users.length > 1"
-          color="white"
-          class="group w-full sm:w-auto"
-          :loading="leaveWorkspaceLoadingState"
-          @click="leaveWorkSpace(workspace.id)"
+      <v-button
+        v-if="users.length > 1"
+        color="white"
+        class="group w-full sm:w-auto"
+        :loading="leaveWorkspaceLoadingState"
+        @click="leaveWorkSpace(workspace.id)"
+      >
+        Leave Workspace
+      </v-button>
+
+      <v-button
+        v-if="isWorkspaceAdmin && users.length == 1"
+        color="white"
+        class="group w-full sm:w-auto"
+        :loading="loading"
+        @click="deleteWorkspace(workspace.id)"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 -mt-1 inline group-hover:text-red-700"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          Leave Workspace
-        </v-button>
-        
-        <v-button
-          v-if="isWorkspaceAdmin && users.length == 1"
-          color="white"
-          class="group w-full sm:w-auto"
-          :loading="loading"
-          @click="deleteWorkspace(workspace.id)"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 -mt-1 inline group-hover:text-red-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-          Remove workspace
-        </v-button>
-      </div>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+        Remove workspace
+      </v-button>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -146,11 +168,11 @@ onMounted(() => {
 })
 
 const getWorkspaceUsers = async () => {
-  userInviteModal.value = false;
+  userInviteModal.value = false
   loadingUsers.value = true
   let data = await workspacesStore.getWorkspaceUsers()
   data = data.map(d => {
-    return { 
+    return {
       ...d,
       name: d.name,
       email:d.email,
@@ -175,7 +197,7 @@ const getWorkspaceUsers = async () => {
 
 const isWorkspaceAdmin = computed(() => {
   if(!users.value) return false
-  let user = users.value.find((user) => user.id === authStore.user.id)
+  const user = users.value.find((user) => user.id === authStore.user.id)
   return user && user.pivot.role === "admin"
 })
 
@@ -205,7 +227,7 @@ const editUser = (row) => {
 
 
 const removeUser = (index) => {
-  let user = rows.value[index]
+  const user = rows.value[index]
   useAlert().confirm(
     "Do you really want to remove " + user.name + " from this workspace?",
     () => {
@@ -217,7 +239,7 @@ const removeUser = (index) => {
         },
         { showSuccess: false },
       ).then(() => {
-        useAlert().success("User successfully Removed removed.")
+        useAlert().success("User successfully removed.")
         getWorkspaceUsers()
       }).catch((error) => {
         useAlert().error("There was an error removing user")

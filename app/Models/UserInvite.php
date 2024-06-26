@@ -13,34 +13,42 @@ class UserInvite extends Model
 {
     use HasFactory;
 
-    public const ADMIN_ROLE = 'admin';
-    public const USER_ROLE = 'user';
     public const PENDING_STATUS = 'pending';
     public const ACCEPTED_STATUS = 'accepted';
 
-    public function inviteUser(string $email, string $role, Workspace $workspace, Carbon $validUntil = null)
-    {
-        $this->email = $email;
-        $this->workspace_id = $workspace->id;
-        $this->role = $role;
-        $this->valid_until = $validUntil ??  now()->addDays(7);
-        $this->token = $this->generateUniqueToken();
-        $this->save();
-        $this->sendEmail();
+    protected $fillable = [
+        'email',
+        'role',
+        'workspace_id',
+        'valid_until',
+        'token'
+    ];
+
+    public static function inviteUser(
+        string $email,
+        string $role,
+        Workspace $workspace,
+        Carbon $validUntil = null
+    ): self {
+        // Generate a token
+        do {
+            $token = Str::random(100);
+        } while (UserInvite::where('token', $token)->exists());
+
+        $invite = self::create([
+            'email' => $email,
+            'role' => $role,
+            'workspace_id' => $workspace->id,
+            'valid_until' => $validUntil ?? now()->addDays(7),
+            'token' => $token,
+        ]);
+        $invite->sendEmail();
+        return $invite;
     }
 
     public function getLink()
     {
         return front_url('/register?email=' . $this->email . '&invite_token=' . $this->token);
-    }
-
-    public function generateUniqueToken()
-    {
-        do {
-            $token = Str::random(100);
-        } while (UserInvite::where('token', $token)->exists());
-
-        return $token;
     }
 
     public function hasExpired()
@@ -55,6 +63,16 @@ class UserInvite extends Model
 
     public function sendEmail()
     {
-        Mail::to($this->email)->send(new UserInvitationEmail($this->workspace->name, $this->getLink()));
+        Mail::to($this->email)->send(new UserInvitationEmail($this));
+    }
+
+    public function scopeNotExpired($query)
+    {
+        return $query->where('valid_until', '>', now());
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', self::PENDING_STATUS);
     }
 }

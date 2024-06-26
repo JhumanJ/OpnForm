@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->string('email');
             $table->string('role')->default('user');
             $table->string('token', 191)->unique();
-            $table->string('status')->default('pending');
+            $table->string('status')->default(\App\Models\UserInvite::PENDING_STATUS);
             $table->dateTime('valid_until')->nullable();
             $table->timestamps();
         });

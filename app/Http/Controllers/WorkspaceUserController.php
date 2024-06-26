@@ -26,7 +26,7 @@ class WorkspaceUserController extends Controller
     public function addUser(Request $request, $workspaceId)
     {
         $workspace = Workspace::findOrFail($workspaceId);
-        $this->authorize('workspaceAdmin', $workspace);
+        $this->authorize('adminAction', $workspace);
 
         $this->validate($request, [
             'email' => 'required|email',
@@ -34,22 +34,8 @@ class WorkspaceUserController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-
         if (!$user) {
-            if (UserInvite::where('email', $request->email)->where('workspace_id', $workspaceId)->exists()) {
-                // Invitation exists, but user hasn't registered.
-                return $this->success([
-                    'message' => 'User has already been invited.'
-                ]);
-            }
-
-            // Send new invite
-            $userInvite = new UserInvite();
-            $userInvite->inviteUser($request->email, $request->role, $workspace, now()->addDays(7));
-
-            return $this->success([
-                'message' => 'Registration invitation email sent to user.'
-            ]);
+            return $this->inviteUser($workspace, $request->email, $request->role);
         }
 
         if ($workspace->users->contains($user->id)) {
@@ -58,15 +44,36 @@ class WorkspaceUserController extends Controller
             ]);
         }
 
+        // User found - add user to workspace
         $workspace->users()->sync([
             $user->id => [
                 'role' => $request->role,
             ],
         ], false);
 
-
         return $this->success([
             'message' => 'User has been successfully added to workspace.'
+        ]);
+    }
+
+    private function inviteUser(Workspace $workspace, string $email, string $role)
+    {
+        if (
+            UserInvite::where('email', $email)
+                ->where('workspace_id', $workspace->id)
+                ->notExpired()
+                ->pending()
+                ->exists()) {
+            return $this->success([
+                'message' => 'User has already been invited.'
+            ]);
+        }
+
+        // Send new invite
+        UserInvite::inviteUser($email, $role, $workspace, now()->addDays(7));
+
+        return $this->success([
+            'message' => 'Registration invitation email sent to user.'
         ]);
     }
 
@@ -74,7 +81,7 @@ class WorkspaceUserController extends Controller
     {
         $workspace = Workspace::findOrFail($workspaceId);
         $user = User::findOrFail($userId);
-        $this->authorize('workspaceAdmin', $workspace);
+        $this->authorize('adminAction', $workspace);
 
         $this->validate($request, [
             'role' => 'required|in:admin,user',
@@ -94,7 +101,7 @@ class WorkspaceUserController extends Controller
     public function removeUser(Request $request, $workspaceId, $userId)
     {
         $workspace = Workspace::findOrFail($workspaceId);
-        $this->authorize('workspaceAdmin', $workspace);
+        $this->authorize('adminAction', $workspace);
 
         $workspace->users()->detach($userId);
 

@@ -12,6 +12,7 @@ beforeEach(function () {
 });
 
 it('can list users in a workspace', function () {
+
     $this->actingAs($this->user)
         ->getJson(route('open.workspaces.users.index', ['workspaceId' => $this->workspace->id]))
         ->assertSuccessful()

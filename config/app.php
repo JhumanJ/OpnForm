@@ -55,7 +55,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
-    'self_host_mode' => env('SELF_HOST_MODE', true),
+    'self_hosted' => env('SELF_HOSTED', true),
 
     /*
     |--------------------------------------------------------------------------

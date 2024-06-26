@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\UserInvite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -19,11 +20,8 @@ class UserInvitationEmail extends Mailable implements ShouldQueue
      * @param string $workspaceName
      * @return void
      */
-    public function __construct(public string $workspaceName, public string $inviteLink)
-    {
-        $this->workspaceName = $workspaceName;
-        $this->inviteLink = $inviteLink;
-    }
+    public function __construct(public UserInvite $invite)
+    {}
 
     /**
      * Build the message.
@@ -32,9 +30,11 @@ class UserInvitationEmail extends Mailable implements ShouldQueue
      */
     public function build()
     {
+        $workspaceName = $this->invite->workspace->name;
         return $this
             ->markdown('mail.user.invitation', [
-                'workspaceName' => $this->workspaceName,
-            ])->subject('You are invited to join ' . $this->workspaceName . ' on OpnForm');
+                'workspaceName' => $workspaceName,
+                'inviteLink' => $this->invite->getLink(),
+            ])->subject('You are invited to join ' . $workspaceName . ' on OpnForm');
     }
 }

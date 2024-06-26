@@ -70,41 +70,11 @@ class RegisterController extends Controller
 
     /**
      * Create a new user instance after a valid registration.
-     *
-     * @return \App\User
      */
     protected function create(array $data)
     {
-        // Handle invitation
-        if (config('app.self_host_mode') && !array_key_exists('invite_token', $data)) {
-            response()->json(['message' => 'Registration is not allowed in self host mode'], 400)->throwResponse();
-        }
-
-        if (array_key_exists('invite_token', $data)) {
-            $userInvite = UserInvite::where('email', $data['email'])->where('token', $data['invite_token'])->first();
-            if (!$userInvite) {
-                response()->json(['message' => 'Invite token is invalid.'], 400)->throwResponse();
-            }
-            if ($userInvite->hasExpired()) {
-                response()->json(['message' => 'Invite token has expired.'], 400)->throwResponse();
-            }
-
-            if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
-                response()->json(['message' => 'Invite is already accepted.'], 400)->throwResponse();
-            }
-
-            $workspace = $userInvite->workspace;
-            $role = $userInvite->role;
-            $userInvite->status = UserInvite::ACCEPTED_STATUS;
-            $userInvite->save();
-        } else {
-            $workspace = Workspace::create([
-                'name' => 'My Workspace',
-                'icon' => '🧪',
-            ]);
-            $role = 'admin';
-        }
-
+        $this->checkRegistrationAllowed($data);
+        [$workspace, $role] = $this->getWorkspaceAndRole($data);
 
         $user = User::create([
             'name' => $data['name'],
@@ -123,5 +93,45 @@ class RegisterController extends Controller
         $this->appsumoLicense = AppSumoAuthController::registerWithLicense($user, $data['appsumo_license'] ?? null);
 
         return $user;
+    }
+
+    private function checkRegistrationAllowed(array $data)
+    {
+        if (config('app.self_hosted') && !array_key_exists('invite_token', $data)) {
+            response()->json(['message' => 'Registration is not allowed in self host mode'], 400)->throwResponse();
+        }
+    }
+
+    private function getWorkspaceAndRole(array $data) {
+        if (!array_key_exists('invite_token', $data)) {
+            return [
+                Workspace::create([
+                    'name' => 'My Workspace',
+                    'icon' => '🧪',
+                ]),
+                User::ROLE_ADMIN
+            ];
+        }
+
+        $userInvite = UserInvite::where('email', $data['email'])
+            ->where('token', $data['invite_token'])
+            ->first();
+
+        if (!$userInvite) {
+            response()->json(['message' => 'Invite token is invalid.'], 400)->throwResponse();
+        }
+        if ($userInvite->hasExpired()) {
+            response()->json(['message' => 'Invite token has expired.'], 400)->throwResponse();
+        }
+
+        if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
+            response()->json(['message' => 'Invite is already accepted.'], 400)->throwResponse();
+        }
+
+        $userInvite->update(['status' => UserInvite::ACCEPTED_STATUS]);
+        return [
+            $userInvite->workspace,
+            $userInvite->role,
+        ];
     }
 }
