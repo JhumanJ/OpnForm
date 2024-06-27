@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.data?.form?.redirect_target_url) {
 
       // redirect to target URL
-      window.location.href = event.data.form.redirect_target_url
+      window.top.location.href = event.data.form.redirect_target_url
     }
   })
 })
