@@ -5,8 +5,8 @@
       v-model="internalValue"
       :name="name"
       type="checkbox"
-      :class="sizeClasses"
-      class="rounded border-gray-500 cursor-pointer checkbox"
+      class="rounded border-gray-500 w-10 h-10 cursor-pointer checkbox"
+      :class="theme.CheckboxInput.size"
       :style="{ '--accent-color': color }"
       :disabled="disabled ? true : null"
     >
@@ -32,7 +32,7 @@ const props = defineProps({
   name: { type: String, default: "checkbox" },
   modelValue: { type: [Boolean, String], default: false },
   disabled: { type: Boolean, default: false },
-  sizeClasses: { type: String, default: "w-4 h-4" },
+  theme: { type: Object },
   color: { type: String, default: null },
 })
 

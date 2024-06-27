@@ -91,14 +91,19 @@
           allow you to preview your form changes.
         </div>
 
-        <form-information />
-        <form-structure />
-        <form-customization />
-        <form-about-submission />
-        <form-access />
-        <form-security-privacy />
-        <form-custom-seo />
-        <form-custom-code />
+        <VForm
+          size="sm"
+          @submit.prevent=""
+        >
+          <form-information />
+          <form-structure />
+          <form-customization />
+          <form-about-submission />
+          <form-access />
+          <form-security-privacy />
+          <form-custom-seo />
+          <form-custom-code />
+        </VForm>
       </div>
 
       <form-editor-preview />

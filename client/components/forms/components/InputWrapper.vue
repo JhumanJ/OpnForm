@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="wrapperClass"
+    :class="[ twMerge(theme.default.wrapper,wrapperClass)]"
     :style="inputStyle"
   >
     <slot name="label">
@@ -54,20 +54,21 @@
 <script setup>
 import InputLabel from "./InputLabel.vue"
 import InputHelp from "./InputHelp.vue"
+import {twMerge} from "tailwind-merge"
 
 defineProps({
-  id: { type: String, required: false },
-  name: { type: String, required: false },
-  label: { type: String, required: false },
-  form: { type: Object, required: false },
-  theme: { type: Object, required: true },
-  wrapperClass: { type: String, required: false },
-  inputStyle: { type: Object, required: false },
-  help: { type: String, required: false },
-  helpPosition: { type: String, default: "below_input" },
-  uppercaseLabels: { type: Boolean, default: true },
-  hideFieldName: { type: Boolean, default: true },
-  required: { type: Boolean, default: false },
-  hasValidation: { type: Boolean, default: true },
+  id: {type: String, required: false},
+  name: {type: String, required: false},
+  label: {type: String, required: false},
+  form: {type: Object, required: false},
+  theme: {type: Object, required: true},
+  wrapperClass: {type: String, required: false},
+  inputStyle: {type: Object, required: false},
+  help: {type: String, required: false},
+  helpPosition: {type: String, default: "below_input"},
+  uppercaseLabels: {type: Boolean, default: true},
+  hideFieldName: {type: Boolean, default: true},
+  required: {type: Boolean, default: false},
+  hasValidation: {type: Boolean, default: true},
 })
 </script>
