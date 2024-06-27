@@ -272,7 +272,8 @@ export default {
           type: 'form-submitted',
           form: {
             slug: this.form.slug,
-            id: this.form.id
+            id: this.form.id,
+            redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
           },
           submission_data: form.data()
         })
