@@ -1,5 +1,4 @@
 import {computed, reactive} from 'vue'
-import {compress, decompress} from 'lzutf8'
 import debounce from 'debounce'
 import {hash} from "~/lib/utils.js"
 
@@ -13,19 +12,13 @@ function mergeOptions(options) {
     max: 30,
     persistent: false,
     persistentStrategy: {
+      // eslint-disable-next-line no-unused-vars
       get: function (store, type) {
-        if (typeof localStorage !== 'undefined') {
-          const key = `pinia-history-${store.$id}-${type}`
-          const value = localStorage.getItem(key)
-          return value ? decompress(value, {inputEncoding: 'Base64'}).split(',') : undefined
-        }
+        // Todo
       },
+      // eslint-disable-next-line no-unused-vars
       set: function (store, type, value) {
-        if (typeof localStorage !== 'undefined') {
-          const key = `pinia-history-${store.$id}-${type}`
-          const string = compress(value.join(','), {outputEncoding: 'Base64'})
-          localStorage.setItem(key, string)
-        }
+        // Todo
       },
       remove: function (store, type) {
         if (typeof localStorage !== 'undefined') {
