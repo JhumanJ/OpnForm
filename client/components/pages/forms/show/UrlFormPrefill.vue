@@ -109,7 +109,7 @@
 <script>
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
-import { themes } from "~/lib/forms/form-themes.js"
+import { themes } from "~/lib/forms/themes/form-themes.js"
 
 export default {
   name: "UrlFormPrefill",

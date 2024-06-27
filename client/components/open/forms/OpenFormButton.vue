@@ -2,7 +2,7 @@
   <button
     :type="nativeType"
     :disabled="loading ? true : null"
-    :class="`py-${sizes['p-y']} px-${sizes['p-x']} text-${sizes['font']} ${theme.Button.body}`"
+    :class="[`py-${sizes['p-y']} px-${sizes['p-x']} text-${sizes['font']}`,theme.Button.body,theme.Button.borderRadius]"
     :style="buttonStyle"
     class="btn"
   >
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { themes } from "~/lib/forms/form-themes.js"
+import {themes} from "~/lib/forms/themes/form-themes.js"
 
 export default {
   name: "OpenFormButton",
@@ -43,7 +43,7 @@ export default {
       default: false,
     },
 
-    theme: { type: Object, default: () => themes.default },
+    theme: {type: Object, default: () => themes.default},
   },
 
   computed: {
