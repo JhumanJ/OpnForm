@@ -196,7 +196,9 @@ class Form extends Model implements CachableAttributes
 
     public function getClosesAtAttribute($value)
     {
-        if (!$value) return $value;
+        if (!$value) {
+            return $value;
+        }
         // Retrieve the desired timezone from the request or default to 'UTC'
         $timezone = request()->get('timezone', 'UTC');
         return Carbon::parse($value)->setTimezone($timezone)->toIso8601String();
