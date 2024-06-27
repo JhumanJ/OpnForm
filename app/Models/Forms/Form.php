@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
+use Carbon\Carbon;
 
 class Form extends Model implements CachableAttributes
 {
@@ -186,6 +187,18 @@ class Form extends Model implements CachableAttributes
             $value = null;
         }
         $this->attributes['tags'] = json_encode($value);
+    }
+
+    public function setClosesAtAttribute($value)
+    {
+        $this->attributes['closes_at'] = Carbon::parse($value)->setTimezone('UTC');
+    }
+
+    public function getClosesAtAttribute($value)
+    {
+        // Retrieve the desired timezone from the request or default to 'UTC'
+        $timezone = request()->get('timezone', 'UTC');
+        return Carbon::parse($value)->setTimezone($timezone)->toIso8601String();
     }
 
     public function getIsClosedAttribute()
