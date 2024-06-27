@@ -140,7 +140,7 @@
       help="Show a message, or redirect to a URL"
     >
       <template #selected="{ option, optionName }">
-        <div class="flex items-center truncate mr-6">
+        <div class="flex items-center text-sm truncate mr-6">
           {{ optionName }}
           <pro-tag
             v-if="option === 'redirect'"
