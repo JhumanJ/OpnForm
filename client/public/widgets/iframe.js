@@ -473,11 +473,9 @@
  * Starting from here is OpnForm custom code.
  * @type {string}
  */
-const formSlug = document.currentScript.getAttribute('data-form-slug')
-
-document.addEventListener("DOMContentLoaded", function () {
-  if (formSlug) {
-    iFrameResize({log: false, checkOrigin: false}, '#' + formSlug)
+function initForm(formSlug) {
+  if (!formSlug) {
+    return
   }
 
   window.addEventListener('message', function (event) {
@@ -485,6 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.data?.type !== 'form-submitted' || event.data?.form?.slug !== formSlug) {
       return
     }
+
     // Redirect
     if (event.data?.form?.redirect_target_url) {
 
@@ -492,4 +491,8 @@ document.addEventListener("DOMContentLoaded", function () {
       window.top.location.href = event.data.form.redirect_target_url
     }
   })
-})
+
+  document.addEventListener("DOMContentLoaded", function () {
+    iFrameResize({log: false, checkOrigin: false}, '#form-' + formSlug)
+  })
+}
