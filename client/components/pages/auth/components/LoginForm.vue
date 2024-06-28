@@ -146,7 +146,11 @@ export default {
           this.redirect()
         })
         .catch((error) => {
-          console.error(error)
+          if (error.response._data.message == "You must change your credentials when in self host mode") {
+            console.log(error.response._data.message)
+            this.showForgotModal = true
+          }
+
         })
         .finally(() => {
           this.loading = false

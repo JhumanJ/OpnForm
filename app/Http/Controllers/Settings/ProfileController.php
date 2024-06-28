@@ -18,12 +18,35 @@ class ProfileController extends Controller
 
         $this->validate($request, [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
         return tap($user)->update([
             'name' => $request->name,
             'email' => strtolower($request->email),
+        ]);
+    }
+
+    public function updateSelfModeCredentials(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|not_in:admin@opnform.com',
+            'password' => 'required|min:6|confirmed|not_in:password',
+        ],[
+            'email.not_in' => 'Please provide email address other than admin@opnform.com',
+            'password.not_in' => "Please another password other than 'password'."
+        ]);
+
+        $user = $request->user();
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->credentials_changed = true;
+        $user->save();
+        $user->refresh();
+
+        return $this->success([
+            'message' => 'Congratulations, your account credentials have been updated successfully.',
+            'user' => $user,
         ]);
     }
 }
