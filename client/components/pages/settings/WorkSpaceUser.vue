@@ -1,20 +1,15 @@
 <template>
-  <div class="mt-4">
+  <div class="border rounded-md p-4">
     <div class="flex items-center justify-between">
-      <h4 class="font-bold">
-        Members
+      <h4 class="font-semibold">
+        Workspace Members
       </h4>
-      <v-button
-        color="outline-blue"
+      <UButton
+        label="Invite User"
+        icon="i-heroicons-user-plus-20-solid"
         :loading="loading"
         @click="userInviteModal = true"
-      >
-        <Icon
-          name="heroicons:plus-16-solid"
-          class="w-5 h-5"
-        />
-        Invite User
-      </v-button>
+      />
     </div>
     <!--  User invite modal  -->
     <modal
@@ -22,12 +17,14 @@
       max-width="lg"
       @close="userInviteModal = false"
     >
+      <p>Invite a new user and collaborate on building forms.</p>
       <AddUserToWorkspace
         :is-workspace-admin="isWorkspaceAdmin"
         @fetch-users="getWorkspaceUsers"
       />
     </modal>
     <UTable
+      class="-mx-4 border-b"
       :loading="loadingUsers"
       :rows="rows"
       :columns="columns"
@@ -35,7 +32,6 @@
       <template
         v-if="isWorkspaceAdmin"
         #actions-data="{ row, index }"
-        class=""
       >
         <div class="space-x-2">
           <UTooltip
@@ -106,40 +102,26 @@
       @fetch-users="getWorkspaceUsers"
     />
 
-    <div class="flex flex-wrap justify-between gap-2 mt-4 mb-3">
-      <v-button
+    <div class="flex gap-2 mt-4">
+      <UButton
         v-if="users.length > 1"
-        color="white"
-        class="group w-full sm:w-auto"
+        color="gray"
+        icon="i-heroicons-arrow-left-start-on-rectangle-20-solid"
         :loading="leaveWorkspaceLoadingState"
         @click="leaveWorkSpace(workspace.id)"
       >
         Leave Workspace
-      </v-button>
+      </UButton>
 
-      <v-button
+      <UButton
         v-if="isWorkspaceAdmin && users.length == 1"
-        color="white"
-        class="group w-full sm:w-auto"
+        icon="i-heroicons-trash"
+        color="gray"
         :loading="loading"
         @click="deleteWorkspace(workspace.id)"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 -mt-1 inline group-hover:text-red-700"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-          />
-        </svg>
         Remove workspace
-      </v-button>
+      </UButton>
     </div>
   </div>
 </template>

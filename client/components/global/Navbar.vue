@@ -23,19 +23,19 @@
         </div>
         <div
           v-if="showAuth"
-          class="hidden md:block ml-auto relative"
+          class="hidden md:flex gap-x-2 ml-auto"
         >
           <NuxtLink
             v-if="$route.name !== 'templates'"
             :to="{ name: 'templates' }"
-            class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+            :class="navLinkClasses"
           >
             Templates
           </NuxtLink>
           <template v-if="featureBaseEnabled">
             <button
               v-if="user"
-              class="text-sm text-gray-600 dark:text-white hidden sm:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
+              :class="navLinkClasses"
               @click.prevent="openChangelog"
             >
               What's new? <span
@@ -48,7 +48,7 @@
               v-else
               :href="opnformConfig.links.changelog_url"
               target="_blank"
-              class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
+              :class="navLinkClasses"
             >
               What's new?
             </a>
@@ -56,7 +56,8 @@
           <NuxtLink
             v-if="$route.name !== 'ai-form-builder' && user === null"
             :to="{ name: 'ai-form-builder' }"
-            class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
+            :class="navLinkClasses"
+            class="hidden lg:inline"
           >
             AI Form Builder
           </NuxtLink>
@@ -67,7 +68,7 @@
                 $route.name !== 'pricing'
             "
             :to="{ name: 'pricing' }"
-            class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
+            :class="navLinkClasses"
           >
             <span v-if="user">Upgrade</span>
             <span v-else>Pricing</span>
@@ -75,7 +76,7 @@
 
           <NuxtLink
             :href="helpUrl"
-            class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1"
+            :class="navLinkClasses"
             target="_blank"
           >
             Help
@@ -90,7 +91,7 @@
           class="block"
         >
           <div class="flex items-center">
-            <div class="ml-3 mr-4 relative">
+            <div class="ml-4 relative">
               <div class="relative inline-block text-left">
                 <dropdown
                   v-if="user"
@@ -100,7 +101,8 @@
                     <button
                       id="dropdown-menu-button"
                       type="button"
-                      class="flex items-center justify-center w-full rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500"
+                      :class="navLinkClasses"
+                      class="flex items-center"
                       dusk="nav-dropdown-button"
                       @click.stop="toggle()"
                     >
@@ -289,6 +291,10 @@ export default {
       isIframe: useIsIframe(),
     }
   },
+
+  data: () => ({
+    navLinkClasses: 'border border-transparent hover:border-gray-200 text-gray-500 hover:text-gray-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
+  }),
 
   computed: {
     helpUrl() {

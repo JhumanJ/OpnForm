@@ -1,29 +1,34 @@
 <template>
-    <form v-if="isWorkspaceAdmin" @submit.prevent="addUser" class="my-2">
-          <text-input
-            name="email"
-            v-model="newUser"
-            label="Email"
-            :required="true"
-            placeholder="Add a new user by email"
-          />
-          <select-input
-            name="newUserRole"
-            v-model="newUserRole"
-            :options="roleOptions"
-            placeholder="Select User Role"
-            label="Role"
-            :required="true"
-          />
-          <div class="flex justify-end mt-2">
-            <v-button
-            color="outline-blue"
-            :loading="addingUsersState"
-          >
-            Add User
-          </v-button>
-          </div>
-        </form>
+  <form
+    v-if="isWorkspaceAdmin"
+    class="my-2"
+    @submit.prevent="addUser"
+  >
+    <text-input
+      v-model="newUser"
+      name="email"
+      label="Email"
+      :required="true"
+      placeholder="Add a new user by email"
+    />
+    <select-input
+      v-model="newUserRole"
+      name="newUserRole"
+      :options="roleOptions"
+      placeholder="Select User Role"
+      label="Role"
+      :required="true"
+    />
+    <div class="flex justify-center mt-2">
+      <UButton
+        type="submit"
+        :loading="addingUsersState"
+        icon="i-heroicons-envelope"
+      >
+        Invite User
+      </UButton>
+    </div>
+  </form>
 </template>
 
 <script setup>

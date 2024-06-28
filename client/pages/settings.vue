@@ -34,7 +34,7 @@
     </div>
     <div class="flex bg-white">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
-        <div class="mt-8 pb-0">
+        <div class="mt-4 pb-0">
           <NuxtPage />
         </div>
       </div>
