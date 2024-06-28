@@ -10,6 +10,10 @@
       :disabled="disabled ? true : null"
       :class="[
         theme.default.input,
+        theme.default.borderRadius,
+        theme.default.spacing.horizontal,
+        theme.default.spacing.vertical,
+        theme.default.fontSize,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
@@ -48,18 +52,18 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
   name: "TextAreaInput",
-  components: { InputWrapper },
+  components: {InputWrapper},
   mixins: [],
 
   props: {
     ...inputProps,
-    maxCharLimit: { type: Number, required: false, default: null },
-    showCharLimit: { type: Boolean, required: false, default: false },
+    maxCharLimit: {type: Number, required: false, default: null},
+    showCharLimit: {type: Boolean, required: false, default: false},
   },
 
   setup(props, context) {

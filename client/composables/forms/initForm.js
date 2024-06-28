@@ -15,7 +15,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     color: "#3B82F6",
     hide_title: false,
     no_branding: false,
-    uppercase_labels: true,
+    uppercase_labels: false,
     transparent_background: false,
     closes_at: null,
     closed_text:

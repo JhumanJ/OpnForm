@@ -35,8 +35,10 @@
       help="Gives user a unique url to update their submission"
     >
       <template #label>
-        Editable submissions
-        <pro-tag class="ml-1" />
+        <span class="text-sm">
+          Editable submissions
+        </span>
+        <pro-tag class="-mt-1 ml-1" />
       </template>
     </toggle-switch-input>
     <text-input
@@ -138,7 +140,7 @@
       help="Show a message, or redirect to a URL"
     >
       <template #selected="{ option, optionName }">
-        <div class="flex items-center truncate mr-6">
+        <div class="flex items-center text-sm truncate mr-6">
           {{ optionName }}
           <pro-tag
             v-if="option === 'redirect'"
@@ -147,8 +149,8 @@
         </div>
       </template>
       <template #option="{ option, selected }">
-        <span class="flex hover:text-white">
-          <p class="flex-grow hover:text-white">
+        <span class="flex">
+          <p class="flex-grow">
             {{ option.name }}
             <template v-if="option.value === 'redirect'"><pro-tag /></template>
           </p>

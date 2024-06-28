@@ -28,7 +28,7 @@
 <script setup>
 import { ref, defineProps, defineEmits } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
-import { themes } from "~/lib/forms/form-themes.js"
+import { themes } from "~/lib/forms/themes/form-themes.js"
 const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true },

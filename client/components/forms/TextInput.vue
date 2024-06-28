@@ -14,6 +14,10 @@
       :style="inputStyle"
       :class="[
         theme.default.input,
+        theme.default.borderRadius,
+        theme.default.spacing.horizontal,
+        theme.default.spacing.vertical,
+        theme.default.fontSize,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
@@ -55,23 +59,23 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
   name: "TextInput",
-  components: { InputWrapper },
+  components: {InputWrapper},
 
   props: {
     ...inputProps,
-    nativeType: { type: String, default: "text" },
-    accept: { type: String, default: null },
-    min: { type: Number, required: false, default: null },
-    max: { type: Number, required: false, default: null },
-    autocomplete: { type:[Boolean, String, Object], default: null },
-    maxCharLimit: { type: Number, required: false, default: null },
-    showCharLimit: { type: Boolean, required: false, default: false },
-    pattern: { type: String, default: null },
+    nativeType: {type: String, default: "text"},
+    accept: {type: String, default: null},
+    min: {type: Number, required: false, default: null},
+    max: {type: Number, required: false, default: null},
+    autocomplete: {type: [Boolean, String, Object], default: null},
+    maxCharLimit: {type: Number, required: false, default: null},
+    showCharLimit: {type: Boolean, required: false, default: false},
+    pattern: {type: String, default: null},
   },
 
   setup(props, context) {
@@ -92,10 +96,12 @@ export default {
       ...useFormInput(
         props,
         context,
-        props.nativeType === "file" ? "file-" : null,
+        {
+          formPrefixKey: props.nativeType === "file" ? "file-" : null
+        },
       ),
       onEnterPress,
-      onChange,
+      onChange
     }
   },
   computed: {
