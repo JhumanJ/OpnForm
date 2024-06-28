@@ -24,7 +24,7 @@
       />
     </modal>
     <UTable
-      class="-mx-4 border-b"
+      class="-mx-4 border-y mt-4"
       :loading="loadingUsers"
       :rows="rows"
       :columns="columns"

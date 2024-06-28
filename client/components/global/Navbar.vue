@@ -119,7 +119,7 @@
                   <NuxtLink
                     v-if="userOnboarded"
                     :to="{ name: 'home' }"
-                    class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +141,7 @@
                   <NuxtLink
                     v-if="userOnboarded"
                     :to="{ name: 'templates-my-templates' }"
-                    class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +162,7 @@
 
                   <NuxtLink
                     :to="{ name: 'settings-profile' }"
-                    class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg
                       class="w-4 h-4 mr-2"
@@ -190,7 +190,7 @@
                   <NuxtLink
                     v-if="user.moderator"
                     :to="{ name: 'settings-admin' }"
-                    class="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +211,7 @@
 
                   <a
                     href="#"
-                    class="block block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+                    class="block px-4 py-2 text-md text-gray-700 hover:no-underline transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
                     @click.prevent="logout"
                   >
                     <svg

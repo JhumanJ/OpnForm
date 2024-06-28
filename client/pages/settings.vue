@@ -12,7 +12,7 @@
             <li>{{ user.email }}</li>
           </ul>
 
-          <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="mt-4 border-gray-200 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
               <li
                 v-for="(tab, i) in tabsList"
