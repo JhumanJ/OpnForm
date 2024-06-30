@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Passport;
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Http\Controllers\AuthorizationController as PassportAuthorizationController;
@@ -63,6 +64,9 @@ class AuthorizationController extends PassportAuthorizationController
 
         $request->session()->put('authToken', $authToken = Str::random());
         $request->session()->put('authRequest', $authRequest);
+
+        Cache::put("authToken:{$user->getAuthIdentifier()}", $authToken = Str::random(), 60);
+        Cache::put("authRequest:{$user->getAuthIdentifier()}", $authRequest, 60);
 
         return response()->json([
             'client' => $client,
