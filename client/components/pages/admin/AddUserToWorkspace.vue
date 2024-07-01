@@ -9,12 +9,14 @@
       name="email"
       label="Email"
       :required="true"
+      :disabled="disabled"
       placeholder="Add a new user by email"
     />
     <select-input
       v-model="newUserRole"
       name="newUserRole"
       :options="roleOptions"
+      :disabled="disabled"
       placeholder="Select User Role"
       label="Role"
       :required="true"
@@ -22,6 +24,7 @@
     <div class="flex justify-center mt-2">
       <UButton
         type="submit"
+        :disabled="disabled"
         :loading="addingUsersState"
         icon="i-heroicons-envelope"
       >
@@ -34,7 +37,13 @@
 <script setup>
 import { watch, ref } from "vue"
 
-defineProps(['isWorkspaceAdmin'])
+const props = defineProps({
+  isWorkspaceAdmin: {},
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+})
 const emit = defineEmits(['fetchUsers'])
 
 const workspacesStore = useWorkspacesStore()

@@ -14,7 +14,10 @@
       @close="showCustomDomainModal = false"
     >
       <template v-if="customDomainsEnabled">
-        <p v-if="!workspace.is_pro">
+        <p
+          v-if="!workspace.is_pro"
+          class="mb-4"
+        >
           Please <NuxtLink :to="{name:'pricing'}">
             upgrade your account
           </NuxtLink> to setup a custom domain.

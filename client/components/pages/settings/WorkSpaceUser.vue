@@ -17,8 +17,61 @@
       max-width="lg"
       @close="userInviteModal = false"
     >
-      <p>Invite a new user and collaborate on building forms.</p>
+      <h4 class="mb-4 font-medium">
+        Invite a new user and collaborate on building forms
+      </h4>
+
+      <template v-if="paidPlansEnabled">
+        <UAlert
+          v-if="workspace.is_pro"
+          icon="i-heroicons-credit-card"
+          color="primary"
+          variant="subtle"
+          title="This is a billable event."
+        >
+          <template #description>
+            You will be charged $6/month for each user you invite to this workspace. More details on the
+            <NuxtLink
+              target="_blank"
+              class="underline"
+              :to="{name:'settings-billing'}"
+            >
+              billing
+            </NuxtLink>
+            and
+            <NuxtLink
+              target="_blank"
+              class="underline"
+              :to="{name:'pricing'}"
+            >
+              pricing
+            </NuxtLink>
+            page.
+          </template>
+        </UAlert>
+        <UAlert
+          v-else
+          icon="i-heroicons-user-group-20-solid"
+          color="yellow"
+          variant="subtle"
+          title="Pro plan required"
+        >
+          <template #description>
+            You need a Pro plan to invite new users on OpnForm. Please upgrade on our
+            <NuxtLink
+              target="_blank"
+              class="underline"
+              :to="{name:'pricing'}"
+            >
+              pricing
+            </NuxtLink>
+            page.
+          </template>
+        </UAlert>
+      </template>
+
       <AddUserToWorkspace
+        :disabled="!canInviteUser"
         :is-workspace-admin="isWorkspaceAdmin"
         @fetch-users="getWorkspaceUsers"
       />
@@ -127,8 +180,6 @@
 </template>
 
 <script setup>
-import { watch, ref } from "vue"
-
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
 
@@ -145,6 +196,12 @@ const showEditUserModal = ref(false)
 const selectedUser = ref(null)
 const userNewRole = ref("")
 
+const paidPlansEnabled = computed(() => useRuntimeConfig().public.paidPlansEnabled)
+const canInviteUser = computed(() => {
+  return paidPlansEnabled.value ? workspace.value.is_pro : true
+})
+
+
 onMounted(() => {
   getWorkspaceUsers()
 })
@@ -157,20 +214,20 @@ const getWorkspaceUsers = async () => {
     return {
       ...d,
       name: d.name,
-      email:d.email,
+      email: d.email,
       status: 'accepted',
-      role:d.pivot.role,
-      type:'user'
-     }
+      role: d.pivot.role,
+      type: 'user'
+    }
   })
   let invites = await workspacesStore.getWorkspaceInvites()
-  invites = invites.filter(i=>i.status!== 'accepted').map(i=>{
+  invites = invites.filter(i => i.status !== 'accepted').map(i => {
     return {
       ...i,
       name: 'Invitee',
-      email:i.email,
-      status:i.status,
-      type:'invitee'
+      email: i.email,
+      status: i.status,
+      type: 'invitee'
     }
   })
   users.value = [...data, ...invites]
@@ -178,26 +235,25 @@ const getWorkspaceUsers = async () => {
 }
 
 const isWorkspaceAdmin = computed(() => {
-  if(!users.value) return false
+  if (!users.value) return false
   const user = users.value.find((user) => user.id === authStore.user.id)
   return user && user.pivot.role === "admin"
 })
 
 const rows = computed(() => {
-  if(users.value){
+  if (users.value) {
     return users.value.filter((user) => user.id !== authStore.user.id)
   }
 })
 
-const columns = computed(()=>{
+const columns = computed(() => {
   return [
-      { key: 'name', label: 'Name' },
-      { key: 'email', label: 'Email' },
-      { key: 'role', label: 'Role' },
-      ...(isWorkspaceAdmin.value ? [{ key: 'actions', label: 'Action' }] : [])
-    ]
+    {key: 'name', label: 'Name'},
+    {key: 'email', label: 'Email'},
+    {key: 'role', label: 'Role'},
+    ...(isWorkspaceAdmin.value ? [{key: 'actions', label: 'Action'}] : [])
+  ]
 })
-
 
 
 const editUser = (row) => {
@@ -205,7 +261,6 @@ const editUser = (row) => {
   userNewRole.value = selectedUser.value.pivot.role
   showEditUserModal.value = true
 }
-
 
 
 const removeUser = (index) => {
@@ -219,7 +274,7 @@ const removeUser = (index) => {
         {
           method: "DELETE",
         },
-        { showSuccess: false },
+        {showSuccess: false},
       ).then(() => {
         useAlert().success("User successfully removed.")
         getWorkspaceUsers()
@@ -240,7 +295,7 @@ const deleteWorkspace = (workspaceId) => {
   useAlert().confirm(
     "Do you really want to delete this workspace? All forms created in this workspace will be removed.",
     () => {
-      opnFetch("/open/workspaces/" + workspaceId, { method: "DELETE" }).then(
+      opnFetch("/open/workspaces/" + workspaceId, {method: "DELETE"}).then(
         () => {
           useAlert().success("Workspace successfully removed.")
           workspacesStore.remove(workspaceId)
@@ -275,7 +330,7 @@ const resendInvite = (id) => {
   useAlert().confirm(
     "Do you really want to resend invite email to this user?",
     () => {
-      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/resend", { method: "POST" }).then(
+      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/resend", {method: "POST"}).then(
         () => {
           useAlert().success("Invitation resent successfully.")
           getWorkspaceUsers()
@@ -291,7 +346,7 @@ const cancelInvite = (id) => {
   useAlert().confirm(
     "Do you really want to cancel this user's invitation to this workspace?",
     () => {
-      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/cancel", { method: "DELETE" }).then(
+      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/cancel", {method: "DELETE"}).then(
         () => {
           useAlert().success("Invitation cancelled successfully.")
           getWorkspaceUsers()

@@ -238,7 +238,7 @@
                   <NuxtLink
                     v-if="$route.name !== 'login'"
                     :to="{ name: 'login' }"
-                    class="text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-white px-0 sm:px-3 py-2 rounded-md text-sm"
+                    :class="navLinkClasses"
                     active-class="text-gray-800 dark:text-white"
                   >
                     Login
