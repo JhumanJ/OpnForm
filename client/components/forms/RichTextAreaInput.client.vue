@@ -16,6 +16,7 @@
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
         theme.RichTextAreaInput.input,
+        theme.RichTextAreaInput.borderRadius,
       ]"
       :editor-toolbar="editorToolbar"
       class="rich-editor resize-y"

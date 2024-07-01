@@ -49,27 +49,16 @@ export default {
   computed: {
     embedCode() {
       // eslint-disable no-useless-escape
-      return `
-        <script type="text/javascript" src="${appUrl("/widgets/iframeResize.min.js")}"><\/script>
-        ${this.iframeCode}
-        <script type="text/javascript">iFrameResize({log: false, checkOrigin: false}, "#${this.iframeId}");<\/script>
-`
+      return `${this.iframeCode}<script type="text/javascript" onload="initEmbed('${this.form.slug}')" src="${appUrl("/widgets/iframe.min.js")}"><\/script>`
     },
     iframeCode() {
       const share_url = this.extraQueryParam
         ? this.form.share_url + "?" + this.extraQueryParam
         : this.form.share_url + this.extraQueryParam
       return (
-        '<iframe style="border:none;width:100%;" id="' +
-        this.iframeId +
-        '" src="' +
-        share_url +
-        '"></iframe>'
+        '<iframe style="border:none;width:100%;" id="' + this.form.slug + '" src="' + share_url + '"></iframe>'
       )
-    },
-    iframeId() {
-      return "form-" + this.form.slug
-    },
+    }
   },
 
   methods: {},

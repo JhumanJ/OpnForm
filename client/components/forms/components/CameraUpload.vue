@@ -4,7 +4,7 @@
       id="webcam"
       autoplay
       playsinline
-      :class="[{ hidden: !isCapturing }, theme.fileInput.cameraInput]"
+      :class="[{ hidden: !isCapturing }, theme.fileInput.minHeight, theme.fileInput.borderRadius]"
       width="1280"
       height="720"
     />
@@ -136,7 +136,7 @@
 
 <script>
 import Webcam from "webcam-easy"
-import { themes } from "~/lib/forms/form-themes.js"
+import { themes } from "~/lib/forms/themes/form-themes.js"
 export default {
   name: "FileInput",
   props: {

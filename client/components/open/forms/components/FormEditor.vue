@@ -28,6 +28,9 @@
         </svg>
         Go back
       </a>
+
+      <UndoRedo />
+
       <div class="hidden md:flex items-center ml-3">
         <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
           {{ form.title }}
@@ -88,14 +91,19 @@
           allow you to preview your form changes.
         </div>
 
-        <form-information />
-        <form-structure />
-        <form-customization />
-        <form-about-submission />
-        <form-access />
-        <form-security-privacy />
-        <form-custom-seo />
-        <form-custom-code />
+        <VForm
+          size="sm"
+          @submit.prevent=""
+        >
+          <form-information />
+          <form-structure />
+          <form-customization />
+          <form-about-submission />
+          <form-access />
+          <form-security-privacy />
+          <form-custom-seo />
+          <form-custom-code />
+        </VForm>
       </div>
 
       <form-editor-preview />
@@ -118,6 +126,7 @@
 </template>
 
 <script>
+import UndoRedo from "../../editors/UndoRedo.vue"
 import FormEditorSidebar from "./form-components/FormEditorSidebar.vue"
 import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormInformation from "./form-components/FormInformation.vue"
@@ -136,6 +145,7 @@ import { captureException } from "@sentry/core"
 export default {
   name: "FormEditor",
   components: {
+    UndoRedo,
     FormEditorSidebar,
     FormEditorPreview,
     FormAboutSubmission,

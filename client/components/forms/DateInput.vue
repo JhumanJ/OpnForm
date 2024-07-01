@@ -10,18 +10,18 @@
       :popper="{ placement: 'bottom-start' }"
     >
       <button
+        ref="datepicker"
         class="cursor-pointer overflow-hidden"
         :class="inputClasses"
         :disabled="props.disabled"
-        ref="datepicker"
       >
-        <div class="flex items-center min-w-0">
+        <div class="flex items-stretch min-w-0">
           <div
             class="flex-grow min-w-0 flex items-center gap-x-2"
             :class="[
-              props.theme.default.inputSpacing.vertical,
-              props.theme.default.inputSpacing.horizontal,
-              {'hover:bg-gray-50 dark:hover:bg-gray-900': !props.disabled}
+              props.theme.DateInput.spacing.horizontal,
+              props.theme.DateInput.spacing.vertical,
+              props.theme.DateInput.fontSize,
             ]"
           >
             <Icon
@@ -29,16 +29,24 @@
               class="w-4 h-4 flex-shrink-0"
               dynamic
             />
-            <div class="flex-grow truncate overflow-hidden">
-              <p class="flex-grow truncate h-[24px]">
+            <div class="flex-grow truncate overflow-hidden flex items-center">
+              <p
+                v-if="formattedDatePreview"
+                class="flex-grow truncate"
+              >
                 {{ formattedDatePreview }}
+              </p>
+              <p
+                v-else
+                class="text-transparent"
+              >
+                -
               </p>
             </div>
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
-            :class="[props.theme.default.inputSpacing.vertical]"
+            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2 flex items-center"
             @click.prevent="clear()"
           >
             <Icon
@@ -133,7 +141,7 @@ const modeledValue = computed({
 })
 
 const inputClasses = computed(() => {
-  const classes = [props.theme.DateInput.input, 'w-full']
+  const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
     classes.push('!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200')
   }
