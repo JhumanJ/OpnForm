@@ -247,6 +247,7 @@
                   <v-button
                     v-track.nav_create_form_click
                     size="small"
+                    class="shrink-0"
                     :to="{ name: 'forms-create-guest' }"
                     color="outline-blue"
                     :arrow="true"

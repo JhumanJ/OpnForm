@@ -1,7 +1,9 @@
 <template>
-  <div id="custom-domains">
+  <div
+    v-if="customDomainsEnabled"
+    id="custom-domains"
+  >
     <UButton
-      v-if="customDomainsEnabled"
       color="gray"
       label="Manage Custom Domains"
       icon="i-heroicons-globe-alt"
@@ -13,39 +15,50 @@
       max-width="lg"
       @close="showCustomDomainModal = false"
     >
-      <template v-if="customDomainsEnabled">
-        <p
-          v-if="!workspace.is_pro"
-          class="mb-4"
-        >
-          Please <NuxtLink :to="{name:'pricing'}">
+      <h4 class="mb-4 font-medium">
+        Manage your custom domains
+      </h4>
+      <UAlert
+        v-if="!workspace.is_pro"
+        icon="i-heroicons-user-group-20-solid"
+        class="mb-4"
+        color="orange"
+        variant="subtle"
+        title="Pro plan required"
+      >
+        <template #description>
+          Please <NuxtLink
+            :to="{name:'pricing'}"
+            class="underline"
+          >
             upgrade your account
           </NuxtLink> to setup a custom domain.
-        </p>
-        <text-area-input
-          :form="customDomainsForm"
-          name="custom_domains"
-          :required="false"
-          :disabled="!workspace.is_pro"
-          label="Workspace Custom Domains"
-          wrapper-class=""
-          placeholder="yourdomain.com - 1 per line"
-        />
-        <p class="text-gray-500 text-sm">
-          Read our
-          <a
-            href="#"
-            @click.prevent="
-              crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')
-            "
-          >custom domain instructions</a>
-          to learn how to use your own domain.
-        </p>
-      </template>
+        </template>
+      </UAlert>
+      <p class="text-gray-500 text-sm mb-4">
+        Read
+        <a
+          href="#"
+          class="underline"
+          @click.prevent="
+            crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')
+          "
+        >our instructions</a>
+        to learn how to setup your own domain.
+      </p>
+      <text-area-input
+        :form="customDomainsForm"
+        name="custom_domains"
+        :required="false"
+        :disabled="!workspace.is_pro"
+        label="Workspace Custom Domains"
+        wrapper-class=""
+        placeholder="yourdomain.com - 1 per line"
+      />
       <UButton
-        v-if="customDomainsEnabled"
         class="mt-3"
         :loading="customDomainsLoading"
+        :disabled="!workspace.is_pro"
         icon="i-heroicons-check"
         @click="saveChanges"
       >

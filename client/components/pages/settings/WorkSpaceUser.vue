@@ -52,7 +52,7 @@
         <UAlert
           v-else
           icon="i-heroicons-user-group-20-solid"
-          color="yellow"
+          color="orange"
           variant="subtle"
           title="Pro plan required"
         >
