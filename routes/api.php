@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('open')->name('open.')->group(function () {
-        Route::get('/providers', [OAuthProviderController::class, 'index'])->name('index');
+        Route::get('/providers', [OAuthProviderController::class, 'index'])->name('providers');
 
         Route::get('/forms', [FormController::class, 'indexAll'])->name('forms.index-all');
         Route::get('/forms/{slug}', [FormController::class, 'show'])->name('forms.show');
