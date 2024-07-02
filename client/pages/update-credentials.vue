@@ -9,7 +9,7 @@
                 Welcome to OpnForm!
             </h2>
             <p class="text-sm text-gray-600">You are seeing this page because you're in Self-Host Mode, and you are yet to updet your login credrntials.</p>
-            <p class="text-sm text-gray-600">Please set your login email and passwordto continue using OpnForm.</p>
+            <p class="text-sm text-gray-600">Please set your login email and password to continue using OpnForm.</p>
         </div>
 
         <form
