@@ -64,6 +64,7 @@
           v-if="props.dateRange"
           v-model.range="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
+          :is24hr="props.timeFormat == '24'"
           is-required
           borderless
           :min-date="minDate"
@@ -76,6 +77,7 @@
           v-else
           v-model="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
+          :is24hr="props.timeFormat == '24'"
           is-required
           borderless
           :min-date="minDate"
@@ -112,6 +114,7 @@ const props = defineProps({
   disablePastDates: { type: Boolean, default: false },
   disableFutureDates: { type: Boolean, default: false },
   dateFormat: { type: String, default: 'dd/MM/yyyy' },
+  timeFormat: { type: String, default: '24' },
   outputDateFormat: { type: String, default: 'yyyy-MM-dd\'T\'HH:mm:ssXXX' },
   isDark: { type: Boolean, default: false }
 })
@@ -190,8 +193,9 @@ const clear = () => {
 const formattedDate = (value) => {
   if (props.withTime) {
     try {
-      return format(new Date(value), props.dateFormat + ' HH:mm')
+      return format(new Date(value), props.dateFormat + (props.timeFormat == 12 ? ' p':' HH:mm'))
     } catch (e) {
+      console.log(e)
       return ''
     }
   }
