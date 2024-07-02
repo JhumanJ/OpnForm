@@ -108,7 +108,7 @@ export default {
 
   computed: {
     isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
+      return useRuntimeConfig().public.selfHosted
     },
   },
   
@@ -146,7 +146,11 @@ export default {
           this.redirect()
         })
         .catch((error) => {
-          console.error(error)
+          if (error.response?._data?.message == "You must change your credentials when in self host mode") {
+            // this.showForgotModal = true
+            this.redirect()
+          }
+
         })
         .finally(() => {
           this.loading = false

@@ -1,8 +1,7 @@
-export default defineNuxtRouteMiddleware((from, to, next) => {
+export default defineNuxtRouteMiddleware((from) => {
     const runtimeConfig = useRuntimeConfig()
-    const route = useRoute()
-    if (runtimeConfig.public?.selfHostMode) {
-        if (from.name == 'register' && route.query?.email && route.query?.invite_token) {
+    if (runtimeConfig.public?.selfHosted) {
+        if (from.name == 'register' && from.query?.email && from.query?.invite_token) {
             return
         }
         if (from.name == 'ai-form-builder' && runtimeConfig.public?.aiFeaturesEnabled) {
