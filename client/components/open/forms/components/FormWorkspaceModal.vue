@@ -20,25 +20,13 @@
       </svg>
     </template>
     <template #title>
-      Change form workspace
+      Change form's workspace
     </template>
     <div class="p-4">
       <div class="flex space-x-4 items-center">
         <p>Current workspace:</p>
         <div class="flex items-center cursor group p-2 rounded border">
-          <div class="rounded-full h-8 8">
-            <img
-              v-if="isUrl(workspace.icon)"
-              :src="workspace.icon"
-              :alt="workspace.name + ' icon'"
-              class="flex-shrink-0 h-8 w-8 rounded-full shadow"
-            >
-            <div
-              v-else
-              class="rounded-full pt-2 text-xs truncate bg-nt-blue-lighter h-8 w-8 text-center shadow"
-              v-text="workspace.icon"
-            />
-          </div>
+          <WorkspaceIcon :workspace="workspace" />
           <p
             class="lg:block max-w-10 truncate ml-2 text-gray-800 dark:text-gray-200"
           >
@@ -54,7 +42,7 @@
             class=""
             :options="workspacesSelectOptions"
             :required="true"
-            label="Select workspace"
+            label="Select destination workspace"
           />
         </div>
         <div class="flex justify-end mt-4 pb-5">
@@ -78,6 +66,7 @@
 
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
+import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 const emit = defineEmits(["close"])
 const workspacesStore = useWorkspacesStore()
 const formsStore = useFormsStore()

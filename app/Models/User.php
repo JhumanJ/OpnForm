@@ -17,6 +17,9 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory;
     use Notifiable;
 
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -235,6 +238,8 @@ class User extends Authenticatable implements JWTSubject
             foreach ($user->workspaces as $workspace) {
                 if ($workspace->users()->count() == 1) {
                     $workspace->delete();
+                } else {
+                    $workspace->users()->detach($user->id);
                 }
             }
         });

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
-use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,14 +20,6 @@ class WorkspaceController extends Controller
         $this->authorize('viewAny', Workspace::class);
 
         return WorkspaceResource::collection(Auth::user()->workspaces);
-    }
-
-    public function listUsers(Request $request, $workspaceId)
-    {
-        $workspace = Workspace::findOrFail($workspaceId);
-        $this->authorize('view', $workspace);
-
-        return (new WorkspaceHelper($workspace))->getAllUsers();
     }
 
     public function saveCustomDomain(CustomDomainRequest $request)

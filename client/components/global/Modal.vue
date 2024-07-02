@@ -15,7 +15,7 @@
         >
           <div
             v-if="closeable"
-            class="absolute top-4 right-4"
+            class="absolute top-4 right-4 z-10"
           >
             <button
               class="text-gray-500 hover:text-gray-900 cursor-pointer"
