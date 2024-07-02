@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\Billing\WorkspaceUsersUpdated;
 use App\Mail\UserInvitationEmail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,6 +66,7 @@ class UserInvite extends Model
     public function markAsAccepted()
     {
         $this->update(['status' => self::ACCEPTED_STATUS]);
+        WorkspaceUsersUpdated::dispatch($this->workspace);
         return $this;
     }
 

@@ -21,14 +21,14 @@
     </section>
 
     <pricing-table>
-      <template #pricing-table>
+      <template #pricing-table="{isYearly}">
         <div class="flex gap-x-2 items-center">
           <Icon
             class="inline w-5 h-5 text-blue-500"
             name="heroicons:user-plus-16-solid"
           />
           <p>
-            Extra users for $6/month
+            Extra users for {{ isYearly?'$5/month':'$6/month' }}
           </p>
         </div>
       </template>

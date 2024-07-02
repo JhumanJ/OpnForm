@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             ->where('subscription', '(' . implode('|', SubscriptionController::SUBSCRIPTION_NAMES) . ')')
             ->where('plan', '(' . implode('|', SubscriptionController::SUBSCRIPTION_PLANS) . ')');
         Route::get('/billing-portal', [SubscriptionController::class, 'billingPortal'])->name('billing-portal');
+        Route::get('/users-count', [SubscriptionController::class, 'getUsersCount'])->name('users-count');
     });
 
     Route::prefix('open')->name('open.')->group(function () {

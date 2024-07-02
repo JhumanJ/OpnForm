@@ -16,9 +16,9 @@ class UserHelper
      */
     public function getActiveMembersCount(): ?int
     {
-        $count = 0;
+        $count = 1;
         foreach ($this->user->workspaces as $workspace) {
-            $count += $workspace->users()->count();
+            $count += $workspace->users()->where('users.id','!=',$this->user->id)->count();
         }
         return $count;
     }

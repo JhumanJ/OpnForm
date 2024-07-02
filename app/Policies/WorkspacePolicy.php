@@ -94,13 +94,14 @@ class WorkspacePolicy
             return Response::allow();
         }
 
-        if (!$user->is_subscribed) {
+        if (!$workspace->is_pro) {
             return Response::deny('You need a Pro subscription to invite a user.');
         }
 
-        // In case of special License, check license limit
-        if ($license = $user->activeLicense()) {
-            $userActiveMembers = (new UserHelper($user))->getActiveMembersCount();
+        // In case of special license, check license limit
+        $billingOwner = $workspace->billingOwners()->first();
+        if ($license = $billingOwner->activeLicense()) {
+            $userActiveMembers = (new UserHelper($billingOwner))->getActiveMembersCount();
             if ($userActiveMembers >= $license->max_users_limit_count) {
                 return Response::deny('You have reached the maximum number of users allowed with your license.');
             }

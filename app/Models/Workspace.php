@@ -7,6 +7,7 @@ use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Workspace extends Model implements CachableAttributes
 {
@@ -191,7 +192,7 @@ class Workspace extends Model implements CachableAttributes
         return $this->users()->wherePivot('role', 'admin');
     }
 
-    public function billingOwners()
+    public function billingOwners(): Collection
     {
         return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
     }

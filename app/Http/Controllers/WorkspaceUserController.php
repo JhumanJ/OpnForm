@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\Billing\WorkspaceUsersUpdated;
 use App\Models\UserInvite;
 use Illuminate\Http\Request;
 use App\Models\Workspace;
@@ -50,6 +51,7 @@ class WorkspaceUserController extends Controller
                 'role' => $request->role,
             ],
         ], false);
+        WorkspaceUsersUpdated::dispatch($workspace);
 
         return $this->success([
             'message' => 'User has been successfully added to workspace.'
@@ -104,6 +106,7 @@ class WorkspaceUserController extends Controller
         $this->authorize('adminAction', $workspace);
 
         $workspace->users()->detach($userId);
+        WorkspaceUsersUpdated::dispatch($workspace);
 
         return $this->success([
             'message' => 'User removed from workspace successfully.'
