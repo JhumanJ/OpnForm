@@ -79,7 +79,7 @@
     <UTable
       class="-mx-4 border-y mt-4"
       :loading="loadingUsers"
-      :rows="rows"
+      :rows="users"
       :columns="columns"
     >
       <template
@@ -87,63 +87,61 @@
         #actions-data="{ row, index }"
       >
         <div class="space-x-2">
-          <UTooltip
+          <UButtonGroup
             v-if="row.type == 'user'"
-            text="Edit user"
+            size="2xs"
           >
-            <UButton
-              icon="i-heroicons-pencil"
-              size="2xs"
-              color="blue"
-              variant="outline"
-              :ui="{ rounded: 'rounded-full' }"
-              square
-              @click="editUser(index)"
-            />
-          </UTooltip>
-          <UTooltip
-            v-if="row.type == 'user'"
-            text="Remove user"
+            <UTooltip
+              text="Edit user"
+            >
+              <UButton
+                icon="i-heroicons-pencil"
+                color="gray"
+                class="hover:text-blue-500"
+                square
+                @click="editUser(index)"
+              />
+            </UTooltip>
+            <UTooltip
+              text="Remove user"
+            >
+              <UButton
+                v-if="row.type == 'user'"
+                icon="i-heroicons-trash"
+                color="gray"
+                class="hover:text-red-500"
+                square
+                @click="removeUser(index)"
+              />
+            </UTooltip>
+          </UButtonGroup>
+          <UButtonGroup
+            v-else-if="row.type == 'invitee'"
+            size="2xs"
           >
-            <UButton
-              v-if="row.type == 'user'"
-              icon="i-heroicons-trash"
-              size="2xs"
-              color="red"
-              variant="outline"
-              :ui="{ rounded: 'rounded-full' }"
-              square
-              @click="removeUser(index)"
-            />
-          </UTooltip>
-          <UTooltip
-            v-if="row.type == 'invitee'"
-            text="Resend Invite"
-          >
-            <UButton
-              icon="i-heroicons-envelope"
-              size="2xs"
-              color="green"
-              variant="outline"
-              :ui="{ rounded: 'rounded-full' }"
-              square
-              @click="resendInvite(index)"
-            />
-          </UTooltip>
-          <UTooltip
-            v-if="row.type == 'invitee'"
-            text="Cancel Invite"
-          >
-            <UButton
-              icon="i-heroicons-x-mark"
-              size="2xs"
-              color="red"
-              variant="outline"
-              :ui="{ rounded: 'rounded-full' }"
-              square
-              @click="cancelInvite(index)"
-            />
-          </UTooltip>
+            <UTooltip
+              text="Resend Invite"
+            >
+              <UButton
+                icon="i-heroicons-envelope"
+                color="gray"
+                class="hover:text-blue-500"
+                square
+                @click="resendInvite(index)"
+              />
+            </UTooltip>
+            <UTooltip
+              text="Cancel Invite"
+            >
+              <UButton
+                icon="i-heroicons-trash"
+                color="gray"
+                class="hover:text-red-500"
+                square
+                @click="cancelInvite(index)"
+              />
+            </UTooltip>
+          </UButtonGroup>
         </div>
       </template>
     </UTable>
@@ -240,12 +238,6 @@ const isWorkspaceAdmin = computed(() => {
   return user && user.pivot.role === "admin"
 })
 
-const rows = computed(() => {
-  if (users.value) {
-    return users.value.filter((user) => user.id !== authStore.user.id)
-  }
-})
-
 const columns = computed(() => {
   return [
     {key: 'name', label: 'Name'},
@@ -257,14 +249,14 @@ const columns = computed(() => {
 
 
 const editUser = (row) => {
-  selectedUser.value = rows.value[row]
+  selectedUser.value = users.value[row]
   userNewRole.value = selectedUser.value.pivot.role
   showEditUserModal.value = true
 }
 
 
 const removeUser = (index) => {
-  const user = rows.value[index]
+  const user = users.value[index]
   useAlert().confirm(
     "Do you really want to remove " + user.name + " from this workspace?",
     () => {
@@ -326,7 +318,7 @@ const leaveWorkSpace = (workspaceId) => {
 }
 
 const resendInvite = (id) => {
-  const inviteId = rows.value[id].id
+  const inviteId = users.value[id].id
   useAlert().confirm(
     "Do you really want to resend invite email to this user?",
     () => {
@@ -342,7 +334,7 @@ const resendInvite = (id) => {
 }
 
 const cancelInvite = (id) => {
-  const inviteId = rows.value[id].id
+  const inviteId = users.value[id].id
   useAlert().confirm(
     "Do you really want to cancel this user's invitation to this workspace?",
     () => {

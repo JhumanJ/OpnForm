@@ -26,7 +26,7 @@ class WorkspaceUserController extends Controller
     public function addUser(Request $request, $workspaceId)
     {
         $workspace = Workspace::findOrFail($workspaceId);
-        $this->authorize('adminAction', $workspace);
+        $this->authorize('inviteUser', $workspace);
 
         $this->validate($request, [
             'email' => 'required|email',

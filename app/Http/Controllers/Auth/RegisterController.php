@@ -63,6 +63,7 @@ class RegisterController extends Controller
             'hear_about_us' => 'required|string',
             'agree_terms' => ['required', Rule::in([true])],
             'appsumo_license' => ['nullable'],
+            'invite_token' => ['nullable', 'string'],
         ], [
             'agree_terms' => 'Please agree with the terms and conditions.',
         ]);
@@ -102,7 +103,8 @@ class RegisterController extends Controller
         }
     }
 
-    private function getWorkspaceAndRole(array $data) {
+    private function getWorkspaceAndRole(array $data)
+    {
         if (!array_key_exists('invite_token', $data)) {
             return [
                 Workspace::create([
@@ -128,7 +130,7 @@ class RegisterController extends Controller
             response()->json(['message' => 'Invite is already accepted.'], 400)->throwResponse();
         }
 
-        $userInvite->update(['status' => UserInvite::ACCEPTED_STATUS]);
+        $userInvite->markAsAccepted();
         return [
             $userInvite->workspace,
             $userInvite->role,

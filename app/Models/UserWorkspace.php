@@ -16,7 +16,6 @@ class UserWorkspace extends Model
         'role',
     ];
 
-
     public function user()
     {
         return $this->belongsTo(User::class);

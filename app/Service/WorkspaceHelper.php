@@ -11,12 +11,6 @@ class WorkspaceHelper
 
     }
 
-    public function getRecords($relatedRecordIds = null)
-    {
-        return [];
-    }
-
-
     public function getAllUsers()
     {
         return $this->workspace->users()->withPivot('role')->get();

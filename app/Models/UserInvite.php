@@ -21,7 +21,8 @@ class UserInvite extends Model
         'role',
         'workspace_id',
         'valid_until',
-        'token'
+        'status',
+        'token',
     ];
 
     public static function inviteUser(
@@ -48,7 +49,7 @@ class UserInvite extends Model
 
     public function getLink()
     {
-        return front_url('/register?email=' . $this->email . '&invite_token=' . $this->token);
+        return front_url('/register?email=' . urlencode($this->email) . '&invite_token=' . urlencode($this->token));
     }
 
     public function hasExpired()
@@ -59,6 +60,12 @@ class UserInvite extends Model
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    public function markAsAccepted()
+    {
+        $this->update(['status' => self::ACCEPTED_STATUS]);
+        return $this;
     }
 
     public function sendEmail()

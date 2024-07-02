@@ -55,6 +55,15 @@ class License extends Model
         ][$this->meta['tier']];
     }
 
+    public function getMaxUsersLimitCountAttribute(): ?int
+    {
+        return [
+            1 => 1,
+            2 => 5,
+            3 => null,
+        ][$this->meta['tier']];
+    }
+
     public static function booted(): void
     {
         static::saved(function (License $license) {
