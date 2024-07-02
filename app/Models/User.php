@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
+    use HasApiTokens;
     use Billable;
     use HasFactory;
     use Notifiable;
@@ -187,25 +188,6 @@ class User extends Authenticatable implements JWTSubject
     public function oauthProviders()
     {
         return $this->hasMany(OAuthProvider::class);
-    }
-
-    /**
-     * @return int
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [
-            'ip' => \Hash::make(request()->ip()),
-            'ua' => \Hash::make(request()->userAgent()),
-        ];
     }
 
     public function getIsRiskyAttribute()

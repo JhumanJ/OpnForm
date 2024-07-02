@@ -174,11 +174,19 @@ export default {
       // Register the user.
       const data = await this.form.post("/register")
 
+      this.form.update({
+        username: this.form.email,
+        password: this.form.password,
+        grant_type: 'password',
+        scope: '*',
+      })
+
       // Log in the user.
-      const tokenData = await this.form.post("/login")
+      const tokenData = await this.form
+        .post('/oauth/token')
 
       // Save the token.
-      this.authStore.setToken(tokenData.token)
+      this.authStore.setToken(tokenData.access_token)
 
       const userData = await opnFetch("user")
       this.authStore.setUser(userData)
