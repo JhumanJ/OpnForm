@@ -108,7 +108,7 @@ export default {
 
   computed: {
     isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
+      return useRuntimeConfig().public.selfHosted
     },
   },
   

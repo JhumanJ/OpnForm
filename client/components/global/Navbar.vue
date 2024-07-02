@@ -341,7 +341,7 @@ export default {
       return window.Featurebase("unviewed_changelog_count") > 0
     },
     isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
+      return useRuntimeConfig().public.selfHosted
     },
     hasAiFeatures(){
       return useRuntimeConfig().public.aiFeaturesEnabled
