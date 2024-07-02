@@ -54,7 +54,7 @@
             </a>
           </template>
           <NuxtLink
-            v-if="$route.name !== 'ai-form-builder' && user === null"
+            v-if="($route.name !== 'ai-form-builder' && user === null) && (!isSelfHosted || hasAiFeatures)"
             :to="{ name: 'ai-form-builder' }"
             class="text-sm text-gray-600 dark:text-white hidden lg:inline hover:text-gray-800 cursor-pointer mt-1 mr-8"
           >
@@ -62,9 +62,9 @@
           </NuxtLink>
           <NuxtLink
             v-if="
-              paidPlansEnabled &&
+              (paidPlansEnabled &&
                 (user === null || (user && workspace && !workspace.is_pro)) &&
-                $route.name !== 'pricing'
+                $route.name !== 'pricing') && !isSelfHosted
             "
             :to="{ name: 'pricing' }"
             class="text-sm text-gray-600 dark:text-white hover:text-gray-800 cursor-pointer mt-1 mr-8"
@@ -339,6 +339,12 @@ export default {
     hasNewChanges() {
       if (import.meta.server || !window.Featurebase) return false
       return window.Featurebase("unviewed_changelog_count") > 0
+    },
+    isSelfHosted(){
+      return useRuntimeConfig().public.selfHostMode
+    },
+    hasAiFeatures(){
+      return useRuntimeConfig().public.aiFeaturesEnabled
     },
   },
 

@@ -13,7 +13,8 @@ export default {
     paidPlansEnabled: process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED || false,
     customDomainsEnabled: process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED || false,
     featureBaseOrganization: process.env.NUXT_PUBLIC_FEATURE_BASE_ORGANISATION || null,
-
+    selfHostMode: process.env.NUXT_PUBLIC_SELF_HOST_MODE || true,
+    
     // Config within public will be also exposed to the client
     SENTRY_DSN_PUBLIC: process.env.SENTRY_DSN_PUBLIC,
     SENTRY_TRACES_SAMPLE_RATE: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE ?? '0'),
