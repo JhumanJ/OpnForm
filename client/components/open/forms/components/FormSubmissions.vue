@@ -163,12 +163,11 @@
 <script>
 import Fuse from 'fuse.js'
 import clonedeep from 'clone-deep'
-import VSwitch from '../../../forms/components/VSwitch.vue'
 import OpenTable from '../../tables/OpenTable.vue'
 
 export default {
   name: 'FormSubmissions',
-  components: {OpenTable, VSwitch},
+  components: {OpenTable},
   props: {},
 
   setup() {
