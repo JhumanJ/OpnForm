@@ -17,7 +17,7 @@ class SelfHostedCredentialsMiddleware
     {
         $allowedRouteNames = ['login', 'credentials.update', 'user.current', 'logout'];
         $routeName = request()->route()->getName();
-        if(in_array($routeName, $allowedRouteNames)){
+        if(in_array($routeName, $allowedRouteNames)) {
             ray('allowed route');
             return $next($request);
         }

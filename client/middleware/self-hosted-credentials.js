@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((from, to, next) => {
+export default defineNuxtRouteMiddleware(() => {
   const authStore = useAuthStore()
   const runtimeConfig = useRuntimeConfig()
     if (runtimeConfig.public?.selfHosted) {

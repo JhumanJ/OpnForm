@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if(config('app.self_host_mode')){
-            
+        if(config('app.self_host_mode')) {
+
         }
     }
 }
