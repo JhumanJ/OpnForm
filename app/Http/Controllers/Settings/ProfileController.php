@@ -41,9 +41,9 @@ class ProfileController extends Controller
 
         $user = $request->user();
         if ($user->credentials_changed) {
-            // return $this->error([
-            //     'message' => 'Credentials already updated.'
-            // ]);
+            return $this->error([
+                'message' => 'Credentials already updated.'
+            ]);
         }
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
