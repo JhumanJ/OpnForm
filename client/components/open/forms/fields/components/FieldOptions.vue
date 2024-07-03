@@ -421,6 +421,7 @@
         name="prefill"
         class="mt-3"
         :form="field"
+        :time-format="field.time_format"
         :with-time="field.with_time === true"
         :date-range="field.date_range === true"
         label="Pre-filled value"
@@ -767,7 +768,7 @@ export default {
         this.field.disable_future_dates = false
         this.field.disable_past_dates = false
       } else {
-        this.field.prefill = null
+        this.field.prefill = this.field.prefill ?? null
       }
     },
     onFieldAllowCreationChange(val) {
