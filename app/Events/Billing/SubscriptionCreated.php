@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Billing;
 
 use App\Models\Billing\Subscription;
 use Illuminate\Broadcasting\InteractsWithSockets;

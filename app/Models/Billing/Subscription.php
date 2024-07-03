@@ -2,7 +2,8 @@
 
 namespace App\Models\Billing;
 
-use App\Events\SubscriptionCreated;
+use App\Events\Billing\SubscriptionCreated;
+use App\Events\Billing\SubscriptionUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Cashier\Subscription as CashierSubscription;
 
@@ -12,6 +13,7 @@ class Subscription extends CashierSubscription
 
     protected $dispatchesEvents = [
         'created' => SubscriptionCreated::class,
+        'updated' => SubscriptionUpdated::class,
     ];
 
     public static function booted(): void

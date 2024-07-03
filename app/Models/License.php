@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class License extends Model
 {
     use HasFactory;
-    public const STATUS_ACTIVE = 'active';
 
+    public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
 
     protected $fillable = [
@@ -30,6 +30,11 @@ class License extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     public function scopeActive($query)
