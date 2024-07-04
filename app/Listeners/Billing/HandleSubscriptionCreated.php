@@ -24,6 +24,8 @@ class HandleSubscriptionCreated
         });
 
         // Update pricing (number of users)
-        WorkspaceUsersUpdated::dispatch($user->workspaces()->first());
+        if ($workspace = $user->workspaces()->first()) {
+            WorkspaceUsersUpdated::dispatch($workspace);
+        }
     }
 }
