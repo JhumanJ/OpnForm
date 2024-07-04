@@ -21,6 +21,8 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     closed_text:
       "This form has now been closed by its owner and does not accept submissions anymore.",
     auto_save: true,
+    border_radius: 'small',
+    size: 'md',
 
     // Submission
     submit_button_text: "Submit",

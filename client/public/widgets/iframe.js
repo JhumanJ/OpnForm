@@ -473,7 +473,7 @@
  * Starting from here is OpnForm custom code.
  * @type {string}
  */
-function initForm(formSlug) {
+function initEmbed(formSlug) {
   if (!formSlug) {
     return
   }
@@ -493,6 +493,6 @@ function initForm(formSlug) {
   })
 
   document.addEventListener("DOMContentLoaded", function () {
-    iFrameResize({log: false, checkOrigin: false}, '#form-' + formSlug)
+    iFrameResize({log: false, checkOrigin: false}, '#' + formSlug)
   })
 }
