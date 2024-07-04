@@ -14,6 +14,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Cashier\Cashier;
 
+/**
+ * Update subscription with extra users when workspace users are updated.
+ */
 class WorkspaceUsersUpdated implements ShouldQueue
 {
     use Dispatchable;

@@ -4,11 +4,12 @@ use App\Models\UserInvite;
 use Carbon\Carbon;
 
 it('can register with invite token', function () {
+    $this->withoutExceptionHandling();
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $response = $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
         ->assertSuccessful();
 
     expect($workspace->invites()->count())->toBe(1);
@@ -37,7 +38,7 @@ it('cannot register with expired invite token', function () {
     $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $response = $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
         ->assertSuccessful();
 
     expect($workspace->invites()->count())->toBe(1);
@@ -69,7 +70,7 @@ it('cannot re-register with accepted invite token', function () {
     $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $response = $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
         ->assertSuccessful();
 
     expect($workspace->invites()->count())->toBe(1);
