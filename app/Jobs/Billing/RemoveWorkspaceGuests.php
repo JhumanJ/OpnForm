@@ -3,6 +3,7 @@
 namespace App\Jobs\Billing;
 
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +28,7 @@ class RemoveWorkspaceGuests implements ShouldQueue
     public function handle(): void
     {
         // If pricing not enabled
-        if (!config('services.pricing.enabled')) {
+        if (is_null(config('cashier.key'))) {
             return;
         }
 
@@ -36,14 +37,24 @@ class RemoveWorkspaceGuests implements ShouldQueue
         }
 
         // User is not subscribed anymore - remove guests
-        $this->user->workspaces->each(function ($workspace) {
+        $this->user->workspaces->each(function (Workspace $workspace) {
+            // Flush workspace cache to be sure we have the latest data
+            $workspace->flush();
             if ($workspace->is_pro) {
                 // Another user still has pro subscription
                 return;
             }
 
             // Detach all users from the workspace (except the owner)
-            $workspace->users()->where('users.id','!=', $this->user->id)->detach();
+            foreach ($workspace->users()->where('users.id','!=', $this->user->id)->get() as $user) {
+                \Log::info('Detaching user from workspace', [
+                    'workspace_id' => $workspace->id,
+                    'workspace_name' => $workspace->name,
+                    'user_id' => $user->id,
+                    'user_email' => $user->email,
+                ]);
+                $workspace->users()->detach($user);
+            }
         });
     }
 }

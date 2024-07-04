@@ -70,7 +70,10 @@
             :to="{ name: 'pricing' }"
             :class="navLinkClasses"
           >
-            <span v-if="user">Upgrade</span>
+            <span
+              v-if="user"
+              class="text-primary"
+            >Upgrade</span>
             <span v-else>Pricing</span>
           </NuxtLink>
 

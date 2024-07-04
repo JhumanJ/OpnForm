@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Billing;
 
-use App\Http\Controllers\SubscriptionController;
 use App\Models\Billing\Subscription;
 use App\Models\Workspace;
 use App\Service\BillingHelper;

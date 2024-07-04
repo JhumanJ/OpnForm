@@ -9,7 +9,7 @@ use App\Events\Models\FormCreated;
 use App\Events\Models\FormIntegrationCreated;
 use App\Events\Models\FormIntegrationsEventCreated;
 use App\Listeners\Billing\HandleSubscriptionCreated;
-use App\Listeners\Billing\RemoveWorkspaceGuestsOnCancellation;
+use App\Listeners\Billing\RemoveWorkspaceGuestsIfNeeded;
 use App\Listeners\Forms\FormCreationConfirmation;
 use App\Listeners\Forms\FormIntegrationCreatedHandler;
 use App\Listeners\Forms\FormIntegrationsEventListener;
@@ -42,10 +42,10 @@ class EventServiceProvider extends ServiceProvider
             FormIntegrationsEventListener::class,
         ],
         SubscriptionCreated::class => [
-            HandleSubscriptionCreated::class
+            HandleSubscriptionCreated::class,
         ],
         SubscriptionUpdated::class => [
-            RemoveWorkspaceGuestsOnCancellation::class
+            RemoveWorkspaceGuestsIfNeeded::class
         ]
     ];
 

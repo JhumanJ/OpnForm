@@ -86,35 +86,43 @@
         v-if="isWorkspaceAdmin"
         #actions-data="{ row, index }"
       >
-        <div class="space-x-2">
-          <UButtonGroup
-            v-if="row.type == 'user'"
-            size="2xs"
-          >
-            <UTooltip
-              text="Edit user"
+        <div class="space-x-2 flex justify-center">
+          <template v-if="row.type == 'user'">
+            <p
+              v-if="row.is_current_user"
+              class="text-gray-500 text-center text-sm"
             >
-              <UButton
-                icon="i-heroicons-pencil"
-                color="gray"
-                class="hover:text-blue-500"
-                square
-                @click="editUser(index)"
-              />
-            </UTooltip>
-            <UTooltip
-              text="Remove user"
+              -
+            </p>
+            <UButtonGroup
+              v-else
+              size="2xs"
             >
-              <UButton
-                v-if="row.type == 'user'"
-                icon="i-heroicons-trash"
-                color="gray"
-                class="hover:text-red-500"
-                square
-                @click="removeUser(index)"
-              />
-            </UTooltip>
-          </UButtonGroup>
+              <UTooltip
+                text="Edit user"
+              >
+                <UButton
+                  icon="i-heroicons-pencil"
+                  color="gray"
+                  class="hover:text-blue-500"
+                  square
+                  @click="editUser(index)"
+                />
+              </UTooltip>
+              <UTooltip
+                text="Remove user"
+              >
+                <UButton
+                  v-if="row.type == 'user'"
+                  icon="i-heroicons-trash"
+                  color="gray"
+                  class="hover:text-red-500"
+                  square
+                  @click="removeUser(index)"
+                />
+              </UTooltip>
+            </UButtonGroup>
+          </template>
           <UButtonGroup
             v-else-if="row.type == 'invitee'"
             size="2xs"
@@ -211,6 +219,8 @@ const getWorkspaceUsers = async () => {
   data = data.map(d => {
     return {
       ...d,
+      id: d.id,
+      is_current_user: d.id === authStore.user.id,
       name: d.name,
       email: d.email,
       status: 'accepted',
@@ -243,7 +253,7 @@ const columns = computed(() => {
     {key: 'name', label: 'Name'},
     {key: 'email', label: 'Email'},
     {key: 'role', label: 'Role'},
-    ...(isWorkspaceAdmin.value ? [{key: 'actions', label: 'Action'}] : [])
+    ...(isWorkspaceAdmin.value ? [{key: 'actions', label: 'Action', class: 'text-center'}] : [])
   ]
 })
 

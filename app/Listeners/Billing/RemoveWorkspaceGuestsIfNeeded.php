@@ -6,7 +6,7 @@ use App\Events\Billing\SubscriptionUpdated;
 use App\Jobs\Billing\RemoveWorkspaceGuests;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RemoveWorkspaceGuestsOnCancellation implements ShouldQueue
+class RemoveWorkspaceGuestsIfNeeded implements ShouldQueue
 {
     /**
      * Create the event listener.
