@@ -51,7 +51,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getMaxFileSizeAttribute()
     {
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return self::MAX_FILE_SIZE_PRO;
         }
 
@@ -74,7 +74,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getCustomDomainCountLimitAttribute()
     {
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return null;
         }
 
@@ -96,7 +96,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsProAttribute()
     {
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return true;    // If no paid plan so TRUE for ALL
         }
 
@@ -114,7 +114,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsTrialingAttribute()
     {
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return false;    // If no paid plan so FALSE for ALL
         }
 
@@ -132,7 +132,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsEnterpriseAttribute()
     {
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return true;    // If no paid plan so TRUE for ALL
         }
 

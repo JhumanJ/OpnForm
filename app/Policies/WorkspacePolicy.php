@@ -90,7 +90,7 @@ class WorkspacePolicy
         }
 
         // If self-hosted, allow
-        if (pricing_enabled()) {
+        if (!pricing_enabled()) {
             return Response::allow();
         }
 
