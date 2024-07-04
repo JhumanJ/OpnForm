@@ -18,7 +18,7 @@ class UserHelper
     {
         $count = 1;
         foreach ($this->user->workspaces as $workspace) {
-            $count += $workspace->users()->where('users.id','!=',$this->user->id)->count();
+            $count += $workspace->users()->where('users.id', '!=', $this->user->id)->count();
         }
         return $count;
     }

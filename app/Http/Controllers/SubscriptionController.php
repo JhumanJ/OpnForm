@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Subscriptions\UpdateStripeDetailsRequest;
 use App\Service\BillingHelper;
 use App\Service\UserHelper;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Subscription;
 

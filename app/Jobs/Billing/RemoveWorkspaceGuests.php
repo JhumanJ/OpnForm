@@ -12,7 +12,10 @@ use Illuminate\Queue\SerializesModels;
 
 class RemoveWorkspaceGuests implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
@@ -46,7 +49,7 @@ class RemoveWorkspaceGuests implements ShouldQueue
             }
 
             // Detach all users from the workspace (except the owner)
-            foreach ($workspace->users()->where('users.id','!=', $this->user->id)->get() as $user) {
+            foreach ($workspace->users()->where('users.id', '!=', $this->user->id)->get() as $user) {
                 \Log::info('Detaching user from workspace', [
                     'workspace_id' => $workspace->id,
                     'workspace_name' => $workspace->name,

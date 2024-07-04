@@ -2,13 +2,11 @@
 
 namespace App\Service;
 
-use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Stripe\SubscriptionItem;
 
 class BillingHelper
 {
-
     public static function getPricing($productName = 'default')
     {
         return App::environment() == 'production' ?
@@ -25,6 +23,7 @@ class BillingHelper
 
     public static function getLineItemInterval(SubscriptionItem $item)
     {
-        return $item->price->recurring->interval === 'year' ? 'yearly' : 'monthly';;
+        return $item->price->recurring->interval === 'year' ? 'yearly' : 'monthly';
+        ;
     }
 }

@@ -118,7 +118,7 @@ class StripeController extends WebhookController
     private function getMainSubscriptionLineItem(array $items)
     {
         return collect($items)->first(function ($item) {
-            return in_array($this->getSubscriptionName($item['price']['product']),['default']);
+            return in_array($this->getSubscriptionName($item['price']['product']), ['default']);
         });
     }
 
