@@ -6,7 +6,7 @@ import gtm from "./gtm"
 
 export default defineNuxtConfig({
     loglevel: process.env.NUXT_LOG_LEVEL || 'info',
-    devtools: {enabled: false},
+    devtools: {enabled: true},
     css: ['~/scss/app.scss'],
     modules: [
         '@pinia/nuxt',
@@ -70,7 +70,7 @@ export default defineNuxtConfig({
         classPrefix: '',
     },
     ui: {
-      icons: ['heroicons','material-symbols'],
+        icons: ['heroicons', 'material-symbols'],
     },
     sitemap,
     runtimeConfig,

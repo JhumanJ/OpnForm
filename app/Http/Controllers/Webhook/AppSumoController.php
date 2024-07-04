@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Billing\RemoveWorkspaceGuests;
 use App\Models\License;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -56,7 +57,8 @@ class AppSumoController extends Controller
 
     private function handleDeactivateEvent($request)
     {
-        $this->deactivateLicense($request->license_key);
+        $license = $this->deactivateLicense($request->license_key);
+        RemoveWorkspaceGuests::dispatch($license->user);
     }
 
     private function createLicense(array $licenseData): License
