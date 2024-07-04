@@ -35,7 +35,7 @@ class WorkspaceUsersUpdated implements ShouldQueue
     public function handle(): void
     {
         // If self-hosted, no need to update billing
-        if (is_null(config('cashier.key'))) {
+        if (pricing_enabled()) {
             return;
         }
 

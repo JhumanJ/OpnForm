@@ -31,7 +31,7 @@ class RemoveWorkspaceGuests implements ShouldQueue
     public function handle(): void
     {
         // If pricing not enabled
-        if (is_null(config('cashier.key'))) {
+        if (pricing_enabled()) {
             return;
         }
 

@@ -90,7 +90,7 @@ class WorkspacePolicy
         }
 
         // If self-hosted, allow
-        if (is_null(config('cashier.key'))) {
+        if (pricing_enabled()) {
             return Response::allow();
         }
 
