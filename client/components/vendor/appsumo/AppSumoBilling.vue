@@ -34,6 +34,10 @@
         File Size Uploads:
         <span class="font-semibold">{{ tierFeatures.file_upload_size }}</span>
       </li>
+      <li>
+        Users limit:
+        <span class="font-semibold">{{ tierFeatures.users }}</span>
+      </li>
     </ul>
     <div class="w-max">
       <v-button
@@ -43,7 +47,7 @@
         href="https://appsumo.com/account/products/"
         target="_blank"
       >
-        Mangage in AppSumo
+        Manage in AppSumo
       </v-button>
     </div>
   </div>
@@ -80,16 +84,19 @@ export default {
           form_quantity: "Unlimited",
           file_upload_size: "25mb",
           domain_names: "5",
+          users: 1
         },
         2: {
           form_quantity: "Unlimited",
           file_upload_size: "50mb",
           domain_names: "25",
+          users: 5
         },
         3: {
           form_quantity: "Unlimited",
           file_upload_size: "75mb",
           domain_names: "Unlimited",
+          users: 'Unlimited'
         },
       }[this.licenseTier]
     },

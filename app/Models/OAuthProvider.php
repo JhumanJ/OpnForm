@@ -33,10 +33,13 @@ class OAuthProvider extends Model
         'access_token', 'refresh_token',
     ];
 
-    protected $casts = [
-        'provider' => OAuthProviderService::class,
-        'token_expires_at' => 'datetime',
-    ];
+    protected function casts()
+    {
+        return [
+            'provider' => OAuthProviderService::class,
+            'token_expires_at' => 'datetime',
+        ];
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

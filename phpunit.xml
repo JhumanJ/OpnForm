@@ -31,6 +31,7 @@
         <env name="MAIL_FROM_NAME" value="NotionForms"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="SELF_HOSTED" value="false"/>
         <env name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
         <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
     </php>

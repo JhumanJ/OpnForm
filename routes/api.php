@@ -20,7 +20,9 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\UserInviteController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Http\Request;
@@ -62,6 +64,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             ->where('subscription', '(' . implode('|', SubscriptionController::SUBSCRIPTION_NAMES) . ')')
             ->where('plan', '(' . implode('|', SubscriptionController::SUBSCRIPTION_PLANS) . ')');
         Route::get('/billing-portal', [SubscriptionController::class, 'billingPortal'])->name('billing-portal');
+        Route::get('/users-count', [SubscriptionController::class, 'getUsersCount'])->name('users-count');
     });
 
     Route::prefix('open')->name('open.')->group(function () {
@@ -77,8 +80,43 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::prefix('/{workspaceId}')->group(function () {
                 Route::get(
                     '/users',
-                    [WorkspaceController::class, 'listUsers']
+                    [WorkspaceUserController::class, 'listUsers']
                 )->name('users.index');
+                Route::get(
+                    '/invites',
+                    [UserInviteController::class, 'listInvites']
+                )->name('invites.index');
+
+                Route::post(
+                    '/users/add',
+                    [WorkspaceUserController::class, 'addUser']
+                )->name('users.add');
+
+                Route::delete(
+                    '/users/{userId}/remove',
+                    [WorkspaceUserController::class, 'removeUser']
+                )->name('users.remove');
+
+                Route::post(
+                    '/invites/{inviteId}/resend',
+                    [UserInviteController::class, 'resendInvite']
+                )->name('invites.resend');
+
+                Route::delete(
+                    '/invites/{inviteId}/cancel',
+                    [UserInviteController::class, 'cancelInvite']
+                )->name('invites.cancel');
+
+                Route::put(
+                    '/users/{userId}/update-role',
+                    [WorkspaceUserController::class, 'updateUserRole']
+                )->name('users.update-role');
+
+                // leave workspace route
+                Route::post(
+                    '/leave',
+                    [WorkspaceUserController::class, 'leaveWorkspace']
+                )->name('leave');
 
                 Route::prefix('/databases')->name('databases.')->group(function () {
                     Route::get(

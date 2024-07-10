@@ -20,7 +20,19 @@
       </div>
     </section>
 
-    <pricing-table />
+    <pricing-table>
+      <template #pricing-table="{isYearly}">
+        <div class="flex gap-x-2 items-center">
+          <Icon
+            class="inline w-5 h-5 text-blue-500"
+            name="heroicons:user-plus-16-solid"
+          />
+          <p>
+            Extra users for {{ isYearly?'$5/month':'$6/month' }}
+          </p>
+        </div>
+      </template>
+    </pricing-table>
 
     <section class="py-12 bg-white sm:py-16 lg:py-24 xl:py-24">
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
@@ -387,12 +399,12 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useAuthStore } from "../stores/auth"
+import {computed} from "vue"
+import {useAuthStore} from "../stores/auth"
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
 
 export default {
-  components: { PricingTable },
+  components: {PricingTable},
   layout: "default",
 
   setup() {
@@ -408,7 +420,7 @@ export default {
           // Custom inline middleware
           if (!useRuntimeConfig().public.paidPlansEnabled) {
             // If no paid plan so no need this page
-            return navigateTo("/", { redirectCode: 301 })
+            return navigateTo("/", {redirectCode: 301})
           }
         },
       ],
