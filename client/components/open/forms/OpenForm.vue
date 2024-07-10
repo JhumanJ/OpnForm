@@ -130,6 +130,7 @@ import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import {computed} from "vue"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 export default {
   name: 'OpenForm',
@@ -140,9 +141,14 @@ export default {
       required: true
     },
     theme: {
-      type: Object,
-      required: true
-    },
+    type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
+      return CachedDefaultTheme.getInstance()
+    }
+  },
     loading: {
       type: Boolean,
       required: true
