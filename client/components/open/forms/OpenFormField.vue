@@ -193,7 +193,8 @@ export default {
         checkbox: 'CheckboxInput',
         url: 'TextInput',
         email: 'TextInput',
-        phone_number: 'TextInput'
+        phone_number: 'TextInput',
+        matrix: 'MatrixInput'
       }[field.type]
     },
     isPublicFormPage() {
@@ -290,6 +291,12 @@ export default {
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
         showCharLimit: field.show_char_limit || false,
         isDark: this.darkMode
+      }
+
+      if(field.type == 'matrix'){
+        inputProperties.rows = field.rows
+        inputProperties.columns = field.columns,
+        inputProperties.selectionData = field.selection_data
       }
 
       if (['select', 'multi_select'].includes(field.type)) {

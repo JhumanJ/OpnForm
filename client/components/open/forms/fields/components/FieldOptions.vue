@@ -187,6 +187,8 @@
       />
     </div>
 
+   <MatrixFieldOptions :field="field" />
+
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"
@@ -408,6 +410,9 @@
         label="Pre-filled value"
         :multiple="field.type === 'multi_select'"
       />
+      <template v-else-if="field.type === 'matrix'">
+          <MatrixPrefilledValues :field="field"/>
+      </template>
       <date-input
         v-else-if="field.type === 'date' && field.prefill_today !== true"
         name="prefill"
@@ -581,12 +586,14 @@ import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../../components/CustomFieldValidation.vue'
+import MatrixFieldOptions from './MatrixFieldOptions.vue'
+import MatrixPrefilledValues from './MatrixPrefilledValues.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation },
+  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation, MatrixFieldOptions, MatrixPrefilledValues },
   props: {
     field: {
       type: Object,
@@ -824,6 +831,13 @@ export default {
         },
         date: {
           date_format: this.dateFormatOptions[0].value
+        },
+        matrix: {
+          rows:['Row 1'],
+          columns: [1 ,2 ,3],
+          selection_data:{
+            'Row 1': null
+          }
         }
       }
       if (this.field.type in defaultFieldValues) {
