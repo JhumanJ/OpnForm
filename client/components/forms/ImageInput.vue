@@ -213,7 +213,7 @@ export default {
 
   methods: {
     clearUrl() {
-      this.form[this.name] = null
+      this.compVal = null
     },
     onUploadDragoverEvent() {
       this.uploadDragoverEvent = true
