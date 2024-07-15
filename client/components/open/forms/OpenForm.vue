@@ -109,8 +109,8 @@
         :color="form.color"
         :theme="theme"
         class="mt-2 px-8 mx-1"
-        @click.stop="nextPage"
         :loading="dataForm.busy"
+        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -461,7 +461,11 @@ export default {
           this.currentFieldGroupIndex += 1
           this.dataForm.busy = false
           window.scrollTo({top: 0, behavior: 'smooth'})
-        }).catch(err => {
+        }).catch(error => {
+          console.error(error)
+          if (error && error.data && error.data.message) {
+            useAlert().error(error.data.message)
+          }
           this.dataForm.busy = false
         })
       return false
