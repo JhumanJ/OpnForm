@@ -255,6 +255,14 @@
         help="Make sure to select the same timezone you're using in Notion. Leave blank otherwise."
       />
       <flat-select-input
+        v-if="field.with_time"
+        name="time_format"
+        class="mt-4"
+        :form="field"
+        :options="timeFormatOptions"
+        label="Time format"
+      />
+      <flat-select-input
         name="date_format"
         class="mt-4"
         :form="field"
@@ -413,6 +421,7 @@
         name="prefill"
         class="mt-3"
         :form="field"
+        :time-format="field.time_format"
         :with-time="field.with_time === true"
         :date-range="field.date_range === true"
         label="Pre-filled value"
@@ -645,6 +654,10 @@ export default {
         }
       })
     },
+    timeFormatOptions() {
+      return [{ name: '13:00', value: '24', },
+      { name: '01:00 PM', value: '12', },]
+    },
     displayBasedOnAdvanced() {
       if (this.field.generates_uuid || this.field.generates_auto_increment_id) {
         return false
@@ -755,7 +768,7 @@ export default {
         this.field.disable_future_dates = false
         this.field.disable_past_dates = false
       } else {
-        this.field.prefill = null
+        this.field.prefill = this.field.prefill ?? null
       }
     },
     onFieldAllowCreationChange(val) {
@@ -823,7 +836,8 @@ export default {
           max_char_limit: 2000
         },
         date: {
-          date_format: this.dateFormatOptions[0].value
+          date_format: this.dateFormatOptions[0].value,
+          time_format: this.timeFormatOptions[0].value
         }
       }
       if (this.field.type in defaultFieldValues) {

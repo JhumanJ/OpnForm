@@ -306,6 +306,7 @@ export default {
         inputProperties.searchable = (inputProperties.options.length > 4)
       } else if (field.type === 'date') {
         inputProperties.dateFormat = field.date_format
+        inputProperties.timeFormat = field.time_format
         if (field.with_time) {
           inputProperties.withTime = true
         }
