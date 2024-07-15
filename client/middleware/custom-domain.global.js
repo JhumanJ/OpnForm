@@ -13,6 +13,7 @@ const customDomainHeaderName = "user-custom-domain"
 const customDomainAllowedRoutes = ["forms-slug"]
 
 function redirectToMainDomain(details = {}) {
+  const config = useRuntimeConfig()
   const appDomain = getDomain(config.public.appUrl)
   const host = getHost()
   console.warn("Redirecting to main domain", {
