@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Billing;
 
 use App\Models\Billing\Subscription;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SubscriptionCreated
+class SubscriptionUpdated
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -15,12 +15,9 @@ class SubscriptionCreated
 
     /**
      * Create a new event instance.
-     *
-     * @return void
      */
-
     public function __construct(public Subscription $subscription)
     {
-
+        //
     }
 }

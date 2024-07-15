@@ -36,6 +36,9 @@ class ImpersonationMiddleware
         'open.forms.regenerate-link',
         'open.forms.submissions',
         'open.forms.submissions.file',
+        'open.providers',
+        'open.forms.integrations',
+        'open.forms.integrations.events',
 
         // Workspaces
         'open.workspaces.index',
@@ -66,7 +69,7 @@ class ImpersonationMiddleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            if (! auth()->check() || ! auth()->payload()->get('impersonating')) {
+            if (!auth()->check() || !auth()->payload()->get('impersonating')) {
                 return $next($request);
             }
         } catch (JWTException $e) {
@@ -75,7 +78,7 @@ class ImpersonationMiddleware
 
         // Check that route is allowed
         $routeName = $request->route()->getName();
-        if (! in_array($routeName, self::ALLOWED_ROUTES)) {
+        if (!in_array($routeName, self::ALLOWED_ROUTES)) {
             return response([
                 'message' => 'Unauthorized when impersonating',
                 'route' => $routeName,
@@ -85,7 +88,7 @@ class ImpersonationMiddleware
                 'payload' => $request->all(),
             ], 403);
         } elseif (in_array($routeName, self::LOG_ROUTES)) {
-            \Log::warning(self::ADMIN_LOG_PREFIX.'Impersonator action', [
+            \Log::warning(self::ADMIN_LOG_PREFIX . 'Impersonator action', [
                 'route' => $routeName,
                 'url' => $request->fullUrl(),
                 'impersonated_account' => auth()->id(),

@@ -54,7 +54,6 @@ it('check formstat chart data', function () {
                     return true;
                 })
                 ->where('submissions', function ($values) use ($submissions) {
-                    ray($values, $submissions);
                     foreach ($values as $date => $count) {
                         if ((isset($submissions[$date]) && $submissions[$date] != $count) || (!isset($submissions[$date]) && $count != 0)) {
                             return false;

@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col">
+  <div
+    id="public-form"
+    class="flex flex-col"
+  >
     <div v-if="form && !isIframe && (form.logo_picture || form.cover_picture)">
       <div v-if="form.cover_picture">
         <div
@@ -235,3 +238,19 @@ useHead({
   script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>
+
+<style lang="scss">
+#public-form {
+  p, div {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  a {
+    @apply text-blue-600 hover:underline;
+  }
+}
+</style>

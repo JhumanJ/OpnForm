@@ -31,8 +31,10 @@ export default {
     })
 
     const authStore = useAuthStore()
+    const confetti = useConfetti()
     return {
       authStore,
+      confetti,
       authenticated: computed(() => authStore.check),
       user: computed(() => authStore.user),
       crisp: useCrisp(),
@@ -52,6 +54,12 @@ export default {
 
   beforeUnmount() {
     clearInterval(this.interval)
+  },
+  unmounted() {
+    // stop confettis after 2 sec
+    setTimeout(() => {
+      this.confetti.stop()
+    }, 2000)
   },
 
   methods: {
@@ -73,6 +81,7 @@ export default {
         } catch (error) {
           console.error(error)
         }
+        this.confetti.play()
         this.$router.push({name: "home"})
 
         if (this.user.has_enterprise_subscription) {
@@ -88,6 +97,6 @@ export default {
         }
       }
     },
-  },
+  }
 }
 </script>
