@@ -203,7 +203,9 @@ class FormSubmissionFormatter
                 $field['value'] = $data[$field['id']] ? 'Yes' : 'No';
             } elseif ($field['type'] == 'date') {
                 $dateFormat = ($field['date_format'] ?? 'dd/MM/yyyy') == 'dd/MM/yyyy' ? 'd/m/Y' : 'm/d/Y';
-                $dateFormat .= (isset($field['with_time']) && $field['with_time']) ? ' H:i' : '';
+                if (isset($field['with_time']) && $field['with_time']) {
+                    $dateFormat .= (isset($field['time_format']) && $field['time_format'] == 24) ? ' H:i' : ' g:ia';
+                }
                 if (is_array($data[$field['id']])) {
                     $field['value'] = isset($data[$field['id']][1]) ? (new Carbon($data[$field['id']][0]))->format($dateFormat)
                         . ' - ' . (new Carbon($data[$field['id']][1]))->format($dateFormat) : (new Carbon($data[$field['id']][0]))->format($dateFormat);

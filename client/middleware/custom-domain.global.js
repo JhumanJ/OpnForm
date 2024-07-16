@@ -1,4 +1,4 @@
-import { customDomainUsed, getDomain, getHost } from "~/lib/utils.js"
+import {customDomainUsed, getDomain, getHost} from "~/lib/utils.js"
 
 /**
  * Added by Caddy when proxying to the app
@@ -13,11 +13,19 @@ const customDomainHeaderName = "user-custom-domain"
 const customDomainAllowedRoutes = ["forms-slug"]
 
 function redirectToMainDomain(details = {}) {
-  console.warn("Redirecting to main domain", { reason: "unknown", ...details })
+  const config = useRuntimeConfig()
+  const appDomain = getDomain(config.public.appUrl)
+  const host = getHost()
+  console.warn("Redirecting to main domain", {
+    reason: "unknown",
+    appDomain,
+    host,
+    getDomain: getDomain(host), ...details
+  })
   return navigateTo(
     useRuntimeConfig().public.appUrl +
-      "?utm_source=failed_custom_domain_redirect",
-    { redirectCode: 301, external: true },
+    "?utm_source=failed_custom_domain_redirect",
+    {redirectCode: 301, external: true},
   )
 }
 
@@ -50,6 +58,7 @@ export default defineNuxtRouteMiddleware((to) => {
     // Custom domain only allowed for form url
     return redirectToMainDomain({
       reason: "route_not_allowed",
+      route: to.name
     })
   }
 })
