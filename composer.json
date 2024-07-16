@@ -32,7 +32,7 @@
         "openai-php/client": "*",
         "propaganistas/laravel-disposable-email": "*",
         "sentry/sentry-laravel": "*",
-        "spatie/laravel-data": "^4.6",
+        "spatie/laravel-data": "^4.7",
         "spatie/laravel-sitemap": "*",
         "spatie/laravel-sluggable": "*",
         "stevebauman/purify": "*",
