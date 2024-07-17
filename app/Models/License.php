@@ -65,7 +65,7 @@ class License extends Model
         return [
             1 => 1,
             2 => 5,
-            3 => null,
+            3 => 10,
         ][$this->meta['tier']];
     }
 
