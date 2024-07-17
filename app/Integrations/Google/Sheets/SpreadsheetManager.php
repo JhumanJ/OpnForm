@@ -12,6 +12,7 @@ use Google\Service\Sheets\BatchUpdateValuesRequest;
 use Google\Service\Sheets\Spreadsheet;
 use Google\Service\Sheets\ValueRange;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SpreadsheetManager
 {
@@ -30,17 +31,10 @@ class SpreadsheetManager
                 url: $this->integration->data->url,
                 spreadsheet_id: $this->integration->data->spreadsheet_id,
                 columns: array_map(
-                    fn ($column) => (array) $column,
+                    fn ($column) => (array)$column,
                     $this->integration->data->columns
                 )
             );
-    }
-
-    protected function convertToArray(mixed $object): array
-    {
-        return is_scalar($object) || is_null($object)
-            ? $object
-            : $this->convertToArray((array) $object);
     }
 
     public function get(string $id): Spreadsheet
@@ -73,9 +67,12 @@ class SpreadsheetManager
 
     public function buildColumns(): array
     {
-        $properties = $this->integration->form->properties;
+        collect($this->integration->form->properties)->each(function ($property) {
+            // Skip custom blocks
+            if (Str::of($property['type'])->startsWith('nf-')) {
+                return;
+            }
 
-        foreach ($properties as $property) {
             $key = Arr::first(
                 array_keys($this->data->columns),
                 fn (int $key) => $this->data->columns[$key]['id'] === $property['id']
@@ -88,12 +85,11 @@ class SpreadsheetManager
             } else {
                 $this->data->columns[] = $column;
             }
-        }
+        });
 
         $this->integration->update([
             'data' => $this->data,
         ]);
-
         return $this->data->columns;
     }
 
@@ -184,6 +180,20 @@ class SpreadsheetManager
 
     protected function buildRange(array $values): string
     {
-        return "A1:" . chr(64 + count($values)) . "1";
+        $columnsCount = count($values);
+        $endColumn = $this->getColumnLetter($columnsCount);
+        return "A1:{$endColumn}1";
+    }
+
+
+    protected function getColumnLetter(int $columnIndex): string
+    {
+        $columnLetter = '';
+        while ($columnIndex > 0) {
+            $columnIndex--;
+            $columnLetter = chr(65 + ($columnIndex % 26)) . $columnLetter;
+            $columnIndex = (int)($columnIndex / 26);
+        }
+        return $columnLetter;
     }
 }
