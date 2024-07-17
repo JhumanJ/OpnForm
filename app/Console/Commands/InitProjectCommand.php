@@ -27,7 +27,7 @@ class InitProjectCommand extends Command
      */
     public function handle()
     {
-        if (config('app.self_host_mode')) {
+        if (config('app.self_hosted')) {
             Artisan::call('migrate:fresh');
             User::create([
                 'name' => 'Admin',

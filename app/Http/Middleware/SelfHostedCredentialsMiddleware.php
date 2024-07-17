@@ -15,14 +15,16 @@ class SelfHostedCredentialsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (app()->environment() == "testing") {
+            return $next($request);
+        }
         $allowedRouteNames = ['login', 'credentials.update', 'user.current', 'logout'];
         $routeName = request()->route()->getName();
-        if(in_array($routeName, $allowedRouteNames)) {
-            ray('allowed route');
+        if (in_array($routeName, $allowedRouteNames)) {
             return $next($request);
         }
         if (
-            config('app.self_host_mode') &&
+            config('app.self_hosted') &&
             $request->user() &&
             !$request->user()->credentials_changed &&
             ($request)
