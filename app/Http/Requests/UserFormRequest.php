@@ -90,6 +90,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.multi_lines' => 'boolean|nullable',
             'properties.*.max_char_limit' => 'integer|nullable|min:1|max:2000',
             'properties.*.show_char_limit ' => 'boolean|nullable',
+            'properties.*.secret_input' => 'boolean|nullable',
 
             // Date field
             'properties.*.with_time' => 'boolean|nullable',

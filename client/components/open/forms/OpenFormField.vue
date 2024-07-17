@@ -341,6 +341,8 @@ export default {
         inputProperties.pattern = '/d*'
       } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
         inputProperties.unavailableCountries = field.unavailable_countries ?? []
+      } else if (field.type === 'text' && field.secret_input) {
+        inputProperties.nativeType = 'password'
       }
 
       return inputProperties
