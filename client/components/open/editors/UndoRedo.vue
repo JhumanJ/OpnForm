@@ -3,7 +3,11 @@
     size="sm"
     orientation="horizontal"
   >
-    <UTooltip text="Undo" :shortcuts="undoShortcut" :popper="{ placement: 'left' }">
+    <UTooltip 
+      text="Undo" 
+      :shortcuts="[metaSymbol,'Z']"
+      :popper="{ placement: 'left' }"
+    >
       <UButton
         :disabled="!canUndo"
         color="white"
@@ -12,7 +16,11 @@
         @click="undo"
       />
     </UTooltip>
-    <UTooltip text="Redo" :shortcuts="redoShortcut" :popper="{ placement: 'right' }">
+    <UTooltip 
+      text="Redo" 
+      :shortcuts="[metaSymbol,'Shift','Z']"
+      :popper="{ placement: 'right' }"
+    >
       <UButton
         :disabled="!canRedo"
         icon="i-material-symbols-redo"
@@ -44,30 +52,10 @@ defineShortcuts({
     }
   }
 })
-
-const undoShortcut = computed(() => {
-  return getOS() == 'macOS' ? ['⌘', 'Z'] : ['Ctrl', 'Z']
-})
-
-const redoShortcut = computed(() => {
-  return getOS() == 'macOS' ? ['⌘', 'Shift', 'Z'] : ['Ctrl', 'Shift', 'Z']
-})
+const { metaSymbol } = useShortcuts()
 
 onMounted(() => {
   setTimeout(() => { clearHistory() }, 500)
 })
 
-const  getOS = ()=> {
-  if (navigator.userAgentData) {
-    // Modern method
-    return navigator.userAgentData.platform;
-  } else {
-    // Fallback for older browsers
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf("mac") > -1) return "macOS";
-    if (userAgent.indexOf("win") > -1) return "Windows";
-    if (userAgent.indexOf("linux") > -1) return "Linux";
-    return "Unknown";
-  }
-}
 </script>
