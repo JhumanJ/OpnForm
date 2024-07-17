@@ -74,7 +74,7 @@
                 theme.SelectInput.fontSize,
               ]"
             >
-              {{ option.name }}
+              {{ getOptionName(option) }}
             </p>
             <span
               v-if="selected"
@@ -157,7 +157,8 @@ export default {
   methods: {
     getOptionName(val) {
       const option = this.finalOptions.find((optionCandidate) => {
-        return optionCandidate[this.optionKey] === val
+        return optionCandidate[this.optionKey] === val ||
+          (typeof val === 'object' && optionCandidate[this.optionKey] === val[this.optionKey])
       })
       if (option) return option[this.displayKey]
       return null

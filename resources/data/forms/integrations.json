@@ -49,6 +49,7 @@
     "section_name": "Databases",
     "file_name": "GoogleSheetsIntegration",
     "actions_file_name": "GoogleSheetsIntegrationActions",
-    "is_pro": false
+    "is_pro": false,
+    "crisp_help_page_slug": "how-do-i-integrate-google-sheets-for-my-database-goefny"
   }
 }
