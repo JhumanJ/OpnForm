@@ -517,6 +517,17 @@
         :form="field"
         :editor-toolbar="editorToolbarCustom"
         label="Field Help"
+        :editor-options="{
+          formats: [
+            'bold',
+            'color',
+            'font',
+            'italic',
+            'link',
+            'underline',
+            'list'
+          ]
+        }"
         help="Your field help will be shown below/above the field, just like this text."
         :help-position="field.help_position"
       />

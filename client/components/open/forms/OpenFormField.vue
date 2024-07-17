@@ -91,6 +91,7 @@
             :alt="field.name"
             :src="field.image_block"
             class="max-w-full"
+            :class="theme.default.borderRadius"
           >
         </div>
       </template>
