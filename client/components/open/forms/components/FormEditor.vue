@@ -81,6 +81,7 @@
         </v-button>
       </div>
     </div>
+    <FormEditorErrorHandler>
 
     <div class="w-full flex grow overflow-y-scroll relative bg-gray-50">
       <div
@@ -116,6 +117,7 @@
         @close="showFormErrorModal = false"
       />
     </div>
+  </FormEditorErrorHandler>
   </div>
   <div
     v-else
@@ -141,10 +143,12 @@ import FormAccess from "./form-components/FormAccess.vue"
 import { validatePropertiesLogic } from "~/composables/forms/validatePropertiesLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
+import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 
 export default {
   name: "FormEditor",
   components: {
+    FormEditorErrorHandler,
     UndoRedo,
     FormEditorSidebar,
     FormEditorPreview,
@@ -249,9 +253,6 @@ export default {
           content: "Click this button when you're done to save your form!",
         },
       ]
-    },
-    helpUrl() {
-      return this.opnformConfig.links.help
     },
   },
 
