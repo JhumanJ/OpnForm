@@ -202,7 +202,14 @@
         :form="field"
         name="multi_lines"
         label="Multi-lines input"
-        @update:model-value="field.multi_lines = $event"
+        @update:model-value="onFieldMultiLinesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="secret_input"
+        label="Secret input"
+        help="Hide input content with * for privacy"
+        @update:model-value="onFieldSecretInputChange"
       />
     </div>
 
@@ -510,6 +517,17 @@
         :form="field"
         :editor-toolbar="editorToolbarCustom"
         label="Field Help"
+        :editor-options="{
+          formats: [
+            'bold',
+            'color',
+            'font',
+            'italic',
+            'link',
+            'underline',
+            'list'
+          ]
+        }"
         help="Your field help will be shown below/above the field, just like this text."
         :help-position="field.help_position"
       />
@@ -800,6 +818,18 @@ export default {
     onFieldHelpPositionChange(val) {
       if (!val) {
         this.field.help_position = 'below_input'
+      }
+    },
+    onFieldMultiLinesChange(val) {
+      this.field.multi_lines = val
+      if (this.field.multi_lines) {
+        this.field.secret_input = false
+      }
+    },
+    onFieldSecretInputChange(val) {
+      this.field.secret_input = val
+      if (this.field.secret_input) {
+        this.field.multi_lines = false
       }
     },
     selectAllCountries() {
