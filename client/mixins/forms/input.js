@@ -1,4 +1,4 @@
-import { themes } from "~/lib/forms/form-themes.js"
+import { themes } from "~/lib/forms/themes/form-themes.js"
 import { default as _has } from "lodash/has"
 
 export default {

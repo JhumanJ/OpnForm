@@ -5,7 +5,10 @@
     </template>
     <div
       v-if="cameraUpload && isInWebcam"
-      class="hidden sm:block w-full min-h-40"
+      class="hidden sm:block w-full"
+      :class="[
+        theme.fileInput.minHeight
+      ]"
     >
       <camera-upload
         v-if="cameraUpload"
@@ -17,9 +20,17 @@
     <div
       v-else
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
-      :class="[{'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
-                [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
-                ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading}, theme.fileInput.input]"
+      :class="[
+        {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
+         [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
+         ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
+        theme.fileInput.input,
+        theme.fileInput.borderRadius,
+        theme.fileInput.spacing.horizontal,
+        theme.fileInput.spacing.vertical,
+        theme.fileInput.fontSize,
+        theme.fileInput.minHeight
+      ]"
       @dragover.prevent="uploadDragoverEvent=true"
       @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
@@ -66,7 +77,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                 >
                   <path
                     stroke-linecap="round"
@@ -76,7 +87,7 @@
                 </svg>
               </div>
 
-              <p class="mt-2 text-sm text-gray-500 font-semibold select-none">
+              <p class="mt-2 text-sm text-gray-500 font-medium select-none">
                 Click to choose {{ multiple ? 'file(s)' : 'a file' }} or drag here
               </p>
               <p class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none">
@@ -129,24 +140,24 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
+import {inputProps, useFormInput} from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
 import OpenFormButton from '../open/forms/OpenFormButton.vue'
 import CameraUpload from './components/CameraUpload.vue'
-import { storeFile } from "~/lib/file-uploads.js"
+import {storeFile} from "~/lib/file-uploads.js"
 
 export default {
   name: 'FileInput',
-  components: { InputWrapper, UploadedFile, OpenFormButton },
+  components: {InputWrapper, UploadedFile, OpenFormButton},
   mixins: [],
   props: {
     ...inputProps,
-    multiple: { type: Boolean, default: true },
-    cameraUpload: { type: Boolean, default: false },
-    mbLimit: { type: Number, default: 5 },
-    accept: { type: String, default: '' },
-    moveToFormAssets: { type: Boolean, default: false }
+    multiple: {type: Boolean, default: true},
+    cameraUpload: {type: Boolean, default: false},
+    mbLimit: {type: Number, default: 5},
+    accept: {type: String, default: ''},
+    moveToFormAssets: {type: Boolean, default: false}
   },
 
   setup(props, context) {
@@ -159,7 +170,7 @@ export default {
     files: [],
     uploadDragoverEvent: false,
     loading: false,
-    isInWebcam:false
+    isInWebcam: false
   }),
 
   computed: {
@@ -254,13 +265,13 @@ export default {
         this.uploadFileToServer(files.item(i))
       }
     },
-    openWebcam(){
-      if(!this.cameraUpload){
+    openWebcam() {
+      if (!this.cameraUpload) {
         return
       }
       this.isInWebcam = true
     },
-    cameraFileUpload(file){
+    cameraFileUpload(file) {
       this.isInWebcam = false
       this.isUploading = false
       this.uploadFileToServer(file)

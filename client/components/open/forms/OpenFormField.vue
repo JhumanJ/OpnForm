@@ -91,6 +91,7 @@
             :alt="field.name"
             :src="field.image_block"
             class="max-w-full"
+            :class="theme.default.borderRadius"
           >
         </div>
       </template>
@@ -306,6 +307,7 @@ export default {
         inputProperties.searchable = (inputProperties.options.length > 4)
       } else if (field.type === 'date') {
         inputProperties.dateFormat = field.date_format
+        inputProperties.timeFormat = field.time_format
         if (field.with_time) {
           inputProperties.withTime = true
         }
@@ -340,6 +342,8 @@ export default {
         inputProperties.pattern = '/d*'
       } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
         inputProperties.unavailableCountries = field.unavailable_countries ?? []
+      } else if (field.type === 'text' && field.secret_input) {
+        inputProperties.nativeType = 'password'
       }
 
       return inputProperties

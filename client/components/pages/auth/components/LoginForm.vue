@@ -31,14 +31,13 @@
 
       <!-- Remember Me -->
       <div class="relative flex items-center my-5">
-        <v-checkbox
+        <CheckboxInput
           v-model="remember"
           class="w-full md:w-1/2"
           name="remember"
           size="small"
-        >
-          Remember me
-        </v-checkbox>
+          label="Remember me"
+        />
 
         <div class="w-full md:w-1/2 text-right">
           <a

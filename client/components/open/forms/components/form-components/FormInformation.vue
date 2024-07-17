@@ -36,7 +36,6 @@
       name="tags"
       label="Tags"
       :form="form"
-      class="mt-4"
       help="To organize your forms (hidden to respondents)"
       placeholder="Select Tag(s)"
       :multiple="true"
@@ -47,7 +46,6 @@
       name="visibility"
       label="Visibility"
       :form="form"
-      class="mt-4"
       help="Only public form will be accessible"
       placeholder="Select Visibility"
       :required="true"
@@ -56,7 +54,7 @@
     <v-button
       v-if="copyFormOptions.length > 0"
       color="light-gray"
-      class="w-full mt-4"
+      class="w-full"
       @click="showCopyFormSettingsModal = true"
     >
       <svg
@@ -98,20 +96,13 @@
         </svg>
       </template>
       <template #title>
-        Copy Settings from another form
+        Import Settings from another form
       </template>
-      <div class="p-4 min-h-[450px]">
-        <p class="text-gray-600">
-          If you already have another form that you like to use as a base for
-          this form, you can do that here. Select another form, confirm, and we
-          will copy all of the other form settings (except the form structure)
-          to this form.
-        </p>
+      <div>
         <select-input
           v-model="copyFormId"
           name="copy_form_id"
           label="Copy Settings From"
-          class="mt-3 mb-6"
           placeholder="Choose a form"
           :searchable="copyFormOptions.length > 5"
           :options="copyFormOptions"

@@ -202,7 +202,14 @@
         :form="field"
         name="multi_lines"
         label="Multi-lines input"
-        @update:model-value="field.multi_lines = $event"
+        @update:model-value="onFieldMultiLinesChange"
+      />
+      <toggle-switch-input
+        :form="field"
+        name="secret_input"
+        label="Secret input"
+        help="Hide input content with * for privacy"
+        @update:model-value="onFieldSecretInputChange"
       />
     </div>
 
@@ -253,6 +260,14 @@
         label="Timezone"
         :searchable="true"
         help="Make sure to select the same timezone you're using in Notion. Leave blank otherwise."
+      />
+      <flat-select-input
+        v-if="field.with_time"
+        name="time_format"
+        class="mt-4"
+        :form="field"
+        :options="timeFormatOptions"
+        label="Time format"
       />
       <flat-select-input
         name="date_format"
@@ -413,6 +428,7 @@
         name="prefill"
         class="mt-3"
         :form="field"
+        :time-format="field.time_format"
         :with-time="field.with_time === true"
         :date-range="field.date_range === true"
         label="Pre-filled value"
@@ -501,6 +517,17 @@
         :form="field"
         :editor-toolbar="editorToolbarCustom"
         label="Field Help"
+        :editor-options="{
+          formats: [
+            'bold',
+            'color',
+            'font',
+            'italic',
+            'link',
+            'underline',
+            'list'
+          ]
+        }"
         help="Your field help will be shown below/above the field, just like this text."
         :help-position="field.help_position"
       />
@@ -645,6 +672,10 @@ export default {
         }
       })
     },
+    timeFormatOptions() {
+      return [{ name: '13:00', value: '24', },
+      { name: '01:00 PM', value: '12', },]
+    },
     displayBasedOnAdvanced() {
       if (this.field.generates_uuid || this.field.generates_auto_increment_id) {
         return false
@@ -755,7 +786,7 @@ export default {
         this.field.disable_future_dates = false
         this.field.disable_past_dates = false
       } else {
-        this.field.prefill = null
+        this.field.prefill = this.field.prefill ?? null
       }
     },
     onFieldAllowCreationChange(val) {
@@ -787,6 +818,18 @@ export default {
     onFieldHelpPositionChange(val) {
       if (!val) {
         this.field.help_position = 'below_input'
+      }
+    },
+    onFieldMultiLinesChange(val) {
+      this.field.multi_lines = val
+      if (this.field.multi_lines) {
+        this.field.secret_input = false
+      }
+    },
+    onFieldSecretInputChange(val) {
+      this.field.secret_input = val
+      if (this.field.secret_input) {
+        this.field.multi_lines = false
       }
     },
     selectAllCountries() {
@@ -823,7 +866,8 @@ export default {
           max_char_limit: 2000
         },
         date: {
-          date_format: this.dateFormatOptions[0].value
+          date_format: this.dateFormatOptions[0].value,
+          time_format: this.timeFormatOptions[0].value
         }
       }
       if (this.field.type in defaultFieldValues) {

@@ -10,18 +10,18 @@
       :popper="{ placement: 'bottom-start' }"
     >
       <button
+        ref="datepicker"
         class="cursor-pointer overflow-hidden"
         :class="inputClasses"
         :disabled="props.disabled"
-        ref="datepicker"
       >
-        <div class="flex items-center min-w-0">
+        <div class="flex items-stretch min-w-0">
           <div
             class="flex-grow min-w-0 flex items-center gap-x-2"
             :class="[
-              props.theme.default.inputSpacing.vertical,
-              props.theme.default.inputSpacing.horizontal,
-              {'hover:bg-gray-50 dark:hover:bg-gray-900': !props.disabled}
+              props.theme.DateInput.spacing.horizontal,
+              props.theme.DateInput.spacing.vertical,
+              props.theme.DateInput.fontSize,
             ]"
           >
             <Icon
@@ -29,16 +29,24 @@
               class="w-4 h-4 flex-shrink-0"
               dynamic
             />
-            <div class="flex-grow truncate overflow-hidden">
-              <p class="flex-grow truncate h-[24px]">
+            <div class="flex-grow truncate overflow-hidden flex items-center">
+              <p
+                v-if="formattedDatePreview"
+                class="flex-grow truncate"
+              >
                 {{ formattedDatePreview }}
+              </p>
+              <p
+                v-else
+                class="text-transparent"
+              >
+                -
               </p>
             </div>
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
-            :class="[props.theme.default.inputSpacing.vertical]"
+            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2 flex items-center"
             @click.prevent="clear()"
           >
             <Icon
@@ -56,6 +64,7 @@
           v-if="props.dateRange"
           v-model.range="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
+          :is24hr="props.timeFormat == '24'"
           is-required
           borderless
           :min-date="minDate"
@@ -68,6 +77,7 @@
           v-else
           v-model="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
+          :is24hr="props.timeFormat == '24'"
           is-required
           borderless
           :min-date="minDate"
@@ -104,6 +114,7 @@ const props = defineProps({
   disablePastDates: { type: Boolean, default: false },
   disableFutureDates: { type: Boolean, default: false },
   dateFormat: { type: String, default: 'dd/MM/yyyy' },
+  timeFormat: { type: String, default: '24' },
   outputDateFormat: { type: String, default: 'yyyy-MM-dd\'T\'HH:mm:ssXXX' },
   isDark: { type: Boolean, default: false }
 })
@@ -133,7 +144,7 @@ const modeledValue = computed({
 })
 
 const inputClasses = computed(() => {
-  const classes = [props.theme.DateInput.input, 'w-full']
+  const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
     classes.push('!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200')
   }
@@ -182,8 +193,9 @@ const clear = () => {
 const formattedDate = (value) => {
   if (props.withTime) {
     try {
-      return format(new Date(value), props.dateFormat + ' HH:mm')
+      return format(new Date(value), props.dateFormat + (props.timeFormat == 12 ? ' p':' HH:mm'))
     } catch (e) {
+      console.log(e)
       return ''
     }
   }

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Subscriptions\UpdateStripeDetailsRequest;
-use Illuminate\Support\Facades\App;
+use App\Service\BillingHelper;
+use App\Service\UserHelper;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Subscription;
 
@@ -36,7 +37,7 @@ class SubscriptionController extends Controller
         }
 
         $checkoutBuilder = $user
-            ->newSubscription($pricing, $this->getPricing($pricing)[$plan])
+            ->newSubscription($pricing, BillingHelper::getPricing($pricing)[$plan])
             ->allowPromotionCodes();
 
         if ($trial != null) {
@@ -60,10 +61,18 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    public function getUsersCount()
+    {
+        $this->middleware('auth');
+        return [
+            'count' => (new UserHelper(Auth::user()))->getActiveMembersCount() - 1,
+        ];
+    }
+
     public function updateStripeDetails(UpdateStripeDetailsRequest $request)
     {
         $user = Auth::user();
-        if (! $user->hasStripeId()) {
+        if (!$user->hasStripeId()) {
             $user->createAsStripeCustomer();
         }
         $user->updateStripeCustomer([
@@ -79,7 +88,7 @@ class SubscriptionController extends Controller
     public function billingPortal()
     {
         $this->middleware('auth');
-        if (! Auth::user()->has_customer_id) {
+        if (!Auth::user()->has_customer_id) {
             return $this->error([
                 'message' => 'Please subscribe before accessing your billing portal.',
             ]);
@@ -88,10 +97,5 @@ class SubscriptionController extends Controller
         return $this->success([
             'portal_url' => Auth::user()->billingPortalUrl(front_url('/home')),
         ]);
-    }
-
-    private function getPricing($product = 'default')
-    {
-        return App::environment() == 'production' ? config('pricing.production.'.$product.'.pricing') : config('pricing.test.'.$product.'.pricing');
     }
 }
