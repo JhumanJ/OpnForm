@@ -28,6 +28,9 @@
         </svg>
         Go back
       </a>
+
+      <UndoRedo />
+
       <div class="hidden md:flex items-center ml-3">
         <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
           {{ form.title }}
@@ -78,6 +81,7 @@
         </v-button>
       </div>
     </div>
+    <FormEditorErrorHandler>
 
     <div class="w-full flex grow overflow-y-scroll relative bg-gray-50">
       <div
@@ -88,14 +92,19 @@
           allow you to preview your form changes.
         </div>
 
-        <form-information />
-        <form-structure />
-        <form-customization />
-        <form-about-submission />
-        <form-access />
-        <form-security-privacy />
-        <form-custom-seo />
-        <form-custom-code />
+        <VForm
+          size="sm"
+          @submit.prevent=""
+        >
+          <form-information />
+          <form-structure />
+          <form-customization />
+          <form-about-submission />
+          <form-access />
+          <form-security-privacy />
+          <form-custom-seo />
+          <form-custom-code />
+        </VForm>
       </div>
 
       <form-editor-preview />
@@ -108,6 +117,7 @@
         @close="showFormErrorModal = false"
       />
     </div>
+  </FormEditorErrorHandler>
   </div>
   <div
     v-else
@@ -118,6 +128,7 @@
 </template>
 
 <script>
+import UndoRedo from "../../editors/UndoRedo.vue"
 import FormEditorSidebar from "./form-components/FormEditorSidebar.vue"
 import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormInformation from "./form-components/FormInformation.vue"
@@ -132,10 +143,13 @@ import FormAccess from "./form-components/FormAccess.vue"
 import { validatePropertiesLogic } from "~/composables/forms/validatePropertiesLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
+import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 
 export default {
   name: "FormEditor",
   components: {
+    FormEditorErrorHandler,
+    UndoRedo,
     FormEditorSidebar,
     FormEditorPreview,
     FormAboutSubmission,
@@ -239,9 +253,6 @@ export default {
           content: "Click this button when you're done to save your form!",
         },
       ]
-    },
-    helpUrl() {
-      return this.opnformConfig.links.help
     },
   },
 

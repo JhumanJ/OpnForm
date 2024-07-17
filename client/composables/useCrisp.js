@@ -98,6 +98,28 @@ export function useCrisp () {
     crisp.session.setSegments(segments, overwrite)
   }
 
+  // Send message as operator
+  function showMessage (message, delay = 500) {
+    if (!crisp)
+      return
+    setTimeout(() => {
+      crisp.message.show('text', message)
+    }, delay)
+  }
+
+  function pauseChatBot () {
+    if (!crisp)
+      return
+    crisp.session.setData({ 'enum': 'pause_chatbot' })
+  }
+
+  function enableChatbot () {
+    if (!crisp)
+      return
+    crisp.session.setData({ 'enum': 'start_chatbot' })
+  }
+
+
   return {
     crisp,
     onCrispInit,
@@ -111,6 +133,9 @@ export function useCrisp () {
     sendTextMessage,
     pushEvent,
     setSegments,
-    setUser
+    setUser,
+    pauseChatBot,
+    enableChatbot,
+    showMessage
   }
 }

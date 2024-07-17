@@ -1,10 +1,10 @@
 <template>
-  <input-wrapper v-bind="inputWrapperProps">
+  <InputWrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
 
-    <vue-editor
+    <VueEditor
       :id="id ? id : name"
       ref="editor"
       v-model="compVal"
@@ -16,7 +16,9 @@
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
         theme.RichTextAreaInput.input,
+        theme.RichTextAreaInput.borderRadius,
       ]"
+      :editor-options="editorOptions"
       :editor-toolbar="editorToolbar"
       class="rich-editor resize-y"
       :style="inputStyle"
@@ -28,40 +30,58 @@
     <template #error>
       <slot name="error" />
     </template>
-  </input-wrapper>
+  </InputWrapper>
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import { VueEditor, Quill } from "vue3-editor"
+import { Quill, VueEditor } from 'vue3-editor'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
 
-Quill.imports["formats/link"].PROTOCOL_WHITELIST.push("notion")
+Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('notion')
 
 export default {
-  name: "RichTextAreaInput",
+  name: 'RichTextAreaInput',
   components: { InputWrapper, VueEditor },
 
   props: {
     ...inputProps,
+    editorOptions: {
+      type: Object,
+      default: () => {
+        return {
+          formats: [
+            'bold',
+            'color',
+            'font',
+            'italic',
+            'link',
+            'underline',
+            'header',
+            'indent',
+            'list'
+          ]
+        }
+      }
+    },
     editorToolbar: {
       type: Array,
       default: () => {
         return [
           [{ header: 1 }, { header: 2 }],
-          ["bold", "italic", "underline", "link"],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ color: [] }],
+          ['bold', 'italic', 'underline', 'link'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ color: [] }]
         ]
-      },
-    },
-  },
-
-  setup(props, context) {
-    return {
-      ...useFormInput(props, context),
+      }
     }
   },
+
+  setup (props, context) {
+    return {
+      ...useFormInput(props, context)
+    }
+  }
 }
 </script>
 

@@ -15,7 +15,7 @@ function parseNumber(value, defaultValue = 0) {
 export default {
   // Keys within public, will be also exposed to the client-side
   public: {
-    apiBase: process.env.NUXT_PUBLIC_API_BASE ||'',
+    apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
     appUrl: process.env.NUXT_PUBLIC_APP_URL || '',
     env: process.env.NUXT_PUBLIC_ENV || 'local',
     hCaptchaSiteKey: process.env.NUXT_PUBLIC_H_CAPTCHA_SITE_KEY || null,
@@ -27,8 +27,8 @@ export default {
     paidPlansEnabled: parseBoolean(process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED),
     customDomainsEnabled: parseBoolean(process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED),
     featureBaseOrganization: process.env.NUXT_PUBLIC_FEATURE_BASE_ORGANISATION || null,
-    selfHosted: parseBoolean(process.env.NUXT_PUBLIC_SELF_HOST_MODE, true),
-    
+    selfHosted: parseBoolean(process.env.NUXT_PUBLIC_SELF_HOSTED, true),
+
     // Config within public will be also exposed to the client
     SENTRY_DSN_PUBLIC: process.env.SENTRY_DSN_PUBLIC,
     SENTRY_TRACES_SAMPLE_RATE: parseNumber(process.env.SENTRY_TRACES_SAMPLE_RATE),

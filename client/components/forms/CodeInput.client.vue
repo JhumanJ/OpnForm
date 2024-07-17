@@ -11,6 +11,7 @@
     <div
       :class="[
         theme.CodeInput.input,
+        theme.CodeInput.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,

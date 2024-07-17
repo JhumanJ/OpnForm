@@ -15,12 +15,14 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     color: "#3B82F6",
     hide_title: false,
     no_branding: false,
-    uppercase_labels: true,
+    uppercase_labels: false,
     transparent_background: false,
     closes_at: null,
     closed_text:
       "This form has now been closed by its owner and does not accept submissions anymore.",
     auto_save: true,
+    border_radius: 'small',
+    size: 'md',
 
     // Submission
     submit_button_text: "Submit",

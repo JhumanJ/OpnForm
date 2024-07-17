@@ -10,41 +10,77 @@
       class="h-6 w-6 text-nt-blue mx-auto"
     />
     <div
-      v-for="(option, index) in options"
       v-else
-      :key="option[optionKey]"
-      role="button"
+      class="relative overflow-hidden"
       :class="[
         theme.default.input,
-        'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 flex',
+        theme.default.borderRadius,
         {
           'mb-2': index !== options.length,
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
       ]"
-      @click="onSelect(option[optionKey])"
     >
-      <p class="flex-grow">
-        {{ option[displayKey] }}
-      </p>
-      <div
-        v-if="isSelected(option[optionKey])"
-        class="flex items-center"
+    <template
+      v-if="options && options.length"
+    >
+     <div
+        v-for="(option) in options"
+        :key="option[optionKey]"
+        :role="multiple?'checkbox':'radio'"
+        :aria-checked="isSelected(option[optionKey])"
+        :class="[
+          theme.FlatSelectInput.spacing.vertical,
+          theme.FlatSelectInput.fontSize,
+          theme.FlatSelectInput.option,
+        ]"
+        @click="onSelect(option[optionKey])"
       >
-        <svg
-          :color="color"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-            clip-rule="evenodd"
+        <template v-if="multiple">
+          <Icon
+            v-if="isSelected(option[optionKey])"
+            name="material-symbols:check-box"
+            class="text-inherit"
+            :color="color"
+            :class="[theme.FlatSelectInput.icon]"
           />
-        </svg>
+          <Icon
+            v-else
+            name="material-symbols:check-box-outline-blank"
+            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
+          />
+        </template>
+        <template v-else>
+          <Icon
+            v-if="isSelected(option[optionKey])"
+            name="material-symbols:radio-button-checked-outline"
+            class="text-inherit"
+            :color="color"
+            :class="[theme.FlatSelectInput.icon]"
+          />
+          <Icon
+            v-else
+            name="material-symbols:radio-button-unchecked"
+            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
+          />
+        </template>
+        <p class="flex-grow">
+          {{ option[displayKey] }}
+        </p>
+      </div>
+    </template>
+      <div
+        v-else
+        :class="[
+          theme.FlatSelectInput.spacing.horizontal,
+          theme.FlatSelectInput.spacing.vertical,
+          theme.FlatSelectInput.fontSize,
+          theme.FlatSelectInput.option,
+          '!text-gray-500 !cursor-not-allowed'
+        ]"
+      >
+        No options available.
       </div>
     </div>
 
@@ -58,7 +94,7 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 
 /**
@@ -66,16 +102,16 @@ import InputWrapper from "./components/InputWrapper.vue"
  */
 export default {
   name: "FlatSelectInput",
-  components: { InputWrapper },
+  components: {InputWrapper},
 
   props: {
     ...inputProps,
-    options: { type: Array, required: true },
-    optionKey: { type: String, default: "value" },
-    emitKey: { type: String, default: "value" },
-    displayKey: { type: String, default: "name" },
-    loading: { type: Boolean, default: false },
-    multiple: { type: Boolean, default: false },
+    options: {type: Array, required: true},
+    optionKey: {type: String, default: "value"},
+    emitKey: {type: String, default: "value"},
+    displayKey: {type: String, default: "name"},
+    loading: {type: Boolean, default: false},
+    multiple: {type: Boolean, default: false},
   },
   setup(props, context) {
     return {

@@ -53,9 +53,34 @@
       label="Form Theme"
     />
 
+    <div class="flex space-x-4 justify-stretch">
+      <select-input
+        name="size"
+        class="flex-grow"
+        :options="[
+          { name: 'Small', value: 'sm' },
+          { name: 'Medium', value: 'md' },
+          { name: 'Large', value: 'lg' },
+        ]"
+        :form="form"
+        label="Input Size"
+      />
+
+      <select-input
+        name="border_radius"
+        class="flex-grow"
+        :options="[
+          { name: 'None', value: 'none' },
+          { name: 'Small', value: 'small' },
+          { name: 'Full', value: 'full' },
+        ]"
+        :form="form"
+        label="Input Roundness"
+      />
+    </div>
+
     <select-input
       name="dark_mode"
-      class="mt-4"
       help="To see changes, save your form and open it"
       :options="[
         { name: 'Auto - use Device System Preferences', value: 'auto' },
@@ -68,7 +93,6 @@
 
     <select-input
       name="width"
-      class="mt-4"
       :options="[
         { name: 'Centered', value: 'centered' },
         { name: 'Full Width', value: 'full' },
@@ -80,7 +104,6 @@
 
     <image-input
       name="cover_picture"
-      class="mt-4"
       :form="form"
       label="Cover Picture"
       help="Not visible when form is embedded"
@@ -89,7 +112,6 @@
 
     <image-input
       name="logo_picture"
-      class="mt-4"
       :form="form"
       label="Logo"
       help="Not visible when form is embedded"
@@ -98,49 +120,44 @@
 
     <color-input
       name="color"
-      class="mt-4"
       :form="form"
       label="Color (for buttons & inputs border)"
     />
     <toggle-switch-input
       name="hide_title"
       :form="form"
-      class="mt-4"
       label="Hide Title"
     />
     <toggle-switch-input
       name="no_branding"
       :form="form"
-      class="mt-4"
     >
       <template #label>
-        Remove OpnForm Branding
-        <pro-tag class="ml-1" />
+        <span class="text-sm">
+          Remove OpnForm Branding
+        </span>
+        <pro-tag class="-mt-1" />
       </template>
     </toggle-switch-input>
     <toggle-switch-input
       name="show_progress_bar"
       :form="form"
-      class="mt-4"
       label="Show progress bar"
     />
     <toggle-switch-input
       name="uppercase_labels"
       :form="form"
-      class="mt-4"
       label="Uppercase Input Labels"
     />
     <toggle-switch-input
       name="transparent_background"
       :form="form"
-      class="mt-4"
       label="Transparent Background"
       help="Only applies when form is embedded"
     />
     <toggle-switch-input
       name="confetti_on_submission"
       :form="form"
-      class="mt-4"
       label="Confetti on successful submisison"
       @update:model-value="onChangeConfettiOnSubmission"
     />

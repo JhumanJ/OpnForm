@@ -34,7 +34,7 @@
     </div>
     <div class="flex bg-white">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl">
-        <div class="mt-8 pb-0">
+        <div class="mt-4 pb-0">
           <text-input
             v-if="forms.length > 0"
             v-model="search"
@@ -180,6 +180,40 @@
                 />
               </div>
             </div>
+            <div
+              v-if="!workspace.is_pro"
+              class="px-4"
+            >
+              <UAlert
+                class="mt-4"
+                icon="i-heroicons-command-line"
+                color="primary"
+                variant="subtle"
+                description="You can add components to your app using the cli."
+              >
+                <template #title>
+                  <h2 class="font-medium text-lg -mt-2">
+                    Discover our Pro plan
+                  </h2>
+                </template>
+                <template #description>
+                  <div class="flex flex-wrap sm:flex-nowrap gap-2 items-start">
+                    <p class="flex-grow">
+                      Remove NoteForms branding, customize forms further, use your custom domain, integrate with your
+                      favorite tools, invite users, and more!
+                    </p>
+                    <UButton
+                      v-track.upgrade_banner_home_click
+                      :to="{name:'pricing'}"
+                      color="white"
+                      class="block"
+                    >
+                      Upgrade Now
+                    </UButton>
+                  </div>
+                </template>
+              </UAlert>
+            </div>
           </div>
           <div
             v-if="formsLoading"
@@ -195,12 +229,12 @@
 </template>
 
 <script setup>
-import { useFormsStore } from "../stores/forms"
-import { useWorkspacesStore } from "../stores/workspaces"
+import {useFormsStore} from "../stores/forms"
+import {useWorkspacesStore} from "../stores/workspaces"
 import Fuse from "fuse.js"
 import TextInput from "../components/forms/TextInput.vue"
 import ExtraMenu from "../components/pages/forms/show/ExtraMenu.vue"
-import { refDebounced } from "@vueuse/core"
+import {refDebounced} from "@vueuse/core"
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
@@ -215,6 +249,8 @@ useOpnSeoMeta({
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 formsStore.startLoading()
+
+const workspace = computed(() => workspacesStore.getCurrent)
 
 onMounted(() => {
   if (!formsStore.allLoaded) {

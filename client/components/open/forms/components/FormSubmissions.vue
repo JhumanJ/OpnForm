@@ -55,9 +55,11 @@
                 <p class="flex-grow truncate">
                   {{ field.name }}
                 </p>
-                <v-switch
+                <ToggleSwitchInput
                   v-model="displayColumns[field.id]"
-                  class="float-right"
+                  wrapper-class="mb-0"
+                  label=""
+                  name="field.id"
                   @update:model-value="onChangeDisplayColumns"
                 />
               </div>
@@ -77,9 +79,11 @@
                 <p class="flex-grow truncate">
                   {{ field.name }}
                 </p>
-                <v-switch
+                <ToggleSwitchInput
                   v-model="displayColumns[field.id]"
-                  class="float-right"
+                  wrapper-class="mb-0"
+                  label=""
+                  name="field.id"
                   @update:model-value="onChangeDisplayColumns"
                 />
               </div>
@@ -98,12 +102,14 @@
           class="flex flex-wrap items-end"
         >
           <div class="flex-grow">
-            <text-input
-              class="w-64"
-              :form="searchForm"
-              name="search"
-              placeholder="Search..."
-            />
+            <VForm size="sm">
+              <text-input
+                class="w-64"
+                :form="searchForm"
+                name="search"
+                placeholder="Search..."
+              />
+            </VForm>
           </div>
           <div class="font-semibold flex gap-4">
             <p class="float-right text-xs uppercase mb-2">
@@ -157,12 +163,11 @@
 <script>
 import Fuse from 'fuse.js'
 import clonedeep from 'clone-deep'
-import VSwitch from '../../../forms/components/VSwitch.vue'
 import OpenTable from '../../tables/OpenTable.vue'
 
 export default {
   name: 'FormSubmissions',
-  components: {OpenTable, VSwitch},
+  components: {OpenTable},
   props: {},
 
   setup() {

@@ -153,4 +153,5 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.content.properties = newFields
     }
   },
+  history: {}
 })

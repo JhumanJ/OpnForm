@@ -11,18 +11,24 @@
         aria-expanded="true"
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
-        :class="[theme.default.input, { 'ring-red-500 ring-2': hasError }]"
+        :class="[
+          theme.default.input,
+          theme.default.spacing.horizontal,
+          theme.default.spacing.vertical,
+          theme.default.fontSize,
+          theme.default.borderRadius,
+          { 'ring-red-500 ring-2': hasError }
+        ]"
         :style="inputStyle"
         @click.prevent="showUploadModal = true"
       >
         <div
           v-if="currentUrl == null"
-          class="h-6 text-gray-600 dark:text-gray-400"
+          class="text-gray-600 dark:text-gray-400"
         >
-          Upload image
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 inline"
+            class="h-5 w-5 inline"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -34,6 +40,7 @@
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             />
           </svg>
+          Upload image
         </div>
         <div
           v-else
@@ -206,7 +213,7 @@ export default {
 
   methods: {
     clearUrl() {
-      this.form[this.name] = null
+      this.compVal = null
     },
     onUploadDragoverEvent() {
       this.uploadDragoverEvent = true

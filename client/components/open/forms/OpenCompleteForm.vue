@@ -193,13 +193,12 @@
 <script>
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
-import { themes } from '~/lib/forms/form-themes.js'
 import VButton from '~/components/global/VButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import clonedeep from "clone-deep"
-import { default as _has } from 'lodash/has'
+import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
   components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
@@ -227,7 +226,6 @@ export default {
     return {
       loading: false,
       submitted: false,
-      themes: themes,
       passwordForm: useForm({
         password: null
       }),
@@ -241,7 +239,10 @@ export default {
       return import.meta.client && window.location.href.includes('popup=true')
     },
     theme () {
-      return this.themes[_has(this.themes, this.form.theme) ? this.form.theme : 'default']
+      return new ThemeBuilder(this.form.theme, {
+        size: this.form.size,
+        borderRadius: this.form.border_radius
+      }).getAllComponents()
     },
     isPublicFormPage () {
       return this.$route.name === 'forms-slug'
@@ -272,7 +273,8 @@ export default {
           type: 'form-submitted',
           form: {
             slug: this.form.slug,
-            id: this.form.id
+            id: this.form.id,
+            redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
           },
           submission_data: form.data()
         })

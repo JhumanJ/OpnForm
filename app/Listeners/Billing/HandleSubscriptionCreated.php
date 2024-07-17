@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Billing;
 
-use App\Events\SubscriptionCreated;
+use App\Events\Billing\SubscriptionCreated;
+use App\Jobs\Billing\WorkspaceUsersUpdated;
 
 class HandleSubscriptionCreated
 {
@@ -22,5 +23,9 @@ class HandleSubscriptionCreated
             $workspace->forms()->update(['no_branding' => true]);
         });
 
+        // Update pricing (number of users)
+        if ($workspace = $user->workspaces()->first()) {
+            WorkspaceUsersUpdated::dispatch($workspace);
+        }
     }
 }

@@ -10,9 +10,16 @@
       :disabled="disabled ? true : null"
       :name="name"
       :color="color"
+      :theme="theme"
     >
-      <slot name="label">
-        {{ label }}
+      <slot
+        name="label"
+      >
+        <span
+          :class="[
+            theme.SelectInput.fontSize,
+          ]"
+        >{{ label }}</span>
         <span
           v-if="required"
           class="text-red-500 required-dot"
