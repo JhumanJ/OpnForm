@@ -35,8 +35,6 @@
 </template>
 
 <script setup>
-import { watch, ref } from "vue"
-
 const props = defineProps({
   isWorkspaceAdmin: {},
   disabled: {
@@ -49,8 +47,8 @@ const emit = defineEmits(['fetchUsers'])
 const workspacesStore = useWorkspacesStore()
 
 const roleOptions = [
-  { name: "User", value: "user" },
-  { name: "Admin", value: "admin" }
+  {name: "User", value: "user"},
+  {name: "Admin", value: "admin"}
 ]
 
 const newUser = ref("")
@@ -78,7 +76,7 @@ const addUser = () => {
 
     emit("fetchUsers")
   }).catch((error) => {
-    useAlert().error("There was an error adding user")
+    useAlert().error("There was an error adding user: " + error.data.message)
   }).finally(() => {
     addingUsersState.value = false
   })
