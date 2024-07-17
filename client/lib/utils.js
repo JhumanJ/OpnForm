@@ -107,13 +107,5 @@ export const customDomainUsed = function () {
   const appDomain = getDomain(config.public.appUrl)
   const host = getHost()
 
-  console.log('Checking if custom domain is used', {
-    appDomain,
-    host,
-    getDomain: getDomain(host),
-    used: host !== appDomain,
-    hostDomainused: getDomain(host) !== appDomain
-  })
-
   return host !== appDomain && getDomain(host) !== appDomain
 }
