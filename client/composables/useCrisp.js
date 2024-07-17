@@ -118,7 +118,7 @@ export function useCrisp () {
       return
     crisp.session.setData({ 'enum': 'start_chatbot' })
   }
-  
+
 
   return {
     crisp,
@@ -133,6 +133,9 @@ export function useCrisp () {
     sendTextMessage,
     pushEvent,
     setSegments,
-    setUser
+    setUser,
+    pauseChatBot,
+    enableChatbot,
+    showMessage
   }
 }
