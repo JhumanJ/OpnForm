@@ -27,6 +27,7 @@
     <select-input
       v-if="customDomainAllowed"
       v-model="form.custom_domain"
+      :clearable="true"
       :disabled="customDomainOptions.length <= 0"
       :options="customDomainOptions"
       name="type"
@@ -111,6 +112,10 @@ export default {
         this.form.seo_meta[keyname] = null
       }
     })
+
+    if (this.form.custom_domain && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
+      this.form.custom_domain = null
+    }
   },
   methods: {},
 }
