@@ -55,7 +55,6 @@
 
 <script>
 import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
 import VButton from "~/components/global/VButton.vue"
 
 export default {
@@ -96,7 +95,7 @@ export default {
           form_quantity: "Unlimited",
           file_upload_size: "75mb",
           domain_names: "Unlimited",
-          users: 'Unlimited'
+          users: 10
         },
       }[this.licenseTier]
     },
