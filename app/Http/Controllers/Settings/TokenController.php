@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Requests\CreateTokenRequest;
 use App\Http\Resources\TokenResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class TokenController
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         return TokenResource::collection(
@@ -30,6 +33,8 @@ class TokenController
 
     public function destroy(PersonalAccessToken $token)
     {
+        $this->authorize('delete', $token);
+
         $token->delete();
 
         return response()->json();
