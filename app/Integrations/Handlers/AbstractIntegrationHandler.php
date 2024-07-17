@@ -34,7 +34,7 @@ abstract class AbstractIntegrationHandler
 
     protected function logicConditionsMet(): bool
     {
-        if (!$this->formIntegration->logic) {
+        if (!$this->formIntegration->logic || empty((array) $this->formIntegration->logic)) {
             return true;
         }
         return FormLogicConditionChecker::conditionsMet(
