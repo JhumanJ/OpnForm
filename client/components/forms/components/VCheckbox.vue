@@ -3,6 +3,7 @@
     <input
       :id="id || name"
       v-model="internalValue"
+      :value="value"
       :name="name"
       type="checkbox"
       class="rounded border-gray-500 w-10 h-10 cursor-pointer checkbox"
@@ -31,6 +32,7 @@ const props = defineProps({
   id: { type: String, default: null },
   name: { type: String, default: "checkbox" },
   modelValue: { type: [Boolean, String], default: false },
+  value: { type: [Boolean, String, Number, Object], required: false },
   disabled: { type: Boolean, default: false },
   theme: { type: Object },
   color: { type: String, default: null },
