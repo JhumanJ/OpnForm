@@ -2,8 +2,8 @@
  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
-    </template>
-    <div class="flex mb-2">
+    </template> 
+    <!-- <div class="flex mb-2">
         <div class="w-1/4"></div>
         <div class="">
             <div class="flex space-x-6 py-2" :class="columnGrids">
@@ -31,8 +31,62 @@
                 >
             </div>
         </div>
-    </div>
+    </div>        -->
+        <table class="w-full table-fixed overflow-hidden" :class="[theme.default.borderRadius]">
+            <thead class="">
+                <tr class="bg-gray-200/40">
+                    <th @click="test" class="border-t border-l">
+                        
+                    </th>
+                    <td v-for="column in columns" :key="column" class="border">
+                        <div class="p-2 w-full flex items-center justify-center capitalize">
+                            <span>
+                                {{ column }}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
 
+            <tbody>
+                <tr v-for="row, rowIndex in rows" :key="rowIndex" class="border">
+                    <td class="border">
+                        <div class="p-2">
+                            {{ row }}
+                        </div>
+                    </td>
+                    <td v-for="column, columnIndex in columns" :key="row + column" class="border">
+                        <div class="w-full flex items-center justify-center">
+                            <div
+                                role="radio"
+                                :aria-checked="selection[row] === column"
+                                :class="[
+                                theme.FlatSelectInput.spacing.vertical,
+                                theme.FlatSelectInput.fontSize,
+                                theme.FlatSelectInput.option,
+                                ]"
+                                @click="onSelect(row, column)"
+                            >
+                                <Icon
+                                    v-if="selection[row] === column"
+                                    :key="row+column"
+                                    name="material-symbols:radio-button-checked-outline"
+                                    class="text-inherit"
+                                    :color="color"
+                                    :class="[theme.FlatSelectInput.icon]"
+                                />
+                                <Icon
+                                    v-else
+                                    :key="row+column"
+                                    name="material-symbols:radio-button-unchecked"
+                                    :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
+                                />
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     <template #help>
       <slot name="help" />
     </template>
@@ -47,23 +101,24 @@ import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
   name: "MatrixInput",
-  components: { InputWrapper },
+    components: { InputWrapper },
 
-  props: {
-    ...inputProps,
-    rows: {type: Array, required: true},
-    columns: {type: Array, required: true},
-    selectionData: {type: Object, required: true},
-  },
+    props: {
+        ...inputProps,
+        rows: { type: Array, required: true },
+        columns: { type: Array, required: true },
+        selectionData: { type: Object, required: true },
+    },
     data() {
         return {
-            selection: {}
+            selection: {},
+            selected: false
         }
     },
-  setup(props, context) {
-    return {
-      ...useFormInput(props, context),
-    }
+    setup(props, context) {
+        return {
+            ...useFormInput(props, context),
+        }
     },
     computed: {
         matrixData() {
@@ -81,12 +136,25 @@ export default {
 
     },
     methods: {
-        onSelection() {
-            this.compVal = this.selection
+        test() {
+            console.log(this.selection)
         },
         handleCompValChanged() {
-            this.selection = this.compVal ?? this.selectionData
-        }
+
+            this.selection = this.selectionData
+        },
+        onSelect(row, column) {
+            if (this.selection[row] == column) {
+                this.selection[row] = null
+            } else {
+                this.selection[row] = column
+            }
+            this.compVal = this.selection
+        },
+        onSelection() {
+            console.log(this.selection)
+            this.compval = this.selection
+        },
     },
     mounted() {
         this.handleCompValChanged()
@@ -104,32 +172,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-.styled-radio {
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: #fff;
-  border: 2px solid #000;
-  padding: 10px;
-  border-radius: 4px;
-  display: inline-block;
-  position: relative;
-}
-
-.styled-radio:checked {
-  background-color: transparent;
-  border-color: #2563EB;
-}
-
-.styled-radio:checked::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  background-color: #2563EB;
-  display: block;
-}
-</style>

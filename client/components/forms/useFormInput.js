@@ -61,6 +61,7 @@ export function useFormInput(props, context, options = {}) {
       if (props.form) {
         return _get(props.form, (composableOptions.formPrefixKey || "") + props.name)
       }
+      console.log(content.value)
       return content.value
     },
     set: (val) => {
