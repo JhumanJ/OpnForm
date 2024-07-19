@@ -280,7 +280,6 @@ export default {
         })
 
         this.loading=false;
-        return
         if (this.isIframe) {
           window.parent.postMessage(payload, '*')
         }

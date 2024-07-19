@@ -94,8 +94,10 @@
           >
         </div>
       </template>
-      <div class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3">
-        <div class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle">
+      <div
+        class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3">
+        <div
+          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle">
           <Icon
             name="clarity:drag-handle-line"
             class="h-6 w-6 -ml-1 block shrink-0"
@@ -293,10 +295,9 @@ export default {
         isDark: this.darkMode
       }
 
-      if(field.type == 'matrix'){
+      if (field.type === 'matrix') {
         inputProperties.rows = field.rows
-        inputProperties.columns = field.columns,
-        inputProperties.selectionData = field.prefill ? field.prefill : field.selection_data
+        inputProperties.columns = field.columns
       }
 
       if (['select', 'multi_select'].includes(field.type)) {

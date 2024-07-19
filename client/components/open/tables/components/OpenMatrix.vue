@@ -5,11 +5,15 @@
     class="-mb-2"
   >
     <template v-if="matrixData">
-      <open-tag
+      <div
         v-for="(data, index) in matrixData"
-        :key="data.label"
-        :opt="data.label + ': '+ data.value"
-      />
+        :key="data.label+data.value"
+        class="mr-2 text-gray-700 bg-gray-100 dark:text-gray-300 rounded-md flex px-2 text-sm w-max"
+      >
+        <span class="py-0.5 pr-1 border-r border-gray-300">{{data.label}}</span>
+        <span class="py-0.5 pl-1">{{data.value}}</span>
+      </div>
+
     </template>
     <open-tag
       v-else
@@ -51,7 +55,7 @@ export default {
   methods: {
     test(){
       console.log(this.matrixData)
-      
+
     }
   }
 }

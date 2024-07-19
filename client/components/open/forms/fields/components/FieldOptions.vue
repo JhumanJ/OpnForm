@@ -412,7 +412,7 @@
       />
       <template v-else-if="field.type === 'matrix'">
           <MatrixInput
-            v-model="field.prefill"
+            :form="field"
             :rows="field.rows"
             :columns="field.columns"
             name="prefill"
@@ -578,7 +578,7 @@
       :field="field"
     />
 
-    <custom-field-validation 
+    <custom-field-validation
       class="py-2 px-4 border-b pb-16"
       :form="form"
       :field="field"
@@ -860,4 +860,3 @@ export default {
   }
 }
 </script>
- 

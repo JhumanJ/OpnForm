@@ -1,8 +1,8 @@
 <template>
- <input-wrapper v-bind="inputWrapperProps">
+  <input-wrapper v-bind="inputWrapperProps">
     <template #label>
-      <slot name="label" />
-    </template> 
+      <slot name="label"/>
+    </template>
     <!-- <div class="flex mb-2">
         <div class="w-1/4"></div>
         <div class="">
@@ -32,138 +32,133 @@
             </div>
         </div>
     </div>        -->
-        <table class="w-full table-fixed overflow-hidden border border-separate border-tools-table-outline" :class="[theme.default.borderRadius]">
-            <thead class="">
-                <tr class="bg-gray-200/40 divide-x divide-y">
-                    <th @click="test" class="">
-                        
-                    </th>
-                    <td v-for="column in columns" :key="column" class="">
-                        <div class="p-2 w-full flex items-center justify-center capitalize">
+    <table class="w-full table-fixed overflow-hidden border border-separate border-tools-table-outline"
+           :class="[theme.default.borderRadius]">
+      <thead class="">
+      <tr class="bg-gray-200/40 divide-x divide-y">
+        <th @click="test" class="">
+
+        </th>
+        <td v-for="column in columns" :key="column" class="">
+          <div class="p-2 w-full flex items-center justify-center capitalize">
                             <span>
                                 {{ column }}
                             </span>
-                        </div>
-                    </td>
-                </tr>
-            </thead>
+          </div>
+        </td>
+      </tr>
+      </thead>
 
-            <tbody>
-                <tr v-for="row, rowIndex in rows" :key="rowIndex" class=" divide-y divide-x">
-                    <td class="">
-                        <div class="w-full flex-grow p-2">
-                            {{ row }}
-                        </div>
-                    </td>
-                    <td v-for="column, columnIndex in columns" :key="row + column" class="">
-                        <div class="w-full flex items-center justify-center">
-                            <div
-                                role="radio"
-                                :aria-checked="selection[row] === column"
-                                :class="[
+      <tbody>
+      <tr v-for="row, rowIndex in rows" :key="rowIndex" class=" divide-y divide-x">
+        <td class="">
+          <div class="w-full flex-grow p-2">
+            {{ row }}
+          </div>
+        </td>
+        <td v-for="column, columnIndex in columns" :key="row + column" class="">
+          <div class="w-full flex items-center justify-center">
+            <div
+              v-if="compVal"
+              role="radio"
+              :aria-checked="compVal[row] === column"
+              :class="[
                                 theme.FlatSelectInput.spacing.vertical,
                                 theme.FlatSelectInput.fontSize,
                                 theme.FlatSelectInput.option,
                                 ]"
-                                @click="onSelect(row, column)"
-                            >
-                                <Icon
-                                    v-if="selection[row] === column"
-                                    :key="row+column"
-                                    name="material-symbols:radio-button-checked-outline"
-                                    class="text-inherit"
-                                    :color="color"
-                                    :class="[theme.FlatSelectInput.icon]"
-                                />
-                                <Icon
-                                    v-else
-                                    :key="row+column"
-                                    name="material-symbols:radio-button-unchecked"
-                                    :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
-                                />
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+              @click="onSelect(row, column)"
+            >
+              <Icon
+                v-if="compVal[row] === column"
+                :key="row+column"
+                name="material-symbols:radio-button-checked-outline"
+                class="text-inherit"
+                :color="color"
+                :class="[theme.FlatSelectInput.icon]"
+              />
+              <Icon
+                v-else
+                :key="row+column"
+                name="material-symbols:radio-button-unchecked"
+                :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
+              />
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
     <template #help>
-      <slot name="help" />
+      <slot name="help"/>
     </template>
     <template #error>
-      <slot name="error" />
+      <slot name="error"/>
     </template>
   </input-wrapper>
 </template>
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
+import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 
 export default {
   name: "MatrixInput",
-    components: { InputWrapper },
+  components: {InputWrapper},
 
-    props: {
-        ...inputProps,
-        rows: { type: Array, required: true },
-        columns: { type: Array, required: true },
-        selectionData: { type: Object, required: true },
-    },
-    data() {
+  props: {
+    ...inputProps,
+    rows: {type: Array, required: true},
+    columns: {type: Array, required: true},
+  },
+  data() {
+    return {
+    }
+  },
+  setup(props, context) {
+    return {
+      ...useFormInput(props, context),
+    }
+  },
+  computed: {
+    matrixData() {
+      const options = this.columns
+      return this.rows?.map(row => {
         return {
-            selection: {},
-            selected: false
+          label: row,
+          options
         }
+      })
     },
-    setup(props, context) {
-        return {
-            ...useFormInput(props, context),
-        }
+    // columnGrids() {
+    //   return 'grid-cols-' + this.columns?.length
+    // }
+  },
+  methods: {
+    test() {
+      // console.log(this.selection, this.compVal)
     },
-    computed: {
-        matrixData() {
-            const options = this.columns
-            return this.rows?.map(row => {
-                return {
-                    label: row,
-                    options
-                }
-            })
-        },
-        columnGrids() {
-            return 'grid-cols-' + this.columns?.length
-        }
-
+    onSelect(row, column) {
+      if (this.compVal[row] === column) {
+        this.compVal[row] = null
+      } else {
+        this.compVal[row] = column
+      }
     },
-    methods: {
-        test() {
-            console.log(this.selection, this.compVal)
-        },
-        handleCompValChanged() {
-            this.compVal = this.selection
-        },
-        onSelect(row, column) {
-            if (this.selection[row] == column) {
-                this.selection[row] = null
-            } else {
-                this.selection[row] = column
-            }
-            this.compVal = this.selection
-        },
-    },
-    mounted() {
-        this.handleCompValChanged()
-    },
-
-    watch: {
-        selection: {
-            handler(newVal, oldVal) {
-                if (!oldVal) {
-                    this.handleCompValChanged()
-                }
-            },
-            immediate: false
-        }
-    },
+  },
+  beforeMount() {
+    if (!this.compVal || typeof this.compVal !== 'object') {
+      this.compVal = {}
+    }
+  },
+  // watch: {
+  //   compVal: {
+  //     handler(newVal, oldVal) {
+  //       if (!oldVal) {
+  //         this.handleCompValChanged()
+  //       }
+  //     },
+  //     immediate: false
+  //   }
+  // },
 }
 </script>
