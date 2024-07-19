@@ -32,13 +32,13 @@
             </div>
         </div>
     </div>        -->
-        <table class="w-full table-fixed overflow-hidden" :class="[theme.default.borderRadius]">
+        <table class="w-full table-fixed overflow-hidden border border-separate border-tools-table-outline" :class="[theme.default.borderRadius]">
             <thead class="">
-                <tr class="bg-gray-200/40">
-                    <th @click="test" class="border-t border-l">
+                <tr class="bg-gray-200/40 divide-x divide-y">
+                    <th @click="test" class="">
                         
                     </th>
-                    <td v-for="column in columns" :key="column" class="border">
+                    <td v-for="column in columns" :key="column" class="">
                         <div class="p-2 w-full flex items-center justify-center capitalize">
                             <span>
                                 {{ column }}
@@ -49,13 +49,13 @@
             </thead>
 
             <tbody>
-                <tr v-for="row, rowIndex in rows" :key="rowIndex" class="border">
-                    <td class="border">
-                        <div class="p-2">
+                <tr v-for="row, rowIndex in rows" :key="rowIndex" class=" divide-y divide-x">
+                    <td class="">
+                        <div class="w-full flex-grow p-2">
                             {{ row }}
                         </div>
                     </td>
-                    <td v-for="column, columnIndex in columns" :key="row + column" class="border">
+                    <td v-for="column, columnIndex in columns" :key="row + column" class="">
                         <div class="w-full flex items-center justify-center">
                             <div
                                 role="radio"
@@ -137,11 +137,10 @@ export default {
     },
     methods: {
         test() {
-            console.log(this.selection)
+            console.log(this.selection, this.compVal)
         },
         handleCompValChanged() {
-
-            this.selection = this.selectionData
+            this.compVal = this.selection
         },
         onSelect(row, column) {
             if (this.selection[row] == column) {
@@ -151,17 +150,13 @@ export default {
             }
             this.compVal = this.selection
         },
-        onSelection() {
-            console.log(this.selection)
-            this.compval = this.selection
-        },
     },
     mounted() {
         this.handleCompValChanged()
     },
 
     watch: {
-        compVal: {
+        selection: {
             handler(newVal, oldVal) {
                 if (!oldVal) {
                     this.handleCompValChanged()

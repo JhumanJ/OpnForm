@@ -279,6 +279,8 @@ export default {
           submission_data: form.data()
         })
 
+        this.loading=false;
+        return
         if (this.isIframe) {
           window.parent.postMessage(payload, '*')
         }

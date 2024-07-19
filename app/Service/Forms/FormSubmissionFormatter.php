@@ -81,6 +81,15 @@ class FormSubmissionFormatter
         return $this;
     }
 
+    public function getMatrixString($val)
+    {
+        $parts = [];
+        foreach ($val as $key => $value) {
+            $parts[] = "$key: $value";
+        }
+        return implode(' | ', $parts);
+    }
+
     /**
      * Return a nice "FieldName": "Field Response" array
      * - If createLink enabled, returns html link for emails and links
@@ -145,6 +154,8 @@ class FormSubmissionFormatter
                 } else {
                     $returnArray[$field['name']] = $val;
                 }
+            } elseif ($field['type'] == 'matrix') {
+                $returnArray[$field['name']] = $this->getMatrixString($data[$field['id']]);
             } elseif ($field['type'] == 'files') {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;
@@ -217,6 +228,12 @@ class FormSubmissionFormatter
                 } else {
                     $field['value'] = $val;
                 }
+            } elseif ($field['type'] == 'matrix') {
+                $string = $this->getMatrixString($data[$field['id']]);
+                ray($string);
+                $rep = str_replace(' | ', "\n", $string);
+                $field['value'] = $rep;
+                ray($rep);
             } elseif ($field['type'] == 'files') {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;

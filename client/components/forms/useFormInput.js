@@ -93,6 +93,7 @@ export function useFormInput(props, context, options = {}) {
   watch(
     () => props.modelValue,
     (newValue) => {
+      console.log(newValue, 'watcher')
       if (content.value !== newValue) {
         content.value = newValue
       }

@@ -296,7 +296,7 @@ export default {
       if(field.type == 'matrix'){
         inputProperties.rows = field.rows
         inputProperties.columns = field.columns,
-        inputProperties.selectionData = field.selection_data
+        inputProperties.selectionData = field.prefill ? field.prefill : field.selection_data
       }
 
       if (['select', 'multi_select'].includes(field.type)) {

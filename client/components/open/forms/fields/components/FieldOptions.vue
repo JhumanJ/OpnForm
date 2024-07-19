@@ -411,7 +411,13 @@
         :multiple="field.type === 'multi_select'"
       />
       <template v-else-if="field.type === 'matrix'">
-          <MatrixPrefilledValues :field="field"/>
+          <MatrixInput
+            v-model="field.prefill"
+            :rows="field.rows"
+            :columns="field.columns"
+            name="prefill"
+            label="Pre-filled value"
+          />
       </template>
       <date-input
         v-else-if="field.type === 'date' && field.prefill_today !== true"
@@ -634,6 +640,9 @@ export default {
         }
       })
     },
+    prefillMatrixOptions(){
+
+    },
     timezonesOptions() {
       if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
@@ -851,3 +860,4 @@ export default {
   }
 }
 </script>
+ 
