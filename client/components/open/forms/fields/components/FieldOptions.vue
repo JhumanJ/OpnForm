@@ -593,13 +593,12 @@ import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../../components/CustomFieldValidation.vue'
 import MatrixFieldOptions from './MatrixFieldOptions.vue'
-import MatrixPrefilledValues from './MatrixPrefilledValues.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation, MatrixFieldOptions, MatrixPrefilledValues },
+  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation, MatrixFieldOptions },
   props: {
     field: {
       type: Object,

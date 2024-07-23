@@ -6,7 +6,7 @@
   >
     <template v-if="matrixData">
       <div
-        v-for="(data, index) in matrixData"
+        v-for="(data) in matrixData"
         :key="data.label+data.value"
         class="mr-2 mb-1 text-gray-700 bg-gray-100 dark:text-gray-300 rounded-md flex px-2 text-sm w-max"
       >
@@ -41,8 +41,8 @@ export default {
     matrixData() {
       if (typeof this.value === "object" && this.value !== null) {
         return Object.entries(this.value).map(([label, value]) => {
-            return { label, value };
-        });
+            return { label, value }
+        })
       }
       return null
     },
