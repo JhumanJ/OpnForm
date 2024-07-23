@@ -8,7 +8,7 @@
         :options="row.options"
         :label="row.label"
         v-model="selection[row.label]"
-        @update:model-value="onSelection()"
+        @update:model-value="onSelection"
       />
 </template>
 <script>
@@ -31,7 +31,7 @@ export default {
     },
     computed: {
         matrixData() {
-            const options = this.field.columns
+            const options = this.field.columns || []
             return this.field.rows?.map(row => {
                 return {
                     label: row,
