@@ -3,14 +3,24 @@
     <template #label>
       <slot name="label"/>
     </template>
-     <table class="w-full table-fixed overflow-hidden bordser border-sepsarate"
-           :class="[theme.default.borderRadius]">
+    <div class='border' :class="[
+        theme.default.borderRadius,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-200': disabled,
+        },
+    ]">
+     <table 
+        class="w-full table-fixed overflow-hidden border border-collapse border-transparent" 
+        :class="[
+            theme.default.borderRadius]"
+    >
       <thead class="">
-      <tr class="bg-gray-200/40">
-        <th @click="test" class="">
+      <tr class="bg-gray-200/60">
+        <th @click="test" class="border border-gray-300">
 
         </th>
-        <td v-for="column in columns" :key="column" class="border">
+        <td v-for="column in columns" :key="column" class="border border-gray-300">
           <div class="p-2 w-full flex items-center justify-center capitalize text-sm truncate">
             {{ column }}
           </div>
@@ -20,14 +30,14 @@
 
       <tbody>
       <tr v-for="row, rowIndex in rows" :key="rowIndex" class="">
-        <td class="">
+        <td class="border border-gray-300">
           <div class="w-full flex-grow p-2 text-sm truncate">
             {{ row }}
           </div>
         </td>
-        <td v-for="column, columnIndex in columns" :key="row + column" class="">
+        <td v-for="column, columnIndex in columns" :key="row + column" class="border border-gray-300">
             <div
-                class="w-full flex items-center justify-center hover:bg-gray-200/50 border"
+                class="w-full flex items-center justify-center hover:bg-gray-200/40"
               v-if="compVal"
               role="radio"
               :aria-checked="compVal[row] === column"
@@ -57,6 +67,7 @@
       </tr>
     </tbody>
     </table>
+    </div>
     <template #help>
       <slot name="help"/>
     </template>
