@@ -431,6 +431,8 @@ export default {
           formData[field.id] = urlPrefill.getAll(field.id + '[]')
         } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
           formData[field.id] = new Date().toISOString()
+        } else if (field.type === 'matrix') {
+          formData[field.id] = {...field.prefill}
         } else { // Default prefill if any
           formData[field.id] = field.prefill
         }

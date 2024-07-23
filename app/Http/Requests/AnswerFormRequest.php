@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Forms\Form;
 use App\Rules\CustomFieldValidationRule;
+use App\Rules\MatrixValidationRule;
 use App\Rules\StorageFile;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
@@ -82,6 +83,8 @@ class AnswerFormRequest extends FormRequest
                 } elseif ($property['type'] == 'rating') {
                     // For star rating, needs a minimum of 1 star
                     $rules[] = 'min:1';
+                } elseif ($property['type'] == 'matrix') {
+                    $rules[] = new MatrixValidationRule();
                 }
             } else {
                 $rules[] = 'nullable';
@@ -97,11 +100,12 @@ class AnswerFormRequest extends FormRequest
             }
 
             // User custom validation
-            if(!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
+            if (!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
                 $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
             }
 
             $this->requestRules[$propertyId] = $rules;
+            ray($this->requestRules);
         }
 
         // Validate hCaptcha
@@ -211,6 +215,10 @@ class AnswerFormRequest extends FormRequest
                 }
 
                 return ['string', 'min:6', new ValidPhoneInputRule()];
+            case 'matrix':
+                ray('isMatrix', );
+
+                // no break
             default:
                 return [];
         }
