@@ -189,6 +189,8 @@
 
    <MatrixFieldOptions :field="field" />
 
+   <MatrixFieldOptions :field="field" />
+
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"
@@ -638,6 +640,9 @@ export default {
           value: option.id
         }
       })
+    },
+    prefillMatrixOptions(){
+
     },
     timezonesOptions() {
       if (this.field.type !== 'date') return []
