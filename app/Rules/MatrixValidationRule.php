@@ -14,6 +14,10 @@ class MatrixValidationRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (!is_array($value)) {
+            $fail('The Matrix field must be an array.');
+            return;
+        }
         $nullValues = array_filter($value, function ($val) {
             return $val === null;
         });

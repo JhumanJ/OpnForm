@@ -1,7 +1,7 @@
 <template>
     <p class="font-semibold">Prefilled values</p>
     <select-input
-        v-for="row, i in matrixData"
+        v-for="row in matrixData"
         :key="row.label"
         name="prefill"
         class="mt-3"

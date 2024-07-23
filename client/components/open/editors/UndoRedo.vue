@@ -60,14 +60,14 @@ onMounted(() => {
 const  getOS = ()=> {
   if (navigator.userAgentData) {
     // Modern method
-    return navigator.userAgentData.platform;
+    return navigator.userAgentData.platform
   } else {
     // Fallback for older browsers
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf("mac") > -1) return "macOS";
-    if (userAgent.indexOf("win") > -1) return "Windows";
-    if (userAgent.indexOf("linux") > -1) return "Linux";
-    return "Unknown";
+    const userAgent = navigator.userAgent.toLowerCase()
+    if (userAgent.indexOf("mac") > -1) return "macOS"
+    if (userAgent.indexOf("win") > -1) return "Windows"
+    if (userAgent.indexOf("linux") > -1) return "Linux"
+    return "Unknown"
   }
 }
 </script>

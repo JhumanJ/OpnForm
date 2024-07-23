@@ -53,9 +53,9 @@ const props = defineProps({
 })
 const selectionData = computed(() => {
   return props.field.rows?.reduce((obj, row) => {
-    obj[row] = '';
-    return obj;
-  }, {});
+    obj[row] = ''
+    return obj
+  }, {})
 })
 
 
@@ -80,13 +80,13 @@ function removeMatrixColumn(index) {
 }
 
 function generateUniqueLabel(array, prefix = null) {
-  let uniqueNumber = 1; // Start checking from 1
+  let uniqueNumber = 1 // Start checking from 1
   let label = prefix ? `${prefix} ${uniqueNumber}` : uniqueNumber
   while (array.includes(label)) {
-    uniqueNumber++; // Increment if the number is found in the array
+    uniqueNumber++ // Increment if the number is found in the array
     label = prefix ? `${prefix} ${uniqueNumber}` : uniqueNumber
   }
-  return label; // Return the first unique number found
+  return label // Return the first unique number found
 }
 
 </script>

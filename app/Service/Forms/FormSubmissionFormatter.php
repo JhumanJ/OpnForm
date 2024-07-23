@@ -81,11 +81,13 @@ class FormSubmissionFormatter
         return $this;
     }
 
-    public function getMatrixString($val)
+    public function getMatrixString(array $val): string
     {
         $parts = [];
         foreach ($val as $key => $value) {
-            $parts[] = "$key: $value";
+            if ($key !== null && $value !== null) {
+                $parts[] = "$key: $value";
+            }
         }
         return implode(' | ', $parts);
     }
@@ -229,9 +231,7 @@ class FormSubmissionFormatter
                     $field['value'] = $val;
                 }
             } elseif ($field['type'] == 'matrix') {
-                $string = $this->getMatrixString($data[$field['id']]);
-                $rep = str_replace(' | ', "\n", $string);
-                $field['value'] = $rep;
+                $field['value'] = str_replace(' | ', "\n", $this->getMatrixString($data[$field['id']]));
             } elseif ($field['type'] == 'files') {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;

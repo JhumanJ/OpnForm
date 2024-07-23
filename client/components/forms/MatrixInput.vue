@@ -35,7 +35,7 @@
             {{ row }}
           </div>
         </td>
-        <td v-for="column, columnIndex in columns" :key="row + column" class="border border-gray-300">
+        <td v-for="column in columns" :key="row + column" class="border border-gray-300">
             <div
                 class="w-full flex items-center justify-center hover:bg-gray-200/40"
               v-if="compVal"

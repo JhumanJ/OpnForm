@@ -105,7 +105,6 @@ class AnswerFormRequest extends FormRequest
             }
 
             $this->requestRules[$propertyId] = $rules;
-            ray($this->requestRules);
         }
 
         // Validate hCaptcha
@@ -215,10 +214,6 @@ class AnswerFormRequest extends FormRequest
                 }
 
                 return ['string', 'min:6', new ValidPhoneInputRule()];
-            case 'matrix':
-                ray('isMatrix', );
-
-                // no break
             default:
                 return [];
         }

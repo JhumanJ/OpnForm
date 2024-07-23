@@ -641,9 +641,6 @@ export default {
         }
       })
     },
-    prefillMatrixOptions(){
-
-    },
     timezonesOptions() {
       if (this.field.type !== 'date') return []
       return timezones.map((timezone) => {
