@@ -67,6 +67,7 @@ export function getOpnRequestsOptions(request, opts) {
         }
       } else if (status === 420) {
         // If invalid domain, redirect to main domain
+        console.warn("Invalid response from back-end - redirecting to main domain")
         window.location.href =
           config.public.appUrl + "?utm_source=failed_custom_domain_redirect"
       } else if (status >= 500) {

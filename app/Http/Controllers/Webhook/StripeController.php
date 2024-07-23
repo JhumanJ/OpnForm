@@ -41,17 +41,17 @@ class StripeController extends WebhookController
 
             $subscription->type = $subscription->type ?? $data['metadata']['name'] ?? $this->newSubscriptionName($payload);
 
-            $firstItem = $data['items']['data'][0];
+            $mainItem = $this->getMainSubscriptionLineItem($data['items']['data']);
             $isSinglePrice = count($data['items']['data']) === 1;
 
             // Price...
-            $subscription->stripe_price = $isSinglePrice ? $firstItem['price']['id'] : null;
+            $subscription->stripe_price = $isSinglePrice ? $mainItem['price']['id'] : null;
 
             // Type - previously (Name)
-            $subscription->type = $this->getSubscriptionName($data['plan']['product']);
+            $subscription->type = $this->getSubscriptionName($mainItem['price']['product']);
 
             // Quantity...
-            $subscription->quantity = $isSinglePrice && isset($firstItem['quantity']) ? $firstItem['quantity'] : null;
+            $subscription->quantity = $isSinglePrice && isset($mainItem['quantity']) ? $mainItem['quantity'] : null;
 
             // Trial ending date...
             if (isset($data['trial_end'])) {
@@ -113,6 +113,13 @@ class StripeController extends WebhookController
         }
 
         return $this->successMethod();
+    }
+
+    private function getMainSubscriptionLineItem(array $items)
+    {
+        return collect($items)->first(function ($item) {
+            return in_array($this->getSubscriptionName($item['price']['product']), ['default']);
+        });
     }
 
     private function getSubscriptionName(string $stripeProductId)

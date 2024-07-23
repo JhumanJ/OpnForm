@@ -21,9 +21,11 @@
         },
       ]"
     >
-      <div
-        v-for="(option, index) in options"
-        v-if="options && options.length"
+    <template
+      v-if="options && options.length"
+    >
+     <div
+        v-for="(option) in options"
         :key="option[optionKey]"
         :role="multiple?'checkbox':'radio'"
         :aria-checked="isSelected(option[optionKey])"
@@ -66,6 +68,7 @@
           {{ option[displayKey] }}
         </p>
       </div>
+    </template>
       <div
         v-else
         :class="[

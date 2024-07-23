@@ -7,6 +7,7 @@ use App\Models\Traits\CachableAttributes;
 use App\Models\Traits\CachesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Workspace extends Model implements CachableAttributes
 {
@@ -50,7 +51,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getMaxFileSizeAttribute()
     {
-        if (is_null(config('cashier.key'))) {
+        if (!pricing_enabled()) {
             return self::MAX_FILE_SIZE_PRO;
         }
 
@@ -73,7 +74,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getCustomDomainCountLimitAttribute()
     {
-        if (is_null(config('cashier.key'))) {
+        if (!pricing_enabled()) {
             return null;
         }
 
@@ -95,7 +96,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsProAttribute()
     {
-        if (is_null(config('cashier.key'))) {
+        if (!pricing_enabled()) {
             return true;    // If no paid plan so TRUE for ALL
         }
 
@@ -113,7 +114,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsTrialingAttribute()
     {
-        if (is_null(config('cashier.key'))) {
+        if (!pricing_enabled()) {
             return false;    // If no paid plan so FALSE for ALL
         }
 
@@ -131,7 +132,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function getIsEnterpriseAttribute()
     {
-        if (is_null(config('cashier.key'))) {
+        if (!pricing_enabled()) {
             return true;    // If no paid plan so TRUE for ALL
         }
 
@@ -181,9 +182,19 @@ class Workspace extends Model implements CachableAttributes
         return $this->belongsToMany(User::class);
     }
 
+    public function invites()
+    {
+        return $this->hasMany(UserInvite::class);
+    }
+
     public function owners()
     {
         return $this->users()->wherePivot('role', 'admin');
+    }
+
+    public function billingOwners(): Collection
+    {
+        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
     }
 
     public function forms()

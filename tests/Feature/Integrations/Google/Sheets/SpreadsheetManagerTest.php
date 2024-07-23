@@ -45,7 +45,7 @@ test('build columns', function () {
 
     assertCount(14, $columns);
 
-    foreach($columns as $key => $column) {
+    foreach ($columns as $key => $column) {
         assertEquals($form->properties[$key]['id'], $column['id']);
         assertEquals($form->properties[$key]['name'], $column['name']);
     }
@@ -63,8 +63,8 @@ test('update columns', function () {
 
     $form->update([
         'properties' => [
-            ['id' => '000', 'name' => 'First'],
-            ['id' => '001', 'name' => 'Second'],
+            ['id' => '000', 'name' => 'First', 'type' => 'text'],
+            ['id' => '001', 'name' => 'Second', 'type' => 'text'],
         ]
     ]);
 
@@ -82,8 +82,8 @@ test('update columns', function () {
                 url: 'https://google.com',
                 spreadsheet_id: 'sp_test',
                 columns: [
-                    ['id' => '000', 'name' => 'First'],
-                    ['id' => '001', 'name' => 'Second'],
+                    ['id' => '000', 'name' => 'First', 'type' => 'text'],
+                    ['id' => '001', 'name' => 'Second', 'type' => 'text'],
                 ]
             )
         ]);
@@ -96,8 +96,8 @@ test('update columns', function () {
 
     $form->update([
         'properties' => [
-            ['id' => '000', 'name' => 'First name'],
-            ['id' => '002', 'name' => 'Email'],
+            ['id' => '000', 'name' => 'First name', 'type' => 'text'],
+            ['id' => '002', 'name' => 'Email', 'type' => 'text'],
         ]
     ]);
 

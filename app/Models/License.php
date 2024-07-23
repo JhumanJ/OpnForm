@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class License extends Model
 {
     use HasFactory;
-    public const STATUS_ACTIVE = 'active';
 
+    public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
 
     protected $fillable = [
@@ -32,6 +32,11 @@ class License extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -52,6 +57,15 @@ class License extends Model
             1 => 1,
             2 => 10,
             3 => null,
+        ][$this->meta['tier']];
+    }
+
+    public function getMaxUsersLimitCountAttribute(): ?int
+    {
+        return [
+            1 => 1,
+            2 => 5,
+            3 => 10,
         ][$this->meta['tier']];
     }
 

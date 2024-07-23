@@ -22,14 +22,6 @@ body.dark * {
     --bg-form-color: #2563eb;
   }
 
-  p, div {
-    @apply text-gray-900 dark:text-white;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-gray-900 dark:text-white;
-  }
-
   h1 {
     @apply text-3xl sm:text-4xl font-semibold;
   }
@@ -38,8 +30,16 @@ body.dark * {
     @apply text-3xl font-semibold;
   }
 
+  p, div {
+    @apply text-gray-900 dark:text-white text-inherit;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-white text-inherit;
+  }
+
   a {
-    @apply text-blue-600 hover:underline;
+    @apply text-blue-600 hover:underline text-inherit;
   }
 }
 

@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col">
+  <div
+    id="public-form"
+    class="flex flex-col"
+  >
     <div v-if="form && !isIframe && (form.logo_picture || form.cover_picture)">
       <div v-if="form.cover_picture">
         <div

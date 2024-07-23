@@ -20,6 +20,7 @@
         :form="form"
         label="Email"
         :required="true"
+        :disabled="disableEmail"
         placeholder="Your email address"
       />
 
@@ -135,6 +136,7 @@ export default {
       agree_terms: false,
       appsumo_license: null,
     }),
+    disableEmail:false
   }),
 
   computed: {
@@ -167,12 +169,26 @@ export default {
     ) {
       this.form.appsumo_license = this.$route.query.appsumo_license
     }
+
+    if (this.$route.query?.invite_token) {
+      if (this.$route.query?.email) {
+        this.form.email = this.$route.query?.email
+        this.disableEmail = true
+      }
+      this.form.invite_token = this.$route.query?.invite_token
+    }
   },
 
   methods: {
     async register() {
-      // Register the user.
-      const data = await this.form.post("/register")
+      let data
+      try {
+        // Register the user.
+        data = await this.form.post("/register")
+      } catch (err) {
+        useAlert().error(err.response?._data?.message)
+        return false
+      }
 
       // Log in the user.
       const tokenData = await this.form.post("/login")
@@ -216,7 +232,13 @@ export default {
       if (this.isQuick) {
         this.$emit("afterQuickLogin")
       } else {
-        this.$router.push({name: "forms-create"})
+        // If is invite just redirect to home
+        if (this.form.invite_token) {
+          useAlert().success("You have successfully accepted the invite and joined this workspace.")
+          this.$router.push({name: "home"})
+        } else {
+          this.$router.push({name: "forms-create"})
+        }
       }
     },
   },

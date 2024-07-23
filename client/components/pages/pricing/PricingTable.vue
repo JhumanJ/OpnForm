@@ -97,7 +97,10 @@
                 </svg>
                 {{ title }}
               </li>
-              <slot name="pricing-table" />
+              <slot
+                name="pricing-table"
+                :is-yearly="isYearly"
+              />
             </ul>
           </div>
 

@@ -7,27 +7,12 @@
         </h3>
         <small class="text-gray-600">Manage your external connections.</small>
       </div>
-      <v-button
-        color="outline-blue"
+      <UButton
+        label="Connect new account"
+        icon="i-heroicons-plus"
         :loading="loading"
         @click="providerModal = true"
-      >
-        <svg
-          class="inline -mt-1 mr-1 h-4 w-4"
-          viewBox="0 0 14 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6.99996 1.16699V12.8337M1.16663 7.00033H12.8333"
-            stroke="currentColor"
-            stroke-width="1.67"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Connect new account
-      </v-button>
+      />
     </div>
 
     <div
