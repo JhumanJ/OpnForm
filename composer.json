@@ -17,7 +17,7 @@
         "aws/aws-sdk-php": "*",
         "doctrine/dbal": "*",
         "giggsey/libphonenumber-for-php": "*",
-        "google/apiclient": "^2.16",
+        "google/apiclient": "^2.17",
         "guzzlehttp/guzzle": "*",
         "laravel/cashier": "*",
         "laravel/framework": "^11.17",
@@ -32,7 +32,7 @@
         "openai-php/client": "*",
         "propaganistas/laravel-disposable-email": "*",
         "sentry/sentry-laravel": "*",
-        "spatie/laravel-data": "^4.6",
+        "spatie/laravel-data": "^4.7",
         "spatie/laravel-sitemap": "*",
         "spatie/laravel-sluggable": "*",
         "stevebauman/purify": "*",
@@ -40,7 +40,7 @@
         "vinkla/hashids": "*"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.0.0",
+        "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.23",
         "laravel/dusk": "^8.2.0",
         "laravel/pint": "^1.13",
