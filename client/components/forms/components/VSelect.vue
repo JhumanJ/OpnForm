@@ -198,7 +198,7 @@
 
 <script>
 import Collapsible from '~/components/global/transitions/Collapsible.vue'
-import {themes} from '../../../lib/forms/themes/form-themes.js'
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import debounce from 'debounce'
 import Fuse from 'fuse.js'
 
@@ -224,7 +224,15 @@ export default {
     color: {type: String, default: '#3B82F6'},
     placeholder: {type: String, default: null},
     uppercaseLabels: {type: Boolean, default: true},
-    theme: {type: Object, default: () => themes.default},
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
     allowCreation: {type: Boolean, default: false},
     disabled: {type: Boolean, default: false}
   },

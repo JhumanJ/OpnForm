@@ -18,12 +18,21 @@
 </template>
 
 <script>
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 export default {
   name: "InputLabel",
 
   props: {
     nativeFor: { type: String, default: null },
-    theme: { type: Object, required: true },
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
     uppercaseLabels: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
     label: { type: String, required: true },
