@@ -132,7 +132,7 @@ export default {
     onChange() {
       this.$emit("update:modelValue", this.query)
     },
-    / If there was some changes to the structure, causing an issue, we clear the condition
+    // If there was some changes to the structure, causing an issue, we clear the condition
     handleError (error) {
       this.$nextTick(() => {
         console.error('Error with condition - clearing previous value', error)
@@ -142,7 +142,6 @@ export default {
       })
     }
   }
-  },
 }
 </script>
 <style src="query-builder-vue-3/dist/style.css" />
