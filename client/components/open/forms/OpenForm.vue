@@ -141,14 +141,14 @@ export default {
       required: true
     },
     theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
       }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
+    },
     loading: {
       type: Boolean,
       required: true

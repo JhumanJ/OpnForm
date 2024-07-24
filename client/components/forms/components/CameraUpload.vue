@@ -98,11 +98,20 @@
 
 <script>
 import Webcam from "webcam-easy"
-import { themes } from "~/lib/forms/themes/form-themes.js"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+
 export default {
   name: "FileInput",
   props: {
-    theme: { type: Object, default: () => themes.default },
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
   },
   emits: ['stopWebcam', 'uploadImage'],
   data: () => ({
