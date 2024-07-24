@@ -1,5 +1,5 @@
 <template>
-  <ErrorBoundary @on-error="handleError" ref="error_boundary"></ErrorBoundary>
+  <ErrorBoundary @on-error="handleError" ref="error_boundary">
     <query-builder
       v-model="query"
       :rules="rules"
