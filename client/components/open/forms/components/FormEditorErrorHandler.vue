@@ -37,6 +37,7 @@
     clearError()
   }
   const onFormEditorError = (error) => {
+    console.error('Form Editor Error Handled', error)
     crisp.pauseChatBot()
     const eventData = {
       message: error.message,
