@@ -12,12 +12,12 @@
         theme.SignatureInput.spacing.vertical,
         theme.SignatureInput.fontSize,
         theme.SignatureInput.borderRadius,
-        theme.SignatureInput.minHeight,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
       ]"
+      height="150px"
       :name="name"
       :options="{ onEnd }"
     />

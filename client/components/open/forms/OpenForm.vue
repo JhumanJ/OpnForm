@@ -163,6 +163,7 @@ export default {
     },
     defaultDataForm: {},
     adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
+    urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
     darkMode: {
       type: Boolean,
       default: false
@@ -449,7 +450,7 @@ export default {
       return false
     },
     nextPage() {
-      if (this.adminPreview) {
+      if (this.adminPreview || this.urlPrefillPreview) {
         this.currentFieldGroupIndex += 1
         window.scrollTo({ top: 0, behavior: 'smooth' })
         return false

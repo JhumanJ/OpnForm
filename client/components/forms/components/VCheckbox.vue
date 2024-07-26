@@ -22,6 +22,7 @@
 
 <script setup>
 import { defineEmits, defineOptions, defineProps, onMounted, ref, watch, } from "vue"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 defineOptions({
   name: "VCheckbox",
@@ -32,7 +33,15 @@ const props = defineProps({
   name: { type: String, default: "checkbox" },
   modelValue: { type: [Boolean, String], default: false },
   disabled: { type: Boolean, default: false },
-  theme: { type: Object },
+  theme: {
+    type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
+      return CachedDefaultTheme.getInstance()
+    }
+  },
   color: { type: String, default: null },
 })
 

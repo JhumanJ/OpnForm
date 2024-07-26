@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import {themes} from "~/lib/forms/themes/form-themes.js"
-
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 export default {
   name: "OpenFormButton",
 
@@ -43,7 +42,15 @@ export default {
       default: false,
     },
 
-    theme: {type: Object, default: () => themes.default},
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
   },
 
   computed: {

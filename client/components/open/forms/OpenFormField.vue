@@ -110,6 +110,7 @@
 <script>
 import {computed} from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import {default as _has} from 'lodash/has'
 
 export default {
@@ -129,8 +130,13 @@ export default {
       required: true
     },
     theme: {
-      type: Object,
-      required: true
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
     },
     showHidden: {
       type: Boolean,
