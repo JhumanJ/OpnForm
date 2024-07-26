@@ -8,23 +8,26 @@
     />
   </template>
   
-  <script setup lang="ts">
-  const error = ref()
-  const emit = defineEmits(['on-error'])
-  function clearError() {
-    error.value = undefined
-  }
-  onErrorCaptured(err => {
-    error.value = err
-    emit('on-error', err)
-    return false
-  })
-  const route = useRoute()
-  watch(
-    () => route.fullPath,
-    () => {
-      error.value = undefined
+<script setup>
+    const error = ref()
+    const emit = defineEmits(['on-error'])
+    function clearError() {
+        error.value = undefined
     }
-  )
-  </script>
+    onErrorCaptured(err => {
+        error.value = err
+        emit('on-error', err)
+        return false
+    })
+    const route = useRoute()
+    watch(
+        () => route.fullPath,
+        () => {
+            error.value = undefined
+        }
+    )
+    defineExpose({
+        clearError
+    })
+</script>
   
