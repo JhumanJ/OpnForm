@@ -55,13 +55,22 @@
 import InputLabel from "./InputLabel.vue"
 import InputHelp from "./InputHelp.vue"
 import {twMerge} from "tailwind-merge"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 defineProps({
   id: {type: String, required: false},
   name: {type: String, required: false},
   label: {type: String, required: false},
   form: {type: Object, required: false},
-  theme: {type: Object, required: true},
+  theme: {
+    type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
+      return CachedDefaultTheme.getInstance()
+    }
+  },
   wrapperClass: {type: String, required: false},
   inputStyle: {type: Object, required: false},
   help: {type: String, required: false},
