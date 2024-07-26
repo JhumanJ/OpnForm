@@ -78,6 +78,7 @@
             :show-hidden="true"
             :form="form"
             :fields="form.properties"
+            :url-prefill-preview="true"
             @submit="generateUrl"
           >
             <template #submit-btn="{ submitForm }">
