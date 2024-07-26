@@ -95,7 +95,7 @@ export default {
           form_quantity: "Unlimited",
           file_upload_size: "75mb",
           domain_names: "Unlimited",
-          users: 10
+          users: 20
         },
       }[this.licenseTier]
     },
