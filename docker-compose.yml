@@ -1,0 +1,67 @@
+---
+services:
+  api:
+    image: jhumanj/opnform-api:latest
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+
+      DB_DATABASE: ${DB_DATABASE:-forge}
+      DB_USERNAME: ${DB_USERNAME:-forge}
+      DB_PASSWORD: ${DB_PASSWORD:-forge}
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      LOG_CHANNEL: ${LOG_CHANNEL:-errorlog}
+      AWS_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minio}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minio123}
+      AWS_REGION: eu-west-1
+      AWS_BUCKET: laravel-bucket
+      AWS_TEMPORARY_URL_REWRITES: '{"http://minio:9000": "${APP_URL:-http://localhost}"}'
+    env_file: ./.env
+    volumes:
+      - laravel-persist:/persist
+      - minio-storage:/minio
+
+  ui:
+    image: jhumanj/opnform-ui:latest
+    environment:
+      APP_URL: ${APP_URL:-http://localhost}
+      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-${APP_URL:-/}}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-$APP_URL/api}
+      NUXT_PRIVATE_API_BASE: http://ingress/api
+    env_file: ./client/.env
+
+
+  redis:
+    image: redis:latest
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio123}
+    volumes:
+      - minio-storage:/data
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-forge}
+      POSTGRES_USER: ${DB_USERNAME:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  ingress:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
+    ports:
+      - 80:80
+
+volumes:
+  laravel-persist:
+  postgres-data:
+  minio-storage:

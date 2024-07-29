@@ -7,14 +7,14 @@ main() {
 generate_api_secrets() {
 	if ! is_configured; then
 		SECRET="$(random_string)"
-		add_secret_to_env_file /app/client/.env NUXT_API_SECRET "$SECRET"
-		add_secret_to_env_file /app/.env FRONT_API_SECRET "$SECRET"
+		add_secret_to_env_file client/.env NUXT_API_SECRET "$SECRET"
+		add_secret_to_env_file .env FRONT_API_SECRET "$SECRET"
 	fi
 }
 
 random_string() {
 	array=()
-	for i in {a..z} {A..Z} {0..9}; 
+	for i in {a..z} {A..Z} {0..9};
 	   do
 	   array[$RANDOM]=$i
 	done
@@ -41,7 +41,7 @@ wait_for_other_instance() {
 }
 
 is_configured() {
-    grep -q "FRONT_API_SECRET=.\+" /app/.env
+    grep -q "FRONT_API_SECRET=.\+" .env
 }
 
 main

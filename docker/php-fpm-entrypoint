@@ -1,0 +1,67 @@
+#!/bin/bash
+
+main() {
+    prep_storage
+    prep_laravel_secrets
+    apply_db_migrations
+    read_env
+    run_server "$@"
+}
+
+read_env() {
+    #set +x
+    [ ! -f .env ] || . .env
+    #set -x
+}
+
+prep_laravel_secrets() {
+    read_env
+    chmod a+x ./artisan
+
+    [ "x$APP_KEY" != "x" ] || {
+        ./artisan key:generate
+        read_env
+    }
+    [ "x$JWT_SECRET" != "x" ] || {
+        ./artisan jwt:secret -f
+        read_env
+    }
+
+    [ "x$FRONT_API_SECRET" != "x" ] || {
+        /usr/local/bin/generate-api-secret.sh
+        read_env
+    }
+}
+
+apply_db_migrations() {
+    ./artisan migrate
+}
+
+run_server() {
+    /usr/local/bin/docker-php-entrypoint "$@"
+}
+
+prep_storage() {
+    [ -L storage ] || {
+        echo "Backing up initial storage directory"
+        rm -rf /etc/initial-storage
+        mv ./storage /etc/initial-storage
+    }
+
+    [ -d /persist/storage ] || {
+        echo "Initialising blank storage dir"
+        mkdir -p /persist
+        cp -a /etc/initial-storage /persist/storage
+        chmod 777 -R /persist/storage
+    }
+
+    touch /var/log/opnform.log
+    chown www-data /var/log/opnform.log
+
+    echo "Linking persistent storage into app"
+    ln -t . -sf /persist/storage
+
+    [ -d /minio/$AWS_BUCKET ] || mkdir -m 777 /minio/$AWS_BUCKET
+}
+
+main "$@"

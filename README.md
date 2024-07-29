@@ -9,8 +9,8 @@
 <a href="https://github.com/JhumanJ/OpnForm/stargazers"><img src="https://img.shields.io/github/stars/JhumanJ/OpnForm" alt="Github Stars"></a>
 </a>
 <a href="https://github.com/JhumanJ/OpnForm/pulse"><img src="https://img.shields.io/github/commit-activity/m/JhumanJ/OpnForm" alt="Commits per month"></a>
-<a href="https://hub.docker.com/r/jhumanj/opnform">
-<img src="https://img.shields.io/docker/pulls/jhumanj/opnform">
+<a href="https://hub.docker.com/r/jhumanj/opnform-api">
+<img src="https://img.shields.io/docker/pulls/jhumanj/opnform-api">
 </a>
 <a href="https://github.com/JhumanJ/OpnForm/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-purple" alt="License">
 <a href="https://github.com/JhumanJ/OpnForm/issues/new"><img src="https://img.shields.io/badge/Report a bug-Github-%231F80C0" alt="Report a bug"></a>
@@ -69,12 +69,16 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Docker installation 🐳
 
-This can be built and run locally but is also hosted publicly on docker hub at `jhumanj/opnform` and is generally best run directly from there.
+You can build the images locally but they are also available pre-built on dockerhub and it's generally best to run them from there.  A docker-compose.yml file is provided which should set up all the necessary services to get set up.
+
+#### Requirements
+- docker
+- docker-compose
 
 #### Running from docker hub
 
 ```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
+docker-compose up
 ```
 
 You should now be able to access the application by visiting  http://localhost in a web browser. 
@@ -82,78 +86,21 @@ You should now be able to access the application by visiting  http://localhost i
 > 👀 **Server Deployment**: If you are deploying OpnForm on a server (not locally), then you will [need to use 2 .env files](https://github.com/JhumanJ/opnform?tab=readme-ov-file#using-custom-env-files) to configure the app URLs (`APP_URL` in `.env` and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`).
 
 
-The `-v` argument creates a local directory called `my-opnform-data` which will store your database and files so that your work is not lost when you restart the container.
-
-The `--name` argument names the running container so that you can refer back to it later, with e.g. `docker stop opnform`.  You can use any name you'd like.
-
-
 #### Using custom .env files
 
-If you have custom env file you can use them like so:
+The docker-compose set up will load in the .env and client/.env files.
 
-Custom Laravel .env file:
-```
-docker run --name opnform -v $PWD/custom-laravel-env-file.env:/app/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
-```
+*** FIXME If you run the system without providing .env files then it will never be possible to provide them ***
 
-Custom Nuxt .env file:
-```
-docker run --name opnform -v $PWD/custom-nuxt-env-file.env:/app/client/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
-```
-
-This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.env.docker` example file as there are slightly different defaults for the dockerized setup.
-
-#### Using a custom HTTP port
-
-To run on port 8080
-
-```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 8080:80 jhumanj/opnform
-```
-
-#### Building a custom docker image
-
-To build a custom docker image from your local source code use this command from the root of the source repository:
-
-```
-docker build . -t my-docker-image-name
-```
-
-This should create a new docker image tagged `my-docker-image-name` which can be run as follows:
-
-```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 my-docker-image-name
-
-```
 
 #### Upgrading docker installations
 
 **Please consult the upgrade instructions for the latest opnform version**, e.g. if upgrading from v1 to v2 please check the v2 instructions as the process may change in future releases.
 
-Normal upgrade procedure would be to stop the running container, back up your data directory (you will need this backup if you want to rollback to the old version) and then start a container running the new image with the same arguments.
-
-e.g. if you're running from a specific opnform version with 
-
-```docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:1.0.0```
-
-You could run:
-
+Normal upgrade procedure would be to update the docker-compose.yml file(s) and then apply the changes by re-running:
 ```
-# stop the running container
-docker stop opnform
-# backup the data directory
-cp -r my-opnform-data my-opnform-backup
-# start the new container
-docker run --name opnform-2 -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:2.0.0
+docker-compose up 
 ```
-
-Then if everything is running smoothly you can delete the old container with:
-```
-docker rm opnform
-```
-
-If you haven't specified a version e.g. if you are using the image `jhumanj/opnform` or `jhumanj/opnform:latest` you will need to run `docker pull jhumanj/opnform` or `docker pull jhumanj/opnform:latest` before starting the new container.
-
 
 ### Using Laravel Valet
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.

@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev",
+    "docker-dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev --host 0.0.0.0",
     "generate": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
