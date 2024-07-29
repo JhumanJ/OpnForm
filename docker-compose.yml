@@ -15,13 +15,15 @@ services:
       AWS_ENDPOINT: http://minio:9000
       AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minio}
       AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minio123}
+      FILESYSTEM_DISK: local
       AWS_REGION: eu-west-1
       AWS_BUCKET: laravel-bucket
-      AWS_TEMPORARY_URL_REWRITES: '{"http://minio:9000": "${APP_URL:-http://localhost}"}'
+      SELF_HOSTED: 'false'
+      LOCAL_FILESYSTEM_VISIBILITY: public
     env_file: ./.env
     volumes:
       - laravel-persist:/persist
-      - minio-storage:/minio
+      - secrets-config:/secrets
 
   api-worker:
     <<: *api
@@ -35,19 +37,12 @@ services:
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-$APP_URL/api}
       NUXT_PRIVATE_API_BASE: http://ingress/api
     env_file: ./client/.env
+    volumes:
+      - secrets-config:/secrets
 
 
   redis:
     image: redis:latest
-
-  minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio123}
-    volumes:
-      - minio-storage:/data
 
   db:
     image: postgres:latest
@@ -68,4 +63,4 @@ services:
 volumes:
   laravel-persist:
   postgres-data:
-  minio-storage:
+  secrets-config:
