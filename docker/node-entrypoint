@@ -10,7 +10,7 @@ main() {
     fi
 }
 wait_for_api_secret() {
-    while ! grep -q NUXT_API_SECRET=.. .env 2>/dev/null; do
+    until [ -f /secrets/configured ]; do
         echo "Waiting for api secret..."
         sleep 1
     done

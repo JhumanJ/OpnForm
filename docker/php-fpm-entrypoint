@@ -1,24 +1,42 @@
 #!/bin/bash
 
 main() {
-    prep_storage
-    prep_laravel_secrets
-    apply_db_migrations
+    read_env
+    prep_file_permissions
+    if is_master "$@"; then
+        prep_storage
+        prep_laravel_secrets
+        wait_for_db
+        apply_db_migrations
+        mark_ready
+    else
+        wait_for_ready
+        wait_for_db
+    fi
     read_env
     run_server "$@"
+}
+is_master() {
+    echo "$@" | grep -q php-fpm
 }
 
 read_env() {
     #set +x
-    [ ! -f .env ] || . .env
+    [ -f .env ] || touch .env
+    . .env
     #set -x
+}
+prep_file_permissions() {
+    chmod a+x ./artisan
 }
 
 prep_laravel_secrets() {
     read_env
-    chmod a+x ./artisan
 
     [ "x$APP_KEY" != "x" ] || {
+        grep -q "APP_KEY=" .env || {
+            echo "APP_KEY=" >> .env
+        }
         echo "Generating Laravel key..."
         ./artisan key:generate
         read_env
@@ -36,10 +54,31 @@ prep_laravel_secrets() {
 }
 
 apply_db_migrations() {
+    echo "Running DB Migrations"
     ./artisan migrate
 }
 
+wait_for_ready() {
+    echo "Checking keys have been generated"
+    until [ -f /secrets/configured ]; do
+        sleep 1;
+        echo "Waiting for keys to generate"
+    done
+}
+
+mark_ready() {
+    touch /secrets/configured
+}
+
+wait_for_db() {
+    until ./artisan migrate:status 2>&1 | grep -q -E "(Migration table not found|Migration name)"; do
+        echo "Waiting for DB to bootup"
+        sleep 1
+    done
+}
+
 run_server() {
+    echo "Booting $@"
     /usr/local/bin/docker-php-entrypoint "$@"
 }
 
@@ -62,8 +101,6 @@ prep_storage() {
 
     echo "Linking persistent storage into app"
     ln -t . -sf /persist/storage
-
-    [ -d /minio/$AWS_BUCKET ] || mkdir -m 777 /minio/$AWS_BUCKET
 }
 
 main "$@"
