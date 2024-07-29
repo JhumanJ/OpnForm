@@ -3,8 +3,8 @@
 main() {
     read_env
     prep_file_permissions
+    prep_storage
     if is_master "$@"; then
-        prep_storage
         prep_laravel_secrets
         wait_for_db
         apply_db_migrations
