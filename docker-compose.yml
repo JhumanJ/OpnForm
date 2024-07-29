@@ -1,6 +1,6 @@
 ---
 services:
-  api:
+  api: &api
     image: jhumanj/opnform-api:latest
     environment:
       DB_HOST: db
@@ -22,6 +22,10 @@ services:
     volumes:
       - laravel-persist:/persist
       - minio-storage:/minio
+
+  api-worker:
+    <<: *api
+    command: ./artisan queue:work
 
   ui:
     image: jhumanj/opnform-ui:latest
