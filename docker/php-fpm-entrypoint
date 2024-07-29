@@ -19,10 +19,12 @@ prep_laravel_secrets() {
     chmod a+x ./artisan
 
     [ "x$APP_KEY" != "x" ] || {
+        echo "Generating Laravel key..."
         ./artisan key:generate
         read_env
     }
     [ "x$JWT_SECRET" != "x" ] || {
+        echo "Generating Laravel Secret..."
         ./artisan jwt:secret -f
         read_env
     }

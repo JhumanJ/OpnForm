@@ -6,14 +6,19 @@ WORKDIR /app
 #
 # It's possible to run npm install with only the package.json and package-lock.json file.
 
-ADD ./package.json ./package-lock.json ./
+ADD ./client/package.json ./client/package-lock.json ./
 RUN npm install
 
-ADD . /app/
+ADD ./client/ /app/
 RUN npm run build
 
 FROM node:20-alpine
 WORKDIR /app
 COPY --from=javascript-builder /app/.output/ /app/
 RUN ls /app/
-CMD node ./server/index.mjs
+RUN ln -s /secrets/client.env .env
+ADD ./docker/node-entrypoint /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "node", "./server/index.mjs" ]

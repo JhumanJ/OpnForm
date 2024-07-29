@@ -41,6 +41,8 @@ RUN php artisan package:discover --ansi
 
 COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
 COPY docker/generate-api-secret.sh /usr/local/bin/
+RUN ln -s /secrets/api.env .env
+
 RUN chmod a+x /usr/local/bin/*
 
 ENTRYPOINT [ "/usr/local/bin/opnform-entrypoint" ]

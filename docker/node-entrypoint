@@ -1,0 +1,23 @@
+#!/bin/sh
+
+main() {
+    if [ "$1" == "bash" ]; then
+        "$@"
+    else
+        wait_for_api_secret
+        . .env
+        run_server "$@"
+    fi
+}
+wait_for_api_secret() {
+    while ! grep -q NUXT_API_SECRET=.. .env 2>/dev/null; do
+        echo "Waiting for api secret..."
+        sleep 1
+    done
+}
+run_server() {
+    echo "Running " node "$@"
+    "$@"
+}
+
+main "$@"
