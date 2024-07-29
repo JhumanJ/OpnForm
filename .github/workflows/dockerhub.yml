@@ -25,10 +25,10 @@ jobs:
         run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_ACCESS_TOKEN }}"
 
       - name: Build docker api image
-        run: docker build . -t $DOCKER_API_REPO:latest -t $DOCKER_API_REPO:$TAG_NAME
+        run: docker build -f docker/Dockerfile.api . -t $DOCKER_API_REPO:latest -t $DOCKER_API_REPO:$TAG_NAME
 
       - name: Build docker ui image
-        run: cd client && docker build . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
+        run: cd client && docker build -f docker/Dockerfile.ui . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
 
       - name: Push Docker api image
         run: docker push $DOCKER_API_REPO:latest && docker push $DOCKER_API_REPO:$TAG_NAME
