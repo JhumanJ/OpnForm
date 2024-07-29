@@ -20,6 +20,9 @@ prep_laravel_secrets() {
 
     [ "x$APP_KEY" != "x" ] || {
         echo "Generating Laravel key..."
+        grep "^APP_KEY=" .env || {
+            echo "APP_KEY=" >> .env
+        }
         ./artisan key:generate
         read_env
     }
@@ -30,9 +33,11 @@ prep_laravel_secrets() {
     }
 
     [ "x$FRONT_API_SECRET" != "x" ] || {
+        echo "Generating Shared Client Secret..."
         /usr/local/bin/generate-api-secret.sh
         read_env
     }
+    echo "Done with secrets"
 }
 
 apply_db_migrations() {
@@ -40,6 +45,7 @@ apply_db_migrations() {
 }
 
 run_server() {
+    read_env
     /usr/local/bin/docker-php-entrypoint "$@"
 }
 

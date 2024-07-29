@@ -28,7 +28,7 @@ jobs:
         run: docker build -f docker/Dockerfile.api . -t $DOCKER_API_REPO:latest -t $DOCKER_API_REPO:$TAG_NAME
 
       - name: Build docker ui image
-        run: cd client && docker build -f docker/Dockerfile.ui . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
+        run: cd client && docker build -f docker/Dockerfile.client . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
 
       - name: Push Docker api image
         run: docker push $DOCKER_API_REPO:latest && docker push $DOCKER_API_REPO:$TAG_NAME
