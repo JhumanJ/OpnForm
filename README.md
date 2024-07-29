@@ -69,7 +69,7 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Docker installation 🐳
 
-You can build the images locally but they are also available pre-built on dockerhub and it's generally best to run them from there.  A docker-compose.yml file is provided which should set up all the necessary services to get set up.
+You can build the images locally but they are also available pre-built on dockerhub and it's generally best to run them from there.  A docker-compose.yml file is provided which should set up all the necessary services to get running.
 
 #### Requirements
 - docker
@@ -78,6 +78,8 @@ You can build the images locally but they are also available pre-built on docker
 #### Running from docker hub
 
 ```
+cp .env.docker .env
+cp client/.env.docker client/.env
 docker-compose up
 ```
 
