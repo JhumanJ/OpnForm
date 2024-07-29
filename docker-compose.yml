@@ -42,10 +42,10 @@ services:
 
 
   redis:
-    image: redis:latest
+    image: redis:7
 
   db:
-    image: postgres:latest
+    image: postgres:16
     environment:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
@@ -54,7 +54,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   ingress:
-    image: nginx:latest
+    image: nginx:1
     volumes:
       - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
     ports:
