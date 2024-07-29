@@ -238,19 +238,3 @@ useHead({
   script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' } ]
 })
 </script>
-
-<style lang="scss">
-#public-form {
-  p, div {
-    @apply text-gray-900 dark:text-white;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-gray-900 dark:text-white;
-  }
-
-  a {
-    @apply text-blue-600 hover:underline;
-  }
-}
-</style>

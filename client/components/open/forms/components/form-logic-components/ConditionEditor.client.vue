@@ -1,40 +1,42 @@
 <template>
-  <query-builder
-    v-model="query"
-    :rules="rules"
-    :config="config"
-    @update:model-value="onChange"
-  >
-    <template #groupOperator="props">
-      <div
-        class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-1 flex"
-      >
-        <p class="mr-2 font-semibold">
-          Operator
-        </p>
-        <select-input
-          wrapper-class="relative"
-          :model-value="props.currentOperator"
-          :options="props.operators"
-          emit-key="identifier"
-          option-key="identifier"
-          name="operator-input"
-          margin-bottom=""
-          @update:model-value="props.updateCurrentOperator($event)"
+  <ErrorBoundary @on-error="handleError" ref="error_boundary">
+    <query-builder
+      v-model="query"
+      :rules="rules"
+      :config="config"
+      @update:model-value="onChange"
+    >
+      <template #groupOperator="props">
+        <div
+          class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-1 flex"
+        >
+          <p class="mr-2 font-semibold">
+            Operator
+          </p>
+          <select-input
+            wrapper-class="relative"
+            :model-value="props.currentOperator"
+            :options="props.operators"
+            emit-key="identifier"
+            option-key="identifier"
+            name="operator-input"
+            margin-bottom=""
+            @update:model-value="props.updateCurrentOperator($event)"
+          />
+        </div>
+      </template>
+      <template #groupControl="props">
+        <group-control-slot :group-ctrl="props" />
+      </template>
+      <template #rule="ruleCtrl">
+        <component
+          :is="ruleCtrl.ruleComponent"
+          :model-value="ruleCtrl.ruleData"
+          @update:model-value="ruleCtrl.updateRuleData"
         />
-      </div>
-    </template>
-    <template #groupControl="props">
-      <group-control-slot :group-ctrl="props" />
-    </template>
-    <template #rule="ruleCtrl">
-      <component
-        :is="ruleCtrl.ruleComponent"
-        :model-value="ruleCtrl.ruleData"
-        @update:model-value="ruleCtrl.updateRuleData"
-      />
-    </template>
-  </query-builder>
+      </template>
+    </query-builder>
+  </ErrorBoundary> 
 </template>
 
 <script>
@@ -130,7 +132,16 @@ export default {
     onChange() {
       this.$emit("update:modelValue", this.query)
     },
-  },
+    // If there was some changes to the structure, causing an issue, we clear the condition
+    handleError (error) {
+      this.$nextTick(() => {
+        console.error('Error with condition - clearing previous value', error)
+        this.query = null
+        this.onChange()
+        this.$refs['error_boundary'].clearError()
+      })
+    }
+  }
 }
 </script>
 <style src="query-builder-vue-3/dist/style.css" />

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col">
+  <div class="w-full flex flex-col flex-grow">
     <form-editor
       v-if="(!formsLoading || form ) && !error "
       ref="editor"

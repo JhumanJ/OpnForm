@@ -39,9 +39,10 @@ export default {
     formattedDate(val) {
       if (!val) return ''
       const dateFormat = _has(this.property, 'date_format') ? this.property.date_format : 'dd/MM/yyyy'
+      const timeFormat = _has(this.property, 'time_format') ? this.property.time_format : '24'
       if (this.property?.with_time) {
         try {
-          return format(new Date(val), dateFormat + ' HH:mm')
+          return format(new Date(val), dateFormat + (timeFormat == 12 ? ' p':' HH:mm'))
         } catch (e) {
           return ''
         }

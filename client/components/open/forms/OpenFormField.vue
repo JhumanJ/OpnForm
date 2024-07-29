@@ -91,6 +91,7 @@
             :alt="field.name"
             :src="field.image_block"
             class="max-w-full"
+            :class="theme.default.borderRadius"
           >
         </div>
       </template>
@@ -109,6 +110,7 @@
 <script>
 import {computed} from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import {default as _has} from 'lodash/has'
 
 export default {
@@ -128,8 +130,13 @@ export default {
       required: true
     },
     theme: {
-      type: Object,
-      required: true
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
     },
     showHidden: {
       type: Boolean,
@@ -306,6 +313,7 @@ export default {
         inputProperties.searchable = (inputProperties.options.length > 4)
       } else if (field.type === 'date') {
         inputProperties.dateFormat = field.date_format
+        inputProperties.timeFormat = field.time_format
         if (field.with_time) {
           inputProperties.withTime = true
         }
@@ -340,6 +348,8 @@ export default {
         inputProperties.pattern = '/d*'
       } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
         inputProperties.unavailableCountries = field.unavailable_countries ?? []
+      } else if (field.type === 'text' && field.secret_input) {
+        inputProperties.nativeType = 'password'
       }
 
       return inputProperties

@@ -109,8 +109,8 @@
         :color="form.color"
         :theme="theme"
         class="mt-2 px-8 mx-1"
-        @click.stop="nextPage"
         :loading="dataForm.busy"
+        @click.stop="nextPage"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
@@ -141,14 +141,14 @@ export default {
       required: true
     },
     theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
       }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
+    },
     loading: {
       type: Boolean,
       required: true
@@ -163,6 +163,7 @@ export default {
     },
     defaultDataForm: {},
     adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
+    urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
     darkMode: {
       type: Boolean,
       default: false
@@ -449,7 +450,7 @@ export default {
       return false
     },
     nextPage() {
-      if (this.adminPreview) {
+      if (this.adminPreview || this.urlPrefillPreview) {
         this.currentFieldGroupIndex += 1
         window.scrollTo({ top: 0, behavior: 'smooth' })
         return false
@@ -461,7 +462,11 @@ export default {
           this.currentFieldGroupIndex += 1
           this.dataForm.busy = false
           window.scrollTo({top: 0, behavior: 'smooth'})
-        }).catch(err => {
+        }).catch(error => {
+          console.error(error)
+          if (error && error.data && error.data.message) {
+            useAlert().error(error.data.message)
+          }
           this.dataForm.busy = false
         })
       return false
