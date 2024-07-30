@@ -33,8 +33,8 @@ services:
     image: jhumanj/opnform-ui:latest
     environment:
       APP_URL: ${APP_URL:-http://localhost}
-      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-${APP_URL:-/}}
-      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-$APP_URL/api}
+      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
       NUXT_PRIVATE_API_BASE: http://ingress/api
       NUXT_PUBLIC_SELF_HOSTED: "false"
     env_file: ./client/.env
