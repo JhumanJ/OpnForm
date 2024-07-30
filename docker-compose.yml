@@ -20,6 +20,7 @@ services:
       AWS_BUCKET: laravel-bucket
       SELF_HOSTED: 'false'
       LOCAL_FILESYSTEM_VISIBILITY: public
+      FRONT_URL: ${FRONT_URL:-http://localhost}
     env_file: ./.env
     volumes:
       - laravel-persist:/persist
@@ -32,7 +33,6 @@ services:
   ui:
     image: jhumanj/opnform-ui:latest
     environment:
-      APP_URL: ${APP_URL:-http://localhost}
       NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
       NUXT_PRIVATE_API_BASE: http://ingress/api
