@@ -61,7 +61,6 @@ export function useFormInput(props, context, options = {}) {
       if (props.form) {
         return _get(props.form, (composableOptions.formPrefixKey || "") + props.name)
       }
-      console.log(content.value)
       return content.value
     },
     set: (val) => {
@@ -93,7 +92,6 @@ export function useFormInput(props, context, options = {}) {
   watch(
     () => props.modelValue,
     (newValue) => {
-      console.log(newValue, 'watcher')
       if (content.value !== newValue) {
         content.value = newValue
       }

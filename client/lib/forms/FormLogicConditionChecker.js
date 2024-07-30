@@ -1,3 +1,6 @@
+import { default as _isEqual } from "lodash/isEqual"
+import { default as _has } from "lodash/has"
+
 export function conditionsMet(conditions, formData) {
   if (conditions === undefined || conditions === null) {
     return false
@@ -59,12 +62,18 @@ function propertyConditionMet(propertyCondition, value) {
       return multiSelectConditionMet(propertyCondition, value)
     case "files":
       return filesConditionMet(propertyCondition, value)
+    case "matrix":
+      return matrixConditionMet(propertyCondition, value);
   }
   return false
 }
 
 function checkEquals(condition, fieldValue) {
   return condition.value === fieldValue
+}
+
+function checkObjectEquals(condition, fieldValue) {
+  return _isEqual(condition.value, fieldValue);
 }
 
 function checkContains(condition, fieldValue) {
@@ -148,7 +157,7 @@ function checkPastWeek(condition, fieldValue) {
   return (
     fieldDate <= today &&
     fieldDate >=
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
   )
 }
 
@@ -159,7 +168,7 @@ function checkPastMonth(condition, fieldValue) {
   return (
     fieldDate <= today &&
     fieldDate >=
-      new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
+    new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
   )
 }
 
@@ -170,7 +179,7 @@ function checkPastYear(condition, fieldValue) {
   return (
     fieldDate <= today &&
     fieldDate >=
-      new Date(today.getFullYear() - 1, today.getMonth(), today.getDate())
+    new Date(today.getFullYear() - 1, today.getMonth(), today.getDate())
   )
 }
 
@@ -181,7 +190,7 @@ function checkNextWeek(condition, fieldValue) {
   return (
     fieldDate >= today &&
     fieldDate <=
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7)
+    new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7)
   )
 }
 
@@ -192,7 +201,7 @@ function checkNextMonth(condition, fieldValue) {
   return (
     fieldDate >= today &&
     fieldDate <=
-      new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())
+    new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())
   )
 }
 
@@ -203,7 +212,7 @@ function checkNextYear(condition, fieldValue) {
   return (
     fieldDate >= today &&
     fieldDate <=
-      new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
+    new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
   )
 }
 
@@ -368,6 +377,39 @@ function filesConditionMet(propertyCondition, value) {
       return checkIsEmpty(propertyCondition, value)
     case "is_not_empty":
       return !checkIsEmpty(propertyCondition, value)
+  }
+  return false
+}
+
+function matrixConditionMet(propertyCondition, value) {
+  switch (propertyCondition.operator) {
+    case "equals":
+      return checkObjectEquals(propertyCondition, value)
+    case "does_not_equal":
+      return !checkObjectEquals(propertyCondition, value)
+    case "contains":
+      const conditionValue = propertyCondition.value
+      let results = [];
+      for (const key in conditionValue){
+        console.log('key is:', key)
+        console.log(conditionValue[key], value[key], conditionValue[key] == value[key])
+        if (!_has(value, key)) {
+          // console.log('nohas', value, key)
+          results.push['false']
+            // console.log('pushed false')
+          }else{
+          if (conditionValue[key] == value[key]) {
+            // console.log('has', conditionValue[key], value[key])
+            results.push['true']
+            // console.log('pushed true')
+          }
+        }
+        // console.log(results)
+      }
+      return true;
+    case "does_not_contain":
+      return false
+      return !checkContains(propertyCondition, value)
   }
   return false
 }

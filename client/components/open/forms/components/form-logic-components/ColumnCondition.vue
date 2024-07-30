@@ -58,6 +58,7 @@ export default {
         url: "TextInput",
         email: "TextInput",
         phone_number: "TextInput",
+        matrix: "MatrixInput",
       },
     }
   },
@@ -92,6 +93,10 @@ export default {
         // componentData.withTime = true
       } else if (this.property.type === "checkbox") {
         componentData.label = this.property.name
+      }
+      else if (this.property.type === "matrix"){
+        componentData.rows = this.property.rows
+        componentData.columns = this.property.columns
       }
 
       return componentData
@@ -184,8 +189,9 @@ export default {
       ) {
         this.content.value = {}
       } else if (
-        typeof this.content.value === "boolean" ||
-        typeof this.content.value === "object"
+        this.property.type !== 'matrix' && 
+        (typeof this.content.value === 'boolean' || 
+        typeof this.content.value === 'object')
       ) {
         this.content.value = null
       }

@@ -100,6 +100,10 @@ export default {
   },
   computed: {},
   methods: {
+    test(){
+      console.log(this.compVal)
+      this.compVal = {}
+    },
     onSelect(row, column) {
       if (this.compVal[row] === column) {
         this.compVal[row] = null
