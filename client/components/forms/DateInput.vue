@@ -72,7 +72,7 @@
           :is-dark="props.isDark"
           color="form-color"
           @close="close"
-          @update:modelValue="pickerOpen = false"
+          @update:modelValue="updateModelValue"
         />
         <DatePicker
           v-else
@@ -86,7 +86,7 @@
           :is-dark="props.isDark"
           color="form-color"
           @close="close"
-          @update:modelValue="pickerOpen = false"
+          @update:modelValue="updateModelValue"
         />
       </template>
     </UPopover>
@@ -144,6 +144,12 @@ const modeledValue = computed({
     }
   }
 })
+
+const updateModelValue = () => {
+  if (!props.withTime && !props.dateRange) {
+    pickerOpen.value = false
+  }
+}
 
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
