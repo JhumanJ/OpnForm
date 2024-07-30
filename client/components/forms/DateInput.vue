@@ -72,6 +72,7 @@
           :is-dark="props.isDark"
           color="form-color"
           @close="close"
+          @update:modelValue="pickerOpen = false"
         />
         <DatePicker
           v-else
@@ -85,6 +86,7 @@
           :is-dark="props.isDark"
           color="form-color"
           @close="close"
+          @update:modelValue="pickerOpen = false"
         />
       </template>
     </UPopover>
