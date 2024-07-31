@@ -204,9 +204,9 @@
                     </p>
                     <UButton
                       v-track.upgrade_banner_home_click
-                      :to="{name:'pricing'}"
                       color="white"
                       class="block"
+                      @click.prevent="subscriptionModalStore.openModal()"
                     >
                       Upgrade Now
                     </UButton>
@@ -246,6 +246,7 @@ useOpnSeoMeta({
     "All of your OpnForm are here. Create new forms, or update your existing forms.",
 })
 
+const subscriptionModalStore = useSubscriptionModalStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 formsStore.startLoading()

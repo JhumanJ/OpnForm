@@ -149,7 +149,7 @@
                     v-else
                     class="mr-1"
                     :arrow="true"
-                    @click.prevent="openCustomerCheckout('default')"
+                    @click.prevent="subscriptionModalStore.openModal('default', isYearly)"
                   >
                     Start free trial
                   </v-button>
@@ -201,8 +201,10 @@ export default {
     },
   },
   setup() {
+    const subscriptionModalStore = useSubscriptionModalStore()
     const authStore = useAuthStore()
     return {
+      subscriptionModalStore,
       authenticated: computed(() => authStore.check),
       user: computed(() => authStore.user),
     }
