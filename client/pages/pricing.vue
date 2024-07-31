@@ -416,6 +416,7 @@ export default {
 
     definePageMeta({
       middleware: [
+        "self-hosted",
         function () {
           // Custom inline middleware
           if (!useRuntimeConfig().public.paidPlansEnabled) {

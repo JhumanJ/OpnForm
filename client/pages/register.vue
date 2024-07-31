@@ -106,7 +106,7 @@ export default {
     })
 
     definePageMeta({
-      middleware: "guest",
+      middleware: ["self-hosted","guest",]
     })
 
     defineRouteRules({

@@ -58,7 +58,7 @@
         Log in to continue
       </v-button>
 
-      <p class="text-gray-500 mt-4">
+      <p v-if="!isSelfHosted" class="text-gray-500 mt-4">
         Don't have an account?
         <a
           v-if="isQuick"
@@ -105,6 +105,12 @@ export default {
     }
   },
 
+  computed: {
+    isSelfHosted(){
+      return useRuntimeConfig().public.selfHostMode
+    },
+  },
+  
   data: () => ({
     form: useForm({
       email: "",

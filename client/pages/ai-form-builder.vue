@@ -631,7 +631,9 @@ import { computed } from "vue"
 import { useAuthStore } from "../stores/auth"
 
 const authStore = useAuthStore()
-
+definePageMeta({
+  middleware: ["self-hosted",]
+})
 useOpnSeoMeta({
   title: "Free AI form builder",
   description:
