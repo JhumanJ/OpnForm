@@ -32,7 +32,7 @@
           >
             Templates
           </NuxtLink>
-          <template v-if="featureBaseEnabled">
+          <template v-if="appStore.featureBaseEnabled">
             <button
               v-if="user"
               :class="navLinkClasses"
@@ -54,7 +54,7 @@
             </a>
           </template>
           <NuxtLink
-            v-if="($route.name !== 'ai-form-builder' && user === null) && (!isSelfHosted || hasAiFeatures)"
+            v-if="($route.name !== 'ai-form-builder' && user === null) && (!appStore.selfHosted || appStore.aiFeaturesEnabled)"
             :to="{ name: 'ai-form-builder' }"
             :class="navLinkClasses"
             class="hidden lg:inline"
@@ -63,9 +63,9 @@
           </NuxtLink>
           <NuxtLink
             v-if="
-              (paidPlansEnabled &&
+              (appStore.paidPlansEnabled &&
                 (user === null || (user && workspace && !workspace.is_pro)) &&
-                $route.name !== 'pricing') && !isSelfHosted
+                $route.name !== 'pricing') && !appStore.selfHosted
             "
             :to="{ name: 'pricing' }"
             :class="navLinkClasses"
@@ -313,12 +313,6 @@ export default {
     workspace() {
       return this.workspacesStore.getCurrent
     },
-    paidPlansEnabled() {
-      return this.config.public.paidPlansEnabled
-    },
-    featureBaseEnabled() {
-      return this.config.public.featureBaseOrganization !== null
-    },
     showAuth() {
       return this.$route.name && this.$route.name !== "forms-slug"
     },
@@ -340,21 +334,9 @@ export default {
     userOnboarded() {
       return this.user && this.user.has_forms === true
     },
-    hasCrisp() {
-      return (
-        this.config.public.crispWebsiteId &&
-        this.config.public.crispWebsiteId !== ""
-      )
-    },
     hasNewChanges() {
-      if (import.meta.server || !window.Featurebase) return false
+      if (import.meta.server || !window.Featurebase || !this.appStore.featureBaseEnabled) return false
       return window.Featurebase("unviewed_changelog_count") > 0
-    },
-    isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
-    },
-    hasAiFeatures(){
-      return useRuntimeConfig().public.aiFeaturesEnabled
     },
   },
 

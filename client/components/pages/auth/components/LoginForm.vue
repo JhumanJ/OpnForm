@@ -58,7 +58,10 @@
         Log in to continue
       </v-button>
 
-      <p v-if="!isSelfHosted" class="text-gray-500 mt-4">
+      <p
+        v-if="!appStore.selfHosted"
+        class="text-gray-500 mt-4"
+      >
         Don't have an account?
         <a
           v-if="isQuick"
@@ -99,18 +102,13 @@ export default {
   emits: ['afterQuickLogin', 'openRegister'],
   setup() {
     return {
+      appStore: useAppStore(),
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore(),
     }
   },
 
-  computed: {
-    isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
-    },
-  },
-  
   data: () => ({
     form: useForm({
       email: "",
