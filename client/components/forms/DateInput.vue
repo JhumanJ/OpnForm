@@ -71,7 +71,6 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @close="close"
           @update:modelValue="updateModelValue"
         />
         <DatePicker
@@ -85,7 +84,6 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @close="close"
           @update:modelValue="updateModelValue"
         />
       </template>
