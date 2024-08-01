@@ -76,6 +76,16 @@ function checkObjectEquals(condition, fieldValue) {
   return _isEqual(condition.value, fieldValue);
 }
 
+function checkMatrixContains(condition, fieldValue)
+{
+  const conditionValue = condition.value
+  let comparison = [];
+  for (const key in conditionValue) {
+    comparison.push(conditionValue[key] == fieldValue[key])
+  }
+  return comparison.includes(true)
+}
+
 function checkContains(condition, fieldValue) {
   return fieldValue ? fieldValue.includes(condition.value) : false
 }
@@ -388,28 +398,9 @@ function matrixConditionMet(propertyCondition, value) {
     case "does_not_equal":
       return !checkObjectEquals(propertyCondition, value)
     case "contains":
-      const conditionValue = propertyCondition.value
-      let results = [];
-      for (const key in conditionValue){
-        console.log('key is:', key)
-        console.log(conditionValue[key], value[key], conditionValue[key] == value[key])
-        if (!_has(value, key)) {
-          // console.log('nohas', value, key)
-          results.push['false']
-            // console.log('pushed false')
-          }else{
-          if (conditionValue[key] == value[key]) {
-            // console.log('has', conditionValue[key], value[key])
-            results.push['true']
-            // console.log('pushed true')
-          }
-        }
-        // console.log(results)
-      }
-      return true;
+     return checkMatrixContains(propertyCondition, value)
     case "does_not_contain":
-      return false
-      return !checkContains(propertyCondition, value)
+     return !checkMatrixContains(propertyCondition, value)
   }
   return false
 }
