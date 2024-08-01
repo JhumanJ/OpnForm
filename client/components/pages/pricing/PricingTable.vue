@@ -169,13 +169,6 @@
     </section>
 
     <custom-plan v-if="!homePage" />
-
-    <checkout-details-modal
-      :show="showDetailsModal"
-      :yearly="isYearly"
-      :plan="selectedPlan"
-      @close="showDetailsModal = false"
-    />
   </div>
 </template>
 
@@ -183,7 +176,6 @@
 import { computed } from "vue"
 import { useAuthStore } from "../../../stores/auth"
 import MonthlyYearlySelector from "./MonthlyYearlySelector.vue"
-import CheckoutDetailsModal from "./CheckoutDetailsModal.vue"
 import CustomPlan from "./CustomPlan.vue"
 
 MonthlyYearlySelector.compatConfig = { MODE: 3 }
@@ -191,7 +183,6 @@ MonthlyYearlySelector.compatConfig = { MODE: 3 }
 export default {
   components: {
     MonthlyYearlySelector,
-    CheckoutDetailsModal,
     CustomPlan,
   },
   props: {
@@ -211,9 +202,6 @@ export default {
   },
   data: () => ({
     isYearly: true,
-    selectedPlan: "pro",
-    showDetailsModal: false,
-
     pricingInfo: [
       "Form confirmation emails",
       "Slack notifications",
@@ -230,10 +218,6 @@ export default {
   computed: {},
 
   methods: {
-    openCustomerCheckout(plan) {
-      this.selectedPlan = plan
-      this.showDetailsModal = true
-    },
     openBilling() {
       this.billingLoading = true
       opnFetch("/subscription/billing-portal").then((data) => {
