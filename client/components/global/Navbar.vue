@@ -248,6 +248,7 @@
                   </NuxtLink>
 
                   <v-button
+                    v-if="!appStore.selfHosted"
                     v-track.nav_create_form_click
                     size="small"
                     class="shrink-0"

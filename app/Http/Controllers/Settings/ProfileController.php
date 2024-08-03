@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -28,9 +29,9 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function updateSelfModeCredentials(Request $request)
+    // For self-hosted mode, only admin can update their credentials
+    public function updateAdminCredentials(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email|not_in:admin@opnform.com',
             'password' => 'required|min:6|confirmed|not_in:password',
@@ -39,17 +40,16 @@ class ProfileController extends Controller
             'password.not_in' => "Please another password other than 'password'."
         ]);
 
+        ray('in', $request->password);
         $user = $request->user();
-        if ($user->credentials_changed) {
-            return $this->error([
-                'message' => 'Credentials already updated.'
-            ]);
-        }
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->credentials_changed = true;
-        $user->save();
-        $user->refresh();
+        $user->update([
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+        ray($user);
+
+        Cache::forget('initial_user_setup_complete');
+        Cache::forget('max_user_id');
 
         $workspace = Workspace::create([
             'name' => 'My Workspace',

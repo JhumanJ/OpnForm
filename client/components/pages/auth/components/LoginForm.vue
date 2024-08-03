@@ -109,12 +109,6 @@ export default {
     }
   },
 
-  computed: {
-    isSelfHosted(){
-      return useRuntimeConfig().public.selfHostMode
-    },
-  },
-
   data: () => ({
     form: useForm({
       email: "",

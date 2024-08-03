@@ -13,8 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if(config('app.self_hosted')) {
-
-        }
+        // \App\Models\User::factory(10)->create();
     }
 }

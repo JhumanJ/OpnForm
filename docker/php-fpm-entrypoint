@@ -8,6 +8,7 @@ main() {
         prep_laravel_secrets
         wait_for_db
         apply_db_migrations
+        run_init_project
         mark_ready
     else
         wait_for_ready
@@ -58,6 +59,11 @@ prep_laravel_secrets() {
 apply_db_migrations() {
     echo "Running DB Migrations"
     ./artisan migrate
+}
+
+run_init_project() {
+    echo "Running app:init-project command"
+    ./artisan app:init-project
 }
 
 wait_for_ready() {

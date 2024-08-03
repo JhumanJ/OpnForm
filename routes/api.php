@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Storage;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-    Route::post('update-credentials', [ProfileController::class, 'updateSelfModeCredentials'])->name('credentials.update');
+    Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);

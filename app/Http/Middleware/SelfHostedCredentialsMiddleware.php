@@ -5,9 +5,18 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cache;
+use App\Models\User;
 
 class SelfHostedCredentialsMiddleware
 {
+    const ALLOWED_ROUTES = [
+        'login',
+        'credentials.update',
+        'user.current',
+        'logout',
+    ];
+
     /**
      * Handle an incoming request.
      *
@@ -15,27 +24,43 @@ class SelfHostedCredentialsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment() == "testing") {
+        if (app()->environment('testing')) {
             return $next($request);
         }
-        $allowedRouteNames = ['login', 'credentials.update', 'user.current', 'logout'];
-        $routeName = request()->route()->getName();
-        if (in_array($routeName, $allowedRouteNames)) {
+
+        if (in_array($request->route()->getName(), self::ALLOWED_ROUTES)) {
             return $next($request);
         }
+
         if (
             config('app.self_hosted') &&
             $request->user() &&
-            !$request->user()->credentials_changed &&
-            ($request)
+            !$this->isInitialSetupComplete()
         ) {
-            if ($request->expectsJson()) {
-                return response([
-                    'message' => 'You must change your credentials when in self host mode',
-                    'type' => 'error',
-                ], 403);
-            }
+            return response()->json([
+                'message' => 'You must change your credentials when in self-hosted mode',
+                'type' => 'error',
+            ], Response::HTTP_FORBIDDEN);
         }
+
         return $next($request);
+    }
+
+    private function isInitialSetupComplete(): bool
+    {
+        return (bool) Cache::remember('initial_user_setup_complete', 60 * 60, function () {
+            $maxUserId = $this->getMaxUserId();
+            if ($maxUserId === 0) {
+                return false;
+            }
+            return !User::where('email', 'admin@opnform.com')->exists();
+        });
+    }
+
+    private function getMaxUserId(): int
+    {
+        return (int) Cache::remember('max_user_id', 60 * 60, function () {
+            return User::max('id') ?? 0;
+        });
     }
 }
