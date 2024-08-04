@@ -118,7 +118,7 @@ const openIntegration = (itemKey) => {
     return alert.warning("This integration is not available yet")
   }
 
-  if(integration.external) {
+  if(integration.is_external) {
     window.location.href = integration.url
 
     return

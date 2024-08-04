@@ -41,7 +41,8 @@
     "section_name": "Notifications",
     "file_name": "ZapierIntegration",
     "is_pro": false,
-    "external": true,
+    "is_external": true,
+    "is_editable": false,
     "url": "https://zapier.com/app/zaps"
   },
   "google_sheets": {
