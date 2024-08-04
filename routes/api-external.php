@@ -8,7 +8,7 @@ use App\Http\Controllers\Integrations\Zapier;
 use App\Http\Controllers\Integrations\Zapier\ListFormsController;
 use App\Http\Controllers\Integrations\Zapier\ListWorkspacesController;
 
-Route::prefix('api')
+Route::prefix('external')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::prefix('zapier')->name('zapier.')->group(function () {
