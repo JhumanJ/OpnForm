@@ -7,8 +7,11 @@ module.exports = {
   version: require('./package.json').version,
   platformVersion: require('zapier-platform-core').version,
   requestTemplate: {
-    headers: { Authorization: 'Bearer {{bundle.authData.api_key}}' },
-    params: {},
+    headers: {
+      Authorization: 'Bearer {{bundle.authData.api_key}}',
+      'X-API-KEY': '{{bundle.authData.api_key}}',
+    },
+    params: { api_key: '{{bundle.authData.api_key}}' },
     body: {},
   },
   authentication: authentication,

@@ -3,7 +3,7 @@ module.exports = {
     perform: {
       headers: { Accept: 'application/json' },
       removeMissingValuesFrom: { body: false, params: false },
-      url: '{{process.env.BASE_URL}}/api/zapier/workspaces',
+      url: '{{process.env.BASE_URL}}/external/zapier/workspaces',
     },
     sample: { id: 1, name: 'My Workspace' },
     outputFields: [

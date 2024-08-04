@@ -37,7 +37,7 @@ module.exports = {
       },
       method: 'DELETE',
       removeMissingValuesFrom: { body: false, params: false },
-      url: '{{process.env.BASE_URL}}/api/zapier/webhook',
+      url: '{{process.env.BASE_URL}}/external/zapier/webhook',
     },
     performSubscribe: {
       body: {
@@ -50,7 +50,7 @@ module.exports = {
       },
       method: 'POST',
       removeMissingValuesFrom: { body: false, params: false },
-      url: '{{process.env.BASE_URL}}/api/zapier/webhook',
+      url: '{{process.env.BASE_URL}}/external/zapier/webhook',
     },
   },
   display: {

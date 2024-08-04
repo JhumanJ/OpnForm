@@ -7,7 +7,7 @@ module.exports = {
         workspace_id: '{{bundle.inputData.workspace_id}}',
       },
       removeMissingValuesFrom: { body: false, params: false },
-      url: '{{process.env.BASE_URL}}/api/zapier/forms',
+      url: '{{process.env.BASE_URL}}/external/zapier/forms',
     },
     inputFields: [
       {
@@ -20,11 +20,12 @@ module.exports = {
         altersDynamicFields: false,
       },
     ],
-    sample: { id: 1, name: 'My Form' },
+    sample: { id: 'my-form', name: 'My Form' },
     outputFields: [
-      { key: 'id', label: 'ID', type: 'integer' },
+      { key: 'id', label: 'ID', type: 'string' },
       { key: 'name', label: 'Name', type: 'string' },
     ],
+    canPaginate: false,
   },
   display: {
     description: 'Get the list of all forms',
