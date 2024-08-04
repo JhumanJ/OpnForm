@@ -13,12 +13,19 @@ class DeleteIntegrationRequest extends FormRequest
         return [
             'form_id' => [
                 'required',
-                Rule::exists(Form::getModel()->getTable(), 'id'),
+                Rule::exists(Form::getModel()->getTable(), 'slug'),
             ],
             'hookUrl' => [
                 'required',
                 'url',
             ],
         ];
+    }
+
+    public function form(): Form
+    {
+        return Form::query()
+            ->where('slug', $this->input('form_id'))
+            ->firstOrFail();
     }
 }

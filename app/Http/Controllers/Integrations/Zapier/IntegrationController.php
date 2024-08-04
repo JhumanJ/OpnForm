@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Integrations\Zapier;
 
 use App\Http\Requests\Zapier\CreateIntegrationRequest;
 use App\Http\Requests\Zapier\DeleteIntegrationRequest;
-use App\Models\Integration\FormIntegration;
 
 class IntegrationController
 {
@@ -24,8 +23,8 @@ class IntegrationController
 
     public function destroy(DeleteIntegrationRequest $request)
     {
-        FormIntegration::query()
-            ->where('form_id', $request->input('form_id'))
+        $request->form()
+            ->integrations()
             ->where('data->hook_url', $request->input('hookUrl'))
             ->delete();
 
