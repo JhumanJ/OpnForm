@@ -36,12 +36,13 @@
     "is_pro": false
   },
   "zapier": {
-    "name": "Zapier Integration",
+    "name": "Zapier",
     "icon": "cib:zapier",
     "section_name": "Notifications",
     "file_name": "ZapierIntegration",
-    "is_pro": true,
-    "coming_soon": true
+    "is_pro": false,
+    "external": true,
+    "url": "https://zapier.com/app/zaps"
   },
   "google_sheets": {
     "name": "Google Sheets",
