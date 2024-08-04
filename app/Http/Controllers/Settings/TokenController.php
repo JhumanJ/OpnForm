@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\AccessTokenAbility;
 use App\Http\Requests\CreateTokenRequest;
 use App\Http\Resources\TokenResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -23,7 +24,7 @@ class TokenController
     {
         $token = Auth::user()->createToken(
             $request->input('name'),
-            $request->input('abilities')
+            AccessTokenAbility::allowed($request->input('abilities'))
         );
 
         return response()->json([
