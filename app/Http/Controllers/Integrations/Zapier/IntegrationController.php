@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Integrations\Zapier;
 
 use App\Http\Requests\Zapier\CreateIntegrationRequest;
 use App\Http\Requests\Zapier\DeleteIntegrationRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class IntegrationController
 {
+    use AuthorizesRequests;
+
     public function store(CreateIntegrationRequest $request)
     {
-        $request->form()->integrations()
+        $form = $request->form();
+
+        $this->authorize('view', $form);
+
+        $form->integrations()
             ->create([
                 'integration_id' => 'zapier',
                 'status' => 'active',
@@ -23,7 +30,11 @@ class IntegrationController
 
     public function destroy(DeleteIntegrationRequest $request)
     {
-        $request->form()
+        $form = $request->form();
+
+        $this->authorize('view', $form);
+
+        $form
             ->integrations()
             ->where('data->hook_url', $request->input('hookUrl'))
             ->delete();

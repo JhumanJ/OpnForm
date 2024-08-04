@@ -22,11 +22,11 @@ test('list all forms of a given workspace', function () {
         ->assertJsonCount(2)
         ->assertJson([
             [
-                'id' => $form1->id,
+                'id' => $form1->slug,
                 'name' => $form1->title,
             ],
             [
-                'id' => $form2->id,
+                'id' => $form2->slug,
                 'name' => $form2->title,
             ],
         ]);
@@ -35,6 +35,21 @@ test('list all forms of a given workspace', function () {
 test('cannot list forms without a corresponding ability', function () {
     $user = User::factory()->create();
     $workspace = createUserWorkspace($user);
+
+    $form1 = createForm($user, $workspace, ['title' => 'First form']);
+    $form2 = createForm($user, $workspace, ['title' => 'Second form']);
+
+    Sanctum::actingAs($user);
+
+    get(route('zapier.forms', ['workspace_id' => $workspace->id]))
+        ->assertForbidden();
+});
+
+test('cannot other users forms', function () {
+    $user = User::factory()->create();
+
+    $user2 = User::factory()->create();
+    $workspace = createUserWorkspace($user2);
 
     $form1 = createForm($user, $workspace, ['title' => 'First form']);
     $form2 = createForm($user, $workspace, ['title' => 'Second form']);

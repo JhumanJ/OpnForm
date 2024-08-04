@@ -51,6 +51,25 @@ test('cannot create an integration without a corresponding ability', function ()
     assertDatabaseCount('form_integrations', 0);
 });
 
+test('cannot create an integration for other users form', function () {
+    $user = User::factory()->create();
+
+    $user2 = User::factory()->create();
+    $workspace = createUserWorkspace($user2);
+
+    $form = createForm($user2, $workspace, ['title' => 'First form']);
+
+    Sanctum::actingAs($user);
+
+    post(route('zapier.webhooks.store'), [
+        'form_id' => $form->id,
+        'hookUrl' => 'https://zapier.com/hook/test'
+    ])
+        ->assertForbidden();
+
+    assertDatabaseCount('form_integrations', 0);
+});
+
 test('delete an integration', function () {
     $user = User::factory()->create();
     $workspace = createUserWorkspace($user);
