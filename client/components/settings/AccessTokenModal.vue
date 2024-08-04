@@ -49,17 +49,20 @@
                 v-model="form.abilities"
                 :value="ability.name"
                 :label="ability.title"
+                disabled
               />
             </div>
           </div>
         </div>
 
-        <div
+        <UAlert
           v-if="token"
-          class="mt-2 bg-green-200 text-green-600 text-sm px-4 py-2"
-        >
-          <div>Copy your access token. This message will only be shown once.</div>
-        </div>
+          icon="i-heroicons-command-line"
+          color="green"
+          variant="subtle"
+          title="Copy your access token"
+          description="This message will only be shown once."
+        />
 
         <div class="flex">
           <copy-content
@@ -67,20 +70,10 @@
             :content="token"
           >
             <template #icon>
-              <svg
-                class="h-4 w-4 -mt-1 text-blue-600 inline mr-1"
-                viewBox="0 0 20 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.49984 9.16634H5.83317C3.53198 9.16634 1.6665 7.30086 1.6665 4.99967C1.6665 2.69849 3.53198 0.833008 5.83317 0.833008H7.49984M12.4998 9.16634H14.1665C16.4677 9.16634 18.3332 7.30086 18.3332 4.99967C18.3332 2.69849 16.4677 0.833008 14.1665 0.833008H12.4998M5.83317 4.99967L14.1665 4.99968"
-                  stroke="currentColor"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <Icon
+                name="heroicons:link"
+                class="w-4 h-4 -mt-1 text-blue-600 mr-3"
+              />
             </template>
             Copy Token
           </copy-content>
@@ -88,10 +81,19 @@
 
         <div class="w-full mt-6">
           <v-button
+            v-if="!token"
             :loading="form.busy"
             class="w-full my-3"
           >
             Save
+          </v-button>
+
+          <v-button
+            v-else
+            class="w-full my-3"
+            @click.prevent="emit('close')"
+          >
+            Close
           </v-button>
         </div>
       </form>
@@ -108,9 +110,12 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
+const accessTokenStore = useAccessTokenStore()
+const abilities = computed(() => accessTokenStore.abilities)
+
 const form = useForm({
   name: "",
-  abilities: [],
+  abilities: abilities.value.map(ability => ability.name),
 })
 
 const token = ref('')
@@ -130,12 +135,9 @@ function createToken() {
   })
 }
 
-const accessTokenStore = useAccessTokenStore()
-const abilities = computed(() => accessTokenStore.abilities)
-
 watch(() => props.show, () => {
   form.name = ''
-  form.abilities = []
+  form.abilities = abilities.value.map(ability => ability.name),
   token.value = ''
 })
 </script>

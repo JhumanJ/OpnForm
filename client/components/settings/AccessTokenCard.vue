@@ -8,8 +8,16 @@
           {{ token.name }}
         </div>
 
-        <div>
-          {{ token.abilities }}
+        <div class="">
+          <span
+            v-for="(ability, index) in token.abilities"
+            :key="index"
+          >
+            {{ accessTokenStore.getAbility(ability).title }}
+            <template v-if="index !== token.abilities.length - 1">
+              ,&nbsp;
+            </template>
+          </span>
         </div>
       </div>
     </div>
@@ -23,34 +31,10 @@
             color="white"
             @click="toggle"
           >
-            <svg
-              class="w-4 h-4 inline -mt-1"
-              viewBox="0 0 16 4"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.00016 2.83366C8.4604 2.83366 8.8335 2.46056 8.8335 2.00033C8.8335 1.54009 8.4604 1.16699 8.00016 1.16699C7.53993 1.16699 7.16683 1.54009 7.16683 2.00033C7.16683 2.46056 7.53993 2.83366 8.00016 2.83366Z"
-                stroke="#344054"
-                stroke-width="1.66667"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M13.8335 2.83366C14.2937 2.83366 14.6668 2.46056 14.6668 2.00033C14.6668 1.54009 14.2937 1.16699 13.8335 1.16699C13.3733 1.16699 13.0002 1.54009 13.0002 2.00033C13.0002 2.46056 13.3733 2.83366 13.8335 2.83366Z"
-                stroke="#344054"
-                stroke-width="1.66667"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M2.16683 2.83366C2.62707 2.83366 3.00016 2.46056 3.00016 2.00033C3.00016 1.54009 2.62707 1.16699 2.16683 1.16699C1.70659 1.16699 1.3335 1.54009 1.3335 2.00033C1.3335 2.46056 1.70659 2.83366 2.16683 2.83366Z"
-                stroke="#344054"
-                stroke-width="1.66667"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+            <Icon
+              name="heroicons:ellipsis-horizontal"
+              class="w-4 h-4 -mt-1"
+            />
           </v-button>
         </template>
 

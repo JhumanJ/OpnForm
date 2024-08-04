@@ -33,10 +33,15 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
 
   const tokens = computed(() => contentStore.getAll.value)
 
+  const getAbility = (name) => {
+    return abilities.find(ability => ability.name == name)
+  }
+
   return {
     ...contentStore,
     fetchTokens,
     tokens,
-    abilities
+    abilities,
+    getAbility
   }
 })
