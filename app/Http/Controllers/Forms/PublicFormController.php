@@ -75,7 +75,13 @@ class PublicFormController extends Controller
             ]);
         }
 
-        return redirect()->to(Storage::temporaryUrl($path, now()->addMinutes(5)));
+        $internal_url = Storage::temporaryUrl($path, now()->addMinutes(5));
+
+        foreach(config('filesystems.disks.s3.temporary_url_rewrites') as $from => $to) {
+            $internal_url = str_replace($from, $to, $internal_url);
+        }
+
+        return redirect()->to($internal_url);
     }
 
     public function answer(AnswerFormRequest $request)

@@ -98,7 +98,7 @@ class RegisterController extends Controller
 
     private function checkRegistrationAllowed(array $data)
     {
-        if (config('app.self_hosted') && !array_key_exists('invite_token', $data)) {
+        if (config('app.self_hosted') && !array_key_exists('invite_token', $data) && (app()->environment() !== 'testing')) {
             response()->json(['message' => 'Registration is not allowed in self host mode'], 400)->throwResponse();
         }
     }

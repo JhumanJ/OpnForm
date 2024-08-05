@@ -72,7 +72,6 @@
 </template>
 
 <script setup>
-import {computed} from 'vue'
 import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import sha256 from 'js-sha256'
 import { onBeforeRouteLeave } from 'vue-router'

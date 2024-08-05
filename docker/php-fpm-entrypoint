@@ -1,0 +1,115 @@
+#!/bin/bash
+
+main() {
+    read_env
+    prep_file_permissions
+    prep_storage
+    if is_master "$@"; then
+        prep_laravel_secrets
+        wait_for_db
+        apply_db_migrations
+        run_init_project
+        mark_ready
+    else
+        wait_for_ready
+        wait_for_db
+    fi
+    read_env
+    run_server "$@"
+}
+is_master() {
+    echo "$@" | grep -q php-fpm
+}
+
+read_env() {
+    #set +x
+    [ -f .env ] || touch .env
+    . .env
+    #set -x
+}
+prep_file_permissions() {
+    chmod a+x ./artisan
+}
+
+prep_laravel_secrets() {
+    read_env
+
+    [ "x$APP_KEY" != "x" ] || {
+        echo "Generating Laravel key..."
+        grep -q "APP_KEY=" .env || {
+            echo "APP_KEY=" >> .env
+        }
+        ./artisan key:generate
+        read_env
+    }
+    [ "x$JWT_SECRET" != "x" ] || {
+        echo "Generating Laravel Secret..."
+        ./artisan jwt:secret -f
+        read_env
+    }
+
+    [ "x$FRONT_API_SECRET" != "x" ] || {
+        echo "Generating Shared Client Secret..."
+        /usr/local/bin/generate-api-secret.sh
+        read_env
+    }
+    echo "Done with secrets"
+}
+
+apply_db_migrations() {
+    echo "Running DB Migrations"
+    ./artisan migrate
+}
+
+run_init_project() {
+    echo "Running app:init-project command"
+    ./artisan app:init-project
+}
+
+wait_for_ready() {
+    echo "Checking keys have been generated"
+    until [ -f /secrets/configured ]; do
+        sleep 1;
+        echo "Waiting for keys to generate"
+    done
+}
+
+mark_ready() {
+    touch /secrets/configured
+}
+
+wait_for_db() {
+    until ./artisan migrate:status 2>&1 | grep -q -E "(Migration table not found|Migration name)"; do
+        echo "Waiting for DB to bootup"
+        sleep 1
+    done
+}
+
+run_server() {
+    echo "Booting $@"
+    read_env
+    /usr/local/bin/docker-php-entrypoint "$@"
+}
+
+prep_storage() {
+    [ -L storage ] || {
+        echo "Backing up initial storage directory"
+        rm -rf /etc/initial-storage
+        mv ./storage /etc/initial-storage
+    }
+
+    [ -d /persist/storage ] || {
+        echo "Initialising blank storage dir"
+        mkdir -p /persist
+        cp -a /etc/initial-storage /persist/storage
+        chmod 777 -R /persist/storage
+    }
+
+    touch /var/log/opnform.log
+    chown www-data /var/log/opnform.log
+
+    echo "Linking persistent storage into app"
+    ln -t . -sf /persist/storage
+}
+
+main "$@"
