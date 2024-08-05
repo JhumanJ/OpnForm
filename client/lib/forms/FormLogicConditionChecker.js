@@ -126,19 +126,19 @@ function checkLessThanEqual(condition, fieldValue) {
 }
 
 function checkBefore(condition, fieldValue) {
-  return condition.value && fieldValue && fieldValue > condition.value
-}
-
-function checkAfter(condition, fieldValue) {
   return condition.value && fieldValue && fieldValue < condition.value
 }
 
+function checkAfter(condition, fieldValue) {
+  return condition.value && fieldValue && fieldValue > condition.value
+}
+
 function checkOnOrBefore(condition, fieldValue) {
-  return condition.value && fieldValue && fieldValue >= condition.value
+  return condition.value && fieldValue && fieldValue <= condition.value
 }
 
 function checkOnOrAfter(condition, fieldValue) {
-  return condition.value && fieldValue && fieldValue <= condition.value
+  return condition.value && fieldValue && fieldValue >= condition.value
 }
 
 function checkPastWeek(condition, fieldValue) {
