@@ -36,9 +36,11 @@ export const useFormIntegrationsStore = defineStore("form_integrations", () => {
     return groupedObject
   })
 
-  const fetchFormIntegrations = (formId) => {
-    contentStore.resetState()
-    contentStore.startLoading()
+  const fetchFormIntegrations = (formId, refresh=true) => {
+    if (refresh) {
+      contentStore.resetState()
+      contentStore.startLoading()
+    }
     return useOpnApi(formIntegrationsEndpoint.replace("{formid}", formId)).then(
       (response) => {
         contentStore.save(response.data.value)

@@ -1,4 +1,4 @@
-import { themes } from "~/lib/forms/themes/form-themes.js"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { default as _has } from "lodash/has"
 
 export default {
@@ -14,7 +14,15 @@ export default {
     uppercaseLabels: { type: Boolean, default: false },
     help: { type: String, default: null },
     helpPosition: { type: String, default: "below_input" },
-    theme: { type: Object, default: () => themes.default },
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
     color: { type: String, default: "#3B82F6" },
     wrapperClass: { type: String, default: "relative mb-3" },
   },

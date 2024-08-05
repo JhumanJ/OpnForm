@@ -55,7 +55,7 @@ let interval = null
 
 onMounted(() => {
   if (!props.integration.data || props.integration.data.length === 0) {
-    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id), 3000)
+    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id, false), 3000)
     setTimeout(() => { clearInterval(interval) }, 30000)
   }
 })
