@@ -41,7 +41,8 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('logout', [LoginController::class, 'logout']);
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);
@@ -252,7 +253,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
-    Route::post('login', [LoginController::class, 'login']);
+    Route::post('login', [LoginController::class, 'login'])->name('login');
     Route::post('register', [RegisterController::class, 'register']);
 
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);

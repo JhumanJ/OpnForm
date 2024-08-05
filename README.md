@@ -9,8 +9,8 @@
 <a href="https://github.com/JhumanJ/OpnForm/stargazers"><img src="https://img.shields.io/github/stars/JhumanJ/OpnForm" alt="Github Stars"></a>
 </a>
 <a href="https://github.com/JhumanJ/OpnForm/pulse"><img src="https://img.shields.io/github/commit-activity/m/JhumanJ/OpnForm" alt="Commits per month"></a>
-<a href="https://hub.docker.com/r/jhumanj/opnform">
-<img src="https://img.shields.io/docker/pulls/jhumanj/opnform">
+<a href="https://hub.docker.com/r/jhumanj/opnform-api">
+<img src="https://img.shields.io/docker/pulls/jhumanj/opnform-api">
 </a>
 <a href="https://github.com/JhumanJ/OpnForm/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-purple" alt="License">
 <a href="https://github.com/JhumanJ/OpnForm/issues/new"><img src="https://img.shields.io/badge/Report a bug-Github-%231F80C0" alt="Report a bug"></a>
@@ -66,94 +66,90 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ## Installation
 
+### Docker Installation 🐳
 
-### Docker installation 🐳
+OpnForm can be easily set up using Docker. Pre-built images are available on Docker Hub, which is the recommended method for most users.
 
-This can be built and run locally but is also hosted publicly on docker hub at `jhumanj/opnform` and is generally best run directly from there.
+#### Prerequisites
+- Docker
+- Docker Compose
 
-#### Running from docker hub
+#### Quick Start
 
-```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
-```
+1. Clone the repository:
+   ```
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
 
-You should now be able to access the application by visiting  http://localhost in a web browser. 
+2. Set up environment files:
+   ```
+   cp .env.docker .env
+   cp client/.env.docker client/.env
+   ```
 
-> 👀 **Server Deployment**: If you are deploying OpnForm on a server (not locally), then you will [need to use 2 .env files](https://github.com/JhumanJ/opnform?tab=readme-ov-file#using-custom-env-files) to configure the app URLs (`APP_URL` in `.env` and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`).
+3. Start the application:
+   ```
+   docker-compose up -d
+   ```
 
+4. Access OpnForm at http://localhost
 
-The `-v` argument creates a local directory called `my-opnform-data` which will store your database and files so that your work is not lost when you restart the container.
+> 🌐 **Server Deployment Note**: When deploying to a server, configure the app URLs in both `.env` and `client/.env` files. Set `APP_URL` in `.env`, and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`.
 
-The `--name` argument names the running container so that you can refer back to it later, with e.g. `docker stop opnform`.  You can use any name you'd like.
+#### Customization
 
+- **Environment Variables**: Modify `.env` and `client/.env` files to customize your setup. For example, to enable email features, configure a [supported mail driver](https://laravel.com/docs/11.x/mail) in the `.env` file.
 
-#### Using custom .env files
+#### Upgrading
 
-If you have custom env file you can use them like so:
+1. Check the upgrade instructions for your target version in the documentation.
+2. Update your `docker-compose.yml` file if necessary.
+3. Apply changes:
+   ```
+   docker-compose up -d
+   ```
 
-Custom Laravel .env file:
-```
-docker run --name opnform -v $PWD/custom-laravel-env-file.env:/app/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
-```
+### Initial Login
 
-Custom Nuxt .env file:
-```
-docker run --name opnform -v $PWD/custom-nuxt-env-file.env:/app/client/.env -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform
-```
+After installation, use these credentials to access the admin panel:
+- Email: `admin@opnform.com`
+- Password: `password`
 
-This would load load in the env file located at `my-custom-env-file.env`, note that if you are creating a .env file for use like this it's best to start from the `.env.docker` example file as there are slightly different defaults for the dockerized setup.
+⚠️ Change these credentials immediately after your first login.
 
-#### Using a custom HTTP port
+Note: Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.
 
-To run on port 8080
+### Building from Source
 
-```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 8080:80 jhumanj/opnform
-```
+For development or customization, you can build the Docker images locally:
 
-#### Building a custom docker image
+1. Build the images:
+   ```
+   docker build -t opnform-ui:local -f docker/Dockerfile.client .
+   docker build -t opnform-api:local -f docker/Dockerfile.api .
+   ```
 
-To build a custom docker image from your local source code use this command from the root of the source repository:
+2. Create a docker-compose override file:
+   ```
+   cp docker-compose.override.yml.example docker-compose.override.yml
+   ```
 
-```
-docker build . -t my-docker-image-name
-```
+   Edit the `docker-compose.override.yml` file to use your locally built images:
+   ```yaml
+   services:
+     api:
+       image: opnform-api:local
+     ui:
+       image: opnform-ui:local
+   ```
 
-This should create a new docker image tagged `my-docker-image-name` which can be run as follows:
+3. Start the application:
+   ```
+   docker-compose up -d
+   ```
 
-```
-docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 my-docker-image-name
-
-```
-
-#### Upgrading docker installations
-
-**Please consult the upgrade instructions for the latest opnform version**, e.g. if upgrading from v1 to v2 please check the v2 instructions as the process may change in future releases.
-
-Normal upgrade procedure would be to stop the running container, back up your data directory (you will need this backup if you want to rollback to the old version) and then start a container running the new image with the same arguments.
-
-e.g. if you're running from a specific opnform version with 
-
-```docker run --name opnform -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:1.0.0```
-
-You could run:
-
-```
-# stop the running container
-docker stop opnform
-# backup the data directory
-cp -r my-opnform-data my-opnform-backup
-# start the new container
-docker run --name opnform-2 -v $PWD/my-opnform-data:/persist -p 80:80 jhumanj/opnform:2.0.0
-```
-
-Then if everything is running smoothly you can delete the old container with:
-```
-docker rm opnform
-```
-
-If you haven't specified a version e.g. if you are using the image `jhumanj/opnform` or `jhumanj/opnform:latest` you will need to run `docker pull jhumanj/opnform` or `docker pull jhumanj/opnform:latest` before starting the new container.
-
+This method allows you to make changes to the source code and rebuild the images as needed.
 
 ### Using Laravel Valet
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.

@@ -22,6 +22,11 @@ import { computed } from "vue"
 useOpnSeoMeta({
   title: "Terms & Conditions",
 })
+
+definePageMeta({
+  middleware: ["self-hosted"]
+})
+
 defineRouteRules({
   swr: 3600,
 })
