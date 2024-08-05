@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev",
+    "docker-dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt dev --host 0.0.0.0",
     "generate": "export NODE_TLS_REJECT_UNAUTHORIZED=0; nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -48,6 +49,7 @@
     "crisp-sdk-web": "^1.0.21",
     "date-fns": "^2.30.0",
     "debounce": "^1.2.1",
+    "esbuild": "^0.23.0",
     "fuse.js": "^6.4.6",
     "js-sha256": "^0.10.0",
     "libphonenumber-js": "^1.10.44",

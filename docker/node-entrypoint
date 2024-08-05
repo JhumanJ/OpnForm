@@ -1,0 +1,30 @@
+#!/bin/sh
+
+main() {
+    if [ "$1" == "bash" ]; then
+        "$@"
+    else
+        wait_for_api_secret
+        if [ ! -f .env ] && [ -f /secrets/client.env ]; then
+            ln -sf /secrets/client.env .env
+        fi
+        if [ -f .env ]; then
+            . .env
+        else
+            echo "Warning: .env file not found"
+        fi
+        run_server "$@"
+    fi
+}
+wait_for_api_secret() {
+    until [ -f /secrets/configured ]; do
+        echo "Waiting for api secret..."
+        sleep 1
+    done
+}
+run_server() {
+    echo "Running " node "$@"
+    "$@"
+}
+
+main "$@"

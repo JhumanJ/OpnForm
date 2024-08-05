@@ -148,22 +148,22 @@ class FormLogicConditionChecker
 
     private function checkBefore($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && $fieldValue > $condition['value'];
+        return $condition['value'] && $fieldValue && $fieldValue < $condition['value'];
     }
 
     private function checkAfter($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && $fieldValue < $condition['value'];
+        return $condition['value'] && $fieldValue && $fieldValue > $condition['value'];
     }
 
     private function checkOnOrBefore($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && $fieldValue >= $condition['value'];
+        return $condition['value'] && $fieldValue && $fieldValue <= $condition['value'];
     }
 
     private function checkOnOrAfter($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && $fieldValue <= $condition['value'];
+        return $condition['value'] && $fieldValue && $fieldValue >= $condition['value'];
     }
 
     private function checkPastWeek($condition, $fieldValue): bool

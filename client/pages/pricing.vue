@@ -416,13 +416,7 @@ export default {
 
     definePageMeta({
       middleware: [
-        function () {
-          // Custom inline middleware
-          if (!useRuntimeConfig().public.paidPlansEnabled) {
-            // If no paid plan so no need this page
-            return navigateTo("/", {redirectCode: 301})
-          }
-        },
+        "self-hosted"
       ],
     })
 

@@ -22,6 +22,7 @@
       <div class="flex justify-center mt-5 md:mt-0">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
           <router-link
+            v-if="!appStore.selfHosted"
             :to="{ name: 'privacy-policy' }"
             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
           >
@@ -29,6 +30,7 @@
           </router-link>
 
           <router-link
+            v-if="!appStore.selfHosted"
             :to="{ name: 'terms-conditions' }"
             class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
           >
@@ -70,6 +72,7 @@ export default {
     const authStore = useAuthStore()
     return {
       user: computed(() => authStore.user),
+      appStore: useAppStore(),
       opnformConfig,
     }
   },

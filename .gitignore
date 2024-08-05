@@ -29,5 +29,5 @@ public/.DS_Store
 .env.production
 .env.staging
 _ide_helper.php
-
+docker-compose.override.yml
 /.make.*
