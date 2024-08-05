@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 
 class InitProjectCommand extends Command
 {
@@ -31,7 +30,7 @@ class InitProjectCommand extends Command
             $this->error('This command can only be run in self-hosted mode.');
             return;
         }
-        
+
         // Check if there are any existing users or if the ID increment is not at 0
         if (User::max('id') !== null) {
             $this->error('Users already exist in the database or the User table is not empty. Aborting initialization.');

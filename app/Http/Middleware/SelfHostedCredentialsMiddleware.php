@@ -10,7 +10,7 @@ use App\Models\User;
 
 class SelfHostedCredentialsMiddleware
 {
-    const ALLOWED_ROUTES = [
+    public const ALLOWED_ROUTES = [
         'login',
         'credentials.update',
         'user.current',
