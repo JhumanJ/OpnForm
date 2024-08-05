@@ -5,7 +5,14 @@ main() {
         "$@"
     else
         wait_for_api_secret
-        . .env
+        if [ ! -f .env ] && [ -f /secrets/client.env ]; then
+            ln -sf /secrets/client.env .env
+        fi
+        if [ -f .env ]; then
+            . .env
+        else
+            echo "Warning: .env file not found"
+        fi
         run_server "$@"
     fi
 }

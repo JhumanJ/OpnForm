@@ -7,7 +7,17 @@ WORKDIR /app
 # It's possible to run npm install with only the package.json and package-lock.json file.
 
 ADD ./client/package.json ./client/package-lock.json ./
-RUN npm install
+
+# Install git and other necessary build tools
+RUN apk add --no-cache git
+
+# Clear npm cache, remove existing node_modules, and install dependencies
+RUN npm cache clean --force && \
+    rm -rf node_modules && \
+    npm install
+
+# Explicitly install the correct version of esbuild
+# RUN npm install esbuild@0.21.5
 
 ADD ./client/ /app/
 RUN npm run build

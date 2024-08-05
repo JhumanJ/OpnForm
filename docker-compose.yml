@@ -18,7 +18,6 @@ services:
       FILESYSTEM_DISK: local
       AWS_REGION: eu-west-1
       AWS_BUCKET: laravel-bucket
-      SELF_HOSTED: 'false'
       LOCAL_FILESYSTEM_VISIBILITY: public
       FRONT_URL: ${FRONT_URL:-http://localhost}
     env_file: ./.env
@@ -36,10 +35,12 @@ services:
       NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
       NUXT_PRIVATE_API_BASE: http://ingress/api
-      NUXT_PUBLIC_SELF_HOSTED: "false"
-    env_file: ./client/.env
+    env_file: 
+      - ./client/.env
     volumes:
       - secrets-config:/secrets
+      - ./client/.env:/app/.env
+
 
 
   redis:

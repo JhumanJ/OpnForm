@@ -66,43 +66,90 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ## Installation
 
+### Docker Installation 🐳
 
-### Docker installation 🐳
+OpnForm can be easily set up using Docker. Pre-built images are available on Docker Hub, which is the recommended method for most users.
 
-You can build the images locally but they are also available pre-built on dockerhub and it's generally best to run them from there.  A docker-compose.yml file is provided which should set up all the necessary services to get running.
+#### Prerequisites
+- Docker
+- Docker Compose
 
-#### Requirements
-- docker
-- docker-compose
+#### Quick Start
 
-#### Running from docker hub
+1. Clone the repository:
+   ```
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
 
-```
-cp .env.docker .env
-cp client/.env.docker client/.env
-docker-compose up
-```
+2. Set up environment files:
+   ```
+   cp .env.docker .env
+   cp client/.env.docker client/.env
+   ```
 
-You should now be able to access the application by visiting  http://localhost in a web browser. 
+3. Start the application:
+   ```
+   docker-compose up -d
+   ```
 
-> 👀 **Server Deployment**: If you are deploying OpnForm on a server (not locally), then you will [need to use 2 .env files](https://github.com/JhumanJ/opnform?tab=readme-ov-file#using-custom-env-files) to configure the app URLs (`APP_URL` in `.env` and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`).
+4. Access OpnForm at http://localhost
 
+> 🌐 **Server Deployment Note**: When deploying to a server, configure the app URLs in both `.env` and `client/.env` files. Set `APP_URL` in `.env`, and both `NUXT_PUBLIC_APP_URL` & `NUXT_PUBLIC_API_BASE` in `client/.env`.
 
-#### Using custom .env files
+#### Customization
 
-The docker-compose set up will load in the .env and client/.env files.
+- **Environment Variables**: Modify `.env` and `client/.env` files to customize your setup. For example, to enable email features, configure a [supported mail driver](https://laravel.com/docs/11.x/mail) in the `.env` file.
 
-*** FIXME If you run the system without providing .env files then it will never be possible to provide them ***
+#### Upgrading
 
+1. Check the upgrade instructions for your target version in the documentation.
+2. Update your `docker-compose.yml` file if necessary.
+3. Apply changes:
+   ```
+   docker-compose up -d
+   ```
 
-#### Upgrading docker installations
+### Initial Login
 
-**Please consult the upgrade instructions for the latest opnform version**, e.g. if upgrading from v1 to v2 please check the v2 instructions as the process may change in future releases.
+After installation, use these credentials to access the admin panel:
+- Email: `admin@opnform.com`
+- Password: `password`
 
-Normal upgrade procedure would be to update the docker-compose.yml file(s) and then apply the changes by re-running:
-```
-docker-compose up 
-```
+⚠️ Change these credentials immediately after your first login.
+
+Note: Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.
+
+### Building from Source
+
+For development or customization, you can build the Docker images locally:
+
+1. Build the images:
+   ```
+   docker build -t opnform-ui:local -f docker/Dockerfile.client .
+   docker build -t opnform-api:local -f docker/Dockerfile.api .
+   ```
+
+2. Create a docker-compose override file:
+   ```
+   cp docker-compose.override.yml.example docker-compose.override.yml
+   ```
+
+   Edit the `docker-compose.override.yml` file to use your locally built images:
+   ```yaml
+   services:
+     api:
+       image: opnform-api:local
+     ui:
+       image: opnform-ui:local
+   ```
+
+3. Start the application:
+   ```
+   docker-compose up -d
+   ```
+
+This method allows you to make changes to the source code and rebuild the images as needed.
 
 ### Using Laravel Valet
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.

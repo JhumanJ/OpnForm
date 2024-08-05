@@ -20,7 +20,7 @@ class InitProjectCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Creates the default admin user';
 
     /**
      * Execute the console command.
