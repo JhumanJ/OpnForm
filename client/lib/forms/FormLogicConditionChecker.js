@@ -1,5 +1,4 @@
 import { default as _isEqual } from "lodash/isEqual"
-import { default as _has } from "lodash/has"
 
 export function conditionsMet(conditions, formData) {
   if (conditions === undefined || conditions === null) {
@@ -63,7 +62,7 @@ function propertyConditionMet(propertyCondition, value) {
     case "files":
       return filesConditionMet(propertyCondition, value)
     case "matrix":
-      return matrixConditionMet(propertyCondition, value);
+      return matrixConditionMet(propertyCondition, value
   }
   return false
 }
@@ -73,7 +72,7 @@ function checkEquals(condition, fieldValue) {
 }
 
 function checkObjectEquals(condition, fieldValue) {
-  return _isEqual(condition.value, fieldValue);
+  return _isEqual(condition.value, fieldValue)
 }
 
 function checkMatrixContains(condition, fieldValue)
@@ -84,7 +83,7 @@ function checkMatrixContains(condition, fieldValue)
   const conditionValue = condition.value
   for (const key in conditionValue) {
     if(conditionValue[key] == fieldValue[key]){
-      return true;
+      return true
     }
   }
   return false

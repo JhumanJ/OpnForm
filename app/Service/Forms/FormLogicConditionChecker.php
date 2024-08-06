@@ -95,12 +95,12 @@ class FormLogicConditionChecker
     private function checkMatrixContains($condition, $fieldValue): bool
     {
 
-        foreach($condition['value'] as $key => $value){
-            if(!(array_key_exists($key, $condition['value']) && array_key_exists($key, $fieldValue))){
+        foreach($condition['value'] as $key => $value) {
+            if(!(array_key_exists($key, $condition['value']) && array_key_exists($key, $fieldValue))) {
                 return false;
             }
-            if($condition['value'][$key] == $fieldValue[$key]){
-               return true;
+            if($condition['value'][$key] == $fieldValue[$key]) {
+                return true;
             }
         }
         return false;
@@ -108,9 +108,9 @@ class FormLogicConditionChecker
 
     private function checkMatrixEquals($condition, $fieldValue): bool
     {
-        foreach($condition['value'] as $key => $value){
-            if($condition['value'][$key] !== $fieldValue[$key]){
-               return false;
+        foreach($condition['value'] as $key => $value) {
+            if($condition['value'][$key] !== $fieldValue[$key]) {
+                return false;
             }
         }
         return true;
