@@ -17,7 +17,7 @@
     >
       <thead class="">
       <tr class="bg-gray-200/60">
-        <th @click="test" class="border border-gray-300">
+        <th>
 
         </th>
         <td v-for="column in columns" :key="column" class="border border-gray-300">
@@ -100,10 +100,6 @@ export default {
   },
   computed: {},
   methods: {
-    test(){
-      console.log(this.compVal)
-      this.compVal = {}
-    },
     onSelect(row, column) {
       if (this.compVal[row] === column) {
         this.compVal[row] = null

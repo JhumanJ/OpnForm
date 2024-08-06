@@ -32,7 +32,7 @@ export default {
     computed: {
         matrixData() {
             const options = this.field.columns || []
-            return this.field.rows?.map(row => {
+            return (this.field.row || []).map(row => {
                 return {
                     label: row,
                     options: options?.map(option => ({ name: option, value: option }))
@@ -41,7 +41,7 @@ export default {
         },
     },
     mounted() {
-        this.selection = this.field.prefill ?? this.field.selection_data
+        this.selection = this.field.prefill ?? this.field.selection_data ?? {}
     },
     methods: {
         onSelection() {

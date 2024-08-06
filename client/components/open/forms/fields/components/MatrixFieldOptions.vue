@@ -52,10 +52,7 @@ const props = defineProps({
   },
 })
 const selectionData = computed(() => {
-  return props.field.rows?.reduce((obj, row) => {
-    obj[row] = ''
-    return obj
-  }, {})
+  return Object.fromEntries(this.field.rows?.map(row => [row, '']));
 })
 
 

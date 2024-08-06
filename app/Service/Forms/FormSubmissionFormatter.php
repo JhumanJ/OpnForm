@@ -156,7 +156,7 @@ class FormSubmissionFormatter
                 } else {
                     $returnArray[$field['name']] = $val;
                 }
-            } elseif ($field['type'] == 'matrix') {
+            } elseif ($field['type'] == 'matrix' && is_array($data[$field['id']])) {
                 $returnArray[$field['name']] = $this->getMatrixString($data[$field['id']]);
             } elseif ($field['type'] == 'files') {
                 if ($this->outputStringsOnly) {
