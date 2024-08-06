@@ -54,7 +54,7 @@
         <p>
           You can choose between two different URL formats for your form.
           <span class="font-semibold">Be careful, changing your form URL is not a reversible
-            operation</span>. Make sure to udpate your form URL everywhere where it's used.
+            operation</span>. Make sure to update your form URL everywhere where it's used.
         </p>
         <div class="border-t py-4 mt-4">
           <h3 class="text-xl text-gray-700 font-semibold">
