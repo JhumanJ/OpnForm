@@ -72,6 +72,8 @@ class FormLogicConditionChecker
                 return $this->multiSelectConditionMet($propertyCondition, $value);
             case 'files':
                 return $this->filesConditionMet($propertyCondition, $value);
+            case 'matrix':
+                return $this->matrixConditionMet($propertyCondition, $value);
         }
 
         return false;
@@ -88,6 +90,30 @@ class FormLogicConditionChecker
             return in_array($condition['value'], $fieldValue);
         }
         return \Str::contains($fieldValue, $condition['value']);
+    }
+
+    private function checkMatrixContains($condition, $fieldValue): bool
+    {
+
+        foreach($condition['value'] as $key => $value){
+            if(!(array_key_exists($key, $condition['value']) && array_key_exists($key, $fieldValue))){
+                return false;
+            }
+            if($condition['value'][$key] == $fieldValue[$key]){
+               return true;
+            }
+        }
+        return false;
+    }
+
+    private function checkMatrixEquals($condition, $fieldValue): bool
+    {
+        foreach($condition['value'] as $key => $value){
+            if($condition['value'][$key] !== $fieldValue[$key]){
+               return false;
+            }
+        }
+        return true;
     }
 
     private function checkListContains($condition, $fieldValue): bool
@@ -404,6 +430,22 @@ class FormLogicConditionChecker
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'is_not_empty':
                 return !$this->checkIsEmpty($propertyCondition, $value);
+        }
+
+        return false;
+    }
+
+    private function matrixConditionMet(array $propertyCondition, $value): bool
+    {
+        switch ($propertyCondition['operator']) {
+            case 'equals':
+                return $this->checkMatrixEquals($propertyCondition, $value);
+            case 'does_not_equal':
+                return !$this->checkMatrixEquals($propertyCondition, $value);
+            case 'contains':
+                return $this->checkMatrixContains($propertyCondition, $value);
+            case 'does_not_contain':
+                return !$this->checkMatrixContains($propertyCondition, $value);
         }
 
         return false;

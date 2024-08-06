@@ -189,8 +189,6 @@
 
    <MatrixFieldOptions :field="field" />
 
-   <MatrixFieldOptions :field="field" />
-
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"

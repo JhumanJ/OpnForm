@@ -78,12 +78,16 @@ function checkObjectEquals(condition, fieldValue) {
 
 function checkMatrixContains(condition, fieldValue)
 {
-  const conditionValue = condition.value
-  let comparison = [];
-  for (const key in conditionValue) {
-    comparison.push(conditionValue[key] == fieldValue[key])
+  if (typeof fieldValue === "undefined" || typeof fieldValue !== "object") {
+    return false
   }
-  return comparison.includes(true)
+  const conditionValue = condition.value
+  for (const key in conditionValue) {
+    if(conditionValue[key] == fieldValue[key]){
+      return true;
+    }
+  }
+  return false
 }
 
 function checkContains(condition, fieldValue) {
