@@ -30,7 +30,7 @@ services:
     command: ./artisan queue:work
 
   ui:
-    image: jhumanj/opnform-ui:latest
+    image: jhumanj/opnform-client:latest
     environment:
       NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
