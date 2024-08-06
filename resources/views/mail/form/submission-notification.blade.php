@@ -16,7 +16,7 @@ Your form "{{$form->title}}" has a new submission.
 <a href="{{$link['signed_url']}}">{{$link['label']}}</a> <br/>
 @endforeach
 @else
-{!! is_array($field['value'])?implode(',',$field['value']):$field['value']!!}
+{!! is_array($field['value'])?implode(',',$field['value']):nl2br(e($field['value']))!!}
 @endif
 @endif
 @endforeach

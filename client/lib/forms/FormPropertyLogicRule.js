@@ -107,7 +107,7 @@ class FormPropertyLogicRule {
       (type === "string" && typeof value !== "string") ||
       (type === "boolean" && typeof value !== "boolean") ||
       (type === "number" && typeof value !== "number") ||
-      (type === "object" && !Array.isArray(value))
+      (type === "object" && !(Array.isArray(value) || typeof value === 'object'))
     ) {
       return false
     }
