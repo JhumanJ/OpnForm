@@ -10,9 +10,11 @@ use App\Models\Workspace;
 use App\Policies\FormPolicy;
 use App\Policies\Integration\FormZapierWebhookPolicy;
 use App\Policies\OAuthProviderPolicy;
+use App\Policies\PersonalAccessTokenPolicy;
 use App\Policies\TemplatePolicy;
 use App\Policies\WorkspacePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         FormZapierWebhook::class => FormZapierWebhookPolicy::class,
         Template::class => TemplatePolicy::class,
         OAuthProvider::class => OAuthProviderPolicy::class,
+        PersonalAccessToken::class => PersonalAccessTokenPolicy::class,
     ];
 
     /**

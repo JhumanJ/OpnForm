@@ -22,6 +22,7 @@
         "laravel/cashier": "*",
         "laravel/framework": "^11.9",
         "laravel/horizon": "*",
+        "laravel/sanctum": "^4.0",
         "laravel/socialite": "*",
         "laravel/tinker": "^2.9",
         "laravel/ui": "*",
@@ -48,6 +49,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "*",
         "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.4",
         "spatie/laravel-ignition": "*",
         "spatie/laravel-ray": "*"
     },

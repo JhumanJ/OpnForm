@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap sm:flex-nowrap my-4 w-full">
     <div
-      class="w-full sm:w-auto border border-gray-300 rounded-md p-2 flex-grow select-all bg-gray-100"
+      class="flex-1 truncate sm:w-auto border border-gray-300 rounded-md p-2 flex-grow select-all bg-gray-100"
     >
       <p class="select-all text-gray-900">
         {{ content }}
@@ -11,7 +11,7 @@
       <v-button
         color="light-gray"
         class="w-full"
-        @click="copyToClipboard"
+        @click.prevent="copyToClipboard"
       >
         <slot name="icon">
           <svg

@@ -11,6 +11,10 @@
 |
 */
 
+use App\Models\Forms\Form;
+use App\Models\User;
+use App\Models\Workspace;
+
 uses(\Tests\TestCase::class)->in('Feature');
 
 /*
@@ -38,3 +42,13 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+
+function createUserWorkspace(User $user): Workspace
+{
+    return test()->createUserWorkspace($user);
+}
+
+function createForm(User $user, Workspace $workspace, array $data = []): Form
+{
+    return test()->createForm($user, $workspace, $data);
+}

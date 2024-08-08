@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\OAuth;
+namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OAuthProviderResource;
