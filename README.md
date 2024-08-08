@@ -4,7 +4,6 @@
 <img src="https://github.com/JhumanJ/OpnForm/blob/main/public/img/social-preview.jpg?raw=true">
 </p>
 
-
 <p align="center">
 <a href="https://github.com/JhumanJ/OpnForm/stargazers"><img src="https://img.shields.io/github/stars/JhumanJ/OpnForm" alt="Github Stars"></a>
 </a>
@@ -25,24 +24,25 @@
 
 ## Features
 
-- No-code form builder, with infinite number of fields & submissions
-- Text inputs, Date inputs, URL inputs, Phone inputs, Email inputs, Checkboxes, Select and Multi-Select inputs, Number Inputs, Star-ratings, File uploads & more 
-- Embed anywhere (on your website, in your Notion page, etc)
-- Email notifications (for both form owner & form respondents)
-- Hidden fields
-- Form passwords
-- URL form pre-fill
-- Slack integration
-- Webhooks
-- Form logic
-- Customize colors, add images or even some custom code
-- Captcha form protection
-- Form closing date
-- Limit the number of submissions allowed
+-   No-code form builder, with infinite number of fields & submissions
+-   Text inputs, Date inputs, URL inputs, Phone inputs, Email inputs, Checkboxes, Select and Multi-Select inputs, Number Inputs, Star-ratings, File uploads & more
+-   Embed anywhere (on your website, in your Notion page, etc)
+-   Email notifications (for both form owner & form respondents)
+-   Hidden fields
+-   Form passwords
+-   URL form pre-fill
+-   Slack integration
+-   Webhooks
+-   Form logic
+-   Customize colors, add images or even some custom code
+-   Captcha form protection
+-   Form closing date
+-   Limit the number of submissions allowed
 
 And much more!
 
 ## Bounties
+
 Get paid for contributing to OpnForm! Here are our open bounties:
 
 <a href="https://console.algora.io/org/OpnForm/bounties?status=open">
@@ -60,38 +60,66 @@ It takes 1 minute to try out the builder for free. You'll have high availability
 
 ### Requirements
 
-- PHP >= 8.0
-- MySQL/MariaDB or PostgreSQL
-- Node.js and NPM/Yarn/... to compile assets
+-   PHP >= 8.0
+-   MySQL/MariaDB or PostgreSQL
+-   Node.js and NPM/Yarn/... to compile assets
 
 ## Installation
+
+### Environment Setup
+
+Before you can run the application, you need to set up the environment variables. We have provided a script that will automate the process of creating your `.env` files from the provided examples.
+
+Follow these steps to set up your environment:
+
+1. Make sure you have `openssl` installed, as it is required by the setup script to generate secure keys.
+
+2. Run the setup script from the root of the project:
+
+    ```bash
+    chmod +x ./scripts/setup-env.sh
+    ./scripts/setup-env.sh
+    ```
+
+    **If you are using Docker** and want to prepare a Docker-specific environment, run the script with the `--docker` flag:
+
+    ```bash
+    ./scripts/setup-env.sh --docker
+    ```
+
+3. After running the script, review the `.env` and `client/.env` files to ensure all settings are correct for your environment.
+
+Remember to never commit your `.env` files to version control. They should be kept private as they contain sensitive information.
 
 ### Docker Installation 🐳
 
 OpnForm can be easily set up using Docker. Pre-built images are available on Docker Hub, which is the recommended method for most users.
 
 #### Prerequisites
-- Docker
-- Docker Compose
+
+-   Docker
+-   Docker Compose
 
 #### Quick Start
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/JhumanJ/OpnForm.git
-   cd OpnForm
-   ```
 
-2. Set up environment files:
-   ```
-   cp .env.docker .env
-   cp client/.env.docker client/.env
-   ```
+    ```
+    git clone https://github.com/JhumanJ/OpnForm.git
+    cd OpnForm
+    ```
+
+2. Set up environment files by running the provided setup script. For detailed instructions, refer to the [Environment Setup](#environment-setup) section above:
+
+    ```bash
+    ./scripts/setup-env.sh --docker
+    ```
 
 3. Start the application:
-   ```
-   docker-compose up -d
-   ```
+
+    ```
+    docker-compose up -d
+    ```
 
 4. Access OpnForm at http://localhost
 
@@ -99,59 +127,72 @@ OpnForm can be easily set up using Docker. Pre-built images are available on Doc
 
 #### Customization
 
-- **Environment Variables**: Modify `.env` and `client/.env` files to customize your setup. For example, to enable email features, configure a [supported mail driver](https://laravel.com/docs/11.x/mail) in the `.env` file.
+-   **Environment Variables**: Modify `.env` and `client/.env` files to customize your setup. For example, to enable email features, configure a [supported mail driver](https://laravel.com/docs/11.x/mail) in the `.env` file.
 
 #### Upgrading
 
 1. Check the upgrade instructions for your target version in the documentation.
 2. Update your `docker-compose.yml` file if necessary.
 3. Apply changes:
-   ```
-   docker-compose up -d
-   ```
+    ```
+    docker-compose up -d
+    ```
 
-### Initial Login
+#### Initial Login
 
 After installation, use these credentials to access the admin panel:
-- Email: `admin@opnform.com`
-- Password: `password`
+
+-   Email: `admin@opnform.com`
+-   Password: `password`
 
 ⚠️ Change these credentials immediately after your first login.
 
 Note: Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.
 
-### Building from Source
+#### Building from Source
 
 For development or customization, you can build the Docker images locally:
 
 1. Build the images:
-   ```
-   docker build -t opnform-ui:local -f docker/Dockerfile.client .
-   docker build -t opnform-api:local -f docker/Dockerfile.api .
-   ```
+
+    ```
+    docker build -t opnform-ui:local -f docker/Dockerfile.client .
+    docker build -t opnform-api:local -f docker/Dockerfile.api .
+    ```
 
 2. Create a docker-compose override file:
-   ```
-   cp docker-compose.override.yml.example docker-compose.override.yml
-   ```
 
-   Edit the `docker-compose.override.yml` file to use your locally built images:
-   ```yaml
-   services:
-     api:
-       image: opnform-api:local
-     ui:
-       image: opnform-ui:local
-   ```
+    ```
+    cp docker-compose.override.yml.example docker-compose.override.yml
+    ```
+
+    Edit the `docker-compose.override.yml` file to use your locally built images:
+
+    ```yaml
+    services:
+        api:
+            image: opnform-api:local
+        ui:
+            image: opnform-ui:local
+    ```
 
 3. Start the application:
-   ```
-   docker-compose up -d
-   ```
+    ```
+    docker-compose up -d
+    ```
 
 This method allows you to make changes to the source code and rebuild the images as needed.
 
+#### Clearing all resources
+
+To completely remove all Docker containers, networks, and volumes created by `docker-compose` and also remove all images used by these services, you can use the following command:
+
+```bash
+docker-compose down -v --rmi all
+```
+
 ### Using Laravel Valet
+
 This section explains how to get started locally with the project. It's most likely relevant if you're trying to work on the project.
 First, let's work with the codebase and its dependencies.
 
@@ -160,8 +201,8 @@ First, let's work with the codebase and its dependencies.
 git clone git@github.com:JhumanJ/OpnForm.git && cd OpnForm
 
 # Install PHP dependencies
-composer install 
- 
+composer install
+
  # Install JS dependencies
 cd client && npm install
 
@@ -183,9 +224,18 @@ php artisan jwt:secret # and select yes!
 # Creates DB schemas
 php artisan migrate
 ```
-Now, create an S3 bucket (or equivalent). Create an IAM user with access to this bucket, fill the environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`. In your AWS bucket permissions, add the following under "Cross-origin resource sharing (CORS)": 
+
+Now, create an S3 bucket (or equivalent). Create an IAM user with access to this bucket, fill the environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`. In your AWS bucket permissions, add the following under "Cross-origin resource sharing (CORS)":
+
 ```json
-[ { "AllowedHeaders": [ "*" ], "AllowedMethods": [ "PUT", "POST", "GET", "DELETE" ], "AllowedOrigins": [ "*" ], "ExposeHeaders": [] } ]
+[
+    {
+        "AllowedHeaders": ["*"],
+        "AllowedMethods": ["PUT", "POST", "GET", "DELETE"],
+        "AllowedOrigins": ["*"],
+        "ExposeHeaders": []
+    }
+]
 ```
 
 🎉 Done! Enjoy your personal OpnForm instance at: [http://opnform.test](http://opnform.test).
@@ -197,14 +247,16 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 ## Tech Stack
 
 OpnForm is a standard web application built with:
-- [Laravel](https://laravel.com/) PHP framework
-- [NuxtJs](https://nuxt.com/) Front-end SSR framework
-- [Vue.js 3](https://vuejs.org/) Front-end framework
-- [TailwindCSS](https://tailwindcss.com/)
+
+-   [Laravel](https://laravel.com/) PHP framework
+-   [NuxtJs](https://nuxt.com/) Front-end SSR framework
+-   [Vue.js 3](https://vuejs.org/) Front-end framework
+-   [TailwindCSS](https://tailwindcss.com/)
 
 ## Contribute
+
 You're more than welcome to contribute to this project. We don't have guidelines on this yet, but we will soon. In the meantime, feel free to ask [any question here](https://github.com/JhumanJ/OpnForm/discussions).
 
 ## License
-OpnForm is open-source under the GNU Affero General Public License Version 3 (AGPLv3) or any later version. You can find it [here](https://github.com/JhumanJ/OpnForm/blob/main/LICENSE).
 
+OpnForm is open-source under the GNU Affero General Public License Version 3 (AGPLv3) or any later version. You can find it [here](https://github.com/JhumanJ/OpnForm/blob/main/LICENSE).
