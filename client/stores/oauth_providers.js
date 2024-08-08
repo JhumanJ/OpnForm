@@ -80,7 +80,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         try {
           alert.error(error.data.message)
         } catch (e) {
-          alert.error("yy An error occurred while connecting an account")
+          alert.error("An error occurred while connecting an account")
         }
       })
       .finally(() => {
