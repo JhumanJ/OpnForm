@@ -4,7 +4,42 @@
       <slot name="label" />
     </template>
 
+    <div
+      v-if="loading || file"
+      :class="[
+        theme.SignatureInput.input,
+        theme.SignatureInput.spacing.horizontal,
+        theme.SignatureInput.spacing.vertical,
+        theme.SignatureInput.fontSize,
+        theme.SignatureInput.borderRadius,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-200': disabled,
+        },
+      ]"
+      class="flex flex-wrap items-center justify-center gap-4"
+    >
+      <div
+        v-if="loading"
+        class="text-gray-600 dark:text-gray-400"
+      >
+        <Loader class="mx-auto h-6 w-6" />
+        <p class="mt-2 text-center text-sm text-gray-500">
+          Uploading your file...
+        </p>
+      </div>
+    
+      <uploaded-file
+        v-else
+        :key="file.url"
+        :file="file"
+        :theme="theme"
+        :show-remove="false"
+      />
+    </div>
+
     <VueSignaturePad
+      v-else
       ref="signaturePad"
       :class="[
         theme.SignatureInput.input,
@@ -23,6 +58,25 @@
     />
 
     <template #bottom_after_help>
+      <small
+        :class="theme.default.help"
+        class="mr-2"
+      >
+        <input
+          ref="actual-input"
+          class="hidden"
+          :multiple="false"
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg"
+          @change="manualFileUpload"
+        >
+        <a
+          :class="theme.default.help"
+          href="#"
+          @click.prevent="openFileUpload"
+        >Or upload file</a>
+      </small>
+
       <small :class="theme.default.help">
         <a
           :class="theme.default.help"
@@ -42,6 +96,7 @@
 import { inputProps, useFormInput } from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 import { VueSignaturePad } from "vue-signature-pad"
+import { storeFile } from "~/lib/file-uploads.js"
 
 export default {
   name: "SignatureInput",
@@ -57,9 +112,23 @@ export default {
     }
   },
 
+  data: () => ({
+    file: null,
+    loading: false
+  }),
+
+  watch: {
+    file: {
+      handler(file) {
+        this.compVal = file?.url || null
+      }
+    }
+  },
+
   methods: {
     clear() {
-      this.$refs.signaturePad.clearSignature()
+      this.file = []
+      this.$refs.signaturePad?.clearSignature()
       this.onEnd()
     },
     onEnd() {
@@ -71,6 +140,39 @@ export default {
         this.form[this.name] = !isEmpty && data ? data : null
       }
     },
+    openFileUpload() {
+      if (this.disabled || !this.$refs['actual-input']) return
+      this.$refs['actual-input'].click()
+    },
+    manualFileUpload(e) {
+      const files = e.target.files
+      for (let i = 0; i < files.length; i++) {
+        this.uploadFileToServer(files.item(i))
+      }
+    },
+    uploadFileToServer(file) {
+      if (this.disabled) return
+      this.loading = true
+      storeFile(file)
+        .then((response) => {
+          this.file = {
+            file: file,
+            url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension,
+            src: this.getFileSrc(file)
+          }
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+          this.file = null
+        })
+    },
+    getFileSrc(file) {
+      if (file.type && file.type.split('/')[0] === 'image') {
+        return URL.createObjectURL(file)
+      }
+      return null
+    }
   },
 }
 </script>
