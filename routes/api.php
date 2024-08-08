@@ -263,7 +263,8 @@ Route::group(['middleware' => 'guest:api'], function () {
     Route::post('email/resend', [VerificationController::class, 'resend']);
 
     Route::post('oauth/{driver}', [OAuthController::class, 'redirect']);
-    Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
+    Route::post('oauth/connect/{service}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
+    Route::post('oauth/{provider}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
 });
 
 Route::group(['prefix' => 'appsumo'], function () {
