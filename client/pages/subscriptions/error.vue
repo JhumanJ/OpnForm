@@ -1,34 +1,14 @@
-<template />
+<script setup>
+import { useBroadcastChannel } from '@vueuse/core'
 
-<script>
-import { computed } from "vue"
-import { useAuthStore } from "../../stores/auth"
+definePageMeta({
+  middleware: 'auth'
+})
 
-export default {
-  components: {},
-  layout: "default",
-  middleware: "auth",
+const subscribeBroadcast = useBroadcastChannel('subscribe')
 
-  setup() {
-    useOpnSeoMeta({
-      title: "Error",
-    })
-
-    const authStore = useAuthStore()
-    return {
-      authenticated: computed(() => authStore.check),
-    }
-  },
-
-  data: () => ({}),
-
-  computed: {},
-
-  mounted() {
-    this.$router.push({ name: "pricing" })
-    useAlert().error(
-      "Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.",
-    )
-  },
-}
+onMounted(() => {
+  subscribeBroadcast.post({ 'type': 'error' })
+  window.close()
+})
 </script>

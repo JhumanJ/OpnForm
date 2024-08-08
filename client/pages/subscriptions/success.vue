@@ -17,86 +17,71 @@
   </div>
 </template>
 
-<script>
-import {computed} from "vue"
-import {useAuthStore} from "../../stores/auth"
 
-export default {
-  layout: "default",
-  middleware: "auth",
+<script setup>
+import { useBroadcastChannel } from '@vueuse/core'
 
-  setup() {
-    useOpnSeoMeta({
-      title: "Subscription Success",
-    })
+definePageMeta({
+  middleware: 'auth'
+})
 
-    const authStore = useAuthStore()
-    const confetti = useConfetti()
-    return {
-      authStore,
-      confetti,
-      authenticated: computed(() => authStore.check),
-      user: computed(() => authStore.user),
-      crisp: useCrisp(),
+useOpnSeoMeta({
+  title: 'Subscription Success'
+})
+
+const authStore = useAuthStore()
+const confetti = useConfetti()
+const user = computed(() => authStore.user)
+const subscribeBroadcast = useBroadcastChannel('subscribe')
+
+const interval = ref(null)
+
+const redirectIfSubscribed = () => {
+  if (user.value.is_subscribed) {
+    // Log subscription
+    const eventData = {
+      plan: user.value.has_enterprise_subscription ? 'enterprise' : 'pro'
     }
-  },
 
-  data: () => ({
-    interval: null,
-  }),
-
-  computed: {},
-
-  mounted() {
-    this.redirectIfSubscribed()
-    this.interval = setInterval(() => this.checkSubscription(), 5000)
-  },
-
-  beforeUnmount() {
-    clearInterval(this.interval)
-  },
-  unmounted() {
-    // stop confettis after 2 sec
-    setTimeout(() => {
-      this.confetti.stop()
-    }, 2000)
-  },
-
-  methods: {
-    async checkSubscription() {
-      // Fetch the user.
-      await this.authStore.fetchUser()
-      this.redirectIfSubscribed()
-    },
-    redirectIfSubscribed() {
-      if (this.user.is_subscribed) {
-        useAmplitude().logEvent("subscribed", {
-          plan: "pro",
-        })
-        this.crisp.pushEvent("subscribed", {
-          plan: "pro",
-        })
-        try {
-          useGtm().trackEvent({event: 'subscribed'})
-        } catch (error) {
-          console.error(error)
-        }
-        this.confetti.play()
-        this.$router.push({name: "home"})
-
-        if (this.user.has_enterprise_subscription) {
-          useAlert().success(
-            "Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Enterprise " +
-            "features. No need to invite your teammates, just ask them to create a OpnForm account and to connect the same Notion workspace. Feel free to contact us if you have any question 🙌",
-          )
-        } else {
-          useAlert().success(
-            "Awesome! Your subscription to OpnForm is now confirmed! You now have access to all Pro " +
-            "features. Feel free to contact us if you have any question 🙌",
-          )
-        }
+    try {
+      useAmplitude().logEvent('subscribed', eventData)
+      useCrisp().pushEvent('subscribed', eventData)
+      useGtm().trackEvent({ event: 'subscribed', ...eventData })
+      if (import.meta.client && window.rewardful) {
+        window.rewardful('convert', { email: user.value.email })
       }
-    },
+    } catch (error) {
+      console.error(error)
+    }
+    
+    subscribeBroadcast.post({ 'type': 'success' })
+    window.close()
   }
 }
+const checkSubscription = () => {
+  // Fetch the user.
+  return noteFormsFetch('user').then((data) => {
+    authStore.setUser(data)
+    redirectIfSubscribed()
+  }).catch((error) => {
+    console.error(error)
+    clearInterval(interval.value)
+  })
+}
+
+onMounted(() => {
+  redirectIfSubscribed()
+  interval.value = setInterval(() => checkSubscription(), 5000)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(interval.value)
+})
+
+onUnmounted(() => {
+  // stop confettis after 2 sec
+  setTimeout(() => {
+    confetti.stop()
+  }, 2000)
+})
 </script>

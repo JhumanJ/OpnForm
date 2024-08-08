@@ -1,154 +1,113 @@
 <template>
-  <v-transition>
-    <div
+  <VTransition>
+    <section
       v-if="hasCleanings && !hideWarning"
-      class="border border-gray-300 dark:border-gray-600 rounded-md bg-white p-2"
-      :class="{
-        'hover:bg-yellow-50 dark:hover:bg-yellow-900': !collapseOpened,
-      }"
+      class="flex gap-3 p-4 bg-blue-50 rounded-lg border border-blue-300 border-solid max-md:flex-wrap mb-2"
+      aria-labelledby="notification-title"
     >
-      <collapse v-model="collapseOpened">
-        <template #title>
-          <p
-            class="text-yellow-500 dark:text-yellow-400 font-semibold text-sm p-1 pr-4"
+      <div class="flex justify-center items-center self-start py-px">
+        <Icon
+          name="bi:stars"
+          class="w-6 h-6 text-nt-blue"
+        />
+      </div>
+      <div class="flex flex-col flex-1 max-md:max-w-full">
+        <div class="flex flex-col text-sm leading-5 text-slate-900 max-md:max-w-full">
+          <h5
+            id="notification-title"
+            class="font-medium max-md:max-w-full text-blue-500"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6 inline"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-              />
-            </svg>
-            Some features that are included in our
-            {{ form.is_pro ? "Enterprise" : "Pro" }} plan are disabled when
-            publicly sharing this form<span v-if="specifyFormOwner">
-              (only owners of this form can see this)</span>.
+            Upgrade to unlock all features
+          </h5>
+          <p class="mt-2 max-md:max-w-full text-slate-500">
+            <span v-if="specifyFormOwner">Only you are seeing this notification, as owner of the form.</span> The
+            following features are disabled on the published form:
           </p>
-        </template>
-
-        <div class="border-t mt-1 p-4 pb-2 -mx-2">
-          <p
-            class="text-gray-500 text-sm"
+          <div
+            class="text-slate-500"
             v-html="cleaningContent"
           />
-          <p class="text-gray-500 text-sm mb-4 font-semibold">
-            <NuxtLink :to="{ name: 'pricing' }">
-              {{
-                form.is_pro
-                  ? "Upgrade your OpnForms plan today"
-                  : "Start your free OpnForms trial"
-              }}
-            </NuxtLink>
-            to unlock all of our features and build powerful forms.
-          </p>
-          <div class="flex flex-wrap items-end w-full">
-            <div class="flex-grow flex pr-2">
-              <v-button
-                v-track.upgrade_from_form_cleanings_click
-                size="small"
-                class="inline-block"
-                :to="{ name: 'pricing' }"
-              >
-                {{ form.is_pro ? "Upgrade plan" : "Start free trial" }}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 inline -mt-[2px]"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </v-button>
-              <v-button
-                color="white"
-                size="small"
-                class="ml-2"
-                @click.prevent="openCrisp"
-              >
-                Contact us
-              </v-button>
-            </div>
-            <v-button
-              v-if="hideable"
-              color="white"
-              size="small"
-              class="mt-2"
-              @click.prevent="hideWarning = true"
-            >
-              Hide warning
-            </v-button>
-          </div>
         </div>
-      </collapse>
-    </div>
-  </v-transition>
+        <div class="flex gap-0 self-start mt-2 text-xs font-medium leading-3 text-center">
+          <UButton
+            v-track.form_cleanings_unlock_all_features
+            icon="i-heroicons-check-badge-16-solid"
+            @click.prevent="onUpgradeClick"
+          >
+            <template v-if="form.is_pro">
+              Upgrade plan - Unlock all features
+            </template>
+            <template v-else>
+              Start free trial - Unlock all features
+            </template>
+          </UButton>
+          <UButton
+            v-if="specifyFormOwner"
+            variant="link"
+            @click.prevent="hideWarning=true"
+          >
+            Dismiss
+          </UButton>
+        </div>
+      </div>
+    </section>
+  </VTransition>
 </template>
+
 <script>
-import Collapse from "~/components/global/Collapse.vue"
-import VButton from "~/components/global/VButton.vue"
-import VTransition from "~/components/global/transitions/VTransition.vue"
+import VTransition from '~/components/global/transitions/VTransition.vue'
 
 export default {
-  name: "FormCleanings",
-  components: { VTransition, VButton, Collapse },
+  name: 'FormCleanings',
+  components: { VTransition },
   props: {
     form: { type: Object, required: true },
     specifyFormOwner: { type: Boolean, default: false },
-    hideable: { type: Boolean, default: false },
+    hideable: { type: Boolean, default: false }
   },
-  data() {
+  setup () {
+    const subscriptionModalStore = useSubscriptionModalStore()
+    return {
+      subscriptionModalStore
+    }
+  },
+  data () {
     return {
       collapseOpened: false,
-      hideWarning: false,
+      hideWarning: false
     }
   },
   computed: {
-    hasCleanings() {
+    hasCleanings () {
       return this.form.cleanings && Object.keys(this.form.cleanings).length > 0
     },
-    cleanings() {
+    cleanings () {
       return this.form.cleanings
     },
-    cleaningContent() {
-      let message = ""
+    cleaningContent () {
+      let message = ''
       Object.keys(this.cleanings).forEach((key) => {
         let fieldName = key.charAt(0).toUpperCase() + key.slice(1)
-        if (fieldName !== "Form") {
+        if (fieldName !== 'Form') {
           fieldName = '"' + fieldName + '" field'
         }
-        let fieldInfo =
-          '<span class="font-semibold">' +
-          fieldName +
-          "</span><br/><ul class='list-disc list-inside'>"
+        let fieldInfo = '<br><span class="font-semibold">' + fieldName + '</span><br/><ul class=\'list-disc list-inside\'>'
         this.cleanings[key].forEach((msg) => {
-          fieldInfo = fieldInfo + "<li>" + msg + "</li>"
+          if (!msg) return
+          fieldInfo = fieldInfo + '<li>' + msg + '</li>'
         })
         if (fieldInfo) {
-          message = message + fieldInfo + "<ul/><br/>"
+          message = message + fieldInfo + '</ul>'
         }
       })
       return message
-    },
+    }
   },
-  watch: {},
-  mounted() {},
   methods: {
-    openCrisp() {
-      useCrisp().openAndShowChat()
-    },
-  },
+    onUpgradeClick () {
+      this.subscriptionModalStore.setModalContent('Upgrade to unlock all features for your form', 'Some features are disabled on the published form. Upgrade your plan to unlock these features and much more. Gain full access to all advanced features.')
+      this.subscriptionModalStore.openModal()
+    }
+  }
 }
 </script>

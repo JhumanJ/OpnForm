@@ -49,6 +49,7 @@
 
     <NotificationsWrapper />
     <feature-base />
+    <SubscriptionModal />
   </div>
 </template>
 
