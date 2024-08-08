@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\EmailTakenException;
 use App\Http\Controllers\Controller;
+use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\OAuthProvider;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -31,11 +32,11 @@ class OAuthController extends Controller
      * @param  string  $provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirect($provider)
+    public function redirect(OAuthProviderService $service)
     {
-        return [
-            'url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
-        ];
+        return response()->json([
+            'url' => $service->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getRedirectUrl()
+        ]);
     }
 
     /**
@@ -44,47 +45,84 @@ class OAuthController extends Controller
      * @param  string  $driver
      * @return \Illuminate\Http\Response
      */
-    public function handleCallback($provider)
+    public function handleCallback(OAuthProviderService $provider)
     {
-        $user = Socialite::driver($provider)->stateless()->user();
-        $user = $this->findOrCreateUser($provider, $user);
-
-        $this->guard()->setToken(
-            $token = $this->guard()->login($user)
-        );
-
-        return view('oauth/callback', [
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
-        ]);
+        try{
+            $driverUser = $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getUser();
+            $user = $this->findOrCreateUser($provider, $driverUser);
+            if(!$user){
+                return $this->error([
+                    "message" => "User not found."
+                ]);
+            }
+            $this->guard()->setToken(
+                $token = $this->guard()->login($user)
+            );
+    
+            return response()->json([
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
+                'new_user' => $user->new_user
+            ]);
+        }catch(\Exception $e){
+            return $this->error([
+                "message" => "OAuth service failed to authenticate: ". $e->getMessage()
+            ]);
+        }
     }
 
     /**
-     * @param  string  $provider
-     * @param  \Laravel\Socialite\Contracts\User  $sUser
-     * @return \App\Models\User
+     * @param  \Laravel\Socialite\Contracts\User  $socialiteUser
+     * @return \App\Models\User | null
      */
-    protected function findOrCreateUser($provider, $user)
+    protected function findOrCreateUser($provider, $socialiteUser)
     {
         $oauthProvider = OAuthProvider::where('provider', $provider)
-            ->where('provider_user_id', $user->getId())
+            ->where('provider_user_id', $socialiteUser->getId())
             ->first();
 
         if ($oauthProvider) {
             $oauthProvider->update([
-                'access_token' => $user->token,
-                'refresh_token' => $user->refreshToken,
+                'access_token' => $socialiteUser->token,
+                'refresh_token' => $socialiteUser->refreshToken,
             ]);
 
             return $oauthProvider->user;
         }
 
-        if (User::where('email', $user->getEmail())->exists()) {
-            throw new EmailTakenException();
-        }
 
-        return $this->createUser($provider, $user);
+        if ($provider->getDriver()->canCreateUser()) {
+            $user = User::whereEmail($socialiteUser->getEmail())->first();
+            if (!$user) {
+                $user = User::create([
+                    'name' => $socialiteUser->getName(),
+                    'email' => $socialiteUser->getEmail(),
+                    'email_verified_at' => now(),
+                ]);
+                // Create and sync workspace
+                $workspace = Workspace::create([
+                    'name' => 'My Workspace',
+                    'icon' => '🧪',
+                ]);
+
+                $user->workspaces()->sync([
+                    $workspace->id => [
+                        'role' => User::ROLE_ADMIN,
+                    ],
+                ], false);
+                $user->new_user = true;
+            }
+            $user->oauthProviders()->create([
+                'provider' => $provider,
+                'provider_user_id' => $socialiteUser->getId(),
+                'access_token' => $socialiteUser->token,
+                'refresh_token' => $socialiteUser->refreshToken,
+            ]);
+            return $user;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -94,6 +132,7 @@ class OAuthController extends Controller
      */
     protected function createUser($provider, $sUser)
     {
+
         $user = User::create([
             'name' => $sUser->getName(),
             'email' => $sUser->getEmail(),

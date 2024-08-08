@@ -98,6 +98,19 @@
           Log In
         </NuxtLink>
       </p>
+
+      <hr class="my-4"/>
+      <p class="text-gray-600/50 text-center mb-4">You can also</p>
+      <v-button
+        native-type="buttom"
+        color="white"
+        class="space-x-4 flex items-center w-full"
+        :loading="false"
+        @click.prevent="signInwithGoogle"
+      >
+        <Icon name="devicon:google"/>
+        <span class="mx-2">Sign in with Google</span>
+      </v-button>
     </form>
   </div>
 </template>
@@ -123,6 +136,7 @@ export default {
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore(),
+      providersStore: useOAuthProvidersStore(),
       logEvent: useAmplitude().logEvent,
     }
   },
@@ -241,6 +255,9 @@ export default {
         }
       }
     },
+    signInwithGoogle() {
+      this.providersStore.guestConnect('google', true)
+    }
   },
 }
 </script>
