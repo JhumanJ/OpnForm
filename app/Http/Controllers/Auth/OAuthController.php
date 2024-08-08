@@ -8,7 +8,6 @@ use App\Models\OAuthProvider;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Laravel\Socialite\Facades\Socialite;
 
 class OAuthController extends Controller
 {
@@ -47,10 +46,10 @@ class OAuthController extends Controller
      */
     public function handleCallback(OAuthProviderService $provider)
     {
-        try{
+        try {
             $driverUser = $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getUser();
             $user = $this->findOrCreateUser($provider, $driverUser);
-            if(!$user){
+            if(!$user) {
                 return $this->error([
                     "message" => "User not found."
                 ]);
@@ -58,14 +57,14 @@ class OAuthController extends Controller
             $this->guard()->setToken(
                 $token = $this->guard()->login($user)
             );
-    
+
             return response()->json([
                 'token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
                 'new_user' => $user->new_user
             ]);
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             return $this->error([
                 "message" => "OAuth service failed to authenticate: ". $e->getMessage()
             ]);
