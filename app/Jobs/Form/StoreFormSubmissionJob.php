@@ -216,6 +216,10 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     private function storeSignature(?string $value)
     {
+        if ($value && preg_match('/^[\/\w\-. ]+$/', $value)) {  // If it's filename
+            return $this->storeFile($value);
+        }
+
         if ($value == null || !isset(explode(',', $value)[1])) {
             return null;
         }

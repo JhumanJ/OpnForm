@@ -37,6 +37,7 @@
         {{ file.file.name }}
       </p>
       <a
+        v-if="showRemove"
         href="javascript:void(0);"
         class="flex text-gray-400 rounded hover:bg-neutral-50 hover:text-red-500 dark:text-gray-600 p-1"
         role="button"
@@ -69,7 +70,8 @@ export default {
   name: "UploadedFile",
 
   props: {
-    file: { type:Object, default: null },
+    file: { type: Object, default: null },
+    showRemove: { type: Boolean, default: true },
     theme: {
       type: Object, default: () => {
         const theme = inject("theme", null)
