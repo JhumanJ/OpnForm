@@ -60,7 +60,7 @@
     <template #bottom_after_help>
       <small
         :class="theme.default.help"
-        class="mr-2"
+        class="flex-auto"
       >
         <input
           ref="actual-input"
@@ -74,7 +74,7 @@
           :class="theme.default.help"
           href="#"
           @click.prevent="openFileUpload"
-        >Or upload file</a>
+        >Upload file instead</a>
       </small>
 
       <small :class="theme.default.help">
@@ -127,7 +127,7 @@ export default {
 
   methods: {
     clear() {
-      this.file = []
+      this.file = null
       this.$refs.signaturePad?.clearSignature()
       this.onEnd()
     },
