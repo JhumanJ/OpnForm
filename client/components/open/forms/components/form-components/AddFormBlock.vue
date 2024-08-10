@@ -45,7 +45,7 @@
         >
           <template #item="{element}">
             <div
-              class="bg-gray-50 border cursor-grab hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
+              class="bg-transparent border cursor-grab hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
               role="button"
               @click.prevent="addBlock(element.name)"
             >
@@ -55,7 +55,7 @@
                   class="h-6 w-6 text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  :stroke="element?.color || 'blue'"
                   stroke-width="2"
                   v-html="element.icon"
                 />
@@ -84,7 +84,7 @@
         >
           <template #item="{element}">
             <div
-              class="bg-gray-50 border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
+              class="bg-transparent border hover:bg-gray-100 dark:bg-gray-900 rounded-md dark:hover:bg-gray-800 py-2 flex flex-col"
               role="button"
               @click.prevent="addBlock(element.name)"
             >
@@ -94,7 +94,7 @@
                   class="h-6 w-6 text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  stroke="#008000"
                   stroke-width="2"
                   v-html="element.icon"
                 />
@@ -168,41 +168,49 @@ export default {
           name: "select",
           title: "Select Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>',
+          color: '#d18403'
         },
         {
           name: "multi_select",
           title: "Multi-select Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>',
+          color: '#d18403'
         },
         {
           name: "number",
           title: "Number Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>',
+          color: '#ec4899'
         },
         {
           name: "rating",
           title: "Rating Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />',
+          color: '#ec4899'
         },
         {
           name: "scale",
           title: "Scale Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />',
+          color: '#ec4899'
         },
         {
           name: "slider",
           title: "Slider Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />',
+          color: '#ec4899'
         },
         {
           name: "files",
           title: "File Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />',
+          color: '#049db7'
         },
         {
           name: "signature",
           title: "Signature Input",
           icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />',
+          color: '#049db7'
         },
       ],
       layoutBlocks: [
