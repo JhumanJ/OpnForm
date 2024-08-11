@@ -129,7 +129,7 @@ class SpreadsheetManager
 
     public function buildRow(array $submissionData): array
     {
-        $formatter = (new FormSubmissionFormatter($this->integration->form, $submissionData))->outputStringsOnly();
+        $formatter = (new FormSubmissionFormatter($this->integration->form, $submissionData))->useSignedUrlForFiles()->outputStringsOnly();
 
         $fields = $formatter->getFieldsWithValue();
 

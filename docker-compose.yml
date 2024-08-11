@@ -10,8 +10,6 @@ services:
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
-      LOG_LEVEL: ${LOG_LEVEL:-debug}
-      LOG_CHANNEL: ${LOG_CHANNEL:-errorlog}
       AWS_ENDPOINT: http://minio:9000
       AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minio}
       AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minio123}
@@ -23,11 +21,13 @@ services:
     env_file: ./.env
     volumes:
       - laravel-persist:/persist
-      - secrets-config:/secrets
+      - ./storage/logs:/usr/share/nginx/html/storage/logs
 
   api-worker:
     <<: *api
     command: ./artisan queue:work
+    volumes:
+      - ./storage/logs:/usr/share/nginx/html/storage/logs
 
   ui:
     image: jhumanj/opnform-client:latest
@@ -38,10 +38,7 @@ services:
     env_file: 
       - ./client/.env
     volumes:
-      - secrets-config:/secrets
       - ./client/.env:/app/.env
-
-
 
   redis:
     image: redis:7
@@ -65,4 +62,3 @@ services:
 volumes:
   laravel-persist:
   postgres-data:
-  secrets-config:
