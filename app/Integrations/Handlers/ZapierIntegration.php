@@ -5,8 +5,6 @@ namespace App\Integrations\Handlers;
 use App\Events\Forms\FormSubmitted;
 use App\Models\Integration\FormIntegration;
 use Exception;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class ZapierIntegration extends AbstractIntegrationHandler
 {
