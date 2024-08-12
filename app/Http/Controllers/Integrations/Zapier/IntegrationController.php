@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Integrations\Zapier;
 
+use App\Http\Requests\Integration\Zapier\PollSubmissionRequest;
 use App\Http\Requests\Zapier\CreateIntegrationRequest;
 use App\Http\Requests\Zapier\DeleteIntegrationRequest;
+use App\Integrations\Handlers\ZapierIntegration;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Tests\Helpers\FormSubmissionDataFactory;
 
 class IntegrationController
 {
@@ -40,5 +43,20 @@ class IntegrationController
             ->delete();
 
         return response()->json();
+    }
+
+    public function poll(PollSubmissionRequest $request)
+    {
+        $form = $request->form();
+
+        $this->authorize('view', $form);
+
+        $lastSubmission = $form->submissions()->latest()->first();
+        if (!$lastSubmission) {
+            // Generate fake data when no previous submissions
+            $submissionData = (new FormSubmissionDataFactory($form))->asFormSubmissionData()->createSubmissionData();
+        }
+
+        return [ZapierIntegration::formatWebhookData($form, $submissionData ?? $lastSubmission->data)];
     }
 }

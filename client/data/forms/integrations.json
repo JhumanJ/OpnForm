@@ -31,14 +31,14 @@
   "webhook": {
     "name": "Webhook Notification",
     "icon": "material-symbols:webhook",
-    "section_name": "Notifications",
+    "section_name": "Automation",
     "file_name": "WebhookIntegration",
     "is_pro": false
   },
   "zapier": {
     "name": "Zapier",
     "icon": "cib:zapier",
-    "section_name": "Notifications",
+    "section_name": "Automation",
     "file_name": "ZapierIntegration",
     "is_pro": false,
     "is_external": true,

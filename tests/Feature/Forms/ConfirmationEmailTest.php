@@ -4,6 +4,7 @@ use App\Mail\Forms\SubmissionConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 
 it('creates confirmation emails with the submitted data', function () {
+    $this->withoutExceptionHandling();
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);

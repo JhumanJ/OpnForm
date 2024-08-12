@@ -9,6 +9,12 @@ class FormSubmissionDataFactory
 {
     private ?Faker\Generator $faker;
 
+    /**
+     * If true, then format expected by answer endpoint
+     * otherwise, format of answer as we store it in the FormSubmission's data
+     */
+    private bool $answerFormat = true;
+
     public function __construct(private Form $form)
     {
         $this->faker = Faker\Factory::create();
@@ -17,6 +23,12 @@ class FormSubmissionDataFactory
     public static function generateSubmissionData(Form $form, array $data = [])
     {
         return (new self($form))->createSubmissionData($data);
+    }
+
+    public function asFormSubmissionData()
+    {
+        $this->answerFormat = false;
+        return $this;
     }
 
     public function createSubmissionData($mergeData = [])
@@ -68,7 +80,21 @@ class FormSubmissionDataFactory
             $data[$property['id']] = $value;
         });
 
+        if (!$this->answerFormat) {
+            $data = $this->formatAsSubmissionData($data);
+        }
+
         return array_merge($data, $mergeData);
+    }
+
+    private function formatAsSubmissionData($data)
+    {
+        collect($this->form->properties)->each(function ($property) use (&$data) {
+            if ($property['type'] === 'phone_number') {
+                $data[$property['id']] = '+33749119783';
+            }
+        });
+        return $data;
     }
 
     private function generateSelectValue($property)

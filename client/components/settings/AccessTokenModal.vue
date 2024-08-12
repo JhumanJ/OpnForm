@@ -30,7 +30,7 @@
         @submit.prevent="createToken"
         @keydown="form.onKeydown($event)"
       >
-        <div>
+        <div v-if="!token">
           <text-input
             name="name"
             class="mt-4"
@@ -57,11 +57,11 @@
 
         <UAlert
           v-if="token"
-          icon="i-heroicons-command-line"
+          icon="i-heroicons-key-20-solid"
           color="green"
           variant="subtle"
           title="Copy your access token"
-          description="This message will only be shown once."
+          description="Your token will only be shown once. Make sure to save it safely."
         />
 
         <div class="flex">

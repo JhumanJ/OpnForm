@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Forms\FormSubmission;
 use App\Models\Integration\FormIntegration;
+use App\Models\Integration\FormZapierWebhook;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Tests\Helpers\FormSubmissionDataFactory;
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\delete;
@@ -20,8 +23,9 @@ test('create an integration', function () {
         ['manage-integrations']
     );
 
+    $this->withoutExceptionHandling();
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->id,
+        'form_id' => $form->slug,
         'hookUrl' => $hookUrl = 'https://zapier.com/hook/test'
     ])
         ->assertOk();
@@ -43,7 +47,7 @@ test('cannot create an integration without a corresponding ability', function ()
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->id,
+        'form_id' => $form->slug,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
         ->assertForbidden();
@@ -62,7 +66,7 @@ test('cannot create an integration for other users form', function () {
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->id,
+        'form_id' => $form->slug,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
         ->assertForbidden();
@@ -92,7 +96,7 @@ test('delete an integration', function () {
     assertDatabaseCount('form_integrations', 1);
 
     delete(route('zapier.webhooks.destroy', $integration), [
-        'form_id' => $form->id,
+        'form_id' => $form->slug,
         'hookUrl' => $hookUrl,
     ])
         ->assertOk();
@@ -120,10 +124,123 @@ test('cannot delete an integration with an incorrect hook url', function () {
         ]);
 
     delete(route('zapier.webhooks.destroy', $integration), [
-        'form_id' => $form->id,
+        'form_id' => $form->slug,
         'hookUrl' => 'https://google.com',
     ])
         ->assertOk();
 
     assertDatabaseCount('form_integrations', 1);
+});
+
+test('poll for the latest submission', function () {
+    $user = User::factory()->create();
+    $workspace = createUserWorkspace($user);
+    $form = createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'text',
+                'hidden' => false,
+                'required' => true,
+                'logic' => [
+                    'conditions' => null,
+                    'actions' => [],
+                ],
+            ],
+            [
+                'id' => 'age',
+                'name' => 'Age',
+                'type' => 'number',
+                'hidden' => false,
+                'required' => true,
+            ],
+        ],
+    ]);
+
+    // Create a submission for the form
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    // Create a webhook integration for the form
+    $integration = FormIntegration::factory()
+        ->for($form)
+        ->create([
+            'data' => [
+                'hook_url' => 'https://zapier.com/hook/test'
+            ]
+        ]);
+
+    Sanctum::actingAs($user, ['view', 'manage-integrations']);
+
+    // Call the poll endpoint
+    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->slug]));
+
+    // Assert the response status is OK
+    $response->assertOk();
+
+    // Decode the response data
+    $responseData = $response->json()[0];
+    $receivedData = collect($responseData['data'])->values()->pluck('value')->toArray();
+
+    $this->assertEmpty(array_diff(array_values($formData), $receivedData));
+});
+
+test('make up a submission when polling without any submission', function () {
+    $user = User::factory()->create();
+    $workspace = createUserWorkspace($user);
+    $form = createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'text',
+                'hidden' => false,
+                'required' => true,
+                'logic' => [
+                    'conditions' => null,
+                    'actions' => [],
+                ],
+            ],
+            [
+                'id' => 'age',
+                'name' => 'Age',
+                'type' => 'number',
+                'hidden' => false,
+                'required' => true,
+            ],
+        ],
+    ]);
+
+    // Create a webhook integration for the form
+    $integration = FormIntegration::factory()
+        ->for($form)
+        ->create([
+            'data' => [
+                'hook_url' => 'https://zapier.com/hook/test'
+            ]
+        ]);
+
+    Sanctum::actingAs($user, ['view', 'manage-integrations']);
+
+    // Call the poll endpoint
+    $this->withoutExceptionHandling();
+    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->slug]));
+    // Assert the response status is OK
+    $response->assertOk();
+
+    // Decode the response data
+    $responseData = $response->json()[0];
+
+    ray($responseData);
+
+    ray($responseData);
+    $this->assertNotEmpty($responseData['data']);
+    $this->assertTrue(count($responseData['data']) == 2);
 });

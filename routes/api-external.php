@@ -24,6 +24,7 @@ Route::prefix('external')
 
                     Route::delete('webhook', [Zapier\IntegrationController::class, 'destroy'])
                         ->name('destroy');
+                    Route::get('submissions/recent', [Zapier\IntegrationController::class, 'poll'])->name('poll');
                 });
 
             Route::get('workspaces', ListWorkspacesController::class)

@@ -28,27 +28,9 @@ class ZapierIntegration extends AbstractIntegrationHandler
         return false;
     }
 
-    public function handle(): void
-    {
-        if (!$this->shouldRun()) {
-            return;
-        }
-
-        Log::debug('Triggering Zapier Webhook', [
-            'hook_url' => $this->getWebhookUrl(),
-            'form_id' => $this->form->id,
-            'form_slug' => $this->form->slug,
-        ]);
-
-        Http::post(
-            $this->getWebhookUrl(),
-            $this->getWebhookData()
-        );
-    }
-
     protected function getWebhookUrl(): string
     {
-        if(!isset($this->integrationData->hook_url)) {
+        if (!isset($this->integrationData->hook_url)) {
             throw new Exception('The webhook URL is missing');
         }
 
