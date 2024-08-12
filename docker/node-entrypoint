@@ -1,0 +1,21 @@
+#!/bin/sh
+
+main() {
+    if [ "$1" = "bash" ]; then
+        "$@"
+    else
+        if [ -f .env ]; then
+            . .env
+        else
+            echo "Warning: .env file not found"
+        fi
+        run_server "$@"
+    fi
+}
+
+run_server() {
+    echo "Running node $@"
+    "$@"
+}
+
+main "$@"

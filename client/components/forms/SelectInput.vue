@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {inputProps, useFormInput} from './useFormInput.js'
+import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 
 /**
@@ -109,21 +109,21 @@ import InputWrapper from './components/InputWrapper.vue'
  */
 export default {
   name: 'SelectInput',
-  components: {InputWrapper},
+  components: { InputWrapper },
 
   props: {
     ...inputProps,
-    options: {type: Array, required: true},
-    optionKey: {type: String, default: 'value'},
-    emitKey: {type: String, default: 'value'},
-    displayKey: {type: String, default: 'name'},
-    loading: {type: Boolean, default: false},
-    multiple: {type: Boolean, default: false},
-    searchable: {type: Boolean, default: false},
-    clearable: {type: Boolean, default: false},
-    allowCreation: {type: Boolean, default: false},
-    dropdownClass: {type: String, default: 'w-full'},
-    remote: {type: Function, default: null}
+    options: { type: Array, required: true },
+    optionKey: { type: String, default: 'value' },
+    emitKey: { type: String, default: 'value' },
+    displayKey: { type: String, default: 'name' },
+    loading: { type: Boolean, default: false },
+    multiple: { type: Boolean, default: false },
+    searchable: { type: Boolean, default: false },
+    clearable: { type: Boolean, default: false },
+    allowCreation: { type: Boolean, default: false },
+    dropdownClass: { type: String, default: 'w-full' },
+    remote: { type: Function, default: null }
   },
   setup(props, context) {
     return {
@@ -156,17 +156,19 @@ export default {
   },
   methods: {
     getOptionName(val) {
+      if (val == null) return ''
       const option = this.finalOptions.find((optionCandidate) => {
-        return optionCandidate[this.optionKey] === val ||
-          (typeof val === 'object' && optionCandidate[this.optionKey] === val[this.optionKey])
+        return optionCandidate && optionCandidate[this.optionKey] === val ||
+          (typeof val === 'object' && val && optionCandidate && optionCandidate[this.optionKey] === val[this.optionKey])
       })
-      if (option) return option[this.displayKey]
-      return null
+      if (option && option[this.displayKey] !== undefined) {
+        return option[this.displayKey]
+      }
+      return val.toString() // Convert to string to ensure it's not null
     },
     getOptionNames(values) {
-      return values.map(val => {
-        return this.getOptionName(val)
-      })
+      if (!Array.isArray(values)) return []
+      return values.map(val => this.getOptionName(val)).filter(Boolean)
     },
     updateModelValue(newValues) {
       if (newValues === null) newValues = []
