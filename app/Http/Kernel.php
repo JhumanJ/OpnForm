@@ -64,6 +64,11 @@ class Kernel extends HttpKernel
             SelfHostedCredentialsMiddleware::class,
             ImpersonationMiddleware::class,
         ],
+
+        'api-external' => [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 
     /**
@@ -90,5 +95,8 @@ class Kernel extends HttpKernel
 
         'pro-form' => \App\Http\Middleware\Form\ProForm::class,
         'protected-form' => \App\Http\Middleware\Form\ProtectedForm::class,
+
+        'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+        'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
     ];
 }

@@ -15,9 +15,10 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
-use App\Http\Controllers\OAuth\OAuthProviderController;
+use App\Http\Controllers\Settings\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\TokenController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserInviteController;
@@ -50,6 +51,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::prefix('/settings')->name('settings.')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::patch('/password', [PasswordController::class, 'update']);
+
+        Route::prefix('/tokens')->name('tokens.')->group(function () {
+            Route::get('/', [TokenController::class, 'index'])->name('index');
+            Route::post('/', [TokenController::class, 'store'])->name('store');
+            Route::delete('{token}', [TokenController::class, 'destroy'])->name('destroy');
+        });
 
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
