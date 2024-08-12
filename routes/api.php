@@ -313,6 +313,9 @@ Route::prefix('content')->name('content.')->group(function () {
 
 Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
 
+// Fonts
+Route::get('/fonts', [\App\Http\Controllers\FontsController::class, 'index'])->name('fonts.index');
+
 // Templates
 Route::prefix('templates')->group(function () {
     Route::get('/', [TemplateController::class, 'index'])->name('templates.index');
