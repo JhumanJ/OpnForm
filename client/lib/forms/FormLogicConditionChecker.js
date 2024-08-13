@@ -62,7 +62,7 @@ function propertyConditionMet(propertyCondition, value) {
     case "files":
       return filesConditionMet(propertyCondition, value)
     case "matrix":
-      return matrixConditionMet(propertyCondition, value
+      return matrixConditionMet(propertyCondition, value)
   }
   return false
 }
