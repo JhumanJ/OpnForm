@@ -48,35 +48,35 @@ class OAuthController extends Controller
     {
         try {
             $driverUser = $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getUser();
-            $user = $this->findOrCreateUser($provider, $driverUser);
-
-            if (!$user) {
-                return $this->error([
-                    "message" => "User not found."
-                ]);
-            }
-
-            if ($user->has_registered) {
-                return $this->error([
-                    "message" => "This email is already registered. Please sign in with your password."
-                ]);
-            }
-
-            $this->guard()->setToken(
-                $token = $this->guard()->login($user)
-            );
-
-            return response()->json([
-                'token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
-                'new_user' => $user->new_user
-            ]);
         } catch (\Exception $e) {
             return $this->error([
                 "message" => "OAuth service failed to authenticate: " . $e->getMessage()
             ]);
         }
+        $user = $this->findOrCreateUser($provider, $driverUser);
+
+        if (!$user) {
+            return $this->error([
+                "message" => "User not found."
+            ]);
+        }
+
+        if ($user->has_registered) {
+            return $this->error([
+                "message" => "This email is already registered. Please sign in with your password."
+            ]);
+        }
+
+        $this->guard()->setToken(
+            $token = $this->guard()->login($user)
+        );
+
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
+            'new_user' => $user->new_user
+        ]);
     }
 
     /**
@@ -105,29 +105,31 @@ class OAuthController extends Controller
 
         $email = strtolower($socialiteUser->getEmail());
         $user = User::whereEmail($email)->first();
+
         if ($user) {
             $user->has_registered = true;
             return $user;
-        } else {
-            $user = User::create([
-                'name' => $socialiteUser->getName(),
-                'email' => $email,
-                'email_verified_at' => now(),
-            ]);
-
-            // Create and sync workspace
-            $workspace = Workspace::create([
-                'name' => 'My Workspace',
-                'icon' => '🧪',
-            ]);
-
-            $user->workspaces()->sync([
-                $workspace->id => [
-                    'role' => User::ROLE_ADMIN,
-                ],
-            ], false);
-            $user->new_user = true;
         }
+
+        $user = User::create([
+            'name' => $socialiteUser->getName(),
+            'email' => $email,
+            'email_verified_at' => now(),
+        ]);
+
+        // Create and sync workspace
+        $workspace = Workspace::create([
+            'name' => 'My Workspace',
+            'icon' => '🧪',
+        ]);
+
+        $user->workspaces()->sync([
+            $workspace->id => [
+                'role' => User::ROLE_ADMIN,
+            ],
+        ], false);
+        $user->new_user = true;
+
         $user->oauthProviders()->create([
             'provider' => $provider,
             'provider_user_id' => $socialiteUser->getId(),
