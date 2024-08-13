@@ -67,9 +67,9 @@ function handleCallback() {
             router.push({ name: "home" })
             return
         } else {
-            console.log('new user')
             logEvent("register", { source: provider })
             router.push({ name: "forms-create" })
+            useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
             try {
                 useGtm().trackEvent({
                     event: 'register',

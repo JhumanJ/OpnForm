@@ -49,11 +49,19 @@ class OAuthController extends Controller
         try {
             $driverUser = $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getUser();
             $user = $this->findOrCreateUser($provider, $driverUser);
-            if(!$user) {
+
+            if (!$user) {
                 return $this->error([
                     "message" => "User not found."
                 ]);
             }
+
+            if ($user->has_registered) {
+                return $this->error([
+                    "message" => "This email is already registered. Please sign in with your password."
+                ]);
+            }
+
             $this->guard()->setToken(
                 $token = $this->guard()->login($user)
             );
@@ -64,15 +72,15 @@ class OAuthController extends Controller
                 'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
                 'new_user' => $user->new_user
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->error([
-                "message" => "OAuth service failed to authenticate: ". $e->getMessage()
+                "message" => "OAuth service failed to authenticate: " . $e->getMessage()
             ]);
         }
     }
 
     /**
-     * @param  \Laravel\Socialite\Contracts\User  $socialiteUser
+     * @p   aram  \Laravel\Socialite\Contracts\User  $socialiteUser
      * @return \App\Models\User | null
      */
     protected function findOrCreateUser($provider, $socialiteUser)
@@ -91,37 +99,42 @@ class OAuthController extends Controller
         }
 
 
-        if ($provider->getDriver()->canCreateUser()) {
-            $user = User::whereEmail($socialiteUser->getEmail())->first();
-            if (!$user) {
-                $user = User::create([
-                    'name' => $socialiteUser->getName(),
-                    'email' => $socialiteUser->getEmail(),
-                    'email_verified_at' => now(),
-                ]);
-                // Create and sync workspace
-                $workspace = Workspace::create([
-                    'name' => 'My Workspace',
-                    'icon' => '🧪',
-                ]);
-
-                $user->workspaces()->sync([
-                    $workspace->id => [
-                        'role' => User::ROLE_ADMIN,
-                    ],
-                ], false);
-                $user->new_user = true;
-            }
-            $user->oauthProviders()->create([
-                'provider' => $provider,
-                'provider_user_id' => $socialiteUser->getId(),
-                'access_token' => $socialiteUser->token,
-                'refresh_token' => $socialiteUser->refreshToken,
-            ]);
-            return $user;
-        } else {
+        if (!$provider->getDriver()->canCreateUser()) {
             return null;
         }
+
+        $email = strtolower($socialiteUser->getEmail());
+        $user = User::whereEmail($email)->first();
+        if ($user) {
+            $user->has_registered = true;
+            return $user;
+        } else {
+            $user = User::create([
+                'name' => $socialiteUser->getName(),
+                'email' => $email,
+                'email_verified_at' => now(),
+            ]);
+
+            // Create and sync workspace
+            $workspace = Workspace::create([
+                'name' => 'My Workspace',
+                'icon' => '🧪',
+            ]);
+
+            $user->workspaces()->sync([
+                $workspace->id => [
+                    'role' => User::ROLE_ADMIN,
+                ],
+            ], false);
+            $user->new_user = true;
+        }
+        $user->oauthProviders()->create([
+            'provider' => $provider,
+            'provider_user_id' => $socialiteUser->getId(),
+            'access_token' => $socialiteUser->token,
+            'refresh_token' => $socialiteUser->refreshToken,
+        ]);
+        return $user;
     }
 
     /**
