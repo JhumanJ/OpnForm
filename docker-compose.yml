@@ -1,0 +1,64 @@
+---
+services:
+  api: &api
+    image: jhumanj/opnform-api:latest
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+
+      DB_DATABASE: ${DB_DATABASE:-forge}
+      DB_USERNAME: ${DB_USERNAME:-forge}
+      DB_PASSWORD: ${DB_PASSWORD:-forge}
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      AWS_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minio}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minio123}
+      FILESYSTEM_DISK: local
+      AWS_REGION: eu-west-1
+      AWS_BUCKET: laravel-bucket
+      LOCAL_FILESYSTEM_VISIBILITY: public
+      FRONT_URL: ${FRONT_URL:-http://localhost}
+    env_file: ./.env
+    volumes:
+      - laravel-persist:/persist
+      - ./storage/logs:/usr/share/nginx/html/storage/logs
+
+  api-worker:
+    <<: *api
+    command: ./artisan queue:work
+    volumes:
+      - ./storage/logs:/usr/share/nginx/html/storage/logs
+
+  ui:
+    image: jhumanj/opnform-client:latest
+    environment:
+      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
+      NUXT_PRIVATE_API_BASE: http://ingress/api
+    env_file: 
+      - ./client/.env
+    volumes:
+      - ./client/.env:/app/.env
+
+  redis:
+    image: redis:7
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-forge}
+      POSTGRES_USER: ${DB_USERNAME:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  ingress:
+    image: nginx:1
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
+    ports:
+      - 80:80
+
+volumes:
+  laravel-persist:
+  postgres-data:

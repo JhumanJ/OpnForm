@@ -6,6 +6,7 @@
   </div>
   <form
     v-else-if="dataForm"
+    :style="computedStyle"
     @submit.prevent=""
   >
     <template v-if="form.show_progress_bar">
@@ -77,6 +78,8 @@
           ref="hcaptcha"
           :sitekey="hCaptchaSiteKey"
           :theme="darkMode?'dark':'light'"
+          @opened="setMinHeight(500)"
+          @closed="setMinHeight(0)"
         />
         <has-error
           :form="dataForm"
@@ -141,14 +144,14 @@ export default {
       required: true
     },
     theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
       }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
+    },
     loading: {
       type: Boolean,
       required: true
@@ -163,6 +166,7 @@ export default {
     },
     defaultDataForm: {},
     adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
+    urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
     darkMode: {
       type: Boolean,
       default: false
@@ -178,6 +182,7 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
+      isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: pendingSubmission(props.form)
     }
@@ -190,6 +195,7 @@ export default {
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
+      minHeight: 0
     }
   },
 
@@ -289,6 +295,11 @@ export default {
         }
       })
       return data
+    },
+    computedStyle() {
+      return {
+        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {}
+      }
     }
   },
 
@@ -451,9 +462,9 @@ export default {
       return false
     },
     nextPage() {
-      if (this.adminPreview) {
+      if (this.adminPreview || this.urlPrefillPreview) {
         this.currentFieldGroupIndex += 1
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        window.scrollTo({top: 0, behavior: 'smooth'})
         return false
       }
       const fieldsToValidate = this.currentFields.map(f => f.id)
@@ -464,28 +475,28 @@ export default {
           this.dataForm.busy = false
           window.scrollTo({top: 0, behavior: 'smooth'})
         }).catch(error => {
-          console.error(error)
-          if (error && error.data && error.data.message) {
-            useAlert().error(error.data.message)
-          }
-          this.dataForm.busy = false
-        })
+        console.error(error)
+        if (error && error.data && error.data.message) {
+          useAlert().error(error.data.message)
+        }
+        this.dataForm.busy = false
+      })
       return false
     },
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
-    getTargetFieldIndex(currentFieldPageIndex){
+    getTargetFieldIndex(currentFieldPageIndex) {
       let targetIndex = 0
-        if (this.currentFieldGroupIndex > 0) {
-          for (let i = 0; i < this.currentFieldGroupIndex; i++) {
-            targetIndex += this.fieldGroups[i].length
-          }
-          targetIndex += currentFieldPageIndex
-        } else {
-          targetIndex = currentFieldPageIndex
+      if (this.currentFieldGroupIndex > 0) {
+        for (let i = 0; i < this.currentFieldGroupIndex; i++) {
+          targetIndex += this.fieldGroups[i].length
         }
-        return targetIndex
+        targetIndex += currentFieldPageIndex
+      } else {
+        targetIndex = currentFieldPageIndex
+      }
+      return targetIndex
     },
     handleDragDropped(data) {
       if (data.added) {
@@ -497,6 +508,18 @@ export default {
         const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
         const newTargetIndex = this.getTargetFieldIndex(data.moved.newIndex)
         this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
+      }
+    },
+    setMinHeight(minHeight) {
+      if (!this.isIframe) {
+        return
+      }
+      this.minHeight = minHeight
+      // Trigger window iframe resize
+      try {
+        window.parentIFrame.size()
+      } catch (e) {
+        console.error(e)
       }
     }
   }

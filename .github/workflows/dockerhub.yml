@@ -11,16 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get tag name
-        run: ( echo "TAG_NAME=${GITHUB_REF#refs/*/v}"; echo "DOCKER_REPO=${{secrets.DOCKER_REPO}}") >> $GITHUB_ENV
+        run: |
+          (
+            echo "TAG_NAME=${GITHUB_REF#refs/*/v}";
+            echo "DOCKER_UI_REPO=${{secrets.DOCKER_UI_REPO}}"
+            echo "DOCKER_API_REPO=${{secrets.DOCKER_API_REPO}}"
+          ) >> $GITHUB_ENV
 
       - name: Check out the repo
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
         run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_ACCESS_TOKEN }}"
-      
-      - name: Build docker image
-        run: docker build . -t $DOCKER_REPO:latest -t $DOCKER_REPO:$TAG_NAME
-      
-      - name: Push Docker image
-        run: docker push $DOCKER_REPO:latest && docker push $DOCKER_REPO:$TAG_NAME
+
+      - name: Build docker api image
+        run: docker build -f docker/Dockerfile.api . -t $DOCKER_API_REPO:latest -t $DOCKER_API_REPO:$TAG_NAME
+
+      - name: Build docker ui image
+        run: docker build -f docker/Dockerfile.client . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
+
+      - name: Push Docker api image
+        run: docker push $DOCKER_API_REPO:latest && docker push $DOCKER_API_REPO:$TAG_NAME
+
+      - name: Push Docker ui image
+        run: docker push $DOCKER_UI_REPO:latest && docker push $DOCKER_UI_REPO:$TAG_NAME

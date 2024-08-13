@@ -49,7 +49,7 @@
             v-for="(sectionItem, sectionItemKey) in section"
             :key="sectionItemKey"
             :integration="sectionItem"
-            @select="openIntegrationModal"
+            @select="openIntegration"
           />
         </div>
       </div>
@@ -107,11 +107,22 @@ onMounted(() => {
   oAuthProvidersStore.fetchOAuthProviders(props.form.workspace_id)
 })
 
-const openIntegrationModal = (itemKey) => {
-  if (!itemKey || !integrations.value.has(itemKey))
+const openIntegration = (itemKey) => {
+  if (!itemKey || !integrations.value.has(itemKey)) {
     return alert.error("Integration not found")
-  if (integrations.value.get(itemKey).coming_soon)
+  }
+
+  const integration = integrations.value.get(itemKey)
+
+  if (integration.coming_soon) {
     return alert.warning("This integration is not available yet")
+  }
+
+  if(integration.is_external && integration.url) {
+    window.open(integration.url, '_blank')
+    return
+  }
+
   selectedIntegrationKey.value = itemKey
   selectedIntegration.value = integrations.value.get(
     selectedIntegrationKey.value,

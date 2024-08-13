@@ -15,9 +15,10 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
-use App\Http\Controllers\OAuth\OAuthProviderController;
+use App\Http\Controllers\Settings\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\TokenController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserInviteController;
@@ -41,7 +42,8 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('logout', [LoginController::class, 'logout']);
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);
@@ -49,6 +51,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::prefix('/settings')->name('settings.')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::patch('/password', [PasswordController::class, 'update']);
+
+        Route::prefix('/tokens')->name('tokens.')->group(function () {
+            Route::get('/', [TokenController::class, 'index'])->name('index');
+            Route::post('/', [TokenController::class, 'store'])->name('store');
+            Route::delete('{token}', [TokenController::class, 'destroy'])->name('destroy');
+        });
 
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
@@ -252,7 +260,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
-    Route::post('login', [LoginController::class, 'login']);
+    Route::post('login', [LoginController::class, 'login'])->name('login');
     Route::post('register', [RegisterController::class, 'register']);
 
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);

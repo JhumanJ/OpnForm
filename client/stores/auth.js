@@ -10,6 +10,7 @@ export const useAuthStore = defineStore("auth", {
   },
   getters: {
     check: (state) => state.user !== null && state.user !== undefined,
+    has_active_license: (state) => state.user !== null && state.user !== undefined && state.user.active_license !== null,
     isImpersonating: (state) =>
       state.admin_token !== null && state.admin_token !== undefined,
   },

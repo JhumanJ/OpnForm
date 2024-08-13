@@ -31,17 +31,19 @@
   "webhook": {
     "name": "Webhook Notification",
     "icon": "material-symbols:webhook",
-    "section_name": "Notifications",
+    "section_name": "Automation",
     "file_name": "WebhookIntegration",
     "is_pro": false
   },
   "zapier": {
-    "name": "Zapier Integration",
+    "name": "Zapier",
     "icon": "cib:zapier",
-    "section_name": "Notifications",
+    "section_name": "Automation",
     "file_name": "ZapierIntegration",
-    "is_pro": true,
-    "coming_soon": true
+    "is_pro": false,
+    "is_external": true,
+    "is_editable": false,
+    "url": "https://zapier.com/apps/opnform/integrations"
   },
   "google_sheets": {
     "name": "Google Sheets",

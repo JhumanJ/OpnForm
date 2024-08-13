@@ -28,11 +28,20 @@
 <script setup>
 import { ref, defineProps, defineEmits } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
-import { themes } from "~/lib/forms/themes/form-themes.js"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+
 const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true },
-  theme: { type: Object, default: themes.default },
+  theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
   submission: { type: Object },
 })
 

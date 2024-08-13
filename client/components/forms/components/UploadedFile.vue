@@ -63,12 +63,22 @@
 </template>
 
 <script>
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+
 export default {
   name: "UploadedFile",
 
   props: {
     file: { type:Object, default: null },
-    theme: { type: Object },
+    theme: {
+      type: Object, default: () => {
+        const theme = inject("theme", null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
+      }
+    },
   },
   emits: ['remove'],
   data: () => ({

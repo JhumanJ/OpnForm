@@ -22,6 +22,7 @@
 
 <script setup>
 import { defineEmits, defineProps } from "vue"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 const props = defineProps({
   id: { type: String, default: null },
@@ -29,7 +30,15 @@ const props = defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   color: { type: String, default: '#3B82F6' },
-  theme: { type: Object },
+  theme: {
+    type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
+      return CachedDefaultTheme.getInstance()
+    }
+  },
 })
 const emit = defineEmits(["update:modelValue"])
 

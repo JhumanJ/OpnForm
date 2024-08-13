@@ -67,6 +67,10 @@ const tabsList = computed(() => {
       route: "settings-workspace",
     },
     {
+      name: "Access Tokens",
+      route: "settings-access-tokens",
+    },
+    {
       name: "Connections",
       route: "settings-connections",
     },

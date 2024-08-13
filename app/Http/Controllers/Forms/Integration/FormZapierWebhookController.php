@@ -13,7 +13,6 @@ class FormZapierWebhookController extends Controller
      */
     public function __construct()
     {
-        //        $this->middleware('subscribed');
         $this->middleware('auth');
     }
 

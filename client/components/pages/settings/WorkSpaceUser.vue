@@ -21,7 +21,7 @@
         Invite a new user and collaborate on building forms
       </h4>
 
-      <template v-if="paidPlansEnabled">
+      <template v-if="paidPlansEnabled && !hasActiveLicense">
         <UAlert
           v-if="workspace.is_pro"
           icon="i-heroicons-credit-card"
@@ -206,7 +206,7 @@ const paidPlansEnabled = computed(() => useRuntimeConfig().public.paidPlansEnabl
 const canInviteUser = computed(() => {
   return paidPlansEnabled.value ? workspace.value.is_pro : true
 })
-
+const hasActiveLicense = computed(() => authStore.has_active_license)
 
 onMounted(() => {
   getWorkspaceUsers()

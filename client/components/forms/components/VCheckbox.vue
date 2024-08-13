@@ -3,6 +3,7 @@
     <input
       :id="id || name"
       v-model="internalValue"
+      :value="value"
       :name="name"
       type="checkbox"
       class="rounded border-gray-500 w-10 h-10 cursor-pointer checkbox"
@@ -22,6 +23,7 @@
 
 <script setup>
 import { defineEmits, defineOptions, defineProps, onMounted, ref, watch, } from "vue"
+import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 defineOptions({
   name: "VCheckbox",
@@ -31,8 +33,17 @@ const props = defineProps({
   id: { type: String, default: null },
   name: { type: String, default: "checkbox" },
   modelValue: { type: [Boolean, String], default: false },
+  value: { type: [Boolean, String, Number, Object], required: false },
   disabled: { type: Boolean, default: false },
-  theme: { type: Object },
+  theme: {
+    type: Object, default: () => {
+      const theme = inject("theme", null)
+      if (theme) {
+        return theme.value
+      }
+      return CachedDefaultTheme.getInstance()
+    }
+  },
   color: { type: String, default: null },
 })
 
