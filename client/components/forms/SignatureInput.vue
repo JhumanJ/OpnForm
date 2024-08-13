@@ -59,6 +59,7 @@
 
     <template #bottom_after_help>
       <small
+        v-if="!file"
         :class="theme.default.help"
         class="flex-auto"
       >
@@ -132,6 +133,11 @@ export default {
       this.onEnd()
     },
     onEnd() {
+      if (!this.$refs.signaturePad) {
+        this.form[this.name] = null
+        return
+      }
+      
       if (this.disabled) {
         this.$refs.signaturePad.clearSignature()
       } else {
