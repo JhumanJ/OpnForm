@@ -262,8 +262,8 @@ Route::group(['middleware' => 'guest:api'], function () {
     Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend']);
 
-    Route::post('oauth/{driver}', [OAuthController::class, 'redirect']);
-    Route::post('oauth/connect/{service}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
+    Route::post('oauth/{provider}', [OAuthController::class, 'redirect']);
+    Route::post('oauth/connect/{provider}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
     Route::post('oauth/{provider}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
 });
 

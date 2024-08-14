@@ -31,10 +31,10 @@ class OAuthController extends Controller
      * @param  string  $provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirect(OAuthProviderService $service)
+    public function redirect(OAuthProviderService $provider)
     {
         return response()->json([
-            'url' => $service->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getRedirectUrl()
+            'url' => $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getRedirectUrl()
         ]);
     }
 
