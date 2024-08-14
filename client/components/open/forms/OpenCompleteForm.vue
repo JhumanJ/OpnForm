@@ -5,7 +5,7 @@
     :style="{ '--font-family': form.font_family }"
   >
     <link
-      v-if="form.font_family"
+      v-if="adminPreview && form.font_family"
       rel="stylesheet"
       :href="getFontUrl"
     >

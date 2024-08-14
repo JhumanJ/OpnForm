@@ -29,35 +29,15 @@
         ref="scrollContainer"
         class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem]"
       >
-        <div
+        <FontCard
           v-for="(fontName, index) in enrichedFonts"
           :key="fontName"
           :ref="el => setFontRef(el, index)"
-          class="flex flex-col p-3 rounded-md shadow border-gray-200 border-[0.5px] justify-between w-full cursor-pointer hover:ring ring-blue-300"
-          :class="{'ring': selectedFont === fontName }"
-          @click="selectedFont=fontName"
-        >
-          <link
-            v-if="visible[index]"
-            :href="getFontUrl(fontName)"
-            rel="stylesheet"
-          >
-          <div
-            v-if="visible[index]"
-            class="text-lg mb-3 font-normal"
-            :style="{ 'font-family': `${fontName} !important` }"
-          >
-            The quick brown fox jumped over the lazy dog
-          </div>
-          <div class="text-gray-400 flex justify-between">
-            <div>{{ fontName }}</div>
-            <Icon
-              v-if="selectedFont === fontName"
-              name="heroicons:check-circle-16-solid"
-              class="w-5 h-5 text-nt-blue"
-            />
-          </div>
-        </div>
+          :font-name="fontName"
+          :is-visible="visible[index]"
+          :is-selected="selectedFont === fontName"
+          @select-font="selectedFont = fontName"
+        />
       </div>
 
       <div class="flex">
@@ -72,7 +52,8 @@
         <UButton
           size="md"
           :disabled="!selectedFont"
-          class="flex-grow"
+          block
+          class="flex-1"
           @click="$emit('apply', selectedFont)"
         >
           Apply
@@ -85,7 +66,8 @@
 <script setup>
 import { defineEmits } from "vue"
 import Fuse from "fuse.js"
-import {refDebounced, useElementVisibility} from "@vueuse/core"
+import { refDebounced, useElementVisibility } from "@vueuse/core"
+import FontCard from './FontCard.vue'
 
 const props = defineProps({
   show: {
@@ -158,9 +140,4 @@ const enrichedFonts = computed(() => {
     return res.item
   })
 })
-
-const getFontUrl = (fontName) =>  {
-  const family = fontName.replace(/ /g, '+')
-  return `https://fonts.googleapis.com/css?family=${family}:wght@400&display=swap`
-}
 </script>
