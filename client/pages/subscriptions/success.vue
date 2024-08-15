@@ -38,22 +38,6 @@ const interval = ref(null)
 
 const redirectIfSubscribed = () => {
   if (user.value.is_subscribed) {
-    // Log subscription
-    const eventData = {
-      plan: user.value.has_enterprise_subscription ? 'enterprise' : 'pro'
-    }
-
-    try {
-      useAmplitude().logEvent('subscribed', eventData)
-      useCrisp().pushEvent('subscribed', eventData)
-      useGtm().trackEvent({ event: 'subscribed', ...eventData })
-      if (import.meta.client && window.rewardful) {
-        window.rewardful('convert', { email: user.value.email })
-      }
-    } catch (error) {
-      console.error(error)
-    }
-    
     subscribeBroadcast.post({ 'type': 'success' })
     window.close()
   }

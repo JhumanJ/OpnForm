@@ -383,9 +383,10 @@
                 </v-button>
                 <v-button
                   v-else
+                  :loading="billingLoading"
                   class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
-                  :to="{name:'settings-billing'}"
                   target="_blank"
+                  @click="openBillingDashboard"
                 >
                   Manage Plan
                 </v-button>
@@ -623,6 +624,7 @@ const currentPlan = ref(subscriptionModalStore.plan || 'default')
 const currentStep = ref(1)
 const isYearly = ref(subscriptionModalStore.yearly)
 const loading = ref(false)
+const billingLoading = ref(false)
 const shouldShowUpsell = ref(false)
 const form = useForm({
   name: '',
@@ -639,13 +641,11 @@ const user = computed(() => authStore.user)
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
-// When opening modal with a plan already - skip first step
+// When opening modal with a plan already (and user not subscribed yet) - skip first step
 watch(() => subscriptionModalStore.show, () => {
   currentStep.value = 1
   if (subscriptionModalStore.show && subscriptionModalStore.plan) {
-    if (user.value.is_subscribed && subscriptionModalStore.plan == 'default') {
-      return
-    } else if (user.value.has_enterprise_subscription) {
+    if (user.value.is_subscribed) {
       return
     }
     isYearly.value = subscriptionModalStore.yearly
@@ -664,6 +664,21 @@ watch(broadcastData, () => {
     // Now we need to reload workspace and user
     opnFetch('user').then((userData) => {
       authStore.setUser(userData)
+
+      try {
+        const eventData = {
+          plan: user.value.has_enterprise_subscription ? 'enterprise' : 'pro'
+        }
+        useAmplitude().logEvent('subscribed', eventData)
+        useCrisp().pushEvent('subscribed', eventData)
+        useGtm().trackEvent({ event: 'subscribed', ...eventData })
+        if (import.meta.client && window.rewardful) {
+          window.rewardful('convert', { email: user.value.email })
+        }
+        console.log('Subscription registered 🎊')
+      } catch (error) {
+        console.error('Failed to register subscription event 😔',error)
+      }
     })
     fetchAllWorkspaces().then((workspaces) => {
       workspacesStore.set(workspaces.data.value)
@@ -750,6 +765,18 @@ const saveDetails = () => {
       .finally(() => {
 
       })
+  })
+}
+
+const openBillingDashboard = () => {
+  billingLoading.value = true
+  opnFetch('/subscription/billing-portal').then((data) => {
+    const url = data.portal_url
+    window.location = url
+  }).catch((error) => {
+    useAlert().error(error.data.message)
+  }).finally(() => {
+    billingLoading.value = false
   })
 }
 </script>
