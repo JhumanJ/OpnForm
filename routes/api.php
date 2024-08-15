@@ -330,11 +330,11 @@ Route::post(
 Route::post(
     '/vapor/signed-storage-url',
     [\App\Http\Controllers\Content\SignedStorageUrlController::class, 'store']
-)->middleware([]);
+)->name('vapor.signed-storage-url');
 Route::post(
     '/upload-file',
     [\App\Http\Controllers\Content\FileUploadController::class, 'upload']
-)->middleware([]);
+)->name('upload-file');
 
 Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (!$request->hasValidSignature()) {

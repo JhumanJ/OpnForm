@@ -58,6 +58,8 @@ class ImpersonationMiddleware
 
         'user.current',
         'local.temp',
+        'vapor.signed-storage-url',
+        'upload-file'
     ];
 
     /**
@@ -78,6 +80,7 @@ class ImpersonationMiddleware
 
         // Check that route is allowed
         $routeName = $request->route()->getName();
+        ray($routeName);
         if (!in_array($routeName, self::ALLOWED_ROUTES)) {
             return response([
                 'message' => 'Unauthorized when impersonating',
