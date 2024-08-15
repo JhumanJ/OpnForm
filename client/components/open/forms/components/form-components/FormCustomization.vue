@@ -55,7 +55,7 @@
 
     <label class="text-gray-700 font-medium text-sm">Font Style</label>
     <v-button
-      color="light-gray"
+      color="white"
       class="w-full mb-4"
       size="small"
       @click="showGoogleFontPicker = true"
