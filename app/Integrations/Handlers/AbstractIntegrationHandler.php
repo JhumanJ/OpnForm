@@ -4,6 +4,7 @@ namespace App\Integrations\Handlers;
 
 use App\Models\Integration\FormIntegration;
 use App\Events\Forms\FormSubmitted;
+use App\Models\Forms\Form;
 use App\Models\Integration\FormIntegrationsEvent;
 use App\Service\Forms\FormSubmissionFormatter;
 use App\Service\Forms\FormLogicConditionChecker;
@@ -34,7 +35,7 @@ abstract class AbstractIntegrationHandler
 
     protected function logicConditionsMet(): bool
     {
-        if (!$this->formIntegration->logic) {
+        if (!$this->formIntegration->logic || empty((array) $this->formIntegration->logic)) {
             return true;
         }
         return FormLogicConditionChecker::conditionsMet(
@@ -58,27 +59,7 @@ abstract class AbstractIntegrationHandler
      */
     protected function getWebhookData(): array
     {
-        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))
-            ->useSignedUrlForFiles()
-            ->showHiddenFields();
-
-        $formattedData = [];
-        foreach ($formatter->getFieldsWithValue() as $field) {
-            $formattedData[$field['name']] = $field['value'];
-        }
-
-        $data = [
-            'form_title' => $this->form->title,
-            'form_slug' => $this->form->slug,
-            'submission' => $formattedData,
-        ];
-        if ($this->form->is_pro && $this->form->editable_submissions) {
-            $data['edit_link'] = $this->form->share_url . '?submission_id=' . Hashids::encode(
-                $this->submissionData['submission_id']
-            );
-        }
-
-        return $data;
+        return self::formatWebhookData($this->form, $this->submissionData);
     }
 
     final public function run(): void
@@ -125,8 +106,40 @@ abstract class AbstractIntegrationHandler
         return [];
     }
 
-    public static function formatData(array $data): array
+    public static function formatWebhookData(Form $form, array $submissionData): array
     {
+        $formatter = (new FormSubmissionFormatter($form, $submissionData))
+            ->useSignedUrlForFiles()
+            ->showHiddenFields();
+
+        // Old format - kept for retro-compatibility
+        $oldFormatData = [];
+        foreach ($formatter->getFieldsWithValue() as $field) {
+            $oldFormatData[$field['name']] = $field['value'];
+        }
+
+        // New format using ID
+        $formattedData = [];
+        foreach ($formatter->getFieldsWithValue() as $field) {
+            $formattedData[$field['id']] = [
+                'value' => $field['value'],
+                'name' => $field['name'],
+            ];
+        }
+
+        $data = [
+            'form_title' => $form->title,
+            'form_slug' => $form->slug,
+            'submission' => $oldFormatData,
+            'data' => $formattedData,
+            'message' => 'Please do not use the `submission` field. It is deprecated and will be removed in the future.'
+        ];
+        if ($form->is_pro && $form->editable_submissions) {
+            $data['edit_link'] = $form->share_url . '?submission_id=' . Hashids::encode(
+                $submissionData['submission_id']
+            );
+        }
+
         return $data;
     }
 
@@ -142,5 +155,13 @@ abstract class AbstractIntegrationHandler
         return [
             'message' => $e->getMessage()
         ];
+    }
+
+    /**
+     * Used in FormIntegrationRequest to format integration
+     */
+    public static function formatData(array $data): array
+    {
+        return $data;
     }
 }

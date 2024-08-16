@@ -26,7 +26,6 @@ FROM node:20-alpine
 WORKDIR /app
 COPY --from=javascript-builder /app/.output/ /app/
 RUN ls /app/
-RUN ln -s /secrets/client.env .env
 ADD ./docker/node-entrypoint /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 

@@ -60,6 +60,11 @@ export default defineNuxtConfig({
                 project: "opnform-vue",
             }),
         ],
+        server: {
+            hmr: {
+                clientPort: 3000
+            }
+        }
     },
     tailwindcss: {
         cssPath: ['~/scss/app.scss']
