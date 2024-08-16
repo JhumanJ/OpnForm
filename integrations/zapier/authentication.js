@@ -15,6 +15,6 @@ module.exports = {
       type: 'string',
     },
   ],
-  connectionLabel: '{{bundle.inputData.name}} {{bundle.inputData.email}}',
+  connectionLabel: '{{bundle.inputData.email}}',
   customConfig: {},
 };

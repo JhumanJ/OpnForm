@@ -1,7 +1,7 @@
 {
-  "name": "opnform-test-1",
-  "version": "1.0.1",
-  "description": "opnform-test-1",
+  "name": "opnform",
+  "version": "1.0.2",
+  "description": "OpnForm is an open-source form builder for creating and managing forms, enabling seamless data collection and automation.",
   "main": "index.js",
   "scripts": {
     "test": "jest --testTimeout 10000"
