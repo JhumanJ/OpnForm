@@ -20,14 +20,14 @@
     <div v-else>
       <text-input
         v-model="search"
-        class="px-4"
+      
         name="search"
         placeholder="Search fonts"
       />
 
       <div
         ref="scrollContainer"
-        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem]"
+        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md"
       >
         <FontCard
           v-for="(fontName, index) in enrichedFonts"
@@ -128,14 +128,12 @@ watch(() => props.show, fetchFonts)
 
 
 const enrichedFonts = computed(() => {
-  const enrichedFonts = fonts.value
-
   if (search.value === "" || search.value === null) {
-    return enrichedFonts
+    return fonts.value
   }
 
   // Fuze search
-  const fuse = new Fuse(enrichedFonts)
+  const fuse = new Fuse(Object.values(fonts.value))
   return fuse.search(debouncedSearch.value).map((res) => {
     return res.item
   })

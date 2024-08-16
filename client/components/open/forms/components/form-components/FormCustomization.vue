@@ -60,7 +60,9 @@
       size="small"
       @click="showGoogleFontPicker = true"
     >
-      {{ form.font_family || 'Default' }}
+      <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
+        {{ form.font_family || 'Default' }}
+      </span>
     </v-button>
     <GoogleFontPicker
       :show="showGoogleFontPicker"
