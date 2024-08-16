@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
+use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -16,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
     use Billable;
     use HasFactory;
     use Notifiable;
+    use HasApiTokens;
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';

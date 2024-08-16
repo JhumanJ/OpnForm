@@ -15,9 +15,10 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Controllers\Forms\RecordController;
-use App\Http\Controllers\OAuth\OAuthProviderController;
+use App\Http\Controllers\Settings\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\TokenController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserInviteController;
@@ -50,6 +51,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::prefix('/settings')->name('settings.')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::patch('/password', [PasswordController::class, 'update']);
+
+        Route::prefix('/tokens')->name('tokens.')->group(function () {
+            Route::get('/', [TokenController::class, 'index'])->name('index');
+            Route::post('/', [TokenController::class, 'store'])->name('store');
+            Route::delete('{token}', [TokenController::class, 'destroy'])->name('destroy');
+        });
 
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
@@ -306,6 +313,9 @@ Route::prefix('content')->name('content.')->group(function () {
 
 Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
 
+// Fonts
+Route::get('/fonts', [\App\Http\Controllers\FontsController::class, 'index'])->name('fonts.index');
+
 // Templates
 Route::prefix('templates')->group(function () {
     Route::get('/', [TemplateController::class, 'index'])->name('templates.index');
@@ -323,11 +333,11 @@ Route::post(
 Route::post(
     '/vapor/signed-storage-url',
     [\App\Http\Controllers\Content\SignedStorageUrlController::class, 'store']
-)->middleware([]);
+)->name('vapor.signed-storage-url');
 Route::post(
     '/upload-file',
     [\App\Http\Controllers\Content\FileUploadController::class, 'upload']
-)->middleware([]);
+)->name('upload-file');
 
 Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (!$request->hasValidSignature()) {

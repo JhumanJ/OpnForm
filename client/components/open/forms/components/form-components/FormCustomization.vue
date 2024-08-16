@@ -53,6 +53,24 @@
       label="Form Theme"
     />
 
+    <label class="text-gray-700 font-medium text-sm">Font Style</label>
+    <v-button
+      color="white"
+      class="w-full mb-4"
+      size="small"
+      @click="showGoogleFontPicker = true"
+    >
+      <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
+        {{ form.font_family || 'Default' }}
+      </span>
+    </v-button>
+    <GoogleFontPicker
+      :show="showGoogleFontPicker"
+      :font="form.font_family || null"
+      @close="showGoogleFontPicker=false"
+      @apply="onApplyFont"
+    />
+
     <div class="flex space-x-4 justify-stretch">
       <select-input
         name="size"
@@ -173,12 +191,14 @@
 <script setup>
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import EditorOptionsPanel from "../../../editors/EditorOptionsPanel.vue"
+import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/global/ProTag.vue"
 
 const workingFormStore = useWorkingFormStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
+const showGoogleFontPicker = ref(false)
 
 onMounted(() => {
   isMounted.value = true
@@ -189,5 +209,10 @@ const onChangeConfettiOnSubmission = (val) => {
   if (isMounted.value && val) {
     confetti.play()
   }
+}
+
+const onApplyFont = (val) => {
+  form.value.font_family = val
+  showGoogleFontPicker.value = false
 }
 </script>
