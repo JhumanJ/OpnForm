@@ -1,7 +1,6 @@
 <template>
   <div>
     <form
-      class="mt-4"
       @submit.prevent="register"
       @keydown="form.onKeydown($event)"
     >
@@ -56,6 +55,7 @@
       <checkbox-input
         :form="form"
         name="agree_terms"
+        class="mb-3"
         :required="true"
       >
         <template #label>
@@ -63,6 +63,7 @@
           <NuxtLink
             :to="{ name: 'terms-conditions' }"
             target="_blank"
+            class="underline"
           >
             Terms and conditions
           </NuxtLink>
@@ -70,6 +71,7 @@
           <NuxtLink
             :to="{ name: 'privacy-policy' }"
             target="_blank"
+            class="underline"
           >
             Privacy policy
           </NuxtLink>
@@ -78,16 +80,33 @@
       </checkbox-input>
 
       <!-- Submit Button -->
-      <v-button :loading="form.busy">
-        Create an account
+      <v-button
+        class="w-full mt-4"
+        :loading="form.busy"
+      >
+        Create account
       </v-button>
 
-      <p class="text-gray-500 mt-4">
+      <p class="text-gray-600/50 text-sm text-center my-4">
+        Or
+      </p>
+      <v-button
+        native-type="buttom"
+        color="white"
+        class="space-x-4 flex items-center w-full"
+        :loading="false"
+        @click.prevent="signInwithGoogle"
+      >
+        <Icon name="devicon:google" />
+        <span class="mx-2">Sign in with Google</span>
+      </v-button>
+
+      <p class="text-gray-500 mt-4 text-sm text-center">
         Already have an account?
         <a
           v-if="isQuick"
           href="#"
-          class="font-semibold ml-1"
+          class="font-medium ml-1"
           @click.prevent="$emit('openLogin')"
         >Log In</a>
         <NuxtLink
@@ -98,19 +117,6 @@
           Log In
         </NuxtLink>
       </p>
-
-      <hr class="my-4"/>
-      <p class="text-gray-600/50 text-center mb-4">You can also</p>
-      <v-button
-        native-type="buttom"
-        color="white"
-        class="space-x-4 flex items-center w-full"
-        :loading="false"
-        @click.prevent="signInwithGoogle"
-      >
-        <Icon name="devicon:google"/>
-        <span class="mx-2">Sign in with Google</span>
-      </v-button>
     </form>
   </div>
 </template>

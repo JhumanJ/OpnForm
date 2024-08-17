@@ -9,7 +9,9 @@
             <h2 class="font-semibold text-2xl">
               Login to OpnForm
             </h2>
-            <small>Welcome back! Please enter your details.</small>
+            <p class="text-sm text-gray-500">
+              Welcome back! Please enter your details.
+            </p>
 
             <login-form />
           </div>

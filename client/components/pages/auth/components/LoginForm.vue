@@ -30,7 +30,7 @@
       />
 
       <!-- Remember Me -->
-      <div class="relative flex items-center my-5">
+      <div class="relative flex items-start mt-5">
         <CheckboxInput
           v-model="remember"
           class="w-full md:w-1/2"
@@ -52,15 +52,28 @@
 
       <!-- Submit Button -->
       <v-button
-        dusk="btn_login"
+        class="w-full flex"
         :loading="form.busy || loading"
       >
         Log in to continue
       </v-button>
 
+      <v-button
+        native-type="button"
+        color="white"
+        class="space-x-4 mt-4 flex items-center w-full"
+        :loading="false"
+        @click.prevent="signInwithGoogle"
+      >
+        <Icon
+          name="devicon:google"
+          class="w-4 h-4 -mt-1"
+        />
+        <span class="mx-2">Sign in with Google</span>
+      </v-button>
       <p
         v-if="!appStore.selfHosted"
-        class="text-gray-500 mt-4"
+        class="text-gray-500 text-sm text-center mt-4"
       >
         Don't have an account?
         <a
@@ -77,19 +90,6 @@
           Sign Up
         </NuxtLink>
       </p>
-
-      <hr class="my-4"/>
-      <p class="text-gray-600/50 text-center mb-4">You can also</p>
-      <v-button
-        native-type="button"
-        color="white"
-        class="space-x-4 flex items-center w-full"
-        :loading="false"
-        @click.prevent="signInwithGoogle"
-      >
-        <Icon name="devicon:google"/>
-        <span class="mx-2">Sign in with Google</span>
-      </v-button>
     </form>
   </div>
 </template>
