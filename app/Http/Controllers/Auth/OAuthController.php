@@ -130,12 +130,20 @@ class OAuthController extends Controller
         ], false);
         $user->new_user = true;
 
-        $user->oauthProviders()->create([
-            'provider' => $provider,
-            'provider_user_id' => $socialiteUser->getId(),
-            'access_token' => $socialiteUser->token,
-            'refresh_token' => $socialiteUser->refreshToken,
-        ]);
+        $provider = OAuthProvider::query()
+            ->updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'provider' => $provider,
+                    'provider_user_id' => $socialiteUser->getId(),
+                ],
+                [
+                    'access_token' => $socialiteUser->token,
+                    'refresh_token' => $socialiteUser->refreshToken,
+                    'name' => $socialiteUser->getName(),
+                    'email' => $socialiteUser->getEmail(),
+                ]
+            );
         return $user;
     }
 
