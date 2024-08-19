@@ -23,7 +23,7 @@ test('create an integration', function () {
 
     $this->withoutExceptionHandling();
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->slug,
+        'form_id' => $form->id,
         'hookUrl' => $hookUrl = 'https://zapier.com/hook/test'
     ])
         ->assertOk();
@@ -45,7 +45,7 @@ test('cannot create an integration without a corresponding ability', function ()
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->slug,
+        'form_id' => $form->id,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
         ->assertForbidden();
@@ -64,7 +64,7 @@ test('cannot create an integration for other users form', function () {
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
-        'form_id' => $form->slug,
+        'form_id' => $form->id,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
         ->assertForbidden();
@@ -94,7 +94,7 @@ test('delete an integration', function () {
     assertDatabaseCount('form_integrations', 1);
 
     delete(route('zapier.webhooks.destroy', $integration), [
-        'form_id' => $form->slug,
+        'form_id' => $form->id,
         'hookUrl' => $hookUrl,
     ])
         ->assertOk();
@@ -122,7 +122,7 @@ test('cannot delete an integration with an incorrect hook url', function () {
         ]);
 
     delete(route('zapier.webhooks.destroy', $integration), [
-        'form_id' => $form->slug,
+        'form_id' => $form->id,
         'hookUrl' => 'https://google.com',
     ])
         ->assertOk();
@@ -178,7 +178,7 @@ test('poll for the latest submission', function () {
     Sanctum::actingAs($user, ['view', 'manage-integrations']);
 
     // Call the poll endpoint
-    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->slug]));
+    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->id]));
 
     // Assert the response status is OK
     $response->assertOk();
@@ -229,7 +229,7 @@ test('make up a submission when polling without any submission', function () {
 
     // Call the poll endpoint
     $this->withoutExceptionHandling();
-    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->slug]));
+    $response = $this->getJson(route('zapier.webhooks.poll', ['form_id' => $form->id]));
     // Assert the response status is OK
     $response->assertOk();
 

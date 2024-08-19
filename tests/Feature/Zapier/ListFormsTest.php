@@ -22,11 +22,11 @@ test('list all forms of a given workspace', function () {
         ->assertJsonCount(2)
         ->assertJson([
             [
-                'id' => $form1->slug,
+                'id' => $form1->id,
                 'name' => $form1->title,
             ],
             [
-                'id' => $form2->slug,
+                'id' => $form2->id,
                 'name' => $form2->title,
             ],
         ]);
