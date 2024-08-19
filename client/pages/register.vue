@@ -10,7 +10,9 @@
             <h2 class="font-semibold text-2xl">
               Create an account
             </h2>
-            <small>Sign up in less than 2 minutes.</small>
+            <p class="text-gray-500 text-sm">
+              Sign up in less than 2 minutes.
+            </p>
             <template v-if="!appStore.selfHosted || isInvited">
               <register-form />
             </template>
