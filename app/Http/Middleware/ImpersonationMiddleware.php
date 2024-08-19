@@ -58,6 +58,8 @@ class ImpersonationMiddleware
 
         'user.current',
         'local.temp',
+        'vapor.signed-storage-url',
+        'upload-file'
     ];
 
     /**

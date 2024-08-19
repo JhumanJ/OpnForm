@@ -178,6 +178,39 @@ const pageMeta = computed(() => {
   }
   return {}
 })
+
+const getFontUrl = computed(() => {
+  if(!form.value || !form.value.font_family) return null
+  const family = form.value.font_family.replace(/ /g, '+')
+  return `https://fonts.googleapis.com/css?family=${family}:wght@400,500,700,800,900&display=swap`
+})
+
+const headLinks = computed(() => {
+  const links = []
+  if (form.value && form.value.font_family) {
+    links.push({
+        rel: 'stylesheet',
+        href: getFontUrl.value
+    })
+  }
+  if (pageMeta.value.page_favicon) {
+    links.push({
+        rel: 'icon', type: 'image/x-icon',
+        href: pageMeta.value.page_favicon
+    })
+    links.push({
+        rel: 'apple-touch-icon',
+        type: 'image/png',
+        href: pageMeta.value.page_favicon
+    })
+    links.push({
+      rel: 'shortcut icon',
+      href: pageMeta.value.page_favicon
+    })
+  }
+  return links
+})
+    
 useOpnSeoMeta({
   title: () => {
     if (pageMeta.value.page_title) {
@@ -209,21 +242,7 @@ useHead({
     }
     return titleChunk ? `${titleChunk} - OpnForm` : 'OpnForm'
   },
-  link: pageMeta.value.page_favicon ? [
-    {
-      rel: 'icon', type: 'image/x-icon',
-      href: pageMeta.value.page_favicon
-    },
-    {
-      rel: 'apple-touch-icon',
-      type: 'image/png',
-      href: pageMeta.value.page_favicon
-    },
-    {
-      rel: 'shortcut icon',
-      href: pageMeta.value.page_favicon
-    }
-  ] : {},
+  link: headLinks.value,
   meta: pageMeta.value.page_favicon ? [
     {
       name: 'apple-mobile-web-app-capable',

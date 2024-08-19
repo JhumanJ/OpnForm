@@ -130,44 +130,17 @@ class OAuthController extends Controller
         ], false);
         $user->new_user = true;
 
-        $provider = OAuthProvider::query()
-            ->updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'provider' => $provider,
-                    'provider_user_id' => $socialiteUser->getId(),
-                ],
-                [
-                    'access_token' => $socialiteUser->token,
-                    'refresh_token' => $socialiteUser->refreshToken,
-                    'name' => $socialiteUser->getName(),
-                    'email' => $socialiteUser->getEmail(),
-                ]
-            );
-        return $user;
-    }
-
-    /**
-     * @param  string  $provider
-     * @param  \Laravel\Socialite\Contracts\User  $sUser
-     * @return \App\Models\User
-     */
-    protected function createUser($provider, $sUser)
-    {
-
-        $user = User::create([
-            'name' => $sUser->getName(),
-            'email' => $sUser->getEmail(),
-            'email_verified_at' => now(),
-        ]);
-
-        $user->oauthProviders()->create([
-            'provider' => $provider,
-            'provider_user_id' => $sUser->getId(),
-            'access_token' => $sUser->token,
-            'refresh_token' => $sUser->refreshToken,
-        ]);
-
+        OAuthProvider::create(
+            [
+                'user_id' => $user->id,
+                'provider' => $provider,
+                'provider_user_id' => $socialiteUser->getId(),
+                'access_token' => $socialiteUser->token,
+                'refresh_token' => $socialiteUser->refreshToken,
+                'name' => $socialiteUser->getName(),
+                'email' => $socialiteUser->getEmail(),
+            ]
+        );
         return $user;
     }
 }

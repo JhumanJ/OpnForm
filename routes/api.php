@@ -314,6 +314,9 @@ Route::prefix('content')->name('content.')->group(function () {
 
 Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
 
+// Fonts
+Route::get('/fonts', [\App\Http\Controllers\FontsController::class, 'index'])->name('fonts.index');
+
 // Templates
 Route::prefix('templates')->group(function () {
     Route::get('/', [TemplateController::class, 'index'])->name('templates.index');
@@ -331,11 +334,11 @@ Route::post(
 Route::post(
     '/vapor/signed-storage-url',
     [\App\Http\Controllers\Content\SignedStorageUrlController::class, 'store']
-)->middleware([]);
+)->name('vapor.signed-storage-url');
 Route::post(
     '/upload-file',
     [\App\Http\Controllers\Content\FileUploadController::class, 'upload']
-)->middleware([]);
+)->name('upload-file');
 
 Route::get('local/temp/{path}', function (Request $request, string $path) {
     if (!$request->hasValidSignature()) {
