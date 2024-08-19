@@ -37,7 +37,7 @@ module.exports = {
         key: 'form_id',
         type: 'string',
         label: 'Form',
-        dynamic: 'list_forms.id.name',
+        dynamic: 'list_forms.id.label',
         required: true,
         list: false,
         altersDynamicFields: false,
