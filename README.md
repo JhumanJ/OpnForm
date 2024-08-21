@@ -258,6 +258,8 @@ Now, create an S3 bucket (or equivalent). Create an IAM user with access to this
 
 [![Deploy to RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/?app_id=294)
 
+[![Deploy on Elestio](https://elest.io/images/logos/deploy-to-elestio-btn.png)](https://elest.io/open-source/opnform)
+
 ## Tech Stack
 
 OpnForm is a standard web application built with:
