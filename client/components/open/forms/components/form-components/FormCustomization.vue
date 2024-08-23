@@ -149,12 +149,16 @@
     <toggle-switch-input
       name="no_branding"
       :form="form"
+      @update:model-value="onChangeNoBranding"
     >
       <template #label>
         <span class="text-sm">
           Remove OpnForm Branding
         </span>
-        <pro-tag class="-mt-1" />
+        <pro-tag
+          upgrade-modal-title="Upgrade today to remove OpnForm branding"
+          class="-mt-1"
+        />
       </template>
     </toggle-switch-input>
     <toggle-switch-input
@@ -200,20 +204,42 @@ import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/global/ProTag.vue"
 
 const workingFormStore = useWorkingFormStore()
+const subscriptionModalStore = useSubscriptionModalStore()
+const authStore = useAuthStore()
+const workspacesStore = useWorkspacesStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
+
+const user = computed(() => authStore.user)
+const workspace = computed(() => workspacesStore.getCurrent)
+
+const isPro = computed(() => {
+  if (!useRuntimeConfig().public.paidPlansEnabled) return true
+  if (!user.value || !workspace.value) return false
+  return workspace.value.is_pro
+})
 
 onMounted(() => {
   isMounted.value = true
 })
 
 const onChangeConfettiOnSubmission = (val) => {
-  form.confetti_on_submission = val
   if (isMounted.value && val) {
     confetti.play()
   }
+}
+
+const onChangeNoBranding = (val) => {
+  if (!isPro.value && val) {
+    subscriptionModalStore.setModalContent("Upgrade today to remove OpnForm branding")
+    subscriptionModalStore.openModal()
+    setTimeout(() => {
+      form.value.no_branding = false
+      console.log("form.value.no_branding", form.value.no_branding)
+    }, 300)
+  } 
 }
 
 const onApplyFont = (val) => {

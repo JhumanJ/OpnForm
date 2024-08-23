@@ -9,7 +9,10 @@
       <div class="absolute inset-0 z-10">
         <div class="p-5 max-w-md mx-auto mt-5">
           <p class="text-center">
-            You need a <pro-tag class="mx-1" /> subscription to access your form
+            You need a <pro-tag
+              upgrade-modal-title="Upgrade today to access form analytics"
+              class="mx-1"
+            /> subscription to access your form
             analytics.
           </p>
           <p class="mt-5 text-center">
