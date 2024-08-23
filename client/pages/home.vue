@@ -237,7 +237,7 @@ import ExtraMenu from "../components/pages/forms/show/ExtraMenu.vue"
 import {refDebounced} from "@vueuse/core"
 
 definePageMeta({
-  middleware: "auth",
+  middleware: ["auth", "self-hosted-credentials"],
 })
 
 useOpnSeoMeta({

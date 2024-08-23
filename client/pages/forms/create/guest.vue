@@ -58,7 +58,7 @@ useOpnSeoMeta({
   title: "Create a new Form for free",
 })
 definePageMeta({
-  middleware: "guest",
+  middleware: ["guest", "self-hosted"],
 })
 
 // Data

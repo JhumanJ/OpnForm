@@ -7,6 +7,7 @@
     <v-checkbox
       :id="id ? id : name"
       v-model="compVal"
+      :value="value"
       :disabled="disabled ? true : null"
       :name="name"
       :color="color"
@@ -48,6 +49,7 @@ export default {
   components: { InputWrapper, VCheckbox },
   props: {
     ...inputProps,
+    value: { type: [Boolean, String, Number, Object], required: false },
   },
 
   setup(props, context) {

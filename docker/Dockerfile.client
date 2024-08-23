@@ -1,0 +1,33 @@
+FROM node:20-alpine AS javascript-builder
+WORKDIR /app
+
+# It's best to add as few files as possible before running the build commands
+# as they will be re-run everytime one of those files changes.
+#
+# It's possible to run npm install with only the package.json and package-lock.json file.
+
+ADD ./client/package.json ./client/package-lock.json ./
+
+# Install git and other necessary build tools
+RUN apk add --no-cache git
+
+# Clear npm cache, remove existing node_modules, and install dependencies
+RUN npm cache clean --force && \
+    rm -rf node_modules && \
+    npm install
+
+# Explicitly install the correct version of esbuild
+# RUN npm install esbuild@0.21.5
+
+ADD ./client/ /app/
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=javascript-builder /app/.output/ /app/
+RUN ls /app/
+ADD ./docker/node-entrypoint /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "node", "./server/index.mjs" ]

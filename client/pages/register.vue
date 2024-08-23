@@ -10,8 +10,10 @@
             <h2 class="font-semibold text-2xl">
               Create an account
             </h2>
-            <small>Sign up in less than 2 minutes.</small>
-            <template v-if="!isSelfHosted || isInvited">
+            <p class="text-gray-500 text-sm">
+              Sign up in less than 2 minutes.
+            </p>
+            <template v-if="!appStore.selfHosted || isInvited">
               <register-form />
             </template>
             <div
@@ -106,22 +108,21 @@ export default {
     })
 
     definePageMeta({
-      middleware: "guest",
+      middleware: ["self-hosted", "guest"]
     })
 
     defineRouteRules({
       swr: 3600,
     })
+    return {
+      appStore: useAppStore(),
+    }
   },
 
   data: () => ({}),
 
   computed: {
-    isSelfHosted(){
-      return useRuntimeConfig().public.selfHosted
-    },
-
-    isInvited(){
+    isInvited() {
       return this.$route.query?.email && this.$route.query?.invite_token
     }
   },

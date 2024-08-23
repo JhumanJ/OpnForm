@@ -1,0 +1,63 @@
+#!/bin/bash
+
+main() {
+    prep_file_permissions
+    prep_storage
+    wait_for_db
+    apply_db_migrations
+    run_init_project
+    run_server "$@"
+}
+
+is_master() {
+    echo "$@" | grep -q php-fpm
+}
+
+prep_file_permissions() {
+    chmod a+x ./artisan
+}
+
+apply_db_migrations() {
+    echo "Running DB Migrations"
+    ./artisan migrate
+}
+
+run_init_project() {
+    echo "Running app:init-project command"
+    ./artisan app:init-project
+}
+
+wait_for_db() {
+    echo "Waiting for DB to be ready"
+    until ./artisan migrate:status 2>&1 | grep -q -E "(Migration table not found|Migration name)"; do
+        sleep 1
+    done
+}
+
+run_server() {
+    echo "Starting server $@"
+    /usr/local/bin/docker-php-entrypoint "$@"
+}
+
+prep_storage() {
+    [ -L storage ] || {
+        echo "Backing up initial storage directory"
+        rm -rf /etc/initial-storage
+        mv ./storage /etc/initial-storage
+    }
+
+    [ -d /persist/storage ] || {
+        echo "Initialising blank storage dir"
+        mkdir -p /persist
+        cp -a /etc/initial-storage /persist/storage
+        chmod 777 -R /persist/storage
+    }
+
+    touch /var/log/opnform.log
+    chown www-data /var/log/opnform.log
+
+    echo "Linking persistent storage into app"
+    ln -t . -sf /persist/storage
+}
+
+main "$@"

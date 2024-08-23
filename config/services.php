@@ -69,5 +69,9 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
-    ]
+        'auth_redirect' => env('GOOGLE_AUTH_REDIRECT_URL'),
+
+        'fonts_api_key' => env('GOOGLE_FONTS_API_KEY'),
+    ],
+
 ];

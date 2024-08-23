@@ -71,7 +71,7 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @close="close"
+          @update:modelValue="updateModelValue"
         />
         <DatePicker
           v-else
@@ -84,7 +84,7 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @close="close"
+          @update:modelValue="updateModelValue"
         />
       </template>
     </UPopover>
@@ -142,6 +142,12 @@ const modeledValue = computed({
     }
   }
 })
+
+const updateModelValue = () => {
+  if (!props.withTime && !props.dateRange) {
+    pickerOpen.value = false
+  }
+}
 
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]

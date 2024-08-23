@@ -145,7 +145,7 @@ class FormSubmissionFormatter
                 } else {
                     $returnArray[$field['name']] = $val;
                 }
-            } elseif ($field['type'] == 'files') {
+            } elseif (in_array($field['type'], ['files', 'signature'])) {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;
                     $returnArray[$field['name']] = implode(
@@ -219,7 +219,7 @@ class FormSubmissionFormatter
                 } else {
                     $field['value'] = $val;
                 }
-            } elseif ($field['type'] == 'files') {
+            } elseif (in_array($field['type'], ['files', 'signature'])) {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;
                     $field['value'] = implode(

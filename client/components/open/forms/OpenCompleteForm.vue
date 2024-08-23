@@ -2,7 +2,14 @@
   <div
     v-if="form"
     class="open-complete-form"
+    :style="{ '--font-family': form.font_family }"
   >
+    <link
+      v-if="adminPreview && form.font_family"
+      rel="stylesheet"
+      :href="getFontUrl"
+    >
+    
     <h1
       v-if="!isHideTitle"
       class="mb-4 px-2"
@@ -249,6 +256,11 @@ export default {
     },
     isHideTitle () {
       return this.form.hide_title || (import.meta.client && window.location.href.includes('hide_title=true'))
+    },
+    getFontUrl() {
+      if(!this.form || !this.form.font_family) return null
+      const family = this.form?.font_family.replace(/ /g, '+')
+      return `https://fonts.googleapis.com/css?family=${family}:wght@400,500,700,800,900&display=swap`
     }
   },
 
@@ -330,6 +342,9 @@ export default {
 
 <style lang="scss">
 .open-complete-form {
+  * {
+    font-family: var(--font-family) !important;
+  }
   .form-description, .nf-text {
     ol {
       @apply list-decimal list-inside;
