@@ -185,19 +185,19 @@
               class="px-4"
             >
               <UAlert
-                class="mt-4"
-                icon="i-heroicons-command-line"
+                class="mt-8 p-4"
+                icon="i-heroicons-sparkles"
                 color="primary"
                 variant="subtle"
                 description="You can add components to your app using the cli."
               >
                 <template #title>
-                  <h2 class="font-medium text-lg -mt-2">
+                  <h3 class="font-semibold text-md">
                     Discover our Pro plan
-                  </h2>
+                  </h3>
                 </template>
                 <template #description>
-                  <div class="flex flex-wrap sm:flex-nowrap gap-2 items-start">
+                  <div class="flex flex-wrap sm:flex-nowrap gap-4 items-start">
                     <p class="flex-grow">
                       Remove NoteForms branding, customize forms further, use your custom domain, integrate with your
                       favorite tools, invite users, and more!

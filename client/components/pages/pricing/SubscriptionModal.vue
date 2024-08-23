@@ -2,6 +2,7 @@
   <modal
     :show="subscriptionModalStore.show"
     compact-header
+    max-width="screen-lg"
     backdrop-blur
     @close="subscriptionModalStore.closeModal()"
   >
@@ -418,19 +419,19 @@
                 />
                 <p class="mt-2">
                   <strong class="font-semibold text-slate-800">Full form customization.</strong>
-                  <span class="text-slate-500"> Customize the colors, themes, images etc of your forms to match your brand aesthetic.</span>
+                  <span class="text-slate-500"> Customize the colors, themes, images etc of your forms. Inject custom CSS and JS code.</span>
                 </p>
               </div>
             </article>
-            <article class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
+            <article class="flex flex-col  w-[33%] max-md:ml-0 max-md:w-full">
               <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                 <Icon
                   name="icons8:upload-2"
                   class="w-5 h-5 text-nt-blue"
                 />
                 <p class="mt-2">
-                  <strong class="font-semibold text-slate-800">File uploads.</strong>
-                  <span class="text-slate-500"> Allow respondents to upload files, get them directly into your Notion databases.</span>
+                  <strong class="font-semibold text-slate-800">Larger File uploads.</strong>
+                  <span class="text-slate-500"> Larger files upload in your forms (up to 50 mb). This allows you to collect bigger attachments.</span>
                 </p>
               </div>
             </article>
@@ -441,11 +442,11 @@
             <article class="flex flex-col w-[33%] max-md:ml-0 max-md:w-full">
               <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                 <Icon
-                  name="mage:notification-bell"
+                  name="heroicons:bell"
                   class="w-5 h-5 text-nt-blue"
                 />
                 <p class="mt-2">
-                  <strong class="font-semibold text-slate-800">Enhanced form notifications.</strong>
+                  <strong class="font-semibold text-slate-800">Access to all integrations.</strong>
                   <span class="text-slate-500"> Setup email, Slack, Discord notifications or GSheet, Zapier or webhooks integrations.</span>
                 </p>
               </div>
@@ -453,24 +454,24 @@
             <article class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
               <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                 <Icon
-                  name="material-symbols:list"
+                  name="heroicons:globe-alt"
                   class="w-5 h-5 text-nt-blue"
                 />
                 <p class="mt-2">
-                  <strong class="font-semibold text-slate-800">Form logic and rules.</strong>
-                  <span class="text-slate-500"> Use logic to create more engaging and interactive forms, adapting to your users' needs.</span>
+                  <strong class="font-semibold text-slate-800">1 custom domain.</strong>
+                  <span class="text-slate-500"> Host your form on your own domain for a professional look and improved branding.</span>
                 </p>
               </div>
             </article>
             <article class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
               <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                 <Icon
-                  name="carbon:table"
+                  name="mdi:pencil-outline"
                   class="w-5 h-5 text-nt-blue"
                 />
                 <p class="mt-2">
-                  <strong class="font-semibold text-slate-800">Database views.</strong>
-                  <span class="text-slate-500"> Securely share portions of your Notion Databases. Filters, embeds, records edition and more.</span>
+                  <strong class="font-semibold text-slate-800">Editable submissions.</strong>
+                  <span class="text-slate-500"> Form respondents can go back and edit their form submissions, allowing for updates and corrections.</span>
                 </p>
               </div>
             </article>
@@ -560,7 +561,7 @@
             <v-form size="sm">
               <toggle-switch-input
                 v-model="isYearly"
-                label="20% off your first year with the yearly plan"
+                label="20% off with the yearly plan"
                 size="sm"
                 wrapper-class="mb-0"
               />
