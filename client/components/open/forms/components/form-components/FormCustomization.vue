@@ -185,6 +185,11 @@
       label="Auto save form response"
       help="Will save data in browser, if user not submit the form then next time will auto prefill last entered data"
     />
+    <ToggleSwitchInput
+      name="auto_focus"
+      :form="form"
+      label="Auto focus first input on page"
+    />
   </editor-options-panel>
 </template>
 

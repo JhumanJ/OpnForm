@@ -62,6 +62,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'confetti_on_submission' => 'boolean',
             'show_progress_bar' => 'boolean',
             'auto_save' => 'boolean',
+            'auto_focus' => 'boolean',
 
             // Properties
             'properties' => 'required|array',

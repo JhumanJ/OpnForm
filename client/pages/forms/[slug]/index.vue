@@ -161,7 +161,7 @@ onMounted(() => {
           console.error('Error appending custom code', e)
         }
       }
-      if (!isIframe) focusOnFirstFormElement()
+      if (!isIframe && form.value?.auto_focus) focusOnFirstFormElement()
     }
   }
 })
