@@ -21,15 +21,6 @@ class FormFactory extends Factory
         });
     }
 
-    public function forDatabase(string $databaseId)
-    {
-        return $this->state(function (array $attributes) use ($databaseId) {
-            return [
-                'database_id' => $databaseId,
-            ];
-        });
-    }
-
     public function withProperties(array $properties)
     {
         return $this->state(function (array $attributes) use ($properties) {

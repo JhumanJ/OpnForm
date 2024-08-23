@@ -17,6 +17,7 @@ const defaultBlockNames = {
   multi_select: "Multi Select",
   files: "Files",
   signature: "Signature",
+  matrix: "Matrix",
   "nf-text": "Text Block",
   "nf-page-break": "Page Break",
   "nf-divider": "Divider",

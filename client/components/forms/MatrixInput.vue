@@ -1,0 +1,121 @@
+<template>
+  <input-wrapper v-bind="inputWrapperProps">
+    <template #label>
+      <slot name="label" />
+    </template>
+    <div
+      class="border border-gray-300"
+      :class="[
+        theme.default.borderRadius,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-300': disabled,
+        },
+      ]"
+    >
+      <table 
+        class="w-full table-fixed overflow-hidden" 
+      >
+        <thead class="">
+          <tr>
+            <th />
+            <td
+              v-for="column in columns"
+              :key="column"
+              class="border-l border-gray-300"
+            >
+              <div class="p-2 w-full flex items-center justify-center capitalize text-sm truncate">
+                {{ column }}
+              </div>
+            </td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            v-for="row, rowIndex in rows"
+            :key="rowIndex"
+            class="border-t border-gray-300"
+          >
+            <td>
+              <div class="w-full flex-grow p-2 text-sm truncate">
+                {{ row }}
+              </div>
+            </td>
+            <td
+              v-for="column in columns"
+              :key="row + column"
+              class="border-l border-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800"
+            >
+              <div
+                v-if="compVal"
+                class="w-full flex items-center justify-center"
+                role="radio"
+                :aria-checked="compVal[row] === column"
+                :class="[
+                  theme.FlatSelectInput.spacing.vertical,
+                  theme.FlatSelectInput.fontSize,
+                  theme.FlatSelectInput.option,
+                ]"
+                @click="onSelect(row, column)"
+              >
+                <RadioButtonIcon
+                  :key="row+column"
+                  :is-checked="compVal[row] === column"
+                  :color="color"
+                  :theme="theme"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <template #help>
+      <slot name="help" />
+    </template>
+    <template #error>
+      <slot name="error" />
+    </template>
+  </input-wrapper>
+</template>
+<script>
+import {inputProps, useFormInput} from "./useFormInput.js"
+import InputWrapper from "./components/InputWrapper.vue"
+import RadioButtonIcon from "./components/RadioButtonIcon.vue"
+
+export default {
+  name: "MatrixInput",
+  components: {InputWrapper, RadioButtonIcon},
+
+  props: {
+    ...inputProps,
+    rows: {type: Array, required: true},
+    columns: {type: Array, required: true},
+  },
+  setup(props, context) {
+    return {
+      ...useFormInput(props, context),
+    }
+  },
+  data() {
+    return {
+    }
+  },
+  computed: {},
+  beforeMount() {
+    if (!this.compVal || typeof this.compVal !== 'object') {
+      this.compVal = {}
+    }
+  },
+  methods: {
+    onSelect(row, column) {
+      if (this.compVal[row] === column && !this.required) {
+        this.compVal[row] = null
+      } else {
+        this.compVal[row] = column
+      }
+    },
+  },
+}
+</script>

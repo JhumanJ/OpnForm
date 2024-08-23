@@ -16,60 +16,45 @@
         theme.default.input,
         theme.default.borderRadius,
         {
-          'mb-2': index !== options.length,
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
       ]"
     >
-    <template
-      v-if="options && options.length"
-    >
-     <div
-        v-for="(option) in options"
-        :key="option[optionKey]"
-        :role="multiple?'checkbox':'radio'"
-        :aria-checked="isSelected(option[optionKey])"
-        :class="[
-          theme.FlatSelectInput.spacing.vertical,
-          theme.FlatSelectInput.fontSize,
-          theme.FlatSelectInput.option,
-        ]"
-        @click="onSelect(option[optionKey])"
+      <template
+        v-if="options && options.length"
       >
-        <template v-if="multiple">
-          <Icon
-            v-if="isSelected(option[optionKey])"
-            name="material-symbols:check-box"
-            class="text-inherit"
-            :color="color"
-            :class="[theme.FlatSelectInput.icon]"
-          />
-          <Icon
-            v-else
-            name="material-symbols:check-box-outline-blank"
-            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
-          />
-        </template>
-        <template v-else>
-          <Icon
-            v-if="isSelected(option[optionKey])"
-            name="material-symbols:radio-button-checked-outline"
-            class="text-inherit"
-            :color="color"
-            :class="[theme.FlatSelectInput.icon]"
-          />
-          <Icon
-            v-else
-            name="material-symbols:radio-button-unchecked"
-            :class="[theme.FlatSelectInput.icon,theme.FlatSelectInput.unselectedIcon]"
-          />
-        </template>
-        <p class="flex-grow">
-          {{ option[displayKey] }}
-        </p>
-      </div>
-    </template>
+        <div
+          v-for="(option) in options"
+          :key="option[optionKey]"
+          :role="multiple?'checkbox':'radio'"
+          :aria-checked="isSelected(option[optionKey])"
+          :class="[
+            theme.FlatSelectInput.spacing.vertical,
+            theme.FlatSelectInput.fontSize,
+            theme.FlatSelectInput.option,
+          ]"
+          @click="onSelect(option[optionKey])"
+        >
+          <template v-if="multiple">
+            <CheckboxIcon
+              :is-checked="isSelected(option[optionKey])"
+              :color="color"
+              :theme="theme"
+            />
+          </template>
+          <template v-else>
+            <RadioButtonIcon
+              :is-checked="isSelected(option[optionKey])"
+              :color="color"
+              :theme="theme"
+            />
+          </template>
+          <p class="flex-grow">
+            {{ option[displayKey] }}
+          </p>
+        </div>
+      </template>
       <div
         v-else
         :class="[
@@ -96,13 +81,15 @@
 <script>
 import {inputProps, useFormInput} from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
+import RadioButtonIcon from "./components/RadioButtonIcon.vue"
+import CheckboxIcon from "./components/CheckboxIcon.vue"
 
 /**
  * Options: {name,value} objects
  */
 export default {
   name: "FlatSelectInput",
-  components: {InputWrapper},
+  components: {InputWrapper, RadioButtonIcon, CheckboxIcon},
 
   props: {
     ...inputProps,

@@ -187,6 +187,11 @@
       />
     </div>
 
+    <MatrixFieldOptions
+      :model-value="field"
+      @update:model-value="field = $event"
+    />
+
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"
@@ -290,7 +295,6 @@
         Advanced options for your select/multiselect fields.
       </p>
       <text-area-input
-        v-model="optionsText"
         :name="field.id + '_options_text'"
         class="mt-3"
         label="Set selection options"
@@ -423,6 +427,15 @@
         label="Pre-filled value"
         :multiple="field.type === 'multi_select'"
       />
+      <template v-else-if="field.type === 'matrix'">
+        <MatrixInput
+          :form="field"
+          :rows="field.rows"
+          :columns="field.columns"
+          name="prefill"
+          label="Pre-filled value"
+        />
+      </template>
       <date-input
         v-else-if="field.type === 'date' && field.prefill_today !== true"
         name="prefill"
@@ -594,7 +607,7 @@
       :field="field"
     />
 
-    <custom-field-validation 
+    <custom-field-validation
       class="py-2 px-4 border-b pb-16"
       :form="form"
       :field="field"
@@ -608,12 +621,13 @@ import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../../components/CustomFieldValidation.vue'
+import MatrixFieldOptions from './MatrixFieldOptions.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation },
+  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation, MatrixFieldOptions },
   props: {
     field: {
       type: Object,
@@ -682,12 +696,6 @@ export default {
       }
       return true
     },
-    optionsText() {
-      if (!this.field[this.field.type]) return ''
-      return this.field[this.field.type].options.map(option => {
-        return option.name
-      }).join('\n')
-    }
   },
 
   watch: {
@@ -868,6 +876,13 @@ export default {
         date: {
           date_format: this.dateFormatOptions[0].value,
           time_format: this.timeFormatOptions[0].value
+        },
+        matrix: {
+          rows:['Row 1'],
+          columns: [1 ,2 ,3],
+          selection_data:{
+            'Row 1': null
+          }
         }
       }
       if (this.field.type in defaultFieldValues) {
@@ -877,6 +892,9 @@ export default {
           }
         })
       }
+    },
+    updateMatrixField(newField) {
+      this.field = newField
     }
   }
 }
