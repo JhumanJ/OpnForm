@@ -88,6 +88,7 @@ class Form extends Model implements CachableAttributes
         'confetti_on_submission',
         'show_progress_bar',
         'auto_save',
+        'auto_focus',
 
         // Security & Privacy
         'can_be_indexed',
