@@ -84,10 +84,13 @@ class AnswerFormRequest extends FormRequest
                     // For star rating, needs a minimum of 1 star
                     $rules[] = 'min:1';
                 } elseif ($property['type'] == 'matrix') {
-                    $rules[] = new MatrixValidationRule();
+                    $rules[] = new MatrixValidationRule($property, true);
                 }
             } else {
                 $rules[] = 'nullable';
+                if ($property['type'] == 'matrix') {
+                    $rules[] = new MatrixValidationRule($property, false);
+                }
             }
 
             // Clean id to escape "."

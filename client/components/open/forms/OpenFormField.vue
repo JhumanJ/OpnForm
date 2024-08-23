@@ -6,7 +6,7 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
   >
@@ -96,9 +96,11 @@
         </div>
       </template>
       <div
-        class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3">
+        class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3"
+      >
         <div
-          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle">
+          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle"
+        >
           <Icon
             name="clarity:drag-handle-line"
             class="h-6 w-6 -ml-1 block shrink-0"

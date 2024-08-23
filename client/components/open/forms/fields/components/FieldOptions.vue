@@ -187,7 +187,10 @@
       />
     </div>
 
-   <MatrixFieldOptions :field="field" />
+    <MatrixFieldOptions
+      :model-value="field"
+      @update:model-value="field = $event"
+    />
 
     <!--   Text Options   -->
     <div
@@ -292,7 +295,6 @@
         Advanced options for your select/multiselect fields.
       </p>
       <text-area-input
-        v-model="optionsText"
         :name="field.id + '_options_text'"
         class="mt-3"
         label="Set selection options"
@@ -426,13 +428,13 @@
         :multiple="field.type === 'multi_select'"
       />
       <template v-else-if="field.type === 'matrix'">
-          <MatrixInput
-            :form="field"
-            :rows="field.rows"
-            :columns="field.columns"
-            name="prefill"
-            label="Pre-filled value"
-          />
+        <MatrixInput
+          :form="field"
+          :rows="field.rows"
+          :columns="field.columns"
+          name="prefill"
+          label="Pre-filled value"
+        />
       </template>
       <date-input
         v-else-if="field.type === 'date' && field.prefill_today !== true"
@@ -694,12 +696,6 @@ export default {
       }
       return true
     },
-    optionsText() {
-      if (!this.field[this.field.type]) return ''
-      return this.field[this.field.type].options.map(option => {
-        return option.name
-      }).join('\n')
-    }
   },
 
   watch: {
@@ -896,6 +892,9 @@ export default {
           }
         })
       }
+    },
+    updateMatrixField(newField) {
+      this.field = newField
     }
   }
 }

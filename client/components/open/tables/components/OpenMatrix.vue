@@ -1,7 +1,6 @@
 <template>
   <span
     v-if="value"
-    @click="test"
     class="-mb-2"
   >
     <template v-if="matrixData">
@@ -10,8 +9,8 @@
         :key="data.label+data.value"
         class="mr-2 mb-1 text-gray-700 bg-gray-100 dark:text-gray-300 rounded-md flex px-2 text-sm w-max"
       >
-        <span class="py-0.5 pr-1 border-r border-gray-300">{{data.label}}</span>
-        <span class="py-0.5 pl-1">{{data.value}}</span>
+        <span class="py-0.5 pr-1 border-r border-gray-300">{{ data.label }}</span>
+        <span class="py-0.5 pl-1">{{ data.value }}</span>
       </div>
 
     </template>
@@ -47,16 +46,5 @@ export default {
       return null
     },
   },
-
-  mounted()
-  {
-    console.log( (this.value))
-  },
-  methods: {
-    test(){
-      console.log(this.matrixData)
-
-    }
-  }
 }
 </script>
