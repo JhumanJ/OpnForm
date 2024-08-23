@@ -21,8 +21,18 @@
           :loading="billingLoading"
           @click="openBillingDashboard"
         >
-          Manage Subscription
+          <span v-if="canCancel">Manage Subscription & Invoices</span>
+          <span else>Billing & Invoices</span>
         </UButton>
+        <br><br>
+        <v-button
+          v-if="canCancel"
+          color="white"
+          :loading="cancelLoading"
+          @click.prevent="cancelSubscription"
+        >
+          Cancel Subscription
+        </v-button>
       </div>
     </template>
 
@@ -45,6 +55,7 @@ definePageMeta({
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 const billingLoading = ref(false)
+const cancelLoading = ref(false)
 const usersCount = ref(0)
 
 onMounted(() => {
@@ -61,18 +72,60 @@ const loadUsersCount = () => {
     })
 }
 
+const canCancel = computed(() => {
+  return user.value.subscriptions.some(sub => (sub.stripe_status === 'active') || (sub.stripe_status === 'trialing' && sub.ends_at == null))
+})
+
+const cancelSubscription = () => {
+  cancelLoading.value = true
+  opnFetch('/subscription').then((data) => {
+    if (data && data.length) {
+      window.profitwell('init_cancellation_flow', { subscription_id: data[0].stripe_id }).then(result => {
+        // This means the customer either aborted the flow (i.e.
+        // they clicked on "never mind, I don't want to cancel"), or
+        // accepted a salvage attempt or salvage offer.
+        // Thus, do nothing since they won't cancel.
+        if (result.status === 'retained' || result.status === 'aborted') {
+          console.log('Retained 🥳')
+        } else {
+          opnFetch('/subscription/' + data[0].id + '/cancel', { method: 'POST' })
+            .then(() => {
+              useAlert().success('Subscription cancelled. Sorry to see you leave 😢')
+            })
+            .catch(() => {
+              useAlert().error('Sorry to see you leave 😢 We\'re currently having issues with subscriptions. Please ' +
+                'send us a message via the livechat, and we will cancel your subscription.')
+            }).finally(() => {
+            cancelLoading.value = false
+            useAmplitude().logEvent('subscription_cancelled')
+            useCrisp().pushEvent('subscription_cancelled')
+
+            // Now we need to reload workspace and user
+            opnFetch('user').then((userData) => {
+              authStore.setUser(userData)
+            })
+            fetchAllWorkspaces().then((workspaces) => {
+              workspacesStore.set(workspaces.data.value)
+            })
+          })
+        }
+      })
+    }
+  }).finally(() => {
+    useCrisp().pushEvent('subscription_cancelled')
+    cancelLoading.value = false
+  })
+}
+
 const openBillingDashboard = () => {
   billingLoading.value = true
-  opnFetch("/subscription/billing-portal")
-    .then((data) => {
-      const url = data.portal_url
-      window.location = url
-    })
-    .catch((error) => {
-      useAlert().error(error.data.message)
-    })
-    .finally(() => {
-      billingLoading.value = false
-    })
+  opnFetch('/subscription/billing-portal').then((data) => {
+    const url = data.portal_url
+    window.location = url
+  }).catch((error) => {
+    useAlert().error(error.data.message)
+  }).finally(() => {
+    billingLoading.value = false
+  })
 }
 </script>

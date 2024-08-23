@@ -9,6 +9,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     properties: withDefaultProperties ? getDefaultProperties() : [],
 
     // Customization
+    font_family: null,
     theme: "default",
     width: "centered",
     dark_mode: "auto",
@@ -21,6 +22,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     closed_text:
       "This form has now been closed by its owner and does not accept submissions anymore.",
     auto_save: true,
+    auto_focus: true,
     border_radius: 'small',
     size: 'md',
 

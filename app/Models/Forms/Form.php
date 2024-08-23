@@ -31,9 +31,9 @@ class Form extends Model implements CachableAttributes
 
     public const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
 
-    public const SIZES = ['sm','md','lg'];
+    public const SIZES = ['sm', 'md', 'lg'];
 
-    public const BORDER_RADIUS = ['none','small','full'];
+    public const BORDER_RADIUS = ['none', 'small', 'full'];
 
     public const THEMES = ['default', 'simple', 'notion'];
 
@@ -53,6 +53,7 @@ class Form extends Model implements CachableAttributes
         'visibility',
 
         // Customization
+        'font_family',
         'custom_domain',
         'size',
         'border_radius',
@@ -87,6 +88,7 @@ class Form extends Model implements CachableAttributes
         'confetti_on_submission',
         'show_progress_bar',
         'auto_save',
+        'auto_focus',
 
         // Security & Privacy
         'can_be_indexed',

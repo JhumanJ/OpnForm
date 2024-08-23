@@ -12,8 +12,9 @@ class FormResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->slug,
+            'id' => $this->resource->id,
             'name' => $this->resource->title,
+            'label' => $this->resource->title . ' (' . $this->resource->slug . ')'
         ];
     }
 }

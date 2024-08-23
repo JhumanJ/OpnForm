@@ -16,7 +16,7 @@ export function useAmplitude () {
   }
 
   const logEvent = function (eventName, eventData) {
-    if (!config.public.env === 'production') {
+    if (config.public.env !== 'production') {
       console.log('[DEBUG] Amplitude logged event:', eventName, eventData)
     }
 

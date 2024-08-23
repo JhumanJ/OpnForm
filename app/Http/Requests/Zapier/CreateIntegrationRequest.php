@@ -13,7 +13,7 @@ class CreateIntegrationRequest extends FormRequest
         return [
             'form_id' => [
                 'required',
-                Rule::exists(Form::getModel()->getTable(), 'slug'),
+                Rule::exists(Form::getModel()->getTable(), 'id'),
             ],
             'hookUrl' => [
                 'required',
@@ -24,8 +24,6 @@ class CreateIntegrationRequest extends FormRequest
 
     public function form(): Form
     {
-        return Form::query()
-            ->where('slug', $this->input('form_id'))
-            ->firstOrFail();
+        return Form::findOrFail($this->input('form_id'));
     }
 }

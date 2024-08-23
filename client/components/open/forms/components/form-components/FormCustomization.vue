@@ -53,6 +53,24 @@
       label="Form Theme"
     />
 
+    <label class="text-gray-700 font-medium text-sm">Font Style</label>
+    <v-button
+      color="white"
+      class="w-full mb-4"
+      size="small"
+      @click="showGoogleFontPicker = true"
+    >
+      <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
+        {{ form.font_family || 'Default' }}
+      </span>
+    </v-button>
+    <GoogleFontPicker
+      :show="showGoogleFontPicker"
+      :font="form.font_family || null"
+      @close="showGoogleFontPicker=false"
+      @apply="onApplyFont"
+    />
+
     <div class="flex space-x-4 justify-stretch">
       <select-input
         name="size"
@@ -131,12 +149,16 @@
     <toggle-switch-input
       name="no_branding"
       :form="form"
+      @update:model-value="onChangeNoBranding"
     >
       <template #label>
         <span class="text-sm">
           Remove OpnForm Branding
         </span>
-        <pro-tag class="-mt-1" />
+        <pro-tag
+          upgrade-modal-title="Upgrade today to remove OpnForm branding"
+          class="-mt-1"
+        />
       </template>
     </toggle-switch-input>
     <toggle-switch-input
@@ -167,27 +189,61 @@
       label="Auto save form response"
       help="Will save data in browser, if user not submit the form then next time will auto prefill last entered data"
     />
+    <ToggleSwitchInput
+      name="auto_focus"
+      :form="form"
+      label="Auto focus first input on page"
+    />
   </editor-options-panel>
 </template>
 
 <script setup>
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import EditorOptionsPanel from "../../../editors/EditorOptionsPanel.vue"
+import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/global/ProTag.vue"
 
 const workingFormStore = useWorkingFormStore()
+const subscriptionModalStore = useSubscriptionModalStore()
+const authStore = useAuthStore()
+const workspacesStore = useWorkspacesStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
+const showGoogleFontPicker = ref(false)
+
+const user = computed(() => authStore.user)
+const workspace = computed(() => workspacesStore.getCurrent)
+
+const isPro = computed(() => {
+  if (!useRuntimeConfig().public.paidPlansEnabled) return true
+  if (!user.value || !workspace.value) return false
+  return workspace.value.is_pro
+})
 
 onMounted(() => {
   isMounted.value = true
 })
 
 const onChangeConfettiOnSubmission = (val) => {
-  form.confetti_on_submission = val
   if (isMounted.value && val) {
     confetti.play()
   }
+}
+
+const onChangeNoBranding = (val) => {
+  if (!isPro.value && val) {
+    subscriptionModalStore.setModalContent("Upgrade today to remove OpnForm branding")
+    subscriptionModalStore.openModal()
+    setTimeout(() => {
+      form.value.no_branding = false
+      console.log("form.value.no_branding", form.value.no_branding)
+    }, 300)
+  } 
+}
+
+const onApplyFont = (val) => {
+  form.value.font_family = val
+  showGoogleFontPicker.value = false
 }
 </script>
