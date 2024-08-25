@@ -38,11 +38,11 @@
         "spatie/laravel-sluggable": "*",
         "stevebauman/purify": "*",
         "tymon/jwt-auth": "*",
-        "vinkla/hashids": "*"
+        "vinkla/hashids": "*",
+        "fakerphp/faker": "^1.23"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0.0",
-        "fakerphp/faker": "^1.23",
         "laravel/dusk": "^8.2.0",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
@@ -74,6 +74,17 @@
         },
         "google/apiclient-services": [
           "Sheets"
+        ],
+        "aws/aws-sdk-php": [
+          "CloudWatch",
+          "CloudWatchLogs",
+          "DynamoDb",
+          "Iam",
+          "Lambda",
+          "S3",
+          "Sqs",
+          "Ses",
+          "Ssm"
         ]
       },
       "autoload": {
@@ -94,7 +105,10 @@
       "minimum-stability": "dev",
       "prefer-stable": true,
       "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
+        "pre-autoload-dump": [
+          "Google\\Task\\Composer::cleanup",
+          "Aws\\Script\\Composer\\Composer::removeUnusedServices"
+        ],
         "post-autoload-dump": [
           "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
           "@php artisan package:discover --ansi"
