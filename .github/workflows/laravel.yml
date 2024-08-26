@@ -147,6 +147,7 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: Run tests (Unit and Feature)
+        working-directory: ./api
         run: ./vendor/bin/pest -p
         env:
           DB_CONNECTION: ${{ matrix.connection }}
@@ -159,10 +160,9 @@ jobs:
       - name: "Archive log results"
         if: always()
         uses: actions/upload-artifact@v3
-        working-directory: ./api
         with:
           name: log results
-          path: storage/logs/laravel.log
+          path: api/storage/logs/laravel.log
           retention-days: 3
 
   build-nuxt-app:
