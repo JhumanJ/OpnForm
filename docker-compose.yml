@@ -17,28 +17,23 @@ services:
       AWS_REGION: eu-west-1
       AWS_BUCKET: laravel-bucket
       LOCAL_FILESYSTEM_VISIBILITY: public
-      FRONT_URL: ${FRONT_URL:-http://localhost}
-    env_file: ./.env
+    env_file: 
+    - ./api/.env
     volumes:
-      - laravel-persist:/persist
-      - ./storage/logs:/usr/share/nginx/html/storage/logs
+      - ./api/storage:/usr/share/nginx/html/storage
 
   api-worker:
     <<: *api
     command: ./artisan queue:work
+    env_file: 
+    - ./api/.env
     volumes:
-      - ./storage/logs:/usr/share/nginx/html/storage/logs
+      - ./api/storage:/usr/share/nginx/html/storage
 
   ui:
     image: jhumanj/opnform-client:latest
-    environment:
-      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
-      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
-      NUXT_PRIVATE_API_BASE: http://ingress/api
     env_file: 
-      - ./client/.env
-    volumes:
-      - ./client/.env:/app/.env
+    - ./client/.env
 
   redis:
     image: redis:7
@@ -60,5 +55,4 @@ services:
       - 80:80
 
 volumes:
-  laravel-persist:
   postgres-data:

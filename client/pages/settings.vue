@@ -47,7 +47,7 @@ import { computed } from "vue"
 import { useAuthStore } from "../stores/auth"
 
 definePageMeta({
-  middleware: "auth",
+  middleware: ["auth", "self-hosted-credentials"],
 })
 
 useOpnSeoMeta({

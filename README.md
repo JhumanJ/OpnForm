@@ -103,19 +103,6 @@ OpnForm can be easily set up using Docker. Pre-built images are available on Doc
 #### Quick Start
 
 1. Clone the repository:
-<<<<<<< HEAD
-
-    ```
-    git clone https://github.com/JhumanJ/OpnForm.git
-    cd OpnForm
-    ```
-
-2. Set up environment files:
-
-    ```
-    cp .env.docker .env
-    cp client/.env.docker client/.env
-=======
 
     ```
     git clone https://github.com/JhumanJ/OpnForm.git
@@ -126,7 +113,6 @@ OpnForm can be easily set up using Docker. Pre-built images are available on Doc
 
     ```bash
     ./scripts/setup-env.sh --docker
->>>>>>> 0a9400492674212cdabcd4821ee87483b28735e5
     ```
 
 3. Start the application:
@@ -177,7 +163,7 @@ For development or customization, you can build the Docker images locally:
 2. Create a docker-compose override file:
 
     ```
-    cp docker-compose.override.yml.example docker-compose.override.yml
+    touch docker-compose.override.yml
     ```
 
     Edit the `docker-compose.override.yml` file to use your locally built images:
@@ -188,6 +174,8 @@ For development or customization, you can build the Docker images locally:
             image: opnform-api:local
         ui:
             image: opnform-ui:local
+        api-worker:
+            image: opnform-api:local
     ```
 
 3. Start the application:

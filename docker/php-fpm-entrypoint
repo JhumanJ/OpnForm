@@ -55,9 +55,6 @@ prep_storage() {
 
     touch /var/log/opnform.log
     chown www-data /var/log/opnform.log
-
-    echo "Linking persistent storage into app"
-    ln -t . -sf /persist/storage
 }
 
 main "$@"
