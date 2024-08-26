@@ -5,11 +5,11 @@ set -e
 # Welcome to the OpnForm environment setup script!
 
 # Paths to the environment files
-ENV_FILE=".env"
+ENV_FILE="api/.env"
 CLIENT_ENV_FILE="client/.env"
 
 # Paths to the environment templates
-ENV_EXAMPLE=".env.example"
+ENV_EXAMPLE="api/.env.example"
 CLIENT_ENV_EXAMPLE="client/.env.example"
 
 # Check for the --docker flag to use Docker-specific environment settings
@@ -17,7 +17,7 @@ USE_DOCKER_ENV=false
 for arg in "$@"; do
   if [ "$arg" == "--docker" ]; then
     USE_DOCKER_ENV=true
-    ENV_EXAMPLE=".env.docker"
+    ENV_EXAMPLE="api/.env.docker"
     CLIENT_ENV_EXAMPLE="client/.env.docker"
     echo "OpnForm setup detected the --docker flag. Preparing Docker-specific environment..."
     break

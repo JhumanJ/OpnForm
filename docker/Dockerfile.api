@@ -8,9 +8,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN docker-php-ext-install pdo pgsql pdo_pgsql gd bcmath zip && pecl install redis && docker-php-ext-enable redis
 
-
 WORKDIR /usr/share/nginx/html/
-ADD composer.json composer.lock artisan ./
+ADD api/composer.json api/composer.lock api/artisan ./
 
 # NOTE: The project would build more reliably if all php files were added before running
 # composer install.  This would though introduce a dependency which would cause every
@@ -22,19 +21,19 @@ ADD composer.json composer.lock artisan ./
 # post-autoload command from the composer file if we want to run composer without
 # adding a dependency to all the php files.
 RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json
-ADD app/helpers.php app/helpers.php
+ADD api/app/helpers.php app/helpers.php
 RUN composer install --ignore-platform-req=php
 
-ADD app ./app
-ADD bootstrap ./bootstrap
-ADD config ./config
-ADD database ./database
-ADD public public
-ADD routes routes
-ADD tests tests
-ADD resources resources
-ADD storage ./storage
-RUN chmod 777 -R storage
+ADD api/app ./app
+ADD api/bootstrap ./bootstrap
+ADD api/config ./config
+ADD api/database ./database
+ADD api/public public
+ADD api/routes routes
+ADD api/tests tests
+ADD api/resources resources
+ADD api/storage ./storage
+RUN chmod -R 775 storage && chown -R www-data:www-data storage
 
 # Manually run the command we deleted from composer.json earlier
 RUN php artisan package:discover --ansi
@@ -42,6 +41,11 @@ RUN php artisan package:discover --ansi
 COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
 
 RUN chmod a+x /usr/local/bin/*
+
+# Create necessary directories and set permissions
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
+    && chown -R www-data:www-data storage \
+    && chmod -R 775 storage
 
 ENTRYPOINT [ "/usr/local/bin/opnform-entrypoint" ]
 CMD php-fpm
