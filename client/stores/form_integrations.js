@@ -15,7 +15,6 @@ export const useFormIntegrationsStore = defineStore("form_integrations", () => {
 
     const enrichedIntegrations = new Map()
     for (const [key, integration] of integrations.value.entries()) {
-      console.log(featureFlagsStore.getFlag(`integrations.${key}`, true))
       if (featureFlagsStore.getFlag(`integrations.${key}`, true)) {
         enrichedIntegrations.set(key, {
           ...integration,

@@ -1,27 +1,37 @@
 <template>
-    <ErrorBoundary @on-error="onFormEditorError">
-  
-      <template #error="{ error, clearError }">
-        <div class="flex-grow w-full flex items-center justify-center flex-col gap-4">
-          <h1 class="text-blue-800 text-2xl font-medium">Oops! Something went wrong.</h1>
-          <p class="text-gray-500 max-w-lg text-center">It looks like your last action caused an issue on our side. We
-            apologize for
-            the
-            inconvenience.</p>
-          <div class="flex gap-2 mt-4">
-            <UButton icon="i-material-symbols-undo" @click="clearEditorError(error, clearError)">Go back one step
-            </UButton>
-            <UButton variant="outline" icon="i-heroicons-chat-bubble-left-right-16-solid"
-                     @click="onErrorContact(error)">
-              Report this error
-            </UButton>
-          </div>
+  <ErrorBoundary @on-error="onFormEditorError">
+    <template #error="{ error, clearError }">
+      <div class="flex-grow w-full flex items-center justify-center flex-col gap-4">
+        <h1 class="text-blue-800 text-2xl font-medium">
+          Oops! Something went wrong.
+        </h1>
+        <p class="text-gray-500 max-w-lg text-center">
+          It looks like your last action caused an issue on our side. We
+          apologize for
+          the
+          inconvenience.
+        </p>
+        <div class="flex gap-2 mt-4">
+          <UButton
+            icon="i-material-symbols-undo"
+            @click="clearEditorError(error, clearError)"
+          >
+            Go back one step
+          </UButton>
+          <UButton
+            variant="outline"
+            icon="i-heroicons-chat-bubble-left-right-16-solid"
+            @click="onErrorContact(error)"
+          >
+            Report this error
+          </UButton>
         </div>
-      </template>
+      </div>
+    </template>
   
-      <slot />
-    </ErrorBoundary>
-  </template>
+    <slot />
+  </ErrorBoundary>
+</template>
   
   <script setup>
   import { computed } from 'vue'
@@ -51,7 +61,6 @@
     }
   }
   const onErrorContact = (error) => {
-    console.log('Contacting via crisp for an error', error)
     crisp.pauseChatBot()
     let errorReport = 'Hi there, I have a technical issue with the form editor.'
     if (form.value.slug) {

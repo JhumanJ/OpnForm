@@ -239,7 +239,6 @@ const onChangeNoBranding = (val) => {
     subscriptionModalStore.openModal()
     setTimeout(() => {
       form.value.no_branding = false
-      console.log("form.value.no_branding", form.value.no_branding)
     }, 300)
   } 
 }
