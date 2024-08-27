@@ -10,7 +10,7 @@ async function storeLocalFile(file) {
 }
 
 export const storeFile = async (file, options = {}) => {
-  if (!useRuntimeConfig().public.s3Enabled)
+  if (useFeatureFlag('storage.local'))
     return storeLocalFile(file, options)
 
   const response = await opnFetch(

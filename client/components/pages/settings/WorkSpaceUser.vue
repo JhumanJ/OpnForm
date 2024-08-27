@@ -202,7 +202,7 @@ const showEditUserModal = ref(false)
 const selectedUser = ref(null)
 const userNewRole = ref("")
 
-const paidPlansEnabled = computed(() => useRuntimeConfig().public.paidPlansEnabled)
+const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))
 const canInviteUser = computed(() => {
   return paidPlansEnabled.value ? workspace.value.is_pro : true
 })

@@ -53,23 +53,25 @@
       label="Form Theme"
     />
 
-    <label class="text-gray-700 font-medium text-sm">Font Style</label>
-    <v-button
-      color="white"
-      class="w-full mb-4"
-      size="small"
-      @click="showGoogleFontPicker = true"
-    >
-      <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
-        {{ form.font_family || 'Default' }}
-      </span>
-    </v-button>
-    <GoogleFontPicker
-      :show="showGoogleFontPicker"
-      :font="form.font_family || null"
-      @close="showGoogleFontPicker=false"
-      @apply="onApplyFont"
-    />
+    <template v-if="useFeatureFlag('services.google.fonts')">
+      <label class="text-gray-700 font-medium text-sm">Font Style</label>
+      <v-button
+        color="white"
+        class="w-full mb-4"
+        size="small"
+        @click="showGoogleFontPicker = true"
+      >
+        <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
+          {{ form.font_family || 'Default' }}
+        </span>
+      </v-button>
+      <GoogleFontPicker
+        :show="showGoogleFontPicker"
+        :font="form.font_family || null"
+        @close="showGoogleFontPicker=false"
+        @apply="onApplyFont"
+      />
+    </template>
 
     <div class="flex space-x-4 justify-stretch">
       <select-input
@@ -216,7 +218,7 @@ const user = computed(() => authStore.user)
 const workspace = computed(() => workspacesStore.getCurrent)
 
 const isPro = computed(() => {
-  if (!useRuntimeConfig().public.paidPlansEnabled) return true
+  if (!useFeatureFlag('billing.enabled')) return true
   if (!user.value || !workspace.value) return false
   return workspace.value.is_pro
 })

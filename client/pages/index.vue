@@ -176,7 +176,7 @@
       <more-features class="pt-56" />
 
       <pricing-table
-        v-if="paidPlansEnabled"
+        v-if="useFeatureFlag('billing.enabled')"
         class="pb-20"
         :home-page="true"
       >
@@ -336,9 +336,6 @@ export default {
   computed: {
     configLinks() {
       return this.config.links
-    },
-    paidPlansEnabled() {
-      return this.runtimeConfig.public.paidPlansEnabled
     },
   },
 }

@@ -54,7 +54,7 @@
             </a>
           </template>
           <NuxtLink
-            v-if="($route.name !== 'ai-form-builder' && user === null) && (!appStore.selfHosted || appStore.aiFeaturesEnabled)"
+            v-if="($route.name !== 'ai-form-builder' && user === null) && (!useFeatureFlag('self_hosted') || useFeatureFlag('ai_features'))"
             :to="{ name: 'ai-form-builder' }"
             :class="navLinkClasses"
             class="hidden lg:inline"
@@ -63,9 +63,9 @@
           </NuxtLink>
           <NuxtLink
             v-if="
-              (appStore.paidPlansEnabled &&
+              (useFeatureFlag('billing.enabled') &&
                 (user === null || (user && workspace && !workspace.is_pro)) &&
-                $route.name !== 'pricing') && !appStore.selfHosted
+                $route.name !== 'pricing') && !isSelfHosted
             "
             :to="{ name: 'pricing' }"
             :class="navLinkClasses"
@@ -248,7 +248,7 @@
                   </NuxtLink>
 
                   <v-button
-                    v-if="!appStore.selfHosted"
+                    v-if="!isSelfHosted"
                     v-track.nav_create_form_click
                     size="small"
                     class="shrink-0"
@@ -274,6 +274,7 @@ import Dropdown from "~/components/global/Dropdown.vue"
 import WorkspaceDropdown from "./WorkspaceDropdown.vue"
 import opnformConfig from "~/opnform.config.js"
 import { useRuntimeConfig } from "#app"
+import { useFeatureFlag } from "~/composables/useFeatureFlag"
 
 export default {
   components: {
@@ -294,6 +295,7 @@ export default {
       config: useRuntimeConfig(),
       user: computed(() => authStore.user),
       isIframe: useIsIframe(),
+      isSelfHosted: computed(() => useFeatureFlag('self_hosted')),
     }
   },
 

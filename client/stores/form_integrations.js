@@ -10,15 +10,19 @@ export const useFormIntegrationsStore = defineStore("form_integrations", () => {
 
   const availableIntegrations = computed(() => {
     const user = useAuthStore().user
+    const featureFlagsStore = useFeatureFlagsStore()
     if (!user) return integrations.value
 
     const enrichedIntegrations = new Map()
     for (const [key, integration] of integrations.value.entries()) {
-      enrichedIntegrations.set(key, {
-        ...integration,
-        id: key,
-        requires_subscription: !user.is_subscribed && integration.is_pro,
-      })
+      console.log(featureFlagsStore.getFlag(`integrations.${key}`, true))
+      if (featureFlagsStore.getFlag(`integrations.${key}`, true)) {
+        enrichedIntegrations.set(key, {
+          ...integration,
+          id: key,
+          requires_subscription: !user.is_subscribed && integration.is_pro,
+        })
+      }
     }
 
     return enrichedIntegrations

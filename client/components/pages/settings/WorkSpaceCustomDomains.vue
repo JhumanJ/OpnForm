@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="customDomainsEnabled"
+    v-if="useFeatureFlag('custom_domains')"
     id="custom-domains"
   >
     <UButton
@@ -81,10 +81,6 @@ const customDomainsForm = useForm({
 })
 const customDomainsLoading = ref(false)
 const showCustomDomainModal = ref(false)
-
-const customDomainsEnabled = computed(
-  () => useRuntimeConfig().public.customDomainsEnabled,
-)
 
 onMounted(() => {
   initCustomDomains()

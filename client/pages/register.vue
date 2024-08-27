@@ -13,7 +13,7 @@
             <p class="text-gray-500 text-sm">
               Sign up in less than 2 minutes.
             </p>
-            <template v-if="!appStore.selfHosted || isInvited">
+            <template v-if="!useFeatureFlag('self_hosted') || isInvited">
               <register-form />
             </template>
             <div
