@@ -24,36 +24,45 @@
       <template
         v-if="options && options.length"
       >
-        <div
+        <UTooltip
           v-for="(option) in options"
           :key="option[optionKey]"
-          :role="multiple?'checkbox':'radio'"
-          :aria-checked="isSelected(option[optionKey])"
-          :class="[
-            theme.FlatSelectInput.spacing.vertical,
-            theme.FlatSelectInput.fontSize,
-            theme.FlatSelectInput.option,
-          ]"
-          @click="onSelect(option[optionKey])"
+          :text="disableOptionsTooltip"
+          :prevent="!disableOptions.includes(option[optionKey])"
+          class="inline"
         >
-          <template v-if="multiple">
-            <CheckboxIcon
-              :is-checked="isSelected(option[optionKey])"
-              :color="color"
-              :theme="theme"
-            />
-          </template>
-          <template v-else>
-            <RadioButtonIcon
-              :is-checked="isSelected(option[optionKey])"
-              :color="color"
-              :theme="theme"
-            />
-          </template>
-          <p class="flex-grow">
-            {{ option[displayKey] }}
-          </p>
-        </div>
+          <div
+            :role="multiple?'checkbox':'radio'"
+            :aria-checked="isSelected(option[optionKey])"
+            :class="[
+              theme.FlatSelectInput.spacing.vertical,
+              theme.FlatSelectInput.fontSize,
+              theme.FlatSelectInput.option,
+              {
+                '!cursor-not-allowed !bg-gray-200': disableOptions.includes(option[optionKey]),
+              },
+            ]"
+            @click="onSelect(option[optionKey])"
+          >
+            <template v-if="multiple">
+              <CheckboxIcon
+                :is-checked="isSelected(option[optionKey])"
+                :color="color"
+                :theme="theme"
+              />
+            </template>
+            <template v-else>
+              <RadioButtonIcon
+                :is-checked="isSelected(option[optionKey])"
+                :color="color"
+                :theme="theme"
+              />
+            </template>
+            <p class="flex-grow">
+              {{ option[displayKey] }}
+            </p>
+          </div>
+        </UTooltip>
       </template>
       <div
         v-else
@@ -98,7 +107,9 @@ export default {
     emitKey: {type: String, default: "value"},
     displayKey: {type: String, default: "name"},
     loading: {type: Boolean, default: false},
-    multiple: {type: Boolean, default: false},
+    multiple: { type: Boolean, default: false },
+    disableOptions: { type: Array, default: () => [] },
+    disableOptionsTooltip: {type: String, default: "Not allowed"},
   },
   setup(props, context) {
     return {
@@ -111,7 +122,7 @@ export default {
   computed: {},
   methods: {
     onSelect(value) {
-      if (this.disabled) {
+      if (this.disabled || this.disableOptions.includes(value)) {
         return
       }
 

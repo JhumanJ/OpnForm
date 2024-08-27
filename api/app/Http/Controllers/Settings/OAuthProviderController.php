@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OAuthProviderResource;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\OAuthProvider;
+use Google\Service\Sheets;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,8 +27,13 @@ class OAuthProviderController extends Controller
         $userId = Auth::id();
         cache()->put("oauth-intention:{$userId}", $request->input('intention'), 60 * 5);
 
+        $scopes = [];
+        if ($service->value === 'google') {
+            $scopes = [Sheets::DRIVE_FILE];
+        }
+
         return response()->json([
-            'url' => $service->getDriver()->getRedirectUrl(),
+            'url' => $service->getDriver()->setScopes($scopes)->getRedirectUrl(),
         ]);
     }
 
@@ -47,6 +53,7 @@ class OAuthProviderController extends Controller
                     'refresh_token' => $driverUser->refreshToken,
                     'name' => $driverUser->getName(),
                     'email' => $driverUser->getEmail(),
+                    'scopes' => $driverUser->approvedScopes
                 ]
             );
 

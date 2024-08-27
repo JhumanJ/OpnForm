@@ -8,6 +8,7 @@ interface OAuthDriver
 {
     public function getRedirectUrl(): string;
     public function setRedirectUrl($url): self;
+    public function setScopes($scopes): self;
     public function getUser(): User;
     public function canCreateUser(): bool;
 }

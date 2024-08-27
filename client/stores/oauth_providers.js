@@ -7,6 +7,8 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
   const alert = useAlert()
 
+  const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
+
   const services = computed(() => {
     return [
       {
@@ -92,6 +94,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
 
   return {
     ...contentStore,
+    googleDrivePermission,
     services,
     getService,
     fetchOAuthProviders,

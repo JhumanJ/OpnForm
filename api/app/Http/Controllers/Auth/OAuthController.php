@@ -93,6 +93,7 @@ class OAuthController extends Controller
             $oauthProvider->update([
                 'access_token' => $socialiteUser->token,
                 'refresh_token' => $socialiteUser->refreshToken,
+                'scopes' => $socialiteUser->approvedScopes
             ]);
 
             return $oauthProvider->user;
@@ -139,6 +140,7 @@ class OAuthController extends Controller
                 'refresh_token' => $socialiteUser->refreshToken,
                 'name' => $socialiteUser->getName(),
                 'email' => $socialiteUser->getEmail(),
+                'scopes' => $socialiteUser->approvedScopes
             ]
         );
         return $user;
