@@ -23,11 +23,6 @@ export default {
     amplitudeCode: process.env.NUXT_PUBLIC_AMPLITUDE_CODE || null,
     crispWebsiteId: process.env.NUXT_PUBLIC_CRISP_WEBSITE_ID || null,
     
-    // aiFeaturesEnabled: parseBoolean(process.env.NUXT_PUBLIC_AI_FEATURES_ENABLED),
-    // s3Enabled: parseBoolean(process.env.NUXT_PUBLIC_S3_ENABLED),
-    // paidPlansEnabled: parseBoolean(process.env.NUXT_PUBLIC_PAID_PLANS_ENABLED),
-    // customDomainsEnabled: parseBoolean(process.env.NUXT_PUBLIC_CUSTOM_DOMAINS_ENABLED),
-    // selfHosted: parseBoolean(process.env.NUXT_PUBLIC_SELF_HOSTED, true),
     featureBaseOrganization: process.env.NUXT_PUBLIC_FEATURE_BASE_ORGANISATION || null,
 
     // Config within public will be also exposed to the client

@@ -30,7 +30,7 @@ class FeatureFlagsController extends Controller
                     ],
                 ],
                 'integrations' => [
-                    'zapier' => !empty(config('services.zapier.enabled')),
+                    'zapier' => config('services.zapier.enabled'),
                     'google_sheets' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
                 ],
             ];
