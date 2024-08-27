@@ -74,4 +74,8 @@ return [
         'fonts_api_key' => env('GOOGLE_FONTS_API_KEY'),
     ],
 
+    'zapier' => [
+        'enabled' => env('ZAPIER_ENABLED', false),
+    ],
+
 ];
