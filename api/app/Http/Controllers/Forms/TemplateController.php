@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Forms;
 
 use App\Http\Requests\Templates\FormTemplateRequest;
 use App\Http\Resources\FormTemplateResource;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class TemplateController extends Controller
 {
@@ -23,7 +24,7 @@ class TemplateController extends Controller
             } else {
                 $query->where(function ($q) {
                     $q->where('publicly_listed', true)
-                      ->orWhere('creator_id', Auth::id());
+                        ->orWhere('creator_id', Auth::id());
                 });
             }
         } else {

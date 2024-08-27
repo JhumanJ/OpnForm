@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Models\UserInvite;
 use App\Models\Workspace;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UserInviteController extends Controller
 {
@@ -31,7 +32,7 @@ class UserInviteController extends Controller
             return $this->error(['success' => false, 'message' => 'Invite not found for this workspace.']);
         }
 
-        if($userInvite->status == UserInvite::ACCEPTED_STATUS) {
+        if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
             return $this->error(['success' => false, 'message' => 'Invite already accepted.']);
         }
 
@@ -49,7 +50,7 @@ class UserInviteController extends Controller
             return $this->error(['success' => false, 'message' => 'Invite not found for this workspace.']);
         }
 
-        if($userInvite->status == UserInvite::ACCEPTED_STATUS) {
+        if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
             return $this->error(['success' => false, 'message' => 'Invite already accepted.']);
         }
 

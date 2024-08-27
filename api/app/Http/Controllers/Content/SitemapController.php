@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Content;
 
 use App\Models\Template;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SitemapController extends Controller
 {
@@ -20,7 +21,7 @@ class SitemapController extends Controller
         Template::where('publicly_listed', true)->chunk(100, function ($templates) use (&$urls) {
             foreach ($templates as $template) {
                 $urls[] = [
-                    'loc' => '/templates/'.$template->slug,
+                    'loc' => '/templates/' . $template->slug,
                 ];
             }
         });
