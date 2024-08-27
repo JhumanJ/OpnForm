@@ -71,7 +71,7 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @update:modelValue="updateModelValue"
+          @update:model-value="updateModelValue"
         />
         <DatePicker
           v-else
@@ -84,7 +84,7 @@
           :max-date="maxDate"
           :is-dark="props.isDark"
           color="form-color"
-          @update:modelValue="updateModelValue"
+          @update:model-value="updateModelValue"
         />
       </template>
     </UPopover>
@@ -201,7 +201,7 @@ const formattedDate = (value) => {
     try {
       return format(new Date(value), props.dateFormat + (props.timeFormat == 12 ? ' p':' HH:mm'))
     } catch (e) {
-      console.log(e)
+      console.log('Error formatting date', e)
       return ''
     }
   }

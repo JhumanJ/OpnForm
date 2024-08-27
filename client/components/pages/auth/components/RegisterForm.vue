@@ -87,19 +87,21 @@
         Create account
       </v-button>
 
-      <p class="text-gray-600/50 text-sm text-center my-4">
-        Or
-      </p>
-      <v-button
-        native-type="buttom"
-        color="white"
-        class="space-x-4 flex items-center w-full"
-        :loading="false"
-        @click.prevent="signInwithGoogle"
-      >
-        <Icon name="devicon:google" />
-        <span class="mx-2">Sign in with Google</span>
-      </v-button>
+      <template v-if="useFeatureFlag('services.google.auth')">
+        <p class="text-gray-600/50 text-sm text-center my-4">
+          Or
+        </p>
+        <v-button
+          native-type="buttom"
+          color="white"
+          class="space-x-4 flex items-center w-full"
+          :loading="false"
+          @click.prevent="signInwithGoogle"
+        >
+          <Icon name="devicon:google" />
+          <span class="mx-2">Sign in with Google</span>
+        </v-button>
+      </template>
 
       <p class="text-gray-500 mt-4 text-sm text-center">
         Already have an account?

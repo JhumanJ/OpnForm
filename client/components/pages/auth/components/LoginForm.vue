@@ -59,6 +59,7 @@
       </v-button>
 
       <v-button
+        v-if="useFeatureFlag('services.google.auth')"
         native-type="button"
         color="white"
         class="space-x-4 mt-4 flex items-center w-full"
@@ -72,7 +73,7 @@
         <span class="mx-2">Sign in with Google</span>
       </v-button>
       <p
-        v-if="!appStore.selfHosted"
+        v-if="!useFeatureFlag('self_hosted')"
         class="text-gray-500 text-sm text-center mt-4"
       >
         Don't have an account?

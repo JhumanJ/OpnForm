@@ -9,7 +9,7 @@
           You can switch to another workspace in top left corner of the page.</small>
       </div>
       <div class="w-full flex flex-wrap justify-between gap-2">
-        <WorkSpaceCustomDomains v-if="customDomainsEnabled && !loading" />
+        <WorkSpaceCustomDomains v-if="useFeatureFlag('custom_domains') && !loading" />
         <UButton
           label="New Workspace"
           icon="i-heroicons-plus"
@@ -116,9 +116,6 @@ const form = useForm({
 const workspaceModal = ref(false)
 
 const workspace = computed(() => workspacesStore.getCurrent)
-const customDomainsEnabled = computed(
-  () => useRuntimeConfig().public.customDomainsEnabled,
-)
 
 onMounted(() => {
   fetchAllWorkspaces()

@@ -83,7 +83,6 @@ export function darkModeEnabled (elem = ref(null)) {
 
   // Update isDark based on the current class
   const updateIsDark = () => {
-    console.log(elem.value, 'test')
     const finalElement = elem.value ?? document.body
     isDark.value = finalElement.classList.contains('dark')
   }

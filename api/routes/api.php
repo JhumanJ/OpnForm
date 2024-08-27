@@ -20,8 +20,8 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\TokenController;
 use App\Http\Controllers\SubscriptionController;
-use App\Http\Controllers\TemplateController;
-use App\Http\Controllers\UserInviteController;
+use App\Http\Controllers\Forms\TemplateController;
+use App\Http\Controllers\Auth\UserInviteController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
@@ -309,13 +309,14 @@ Route::prefix('forms')->name('forms.')->group(function () {
  * Other public routes
  */
 Route::prefix('content')->name('content.')->group(function () {
+    Route::get('/feature-flags', [\App\Http\Controllers\Content\FeatureFlagsController::class, 'index'])->name('feature-flags');
     Route::get('changelog/entries', [\App\Http\Controllers\Content\ChangelogController::class, 'index'])->name('changelog.entries');
 });
 
-Route::get('/sitemap-urls', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-urls', [\App\Http\Controllers\Content\SitemapController::class, 'index'])->name('sitemap.index');
 
 // Fonts
-Route::get('/fonts', [\App\Http\Controllers\FontsController::class, 'index'])->name('fonts.index');
+Route::get('/fonts', [\App\Http\Controllers\Content\FontsController::class, 'index'])->name('fonts.index');
 
 // Templates
 Route::prefix('templates')->group(function () {

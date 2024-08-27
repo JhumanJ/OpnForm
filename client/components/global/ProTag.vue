@@ -33,7 +33,7 @@ const user = computed(() => authStore.user)
 const workspace = computed(() => workspacesStore.getCurrent)
 
 const shouldDisplayProTag = computed(() => {
-  if (!useRuntimeConfig().public.paidPlansEnabled) return false
+  if (!useFeatureFlag('billing.enabled')) return false
   if (!user.value || !workspace.value) return true
   return !workspace.value.is_pro
 })

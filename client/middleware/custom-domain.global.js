@@ -47,7 +47,7 @@ export default defineNuxtRouteMiddleware((to) => {
     })
   }
 
-  if (!config.public.customDomainsEnabled) {
+  if (!useFeatureFlag('custom_domains')) {
     // If custom domain not allowed, redirect
     return redirectToMainDomain({
       reason: "custom_domains_disabled",

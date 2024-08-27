@@ -25,7 +25,7 @@
       on other sites (Open Graph).
     </p>
     <select-input
-      v-if="customDomainAllowed"
+      v-if="useFeatureFlag('custom_domains')"
       v-model="form.custom_domain"
       :clearable="true"
       :disabled="customDomainOptions.length <= 0"
@@ -97,9 +97,6 @@ export default {
             }
           })
         : []
-    },
-    customDomainAllowed() {
-      return useRuntimeConfig().public.customDomainsEnabled
     },
   },
   watch: {},

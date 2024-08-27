@@ -103,7 +103,7 @@ export const getDomain = function (url) {
  */
 export const customDomainUsed = function () {
   const config = useRuntimeConfig()
-  if (!config.public.customDomainsEnabled) return false
+  if (!useFeatureFlag('custom_domains')) return false
   const appDomain = getDomain(config.public.appUrl)
   const host = getHost()
 
