@@ -6,9 +6,10 @@ use Illuminate\Support\Facades\Config;
 
 it('returns feature flags', function () {
     // Arrange
+    Config::set('app.self_hosted', false);
     Config::set('custom_domains.enabled', true);
-    Config::set('services.stripe.key', 'stripe_key');
-    Config::set('services.stripe.secret', 'stripe_secret');
+    Config::set('cashier.key', 'stripe_key');
+    Config::set('cashier.secret', 'stripe_secret');
     Config::set('services.appsumo.api_key', 'appsumo_key');
     Config::set('services.appsumo.api_secret', 'appsumo_secret');
     Config::set('filesystems.default', 's3');
@@ -25,7 +26,9 @@ it('returns feature flags', function () {
     // Assert
     $response->assertStatus(200)
         ->assertJson([
+            'self_hosted' => false,
             'custom_domains' => true,
+            'ai_features' => true,
             'billing' => [
                 'enabled' => true,
                 'appsumo' => true,
@@ -35,7 +38,6 @@ it('returns feature flags', function () {
                 's3' => true,
             ],
             'services' => [
-                'openai' => true,
                 'unsplash' => true,
                 'google' => [
                     'fonts' => true,
