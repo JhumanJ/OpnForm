@@ -40,18 +40,19 @@ run_server() {
 }
 
 prep_storage() {
-    [ -L storage ] || {
+    mkdir -p /etc/initial-storage
+    if [ ! -d /etc/initial-storage/app ]; then
         echo "Backing up initial storage directory"
-        rm -rf /etc/initial-storage
-        mv ./storage /etc/initial-storage
-    }
+        cp -a ./storage/* /etc/initial-storage/
+    fi
 
-    [ -d /persist/storage ] || {
+    mkdir -p /persist/storage
+    if [ ! -d /persist/storage/app ]; then
         echo "Initialising blank storage dir"
-        mkdir -p /persist
-        cp -a /etc/initial-storage /persist/storage
-        chmod 777 -R /persist/storage
-    }
+        cp -a /etc/initial-storage/* /persist/storage/
+    fi
+
+    chmod -R 777 /persist/storage
 
     touch /var/log/opnform.log
     chown www-data /var/log/opnform.log
