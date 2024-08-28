@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
-use App\Models\Forms\Form;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
 
 class FormStatsController extends Controller
 {
@@ -13,10 +13,9 @@ class FormStatsController extends Controller
         $this->middleware('auth');
     }
 
-    public function getFormStats(string $workspaceId, string $formId)
+    public function getFormStats(Request $request)
     {
-        $form = Form::findOrFail($formId);
-
+        $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
 
         $formStats = $form->statistics()->where('date', '>', now()->subDays(29)->startOfDay())->get();

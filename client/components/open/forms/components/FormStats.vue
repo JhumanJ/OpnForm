@@ -3,7 +3,7 @@
     class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
   >
     <div
-      v-if="false"
+      v-if="!form.is_pro"
       class="relative"
     >
       <div class="absolute inset-0 z-10">
@@ -16,7 +16,10 @@
             analytics.
           </p>
           <p class="mt-5 text-center">
-            <v-button :to="{ name: 'pricing' }">
+            <v-button
+              class="w-full"
+              @click.prevent="subscriptionModalStore.openModal()"
+            >
               Subscribe
             </v-button>
           </p>
@@ -76,6 +79,12 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const subscriptionModalStore = useSubscriptionModalStore()
+    return {
+      subscriptionModalStore
+    }
+  },
   data() {
     return {
       isLoading: true,
@@ -115,9 +124,7 @@ export default {
   },
   methods: {
     getChartData() {
-      if (!this.form) {
-        return null
-      }
+      if (!this.form || !this.form.is_pro) { return null }
       this.isLoading = true
       opnFetch(
         "/open/workspaces/" +
