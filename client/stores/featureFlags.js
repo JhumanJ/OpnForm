@@ -6,7 +6,7 @@ export const useFeatureFlagsStore = defineStore('feature_flags', () => {
 
   async function fetchFlags() {
     try {
-      const { data } = await useOpnApi('/content/feature-flags')
+      const { data } = await useOpnApi('content/feature-flags')
       flags.value = data.value
     } catch (error) {
       console.error('Failed to fetch feature flags:', error)
