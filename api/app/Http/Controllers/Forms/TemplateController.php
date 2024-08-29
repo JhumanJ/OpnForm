@@ -7,10 +7,34 @@ use App\Http\Resources\FormTemplateResource;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
 
 class TemplateController extends Controller
 {
+    private function getProdTemplates($slug = false)
+    {
+        if (!config('app.self_hosted')) {
+            return [];
+        }
+
+        $prodTemplates = \Cache::remember('prod_templates', 3600, function () {
+            $response = Http::get('https://api.opnform.com/templates');
+            if ($response->successful()) {
+                return collect($response->json())->map(function ($item) {
+                    $item['from_prod'] = true;
+                    return $item;
+                })->toArray();
+            }
+        });
+        if ($slug) {
+            return collect($prodTemplates)->filter(function ($item) use ($slug) {
+                return $item['slug'] === $slug;
+            })->toArray();
+        }
+        return $prodTemplates;
+    }
+
     public function index(Request $request)
     {
         $limit = (int) $request->get('limit', 0);
@@ -37,7 +61,10 @@ class TemplateController extends Controller
 
         $templates = $query->orderByDesc('created_at')->get();
 
-        return FormTemplateResource::collection($templates);
+        return response()->json(array_merge(
+            FormTemplateResource::collection($templates)->toArray($request),
+            $this->getProdTemplates()
+        ));
     }
 
     public function create(FormTemplateRequest $request)
@@ -83,8 +110,7 @@ class TemplateController extends Controller
 
     public function show(string $slug)
     {
-        return new FormTemplateResource(
-            Template::whereSlug($slug)->firstOrFail()
-        );
+        $template = Template::whereSlug($slug)->first();
+        return ($template) ? new FormTemplateResource($template) : $this->getProdTemplates($slug);
     }
 }

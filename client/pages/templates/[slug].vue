@@ -334,6 +334,7 @@ const canEditTemplate = computed(
   () =>
     authStore.check &&
     template.value &&
+    template.value?.from_prod !== true &&
     (authStore.user.admin ||
       authStore.user.template_editor ||
       template.value.creator_id === authStore.user.id),
