@@ -25,6 +25,7 @@
           <InputHelp>
             <span>
               <NuxtLink
+                class="text-blue-500"
                 :to="{ name: 'settings-connections' }"
               >
                 Click here
