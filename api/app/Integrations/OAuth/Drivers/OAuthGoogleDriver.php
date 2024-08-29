@@ -3,6 +3,7 @@
 namespace App\Integrations\OAuth\Drivers;
 
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use Google\Service\Sheets;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
@@ -46,15 +47,20 @@ class OAuthGoogleDriver implements OAuthDriver
         return true;
     }
 
-    public function setRedirectUrl($url): OAuthDriver
+    public function setRedirectUrl(string $url): OAuthDriver
     {
         $this->redirectUrl = $url;
         return $this;
     }
 
-    public function setScopes($scopes): OAuthDriver
+    public function setScopes(array $scopes): OAuthDriver
     {
         $this->scopes = $scopes;
         return $this;
+    }
+
+    public function fullScopes(): OAuthDriver
+    {
+        return $this->setScopes([Sheets::DRIVE_FILE]);
     }
 }

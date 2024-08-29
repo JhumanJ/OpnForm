@@ -27,13 +27,10 @@ class OAuthProviderController extends Controller
         $userId = Auth::id();
         cache()->put("oauth-intention:{$userId}", $request->input('intention'), 60 * 5);
 
-        $scopes = [];
-        if ($service->value === 'google') {
-            $scopes = [Sheets::DRIVE_FILE];
-        }
-
+        // Connecting an account for integrations purposes
+        // Adding full scopes to the driver
         return response()->json([
-            'url' => $service->getDriver()->setScopes($scopes)->getRedirectUrl(),
+            'url' => $service->getDriver()->fullScopes()->getRedirectUrl(),
         ]);
     }
 
