@@ -39,7 +39,8 @@
         "stevebauman/purify": "*",
         "tymon/jwt-auth": "*",
         "vinkla/hashids": "*",
-        "fakerphp/faker": "^1.23"
+        "fakerphp/faker": "^1.23",
+        "spatie/laravel-ray": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0.0",
@@ -50,8 +51,7 @@
         "nunomaduro/collision": "*",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.4",
-        "spatie/laravel-ignition": "*",
-        "spatie/laravel-ray": "*"
+        "spatie/laravel-ignition": "*"
     },
     "config": {
         "optimize-autoloader": true,
