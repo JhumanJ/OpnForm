@@ -4,7 +4,6 @@ if (!function_exists('front_url')) {
     function front_url($path = '')
     {
         $baseUrl = config('app.front_url') ?? config('app.url');
-        \Log::info('Base URL for front-end: ' . $baseUrl);
         if (! $baseUrl) {
             return $path;
         }
