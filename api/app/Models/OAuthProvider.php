@@ -30,7 +30,8 @@ class OAuthProvider extends Model
      * @var array
      */
     protected $hidden = [
-        'access_token', 'refresh_token',
+        'access_token',
+        'refresh_token',
     ];
 
     protected function casts()
@@ -38,6 +39,7 @@ class OAuthProvider extends Model
         return [
             'provider' => OAuthProviderService::class,
             'token_expires_at' => 'datetime',
+            'scopes' => 'array'
         ];
     }
 

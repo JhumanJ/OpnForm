@@ -32,6 +32,7 @@ class OAuthProviderResource extends JsonResource
                 fn () => OAuthProviderUserResource::make($this->resource->user),
                 null,
             ),
+            'scopes' => $this->resource->scopes
         ];
     }
 }

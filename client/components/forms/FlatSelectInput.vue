@@ -33,6 +33,9 @@
             theme.FlatSelectInput.spacing.vertical,
             theme.FlatSelectInput.fontSize,
             theme.FlatSelectInput.option,
+            {
+              '!cursor-not-allowed !bg-gray-200': disableOptions.includes(option[optionKey]),
+            },
           ]"
           @click="onSelect(option[optionKey])"
         >
@@ -50,9 +53,15 @@
               :theme="theme"
             />
           </template>
-          <p class="flex-grow">
-            {{ option[displayKey] }}
-          </p>
+          <UTooltip
+            :text="disableOptionsTooltip"
+            :prevent="!disableOptions.includes(option[optionKey])"
+            class="w-full"
+          >
+            <p class="flex-grow">
+              {{ option[displayKey] }}
+            </p>
+          </UTooltip>
         </div>
       </template>
       <div
@@ -98,7 +107,9 @@ export default {
     emitKey: {type: String, default: "value"},
     displayKey: {type: String, default: "name"},
     loading: {type: Boolean, default: false},
-    multiple: {type: Boolean, default: false},
+    multiple: { type: Boolean, default: false },
+    disableOptions: { type: Array, default: () => [] },
+    disableOptionsTooltip: {type: String, default: "Not allowed"},
   },
   setup(props, context) {
     return {
@@ -111,7 +122,7 @@ export default {
   computed: {},
   methods: {
     onSelect(value) {
-      if (this.disabled) {
+      if (this.disabled || this.disableOptions.includes(value)) {
         return
       }
 

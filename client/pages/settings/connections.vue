@@ -8,7 +8,7 @@
         <small class="text-gray-600">Manage your external connections.</small>
       </div>
       <UButton
-        label="Connect new account"
+        label="Connect account"
         icon="i-heroicons-plus"
         :loading="loading"
         @click="providerModal = true"

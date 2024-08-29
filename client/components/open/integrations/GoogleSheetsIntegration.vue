@@ -4,12 +4,17 @@
     :integration="props.integration"
     :form="form"
   >
-    <div class="my-5">
-      <select-input
+    <div class="mb-4">
+      <p class="text-gray-500 mb-4">
+        Adds new entry to spreadsheets on each form submission.
+      </p>
+      <FlatSelectInput
         v-if="providers.length"
         v-model="integrationData.oauth_id"
         name="provider"
         :options="providers"
+        :disable-options="disableProviders"
+        disable-options-tooltip="Re-connect account to fix permissions"
         display-key="email"
         option-key="id"
         emit-key="id"
@@ -19,8 +24,8 @@
         <template #help>
           <InputHelp>
             <span>
-              Add an entry to spreadsheets on each form submission.
               <NuxtLink
+                class="text-blue-500"
                 :to="{ name: 'settings-connections' }"
               >
                 Click here
@@ -29,7 +34,7 @@
             </span>
           </InputHelp>
         </template>
-      </select-input>
+      </FlatSelectInput>
 
       <v-button
         v-else
@@ -44,6 +49,7 @@
 </template>
 
 <script setup>
+import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 
 const props = defineProps({
@@ -55,6 +61,7 @@ const props = defineProps({
 
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
+const disableProviders = computed(() => providersStore.getAll.filter(provider => !provider.scopes.includes(providersStore.googleDrivePermission)).map((provider) => provider.id))
 
 function connect () {
   providersStore.connect('google', true)

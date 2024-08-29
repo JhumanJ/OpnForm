@@ -11,6 +11,7 @@ use Laravel\Socialite\Two\GoogleProvider;
 class OAuthGoogleDriver implements OAuthDriver
 {
     private ?string $redirectUrl = null;
+    private ?array $scopes = [];
 
     protected GoogleProvider $provider;
 
@@ -22,7 +23,7 @@ class OAuthGoogleDriver implements OAuthDriver
     public function getRedirectUrl(): string
     {
         return $this->provider
-            ->scopes([Sheets::DRIVE_FILE])
+            ->scopes($this->scopes ?? [])
             ->stateless()
             ->redirectUrl($this->redirectUrl ?? config('services.google.redirect'))
             ->with([
@@ -46,10 +47,20 @@ class OAuthGoogleDriver implements OAuthDriver
         return true;
     }
 
-    public function setRedirectUrl($url): OAuthDriver
+    public function setRedirectUrl(string $url): OAuthDriver
     {
         $this->redirectUrl = $url;
         return $this;
     }
 
+    public function setScopes(array $scopes): OAuthDriver
+    {
+        $this->scopes = $scopes;
+        return $this;
+    }
+
+    public function fullScopes(): OAuthDriver
+    {
+        return $this->setScopes([Sheets::DRIVE_FILE]);
+    }
 }

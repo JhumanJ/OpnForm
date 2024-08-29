@@ -26,8 +26,10 @@ class OAuthProviderController extends Controller
         $userId = Auth::id();
         cache()->put("oauth-intention:{$userId}", $request->input('intention'), 60 * 5);
 
+        // Connecting an account for integrations purposes
+        // Adding full scopes to the driver
         return response()->json([
-            'url' => $service->getDriver()->getRedirectUrl(),
+            'url' => $service->getDriver()->fullScopes()->getRedirectUrl(),
         ]);
     }
 
@@ -47,6 +49,7 @@ class OAuthProviderController extends Controller
                     'refresh_token' => $driverUser->refreshToken,
                     'name' => $driverUser->getName(),
                     'email' => $driverUser->getEmail(),
+                    'scopes' => $driverUser->approvedScopes
                 ]
             );
 
