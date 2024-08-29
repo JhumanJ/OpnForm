@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 
 it('check formstat chart data', function () {
-    $user = $this->actingAsUser();
+    $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, []);
 
