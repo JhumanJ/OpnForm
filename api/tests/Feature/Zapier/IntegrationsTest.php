@@ -236,9 +236,6 @@ test('make up a submission when polling without any submission', function () {
     // Decode the response data
     $responseData = $response->json()[0];
 
-    ray($responseData);
-
-    ray($responseData);
     $this->assertNotEmpty($responseData['data']);
     $this->assertTrue(count($responseData['data']) == 2);
 });

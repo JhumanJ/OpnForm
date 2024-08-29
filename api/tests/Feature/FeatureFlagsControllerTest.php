@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 it('returns feature flags', function () {
     // Arrange
     Config::set('app.self_hosted', false);
-    Config::set('custom_domains.enabled', true);
+    Config::set('custom-domains.enabled', true);
     Config::set('cashier.key', 'stripe_key');
     Config::set('cashier.secret', 'stripe_secret');
     Config::set('services.appsumo.api_key', 'appsumo_key');
