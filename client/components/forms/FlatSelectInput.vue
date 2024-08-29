@@ -24,45 +24,45 @@
       <template
         v-if="options && options.length"
       >
-        <UTooltip
+        <div
           v-for="(option) in options"
           :key="option[optionKey]"
-          :text="disableOptionsTooltip"
-          :prevent="!disableOptions.includes(option[optionKey])"
-          class="inline"
+          :role="multiple?'checkbox':'radio'"
+          :aria-checked="isSelected(option[optionKey])"
+          :class="[
+            theme.FlatSelectInput.spacing.vertical,
+            theme.FlatSelectInput.fontSize,
+            theme.FlatSelectInput.option,
+            {
+              '!cursor-not-allowed !bg-gray-200': disableOptions.includes(option[optionKey]),
+            },
+          ]"
+          @click="onSelect(option[optionKey])"
         >
-          <div
-            :role="multiple?'checkbox':'radio'"
-            :aria-checked="isSelected(option[optionKey])"
-            :class="[
-              theme.FlatSelectInput.spacing.vertical,
-              theme.FlatSelectInput.fontSize,
-              theme.FlatSelectInput.option,
-              {
-                '!cursor-not-allowed !bg-gray-200': disableOptions.includes(option[optionKey]),
-              },
-            ]"
-            @click="onSelect(option[optionKey])"
+          <template v-if="multiple">
+            <CheckboxIcon
+              :is-checked="isSelected(option[optionKey])"
+              :color="color"
+              :theme="theme"
+            />
+          </template>
+          <template v-else>
+            <RadioButtonIcon
+              :is-checked="isSelected(option[optionKey])"
+              :color="color"
+              :theme="theme"
+            />
+          </template>
+          <UTooltip
+            :text="disableOptionsTooltip"
+            :prevent="!disableOptions.includes(option[optionKey])"
+            class="w-full"
           >
-            <template v-if="multiple">
-              <CheckboxIcon
-                :is-checked="isSelected(option[optionKey])"
-                :color="color"
-                :theme="theme"
-              />
-            </template>
-            <template v-else>
-              <RadioButtonIcon
-                :is-checked="isSelected(option[optionKey])"
-                :color="color"
-                :theme="theme"
-              />
-            </template>
             <p class="flex-grow">
               {{ option[displayKey] }}
             </p>
-          </div>
-        </UTooltip>
+          </UTooltip>
+        </div>
       </template>
       <div
         v-else
