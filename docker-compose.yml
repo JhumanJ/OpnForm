@@ -2,33 +2,30 @@
 services:
   api: &api
     image: jhumanj/opnform-api:latest
-    environment:
+    environment: &api-environment  # Add this anchor
       DB_HOST: db
       REDIS_HOST: redis
-
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
-      AWS_ENDPOINT: http://minio:9000
-      AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minio}
-      AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minio123}
       FILESYSTEM_DISK: local
-      AWS_REGION: eu-west-1
-      AWS_BUCKET: laravel-bucket
       LOCAL_FILESYSTEM_VISIBILITY: public
     env_file: 
     - ./api/.env
     volumes:
-      - ./api/storage:/usr/share/nginx/html/storage
+    - opnform_storage:/usr/share/nginx/html/storage:rw
 
   api-worker:
-    <<: *api
-    command: ./artisan queue:work
+    image: jhumanj/opnform-api:latest
+    command: php artisan queue:work
+    environment:
+      <<: *api-environment
+      IS_API_WORKER: "true"
     env_file: 
     - ./api/.env
     volumes:
-      - ./api/storage:/usr/share/nginx/html/storage
+    - opnform_storage:/usr/share/nginx/html/storage:rw
 
   ui:
     image: jhumanj/opnform-client:latest
@@ -56,3 +53,4 @@ services:
 
 volumes:
   postgres-data:
+  opnform_storage:

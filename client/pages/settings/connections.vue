@@ -44,9 +44,7 @@ useOpnSeoMeta({
 
 definePageMeta({
   middleware: "auth",
-  alias: [
-    '/settings/connections/callback/:service'
-  ]
+  alias: '/settings/connections/callback/:service'
 })
 
 const router = useRouter()

@@ -40,13 +40,11 @@ class ProfileController extends Controller
             'password.not_in' => "Please another password other than 'password'."
         ]);
 
-        ray('in', $request->password);
         $user = $request->user();
         $user->update([
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-        ray($user);
 
         Cache::forget('initial_user_setup_complete');
         Cache::forget('max_user_id');

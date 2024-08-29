@@ -2,50 +2,46 @@ FROM php:8.3-fpm
 
 # syntax=docker/dockerfile:1.3-labs
 
-RUN apt-get update && apt-get install -y libzip-dev libpng-dev postgresql-client libpq-dev && apt-get clean
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libpng-dev \
+    postgresql-client \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN docker-php-ext-install pdo pgsql pdo_pgsql gd bcmath zip && pecl install redis && docker-php-ext-enable redis
+RUN docker-php-ext-install pdo pgsql pdo_pgsql gd bcmath zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
 WORKDIR /usr/share/nginx/html/
-ADD api/composer.json api/composer.lock api/artisan ./
 
-# NOTE: The project would build more reliably if all php files were added before running
-# composer install.  This would though introduce a dependency which would cause every
-# dependency to be re-installed each time any php file is edited.  It may be necessary in
-# future to remove this 'optimisation' by moving the `RUN composer install` line after all
-# the following ADD commands.
+# Combine multiple ADD commands into one
+COPY api/composer.json api/composer.lock api/artisan ./
+COPY api/app ./app
+COPY api/bootstrap ./bootstrap
+COPY api/config ./config
+COPY api/database ./database
+COPY api/public ./public
+COPY api/routes ./routes
+COPY api/tests ./tests
+COPY api/resources ./resources
+COPY api/storage ./storage
 
-# Running artisan requires the full php app to be installed so we need to remove the
-# post-autoload command from the composer file if we want to run composer without
-# adding a dependency to all the php files.
-RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json
-ADD api/app/helpers.php app/helpers.php
-RUN composer install --ignore-platform-req=php
-
-ADD api/app ./app
-ADD api/bootstrap ./bootstrap
-ADD api/config ./config
-ADD api/database ./database
-ADD api/public public
-ADD api/routes routes
-ADD api/tests tests
-ADD api/resources resources
-ADD api/storage ./storage
-RUN chmod -R 775 storage && chown -R www-data:www-data storage
-
-# Manually run the command we deleted from composer.json earlier
-RUN php artisan package:discover --ansi
-
-COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
-
-RUN chmod a+x /usr/local/bin/*
-
-# Create necessary directories and set permissions
-RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
+RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json \
+    && composer install --ignore-platform-req=php --no-dev --optimize-autoloader \
+    && composer clear-cache \
+    && php artisan package:discover --ansi \
+    && chmod -R 775 storage \
+    && chown -R www-data:www-data storage \
+    && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
     && chown -R www-data:www-data storage \
     && chmod -R 775 storage
 
-ENTRYPOINT [ "/usr/local/bin/opnform-entrypoint" ]
-CMD php-fpm
+COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
+RUN chmod a+x /usr/local/bin/*
+
+ENTRYPOINT ["/usr/local/bin/opnform-entrypoint"]
+CMD ["php-fpm"]
