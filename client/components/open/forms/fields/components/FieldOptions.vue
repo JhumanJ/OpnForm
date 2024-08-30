@@ -295,6 +295,7 @@
         Advanced options for your select/multiselect fields.
       </p>
       <text-area-input
+        v-model="optionsText"
         :name="field.id + '_options_text'"
         class="mt-3"
         label="Set selection options"
@@ -657,6 +658,9 @@ export default {
     },
     mbLimit() {
       return  (this.form?.workspace && this.form?.workspace.max_file_size) ? this.form?.workspace?.max_file_size : 10
+    },
+    optionsText() {
+      return this.field[this.field.type].options.map(option => option.name).join('\n')
     },
     prefillSelectsOptions() {
       if (!['select', 'multi_select'].includes(this.field.type)) return {}
