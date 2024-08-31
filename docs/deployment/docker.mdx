@@ -1,0 +1,33 @@
+# Docker Installation
+
+OpnForm can be easily set up using Docker. We provide pre-built images on Docker Hub, which is the recommended method for most users.
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+
+## Quick Start
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
+
+2. Set up environment files:
+
+   ```bash
+   ./scripts/setup-env.sh --docker
+   ```
+
+3. Start the application:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Access OpnForm at http://localhost
+
+For more detailed instructions, including customization, upgrading, and building from source, please refer to our full Docker deployment guide.

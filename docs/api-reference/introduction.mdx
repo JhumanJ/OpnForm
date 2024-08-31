@@ -1,0 +1,37 @@
+---
+title: "Introduction"
+description: "API Documentation for OpnForm"
+---
+
+Welcome to the OpnForm API documentation. This guide provides information on how to interact with the OpnForm API to automate your workflows and integrate OpnForm with your applications.
+
+## Authentication
+
+To authenticate with the OpnForm API, you need an API key. Here's how to create and use an API key.
+
+### Creating an API Key
+
+<Frame>
+  <img
+    src="/api-reference/images/create-token.png"
+    alt="Creating an API Key in OpnForm"
+  />
+</Frame>
+
+1. Log in to your OpnForm account.
+2. Navigate to the Access Tokens page at https://opnform.com/settings/access-tokens.
+3. Click on the "Create new token" button.
+4. Give your token a name (e.g., "My API Integration").
+5. Click "Create" to generate your API key. 6. Copy the generated API key immediately, as it won't be displayed again for security reasons.
+
+### Using the API Key
+
+To use the API key, you need to include it in the header of every request you make to the API as a Bearer token. Here's how to do it:
+
+1. Take your API key that you generated earlier.
+2. Add it to the `Authorization` header of your HTTP request.
+3. Prefix the key with the word "Bearer" followed by a space.
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
