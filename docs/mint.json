@@ -17,6 +17,10 @@
   },
   "topbarLinks": [
     {
+      "name": "OpnForm",
+      "url": "https://opnform.com?utm_source=docs&utm_medium=topbar&utm_campaign=technical_docs"
+    },
+    {
       "name": "GitHub",
       "url": "https://github.com/JhumanJ/OpnForm"
     }
@@ -82,15 +86,6 @@
       ]
     },
     {
-      "group": "Troubleshooting",
-      "pages": [
-        "troubleshooting/common-issues",
-        "troubleshooting/docker-issues",
-        "troubleshooting/configuration-problems",
-        "troubleshooting/deployment-errors"
-      ]
-    },
-    {
       "group": "API Reference",
       "pages": [
         "api-reference/introduction"
@@ -109,7 +104,9 @@
     {
       "group": "Contributing",
       "pages": [
-        "contributing"
+        "contributing/getting-started",
+        "contributing/new-form-block",
+        "contributing/new-integration"
       ]
     }
   ],
