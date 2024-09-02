@@ -16,5 +16,6 @@ export default {
     feature_requests: "https://feedback.opnform.com/",
     changelog_url: "https://feedback.opnform.com/changelog",
     roadmap: "https://feedback.opnform.com/roadmap",
+    tech_docs: "https://docs.opnform.com",
   },
 }
