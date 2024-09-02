@@ -1,0 +1,200 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpnForm API",
+    "description": "API for interacting with OpnForm, primarily used for Zapier integration",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.opnform.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/external/zapier/validate": {
+      "get": {
+        "summary": "Validate API Key",
+        "description": "This endpoint is used by Zapier to test the validity of the API key.",
+        "responses": {
+          "200": {
+            "description": "API key is valid"
+          },
+          "401": {
+            "description": "Invalid API key"
+          }
+        }
+      }
+    },
+    "/external/zapier/forms": {
+      "get": {
+        "summary": "List Forms",
+        "description": "Retrieve a list of forms available in a specific workspace.",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "The ID of the workspace for which to list forms",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Form"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/external/zapier/webhook": {
+      "post": {
+        "summary": "New Submission Trigger",
+        "description": "This endpoint is used to set up a webhook for new form submissions.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hookUrl": {
+                    "type": "string",
+                    "description": "The URL provided by Zapier to send the submission data"
+                  },
+                  "form_id": {
+                    "type": "string",
+                    "description": "The ID of the form for which to trigger the webhook"
+                  }
+                },
+                "required": ["hookUrl", "form_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully set up"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unsubscribe Webhook",
+        "description": "This endpoint is used to unsubscribe from the webhook.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hookUrl": {
+                    "type": "string",
+                    "description": "The URL provided by Zapier to stop sending the submission data"
+                  },
+                  "form_id": {
+                    "type": "string",
+                    "description": "The ID of the form for which to unsubscribe the webhook"
+                  }
+                },
+                "required": ["hookUrl", "form_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully unsubscribed"
+          }
+        }
+      }
+    },
+    "/external/zapier/submissions/recent": {
+      "get": {
+        "summary": "Sample Submission Polling",
+        "description": "Retrieves the most recent submissions for a specified form.",
+        "parameters": [
+          {
+            "name": "form_id",
+            "in": "query",
+            "description": "The ID of the form to retrieve submissions for",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Submission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Form": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "submission_id": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

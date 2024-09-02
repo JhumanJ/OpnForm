@@ -1,0 +1,122 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "OpnForm Technical Docs",
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg"
+  },
+  "favicon": "/logo.svg",
+  "colors": {
+    "primary": "#3b82f6",
+    "light": "#60a5fa",
+    "dark": "#2563eb",
+    "anchors": {
+      "from": "#2563eb",
+      "to": "#60a5fa"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "OpnForm",
+      "url": "https://opnform.com?utm_source=docs&utm_medium=topbar&utm_campaign=technical_docs"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/JhumanJ/OpnForm"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://opnform.com"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "Contributing",
+      "url": "contributing"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Product Documentation",
+      "icon": "book-open-cover",
+      "url": "https://help.opnform.com"
+    },
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/YTSjU2a9TS"
+    },
+    {
+      "name": "Changelog",
+      "icon": "sparkles",
+      "url": "https://feedback.opnform.com/changelog"
+    },
+    {
+      "name": "Roadmap",
+      "icon": "road",
+      "url": "https://feedback.opnform.com/roadmap"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "introduction",
+        "tech-stack"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "pages": [
+        "deployment/docker",
+        "deployment/local-deployment",
+        "deployment/cloud-vs-self-hosting"
+      ]
+    },
+    {
+      "group": "Configuration",
+      "pages": [
+        "configuration/environment-variables",
+        "configuration/aws-s3",
+        "configuration/email-setup",
+        "configuration/custom-domain"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction"
+      ]
+    },
+    {
+      "group": "Zapier Endpoints",
+      "pages": [
+        "api-reference/endpoint/validate-api-key",
+        "api-reference/endpoint/list-forms",
+        "api-reference/endpoint/new-submission-trigger",
+        "api-reference/endpoint/unsubscribe-webhook",
+        "api-reference/endpoint/sample-submission-polling"
+      ]
+    },
+    {
+      "group": "Contributing",
+      "pages": [
+        "contributing/getting-started",
+        "contributing/new-form-block",
+        "contributing/new-integration"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/opnform",
+    "github": "https://github.com/JhumanJ/OpnForm"
+  },
+  "openapi": "/api-reference/openapi.json",
+  "feedback": {
+    "suggestEdit": true
+  }
+}
