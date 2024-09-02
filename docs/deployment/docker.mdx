@@ -1,0 +1,94 @@
+---
+title: "Docker"
+description: "OpnForm can be easily set up using Docker. We provide pre-built images on Docker Hub, which is the recommended method for most users."
+---
+
+import CloudVersion from "/snippets/cloud-version.mdx";
+
+<CloudVersion/>
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+
+## Quick Start
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
+
+2. Set up environment files:
+
+   ```bash
+   ./scripts/setup-env.sh --docker
+   ```
+
+3. (Optional) Customize the environment variables:
+   
+   You can modify two environment files to customize your OpnForm installation:
+   - The `.env` file in the `api` directory for backend configuration
+   - The `.env` file in the `client` directory for frontend configuration
+
+   For more information on available environment variables, please refer to our [Environment Variables](/configuration/environment-variables) page.
+
+4. Start the application:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Access OpnForm at http://localhost
+
+
+## Docker Images
+
+OpnForm provides pre-built Docker images for easy deployment. You can find our official Docker images on Docker Hub:
+
+- [OpnForm API Image](https://hub.docker.com/r/jhumanj/opnform-api)
+- [OpnForm Client Image](https://hub.docker.com/r/jhumanj/opnform-client)
+
+We recommend using these official images for your OpnForm deployment.
+
+
+## Building Your Own Docker Images
+
+If you prefer to build your own Docker images, you can do so using the provided Dockerfiles in the repository:
+
+1. Build the API image:
+   ```bash
+   docker build -t opnform-api:local -f docker/Dockerfile.api .
+   ```
+
+2. Build the UI image:
+   ```bash
+   docker build -t opnform-ui:local -f docker/Dockerfile.client .
+   ```
+
+### Overriding Docker Compose Configuration
+
+You can override the default Docker Compose configuration by creating a `docker-compose.override.yml` file. This allows you to customize various aspects of the deployment without modifying the main `docker-compose.yml` file.
+
+Example `docker-compose.override.yml`:
+
+```yaml
+services:
+  api:
+    image: opnform-api:local
+  ui:
+    image: opnform-ui:local
+  api-worker:
+    image: opnform-api:local
+```
+
+
+### Clearing all resources
+
+To completely remove all Docker containers, networks, and volumes created by docker-compose and also remove all images used by these services, you can use the following command:
+
+```
+docker-compose down -v --rmi all
+```

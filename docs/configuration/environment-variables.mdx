@@ -1,0 +1,64 @@
+---
+title: Environment Variables Configuration
+description: Detailed guide on configuring environment variables for OpnForm
+---
+
+OpnForm uses two `.env` files for configuration: one for the Laravel backend located in the `api` directory, and one for the Nuxt front-end located in the `client` directory.
+
+## Backend Environment Variables
+
+The following environment variables are used to [configure the Laravel](https://laravel.com/docs/11.x/configuration) application (OpnForm's API).
+
+### Dedicated guides
+There are dedicated configuration pages available for more detailed setup instructions on specific topics:
+- [File Storage (S3)](../configuration/aws-s3)
+- [Email Configuration (SMTP)](../configuration/email-setup)
+- [Custom Domain](../configuration/custom-domain)
+
+
+### Other Environment Variables
+
+### Configuration Environment Variables
+
+| Variable Name                | Description                                      |
+|------------------------------|--------------------------------------------------|
+| `JWT_TTL`                    | Time to live for JSON Web Tokens (JWT).          |
+| `JWT_SECRET`                 | Secret key used to sign JWTs.                    |
+| `H_CAPTCHA_SITE_KEY`         | Site key for hCaptcha integration.               |
+| `H_CAPTCHA_SECRET_KEY`       | Secret key for hCaptcha integration.             |
+| `OPEN_AI_API_KEY`            | API key for accessing OpenAI services.           |
+| `UNSPLASH_ACCESS_KEY`        | Access key for Unsplash API.                     |
+| `UNSPLASH_SECRET_KEY`        | Secret key for Unsplash API.                     |
+| `GOOGLE_CLIENT_ID`           | Client ID for Google OAuth.                      |
+| `GOOGLE_CLIENT_SECRET`       | Client secret for Google OAuth.                  |
+| `GOOGLE_REDIRECT_URL`        | Redirect URL for Google OAuth.                   |
+| `GOOGLE_AUTH_REDIRECT_URL`   | Authentication redirect URL for Google OAuth.    |
+| `GOOGLE_FONTS_API_KEY`       | API key for accessing Google Fonts.              |
+| `FRONT_URL`                  | Public facing URL of the front-end.              |
+| `FRONT_API_SECRET`           | Shared secret with the front-end.                |
+
+### User Options Environment Variables
+
+| Variable Name                | Description                                      |
+|------------------------------|--------------------------------------------------|
+| `ADMIN_EMAILS`               | Comma-separated list of admin email addresses.   |
+| `TEMPLATE_EDITOR_EMAILS`     | Comma-separated list of template editor emails.  |
+| `EXTRA_PRO_USERS_EMAILS`     | Comma-separated list of extra pro user emails.   |
+| `MODERATOR_EMAILS`           | Comma-separated list of moderator email addresses. |
+
+
+## Front-end Environment Variables
+
+### Front-end Environment Variables
+
+| Variable Name                | Description                                      |
+|------------------------------|--------------------------------------------------|
+| `NUXT_PUBLIC_APP_URL`        | Public facing URL of the Nuxt application.       |
+| `NUXT_PUBLIC_API_BASE`       | Base URL for the Laravel API.                    |
+| `NUXT_PUBLIC_H_CAPTCHA_SITE_KEY` | Site key for hCaptcha integration on the front-end. |
+| `NUXT_API_SECRET`            | Shared secret key between Nuxt and Laravel backend. |
+
+
+import CloudVersion from "/snippets/cloud-version.mdx";
+
+<CloudVersion/>

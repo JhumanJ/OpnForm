@@ -1,0 +1,30 @@
+---
+title: AWS S3 Configuration
+description: OpnForm & File uploads
+---
+
+OpnForm uses [Laravel's filesystem](https://laravel.com/docs/master/filesystem), which provides a powerful abstraction layer for various file storage systems. While AWS S3 is a popular choice, OpnForm supports both local storage and S3-compatible services.
+
+1. Create an S3 bucket in your AWS account (or use an equivalent service).
+
+2. Create an IAM user with access to this bucket. Ensure the user has the necessary permissions to read from and write to the bucket.
+
+3. Configure CORS for the S3 bucket permissions,  by adding the following under "Cross-origin resource sharing (CORS)":
+    ```json
+    [
+        {
+            "AllowedHeaders": ["*"],
+            "AllowedMethods": ["PUT", "POST", "GET", "DELETE"],
+            "AllowedOrigins": ["*"],
+            "ExposeHeaders": []
+        }
+    ]
+    ```
+
+4. Set the following environment variables in your OpnForm installation (`api/.env`):
+   - `AWS_ACCESS_KEY_ID`: Your IAM user's access key ID
+   - `AWS_SECRET_ACCESS_KEY`: Your IAM user's secret access key
+   - `AWS_DEFAULT_REGION`: The AWS region where your S3 bucket is located
+   - `AWS_BUCKET`: The name of your S3 bucket
+
+These settings will enable OpnForm to use your S3 bucket for file storage.

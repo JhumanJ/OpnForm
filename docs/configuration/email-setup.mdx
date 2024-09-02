@@ -1,0 +1,33 @@
+---
+title: Email Setup
+description: OpnForm & Emails
+---
+
+This page explains how to configure email notifications in OpnForm.
+
+By default, with a new Docker deployment, the email driver used is `log`, which simply logs the emails instead of sending them. To enable actual email sending, you need to set up a proper email configuration.
+
+OpnForm uses Laravel's mail system. For more detailed information, you can refer to the [Laravel Mail documentation](https://laravel.com/docs/master/mail).
+
+## Supported Mail Drivers
+
+Laravel supports various mail drivers, including SMTP, Mailgun, Postmark, Amazon SES, and more. In this guide, we'll focus on setting up SMTP, which is widely used.
+
+## Configuring SMTP Settings
+
+To configure SMTP, you need to set the following environment variables in your `.env` file:
+
+| Variable | Description |
+|----------|-------------|
+| `MAIL_MAILER` | Set this to `smtp` to use the SMTP driver. |
+| `MAIL_HOST` | The address of your SMTP server. |
+| `MAIL_PORT` | The port used by your SMTP server (common ports are 25, 465, and 587). |
+| `MAIL_USERNAME` | The username for your SMTP account. |
+| `MAIL_PASSWORD` | The password for your SMTP account. |
+| `MAIL_ENCRYPTION` | The encryption method used by your SMTP server (typically `tls` or `ssl`). |
+| `MAIL_FROM_ADDRESS` | The email address that emails should be sent from. |
+| `MAIL_FROM_NAME` | The name that should appear as the sender of the emails. |
+
+import CloudVersion from "/snippets/cloud-version.mdx";
+
+<CloudVersion/>
