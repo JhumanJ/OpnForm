@@ -20,16 +20,22 @@
 <a href="https://console.algora.io/org/OpnForm/bounties?status=completed"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2FOpnForm%2Fbounties%3Fstatus%3Dcompleted" alt="Rewarded Bounties"></a>
 </p>
 
-OpnForm is an open-source form builder, providing an alternative to products like Typeform, JotForm, and Tally.
+OpnForm is an open-source form builder.
+
+## Get Started
+
+The easiest way to get started with OpnForm is to sign up for our [managed service in the Cloud](https://opnform.com/). You get support, backups, upgrades, and more. Your data is safe and secure, and you don't need to worry about maintenance or infrastructure. Check out our quick overview of [cloud vs self-hosting](https://docs.opnform.com/deployment/cloud-vs-self-hosting).
 
 ## Key Features
 
--   No-code form builder with unlimited fields & submissions
--   Various input types (Text, Date, URL, File uploads, etc.)
--   Embeddable forms
--   Email notifications
--   Integrations (Slack, Webhooks)
--   Form logic and customization options
+-   🚀 No-code builder with unlimited forms & submissions
+-   📝 Various input types: Text, Date, URL, File uploads & much more
+-   🌐 Embed anywhere
+-   📧 Email notifications
+-   💬 Integrations (Slack, Webhooks, Discord)
+-   🧠 Form logic & customization
+-   🛡️ Captcha protection
+-   📊 Form analytics
 
 For a complete list of features and detailed documentation, visit our [Technical Documentation](https://docs.opnform.com).
 
@@ -37,11 +43,14 @@ For a complete list of features and detailed documentation, visit our [Technical
 
 The easiest way to get started with OpnForm is through our [official managed service in the Cloud](https://opnform.com/).
 
-For self-hosted installations, please refer to our [Deployment Guides](https://docs.opnform.com/deployment).
+For self-hosted installations, please refer to our [Deployment Guides](https://docs.opnform.com/deployment). For detailed instructions on setting up a local environment, check out our [Local Deployment Documentation](https://docs.opnform.com/deployment/local-deployment).
 
-## Contributing
+## Support & Community
 
-We welcome contributions to OpnForm! Please check our [Contributing Guide](https://docs.opnform.com/contributing/getting-started) for more information.
+If you need help or have questions, please join our [Discord community](https://discord.gg/YTSjU2a9TS). For more information and assistance, check out the following resources:
+
+-   [Product Helpdesk](https://help.opnform.com)
+-   [Technical Documentation](https://docs.opnform.com)
 
 ## License
 
