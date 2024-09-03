@@ -18,7 +18,7 @@
       >
         <thead class="">
           <tr>
-            <th />
+            <th colspan="2"/>
             <td
               v-for="column in columns"
               :key="column"
@@ -37,8 +37,8 @@
             :key="rowIndex"
             class="border-t border-gray-300"
           >
-            <td>
-              <div class="w-full flex-grow p-2 text-sm truncate">
+            <td colspan="2">
+              <div class="w-full flex-grow p-2 text-sm">
                 {{ row }}
               </div>
             </td>
@@ -103,7 +103,7 @@ export default {
     }
   },
   computed: {},
-  beforeMount() {
+  mounted() {
     if (!this.compVal || typeof this.compVal !== 'object') {
       this.compVal = {}
     }
