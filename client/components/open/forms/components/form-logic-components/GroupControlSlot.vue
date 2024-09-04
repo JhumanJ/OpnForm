@@ -48,6 +48,8 @@ export default {
         this.groupCtrl.addRule(this.selectedRule)
         this.$refs.ruleSelect.content = null
         this.selectedRule = null
+      } else {
+        useAlert().error('Please select a field to add condition on.')
       }
     },
   },
