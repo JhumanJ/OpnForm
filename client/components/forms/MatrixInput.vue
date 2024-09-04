@@ -4,7 +4,7 @@
       <slot name="label" />
     </template>
     <div
-      class="border border-gray-300"
+      class="border border-gray-300 overflow-x-auto"
       :class="[
         theme.default.borderRadius,
         {
@@ -13,18 +13,16 @@
         },
       ]"
     >
-      <table 
-        class="w-full table-fixed overflow-hidden" 
-      >
+      <table class="w-full table-auto">
         <thead class="">
           <tr>
-            <th colspan="2"/>
+            <th class="text-left p-2 w-auto max-w-xs" />
             <td
               v-for="column in columns"
               :key="column"
-              class="border-l border-gray-300"
+              class="border-l border-gray-300 max-w-24 overflow-hidden"
             >
-              <div class="p-2 w-full flex items-center justify-center capitalize text-sm truncate">
+              <div class="p-2 w-full flex items-center justify-center text-sm">
                 {{ column }}
               </div>
             </td>
@@ -37,8 +35,8 @@
             :key="rowIndex"
             class="border-t border-gray-300"
           >
-            <td colspan="2">
-              <div class="w-full flex-grow p-2 text-sm">
+            <td class="text-left w-auto max-w-24 overflow-hidden">
+              <div class="w-full p-2 text-sm">
                 {{ row }}
               </div>
             </td>
