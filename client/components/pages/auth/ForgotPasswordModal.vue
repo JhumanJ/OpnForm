@@ -150,8 +150,15 @@ export default {
   }),
   methods: {
     async send() {
-      await this.form.post("/password/email")
-      this.isMailSent = true
+      await this.form.post("/password/email").then(() => {
+        this.isMailSent = true
+      }).catch(error => {
+        if(error?.data?.email){
+          useAlert().error(error.data?.email)
+          this.isMailSent = false
+        }
+      }
+      )
     },
     close() {
       this.$emit("close")
