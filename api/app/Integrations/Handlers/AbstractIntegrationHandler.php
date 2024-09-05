@@ -17,6 +17,7 @@ abstract class AbstractIntegrationHandler
     protected $form = null;
     protected $submissionData = null;
     protected $integrationData = null;
+    protected $mailer = null;
 
     public function __construct(
         protected FormSubmitted $event,
@@ -26,6 +27,25 @@ abstract class AbstractIntegrationHandler
         $this->form = $event->form;
         $this->submissionData = $event->data;
         $this->integrationData = $formIntegration->data;
+        $this->mailer = config('mail.default');
+        $this->setWorkspaceSMTPSettings();
+    }
+
+    protected function setWorkspaceSMTPSettings()
+    {
+        $workspace = $this->form->workspace;
+        $emailSettings = $workspace->settings['email_settings'] ?? [];
+        if (!$workspace->is_pro || !$emailSettings) {
+            return;
+        }
+
+        config([
+            'mail.mailers.custom_smtp.host' => $emailSettings['host'],
+            'mail.mailers.custom_smtp.port' => $emailSettings['port'],
+            'mail.mailers.custom_smtp.username' => $emailSettings['username'],
+            'mail.mailers.custom_smtp.password' => $emailSettings['password']
+        ]);
+        $this->mailer = 'custom_smtp';
     }
 
     protected function getProviderName(): string

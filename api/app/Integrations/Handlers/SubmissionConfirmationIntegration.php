@@ -54,8 +54,9 @@ class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
             'recipient' => $email,
             'form_id' => $this->form->id,
             'form_slug' => $this->form->slug,
+            'mailer' => $this->mailer
         ]);
-        Mail::to($email)->send(new SubmissionConfirmationMail($this->event, $this->integrationData));
+        Mail::mailer($this->mailer)->to($email)->send(new SubmissionConfirmationMail($this->event, $this->integrationData));
     }
 
     private function getRespondentEmail()

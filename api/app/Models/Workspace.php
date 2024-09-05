@@ -25,6 +25,7 @@ class Workspace extends Model implements CachableAttributes
         'icon',
         'user_id',
         'custom_domain',
+        'settings'
     ];
 
     protected $appends = [
@@ -33,10 +34,11 @@ class Workspace extends Model implements CachableAttributes
         'is_enterprise',
     ];
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'custom_domains' => 'array',
+            'settings' => 'array'
         ];
     }
 
@@ -194,12 +196,11 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()
     {
         return $this->hasMany(Form::class);
     }
-
 }

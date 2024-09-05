@@ -36,10 +36,11 @@ class EmailIntegration extends AbstractIntegrationHandler
             'recipients' => $subscribers->toArray(),
             'form_id' => $this->form->id,
             'form_slug' => $this->form->slug,
+            'mailer' => $this->mailer
         ]);
         $subscribers->each(function ($subscriber) {
             Notification::route('mail', $subscriber)->notify(
-                new FormSubmissionNotification($this->event, $this->integrationData)
+                new FormSubmissionNotification($this->event, $this->integrationData, $this->mailer)
             );
         });
     }

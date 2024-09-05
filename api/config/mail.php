@@ -45,6 +45,15 @@ return [
             'auth_mode' => null,
         ],
 
+        'custom_smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.mailgun.org',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'your-username',
+            'password' => 'your-password',
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],

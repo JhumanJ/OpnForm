@@ -15,15 +15,17 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public FormSubmitted $event;
+    private $mailer;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(FormSubmitted $event, private $integrationData)
+    public function __construct(FormSubmitted $event, private $integrationData, $mailer)
     {
         $this->event = $event;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -51,7 +53,7 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
             ->outputStringsOnly()
             ->useSignedUrlForFiles();
 
-        return (new MailMessage())
+        $mail = (new MailMessage())
             ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
             ->from($this->getFromEmail(), config('app.name'))
             ->subject('New form submission for "' . $this->event->form->title . '"')
@@ -59,6 +61,12 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
                 'fields' => $formatter->getFieldsWithValue(),
                 'form' => $this->event->form,
             ]);
+
+        if ($this->mailer) {
+            $mail->mailer($this->mailer);
+        }
+
+        return $mail;
     }
 
     private function getFromEmail()
