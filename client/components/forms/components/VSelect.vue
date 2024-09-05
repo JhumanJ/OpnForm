@@ -10,7 +10,7 @@
       :class="[
         theme.SelectInput.input,
         theme.SelectInput.borderRadius,
-        { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed !bg-gray-200': disabled },
+        { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled },
         inputClass
       ]"
     >
