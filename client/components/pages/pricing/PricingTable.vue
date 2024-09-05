@@ -212,7 +212,8 @@ export default {
       "Larger file uploads (50mb)",
       "Remove OpnForm branding",
       "Priority support",
-      "Form Analytics"
+      "Form Analytics",
+      "Custom sender email (SMTP)"
     ],
   }),
 
