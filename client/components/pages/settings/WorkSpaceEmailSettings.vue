@@ -88,6 +88,17 @@
       >
         Update
       </UButton>
+      <UButton
+        class="mt-3 ml-2"
+        color="white"
+        size="sm"
+        :loading="emailSettingsLoading"
+        :disabled="!workspace.is_pro"
+        icon="i-heroicons-x-mark"
+        @click="clearEmailSettings"
+      >
+        Clear
+      </UButton>
     </modal>
   </div>
 </template>
@@ -118,6 +129,11 @@ watch(
     initEmailSettings()
   },
 )
+
+const clearEmailSettings = () => {
+  emailSettingsForm.reset()
+  saveChanges()
+}
 
 const saveChanges = () => {
   if (emailSettingsLoading.value) return

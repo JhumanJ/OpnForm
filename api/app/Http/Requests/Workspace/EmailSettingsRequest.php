@@ -22,11 +22,44 @@ class EmailSettingsRequest extends FormRequest
      */
     public function rules()
     {
+        $allFieldsPresent = $this->filled(['host', 'port', 'username', 'password']);
+
         return [
-            'host' => 'required|string',
-            'port' => 'required|integer',
-            'username' => 'required|string',
-            'password' => 'required|string'
+            'host' => [
+                $allFieldsPresent ? 'required' : 'nullable',
+                'required_with:port,username,password',
+                'string',
+            ],
+            'port' => [
+                $allFieldsPresent ? 'required' : 'nullable',
+                'required_with:host,username,password',
+                'integer',
+            ],
+            'username' => [
+                $allFieldsPresent ? 'required' : 'nullable',
+                'required_with:host,port,password',
+                'string',
+            ],
+            'password' => [
+                $allFieldsPresent ? 'required' : 'nullable',
+                'required_with:host,port,username',
+                'string',
+            ],
+        ];
+    }
+
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'host.required_with' => 'The host field is required.',
+            'port.required_with' => 'The port field is required.',
+            'username.required_with' => 'The username field is required.',
+            'password.required_with' => 'The password field is required.',
         ];
     }
 }

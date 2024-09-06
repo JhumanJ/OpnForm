@@ -35,7 +35,7 @@ abstract class AbstractIntegrationHandler
     {
         $workspace = $this->form->workspace;
         $emailSettings = $workspace->settings['email_settings'] ?? [];
-        if (!$workspace->is_pro || !$emailSettings) {
+        if (!$workspace->is_pro || !$emailSettings || empty($emailSettings['host']) || empty($emailSettings['port']) || empty($emailSettings['username']) || empty($emailSettings['password'])) {
             return;
         }
 
