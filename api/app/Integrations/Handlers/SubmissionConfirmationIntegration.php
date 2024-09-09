@@ -10,7 +10,7 @@ use Stevebauman\Purify\Facades\Purify;
 /**
  * Sends a confirmation to form respondant that form was submitted
  */
-class SubmissionConfirmationIntegration extends AbstractIntegrationHandler
+class SubmissionConfirmationIntegration extends AbstractEmailIntegrationHandler
 {
     public const RISKY_USERS_LIMIT = 120;
 

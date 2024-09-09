@@ -45,13 +45,15 @@ return [
             'auth_mode' => null,
         ],
 
+        // Use the custom_smtp mailer for the user's own SMTP server.
+        // This configuration will be set dynamically by the AbstractEmailIntegrationHandler class.
         'custom_smtp' => [
             'transport' => 'smtp',
-            'host' => 'smtp.mailgun.org',
+            'host' => null,
             'port' => 587,
             'encryption' => 'tls',
-            'username' => 'your-username',
-            'password' => 'your-password',
+            'username' => null,
+            'password' => null,
         ],
 
         'ses' => [

@@ -27,7 +27,7 @@ class WorkspaceController extends Controller
     {
         if (!$request->workspace->is_pro) {
             return $this->error([
-                'message' => 'You need Pro plan for use this feature.',
+                'message' => 'A Pro plan is required to use this feature.',
             ], 403);
         }
 
@@ -41,14 +41,11 @@ class WorkspaceController extends Controller
     {
         if (!$request->workspace->is_pro) {
             return $this->error([
-                'message' => 'You need Pro plan for use this feature.',
+                'message' => 'A Pro plan is required to use this feature.',
             ], 403);
         }
 
-        $settings = $request->workspace->settings;
-        $settings['email_settings'] = $request->all();
-        $request->workspace->settings = $settings;
-        $request->workspace->save();
+        $request->workspace->update(['settings' => array_merge($request->workspace->settings, ['email_settings' => $request->validated()])]);
 
         return new WorkspaceResource($request->workspace);
     }
