@@ -33,9 +33,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Form $form, public array $submissionData)
-    {
-    }
+    public function __construct(public Form $form, public array $submissionData, public ?int $completionTime = null) {}
 
     /**
      * Execute the job.
@@ -70,11 +68,13 @@ class StoreFormSubmissionJob implements ShouldQueue
         // Create or update record
         if ($previousSubmission = $this->submissionToUpdate()) {
             $previousSubmission->data = $formData;
+            $previousSubmission->completion_time = $this->completionTime;
             $previousSubmission->save();
             $this->submissionId = $previousSubmission->id;
         } else {
             $response = $this->form->submissions()->create([
                 'data' => $formData,
+                'completion_time' => $this->completionTime,
             ]);
             $this->submissionId = $response->id;
         }

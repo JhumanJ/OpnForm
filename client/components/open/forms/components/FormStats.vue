@@ -1,45 +1,60 @@
 <template>
-  <div
-    class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
-  >
-    <div
-      v-if="!form.is_pro"
-      class="relative"
-    >
-      <div class="absolute inset-0 z-10">
-        <div class="p-5 max-w-md mx-auto mt-5">
-          <p class="text-center">
-            You need a <pro-tag
-              upgrade-modal-title="Upgrade today to access form analytics"
-              class="mx-1"
-            /> subscription to access your form
-            analytics.
-          </p>
-          <p class="mt-5 text-center">
-            <v-button
-              class="w-full"
-              @click.prevent="subscriptionModalStore.openModal()"
-            >
-              Subscribe
-            </v-button>
-          </p>
-        </div>
-      </div>
-      <img
-        src="/img/pages/forms/blurred_graph.png"
-        alt="Sample Graph"
-        class="mx-auto filter blur-md z-0"
-      >
+  <div>
+    <div class="flex flex-wrap items-end mt-5">
+      <h3 class="flex-grow font-semibold text-xl mb-3">
+        Form Analytics
+      </h3>
+      <DateInput
+        :form="filterForm"
+        name="filter_date"
+        class="flex-1 !mb-0"
+        :date-range="true"
+        :disable-future-dates="true"
+        :disabled="!form.is_pro"
+      />
     </div>
-    <Loader
-      v-else-if="isLoading"
-      class="h-6 w-6 text-nt-blue mx-auto"
-    />
-    <LineChart
-      v-else
-      :options="chartOptions"
-      :data="chartData"
-    />
+    <div
+      class="border border-gray-400 rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+    >
+      <div
+        v-if="!form.is_pro"
+        class="relative"
+      >
+        <div class="absolute inset-0 z-10">
+          <div class="p-5 max-w-md mx-auto mt-5">
+            <p class="text-center">
+              You need a <pro-tag
+                upgrade-modal-title="Upgrade today to access form analytics"
+                class="mx-1"
+              /> subscription to access your form
+              analytics.
+            </p>
+            <p class="mt-5 text-center">
+              <v-button
+                class="w-full"
+                @click.prevent="subscriptionModalStore.openModal()"
+              >
+                Subscribe
+              </v-button>
+            </p>
+          </div>
+        </div>
+        <img
+          src="/img/pages/forms/blurred_graph.png"
+          alt="Sample Graph"
+          class="mx-auto filter blur-md z-0"
+        >
+      </div>
+      <Loader
+        v-else-if="isLoading"
+        class="h-6 w-6 text-nt-blue mx-auto"
+      />
+      <LineChart
+        v-else
+        :options="chartOptions"
+        :data="chartData"
+      />
+    </div>
   </div>
 </template>
 
@@ -55,7 +70,6 @@ import {
   CategoryScale,
   PointElement,
 } from "chart.js"
-import ProTag from "~/components/global/ProTag.vue"
 
 ChartJS.register(
   Title,
@@ -69,10 +83,7 @@ ChartJS.register(
 
 export default {
   name: "FormStats",
-  components: {
-    ProTag,
-    LineChart,
-  },
+  components: { LineChart },
   props: {
     form: {
       type: Object,
@@ -81,8 +92,12 @@ export default {
   },
   setup() {
     const subscriptionModalStore = useSubscriptionModalStore()
+    const filterForm = useForm({
+      filter_date: null,
+    })
     return {
-      subscriptionModalStore
+      subscriptionModalStore,
+      filterForm
     }
   },
   data() {
@@ -119,8 +134,23 @@ export default {
       },
     }
   },
+  watch: {
+    filterForm: {
+      deep: true,
+      handler(newVal) {
+        if(newVal.filter_date && Array.isArray(newVal.filter_date) && newVal.filter_date[0] && newVal.filter_date[1]) {
+          this.getChartData()
+        }
+      }
+    }
+  },
   mounted() {
-    this.getChartData()
+    if (this.form.is_pro) {
+      const toDate = new Date()
+      const fromDate = new Date(toDate)
+      fromDate.setDate(toDate.getDate() - 29)
+      this.filterForm.filter_date = [fromDate.toISOString().split('T')[0], toDate.toISOString().split('T')[0]]
+    }
   },
   methods: {
     getChartData() {
@@ -131,6 +161,12 @@ export default {
           this.form.workspace_id +
           "/form-stats/" +
           this.form.id,
+        {
+          params: {
+            date_from: this.filterForm.filter_date[0] ? this.filterForm.filter_date[0].split('T')[0] : null,
+            date_to: this.filterForm.filter_date[1] ? this.filterForm.filter_date[1].split('T')[0] : null,
+          }
+        }
       ).then((statsData) => {
         if (statsData && statsData.views !== undefined) {
           this.chartData.labels = Object.keys(statsData.views)
@@ -138,6 +174,9 @@ export default {
           this.chartData.datasets[1].data = statsData.submissions
           this.isLoading = false
         }
+      }).catch((error) => {
+        this.isLoading = false
+        useAlert().error(error.data.message)
       })
     },
   },

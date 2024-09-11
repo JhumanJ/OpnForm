@@ -77,7 +77,7 @@ class PublicFormController extends Controller
 
         $internal_url = Storage::temporaryUrl($path, now()->addMinutes(5));
 
-        foreach(config('filesystems.disks.s3.temporary_url_rewrites') as $from => $to) {
+        foreach (config('filesystems.disks.s3.temporary_url_rewrites') as $from => $to) {
             $internal_url = str_replace($from, $to, $internal_url);
         }
 
@@ -89,12 +89,16 @@ class PublicFormController extends Controller
         $form = $request->form;
         $submissionId = false;
 
+        $submissionData = $request->validated();
+        $completionTime = $request->get('completion_time') ?? null;
+        unset($submissionData['completion_time']); // Remove completion_time from the main data array
+
         if ($form->editable_submissions) {
-            $job = new StoreFormSubmissionJob($form, $request->validated());
+            $job = new StoreFormSubmissionJob($form, $submissionData, $completionTime);
             $job->handle();
             $submissionId = Hashids::encode($job->getSubmissionId());
         } else {
-            StoreFormSubmissionJob::dispatch($form, $request->validated());
+            StoreFormSubmissionJob::dispatch($form, $submissionData, $completionTime);
         }
 
         return $this->success(array_merge([
