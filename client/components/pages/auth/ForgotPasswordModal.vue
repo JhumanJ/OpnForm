@@ -15,7 +15,7 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect
-            class="text-blue-50"
+            class="text-primary-50"
             width="56"
             height="56"
             rx="28"
@@ -39,7 +39,7 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect
-            class="text-blue-50"
+            class="text-primary-50"
             width="56"
             height="56"
             rx="28"

@@ -22,7 +22,7 @@
                 <nuxt-link
                   :to="{ name: tab.route }"
                   class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                  active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
+                  active-class="text-primary-600 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-500 border-primary-600 dark:border-primary-500"
                 >
                   {{ tab.name }}
                 </nuxt-link>

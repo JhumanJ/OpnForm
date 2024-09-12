@@ -9,11 +9,11 @@
       <a
         v-if="backButton"
         href="#"
-        class="ml-2 flex text-blue font-semibold text-sm"
+        class="ml-2 flex text-primary font-semibold text-sm"
         @click.prevent="goBack"
       >
         <svg
-          class="w-3 h-3 text-blue mt-1 mr-1"
+          class="w-3 h-3 text-primary mt-1 mr-1"
           viewBox="0 0 6 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@
       <div
         class="relative w-full bg-white shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5"
       >
-        <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
+        <div class="border-b bg-primary-50 p-5 text-nt-primary-dark md:hidden">
           Please create this form on a device with a larger screen. That will
           allow you to preview your form changes.
         </div>

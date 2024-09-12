@@ -15,7 +15,7 @@
     />
     <v-button
       class="ml-1 mt-1"
-      color="blue"
+      color="primary"
       size="small"
       :disabled="selectedRule === '' ? true : null"
       @click="addRule"
@@ -24,7 +24,7 @@
     </v-button>
     <v-button
       class="ml-1 mt-1"
-      color="outline-blue"
+      color="outline-primary"
       size="small"
       @click="groupCtrl.newGroup"
     >

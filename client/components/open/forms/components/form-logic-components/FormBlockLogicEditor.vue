@@ -17,7 +17,7 @@
           size="small"
           @click="showCopyFormModal = true"
         >
-          <Icon name="lucide:copy" class="w-4 h-4 text-blue-600 inline mr-1 -mt-1" />
+          <Icon name="lucide:copy" class="w-4 h-4 text-primary-600 inline mr-1 -mt-1" />
           Copy from
         </v-button>
       </div>
@@ -84,7 +84,7 @@
         />
         <div class="flex justify-between mb-6">
           <v-button
-            color="blue"
+            color="primary"
             shade="light"
             @click="copyLogic"
           >

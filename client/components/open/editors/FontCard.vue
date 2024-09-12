@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col p-3 rounded-md shadow border-gray-200 border-[0.5px] justify-between w-full cursor-pointer hover:ring ring-blue-300 relative"
+    class="flex flex-col p-3 rounded-md shadow border-gray-200 border-[0.5px] justify-between w-full cursor-pointer hover:ring ring-primary-300 relative"
     :class="{'ring': isSelected }"
     @click="$emit('select-font')"
   >
@@ -36,7 +36,7 @@
     <Icon
       v-if="isSelected"
       name="heroicons:check-circle-16-solid"
-      class="w-5 h-5 text-nt-blue absolute bottom-4 right-4"
+      class="w-5 h-5 text-nt-primary absolute bottom-4 right-4"
     />
   </div>
 </template>

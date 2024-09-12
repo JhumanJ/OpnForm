@@ -53,9 +53,9 @@
               :class="[
                 'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
                 {
-                  'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':
+                  'bg-primary-50 text-primary-600 ring-primary-500/10 dark:bg-primary-400':
                     selectedTags.has(tag),
-                  'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-500/10 hover:dark:bg-blue-400':
+                  'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-700 hover:bg-primary-50 hover:text-primary-600 hover:ring-primary-500/10 hover:dark:bg-primary-400':
                     !selectedTags.has(tag),
                 },
               ]"
@@ -219,7 +219,7 @@
             v-if="formsLoading"
             class="text-center"
           >
-            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-nt-primary mx-auto" />
           </div>
         </div>
       </div>

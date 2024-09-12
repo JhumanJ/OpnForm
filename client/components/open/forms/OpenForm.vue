@@ -1,7 +1,7 @@
 <template>
   <div v-if="isAutoSubmit">
     <p class="text-center p-4">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-primary mx-auto" />
     </p>
   </div>
   <form
@@ -48,7 +48,7 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
+          :class="{'rounded-md bg-primary-50':draggingNewBlock}"
           ghost-class="ghost-item"
           :animation="200"
           :disabled="!adminPreview"
@@ -528,6 +528,6 @@ export default {
 
 <style lang='scss' scoped>
 .ghost-item {
-  @apply bg-blue-100 dark:bg-blue-900 rounded-md;
+  @apply bg-primary-100 dark:bg-primary-900 rounded-md;
 }
 </style>

@@ -24,42 +24,42 @@
           <a
             :href="opnformConfig.links.feature_requests"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             Feature Requests
           </a>
           <a
             :href="opnformConfig.links.roadmap"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             Roadmap
           </a>
           <a
             :href="opnformConfig.links.discord"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             Discord
           </a>
           <a
             :href="opnformConfig.links.tech_docs"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             Technical Docs
           </a>
           <template v-if="!useFeatureFlag('self_hosted')">
             <router-link
               :to="{ name: 'privacy-policy' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
             >
               Privacy Policy
             </router-link>
 
             <router-link
               :to="{ name: 'terms-conditions' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
             >
               Terms & Conditions
             </router-link>

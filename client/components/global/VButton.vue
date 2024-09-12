@@ -73,7 +73,7 @@ export default {
   props: {
     color: {
       type: String,
-      default: "blue",
+      default: "primary",
     },
 
     size: {
@@ -122,21 +122,21 @@ export default {
         focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
     },
     colorShades() {
-      if (this.color === "blue") {
+      if (this.color === "primary") {
         return {
-          main: "bg-blue-600",
-          hover: "hover:bg-blue-700",
-          ring: "focus:ring-blue-500",
-          "ring-offset": "focus:ring-offset-blue-200",
+          main: "bg-primary-600",
+          hover: "hover:bg-primary-700",
+          ring: "focus:ring-primary-500",
+          "ring-offset": "focus:ring-offset-primary-200",
           text: "text-white",
         }
-      } else if (this.color === "outline-blue") {
+      } else if (this.color === "outline-primary") {
         return {
-          main: "bg-transparent border border-blue-600",
-          hover: "hover:bg-blue-600",
-          ring: "focus:ring-blue-500",
-          "ring-offset": "focus:ring-offset-blue-200",
-          text: "text-blue-600 hover:text-white",
+          main: "bg-transparent border border-primary-600",
+          hover: "hover:bg-primary-600",
+          ring: "focus:ring-primary-500",
+          "ring-offset": "focus:ring-offset-primary-200",
+          text: "text-primary-600 hover:text-white",
         }
       } else if (this.color === "outline-gray") {
         return {

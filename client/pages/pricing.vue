@@ -24,7 +24,7 @@
       <template #pricing-table="{isYearly}">
         <div class="flex gap-x-2 items-center">
           <Icon
-            class="inline w-5 h-5 text-blue-500"
+            class="inline w-5 h-5 text-primary-500"
             name="heroicons:user-plus-16-solid"
           />
           <p>
@@ -40,7 +40,7 @@
           <h2
             class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl lg:leading-tight"
           >
-            <span class="text-blue-600">99%</span> of features are available to
+            <span class="text-primary-600">99%</span> of features are available to
             all users for free and without limits.
           </h2>
         </div>
@@ -51,7 +51,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +73,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +123,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +145,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +167,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +189,7 @@
           <div class="flex flex-col items-center gap-3 md:flex-row">
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -213,7 +213,7 @@
           >
             <svg
               aria-hidden="true"
-              class="w-6 h-6 shrink-0 stroke-blue-600"
+              class="w-6 h-6 shrink-0 stroke-primary-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -386,7 +386,7 @@
             Didn't find the answer?
             <a
               href="#"
-              class="font-semibold text-blue-600 hover:underline"
+              class="font-semibold text-primary-600 hover:underline"
               @click.prevent="contactUs"
             >Contact us</a>
           </p>

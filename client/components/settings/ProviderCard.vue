@@ -4,7 +4,7 @@
   >
     <div class="flex-grow flex items-center">
       <div
-        class="mr-4 text-blue-500"
+        class="mr-4 text-primary-500"
       >
         <Icon
           :name="service?.icon"

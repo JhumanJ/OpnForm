@@ -57,7 +57,7 @@
           </NuxtLink>
           <div
             v-else
-            class="text-sm font-semibold sm:w-full w-36 text-blue-500 truncate"
+            class="text-sm font-semibold sm:w-full w-36 text-primary-500 truncate"
           >
             {{ item.label }}
           </div>

@@ -9,7 +9,7 @@
       <div
         class="mr-4"
         :class="{
-          'text-blue-500': integration.status === 'active',
+          'text-primary-500': integration.status === 'active',
           'text-gray-400': integration.status !== 'active',
         }"
       >

@@ -7,7 +7,7 @@
       @click="openAddFieldSidebar"
     >
       <svg
-        class="w-4 h-4 text-nt-blue inline mr-1 -mt-1"
+        class="w-4 h-4 text-nt-primary inline mr-1 -mt-1"
         viewBox="0 0 14 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +39,7 @@
             'bg-white dark:bg-notion-dark-light':
               !element.hidden && !element.type === 'nf-page-break',
             'border-b': index !== form.properties.length - 1,
-            'bg-blue-50 dark:bg-blue-900':
+            'bg-primary-50 dark:bg-primary-900':
               element && element.type === 'nf-page-break',
           }"
         >
@@ -113,9 +113,9 @@
                 </svg>
               </button>
               <button
-                class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
+                class="hover:bg-nt-primary-lighter rounded transition-colors cursor-pointer p-2 hidden"
                 :class="{
-                  'text-blue-500': !element.hidden,
+                  'text-primary-500': !element.hidden,
                   'text-gray-500': element.hidden,
                   'group-hover:md:block': !element.hidden,
                   'md:block': element.hidden,
@@ -175,7 +175,7 @@
               </button>
               <button
                 v-if="!element.type.startsWith('nf-')"
-                class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2 hidden"
+                class="hover:bg-nt-primary-lighter rounded transition-colors cursor-pointer p-2 hidden"
                 :class="{
                   'group-hover:md:block': !element.required,
                   'md:block': element.required,
@@ -206,11 +206,11 @@
                 </div>
               </button>
               <button
-                class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer p-2"
+                class="hover:bg-nt-primary-lighter rounded transition-colors cursor-pointer p-2"
                 @click="editOptions(index)"
               >
                 <svg
-                  class="h-4 w-4 text-blue-600"
+                  class="h-4 w-4 text-primary-600"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -256,7 +256,7 @@
       @click="openAddFieldSidebar"
     >
       <svg
-        class="w-4 h-4 text-nt-blue inline mr-1 -mt-1"
+        class="w-4 h-4 text-nt-primary inline mr-1 -mt-1"
         viewBox="0 0 14 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

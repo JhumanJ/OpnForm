@@ -3,7 +3,7 @@
     <section>
       <div class="mx-auto max-w-7xl isolate sm:px-6 lg:px-8">
         <div
-          class="relative px-4 py-8 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:py-0 sm:shadow-gray-600/10"
+          class="relative px-4 py-8 overflow-hidden bg-primary-100 ring-primary-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:py-0 sm:shadow-gray-600/10"
         >
           <div class="absolute inset-0">
             <img
@@ -17,7 +17,7 @@
             class="relative max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:flex-auto lg:py-16 lg:text-left"
           >
             <span
-              class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-blue-200 ring-1 text-blue-600 px-2.5 py-1.5 rounded-full"
+              class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-primary-200 ring-1 text-primary-600 px-2.5 py-1.5 rounded-full"
             >
               <svg
                 aria-hidden="true"
@@ -40,7 +40,7 @@
             >
               Say goodbye to tedious form building with OpnForm's new
               <span
-                class="text-transparent bg-clip-text bg-gradient-to-r lg:block from-blue-600 to-blue-300"
+                class="text-transparent bg-clip-text bg-gradient-to-r lg:block from-primary-600 to-primary-300"
               >AI-powered feature!</span>
             </h2>
             <p
@@ -56,7 +56,7 @@
                 class="block"
                 :to="{ name: 'forms-create-guest' }"
                 :arrow="true"
-                color="blue"
+                color="primary"
               >
                 Try our AI form builder
               </v-button>
@@ -136,7 +136,7 @@
             class="relative hidden lg:block w-full px-6 mx-auto mt-8 lg:px-0 sm:mt-12 lg:bottom-0 lg:absolute lg:-right-16 xl:right-0 lg:max-w-lg"
           >
             <img
-              class="rounded-t-2xl ring-1 ring-blue-100 lg:rounded-tr-none w-full"
+              class="rounded-t-2xl ring-1 ring-primary-100 lg:rounded-tr-none w-full"
               src="/img/pages/ai_form_builder/ai-feature-illustration.svg"
               alt="App screenshot"
             >

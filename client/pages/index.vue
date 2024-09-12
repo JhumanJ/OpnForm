@@ -57,7 +57,7 @@
           >
             Build
             <span
-              class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400"
+              class="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400"
             >beautiful forms</span>
             <br>
             in seconds
@@ -148,7 +148,7 @@
           class="w-full mt-12 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center"
         >
           <div
-            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
+            class="-m-2 rounded-xl bg-primary-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-primary-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
             <img
               src="/img/pages/welcome/product-cover.jpg"
@@ -203,7 +203,7 @@
 
       <templates-slider class="max-w-full mb-12" />
 
-      <div class="w-full bg-blue-900 p-12 md:p-24 text-center">
+      <div class="w-full bg-primary-900 p-12 md:p-24 text-center">
         <h4 class="font-semibold text-3xl text-white">
           Take your forms to the next level
         </h4>
@@ -215,7 +215,7 @@
             v-track.welcome_create_form_click
             :to="{ name: 'forms-create-guest' }"
             :arrow="true"
-            color="blue"
+            color="primary"
           >
             Create a form for FREE
           </v-button>

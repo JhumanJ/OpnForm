@@ -72,7 +72,7 @@
             <template #icon>
               <Icon
                 name="heroicons:link"
-                class="w-4 h-4 -mt-1 text-blue-600 mr-3"
+                class="w-4 h-4 -mt-1 text-primary-600 mr-3"
               />
             </template>
             Copy Token

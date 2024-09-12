@@ -41,7 +41,7 @@
               What's new? <span
                 v-if="hasNewChanges"
                 id="fb-update-badge"
-                class="bg-blue-500 rounded-full px-2 ml-1 text-white"
+                class="bg-primary-500 rounded-full px-2 ml-1 text-white"
               />
             </button>
             <a
@@ -253,7 +253,7 @@
                     size="small"
                     class="shrink-0"
                     :to="{ name: 'forms-create-guest' }"
-                    color="outline-blue"
+                    color="outline-primary"
                     :arrow="true"
                   >
                     Create a form

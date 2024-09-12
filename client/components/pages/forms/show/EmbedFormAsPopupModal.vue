@@ -11,7 +11,7 @@
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
+        class="h-6 w-6 mr-2 text-primary-600 inline"
         fill="none"
         viewBox="0 0 24 24"
         stroke-width="1.5"
@@ -33,7 +33,7 @@
       <template #icon>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="w-10 h-10 text-blue"
+          class="w-10 h-10 text-primary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -55,7 +55,7 @@
         </h3>
         <p class="pb-6">
           A live preview of your form popup was just added to this page.
-          <span class="font-semibold text-blue-800">Click on the button on the bottom
+          <span class="font-semibold text-primary-800">Click on the button on the bottom
             {{ advancedOptions.position }} corner to try it</span>.
         </p>
 
@@ -68,19 +68,19 @@
         </p>
 
         <div
-          class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+          class="border border-nt-primary-light bg-primary-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
         >
           <div class="flex items-center">
-            <p class="select-all text-nt-blue flex-grow break-all">
+            <p class="select-all text-nt-primary flex-grow break-all">
               {{ embedPopupCode }}
             </p>
             <div
-              class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer"
+              class="hover:bg-nt-primary-lighter rounded transition-colors cursor-pointer"
               @click="copyToClipboard"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-nt-blue"
+                class="h-6 w-6 text-nt-primary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

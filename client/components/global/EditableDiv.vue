@@ -21,13 +21,13 @@
     <div
       v-if="editing"
       class="absolute inset-0 border-2 transition-colors"
-      :class="{ 'border-transparent': !editing, 'border-blue-500': editing }"
+      :class="{ 'border-transparent': !editing, 'border-primary-500': editing }"
     >
       <input
         ref="editInputRef"
         v-model="content"
         class="absolute inset-0 focus:outline-none bg-white transition-colors"
-        :class="[{ 'bg-blue-50': editing }, contentClass]"
+        :class="[{ 'bg-primary-50': editing }, contentClass]"
         @blur="editing = false"
         @keyup.enter="editing = false"
         @input="handleInput"

@@ -47,7 +47,7 @@
                     v-if="!isSubscribed"
                     class="flex flex-col w-6/12 max-md:ml-0 max-md:w-full m-auto"
                   >
-                    <div class="flex flex-col grow justify-between p-6 w-full bg-blue-50 rounded-2xl max-md:px-5 max-md:mt-2">
+                    <div class="flex flex-col grow justify-between p-6 w-full bg-primary-50 rounded-2xl max-md:px-5 max-md:mt-2">
                       <div class="flex flex-col items-center">
                         <div class="flex gap-2 py-px">
                           <h2 class="my-auto text-xl font-semibold tracking-tighter leading-5 text-slate-900">
@@ -109,7 +109,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="mdi:star-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Remove OpnForm branding.</strong>
@@ -121,7 +121,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="ion:brush-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Full form customization.</strong>
@@ -133,7 +133,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="icons8:upload-2"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Larger File uploads.</strong>
@@ -149,7 +149,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="heroicons:bell"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Access to all integrations.</strong>
@@ -161,7 +161,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="heroicons:globe-alt"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">1 custom domain.</strong>
@@ -173,7 +173,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="mdi:pencil-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-nt-primary"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Editable submissions.</strong>
@@ -185,12 +185,12 @@
               </div>
             </section>
             <footer
-              class="justify-center py-1.5 mt-12 text-base font-medium leading-6 text-center text-blue-500 max-md:mt-10"
+              class="justify-center py-1.5 mt-12 text-base font-medium leading-6 text-center text-primary-500 max-md:mt-10"
             >
               <NuxtLink
                 :to="{ name: 'pricing' }"
                 target="_blank"
-                class="focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 And much more. See full plans comparison
                 <Icon
@@ -226,10 +226,10 @@
             <div class="flex-grow w-full max-w-sm">
               <div
                 v-if="!isSubscribed"
-                class="bg-blue-50 rounded-md p-4 border border-blue-200 flex flex-col my-4 gap-1"
+                class="bg-primary-50 rounded-md p-4 border border-primary-200 flex flex-col my-4 gap-1"
               >
                 <div class="flex w-full">
-                  <p class="text-blue-500 capitalize font-medium flex-grow">
+                  <p class="text-primary-500 capitalize font-medium flex-grow">
                     OpnForm - {{ currentPlan == 'default' ? 'Pro' : 'Team' }} plan
                   </p>
                   <UBadge

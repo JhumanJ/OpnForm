@@ -39,7 +39,7 @@
             <Loader
               v-if="loading"
               key="loader"
-              class="h-6 w-6 text-nt-blue mx-auto"
+              class="h-6 w-6 text-nt-primary mx-auto"
             />
             <div
               v-else-if="modelValue"
@@ -141,7 +141,7 @@
           v-if="loading"
           class="w-full py-2 flex justify-center"
         >
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-nt-primary mx-auto" />
         </div>
         <div
           v-if="filteredOptions.length > 0"

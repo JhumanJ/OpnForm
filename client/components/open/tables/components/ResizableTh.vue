@@ -9,7 +9,7 @@
       class="absolute right-0 top-0 w-0 z-10"
     >
       <div
-        class="resize-handler bg-transparent cursor-move hover:bg-blue-500 opacity-80 transition-colors"
+        class="resize-handler bg-transparent cursor-move hover:bg-primary-500 opacity-80 transition-colors"
         @mousedown="mouseDownHandler"
       />
     </div>

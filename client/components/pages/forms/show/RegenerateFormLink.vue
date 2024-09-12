@@ -11,7 +11,7 @@
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
+        class="h-6 w-6 mr-2 text-primary-600 inline"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -34,7 +34,7 @@
       <template #icon>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="w-10 h-10 text-blue-600"
+          class="w-10 h-10 text-primary-600"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -70,7 +70,7 @@
           <div class="text-center mt-4">
             <v-button
               :loading="loadingNewLink"
-              color="outline-blue"
+              color="outline-primary"
               @click="regenerateLink('slug')"
             >
               Generate a Human Readable URL
@@ -91,7 +91,7 @@
           <div class="text-center mt-4">
             <v-button
               :loading="loadingNewLink"
-              color="outline-blue"
+              color="outline-primary"
               @click="regenerateLink('uuid')"
             >
               Generate a Random ID URL

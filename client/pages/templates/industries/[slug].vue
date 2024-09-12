@@ -12,7 +12,7 @@
       <section class="py-12 sm:py-16 bg-gray-50 border-b border-gray-200">
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div class="text-center mx-auto">
-            <div class="font-semibold sm:w-full text-blue-500 mb-3">
+            <div class="font-semibold sm:w-full text-primary-500 mb-3">
               {{ industry.name }}
             </div>
             <h1

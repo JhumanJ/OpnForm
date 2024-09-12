@@ -39,7 +39,7 @@
           v-if="loading"
           class="text-center mt-4"
         >
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-nt-primary mx-auto" />
         </div>
         <p
           v-else-if="enrichedTemplates.length === 0"
@@ -96,7 +96,7 @@
             :key="row.slug"
             :to="{ params: { slug: row.slug }, name: 'templates-types-slug' }"
             :title="row.name"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             {{ row.name }}
           </NuxtLink>
@@ -137,7 +137,7 @@
               name: 'templates-industries-slug',
             }"
             :title="row.name"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-primary"
           >
             {{ row.name }}
           </NuxtLink>

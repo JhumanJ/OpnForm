@@ -8,7 +8,7 @@
       class="absolute top-0 right-0 p-3 z-10"
     >
       <span
-        class="inline-flex items-center gap-1 rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white"
+        class="inline-flex items-center gap-1 rounded-full bg-primary-500 px-2 py-1 text-xs font-medium text-white"
       >
         <svg
           aria-hidden="true"
@@ -37,7 +37,7 @@
       >
     </div>
     <p
-      class="text-lg font-semibold leading-tight tracking-tight text-gray-900 mt-4 group-hover:text-blue-500 transition-all duration-150"
+      class="text-lg font-semibold leading-tight tracking-tight text-gray-900 mt-4 group-hover:text-primary-500 transition-all duration-150"
     >
       {{ template.name }}
     </p>

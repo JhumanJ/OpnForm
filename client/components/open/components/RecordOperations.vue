@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center space-x-1">
     <button
       v-track.delete_record_click
-      class="border rounded py-1 px-2 text-gray-500 dark:text-gray-400 hover:text-blue-700"
+      class="border rounded py-1 px-2 text-gray-500 dark:text-gray-400 hover:text-primary-700"
       @click="showEditSubmissionModal = true"
     >
       <svg

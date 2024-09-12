@@ -5,7 +5,7 @@
     >
       <div class="flex-1">
         <h3
-          class="inline-flex px-4 py-1 rounded-full text-md font-semibold tracking-wide bg-blue-500 text-white"
+          class="inline-flex px-4 py-1 rounded-full text-md font-semibold tracking-wide bg-primary-500 text-white"
         >
           Custom Plan
         </h3>

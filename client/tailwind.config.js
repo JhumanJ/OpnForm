@@ -14,9 +14,9 @@ module.exports = {
   ],
   safelist: [
     {
-      pattern: /.*bg-(blue|gray|red|yellow|green).*/,
+      pattern: /.*bg-(primary|blue|gray|red|yellow|green).*/,
     },
-    ...["green", "red", "blue", "yellow"]
+    ...["primary", "green", "red", "blue", "yellow"]
       .map((color) => ["bg-" + color + "-100", "border-" + color + "-500"])
       .flat(), // Alerts
     ...["dark:hover:bg-notion-dark-light"],
@@ -61,12 +61,12 @@ module.exports = {
       },
       colors: {
         gray: colors.slate,
-        "nt-blue": {
-          lighter: colors.blue["100"],
-          light: colors.blue["300"],
-          default: colors.blue["600"],
-          DEFAULT: colors.blue["600"],
-          dark: colors.blue["800"],
+        "nt-primary": {
+          lighter: colors.green["100"],
+          light: colors.green["300"],
+          default: colors.green["600"],
+          DEFAULT: colors.green["600"],
+          dark: colors.green["800"],
         },
         "notion-dark": {
           DEFAULT: "#191919",

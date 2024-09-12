@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto mb-12 max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-lg font-semibold leading-8 tracking-tight text-blue-500">
+      <h2 class="text-lg font-semibold leading-8 tracking-tight text-primary-500">
         Single or multi-page forms
       </h2>
       <p

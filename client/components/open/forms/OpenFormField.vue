@@ -6,8 +6,8 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
-        'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-primary-900 rounded-md':adminPreview,
+        'bg-primary-50 hover:!bg-primary-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
   >
     <div
@@ -23,7 +23,7 @@
           :class="{ 'lg:flex-row lg:-space-x-2': !fieldSideBarOpened, 'xl:flex-row xl:-space-x-1': fieldSideBarOpened }"
         >
           <div
-            class="p-1 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer"
+            class="p-1 -mb-2 text-gray-300 hover:text-primary-500 cursor-pointer"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
@@ -33,7 +33,7 @@
             />
           </div>
           <div
-            class="p-1 text-gray-300 hover:text-blue-500 cursor-pointer text-center"
+            class="p-1 text-gray-300 hover:text-primary-500 cursor-pointer text-center"
             role="button"
             @click.prevent="editFieldOptions"
           >

@@ -30,7 +30,7 @@
         href="#"
         class="px-4 py-2 text-md rounded text-gray-700 hover:no-underline hover:bg-neutral-50 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
         :class="{
-          'bg-blue-100 dark:bg-blue-900 hover:bg-blue-200':
+          'bg-primary-100 dark:bg-primary-900 hover:bg-primary-200':
             workspace?.id === worksp?.id,
         }"
         @click.prevent="switchWorkspace(worksp)"

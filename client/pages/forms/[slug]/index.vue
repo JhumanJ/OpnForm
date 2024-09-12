@@ -49,13 +49,13 @@
       </div>
       <div v-else-if="formLoading">
         <p class="text-center mt-6 p-4">
-          <loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <loader class="h-6 w-6 text-nt-primary mx-auto" />
         </p>
       </div>
       <template v-else>
         <div v-if="recordLoading">
           <p class="text-center mt-6 p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <loader class="h-6 w-6 text-nt-primary mx-auto" />
           </p>
         </div>
         <OpenCompleteForm

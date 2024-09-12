@@ -40,7 +40,7 @@
               <div
                 class="transition-colors"
                 :class="{
-                  'text-blue-600': showLogic,
+                  'text-primary-600': showLogic,
                   'text-gray-300': !showLogic,
                 }"
               >

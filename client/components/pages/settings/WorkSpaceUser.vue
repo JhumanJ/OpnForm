@@ -104,7 +104,7 @@
                 <UButton
                   icon="i-heroicons-pencil"
                   color="gray"
-                  class="hover:text-blue-500"
+                  class="hover:text-primary-500"
                   square
                   @click="editUser(index)"
                 />
@@ -133,7 +133,7 @@
               <UButton
                 icon="i-heroicons-envelope"
                 color="gray"
-                class="hover:text-blue-500"
+                class="hover:text-primary-500"
                 square
                 @click="resendInvite(index)"
               />

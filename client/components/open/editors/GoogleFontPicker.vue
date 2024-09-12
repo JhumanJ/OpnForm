@@ -7,7 +7,7 @@
     <template #icon>
       <Icon
         name="ci:font"
-        class="w-10 h-10 text-blue"
+        class="w-10 h-10 text-primary"
       />
     </template>
     <template #title>
@@ -15,7 +15,7 @@
     </template>
     
     <div v-if="loading">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-nt-primary mx-auto" />
     </div>
     <div v-else>
       <text-input

@@ -107,7 +107,7 @@ const props = defineProps({
   },
   iconColor: {
     type: String,
-    default: 'blue'
+    default: 'primary'
   },
   maxWidth: {
     type: String,

@@ -69,7 +69,7 @@ function userPlanStyles(plan) {
         case 'pro':
             return 'capitalize text-xs select-all bg-green-50 rounded-md px-2 py-1 border border-green-200 text-green-500'
         case 'enterprise':
-            return 'capitalize text-xs select-all bg-blue-50 rounded-md px-2 py-1 border border-blue-200  text-blue-500'
+            return 'capitalize text-xs select-all bg-primary-50 rounded-md px-2 py-1 border border-primary-200  text-primary-500'
         default:
             return 'capitalize text-xs select-all bg-gray-50 rounded-md px-2 py-1 border'
     }

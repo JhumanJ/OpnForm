@@ -94,7 +94,7 @@
 
       <Loader
         v-if="!form"
-        class="h-6 w-6 text-nt-blue mx-auto"
+        class="h-6 w-6 text-nt-primary mx-auto"
       />
       <div v-else>
         <div
@@ -129,7 +129,7 @@
               >Export as CSV</a>
             </p>
             <p v-else>
-              <loader class="w-3 h-3 text-blue-500" />
+              <loader class="w-3 h-3 text-primary-500" />
             </p>
           </div>
         </div>

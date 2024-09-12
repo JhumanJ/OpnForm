@@ -7,7 +7,7 @@
       v-track.new_integration_click="{ name: integration.id }"
       role="button"
       :class="{
-        'hover:bg-blue-50 group cursor-pointer': !unavailable,
+        'hover:bg-primary-50 group cursor-pointer': !unavailable,
         'cursor-not-allowed': integration.coming_soon,
       }"
       class="bg-gray-50 border border-gray-200 rounded-md transition-colors p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative"
@@ -15,7 +15,7 @@
     >
       <div class="flex justify-center">
         <div
-          class="h-10 w-10 text-gray-500 group-hover:text-blue-500 transition-colors flex items-center"
+          class="h-10 w-10 text-gray-500 group-hover:text-primary-500 transition-colors flex items-center"
         >
           <Icon
             :name="integration.icon"

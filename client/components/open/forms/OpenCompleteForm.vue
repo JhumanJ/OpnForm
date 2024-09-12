@@ -175,7 +175,7 @@
           <a
             target="_parent"
             :href="form.share_url+'?submission_id='+submissionId"
-            class="text-nt-blue hover:underline"
+            class="text-nt-primary hover:underline"
           >
             {{ form.editable_submissions_button_text }}
           </a>
@@ -187,7 +187,7 @@
           <a
             target="_parent"
             href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-            class="text-nt-blue hover:underline"
+            class="text-nt-primary hover:underline"
           >
             Create your form for free with OpnForm
           </a>

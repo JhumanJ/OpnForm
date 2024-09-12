@@ -6,11 +6,11 @@
           <div class="pt-4 pb-0">
             <a
               href="#"
-              class="flex text-blue mb-2 font-semibold text-sm"
+              class="flex text-primary mb-2 font-semibold text-sm"
               @click.prevent="goBack"
             >
               <svg
-                class="w-3 h-3 text-blue mt-1 mr-1"
+                class="w-3 h-3 text-primary mt-1 mr-1"
                 viewBox="0 0 6 10"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +39,7 @@
                 <v-button
                   v-if="form.visibility === 'draft'"
                   color="white"
-                  class="mr-2 text-blue-600 hidden sm:block"
+                  class="mr-2 text-primary-600 hidden sm:block"
                   @click="showDraftFormWarningNotification"
                 >
                   <svg
@@ -73,7 +73,7 @@
                   target="_blank"
                   :href="form.share_url"
                   color="white"
-                  class="mr-2 text-blue-600 hidden sm:block"
+                  class="mr-2 text-primary-600 hidden sm:block"
                 >
                   <svg
                     class="w-6 h-6 inline -mt-1"
@@ -202,7 +202,7 @@
                   <nuxt-link
                     :to="{ name: tab.route, params: tab.params ?? {} }"
                     class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                    active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
+                    active-class="text-primary-600 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-500 border-primary-600 dark:border-primary-500"
                   >
                     {{ tab.name }}
                   </nuxt-link>

@@ -2,13 +2,13 @@
   <transition name="fade">
     <button
       v-if="isImpersonating"
-      class="cursor-pointer group hover:bg-blue-50 text-gray-600 py-2 px-5 fixed bottom-0 left-0 rounded-tr-md bg-white border-t border-r"
+      class="cursor-pointer group hover:bg-primary-50 text-gray-600 py-2 px-5 fixed bottom-0 left-0 rounded-tr-md bg-white border-t border-r"
       @click="reverseImpersonation"
     >
       <template v-if="!loading">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 -mt-1 group-hover:text-blue-500 inline text-gray-400"
+          class="h-5 w-5 -mt-1 group-hover:text-primary-500 inline text-gray-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

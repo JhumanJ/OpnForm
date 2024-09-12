@@ -20,7 +20,7 @@
               class="text-3xl font-semibold tracking-tight text-gray-950"
             >
               Check out our
-              <span class="ml-2 text-nt-blue">
+              <span class="ml-2 text-nt-primary">
                 <svg
                   class="inline w-10 h-10"
                   viewBox="0 0 32 32"
@@ -83,7 +83,7 @@
               >
                 <svg
                   aria-hidden="true"
-                  class="w-5 h-5 shrink-0 stroke-blue-600"
+                  class="w-5 h-5 shrink-0 stroke-primary-600"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

@@ -2,20 +2,20 @@
   <VTransition>
     <section
       v-if="hasCleanings && !hideWarning"
-      class="flex gap-3 p-4 bg-blue-50 rounded-lg border border-blue-300 border-solid max-md:flex-wrap mb-2"
+      class="flex gap-3 p-4 bg-primary-50 rounded-lg border border-primary-300 border-solid max-md:flex-wrap mb-2"
       aria-labelledby="notification-title"
     >
       <div class="flex justify-center items-center self-start py-px">
         <Icon
           name="bi:stars"
-          class="w-6 h-6 text-nt-blue"
+          class="w-6 h-6 text-nt-primary"
         />
       </div>
       <div class="flex flex-col flex-1 max-md:max-w-full">
         <div class="flex flex-col text-sm leading-5 text-slate-900 max-md:max-w-full">
           <h5
             id="notification-title"
-            class="font-medium max-md:max-w-full text-blue-500"
+            class="font-medium max-md:max-w-full text-primary-500"
           >
             Upgrade to unlock all features
           </h5>

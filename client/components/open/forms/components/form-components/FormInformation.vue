@@ -58,7 +58,7 @@
       @click="showCopyFormSettingsModal = true"
     >
       <svg
-        class="h-5 w-5 -mt-1 text-nt-blue inline mr-2"
+        class="h-5 w-5 -mt-1 text-nt-primary inline mr-2"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@
     >
       <template #icon>
         <svg
-          class="w-10 h-10 text-blue"
+          class="w-10 h-10 text-primary"
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +116,7 @@
             Cancel
           </v-button>
           <v-button
-            color="blue"
+            color="primary"
             class="w-full"
             @click="copySettings"
           >

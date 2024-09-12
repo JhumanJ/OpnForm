@@ -6,7 +6,7 @@
   >
     <div
       v-track.pro_tag_click="{title:upgradeModalTitle}"
-      class="bg-nt-blue text-white px-2 text-xs uppercase inline rounded-full font-semibold cursor-pointer"
+      class="bg-nt-primary text-white px-2 text-xs uppercase inline rounded-full font-semibold cursor-pointer"
       @click.stop="onClick"
     >
       PRO

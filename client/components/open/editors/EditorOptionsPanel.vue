@@ -7,7 +7,7 @@
       <div class="flex items-center pr-8 space-x-2">
         <div
           class="mr-3"
-          :class="{ 'text-blue-600': show, 'text-gray-500': !show }"
+          :class="{ 'text-primary-600': show, 'text-gray-500': !show }"
         >
           <slot name="icon" />
         </div>

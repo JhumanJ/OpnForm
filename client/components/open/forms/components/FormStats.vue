@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+    class="border border-nt-primary-light bg-primary-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
   >
     <div
       v-if="!form.is_pro"
@@ -33,7 +33,7 @@
     </div>
     <Loader
       v-else-if="isLoading"
-      class="h-6 w-6 text-nt-blue mx-auto"
+      class="h-6 w-6 text-nt-primary mx-auto"
     />
     <LineChart
       v-else
