@@ -20,6 +20,12 @@ class FormStatsController extends Controller
         $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
 
+        if (!$request->date_from || !$request->date_to) {
+            return $this->error([
+                'message' => 'Date range is required. Please select a date range.',
+            ]);
+        }
+
         // Check if the date range is more than 3 months
         if (Carbon::parse($request->date_from)->diffInMonths(Carbon::parse($request->date_to)) > 3) {
             return $this->error([
