@@ -4,7 +4,10 @@
     class="open-complete-form"
     :style="{ '--font-family': form.font_family }"
   >
-    <FormTimer ref="formTimer" />
+    <FormTimer
+      ref="formTimer"
+      :form="form"
+    />
 
     <link
       v-if="adminPreview && form.font_family"
@@ -306,6 +309,7 @@ export default {
         }
         window.postMessage(payload, '*')
         this.pendingSubmission.remove()
+        this.pendingSubmission.removeTimer()
 
         if (data.redirect && data.redirect_url) {
           window.location.href = data.redirect_url
