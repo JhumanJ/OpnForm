@@ -33,7 +33,7 @@ class FormStatsController extends Controller
             ]);
         }
 
-        $formStats = $form->statistics()->where('date', '>', now()->subDays(29)->startOfDay())->get();
+        $formStats = $form->statistics()->whereBetween('date', [$request->date_from, $request->date_to])->get();
         $periodStats = ['views' => [], 'submissions' => []];
         foreach (CarbonPeriod::create($request->date_from, $request->date_to) as $dateObj) {
             $date = $dateObj->format('d-m-Y');
