@@ -31,12 +31,12 @@ const stopTimer = () => {
   if (timer) {
     clearInterval(timer)
     timer = null
+    startTime.value = null
   }
 }
 
 const resetTimer = () => {
   stopTimer()
-  startTime.value = null
   completionTime.value = null
 }
 

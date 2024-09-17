@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use App\Http\Requests\FormStatsRequest;
 use Carbon\CarbonPeriod;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
@@ -15,23 +15,10 @@ class FormStatsController extends Controller
         $this->middleware('auth');
     }
 
-    public function getFormStats(Request $request)
+    public function getFormStats(FormStatsRequest $request)
     {
         $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
-
-        if (!$request->date_from || !$request->date_to) {
-            return $this->error([
-                'message' => 'Date range is required. Please select a date range.',
-            ]);
-        }
-
-        // Check if the date range is more than 3 months
-        if (Carbon::parse($request->date_from)->diffInMonths(Carbon::parse($request->date_to)) > 3) {
-            return $this->error([
-                'message' => 'Date range exceeds 3 months. Please select a shorter period.',
-            ]);
-        }
 
         $formStats = $form->statistics()->whereBetween('date', [$request->date_from, $request->date_to])->get();
         $periodStats = ['views' => [], 'submissions' => []];
@@ -57,9 +44,12 @@ class FormStatsController extends Controller
 
         $totalViews = $form->views()->count();
         $totalSubmissions = $form->submissions_count;
-        $submissionsWithDuration = $form->submissions()->whereNotNull('completion_time')->count() ?? 0;
-        $totalDuration = $form->submissions()->whereNotNull('completion_time')->sum('completion_time') ?? 0;
-        $averageDuration = $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : 0;
+
+        $averageDuration = \Cache::remember('form_stats_average_duration_' . $form->id, 1800, function () use ($form) {
+            $submissionsWithDuration = $form->submissions()->whereNotNull('completion_time')->count() ?? 0;
+            $totalDuration = $form->submissions()->whereNotNull('completion_time')->sum('completion_time') ?? 0;
+            return $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : 0;
+        });
 
         return [
             'views' => $totalViews,

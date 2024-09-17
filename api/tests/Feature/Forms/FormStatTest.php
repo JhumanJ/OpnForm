@@ -79,7 +79,7 @@ it('checks form stats details', function () {
         ['completion_time' => 60],  // 1 minute
         ['completion_time' => 120], // 2 minutes
         ['completion_time' => 120], // 2 minutes
-        ['completion_time' => null] // Incomplete submission
+        [] // Incomplete submission
     ]);
 
     // Create form views
