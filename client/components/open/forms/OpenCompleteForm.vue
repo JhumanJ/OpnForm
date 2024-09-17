@@ -329,7 +329,6 @@ export default {
         }
       }).catch((error) => {
         console.error(error)
-        this.$refs.formTimer.resetTimer() // Reset the timer
         if (error.response && error.data && error.data.message) {
           useAlert().error(error.data.message)
         }
@@ -340,7 +339,7 @@ export default {
     restart () {
       this.submitted = false
       this.$emit('restarted', true)
-      this.$refs.formTimer.resetTimer() // Reset the timer
+      this.$refs.formTimer.removeTimer() // Reset the timer
     },
     passwordEntered () {
       if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {
