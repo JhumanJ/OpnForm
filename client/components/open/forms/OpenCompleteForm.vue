@@ -4,6 +4,11 @@
     class="open-complete-form"
     :style="{ '--font-family': form.font_family }"
   >
+    <FormTimer
+      ref="formTimer"
+      :form="form"
+    />
+
     <link
       v-if="adminPreview && form.font_family"
       rel="stylesheet"
@@ -200,6 +205,7 @@
 <script>
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
+import FormTimer from './FormTimer.vue'
 import VButton from '~/components/global/VButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
@@ -208,7 +214,7 @@ import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
-  components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings },
+  components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings, FormTimer },
 
   props: {
     form: { type: Object, required: true },
@@ -274,8 +280,15 @@ export default {
 
       if (form.busy) return
       this.loading = true
+
+      // Stop the timer and get the completion time
+      this.$refs.formTimer.stopTimer()
+      const completionTime = this.$refs.formTimer.completionTime
+      form.completion_time = completionTime
+
       // this.closeAlert()
-      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
+      form.post('/forms/' + this.form.slug + '/answer')
+      .then((data) => {
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
@@ -288,7 +301,8 @@ export default {
             id: this.form.id,
             redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
           },
-          submission_data: form.data()
+          submission_data: form.data(),
+          completion_time: completionTime
         })
 
         if (this.isIframe) {
@@ -296,6 +310,7 @@ export default {
         }
         window.postMessage(payload, '*')
         this.pendingSubmission.remove()
+        this.pendingSubmission.removeTimer()
 
         if (data.redirect && data.redirect_url) {
           window.location.href = data.redirect_url
@@ -319,12 +334,14 @@ export default {
           useAlert().error(error.data.message)
         }
         this.loading = false
+        this.$refs.formTimer.startTimer()
         onFailure()
       })
     },
     restart () {
       this.submitted = false
       this.$emit('restarted', true)
+      this.$refs.formTimer.resetTimer() // Reset the timer
     },
     passwordEntered () {
       if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {
