@@ -53,6 +53,7 @@ class OAuthController extends Controller
                 "message" => "OAuth service failed to authenticate: " . $e->getMessage()
             ]);
         }
+
         $user = $this->findOrCreateUser($provider, $driverUser);
 
         if (!$user) {
@@ -116,6 +117,7 @@ class OAuthController extends Controller
             'name' => $socialiteUser->getName(),
             'email' => $email,
             'email_verified_at' => now(),
+            'utm_data' => json_decode(request()->utm_data, true)
         ]);
 
         // Create and sync workspace
