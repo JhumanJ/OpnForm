@@ -64,6 +64,7 @@ class RegisterController extends Controller
             'agree_terms' => ['required', Rule::in([true])],
             'appsumo_license' => ['nullable'],
             'invite_token' => ['nullable', 'string'],
+            'utm_data' => ['nullable', 'array']
         ], [
             'agree_terms' => 'Please agree with the terms and conditions.',
         ]);
@@ -82,6 +83,7 @@ class RegisterController extends Controller
             'email' => strtolower($data['email']),
             'password' => bcrypt($data['password']),
             'hear_about_us' => $data['hear_about_us'],
+            'utm_data' => array_key_exists('utm_data', $data) ? $data['utm_data'] : null,
         ]);
 
         // Add relation with user

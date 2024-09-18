@@ -140,12 +140,14 @@ export default {
   emits: ['afterQuickLogin', 'openLogin'],
 
   setup() {
+    const { $utm } = useNuxtApp()
     return {
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore(),
       providersStore: useOAuthProvidersStore(),
       logEvent: useAmplitude().logEvent,
+      $utm
     }
   },
 
@@ -157,6 +159,7 @@ export default {
       password_confirmation: "",
       agree_terms: false,
       appsumo_license: null,
+      utm_data: null
     }),
     disableEmail:false
   }),
@@ -204,6 +207,7 @@ export default {
   methods: {
     async register() {
       let data
+      this.form.utm_data = this.$utm.value
       try {
         // Register the user.
         data = await this.form.post("/register")

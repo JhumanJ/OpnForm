@@ -14,6 +14,7 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt-simple-sitemap',
         '@nuxt/ui',
+        'nuxt-utm',
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
     ],
     build: {

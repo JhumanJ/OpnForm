@@ -30,6 +30,9 @@
 </template>
 
 <script setup>
+import { useNuxtApp } from "nuxt/app";
+
+const { $utm } = useNuxtApp();
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
@@ -49,7 +52,8 @@ function handleCallback() {
     opnFetch(`/oauth/${provider}/callback`, {
         method: 'POST',
         params: {
-            code
+            code,
+            utm_data: $utm.value
         }
     }).then(async (data) => {
         authStore.setToken(data.token)
