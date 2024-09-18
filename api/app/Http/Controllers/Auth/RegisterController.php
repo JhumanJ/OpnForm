@@ -83,7 +83,7 @@ class RegisterController extends Controller
             'email' => strtolower($data['email']),
             'password' => bcrypt($data['password']),
             'hear_about_us' => $data['hear_about_us'],
-            'utm_data' => $data['utm_data'],
+            'utm_data' => array_key_exists('utm_data', $data) ? $data['utm_data'] : null,
         ]);
 
         // Add relation with user
