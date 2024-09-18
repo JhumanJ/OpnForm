@@ -287,7 +287,8 @@ export default {
       form.completion_time = completionTime
 
       // this.closeAlert()
-      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
+      form.post('/forms/' + this.form.slug + '/answer')
+      .then((data) => {
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
@@ -333,6 +334,7 @@ export default {
           useAlert().error(error.data.message)
         }
         this.loading = false
+        this.$refs.formTimer.startTimer()
         onFailure()
       })
     },

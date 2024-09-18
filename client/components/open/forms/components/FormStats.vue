@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex flex-wrap items-end mt-5">
-      <h3 class="flex-grow font-semibold text-xl mb-3">
-        Form Analytics
+      <h3 class="flex-grow font-medium text-lg mb-3">
+        Views & Submission History
       </h3>
       <DateInput
         :form="filterForm"
@@ -14,7 +14,7 @@
       />
     </div>
     <div
-      class="border border-gray-400 rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+      class="border border-gray-300 rounded-lg shadow-sm p-4 mb-5 w-full mx-auto mt-4 select-all"
     >
       <div
         v-if="!form.is_pro"

@@ -48,14 +48,14 @@ class FormStatsController extends Controller
         $averageDuration = \Cache::remember('form_stats_average_duration_' . $form->id, 1800, function () use ($form) {
             $submissionsWithDuration = $form->submissions()->whereNotNull('completion_time')->count() ?? 0;
             $totalDuration = $form->submissions()->whereNotNull('completion_time')->sum('completion_time') ?? 0;
-            return $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : 0;
+            return $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : null;
         });
 
         return [
             'views' => $totalViews,
             'submissions' => $totalSubmissions,
             'completion_rate' => $totalViews > 0 ? round(($totalSubmissions / $totalViews) * 100, 2) : 0,
-            'average_duration' => CarbonInterval::seconds($averageDuration)->cascade()->forHumans()
+            'average_duration' => $averageDuration ? CarbonInterval::seconds($averageDuration)->cascade()->forHumans() : null
         ];
     }
 }
