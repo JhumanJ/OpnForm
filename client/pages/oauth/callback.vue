@@ -33,6 +33,9 @@
 import { useNuxtApp } from "nuxt/app";
 
 const { $utm } = useNuxtApp();
+import { useNuxtApp } from "nuxt/app";
+
+const { $utm } = useNuxtApp();
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()

@@ -39,7 +39,7 @@ it('check formstat chart data', function () {
     }
 
     // Now check chart data
-    $this->getJson(route('open.workspaces.form.stats', [$workspace->id, $form->id]))
+    $this->getJson(route('open.workspaces.form.stats', [$workspace->id, $form->id]) . '?date_from=' . now()->subDays(29)->format('Y-m-d') . '&date_to=' . now()->format('Y-m-d'))
         ->assertSuccessful()
         ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) use ($views, $submissions) {
             return $json->whereType('views', 'array')
@@ -62,6 +62,40 @@ it('check formstat chart data', function () {
 
                     return true;
                 })
+                ->etc();
+        });
+});
+
+
+it('checks form stats details', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, []);
+
+    // Create form submissions with varying completion times
+    $form->submissions()->createMany([
+        ['completion_time' => 60],  // 1 minute
+        ['completion_time' => 60],  // 1 minute
+        ['completion_time' => 60],  // 1 minute
+        ['completion_time' => 120], // 2 minutes
+        ['completion_time' => 120], // 2 minutes
+        [] // Incomplete submission
+    ]);
+
+    // Create form views
+    $form->views()->createMany(array_fill(0, 10, []));
+
+    $this->getJson(route('open.workspaces.form.stats-details', [$workspace->id, $form->id]))
+        ->assertSuccessful()
+        ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) {
+            return $json->has('views')
+                ->has('submissions')
+                ->has('completion_rate')
+                ->has('average_duration')
+                ->where('views', 10)
+                ->where('submissions', 6)
+                ->where('completion_rate', 60)
+                ->where('average_duration', '1 minute 24 seconds')
                 ->etc();
         });
 });

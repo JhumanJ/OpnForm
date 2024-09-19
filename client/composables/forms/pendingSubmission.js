@@ -7,6 +7,9 @@ export const pendingSubmission = (form) => {
       ? form.form_pending_submission_key + "-" + hash(window.location.href)
       : ""
   })
+  const formPendingSubmissionTimerKey = computed(() => {
+    return formPendingSubmissionKey.value + "-timer"
+  })
 
   const enabled = computed(() => {
     return form?.auto_save ?? false
@@ -28,10 +31,27 @@ export const pendingSubmission = (form) => {
     return pendingSubmission ? JSON.parse(pendingSubmission) : defaultValue
   }
 
+  const setTimer = (value) => {
+    if (import.meta.server) return
+    useStorage(formPendingSubmissionTimerKey.value).value = value
+  }
+
+  const removeTimer = () => {
+    return setTimer(null)
+  }
+
+  const getTimer = (defaultValue = null) => {
+    if (import.meta.server) return
+    return useStorage(formPendingSubmissionTimerKey.value).value ?? defaultValue
+  }
+
   return {
     enabled,
     set,
     get,
     remove,
+    setTimer,
+    removeTimer,
+    getTimer,
   }
 }

@@ -23,7 +23,8 @@ class FormSubmissionResource extends JsonResource
         }
 
         return array_merge([
-            'data' => $this->data
+            'data' => $this->data,
+            'completion_time' => $this->completion_time,
         ], ($this->publiclyAccessed) ? [] : [
             'form_id' => $this->form_id,
             'id' => $this->id

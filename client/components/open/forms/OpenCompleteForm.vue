@@ -274,7 +274,7 @@ export default {
 
       if (form.busy) return
       this.loading = true
-      // this.closeAlert()
+
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
@@ -288,7 +288,8 @@ export default {
             id: this.form.id,
             redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
           },
-          submission_data: form.data()
+          submission_data: form.data(),
+          completion_time: form['completion_time']
         })
 
         if (this.isIframe) {
@@ -296,6 +297,7 @@ export default {
         }
         window.postMessage(payload, '*')
         this.pendingSubmission.remove()
+        this.pendingSubmission.removeTimer()
 
         if (data.redirect && data.redirect_url) {
           window.location.href = data.redirect_url
