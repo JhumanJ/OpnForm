@@ -145,7 +145,8 @@
       <template #help>
         <InputHelp>
           <span class="text-gray-500">
-            For buttons & input borders - <a
+            Color (for buttons & inputs border) - <a
+              class="text-blue-500"
               href="#"
               @click.prevent="form.color = DEFAULT_COLOR"
             >Reset</a>
