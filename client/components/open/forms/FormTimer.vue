@@ -1,5 +1,4 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
 import { pendingSubmission as pendingSubmissionFun } from "~/composables/forms/pendingSubmission.js"
 
 const props = defineProps({
@@ -9,7 +8,7 @@ const props = defineProps({
 const pendingSubmission = pendingSubmissionFun(props.form)
 const startTime = ref(null)
 const completionTime = ref(parseInt(pendingSubmission.getTimer() ?? null))
-let timer = null
+const timer = ref(null)
 
 watch(() => completionTime.value, () => {
   if (completionTime.value) {
@@ -21,16 +20,16 @@ const startTimer = () => {
   if (!startTime.value) {
     startTime.value = parseInt(pendingSubmission.getTimer() ?? 1)
     completionTime.value = startTime.value
-    timer = setInterval(() => {
+    timer.value = setInterval(() => {
       completionTime.value += 1
     }, 1000)
   }
 }
 
 const stopTimer = () => {
-  if (timer) {
-    clearInterval(timer)
-    timer = null
+  if (timer.value) {
+    clearInterval(timer.value)
+    timer.value = null
     startTime.value = null
   }
 }
@@ -40,17 +39,9 @@ const resetTimer = () => {
   completionTime.value = null
 }
 
-onMounted(() => {
-  document.addEventListener('input', startTimer)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('input', startTimer)
-  stopTimer()
-})
-
 defineExpose({
   completionTime,
+  startTimer,
   stopTimer,
   resetTimer
 })
