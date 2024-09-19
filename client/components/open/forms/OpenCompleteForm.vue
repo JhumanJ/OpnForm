@@ -100,7 +100,7 @@
       :specify-form-owner="true"
     />
 
-    <transition name="fade">
+    <v-transition name="fade">
       <div
         v-if="!submitted"
         key="form"
@@ -184,7 +184,7 @@
           </a>
         </p>
       </div>
-    </transition>
+    </v-transition>
   </div>
 </template>
 
