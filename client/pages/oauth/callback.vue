@@ -40,6 +40,10 @@ const workspacesStore = useWorkspacesStore()
 const formsStore = useFormsStore()
 const logEvent = useAmplitude().logEvent
 const loading = ref(true)
+const form = useForm({
+    code: '',
+    utm_data: null,
+})
 
 definePageMeta({
     alias: '/oauth/:provider/callback'
@@ -47,15 +51,10 @@ definePageMeta({
 
 function handleCallback() {
 
-    const code = route.query.code
     const provider = route.params.provider
-    opnFetch(`/oauth/${provider}/callback`, {
-        method: 'POST',
-        params: {
-            code,
-            utm_data: $utm.value
-        }
-    }).then(async (data) => {
+    form.code = route.query.code
+    form.utm_data = $utm.value
+    form.post(`/oauth/${provider}/callback`).then(async (data) => {
         authStore.setToken(data.token)
         const [userDataResponse, workspacesResponse] = await Promise.all([
             opnFetch("user"),
