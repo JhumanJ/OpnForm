@@ -141,8 +141,19 @@
     <color-input
       name="color"
       :form="form"
-      label="Color (for buttons & inputs border)"
-    />
+      >
+      <template #help>
+        <InputHelp>
+          <span class="text-gray-500">
+            For buttons & input borders - <a
+              href="#"
+              @click.prevent="form.color = DEFAULT_COLOR"
+            >Reset</a>
+          </span>
+        </InputHelp>
+      </template>
+    </color-input>
+
     <toggle-switch-input
       name="hide_title"
       :form="form"
@@ -204,6 +215,8 @@ import { useWorkingFormStore } from "../../../../../stores/working_form"
 import EditorOptionsPanel from "../../../editors/EditorOptionsPanel.vue"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/global/ProTag.vue"
+import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+
 
 const workingFormStore = useWorkingFormStore()
 const subscriptionModalStore = useSubscriptionModalStore()
