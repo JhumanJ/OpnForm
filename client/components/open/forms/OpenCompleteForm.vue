@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <v-transition>
+    <v-transition name="fade">
       <div
         v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
         class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
@@ -100,16 +100,7 @@
       :specify-form-owner="true"
     />
 
-    <transition
-      v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
-      enter-active-class="duration-500 ease-out"
-      enter-from-class="translate-x-full opacity-0"
-      enter-to-class="translate-x-0 opacity-100"
-      leave-active-class="duration-500 ease-in"
-      leave-from-class="translate-x-0 opacity-100"
-      leave-to-class="translate-x-full opacity-0"
-      mode="out-in"
-    >
+    <v-transition name="fade">
       <div
         v-if="!submitted"
         key="form"
@@ -193,7 +184,7 @@
           </a>
         </p>
       </div>
-    </transition>
+    </v-transition>
   </div>
 </template>
 
