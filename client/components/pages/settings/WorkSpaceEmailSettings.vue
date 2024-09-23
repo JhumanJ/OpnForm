@@ -16,42 +16,34 @@
         Email Settings
       </h4>
       <p class="mb-4 text-gray-500 text-sm">
-        Customize email sender with your own SMTP and send with your email.
+        Customize email sender - connect your SMTP server.
       </p>
       <UAlert
         v-if="!workspace.is_pro"
         icon="i-heroicons-user-group-20-solid"
-        class="mb-4"
+        class="my-4 !text-orange-500"
         color="orange"
         variant="subtle"
         title="Pro plan required"
       >
         <template #description>
-          Please <NuxtLink
-            :to="{name:'pricing'}"
-            class="underline"
+          Please <a
+            href="#"
+            class="text-orange-500 underline"
+            @click.prevent="openSubscriptionModal"
           >
             upgrade your account
-          </NuxtLink> to setup an email settings.
+          </a> to setup an email settings.
         </template>
       </UAlert>
-      <p class="text-gray-500 text-sm mb-4">
-        Read
-        <a
-          href="#"
-          class="underline"
-          @click.prevent="
-            crisp.openHelpdesk
-          "
-        >our instructions</a>
-        to learn how to setup email settings.
-      </p>
+       
       <TextInput
         :form="emailSettingsForm"
         name="host"
         :required="true"
         :disabled="!workspace.is_pro"
         label="Host/Server"
+        class="mt-2"
         placeholder="smtp.example.com"
       />
       <TextInput
@@ -79,26 +71,29 @@
         label="Password"
         placeholder="Password"
       />
-      <UButton
-        class="mt-3"
-        :loading="emailSettingsLoading"
-        :disabled="!workspace.is_pro"
-        icon="i-heroicons-check"
-        @click="saveChanges"
-      >
-        Update
-      </UButton>
-      <UButton
-        class="mt-3 ml-2"
-        color="white"
-        size="sm"
-        :loading="emailSettingsLoading"
-        :disabled="!workspace.is_pro"
-        icon="i-heroicons-x-mark"
-        @click="clearEmailSettings"
-      >
-        Clear
-      </UButton>
+
+      <div class="flex justify-between gap-2">
+        <UButton
+          class="mt-3 px-6"
+          :loading="emailSettingsLoading"
+          :disabled="!workspace.is_pro"
+          icon="i-heroicons-check"
+          @click="saveChanges"
+        >
+          Update
+        </UButton>
+        <UButton
+          class="mt-3 ml-2"
+          color="white"
+          size="sm"
+          :loading="emailSettingsLoading"
+          :disabled="!workspace.is_pro"
+          icon="i-heroicons-x-mark"
+          @click="clearEmailSettings"
+        >
+          Clear
+        </UButton>
+      </div>
     </modal>
   </div>
 </template>
@@ -106,9 +101,15 @@
 <script setup>
 import {watch} from "vue"
 
-const crisp = useCrisp()
 const workspacesStore = useWorkspacesStore()
 const workspace = computed(() => workspacesStore.getCurrent)
+const subscriptionModalStore = useSubscriptionModalStore()
+
+const openSubscriptionModal = () => {
+  showEmailSettingsModal.value = false
+  subscriptionModalStore.setModalContent('Upgrade to send emails using your own domain')
+  subscriptionModalStore.openModal()
+}
 
 const emailSettingsForm = useForm({
   host: '',
