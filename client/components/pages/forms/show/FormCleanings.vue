@@ -2,7 +2,7 @@
   <VTransition>
     <section
       v-if="hasCleanings && !hideWarning"
-      class="flex gap-3 p-4 bg-blue-50 rounded-lg border border-blue-300 border-solid max-md:flex-wrap mb-2"
+      class="flex gap-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-300 border-solid max-md:flex-wrap mb-2"
       aria-labelledby="notification-title"
     >
       <div class="flex justify-center items-center self-start py-px">
