@@ -201,7 +201,7 @@ const formattedDate = (value) => {
     try {
       return format(new Date(value), props.dateFormat + (props.timeFormat == 12 ? ' p':' HH:mm'))
     } catch (e) {
-      console.log('Error formatting date', e)
+      console.error('Error formatting date', e)
       return ''
     }
   }

@@ -153,6 +153,7 @@ export default {
       formsStore,
       form,
       user,
+      workingFormStore,
       activeTab: computed(() => workingFormStore.activeTab)
     }
   },
@@ -176,6 +177,11 @@ export default {
     this.$emit("mounted")
     useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
+    if (!this.isEdit) {
+      this.$nextTick(() => {
+        this.workingFormStore.openAddFieldSidebar()
+      })
+    }
   },
 
   beforeUnmount() {

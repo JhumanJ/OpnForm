@@ -4,21 +4,21 @@
       <div class="flex">
         <button
           class="text-gray-500 hover:text-gray-900 cursor-pointer"
-          @click.prevent="closeSidebar"
+          @click="closeSidebar"
         >
           <Icon
             name="heroicons:x-mark-20-solid"
             class="inline w-6 h-6"
           />
         </button>
-        <div class="font-semibold inline ml-2 flex-grow truncate">
+        <div class="font-medium inline ml-2 flex-grow truncate">
           Add Block
         </div>
       </div>
     </div>
 
     <div class="py-2 px-4">
-      <p class="text-sm font-semibold my-2">
+      <p class="text-sm font-medium my-2">
         Input Blocks
       </p>
       <draggable
@@ -48,8 +48,8 @@
         </template>
       </draggable>
     </div>
-    <div class="px-4 border-t">
-      <p class="text-sm font-semibold my-2">
+    <div class="px-4 border-t mb-4">
+      <p class="text-sm font-medium my-2">
         Layout Blocks
       </p>
       <draggable

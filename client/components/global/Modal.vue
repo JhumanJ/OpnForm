@@ -4,7 +4,7 @@
       <div
         v-if="show"
         ref="backdrop"
-        class="fixed z-30 top-0 inset-0 px-2 sm:px-4 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll"
+        class="fixed z-40 top-0 inset-0 px-2 sm:px-4 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll"
         :class="{ 'backdrop-blur-sm': backdropBlur }"
         @click.self="close"
       >

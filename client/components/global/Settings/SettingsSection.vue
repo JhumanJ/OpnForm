@@ -3,7 +3,7 @@
     v-show="isActive"
     class="settings-section"
   >
-    <h3 class="text-xl font-semibold mb-1">
+    <h3 class="text-xl font-medium mb-1">
       {{ name }}
     </h3>
     <slot />

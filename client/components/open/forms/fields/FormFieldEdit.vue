@@ -90,9 +90,9 @@
     </template>
     <div
       v-else
-      class="text-center p-10"
+      class="text-center p-10 text-sm text-gray-500"
     >
-      Click on field's setting icon in your form to modify it
+      Click on field to edit it.
     </div>
   </div>
 </template>

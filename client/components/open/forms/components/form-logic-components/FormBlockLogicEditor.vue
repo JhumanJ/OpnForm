@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <h5 class="font-semibold mt-3">
+    <h5 class="font-medium text-gray-700 mt-3">
       1. Conditions
     </h5>
     <condition-editor
@@ -47,7 +47,7 @@
       :form="form"
     />
 
-    <h5 class="font-semibold mt-3">
+    <h5 class="font-medium text-gray-700 mt-3">
       2. Actions
     </h5>
     <flat-select-input

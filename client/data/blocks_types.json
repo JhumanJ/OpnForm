@@ -63,6 +63,14 @@
     "bg_class": "bg-red-100",
     "text_class": "text-red-900"
   },
+  "matrix": {
+    "name": "matrix",
+    "title": "Matrix Input",
+    "icon": "i-heroicons-table-cells-20-solid",
+    "default_block_name": "Matrix",
+     "bg_class": "bg-red-100",
+    "text_class": "text-red-900"
+  },
   "number": {
     "name": "number",
     "title": "Number Input",
@@ -76,8 +84,8 @@
     "title": "Rating Input",
     "icon": "i-heroicons-star",
     "default_block_name": "Rating",
-    "bg_class": "bg-yellow-100",
-    "text_class": "text-yellow-900"
+     "bg_class": "bg-purple-100",
+    "text_class": "text-purple-900"
   },
   "scale": {
     "name": "scale",
@@ -108,19 +116,9 @@
     "title": "Signature Input",
     "icon": "i-heroicons-pencil-square-20-solid",
     "default_block_name": "Signature",
-    "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
+    "bg_class": "bg-pink-100",
+    "text_class": "text-pink-900"
   },
-  "matrix": {
-    "name": "matrix",
-    "title": "Matrix Input",
-    "icon": "i-heroicons-table-cells-20-solid",
-    "default_block_name": "Matrix",
-    "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
-  },
-
-  
   "nf-text": {
     "name": "nf-text",
     "title": "Text",

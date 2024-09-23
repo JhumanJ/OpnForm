@@ -1,25 +1,30 @@
 <template>
-  <ErrorBoundary @on-error="handleError" ref="error_boundary">
+  <ErrorBoundary
+    ref="error_boundary"
+    @on-error="handleError"
+  >
     <query-builder
       v-model="query"
       :rules="rules"
       :config="config"
+      v-bind="$attrs"
       @update:model-value="onChange"
     >
       <template #groupOperator="props">
         <div
-          class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-1 flex"
+          class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-"
         >
           <p class="mr-2 font-semibold">
             Operator
           </p>
           <select-input
-            wrapper-class="relative"
+            wrapper-class="relative mb-0" 
             :model-value="props.currentOperator"
             :options="props.operators"
             emit-key="identifier"
             option-key="identifier"
             name="operator-input"
+            :help="null"
             margin-bottom=""
             @update:model-value="props.updateCurrentOperator($event)"
           />

@@ -535,7 +535,7 @@
           help="Maximum character limit of 2000"
           :required="false"
         />
-        <checkbox-input
+        <toggle-switch-input
           name="show_char_limit"
           :form="field"
           class="mt-3"
