@@ -9,6 +9,10 @@
     :style="computedStyle"
     @submit.prevent=""
   >
+    <FormTimer
+      ref="form-timer"
+      :form="form"
+    />
     <template v-if="form.show_progress_bar">
       <div
         v-if="isIframe"
@@ -135,11 +139,12 @@ import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha},
+  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
   props: {
     form: {
       type: Object,
@@ -352,6 +357,7 @@ export default {
     this.initForm()
   },
   mounted() {
+    this.$refs['form-timer'].startTimer()
     if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
@@ -371,12 +377,16 @@ export default {
         this.dataForm.submission_id = this.form.submission_id
       }
 
+      this.$refs['form-timer'].stopTimer()
+      this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
      *   Handle form submission failure
      */
     onSubmissionFailure() {
+      this.$refs['form-timer'].startTimer()
       this.isAutoSubmit = false
       if (this.fieldGroups.length > 1) {
         this.showFirstPageWithError()

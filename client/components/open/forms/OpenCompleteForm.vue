@@ -4,11 +4,6 @@
     class="open-complete-form"
     :style="{ '--font-family': form.font_family }"
   >
-    <FormTimer
-      ref="formTimer"
-      :form="form"
-    />
-
     <link
       v-if="adminPreview && form.font_family"
       rel="stylesheet"
@@ -49,7 +44,7 @@
       </div>
     </div>
 
-    <v-transition>
+    <v-transition name="fade">
       <div
         v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
         class="m-2 my-4 flex flex-grow items-end p-4 rounded-md dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-600/20 dark:border-yellow-500"
@@ -99,16 +94,7 @@
       :specify-form-owner="true"
     />
 
-    <transition
-      v-if="!form.is_password_protected && (!isPublicFormPage || (!form.is_closed && !form.max_number_of_submissions_reached && form.visibility!='closed'))"
-      enter-active-class="duration-500 ease-out"
-      enter-from-class="translate-x-full opacity-0"
-      enter-to-class="translate-x-0 opacity-100"
-      leave-active-class="duration-500 ease-in"
-      leave-from-class="translate-x-0 opacity-100"
-      leave-to-class="translate-x-full opacity-0"
-      mode="out-in"
-    >
+    <v-transition name="fade">
       <div
         v-if="!submitted"
         key="form"
@@ -192,7 +178,7 @@
           </a>
         </p>
       </div>
-    </transition>
+    </v-transition>
   </div>
 </template>
 
@@ -274,14 +260,7 @@ export default {
       if (form.busy) return
       this.loading = true
 
-      // Stop the timer and get the completion time
-      this.$refs.formTimer.stopTimer()
-      const completionTime = this.$refs.formTimer.completionTime
-      form.completion_time = completionTime
-
-      // this.closeAlert()
-      form.post('/forms/' + this.form.slug + '/answer')
-      .then((data) => {
+      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
@@ -295,7 +274,7 @@ export default {
             redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
           },
           submission_data: form.data(),
-          completion_time: completionTime
+          completion_time: form['completion_time']
         })
 
         if (this.isIframe) {
@@ -327,14 +306,12 @@ export default {
           useAlert().error(error.data.message)
         }
         this.loading = false
-        this.$refs.formTimer.startTimer()
         onFailure()
       })
     },
     restart () {
       this.submitted = false
       this.$emit('restarted', true)
-      this.$refs.formTimer.resetTimer() // Reset the timer
     },
     passwordEntered () {
       if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {

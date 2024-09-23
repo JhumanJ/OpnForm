@@ -20,8 +20,19 @@
     <color-input
       name="color"
       :form="form"
-      label="Color (for buttons & inputs border)"
-    />
+    >
+      <template #help>
+        <InputHelp>
+          <span class="text-gray-500">
+            Color (for buttons & inputs border) - <a
+              class="text-blue-500"
+              href="#"
+              @click.prevent="form.color = DEFAULT_COLOR"
+            >Reset</a>
+          </span>
+        </InputHelp>
+      </template>
+    </color-input>
     <select-input
       name="dark_mode"
       :options="[
@@ -117,9 +128,12 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Cover Picture"
-      help="Not visible when form is embedded"
-      :required="false"
+      label="Color (for buttons & inputs border)"
+    />
+    <toggle-switch-input
+      name="hide_title"
+      :form="form"
+      label="Hide Title"
     />
     <toggle-switch-input
       name="no_branding"
@@ -181,6 +195,8 @@ import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/global/ProTag.vue"
+import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+
 
 const workingFormStore = useWorkingFormStore()
 const subscriptionModalStore = useSubscriptionModalStore()
