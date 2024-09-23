@@ -38,7 +38,7 @@ class WorkspaceUsersUpdated implements ShouldQueue
     public function handle(): void
     {
         // If self-hosted, no need to update billing
-        if (!pricing_enabled()) {
+        if (!pricing_enabled() || \App::environment('testing')) {
             return;
         }
 

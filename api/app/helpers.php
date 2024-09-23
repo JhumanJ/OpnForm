@@ -15,6 +15,6 @@ if (!function_exists('front_url')) {
 if (!function_exists('pricing_enabled')) {
     function pricing_enabled(): bool
     {
-        return App::environment() !== 'testing' && !is_null(config('cashier.key'));
+        return !is_null(config('cashier.key'));
     }
 }

@@ -34,7 +34,7 @@
         <env name="SELF_HOSTED" value="false"/>
         <env name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
         <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
-        <env name="CASHIER_KEY" value="TEST_KEY"/>
-        <env name="CASHIER_SECRET" value="TEST_SECRET"/>
+        <env name="STRIPE_KEY" value="TEST_KEY"/>
+        <env name="STRIPE_SECRET" value="TEST_SECRET"/>
     </php>
 </phpunit>
