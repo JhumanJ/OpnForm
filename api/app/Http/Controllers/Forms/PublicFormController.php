@@ -77,7 +77,7 @@ class PublicFormController extends Controller
 
         $internal_url = Storage::temporaryUrl($path, now()->addMinutes(5));
 
-        foreach(config('filesystems.disks.s3.temporary_url_rewrites') as $from => $to) {
+        foreach (config('filesystems.disks.s3.temporary_url_rewrites') as $from => $to) {
             $internal_url = str_replace($from, $to, $internal_url);
         }
 

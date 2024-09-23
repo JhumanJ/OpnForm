@@ -58,7 +58,7 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
 
     protected function getSpreadsheetId(): string
     {
-        if(!isset($this->integrationData->spreadsheet_id)) {
+        if (!isset($this->integrationData->spreadsheet_id)) {
             throw new Exception('The spreadsheed is not instantiated');
         }
 

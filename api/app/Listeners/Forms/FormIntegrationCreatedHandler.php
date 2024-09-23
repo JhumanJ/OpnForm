@@ -15,17 +15,17 @@ class FormIntegrationCreatedHandler implements ShouldQueue
     {
         $integration = FormIntegration::getIntegration($event->formIntegration->integration_id);
 
-        if(!$integration) {
+        if (!$integration) {
             return;
         }
 
-        if(!isset($integration['file_name'])) {
+        if (!isset($integration['file_name'])) {
             return;
         }
 
         $className = 'App\Integrations\Handlers\Events\\' . $integration['file_name'] . 'Created';
 
-        if(!class_exists($className)) {
+        if (!class_exists($className)) {
             return;
         }
 

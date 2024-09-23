@@ -27,7 +27,7 @@ class Google
 
     public function getClient(): Client
     {
-        if($this->client->isAccessTokenExpired()) {
+        if ($this->client->isAccessTokenExpired()) {
             $this->refreshToken();
         }
 

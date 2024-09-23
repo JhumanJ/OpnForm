@@ -41,7 +41,7 @@ class OneEmailPerLine implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if(!$this->passes($attribute, $value)) {
+        if (!$this->passes($attribute, $value)) {
             $fail($this->message());
         }
     }
