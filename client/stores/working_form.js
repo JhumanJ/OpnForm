@@ -1,33 +1,13 @@
 import { defineStore } from "pinia"
 import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
-
-const defaultBlockNames = {
-  text: "Your name",
-  date: "Date",
-  url: "Link",
-  phone_number: "Phone Number",
-  number: "Number",
-  rating: "Rating",
-  scale: "Scale",
-  slider: "Slider",
-  email: "Email",
-  checkbox: "Checkbox",
-  select: "Select",
-  multi_select: "Multi Select",
-  files: "Files",
-  signature: "Signature",
-  matrix: "Matrix",
-  "nf-text": "Text Block",
-  "nf-page-break": "Page Break",
-  "nf-divider": "Divider",
-  "nf-image": "Image",
-  "nf-code": "Code Block",
-}
+import blocksTypes from "~/data/blocks_types.json"
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
     content: null,
+    activeTab: 0,
+    formPageIndex: 0,
 
     // Field being edited
     selectedFieldIndex: null,
@@ -42,6 +22,14 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
     setProperties(properties) {
       this.content.properties = [...properties]
+    },
+    objectToIndex(field) {
+      if (typeof field === 'object') {
+        return this.content.properties.findIndex(
+          prop => prop.nf_id === field.nf_id
+        )
+      }
+      return field
     },
     openSettingsForField(index) {
       // If field is passed, compute index
@@ -107,7 +95,7 @@ export const useWorkingFormStore = defineStore("working_form", {
 
     addBlock(type, index = null) {
       this.blockForm.type = type
-      this.blockForm.name = defaultBlockNames[type]
+      this.blockForm.name = blocksTypes[type].default_block_name
       const newBlock = this.prefillDefault(this.blockForm.data())
       newBlock.id = generateUUID()
       newBlock.hidden = false
@@ -144,6 +132,26 @@ export const useWorkingFormStore = defineStore("working_form", {
         newFields.splice(fieldIndex, 0, newBlock)
         this.content.properties = newFields
         this.openSettingsForField(fieldIndex)
+      }
+    },
+    removeField(field) {
+      this.internalRemoveField(field)
+    },
+    internalRemoveField(field) {
+      const index = this.objectToIndex(field)
+
+      if (index !== -1) {
+        useAlert().success('Ctrl + Z to undo',10000,{
+          title: 'Field removed',
+          actions: [{
+            label: 'Undo',
+            icon:"i-material-symbols-undo",
+            click: () => {
+              this.undo()
+            }
+          }]
+        })
+        this.content.properties.splice(index, 1)
       }
     },
 

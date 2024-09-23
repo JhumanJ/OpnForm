@@ -4,120 +4,79 @@
     id="form-editor"
     class="relative flex w-full flex-col grow max-h-screen"
   >
-    <!--  Navbar  -->
-    <div class="w-full border-b p-2 flex items-center justify-between bg-white">
-      <a
-        v-if="backButton"
-        href="#"
-        class="ml-2 flex text-blue font-semibold text-sm"
-        @click.prevent="goBack"
-      >
-        <svg
-          class="w-3 h-3 text-blue mt-1 mr-1"
-          viewBox="0 0 6 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5 9L1 5L5 1"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Go back
-      </a>
-
-      <UndoRedo />
-
-      <div class="hidden md:flex items-center ml-3">
-        <h3 class="font-semibold text-lg max-w-[14rem] truncate text-gray-500">
-          {{ form.title }}
-        </h3>
-      </div>
-
-      <div
-        class="flex items-center"
-        :class="{ 'mx-auto md:mx-0': !backButton }"
-      >
-        <div class="hidden md:block mr-10 relative">
-          <a
-            href="#"
-            class="text-sm px-3 py-2 hover:bg-gray-50 cursor-pointer rounded-md text-gray-500 px-0 sm:px-3 hover:text-gray-800 cursor-pointer mt-1"
-            @click.prevent="openCrisp"
-          >
-            Help
-          </a>
-        </div>
-        <v-button
-          v-track.save_form_click
-          size="small"
-          class="w-full px-8 md:px-4 py-2"
-          :loading="updateFormLoading"
-          :class="saveButtonClass"
-          @click="saveForm"
-        >
-          <svg
-            class="w-4 h-4 text-white inline mr-1 -mt-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17 21V13H7V21M7 3V8H15M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <template v-if="form.visibility === 'public'">
-            Publish Form
-          </template>
-          <template v-else>
-            Save Changes
-          </template>
-        </v-button>
-      </div>
-    </div>
-    <FormEditorErrorHandler>
-
-    <div class="w-full flex grow overflow-y-scroll relative bg-gray-50">
-      <div
-        class="relative w-full bg-white shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-sm lg:w-2/5"
-      >
-        <div class="border-b bg-blue-50 p-5 text-nt-blue-dark md:hidden">
-          Please create this form on a device with a larger screen. That will
-          allow you to preview your form changes.
-        </div>
-
-        <VForm
-          size="sm"
-          @submit.prevent=""
-        >
-          <form-information />
-          <form-structure />
-          <form-customization />
-          <form-about-submission />
-          <form-access />
-          <form-security-privacy />
-          <form-custom-seo />
-          <form-custom-code />
-        </VForm>
-      </div>
-
-      <form-editor-preview />
-      <form-editor-sidebar />
-
-      <!-- Form Error Modal -->
-      <form-error-modal
-        :show="showFormErrorModal"
-        :form="form"
-        @close="showFormErrorModal = false"
+    <div
+      class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center"
+    >
+      <Icon
+        name="heroicons:exclamation-circle"
+        class="w-10 h-10 text-nt-blue-dark"
       />
+      <div class="p-5 text-nt-blue-dark text-center">
+        OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
+      </div>
+      <div>
+        <UButton
+          color="white"
+          size="lg"
+          class="w-full"
+          :to="{ name: 'home' }"
+        >
+          Back to dashboard
+        </UButton>
+      </div>
     </div>
-  </FormEditorErrorHandler>
+
+    <FormEditorNavbar
+      :back-button="backButton"
+      :update-form-loading="updateFormLoading"
+      :save-button-class="saveButtonClass"
+      @go-back="goBack"
+      @save-form="saveForm"
+    >
+      <template #before-save>
+        <slot name="before-save" />
+      </template>
+    </FormEditorNavbar>
+
+    <FormEditorErrorHandler>
+      <div
+        v-show="activeTab !== 2"
+        class="w-full flex grow overflow-y-scroll relative bg-white"
+      >
+        <div
+          class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5"
+        >
+          <VForm
+            size="sm"
+            @submit.prevent=""
+          >
+            <div
+              v-show="activeTab === 0"
+            >
+              <FormFieldsEditor />
+            </div>
+            <div
+              v-show="activeTab === 1"
+            >
+              <FormCustomization />
+            </div>
+          </VForm>
+        </div>
+
+        <FormEditorPreview />
+
+        <FormEditorSidebar />
+      </div>
+    </FormEditorErrorHandler>
+
+    <FormSettings v-show="activeTab === 2" />
+
+    <!-- Form Error Modal -->
+    <FormErrorModal
+      :show="showFormErrorModal"
+      :validation-error-response="validationErrorResponse"
+      @close="showFormErrorModal = false"
+    />
   </div>
   <div
     v-else
@@ -128,39 +87,29 @@
 </template>
 
 <script>
-import UndoRedo from "../../editors/UndoRedo.vue"
+import FormEditorNavbar from './FormEditorNavbar.vue'
 import FormEditorSidebar from "./form-components/FormEditorSidebar.vue"
 import FormErrorModal from "./form-components/FormErrorModal.vue"
-import FormInformation from "./form-components/FormInformation.vue"
-import FormStructure from "./form-components/FormStructure.vue"
+import FormFieldsEditor from './FormFieldsEditor.vue'
 import FormCustomization from "./form-components/FormCustomization.vue"
-import FormCustomCode from "./form-components/FormCustomCode.vue"
-import FormAboutSubmission from "./form-components/FormAboutSubmission.vue"
 import FormEditorPreview from "./form-components/FormEditorPreview.vue"
-import FormSecurityPrivacy from "./form-components/FormSecurityPrivacy.vue"
-import FormCustomSeo from "./form-components/FormCustomSeo.vue"
-import FormAccess from "./form-components/FormAccess.vue"
 import { validatePropertiesLogic } from "~/composables/forms/validatePropertiesLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
+import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 
 export default {
   name: "FormEditor",
   components: {
+    FormEditorNavbar,
     FormEditorErrorHandler,
-    UndoRedo,
     FormEditorSidebar,
     FormEditorPreview,
-    FormAboutSubmission,
-    FormCustomCode,
     FormCustomization,
-    FormStructure,
-    FormInformation,
+    FormFieldsEditor,
     FormErrorModal,
-    FormSecurityPrivacy,
-    FormCustomSeo,
-    FormAccess,
+    FormSettings
   },
   props: {
     isEdit: {
@@ -185,13 +134,15 @@ export default {
     },
   },
 
-  emits: ['mounted', 'on-save', 'openRegister'],
+  emits: ['mounted', 'on-save', 'openRegister', 'go-back', 'save-form'],
 
   setup() {
     const { user } = storeToRefs(useAuthStore())
     const formsStore = useFormsStore()
     const { content: form } = storeToRefs(useWorkingFormStore())
     const { getCurrent: workspace } = storeToRefs(useWorkspacesStore())
+    const workingFormStore = useWorkingFormStore()
+    
     return {
       appStore: useAppStore(),
       crisp: useCrisp(),
@@ -201,6 +152,7 @@ export default {
       formsStore,
       form,
       user,
+      activeTab: computed(() => workingFormStore.activeTab)
     }
   },
 
@@ -216,50 +168,12 @@ export default {
   computed: {
     createdForm() {
       return this.formsStore.getByKey(this.createdFormSlug)
-    },
-    steps() {
-      return [
-        {
-          target: "#v-step-0",
-          header: {
-            title: "Welcome to the OpnForm Editor!",
-          },
-          content: "Discover <strong>your form Editor</strong>!",
-        },
-        {
-          target: "#v-step-1",
-          header: {
-            title: "Change your form fields",
-          },
-          content:
-            "Here you can decide which field to include or not, but also the " +
-            "order you want your fields to be and so on. You also have custom options available for each field, just " +
-            "click the blue cog.",
-        },
-        {
-          target: "#v-step-2",
-          header: {
-            title: "Notifications, Customizations and more!",
-          },
-          content:
-            "Many more options are available: change colors, texts and receive a " +
-            "notifications whenever someones submits your form.",
-        },
-        {
-          target: ".v-last-step",
-          header: {
-            title: "Create your form",
-          },
-          content: "Click this button when you're done to save your form!",
-        },
-      ]
-    },
+    }
   },
-
-  watch: {},
 
   mounted() {
     this.$emit("mounted")
+    useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
   },
 

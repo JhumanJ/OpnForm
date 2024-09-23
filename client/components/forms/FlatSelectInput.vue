@@ -109,7 +109,8 @@ export default {
     loading: {type: Boolean, default: false},
     multiple: { type: Boolean, default: false },
     disableOptions: { type: Array, default: () => [] },
-    disableOptionsTooltip: {type: String, default: "Not allowed"},
+    disableOptionsTooltip: { type: String, default: "Not allowed" },
+    clearable: { type: Boolean, default: false },
   },
   setup(props, context) {
     return {
@@ -129,11 +130,11 @@ export default {
       if (this.multiple) {
         const emitValue = Array.isArray(this.compVal) ? [...this.compVal] : []
 
-        // Already in value, remove it
+        // Already in value, remove it only if clearable or not the last item
         if (this.isSelected(value)) {
-          this.compVal = emitValue.filter((item) => {
-            return item !== value
-          })
+          if (this.clearable || emitValue.length > 1) {
+            this.compVal = emitValue.filter((item) => item !== value)
+          }
           return
         }
 
@@ -141,7 +142,10 @@ export default {
         emitValue.push(value)
         this.compVal = emitValue
       } else {
-        this.compVal = this.compVal === value ? null : value
+        // For single select, only change value if it's different or clearable
+        if (this.compVal !== value || this.clearable) {
+          this.compVal = this.compVal === value && this.clearable ? null : value
+        }
       }
     },
     isSelected(value) {

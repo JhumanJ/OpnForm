@@ -1,19 +1,12 @@
 <template>
-  <collapse
-    v-model="show"
-    class="p-2 w-full"
-  >
-    <template #title>
-      <h3 class="font-semibold block text-lg">
-        Validation
-      </h3>
-      <p class="text-gray-400 text-xs mb-3">
-        Add some custom validation (save form before testing)
-      </p>
-    </template>
+  <div class="py-2 px-4">
+    <p class="text-gray-500 text-xs mb-3">
+      Add some custom validation. Save your form before testing.
+    </p>
+    
     <div class="py-2">
       <p class="font-semibold text-sm text-gray-700">
-        Conditions for this field to be accepted
+        Validation criteria for field acceptance
       </p>
       <condition-editor
         ref="filter-editor"
@@ -25,10 +18,11 @@
         name="error_message"
         class=""
         :form="field.validation"
-        label="Error message when validation fails"
+        label="Error message"
+        help="Displayed when the validation fails"
       />
     </div>
-  </collapse>
+  </div>
 </template>
 
 <script>

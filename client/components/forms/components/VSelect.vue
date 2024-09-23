@@ -78,7 +78,7 @@
         </span>
       </button>
       <button
-        v-if="clearable && !isEmpty"
+        v-if="clearable && showClearButton && !isEmpty"
         class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
         :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
@@ -223,7 +223,8 @@ export default {
     emitKey: {type: String, default: null},
     color: {type: String, default: '#3B82F6'},
     placeholder: {type: String, default: null},
-    uppercaseLabels: {type: Boolean, default: true},
+    uppercaseLabels: { type: Boolean, default: true },
+    showClearButton: { type: Boolean, default: true },
     theme: {
       type: Object, default: () => {
         const theme = inject("theme", null)
@@ -334,22 +335,24 @@ export default {
         const emitValue = Array.isArray(this.modelValue) ? [...this.modelValue] : []
 
         if (this.isSelected(value)) {
-          this.$emit('update:modelValue', emitValue.filter((item) => {
-            if (this.emitKey) {
-              return item !== value
-            }
-            return item[this.optionKey] !== value && item[this.optionKey] !== value[this.optionKey]
-          }))
+          // Only remove if clearable or not the last item
+          if (this.clearable || emitValue.length > 1) {
+            this.$emit('update:modelValue', emitValue.filter((item) => {
+              if (this.emitKey) {
+                return item !== value
+              }
+              return item[this.optionKey] !== value && item[this.optionKey] !== value[this.optionKey]
+            }))
+          }
           return
         }
 
         emitValue.push(value)
         this.$emit('update:modelValue', emitValue)
       } else {
-        if (this.modelValue === value) {
-          this.$emit('update:modelValue', this.defaultValue ?? null)
-        } else {
-          this.$emit('update:modelValue', value)
+        // For single select, only change value if it's different or clearable
+        if (this.modelValue !== value || this.clearable) {
+          this.$emit('update:modelValue', this.modelValue === value && this.clearable ? null : value)
         }
       }
     },

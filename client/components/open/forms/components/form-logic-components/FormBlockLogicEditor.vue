@@ -3,12 +3,8 @@
     v-if="logic"
     :key="resetKey"
   >
-    <h3 class="font-semibold block text-lg">
-      Logic
-    </h3>
     <p class="text-gray-400 text-xs mb-3">
-      Add some logic to this block. Start by adding some conditions, and then
-      add some actions.
+      Select a field, add some conditions, and finally add some actions.
     </p>
     <div class="relative flex">
       <div>
@@ -17,7 +13,10 @@
           size="small"
           @click="showCopyFormModal = true"
         >
-          <Icon name="lucide:copy" class="w-4 h-4 text-blue-600 inline mr-1 -mt-1" />
+          <Icon
+            name="lucide:copy"
+            class="w-4 h-4 text-blue-600 inline mr-1 -mt-1"
+          />
           Copy from
         </v-button>
       </div>
@@ -29,8 +28,11 @@
           class="ml-1"
           @click="clearAll"
         >
-          <Icon name="mdi:clear-outline" class="w-4 h-4 text-red-600 inline mr-1 -mt-1" />
-          Clear All
+          <Icon
+            name="mdi:clear-outline"
+            class="w-4 h-4 text-red-600 inline mr-1 -mt-1"
+          />
+          Clear
         </v-button>
       </div>
     </div>

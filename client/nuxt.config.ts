@@ -41,6 +41,11 @@ export default defineNuxtConfig({
             pathPrefix: false,
         },
         {
+            path: '~/components/forms',
+            pathPrefix: false,
+            global: true
+        },
+        {
             path: '~/components/pages',
             pathPrefix: false,
         },
@@ -76,7 +81,7 @@ export default defineNuxtConfig({
         classPrefix: '',
     },
     ui: {
-        icons: ['heroicons', 'material-symbols'],
+        icons: ['heroicons', 'material-symbols']
     },
     sitemap,
     runtimeConfig,

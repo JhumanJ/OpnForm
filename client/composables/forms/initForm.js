@@ -3,7 +3,6 @@ import { generateUUID } from "~/lib/utils.js"
 export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
   return useForm({
     title: "My Form",
-    description: null,
     visibility: "public",
     workspace_id: null,
     properties: withDefaultProperties ? getDefaultProperties() : [],

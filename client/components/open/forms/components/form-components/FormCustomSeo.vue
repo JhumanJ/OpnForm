@@ -1,28 +1,18 @@
 <template>
-  <editor-options-panel
-    name="Link Settings - SEO"
-    :already-opened="false"
-    :has-pro-tag="true"
-  >
-    <template #icon>
-      <svg
-        class="h-5 w-5"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-        />
-      </svg>
-    </template>
-    <p class="mt-4 text-gray-500 text-sm">
-      Customize the link, images and text that appear when you share your form
-      on other sites (Open Graph).
+  <SettingsSection
+    name="Link Settings"
+    icon="i-heroicons-link"
+  >  
+    <h4 class="font-semibold mt-4 border-t pt-4">
+      SEO & Social Sharing - Meta <ProTag
+        class="ml-2"
+        upgrade-modal-title="Upgrade to Enhance Your Form's SEO"
+        upgrade-modal-description="Explore advanced SEO features in the editor on our Free plan. Upgrade to fully implement custom meta tags, Open Graph data, and improved search visibility. Boost your form's online presence and attract more respondents with our premium SEO toolkit."
+      />
+    </h4>
+    <p class="text-gray-500 text-sm">
+      Customize the image and text that appear when you share your form on other
+      sites (Open Graph).
     </p>
     <select-input
       v-if="useFeatureFlag('custom_domains')"
@@ -31,58 +21,74 @@
       :disabled="customDomainOptions.length <= 0"
       :options="customDomainOptions"
       name="type"
-      class="mt-4"
+      class="mt-4 max-w-xs"
       label="Form Domain"
       placeholder="yourdomain.com"
     />
-    <text-input
-      v-model="form.seo_meta.page_title"
-      name="page_title"
-      class="mt-4"
-      label="Page Title"
-      help="Under or approximately 60 characters"
-    />
-    <text-area-input
-      v-model="form.seo_meta.page_description"
-      name="page_description"
-      class="mt-4"
-      label="Page Description"
-      help="Between 150 and 160 characters"
-    />
-    <image-input
-      v-model="form.seo_meta.page_thumbnail"
-      name="page_thumbnail"
-      class="mt-4"
-      label="Page Thumbnail Image"
-      help="Also know as og:image - 1200 X 630"
-    />
-    <image-input
-      v-model="form.seo_meta.page_favicon"
-      name="page_favicon"
-      class="mt-4"
-      label="Page Favicon Image"
-      help="Upload favicon image to be displayed on the form page"
-    />
-  </editor-options-panel>
+    <template v-if="form.seo_meta">
+      <text-input
+        v-model="form.seo_meta.page_title"
+        name="page_title"
+        class="mt-4 max-w-xs"
+        label="Page Title"
+        help="Max 60 characters recommended"
+      />
+      <text-area-input
+        v-model="form.seo_meta.page_description"
+        name="page_description"
+        class="max-w-xs"
+        label="Page Description"
+        help="Between 150 and 160 characters"
+      />
+      <div class="flex gap-4">
+        <image-input
+          v-model="form.seo_meta.page_thumbnail"
+          name="page_thumbnail"
+          class="flex-grow"
+          label="Thumbnail Image"
+          help="og:image - 1200px X 630px"
+        />
+        <image-input
+          v-model="form.seo_meta.page_favicon"
+          name="page_favicon"
+          class="flex-grow"
+          label="Favicon Image"
+          help="Public form page favicon"
+        />
+      </div>
+    </template>
+
+    <div class="w-full border-t pt-4">
+      <h4 class="font-semibold">
+        Link Privacy
+      </h4>
+      <p class="text-gray-500 text-sm mb-4">
+        Disable to prevent Google from listing your form in search results.
+      </p>
+      <ToggleSwitchInput
+        name="can_be_indexed"
+        :form="form"
+        label="Indexable by Google"
+      />
+    </div>
+  </SettingsSection>
 </template>
 
 <script>
-import { useWorkingFormStore } from "../../../../../stores/working_form"
-import EditorOptionsPanel from "../../../editors/EditorOptionsPanel.vue"
+import ProTag from '~/components/global/ProTag.vue'
+import { useWorkingFormStore } from '../../../../../stores/working_form'
 
 export default {
-  components: { EditorOptionsPanel },
-  props: {},
-  setup() {
+  components: {
+    ProTag
+  },
+  setup () {
     const workingFormStore = useWorkingFormStore()
     return {
-      workspacesStore: useWorkspacesStore(),
       workingFormStore,
-      form: storeToRefs(workingFormStore).content,
+      workspacesStore: useWorkspacesStore(),
+      form: storeToRefs(workingFormStore).content
     }
-  },
-  data() {
-    return {}
   },
   computed: {
     workspace() {
@@ -99,21 +105,18 @@ export default {
         : []
     },
   },
-  watch: {},
-  mounted() {
+  mounted () {
     if (!this.form.seo_meta || Array.isArray(this.form.seo_meta))
       this.form.seo_meta = {};
-    
-    ["page_title", "page_description", "page_thumbnail", "page_favicon"].forEach((keyname) => {
-      if (this.form.seo_meta[keyname] === undefined) {
+
+    ['page_title', 'page_description', 'page_thumbnail', 'page_favicon'].forEach((keyname) => {
+      if (this.form.seo_meta[keyname] === undefined)
         this.form.seo_meta[keyname] = null
-      }
     })
 
     if (this.form.custom_domain && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
       this.form.custom_domain = null
     }
-  },
-  methods: {},
+  }
 }
 </script>

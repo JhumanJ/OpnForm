@@ -21,11 +21,6 @@
       :class="{'mt-4':isEmbedPopup}"
       v-text="form.title"
     />
-    <div
-      v-if="form.description"
-      class="form-description mb-4 text-gray-700 dark:text-gray-300 whitespace-pre-wrap px-2"
-      v-html="form.description"
-    />
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -57,19 +52,18 @@
     <v-transition>
       <div
         v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
-        class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
+        class="m-2 my-4 flex flex-grow items-end p-4 rounded-md dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-600/20 dark:border-yellow-500"
       >
-        <div class="flex flex-grow">
-          <p class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600">
-            We disabled the password protection for this form because you are an owner of it.
-          </p>
-          <v-button
-            color="yellow"
-            @click="hidePasswordDisabledMsg=true"
-          >
-            OK
-          </v-button>
-        </div>
+        <p class="mb-0 text-yellow-600 dark:text-yellow-600 text-sm">
+          We disabled the password protection for this form because you are an owner of it.
+        </p>
+        <UButton
+          color="yellow"
+          size="xs"
+          @click="hidePasswordDisabledMsg = true"
+        >
+          Close
+        </ubutton>
       </div>
     </v-transition>
 
@@ -206,7 +200,6 @@
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormTimer from './FormTimer.vue'
-import VButton from '~/components/global/VButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
@@ -214,7 +207,7 @@ import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
-  components: { VTransition, VButton, OpenFormButton, OpenForm, FormCleanings, FormTimer },
+  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FormTimer },
 
   props: {
     form: { type: Object, required: true },

@@ -2,6 +2,7 @@
   <UButtonGroup
     size="sm"
     orientation="horizontal"
+    class="shadow-none"
   >
     <UTooltip 
       text="Undo" 
@@ -12,7 +13,7 @@
         :disabled="!canUndo"
         color="white"
         icon="i-material-symbols-undo"
-        class="disabled:text-gray-500"
+        class="disabled:text-gray-500 shadow-none"
         @click="undo"
       />
     </UTooltip>
@@ -25,7 +26,7 @@
         :disabled="!canRedo"
         icon="i-material-symbols-redo"
         color="white"
-        class="disabled:text-gray-500"
+        class="disabled:text-gray-500 shadow-none"
         @click="redo"
       />
     </UTooltip>

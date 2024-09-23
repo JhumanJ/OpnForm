@@ -41,6 +41,7 @@
     <VueSignaturePad
       v-else
       ref="signaturePad"
+      class="not-draggable"
       :class="[
         theme.SignatureInput.input,
         theme.SignatureInput.spacing.horizontal,
