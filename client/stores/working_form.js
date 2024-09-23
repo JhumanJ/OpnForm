@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
+import { useAlert } from '~/composables/useAlert'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
@@ -26,19 +27,16 @@ export const useWorkingFormStore = defineStore("working_form", {
     objectToIndex(field) {
       if (typeof field === 'object') {
         return this.content.properties.findIndex(
-          prop => prop.nf_id === field.nf_id
+          prop => prop.id === field.id
         )
       }
       return field
     },
-    openSettingsForField(index) {
-      // If field is passed, compute index
-      if (typeof index === "object") {
-        index = this.content.properties.findIndex(
-          (prop) => prop.id === index.id,
-        )
-      }
-      this.selectedFieldIndex = index
+    setEditingField(field) {
+      this.selectedFieldIndex = this.objectToIndex(field)
+    },
+    openSettingsForField(field) {
+      this.setEditingField(field)
       this.showEditFieldSidebar = true
       this.showAddFieldSidebar = false
     },
@@ -47,14 +45,10 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
     },
-    openAddFieldSidebar(index) {
-      // If field is passed, compute index
-      if (index !== null && typeof index === "object") {
-        index = this.content.properties.findIndex(
-          (prop) => prop.id === index.id,
-        )
+    openAddFieldSidebar(field) {
+      if (field !== null) {
+        this.setEditingField(field)
       }
-      this.selectedFieldIndex = index
       this.showAddFieldSidebar = true
       this.showEditFieldSidebar = false
     },

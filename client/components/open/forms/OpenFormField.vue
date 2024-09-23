@@ -7,9 +7,11 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': adminPreview,
+        'cursor-pointer':workingFormStore.showEditFieldSidebar && adminPreview,
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
+    @click="setFieldAsSelected"
   >
     <div
       class="-m-[1px] w-full max-w-full mx-auto"
@@ -269,9 +271,15 @@ export default {
 
   methods: {
     editFieldOptions() {
+      if (!this.adminPreview) return
+      this.workingFormStore.openSettingsForField(this.field)
+    },
+    setFieldAsSelected () {
+      if (!this.adminPreview || !this.workingFormStore.showEditFieldSidebar) return
       this.workingFormStore.openSettingsForField(this.field)
     },
     openAddFieldSidebar() {
+      if (!this.adminPreview) return
       this.workingFormStore.openAddFieldSidebar(this.field)
     },
     removeField () {
