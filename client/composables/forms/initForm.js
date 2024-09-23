@@ -1,3 +1,4 @@
+import clonedeep from 'clone-deep'
 import { generateUUID } from "~/lib/utils.js"
 
 export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
@@ -71,4 +72,54 @@ function getDefaultProperties() {
       id: generateUUID(),
     },
   ]
+}
+
+/**
+ * Sets default values for form properties if they are not already defined.
+ * This function ensures that all necessary form fields have a valid initial value,
+ * which helps maintain consistency and prevents errors due to undefined properties.
+ * 
+ * @param {Object} formData - The initial form data object
+ * @returns {Object} A new object with default values applied where necessary
+ */
+export function setFormDefaults(formData) {
+  const defaultValues = {
+    title: 'Untitled Form',
+    visibility: 'public',
+    theme: 'default',
+    width: 'centered',
+    size: 'md',
+    border_radius: 'small',
+    dark_mode: 'light',
+    color: '#3B82F6',
+    hide_title: false,
+    uppercase_labels: false,
+    no_branding: false,
+    transparent_background: false,
+    submit_button_text: 'Submit',
+    confetti_on_submission: false,
+    show_progress_bar: false,
+    bypass_success_page: false,
+    can_be_indexed: true,
+    use_captcha: false,
+    properties: [],
+  }
+
+  const filledFormData = clonedeep(formData)
+
+  for (const [key, value] of Object.entries(defaultValues)) {
+    if (filledFormData[key] === undefined || filledFormData[key] === null || (typeof value === 'string' && filledFormData[key] === '')) {
+      filledFormData[key] = value
+    }
+  }
+
+  // Handle required nested properties
+  if (filledFormData.properties && Array.isArray(filledFormData.properties)) {
+    filledFormData.properties = filledFormData.properties.map(property => ({
+      ...property,
+      name: property.name === '' || property.name === null || property.name === undefined ? 'Untitled' : property.name,
+    }))
+  }
+
+  return filledFormData
 }

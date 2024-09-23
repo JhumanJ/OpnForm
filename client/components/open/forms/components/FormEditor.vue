@@ -98,6 +98,7 @@ import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
 import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
+import { setFormDefaults } from '~/composables/forms/initForm.js'
 
 export default {
   name: "FormEditor",
@@ -208,6 +209,11 @@ export default {
       this.showFormErrorModal = true
     },
     saveForm() {
+      // Apply defaults to the form
+      const defaultedData = setFormDefaults(this.form.data())
+      console.log('defaultedData', defaultedData)
+      this.form.fill(defaultedData)
+  
       this.form.properties = validatePropertiesLogic(this.form.properties)
       if (this.isGuest) {
         this.saveFormGuest()
