@@ -40,14 +40,18 @@
                 color="white"
                 icon="i-heroicons-ellipsis-vertical"
               />
-            </UDropdown>
 
-            <ChangeFieldType
-              v-if="!isBlockField"
-              btn-classes="rounded-l-none text-xs"
-              :field="field"
-              @change-type="onChangeType"
-            />
+              <template
+                v-if="typeCanBeChanged"
+                #changetype
+              >
+                <ChangeFieldType
+                  v-if="!isBlockField"
+                  :field="field"
+                  @change-type="onChangeType"
+                />
+              </template>
+            </UDropdown>
           </div>
         </div>
       </template>
@@ -177,6 +181,11 @@ const dropdownItems = computed(() => {
         form.value.properties = newFields
       }
     }],
+    ... (typeCanBeChanged.value ? [[{
+      label: 'Change type',
+      icon: 'i-heroicons-document-duplicate-20-solid',
+      slot: 'changetype',
+    }]] : []),
     [{
       label: 'Remove',
       icon: 'i-heroicons-trash-20-solid',

@@ -25,7 +25,7 @@
           class="flex lg:flex-col bg-gray-100 dark:bg-gray-800 border rounded-md"
         >
           <div
-            class="p-1 pt-0 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
@@ -35,7 +35,7 @@
             />
           </div>
           <div
-            class="p-1 pt-0 hover:text-blue-500 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
             role="button"
             @click.prevent="editFieldOptions"
           >
