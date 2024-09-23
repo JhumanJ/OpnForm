@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="shouldRender"
-    class="flex mb-1 input-help"
+    class="flex input-help"
   >
     <small
       :class="helpClasses"
@@ -16,7 +16,10 @@
       </slot>
     </small>
     <slot name="after-help">
-      <small class="flex-grow" />
+      <small
+        v-if="shouldRender || (!!slots.default)"
+        class="flex-grow"
+      />
     </slot>
   </div>
 </template>

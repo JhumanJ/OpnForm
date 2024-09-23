@@ -1,66 +1,46 @@
 <template>
-  <dropdown
+  <UPopover
     v-if="changeTypeOptions.length > 0"
-    ref="newTypeDropdown"
-    dusk="nav-dropdown"
+    v-model:open="open"
+    class="-mb-1"
   >
-    <template #trigger="{ toggle }">
-      <v-button
-        class="relative"
-        :class="btnClasses"
-        size="small"
-        color="light-gray"
-        @click.stop="toggle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="h-4 w-4 text-blue-600 inline mr-1 -mt-1"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
-          />
-        </svg>
-        <span class="whitespace-nowrap">Change Type</span>
-      </v-button>
-    </template>
+    <div class="flex items-center gap-1.5 group">
+      <Icon
+        name="heroicons:arrows-right-left-20-solid"
+        class="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500"
+      />
+      <span class="truncate">Change Type</span>
+    </div>
 
-    <a
-      v-for="(op, index) in changeTypeOptions"
-      :key="index"
-      href="#"
-      class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-      @click.prevent="changeType(op.value)"
-    >
-      {{ op.name }}
-    </a>
-  </dropdown>
+    <template #panel>
+      <a
+        v-for="(op, index) in changeTypeOptions"
+        :key="index"
+        href="#"
+        class="block px-4 py-2 text-md text-gray-700 dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+        @click.prevent="changeType(op.value)"
+      >
+        {{ op.name }}
+      </a>
+    </template>
+  </UPopover>
 </template>
 
 <script>
-import Dropdown from "~/components/global/Dropdown.vue"
-
 export default {
   name: "ChangeFieldType",
-  components: { Dropdown },
+  components: {},
   props: {
     field: {
       type: Object,
       required: true,
     },
-    btnClasses: {
-      type: String,
-      required: true,
-    },
   },
   emits:  ['changeType'],
   data() {
-    return {}
+    return {
+      open: false,
+    }
   },
 
   computed: {
@@ -114,7 +94,7 @@ export default {
     changeType(newType) {
       if (newType) {
         this.$emit("changeType", newType)
-        this.$refs.newTypeDropdown.close()
+        this.open = false
       }
     },
   },

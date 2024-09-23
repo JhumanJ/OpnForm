@@ -1,26 +1,25 @@
 <template>
-  <div class="flex flex-wrap flex-col">
-    <div key="2">
-      <create-form-base-modal
-        :show="showInitialFormModal"
-        @form-generated="formGenerated"
-        @close="showInitialFormModal = false"
-      />
-      <form-editor
-        v-if="!workspacesLoading"
-        ref="editor"
-        class="w-full flex flex-grow"
-        :error="error"
-        :is-guest="isGuest"
-        @open-register="registerModal = true"
-      />
-      <div
-        v-else
-        class="text-center mt-4 py-6"
-      >
-        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-      </div>
+  <div class="flex flex-wrap flex-col flex-grow">
+    <create-form-base-modal
+      :show="showInitialFormModal"
+      @form-generated="formGenerated"
+      @close="showInitialFormModal = false"
+    />
+    <form-editor
+      v-if="!workspacesLoading"
+      ref="editor"
+      class="w-full flex flex-grow"
+      :error="error"
+      :is-guest="isGuest"
+      @open-register="registerModal = true"
+    />
+    <div
+      v-else
+      class="text-center mt-4 py-6"
+    >
+      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
+    
 
     <quick-register
       :show-register-modal="registerModal"

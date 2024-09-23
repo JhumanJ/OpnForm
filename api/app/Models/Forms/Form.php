@@ -48,7 +48,6 @@ class Form extends Model implements CachableAttributes
         'removed_properties',
 
         'title',
-        'description',
         'tags',
         'visibility',
 
@@ -175,12 +174,6 @@ class Form extends Model implements CachableAttributes
             return $this->views()->count() +
                 $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
         });
-    }
-
-    public function setDescriptionAttribute($value)
-    {
-        // Strip out unwanted html
-        $this->attributes['description'] = Purify::clean($value);
     }
 
     public function setSubmittedTextAttribute($value)

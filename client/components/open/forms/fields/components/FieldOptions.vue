@@ -1,47 +1,33 @@
 <template>
   <div
     v-if="field"
-    class="py-2"
+    class="pb-2"
   >
     <!-- General -->
-    <div class="border-b px-4">
-      <h3 class="font-semibold block text-lg">
-        General
-      </h3>
-      <p class="text-gray-400 mb-2 text-xs">
-        Exclude this field or make it required.
-      </p>
-      <toggle-switch-input
+    <div class="px-4">
+      <text-input
+        name="name"
+        class="mt-2"
         :form="field"
-        name="required"
-        label="Required"
-        @update:model-value="onFieldRequiredChange"
+        :required="true"
+        wrapper-class="mb-2"
+        label="Field Name"
       />
-      <toggle-switch-input
-        :form="field"
-        name="hidden"
-        label="Hidden"
-        @update:model-value="onFieldHiddenChange"
-      />
-      <toggle-switch-input
-        :form="field"
-        name="disabled"
-        label="Disabled"
-        @update:model-value="onFieldDisabledChange"
+      <HiddenRequiredDisabled
+        class="mt-4"
+        :field="field"
       />
     </div>
 
     <!-- Checkbox -->
     <div
       v-if="field.type === 'checkbox'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Checkbox
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for checkbox.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-check-circle"
+        title="Checkbox"
+      />
       <toggle-switch-input
         :form="field"
         name="use_toggle_switch"
@@ -53,11 +39,12 @@
     <!-- File Uploads -->
     <div
       v-if="field.type === 'files'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg mb-3">
-        File uploads
-      </h3>
+      <EditorSectionHeader
+        icon="i-heroicons-paper-clip"
+        title="File uploads"
+      />
       <toggle-switch-input
         :form="field"
         name="multiple"
@@ -92,14 +79,12 @@
 
     <div
       v-if="field.type === 'rating'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Rating
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for rating.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-star"
+        title="Rating"
+      />
       <text-input
         name="rating_max_value"
         native-type="number"
@@ -113,14 +98,12 @@
 
     <div
       v-if="field.type === 'scale'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Scale
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for scale.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-scale-20-solid"
+        title="Scale"
+      />
       <text-input
         name="scale_min_value"
         native-type="number"
@@ -151,14 +134,12 @@
 
     <div
       v-if="field.type === 'slider'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Slider
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for slider.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-adjustments-horizontal"
+        title="Slider"
+      />
       <text-input
         name="slider_min_value"
         native-type="number"
@@ -195,14 +176,12 @@
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Text Options
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Keep it simple or make it a multi-lines input.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-bars-3-bottom-left"
+        title="Text Options"
+      />
       <toggle-switch-input
         :form="field"
         name="multi_lines"
@@ -221,11 +200,12 @@
     <!--   Date Options   -->
     <div
       v-if="field.type === 'date'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Date Options
-      </h3>
+      <EditorSectionHeader
+        icon="i-heroicons-calendar-20-solid"
+        title="Date Options"
+      />
       <toggle-switch-input
         :form="field"
         class="mt-3"
@@ -286,14 +266,12 @@
     <!-- select/multiselect Options   -->
     <div
       v-if="['select', 'multi_select'].includes(field.type)"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Select Options
-      </h3>
-      <p class="text-gray-400 mb-3 text-xs">
-        Advanced options for your select/multiselect fields.
-      </p>
+      <EditorSectionHeader
+        icon="i-heroicons-chevron-up-down-20-solid"
+        title="Select Options"
+      />
       <text-area-input
         v-model="optionsText"
         :name="field.id + '_options_text'"
@@ -320,22 +298,11 @@
     <!-- Customization - Placeholder, Prefill, Relabel, Field Help    -->
     <div
       v-if="displayBasedOnAdvanced"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg">
-        Customization
-      </h3>
-
-      <p class="text-gray-400 mb-3 text-xs">
-        Change your form field name, pre-fill a value, add hints, etc.
-      </p>
-
-      <text-input
-        name="name"
-        class="mt-3"
-        :form="field"
-        :required="true"
-        label="Field Name"
+      <EditorSectionHeader
+        icon="i-heroicons-adjustments-horizontal"
+        title="Customization"
       />
 
       <toggle-switch-input
@@ -568,7 +535,7 @@
           help="Maximum character limit of 2000"
           :required="false"
         />
-        <checkbox-input
+        <toggle-switch-input
           name="show_char_limit"
           :form="field"
           class="mt-3"
@@ -580,11 +547,13 @@
     <!--  Advanced Options   -->
     <div
       v-if="field.type === 'text'"
-      class="border-b py-2 px-4"
+      class="px-4"
     >
-      <h3 class="font-semibold block text-lg mb-3">
-        Advanced Options
-      </h3>
+      <EditorSectionHeader
+        icon="i-heroicons-bars-3-bottom-left"
+        title="Advanced Options"
+      />
+      
       <toggle-switch-input
         :form="field"
         name="generates_uuid"
@@ -600,19 +569,6 @@
         @update:model-value="onFieldGenAutoIdChange"
       />
     </div>
-
-    <!--  Logic Block -->
-    <form-block-logic-editor
-      class="py-2 px-4 border-b"
-      :form="form"
-      :field="field"
-    />
-
-    <custom-field-validation
-      class="py-2 px-4 border-b pb-16"
-      :form="form"
-      :field="field"
-    />
   </div>
 </template>
 
@@ -620,15 +576,15 @@
 import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
-import FormBlockLogicEditor from '../../components/form-logic-components/FormBlockLogicEditor.vue'
-import CustomFieldValidation from '../../components/CustomFieldValidation.vue'
 import MatrixFieldOptions from './MatrixFieldOptions.vue'
+import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
+import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, FormBlockLogicEditor, CustomFieldValidation, MatrixFieldOptions },
+  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader },
   props: {
     field: {
       type: Object,
@@ -738,28 +694,6 @@ export default {
   },
 
   methods: {
-    onFieldDisabledChange(val) {
-      this.field.disabled = val
-      if (this.field.disabled) {
-        this.field.hidden = false
-      }
-    },
-    onFieldRequiredChange(val) {
-      this.field.required = val
-      if (this.field.required) {
-        this.field.hidden = false
-      }
-    },
-    onFieldHiddenChange(val) {
-      this.field.hidden = val
-      if (this.field.hidden) {
-        this.field.required = false
-        this.field.disabled = false
-      } else {
-        this.field.generates_uuid = false
-        this.field.generates_auto_increment_id = false
-      }
-    },
     onFieldDateRangeChange(val) {
       this.field.date_range = val
       if (this.field.date_range) {

@@ -2,13 +2,16 @@
   <div
     v-if="!isFieldHidden"
     :id="'block-' + field.id"
+    ref="form-block"
     class="px-2"
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md':adminPreview,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': adminPreview,
+        'cursor-pointer':workingFormStore.showEditFieldSidebar && adminPreview,
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
+    @click="setFieldAsSelected"
   >
     <div
       class="-m-[1px] w-full max-w-full mx-auto"
@@ -16,14 +19,13 @@
     >
       <div
         v-if="adminPreview"
-        class="absolute -translate-x-full -left-1 top-1 bottom-0 hidden group-hover/nffield:block"
+        class="absolute translate-y-full lg:translate-y-0 -bottom-1.5 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
       >
         <div
-          class="flex flex-col -space-1 bg-white rounded-md shadow -mt-1"
-          :class="{ 'lg:flex-row lg:-space-x-2': !fieldSideBarOpened, 'xl:flex-row xl:-space-x-1': fieldSideBarOpened }"
+          class="flex lg:flex-col bg-gray-100 dark:bg-gray-800 border rounded-md"
         >
           <div
-            class="p-1 -mb-2 text-gray-300 hover:text-blue-500 cursor-pointer"
+            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
@@ -33,12 +35,22 @@
             />
           </div>
           <div
-            class="p-1 text-gray-300 hover:text-blue-500 cursor-pointer text-center"
+            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
             role="button"
             @click.prevent="editFieldOptions"
           >
             <Icon
               name="heroicons:cog-8-tooth-20-solid"
+              class="w-5 h-5"
+            />
+          </div>
+          <div
+            class="p-1 pt-0 hover:text-blue-500 mt-1 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            role="button"
+            @click.prevent="removeField"
+          >
+            <Icon
+              name="heroicons:trash-20-solid"
               class="w-5 h-5"
             />
           </div>
@@ -82,9 +94,13 @@
         >
           <div
             v-if="!field.image_block"
-            class="p-4 border border-dashed"
+            class="p-4 border border-dashed text-center"
           >
-            Open <b>{{ field.name }}'s</b> block settings to upload image.
+            <a
+              href="#"
+              class="text-blue-800 dark:text-blue-200"
+              @click.prevent="editFieldOptions"
+            >Open block settings to upload image.</a>
           </div>
           <img
             v-else
@@ -255,10 +271,20 @@ export default {
 
   methods: {
     editFieldOptions() {
+      if (!this.adminPreview) return
+      this.workingFormStore.openSettingsForField(this.field)
+    },
+    setFieldAsSelected () {
+      if (!this.adminPreview || !this.workingFormStore.showEditFieldSidebar) return
       this.workingFormStore.openSettingsForField(this.field)
     },
     openAddFieldSidebar() {
+      if (!this.adminPreview) return
       this.workingFormStore.openAddFieldSidebar(this.field)
+    },
+    removeField () {
+      if (!this.adminPreview)  return
+      this.workingFormStore.removeField(this.field)
     },
     getFieldWidthClasses(field) {
       if (!field.width || field.width === 'full') return 'col-span-full'
@@ -307,6 +333,10 @@ export default {
       if (field.type === 'matrix') {
         inputProperties.rows = field.rows
         inputProperties.columns = field.columns
+      }
+
+      if (['select','multi_select'].includes(field.type) && !this.isFieldRequired) {
+        inputProperties.clearable = true
       }
 
       if (['select', 'multi_select'].includes(field.type)) {

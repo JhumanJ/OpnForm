@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-wrap flex-col flex-grow">
-    <div key="2"
+    <div
+      key="2"
       class="w-full flex flex-grow flex-col"
     >
       <create-form-base-modal
