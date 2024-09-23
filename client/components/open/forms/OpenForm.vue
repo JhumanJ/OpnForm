@@ -551,7 +551,7 @@ export default {
     handleDragDropped(data) {
       if (data.added) {
         const targetIndex = this.getTargetFieldIndex(data.added.newIndex)
-        this.workingFormStore.addBlock(data.added.element, targetIndex)
+        this.workingFormStore.addBlock(data.added.element, targetIndex, false)
       }
       if (data.moved) {
         const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
