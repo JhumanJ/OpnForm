@@ -9,6 +9,10 @@
     :style="computedStyle"
     @submit.prevent=""
   >
+    <FormTimer
+      ref="form-timer"
+      :form="form"
+    />
     <template v-if="form.show_progress_bar">
       <div
         v-if="isIframe"
@@ -40,7 +44,7 @@
       mode="out-in"
     >
       <div
-        :key="currentFieldGroupIndex"
+        :key="formPageIndex"
         class="form-group flex flex-wrap w-full"
       >
         <draggable
@@ -50,6 +54,7 @@
           class="grid grid-cols-12 relative transition-all w-full"
           :class="{'rounded-md bg-blue-50':draggingNewBlock}"
           ghost-class="ghost-item"
+          filter=".not-draggable"
           :animation="200"
           :disabled="!adminPreview"
           handle=".handle"
@@ -91,7 +96,7 @@
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
       <open-form-button
-        v-if="currentFieldGroupIndex>0 && previousFieldsPageBreak && !loading"
+        v-if="formPageIndex>0 && previousFieldsPageBreak && !loading"
         native-type="button"
         :color="form.color"
         :theme="theme"
@@ -134,10 +139,12 @@ import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import FormTimer from './FormTimer.vue'
+import { storeToRefs } from 'pinia'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha},
+  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
   props: {
     form: {
       type: Object,
@@ -164,7 +171,7 @@ export default {
       type: Array,
       required: true
     },
-    defaultDataForm: {},
+    defaultDataForm: { type: [Object, null] },
     adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
     urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
     darkMode: {
@@ -172,7 +179,7 @@ export default {
       default: false
     }
   },
-
+  emits: ['submit'],
   setup(props) {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
@@ -184,13 +191,18 @@ export default {
       workingFormStore,
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
-      pendingSubmission: pendingSubmission(props.form)
+      pendingSubmission: pendingSubmission(props.form),
+      formPageIndex: storeToRefs(workingFormStore).formPageIndex,
+
+      // Used for admin previews
+      selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
+      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
     }
   },
 
   data() {
     return {
-      currentFieldGroupIndex: 0,
+      // Page index
       /**
        * Used to force refresh components by changing their keys
        */
@@ -232,16 +244,16 @@ export default {
     },
     currentFields: {
       get() {
-        return this.fieldGroups[this.currentFieldGroupIndex]
+        return this.fieldGroups[this.formPageIndex]
       },
       set(val) {
         // On re-order from the form, set the new order
         // Add the previous groups and next to val, and set the properties on working form
         const newFields = []
         this.fieldGroups.forEach((group, index) => {
-          if (index < this.currentFieldGroupIndex) {
+          if (index < this.formPageIndex) {
             newFields.push(...group)
-          } else if (index === this.currentFieldGroupIndex) {
+          } else if (index === this.formPageIndex) {
             newFields.push(...val)
           } else {
             newFields.push(...group)
@@ -262,8 +274,8 @@ export default {
       return null
     },
     previousFieldsPageBreak() {
-      if (this.currentFieldGroupIndex === 0) return null
-      const previousFields = this.fieldGroups[this.currentFieldGroupIndex - 1]
+      if (this.formPageIndex === 0) return null
+      const previousFields = this.fieldGroups[this.formPageIndex - 1]
       const block = previousFields[previousFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
@@ -273,7 +285,7 @@ export default {
      * @returns {boolean}xs
      */
     isLastPage() {
-      return this.currentFieldGroupIndex === (this.fieldGroups.length - 1)
+      return this.formPageIndex === (this.fieldGroups.length - 1)
     },
     isPublicFormPage() {
       return this.$route.name === 'forms-slug'
@@ -323,11 +335,29 @@ export default {
           this.pendingSubmission.set(this.dataFormValue)
         }
       }
+    },
+
+    // These watchers ensure the form shows the correct page for the field being edited in admin preview
+    selectedFieldIndex: {
+      handler(newIndex) {
+        if (this.adminPreview && this.showEditFieldSidebar) {
+          this.setPageForField(newIndex)
+        }
+      }
+    },
+    showEditFieldSidebar: {
+      handler(newValue) {
+        if (this.adminPreview && newValue) {
+          this.setPageForField(this.selectedFieldIndex)
+        }
+      }
     }
   },
-
-  mounted() {
+  beforeMount() {
     this.initForm()
+  },
+  mounted() {
+    this.$refs['form-timer'].startTimer()
     if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
@@ -336,9 +366,7 @@ export default {
 
   methods: {
     submitForm() {
-      if (this.currentFieldGroupIndex !== this.fieldGroups.length - 1) {
-        return
-      }
+      if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
         this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
@@ -349,34 +377,36 @@ export default {
         this.dataForm.submission_id = this.form.submission_id
       }
 
+      this.$refs['form-timer'].stopTimer()
+      this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
-     * If more than one page, show first page with error
+     *   Handle form submission failure
      */
     onSubmissionFailure() {
+      this.$refs['form-timer'].startTimer()
       this.isAutoSubmit = false
       if (this.fieldGroups.length > 1) {
-        // Find first mistake and show page
-        let pageChanged = false
-        this.fieldGroups.forEach((group, groupIndex) => {
-          group.forEach((field) => {
-            if (pageChanged) return
-
-            if (!pageChanged && this.dataForm.errors.has(field.id)) {
-              this.currentFieldGroupIndex = groupIndex
-              pageChanged = true
-            }
-          })
-        })
+        this.showFirstPageWithError()
       }
-
-      // Scroll to error
+      this.scrollToFirstError()
+    },
+    showFirstPageWithError() {
+      for (let i = 0; i < this.fieldGroups.length; i++) {
+        if (this.fieldGroups[i].some(field => this.dataForm.errors.has(field.id))) {
+          this.formPageIndex = i
+          break
+        }
+      }
+    },
+    scrollToFirstError() {
       if (import.meta.server) return
-      const elements = document.getElementsByClassName('has-error')
-      if (elements.length > 0) {
+      const firstErrorElement = document.querySelector('.has-error')
+      if (firstErrorElement) {
         window.scroll({
-          top: window.scrollY + elements[0].getBoundingClientRect().top - 60,
+          top: window.scrollY + firstErrorElement.getBoundingClientRect().top - 60,
           behavior: 'smooth'
         })
       }
@@ -392,130 +422,160 @@ export default {
       )
       return this.recordsStore.getByKey(this.form.submission_id)
     },
+
+     /**
+     * Form initialization
+     */
     async initForm() {
       if (this.defaultDataForm) {
         this.dataForm = useForm(this.defaultDataForm)
         return
       }
 
+      if (await this.tryInitFormFromEditableSubmission()) return
+      if (this.tryInitFormFromPendingSubmission()) return
+
+      this.initFormWithDefaultValues()
+    },
+    async tryInitFormFromEditableSubmission() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
-        if (useRoute().query?.submission_id) {
-          this.form.submission_id = useRoute().query?.submission_id
+        const submissionId = useRoute().query?.submission_id
+        if (submissionId) {
+          this.form.submission_id = submissionId
           const data = await this.getSubmissionData()
-          if (data !== null && data) {
+          if (data) {
             this.dataForm = useForm(data)
-            return
+            return true
           }
         }
       }
+      return false
+    },
+    tryInitFormFromPendingSubmission() {
       if (this.isPublicFormPage && this.form.auto_save) {
         const pendingData = this.pendingSubmission.get()
-        if (pendingData !== null && pendingData && Object.keys(this.pendingSubmission.get()).length !== 0) {
-          this.fields.forEach((field) => {
-            if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-              pendingData[field.id] = new Date().toISOString()
-            }
-          })
+        if (pendingData && Object.keys(pendingData).length !== 0) {
+          this.updatePendingDataFields(pendingData)
           this.dataForm = useForm(pendingData)
-          return
+          return true
         }
       }
-
-      const formData = clonedeep(this.dataForm ? this.dataForm.data() : {})
-      let urlPrefill = null
-      if (this.isPublicFormPage) {
-        urlPrefill = new URLSearchParams(window.location.search)
-      }
-
-      this.fields.forEach((field) => {
-        if (field.type.startsWith('nf-')) {
-          return
-        }
-
-        if (urlPrefill && urlPrefill.has(field.id)) {
-          // Url prefills
-          if (field.type === 'checkbox') {
-            if (urlPrefill.get(field.id) === 'false' || urlPrefill.get(field.id) === '0') {
-              formData[field.id] = false
-            } else if (urlPrefill.get(field.id) === 'true' || urlPrefill.get(field.id) === '1') {
-              formData[field.id] = true
-            }
-          } else {
-            formData[field.id] = urlPrefill.get(field.id)
-          }
-        } else if (urlPrefill && urlPrefill.has(field.id + '[]')) {
-          // Array url prefills
-          formData[field.id] = urlPrefill.getAll(field.id + '[]')
-        } else if (field.type === 'date' && field.prefill_today === true) { // For Prefill with 'today'
-          formData[field.id] = new Date().toISOString()
-        } else if (field.type === 'matrix') {
-          formData[field.id] = {...field.prefill}
-        } else { // Default prefill if any
-          formData[field.id] = field.prefill
+      return false
+    },
+    updatePendingDataFields(pendingData) {
+      this.fields.forEach(field => {
+        if (field.type === 'date' && field.prefill_today) {
+          pendingData[field.id] = new Date().toISOString()
         }
       })
+    },
+    initFormWithDefaultValues() {
+      const formData = clonedeep(this.dataForm?.data() || {})
+      const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
+
+      this.fields.forEach(field => {
+        if (field.type.startsWith('nf-')) return
+
+        this.handleUrlPrefill(field, formData, urlPrefill)
+        this.handleDefaultPrefill(field, formData)
+      })
+
       this.dataForm = useForm(formData)
     },
+    handleUrlPrefill(field, formData, urlPrefill) {
+      if (!urlPrefill) return
+
+      const prefillValue = urlPrefill.get(field.id)
+      const arrayPrefillValue = urlPrefill.getAll(field.id + '[]')
+
+      if (prefillValue !== null) {
+        formData[field.id] = field.type === 'checkbox' ? this.parseBooleanValue(prefillValue) : prefillValue
+      } else if (arrayPrefillValue.length > 0) {
+        formData[field.id] = arrayPrefillValue
+      }
+    },
+    parseBooleanValue(value) {
+      return value === 'true' || value === '1'
+    },
+    handleDefaultPrefill(field, formData) {
+      if (field.type === 'date' && field.prefill_today) {
+        formData[field.id] = new Date().toISOString()
+      } else if (field.type === 'matrix') {
+        formData[field.id] = {...field.prefill}
+      } else if (!(field.id in formData)) {
+        formData[field.id] = field.prefill
+      }
+    },
+    
+    /**
+     * Page Navigation
+     */
     previousPage() {
-      this.currentFieldGroupIndex -= 1
-      window.scrollTo({top: 0, behavior: 'smooth'})
-      return false
+      this.formPageIndex--
+      this.scrollToTop()
     },
     nextPage() {
       if (this.adminPreview || this.urlPrefillPreview) {
-        this.currentFieldGroupIndex += 1
-        window.scrollTo({top: 0, behavior: 'smooth'})
+        this.formPageIndex++
+        this.scrollToTop()
         return false
       }
       const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.busy = true
       this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
-        .then((data) => {
-          this.currentFieldGroupIndex += 1
+        .then(() => {
+          this.formPageIndex++
           this.dataForm.busy = false
-          window.scrollTo({top: 0, behavior: 'smooth'})
-        }).catch(error => {
-        console.error(error)
-        if (error && error.data && error.data.message) {
-          useAlert().error(error.data.message)
-        }
-        this.dataForm.busy = false
-      })
+          this.scrollToTop()
+        }).catch(this.handleValidationError)
       return false
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    handleValidationError(error) {
+      console.error(error)
+      if (error?.data?.message) {
+        useAlert().error(error.data.message)
+      }
+      this.dataForm.busy = false
     },
     isFieldHidden(field) {
       return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
     },
     getTargetFieldIndex(currentFieldPageIndex) {
-      let targetIndex = 0
-      if (this.currentFieldGroupIndex > 0) {
-        for (let i = 0; i < this.currentFieldGroupIndex; i++) {
-          targetIndex += this.fieldGroups[i].length
-        }
-        targetIndex += currentFieldPageIndex
-      } else {
-        targetIndex = currentFieldPageIndex
-      }
-      return targetIndex
+      return this.formPageIndex > 0
+        ? this.fieldGroups.slice(0, this.formPageIndex).reduce((sum, group) => sum + group.length, 0) + currentFieldPageIndex
+        : currentFieldPageIndex
     },
     handleDragDropped(data) {
       if (data.added) {
         const targetIndex = this.getTargetFieldIndex(data.added.newIndex)
-        this.workingFormStore.addBlock(data.added.element, targetIndex)
+        this.workingFormStore.addBlock(data.added.element, targetIndex, false)
       }
-
       if (data.moved) {
         const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
         const newTargetIndex = this.getTargetFieldIndex(data.moved.newIndex)
         this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
       }
     },
-    setMinHeight(minHeight) {
-      if (!this.isIframe) {
-        return
+    setPageForField(fieldIndex) {
+      if (fieldIndex === -1) return
+
+      let currentIndex = 0
+      for (let i = 0; i < this.fieldGroups.length; i++) {
+        currentIndex += this.fieldGroups[i].length
+        if (currentIndex > fieldIndex) {
+          this.formPageIndex = i
+          return
+        }
       }
+      this.formPageIndex = this.fieldGroups.length - 1
+    },
+    setMinHeight(minHeight) {
+      if (!this.isIframe) return
+
       this.minHeight = minHeight
-      // Trigger window iframe resize
       try {
         window.parentIFrame.size()
       } catch (e) {

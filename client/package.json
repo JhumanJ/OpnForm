@@ -23,6 +23,7 @@
     "nuxt": "^3.9.1",
     "nuxt-icon": "^0.6.10",
     "nuxt-simple-sitemap": "^4.2.3",
+    "nuxt-utm": "^0.1.10",
     "postcss": "^8.4.32",
     "prettier": "^3.2.5",
     "sass": "^1.69.6",

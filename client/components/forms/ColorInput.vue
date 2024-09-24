@@ -14,7 +14,11 @@
         :name="name"
       >
       <slot name="label">
-        <span>{{ label }}
+        <span
+          :class="[
+            theme.SelectInput.fontSize,
+          ]"
+        >{{ label }}
           <span
             v-if="required"
             class="text-red-500 required-dot"

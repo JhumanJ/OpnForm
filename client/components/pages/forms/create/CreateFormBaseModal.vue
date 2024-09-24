@@ -44,7 +44,7 @@
     </template>
     <div
       v-if="state == 'default'"
-      class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4"
     >
       <div
         v-track.select_form_base="{ base: 'contact-form' }"

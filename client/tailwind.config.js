@@ -11,6 +11,7 @@ module.exports = {
     "./error.vue",
     "./lib/forms/themes/form-themes.js",
     "./lib/forms/themes/ThemeBuilder.js",
+    './data/**/*.json'
   ],
   safelist: [
     {

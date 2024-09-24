@@ -1,5 +1,6 @@
 <template>
-  <div
+  <component
+    :is="element"
     ref="parentRef"
     tabindex="0"
     :class="{
@@ -8,7 +9,7 @@
     }"
     class="relative"
     :style="{ height: editing ? divHeight + 'px' : 'auto' }"
-    @focus="startEditing"
+    @click="startEditing"
   >
     <slot
       v-if="!editing"
@@ -20,20 +21,20 @@
     </slot>
     <div
       v-if="editing"
-      class="absolute inset-0 border-2 transition-colors"
+      class="absolute inset-0 border rounded-md border-inset transition-colors"
       :class="{ 'border-transparent': !editing, 'border-blue-500': editing }"
     >
       <input
         ref="editInputRef"
         v-model="content"
-        class="absolute inset-0 focus:outline-none bg-white transition-colors"
+        class="absolute inset-0 focus:outline-none bg-white rounded-md transition-colors px-2"
         :class="[{ 'bg-blue-50': editing }, contentClass]"
         @blur="editing = false"
         @keyup.enter="editing = false"
         @input="handleInput"
       >
     </div>
-  </div>
+  </component>
 </template>
 
 <script setup>
@@ -43,6 +44,7 @@ const props = defineProps({
   modelValue: { type: String, required: true },
   textAlign: { type: String, default: "left" },
   contentClass: { type: String, default: "" },
+  element: { type: String, default: 'div' }, // New prop for element type
 })
 
 const emit = defineEmits(['update:modelValue'])

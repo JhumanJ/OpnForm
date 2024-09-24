@@ -53,6 +53,7 @@ class OAuthController extends Controller
                 "message" => "OAuth service failed to authenticate: " . $e->getMessage()
             ]);
         }
+
         $user = $this->findOrCreateUser($provider, $driverUser);
 
         if (!$user) {
@@ -112,10 +113,12 @@ class OAuthController extends Controller
             return $user;
         }
 
+        $utmData = request()->utm_data;
         $user = User::create([
             'name' => $socialiteUser->getName(),
             'email' => $email,
             'email_verified_at' => now(),
+            'utm_data' => is_string($utmData) ? json_decode($utmData, true) : $utmData
         ]);
 
         // Create and sync workspace

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
         '@vueuse/motion/nuxt',
         'nuxt-simple-sitemap',
         '@nuxt/ui',
+        'nuxt-utm',
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
     ],
     build: {
@@ -38,6 +39,11 @@ export default defineNuxtConfig({
         {
             path: '~/components/global',
             pathPrefix: false,
+        },
+        {
+            path: '~/components/forms',
+            pathPrefix: false,
+            global: true
         },
         {
             path: '~/components/pages',
@@ -75,7 +81,7 @@ export default defineNuxtConfig({
         classPrefix: '',
     },
     ui: {
-        icons: ['heroicons', 'material-symbols'],
+        icons: ['heroicons', 'material-symbols']
     },
     sitemap,
     runtimeConfig,

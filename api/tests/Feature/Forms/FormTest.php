@@ -65,8 +65,7 @@ it('can update a form', function () {
 
     $this->assertDatabaseHas('forms', [
         'id' => $form->id,
-        'title' => $form->title,
-        'description' => $form->description,
+        'title' => $form->title
     ]);
 });
 
@@ -125,8 +124,7 @@ it('can duplicate a form', function () {
     expect($workspace->forms()->count())->toBe(2);
     $this->assertDatabaseHas('forms', [
         'id' => $response->json('new_form.id'),
-        'title' => 'Copy of ' . $form->title,
-        'description' => $form->description,
+        'title' => 'Copy of ' . $form->title
     ]);
 });
 

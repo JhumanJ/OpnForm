@@ -1,6 +1,7 @@
 <template>
   <editor-right-sidebar
-    :show="form && (showEditFieldSidebar || showAddFieldSidebar)"
+    :width-class="showAddFieldSidebar ? 'md:max-w-[15rem]' : 'md:max-w-[20rem]'"
+    :show="isOpen"
   >
     <VForm
       size="sm"
@@ -47,6 +48,9 @@ export default {
     return {}
   },
   computed: {
+    isOpen() {
+      return this.form !== null && (this.showEditFieldSidebar || this.showAddFieldSidebar)
+    },
     form: {
       get() {
         return this.workingFormStore.content

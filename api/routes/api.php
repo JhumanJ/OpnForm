@@ -147,6 +147,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 Route::middleware('pro-form')->group(function () {
                     Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
+                    Route::get('form-stats-details/{formId}', [FormStatsController::class, 'getFormStatsDetails'])->name('form.stats-details');
                 });
             });
         });

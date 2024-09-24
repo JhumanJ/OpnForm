@@ -1,14 +1,12 @@
 <template>
   <div
     v-if="localField.type === 'matrix'"
-    class="border-b py-2 px-4"
+    class="px-4"
   >
-    <h3 class="font-semibold block text-lg">
-      Matrix
-    </h3>
-    <p class="text-gray-400 mb-3 text-xs">
-      Advanced options for matrix.
-    </p>
+    <EditorSectionHeader
+      icon="i-heroicons-table-cells-20-solid"
+      title="Matrix"
+    />
 
     <div class="grid grid-cols-2 gap-4">
       <div class="">
@@ -72,6 +70,7 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
 
 const props = defineProps({
   modelValue: {

@@ -219,10 +219,10 @@ useOpnSeoMeta({
     return form.value ? form.value.title : 'Create beautiful forms'
   },
   description: () => {
-    if (pageMeta.value.description) {
-      return pageMeta.value.description
+    if (pageMeta.value.page_description) {
+      return pageMeta.value.page_description
     }
-    return (form.value && form.value?.description) ? form.value?.description.substring(0, 160) : null
+    return null
   },
   ogImage: () => {
     if (pageMeta.value.page_thumbnail) {

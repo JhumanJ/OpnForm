@@ -18,6 +18,5 @@ it('can make a form for a database', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->makeForm($user, $workspace);
     expect($form->title)->not()->toBeNull();
-    expect($form->description)->not()->toBeNull();
     expect(count($form->properties))->not()->toBe(0);
 });
