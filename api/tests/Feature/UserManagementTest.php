@@ -3,7 +3,6 @@
 use App\Models\UserInvite;
 use Carbon\Carbon;
 
-
 beforeEach(function () {
     $this->user = $this->actingAsProUser();
     $this->workspace = $this->createUserWorkspace($this->user);
