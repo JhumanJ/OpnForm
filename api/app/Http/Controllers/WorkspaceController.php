@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Workspace\CustomDomainRequest;
+use App\Http\Requests\Workspace\EmailSettingsRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
@@ -24,8 +25,27 @@ class WorkspaceController extends Controller
 
     public function saveCustomDomain(CustomDomainRequest $request)
     {
+        if (!$request->workspace->is_pro) {
+            return $this->error([
+                'message' => 'A Pro plan is required to use this feature.',
+            ], 403);
+        }
+
         $request->workspace->custom_domains = $request->customDomains;
         $request->workspace->save();
+
+        return new WorkspaceResource($request->workspace);
+    }
+
+    public function saveEmailSettings(EmailSettingsRequest $request)
+    {
+        if (!$request->workspace->is_pro) {
+            return $this->error([
+                'message' => 'A Pro plan is required to use this feature.',
+            ], 403);
+        }
+
+        $request->workspace->update(['settings' => array_merge($request->workspace->settings, ['email_settings' => $request->validated()])]);
 
         return new WorkspaceResource($request->workspace);
     }

@@ -54,7 +54,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
 
     private function getFromEmail()
     {
-        if(config('app.self_hosted')) {
+        if (config('app.self_hosted')) {
             return config('mail.from.address');
         }
 

@@ -45,6 +45,17 @@ return [
             'auth_mode' => null,
         ],
 
+        // Use the custom_smtp mailer for the user's own SMTP server.
+        // This configuration will be set dynamically by the AbstractEmailIntegrationHandler class.
+        'custom_smtp' => [
+            'transport' => 'smtp',
+            'host' => null,
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => null,
+            'password' => null,
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],

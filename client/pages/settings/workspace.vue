@@ -8,8 +8,9 @@
         <small class="text-gray-500">You're currently editing the settings for the workspace "{{ workspace.name }}".
           You can switch to another workspace in top left corner of the page.</small>
       </div>
-      <div class="w-full flex flex-wrap justify-between gap-2">
+      <div class="w-full flex flex-wrap gap-2">
         <WorkSpaceCustomDomains v-if="useFeatureFlag('custom_domains') && !loading" />
+        <WorkSpaceEmailSettings v-if="!loading" />
         <UButton
           label="New Workspace"
           icon="i-heroicons-plus"

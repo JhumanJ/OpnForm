@@ -3,16 +3,19 @@
 use App\Models\UserInvite;
 use Carbon\Carbon;
 
+beforeEach(function () {
+    $this->user = $this->actingAsProUser();
+    $this->workspace = $this->createUserWorkspace($this->user);
+});
+
+
 it('can register with invite token', function () {
-    $this->withoutExceptionHandling();
-    $user = $this->actingAsUser();
-    $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $this->workspace->id), $inviteData)
         ->assertSuccessful();
 
-    expect($workspace->invites()->count())->toBe(1);
+    expect($this->workspace->invites()->count())->toBe(1);
     $userInvite = UserInvite::latest()->first();
     $token = $userInvite->token;
 
@@ -30,18 +33,16 @@ it('can register with invite token', function () {
         'invite_token' => $token,
     ]);
     $response->assertSuccessful();
-    expect($workspace->users()->count())->toBe(2);
+    expect($this->workspace->users()->count())->toBe(2);
 });
 
 it('cannot register with expired invite token', function () {
-    $user = $this->actingAsUser();
-    $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $this->workspace->id), $inviteData)
         ->assertSuccessful();
 
-    expect($workspace->invites()->count())->toBe(1);
+    expect($this->workspace->invites()->count())->toBe(1);
     $userInvite = UserInvite::latest()->first();
     $token = $userInvite->token;
 
@@ -62,18 +63,16 @@ it('cannot register with expired invite token', function () {
     $response->assertStatus(400)->assertJson([
         'message' => 'Invite token has expired.',
     ]);
-    expect($workspace->users()->count())->toBe(1);
+    expect($this->workspace->users()->count())->toBe(1);
 });
 
 it('cannot re-register with accepted invite token', function () {
-    $user = $this->actingAsUser();
-    $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $this->postJson(route('open.workspaces.users.add', $this->workspace->id), $inviteData)
         ->assertSuccessful();
 
-    expect($workspace->invites()->count())->toBe(1);
+    expect($this->workspace->invites()->count())->toBe(1);
     $userInvite = UserInvite::latest()->first();
     $token = $userInvite->token;
 
@@ -91,10 +90,10 @@ it('cannot re-register with accepted invite token', function () {
         'invite_token' => $token,
     ]);
     $response->assertSuccessful();
-    expect($workspace->users()->count())->toBe(2);
+    expect($this->workspace->users()->count())->toBe(2);
 
     $this->postJson('/logout')
-    ->assertSuccessful();
+        ->assertSuccessful();
 
     // Register again with same used token
     $response = $this->postJson('/register', [
@@ -110,23 +109,21 @@ it('cannot re-register with accepted invite token', function () {
     $response->assertStatus(422)->assertJson([
         'message' => 'The email has already been taken.',
     ]);
-    expect($workspace->users()->count())->toBe(2);
+    expect($this->workspace->users()->count())->toBe(2);
 });
 
 it('can cancel user invite', function () {
-    $user = $this->actingAsUser();
-    $workspace = $this->createUserWorkspace($user);
     $email = 'invitee@gmail.com';
     $inviteData = ['email' => $email, 'role' => 'user'];
-    $response = $this->postJson(route('open.workspaces.users.add', $workspace->id), $inviteData)
+    $response = $this->postJson(route('open.workspaces.users.add', $this->workspace->id), $inviteData)
         ->assertSuccessful();
 
-    expect($workspace->invites()->count())->toBe(1);
+    expect($this->workspace->invites()->count())->toBe(1);
     $userInvite = UserInvite::latest()->first();
     $token = $userInvite->token;
 
     // Cancel the invite
-    $this->deleteJson(route('open.workspaces.invites.cancel', ['workspaceId' => $workspace->id, 'inviteId' => $userInvite->id]))
+    $this->deleteJson(route('open.workspaces.invites.cancel', ['workspaceId' => $this->workspace->id, 'inviteId' => $userInvite->id]))
         ->assertSuccessful();
 
     $this->postJson('/logout')
@@ -146,5 +143,5 @@ it('can cancel user invite', function () {
         'message' => 'Invite token is invalid.',
     ]);
 
-    expect($workspace->users()->count())->toBe(1);
+    expect($this->workspace->users()->count())->toBe(1);
 });

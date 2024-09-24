@@ -4,7 +4,19 @@
     :integration="props.integration"
     :form="form"
   >
-    <div>{{ emailSubmissionConfirmationHelp }}</div>
+    <div class="text-gray-500 text-sm">
+      {{ emailSubmissionConfirmationHelp }}
+    </div>
+
+    <p class="text-gray-500 text-sm mb-3">
+      You can <NuxtLink
+        class="underline"
+        :to="{ name: 'settings-workspace' }"
+        target="_blank"
+      >
+        use our custom SMTP feature
+      </NuxtLink> to send emails from your own domain.
+    </p>
 
     <div v-if="emailSubmissionConfirmationField">
       <text-input

@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
->
-    <testsuites>
-        <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
-        </testsuite>
-<!--        <testsuite name="Browser">-->
-<!--            <directory suffix="Test.php">./tests/Browser</directory>-->
-<!--        </testsuite>-->
-    </testsuites>
-    <coverage>
-        <include>
-            <directory suffix=".php">./app</directory>
-        </include>
-    </coverage>
-    <php>
-        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
-        <env name="APP_ENV" value="testing"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="DB_FOREIGN_KEYS" value="(false)"/>
-        <env name="MAIL_MAILER" value="log"/>
-        <env name="MAIL_FROM_ADDRESS" value="notifications@notionforms.io"/>
-        <env name="MAIL_FROM_NAME" value="NotionForms"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="SELF_HOSTED" value="false"/>
-        <env name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
-        <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory suffix="Test.php">./tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">./tests/Feature</directory>
+    </testsuite>
+    <!--        <testsuite name="Browser">-->
+    <!--            <directory suffix="Test.php">./tests/Browser</directory>-->
+    <!--        </testsuite>-->
+  </testsuites>
+  <php>
+    <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+    <env name="APP_ENV" value="testing"/>
+    <env name="BCRYPT_ROUNDS" value="4"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="DB_FOREIGN_KEYS" value="(false)"/>
+    <env name="MAIL_MAILER" value="log"/>
+    <env name="MAIL_FROM_ADDRESS" value="notifications@notionforms.io"/>
+    <env name="MAIL_FROM_NAME" value="NotionForms"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="SELF_HOSTED" value="false"/>
+    <env name="TEMPLATE_EDITOR_EMAILS" value="admin@opnform.com"/>
+    <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
+    <env name="STRIPE_KEY" value="TEST_KEY"/>
+    <env name="STRIPE_SECRET" value="TEST_SECRET"/>
+  </php>
+  <source>
+    <include>
+      <directory suffix=".php">./app</directory>
+    </include>
+  </source>
 </phpunit>
