@@ -52,13 +52,14 @@ class IntegrationController
         $this->authorize('view', $form);
 
         $lastSubmission = $form->submissions()->latest()->first();
+        $submissionData = null;
         if (!$lastSubmission) {
             // Generate fake data when no previous submissions
-            return (array) \Cache::remember('zapier-poll-submissions', 60 * 5, function () use ($form, $lastSubmission) {
-                $submissionData = (new FormSubmissionDataFactory($form))->asFormSubmissionData()->createSubmissionData();
-                return [ZapierIntegration::formatWebhookData($form, $submissionData ?? $lastSubmission->data)];
-            });
+            $submissionData = (new FormSubmissionDataFactory($form))->asFormSubmissionData()->createSubmissionData();
         }
+        return (array) \Cache::remember('zapier-poll-submissions', 60 * 5, function () use ($form, $submissionData, $lastSubmission) {
+            return [ZapierIntegration::formatWebhookData($form, $submissionData ?? $lastSubmission->data)];
+        });
 
     }
 }
