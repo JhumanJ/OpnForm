@@ -114,13 +114,12 @@ abstract class AbstractIntegrationHandler
 
         // Old format - kept for retro-compatibility
         $oldFormatData = [];
-        foreach ($formatter->getFieldsWithValue() as $field) {
-            $oldFormatData[$field['name']] = $field['value'];
-        }
-
-        // New format using ID
         $formattedData = [];
-        foreach ($formatter->getFieldsWithValue() as $field) {
+        $fieldsWithValue = $formatter->getFieldsWithValue();
+
+        foreach ($fieldsWithValue as $field) {
+            $oldFormatData[$field['name']] = $field['value'];
+            // New format using ID
             $formattedData[$field['id']] = [
                 'value' => $field['value'],
                 'name' => $field['name'],
