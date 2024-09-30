@@ -95,7 +95,7 @@ it('checks form stats details', function () {
                 ->where('views', 10)
                 ->where('submissions', 6)
                 ->where('completion_rate', 60)
-                ->where('average_duration', '1 minute 24 seconds')
+                ->where('average_duration', '1m 24s')
                 ->etc();
         });
 });
