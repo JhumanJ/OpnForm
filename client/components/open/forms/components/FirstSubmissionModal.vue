@@ -7,7 +7,7 @@
   >
     <template #title>
       <h2 class="text-xl font-medium">
-        🎉 You first submission! Congratulations!
+        🎉 Your first submission! Congratulations!
       </h2>
     </template>
     <div class="">
