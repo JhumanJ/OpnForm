@@ -67,7 +67,7 @@
       class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
     >
       <div class="flex-grow">
-        <p
+        <div
           class="mb-0 py-2 px-4 text-yellow-600"
           v-html="form.closed_text"
         />
@@ -100,7 +100,7 @@
         key="form"
       >
         <open-form
-          v-if="form"
+          v-if="form && !form.is_closed"
           :form="form"
           :loading="loading"
           :fields="form.properties"
