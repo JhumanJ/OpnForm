@@ -57,7 +57,8 @@ class IntegrationController
             // Generate fake data when no previous submissions
             $submissionData = (new FormSubmissionDataFactory($form))->asFormSubmissionData()->createSubmissionData();
         }
-        return (array) \Cache::remember('zapier-poll-submissions', 60 * 5, function () use ($form, $submissionData, $lastSubmission) {
+        $cacheKey = "zapier-poll-submissions-{$form->id}";
+        return (array) \Cache::remember($cacheKey, 60 * 5, function () use ($form, $submissionData, $lastSubmission) {
             return [ZapierIntegration::formatWebhookData($form, $submissionData ?? $lastSubmission->data)];
         });
 
