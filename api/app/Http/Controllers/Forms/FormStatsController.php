@@ -42,7 +42,7 @@ class FormStatsController extends Controller
         $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
 
-        $totalViews = $form->views()->count();
+        $totalViews = $form->views_count;
         $totalSubmissions = $form->submissions_count;
 
         $averageDuration = \Cache::remember('form_stats_average_duration_' . $form->id, 1800, function () use ($form) {
@@ -55,7 +55,7 @@ class FormStatsController extends Controller
             'views' => $totalViews,
             'submissions' => $totalSubmissions,
             'completion_rate' => $totalViews > 0 ? round(($totalSubmissions / $totalViews) * 100, 2) : 0,
-            'average_duration' => $averageDuration ? CarbonInterval::seconds($averageDuration)->cascade()->forHumans() : null
+            'average_duration' => $averageDuration ? CarbonInterval::seconds($averageDuration)->cascade()->forHumans(null, true) : null
         ];
     }
 }
