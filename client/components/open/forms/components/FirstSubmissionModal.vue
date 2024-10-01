@@ -12,7 +12,7 @@
     </template>
     <div class="">
       <div class="text-sm text-gray-500">
-        Congratulations on creating your form and receiving your first submission! Your form is now live and ready for action. You can now <span class="font-semibold">share your form</span> with others, or <span class="font-semibold">open your Notion database</span> to view the submitted data.
+        Congratulations on creating your form and receiving your first submission! Your form is now live and ready for action. You can now <span class="font-semibold">share your form</span> with others, or <span class="font-semibold">open your Form submission page</span> to view the submitted data.
       </div>
 
       <div class="flex gap-2 items-center max-w-full">
@@ -23,11 +23,13 @@
         <UButton
           v-track.form_first_submission_modal_open_db_click
           color="white"
-          icon="i-logos-notion-icon"
-          :to="form.notion_database_url"
+          icon="i-heroicons-document"
+          :to="{ name: 'forms-slug-show-submissions',
+                 params: { slug: form.slug }
+               }"
           target="_blank"
         >
-          See  Notion database
+          See Submissions
         </UButton>
       </div>
 
@@ -39,11 +41,11 @@
           v-for="(item, i) in helpLinks"
           :key="i"
           role="button"
-          class="bg-white shadow border border-gray-200 rounded-lg p-4 pb-2 items-center justify-center flex flex-col relative hover:bg-gray-50 group transition-colors"
+          class="bg-white shadow border border-gray-200 rounded-lg p-4 pb-2 items-center justify-center flex flex-col relative hover:bg-gray-50 dark:hover:bg-gray-800 group transition-colors"
           @click="item.action"
         >
           <div class="flex justify-center">
-            <div class="h-8 w-8 text-gray-600 group-hover:text-gray-800 transition-colors flex items-center">
+            <div class="h-8 w-8 text-gray-600 group-hover:text-gray-800 dark:group-hover:text-white transition-colors flex items-center">
               <Icon
                 :name="item.icon"
                 class=""
@@ -51,7 +53,7 @@
               />
             </div>
           </div>
-          
+
           <p class="text-gray-500 font-medium text-xs text-center my-2">
             {{ item.label }}
           </p>
@@ -62,35 +64,26 @@
 </template>
 
 <script setup>
-import ShareFormUrl from '~/components/notion/forms/components/ShareFormUrl.vue'
-
+import ShareFormUrl from '~/components/open/forms/components/ShareFormUrl.vue'
 const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true }
 })
-
 const emit = defineEmits(['close'])
 const confetti = useConfetti()
 const crisp = useCrisp()
-
 watch(() => props.show, () => {
   if (props.show) {
     confetti.play()
     useAmplitude().logEvent('form_first_submission_modal_viewed')
   }
 })
-
 const helpLinks = computed(() => {
   return [
     {
       'label': 'Embed form on your website',
       'icon': 'heroicons:code-bracket',
-      'action': () => crisp.openHelpdeskArticle('how-to-embed-your-form-on-your-website-yqa6i')
-    },
-    {
-      'label': 'Embed form in Notion',
-      'icon': 'ri:notion-fill',
-      'action': () => crisp.openHelpdeskArticle('can-i-embed-my-form-in-a-notion-page-or-site-11iroj9')
+      'action': () => crisp.openHelpdeskArticle('https://help.opnform.com/en/article/can-i-embed-my-form-in-a-notion-page-or-site-x7guph/')
     },
     {
       'label': 'Help Center',
@@ -104,5 +97,4 @@ const helpLinks = computed(() => {
     },
   ]
 })
-
 </script>
