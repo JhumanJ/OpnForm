@@ -73,18 +73,35 @@ export const themes = {
         lg: 'w-6 h-6 mx-1'
       }
     },
+    PhoneInput: {
+      flag: {
+        sm: '!-mt-[14px]',
+        md: '!-mt-[9px] rounded',
+        lg: '!-mt-[9px] rounded'
+      },
+      flagSize: {
+        sm: 'small',
+        md: 'normal',
+        lg: 'normal'
+      },
+      maxHeight: {
+        sm: 'max-h-[20px]',
+        md: 'max-h-[24px]',
+        lg: 'max-h-[28px]'
+      }
+    },
     DateInput: {
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
     },
-    CheckboxInput:{
+    CheckboxInput: {
       size: {
         sm: 'w-4 h-4',
         md: 'w-5 h-5',
         lg: 'w-5 h-5'
       },
     },
-    SwitchInput:{
+    SwitchInput: {
       containerSize: {
         sm: 'h-5 w-10 p-0.5',
         md: 'h-6 w-12 p-1',
@@ -101,7 +118,7 @@ export const themes = {
         lg: 'translate-x-6'
       }
     },
-    RatingInput:{
+    RatingInput: {
       size: {
         sm: 'w-6 h-6',
         md: 'w-8 h-8',
@@ -202,17 +219,34 @@ export const themes = {
         lg: 'w-6 h-6 mx-1'
       }
     },
+    PhoneInput: {
+      flag: {
+        sm: '!-mt-[14px]',
+        md: '!-mt-[9px] rounded',
+        lg: '!-mt-[9px] rounded'
+      },
+      flagSize: {
+        sm: 'small',
+        md: 'normal',
+        lg: 'normal'
+      },
+      maxHeight: {
+        sm: 'max-h-[20px]',
+        md: 'max-h-[24px]',
+        lg: 'max-h-[28px]'
+      }
+    },
     DateInput: {
       input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
     },
-    CheckboxInput:{
+    CheckboxInput: {
       size: {
         sm: 'w-4 h-4',
         md: 'w-5 h-5',
         lg: 'w-5 h-5'
       },
     },
-    SwitchInput:{
+    SwitchInput: {
       containerSize: {
         sm: 'h-5 w-10',
         md: 'h-6 w-12',
@@ -224,7 +258,7 @@ export const themes = {
         lg: 'h-4 w-4'
       },
     },
-    RatingInput:{
+    RatingInput: {
       size: {
         sm: 'w-6 h-6',
         md: 'w-8 h-8',
@@ -325,17 +359,34 @@ export const themes = {
         lg: 'w-6 h-6 mx-1'
       }
     },
+    PhoneInput: {
+      flag: {
+        sm: '!-mt-[14px]',
+        md: '!-mt-[9px] rounded',
+        lg: '!-mt-[9px] rounded'
+      },
+      flagSize: {
+        sm: 'small',
+        md: 'normal',
+        lg: 'normal'
+      },
+      maxHeight: {
+        sm: 'max-h-[20px]',
+        md: 'max-h-[24px]',
+        lg: 'max-h-[28px]'
+      }
+    },
     DateInput: {
       input: 'shadow-inner-notion border-transparent focus:border-transparent flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion p-[1px]'
     },
-    CheckboxInput:{
+    CheckboxInput: {
       size: {
         sm: 'w-4 h-4',
         md: 'w-5 h-5',
         lg: 'w-5 h-5'
       },
     },
-    SwitchInput:{
+    SwitchInput: {
       containerSize: {
         sm: 'h-5 w-10',
         md: 'h-6 w-12',
@@ -347,7 +398,7 @@ export const themes = {
         lg: 'h-4 w-4'
       },
     },
-    RatingInput:{
+    RatingInput: {
       size: {
         sm: 'w-6 h-6',
         md: 'w-8 h-8',
