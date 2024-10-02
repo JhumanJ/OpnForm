@@ -16,18 +16,23 @@
       </div>
 
       <div class="flex gap-2 items-center max-w-full">
+        <p class="text-sm w-48 text-gray-500">
+          Share form URL:
+        </p>
         <ShareFormUrl
           class="flex-grow my-4"
           :form="form"
         />
+      </div>
+      <div class="flex py-2 items-center max-w-full">
+        <p class="text-sm w-48 text-gray-500">
+          Check your submissions:
+        </p>
         <UButton
-          v-track.form_first_submission_modal_open_db_click
           color="white"
           icon="i-heroicons-document"
-          :to="{ name: 'forms-slug-show-submissions',
-                 params: { slug: form.slug }
-               }"
           target="_blank"
+          @click="trackOpenDbClick"
         >
           See Submissions
         </UButton>
@@ -72,6 +77,7 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 const confetti = useConfetti()
 const crisp = useCrisp()
+const amplitude = useAmplitude()
 watch(() => props.show, () => {
   if (props.show) {
     confetti.play()
@@ -97,4 +103,11 @@ const helpLinks = computed(() => {
     },
   ]
 })
+
+const trackOpenDbClick = () => {
+  const submissionsUrl = `/forms/${props.form.slug}/submissions`
+  window.open(submissionsUrl, '_blank')
+  amplitude.logEvent('form_first_submission_modal_open_db_click')
+}
+
 </script>
