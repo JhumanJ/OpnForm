@@ -74,6 +74,11 @@ export const themes = {
       }
     },
     PhoneInput: {
+      countrySelectWidth: {
+        sm: 'w-[100px]',
+        md: 'w-[120px]',
+        lg: 'w-[120px]'
+      },
       flag: {
         sm: '!-mt-[14px]',
         md: '!-mt-[9px] rounded',
@@ -220,6 +225,11 @@ export const themes = {
       }
     },
     PhoneInput: {
+      countrySelectWidth: {
+        sm: 'w-[100px]',
+        md: 'w-[120px]',
+        lg: 'w-[120px]'
+      },
       flag: {
         sm: '!-mt-[14px]',
         md: '!-mt-[9px] rounded',
@@ -360,6 +370,11 @@ export const themes = {
       }
     },
     PhoneInput: {
+      countrySelectWidth: {
+        sm: 'w-[100px]',
+        md: 'w-[120px]',
+        lg: 'w-[120px]'
+      },
       flag: {
         sm: '!-mt-[14px]',
         md: '!-mt-[9px] rounded',

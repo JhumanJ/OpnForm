@@ -12,7 +12,7 @@
     >
       <v-select
         v-model="selectedCountryCode"
-        class="w-[130px]"
+        :class="theme.PhoneInput.countrySelectWidth"
         dropdown-class="max-w-[300px]"
         input-class="rounded-r-none"
         :data="countries"
