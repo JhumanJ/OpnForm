@@ -49,6 +49,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
             ->from($this->getFromEmail(), $this->integrationData->notification_sender)
             ->subject($this->getSubject())
             ->markdown('mail.form.confirmation-submission-notification', [
+                'notificationBody' => $this->getNotificationBody(),
                 'fields' => $this->formattedData,
                 'form' => $form,
                 'integrationData' => $this->integrationData,
