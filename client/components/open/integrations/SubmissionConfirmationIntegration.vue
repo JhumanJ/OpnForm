@@ -24,30 +24,32 @@
         name="settings.notification_sender"
         class="mt-4"
         required
-        label="Confirmation Email Sender Name"
+        label="Email Sender Name"
         help="Emails will be sent from our email address but you can customize the name of the Sender"
       />
-      <text-input
+      <MentionInput
         :form="integrationData"
+        :mentions="form.properties"
         name="settings.notification_subject"
         class="mt-4"
         required
-        label="Confirmation email subject"
-        help="Subject of the confirmation email that will be sent"
+        label="Email subject"
       />
       <rich-text-area-input
         :form="integrationData"
         name="settings.notification_body"
+        :enable-mentions="true"
+        :mentions="form.properties"
         class="mt-4"
         required
-        label="Confirmation email content"
-        help="Content of the confirmation email that will be sent"
+        label="Email content"
       />
-      <text-input
+      <MentionInput
         :form="integrationData"
+        :mentions="form.properties"
         name="settings.confirmation_reply_to"
         class="mt-4"
-        label="Confirmation Reply To"
+        label="Reply To"
         help="If empty, Reply-to will be your own email."
       />
       <toggle-switch-input

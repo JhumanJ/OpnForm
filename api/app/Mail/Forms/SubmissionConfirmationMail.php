@@ -4,6 +4,7 @@ namespace App\Mail\Forms;
 
 use App\Events\Forms\FormSubmitted;
 use App\Mail\OpenFormMail;
+use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +17,8 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    private $formattedData;
+
     /**
      * Create a new message instance.
      *
@@ -23,6 +26,12 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
      */
     public function __construct(private FormSubmitted $event, private $integrationData)
     {
+        $formatter = (new FormSubmissionFormatter($event->form, $event->data))
+            ->createLinks()
+            ->outputStringsOnly()
+            ->useSignedUrlForFiles();
+
+        $this->formattedData = $formatter->getFieldsWithValue();
     }
 
     /**
@@ -34,17 +43,13 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     {
         $form = $this->event->form;
 
-        $formatter = (new FormSubmissionFormatter($form, $this->event->data))
-            ->createLinks()
-            ->outputStringsOnly()
-            ->useSignedUrlForFiles();
-
+       
         return $this
             ->replyTo($this->getReplyToEmail($form->creator->email))
             ->from($this->getFromEmail(), $this->integrationData->notification_sender)
-            ->subject($this->integrationData->notification_subject)
+            ->subject($this->getSubject())
             ->markdown('mail.form.confirmation-submission-notification', [
-                'fields' => $formatter->getFieldsWithValue(),
+                'fields' => $this->formattedData,
                 'form' => $form,
                 'integrationData' => $this->integrationData,
                 'noBranding' => $form->no_branding,
@@ -67,9 +72,25 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     {
         $replyTo = $this->integrationData->confirmation_reply_to ?? null;
 
-        if ($replyTo && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
-            return $replyTo;
+        if ($replyTo) {
+            $parser = new MentionParser($replyTo, $this->formattedData);
+            $parsedReplyTo = $parser->parse();
+            if ($parsedReplyTo && filter_var($parsedReplyTo, FILTER_VALIDATE_EMAIL)) {
+                return $parsedReplyTo;
+            }
         }
         return $default;
+    }
+
+    private function getSubject()
+    {
+        $parser = new MentionParser($this->integrationData->notification_subject, $this->formattedData);
+        return $parser->parse();
+    }
+
+    private function getNotificationBody()
+    {
+        $parser = new MentionParser($this->integrationData->notification_body, $this->formattedData);
+        return $parser->parse();
     }
 }

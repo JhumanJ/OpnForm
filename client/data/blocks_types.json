@@ -5,7 +5,8 @@
     "icon": "i-heroicons-bars-3-bottom-left",
     "default_block_name": "Your name",
     "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
+    "text_class": "text-blue-900",
+    "is_input": true
   },
   "date": {
     "name": "date",
@@ -13,7 +14,8 @@
     "icon": "i-heroicons-calendar-20-solid",
     "default_block_name": "Date",
     "bg_class": "bg-green-100",
-    "text_class": "text-green-900"
+    "text_class": "text-green-900",
+    "is_input": true
   },
   "url": {
     "name": "url",
@@ -21,7 +23,8 @@
     "icon": "i-heroicons-link-20-solid",
     "default_block_name": "Link",
     "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
+    "text_class": "text-blue-900",
+    "is_input": true
   },
   "phone_number": {
     "name": "phone_number",
@@ -29,7 +32,8 @@
     "icon": "i-heroicons-phone-20-solid",
     "default_block_name": "Phone Number",
     "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
+    "text_class": "text-blue-900",
+    "is_input": true
   },
   "email": {
     "name": "email",
@@ -37,7 +41,8 @@
     "icon": "i-heroicons-at-symbol-20-solid",
     "default_block_name": "Email",
     "bg_class": "bg-blue-100",
-    "text_class": "text-blue-900"
+    "text_class": "text-blue-900",
+    "is_input": true
   },
   "checkbox": {
     "name": "checkbox",
@@ -45,7 +50,8 @@
     "icon": "i-heroicons-check-circle",
     "default_block_name": "Checkbox",
     "bg_class": "bg-red-100",
-    "text_class": "text-red-900"
+    "text_class": "text-red-900",
+    "is_input": true
   },
   "select": {
     "name": "select",
@@ -53,7 +59,8 @@
     "icon": "i-heroicons-chevron-up-down-20-solid",
     "default_block_name": "Select",
     "bg_class": "bg-red-100",
-    "text_class": "text-red-900"
+    "text_class": "text-red-900",
+    "is_input": true
   },
   "multi_select": {
     "name": "multi_select",
@@ -61,7 +68,8 @@
     "icon": "i-heroicons-chevron-up-down-20-solid",
     "default_block_name": "Multi Select",
     "bg_class": "bg-red-100",
-    "text_class": "text-red-900"
+    "text_class": "text-red-900",
+    "is_input": true
   },
   "matrix": {
     "name": "matrix",
@@ -69,7 +77,8 @@
     "icon": "i-heroicons-table-cells-20-solid",
     "default_block_name": "Matrix",
      "bg_class": "bg-red-100",
-    "text_class": "text-red-900"
+    "text_class": "text-red-900",
+    "is_input": true
   },
   "number": {
     "name": "number",
@@ -77,7 +86,8 @@
     "icon": "i-heroicons-hashtag-20-solid",
     "default_block_name": "Number",
     "bg_class": "bg-purple-100",
-    "text_class": "text-purple-900"
+    "text_class": "text-purple-900",
+    "is_input": true
   },
   "rating": {
     "name": "rating",
@@ -85,7 +95,8 @@
     "icon": "i-heroicons-star",
     "default_block_name": "Rating",
      "bg_class": "bg-purple-100",
-    "text_class": "text-purple-900"
+    "text_class": "text-purple-900",
+    "is_input": true
   },
   "scale": {
     "name": "scale",
@@ -93,7 +104,8 @@
     "icon": "i-heroicons-scale-20-solid",
     "default_block_name": "Scale",
     "bg_class": "bg-purple-100",
-    "text_class": "text-purple-900"
+    "text_class": "text-purple-900",
+    "is_input": true
   },
   "slider": {
     "name": "slider",
@@ -101,7 +113,8 @@
     "icon": "i-heroicons-adjustments-horizontal",
     "default_block_name": "Slider",
     "bg_class": "bg-purple-100",
-    "text_class": "text-purple-900"
+    "text_class": "text-purple-900",
+    "is_input": true
   },
   "files": {
     "name": "files",
@@ -109,7 +122,8 @@
     "icon": "i-heroicons-paper-clip",
     "default_block_name": "Files",
     "bg_class": "bg-pink-100",
-    "text_class": "text-pink-900"
+    "text_class": "text-pink-900",
+    "is_input": true
   },
   "signature": {
     "name": "signature",
@@ -117,7 +131,8 @@
     "icon": "i-heroicons-pencil-square-20-solid",
     "default_block_name": "Signature",
     "bg_class": "bg-pink-100",
-    "text_class": "text-pink-900"
+    "text_class": "text-pink-900",
+    "is_input": true
   },
   "nf-text": {
     "name": "nf-text",
@@ -125,7 +140,8 @@
     "icon": "i-heroicons-bars-3",
     "default_block_name": "Text",
     "bg_class": "bg-yellow-100",
-    "text_class": "text-yellow-900"
+    "text_class": "text-yellow-900",
+    "is_input": false
   },
   "nf-page-break": {
     "name": "nf-page-break",
@@ -133,7 +149,8 @@
     "icon": "i-heroicons-document-plus",
     "default_block_name": "Page Break",
     "bg_class": "bg-gray-100",
-    "text_class": "text-gray-900"
+    "text_class": "text-gray-900",
+    "is_input": false
   },
   "nf-divider": {
     "name": "nf-divider",
@@ -141,7 +158,8 @@
     "icon": "i-heroicons-minus",
     "default_block_name": "Divider",
     "bg_class": "bg-gray-100",
-    "text_class": "text-gray-900"
+    "text_class": "text-gray-900",
+    "is_input": false
   },
   "nf-image": {
     "name": "nf-image",
@@ -149,7 +167,8 @@
     "icon": "i-heroicons-photo",
     "default_block_name": "Image",
     "bg_class": "bg-yellow-100",
-    "text_class": "text-yellow-900"
+    "text_class": "text-yellow-900",
+    "is_input": false
   },
   "nf-code": {
     "name": "nf-code",
@@ -157,6 +176,7 @@
     "icon": "i-heroicons-code-bracket",
     "default_block_name": "Code Block",
     "bg_class": "bg-yellow-100",
-    "text_class": "text-yellow-900"
+    "text_class": "text-yellow-900",
+    "is_input": false
   }
 }

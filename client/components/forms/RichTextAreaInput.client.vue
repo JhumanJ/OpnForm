@@ -24,12 +24,25 @@
       :style="inputStyle"
     />
 
+    <InputHelp
+      v-if="enableMentions"
+      help="Click @ to use form variables"
+      :help-classes="theme.default.help"
+    />
+
     <template #help>
       <slot name="help" />
     </template>
     <template #error>
       <slot name="error" />
     </template>
+
+    <MentionDropdown
+      v-if="enableMentions"
+      :state="mentionState"
+      :mentions="mentions"
+    />
+
   </InputWrapper>
 </template>
 
@@ -37,49 +50,74 @@
 import { Quill, VueEditor } from 'vue3-editor'
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
+import MentionDropdown from './components/MentionDropdown.vue'
+import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
 
 Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('notion')
 
 export default {
   name: 'RichTextAreaInput',
-  components: { InputWrapper, VueEditor },
+  components: { InputWrapper, VueEditor, MentionDropdown },
 
   props: {
     ...inputProps,
     editorOptions: {
       type: Object,
-      default: () => {
-        return {
-          formats: [
-            'bold',
-            'color',
-            'font',
-            'italic',
-            'link',
-            'underline',
-            'header',
-            'indent',
-            'list'
-          ]
+      default: () => ({
+        formats: [
+          'bold',
+          'color',
+          'font',
+          'italic',
+          'link',
+          'underline',
+          'header',
+          'indent',
+          'list',
+          'mention'
+        ],
+        modules: {
+          mention: {
+            mentions: [] // This will be populated with form fields
+          }
         }
-      }
+      })
     },
     editorToolbar: {
       type: Array,
-      default: () => {
-        return [
-          [{ header: 1 }, { header: 2 }],
-          ['bold', 'italic', 'underline', 'link'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ color: [] }]
-        ]
-      }
+      default: () => [
+        [{ header: 1 }, { header: 2 }],
+        ['bold', 'italic', 'underline', 'link'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ color: [] }]
+      ]
+    },
+    mentions: {
+      type: Array,
+      default: () => []
+    },
+    enableMentions: {
+      type: Boolean,
+      default: false
     }
   },
 
-  setup (props, context) {
+  setup(props, context) {
+    const editorOptions = {
+      ...props.editorOptions,
+      modules: { 
+        ...props.editorOptions.modules,
+        mention: props.enableMentions ? { mentions: props.mentions } : undefined
+      }
+    }
+    const editorToolbar = props.enableMentions 
+      ? [...props.editorToolbar, ['mention']]
+      : props.editorToolbar
     return {
-      ...useFormInput(props, context)
+      ...useFormInput(props, context),
+      editorOptions,
+      editorToolbar,
+      mentionState: registerMentionExtension(Quill)
     }
   }
 }
@@ -119,5 +157,13 @@ export default {
   .ql-snow.ql-toolbar button:hover {
     @apply text-nt-blue;
   }
+}
+
+.ql-mention::after {
+  content: '@';
+  font-size: 18px;
+}
+span[mention] {
+  @apply max-w-[150px] truncate overflow-hidden bg-blue-100 text-blue-800 border border-blue-200 rounded-md px-1 inline-flex items-center align-baseline leading-tight text-sm relative;
 }
 </style>
