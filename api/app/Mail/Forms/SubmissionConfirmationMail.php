@@ -43,7 +43,7 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     {
         $form = $this->event->form;
 
-       
+
         return $this
             ->replyTo($this->getReplyToEmail($form->creator->email))
             ->from($this->getFromEmail(), $this->integrationData->notification_sender)
