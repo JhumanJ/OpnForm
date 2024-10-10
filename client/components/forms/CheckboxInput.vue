@@ -15,7 +15,6 @@
       :theme="theme"
     />
     <div>
-      <div>
         <slot name="label">
           <label
             :aria-label="id ? id : name"
@@ -41,7 +40,6 @@
         </slot>
       </div>
     </div>
-  </div>
 
     <template #help>
       <span class="hidden" />
