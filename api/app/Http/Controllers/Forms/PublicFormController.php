@@ -87,6 +87,7 @@ class PublicFormController extends Controller
     public function answer(AnswerFormRequest $request)
     {
         $form = $request->form;
+        $isFirstSubmission = ($form->submissions_count === 0);
         $submissionId = false;
 
         $submissionData = $request->validated();
@@ -104,6 +105,7 @@ class PublicFormController extends Controller
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
             'submission_id' => $submissionId,
+            'is_first_submission' => $isFirstSubmission
         ], $request->form->is_pro && $request->form->redirect_url ? [
             'redirect' => true,
             'redirect_url' => $request->form->redirect_url,

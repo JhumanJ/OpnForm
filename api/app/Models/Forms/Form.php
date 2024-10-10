@@ -153,6 +153,15 @@ class Form extends Model implements CachableAttributes
         return front_url('/forms/' . $this->slug);
     }
 
+    public function getSubmissionsUrlAttribute()
+    {
+        if ($this->custom_domain) {
+            return 'https://' . $this->custom_domain . '/forms/' . $this->slug . '/show/submissions';
+        }
+
+        return front_url('/forms/' . $this->slug . '/show/submissions');
+    }
+
     public function getEditUrlAttribute()
     {
         return front_url('/forms/' . $this->slug . '/show');
