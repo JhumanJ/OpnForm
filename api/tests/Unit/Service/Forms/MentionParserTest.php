@@ -5,9 +5,6 @@
 
 use App\Open\MentionParser;
 
-
-
-
 test('it replaces mention elements with their corresponding values', function () {
 
     $content = '<p>Hello <span mention mention-field-id="123">Placeholder</span></p>';
