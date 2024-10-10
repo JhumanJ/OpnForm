@@ -152,14 +152,13 @@ const quillOptions = computed(() => {
   content: '@';
   font-size: 16px;
 }
-.rich-editor {
+.rich-editor, .mention-input {
   span[mention] {
     @apply inline-flex items-center align-baseline leading-tight text-sm relative bg-blue-100 text-blue-800 border border-blue-200 rounded-md px-1 py-0.5 mx-0.5;
     max-width: 200px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: default;
   }
 }
 </style>

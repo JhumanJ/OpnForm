@@ -27,6 +27,7 @@
             },
             'pr-12'
           ]"
+          :placeholder="placeholder"
           @input="onInput"
         />
         <UButton
