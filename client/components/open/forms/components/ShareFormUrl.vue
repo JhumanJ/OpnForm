@@ -47,9 +47,10 @@
   const { copy } = useClipboard()
   
   const share_url = computed(() => {
-    return props.extraQueryParam
-      ? `${props.form.share_url}?${props.extraQueryParam}`
-      : props.form.share_url + props.extraQueryParam
+    if (props.extraQueryParam) {
+        return `${props.form.share_url}?${props.extraQueryParam}`
+    }
+    return props.form.share_url
   })
   
   function copyToClipboard() {

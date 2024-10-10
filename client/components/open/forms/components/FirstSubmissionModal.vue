@@ -105,7 +105,7 @@ const helpLinks = computed(() => {
 })
 
 const trackOpenDbClick = () => {
-  const submissionsUrl = `/forms/${props.form.slug}/submissions`
+  const submissionsUrl = props.form.submissions_url
   window.open(submissionsUrl, '_blank')
   amplitude.logEvent('form_first_submission_modal_open_db_click')
 }
