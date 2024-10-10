@@ -84,7 +84,7 @@
   const selectedField = ref(null)
   const fallbackValue = ref('')
   const filteredMentions = computed(() => {
-    return props.mentions.filter(mention => blocksTypes[mention.type].is_input)
+    return props.mentions.filter(mention => blocksTypes[mention.type]?.is_input ?? false)
   })
   function selectField(field, insert = false) {
     selectedField.value = {...field}
