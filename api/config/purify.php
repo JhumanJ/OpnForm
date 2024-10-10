@@ -40,7 +40,7 @@ return [
     'configs' => [
 
         'default' => [
-            'HTML.Allowed' => 'h1,h2,b,strong,i,em,a[href|title],ul,ol,li,p,br,span[mention|mention-field-id|mention-field-name|mention-fallback|contenteditable],*[style]',
+            'HTML.Allowed' => 'h1,h2,b,strong,i,em,a[href|title],ul,ol,li,p,br,span[mention|mention-field-id|mention-field-name|mention-fallback],*[style]',
             'HTML.ForbiddenElements' => '',
             'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,text-decoration,color,text-align',
 
