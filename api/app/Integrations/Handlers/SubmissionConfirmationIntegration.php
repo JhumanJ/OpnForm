@@ -26,7 +26,7 @@ class SubmissionConfirmationIntegration extends AbstractEmailIntegrationHandler
                     }
                 },
             ],
-            'confirmation_reply_to' => 'email|nullable',
+            'confirmation_reply_to' => 'nullable',
             'notification_sender' => 'required',
             'notification_subject' => 'required',
             'notification_body' => 'required',
@@ -107,6 +107,7 @@ class SubmissionConfirmationIntegration extends AbstractEmailIntegrationHandler
     public static function formatData(array $data): array
     {
         return array_merge(parent::formatData($data), [
+            'notification_subject' => Purify::clean($data['notification_subject'] ?? ''),
             'notification_body' => Purify::clean($data['notification_body'] ?? ''),
         ]);
     }

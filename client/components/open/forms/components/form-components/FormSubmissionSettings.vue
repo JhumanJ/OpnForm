@@ -129,6 +129,8 @@
       </template>
       <template v-else>
         <rich-text-area-input
+          enable-mentions
+          :mentions="form.properties"
           name="submitted_text"
           class="w-full"
           :form="form"

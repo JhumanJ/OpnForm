@@ -1,6 +1,6 @@
 @component('mail::message', ['noBranding' => $noBranding])
 
-{!! $integrationData->notification_body !!}
+{!! $notificationBody !!}
 
 @if($form->editable_submissions)
 @component('mail::button', ['url' => $form->share_url.'?submission_id='.$submission_id])
