@@ -86,7 +86,7 @@ class MentionParser
 
     private function getData($fieldId)
     {
-        $value = collect($this->data)->firstWhere('nf_id', $fieldId)['value'] ?? null;
+        $value = collect($this->data)->firstWhere('id', $fieldId)['value'] ?? null;
 
         if (is_object($value)) {
             return (array) $value;
