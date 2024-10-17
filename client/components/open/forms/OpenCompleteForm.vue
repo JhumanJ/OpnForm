@@ -140,9 +140,13 @@
         key="submitted"
         class="px-2"
       >
-        <p
+      <TextBlock
+          v-if="form.submitted_text"
           class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
-          v-html="form.submitted_text "
+          :content="form.submitted_text"
+          :mentions-allowed="true"
+          :form="form"
+          :form-data="submittedData"
         />
         <open-form-button
           v-if="form.re_fillable"
@@ -222,7 +226,8 @@ export default {
         password: null
       }),
       hidePasswordDisabledMsg: false,
-      submissionId: false
+      submissionId: false,
+      submittedData: null
     }
   },
 
@@ -261,6 +266,7 @@ export default {
       this.loading = true
 
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
+        this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id

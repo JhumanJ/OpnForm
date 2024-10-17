@@ -1,7 +1,8 @@
 <?php
 
-use App\Mail\Forms\SubmissionConfirmationMail;
-use Illuminate\Support\Facades\Mail;
+use App\Notifications\Forms\FormEmailNotification;
+use Tests\Helpers\FormSubmissionDataFactory;
+use Illuminate\Notifications\AnonymousNotifiable;
 
 it('can not save custom SMTP settings if not pro user', function () {
     $user = $this->actingAsUser();
@@ -15,7 +16,7 @@ it('can not save custom SMTP settings if not pro user', function () {
     ])->assertStatus(403);
 });
 
-it('creates confirmation emails with custom SMTP settings', function () {
+it('send email with custom SMTP settings', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
@@ -28,21 +29,19 @@ it('creates confirmation emails with custom SMTP settings', function () {
         'password' => 'custom_password',
     ])->assertSuccessful();
 
-    $integrationData = $this->createFormIntegration('submission_confirmation', $form->id, [
-        'respondent_email' => true,
-        'notifications_include_submission' => true,
-        'notification_sender' => 'Custom Sender',
-        'notification_subject' => 'Custom SMTP Test',
-        'notification_body' => 'This email was sent using custom SMTP settings',
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>New form submission received.',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => 'reply@example.com',
     ]);
 
-    $formData = [
-        collect($form->properties)->first(function ($property) {
-            return $property['type'] == 'email';
-        })['id'] => 'test@test.com',
-    ];
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
 
-    Mail::fake();
+    Notification::fake();
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
@@ -51,10 +50,12 @@ it('creates confirmation emails with custom SMTP settings', function () {
             'message' => 'Form submission saved.',
         ]);
 
-    Mail::assertQueued(
-        SubmissionConfirmationMail::class,
-        function (SubmissionConfirmationMail $mail) {
-            return $mail->hasTo('test@test.com') && $mail->mailer === 'custom_smtp';
+    Notification::assertSentTo(
+        new AnonymousNotifiable(),
+        FormEmailNotification::class,
+        function (FormEmailNotification $notification, $channels, $notifiable) {
+            return $notifiable->routes['mail'] === 'test@test.com' &&
+                $notification->mailer === 'custom_smtp';
         }
     );
 });
