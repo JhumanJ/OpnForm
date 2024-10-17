@@ -1,59 +1,59 @@
 <template>
-    <InputWrapper v-bind="inputWrapperProps">
-      <template #label>
-        <slot name="label" />
-      </template>
+  <InputWrapper v-bind="inputWrapperProps">
+    <template #label>
+      <slot name="label" />
+    </template>
   
-      <MentionDropdown
-        :state="mentionState"
-        :mentions="mentions"
+    <MentionDropdown
+      :state="mentionState"
+      :mentions="mentions"
+    />
+  
+    <div class="relative">
+      <div
+        ref="editableDiv"
+        :contenteditable="!disabled"
+        class="mention-input"
+        :style="inputStyle"
+        :class="[
+          theme.default.input,
+          theme.default.borderRadius,
+          theme.default.spacing.horizontal,
+          theme.default.spacing.vertical,
+          theme.default.fontSize,
+          {
+            '!ring-red-500 !ring-2 !border-transparent': hasError,
+            '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled,
+          },
+          'pr-12'
+        ]"
+        :placeholder="placeholder"
+        @input="onInput"
       />
+      <UButton
+        type="button"
+        color="white"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 px-2"
+        icon="i-heroicons-at-symbol-16-solid"
+        @click="openMentionDropdown"
+      />
+    </div>
   
-      <div class="relative">
-        <div
-          ref="editableDiv"
-          :contenteditable="!disabled"
-          class="mention-input"
-          :style="inputStyle"
-          :class="[
-            theme.default.input,
-            theme.default.borderRadius,
-            theme.default.spacing.horizontal,
-            theme.default.spacing.vertical,
-            theme.default.fontSize,
-            {
-              '!ring-red-500 !ring-2 !border-transparent': hasError,
-              '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled,
-            },
-            'pr-12'
-          ]"
-          :placeholder="placeholder"
-          @input="onInput"
-        />
-        <UButton
-          type="button"
-          color="white"
-          class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 px-2"
-          icon="i-heroicons-at-symbol-16-solid"
-          @click="openMentionDropdown"
-        />
-      </div>
+    <template
+      v-if="$slots.help"
+      #help
+    >
+      <slot name="help" />
+    </template>
   
-      <template
-        v-if="$slots.help"
-        #help
-      >
-        <slot name="help" />
-      </template>
-  
-      <template
-        v-if="$slots.error"
-        #error
-      >
-        <slot name="error" />
-      </template>
-    </InputWrapper>
-  </template>
+    <template
+      v-if="$slots.error"
+      #error
+    >
+      <slot name="error" />
+    </template>
+  </InputWrapper>
+</template>
   
   <script setup>
   import { ref, onMounted, watch, computed } from 'vue'
@@ -63,11 +63,14 @@
   const props = defineProps({
     ...inputProps,
     mentions: { type: Array, default: () => [] },
+    disableMention: { type: Boolean, default: false },
   })
   const emit = defineEmits(['update:modelValue'])
   const { compVal, inputStyle, hasValidation, hasError, inputWrapperProps } = useFormInput(props, { emit })
   const editableDiv = ref(null)
   const savedRange = ref(null)
+  const subscriptionModalStore = useSubscriptionModalStore()
+
   const mentionState = ref({
     open: false,
     onInsert: (mention) => {
@@ -108,6 +111,12 @@
     updateCompVal()
   }
   const openMentionDropdown = () => {
+    if (props.disableMention) {
+      subscriptionModalStore.setModalContent('Upgrade to Pro', 'Upgrade to Pro to use mentions')
+      subscriptionModalStore.openModal()
+      return
+    }
+  
     saveSelection()
     if (!savedRange.value) {
       // If no previous selection, move cursor to the end

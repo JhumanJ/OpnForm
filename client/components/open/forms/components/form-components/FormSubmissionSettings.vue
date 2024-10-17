@@ -118,9 +118,10 @@
         </template>
       </select-input>
       <template v-if="submissionOptions.submissionMode === 'redirect'">
-        <text-input
+        <MentionInput
           name="redirect_url"
           :form="form"
+          :mentions="form.properties"
           class="w-full max-w-xs"
           label="Redirect URL"
           placeholder="https://www.google.com"

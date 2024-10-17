@@ -1,0 +1,100 @@
+<?php
+
+use App\Notifications\Forms\FormEmailNotification;
+use Tests\Helpers\FormSubmissionDataFactory;
+use Illuminate\Notifications\AnonymousNotifiable;
+
+it('send email with the submitted data', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>Test body',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => 'reply@example.com',
+    ]);
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+    expect($renderedMail->subject)->toBe('New form submission');
+    expect(trim($renderedMail->render()))->toContain('Test body');
+});
+
+it('sends a email if needed', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
+
+    $this->createFormIntegration('email', $form->id, [
+        'send_to' => '<span mention-field-id="' . $emailProperty['id'] . '" mention-field-name="' . $emailProperty['name'] . '" mention-fallback="" contenteditable="false" mention="true">' . $emailProperty['name'] . '</span>',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>New form submission received.',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => 'reply@example.com',
+    ]);
+
+    $formData = [
+        $emailProperty['id'] => 'test@test.com',
+    ];
+
+    Notification::fake();
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    Notification::assertSentTo(
+        new AnonymousNotifiable(),
+        FormEmailNotification::class,
+        function (FormEmailNotification $notification, $channels, $notifiable) {
+            return $notifiable->routes['mail'] === 'test@test.com';
+        }
+    );
+});
+
+it('does not send a email if not needed', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
+    $formData = [
+        $emailProperty['id'] => 'test@test.com',
+    ];
+
+    Notification::fake();
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    Notification::assertNotSentTo(
+        new AnonymousNotifiable(),
+        FormEmailNotification::class,
+        function (FormEmailNotification $notification, $channels, $notifiable) {
+            return $notifiable->routes['mail'] === 'test@test.com';
+        }
+    );
+});

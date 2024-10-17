@@ -9,6 +9,7 @@ use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
+use App\Open\MentionParser;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
@@ -101,12 +102,21 @@ class PublicFormController extends Controller
             StoreFormSubmissionJob::dispatch($form, $submissionData, $completionTime);
         }
 
+        // Parse redirect URL
+        $formattedData = collect($submissionData)->map(function ($value, $key) {
+            return ['id' => $key, 'value' => $value];
+        })->values()->all();
+        $redirectUrl = ($request->form->redirect_url) ? (new MentionParser($request->form->redirect_url, $formattedData))->parse() : null;
+        if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+            $redirectUrl = null;
+        }
+
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
             'submission_id' => $submissionId,
-        ], $request->form->is_pro && $request->form->redirect_url ? [
+        ], $request->form->is_pro && $redirectUrl ? [
             'redirect' => true,
-            'redirect_url' => $request->form->redirect_url,
+            'redirect_url' => $redirectUrl,
         ] : [
             'redirect' => false,
         ]));

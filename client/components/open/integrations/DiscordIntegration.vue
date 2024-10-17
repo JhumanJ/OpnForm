@@ -29,7 +29,10 @@
     <h4 class="font-bold mt-4">
       Discord message options
     </h4>
-    <notifications-message-actions v-model="integrationData.settings" />
+    <notifications-message-actions
+      v-model="integrationData.settings"
+      :form="form"
+    />
   </IntegrationWrapper>
 </template>
 
