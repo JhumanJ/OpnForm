@@ -27,6 +27,7 @@ class SubmissionConfirmationIntegration extends AbstractEmailIntegrationHandler
                 },
             ],
             'confirmation_reply_to' => 'email|nullable',
+            'confirmation_from_email' => 'email|nullable',
             'notification_sender' => 'required',
             'notification_subject' => 'required',
             'notification_body' => 'required',
