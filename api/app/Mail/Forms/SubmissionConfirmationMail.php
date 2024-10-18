@@ -55,6 +55,13 @@ class SubmissionConfirmationMail extends OpenFormMail implements ShouldQueue
     private function getFromEmail()
     {
         if (config('app.self_hosted')) {
+
+            $fromEmail = $this->integrationData->confirmation_from_email ?? null;
+
+            if ($fromEmail && filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
+                return $fromEmail;
+            }
+
             return config('mail.from.address');
         }
 
