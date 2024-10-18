@@ -23,6 +23,12 @@
     />
     <text-input
       :form="integrationData"
+      name="settings.notification_from_email"
+      label="Notification From Email"
+      help="Overrides the From email address, if your provider supports it. Leave blank for default."
+    />
+    <text-input
+      :form="integrationData"
       name="settings.notification_reply_to"
       label="Notification Reply To"
       :help="notifiesHelp"
