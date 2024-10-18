@@ -26,6 +26,7 @@ class FormResource extends JsonResource
             'views_count' => $this->views_count,
             'submissions_count' => $this->submissions_count,
             'redirect_url' => $this->redirect_url,
+            'submissions_url' => $this->submissions_url,
             'database_fields_update' => $this->database_fields_update,
             'cleanings' => $this->getCleanigns(),
             'can_be_indexed' => $this->can_be_indexed,
