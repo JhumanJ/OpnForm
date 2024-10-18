@@ -89,7 +89,7 @@ class Form {
     Object.keys(this)
       .filter((key) => !Form.ignore.includes(key))
       .forEach((key) => {
-        this[key] = JSON.parse(JSON.stringify(this.originalData[key]))
+        this[key] = cloneDeep(this.originalData[key])
       })
   }
 

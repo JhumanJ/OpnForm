@@ -7,13 +7,6 @@
     "is_pro": false,
     "crisp_help_page_slug": "can-i-receive-notifications-on-form-submissions-134svqv"
   },
-  "submission_confirmation": {
-    "name": "Submission Confirmation",
-    "icon": "heroicons:paper-airplane-20-solid",
-    "section_name": "Notifications",
-    "file_name": "SubmissionConfirmationIntegration",
-    "is_pro": true
-  },
   "slack": {
     "name": "Slack Notification",
     "icon": "mdi:slack",

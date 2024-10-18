@@ -1,5 +1,13 @@
 <template>
   <div>
+    <MentionInput
+      v-model="compVal.message"
+      :mentions="form.properties"
+      name="message"
+      class="mt-4"
+      label="Notification Message"
+      help="Customize the text of the notification message. Click @ to include form field values."
+    />
     <toggle-switch-input
       v-model="compVal.include_submission_data"
       name="include_submission_data"
@@ -43,6 +51,7 @@ export default {
   components: {},
   props: {
     modelValue: { type: Object, required: false },
+    form: { type: Object, required: true },
   },
   emits:  ['modelValue',  'input'],
   data() {
@@ -74,6 +83,7 @@ export default {
       this.compVal = {}
     }
     [
+      "message",
       "include_submission_data",
       "link_open_form",
       "link_edit_form",
@@ -81,7 +91,11 @@ export default {
       "link_edit_submission",
     ].forEach((keyname) => {
       if (this.compVal[keyname] === undefined) {
-        this.compVal[keyname] = true
+        if (keyname === 'message') {
+          this.compVal[keyname] = 'New form submission'
+        } else {
+          this.compVal[keyname] = true
+        }
       }
     })
   },

@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
 use Vinkla\Hashids\Facades\Hashids;
@@ -32,6 +33,9 @@ class DiscordIntegration extends AbstractIntegrationHandler
 
     protected function getWebhookData(): array
     {
+        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
+        $formattedData = $formatter->getFieldsWithValue();
+
         $settings = (array) $this->integrationData ?? [];
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
@@ -50,8 +54,7 @@ class DiscordIntegration extends AbstractIntegrationHandler
         $blocks = [];
         if (Arr::get($settings, 'include_submission_data', true)) {
             $submissionString = '';
-            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-            foreach ($formatter->getFieldsWithValue() as $field) {
+            foreach ($formattedData as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
                 $submissionString .= '**' . ucfirst($field['name']) . '**: ' . $tmpVal . "\n";
             }
@@ -80,8 +83,9 @@ class DiscordIntegration extends AbstractIntegrationHandler
             ];
         }
 
+        $message = Arr::get($settings, 'message', 'New form submission');
         return [
-            'content' => 'New submission for your form **' . $this->form->title . '**',
+            'content' => (new MentionParser($message, $formattedData))->parse(),
             'tts' => false,
             'username' => config('app.name'),
             'avatar_url' => asset('img/logo.png'),

@@ -10,8 +10,13 @@ it('can fetch form integration events', function () {
         'integration_id' => 'email',
         'logic' => null,
         'settings' => [
-            'notification_emails' => 'test@test.com',
-            'notification_reply_to' => null
+            'send_to' => 'test@test.com',
+            'sender_name' => 'OpnForm',
+            'subject' => 'New form submission',
+            'email_content' => 'Hello there 👋 <br>New form submission received.',
+            'include_submission_data' => true,
+            'include_hidden_fields_submission_data' => false,
+            'reply_to' => null
         ]
     ];
 

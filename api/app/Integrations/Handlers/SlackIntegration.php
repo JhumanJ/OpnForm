@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
 use Vinkla\Hashids\Facades\Hashids;
@@ -32,6 +33,9 @@ class SlackIntegration extends AbstractIntegrationHandler
 
     protected function getWebhookData(): array
     {
+        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
+        $formattedData = $formatter->getFieldsWithValue();
+
         $settings = (array) $this->integrationData ?? [];
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
@@ -46,20 +50,20 @@ class SlackIntegration extends AbstractIntegrationHandler
             $externalLinks[] = '*<' . $this->form->share_url . '?submission_id=' . $submissionId . '|✍️ ' . $this->form->editable_submissions_button_text . '>*';
         }
 
+        $message = Arr::get($settings, 'message', 'New form submission');
         $blocks = [
             [
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => 'New submission for your form *' . $this->form->title . '*',
+                    'text' => (new MentionParser($message, $formattedData))->parse(),
                 ],
             ],
         ];
 
         if (Arr::get($settings, 'include_submission_data', true)) {
             $submissionString = '';
-            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-            foreach ($formatter->getFieldsWithValue() as $field) {
+            foreach ($formattedData as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
                 $submissionString .= '>*' . ucfirst($field['name']) . '*: ' . $tmpVal . " \n";
             }
