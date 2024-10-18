@@ -67,8 +67,16 @@ class FormSubmissionNotification extends Notification implements ShouldQueue
     private function getFromEmail()
     {
         if (config('app.self_hosted')) {
+
+            $fromEmail = $this->integrationData->notification_from_email ?? null;
+
+            if ($fromEmail && filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
+                return $fromEmail;
+            }
+
             return config('mail.from.address');
         }
+
         $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
 
         return $originalFromAddress->first() . '+' . time() . '@' . $originalFromAddress->last();
