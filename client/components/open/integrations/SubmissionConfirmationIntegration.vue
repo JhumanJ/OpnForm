@@ -29,6 +29,12 @@
       />
       <text-input
         :form="integrationData"
+        name="settings.confirmation_from_email"
+        label="Confirmation From Email"
+        help="Overrides the From email address, if your provider supports it. Leave blank for default."
+      />
+      <text-input
+        :form="integrationData"
         name="settings.notification_subject"
         class="mt-4"
         required
