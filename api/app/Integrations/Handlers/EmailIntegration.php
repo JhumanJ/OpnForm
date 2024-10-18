@@ -14,6 +14,7 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
         return [
             'notification_emails' => ['required', new OneEmailPerLine()],
             'notification_reply_to' => 'email|nullable',
+            'notification_from_email' => 'email|nullable',
         ];
     }
 
