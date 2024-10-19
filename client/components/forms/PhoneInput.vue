@@ -12,7 +12,7 @@
     >
       <v-select
         v-model="selectedCountryCode"
-        class="w-[130px]"
+        :class="theme.PhoneInput.countrySelectWidth"
         dropdown-class="max-w-[300px]"
         input-class="rounded-r-none"
         :data="countries"
@@ -41,13 +41,14 @@
         <template #selected="props">
           <div
             class="flex items-center space-x-2 justify-center overflow-hidden"
+            :class="theme.PhoneInput.maxHeight"
           >
             <country-flag
               size="normal"
               class="!-mt-[9px] rounded"
               :country="props.option.code"
             />
-            <span>{{ props.option.dial_code }}</span>
+            <span class="text-sm">{{ props.option.dial_code }}</span>
           </div>
         </template>
       </v-select>
@@ -57,11 +58,11 @@
         class="inline-flex-grow !border-l-0 !rounded-l-none"
         :disabled="disabled ? true : null"
         :class="[
-          theme.default.input,
-          theme.default.spacing.horizontal,
-          theme.default.spacing.vertical,
-          theme.default.fontSize,
-          theme.default.borderRadius,
+          theme.PhoneInput.input,
+          theme.PhoneInput.spacing.horizontal,
+          theme.PhoneInput.spacing.vertical,
+          theme.PhoneInput.fontSize,
+          theme.PhoneInput.borderRadius,
           {
             '!ring-red-500 !ring-2': hasError,
             '!cursor-not-allowed !bg-gray-200': disabled,
