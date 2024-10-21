@@ -40,7 +40,7 @@ return [
     'configs' => [
 
         'default' => [
-            'HTML.Allowed' => 'h1,h2,b,strong,i,em,a[href|title],ul,ol,li,p,br,span,*[style]',
+            'HTML.Allowed' => 'h1,h2,b,u,strong,i,em,a[href|title],ul,ol,li,p,br,span,*[style]',
             'HTML.ForbiddenElements' => '',
             'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,text-decoration,color,text-align',
 
