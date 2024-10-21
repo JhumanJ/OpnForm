@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@vueuse/motion/nuxt',
-        'nuxt-simple-sitemap',
+        '@nuxtjs/sitemap',
         '@nuxt/ui',
         'nuxt-utm',
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],

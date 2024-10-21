@@ -22,7 +22,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "nuxt": "^3.13.2",
     "nuxt-icon": "^0.6.10",
-    "nuxt-simple-sitemap": "^4.4.1",
+    "@nuxtjs/sitemap": "^6.0.0",
     "nuxt-utm": "^0.1.10",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
