@@ -19,7 +19,7 @@
     >
       <div
         v-if="adminPreview"
-        class="absolute translate-y-full lg:translate-y-0 -bottom-1.5 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
+        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
       >
         <div
           class="flex lg:flex-col bg-gray-100 dark:bg-gray-800 border rounded-md"
@@ -68,7 +68,7 @@
           v-if="field.type === 'nf-text' && field.content"
           :id="field.id"
           :key="field.id"
-          class="nf-text w-full mb-3"
+          class="nf-text w-full my-1.5"
           :class="[getFieldAlignClasses(field)]"
           v-html="field.content"
         />
@@ -76,7 +76,7 @@
           v-if="field.type === 'nf-code' && field.content"
           :id="field.id"
           :key="field.id"
-          class="nf-code w-full px-2 mb-3"
+          class="nf-code w-full px-2 my-1.5"
           v-html="field.content"
         />
         <div
@@ -91,6 +91,7 @@
           :key="field.id"
           class="my-4 w-full px-2"
           :class="[getFieldAlignClasses(field)]"
+          @dblclick="editFieldOptions"
         >
           <div
             v-if="!field.image_block"
@@ -115,7 +116,7 @@
         class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3"
       >
         <div
-          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle"
+          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle min-h-[40px]"
         >
           <Icon
             name="clarity:drag-handle-line"

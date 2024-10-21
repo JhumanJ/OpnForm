@@ -18,7 +18,7 @@
     </div>
 
     <div class="py-2 px-4">
-      <p class="text-sm font-medium my-2">
+      <p class="text-gray-500 text-xs font-medium my-2">
         Input Blocks
       </p>
       <draggable
@@ -34,7 +34,7 @@
       >
         <template #item="{element}">
           <div
-            class="flex hover:bg-gray-50 rounded-md items-center gap-2 p-2"
+            class="flex hover:bg-gray-50 rounded-md items-center gap-2 p-2 group"
             role="button"
             @click.prevent="addBlock(element.name)"
           >

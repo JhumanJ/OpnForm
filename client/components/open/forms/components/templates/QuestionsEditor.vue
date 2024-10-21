@@ -99,7 +99,7 @@
     <has-error
       v-if="hasValidation"
       :form="form"
-      :field="name"
+      :field-id="name"
     />
   </div>
 </template>

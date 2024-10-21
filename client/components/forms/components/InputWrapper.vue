@@ -45,7 +45,8 @@
       <has-error
         v-if="hasValidation && form"
         :form="form"
-        :field="name"
+        :field-id="name"
+        :field-name="label"
       />
     </slot>
   </div>

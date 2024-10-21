@@ -88,7 +88,7 @@
         />
         <has-error
           :form="dataForm"
-          field="h-captcha-response"
+          field-id="h-captcha-response"
         />
       </div>
     </template>

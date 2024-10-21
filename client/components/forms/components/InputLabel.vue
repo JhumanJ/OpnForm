@@ -4,7 +4,7 @@
     class="input-label"
     :class="[
       theme.default.label,
-      { 'uppercase text-xs': uppercaseLabels, 'text-sm': !uppercaseLabels },
+      { 'uppercase text-xs': uppercaseLabels, 'text-sm/none': !uppercaseLabels },
     ]"
   >
     <slot>

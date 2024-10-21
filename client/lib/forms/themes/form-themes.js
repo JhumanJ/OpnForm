@@ -5,9 +5,9 @@ export const themes = {
   default: {
     default: {
       wrapper: {
-        sm: 'relative mb-2',
-        md: 'relative mb-3',
-        lg: 'relative mb-3',
+        sm: 'relative my-1',
+        md: 'relative my-1.5',
+        lg: 'relative my-1.5',
       },
       label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
@@ -156,9 +156,9 @@ export const themes = {
   simple: {
     default: {
       wrapper: {
-        sm: 'relative mb-2',
-        md: 'relative mb-3',
-        lg: 'relative mb-3',
+        sm: 'relative my-1',
+        md: 'relative my-1.5',
+        lg: 'relative my-1.5',
       },
       label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
@@ -301,9 +301,9 @@ export const themes = {
   notion: {
     default: {
       wrapper: {
-        sm: 'relative mb-2',
-        md: 'relative mb-3',
-        lg: 'relative mb-3',
+        sm: 'relative my-1',
+        md: 'relative my-1.5',
+        lg: 'relative my-1.5',
       },
       label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:

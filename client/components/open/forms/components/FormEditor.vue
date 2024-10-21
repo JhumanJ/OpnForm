@@ -4,6 +4,13 @@
     id="form-editor"
     class="relative flex w-full flex-col grow max-h-screen"
   >
+    <!-- Loading overlay -->
+    <div
+      v-if="updateFormLoading"
+      class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
+    >
+      <loader class="h-6 w-6 text-blue-500" />
+    </div>
     <div
       class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center"
     >
@@ -175,6 +182,7 @@ export default {
 
   mounted() {
     this.$emit("mounted")
+    this.workingFormStore.activeTab = 0
     useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
     if (!this.isEdit) {
@@ -292,6 +300,8 @@ export default {
               slug: this.createdFormSlug,
               new_form: response.users_first_form,
             },
+          }).then(() => {
+            this.updateFormLoading = false
           })
         })
         .catch((error) => {
@@ -304,8 +314,6 @@ export default {
             )
             captureException(error)
           }
-        })
-        .finally(() => {
           this.updateFormLoading = false
         })
     },
