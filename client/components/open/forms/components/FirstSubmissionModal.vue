@@ -87,11 +87,6 @@ watch(() => props.show, () => {
 const helpLinks = computed(() => {
   return [
     {
-      'label': 'Embed form on your website',
-      'icon': 'heroicons:code-bracket',
-      'action': () => crisp.openHelpdeskArticle('https://help.opnform.com/en/article/can-i-embed-my-form-in-a-notion-page-or-site-x7guph/')
-    },
-    {
       'label': 'Help Center',
       'icon': 'heroicons:book-open',
       'action': () => crisp.openHelpdesk()
