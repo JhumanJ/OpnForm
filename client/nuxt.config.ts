@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@vueuse/motion/nuxt',
-        '@nuxtjs/sitemap',
+        // '@nuxtjs/sitemap',
         '@nuxt/ui',
         'nuxt-utm',
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
@@ -79,9 +79,6 @@ export default defineNuxtConfig({
         preference: 'light',
         fallback: 'light',
         classPrefix: '',
-    },
-    ui: {
-        icons: ['heroicons', 'material-symbols']
     },
     sitemap,
     runtimeConfig,

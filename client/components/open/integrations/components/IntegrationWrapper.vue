@@ -11,19 +11,18 @@
           label="Enabled"
         />
       </slot>
-      <slot name="help">
-        <v-button
-          class="flex"
-          color="white"
-          size="small"
+      <slot
+        v-if="integration?.crisp_help_page_slug"
+        name="help"
+      >
+        <UButton
+          color="gray"
+          size="sm"
+          icon="i-heroicons-question-mark-circle-solid"
           @click="openHelp"
         >
-          <Icon
-            name="heroicons:question-mark-circle-16-solid"
-            class="w-4 h-4 text-gray-500 -mt-[3px]"
-          />
-          <span class="text-gray-500"> Help </span>
-        </v-button>
+          Help
+        </UButton>
       </slot>
     </div>
 

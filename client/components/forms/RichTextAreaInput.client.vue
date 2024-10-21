@@ -4,7 +4,7 @@
       <slot name="label" />
     </template>
 
-   <div
+    <div
       class="rich-editor resize-y"
       :class="[
         {
@@ -43,7 +43,6 @@
       :state="mentionState"
       :mentions="mentions"
     />
-
   </InputWrapper>
 </template>
 
@@ -74,11 +73,11 @@ const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props,
 const editor = ref(null)
 const mentionState = ref(null)
 // Move the mention extension registration to onMounted
-onMounted(() => {
-  if (props.enableMentions && !Quill.imports['blots/mention']) {
-    mentionState.value = registerMentionExtension(Quill)
-  }
-})
+
+if (props.enableMentions && !Quill.imports['blots/mention']) {
+  mentionState.value = registerMentionExtension(Quill)
+}
+
 const quillOptions = computed(() => {
   const defaultOptions = {
     theme: 'snow',
@@ -147,6 +146,7 @@ const quillOptions = computed(() => {
 }
 .ql-mention {
   padding-top: 0px !important;
+  margin-top: -5px !important;
 }
 .ql-mention::after {
   content: '@';

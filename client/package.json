@@ -60,12 +60,8 @@
     "prismjs": "^1.29.0",
     "qrcode": "^1.5.4",
     "query-builder-vue-3": "^1.0.1",
-<<<<<<< HEAD
     "quill": "^2.0.2",
-    "tailwind-merge": "^2.3.0",
-=======
     "tailwind-merge": "^2.5.4",
->>>>>>> main
     "tinymotion": "^0.2.0",
     "v-calendar": "^3.1.2",
     "vue-chartjs": "^5.3.1",
