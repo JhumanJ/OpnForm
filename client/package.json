@@ -28,7 +28,8 @@
     "prettier": "^3.3.3",
     "sass": "^1.80.2",
     "vue": "^3.3.10",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "nitropack": "^2.9.6"
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",
