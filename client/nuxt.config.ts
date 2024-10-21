@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
     ],
     build: {
-        transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
+        transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
     },
     experimental: {
         inlineRouteRules: true
