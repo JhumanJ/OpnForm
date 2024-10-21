@@ -17,7 +17,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public FormSubmitted $event;
-    public $mailer;
+    public string $mailer;
     private $formattedData;
 
     /**
@@ -102,7 +102,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
 
     private function getSubject()
     {
-        $parser = new MentionParser($this->integrationData->subject, $this->formattedData);
+        $parser = new MentionParser($this->integrationData->subject ?? 'New form submission', $this->formattedData);
         return $parser->parse();
     }
 
@@ -130,7 +130,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
 
     private function getEmailContent()
     {
-        $parser = new MentionParser($this->integrationData->email_content, $this->formattedData);
+        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formattedData);
         return $parser->parse();
     }
 

@@ -102,24 +102,30 @@ class PublicFormController extends Controller
             StoreFormSubmissionJob::dispatch($form, $submissionData, $completionTime);
         }
 
-        // Parse redirect URL
+        return $this->success(array_merge([
+            'message' => 'Form submission saved.',
+            'submission_id' => $submissionId,
+        ], $this->getRedirectData($request->form, $submissionData)));
+    }
+
+    private function getRedirectData($form, $submissionData)
+    {
         $formattedData = collect($submissionData)->map(function ($value, $key) {
             return ['id' => $key, 'value' => $value];
         })->values()->all();
-        $redirectUrl = ($request->form->redirect_url) ? (new MentionParser($request->form->redirect_url, $formattedData))->parse() : null;
+
+        $redirectUrl = ($form->redirect_url) ? (new MentionParser($form->redirect_url, $formattedData))->parse() : null;
+
         if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
             $redirectUrl = null;
         }
 
-        return $this->success(array_merge([
-            'message' => 'Form submission saved.',
-            'submission_id' => $submissionId,
-        ], $request->form->is_pro && $redirectUrl ? [
+        return $form->is_pro && $redirectUrl ? [
             'redirect' => true,
             'redirect_url' => $redirectUrl,
         ] : [
             'redirect' => false,
-        ]));
+        ];
     }
 
     public function fetchSubmission(Request $request, string $slug, string $submissionId)
