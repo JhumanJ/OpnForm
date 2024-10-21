@@ -28,8 +28,7 @@
     "prettier": "^3.3.3",
     "sass": "^1.80.2",
     "vue": "^3.3.10",
-    "vue-router": "^4.4.5",
-    "nitropack": "^2.9.6"
+    "vue-router": "^4.4.5"
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",
@@ -77,8 +76,5 @@
   },
   "eslintIgnore": [
     "/lib/jaro-winkler.js"
-  ],
-  "overrides": {
-    "nitropack": "2.9.6"
-  }
+  ]
 }
