@@ -183,6 +183,11 @@
         </p>
       </div>
     </v-transition>
+    <FirstSubmissionModal
+      :show="showFirstSubmissionModal"
+      :form="form"
+      @close="showFirstSubmissionModal=false"
+    />
   </div>
 </template>
 
@@ -195,9 +200,10 @@ import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
+import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 
 export default {
-  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FormTimer },
+  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FormTimer, FirstSubmissionModal },
 
   props: {
     form: { type: Object, required: true },
@@ -211,7 +217,10 @@ export default {
   },
 
   setup(props) {
+    const authStore = useAuthStore()
     return {
+      authStore,
+      authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
       confetti: useConfetti()
@@ -227,7 +236,8 @@ export default {
       }),
       hidePasswordDisabledMsg: false,
       submissionId: false,
-      submittedData: null
+      submittedData: null,
+      showFirstSubmissionModal: false
     }
   },
 
@@ -251,6 +261,9 @@ export default {
       if(!this.form || !this.form.font_family) return null
       const family = this.form?.font_family.replace(/ /g, '+')
       return `https://fonts.googleapis.com/css?family=${family}:wght@400,500,700,800,900&display=swap`
+    },
+    isFormOwner() {
+      return this.authenticated && this.form && this.form.creator_id === this.authStore.user.id
     }
   },
 
@@ -297,7 +310,9 @@ export default {
         if (data.submission_id) {
           this.submissionId = data.submission_id
         }
-
+        if (this.isFormOwner && !this.isIframe && data?.is_first_submission) {
+          this.showFirstSubmissionModal = true
+        }
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)

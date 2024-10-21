@@ -12,13 +12,13 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@vueuse/motion/nuxt',
-        'nuxt-simple-sitemap',
+        '@nuxtjs/sitemap',
         '@nuxt/ui',
         'nuxt-utm',
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
     ],
     build: {
-        transpile: process.env.NODE_ENV === "development" ? [] : ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
+        transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
     },
     experimental: {
         inlineRouteRules: true
