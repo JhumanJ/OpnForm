@@ -18,7 +18,7 @@ export default function registerMentionExtension(Quill) {
       node.setAttribute('mention', 'true')
 
       if (data && typeof data === 'object') {
-        node.setAttribute('mention-field-id', data.field?.nf_id || '')
+        node.setAttribute('mention-field-id', data.field?.id || '')
         node.setAttribute('mention-field-name', data.field?.name || '')
         node.setAttribute('mention-fallback', data.fallback || '')
         node.textContent = data.field?.name || ''
@@ -53,7 +53,7 @@ export default function registerMentionExtension(Quill) {
     static value(domNode) {
       return {
         field: {
-          nf_id: domNode.getAttribute('mention-field-id') || '',
+          id: domNode.getAttribute('mention-field-id') || '',
           name: domNode.getAttribute('mention-field-name') || ''
         },
         fallback: domNode.getAttribute('mention-fallback') || ''

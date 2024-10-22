@@ -127,14 +127,23 @@ class FormEmailNotification extends Notification implements ShouldQueue
         $formId = $this->event->form->id;
         $submissionId = $this->event->data['submission_id'] ?? 'unknown';
         $domain = Str::after(config('app.url'), '://');
+        $timestamp = time();
 
-        $uniquePart = substr(md5($formId . $submissionId), 0, 8);
-        $messageId = "form-{$formId}-{$uniquePart}@{$domain}";
-        $references = "form-{$formId}@{$domain}";
+        // Create a unique Message-ID for each submission
+        $messageId = "<form-{$formId}-submission-{$submissionId}-{$timestamp}@{$domain}>";
 
-        $message->getHeaders()->remove('Message-ID');
-        $message->getHeaders()->addIdHeader('Message-ID', $messageId);
+        // Create a References header that links to the form, but not to specific submissions
+        $references = "<form-{$formId}@{$domain}>";
+
+        // Add our custom Message-ID as X-Custom-Message-ID
+        $message->getHeaders()->addTextHeader('X-Custom-Message-ID', $messageId);
+
+        // Add References header
         $message->getHeaders()->addTextHeader('References', $references);
+
+        // Add a unique Thread-Index to further prevent grouping
+        $threadIndex = base64_encode(pack('H*', md5($formId . $submissionId . $timestamp)));
+        $message->getHeaders()->addTextHeader('Thread-Index', $threadIndex);
     }
 
     private function getMailData(): array

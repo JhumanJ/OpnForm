@@ -14,7 +14,7 @@ export function useParseMention(content, mentionsAllowed, form, formData) {
   const doc = parser.parseFromString(content, 'text/html')
 
   // Find all elements with mention attribute
-  const mentionElements = doc.querySelectorAll('[mention]')
+  const mentionElements = doc.querySelectorAll('[mention], [mention=""]')
 
   mentionElements.forEach(element => {
     const fieldId = element.getAttribute('mention-field-id')
