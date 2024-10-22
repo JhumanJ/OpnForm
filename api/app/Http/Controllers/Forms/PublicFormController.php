@@ -9,6 +9,7 @@ use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
+use App\Open\MentionParser;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
@@ -105,13 +106,28 @@ class PublicFormController extends Controller
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
             'submission_id' => $submissionId,
-            'is_first_submission' => $isFirstSubmission
-        ], $request->form->is_pro && $request->form->redirect_url ? [
+            'is_first_submission' => $isFirstSubmission,
+        ], $this->getRedirectData($request->form, $submissionData)));
+    }
+
+    private function getRedirectData($form, $submissionData)
+    {
+        $formattedData = collect($submissionData)->map(function ($value, $key) {
+            return ['id' => $key, 'value' => $value];
+        })->values()->all();
+
+        $redirectUrl = ($form->redirect_url) ? (new MentionParser($form->redirect_url, $formattedData))->parse() : null;
+
+        if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+            $redirectUrl = null;
+        }
+
+        return $form->is_pro && $redirectUrl ? [
             'redirect' => true,
-            'redirect_url' => $request->form->redirect_url,
+            'redirect_url' => $redirectUrl,
         ] : [
             'redirect' => false,
-        ]));
+        ];
     }
 
     public function fetchSubmission(Request $request, string $slug, string $submissionId)

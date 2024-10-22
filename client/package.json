@@ -60,6 +60,7 @@
     "prismjs": "^1.29.0",
     "qrcode": "^1.5.4",
     "query-builder-vue-3": "^1.0.1",
+    "quill": "^2.0.2",
     "tailwind-merge": "^2.5.4",
     "tinymotion": "^0.2.0",
     "v-calendar": "^3.1.2",
@@ -70,8 +71,7 @@
     "vue-json-pretty": "^2.4.0",
     "vue-notion": "^3.0.0",
     "vue-signature-pad": "^3.0.2",
-    "vue3-editor": "^0.1.1",
-    "vuedraggable": "^4.1.0",
+    "vuedraggable": "next",
     "webcam-easy": "^1.1.1"
   },
   "eslintIgnore": [

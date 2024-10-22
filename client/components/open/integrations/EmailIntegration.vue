@@ -14,18 +14,66 @@
       </NuxtLink> to send emails from your own domain.
     </p>
 
-    <text-area-input
+    <MentionInput
       :form="integrationData"
-      name="settings.notification_emails"
+      :mentions="form.properties"
+      :disable-mention="!form.is_pro"
+      name="settings.send_to"
       required
-      label="Notification Emails"
+      label="Send To"
       help="Add one email per line"
-    />
-    <text-input
+    /> 
+    <div class="flex space-x-4">
+      <text-input
+        :form="integrationData"
+        name="settings.sender_name"
+        label="Sender Name"
+        class="flex-1"
+      />
+      <text-input
+        v-if="selfHosted"
+        :form="integrationData"
+        name="settings.sender_email"
+        label="Sender Email"
+        help="If supported by email provider - default otherwise"
+        class="flex-1"
+      />
+    </div>
+    <MentionInput
       :form="integrationData"
-      name="settings.notification_reply_to"
-      label="Notification Reply To"
-      :help="notifiesHelp"
+      :mentions="form.properties"
+      required
+      name="settings.subject"
+      label="Subject"
+    />
+    <rich-text-area-input
+      :form="integrationData"
+      :enable-mentions="true"
+      :mentions="form.properties"
+      name="settings.email_content"
+      label="Email Content"
+    />
+    <toggle-switch-input
+      :form="integrationData"
+      name="settings.include_submission_data"
+      class="mt-4"
+      label="Include submission data"
+      help="If enabled the email will contain form submission answers"
+    />
+    <toggle-switch-input
+      v-if="integrationData.settings.include_submission_data"
+      :form="integrationData"
+      name="settings.include_hidden_fields_submission_data"
+      class="mt-4"
+      label="Include hidden fields"
+      help="If enabled the email will contain hidden fields"
+    />
+    <MentionInput
+      :form="integrationData"
+      :mentions="form.properties"
+      name="settings.reply_to"
+      label="Reply To"
+      help="If empty, Reply-to will be your own email."
     />
   </IntegrationWrapper>
 </template>
@@ -40,22 +88,19 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null },
 })
 
-const replayToEmailField = computed(() => {
-  const emailFields = props.form.properties.filter((field) => {
-    return field.type === "email" && !field.hidden
-  })
-  if (emailFields.length === 1) return emailFields[0]
-  return null
-})
+const selfHosted = computed(() => useFeatureFlag('self_hosted'))
 
-const notifiesHelp = computed(() => {
-  if (replayToEmailField.value) {
-    return (
-      'If empty, Reply-to for this notification will be the email filled in the field "' +
-      replayToEmailField.value.name +
-      '".'
-    )
+onBeforeMount(() => {
+  for (const [keyname, defaultValue] of Object.entries({
+    sender_name: "OpnForm",
+    subject: "We saved your answers",
+    email_content: "Hello there 👋 <br>This is a confirmation that your submission was successfully saved.",
+    include_submission_data: true,
+    include_hidden_fields_submission_data: false,
+  })) {
+    if (props.integrationData.settings[keyname] === undefined) {
+      props.integrationData.settings[keyname] = defaultValue
+    }
   }
-  return "If empty, Reply-to for this notification will be your own email. Add a single email field to your form, and it will automatically become the reply to value."
 })
 </script>
