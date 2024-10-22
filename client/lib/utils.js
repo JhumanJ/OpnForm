@@ -88,7 +88,7 @@ export const getHost = function () {
  * @returns {*}
  */
 export const getDomain = function (url) {
-  if (url.includes("localhost")) return "localhost"
+  if (!url || url.includes("localhost")) return "localhost"
   try {
     if (!url.startsWith("http")) url = "https://" + url
     return new URL(url).hostname

@@ -22,12 +22,23 @@
       required
       label="Send To"
       help="Add one email per line"
-    />
-    <text-input
-      :form="integrationData"
-      name="settings.sender_name"
-      label="Sender Name"
-    />
+    /> 
+    <div class="flex space-x-4">
+      <text-input
+        :form="integrationData"
+        name="settings.sender_name"
+        label="Sender Name"
+        class="flex-1"
+      />
+      <text-input
+        v-if="selfHosted"
+        :form="integrationData"
+        name="settings.sender_email"
+        label="Sender Email"
+        help="If supported by email provider - default otherwise"
+        class="flex-1"
+      />
+    </div>
     <MentionInput
       :form="integrationData"
       :mentions="form.properties"
@@ -76,6 +87,8 @@ const props = defineProps({
   integrationData: { type: Object, required: true },
   formIntegrationId: { type: Number, required: false, default: null },
 })
+
+const selfHosted = computed(() => useFeatureFlag('self_hosted'))
 
 onBeforeMount(() => {
   for (const [keyname, defaultValue] of Object.entries({
