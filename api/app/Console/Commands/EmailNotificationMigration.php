@@ -29,19 +29,26 @@ class EmailNotificationMigration extends Command
      */
     public function handle()
     {
-        FormIntegration::where(function ($query) {
-            $query->where('integration_id', 'email')
-                ->orWhere('integration_id', 'submission_confirmation');
-        })->chunk(
-            100,
-            function ($integrations) {
-                foreach ($integrations as $integration) {
-                    $this->line('Process For Form: ' . $integration->form_id . ' - ' . $integration->integration_id . ' - ' . $integration->id);
-
-                    $this->updateIntegration($integration);
-                }
+        if (app()->environment('production')) {
+            if (!$this->confirm('Are you sure you want to run this migration in production?')) {
+                $this->info('Migration aborted.');
+                return 0;
             }
-        );
+        }
+        $query = FormIntegration::whereIn('integration_id', ['email', 'submission_confirmation']);
+        $totalCount = $query->count();
+        $progressBar = $this->output->createProgressBar($totalCount);
+        $progressBar->start();
+
+        $query->chunk(100, function ($integrations) use ($progressBar) {
+            foreach ($integrations as $integration) {
+                $this->updateIntegration($integration);
+                $progressBar->advance();
+            }
+        });
+
+        $progressBar->finish();
+        $this->newLine();
 
         $this->line('Migration Done');
     }

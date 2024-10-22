@@ -98,3 +98,68 @@ it('does not send a email if not needed', function () {
         }
     );
 });
+
+it('uses custom sender email in self-hosted mode', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $customSenderEmail = 'custom@example.com';
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'Custom Sender',
+        'sender_email' => $customSenderEmail,
+        'subject' => 'Custom Subject',
+        'email_content' => 'Custom content',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => 'reply@example.com',
+    ]);
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+
+    expect($renderedMail->from[0])->toBe($customSenderEmail);
+    expect($renderedMail->from[1])->toBe('Custom Sender');
+    expect($renderedMail->subject)->toBe('Custom Subject');
+    expect(trim($renderedMail->render()))->toContain('Custom content');
+});
+
+it('does not use custom sender email in non-self-hosted mode', function () {
+    config(['app.self_hosted' => false]);
+    config(['mail.from.address' => 'default@example.com']);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $customSenderEmail = 'custom@example.com';
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'Custom Sender',
+        'sender_email' => $customSenderEmail,
+        'subject' => 'Custom Subject',
+        'email_content' => 'Custom content',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => 'reply@example.com',
+    ]);
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+
+    expect($renderedMail->from[0])->toBe('default@example.com');
+    expect($renderedMail->from[1])->toBe('Custom Sender');
+    expect($renderedMail->subject)->toBe('Custom Subject');
+    expect(trim($renderedMail->render()))->toContain('Custom content');
+});

@@ -17,6 +17,7 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
         return [
             'send_to' => 'required',
             'sender_name' => 'required',
+            'sender_email' => 'email|nullable',
             'subject' => 'required',
             'email_content' => 'required',
             'include_submission_data' => 'boolean',

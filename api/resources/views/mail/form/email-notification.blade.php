@@ -9,19 +9,12 @@
 @endif
 
 @if($integrationData->include_submission_data)
-Here is the answer:
-
 @foreach($fields as $field)
 @if(isset($field['value']))
-
---------------------------------------------------------------------------------
-
-**{{$field['name']}}**
-
-<p style="white-space: pre-wrap">
-      {!! is_array($field['value'])?implode(',',$field['value']):$field['value']!!}
+<p style="white-space: pre-wrap; border-top: 1px solid #9ca3af;">
+<b>{{$field['name']}}</b>
+{!! is_array($field['value'])?implode(',',$field['value']):$field['value']!!}
 </p>
-
 @endif
 @endforeach
 @endif

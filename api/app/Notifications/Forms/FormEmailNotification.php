@@ -11,6 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
+use Symfony\Component\Mime\Email;
 
 class FormEmailNotification extends Notification implements ShouldQueue
 {
@@ -18,7 +19,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
 
     public FormSubmitted $event;
     public string $mailer;
-    private $formattedData;
+    private array $formattedData;
 
     /**
      * Create a new notification instance.
@@ -29,15 +30,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
     {
         $this->event = $event;
         $this->mailer = $mailer;
-
-        $formatter = (new FormSubmissionFormatter($event->form, $event->data))
-            ->createLinks()
-            ->outputStringsOnly()
-            ->useSignedUrlForFiles();
-        if ($this->integrationData->include_hidden_fields_submission_data ?? false) {
-            $formatter->showHiddenFields();
-        }
-        $this->formattedData = $formatter->getFieldsWithValue();
+        $this->formattedData = $this->formatSubmissionData();
     }
 
     /**
@@ -62,36 +55,52 @@ class FormEmailNotification extends Notification implements ShouldQueue
         return (new MailMessage())
             ->mailer($this->mailer)
             ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
-            ->from($this->getFromEmail(), $this->integrationData->sender_name ?? config('app.name'))
+            ->from($this->getFromEmail(), $this->getSenderName())
             ->subject($this->getSubject())
-            ->markdown('mail.form.email-notification', [
-                'emailContent' => $this->getEmailContent(),
-                'fields' => $this->formattedData,
-                'form' => $this->event->form,
-                'integrationData' => $this->integrationData,
-                'noBranding' => $this->event->form->no_branding,
-                'submission_id' => (isset($this->event->data['submission_id']) && $this->event->data['submission_id']) ? Hashids::encode($this->event->data['submission_id']) : null,
-            ]);
+            ->withSymfonyMessage(function (Email $message) {
+                $this->addCustomHeaders($message);
+            })
+            ->markdown('mail.form.email-notification', $this->getMailData());
     }
 
-    private function getFromEmail()
+    private function formatSubmissionData(): array
     {
-        if (config('app.self_hosted')) {
-            return config('mail.from.address');
+        $formatter = (new FormSubmissionFormatter($this->event->form, $this->event->data))
+            ->createLinks()
+            ->outputStringsOnly()
+            ->useSignedUrlForFiles();
+
+        if ($this->integrationData->include_hidden_fields_submission_data ?? false) {
+            $formatter->showHiddenFields();
         }
 
-        $originalFromAddress = Str::of(config('mail.from.address'))->explode('@');
-
-        return $originalFromAddress->first() . '+' . time() . '@' . $originalFromAddress->last();
+        return $formatter->getFieldsWithValue();
     }
 
-    private function getReplyToEmail($default)
+    private function getFromEmail(): string
+    {
+        if (
+            config('app.self_hosted')
+            && isset($this->integrationData->sender_email)
+            && $this->validateEmail($this->integrationData->sender_email)
+        ) {
+            return $this->integrationData->sender_email;
+        }
+
+        return config('mail.from.address');
+    }
+
+    private function getSenderName(): string
+    {
+        return $this->integrationData->sender_name ?? config('app.name');
+    }
+
+    private function getReplyToEmail($default): string
     {
         $replyTo = $this->integrationData->reply_to ?? null;
 
         if ($replyTo) {
-            $parser = new MentionParser($replyTo, $this->formattedData);
-            $parsedReplyTo = $parser->parse();
+            $parsedReplyTo = $this->parseReplyTo($replyTo);
             if ($parsedReplyTo && $this->validateEmail($parsedReplyTo)) {
                 return $parsedReplyTo;
             }
@@ -100,38 +109,76 @@ class FormEmailNotification extends Notification implements ShouldQueue
         return $this->getRespondentEmail() ?? $default;
     }
 
-    private function getSubject()
+    private function parseReplyTo(string $replyTo): ?string
     {
-        $parser = new MentionParser($this->integrationData->subject ?? 'New form submission', $this->formattedData);
+        $parser = new MentionParser($replyTo, $this->formattedData);
         return $parser->parse();
     }
 
-    private function getRespondentEmail()
+    private function getSubject(): string
     {
-        // Make sure we only have one email field in the form
-        $emailFields = collect($this->event->form->properties)->filter(function ($field) {
-            $hidden = $field['hidden'] ?? false;
+        $defaultSubject = 'New form submission';
+        $parser = new MentionParser($this->integrationData->subject ?? $defaultSubject, $this->formattedData);
+        return $parser->parse();
+    }
 
-            return !$hidden && $field['type'] == 'email';
-        });
-        if ($emailFields->count() != 1) {
-            return null;
+    private function addCustomHeaders(Email $message): void
+    {
+        $formId = $this->event->form->id;
+        $submissionId = $this->event->data['submission_id'] ?? 'unknown';
+        $domain = Str::after(config('app.url'), '://');
+
+        $uniquePart = substr(md5($formId . $submissionId), 0, 8);
+        $messageId = "form-{$formId}-{$uniquePart}@{$domain}";
+        $references = "form-{$formId}@{$domain}";
+
+        $message->getHeaders()->remove('Message-ID');
+        $message->getHeaders()->addIdHeader('Message-ID', $messageId);
+        $message->getHeaders()->addTextHeader('References', $references);
+    }
+
+    private function getMailData(): array
+    {
+        return [
+            'emailContent' => $this->getEmailContent(),
+            'fields' => $this->formattedData,
+            'form' => $this->event->form,
+            'integrationData' => $this->integrationData,
+            'noBranding' => $this->event->form->no_branding,
+            'submission_id' => $this->getEncodedSubmissionId(),
+        ];
+    }
+
+    private function getEmailContent(): string
+    {
+        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formattedData);
+        return $parser->parse();
+    }
+
+    private function getEncodedSubmissionId(): ?string
+    {
+        $submissionId = $this->event->data['submission_id'] ?? null;
+        return $submissionId ? Hashids::encode($submissionId) : null;
+    }
+
+    private function getRespondentEmail(): ?string
+    {
+        $emailFields = ['email', 'e-mail', 'mail'];
+
+        foreach ($this->formattedData as $field => $value) {
+            if (in_array(strtolower($field), $emailFields) && $this->validateEmail($value)) {
+                return $value;
+            }
         }
 
-        if (isset($this->event->data[$emailFields->first()['id']])) {
-            $email = $this->event->data[$emailFields->first()['id']];
-            if ($this->validateEmail($email)) {
-                return $email;
+        // If no email field found, search for any field containing a valid email
+        foreach ($this->formattedData as $value) {
+            if ($this->validateEmail($value)) {
+                return $value;
             }
         }
 
         return null;
-    }
-
-    private function getEmailContent()
-    {
-        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formattedData);
-        return $parser->parse();
     }
 
     public static function validateEmail($email): bool
