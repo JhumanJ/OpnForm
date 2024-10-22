@@ -35,14 +35,20 @@ class EmailNotificationMigration extends Command
                 return 0;
             }
         }
-        $query = FormIntegration::whereIn('integration_id', ['email', 'submission_confirmation']);
+        $query = FormIntegration::whereIn('integration_id', ['email', 'submission_confirmation'])
+            ->whereHas('form');
         $totalCount = $query->count();
         $progressBar = $this->output->createProgressBar($totalCount);
         $progressBar->start();
 
-        $query->chunk(100, function ($integrations) use ($progressBar) {
+        $query->with('form')->chunk(100, function ($integrations) use ($progressBar) {
             foreach ($integrations as $integration) {
-                $this->updateIntegration($integration);
+                try {
+                    $this->updateIntegration($integration);
+                } catch (\Exception $e) {
+                    $this->error('Error updating integration ' . $integration->id . '. Error: ' . $e->getMessage());
+                    ray($e);
+                }
                 $progressBar->advance();
             }
         });
@@ -55,6 +61,9 @@ class EmailNotificationMigration extends Command
 
     public function updateIntegration(FormIntegration $integration)
     {
+        if (!$integration->form) {
+            return;
+        }
         $existingData = $integration->data;
         if ($integration->integration_id === 'email') {
             $integration->data = [
@@ -69,7 +78,7 @@ class EmailNotificationMigration extends Command
         } elseif ($integration->integration_id === 'submission_confirmation') {
             $integration->integration_id = 'email';
             $integration->data = [
-                'send_to' => $this->getMentionHtml($integration->form_id),
+                'send_to' => $this->getMentionHtml($integration->form),
                 'sender_name' => $existingData->notification_sender,
                 'subject' => $existingData->notification_subject,
                 'email_content' => $existingData->notification_body,
@@ -81,15 +90,14 @@ class EmailNotificationMigration extends Command
         return $integration->save();
     }
 
-    private function getMentionHtml($formId)
+    private function getMentionHtml(Form $form)
     {
-        $emailField = $this->getRespondentEmail($formId);
+        $emailField = $this->getRespondentEmail($form);
         return $emailField ? '<span mention-field-id="' . $emailField['id'] . '" mention-field-name="' . $emailField['name'] . '" mention-fallback="" contenteditable="false" mention="true">' . $emailField['name'] . '</span>' : '';
     }
 
-    private function getRespondentEmail($formId)
+    private function getRespondentEmail(Form $form)
     {
-        $form = Form::find($formId);
         $emailFields = collect($form->properties)->filter(function ($field) {
             $hidden = $field['hidden'] ?? false;
             return !$hidden && $field['type'] == 'email';
