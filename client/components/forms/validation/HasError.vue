@@ -42,7 +42,6 @@ export default {
         return null
 
       // Check if baseError starts with "The {field.name} field" and replace if necessary
-      console.log(this.fieldName, baseError,baseError.startsWith(`The ${this.fieldName} field`))
       if (baseError.startsWith(`The ${this.fieldName} field`)) {
         baseError = baseError.replace(`The ${this.fieldName} field`, 'This field')
       }
