@@ -10,7 +10,11 @@
       :class="[
         theme.SelectInput.input,
         theme.SelectInput.borderRadius,
-        { '!ring-red-500 !ring-2 !border-transparent': hasError, '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled },
+        { 
+          '!ring-red-500 !ring-2 !border-transparent': hasError, 
+          '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled,
+          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError
+        },
         inputClass
       ]"
     >
@@ -19,12 +23,14 @@
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-pointer w-full flex-grow relative"
+        class="cursor-pointer w-full flex-grow relative focus:outline-none"
         :class="[
           theme.SelectInput.spacing.horizontal,
           theme.SelectInput.spacing.vertical
         ]"
         @click="toggleDropdown"
+        @focus="onFocus"
+        @blur="onBlur"
       >
         <div
           class="flex items-center"
@@ -237,12 +243,13 @@ export default {
     allowCreation: {type: Boolean, default: false},
     disabled: {type: Boolean, default: false}
   },
-  emits: ['update:modelValue', 'update-options'],
+  emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data() {
     return {
       isOpen: false,
       searchTerm: '',
-      defaultValue: this.modelValue ?? null
+      defaultValue: this.modelValue ?? null,
+      isFocused: false
     }
   },
   computed: {
@@ -311,11 +318,26 @@ export default {
       }
       return this.modelValue === value
     },
+    onFocus(event) {
+      this.isFocused = true
+      this.$emit('focus', event)
+    },
+
+    onBlur(event) {
+      this.isFocused = false
+      this.$emit('blur', event)
+    },
+
     toggleDropdown() {
       if (this.disabled) {
         this.isOpen = false
       } else {
         this.isOpen = !this.isOpen
+        if (this.isOpen) {
+          this.onFocus()
+        } else {
+          this.onBlur()
+        }
       }
       if (!this.isOpen) {
         this.searchTerm = ''

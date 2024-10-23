@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full border-b p-2 flex gap-x-3 items-center bg-white">
+  <div class="w-full border-b p-2 flex gap-x-2 items-center bg-white">
     <a
       v-if="backButton"
       href="#"
@@ -13,37 +13,38 @@
     </a>
 
 
-    <EditableTag
-      v-model="form.title"
-      element="h3"
-      class="font-medium py-1 text-md w-48 text-gray-500 truncate"
+    <UTabs
+      id="form-editor-navbar-tabs"
+      v-model="activeTab"
+      :items="[
+        { label: 'Build' },
+        { label: 'Design'},
+        { label: 'Settings'}
+      ]"
     />
-
-    <UBadge
-      v-if="form.visibility == 'draft'"
-      color="yellow"
-      variant="soft"
-      label="Draft"
-    />
-    <UBadge
-      v-else-if="form.visibility == 'closed'"
-      color="gray"
-      variant="soft"
-      label="Closed"
-    />
-
-    <UndoRedo />
 
     <div class="flex-grow flex justify-center">
-      <UTabs
-        v-model="activeTab"
-        :items="[
-          { label: 'Build' },
-          { label: 'Design'},
-          { label: 'Settings'}
-        ]"
+      <EditableTag
+        id="form-editor-title"
+        v-model="form.title"
+        element="h3"
+        class="font-medium py-1 text-md w-48 text-gray-500 truncate form-editor-title"
+      />
+      <UBadge
+        v-if="form.visibility == 'draft'"
+        color="yellow"
+        variant="soft"
+        label="Draft"
+      />
+      <UBadge
+        v-else-if="form.visibility == 'closed'"
+        color="gray"
+        variant="soft"
+        label="Closed"
       />
     </div>
+
+    <UndoRedo />
 
     <div
       class="flex items-stretch gap-x-2"

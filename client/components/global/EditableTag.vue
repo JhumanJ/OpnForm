@@ -15,9 +15,7 @@
       v-if="!editing"
       :content="content"
     >
-      <label class="cursor-pointer truncate w-full">
-        {{ content }}
-      </label>
+      {{ content }}
     </slot>
     <div
       v-if="editing"
@@ -55,7 +53,11 @@ const divHeight = ref(0)
 const parentRef = ref(null) // Ref for parent element
 const editInputRef = ref(null) // Ref for edit input element
 
-const startEditing = () => {
+const startEditing = (event) => {
+  if (editing.value || (event.type === 'keydown' && event.target !== parentRef.value)) {
+    return
+  }
+
   if (parentRef.value) {
     divHeight.value = parentRef.value.offsetHeight
     editing.value = true

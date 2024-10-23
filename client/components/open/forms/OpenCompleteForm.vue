@@ -10,12 +10,19 @@
       :href="getFontUrl"
     >
     
-    <h1
-      v-if="!isHideTitle"
-      class="mb-4 px-2"
-      :class="{'mt-4':isEmbedPopup}"
-      v-text="form.title"
-    />
+    <template v-if="!isHideTitle">
+      <EditableTag
+        v-if="adminPreview"
+        v-model="form.title"
+        element="h1"
+        class="mb-2"
+      />
+      <h1
+        v-else
+        class="mb-2 px-2"
+        v-text="form.title"
+      />
+    </template>
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">

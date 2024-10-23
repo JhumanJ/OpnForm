@@ -88,6 +88,14 @@ export function useFormInput(props, context, options = {}) {
     return wrapperProps
   })
 
+  const onFocus = (event) => {
+    context.emit('focus', event)
+  }
+
+  const onBlur = (event) => {
+    context.emit('blur', event)
+  }
+
   // Watch for changes in props.modelValue and update the local content
   watch(
     () => props.modelValue,
@@ -104,5 +112,7 @@ export function useFormInput(props, context, options = {}) {
     hasValidation,
     hasError,
     inputWrapperProps,
+    onFocus,
+    onBlur,
   }
 }

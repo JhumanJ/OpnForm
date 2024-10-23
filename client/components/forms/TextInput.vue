@@ -31,6 +31,8 @@
       :maxlength="maxCharLimit"
       @change="onChange"
       @keydown.enter.prevent="onEnterPress"
+      @focus="onFocus"
+      @blur="onBlur"
     >
 
     <template
@@ -74,7 +76,6 @@ export default {
     max: {type: Number, required: false, default: null},
     autocomplete: {type: [Boolean, String, Object], default: null},
     maxCharLimit: {type: Number, required: false, default: null},
-    showCharLimit: {type: Boolean, required: false, default: false},
     pattern: {type: String, default: null},
   },
 

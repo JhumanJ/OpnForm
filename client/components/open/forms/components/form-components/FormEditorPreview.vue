@@ -22,7 +22,7 @@
         <div class="bg-red-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-yellow-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-green-500 rounded-full w-2.5 h-2.5" />
-        <p class="text-sm text-gray-500/70 text-sm ml-4">
+        <p class="text-sm text-gray-500/70 text-sm ml-4 select-none">
           Form Preview
         </p>
         <div class="flex-grow" />

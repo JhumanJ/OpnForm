@@ -19,7 +19,7 @@
           '!cursor-not-allowed !bg-gray-200': disabled,
         },
       ]"
-      class="resize-y"
+      class="resize-y block"
       :name="name"
       :style="inputStyle"
       :placeholder="placeholder"
@@ -63,7 +63,6 @@ export default {
   props: {
     ...inputProps,
     maxCharLimit: {type: Number, required: false, default: null},
-    showCharLimit: {type: Boolean, required: false, default: false},
   },
 
   setup(props, context) {

@@ -7,7 +7,7 @@
       :class="[
         option.class ? (typeof option.class === 'function' ? option.class(isSelected(option.name)) : option.class) : {},
         {
-          'border-blue-500': isSelected(option.name),
+          'border-blue-500 bg-blue-50': isSelected(option.name),
           'hover:bg-gray-100 border-gray-300': !isSelected(option.name)
         }
       ]"

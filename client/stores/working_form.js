@@ -73,6 +73,14 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     prefillDefault(data) {
+      // If a field already has this name, we need to make it unique with a number at the end
+      let baseName = data.name
+      let counter = 1
+      while (this.content.properties.some(prop => prop.name === data.name)) {
+        counter++
+        data.name = `${baseName} ${counter}`
+      }
+      
       if (data.type === "nf-text") {
         data.content = "<p>This is a text block.</p>"
       } else if (data.type === "nf-page-break") {

@@ -19,6 +19,7 @@
     </div>
     <div
       v-else
+      :style="inputStyle"
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
       :class="[
         {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
@@ -29,12 +30,18 @@
         theme.fileInput.spacing.horizontal,
         theme.fileInput.spacing.vertical,
         theme.fileInput.fontSize,
-        theme.fileInput.minHeight
+        theme.fileInput.minHeight,
+        {'border-red-500 border-2':hasError},
+        'focus:outline-none focus:ring-2'
       ]"
+      tabindex="0"
+      role="button"
+      :aria-label="multiple ? 'Choose files or drag here' : 'Choose a file or drag here'"
       @dragover.prevent="uploadDragoverEvent=true"
       @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
       @click="openFileUpload"
+      @keydown.enter.prevent="openFileUpload"
     >
       <div class="flex w-full items-center justify-center">
         <div

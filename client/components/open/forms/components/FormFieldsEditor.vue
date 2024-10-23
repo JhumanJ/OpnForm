@@ -52,7 +52,7 @@
 
               <UTooltip :text="element.hidden ? 'Show Block' : 'Hide Block'">
                 <button
-                  class="hidden cursor-pointer rounded p-1 transition-colors hover:bg-nt-blue-lighter items-center justify-center"
+                  class="hidden !cursor-pointer rounded p-1 transition-colors hover:bg-nt-blue-lighter items-center justify-center"
                   :class="{
                     'text-gray-300 hover:text-blue-500 md:group-hover:flex': !element.hidden,
                     'text-gray-300 hover:text-gray-500 md:flex': element.hidden,

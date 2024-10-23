@@ -53,7 +53,7 @@
 
     <div
       v-if="field.type == 'nf-text'"
-      class="border-t py-2"
+      class="border-t mt-4"
     >
       <rich-text-area-input
         class="mx-4"
@@ -85,7 +85,7 @@
 
     <div
       v-else-if="field.type == 'nf-image'"
-      class="border-t py-2"
+      class="border-t mt-4"
     >
       <image-input
         name="image_block"
