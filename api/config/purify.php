@@ -1,6 +1,6 @@
 <?php
 
-use Stevebauman\Purify\Definitions\Html5Definition;
+use App\Service\HtmlPurifier\OpenFormsHtmlDefinition;
 
 return [
 
@@ -40,7 +40,7 @@ return [
     'configs' => [
 
         'default' => [
-            'HTML.Allowed' => 'h1,h2,b,u,strong,i,em,a[href|title],ul,ol,li,p,br,span,*[style]',
+            'HTML.Allowed' => 'h1,h2,b,u,strong,i,em,a[href|title],ul,ol,li,p,br,span[mention|mention-field-id|mention-field-name|mention-fallback],*[style]',
             'HTML.ForbiddenElements' => '',
             'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,text-decoration,color,text-align',
 
@@ -86,7 +86,7 @@ return [
     |
     */
 
-    'definitions' => Html5Definition::class,
+    'definitions' => OpenFormsHtmlDefinition::class,
 
     /*
     |--------------------------------------------------------------------------

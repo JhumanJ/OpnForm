@@ -4,6 +4,7 @@
     compact-header
     max-width="screen-lg"
     backdrop-blur
+    class="z-50"
     @close="subscriptionModalStore.closeModal()"
   >
     <div class="overflow-hidden">
