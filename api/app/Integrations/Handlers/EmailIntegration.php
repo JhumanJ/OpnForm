@@ -28,7 +28,7 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return $this->integrationData->send_to && parent::shouldRun() && !$this->riskLimitReached();
+        return $this->integrationData?->send_to && parent::shouldRun() && !$this->riskLimitReached();
     }
 
     // To avoid phishing abuse we limit this feature for risky users
@@ -57,10 +57,10 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
 
         if ($this->form->is_pro) {  // For Send to field Mentions are Pro feature
             $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-            $parser = new MentionParser($this->integrationData->send_to, $formatter->getFieldsWithValue());
+            $parser = new MentionParser($this->integrationData?->send_to, $formatter->getFieldsWithValue());
             $sendTo = $parser->parse();
         } else {
-            $sendTo = $this->integrationData->send_to;
+            $sendTo = $this->integrationData?->send_to;
         }
 
         $recipients = collect(preg_split("/\r\n|\n|\r/", $sendTo))
