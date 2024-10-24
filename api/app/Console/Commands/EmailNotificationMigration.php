@@ -65,7 +65,7 @@ class EmailNotificationMigration extends Command
             return;
         }
         $existingData = $integration->data;
-        if ($integration->integration_id === 'email') {
+        if ($integration->integration_id === 'email' && isset($existingData->notification_emails)) {
             $integration->data = [
                 'send_to' => $existingData->notification_emails ?? null,
                 'sender_name' => 'OpnForm',
@@ -75,7 +75,8 @@ class EmailNotificationMigration extends Command
                 'include_hidden_fields_submission_data' => false,
                 'reply_to' => $existingData->notification_reply_to ?? null
             ];
-        } elseif ($integration->integration_id === 'submission_confirmation') {
+            return $integration->save();
+        } else if ($integration->integration_id === 'submission_confirmation' && isset($existingData->notification_subject)) {
             $integration->integration_id = 'email';
             $integration->data = [
                 'send_to' => $this->getMentionHtml($integration->form),
@@ -86,8 +87,9 @@ class EmailNotificationMigration extends Command
                 'include_hidden_fields_submission_data' => false,
                 'reply_to' => $existingData->confirmation_reply_to ?? null
             ];
+            return $integration->save();
         }
-        return $integration->save();
+        return;
     }
 
     private function getMentionHtml(Form $form)
