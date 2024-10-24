@@ -76,7 +76,7 @@ class EmailNotificationMigration extends Command
                 'reply_to' => $existingData->notification_reply_to ?? null
             ];
             return $integration->save();
-        } else if ($integration->integration_id === 'submission_confirmation' && isset($existingData->notification_subject)) {
+        } elseif ($integration->integration_id === 'submission_confirmation' && isset($existingData->notification_subject)) {
             $integration->integration_id = 'email';
             $integration->data = [
                 'send_to' => $this->getMentionHtml($integration->form),
