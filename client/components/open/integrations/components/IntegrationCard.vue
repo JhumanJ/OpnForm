@@ -203,7 +203,7 @@ const showIntegrationEventsModal = ref(false)
 const loadingDelete = ref(false)
 
 const actionsComponent = computed(() => {
-  if(integrationTypeInfo.value.actions_file_name) {
+  if(integrationTypeInfo.value?.actions_file_name || false) {
     return resolveComponent(integrationTypeInfo.value.actions_file_name)
   }
 
