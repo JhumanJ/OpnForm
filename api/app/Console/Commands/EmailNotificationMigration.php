@@ -13,7 +13,7 @@ class EmailNotificationMigration extends Command
      *
      * @var string
      */
-    protected $signature = 'forms:email-notification-migration';
+    protected $signature = 'forms:email-notification-migration {--dry : Log changes without applying them}';
 
     /**
      * The console command description.
@@ -41,10 +41,12 @@ class EmailNotificationMigration extends Command
         $progressBar = $this->output->createProgressBar($totalCount);
         $progressBar->start();
 
-        $query->with('form')->chunk(100, function ($integrations) use ($progressBar) {
+        $isDryRun = $this->option('dry');
+
+        $query->with('form')->chunk(100, function ($integrations) use ($progressBar, $isDryRun) {
             foreach ($integrations as $integration) {
                 try {
-                    $this->updateIntegration($integration);
+                    $this->updateIntegration($integration, $isDryRun);
                 } catch (\Exception $e) {
                     $this->error('Error updating integration ' . $integration->id . '. Error: ' . $e->getMessage());
                     ray($e);
@@ -59,14 +61,14 @@ class EmailNotificationMigration extends Command
         $this->line('Migration Done');
     }
 
-    public function updateIntegration(FormIntegration $integration)
+    public function updateIntegration(FormIntegration $integration, $isDryRun = false)
     {
         if (!$integration->form) {
             return;
         }
         $existingData = $integration->data;
-        if ($integration->integration_id === 'email') {
-            $integration->data = [
+        if ($integration->integration_id === 'email' && isset($existingData->notification_emails)) {
+            $newData = [
                 'send_to' => $existingData->notification_emails ?? null,
                 'sender_name' => 'OpnForm',
                 'subject' => 'New form submission',
@@ -75,9 +77,14 @@ class EmailNotificationMigration extends Command
                 'include_hidden_fields_submission_data' => false,
                 'reply_to' => $existingData->notification_reply_to ?? null
             ];
-        } elseif ($integration->integration_id === 'submission_confirmation') {
-            $integration->integration_id = 'email';
-            $integration->data = [
+            if ($isDryRun) {
+                $this->info('Dry run: Would update integration ' . $integration->id . ' with data: ' . json_encode($newData));
+            } else {
+                $integration->data = $newData;
+                return $integration->save();
+            }
+        } elseif ($integration->integration_id === 'submission_confirmation' && isset($existingData->notification_subject)) {
+            $newData = [
                 'send_to' => $this->getMentionHtml($integration->form),
                 'sender_name' => $existingData->notification_sender,
                 'subject' => $existingData->notification_subject,
@@ -86,8 +93,15 @@ class EmailNotificationMigration extends Command
                 'include_hidden_fields_submission_data' => false,
                 'reply_to' => $existingData->confirmation_reply_to ?? null
             ];
+            if ($isDryRun) {
+                $this->info('Dry run: Would update integration ' . $integration->id . ' with data: ' . json_encode($newData));
+            } else {
+                $integration->integration_id = 'email';
+                $integration->data = $newData;
+                return $integration->save();
+            }
         }
-        return $integration->save();
+        return;
     }
 
     private function getMentionHtml(Form $form)
