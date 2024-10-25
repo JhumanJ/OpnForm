@@ -19,7 +19,6 @@ class FormEmailNotification extends Notification implements ShouldQueue
 
     public FormSubmitted $event;
     public string $mailer;
-    private array $formattedData;
 
     /**
      * Create a new notification instance.
@@ -30,7 +29,6 @@ class FormEmailNotification extends Notification implements ShouldQueue
     {
         $this->event = $event;
         $this->mailer = $mailer;
-        $this->formattedData = $this->formatSubmissionData();
     }
 
     /**
@@ -54,7 +52,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage())
             ->mailer($this->mailer)
-            ->replyTo($this->getReplyToEmail($notifiable->routes['mail']))
+            ->replyTo($this->getReplyToEmail($this->event->form->creator->email))
             ->from($this->getFromEmail(), $this->getSenderName())
             ->subject($this->getSubject())
             ->withSymfonyMessage(function (Email $message) {
@@ -63,13 +61,15 @@ class FormEmailNotification extends Notification implements ShouldQueue
             ->markdown('mail.form.email-notification', $this->getMailData());
     }
 
-    private function formatSubmissionData(): array
+    private function formatSubmissionData($createLinks = true): array
     {
         $formatter = (new FormSubmissionFormatter($this->event->form, $this->event->data))
-            ->createLinks()
             ->outputStringsOnly()
             ->useSignedUrlForFiles();
 
+        if ($createLinks) {
+            $formatter->createLinks();
+        }
         if ($this->integrationData->include_hidden_fields_submission_data ?? false) {
             $formatter->showHiddenFields();
         }
@@ -98,27 +98,25 @@ class FormEmailNotification extends Notification implements ShouldQueue
     private function getReplyToEmail($default): string
     {
         $replyTo = $this->integrationData->reply_to ?? null;
-
         if ($replyTo) {
             $parsedReplyTo = $this->parseReplyTo($replyTo);
             if ($parsedReplyTo && $this->validateEmail($parsedReplyTo)) {
                 return $parsedReplyTo;
             }
         }
-
-        return $this->getRespondentEmail() ?? $default;
+        return $default;
     }
 
     private function parseReplyTo(string $replyTo): ?string
     {
-        $parser = new MentionParser($replyTo, $this->formattedData);
+        $parser = new MentionParser($replyTo, $this->formatSubmissionData(false));
         return $parser->parse();
     }
 
     private function getSubject(): string
     {
         $defaultSubject = 'New form submission';
-        $parser = new MentionParser($this->integrationData->subject ?? $defaultSubject, $this->formattedData);
+        $parser = new MentionParser($this->integrationData->subject ?? $defaultSubject, $this->formatSubmissionData(false));
         return $parser->parse();
     }
 
@@ -150,7 +148,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
     {
         return [
             'emailContent' => $this->getEmailContent(),
-            'fields' => $this->formattedData,
+            'fields' => $this->formatSubmissionData(),
             'form' => $this->event->form,
             'integrationData' => $this->integrationData,
             'noBranding' => $this->event->form->no_branding,
@@ -160,7 +158,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
 
     private function getEmailContent(): string
     {
-        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formattedData);
+        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formatSubmissionData());
         return $parser->parse();
     }
 
@@ -168,26 +166,6 @@ class FormEmailNotification extends Notification implements ShouldQueue
     {
         $submissionId = $this->event->data['submission_id'] ?? null;
         return $submissionId ? Hashids::encode($submissionId) : null;
-    }
-
-    private function getRespondentEmail(): ?string
-    {
-        $emailFields = ['email', 'e-mail', 'mail'];
-
-        foreach ($this->formattedData as $field => $value) {
-            if (in_array(strtolower($field), $emailFields) && $this->validateEmail($value)) {
-                return $value;
-            }
-        }
-
-        // If no email field found, search for any field containing a valid email
-        foreach ($this->formattedData as $value) {
-            if ($this->validateEmail($value)) {
-                return $value;
-            }
-        }
-
-        return null;
     }
 
     public static function validateEmail($email): bool
