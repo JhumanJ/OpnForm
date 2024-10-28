@@ -26,6 +26,7 @@ it('send email with the submitted data', function () {
     $notifiable->route('mail', 'test@test.com');
     $renderedMail = $mailable->toMail($notifiable);
     expect($renderedMail->subject)->toBe('New form submission');
+    expect($renderedMail->replyTo[0][0])->toBe('reply@example.com');
     expect(trim($renderedMail->render()))->toContain('Test body');
 });
 
@@ -162,4 +163,66 @@ it('does not use custom sender email in non-self-hosted mode', function () {
     expect($renderedMail->from[1])->toBe('Custom Sender');
     expect($renderedMail->subject)->toBe('Custom Subject');
     expect(trim($renderedMail->render()))->toContain('Custom content');
+});
+
+it('send email with mention as reply to', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
+
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>Test body',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => '<span mention-field-id="' . $emailProperty['id'] . '" mention-field-name="' . $emailProperty['name'] . '" mention-fallback="" contenteditable="false" mention="true">' . $emailProperty['name'] . '</span>'
+    ]);
+
+    $formData = [
+        $emailProperty['id'] => 'reply@example.com',
+    ];
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+    expect($renderedMail->replyTo[0][0])->toBe('reply@example.com');
+});
+
+it('send email with empty reply to', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
+
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>Test body',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => null,
+    ]);
+
+    $formData = [
+        $emailProperty['id'] => 'reply@example.com',
+    ];
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+    expect($renderedMail->replyTo[0][0])->toBe($form->creator->email);
 });
