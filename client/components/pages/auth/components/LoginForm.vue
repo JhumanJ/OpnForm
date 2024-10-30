@@ -68,7 +68,7 @@
       >
         <Icon
           name="devicon:google"
-          class="w-4 h-4 -mt-1"
+          class="w-4 h-4"
         />
         <span class="mx-2">Sign in with Google</span>
       </v-button>
