@@ -9,7 +9,6 @@
         theme.default.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-300': disabled,
         },
       ]"
     >
@@ -28,7 +27,6 @@
             </td>
           </tr>
         </thead>
-
         <tbody>
           <tr
             v-for="row, rowIndex in rows"
@@ -44,6 +42,9 @@
               v-for="column in columns"
               :key="row + column"
               class="border-l border-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800"
+              :class="{
+                '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800 hover:!bg-gray-200 dark:hover:!bg-gray-800': disabled,
+              }"
             >
               <div
                 v-if="compVal"
@@ -54,6 +55,9 @@
                   theme.FlatSelectInput.spacing.vertical,
                   theme.FlatSelectInput.fontSize,
                   theme.FlatSelectInput.option,
+                  {
+                    '!cursor-not-allowed !bg-transparent hover:!bg-transparent dark:hover:!bg-transparent': disabled,
+                  }
                 ]"
                 @click="onSelect(row, column)"
               >
@@ -77,43 +81,44 @@
     </template>
   </input-wrapper>
 </template>
-<script>
-import {inputProps, useFormInput} from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import RadioButtonIcon from "./components/RadioButtonIcon.vue"
-
-export default {
-  name: "MatrixInput",
-  components: {InputWrapper, RadioButtonIcon},
-
-  props: {
-    ...inputProps,
-    rows: {type: Array, required: true},
-    columns: {type: Array, required: true},
-  },
-  setup(props, context) {
-    return {
-      ...useFormInput(props, context),
-    }
-  },
-  data() {
-    return {
-    }
-  },
-  computed: {},
-  mounted() {
-    if (!this.compVal || typeof this.compVal !== 'object') {
-      this.compVal = {}
-    }
-  },
-  methods: {
-    onSelect(row, column) {
-      if (this.compVal[row] === column && !this.required) {
-        this.compVal[row] = null
-      } else {
-        this.compVal[row] = column
+  <script>
+  import {inputProps, useFormInput} from "./useFormInput.js"
+  import InputWrapper from "./components/InputWrapper.vue"
+  import RadioButtonIcon from "./components/RadioButtonIcon.vue"
+  export default {
+    name: "MatrixInput",
+    components: {InputWrapper, RadioButtonIcon},
+    props: {
+      ...inputProps,
+      rows: {type: Array, required: true},
+      columns: {type: Array, required: true},
+    },
+    setup(props, context) {
+      return {
+        ...useFormInput(props, context),
       }
     },
-  },
-}
-</script>
+    data() {
+      return {
+      }
+    },
+    computed: {},
+    mounted() {
+      if (!this.compVal || typeof this.compVal !== 'object') {
+        this.compVal = {}
+      }
+    },
+    methods: {
+        onSelect(row, column) {
+          if (this.disabled) {
+            return
+          }
+          if (this.compVal[row] === column && !this.required) {
+              this.compVal[row] = null
+          } else {
+              this.compVal[row] = column
+          }
+      },
+    },
+  }
+  </script>
