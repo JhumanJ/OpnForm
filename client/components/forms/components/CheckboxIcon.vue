@@ -1,12 +1,25 @@
 <template>
-  <Icon
-    :name="isChecked ? 'material-symbols:check-box' : 'material-symbols:check-box-outline-blank'"
-    :class="[
-      theme.FlatSelectInput.icon,
-      isChecked ? '' : theme.FlatSelectInput.unselectedIcon,
-    ]"
-    :color="isChecked ? color : undefined"
-  />
+  <div>
+    <Icon
+      v-show="isChecked"
+      name="i-material-symbols-check-box"
+      class="block"
+      :class="[
+        theme.FlatSelectInput.icon
+      ]"
+      :color="color"
+    />
+    <Icon
+      v-show="!isChecked"
+      name="i-material-symbols-check-box-outline-blank"
+      class="block"
+      :class="[
+        theme.FlatSelectInput.icon,
+        theme.FlatSelectInput.unselectedIcon,
+      ]"
+      :color="undefined"
+    />
+  </div>
 </template>
 
 <script setup>
