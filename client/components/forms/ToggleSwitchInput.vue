@@ -5,13 +5,14 @@
     </template>
 
     <div class="flex space-x-2 items-center">
-      <v-switch
+      <UToggle
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"
         :color="color"
         :theme="theme"
       />
+  
       <div>
         <slot name="label">
           <label
