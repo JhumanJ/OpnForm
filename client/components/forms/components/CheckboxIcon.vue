@@ -6,7 +6,7 @@
       class="block"
       :class="[
         theme.FlatSelectInput.icon,
-        'bg-[var(--form-color)]'
+        'bg-[var(--form-color,#3B82F6)]'
       ]"
     />
     <Icon

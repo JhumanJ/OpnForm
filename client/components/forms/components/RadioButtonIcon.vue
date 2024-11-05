@@ -3,14 +3,16 @@
     <Icon
       v-show="isChecked"
       name="ic:round-radio-button-checked"
+      class="block"
       :class="[
         theme.FlatSelectInput.icon,
-        'bg-[var(--form-color)]'
+        'bg-[var(--form-color,#3B82F6)]'
       ]"
     />
     <Icon
       v-show="!isChecked"
       name="ic:round-radio-button-unchecked"
+      class="block"
       :class="[
         theme.FlatSelectInput.icon,
         theme.FlatSelectInput.unselectedIcon,

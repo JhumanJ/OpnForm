@@ -10,8 +10,8 @@
         v-model="compVal"
         :disabled="disabled ? true : null"
         :ui="{
-          active: 'bg-[var(--form-color)]',
-          ring: 'focus:ring-[var(--form-color)]/50'
+          active: 'bg-[var(--form-color,#3B82F6)]',
+          ring: 'focus:ring-[var(--form-color,#3B82F6)]/50'
         }"
       />
   
