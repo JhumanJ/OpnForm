@@ -9,8 +9,11 @@
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"
-        :color="color"
-        :theme="theme"
+        :style="{ '--toggle-color': color }"
+        :ui="{
+          active: 'bg-[var(--toggle-color)]',
+          ring: 'focus:ring-[var(--toggle-color)]/50'
+        }"
       />
   
       <div>
@@ -52,14 +55,13 @@
 
 <script>
 import {inputProps, useFormInput} from "./useFormInput.js"
-import VSwitch from "./components/VSwitch.vue"
 import InputWrapper from "./components/InputWrapper.vue"
 import InputHelp from "~/components/forms/components/InputHelp.vue"
 
 export default {
   name: "ToggleSwitchInput",
 
-  components: {InputHelp, InputWrapper, VSwitch},
+  components: {InputHelp, InputWrapper},
   props: {
     ...inputProps,
   },
