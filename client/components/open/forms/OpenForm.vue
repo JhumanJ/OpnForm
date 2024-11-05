@@ -310,7 +310,8 @@ export default {
     },
     computedStyle() {
       return {
-        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {}
+        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {},
+        '--form-color': this.form.color
       }
     }
   },

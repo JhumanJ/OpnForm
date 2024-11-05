@@ -4,9 +4,9 @@
       v-show="isChecked"
       name="ic:round-radio-button-checked"
       :class="[
-        theme.FlatSelectInput.icon
+        theme.FlatSelectInput.icon,
+        'bg-[var(--form-color)]'
       ]"
-      :color="color"
     />
     <Icon
       v-show="!isChecked"
@@ -15,7 +15,6 @@
         theme.FlatSelectInput.icon,
         theme.FlatSelectInput.unselectedIcon,
       ]"
-      :color="undefined"
     />
   </div>
 </template>

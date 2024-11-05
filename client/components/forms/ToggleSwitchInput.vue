@@ -9,10 +9,9 @@
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"
-        :style="{ '--toggle-color': color }"
         :ui="{
-          active: 'bg-[var(--toggle-color)]',
-          ring: 'focus:ring-[var(--toggle-color)]/50'
+          active: 'bg-[var(--form-color)]',
+          ring: 'focus:ring-[var(--form-color)]/50'
         }"
       />
   
