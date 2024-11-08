@@ -113,6 +113,14 @@
       label="Form Width"
       help="Useful when embedding your form"
     />
+    
+    <ToggleSwitchInput
+      name="layout_rtl"
+      :form="form"
+      class="mt-4"
+      label="Right-to-Left Layout"
+      help="Adjusts form layout for right-to-left languages."
+    />
 
     <EditorSectionHeader
       icon="heroicons:tag-16-solid"
