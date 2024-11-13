@@ -418,6 +418,9 @@ export default {
       await this.recordsStore.loadRecord(
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
           return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
+        }).catch((error) => {
+          useAlert().error(error?.data?.message || 'Something went wrong')
+          return null
         })
       )
       return this.recordsStore.getByKey(this.form.submission_id)
