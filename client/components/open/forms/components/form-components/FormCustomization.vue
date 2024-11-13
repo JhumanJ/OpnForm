@@ -136,7 +136,8 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Color (for buttons & inputs border)"
+      label="Color image"
+      help="Not visible when form is embedded"
     />
     <toggle-switch-input
       name="hide_title"
