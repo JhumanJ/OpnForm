@@ -234,7 +234,11 @@ useOpnSeoMeta({
     return (form.value && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
   }
 })
+
 useHead({
+  htmlAttrs: {
+    lang: (form.value?.language) ? form.value.language : 'en'
+  },
   titleTemplate: (titleChunk) => {
     if (pageMeta.value.page_title) {
       // Disable template if custom SEO title

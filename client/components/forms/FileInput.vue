@@ -50,7 +50,7 @@
         >
           <Loader class="mx-auto h-6 w-6" />
           <p class="mt-2 text-center text-sm text-gray-500">
-            Uploading your file...
+            {{ $t('forms.fileInput.uploadingFile') }}
           </p>
         </div>
         <template v-else>
@@ -95,10 +95,10 @@
               </div>
 
               <p class="mt-2 text-sm text-gray-500 font-medium select-none">
-                Click to choose {{ multiple ? 'file(s)' : 'a file' }} or drag here
+                {{ $t('forms.fileInput.chooseFiles', { n: multiple ? 1 : 0 }) }}
               </p>
               <p class="mt-1 text-xs text-gray-400 dark:text-gray-600 select-none">
-                Size limit: {{ mbLimit }}MB per file
+                {{ $t('forms.fileInput.sizeLimit', mbLimit) }}
               </p>
             </template>
           </div>

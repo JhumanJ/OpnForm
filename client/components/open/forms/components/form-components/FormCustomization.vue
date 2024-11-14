@@ -74,6 +74,14 @@
       label="Uppercase Input Labels"
     />
 
+    <select-input
+      name="language"
+      class="mt-4"
+      :options="availableLocales"
+      :form="form"
+      label="Form Language"
+    />
+
     <EditorSectionHeader
       icon="heroicons:rectangle-stack-16-solid"
       title="Layout & Sizing"
@@ -206,6 +214,7 @@ const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
+const { $i18n } = useNuxtApp()
 
 const user = computed(() => authStore.user)
 const workspace = computed(() => workspacesStore.getCurrent)
@@ -214,6 +223,10 @@ const isPro = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return true
   if (!user.value || !workspace.value) return false
   return workspace.value.is_pro
+})
+
+const availableLocales = computed(() => {
+  return $i18n.locales?.value.map(locale => ({ name: locale.name, value: locale.code })) ?? []
 })
 
 onMounted(() => {

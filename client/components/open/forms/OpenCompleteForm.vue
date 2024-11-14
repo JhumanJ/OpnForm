@@ -147,7 +147,7 @@
         key="submitted"
         class="px-2"
       >
-      <TextBlock
+        <TextBlock
           v-if="form.submitted_text"
           class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
           :content="form.submitted_text"
@@ -224,8 +224,11 @@ export default {
   },
 
   setup(props) {
+    const { setLocale } = useI18n()
     const authStore = useAuthStore()
+    
     return {
+      setLocale,
       authStore,
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
@@ -272,6 +275,17 @@ export default {
     isFormOwner() {
       return this.authenticated && this.form && this.form.creator_id === this.authStore.user.id
     }
+  },
+  watch: {
+    'form.language': {
+      handler(newLanguage) {
+        this.setLocale(newLanguage)
+      },
+      immediate: true
+    }
+  },
+  beforeUnmount() {
+    this.setLocale('en')
   },
 
   methods: {

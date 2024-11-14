@@ -25,7 +25,7 @@
       >
         <Loader class="mx-auto h-6 w-6" />
         <p class="mt-2 text-center text-sm text-gray-500">
-          Uploading your file...
+          {{ $t('forms.fileInput.uploadingFile') }}
         </p>
       </div>
     
@@ -76,7 +76,7 @@
           :class="theme.default.help"
           href="#"
           @click.prevent="openFileUpload"
-        >Upload file instead</a>
+        >{{ $t('forms.signatureInput.uploadFileInstead') }}</a>
       </small>
 
       <small :class="theme.default.help">
@@ -84,7 +84,7 @@
           :class="theme.default.help"
           href="#"
           @click.prevent="clear"
-        >Clear</a>
+        >{{ $t('forms.signatureInput.clear') }}</a>
       </small>
     </template>
 

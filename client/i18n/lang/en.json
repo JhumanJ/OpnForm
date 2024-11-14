@@ -1,0 +1,21 @@
+{
+    "forms": {
+        "fileInput": {
+            "chooseFiles": "Click to choose file(s) or drag here | Click to choose a file or drag here",
+            "sizeLimit": "Size limit: {count}MB per file",
+            "uploadingFile": "Uploading your file..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Allow Camera Permission",
+            "allowCameraPermissionDescription": "You need to allow camera permission before you can take pictures. Go to browser settings to enable camera permission on this page.",
+            "gotIt": "Got it!",
+            "cameraDeviceError": "Camera Device Error",
+            "cameraDeviceErrorDescription": "An unknown error occurred when trying to start Webcam device.",
+            "goBack": "Go back"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Upload file instead",
+            "clear": "Clear"
+        }
+    }
+} 

@@ -94,6 +94,7 @@ return [
 
     'locales' => [
         'en' => 'EN',
+        'fr' => 'FR',
     ],
 
     /*
