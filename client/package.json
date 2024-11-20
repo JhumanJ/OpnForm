@@ -13,7 +13,7 @@
     "lint:fix": "eslint . --fix --ext .js,.vue"
   },
   "devDependencies": {
-    "@nuxt/devtools": "~1.0.0",
+    "@nuxt/devtools": "^1.6.1",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/icon": "^1.7.2",
     "@nuxtjs/sitemap": "^6.1.3",
