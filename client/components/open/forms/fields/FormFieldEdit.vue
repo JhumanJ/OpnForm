@@ -1,27 +1,23 @@
 <template>
   <div>
-    <div class="px-4 py-2 border-b sticky top-0 z-10 bg-white">
-      <button
+    <div class="p-2 border-b sticky top-0 z-10 bg-white">
+      <UButton
         v-if="!field"
-        class="text-gray-500 hover:text-gray-900 cursor-pointer"
-        @click.prevent="closeSidebar"
-      >
-        <Icon
-          name="heroicons:x-mark-solid"
-          class="h-6 w-6"
-        />
-      </button>
+        size="sm"
+        color="gray"
+        icon="i-heroicons-x-mark-20-solid"
+        variant="ghost"
+        @click="closeSidebar"
+      />
       <template v-else>
         <div class="flex">
-          <button
-            class="text-gray-500 hover:text-gray-900 cursor-pointer"
-            @click.prevent="closeSidebar"
-          >
-            <Icon
-              name="heroicons:x-mark-solid"
-              class="h-6 w-6"
-            />
-          </button>
+          <UButton
+            size="sm"
+            color="gray"
+            icon="i-heroicons-x-mark-20-solid"
+            variant="ghost"
+            @click="closeSidebar"
+          />
           <div class="ml-2 flex flex-grow items-center space-between min-w-0 gap-x-3">
             <div class="flex-grow" />
             <BlockTypeIcon

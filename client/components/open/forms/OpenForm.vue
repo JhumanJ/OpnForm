@@ -57,7 +57,6 @@
           filter=".not-draggable"
           :animation="200"
           :disabled="!adminPreview"
-          handle=".handle"
           @change="handleDragDropped"
         >
           <template #item="{element}">
