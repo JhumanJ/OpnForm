@@ -80,6 +80,13 @@ export default defineNuxtConfig({
         fallback: 'light',
         classPrefix: '',
     },
+    icon: {
+        clientBundle: {
+            scan: {
+                globInclude: ['**/*.vue', '**/*.json'],
+            },
+        },
+      },
     sitemap,
     runtimeConfig,
     gtm
