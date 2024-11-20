@@ -13,6 +13,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     font_family: null,
     theme: "default",
     width: "centered",
+    layout_rtl: false,
     dark_mode: "auto",
     color: DEFAULT_COLOR,
     hide_title: false,

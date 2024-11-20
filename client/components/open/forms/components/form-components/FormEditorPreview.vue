@@ -71,12 +71,13 @@
               v-if="form.logo_picture"
               class="w-full mx-auto py-5 relative"
               :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+              :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
             >
               <img
                 alt="Logo Picture"
                 :src="coverPictureSrc(form.logo_picture)"
                 :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                class="max-w-60 h-20 object-contain absolute left-5 transition-all"
+                class="max-w-60 h-20 object-contain absolute transition-all"
               >
             </div>
           </div>

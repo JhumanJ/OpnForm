@@ -62,26 +62,64 @@ class MentionParser
         return $result;
     }
 
-    private function replaceMentions()
+    public function parseAsText()
     {
-        $pattern = '/<span[^>]*mention-field-id="([^"]*)"[^>]*mention-fallback="([^"]*)"[^>]*>.*?<\/span>/';
-        return preg_replace_callback($pattern, function ($matches) {
-            $fieldId = $matches[1];
-            $fallback = $matches[2];
-            $value = $this->getData($fieldId);
+        // First use the existing parse method to handle mentions
+        $html = $this->parse();
 
-            if ($value !== null) {
-                if (is_array($value)) {
-                    return implode(' ', array_map(function ($v) {
-                        return $v;
-                    }, $value));
-                }
-                return $value;
-            } elseif ($fallback) {
-                return $fallback;
+        $doc = new DOMDocument();
+        $internalErrors = libxml_use_internal_errors(true);
+
+        // Wrap in root element
+        $wrappedContent = '<root>' . $html . '</root>';
+
+        $doc->loadHTML(mb_convert_encoding($wrappedContent, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_use_internal_errors($internalErrors);
+
+        // Convert HTML to plain text with proper line breaks
+        $text = '';
+        $this->domToText($doc->getElementsByTagName('root')->item(0), $text);
+
+        // Clean up the text:
+        // 1. Remove escaped newlines
+        // 2. Replace multiple newlines with single newline
+        // 3. Trim whitespace
+        $text = str_replace(['\\n', '\n'], "\n", $text);
+        $text = preg_replace('/\n+/', "\n", trim($text));
+
+        // Ensure each line has exactly one email
+        $lines = explode("\n", $text);
+        $lines = array_map('trim', $lines);
+        $lines = array_filter($lines); // Remove empty lines
+
+        return implode("\n", $lines);
+    }
+
+    private function domToText($node, &$text)
+    {
+        if ($node->nodeType === XML_TEXT_NODE) {
+            $text .= $node->nodeValue;
+            return;
+        }
+
+        $block_elements = ['div', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li'];
+        $nodeName = strtolower($node->nodeName);
+
+        // Add newline before block elements
+        if (in_array($nodeName, $block_elements)) {
+            $text .= "\n";
+        }
+
+        if ($node->hasChildNodes()) {
+            foreach ($node->childNodes as $child) {
+                $this->domToText($child, $text);
             }
-            return '';
-        }, $this->content);
+        }
+
+        // Add newline after block elements
+        if (in_array($nodeName, $block_elements)) {
+            $text .= "\n";
+        }
     }
 
     private function getData($fieldId)

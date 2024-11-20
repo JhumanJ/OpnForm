@@ -110,14 +110,14 @@ class FormEmailNotification extends Notification implements ShouldQueue
     private function parseReplyTo(string $replyTo): ?string
     {
         $parser = new MentionParser($replyTo, $this->formatSubmissionData(false));
-        return $parser->parse();
+        return $parser->parseAsText();
     }
 
     private function getSubject(): string
     {
         $defaultSubject = 'New form submission';
         $parser = new MentionParser($this->integrationData->subject ?? $defaultSubject, $this->formatSubmissionData(false));
-        return $parser->parse();
+        return $parser->parseAsText();
     }
 
     private function addCustomHeaders(Email $message): void

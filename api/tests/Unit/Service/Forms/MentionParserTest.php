@@ -2,85 +2,175 @@
 
 use App\Open\MentionParser;
 
-test('it replaces mention elements with their corresponding values', function () {
-    $content = '<p>Hello <span mention mention-field-id="123">Placeholder</span></p>';
-    $data = [['id' => '123', 'value' => 'World']];
+describe('MentionParser', function () {
+    it('replaces mentions with their values in HTML', function () {
+        $content = '<div>Hello <span mention mention-field-id="123" mention-fallback="">Name</span></div>';
+        $data = [
+            ['id' => '123', 'value' => 'John Doe']
+        ];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
 
-    expect($result)->toBe('<p>Hello World</p>');
-});
+        expect($result)->toBe('<div>Hello John Doe</div>');
+    });
 
-test('it handles multiple mentions', function () {
-    $content = '<p><span mention mention-field-id="123">Name</span> is <span mention mention-field-id="456">Age</span> years old</p>';
-    $data = [
-        ['id' => '123', 'value' => 'John'],
-        ['id' => '456', 'value' => 30],
-    ];
+    it('uses fallback when value is not found', function () {
+        $content = '<span mention mention-field-id="456" mention-fallback="Guest">Name</span>';
+        $data = [];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
 
-    expect($result)->toBe('<p>John is 30 years old</p>');
-});
+        expect($result)->toBe('Guest');
+    });
 
-test('it uses fallback when value is not found', function () {
-    $content = '<p>Hello <span mention mention-field-id="123" mention-fallback="Friend">Placeholder</span></p>';
-    $data = [];
+    it('removes the element when no value and no fallback is provided', function () {
+        $content = '<div>Hello <span mention mention-field-id="789" mention-fallback="">Name</span>!</div>';
+        $data = [];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
 
-    expect($result)->toBe('<p>Hello Friend</p>');
-});
+        expect($result)->toBe('<div>Hello !</div>');
+    });
 
-test('it removes mention element when no value and no fallback', function () {
-    $content = '<p>Hello <span mention mention-field-id="123">Placeholder</span></p>';
-    $data = [];
+    describe('parseAsText', function () {
+        it('converts HTML to plain text with proper line breaks', function () {
+            $content = '<div>First line</div><div>Second line</div>';
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+            $parser = new MentionParser($content, []);
+            $result = $parser->parseAsText();
 
-    expect($result)->toBe('<p>Hello </p>');
-});
+            expect($result)->toBe("First line\nSecond line");
+        });
 
-test('it handles array values', function () {
-    $content = '<p>Tags: <span mention mention-field-id="123">Placeholder</span></p>';
-    $data = [['id' => '123', 'value' => ['PHP', 'Laravel', 'Testing']]];
+        it('handles email addresses with proper line breaks', function () {
+            $content = '<span mention mention-field-id="123" mention-fallback="">Email</span><div>john@example.com</div>';
+            $data = [
+                ['id' => '123', 'value' => 'jane@example.com']
+            ];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+            $parser = new MentionParser($content, $data);
+            $result = $parser->parseAsText();
 
-    expect($result)->toBe('<p>Tags: PHP, Laravel, Testing</p>');
-});
+            expect($result)->toBe("jane@example.com\njohn@example.com");
+        });
 
-test('it preserves HTML structure', function () {
-    $content = '<div><p>Hello <span mention mention-field-id="123">Placeholder</span></p><p>How are you?</p></div>';
-    $data = [['id' => '123', 'value' => 'World']];
+        it('handles multiple mentions and complex HTML structure', function () {
+            $content = '
+                <div>Contact: <span mention mention-field-id="123" mention-fallback="">Email1</span></div>
+                <div>CC: <span mention mention-field-id="456" mention-fallback="">Email2</span></div>
+                <div>Additional: test@example.com</div>
+            ';
+            $data = [
+                ['id' => '123', 'value' => 'primary@example.com'],
+                ['id' => '456', 'value' => 'secondary@example.com'],
+            ];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+            $parser = new MentionParser($content, $data);
+            $result = $parser->parseAsText();
 
-    expect($result)->toBe('<div><p>Hello World</p><p>How are you?</p></div>');
-});
+            expect($result)->toBe(
+                "Contact: primary@example.com\n" .
+                    "CC: secondary@example.com\n" .
+                    "Additional: test@example.com"
+            );
+        });
 
-test('it handles UTF-8 characters', function () {
-    $content = '<p>こんにちは <span mention mention-field-id="123">Placeholder</span></p>';
-    $data = [['id' => '123', 'value' => '世界']];
+        it('handles array values in mentions', function () {
+            $content = '<span mention mention-field-id="123" mention-fallback="">Emails</span>';
+            $data = [
+                ['id' => '123', 'value' => ['first@test.com', 'second@test.com']]
+            ];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+            $parser = new MentionParser($content, $data);
+            $result = $parser->parseAsText();
 
-    expect($result)->toBe('<p>こんにちは 世界</p>');
-});
+            expect($result)->toBe('first@test.com, second@test.com');
+        });
+    });
 
-test('it handles content without surrounding paragraph tags', function () {
-    $content = 'some text <span contenteditable="false" mention="" mention-field-id="123" mention-field-name="Post excerpt" mention-fallback="">Post excerpt</span> dewde';
-    $data = [['id' => '123', 'value' => 'replaced text']];
+    test('it replaces mention elements with their corresponding values', function () {
+        $content = '<p>Hello <span mention mention-field-id="123">Placeholder</span></p>';
+        $data = [['id' => '123', 'value' => 'World']];
 
-    $parser = new MentionParser($content, $data);
-    $result = $parser->parse();
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
 
-    expect($result)->toBe('some text replaced text dewde');
+        expect($result)->toBe('<p>Hello World</p>');
+    });
+
+    test('it handles multiple mentions', function () {
+        $content = '<p><span mention mention-field-id="123">Name</span> is <span mention mention-field-id="456">Age</span> years old</p>';
+        $data = [
+            ['id' => '123', 'value' => 'John'],
+            ['id' => '456', 'value' => 30],
+        ];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>John is 30 years old</p>');
+    });
+
+    test('it uses fallback when value is not found', function () {
+        $content = '<p>Hello <span mention mention-field-id="123" mention-fallback="Friend">Placeholder</span></p>';
+        $data = [];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello Friend</p>');
+    });
+
+    test('it removes mention element when no value and no fallback', function () {
+        $content = '<p>Hello <span mention mention-field-id="123">Placeholder</span></p>';
+        $data = [];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello </p>');
+    });
+
+    test('it handles array values', function () {
+        $content = '<p>Tags: <span mention mention-field-id="123">Placeholder</span></p>';
+        $data = [['id' => '123', 'value' => ['PHP', 'Laravel', 'Testing']]];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Tags: PHP, Laravel, Testing</p>');
+    });
+
+    test('it preserves HTML structure', function () {
+        $content = '<div><p>Hello <span mention mention-field-id="123">Placeholder</span></p><p>How are you?</p></div>';
+        $data = [['id' => '123', 'value' => 'World']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<div><p>Hello World</p><p>How are you?</p></div>');
+    });
+
+    test('it handles UTF-8 characters', function () {
+        $content = '<p>こんにちは <span mention mention-field-id="123">Placeholder</span></p>';
+        $data = [['id' => '123', 'value' => '世界']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>こんにちは 世界</p>');
+    });
+
+    test('it handles content without surrounding paragraph tags', function () {
+        $content = 'some text <span contenteditable="false" mention="" mention-field-id="123" mention-field-name="Post excerpt" mention-fallback="">Post excerpt</span> dewde';
+        $data = [['id' => '123', 'value' => 'replaced text']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('some text replaced text dewde');
+    });
 });

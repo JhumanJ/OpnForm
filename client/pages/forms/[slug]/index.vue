@@ -20,12 +20,13 @@
         v-if="form.logo_picture"
         class="w-full p-5 relative mx-auto"
         :class="{'pt-20':!form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }"
+        :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
       >
         <img
           alt="Logo Picture"
           :src="form.logo_picture"
           :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-          class="w-20 h-20 object-contain absolute left-5 transition-all"
+          class="w-20 h-20 object-contain absolute transition-all"
         >
       </div>
     </div>

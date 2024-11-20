@@ -33,6 +33,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'theme' => ['required', Rule::in(Form::THEMES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],
             'size' => ['required', Rule::in(Form::SIZES)],
+            'layout_rtl' => 'boolean',
             'border_radius' => ['required', Rule::in(Form::BORDER_RADIUS)],
             'cover_picture' => 'url|nullable',
             'logo_picture' => 'url|nullable',

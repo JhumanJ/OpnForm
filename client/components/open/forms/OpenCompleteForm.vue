@@ -2,7 +2,7 @@
   <div
     v-if="form"
     class="open-complete-form"
-    :style="{ '--font-family': form.font_family }"
+    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
     <link
       v-if="adminPreview && form.font_family"
@@ -147,7 +147,7 @@
         key="submitted"
         class="px-2"
       >
-      <TextBlock
+        <TextBlock
           v-if="form.submitted_text"
           class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
           :content="form.submitted_text"
