@@ -1,0 +1,21 @@
+{
+    "forms": {
+        "fileInput": {
+            "chooseFiles": "Clique para escolher arquivo(s) ou solte-os aqui | Clique para escolher um arquivo ou solte-o aqui",
+            "sizeLimit": "Limite de tamanho: {count}MB por arquivo",
+            "uploadingFile": "Enviando seu arquivo..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Permitir acesso à câmera",
+            "allowCameraPermissionDescription": "Você precisa permitir o acesso à câmera antes de tirar fotos. Vá para as configurações do navegador para ativar o acesso à câmera nesta página.",
+            "gotIt": "Entendi!",
+            "cameraDeviceError": "Erro de câmera",
+            "cameraDeviceErrorDescription": "Ocorreu um erro desconhecido ao tentar iniciar o dispositivo da webcam.",
+            "goBack": "Voltar"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Fazer upload de arquivo em vez disso",
+            "clear": "Limpar"
+        }
+    }
+} 

@@ -1,0 +1,21 @@
+{
+    "forms": {
+        "fileInput": {
+            "chooseFiles": "クリックしてファイルを選択するか、ここにドロップしてください | クリックしてファイルを選択するか、ここにドロップしてください",
+            "sizeLimit": "サイズ制限：ファイルあたり{count}MB",
+            "uploadingFile": "ファイルをアップロード中..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "カメラへのアクセスを許可",
+            "allowCameraPermissionDescription": "写真を撮影する前にカメラへのアクセスを許可する必要があります。ブラウザの設定でこのページのカメラアクセスを有効にしてください。",
+            "gotIt": "了解しました！",
+            "cameraDeviceError": "カメラエラー",
+            "cameraDeviceErrorDescription": "ウェブカメラデバイスの起動時に不明なエラーが発生しました。",
+            "goBack": "戻る"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "代わりにファイルをアップロード",
+            "clear": "クリア"
+        }
+    }
+} 

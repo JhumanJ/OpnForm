@@ -1,0 +1,21 @@
+{
+    "forms": {
+        "fileInput": {
+            "chooseFiles": "फ़ाइलें चुनने के लिए क्लिक करें या यहां खींचें | फ़ाइल चुनने के लिए क्लिक करें या यहां खींचें",
+            "sizeLimit": "साइज़ सीमा: प्रति फ़ाइल {count}MB",
+            "uploadingFile": "आपकी फ़ाइल अपलोड हो रही है..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "कैमरा एक्सेस की अनुमति दें",
+            "allowCameraPermissionDescription": "फ़ोटो लेने से पहले कैमरा एक्सेस की अनुमति देनी होगी। इस पेज पर कैमरा एक्सेस सक्षम करने के लिए ब्राउज़र सेटिंग्स में जाएं।",
+            "gotIt": "समझ गया!",
+            "cameraDeviceError": "कैमरा त्रुटि",
+            "cameraDeviceErrorDescription": "वेबकैम डिवाइस शुरू करने का प्रयास करते समय एक अज्ञात त्रुटि हुई।",
+            "goBack": "वापस जाएं"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "इसके बजाय फ़ाइल अपलोड करें",
+            "clear": "साफ़ करें"
+        }
+    }
+} 
