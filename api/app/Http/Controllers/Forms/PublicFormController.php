@@ -141,7 +141,14 @@ class PublicFormController extends Controller
             ]);
         }
 
-        $submission = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $submission = FormSubmission::find($submissionId);
+        if (!$submission) {
+            return $this->error([
+                'message' => 'Submission not found.',
+            ]);
+        }
+
+        $submission = new FormSubmissionResource($submission);
         $submission->publiclyAccessed();
 
         if ($submission->form_id != $form->id) {

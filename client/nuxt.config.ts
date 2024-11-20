@@ -15,7 +15,6 @@ export default defineNuxtConfig({
         '@nuxtjs/sitemap',
         '@nuxt/ui', 
         'nuxt-utm', 
-        '@nuxt/icon', 
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
 ],
     build: {
