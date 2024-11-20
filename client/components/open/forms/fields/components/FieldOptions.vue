@@ -529,13 +529,13 @@
           name="max_char_limit"
           native-type="number"
           :min="1"
-          :max="2000"
           :form="field"
           label="Max character limit"
-          help="Maximum character limit of 2000"
           :required="false"
+          @update:model-value="onFieldMaxCharLimitChange"
         />
         <toggle-switch-input
+          v-if="field.max_char_limit"
           name="show_char_limit"
           :form="field"
           class="mt-3"
@@ -833,6 +833,12 @@ export default {
     },
     updateMatrixField(newField) {
       this.field = newField
+    },
+    onFieldMaxCharLimitChange(val) {
+      this.field.max_char_limit = val
+      if(!this.field.max_char_limit) {
+        this.field.show_char_limit = false
+      }
     }
   }
 }

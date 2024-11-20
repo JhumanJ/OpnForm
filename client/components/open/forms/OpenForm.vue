@@ -310,7 +310,8 @@ export default {
     },
     computedStyle() {
       return {
-        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {}
+        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {},
+        '--form-color': this.form.color
       }
     }
   },
@@ -488,10 +489,19 @@ export default {
     handleUrlPrefill(field, formData, urlPrefill) {
       if (!urlPrefill) return
 
-      const prefillValue = urlPrefill.get(field.id)
+      const prefillValue = (() => {
+        const val = urlPrefill.get(field.id)
+        try {
+          return typeof val === 'string' && val.startsWith('{') ? JSON.parse(val) : val
+        } catch (e) {
+          return val
+        }
+      })()
       const arrayPrefillValue = urlPrefill.getAll(field.id + '[]')
 
-      if (prefillValue !== null) {
+      if (typeof prefillValue === 'object' && prefillValue !== null) {
+        formData[field.id] = { ...prefillValue }
+      } else if (prefillValue !== null) {
         formData[field.id] = field.type === 'checkbox' ? this.parseBooleanValue(prefillValue) : prefillValue
       } else if (arrayPrefillValue.length > 0) {
         formData[field.id] = arrayPrefillValue
@@ -503,7 +513,7 @@ export default {
     handleDefaultPrefill(field, formData) {
       if (field.type === 'date' && field.prefill_today) {
         formData[field.id] = new Date().toISOString()
-      } else if (field.type === 'matrix') {
+      } else if (field.type === 'matrix' && !formData[field.id]) {
         formData[field.id] = {...field.prefill}
       } else if (!(field.id in formData)) {
         formData[field.id] = field.prefill

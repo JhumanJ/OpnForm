@@ -1,17 +1,27 @@
 <template>
-  <Icon
-    :name="isChecked ? 'ic:round-radio-button-checked' : 'ic:round-radio-button-unchecked'"
-    :class="[
-      theme.FlatSelectInput.icon,
-      isChecked ? '' : theme.FlatSelectInput.unselectedIcon,
-    ]"
-    :color="isChecked ? color : undefined"
-  />
+  <div>
+    <Icon
+      v-show="isChecked"
+      name="ic:round-radio-button-checked"
+      class="block"
+      :class="[
+        theme.FlatSelectInput.icon,
+        'bg-[var(--form-color,#3B82F6)]'
+      ]"
+    />
+    <Icon
+      v-show="!isChecked"
+      name="ic:round-radio-button-unchecked"
+      class="block"
+      :class="[
+        theme.FlatSelectInput.icon,
+        theme.FlatSelectInput.unselectedIcon,
+      ]"
+    />
+  </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   isChecked: {
     type: Boolean,

@@ -25,7 +25,7 @@
           class="flex lg:flex-col bg-gray-100 dark:bg-gray-800 border rounded-md"
         >
           <div
-            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 lg:pt-0 -mb-2 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
@@ -326,7 +326,7 @@ export default {
         helpPosition: (field.help_position) ? field.help_position : 'below_input',
         uppercaseLabels: this.form.uppercase_labels == 1 || this.form.uppercase_labels == true,
         theme: this.theme,
-        maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : 2000,
+        maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : null,
         showCharLimit: field.show_char_limit || false,
         isDark: this.darkMode
       }
