@@ -65,7 +65,7 @@
           theme.PhoneInput.borderRadius,
           {
             '!ring-red-500 !ring-2': hasError,
-            '!cursor-not-allowed !bg-gray-200': disabled,
+            '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
           },
         ]"
         :placeholder="placeholder"

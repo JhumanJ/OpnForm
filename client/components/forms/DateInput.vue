@@ -152,7 +152,7 @@ const updateModelValue = () => {
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
-    classes.push('!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200')
+    classes.push('!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800')
   }
   if (input.hasError.value) {
 
