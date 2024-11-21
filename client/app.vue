@@ -96,7 +96,10 @@ export default {
           type: 'image/png',
           href: '/favicon.ico'
         }
-      ]
+      ],
+      htmlAttrs: () => ({
+        dir: 'ltr'
+      })
     })
 
     const appStore = useAppStore()

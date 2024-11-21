@@ -46,7 +46,7 @@
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2 flex items-center"
+            class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:border-r px-2 flex items-center"
             @click.prevent="clear()"
           >
             <Icon

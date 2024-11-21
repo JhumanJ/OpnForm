@@ -64,7 +64,7 @@
             >
               <slot name="placeholder">
                 <div
-                  class="text-gray-400 dark:text-gray-500 w-full text-left truncate pr-3"
+                  class="text-gray-400 dark:text-gray-500 w-full ltr:text-left rtl:!text-right truncate ltr:pr-3 rtl:pl-3 rtl:!pr-0"
                   :class="[
                     { 'py-1': multiple && !loading },
                     theme.SelectInput.fontSize
@@ -76,7 +76,7 @@
             </div>
           </transition>
         </div>
-        <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+        <span class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none">
           <Icon
             name="heroicons:chevron-up-down-16-solid"
             class="h-5 w-5 text-gray-500"
@@ -85,7 +85,7 @@
       </button>
       <button
         v-if="clearable && showClearButton && !isEmpty"
-        class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2"
+        class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:!border-l-0 rtl:border-r px-2 flex items-center"
         :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
       >
@@ -119,12 +119,12 @@
           <input
             v-model="searchTerm"
             type="text"
-            class="flex-grow pl-3 pr-7 py-2 w-full focus:outline-none dark:text-white"
+            class="flex-grow ltr:pl-3 ltr:pr-7 rtl:!pr-3 rtl:pl-7 py-2 w-full focus:outline-none dark:text-white"
             placeholder="Search"
           >
           <div
             v-if="!searchTerm"
-            class="flex absolute right-0 inset-y-0 items-center px-2 justify-center pointer-events-none"
+            class="flex absolute ltr:right-0 rtl:left-0 rtl:!right-auto inset-y-0 items-center px-2 justify-center pointer-events-none"
           >
             <Icon
               name="heroicons:magnifying-glass-solid"
@@ -134,12 +134,12 @@
           <div
             v-else
             role="button"
-            class="flex absolute right-0 inset-y-0 items-center px-2 justify-center"
+            class="flex absolute ltr:right-0 rtl:!right-auto rtl:left-0 inset-y-0 items-center px-2 justify-center"
             @click="searchTerm = ''"
           >
             <Icon
               name="heroicons:backspace"
-              class="h-5 w-5 text-gray-500 dark:text-gray-400"
+              class="h-5 w-5 rtl:rotate-180 text-gray-500 dark:text-gray-400"
             />
           </div>
         </div>
