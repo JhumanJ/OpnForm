@@ -1,6 +1,6 @@
 <template>
   <section
-    class="sticky flex items-center inset-x-0 top-0 z-20 py-3 bg-white border-b border-gray-200"
+    class="sticky flex items-center inset-x-0 top-0 z-10 py-3 bg-white border-b border-gray-200"
   >
     <div class="hidden md:flex flex-grow">
       <slot name="left" />
