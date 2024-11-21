@@ -1,0 +1,40 @@
+name: OpnForm
+description: Deploy OpnForm with a single click
+version: "1.0"
+services:
+  opnform-api:
+    image: jhumanj/opnform-api:latest
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+      DB_DATABASE: ${DB_DATABASE:-forge}
+      DB_USERNAME: ${DB_USERNAME:-forge}
+      DB_PASSWORD: ${DB_PASSWORD:-forge}
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-forge}
+      POSTGRES_USER: ${DB_USERNAME:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+  redis:
+    image: redis:7
+  opnform-ingress:
+    image: jhumanj/opnform-ingress:latest
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+      DB_DATABASE: ${DB_DATABASE:-forge}
+      DB_USERNAME: ${DB_USERNAME:-forge}
+      DB_PASSWORD: ${DB_PASSWORD:-forge}
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+      - redis
