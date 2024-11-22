@@ -2,7 +2,8 @@
   <div
     v-if="form"
     class="open-complete-form"
-    :style="{ '--font-family': form.font_family }"
+    :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
+    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
     <link
       v-if="adminPreview && form.font_family"

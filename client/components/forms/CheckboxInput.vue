@@ -5,16 +5,16 @@
     </template>
 
     <div class="flex space-x-2 items-center">
-    <VCheckbox
-      :id="id ? id : name"
-      v-model="compVal"
-      :value="value"
-      :disabled="disabled ? true : null"
-      :name="name"
-      :color="color"
-      :theme="theme"
-    />
-    <div>
+      <VCheckbox
+        :id="id ? id : name"
+        v-model="compVal"
+        :value="value"
+        :disabled="disabled ? true : null"
+        :name="name"
+        :color="color"
+        :theme="theme"
+      />
+      <div>
         <slot name="label">
           <label
             :aria-label="id ? id : name"

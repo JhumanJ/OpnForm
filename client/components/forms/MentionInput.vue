@@ -23,7 +23,7 @@
           theme.default.fontSize,
           {
             '!ring-red-500 !ring-2 !border-transparent': hasError,
-            '!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200': disabled,
+            '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
           },
           'pr-12'
         ]"

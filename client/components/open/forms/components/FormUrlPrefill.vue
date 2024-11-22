@@ -65,6 +65,8 @@ const preFillUrl = computed(() => {
         props.formData[property.id].forEach((value) => {
           uriComponents.append(property.id + "[]", value)
         })
+      } else if (typeof props.formData[property.id] === 'object') {
+        uriComponents.append(property.id, JSON.stringify(props.formData[property.id]))
       } else {
         uriComponents.append(property.id, props.formData[property.id])
       }

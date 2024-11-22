@@ -14,7 +14,7 @@ RUN apk add --no-cache git
 # Clear npm cache, remove existing node_modules, and install dependencies
 RUN npm cache clean --force && \
     rm -rf node_modules && \
-    npm install
+    npm ci
 
 # Explicitly install the correct version of esbuild
 # RUN npm install esbuild@0.21.5

@@ -121,6 +121,14 @@
       label="Form Width"
       help="Useful when embedding your form"
     />
+    
+    <ToggleSwitchInput
+      name="layout_rtl"
+      :form="form"
+      class="mt-4"
+      label="Right-to-Left Layout"
+      help="Adjusts layout for RTL languages"
+    />
 
     <EditorSectionHeader
       icon="heroicons:tag-16-solid"
@@ -136,7 +144,8 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Color (for buttons & inputs border)"
+      label="Color image"
+      help="Not visible when form is embedded"
     />
     <toggle-switch-input
       name="hide_title"

@@ -34,6 +34,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'theme' => ['required', Rule::in(Form::THEMES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],
             'size' => ['required', Rule::in(Form::SIZES)],
+            'layout_rtl' => 'boolean',
             'border_radius' => ['required', Rule::in(Form::BORDER_RADIUS)],
             'cover_picture' => 'url|nullable',
             'logo_picture' => 'url|nullable',
@@ -91,7 +92,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
             // Text field
             'properties.*.multi_lines' => 'boolean|nullable',
-            'properties.*.max_char_limit' => 'integer|nullable|min:1|max:2000',
+            'properties.*.max_char_limit' => 'integer|nullable|min:1',
             'properties.*.show_char_limit ' => 'boolean|nullable',
             'properties.*.secret_input' => 'boolean|nullable',
 
@@ -134,8 +135,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         return [
             'properties.*.name.required' => 'The form block number :position is missing a name.',
             'properties.*.type.required' => 'The form block number :position is missing a type.',
-            'properties.*.max_char_limit.min' => 'The form block number :position max character limit must be at least 1 OR Empty',
-            'properties.*.max_char_limit.max' => 'The form block number :position max character limit may not be greater than 2000.',
+            'properties.*.max_char_limit.min' => 'The form block number :position max character limit must be at least 1 OR Empty'
         ];
     }
 }

@@ -61,6 +61,7 @@ class Form extends Model implements CachableAttributes
         'border_radius',
         'theme',
         'width',
+        'layout_rtl',
         'cover_picture',
         'logo_picture',
         'dark_mode',

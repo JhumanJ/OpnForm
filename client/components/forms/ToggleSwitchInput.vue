@@ -5,13 +5,16 @@
     </template>
 
     <div class="flex space-x-2 items-center">
-      <v-switch
+      <UToggle
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"
-        :color="color"
-        :theme="theme"
+        :ui="{
+          active: 'bg-[var(--form-color,#3B82F6)]',
+          ring: 'focus:ring-[var(--form-color,#3B82F6)]/50'
+        }"
       />
+  
       <div>
         <slot name="label">
           <label
@@ -51,14 +54,13 @@
 
 <script>
 import {inputProps, useFormInput} from "./useFormInput.js"
-import VSwitch from "./components/VSwitch.vue"
 import InputWrapper from "./components/InputWrapper.vue"
 import InputHelp from "~/components/forms/components/InputHelp.vue"
 
 export default {
   name: "ToggleSwitchInput",
 
-  components: {InputHelp, InputWrapper, VSwitch},
+  components: {InputHelp, InputWrapper},
   props: {
     ...inputProps,
   },
