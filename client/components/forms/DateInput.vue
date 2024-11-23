@@ -46,7 +46,7 @@
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-gray-50 dark:hover:bg-gray-900 border-l px-2 flex items-center"
+            class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:border-r px-2 flex items-center"
             @click.prevent="clear()"
           >
             <Icon
@@ -152,7 +152,7 @@ const updateModelValue = () => {
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
-    classes.push('!cursor-not-allowed dark:!bg-gray-600 !bg-gray-200')
+    classes.push('!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800')
   }
   if (input.hasError.value) {
 

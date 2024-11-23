@@ -119,7 +119,7 @@
       :form="form"
       class="mt-4"
       label="Right-to-Left Layout"
-      help="Adjusts form layout for right-to-left languages."
+      help="Adjusts layout for RTL languages"
     />
 
     <EditorSectionHeader

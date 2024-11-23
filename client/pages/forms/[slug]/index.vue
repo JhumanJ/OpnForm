@@ -254,6 +254,9 @@ useHead({
       content: 'black-translucent'
     },
   ] : {},
-  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' } ]
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }],
+  htmlAttrs: () => ({
+    dir: form.value?.layout_rtl ? 'rtl' : 'ltr'
+  })
 })
 </script>

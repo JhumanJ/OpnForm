@@ -15,11 +15,11 @@
       <table class="w-full table-auto">
         <thead class="">
           <tr>
-            <th class="text-left p-2 w-auto max-w-xs" />
+            <th class="ltr:text-left rtl:text-right p-2 w-auto max-w-xs" />
             <td
               v-for="column in columns"
               :key="column"
-              class="border-l border-gray-300 max-w-24 overflow-hidden"
+              class="ltr:border-l rtl:border-r rtl:!border-l-0 border-gray-300 max-w-24 overflow-hidden"
             >
               <div class="p-2 w-full flex items-center justify-center text-sm">
                 {{ column }}
@@ -33,7 +33,7 @@
             :key="rowIndex"
             class="border-t border-gray-300"
           >
-            <td class="text-left w-auto max-w-24 overflow-hidden">
+            <td class="ltr:text-left rtl:text-right w-auto max-w-24 overflow-hidden">
               <div class="w-full p-2 text-sm">
                 {{ row }}
               </div>
@@ -41,7 +41,7 @@
             <td
               v-for="column in columns"
               :key="row + column"
-              class="border-l border-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800"
+              class="ltr:border-l rtl:border-r rtl:!border-l-0 border-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800"
               :class="{
                 '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800 hover:!bg-gray-200 dark:hover:!bg-gray-800': disabled,
               }"

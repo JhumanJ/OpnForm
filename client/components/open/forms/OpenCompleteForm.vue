@@ -2,6 +2,7 @@
   <div
     v-if="form"
     class="open-complete-form"
+    :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
     :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
     <link
