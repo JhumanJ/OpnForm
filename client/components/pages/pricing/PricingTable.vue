@@ -168,7 +168,10 @@
       </div>
     </section>
 
-    <custom-plan v-if="!homePage" />
+    <custom-plan
+      v-if="!homePage"
+      class="mt-8"
+    />
   </div>
 </template>
 
