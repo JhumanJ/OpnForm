@@ -167,6 +167,7 @@ class AnswerFormRequest extends FormRequest
     {
         switch ($property['type']) {
             case 'text':
+            case 'rich_text':
             case 'signature':
                 return ['string'];
             case 'number':

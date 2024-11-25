@@ -8,6 +8,15 @@
     "text_class": "text-blue-900",
     "is_input": true
   },
+  "rich_text": {
+    "name": "rich_text",
+    "title": "Rich Text Input",
+    "icon": "i-heroicons-bars-3-20-solid",
+    "default_block_name": "Description",
+    "bg_class": "bg-blue-100",
+    "text_class": "text-blue-900",
+    "is_input": true
+  },
   "date": {
     "name": "date",
     "title": "Date Input",

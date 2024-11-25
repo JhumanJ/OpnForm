@@ -193,6 +193,7 @@ export default {
       rafId: null,
       fieldComponents: {
         text: shallowRef(OpenText),
+        rich_text: shallowRef(OpenText),
         number: shallowRef(OpenText),
         rating: shallowRef(OpenText),
         scale: shallowRef(OpenText),
