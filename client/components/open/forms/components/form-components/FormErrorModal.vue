@@ -4,21 +4,21 @@
     @close="$emit('close')"
   >
     <div class="-mx-5">
-      <h2 class="text-red-400 text-2xl font-bold mb-4 px-4">
+      <h2 class="text-red-600 text-2xl font-bold mb-4 px-4">
         Error saving your form
       </h2>
 
       <div
-        v-if="form.errors"
+        v-if="validationErrorResponse"
         class="p-4 border-b border-t"
       >
         <p
-          v-if="form.errors.message"
-          v-text="form.errors.message"
+          v-if="validationErrorResponse.message"
+          v-text="validationErrorResponse.message"
         />
         <ul class="list-disc list-inside">
           <li
-            v-for="(err, key) in form.errors.errors"
+            v-for="(err, key) in validationErrorResponse.errors"
             :key="key"
           >
             {{ Array.isArray(err) ? err[0] : err }}
@@ -41,17 +41,11 @@
 
 <script>
 export default {
-  name: "FormErrorModal",
-  components: {},
+  name: 'FormErrorModal',
   props: {
     show: { type: Boolean, required: true },
-    form: { type: Object, required: false },
+    validationErrorResponse: { type: Object, required: false },
   },
   emits: ['close'],
-  data: () => ({}),
-
-  computed: {},
-
-  methods: {},
 }
 </script>

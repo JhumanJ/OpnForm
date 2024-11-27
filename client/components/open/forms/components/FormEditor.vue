@@ -259,7 +259,7 @@ export default {
         })
         .catch((error) => {
           if (error?.response?.status === 422) {
-            this.validationErrorResponse = error.response.data
+            this.validationErrorResponse = error.data
             this.showValidationErrors()
           } else {
             useAlert().error(
@@ -306,7 +306,7 @@ export default {
         })
         .catch((error) => {
           if (error?.response?.status === 422) {
-            this.validationErrorResponse = error.response
+            this.validationErrorResponse = error.data
             this.showValidationErrors()
           } else {
             useAlert().error(

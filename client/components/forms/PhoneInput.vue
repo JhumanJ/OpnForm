@@ -124,6 +124,8 @@ export default {
   watch: {
     inputVal: {
       handler(val) {
+        if (!this.selectedCountryCode) return
+        
         if (val && val.startsWith("0")) {
           val = val.substring(1)
         }
