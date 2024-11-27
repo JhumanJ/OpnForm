@@ -1,5 +1,11 @@
 {
     "forms": {
+        "select": {
+            "search": "بحث",
+            "typeSomethingToAddAnOption": "اكتب شيءً لإضافة خيار",
+            "noOptionAvailable": "لا يوجد خيارات متاحة",
+            "create": "إنشاء"
+        },
         "fileInput": {
             "chooseFiles": "انقر لاختيار الملفات أو قم بإسقاطها هنا | انقر لاختيار ملف أو قم بإسقاطه هنا",
             "sizeLimit": "الحد الأقصى للحجم: {count} ميجابايت لكل ملف",

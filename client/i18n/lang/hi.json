@@ -1,5 +1,11 @@
 {
     "forms": {
+        "select": {
+            "search": "खोजें",
+            "typeSomethingToAddAnOption": "कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
+            "noOptionAvailable": "कोई विकल्प उपलब्ध नहीं है",
+            "create": "बनाएं"
+        },
         "fileInput": {
             "chooseFiles": "फ़ाइलें चुनने के लिए क्लिक करें या यहां खींचें | फ़ाइल चुनने के लिए क्लिक करें या यहां खींचें",
             "sizeLimit": "साइज़ सीमा: प्रति फ़ाइल {count}MB",

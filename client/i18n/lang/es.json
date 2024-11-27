@@ -1,5 +1,11 @@
 {
     "forms": {
+        "select": {
+            "search": "Buscar",
+            "typeSomethingToAddAnOption": "Escribe algo para agregar una opción",
+            "noOptionAvailable": "No hay opciones disponibles",
+            "create": "Crear"
+        },
         "fileInput": {
             "chooseFiles": "Haga clic para elegir archivo(s) o suéltelo(s) aquí | Haga clic para elegir un archivo o suéltelo aquí",
             "sizeLimit": "Tamaño límite: {count}MB por archivo",

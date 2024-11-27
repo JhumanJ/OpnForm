@@ -1,5 +1,11 @@
 {
     "forms": {
+        "select": {
+            "search": "Search",
+            "typeSomethingToAddAnOption": "Type something to add an option",
+            "noOptionAvailable": "No option available",
+            "create": "Create"
+        },
         "fileInput": {
             "chooseFiles": "Click to choose file(s) or drag here | Click to choose a file or drag here",
             "sizeLimit": "Size limit: {count}MB per file",

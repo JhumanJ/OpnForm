@@ -1,5 +1,11 @@
 {
     "forms": {
+        "select": {
+            "search": "搜索",
+            "typeSomethingToAddAnOption": "输入一些东西以添加选项",
+            "noOptionAvailable": "没有选项可用",
+            "create": "创建"
+        },
         "fileInput": {
             "chooseFiles": "点击选择文件或将文件拖放到此处 | 点击选择文件或将文件拖放到此处",
             "sizeLimit": "大小限制：每个文件 {count}MB",
