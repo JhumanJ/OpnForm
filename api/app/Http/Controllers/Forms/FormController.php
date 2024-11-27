@@ -9,6 +9,7 @@ use App\Http\Requests\UploadAssetRequest;
 use App\Http\Resources\FormResource;
 use App\Models\Forms\Form;
 use App\Models\Workspace;
+use App\Notifications\Forms\MobileEditorEmail;
 use App\Service\Forms\FormCleaner;
 use App\Service\Storage\StorageFileNameParser;
 use Illuminate\Support\Facades\Auth;
@@ -269,6 +270,18 @@ class FormController extends Controller
 
         return $this->success([
             'message' => 'Form workspace updated successfully.',
+        ]);
+    }
+
+    public function mobileEditorEmail($id)
+    {
+        $form = Form::findOrFail($id);
+        $this->authorize('update', $form);
+
+        $form->creator->notify(new MobileEditorEmail($form->slug));
+
+        return $this->success([
+            'message' => 'Email sent.',
         ]);
     }
 }
