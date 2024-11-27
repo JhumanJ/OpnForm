@@ -14,6 +14,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Stevebauman\Purify\Facades\Purify;
 
 class AnswerFormRequest extends FormRequest
 {
@@ -274,6 +275,10 @@ class AnswerFormRequest extends FormRequest
 
             if ($property['type'] === 'phone_number' && (!isset($property['use_simple_text_input']) || !$property['use_simple_text_input']) && $receivedValue && in_array($receivedValue, $countryCodeMapper)) {
                 $mergeData[$property['id']] = null;
+            }
+
+            if ($property['type'] === 'rich_text' && $receivedValue) {
+                $mergeData[$property['id']] = Purify::clean($receivedValue);
             }
         });
 
