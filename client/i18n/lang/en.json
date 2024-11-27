@@ -2,6 +2,7 @@
     "forms": {
         "select": {
             "search": "Search",
+            "searchOrTypeToCreateNew": "Search or type to create new",
             "typeSomethingToAddAnOption": "Type something to add an option",
             "noOptionAvailable": "No option available",
             "create": "Create"

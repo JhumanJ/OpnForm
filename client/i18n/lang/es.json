@@ -2,6 +2,7 @@
     "forms": {
         "select": {
             "search": "Buscar",
+            "searchOrTypeToCreateNew": "Buscar o escribe algo para crear una nueva opción",
             "typeSomethingToAddAnOption": "Escribe algo para agregar una opción",
             "noOptionAvailable": "No hay opciones disponibles",
             "create": "Crear"

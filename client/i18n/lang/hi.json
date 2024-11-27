@@ -2,6 +2,7 @@
     "forms": {
         "select": {
             "search": "खोजें",
+            "searchOrTypeToCreateNew": "खोजें या कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
             "typeSomethingToAddAnOption": "कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
             "noOptionAvailable": "कोई विकल्प उपलब्ध नहीं है",
             "create": "बनाएं"

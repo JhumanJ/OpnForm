@@ -2,6 +2,7 @@
     "forms": {
         "select": {
             "search": "検索",
+            "searchOrTypeToCreateNew": "検索または何かを入力して新しいオプションを作成",
             "typeSomethingToAddAnOption": "オプションを追加するには何かを入力してください",
             "noOptionAvailable": "オプションがありません",
             "create": "作成"

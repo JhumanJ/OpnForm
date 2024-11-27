@@ -2,6 +2,7 @@
     "forms": {
         "select": {
             "search": "搜索",
+            "searchOrTypeToCreateNew": "搜索或输入以创建新选项",
             "typeSomethingToAddAnOption": "输入一些东西以添加选项",
             "noOptionAvailable": "没有选项可用",
             "create": "创建"

@@ -120,7 +120,7 @@
             v-model="searchTerm"
             type="text"
             class="flex-grow ltr:pl-3 ltr:pr-7 rtl:!pr-3 rtl:pl-7 py-2 w-full focus:outline-none dark:text-white"
-            :placeholder="$t('forms.select.search')"
+            :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
           >
           <div
             v-if="!searchTerm"
