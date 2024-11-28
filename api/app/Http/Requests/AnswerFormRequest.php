@@ -67,12 +67,20 @@ class AnswerFormRequest extends FormRequest
             foreach ($selectionFields as $field) {
                 if (isset($data[$field['id']]) && is_array($data[$field['id']])) {
                     $data[$field['id']] = array_map(function ($val) use ($field) {
+                        // Find the option by exact ID match first
                         $tmpop = collect($field[$field['type']]['options'])->first(function ($op) use ($val) {
-                            return $op['id'] ?? $op['value'] === $val;
+                            return $op['id'] === $val || $op['name'] === $val;
                         });
 
-                        return isset($tmpop['name']) ? $tmpop['name'] : '';
+                        // Return the original value if no match found
+                        return isset($tmpop['name']) ? $tmpop['name'] : $val;
                     }, $data[$field['id']]);
+                } elseif (isset($data[$field['id']])) {
+                    // Handle single select values
+                    $tmpop = collect($field[$field['type']]['options'])->first(function ($op) use ($field, $data) {
+                        return $op['id'] === $data[$field['id']] || $op['name'] === $data[$field['id']];
+                    });
+                    $data[$field['id']] = isset($tmpop['name']) ? $tmpop['name'] : $data[$field['id']];
                 }
             }
             if (FormLogicPropertyResolver::isRequired($property, $data)) {

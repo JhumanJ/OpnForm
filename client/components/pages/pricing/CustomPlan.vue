@@ -159,7 +159,7 @@
                   <template v-else>$200</template>
                 </span>
                 <span class="text-sm font-medium leading-6 text-gray-600">
-                  starting from {{ isYearly ? 'per year' : 'per month' }}
+                  starting from per month
                 </span>
               </p>
               <div class="flex justify-center">
