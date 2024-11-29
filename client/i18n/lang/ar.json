@@ -1,5 +1,15 @@
 {
+    "app": {
+        "name": "أوبنفورم"
+    },
     "forms": {
+        "powered_by": "مشغل بواسطة",
+        "password_protected": "هذا النموذج محمي بكلمة مرور.",
+        "invalid_password": "كلمة مرور غير صالحة.",
+        "password_required": "كلمة مرور مطلوبة.",
+        "create_form_free": "أنشأ نموذجك مجانًا باستخدام أوبنفورم",
+        "submit": "إرسال",
+        "wrong_form_structure": "هناك خطأ في بنية هذا النموذج. إذا كنت مالك النموذج، يرجى الاتصال بنا.",
         "select": {
             "search": "بحث",
             "searchOrTypeToCreateNew": "بحث أو اكتب شيءً لإضافة خيار",

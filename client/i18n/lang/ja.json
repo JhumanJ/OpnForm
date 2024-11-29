@@ -1,5 +1,15 @@
 {
+    "app": {
+        "name": "OpnForm"
+    },
     "forms": {
+        "powered_by": "Powered by",
+        "password_protected": "このフォームはパスワードで保護されています。",
+        "invalid_password": "無効なパスワード。",
+        "password_required": "パスワードが必要です。",
+        "create_form_free": "無料でOpnFormでフォームを作成",
+        "submit": "送信",
+        "wrong_form_structure": "このフォームの構造に問題があります。フォームの所有者である場合は、お問い合わせください。",
         "select": {
             "search": "検索",
             "searchOrTypeToCreateNew": "検索または何かを入力して新しいオプションを作成",

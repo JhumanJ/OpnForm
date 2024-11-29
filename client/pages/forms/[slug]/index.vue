@@ -93,6 +93,7 @@ const formLoading = computed(() => formsStore.loading)
 const recordLoading = computed(() => recordsStore.loading)
 const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
+const $t = useI18n()
 
 const openCompleteForm = ref(null)
 
@@ -106,7 +107,7 @@ const passwordEntered = function (password) {
   nextTick(() => {
     loadForm().then(() => {
       if (form.value?.is_password_protected) {
-        openCompleteForm.value.addPasswordError('Invalid password.')
+        openCompleteForm.value.addPasswordError($t('forms.invalid_password'))
       }
     })
   })

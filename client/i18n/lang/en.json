@@ -1,5 +1,15 @@
 {
+    "app": {
+        "name": "OpnForm"
+    },
     "forms": {
+        "powered_by": "Powered by",
+        "password_protected": "This form is protected by a password.",
+        "invalid_password": "Invalid password.",
+        "password_required": "Password is required.",
+        "create_form_free": "Create your form for free with OpnForm",
+        "submit": "Submit",
+        "wrong_form_structure": "Something is wrong with this form structure. If you're the form owner please contact us.",
         "select": {
             "search": "Search",
             "searchOrTypeToCreateNew": "Search or type to create new",

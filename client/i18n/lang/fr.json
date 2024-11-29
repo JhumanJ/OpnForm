@@ -1,5 +1,15 @@
 {
+    "app": {
+        "name": "OpnForm"
+    },
     "forms": {
+        "powered_by": "Powered by",
+        "password_protected": "Ce formulaire est protégé par un mot de passe.",
+        "invalid_password": "Mot de passe invalide.",
+        "password_required": "Le mot de passe est requis.",
+        "create_form_free": "Créez votre formulaire gratuitement avec OpnForm",
+        "submit": "Envoyer",
+        "wrong_form_structure": "Quelque chose ne va pas avec la structure de ce formulaire. Si vous êtes le propriétaire du formulaire, veuillez nous contacter.",
         "select": {
             "search": "Rechercher",
             "searchOrTypeToCreateNew": "Rechercher ou écrivez quelque chose pour créer une nouvelle option",
