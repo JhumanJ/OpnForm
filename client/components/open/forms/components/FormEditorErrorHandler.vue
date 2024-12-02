@@ -69,7 +69,7 @@
     errorReport += ` And here are technical details about the error: \`\`\`${error.stack}\`\`\``
     try {
       crisp.openAndShowChat(errorReport)
-      crisp.showMessage(`Hi there, we're very sorry to hear you experienced an issue with NoteForms.
+      crisp.showMessage(`Hi there, we're very sorry to hear you experienced an issue with OpnForm.
           We'll be in touch about it very soon! In the meantime, I recommend that you try going back one step, and save your changes.`, 2000)
     } catch (e) {
       console.error('Crisp error', e)

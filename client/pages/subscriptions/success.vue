@@ -44,7 +44,7 @@ const redirectIfSubscribed = () => {
 }
 const checkSubscription = () => {
   // Fetch the user.
-  return noteFormsFetch('user').then((data) => {
+  return opnFetch('user').then((data) => {
     authStore.setUser(data)
     redirectIfSubscribed()
   }).catch((error) => {
