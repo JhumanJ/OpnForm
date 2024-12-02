@@ -106,6 +106,7 @@ import { captureException } from "@sentry/core"
 import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 import { setFormDefaults } from '~/composables/forms/initForm.js'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 export default {
   name: "FormEditor",
@@ -145,6 +146,16 @@ export default {
   emits: ['mounted', 'on-save', 'openRegister', 'go-back', 'save-form'],
 
   setup() {
+    // Check if the editor is visible on smaller screens then send an email
+    const breakpoints = useBreakpoints(breakpointsTailwind)
+    const isVisible = ref(breakpoints.smaller("md"))
+    watch(isVisible, (newValue) => {
+      if (newValue) {
+        opnFetch('/open/forms/' + form.value.id + '/mobile-editor-email')
+      }
+    })
+    
+
     const { user } = storeToRefs(useAuthStore())
     const formsStore = useFormsStore()
     const { content: form } = storeToRefs(useWorkingFormStore())
