@@ -1,12 +1,15 @@
 <template>
-  <div  v-if="form">
+  <div v-if="form">
     <div
       v-if="loadingDuplicate || loadingDelete"
       class="pr-4 pt-2"
     >
       <Loader class="h-6 w-6 mx-auto" />
     </div>
-    <UDropdown v-else :items="items">
+    <UDropdown
+      v-else
+      :items="items"
+    >
       <v-button
         color="white"
       >
@@ -128,8 +131,9 @@ const items = computed(() => {
         }
       }] : []
     ],
-    [
-      ...props.isMainPage ? [{
+    ...user.value.is_readonly ? [] : [
+      [
+        ...props.isMainPage ? [{
         label: 'Edit',
         icon: 'i-heroicons-pencil-square-20-solid',
         to: { name: 'forms-slug-edit', params: { slug: props.form.slug } }
@@ -166,6 +170,7 @@ const items = computed(() => {
         class: 'text-red-800 hover:bg-red-50 hover:text-red-600 group',
         iconClass: 'text-red-900 group-hover:text-red-800'
       }
+      ]
     ]
   ].filter((group) => group.length > 0)
 })

@@ -32,6 +32,7 @@
               </h2>
               <div class="flex">
                 <extra-menu
+                  v-if="!user.is_readonly"
                   class="mr-2"
                   :form="form"
                 />
@@ -98,6 +99,7 @@
                   </svg>
                 </v-button>
                 <v-button
+                  v-if="!user.is_readonly"
                   class="text-white"
                   :to="{ name: 'forms-slug-edit', params: { slug: slug } }"
                 >
@@ -244,6 +246,8 @@ useOpnSeoMeta({
   title: "Home",
 })
 
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
 const route = useRoute()
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
@@ -279,11 +283,13 @@ const tabsList = [
     route: "forms-slug-show-submissions",
     params: { 'slug': slug }
   },
-  {
-    name: "Integrations",
-    route: "forms-slug-show-integrations",
-    params: { 'slug': slug }
-  },
+  ...user.value.is_readonly ? [] : [
+    {
+      name: "Integrations",
+      route: "forms-slug-show-integrations",
+      params: { 'slug': slug }
+    },
+  ],
   {
     name: "Analytics",
     route: "forms-slug-show-stats",

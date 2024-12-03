@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'has_enterprise_subscription' => $this->has_enterprise_subscription,
             'admin' => $this->admin,
             'moderator' => $this->moderator,
+            'is_readonly' => $this->is_readonly,
             'template_editor' => $this->template_editor,
             'has_customer_id' => $this->has_customer_id,
             'has_forms' => $this->has_forms,

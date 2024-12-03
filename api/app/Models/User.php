@@ -21,6 +21,13 @@ class User extends Authenticatable implements JWTSubject
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
+    public const ROLE_READONLY = 'readonly';
+
+    public const ROLES = [
+        self::ROLE_ADMIN,
+        self::ROLE_USER,
+        self::ROLE_READONLY,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -116,6 +123,11 @@ class User extends Authenticatable implements JWTSubject
     public function getModeratorAttribute()
     {
         return in_array($this->email, config('opnform.moderator_emails')) || $this->admin;
+    }
+
+    public function getIsReadonlyAttribute()
+    {
+        return $this->workspaces()->where('role', self::ROLE_READONLY)->exists();
     }
 
     public function getTemplateEditorAttribute()
