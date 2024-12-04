@@ -210,6 +210,7 @@ export default {
       }
       return {
         text: 'TextInput',
+        rich_text: 'RichTextAreaInput',
         number: 'TextInput',
         rating: 'RatingInput',
         scale: 'ScaleInput',

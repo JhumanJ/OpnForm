@@ -1,7 +1,5 @@
 <template>
-  <span>
-    {{ value }}
-  </span>
+  <div v-html="value" />
 </template>
 
 <script>

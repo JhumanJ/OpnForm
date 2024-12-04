@@ -448,8 +448,15 @@
         :multiple="field.multiple === true"
         :move-to-form-assets="true"
       />
+      <rich-text-area-input
+        v-else-if="field.type === 'rich_text'"
+        name="prefill"
+        class="mt-3"
+        :form="field"
+        label="Pre-filled value"
+      />
       <text-input
-        v-else-if="!['files', 'signature'].includes(field.type)"
+        v-else-if="!['files', 'signature', 'rich_text'].includes(field.type)"
         name="prefill"
         class="mt-3"
         :form="field"
