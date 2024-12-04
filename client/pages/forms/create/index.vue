@@ -5,6 +5,7 @@
       class="w-full flex flex-grow flex-col"
     >
       <create-form-base-modal
+        :form="form"
         :show="showInitialFormModal"
         @form-generated="formGenerated"
         @close="showInitialFormModal = false"

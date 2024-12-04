@@ -44,6 +44,15 @@
       label="Color Mode"
       help="Use Auto to use device system preferences"
     />
+    <FlatSelectInput
+      :form="form"
+      name="format"
+      :options="[
+        { name: 'Regular format', value: 'regular' },
+        { name: 'Focused format (1 question per page)', value: 'focused' },
+      ]"
+      label="Form format"
+    />
 
     <EditorSectionHeader
       icon="octicon:typography-16"

@@ -41,6 +41,8 @@ class Form extends Model implements CachableAttributes
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
+    public const FORMATS = ['regular', 'focused'];
+
     protected $fillable = [
         'workspace_id',
         'creator_id',
@@ -52,6 +54,7 @@ class Form extends Model implements CachableAttributes
         'visibility',
 
         // Customization
+        'format',
         'font_family',
         'custom_domain',
         'size',
