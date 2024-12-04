@@ -19,6 +19,7 @@
     "@nuxt/devtools": "^1.6.1",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/icon": "^1.8.2",
+    "@nuxtjs/i18n": "^9.0.0",
     "@nuxtjs/sitemap": "^6.1.3",
     "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "autoprefixer": "^10.4.20",

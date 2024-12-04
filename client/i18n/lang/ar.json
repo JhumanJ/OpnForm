@@ -1,0 +1,38 @@
+{
+    "app": {
+        "name": "أوبنفورم"
+    },
+    "forms": {
+        "powered_by": "مشغل بواسطة",
+        "password_protected": "هذا النموذج محمي بكلمة مرور.",
+        "invalid_password": "كلمة مرور غير صالحة.",
+        "password_required": "كلمة مرور مطلوبة.",
+        "create_form_free": "أنشأ نموذجك مجانًا باستخدام أوبنفورم",
+        "submit": "إرسال",
+        "wrong_form_structure": "هناك خطأ في بنية هذا النموذج. إذا كنت مالك النموذج، يرجى الاتصال بنا.",
+        "select": {
+            "search": "بحث",
+            "searchOrTypeToCreateNew": "بحث أو اكتب شيءً لإضافة خيار",
+            "typeSomethingToAddAnOption": "اكتب شيءً لإضافة خيار",
+            "noOptionAvailable": "لا يوجد خيارات متاحة",
+            "create": "إنشاء"
+        },
+        "fileInput": {
+            "chooseFiles": "انقر لاختيار الملفات أو قم بإسقاطها هنا | انقر لاختيار ملف أو قم بإسقاطه هنا",
+            "sizeLimit": "الحد الأقصى للحجم: {count} ميجابايت لكل ملف",
+            "uploadingFile": "جاري تحميل الملف الخاص بك..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "السماح بالوصول إلى الكاميرا",
+            "allowCameraPermissionDescription": "يجب السماح بالوصول إلى الكاميرا قبل التقاط الصور. انتقل إلى إعدادات المتصفح لتمكين الوصول إلى الكاميرا على هذه الصفحة.",
+            "gotIt": "فهمت!",
+            "cameraDeviceError": "خطأ في الكاميرا",
+            "cameraDeviceErrorDescription": "حدث خطأ غير معروف أثناء محاولة تشغيل كاميرا الويب.",
+            "goBack": "رجوع"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "تحميل ملف بدلاً من ذلك",
+            "clear": "مسح"
+        }
+    }
+} 

@@ -252,6 +252,12 @@ class AnswerFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        // Set locale based on form language
+        if ($this->form?->language && in_array($this->form->language, Form::LANGUAGES)) {
+            app()->setLocale($this->form->language);
+        }
+
+
         $receivedData = $this->toArray();
         $mergeData = [];
         $countryCodeMapper = json_decode(file_get_contents(resource_path('data/country_code_mapper.json')), true);

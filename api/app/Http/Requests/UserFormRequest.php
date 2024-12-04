@@ -29,6 +29,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'visibility' => ['required', Rule::in(Form::VISIBILITY)],
 
             // Customization
+            'language' => ['required', Rule::in(Form::LANGUAGES)],
             'font_family' => 'string|nullable',
             'theme' => ['required', Rule::in(Form::THEMES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],

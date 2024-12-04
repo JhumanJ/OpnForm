@@ -120,7 +120,7 @@
             v-model="searchTerm"
             type="text"
             class="flex-grow ltr:pl-3 ltr:pr-7 rtl:!pr-3 rtl:pl-7 py-2 w-full focus:outline-none dark:text-white"
-            placeholder="Search"
+            :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
           >
           <div
             v-if="!searchTerm"
@@ -179,7 +179,7 @@
           v-else-if="!loading && !(allowCreation && searchTerm)"
           class="w-full text-gray-500 text-center py-2"
         >
-          {{ (allowCreation ? 'Type something to add an option' : 'No option available') }}.
+          {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
         </p>
         <div
           v-if="allowCreation && searchTerm"
@@ -192,7 +192,7 @@
             class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
             @click="createOption(searchTerm)"
           >
-            Create <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{
+            {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{
               searchTerm
             }}</span>
           </li>
