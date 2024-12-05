@@ -60,26 +60,33 @@
               :admin-preview="adminPreview"
             />
           </div>
-          <open-form-button
-            v-if="formPageIndex > 0 && !loading"
-            native-type="button"
-            :color="form.color"
-            :theme="theme"
-            class="mt-2 px-8 mx-1"
-            @click="previousPage"
-          >
-            Back
-          </open-form-button>
-          <open-form-button
-            v-if="formPageIndex >= 0 && !isLastPage && !loading"
-            native-type="button"
-            :color="form.color"
-            :theme="theme"
-            class="mt-2 px-8 mx-1"
-            @click="nextPage"
-          >
-            Next
-          </open-form-button>
+          <div class="flex justify-between">
+            <open-form-button
+              v-if="formPageIndex > 0 && !loading"
+              native-type="button"
+              :color="form.color"
+              :theme="theme"
+              class="mt-2 px-8 mx-1"
+              @click="previousPage"
+            >
+              Back
+            </open-form-button>
+            <open-form-button
+              v-if="formPageIndex >= 0 && !isLastPage && !loading"
+              native-type="button"
+              :color="form.color"
+              :theme="theme"
+              class="mt-2 px-8 mx-1"
+              @click="nextPage"
+            >
+              Next
+            </open-form-button>
+            <slot
+              v-if="isLastPage"
+              name="submit-btn"
+              :submit-form="submitForm"
+            />
+          </div>
         </div>
         <div v-else>
           No fields found
@@ -104,37 +111,6 @@
         />
       </div>
     </template>
-
-    <!--  Submit, Next and previous buttons  -->
-    <div class="flex flex-wrap justify-center w-full">
-      <open-form-button
-        v-if="formPageIndex>0 && previousFieldsPageBreak && !loading"
-        native-type="button"
-        :color="form.color"
-        :theme="theme"
-        class="mt-2 px-8 mx-1"
-        @click="previousPage"
-      >
-        {{ previousFieldsPageBreak.previous_btn_text }}
-      </open-form-button>
-
-      <slot
-        v-if="isLastPage"
-        name="submit-btn"
-        :submit-form="submitForm"
-      />
-      <open-form-button
-        v-else-if="currentFieldsPageBreak"
-        native-type="button"
-        :color="form.color"
-        :theme="theme"
-        class="mt-2 px-8 mx-1"
-        :loading="dataForm.busy"
-        @click.stop="nextPage"
-      >
-        {{ currentFieldsPageBreak.next_btn_text }}
-      </open-form-button>
-    </div>
   </form>
 </template>
 

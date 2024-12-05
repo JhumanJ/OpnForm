@@ -145,7 +145,7 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Color image"
+      :label="form.format === 'focused' ? 'Background image' : 'Cover image'"
       help="Not visible when form is embedded"
     />
     <toggle-switch-input

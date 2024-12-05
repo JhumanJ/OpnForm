@@ -275,6 +275,7 @@ export default {
     previousFieldsPageBreak() {
       if (this.formPageIndex === 0) return null
       const previousFields = this.fieldGroups[this.formPageIndex - 1]
+      if (!previousFields?.length) return null
       const block = previousFields[previousFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
