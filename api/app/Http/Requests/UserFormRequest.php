@@ -55,7 +55,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             're_fillable' => 'boolean',
             're_fill_button_text' => 'string|min:1|max:50',
             'submitted_text' => 'string|max:2000',
-            'redirect_url' => 'nullable|max:255',
+            'redirect_url' => 'nullable|string',
             'database_fields_update' => 'nullable|array',
             'max_submissions_count' => 'integer|nullable|min:1',
             'max_submissions_reached_text' => 'string|nullable',
