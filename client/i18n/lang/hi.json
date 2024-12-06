@@ -1,0 +1,38 @@
+{
+    "app": {
+        "name": "ऑपनफॉर्म"
+    },
+    "forms": {
+        "powered_by": "ऑपनफॉर्म के साथ",
+        "password_protected": "यह फ़ॉर्म पासवर्ड से सुरक्षित है।",
+        "invalid_password": "अमान्य पासवर्ड।",
+        "password_required": "पासवर्ड आवश्यक है।",
+        "create_form_free": "अपनी फ़ॉर्म फ्री में ऑपनफॉर्म के साथ बनाएं",
+        "submit": "जमा करें",
+        "wrong_form_structure": "यह फ़ॉर्म संरचना में कुछ गलत है। यदि आप फ़ॉर्म का मालिक हैं, तो कृपया हमसे संपर्क करें।",
+        "select": {
+            "search": "खोजें",
+            "searchOrTypeToCreateNew": "खोजें या कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
+            "typeSomethingToAddAnOption": "कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
+            "noOptionAvailable": "कोई विकल्प उपलब्ध नहीं है",
+            "create": "बनाएं"
+        },
+        "fileInput": {
+            "chooseFiles": "फ़ाइलें चुनने के लिए क्लिक करें या यहां खींचें | फ़ाइल चुनने के लिए क्लिक करें या यहां खींचें",
+            "sizeLimit": "साइज़ सीमा: प्रति फ़ाइल {count}MB",
+            "uploadingFile": "आपकी फ़ाइल अपलोड हो रही है..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "कैमरा एक्सेस की अनुमति दें",
+            "allowCameraPermissionDescription": "फ़ोटो लेने से पहले कैमरा एक्सेस की अनुमति देनी होगी। इस पेज पर कैमरा एक्सेस सक्षम करने के लिए ब्राउज़र सेटिंग्स में जाएं।",
+            "gotIt": "समझ गया!",
+            "cameraDeviceError": "कैमरा त्रुटि",
+            "cameraDeviceErrorDescription": "वेबकैम डिवाइस शुरू करने का प्रयास करते समय एक अज्ञात त्रुटि हुई।",
+            "goBack": "वापस जाएं"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "इसके बजाय फ़ाइल अपलोड करें",
+            "clear": "साफ़ करें"
+        }
+    }
+} 

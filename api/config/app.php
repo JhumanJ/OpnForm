@@ -94,6 +94,12 @@ return [
 
     'locales' => [
         'en' => 'EN',
+        'fr' => 'FR',
+        'hi' => 'HI',
+        'es' => 'ES',
+        'ar' => 'AR',
+        'zh' => 'ZH',
+        'ja' => 'JA',
     ],
 
     /*

@@ -199,7 +199,7 @@
                 <template #description>
                   <div class="flex flex-wrap sm:flex-nowrap gap-4 items-start">
                     <p class="flex-grow">
-                      Remove NoteForms branding, customize forms further, use your custom domain, integrate with your
+                      Remove OpnForm branding, customize forms further, use your custom domain, integrate with your
                       favorite tools, invite users, and more!
                     </p>
                     <UButton

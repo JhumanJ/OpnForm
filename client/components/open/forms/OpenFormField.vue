@@ -329,7 +329,8 @@ export default {
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : null,
         showCharLimit: field.show_char_limit || false,
-        isDark: this.darkMode
+        isDark: this.darkMode,
+        locale: (this.form?.language) ? this.form.language : 'en'
       }
 
       if (field.type === 'matrix') {
