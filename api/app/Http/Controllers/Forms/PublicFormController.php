@@ -116,7 +116,7 @@ class PublicFormController extends Controller
             return ['id' => $key, 'value' => $value];
         })->values()->all();
 
-        $redirectUrl = ($form->redirect_url) ? (new MentionParser($form->redirect_url, $formattedData))->parseAsText() : null;
+        $redirectUrl = ($form->redirect_url) ? (new MentionParser($form->redirect_url, $formattedData))->urlFriendlyOutput()->parseAsText() : null;
 
         if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
             $redirectUrl = null;

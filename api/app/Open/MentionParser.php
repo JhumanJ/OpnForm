@@ -9,11 +9,18 @@ class MentionParser
 {
     private $content;
     private $data;
+    private $urlFriendly = false;
 
     public function __construct($content, $data)
     {
         $this->content = $content;
         $this->data = $data;
+    }
+
+    public function urlFriendlyOutput(bool $enable = true): self
+    {
+        $this->urlFriendly = $enable;
+        return $this;
     }
 
     public function parse()
@@ -40,7 +47,7 @@ class MentionParser
             $value = $this->getData($fieldId);
 
             if ($value !== null) {
-                $textNode = $doc->createTextNode(is_array($value) ? implode(', ', $value) : $value);
+                $textNode = $doc->createTextNode(is_array($value) ? implode($this->urlFriendly ? ',+' : ', ', $value) : $value);
                 $element->parentNode->replaceChild($textNode, $element);
             } elseif ($fallback) {
                 $textNode = $doc->createTextNode($fallback);
@@ -127,7 +134,13 @@ class MentionParser
         $value = collect($this->data)->firstWhere('id', $fieldId)['value'] ?? null;
 
         if (is_object($value)) {
-            return (array) $value;
+            $value = (array) $value;
+        }
+
+        if ($this->urlFriendly && $value !== null) {
+            return is_array($value)
+                ? array_map('urlencode', $value)
+                : urlencode($value);
         }
 
         return $value;
