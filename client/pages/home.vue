@@ -8,6 +8,7 @@
               Your Forms
             </h2>
             <v-button
+              v-if="!user.is_readonly"
               v-track.create_form_click
               :to="{ name: 'forms-create' }"
             >
@@ -246,6 +247,8 @@ useOpnSeoMeta({
     "All of your OpnForm are here. Create new forms, or update your existing forms.",
 })
 
+const authStore = useAuthStore()
+const user = computed(() => authStore.user)
 const subscriptionModalStore = useSubscriptionModalStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()

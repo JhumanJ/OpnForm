@@ -37,7 +37,7 @@ class FormPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return !$user->is_readonly;
     }
 
     /**
@@ -47,7 +47,7 @@ class FormPolicy
      */
     public function update(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $user->ownsForm($form) && !$user->is_readonly;
     }
 
     /**
@@ -57,7 +57,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $user->ownsForm($form) && !$user->is_readonly;
     }
 
     /**
@@ -67,7 +67,7 @@ class FormPolicy
      */
     public function restore(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $user->ownsForm($form) && !$user->is_readonly;
     }
 
     /**
@@ -77,6 +77,6 @@ class FormPolicy
      */
     public function forceDelete(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $user->ownsForm($form) && !$user->is_readonly;
     }
 }

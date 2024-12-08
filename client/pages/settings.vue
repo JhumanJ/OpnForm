@@ -62,18 +62,20 @@ const tabsList = computed(() => {
       name: "Profile",
       route: "settings-profile",
     },
-    {
-      name: "Workspace Settings",
-      route: "settings-workspace",
-    },
-    {
-      name: "Access Tokens",
-      route: "settings-access-tokens",
-    },
-    {
-      name: "Connections",
-      route: "settings-connections",
-    },
+    ...user.value.is_readonly ? [] : [
+      {
+        name: "Workspace Settings",
+        route: "settings-workspace",
+      },
+      {
+        name: "Access Tokens",
+        route: "settings-access-tokens",
+      },
+      {
+        name: "Connections",
+        route: "settings-connections",
+      },
+    ],
     {
       name: "Password",
       route: "settings-password",
