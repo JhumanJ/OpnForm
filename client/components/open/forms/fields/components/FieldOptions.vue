@@ -576,6 +576,28 @@
         @update:model-value="onFieldGenAutoIdChange"
       />
     </div>
+
+    <!--  Focused Format Options   -->
+    <div
+      v-if="form.format === 'focused'"
+      class="px-4"
+    >
+      <EditorSectionHeader
+        icon="i-heroicons-bars-3-bottom-left"
+        title="Focused Format Options"
+      />
+      
+      <text-input
+        name="focused_previous_button_text"
+        :form="field"
+        label="Previous Button Text"
+      />
+      <text-input
+        name="focused_next_button_text"
+        :form="field"
+        label="Next Button Text"
+      />
+    </div>
   </div>
 </template>
 
