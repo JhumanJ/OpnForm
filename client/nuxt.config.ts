@@ -15,10 +15,27 @@ export default defineNuxtConfig({
         '@nuxtjs/sitemap',
         '@nuxt/ui', 
         'nuxt-utm', 
+        '@nuxtjs/i18n',
+        '@nuxt/icon', 
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
-],
+    ],
     build: {
         transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
+    },
+    i18n: {
+        locales: [
+          { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' },
+          { code: 'fr', name: 'French', iso: 'fr-FR', file: 'fr.json' },
+          { code: 'hi', name: 'Hindi', iso: 'hi-IN', file: 'hi.json' },
+          { code: 'es', name: 'Spanish', iso: 'es-ES', file: 'es.json' },
+          { code: 'ar', name: 'Arabic', iso: 'ar-EG', file: 'ar.json' },
+          { code: 'zh', name: 'Chinese', iso: 'zh-CN', file: 'zh.json' },
+          { code: 'ja', name: 'Japanese', iso: 'ja-JP', file: 'ja.json' },
+        ],
+        defaultLocale: 'en',
+        lazy: true,
+        langDir: 'lang/',
+        strategy: 'no_prefix'
     },
     experimental: {
         inlineRouteRules: true

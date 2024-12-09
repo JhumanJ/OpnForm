@@ -1,31 +1,55 @@
 import { reactive } from 'vue'
 import Quill from 'quill'
 const Inline = Quill.import('blots/inline')
+const Delta = Quill.import('delta')
+const Clipboard = Quill.import('modules/clipboard')
 
 export default function registerMentionExtension(Quill) {
+  // Extend Clipboard to handle pasted content
+  class MentionClipboard extends Clipboard {
+    convert(html) {
+      const delta = super.convert(html)
+      // Remove any mention formatting from pasted content
+      return delta.reduce((newDelta, op) => {
+        if (op.attributes && op.attributes.mention) {
+          // Only keep mentions that have valid field IDs
+          if (!op.attributes.mention['mention-field-id']) {
+            delete op.attributes.mention
+          }
+        }
+        newDelta.push(op)
+        return newDelta
+      }, new Delta())
+    }
+  }
+  Quill.register('modules/clipboard', MentionClipboard, true)
+
   class MentionBlot extends Inline {
     static blotName = 'mention'
     static tagName = 'SPAN'
 
     static create(data) {
+      // Only create mention if we have valid data
+      if (!data || !data.field || !data.field.nf_id) {
+        return null
+      }
       let node = super.create()
       MentionBlot.setAttributes(node, data)
       return node
     }
 
     static setAttributes(node, data) {
+      // Only set attributes if we have valid data
+      if (!data || !data.field || !data.field.nf_id) {
+        return
+      }
+
       node.setAttribute('contenteditable', 'false')
       node.setAttribute('mention', 'true')
-
-      if (data && typeof data === 'object') {
-        node.setAttribute('mention-field-id', data.field?.id || '')
-        node.setAttribute('mention-field-name', data.field?.name || '')
-        node.setAttribute('mention-fallback', data.fallback || '')
-        node.textContent = data.field?.name || ''
-      } else {
-        // Handle case where data is not an object (e.g., during undo)
-        node.textContent = data || ''
-      }
+      node.setAttribute('mention-field-id', data.field.nf_id || '')
+      node.setAttribute('mention-field-name', data.field.name || '')
+      node.setAttribute('mention-fallback', data.fallback || '')
+      node.textContent = data.field.name || ''
     }
 
     static formats(domNode) {
@@ -53,7 +77,7 @@ export default function registerMentionExtension(Quill) {
     static value(domNode) {
       return {
         field: {
-          id: domNode.getAttribute('mention-field-id') || '',
+          nf_id: domNode.getAttribute('mention-field-id') || '',
           name: domNode.getAttribute('mention-field-name') || ''
         },
         fallback: domNode.getAttribute('mention-fallback') || ''

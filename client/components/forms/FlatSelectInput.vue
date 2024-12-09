@@ -74,7 +74,7 @@
           '!text-gray-500 !cursor-not-allowed'
         ]"
       >
-        No options available.
+        {{ $t('forms.select.noOptionAvailable') }}
       </div>
     </div>
 

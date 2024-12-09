@@ -11,6 +11,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
 
     // Customization
     format: "regular",
+    language: 'en',
     font_family: null,
     theme: "default",
     width: "centered",

@@ -51,6 +51,7 @@ class FormFactory extends Factory
             'description' => $this->faker->randomHtml(1),
             'visibility' => 'public',
             'format' => 'regular',
+            'language' => 'en',
             'theme' => $this->faker->randomElement(Form::THEMES),
             'size' => $this->faker->randomElement(Form::SIZES),
             'border_radius' => $this->faker->randomElement(Form::BORDER_RADIUS),

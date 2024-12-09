@@ -122,7 +122,7 @@
         {{ currentFieldsPageBreak.next_btn_text }}
       </open-form-button>
       <div v-if="!currentFieldsPageBreak && !isLastPage">
-        Something is wrong with this form structure. If you're the form owner please contact us.
+        {{ $t('forms.wrong_form_structure') }}
       </div>
     </div>
   </form>

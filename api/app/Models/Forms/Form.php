@@ -43,6 +43,8 @@ class Form extends Model implements CachableAttributes
 
     public const FORMATS = ['regular', 'focused'];
 
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja'];
+
     protected $fillable = [
         'workspace_id',
         'creator_id',
@@ -55,6 +57,7 @@ class Form extends Model implements CachableAttributes
 
         // Customization
         'format',
+        'language',
         'font_family',
         'custom_domain',
         'size',
