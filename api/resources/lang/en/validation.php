@@ -149,6 +149,6 @@ return [
 
     'attributes' => [],
 
-    'invalid_json' => 'The entered data is invalid JSON. Please correct the data and try again.',
+    'invalid_json' => 'Invalid input. Please correct and try again.',
 
 ];

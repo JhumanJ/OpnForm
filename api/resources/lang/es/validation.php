@@ -152,6 +152,6 @@ return [
         'message' => 'mensaje',
     ],
 
-    'invalid_json' => 'Los datos ingresados no son JSON válido. Por favor, corrija los datos e intente nuevamente.',
+    'invalid_json' => 'Entrada no válida. Por favor, corrija e intente nuevamente.',
 
 ];
