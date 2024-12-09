@@ -19,7 +19,7 @@ return [
     ],
     'boolean' => ':attribute 必须为布尔值。',
     'confirmed' => ':attribute 两次输入不一致。',
-    'date' => ':attribute 不是一个有效的日期。',
+    'date' => ':attribute 不是一���有效的日期。',
     'date_equals' => ':attribute 必须等于 :date。',
     'date_format' => ':attribute 的格式必须为 :format。',
     'different' => ':attribute 和 :other 必须不同。',
@@ -95,7 +95,7 @@ return [
     'same' => ':attribute 和 :other 必须相同。',
     'size' => [
         'numeric' => ':attribute 大小必须为 :size。',
-        'file' => ':attribute 大小必须为 :size KB。',
+        'file' => ':attribute 大��必须为 :size KB。',
         'string' => ':attribute 必须是 :size 个字符。',
         'array' => ':attribute 必须为 :size 个单元。',
     ],
@@ -114,4 +114,6 @@ return [
     ],
 
     'attributes' => [],
+
+    'invalid_json' => '输入无效。请修正后重试。',
 ];

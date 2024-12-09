@@ -13,7 +13,7 @@ return [
     'before_or_equal' => ':attribute يجب أن يكون تاريخا سابقا أو مطابقا للتاريخ :date.',
     'between' => [
         'numeric' => 'يجب أن تكون قيمة :attribute بين :min و :max.',
-        'file' => 'يجب أن يكون حجم الملف :attribute بين :min و :max كيلوبايت.',
+        'file' => 'يجب أن يكون حجم الملف :attribute بين :min و :max ��يلوبايت.',
         'string' => 'يجب أن يكون عدد حروف النّص :attribute بين :min و :max.',
         'array' => 'يجب أن يحتوي :attribute على عدد من العناصر بين :min و :max.',
     ],
@@ -66,7 +66,7 @@ return [
     ],
     'max' => [
         'numeric' => 'يجب أن تكون قيمة :attribute مساوية أو أصغر من :max.',
-        'file' => 'يجب أن لا يتجاوز حجم الملف :attribute :max كيلوبايت.',
+        'file' => 'يجب أن لا يتجاوز حجم الملف :attribute :max كيلوبا��ت.',
         'string' => 'يجب أن لا يتجاوز طول النّص :attribute :max حروفٍ/حرفًا.',
         'array' => 'يجب أن لا يحتوي :attribute على أكثر من :max عناصر/عنصر.',
     ],
@@ -114,4 +114,6 @@ return [
     ],
 
     'attributes' => [],
+
+    'invalid_json' => 'إدخال غير صالح. يرجى التصحيح والمحاولة مرة أخرى.',
 ];

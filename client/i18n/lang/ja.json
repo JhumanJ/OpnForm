@@ -3,17 +3,20 @@
         "name": "OpnForm"
     },
     "forms": {
-        "powered_by": "Powered by",
+        "powered_by": "開発者",
         "password_protected": "このフォームはパスワードで保護されています。",
         "invalid_password": "無効なパスワード。",
         "password_required": "パスワードが必要です。",
-        "create_form_free": "無料でOpnFormでフォームを作成",
+        "create_form_free": "OpnForm で無料でフォームを作成",
         "submit": "送信",
-        "wrong_form_structure": "このフォームの構造に問題があります。フォームの所有者である場合は、お問い合わせください。",
+        "wrong_form_structure": "このフォームの構造に問題があります。フォームの所有者であれば、お問い合わせください。",
+        "cannot_access_here": "このコンテンツはここでアクセスできません。下のリンクをクリックしてアクセスしてください。",
+        "open_form": "フォームを開く",
+        "restricted_to_workspace": "Notion ワークスペースのメンバーに限定されています。このコンテンツにアクセスするにはログインしてください。",
         "select": {
             "search": "検索",
-            "searchOrTypeToCreateNew": "検索または何かを入力して新しいオプションを作成",
-            "typeSomethingToAddAnOption": "オプションを追加するには何かを入力してください",
+            "searchOrTypeToCreateNew": "検索または新規作成",
+            "typeSomethingToAddAnOption": "オプションを追加するには何かを書いてください",
             "noOptionAvailable": "オプションがありません",
             "create": "作成"
         },

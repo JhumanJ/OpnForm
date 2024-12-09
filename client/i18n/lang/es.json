@@ -4,15 +4,18 @@
     },
     "forms": {
         "powered_by": "Desarrollado por",
-        "password_protected": "Este formulario está protegido por una contraseña.",
+        "password_protected": "Este formulario está protegido por contraseña.",
         "invalid_password": "Contraseña inválida.",
-        "password_required": "Se requiere una contraseña.",
+        "password_required": "Se requiere contraseña.",
         "create_form_free": "Crea tu formulario gratis con OpnForm",
         "submit": "Enviar",
-        "wrong_form_structure": "Algo está mal con la estructura de este formulario. Si eres el propietario del formulario, por favor contacta con nosotros.",
+        "wrong_form_structure": "Hay un problema con la estructura de este formulario. Si eres el propietario del formulario, contáctanos.",
+        "cannot_access_here": "No se puede acceder a este contenido aquí. Haz clic en el enlace de abajo para acceder.",
+        "open_form": "Abrir Formulario",
+        "restricted_to_workspace": "Restringido a miembros del espacio de trabajo de Notion. Inicia sesión para acceder a este contenido.",
         "select": {
             "search": "Buscar",
-            "searchOrTypeToCreateNew": "Buscar o escribe algo para crear una nueva opción",
+            "searchOrTypeToCreateNew": "Buscar o escribir para crear nuevo",
             "typeSomethingToAddAnOption": "Escribe algo para agregar una opción",
             "noOptionAvailable": "No hay opciones disponibles",
             "create": "Crear"

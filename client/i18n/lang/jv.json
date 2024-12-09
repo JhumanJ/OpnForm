@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Dipungkasi dening",
+        "password_protected": "Formulir iki dilindhungi tembung sandi.",
+        "invalid_password": "Tembung sandi ora bener.",
+        "password_required": "Tembung sandi dibutuhake.",
+        "create_form_free": "Gawe formulir sampeyan kanthi gratis nganggo OpnForm",
+        "submit": "Kirim",
+        "wrong_form_structure": "Ana sing salah karo struktur formulir iki. Yen sampeyan pemilik formulir, mangga hubungi kita.",
+        "cannot_access_here": "Konten iki ora bisa diakses ing kene. Klik link ing ngisor iki kanggo ngakses.",
+        "open_form": "Buka Formulir",
+        "restricted_to_workspace": "Dibatesi kanggo anggota Notion Workspace. Login kanggo ngakses konten iki.",
+        "select": {
+            "search": "Goleki",
+            "searchOrTypeToCreateNew": "Goleki utawa ketik kanggo nggawe anyar",
+            "typeSomethingToAddAnOption": "Ketik samubarang kanggo nambah pilihan",
+            "noOptionAvailable": "Ora ana pilihan sing cumawis",
+            "create": "Gawe"
+        },
+        "fileInput": {
+            "chooseFiles": "Klik kanggo milih berkas utawa seret mrene | Klik kanggo milih berkas utawa seret mrene",
+            "sizeLimit": "Watesan ukuran: {count}MB saben berkas",
+            "uploadingFile": "Berkas sampeyan lagi diunggah..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Ijinke Akses Kamera",
+            "allowCameraPermissionDescription": "Sampeyan kudu ngijini akses kamera sadurunge njupuk foto. Bukak setelan browser kanggo ngaktifake ijin kamera ing kaca iki.",
+            "gotIt": "Paham!",
+            "cameraDeviceError": "Kesalahan Piranti Kamera",
+            "cameraDeviceErrorDescription": "Ana kesalahan sing ora dikenal nalika nyoba miwiti piranti webcam.",
+            "goBack": "Bali"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Unggah berkas ing panggone",
+            "clear": "Resiki"
+        }
+    }
+} 

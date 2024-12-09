@@ -41,7 +41,7 @@ class Form extends Model implements CachableAttributes
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
-    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja'];
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr'];
 
     protected $fillable = [
         'workspace_id',

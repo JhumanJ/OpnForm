@@ -1,21 +1,24 @@
 {
     "app": {
-        "name": "أوبنفورم"
+        "name": "نوت فورمز"
     },
     "forms": {
         "powered_by": "مشغل بواسطة",
         "password_protected": "هذا النموذج محمي بكلمة مرور.",
         "invalid_password": "كلمة مرور غير صالحة.",
         "password_required": "كلمة مرور مطلوبة.",
-        "create_form_free": "أنشأ نموذجك مجانًا باستخدام أوبنفورم",
+        "create_form_free": "أنشأ نموذجك مجانًا باستخدام نوت فورمز",
         "submit": "إرسال",
         "wrong_form_structure": "هناك خطأ في بنية هذا النموذج. إذا كنت مالك النموذج، يرجى الاتصال بنا.",
+        "cannot_access_here": "لا يمكنك الوصول إلى هذا المحتوى هنا. اضغط على الرابط أدناه للوصول إليه.",
+        "open_form": "فتح النموذج",
+        "restricted_to_workspace": "محدود لأعضاء المساحة العملية لـ Notion. قم بتسجيل الدخول للوصول إلى هذا المحتوى.",
         "select": {
             "search": "بحث",
-            "searchOrTypeToCreateNew": "بحث أو اكتب شيءً لإضافة خيار",
-            "typeSomethingToAddAnOption": "اكتب شيءً لإضافة خيار",
+            "searchOrTypeToCreateNew": "بحث أو اكتب لإضافة خيار جديد",
+            "typeSomethingToAddAnOption": "اكتب شيءً لإضافة خيار جديد",
             "noOptionAvailable": "لا يوجد خيارات متاحة",
-            "create": "إنشاء"
+            "create": "إضافة"
         },
         "fileInput": {
             "chooseFiles": "انقر لاختيار الملفات أو قم بإسقاطها هنا | انقر لاختيار ملف أو قم بإسقاطه هنا",

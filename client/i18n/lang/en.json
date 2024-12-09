@@ -10,6 +10,9 @@
         "create_form_free": "Create your form for free with OpnForm",
         "submit": "Submit",
         "wrong_form_structure": "Something is wrong with this form structure. If you're the form owner please contact us.",
+        "cannot_access_here": "This content cannot be accessed here. Click the link below to access it.",
+        "open_form": "Open Form",
+        "restricted_to_workspace": "Restricted to members of the Notion Workspace. Login to access this content.",
         "select": {
             "search": "Search",
             "searchOrTypeToCreateNew": "Search or type to create new",

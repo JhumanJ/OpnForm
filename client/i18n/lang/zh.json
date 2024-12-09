@@ -3,16 +3,19 @@
         "name": "OpnForm"
     },
     "forms": {
-        "powered_by": "Powered by",
+        "powered_by": "开发者",
         "password_protected": "此表单受密码保护。",
         "invalid_password": "无效密码。",
         "password_required": "密码是必需的。",
-        "create_form_free": "免费使用OpnForm创建表单",
+        "create_form_free": "免费使用 OpnForm 创建表单",
         "submit": "提交",
         "wrong_form_structure": "此表单的结构有问题。如果您是表单所有者，请与我们联系。",
+        "cannot_access_here": "此内容无法在此访问。点击下面的链接访问。",
+        "open_form": "打开表单",
+        "restricted_to_workspace": "仅限 Notion 工作区成员访问。请登录以访问此内容。",
         "select": {
             "search": "搜索",
-            "searchOrTypeToCreateNew": "搜索或输入以创建新选项",
+            "searchOrTypeToCreateNew": "搜索或输入以创建新",
             "typeSomethingToAddAnOption": "输入一些东西以添加选项",
             "noOptionAvailable": "没有选项可用",
             "create": "创建"

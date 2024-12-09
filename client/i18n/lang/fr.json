@@ -3,13 +3,16 @@
         "name": "OpnForm"
     },
     "forms": {
-        "powered_by": "Powered by",
+        "powered_by": "Développé par",
         "password_protected": "Ce formulaire est protégé par un mot de passe.",
         "invalid_password": "Mot de passe invalide.",
-        "password_required": "Le mot de passe est requis.",
+        "password_required": "Mot de passe requis.",
         "create_form_free": "Créez votre formulaire gratuitement avec OpnForm",
         "submit": "Envoyer",
-        "wrong_form_structure": "Quelque chose ne va pas avec la structure de ce formulaire. Si vous êtes le propriétaire du formulaire, veuillez nous contacter.",
+        "wrong_form_structure": "Il y a un problème avec la structure de ce formulaire. Si vous êtes le propriétaire du formulaire, veuillez nous contacter.",
+        "cannot_access_here": "Ce contenu ne peut pas être accessible ici. Cliquez sur le lien ci-dessous pour accéder à ce contenu.",
+        "open_form": "Ouvrir le formulaire",
+        "restricted_to_workspace": "Restreint aux membres de l'espace de travail de Notion. Connectez-vous pour accéder à ce contenu.",
         "select": {
             "search": "Rechercher",
             "searchOrTypeToCreateNew": "Rechercher ou écrivez quelque chose pour créer une nouvelle option",

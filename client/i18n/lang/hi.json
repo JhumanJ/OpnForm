@@ -1,19 +1,22 @@
 {
     "app": {
-        "name": "ऑपनफॉर्म"
+        "name": "OpnForm"
     },
     "forms": {
-        "powered_by": "ऑपनफॉर्म के साथ",
-        "password_protected": "यह फ़ॉर्म पासवर्ड से सुरक्षित है।",
+        "powered_by": "विकसित करने वाला",
+        "password_protected": "यह फॉर्म एक पासवर्ड से सुरक्षित है।",
         "invalid_password": "अमान्य पासवर्ड।",
         "password_required": "पासवर्ड आवश्यक है।",
-        "create_form_free": "अपनी फ़ॉर्म फ्री में ऑपनफॉर्म के साथ बनाएं",
+        "create_form_free": "OpnForm के साथ अपना फॉर्म मुफ्त में बनाएं",
         "submit": "जमा करें",
-        "wrong_form_structure": "यह फ़ॉर्म संरचना में कुछ गलत है। यदि आप फ़ॉर्म का मालिक हैं, तो कृपया हमसे संपर्क करें।",
+        "wrong_form_structure": "इस फॉर्म की संरचना में कुछ समस्या है। यदि आप फॉर्म का मालिक हैं, कृपया हमसे संपर्क करें।",
+        "cannot_access_here": "यह सामग्री यहां प्रवेश नहीं हो सकती। नीचे दिए गए लिंक पर क्लिक करें जो इसे प्रवेश करने के लिए है।",
+        "open_form": "फॉर्म खोलें",
+        "restricted_to_workspace": "नोटियन वॉर्कस्पेस के सदस्यों के लिए सीमित। इस सामग्री प्रवेश करने के लिए लॉगिन करें।",
         "select": {
             "search": "खोजें",
-            "searchOrTypeToCreateNew": "खोजें या कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
-            "typeSomethingToAddAnOption": "कुछ भी टाइप करें जो विकल्प जोड़ने के लिए",
+            "searchOrTypeToCreateNew": "खोजें या लिखें नए बनाएं",
+            "typeSomethingToAddAnOption": "कुछ लिखें जो विकल्प जोड़ने के लिए",
             "noOptionAvailable": "कोई विकल्प उपलब्ध नहीं है",
             "create": "बनाएं"
         },

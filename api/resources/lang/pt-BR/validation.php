@@ -178,4 +178,6 @@ return [
         'email' => 'e-mail',
         'remember' => 'lembrar-me',
     ],
+
+    'invalid_json' => 'Entrada inválida. Por favor, corrija e tente novamente.',
 ];
