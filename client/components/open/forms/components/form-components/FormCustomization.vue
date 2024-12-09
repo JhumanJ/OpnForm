@@ -52,6 +52,11 @@
         { name: 'Focused format (1 question per page)', value: 'focused' },
       ]"
       label="Form format"
+      @update:model-value="onChangeFormat"
+    />
+    <FormatChangeModal
+      :show="showFormatChangeModal"
+      @close="showFormatChangeModal = false"
     />
 
     <EditorSectionHeader
@@ -212,6 +217,7 @@
 import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
+import FormatChangeModal from "../../../editors/FormatChangeModal.vue"
 import ProTag from "~/components/global/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
@@ -224,7 +230,7 @@ const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
-
+const showFormatChangeModal = ref(false)
 const user = computed(() => authStore.user)
 const workspace = computed(() => workspacesStore.getCurrent)
 
@@ -257,5 +263,11 @@ const onChangeNoBranding = (val) => {
 const onApplyFont = (val) => {
   form.value.font_family = val
   showGoogleFontPicker.value = false
+}
+
+const onChangeFormat = (val) => {
+  if (val === 'focused') {
+    showFormatChangeModal.value = true
+  }
 }
 </script>
