@@ -3,6 +3,8 @@
         "name": "ऑपनफॉर्म"
     },
     "forms": {
+        "back": "पिछला",
+        "next": "अगला",
         "powered_by": "ऑपनफॉर्म के साथ",
         "password_protected": "यह फ़ॉर्म पासवर्ड से सुरक्षित है।",
         "invalid_password": "अमान्य पासवर्ड।",

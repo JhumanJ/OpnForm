@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "Atrás",
+        "next": "Siguiente",
         "powered_by": "Desarrollado por",
         "password_protected": "Este formulario está protegido por una contraseña.",
         "invalid_password": "Contraseña inválida.",

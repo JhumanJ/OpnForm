@@ -69,7 +69,7 @@
               class="mt-2 px-8 mx-1"
               @click="previousPage"
             >
-              {{ currentFields.focused_previous_button_text || 'Back' }}
+              {{ currentFields.focused_previous_button_text || $t('forms.back') }}
             </open-form-button>
             <open-form-button
               v-if="formPageIndex >= 0 && !isLastPage && !loading"
@@ -79,7 +79,7 @@
               class="mt-2 px-8 mx-1"
               @click="nextPage"
             >
-              {{ currentFields.focused_next_button_text || 'Next' }}
+              {{ currentFields.focused_next_button_text || $t('forms.next') }}
             </open-form-button>
             <slot
               v-if="isLastPage"

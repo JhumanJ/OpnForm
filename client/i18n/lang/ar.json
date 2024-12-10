@@ -3,6 +3,8 @@
         "name": "أوبنفورم"
     },
     "forms": {
+        "back": "رجوع",
+        "next": "التالي",
         "powered_by": "مشغل بواسطة",
         "password_protected": "هذا النموذج محمي بكلمة مرور.",
         "invalid_password": "كلمة مرور غير صالحة.",
