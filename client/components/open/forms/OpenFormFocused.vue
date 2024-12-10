@@ -47,10 +47,10 @@
         :key="formPageIndex"
         class="w-full shadow-lg rounded-lg bg-white dark:bg-gray-800 p-6"
       >
-        <div v-if="currentFields">
+        <div v-if="currentField">
           <div>
             <open-form-field
-              :field="currentFields"
+              :field="currentField"
               :show-hidden="showHidden"
               :form="form"
               :data-form="dataForm"
@@ -69,7 +69,7 @@
               class="mt-2 px-8 mx-1"
               @click="previousPage"
             >
-              {{ currentFields.focused_previous_button_text || $t('forms.back') }}
+              {{ currentField.focused_previous_button_text || $t('forms.back') }}
             </open-form-button>
             <open-form-button
               v-if="formPageIndex >= 0 && !isLastPage && !loading"
@@ -79,7 +79,7 @@
               class="mt-2 px-8 mx-1"
               @click="nextPage"
             >
-              {{ currentFields.focused_next_button_text || $t('forms.next') }}
+              {{ currentField.focused_next_button_text || $t('forms.next') }}
             </open-form-button>
             <slot
               v-if="isLastPage"
@@ -90,7 +90,6 @@
         </div>
         <div v-else>
           No fields found
-          {{ formPageIndex }}
         </div>
       </div>
     </transition>
@@ -116,7 +115,6 @@
 
 <script>
 import clonedeep from 'clone-deep'
-import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
@@ -129,7 +127,7 @@ import { storeToRefs } from 'pinia'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
+  components: { OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
   props: {
     form: {
       type: Object,
@@ -200,9 +198,6 @@ export default {
     hCaptchaSiteKey() {
       return useRuntimeConfig().public.hCaptchaSiteKey
     },
-    /**
-     * Create field groups (or Page) using page breaks if any
-     */
     fieldGroups() {
       if (!this.fields) return []
       return this.fields.filter(field => !this.isFieldHidden(field))
@@ -216,36 +211,8 @@ export default {
       const progress = (completedFields.length / requiredFields.length) * 100
       return Math.round(progress)
     },
-    currentFields: {
-      get() {
-        return this.fieldGroups[this.formPageIndex]
-      },
-      set(val) {
-        // On re-order from the form, set the new order
-        // Add the previous groups and next to val, and set the properties on working form
-        const newFields = []
-        this.fieldGroups.forEach((group, index) => {
-          if (index < this.formPageIndex) {
-            newFields.push(...group)
-          } else if (index === this.formPageIndex) {
-            newFields.push(...val)
-          } else {
-            newFields.push(...group)
-          }
-        })
-        // set the properties on working_form store
-        this.workingFormStore.setProperties(newFields)
-      }
-    },
-    /**
-     * Returns the page break block for the current group of fields
-     */
-    currentFieldsPageBreak() {
-      // Last block from current group
-      if (!this.currentFields?.length) return null
-      const block = this.currentFields[this.currentFields.length - 1]
-      if (block && block.type === 'nf-page-break') return block
-      return null
+    currentField() {
+      return this.fieldGroups[this.formPageIndex]
     },
     previousFieldsPageBreak() {
       if (this.formPageIndex === 0) return null
@@ -507,9 +474,8 @@ export default {
         this.scrollToTop()
         return false
       }
-      const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.busy = true
-      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
+      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, this.currentField)
         .then(() => {
           this.formPageIndex++
           this.dataForm.busy = false
@@ -548,16 +514,7 @@ export default {
     },
     setPageForField(fieldIndex) {
       if (fieldIndex === -1) return
-
-      let currentIndex = 0
-      for (let i = 0; i < this.fieldGroups.length; i++) {
-        currentIndex += this.fieldGroups[i].length
-        if (currentIndex > fieldIndex) {
-          this.formPageIndex = i
-          return
-        }
-      }
-      this.formPageIndex = this.fieldGroups.length - 1
+      this.formPageIndex = fieldIndex
     },
     setMinHeight(minHeight) {
       if (!this.isIframe) return
