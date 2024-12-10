@@ -70,7 +70,7 @@ return [
         'string' => ':attribute, :max वर्णों से बड़ा नहीं हो सकता है।',
         'array' => ':attribute में :max से अधिक आइटम नहीं हो सकते हैं।',
     ],
-    'mimes' => ':attribute एक प्रकार की फ़ाइल: :values होनी चाहिए।',
+    'mimes' => ':attribute एक प्रकार की फ़ाइल: :values होनी च��हिए।',
     'mimetypes' => ':attribute एक प्रकार की फ़ाइल: :values होनी चाहिए।',
     'min' => [
         'numeric' => ':attribute कम से कम :min होना चाहिए।',
@@ -100,7 +100,7 @@ return [
         'array' => ':attribute में :size आइटम होने चाहिए।',
     ],
     'starts_with' => ':attribute निम्न में से किसी एक से शुरू होना चाहिए: :values',
-    'string' => ':attribute एक स्ट्रिंग होनी चाहिए।',
+    'string' => ':attribute एक स्ट्रिंग हो��ी चाहिए।',
     'timezone' => ':attribute एक मान्य क्षेत्र होना चाहिए।',
     'unique' => ':attribute पहले से ही लिया गया है।',
     'uploaded' => ':attribute अपलोड करने में विफल रहा।',
@@ -114,4 +114,6 @@ return [
     ],
 
     'attributes' => [],
+
+    'invalid_json' => 'अमान्य इनपुट। कृपया सुधारें और पुनः प्रयास करें।',
 ];

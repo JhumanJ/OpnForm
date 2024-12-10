@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Tarafından desteklenmektedir",
+        "password_protected": "Bu form şifre korumalıdır.",
+        "invalid_password": "Geçersiz şifre.",
+        "password_required": "Şifre gerekli.",
+        "create_form_free": "OpnForm ile formunuzu ücretsiz oluşturun",
+        "submit": "Gönder",
+        "wrong_form_structure": "Bu formun yapısında bir sorun var. Form sahibiyseniz, lütfen bizimle iletişime geçin.",
+        "cannot_access_here": "Bu içeriğe buradan erişilemez. Erişmek için aşağıdaki bağlantıya tıklayın.",
+        "open_form": "Formu Aç",
+        "restricted_to_workspace": "Sadece Notion Çalışma Alanı üyeleriyle sınırlıdır. Bu içeriğe erişmek için giriş yapın.",
+        "select": {
+            "search": "Ara",
+            "searchOrTypeToCreateNew": "Ara veya yeni oluşturmak için yaz",
+            "typeSomethingToAddAnOption": "Bir seçenek eklemek için bir şeyl`er yazın",
+            "noOptionAvailable": "Seçenek mevcut değil",
+            "create": "Oluştur"
+        },
+        "fileInput": {
+            "chooseFiles": "Dosyaları seçmek için tıklayın veya buraya sürükleyin | Dosya seçmek için tıklayın veya buraya sürükleyin",
+            "sizeLimit": "Boyut sınırı: dosya başına {count}MB",
+            "uploadingFile": "Dosyanız yükleniyor..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Kamera İznini Ver",
+            "allowCameraPermissionDescription": "Fotoğraf çekmeden önce kamera erişimine izin vermeniz gerekiyor. Bu sayfada kamera iznini etkinleştirmek için tarayıcı ayarlarına gidin.",
+            "gotIt": "Anladım!",
+            "cameraDeviceError": "Kamera Cihazı Hatası",
+            "cameraDeviceErrorDescription": "Webcam cihazını başlatmaya çalışırken bilinmeyen bir hata oluştu.",
+            "goBack": "Geri Dön"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Bunun yerine dosya yükle",
+            "clear": "Temizle"
+        }
+    }
+} 

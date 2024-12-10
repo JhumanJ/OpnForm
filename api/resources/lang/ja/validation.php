@@ -31,7 +31,7 @@ return [
     'ends_with' => ':attributeは、次のいずれかで終わる必要があります。: :values',
     'exists' => '選択された:attributeは、有効ではありません。',
     'file' => ':attributeには、ファイルを指定してください。',
-    'filled' => ':attributeには、値を指定してください。',
+    'filled' => ':attributeには、値を指��してください。',
     'gt' => [
         'numeric' => ':attributeは、:valueより大きくなければなりません。',
         'file' => ':attributeは、:value KBより大きくなければなりません。',
@@ -114,4 +114,6 @@ return [
     ],
 
     'attributes' => [],
+
+    'invalid_json' => '無効な入力です。修正して再度お試しください。',
 ];

@@ -152,4 +152,6 @@ return [
         'message' => 'mensaje',
     ],
 
+    'invalid_json' => 'Entrada no válida. Por favor, corrija e intente nuevamente.',
+
 ];

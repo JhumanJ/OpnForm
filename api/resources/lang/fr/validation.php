@@ -114,4 +114,6 @@ return [
     ],
 
     'attributes' => [],
+
+    'invalid_json' => 'Entrée invalide. Veuillez corriger et réessayer.',
 ];

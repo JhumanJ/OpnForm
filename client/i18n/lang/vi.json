@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Được cung cấp bởi",
+        "password_protected": "Biểu mẫu này được bảo vệ bằng mật khẩu.",
+        "invalid_password": "Mật khẩu không hợp lệ.",
+        "password_required": "Yêu cầu mật khẩu.",
+        "create_form_free": "Tạo biểu mẫu miễn phí với OpnForm",
+        "submit": "Gửi",
+        "wrong_form_structure": "Có lỗi với cấu trúc của biểu mẫu này. Nếu bạn là chủ sở hữu biểu mẫu, vui lòng liên hệ với chúng tôi.",
+        "cannot_access_here": "Không thể truy cập nội dung này tại đây. Nhấp vào liên kết bên dưới để truy cập.",
+        "open_form": "Mở Biểu mẫu",
+        "restricted_to_workspace": "Chỉ dành cho thành viên Notion Workspace. Đăng nhập để truy cập nội dung này.",
+        "select": {
+            "search": "Tìm kiếm",
+            "searchOrTypeToCreateNew": "Tìm kiếm hoặc nhập để tạo mới",
+            "typeSomethingToAddAnOption": "Nhập để thêm một tùy chọn",
+            "noOptionAvailable": "Không có tùy chọn nào",
+            "create": "Tạo"
+        },
+        "fileInput": {
+            "chooseFiles": "Nhấp để chọn tệp hoặc kéo vào đây | Nhấp để chọn tệp hoặc kéo vào đây",
+            "sizeLimit": "Giới hạn kích thước: {count}MB mỗi tệp",
+            "uploadingFile": "Đang tải tệp của bạn lên..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Cho phép Truy cập Camera",
+            "allowCameraPermissionDescription": "Bạn cần cho phép truy cập camera trước khi chụp ảnh. Vào cài đặt trình duyệt để bật quyền camera trên trang này.",
+            "gotIt": "Đã hiểu!",
+            "cameraDeviceError": "Lỗi Thiết bị Camera",
+            "cameraDeviceErrorDescription": "Đã xảy ra lỗi không xác định khi cố gắng khởi động thiết bị webcam.",
+            "goBack": "Quay lại"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Tải lên tệp thay thế",
+            "clear": "Xóa"
+        }
+    }
+} 

@@ -1,7 +1,7 @@
 <template>
   <iframe
     :id="iframeId"
-    title="NoteForms testimonial"
+    title="OpnForm testimonial"
     loading="lazy"
     height="500px"
     :src="'https://embed-v2.testimonial.to/w/notionforms?theme=light&card=base&loadMore=on&initialCount=8&tag=all'"

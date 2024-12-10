@@ -94,4 +94,6 @@ return [
     |
     */
     'attributes' => [],
+
+    'invalid_json' => '输入无效。请修正后重试。',
 ];

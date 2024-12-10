@@ -91,6 +91,7 @@
     <select-input
       name="language"
       class="mt-4"
+      searchable
       :options="availableLocales"
       :form="form"
       label="Form Language"
