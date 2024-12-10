@@ -115,6 +115,7 @@
           :theme="theme"
           :dark-mode="darkMode"
           :admin-preview="adminPreview"
+          :creating="creating"
           @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
@@ -138,6 +139,7 @@
           :theme="theme"
           :dark-mode="darkMode"
           :admin-preview="adminPreview"
+          :creating="creating"
           @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">

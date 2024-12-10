@@ -155,6 +155,7 @@ export default {
       required: true
     },
     defaultDataForm: { type: [Object, null] },
+    creating: {type: Boolean, default: false},
     adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
     urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
     darkMode: {
@@ -469,7 +470,7 @@ export default {
       this.scrollToTop()
     },
     nextPage() {
-      if (this.adminPreview || this.urlPrefillPreview) {
+      if (this.adminPreview || this.urlPrefillPreview || this.creating) {
         this.formPageIndex++
         this.scrollToTop()
         return false
