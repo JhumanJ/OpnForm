@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "పిలుస్తా",
+        "next": "పిలుస్తా",
         "powered_by": "ద్వారా ఆధారితం",
         "password_protected": "ఈ ఫారమ్ పాస్‌వర్డ్‌తో రక్షించబడింది.",
         "invalid_password": "చెల్లని పాస్‌వర్డ్.",

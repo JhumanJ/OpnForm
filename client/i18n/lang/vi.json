@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "Trở lại",
+        "next": "Tiếp tục",
         "powered_by": "Được cung cấp bởi",
         "password_protected": "Biểu mẫu này được bảo vệ bằng mật khẩu.",
         "invalid_password": "Mật khẩu không hợp lệ.",

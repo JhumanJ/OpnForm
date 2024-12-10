@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "ਪੁਛਣਾ",
+        "next": "ਪੁਛਣਾ",
         "powered_by": "ਦੁਆਰਾ ਸੰਚਾਲਿਤ",
         "password_protected": "ਇਹ ਫਾਰਮ ਪਾਸਵਰਡ ਦੁਆਰਾ ਸੁਰੱਖਿਅਤ ਹੈ।",
         "invalid_password": "ਗਲਤ ਪਾਸਵਰਡ।",
