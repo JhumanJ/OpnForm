@@ -173,4 +173,46 @@ describe('MentionParser', function () {
 
         expect($result)->toBe('some text replaced text dewde');
     });
+
+    describe('urlFriendlyOutput', function () {
+        test('it encodes special characters in values', function () {
+            $content = '<p>Test: <span mention mention-field-id="123">Placeholder</span></p>';
+            $data = [['id' => '123', 'value' => 'Hello & World']];
+
+            $parser = new MentionParser($content, $data);
+            $result = $parser->urlFriendlyOutput()->parse();
+
+            expect($result)->toBe('<p>Test: Hello+%26+World</p>');
+        });
+
+        test('it encodes spaces in values', function () {
+            $content = '<p>Name: <span mention mention-field-id="123">Placeholder</span></p>';
+            $data = [['id' => '123', 'value' => 'John Doe']];
+
+            $parser = new MentionParser($content, $data);
+            $result = $parser->urlFriendlyOutput()->parse();
+
+            expect($result)->toBe('<p>Name: John+Doe</p>');
+        });
+
+        test('it encodes array values', function () {
+            $content = '<p>Tags: <span mention mention-field-id="123">Placeholder</span></p>';
+            $data = [['id' => '123', 'value' => ['Web & Mobile', 'PHP/Laravel']]];
+
+            $parser = new MentionParser($content, $data);
+            $result = $parser->urlFriendlyOutput()->parse();
+
+            expect($result)->toBe('<p>Tags: Web+%26+Mobile,+PHP%2FLaravel</p>');
+        });
+
+        test('it can be disabled explicitly', function () {
+            $content = '<p>Test: <span mention mention-field-id="123">Placeholder</span></p>';
+            $data = [['id' => '123', 'value' => 'Hello & World']];
+
+            $parser = new MentionParser($content, $data);
+            $result = $parser->urlFriendlyOutput(false)->parse();
+
+            expect($result)->toBe('<p>Test: Hello & World</p>');
+        });
+    });
 });
