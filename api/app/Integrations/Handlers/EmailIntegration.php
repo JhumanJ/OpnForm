@@ -28,7 +28,7 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
             'reply_to' => 'nullable',
         ];
 
-        if ($form->is_pro) {
+        if ($form->is_pro || config('app.self_hosted')) {
             return $rules;
         }
 
