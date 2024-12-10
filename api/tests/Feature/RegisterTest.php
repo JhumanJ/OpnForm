@@ -1,8 +1,15 @@
 <?php
 
 use App\Models\User;
+use App\Rules\ValidHCaptcha;
+use Illuminate\Support\Facades\Http;
 
 it('can register', function () {
+
+    Http::fake([
+        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+    ]);
+
     $this->postJson('/register', [
         'name' => 'Test User',
         'email' => 'test@test.app',
@@ -10,13 +17,15 @@ it('can register', function () {
         'password' => 'secret',
         'password_confirmation' => 'secret',
         'agree_terms' => true,
+        'h-captcha-response' => 'test-token', // Mock token for testing
     ])
         ->assertSuccessful()
         ->assertJsonStructure(['id', 'name', 'email']);
-    $this->assertDatabaseHas('users', [
-        'name' => 'Test User',
-        'email' => 'test@test.app',
-    ]);
+
+    $user = User::where('email', 'test@test.app')->first();
+    expect($user)->not->toBeNull();
+    expect($user->meta)->toHaveKey('registration_ip');
+    expect($user->meta['registration_ip'])->toBe(request()->ip());
 });
 
 it('cannot register with existing email', function () {
@@ -27,6 +36,7 @@ it('cannot register with existing email', function () {
         'email' => 'test@test.app',
         'password' => 'secret',
         'password_confirmation' => 'secret',
+        'h-captcha-response' => 'test-token',
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email']);
@@ -48,15 +58,30 @@ it('cannot register with disposable email', function () {
         'password' => 'secret',
         'password_confirmation' => 'secret',
         'agree_terms' => true,
+        'h-captcha-response' => 'test-token',
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email'])
         ->assertJson([
-            'message' => 'Disposable email addresses are not allowed.',
+            'message' => 'Disposable email addresses are not allowed. (and 1 more error)',
             'errors' => [
                 'email' => [
                     'Disposable email addresses are not allowed.',
                 ],
             ],
         ]);
+});
+
+it('requires hcaptcha token in production', function () {
+    app()->detectEnvironment(fn() => 'production');
+
+    $this->postJson('/register', [
+        'name' => 'Test User',
+        'email' => 'test@test.app',
+        'hear_about_us' => 'google',
+        'password' => 'secret',
+        'password_confirmation' => 'secret',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['h-captcha-response']);
 });
