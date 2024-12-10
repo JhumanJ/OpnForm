@@ -2,20 +2,23 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Models\Forms\Form;
+use App\Models\Integration\FormIntegration;
 use App\Notifications\Forms\FormEmailNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
+use Illuminate\Validation\ValidationException;
 
 class EmailIntegration extends AbstractEmailIntegrationHandler
 {
     public const RISKY_USERS_LIMIT = 120;
 
-    public static function getValidationRules(): array
+    public static function getValidationRules(?Form $form): array
     {
-        return [
-            'send_to' => 'required',
+        $rules = [
+            'send_to' => ['required'],
             'sender_name' => 'required',
             'sender_email' => 'email|nullable',
             'subject' => 'required',
@@ -24,6 +27,31 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
             'include_hidden_fields_submission_data' => ['nullable', 'boolean'],
             'reply_to' => 'nullable',
         ];
+
+        if ($form->is_pro) {
+            return $rules;
+        }
+
+        // Free plan users can only send to a single email address (avoid spam)
+        $rules['send_to'][] = function ($attribute, $value, $fail) use ($form) {
+            if (count(explode("\n", trim($value))) > 1 || count(explode(',', $value)) > 1) {
+                $fail('You can only send to a single email address on the free plan. Please upgrade to the Pro plan to create a new integration.');
+            }
+        };
+
+        // Free plan users can only have a single email integration per form (avoid spam)
+        if (!request()->route('integrationid')) {
+            $existingEmailIntegrations = FormIntegration::where('form_id', $form->id)
+                ->where('integration_id', 'email')
+                ->count();
+            if ($existingEmailIntegrations > 0) {
+                throw ValidationException::withMessages([
+                    'settings.send_to' => ['Free users are limited to 1 email integration per form.']
+                ]);
+            }
+        }
+
+        return $rules;
     }
 
     protected function shouldRun(): bool
