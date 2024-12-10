@@ -73,7 +73,7 @@ it('cannot register with disposable email', function () {
 });
 
 it('requires hcaptcha token in production', function () {
-    app()->detectEnvironment(fn() => 'production');
+    app()->detectEnvironment(fn () => 'production');
 
     $this->postJson('/register', [
         'name' => 'Test User',
