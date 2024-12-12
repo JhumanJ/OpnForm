@@ -72,7 +72,7 @@ class RegisterController extends Controller
             'utm_data' => ['nullable', 'array'],
         ];
 
-        if (!config('app.self_hosted')) {
+        if (config('services.h_captcha.secret_key')) {
             $rules['h-captcha-response'] = [new ValidHCaptcha()];
         }
 

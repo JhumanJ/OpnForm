@@ -54,7 +54,7 @@
 
       <!-- hCaptcha -->
       <div
-        v-if="!isSelfHosted"
+        v-if="hCaptchaSiteKey"
         class="mb-3 px-2 mt-2 mx-auto w-max"
       >
         <vue-hcaptcha
@@ -180,8 +180,7 @@ export default {
       'h-captcha-response': null
     }),
     disableEmail: false,
-    hcaptcha: null,
-    isSelfHosted: useFeatureFlag('self_hosted')
+    hcaptcha: null
   }),
 
   computed: {
@@ -210,7 +209,7 @@ export default {
   },
 
   mounted() {
-    if (!this.isSelfHosted) {
+    if (this.hCaptchaSiteKey) {
       this.hcaptcha = this.$refs.hcaptcha
     }
 
@@ -235,7 +234,7 @@ export default {
     async register() {
       let data
       this.form.utm_data = this.$utm.value
-      if (!this.isSelfHosted) {
+      if (this.hCaptchaSiteKey) {
         this.form['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
         this.hcaptcha.reset()
       }
