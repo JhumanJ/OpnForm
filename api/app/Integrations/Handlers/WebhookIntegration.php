@@ -2,9 +2,11 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Models\Forms\Form;
+
 class WebhookIntegration extends AbstractIntegrationHandler
 {
-    public static function getValidationRules(): array
+    public static function getValidationRules(?Form $form): array
     {
         return [
             'webhook_url' => 'required|url'

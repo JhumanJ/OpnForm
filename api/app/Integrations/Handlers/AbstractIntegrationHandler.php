@@ -94,7 +94,7 @@ abstract class AbstractIntegrationHandler
         Http::throw()->post($this->getWebhookUrl(), $this->getWebhookData());
     }
 
-    abstract public static function getValidationRules(): array;
+    abstract public static function getValidationRules(?Form $form): array;
 
     public static function isOAuthRequired(): bool
     {

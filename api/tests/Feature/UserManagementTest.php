@@ -2,10 +2,15 @@
 
 use App\Models\UserInvite;
 use Carbon\Carbon;
+use App\Rules\ValidHCaptcha;
+use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     $this->user = $this->actingAsProUser();
     $this->workspace = $this->createUserWorkspace($this->user);
+    Http::fake([
+        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+    ]);
 });
 
 
@@ -31,6 +36,7 @@ it('can register with invite token', function () {
         'password_confirmation' => 'secret',
         'agree_terms' => true,
         'invite_token' => $token,
+        'h-captcha-response' => 'test-token',
     ]);
     $response->assertSuccessful();
     expect($this->workspace->users()->count())->toBe(2);
@@ -59,6 +65,7 @@ it('cannot register with expired invite token', function () {
         'password_confirmation' => 'secret',
         'agree_terms' => true,
         'invite_token' => $token,
+        'h-captcha-response' => 'test-token',
     ]);
     $response->assertStatus(400)->assertJson([
         'message' => 'Invite token has expired.',
@@ -88,6 +95,7 @@ it('cannot re-register with accepted invite token', function () {
         'password_confirmation' => 'secret',
         'agree_terms' => true,
         'invite_token' => $token,
+        'h-captcha-response' => 'test-token',
     ]);
     $response->assertSuccessful();
     expect($this->workspace->users()->count())->toBe(2);
@@ -104,6 +112,7 @@ it('cannot re-register with accepted invite token', function () {
         'password_confirmation' => 'secret',
         'agree_terms' => true,
         'invite_token' => $token,
+        'h-captcha-response' => 'test-token',
     ]);
 
     $response->assertStatus(422)->assertJson([
@@ -138,6 +147,7 @@ it('can cancel user invite', function () {
         'password_confirmation' => 'secret',
         'agree_terms' => true,
         'invite_token' => $token,
+        'h-captcha-response' => 'test-token',
     ]);
     $response->assertStatus(400)->assertJson([
         'message' => 'Invite token is invalid.',

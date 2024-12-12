@@ -4,6 +4,7 @@ namespace App\Integrations\Handlers;
 
 use App\Events\Forms\FormSubmitted;
 use App\Integrations\Google\Google;
+use App\Models\Forms\Form;
 use App\Models\Integration\FormIntegration;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -22,11 +23,9 @@ class GoogleSheetsIntegration extends AbstractIntegrationHandler
         $this->client = new Google($formIntegration);
     }
 
-    public static function getValidationRules(): array
+    public static function getValidationRules(?Form $form): array
     {
-        return [
-
-        ];
+        return [];
     }
 
     public static function isOAuthRequired(): bool

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Integration;
 
+use App\Models\Forms\Form;
 use App\Models\Integration\FormIntegration;
 use App\Rules\IntegrationLogicRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,9 +15,11 @@ class FormIntegrationsRequest extends FormRequest
     public array $integrationRules = [];
 
     private ?string $integrationClassName = null;
+    private ?Form $form = null;
 
     public function __construct(Request $request)
     {
+        $this->form = Form::findOrFail(request()->route('id'));
         if ($request->integration_id) {
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);
@@ -77,7 +80,7 @@ class FormIntegrationsRequest extends FormRequest
 
     private function loadIntegrationRules()
     {
-        foreach ($this->integrationClassName::getValidationRules() as $key => $value) {
+        foreach ($this->integrationClassName::getValidationRules($this->form) as $key => $value) {
             $this->integrationRules['settings.' . $key] = $value;
         }
     }

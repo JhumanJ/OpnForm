@@ -27,6 +27,7 @@
       <div class="flex justify-center gap-x-2">
         <v-button
           class="px-8"
+          :loading="loading"
           @click.prevent="save"
         >
           Save
@@ -55,6 +56,7 @@ const props = defineProps({
 
 const alert = useAlert()
 const emit = defineEmits(["close"])
+const loading = ref(false)
 
 const formIntegrationsStore = useFormIntegrationsStore()
 const formIntegration = computed(() =>
@@ -98,7 +100,8 @@ const initIntegrationData = () => {
 initIntegrationData()
 
 const save = () => {
-  if (!integrationData.value) return
+  if (!integrationData.value || loading.value) return
+  loading.value = true
   integrationData.value
     .submit(
       props.formIntegrationId ? "PUT" : "POST",
@@ -116,6 +119,9 @@ const save = () => {
       } catch (e) {
         alert.error("An error occurred while saving the integration")
       }
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 </script>
