@@ -7,12 +7,14 @@
       <div v-if="form.cover_picture">
         <div
           id="cover-picture"
-          class="max-h-56 w-full overflow-hidden flex items-center justify-center"
+          class="w-full overflow-hidden flex items-center justify-center"
+          :class="{'h-screen': isFocused, 'max-h-56': !isFocused}"
         >
           <img
             alt="Form Cover Picture"
             :src="form.cover_picture"
             class="w-full"
+            :class="{'h-screen object-cover': isFocused}"
           >
         </div>
       </div>
@@ -59,14 +61,16 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto" />
           </p>
         </div>
-        <OpenCompleteForm
-          v-show="!recordLoading"
-          ref="openCompleteForm"
-          :form="form"
-          class="mb-10"
-          :dark-mode="darkMode"
-          @password-entered="passwordEntered"
-        />
+        <div :class="{'absolute inset-0 flex items-center justify-center': isFocused}">
+          <OpenCompleteForm
+            v-show="!recordLoading"
+            ref="openCompleteForm"
+            :form="form"
+            class="mb-10"
+            :dark-mode="darkMode"
+            @password-entered="passwordEntered"
+          />
+        </div>
       </template>
     </div>
   </div>
@@ -94,6 +98,8 @@ const recordLoading = computed(() => recordsStore.loading)
 const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
 const $t = useI18n()
+
+const isFocused = computed(() => form.value.format === 'focused')
 
 const openCompleteForm = ref(null)
 

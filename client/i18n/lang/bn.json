@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "পেছনে",
+        "next": "পরবর্তী",
         "powered_by": "দ্বারা চালিত",
         "password_protected": "এই ফর্মটি পাসওয়ার্ড দ্বারা সুরক্ষিত।",
         "invalid_password": "অবৈধ পাসওয়ার্ড।",

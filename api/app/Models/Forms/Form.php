@@ -41,6 +41,8 @@ class Form extends Model implements CachableAttributes
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
+    public const FORMATS = ['regular', 'focused'];
+
     public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr'];
 
     protected $fillable = [
@@ -54,6 +56,7 @@ class Form extends Model implements CachableAttributes
         'visibility',
 
         // Customization
+        'format',
         'language',
         'font_family',
         'custom_domain',

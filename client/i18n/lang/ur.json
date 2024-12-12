@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "پیچھے",
+        "next": "پیچھے",
         "powered_by": "پاور بائی",
         "password_protected": "یہ فارم پاس ورڈ سے محفوظ ہے۔",
         "invalid_password": "غلط پاس ورڈ۔",

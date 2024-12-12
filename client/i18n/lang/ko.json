@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "뒤로",
+        "next": "다음",
         "powered_by": "제공",
         "password_protected": "이 양식은 비밀번호로 보호되어 있습니다.",
         "invalid_password": "잘못된 비밀번호입니다.",
