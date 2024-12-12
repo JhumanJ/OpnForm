@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Powered by",
+        "password_protected": "This form is protected by a password.",
+        "invalid_password": "Invalid password.",
+        "password_required": "Password is required.",
+        "create_form_free": "Create your form for free with OpnForm",
+        "submit": "Submit",
+        "wrong_form_structure": "Something is wrong with this form structure. If you're the form owner please contact us.",
+        "cannot_access_here": "This content cannot be accessed here. Click the link below to access it.",
+        "open_form": "Open Form",
+        "restricted_to_workspace": "Restricted to members of the Notion Workspace. Login to access this content.",
+        "select": {
+            "search": "Search",
+            "searchOrTypeToCreateNew": "Search or type to create new",
+            "typeSomethingToAddAnOption": "Type something to add an option",
+            "noOptionAvailable": "No option available",
+            "create": "Create"
+        },
+        "fileInput": {
+            "chooseFiles": "Click to choose file(s) or drag here | Click to choose a file or drag here",
+            "sizeLimit": "Size limit: {count}MB per file",
+            "uploadingFile": "Uploading your file..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Allow Camera Permission",
+            "allowCameraPermissionDescription": "You need to allow camera permission before you can take pictures. Go to browser settings to enable camera permission on this page.",
+            "gotIt": "Got it!",
+            "cameraDeviceError": "Camera Device Error",
+            "cameraDeviceErrorDescription": "An unknown error occurred when trying to start Webcam device.",
+            "goBack": "Go back"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Upload file instead",
+            "clear": "Clear"
+        }
+    }
+} 

@@ -94,6 +94,25 @@ return [
 
     'locales' => [
         'en' => 'EN',
+        'fr' => 'FR',
+        'hi' => 'HI',
+        'es' => 'ES',
+        'ar' => 'AR',
+        'zh' => 'ZH',
+        'ja' => 'JA',
+        'bn' => 'BN',
+        'pt' => 'PT',
+        'ru' => 'RU',
+        'ur' => 'UR',
+        'pa' => 'PA',
+        'de' => 'DE',
+        'jv' => 'JV',
+        'ko' => 'KO',
+        'vi' => 'VI',
+        'te' => 'TE',
+        'mr' => 'MR',
+        'ta' => 'TA',
+        'tr' => 'TR',
     ],
 
     /*

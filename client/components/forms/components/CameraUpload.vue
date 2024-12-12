@@ -49,17 +49,16 @@
         class="w-6 h-6"
       />
       <p class="text-center font-bold">
-        Allow Camera Permission
+        {{ $t('forms.cameraUpload.allowCameraPermission') }}
       </p>
       <p class="text-xs">
-        You need to allow camera permission before you can take pictures. Go to
-        browser settings to enable camera permission on this page.
+        {{ $t('forms.cameraUpload.allowCameraPermissionDescription') }}
       </p>
       <UButton
         color="white"
         @click.stop="cancelCamera"
       >
-        Got it!
+        {{ $t('forms.cameraUpload.gotIt') }}
       </UButton>
     </div>
 
@@ -81,16 +80,16 @@
         class="w-6 h-6"
       />
       <p class="text-center font-bold">
-        Camera Device Error
+        {{ $t('forms.cameraUpload.cameraDeviceError') }}
       </p>
       <p class="text-xs">
-        An unknown error occurred when trying to start Webcam device.
+        {{ $t('forms.cameraUpload.cameraDeviceErrorDescription') }}
       </p>
       <UButton
         color="white"
         @click.stop="cancelCamera"
       >
-        Go back
+        {{ $t('forms.cameraUpload.goBack') }}
       </UButton>
     </div>
   </div>

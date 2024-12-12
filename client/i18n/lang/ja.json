@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "開発者",
+        "password_protected": "このフォームはパスワードで保護されています。",
+        "invalid_password": "無効なパスワード。",
+        "password_required": "パスワードが必要です。",
+        "create_form_free": "OpnForm で無料でフォームを作成",
+        "submit": "送信",
+        "wrong_form_structure": "このフォームの構造に問題があります。フォームの所有者であれば、お問い合わせください。",
+        "cannot_access_here": "このコンテンツはここでアクセスできません。下のリンクをクリックしてアクセスしてください。",
+        "open_form": "フォームを開く",
+        "restricted_to_workspace": "Notion ワークスペースのメンバーに限定されています。このコンテンツにアクセスするにはログインしてください。",
+        "select": {
+            "search": "検索",
+            "searchOrTypeToCreateNew": "検索または新規作成",
+            "typeSomethingToAddAnOption": "オプションを追加するには何かを書いてください",
+            "noOptionAvailable": "オプションがありません",
+            "create": "作成"
+        },
+        "fileInput": {
+            "chooseFiles": "クリックしてファイルを選択するか、ここにドロップしてください | クリックしてファイルを選択するか、ここにドロップしてください",
+            "sizeLimit": "サイズ制限：ファイルあたり{count}MB",
+            "uploadingFile": "ファイルをアップロード中..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "カメラへのアクセスを許可",
+            "allowCameraPermissionDescription": "写真を撮影する前にカメラへのアクセスを許可する必要があります。ブラウザの設定でこのページのカメラアクセスを有効にしてください。",
+            "gotIt": "了解しました！",
+            "cameraDeviceError": "カメラエラー",
+            "cameraDeviceErrorDescription": "ウェブカメラデバイスの起動時に不明なエラーが発生しました。",
+            "goBack": "戻る"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "代わりにファイルをアップロード",
+            "clear": "クリア"
+        }
+    }
+} 

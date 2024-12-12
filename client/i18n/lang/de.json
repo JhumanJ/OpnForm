@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Bereitgestellt von",
+        "password_protected": "Dieses Formular ist passwortgeschützt.",
+        "invalid_password": "Ungültiges Passwort.",
+        "password_required": "Passwort erforderlich.",
+        "create_form_free": "Erstellen Sie Ihr Formular kostenlos mit OpnForm",
+        "submit": "Absenden",
+        "wrong_form_structure": "Mit der Struktur dieses Formulars stimmt etwas nicht. Wenn Sie der Formularbesitzer sind, kontaktieren Sie uns bitte.",
+        "cannot_access_here": "Auf diesen Inhalt kann hier nicht zugegriffen werden. Klicken Sie auf den Link unten, um darauf zuzugreifen.",
+        "open_form": "Formular öffnen",
+        "restricted_to_workspace": "Beschränkt auf Mitglieder des Notion-Arbeitsbereichs. Melden Sie sich an, um auf diesen Inhalt zuzugreifen.",
+        "select": {
+            "search": "Suchen",
+            "searchOrTypeToCreateNew": "Suchen oder Text eingeben, um Neues zu erstellen",
+            "typeSomethingToAddAnOption": "Text eingeben, um eine Option hinzuzufügen",
+            "noOptionAvailable": "Keine Option verfügbar",
+            "create": "Erstellen"
+        },
+        "fileInput": {
+            "chooseFiles": "Klicken Sie, um Datei(en) auszuwählen oder hierher zu ziehen | Klicken Sie, um eine Datei auszuwählen oder hierher zu ziehen",
+            "sizeLimit": "Größenbeschränkung: {count}MB pro Datei",
+            "uploadingFile": "Ihre Datei wird hochgeladen..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Kamerazugriff erlauben",
+            "allowCameraPermissionDescription": "Sie müssen den Kamerazugriff erlauben, bevor Sie Fotos aufnehmen können. Gehen Sie zu den Browsereinstellungen, um die Kameraerlaubnis für diese Seite zu aktivieren.",
+            "gotIt": "Verstanden!",
+            "cameraDeviceError": "Kameragerätefehler",
+            "cameraDeviceErrorDescription": "Beim Versuch, das Webcam-Gerät zu starten, ist ein unbekannter Fehler aufgetreten.",
+            "goBack": "Zurück"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Stattdessen Datei hochladen",
+            "clear": "Löschen"
+        }
+    }
+} 
