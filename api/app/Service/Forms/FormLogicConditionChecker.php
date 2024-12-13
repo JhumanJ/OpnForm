@@ -306,6 +306,20 @@ class FormLogicConditionChecker
                 return $this->checkLength($propertyCondition, $value, '<');
             case 'content_length_less_than_or_equal_to':
                 return $this->checkLength($propertyCondition, $value, '<=');
+            case 'matches_regex':
+                try {
+                    ray('matches_regex', $propertyCondition['value'], $value);
+                    return (bool) preg_match('/' . $propertyCondition['value'] . '/', $value);
+                } catch (\Exception $e) {
+                    ray('matches_regex_error', $e);
+                    return false;
+                }
+            case 'does_not_match_regex':
+                try {
+                    return !(bool) preg_match('/' . $propertyCondition['value'] . '/', $value);
+                } catch (\Exception $e) {
+                    return true;
+                }
         }
 
         return false;

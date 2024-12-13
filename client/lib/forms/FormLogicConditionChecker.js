@@ -278,6 +278,20 @@ function textConditionMet(propertyCondition, value) {
       return checkLength(propertyCondition, value, "<")
     case "content_length_less_than_or_equal_to":
       return checkLength(propertyCondition, value, "<=")
+    case 'matches_regex':
+      try {
+        const regex = new RegExp(propertyCondition.value)
+        return regex.test(value)
+      } catch (e) {
+        return false
+      }
+    case 'does_not_match_regex':
+      try {
+        const regex = new RegExp(propertyCondition.value)
+        return !regex.test(value)
+      } catch (e) {
+        return true
+      }
   }
   return false
 }
