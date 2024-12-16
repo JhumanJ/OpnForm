@@ -71,6 +71,18 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
                 'content_length_less_than_or_equal_to' => [
                     'expected_type' => 'number',
                 ],
+                'matches_regex' => [
+                    'expected_type' => 'string',
+                    'format' => [
+                        'type' => 'regex'
+                    ]
+                ],
+                'does_not_match_regex' => [
+                    'expected_type' => 'string',
+                    'format' => [
+                        'type' => 'regex'
+                    ]
+                ],
             ],
         ],
         'matrix' => [
@@ -672,6 +684,8 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     private $data = [];
 
+    private $operator = '';
+
     private function checkBaseCondition($condition)
     {
 
@@ -712,6 +726,7 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
         $typeField = $condition['value']['property_meta']['type'];
         $operator = $condition['value']['operator'];
+        $this->operator = $operator;
         $value = $condition['value']['value'];
 
         if (!isset(self::CONDITION_MAPPING[$typeField])) {
@@ -750,6 +765,19 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     private function valueHasCorrectType($type, $value)
     {
+        if ($type === 'string' && isset(self::CONDITION_MAPPING[$this->field['type']]['comparators'][$this->operator]['format'])) {
+            $format = self::CONDITION_MAPPING[$this->field['type']]['comparators'][$this->operator]['format'];
+            if ($format['type'] === 'regex') {
+                try {
+                    preg_match('/' . $value . '/', '');
+                    return true;
+                } catch (\Exception $e) {
+                    $this->conditionErrors[] = 'invalid regex pattern';
+                    return false;
+                }
+            }
+        }
+
         if (
             ($type === 'string' && gettype($value) !== 'string') ||
             ($type === 'boolean' && !is_bool($value)) ||
