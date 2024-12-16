@@ -223,7 +223,8 @@ export default {
         url: 'TextInput',
         email: 'TextInput',
         phone_number: 'TextInput',
-        matrix: 'MatrixInput'
+        matrix: 'MatrixInput',
+        barcode: 'BarcodeInput'
       }[field.type]
     },
     isPublicFormPage() {

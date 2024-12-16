@@ -143,6 +143,15 @@
     "text_class": "text-pink-900",
     "is_input": true
   },
+  "barcode": {
+    "name": "barcode",
+    "title": "Barcode Reader",
+    "icon": "i-material-symbols-barcode-scanner-rounded", 
+    "default_block_name": "Scan Barcode",
+    "bg_class": "bg-pink-100",
+    "text_class": "text-purple-900",
+    "is_input": true
+  },
   "nf-text": {
     "name": "nf-text",
     "title": "Text",

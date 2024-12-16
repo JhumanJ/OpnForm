@@ -151,6 +151,13 @@ export const themes = {
         md: 'min-h-40',
         lg: 'min-h-48'
       },
+    },
+    BarcodeInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
     }
   },
   simple: {
@@ -296,6 +303,13 @@ export const themes = {
         md: 'min-h-40',
         lg: 'min-h-48'
       },
+    },
+    BarcodeInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
     }
   },
   notion: {
@@ -436,6 +450,13 @@ export const themes = {
         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light rounded shadow-sm max-w-[10rem]'
     },
     SignatureInput: {
+      minHeight: {
+        sm: 'min-h-28',
+        md: 'min-h-40',
+        lg: 'min-h-48'
+      },
+    },
+    BarcodeInput: {
       minHeight: {
         sm: 'min-h-28',
         md: 'min-h-40',

@@ -36,6 +36,10 @@
         "signatureInput": {
             "uploadFileInstead": "Upload file instead",
             "clear": "Clear"
+        },
+        "barcodeInput": {
+            "startScanning": "Start Scanning",
+            "stopScanning": "Stop Scanning"
         }
     }
 } 
