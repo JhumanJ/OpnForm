@@ -30,7 +30,7 @@ export default function registerMentionExtension(Quill) {
 
     static create(data) {
       // Only create mention if we have valid data
-      if (!data || !data.field || !data.field.nf_id) {
+      if (!data || !data.field || !data.field.id) {
         return null
       }
       let node = super.create()
@@ -40,13 +40,13 @@ export default function registerMentionExtension(Quill) {
 
     static setAttributes(node, data) {
       // Only set attributes if we have valid data
-      if (!data || !data.field || !data.field.nf_id) {
+      if (!data || !data.field || !data.field.id) {
         return
       }
 
       node.setAttribute('contenteditable', 'false')
       node.setAttribute('mention', 'true')
-      node.setAttribute('mention-field-id', data.field.nf_id || '')
+      node.setAttribute('mention-field-id', data.field.id || '')
       node.setAttribute('mention-field-name', data.field.name || '')
       node.setAttribute('mention-fallback', data.fallback || '')
       node.textContent = data.field.name || ''
@@ -77,7 +77,7 @@ export default function registerMentionExtension(Quill) {
     static value(domNode) {
       return {
         field: {
-          nf_id: domNode.getAttribute('mention-field-id') || '',
+          id: domNode.getAttribute('mention-field-id') || '',
           name: domNode.getAttribute('mention-field-name') || ''
         },
         fallback: domNode.getAttribute('mention-fallback') || ''
