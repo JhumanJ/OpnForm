@@ -117,7 +117,7 @@ class AnswerFormRequest extends FormRequest
             $this->requestRules[$propertyId] = $rules;
         }
 
-        // Validate hCaptcha
+        // Validate Captcha
         if ($this->form->use_captcha) {
             if ($this->form->captcha_provider === 'recaptcha') {
                 $this->requestRules['g-recaptcha-response'] = [new ValidReCaptcha()];
