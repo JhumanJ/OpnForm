@@ -8,6 +8,7 @@ use App\Rules\MatrixValidationRule;
 use App\Rules\StorageFile;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
+use App\Rules\ValidReCaptcha;
 use App\Rules\ValidUrl;
 use App\Service\Forms\FormLogicPropertyResolver;
 use Illuminate\Foundation\Http\FormRequest;
@@ -118,7 +119,11 @@ class AnswerFormRequest extends FormRequest
 
         // Validate hCaptcha
         if ($this->form->use_captcha) {
-            $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
+            if ($this->form->captcha_provider === 'recaptcha') {
+                $this->requestRules['g-recaptcha-response'] = [new ValidReCaptcha()];
+            } elseif ($this->form->captcha_provider === 'hcaptcha') {
+                $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
+            }
         }
 
         // Validate submission_id for edit mode

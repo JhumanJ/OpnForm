@@ -79,22 +79,23 @@
       label="Bot Protection"
       help="Protects your form from spam and abuse with a captcha"
     />
+    <FlatSelectInput
+      v-if="form.use_captcha"
+      name="captcha_provider"
+      :form="form"
+      :options="captchaOptions"
+      class="mt-4"
+      label="Select a captcha provider"
+    />
   </SettingsSection>
 </template>
 
-<script>
-import { useWorkingFormStore } from '../../../../../stores/working_form'
+<script setup>
+const workingFormStore = useWorkingFormStore()
+const { content: form } = storeToRefs(workingFormStore)
 
-export default {
-  components: { },
-  props: {},
-  setup () {
-    const workingFormStore = useWorkingFormStore()
-    return {
-      workingFormStore,
-      form: storeToRefs(workingFormStore).content,
-      crisp: useCrisp()
-    }
-  }
-}
+const captchaOptions = [
+  { name: 'reCAPTCHA', value: 'recaptcha' },
+  { name: 'hCaptcha', value: 'hcaptcha' },
+]
 </script>

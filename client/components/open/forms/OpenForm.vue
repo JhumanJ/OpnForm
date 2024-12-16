@@ -78,17 +78,31 @@
     <!-- Captcha -->
     <template v-if="form.use_captcha && isLastPage">
       <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha
-          ref="hcaptcha"
-          :sitekey="hCaptchaSiteKey"
-          :theme="darkMode?'dark':'light'"
-          @opened="setMinHeight(500)"
-          @closed="setMinHeight(0)"
-        />
-        <has-error
-          :form="dataForm"
-          field-id="h-captcha-response"
-        />
+        <template v-if="form.captcha_provider === 'recaptcha'">
+          <RecaptchaV2
+            :sitekey="recaptchaSiteKey"
+            :theme="darkMode ? 'dark' : 'light'"
+            @verify="onRecaptchaVerify"
+            @expired="onRecaptchaExpired"
+          />
+          <has-error
+            :form="dataForm"
+            field-id="g-recaptcha-response"
+          />
+        </template>
+        <template v-if="form.captcha_provider === 'hcaptcha'">
+          <vue-hcaptcha
+            ref="hcaptcha"
+            :sitekey="hCaptchaSiteKey"
+            :theme="darkMode?'dark':'light'"
+            @opened="setMinHeight(500)"
+            @closed="setMinHeight(0)"
+          />
+          <has-error
+            :form="dataForm"
+            field-id="h-captcha-response"
+          />
+        </template>
       </div>
     </template>
 
@@ -213,6 +227,9 @@ export default {
   computed: {
     hCaptchaSiteKey() {
       return useRuntimeConfig().public.hCaptchaSiteKey
+    },
+    recaptchaSiteKey() {
+      return useRuntimeConfig().public.recaptchaSiteKey
     },
     /**
      * Create field groups (or Page) using page breaks if any
@@ -369,8 +386,13 @@ export default {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
-        this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
-        this.$refs.hcaptcha.reset()
+        if (this.form.captcha_provider === 'recaptcha') {
+          this.dataForm['g-recaptcha-response'] = document.getElementsByName('g-recaptcha-response')[0]?.value
+          window.grecaptcha?.reset()
+        } else if (this.form.captcha_provider === 'hcaptcha') {
+          this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
+          this.$refs.hcaptcha.reset()
+        }
       }
 
       if (this.form.editable_submissions && this.form.submission_id) {
@@ -593,6 +615,12 @@ export default {
       } catch (e) {
         console.error(e)
       }
+    },
+    onRecaptchaVerify(token) {
+      this.dataForm['g-recaptcha-response'] = token
+    },
+    onRecaptchaExpired() {
+      this.dataForm['g-recaptcha-response'] = null
     }
   }
 }
