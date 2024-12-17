@@ -77,6 +77,10 @@ it('cannot register with disposable email', function () {
 });
 
 it('requires hcaptcha token when register', function () {
+    Http::fake([
+        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+    ]);
+
     $this->postJson('/register', [
         'name' => 'Test User',
         'email' => 'test@test.app',
