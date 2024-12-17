@@ -76,7 +76,9 @@ it('cannot register with disposable email', function () {
         ]);
 });
 
-it('requires hcaptcha token when register', function () {
+it('requires hcaptcha token in production', function () {
+    app()->detectEnvironment(fn() => 'production');
+
     Http::fake([
         ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
     ]);
