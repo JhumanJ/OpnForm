@@ -43,6 +43,10 @@ it('cannot register with existing email', function () {
 });
 
 it('cannot register with disposable email', function () {
+    Http::fake([
+        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+    ]);
+
     // Select random email
     $email = [
         'dumliyupse@gufum.com',
@@ -63,7 +67,7 @@ it('cannot register with disposable email', function () {
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email'])
         ->assertJson([
-            'message' => 'Disposable email addresses are not allowed. (and 1 more error)',
+            'message' => 'Disposable email addresses are not allowed.',
             'errors' => [
                 'email' => [
                     'Disposable email addresses are not allowed.',
@@ -72,15 +76,14 @@ it('cannot register with disposable email', function () {
         ]);
 });
 
-it('requires hcaptcha token in production', function () {
-    app()->detectEnvironment(fn () => 'production');
-
+it('requires hcaptcha token when register', function () {
     $this->postJson('/register', [
         'name' => 'Test User',
         'email' => 'test@test.app',
         'hear_about_us' => 'google',
         'password' => 'secret',
         'password_confirmation' => 'secret',
+        'agree_terms' => true,
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['h-captcha-response']);
