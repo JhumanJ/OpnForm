@@ -8,18 +8,18 @@
         :label="mentionAsText(integration.data.subject)"
         color="gray"
         size="xs"
-        class="max-w-[300px] truncate"
+        class="max-w-[300px] block truncate"
       />
       <div class="flex items-center gap-1">
         <UBadge
-          :label="firstEmail(integration.data.send_to)"
+          :label="firstEmail"
           color="white"
           size="xs"
-          class="max-w-[300px] truncate"
+          class="max-w-[300px] block truncate"
         />
         <UBadge
-          v-if="additionalEmailsCount(integration.data.send_to) > 0"
-          :label="`+${additionalEmailsCount(integration.data.send_to)}`"
+          v-if="additionalEmailsCount > 0"
+          :label="`+${additionalEmailsCount}`"
           color="white"
           size="xs"
         />
@@ -58,13 +58,13 @@ onBeforeUnmount(() => {
   }
 })
 
-const firstEmail = (sendTo) => {
-  const emails = mentionAsText(sendTo).split('\n').filter(Boolean)
+const firstEmail = computed(() => {
+  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
   return emails[0] || ''
-}
+})
 
-const additionalEmailsCount = (sendTo) => {
-  const emails = mentionAsText(sendTo).split('\n').filter(Boolean)
+const additionalEmailsCount = computed(() => {
+  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
   return Math.max(0, emails.length - 1)
-}
+})
 </script>

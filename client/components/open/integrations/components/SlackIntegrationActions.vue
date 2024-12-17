@@ -8,7 +8,7 @@
         :label="mentionAsText(integration.data.message)"
         color="gray"
         size="xs"
-        class="max-w-[300px] truncate"
+        class="max-w-[300px] block truncate"
       />
     </div>
   </div>

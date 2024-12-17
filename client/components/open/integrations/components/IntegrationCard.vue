@@ -3,7 +3,7 @@
     class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center"
   >
     <div
-      class="flex items-center w-full md:w-1/4"
+      class="flex items-center w-full md:max-w-[240px]"
       :class="{'flex-grow': !actionsComponent}"
     >
       <div
