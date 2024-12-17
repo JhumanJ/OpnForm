@@ -77,6 +77,27 @@
       />
     </div>
 
+    <!-- Barcode Reader -->
+    <div
+      v-if="field.type === 'barcode'"
+      class="px-4"
+    >
+      <EditorSectionHeader
+        icon="i-material-symbols-barcode-scanner-rounded"
+        title="Barcode Reader"
+      />
+      <select-input
+        name="decoders"
+        class="mt-4"
+        :form="field"
+        :options="barcodeDecodersOptions"
+        label="Decoders"
+        :searchable="true"
+        :multiple="true"
+        help="Select the decoders you want to use"
+      />
+    </div>
+
     <div
       v-if="field.type === 'rating'"
       class="px-4"
@@ -611,7 +632,15 @@ export default {
       editorToolbarCustom: [
         ['bold', 'italic', 'underline', 'link']
       ],
-      allCountries: countryCodes
+      allCountries: countryCodes,
+      barcodeDecodersOptions: [
+        { name: 'EAN-13', value: 'ean_reader' },
+        { name: 'EAN-8', value: 'ean_8_reader' },
+        { name: 'Code 128', value: 'code_128_reader' },
+        { name: 'Code 39', value: 'code_39_reader' },
+        { name: 'UPC-A', value: 'upc_reader' },
+        { name: 'UPC-E', value: 'upc_e_reader' }
+      ]
     }
   },
 
@@ -828,6 +857,9 @@ export default {
           selection_data:{
             'Row 1': null
           }
+        },
+        barcode: {
+          decoders: this.barcodeDecodersOptions.map(decoder => decoder.value)
         }
       }
       if (this.field.type in defaultFieldValues) {

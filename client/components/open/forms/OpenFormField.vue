@@ -223,7 +223,8 @@ export default {
         url: 'TextInput',
         email: 'TextInput',
         phone_number: 'TextInput',
-        matrix: 'MatrixInput'
+        matrix: 'MatrixInput',
+        barcode: 'BarcodeInput'
       }[field.type]
     },
     isPublicFormPage() {
@@ -336,6 +337,10 @@ export default {
       if (field.type === 'matrix') {
         inputProperties.rows = field.rows
         inputProperties.columns = field.columns
+      }
+
+      if (field.type === 'barcode') {
+        inputProperties.decoders = field.decoders
       }
 
       if (['select','multi_select'].includes(field.type) && !this.isFieldRequired) {
