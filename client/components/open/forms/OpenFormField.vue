@@ -339,6 +339,10 @@ export default {
         inputProperties.columns = field.columns
       }
 
+      if (field.type === 'barcode') {
+        inputProperties.decoders = field.decoders
+      }
+
       if (['select','multi_select'].includes(field.type) && !this.isFieldRequired) {
         inputProperties.clearable = true
       }

@@ -117,6 +117,10 @@ export default {
       type: Boolean,
       default: false
     },
+    decoders: {
+      type: Array,
+      default: () => []
+    }
   },
   emits: ['stopWebcam', 'uploadImage', 'barcodeDetected'],
   data: () => ({
@@ -174,14 +178,7 @@ export default {
             },
           },
           decoder: {
-            readers: [
-              "ean_reader",
-              "ean_8_reader",
-              "code_128_reader",
-              "code_39_reader",
-              "upc_reader",
-              "upc_e_reader"
-            ]
+            readers: this.decoders || []
           },
           locate: true
         }, (err) => {

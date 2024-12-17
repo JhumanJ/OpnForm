@@ -10,6 +10,7 @@
     >
       <CameraUpload
         :is-barcode-mode="true"
+        :decoders="decoders"
         @stop-webcam="stopScanning"
         @barcode-detected="handleBarcodeDetected"
       />
@@ -109,6 +110,10 @@ export default {
 
   props: {
     ...inputProps,
+    decoders: {
+      type: Array,
+      default: () => []
+    }
   },
 
   setup(props, context) {
