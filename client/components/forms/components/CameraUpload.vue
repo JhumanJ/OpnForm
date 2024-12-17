@@ -21,6 +21,7 @@
         class="p-2 px-4 flex items-center justify-center text-xs space-x-2"
       >
         <span
+          v-if="!isBarcodeMode"
           class="cursor-pointer rounded-full w-14 h-14 border-2 grid place-content-center"
           @click="processCapturedImage"
         >
@@ -98,9 +99,10 @@
 <script>
 import Webcam from "webcam-easy"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import Quagga from 'quagga'
 
 export default {
-  name: "FileInput",
+  name: "CameraUpload",
   props: {
     theme: {
       type: Object, default: () => {
@@ -111,13 +113,18 @@ export default {
         return CachedDefaultTheme.getInstance()
       }
     },
+    isBarcodeMode: {
+      type: Boolean,
+      default: false
+    },
   },
-  emits: ['stopWebcam', 'uploadImage'],
+  emits: ['stopWebcam', 'uploadImage', 'barcodeDetected'],
   data: () => ({
     webcam: null,
     isCapturing: false,
     capturedImage: null,
     cameraPermissionStatus: "loading",
+    quaggaInitialized: false
   }),
   computed: {
     videoDisplay() {
@@ -142,6 +149,9 @@ export default {
         .start()
         .then(() => {
           this.cameraPermissionStatus = "allowed"
+          if (this.isBarcodeMode) {
+            this.initQuagga()
+          }
         })
         .catch((err) => {
           console.error(err)
@@ -152,9 +162,53 @@ export default {
           this.cameraPermissionStatus = "unknown"
         })
     },
+    initQuagga() {
+      if (!this.quaggaInitialized) {
+        Quagga.init({
+          inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.getElementById("webcam"),
+            constraints: {
+              facingMode: "environment"
+            },
+          },
+          decoder: {
+            readers: [
+              "ean_reader",
+              "ean_8_reader",
+              "code_128_reader",
+              "code_39_reader",
+              "upc_reader",
+              "upc_e_reader"
+            ]
+          },
+          locate: true
+        }, (err) => {
+          if (err) {
+            console.error('Quagga initialization failed:', err)
+            return
+          }
+          
+          this.quaggaInitialized = true
+          Quagga.start()
+          
+          Quagga.onDetected((result) => {
+            if (result.codeResult) {
+              this.$emit('barcodeDetected', result.codeResult.code)
+              this.cancelCamera()
+            }
+          })
+        })
+      }
+    },
     cancelCamera() {
       this.isCapturing = false
       this.capturedImage = null
+      if (this.quaggaInitialized) {
+        Quagga.stop()
+        this.quaggaInitialized = false
+      }
       this.webcam.stop()
       this.$emit("stopWebcam")
     },

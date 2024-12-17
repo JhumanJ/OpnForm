@@ -38,8 +38,7 @@
             "clear": "Clear"
         },
         "barcodeInput": {
-            "startScanning": "Start Scanning",
-            "stopScanning": "Stop Scanning"
+            "clickToOpenCamera": "Click to open a camera"
         }
     }
 } 

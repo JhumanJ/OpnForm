@@ -149,7 +149,7 @@
     "icon": "i-material-symbols-barcode-scanner-rounded", 
     "default_block_name": "Scan Barcode",
     "bg_class": "bg-pink-100",
-    "text_class": "text-purple-900",
+    "text_class": "text-pink-900",
     "is_input": true
   },
   "nf-text": {

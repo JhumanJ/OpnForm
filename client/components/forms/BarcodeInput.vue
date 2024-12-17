@@ -5,84 +5,93 @@
     </template>
 
     <div
-      :class="[
-        theme.BarcodeInput.input,
-        theme.BarcodeInput.spacing.horizontal,
-        theme.BarcodeInput.spacing.vertical,
-        theme.BarcodeInput.fontSize,
-        theme.BarcodeInput.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-        },
-      ]"
-      class="flex flex-col gap-4"
+      v-if="isScanning"
+      class="relative w-full"
     >
-      <!-- Barcode Preview -->
-      <div
-        v-if="scannedValue"
-        class="flex items-center gap-2"
-      >
-        <div class="flex-1 break-all">
-          {{ scannedValue }}
-        </div>
-        <button
-          v-if="!disabled"
-          type="button"
-          class="text-gray-400 hover:text-gray-600"
-          @click="clearValue"
-        >
-          <Icon
-            name="i-heroicons-x-mark-20-solid"
-            class="h-5 w-5"
-          />
-        </button>
-      </div>
-
-      <!-- Scanner Interface -->
-      <div
-        v-show="!scannedValue && isScanning"
-        class="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-100"
-      >
-        <video
-          ref="video"
-          class="h-full w-full object-cover"
-        />
-        <div class="absolute inset-0 border-2 border-dashed border-blue-500/50" />
-      </div>
-
-      <!-- Controls -->
-      <div
-        v-if="!disabled"
-        class="flex justify-center"
-      >
-        <button
-          v-if="!isScanning && !scannedValue"
-          type="button"
-          class="inline-flex items-center gap-2 rounded-md bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-100"
-          @click="startScanning"
-        >
-          <Icon
-            name="i-heroicons-qr-code-20-solid"
-            class="h-5 w-5"
-          />
-          {{ $t('forms.barcodeInput.startScanning') }}
-        </button>
-        <button
-          v-if="isScanning"
-          type="button"
-          class="inline-flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100"
-          @click="stopScanning"
-        >
-          <Icon
-            name="i-heroicons-stop-20-solid"
-            class="h-5 w-5"
-          />
-          {{ $t('forms.barcodeInput.stopScanning') }}
-        </button>
-      </div>
+      <CameraUpload
+        :is-barcode-mode="true"
+        @stop-webcam="stopScanning"
+        @barcode-detected="handleBarcodeDetected"
+      />
     </div>
 
+    <div
+      v-else-if="scannedValue"
+      class="flex items-center justify-between border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 rounded-lg px-4 py-2"
+    >
+      <div class="flex-1 break-all">
+        {{ scannedValue }}
+      </div>
+      <button
+        v-if="!disabled"
+        type="button"
+        class="pt-1 text-gray-400 hover:text-gray-600"
+        @click="clearValue"
+      >
+        <Icon
+          name="i-heroicons-x-mark-20-solid"
+          class="h-5 w-5"
+        />
+      </button>
+    </div>
+          
+    <div
+      v-else
+      :style="inputStyle"
+      class="flex flex-col w-full items-center justify-center transition-colors duration-40"
+      :class="[
+        {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled},
+        theme.fileInput.input,
+        theme.fileInput.borderRadius,
+        theme.fileInput.spacing.horizontal,
+        theme.fileInput.spacing.vertical,
+        theme.fileInput.fontSize,
+        theme.fileInput.minHeight,
+        {'border-red-500 border-2':hasError},
+        'focus:outline-none focus:ring-2'
+      ]"
+      tabindex="0"
+      role="button"
+      aria-label="Click to open a camera"
+      @click="startScanning"
+      @keydown.enter.prevent="startScanning"
+    >
+      <div class="flex w-full items-center justify-center">
+        <div class="text-center">
+          <template v-if="!scannedValue && !isScanning">
+            <div class="text-gray-500 w-full flex justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                />
+              </svg>
+            </div>
+
+            <p class="mt-2 text-sm text-gray-500 font-medium select-none">
+              {{ $t('forms.barcodeInput.clickToOpenCamera') }}
+            </p>
+            <div class="w-full items-center justify-center mt-2  hidden sm:flex">
+              <UButton
+                icon="i-heroicons-camera"
+                color="white"
+                class="px-2"
+                @click.stop="startScanning"
+              />
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    
     <template #error>
       <slot name="error" />
     </template>
@@ -92,11 +101,11 @@
 <script>
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
-import Quagga from 'quagga'
+import CameraUpload from './components/CameraUpload.vue'
 
 export default {
   name: 'BarcodeInput',
-  components: { InputWrapper },
+  components: { InputWrapper, CameraUpload },
 
   props: {
     ...inputProps,
@@ -110,8 +119,7 @@ export default {
 
   data: () => ({
     isScanning: false,
-    scannedValue: null,
-    stream: null
+    scannedValue: null
   }),
 
   watch: {
@@ -128,83 +136,18 @@ export default {
   },
 
   methods: {
-    async startScanning() {
-      if (!this.$refs.video) return
-
-      try {
-        // First get user media directly
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "environment"
-          }
-        })
-        
-        // Attach stream to video element
-        this.$refs.video.srcObject = this.stream
-        this.$refs.video.play()
-
-        this.isScanning = true
-        
-        // Initialize Quagga
-        Quagga.init({
-          inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: this.$refs.video,
-            constraints: {
-              facingMode: "environment"
-            },
-          },
-          decoder: {
-            readers: [
-              "ean_reader",
-              "ean_8_reader",
-              "code_128_reader",
-              "code_39_reader",
-              "upc_reader",
-              "upc_e_reader"
-            ]
-          },
-          locate: true // Try to detect the barcode location
-        }, (err) => {
-          if (err) {
-            console.error('Quagga initialization failed:', err)
-            this.stopScanning()
-            return
-          }
-          
-          Quagga.start()
-          
-          Quagga.onDetected((result) => {
-            if (result.codeResult) {
-              this.scannedValue = result.codeResult.code
-              this.stopScanning()
-            }
-          })
-        })
-      } catch (err) {
-        console.error('Failed to start camera:', err)
-        this.isScanning = false
-      }
+    startScanning() {
+      if (this.disabled) return
+      this.isScanning = true
     },
 
     stopScanning() {
-      if (this.isScanning) {
-        Quagga.stop()
-        
-        // Stop all tracks from the stream
-        if (this.stream) {
-          this.stream.getTracks().forEach(track => track.stop())
-          this.stream = null
-        }
+      this.isScanning = false
+    },
 
-        // Clear video source
-        if (this.$refs.video) {
-          this.$refs.video.srcObject = null
-        }
-
-        this.isScanning = false
-      }
+    handleBarcodeDetected(code) {
+      this.scannedValue = code
+      this.stopScanning()
     },
 
     clearValue() {
