@@ -71,7 +71,7 @@ class RegisterController extends Controller
             'utm_data' => ['nullable', 'array'],
         ];
 
-        if (config('services.recaptcha.secret_key')) {
+        if (config('services.re_captcha.secret_key')) {
             $rules['g-recaptcha-response'] = [new ValidReCaptcha()];
         }
 

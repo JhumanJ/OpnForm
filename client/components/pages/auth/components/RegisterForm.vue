@@ -55,7 +55,7 @@
       <!-- Captcha -->
       <div
         v-if="recaptchaSiteKey"
-        class="mb-3 px-2 mt-2 mx-auto w-max"
+        class="my-4 px-2 mx-auto w-max"
       >
         <CaptchaInput
           ref="captcha"
