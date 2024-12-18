@@ -10,7 +10,7 @@ class ValidReCaptcha implements ImplicitRule
 {
     public const RECAPTCHA_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
-    private $error = 'Invalid CAPTCHA. Please prove you\'re not a bot.';
+    private $error = 'validation.invalid_captcha';
 
     /**
      * Determine if the validation rule passes.
@@ -22,7 +22,7 @@ class ValidReCaptcha implements ImplicitRule
     public function passes($attribute, $value)
     {
         if (empty($value)) {
-            $this->error = 'Please complete the captcha.';
+            $this->error = 'validation.complete_captcha';
 
             return false;
         }
@@ -46,6 +46,6 @@ class ValidReCaptcha implements ImplicitRule
      */
     public function message()
     {
-        return $this->error;
+        return trans($this->error);
     }
 }
