@@ -4,6 +4,7 @@
     "icon": "heroicons:envelope-20-solid",
     "section_name": "Notifications",
     "file_name": "EmailIntegration",
+    "actions_file_name": "EmailIntegrationActions",
     "is_pro": false,
     "crisp_help_page_slug": "can-i-receive-notifications-on-form-submissions-134svqv"
   },
@@ -12,6 +13,7 @@
     "icon": "mdi:slack",
     "section_name": "Notifications",
     "file_name": "SlackIntegration",
+    "actions_file_name": "SlackIntegrationActions",
     "is_pro": true
   },
   "discord": {
@@ -19,6 +21,7 @@
     "icon": "ic:baseline-discord",
     "section_name": "Notifications",
     "file_name": "DiscordIntegration",
+    "actions_file_name": "DiscordIntegrationActions",
     "is_pro": true
   },
   "webhook": {
@@ -26,6 +29,7 @@
     "icon": "material-symbols:webhook",
     "section_name": "Automation",
     "file_name": "WebhookIntegration",
+    "actions_file_name": "WebhookIntegrationActions",
     "is_pro": false
   },
   "zapier": {
