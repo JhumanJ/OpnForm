@@ -107,7 +107,7 @@
             v-else
             :alt="field.name"
             :src="field.image_block"
-            class="max-w-full"
+            class="max-w-full inline-block"
             :class="theme.default.borderRadius"
           >
         </div>
