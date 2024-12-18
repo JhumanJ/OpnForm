@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Rules\ValidHCaptcha;
 
 class RegisterController extends Controller
 {
@@ -27,6 +28,9 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+
+        $this->middleware('throttle:5,1')->only('register'); // 5 attempts per minute
+        $this->middleware('throttle:30,60')->only('register'); // 30 attempts per hour
     }
 
     /**
@@ -56,7 +60,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email:filter|max:255|unique:users|indisposable',
             'password' => 'required|min:6|confirmed',
@@ -64,8 +68,14 @@ class RegisterController extends Controller
             'agree_terms' => ['required', Rule::in([true])],
             'appsumo_license' => ['nullable'],
             'invite_token' => ['nullable', 'string'],
-            'utm_data' => ['nullable', 'array']
-        ], [
+            'utm_data' => ['nullable', 'array'],
+        ];
+
+        if (config('services.h_captcha.secret_key')) {
+            $rules['h-captcha-response'] = [new ValidHCaptcha()];
+        }
+
+        return Validator::make($data, $rules, [
             'agree_terms' => 'Please agree with the terms and conditions.',
         ]);
     }
@@ -84,6 +94,7 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
             'hear_about_us' => $data['hear_about_us'],
             'utm_data' => array_key_exists('utm_data', $data) ? $data['utm_data'] : null,
+            'meta' => ['registration_ip' => request()->ip()],
         ]);
 
         // Add relation with user

@@ -52,6 +52,21 @@
         label="Confirm Password"
       />
 
+      <!-- hCaptcha -->
+      <div
+        v-if="hCaptchaSiteKey"
+        class="mb-3 px-2 mt-2 mx-auto w-max"
+      >
+        <vue-hcaptcha
+          ref="hcaptcha"
+          :sitekey="hCaptchaSiteKey"
+        />
+        <has-error
+          :form="form"
+          field-id="h-captcha-response"
+        />
+      </div>
+
       <checkbox-input
         :form="form"
         name="agree_terms"
@@ -125,11 +140,12 @@
 
 <script>
 import {opnFetch} from "~/composables/useOpnApi.js"
-import {fetchAllWorkspaces} from "~/stores/workspaces.js"
+import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import VueHcaptcha from '@hcaptcha/vue3-hcaptcha'
 
 export default {
   name: "RegisterForm",
-  components: {},
+  components: {VueHcaptcha},
   props: {
     isQuick: {
       type: Boolean,
@@ -146,6 +162,7 @@ export default {
       formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore(),
       providersStore: useOAuthProvidersStore(),
+      runtimeConfig: useRuntimeConfig(),
       logEvent: useAmplitude().logEvent,
       $utm
     }
@@ -159,12 +176,17 @@ export default {
       password_confirmation: "",
       agree_terms: false,
       appsumo_license: null,
-      utm_data: null
+      utm_data: null,
+      'h-captcha-response': null
     }),
-    disableEmail:false
+    disableEmail: false,
+    hcaptcha: null
   }),
 
   computed: {
+    hCaptchaSiteKey() {
+      return this.runtimeConfig.public.hCaptchaSiteKey
+    },
     hearAboutUsOptions() {
       const options = [
         {name: "Facebook", value: "facebook"},
@@ -187,6 +209,10 @@ export default {
   },
 
   mounted() {
+    if (this.hCaptchaSiteKey) {
+      this.hcaptcha = this.$refs.hcaptcha
+    }
+
     // Set appsumo license
     if (
       this.$route.query.appsumo_license !== undefined &&
@@ -208,6 +234,10 @@ export default {
     async register() {
       let data
       this.form.utm_data = this.$utm.value
+      if (this.hCaptchaSiteKey) {
+        this.form['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
+        this.hcaptcha.reset()
+      }
       try {
         // Register the user.
         data = await this.form.post("/register")

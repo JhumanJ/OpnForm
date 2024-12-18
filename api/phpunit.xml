@@ -27,6 +27,8 @@
     <env name="JWT_SECRET" value="9K6whOetAFaokQgSIdbMQZuJuDV5uS2Y"/>
     <env name="STRIPE_KEY" value="TEST_KEY"/>
     <env name="STRIPE_SECRET" value="TEST_SECRET"/>
+    <env name="H_CAPTCHA_SITE_KEY" value="TEST_SITE_KEY"/>
+    <env name="H_CAPTCHA_SECRET_KEY" value="TEST_SECRET"/>
   </php>
   <source>
     <include>
