@@ -41,13 +41,21 @@ class FormPolicy
     }
 
     /**
+     * Determine whether the user can perform write operations on the model.
+     */
+    private function canPerformWriteOperation(User $user, Form $form): bool
+    {
+        return $user->ownsForm($form) && !$user->is_readonly;
+    }
+
+    /**
      * Determine whether the user can update the model.
      *
      * @return mixed
      */
     public function update(User $user, Form $form)
     {
-        return $user->ownsForm($form) && !$user->is_readonly;
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -57,7 +65,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form)
     {
-        return $user->ownsForm($form) && !$user->is_readonly;
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -67,7 +75,7 @@ class FormPolicy
      */
     public function restore(User $user, Form $form)
     {
-        return $user->ownsForm($form) && !$user->is_readonly;
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -77,6 +85,6 @@ class FormPolicy
      */
     public function forceDelete(User $user, Form $form)
     {
-        return $user->ownsForm($form) && !$user->is_readonly;
+        return $this->canPerformWriteOperation($user, $form);
     }
 }
