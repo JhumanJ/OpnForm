@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Rules\ValidHCaptcha;
+use App\Rules\ValidReCaptcha;
 
 class RegisterController extends Controller
 {
@@ -71,8 +71,8 @@ class RegisterController extends Controller
             'utm_data' => ['nullable', 'array'],
         ];
 
-        if (config('services.h_captcha.secret_key')) {
-            $rules['h-captcha-response'] = [new ValidHCaptcha()];
+        if (config('services.recaptcha.secret_key')) {
+            $rules['g-recaptcha-response'] = [new ValidReCaptcha()];
         }
 
         return Validator::make($data, $rules, [
