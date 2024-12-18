@@ -72,21 +72,23 @@
     <p class="text-gray-500 text-sm">
       Protect your form, and your sensitive files.
     </p>
-    <ToggleSwitchInput
-      name="use_captcha"
-      :form="form"
-      class="mt-4"
-      label="Bot Protection"
-      help="Protects your form from spam and abuse with a captcha"
-    />
-    <FlatSelectInput
-      v-if="form.use_captcha"
-      name="captcha_provider"
-      :form="form"
-      :options="captchaOptions"
-      class="mt-4"
-      label="Select a captcha provider"
-    />
+    <div class="flex items-start gap-6 flex-wrap">
+      <ToggleSwitchInput
+        name="use_captcha"
+        :form="form"
+        class="mt-4"
+        label="Bot Protection"
+        help="Protects your form from spam and abuse with a captcha"
+      />
+      <FlatSelectInput
+        v-if="form.use_captcha"
+        name="captcha_provider"
+        :form="form"
+        :options="captchaOptions"
+        class="mt-4 w-80"
+        label="Select a captcha provider"
+      />
+    </div>
   </SettingsSection>
 </template>
 
