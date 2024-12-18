@@ -18,6 +18,7 @@
       label="Form Theme"
     />
     <color-input
+      class="mt-4"
       name="color"
       :form="form"
     >

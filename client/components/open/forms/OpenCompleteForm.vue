@@ -12,12 +12,28 @@
     >
     
     <template v-if="!isHideTitle">
-      <EditableTag
+      <div
         v-if="adminPreview"
-        v-model="form.title"
-        element="h1"
-        class="mb-2"
-      />
+        class="relative group"
+      >
+        <EditableTag
+          v-model="form.title"
+          element="h1"
+          class="mb-2"
+          content-class="pr-8"
+        />
+        <UTooltip
+          class="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100"
+          text="Hide title"
+        >
+          <UButton
+            icon="i-heroicons-eye-slash"
+            size="xs"
+            color="gray"
+            @click="hideTitle"
+          />
+        </UTooltip>
+      </div>
       <h1
         v-else
         class="mb-2 px-2"
@@ -391,6 +407,11 @@ export default {
     },
     addPasswordError (msg) {
       this.passwordForm.errors.set('password', msg)
+    },
+    hideTitle() {
+      if (!this.adminPreview) return
+      this.form.hide_title = true
+      this.$emit('update:form', this.form)
     }
   }
 }

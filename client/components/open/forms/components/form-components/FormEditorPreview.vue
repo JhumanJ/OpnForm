@@ -15,7 +15,7 @@
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col flex-grow"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 px-4 flex items-center gap-x-1.5">
@@ -54,12 +54,15 @@
           leave-from-class="max-h-56"
           leave-to-class="max-h-0"
         >
-          <div v-if="(form.logo_picture || form.cover_picture)">
+          <div
+            v-if="(form.logo_picture || form.cover_picture || isFocused)"
+            class="relative z-0"
+          >
             <div v-if="form.cover_picture">
               <div
                 id="cover-picture"
                 class="w-full overflow-hidden flex items-center justify-center"
-                :class="{'h-[100vh]': isFocused, 'h-[30vh]': !isFocused}"
+                :class="{'h-[30vh]': !isFocused}"
               >
                 <img
                   alt="Form Cover Picture"
@@ -71,15 +74,15 @@
             </div>
             <div
               v-if="form.logo_picture"
-              class="w-full mx-auto py-5 relative"
-              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+              class="w-full mx-auto"
+              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded, 'relative py-5': !isFocused}"
               :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
             >
               <img
                 alt="Logo Picture"
                 :src="coverPictureSrc(form.logo_picture)"
-                :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                class="max-w-60 h-20 object-contain absolute transition-all"
+                :class="{ 'top-5':!form.cover_picture && !isFocused, '-top-10':form.cover_picture && !isFocused, 'top-10':isFocused}"
+                class="max-w-60 h-20 object-contain transition-all absolute"
               >
             </div>
           </div>
