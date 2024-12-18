@@ -28,10 +28,9 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
-        if (app()->environment() !== 'testing') {
-            $this->middleware('throttle:5,1')->only('register'); // 5 attempts per minute
-            $this->middleware('throttle:30,60')->only('register'); // 30 attempts per hour
-        }
+
+        $this->middleware('throttle:5,1')->only('register'); // 5 attempts per minute
+        $this->middleware('throttle:30,60')->only('register'); // 30 attempts per hour
     }
 
     /**
