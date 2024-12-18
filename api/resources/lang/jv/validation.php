@@ -116,4 +116,6 @@ return [
     'attributes' => [],
 
     'invalid_json' => 'Input ora valid. Mangga dibenakake lan dicoba maneh.',
+    'invalid_captcha' => 'CAPTCHA ora valid. Mangga dibenakake lan dicoba maneh.',
+    'complete_captcha' => 'CAPTCHA kudu diisi.',
 ];

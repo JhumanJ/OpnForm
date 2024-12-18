@@ -116,4 +116,6 @@ return [
     'attributes' => [],
 
     'invalid_json' => 'Ungültige Eingabe. Bitte korrigieren Sie und versuchen Sie es erneut.',
+    'invalid_captcha' => 'Ungültige CAPTCHA. Bitte beweisen Sie, dass Sie kein Bot sind.',
+    'complete_captcha' => 'Bitte füllen Sie die CAPTCHA aus.',
 ];

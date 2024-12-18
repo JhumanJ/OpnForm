@@ -6,9 +6,9 @@ use Closure;
 use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Support\Facades\Http;
 
-class ValidHCaptcha implements ImplicitRule
+class ValidReCaptcha implements ImplicitRule
 {
-    public const H_CAPTCHA_VERIFY_URL = 'https://hcaptcha.com/siteverify';
+    public const RECAPTCHA_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     private $error = 'validation.invalid_captcha';
 
@@ -27,8 +27,8 @@ class ValidHCaptcha implements ImplicitRule
             return false;
         }
 
-        return Http::asForm()->post(self::H_CAPTCHA_VERIFY_URL, [
-            'secret' => config('services.h_captcha.secret_key'),
+        return Http::asForm()->post(self::RECAPTCHA_VERIFY_URL, [
+            'secret' => config('services.re_captcha.secret_key'),
             'response' => $value,
         ])->json('success');
     }

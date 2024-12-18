@@ -72,29 +72,32 @@
     <p class="text-gray-500 text-sm">
       Protect your form, and your sensitive files.
     </p>
-    <ToggleSwitchInput
-      name="use_captcha"
-      :form="form"
-      class="mt-4"
-      label="Bot Protection"
-      help="Protects your form from spam and abuse with a captcha"
-    />
+    <div class="flex items-start gap-6 flex-wrap">
+      <ToggleSwitchInput
+        name="use_captcha"
+        :form="form"
+        class="mt-4"
+        label="Bot Protection"
+        help="Protects your form from spam and abuse with a captcha"
+      />
+      <FlatSelectInput
+        v-if="form.use_captcha"
+        name="captcha_provider"
+        :form="form"
+        :options="captchaOptions"
+        class="mt-4 w-80"
+        label="Select a captcha provider"
+      />
+    </div>
   </SettingsSection>
 </template>
 
-<script>
-import { useWorkingFormStore } from '../../../../../stores/working_form'
+<script setup>
+const workingFormStore = useWorkingFormStore()
+const { content: form } = storeToRefs(workingFormStore)
 
-export default {
-  components: { },
-  props: {},
-  setup () {
-    const workingFormStore = useWorkingFormStore()
-    return {
-      workingFormStore,
-      form: storeToRefs(workingFormStore).content,
-      crisp: useCrisp()
-    }
-  }
-}
+const captchaOptions = [
+  { name: 'reCAPTCHA', value: 'recaptcha' },
+  { name: 'hCaptcha', value: 'hcaptcha' },
+]
 </script>

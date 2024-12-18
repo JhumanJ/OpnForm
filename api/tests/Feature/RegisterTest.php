@@ -1,13 +1,13 @@
 <?php
 
 use App\Models\User;
-use App\Rules\ValidHCaptcha;
+use App\Rules\ValidReCaptcha;
 use Illuminate\Support\Facades\Http;
 
 it('can register', function () {
 
     Http::fake([
-        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+        ValidReCaptcha::RECAPTCHA_VERIFY_URL => Http::response(['success' => true])
     ]);
 
     $this->postJson('/register', [
@@ -17,7 +17,7 @@ it('can register', function () {
         'password' => 'secret',
         'password_confirmation' => 'secret',
         'agree_terms' => true,
-        'h-captcha-response' => 'test-token', // Mock token for testing
+        'g-recaptcha-response' => 'test-token', // Mock token for testing
     ])
         ->assertSuccessful()
         ->assertJsonStructure(['id', 'name', 'email']);
@@ -36,7 +36,7 @@ it('cannot register with existing email', function () {
         'email' => 'test@test.app',
         'password' => 'secret',
         'password_confirmation' => 'secret',
-        'h-captcha-response' => 'test-token',
+        'g-recaptcha-response' => 'test-token',
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email']);
@@ -44,7 +44,7 @@ it('cannot register with existing email', function () {
 
 it('cannot register with disposable email', function () {
     Http::fake([
-        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+        ValidReCaptcha::RECAPTCHA_VERIFY_URL => Http::response(['success' => true])
     ]);
 
     // Select random email
@@ -62,7 +62,7 @@ it('cannot register with disposable email', function () {
         'password' => 'secret',
         'password_confirmation' => 'secret',
         'agree_terms' => true,
-        'h-captcha-response' => 'test-token',
+        'g-recaptcha-response' => 'test-token',
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email'])
@@ -77,10 +77,10 @@ it('cannot register with disposable email', function () {
 });
 
 it('requires hcaptcha token in production', function () {
-    config(['services.h_captcha.secret_key' => 'test-key']);
+    config(['services.re_captcha.secret_key' => 'test-key']);
 
     Http::fake([
-        ValidHCaptcha::H_CAPTCHA_VERIFY_URL => Http::response(['success' => true])
+        ValidReCaptcha::RECAPTCHA_VERIFY_URL => Http::response(['success' => true])
     ]);
 
     $this->postJson('/register', [
@@ -92,5 +92,5 @@ it('requires hcaptcha token in production', function () {
         'agree_terms' => true,
     ])
         ->assertStatus(422)
-        ->assertJsonValidationErrors(['h-captcha-response']);
+        ->assertJsonValidationErrors(['g-recaptcha-response']);
 });

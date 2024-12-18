@@ -133,4 +133,6 @@ return [
     'attributes' => [],
 
     'invalid_json' => 'Geçersiz girdi. Lütfen düzeltin ve tekrar deneyin.',
+    'invalid_captcha' => 'Geçersiz CAPTCHA. Lütfen bot olmadığınızı gösterin.',
+    'complete_captcha' => 'Lütfen CAPTCHA\'yı tamamlayın.',
 ];

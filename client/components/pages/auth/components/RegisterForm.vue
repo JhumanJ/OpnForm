@@ -52,18 +52,16 @@
         label="Confirm Password"
       />
 
-      <!-- hCaptcha -->
+      <!-- Captcha -->
       <div
-        v-if="hCaptchaSiteKey"
-        class="mb-3 px-2 mt-2 mx-auto w-max"
+        v-if="recaptchaSiteKey"
+        class="my-4 px-2 mx-auto w-max"
       >
-        <vue-hcaptcha
-          ref="hcaptcha"
-          :sitekey="hCaptchaSiteKey"
-        />
-        <has-error
+        <CaptchaInput
+          ref="captcha"
+          provider="recaptcha"
           :form="form"
-          field-id="h-captcha-response"
+          language="en"
         />
       </div>
 
@@ -141,11 +139,10 @@
 <script>
 import {opnFetch} from "~/composables/useOpnApi.js"
 import { fetchAllWorkspaces } from "~/stores/workspaces.js"
-import VueHcaptcha from '@hcaptcha/vue3-hcaptcha'
 
 export default {
   name: "RegisterForm",
-  components: {VueHcaptcha},
+  components: {},
   props: {
     isQuick: {
       type: Boolean,
@@ -177,15 +174,14 @@ export default {
       agree_terms: false,
       appsumo_license: null,
       utm_data: null,
-      'h-captcha-response': null
+      'g-recaptcha-response': null
     }),
     disableEmail: false,
-    hcaptcha: null
   }),
 
   computed: {
-    hCaptchaSiteKey() {
-      return this.runtimeConfig.public.hCaptchaSiteKey
+    recaptchaSiteKey() {
+      return this.runtimeConfig.public.recaptchaSiteKey
     },
     hearAboutUsOptions() {
       const options = [
@@ -209,10 +205,6 @@ export default {
   },
 
   mounted() {
-    if (this.hCaptchaSiteKey) {
-      this.hcaptcha = this.$refs.hcaptcha
-    }
-
     // Set appsumo license
     if (
       this.$route.query.appsumo_license !== undefined &&
@@ -234,9 +226,9 @@ export default {
     async register() {
       let data
       this.form.utm_data = this.$utm.value
-      if (this.hCaptchaSiteKey) {
-        this.form['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
-        this.hcaptcha.reset()
+      // Reset captcha after submission
+      if (import.meta.client && this.recaptchaSiteKey) {
+        this.$refs.captcha.reset()
       }
       try {
         // Register the user.
