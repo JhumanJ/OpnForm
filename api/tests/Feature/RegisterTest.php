@@ -77,7 +77,7 @@ it('cannot register with disposable email', function () {
 });
 
 it('requires hcaptcha token in production', function () {
-    config(['services.recaptcha.secret_key' => 'test-key']);
+    config(['services.re_captcha.secret_key' => 'test-key']);
 
     Http::fake([
         ValidReCaptcha::RECAPTCHA_VERIFY_URL => Http::response(['success' => true])
