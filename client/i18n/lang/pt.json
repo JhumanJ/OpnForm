@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Desenvolvido por",
+        "password_protected": "Este formulário está protegido por senha.",
+        "invalid_password": "Senha inválida.",
+        "password_required": "Senha é obrigatória.",
+        "create_form_free": "Crie seu formulário gratuitamente com OpnForm",
+        "submit": "Enviar",
+        "wrong_form_structure": "Há algo errado com a estrutura deste formulário. Se você é o proprietário do formulário, entre em contato conosco.",
+        "cannot_access_here": "Este conteúdo não pode ser acessado aqui. Clique no link abaixo para acessá-lo.",
+        "open_form": "Abrir Formulário",
+        "restricted_to_workspace": "Restrito aos membros do Workspace do Notion. Faça login para acessar este conteúdo.",
+        "select": {
+            "search": "Pesquisar",
+            "searchOrTypeToCreateNew": "Pesquise ou digite para criar novo",
+            "typeSomethingToAddAnOption": "Digite algo para adicionar uma opção",
+            "noOptionAvailable": "Nenhuma opção disponível",
+            "create": "Criar"
+        },
+        "fileInput": {
+            "chooseFiles": "Clique para escolher arquivo(s) ou arraste aqui | Clique para escolher um arquivo ou arraste aqui",
+            "sizeLimit": "Limite de tamanho: {count}MB por arquivo",
+            "uploadingFile": "Enviando seu arquivo..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Permitir Acesso à Câmera",
+            "allowCameraPermissionDescription": "Você precisa permitir o acesso à câmera antes de tirar fotos. Vá para as configurações do navegador para habilitar a permissão da câmera nesta página.",
+            "gotIt": "Entendi!",
+            "cameraDeviceError": "Erro no Dispositivo de Câmera",
+            "cameraDeviceErrorDescription": "Ocorreu um erro desconhecido ao tentar iniciar o dispositivo da webcam.",
+            "goBack": "Voltar"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Fazer upload de arquivo em vez disso",
+            "clear": "Limpar"
+        }
+    }
+} 

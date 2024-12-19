@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "제공",
+        "password_protected": "이 양식은 비밀번호로 보호되어 있습니다.",
+        "invalid_password": "잘못된 비밀번호입니다.",
+        "password_required": "비밀번호가 필요합니다.",
+        "create_form_free": "OpnForm로 무료로 양식 만들기",
+        "submit": "제출",
+        "wrong_form_structure": "이 양식의 구조에 문제가 있습니다. 양식 소유자인 경우 저희에게 연락해 주세요.",
+        "cannot_access_here": "이 콘텐츠는 여기서 접근할 수 없습니다. 아래 링크를 클릭하여 접근하세요.",
+        "open_form": "양식 열기",
+        "restricted_to_workspace": "Notion 워크스페이스 멤버만 접근 가능합니다. 이 콘텐츠에 접근하려면 로그인하세요.",
+        "select": {
+            "search": "검색",
+            "searchOrTypeToCreateNew": "검색하거나 새로 만들려면 입력하세요",
+            "typeSomethingToAddAnOption": "옵션을 추가하려면 입력하세요",
+            "noOptionAvailable": "사용 가능한 옵션 없음",
+            "create": "만들기"
+        },
+        "fileInput": {
+            "chooseFiles": "파일을 선택하거나 여기로 드래그하세요 | 파일을 선택하거나 여기로 드래그하세요",
+            "sizeLimit": "크기 제한: 파일당 {count}MB",
+            "uploadingFile": "파일을 업로드하는 중..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "카메라 권한 허용",
+            "allowCameraPermissionDescription": "사진을 찍기 전에 카메라 권한을 허용해야 합니다. 브라우저 설정에서 이 페이지의 카메라 권한을 활성화하세요.",
+            "gotIt": "알겠습니다!",
+            "cameraDeviceError": "카메라 장치 오류",
+            "cameraDeviceErrorDescription": "웹캠 장치를 시작하는 중 알 수 없는 오류가 발생했습니다.",
+            "goBack": "뒤로 가기"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "대신 파일 업로드",
+            "clear": "지우기"
+        }
+    }
+} 

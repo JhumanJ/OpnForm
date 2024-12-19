@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Développé par",
+        "password_protected": "Ce formulaire est protégé par un mot de passe.",
+        "invalid_password": "Mot de passe invalide.",
+        "password_required": "Mot de passe requis.",
+        "create_form_free": "Créez votre formulaire gratuitement avec OpnForm",
+        "submit": "Envoyer",
+        "wrong_form_structure": "Il y a un problème avec la structure de ce formulaire. Si vous êtes le propriétaire du formulaire, veuillez nous contacter.",
+        "cannot_access_here": "Ce contenu ne peut pas être accessible ici. Cliquez sur le lien ci-dessous pour accéder à ce contenu.",
+        "open_form": "Ouvrir le formulaire",
+        "restricted_to_workspace": "Restreint aux membres de l'espace de travail de Notion. Connectez-vous pour accéder à ce contenu.",
+        "select": {
+            "search": "Rechercher",
+            "searchOrTypeToCreateNew": "Rechercher ou écrivez quelque chose pour créer une nouvelle option",
+            "typeSomethingToAddAnOption": "Écrivez quelque chose pour ajouter une option",
+            "noOptionAvailable": "Aucune option disponible",
+            "create": "Créer"
+        },
+        "fileInput": {
+            "chooseFiles": "Cliquez pour choisir un/des fichier(s) ou déposez-le(s) ici | Cliquez pour choisir un fichier ou déposez-le ici",
+            "sizeLimit": "Taille limite: {count}MB par fichier",
+            "uploadingFile": "Envoi de votre fichier en cours..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Autoriser l'accès à la caméra",
+            "allowCameraPermissionDescription": "Vous devez autoriser l'accès à la caméra avant de pouvoir prendre des photos. Allez dans les paramètres du navigateur pour activer l'accès à la caméra sur cette page.",
+            "gotIt": "J'ai compris !",
+            "cameraDeviceError": "Erreur de caméra",
+            "cameraDeviceErrorDescription": "Une erreur inconnue est survenue lors de la tentative de démarrage du périphérique webcam.",
+            "goBack": "Retour"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Uploader un fichier à la place",
+            "clear": "Effacer"
+        }
+    }
+}

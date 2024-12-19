@@ -41,6 +41,8 @@ class Form extends Model implements CachableAttributes
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr'];
+
     protected $fillable = [
         'workspace_id',
         'creator_id',
@@ -52,6 +54,7 @@ class Form extends Model implements CachableAttributes
         'visibility',
 
         // Customization
+        'language',
         'font_family',
         'custom_domain',
         'size',
@@ -79,6 +82,7 @@ class Form extends Model implements CachableAttributes
         'submitted_text',
         'redirect_url',
         'use_captcha',
+        'captcha_provider',
         'closes_at',
         'closed_text',
         'max_submissions_count',

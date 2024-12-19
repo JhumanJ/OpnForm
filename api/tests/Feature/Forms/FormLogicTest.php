@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Testing\Fluent\AssertableJson;
+use Tests\Helpers\FormSubmissionDataFactory;
 
 it('create form with logic', function () {
     $user = $this->actingAsUser();
@@ -346,5 +347,200 @@ it('preserves multi-select values when building validation rules', function () {
             'errors' => [
                 '72565901-c345-427a-b988-0ce3de9ad9f4' => ['The Additional Days field is required.']
             ]
+        ]);
+});
+
+
+it('can submit form with passed regex validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // Regex condition to check if email is from gmail.com domain
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'matches_regex',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                        'value' => '^[a-zA-Z0-9._%+-]+@gmail\.com$',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $submissionData = [];
+    $validationMessage = 'Must be a Gmail address';
+
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$targetField['id']] = 'test@gmail.com';
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $response = $this->postJson(route('forms.answer', $form->slug), $formData);
+    $response->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('can not submit form with failed regex validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // Regex condition to check if email is from gmail.com domain
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'matches_regex',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                        'value' => '^[a-zA-Z0-9._%+-]+@gmail\.com$',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $submissionData = [];
+    $validationMessage = 'Must be a Gmail address';
+
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$targetField['id']] = 'test@yahoo.com'; // Non-Gmail address should fail
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
+        ]);
+});
+
+it('can submit form with does not match regex validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // Regex condition to check if email is NOT from gmail.com domain
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'does_not_match_regex',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                        'value' => '^[a-zA-Z0-9._%+-]+@gmail\.com$',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $submissionData = [];
+    $validationMessage = 'Gmail addresses not allowed';
+
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$targetField['id']] = 'test@yahoo.com'; // Non-Gmail address should pass
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $response = $this->postJson(route('forms.answer', $form->slug), $formData);
+    $response->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('handles invalid regex patterns gracefully', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // Invalid regex pattern
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'matches_regex',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                        'value' => '[Invalid Regex)', // Invalid regex pattern
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $submissionData = [];
+    $validationMessage = 'Invalid regex pattern';
+
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$targetField['id']] = 'test@gmail.com';
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
         ]);
 });

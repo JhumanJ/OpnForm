@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "پاور بائی",
+        "password_protected": "یہ فارم پاس ورڈ سے محفوظ ہے۔",
+        "invalid_password": "غلط پاس ورڈ۔",
+        "password_required": "پاس ورڈ درکار ہے۔",
+        "create_form_free": "OpnForm کے ساتھ اپنا فارم مفت میں بنائیں",
+        "submit": "جمع کرائیں",
+        "wrong_form_structure": "اس فارم کی ساخت میں کچھ غلط ہے۔ اگر آپ فارم کے مالک ہیں تو براہ کرم ہم سے رابطہ کریں۔",
+        "cannot_access_here": "اس مواد تک یہاں رسائی نہیں ہو سکتی۔ اس تک رسائی کے لیے نیچے دیے گئے لنک پر کلک کریں۔",
+        "open_form": "فارم کھولیں",
+        "restricted_to_workspace": "Notion ورک سپیس کے ممبران تک محدود۔ اس مواد تک رسائی کے لیے لاگ ان کریں۔",
+        "select": {
+            "search": "تلاش کریں",
+            "searchOrTypeToCreateNew": "تلاش کریں یا نیا بنانے کے لیے ٹائپ کریں",
+            "typeSomethingToAddAnOption": "ایک آپشن شامل کرنے کے لیے کچھ ٹائپ کریں",
+            "noOptionAvailable": "کوئی آپشن دستیاب نہیں",
+            "create": "بنائیں"
+        },
+        "fileInput": {
+            "chooseFiles": "فائل(یں) منتخب کرنے کے لیے کلک کریں یا یہاں کھینچیں | فائل منتخب کرنے کے لیے کلک کریں یا یہاں کھینچیں",
+            "sizeLimit": "سائز کی حد: فی فائل {count}MB",
+            "uploadingFile": "آپ کی فائل اپلوڈ ہو رہی ہے..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "کیمرے کی اجازت دیں",
+            "allowCameraPermissionDescription": "تصاویر لینے سے پہلے آپ کو کیمرے کی اجازت دینی ہوگی۔ اس صفحے پر کیمرے کی اجازت کو فعال کرنے کے لیے براؤزر کی ترتیبات پر جائیں۔",
+            "gotIt": "سمجھ گیا!",
+            "cameraDeviceError": "کیمرا ڈیوائس کی خرابی",
+            "cameraDeviceErrorDescription": "ویب کیم ڈیوائس شروع کرنے کی کوشش کے دوران ایک نامعلوم خرابی پیش آگئی۔",
+            "goBack": "واپس جائیں"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "اس کے بجائے فائل اپلوڈ کریں",
+            "clear": "صاف کریں"
+        }
+    }
+} 

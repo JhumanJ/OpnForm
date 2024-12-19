@@ -8,6 +8,7 @@ use App\Rules\MatrixValidationRule;
 use App\Rules\StorageFile;
 use App\Rules\ValidHCaptcha;
 use App\Rules\ValidPhoneInputRule;
+use App\Rules\ValidReCaptcha;
 use App\Rules\ValidUrl;
 use App\Service\Forms\FormLogicPropertyResolver;
 use Illuminate\Foundation\Http\FormRequest;
@@ -116,9 +117,13 @@ class AnswerFormRequest extends FormRequest
             $this->requestRules[$propertyId] = $rules;
         }
 
-        // Validate hCaptcha
+        // Validate Captcha
         if ($this->form->use_captcha) {
-            $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
+            if ($this->form->captcha_provider === 'recaptcha') {
+                $this->requestRules['g-recaptcha-response'] = [new ValidReCaptcha()];
+            } elseif ($this->form->captcha_provider === 'hcaptcha') {
+                $this->requestRules['h-captcha-response'] = [new ValidHCaptcha()];
+            }
         }
 
         // Validate submission_id for edit mode
@@ -252,6 +257,12 @@ class AnswerFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        // Set locale based on form language
+        if ($this->form?->language && in_array($this->form->language, Form::LANGUAGES)) {
+            app()->setLocale($this->form->language);
+        }
+
+
         $receivedData = $this->toArray();
         $mergeData = [];
         $countryCodeMapper = json_decode(file_get_contents(resource_path('data/country_code_mapper.json')), true);

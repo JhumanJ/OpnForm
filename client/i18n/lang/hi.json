@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "विकसित करने वाला",
+        "password_protected": "यह फॉर्म एक पासवर्ड से सुरक्षित है।",
+        "invalid_password": "अमान्य पासवर्ड।",
+        "password_required": "पासवर्ड आवश्यक है।",
+        "create_form_free": "OpnForm के साथ अपना फॉर्म मुफ्त में बनाएं",
+        "submit": "जमा करें",
+        "wrong_form_structure": "इस फॉर्म की संरचना में कुछ समस्या है। यदि आप फॉर्म का मालिक हैं, कृपया हमसे संपर्क करें।",
+        "cannot_access_here": "यह सामग्री यहां प्रवेश नहीं हो सकती। नीचे दिए गए लिंक पर क्लिक करें जो इसे प्रवेश करने के लिए है।",
+        "open_form": "फॉर्म खोलें",
+        "restricted_to_workspace": "नोटियन वॉर्कस्पेस के सदस्यों के लिए सीमित। इस सामग्री प्रवेश करने के लिए लॉगिन करें।",
+        "select": {
+            "search": "खोजें",
+            "searchOrTypeToCreateNew": "खोजें या लिखें नए बनाएं",
+            "typeSomethingToAddAnOption": "कुछ लिखें जो विकल्प जोड़ने के लिए",
+            "noOptionAvailable": "कोई विकल्प उपलब्ध नहीं है",
+            "create": "बनाएं"
+        },
+        "fileInput": {
+            "chooseFiles": "फ़ाइलें चुनने के लिए क्लिक करें या यहां खींचें | फ़ाइल चुनने के लिए क्लिक करें या यहां खींचें",
+            "sizeLimit": "साइज़ सीमा: प्रति फ़ाइल {count}MB",
+            "uploadingFile": "आपकी फ़ाइल अपलोड हो रही है..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "कैमरा एक्सेस की अनुमति दें",
+            "allowCameraPermissionDescription": "फ़ोटो लेने से पहले कैमरा एक्सेस की अनुमति देनी होगी। इस पेज पर कैमरा एक्सेस सक्षम करने के लिए ब्राउज़र सेटिंग्स में जाएं।",
+            "gotIt": "समझ गया!",
+            "cameraDeviceError": "कैमरा त्रुटि",
+            "cameraDeviceErrorDescription": "वेबकैम डिवाइस शुरू करने का प्रयास करते समय एक अज्ञात त्रुटि हुई।",
+            "goBack": "वापस जाएं"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "इसके बजाय फ़ाइल अपलोड करें",
+            "clear": "साफ़ करें"
+        }
+    }
+} 

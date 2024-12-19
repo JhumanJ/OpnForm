@@ -28,7 +28,8 @@ export const inputProps = {
   help: {type: String, default: null},
   helpPosition: {type: String, default: "below_input"},
   color: {type: String, default: "#3B82F6"},
-  wrapperClass: {type: String, default: ""},
+  wrapperClass: { type: String, default: "" },
+  locale: { type: String, default: "en" },
 }
 
 export function useFormInput(props, context, options = {}) {

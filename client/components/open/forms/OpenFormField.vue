@@ -107,7 +107,7 @@
             v-else
             :alt="field.name"
             :src="field.image_block"
-            class="max-w-full"
+            class="max-w-full inline-block"
             :class="theme.default.borderRadius"
           >
         </div>
@@ -329,7 +329,8 @@ export default {
         theme: this.theme,
         maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : null,
         showCharLimit: field.show_char_limit || false,
-        isDark: this.darkMode
+        isDark: this.darkMode,
+        locale: (this.form?.language) ? this.form.language : 'en'
       }
 
       if (field.type === 'matrix') {

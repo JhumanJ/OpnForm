@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "দ্বারা চালিত",
+        "password_protected": "এই ফর্মটি পাসওয়ার্ড দ্বারা সুরক্ষিত।",
+        "invalid_password": "অবৈধ পাসওয়ার্ড।",
+        "password_required": "পাসওয়ার্ড প্রয়োজন।",
+        "create_form_free": "OpnForm দিয়ে বিনামূল্যে আপনার ফর্ম তৈরি করুন",
+        "submit": "জমা দিন",
+        "wrong_form_structure": "এই ফর্মের কাঠামোতে কিছু ভুল আছে। আপনি যদি ফর্মের মালিক হন তবে আমাদের সাথে যোগাযোগ করুন।",
+        "cannot_access_here": "এই বিষয়বস্তু এখানে অ্যাক্সেস করা যাবে না। এটি অ্যাক্সেস করতে নীচের লিঙ্কে ক্ল��ক করুন।",
+        "open_form": "ফর্ম খুলুন",
+        "restricted_to_workspace": "Notion ওয়ার্কস্পেসের সদস্যদের জন্য সীমাবদ্ধ। এই বিষয়বস্তু অ্যাক্সেস করতে লগইন করুন।",
+        "select": {
+            "search": "অনুসন্ধান",
+            "searchOrTypeToCreateNew": "অনুসন্ধান করুন বা নতুন তৈরি করতে টাইপ করুন",
+            "typeSomethingToAddAnOption": "একটি অপশন যোগ করতে কিছু টাইপ করুন",
+            "noOptionAvailable": "কোন অপশন উপলব্ধ নেই",
+            "create": "তৈরি করুন"
+        },
+        "fileInput": {
+            "chooseFiles": "ফাইল(গুলি) বেছে নিতে ক্লিক করুন বা এখানে টেনে আনুন | একটি ফাইল বেছে নিতে ক্লিক করুন বা এখানে টেনে আনুন",
+            "sizeLimit": "সাইজ সীমা: প্রতি ফাইলে {count}MB",
+            "uploadingFile": "আপনার ফাইল ���পলোড হচ্ছে..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "ক্যামেরা অনুমতি দিন",
+            "allowCameraPermissionDescription": "ছবি তোলার আগে আপনাকে ক্যামেরা অনুমতি দিতে হবে। এই পৃষ্ঠায় ক্যামেরা অনুমতি সক্ষম করতে ব্রাউজার সেটিংসে যান।",
+            "gotIt": "বুঝেছি!",
+            "cameraDeviceError": "ক্যামেরা ডিভাইস ত্রুটি",
+            "cameraDeviceErrorDescription": "ওয়েবক্যাম ডিভাইস চালু করার সময় একটি অজানা ত্রুটি ঘটেছে।",
+            "goBack": "ফিরে যান"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "পরিবর্তে ফাইল আপলোড করুন",
+            "clear": "পরিষ্কার"
+        }
+    }
+} 

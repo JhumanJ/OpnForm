@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Desarrollado por",
+        "password_protected": "Este formulario está protegido por contraseña.",
+        "invalid_password": "Contraseña inválida.",
+        "password_required": "Se requiere contraseña.",
+        "create_form_free": "Crea tu formulario gratis con OpnForm",
+        "submit": "Enviar",
+        "wrong_form_structure": "Hay un problema con la estructura de este formulario. Si eres el propietario del formulario, contáctanos.",
+        "cannot_access_here": "No se puede acceder a este contenido aquí. Haz clic en el enlace de abajo para acceder.",
+        "open_form": "Abrir Formulario",
+        "restricted_to_workspace": "Restringido a miembros del espacio de trabajo de Notion. Inicia sesión para acceder a este contenido.",
+        "select": {
+            "search": "Buscar",
+            "searchOrTypeToCreateNew": "Buscar o escribir para crear nuevo",
+            "typeSomethingToAddAnOption": "Escribe algo para agregar una opción",
+            "noOptionAvailable": "No hay opciones disponibles",
+            "create": "Crear"
+        },
+        "fileInput": {
+            "chooseFiles": "Haga clic para elegir archivo(s) o suéltelo(s) aquí | Haga clic para elegir un archivo o suéltelo aquí",
+            "sizeLimit": "Tamaño límite: {count}MB por archivo",
+            "uploadingFile": "Subiendo su archivo..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Permitir acceso a la cámara",
+            "allowCameraPermissionDescription": "Debe permitir el acceso a la cámara antes de poder tomar fotos. Vaya a la configuración del navegador para habilitar el acceso a la cámara en esta página.",
+            "gotIt": "¡Entendido!",
+            "cameraDeviceError": "Error de cámara",
+            "cameraDeviceErrorDescription": "Se produjo un error desconocido al intentar iniciar el dispositivo de la cámara web.",
+            "goBack": "Volver"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Subir un archivo en su lugar",
+            "clear": "Borrar"
+        }
+    }
+} 

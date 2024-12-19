@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Models\Forms\Form;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
@@ -9,7 +10,7 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class DiscordIntegration extends AbstractIntegrationHandler
 {
-    public static function getValidationRules(): array
+    public static function getValidationRules(?Form $form): array
     {
         return [
             'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks',

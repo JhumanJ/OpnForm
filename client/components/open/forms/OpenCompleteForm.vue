@@ -27,7 +27,7 @@
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
-        This form is protected by a password.
+        {{ $t('forms.password_protected') }}
       </p>
       <div class="form-group flex flex-wrap w-full">
         <div class="relative mb-3 w-full px-2">
@@ -47,7 +47,7 @@
           class="my-4"
           @click="passwordEntered"
         >
-          Submit
+          {{ $t('forms.submit') }}
         </open-form-button>
       </div>
     </div>
@@ -139,7 +139,7 @@
             class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
             target="_blank"
           >
-            Powered by <span class="font-semibold">OpnForm</span>
+            {{ $t('forms.powered_by') }} <span class="font-semibold">{{ $t('app.name') }}</span>
           </a>
         </p>
       </div>
@@ -186,7 +186,7 @@
             href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
             class="text-nt-blue hover:underline"
           >
-            Create your form for free with OpnForm
+            {{ $t('forms.create_form_free') }}
           </a>
         </p>
       </div>
@@ -202,7 +202,6 @@
 <script>
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
-import FormTimer from './FormTimer.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
@@ -211,7 +210,7 @@ import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 
 export default {
-  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FormTimer, FirstSubmissionModal },
+  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
 
   props: {
     form: { type: Object, required: true },
@@ -225,8 +224,11 @@ export default {
   },
 
   setup(props) {
+    const { setLocale } = useI18n()
     const authStore = useAuthStore()
+    
     return {
+      setLocale,
       authStore,
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
@@ -273,6 +275,17 @@ export default {
     isFormOwner() {
       return this.authenticated && this.form && this.form.creator_id === this.authStore.user.id
     }
+  },
+  watch: {
+    'form.language': {
+      handler(newLanguage) {
+        this.setLocale(newLanguage)
+      },
+      immediate: true
+    }
+  },
+  beforeUnmount() {
+    this.setLocale('en')
   },
 
   methods: {
@@ -346,7 +359,7 @@ export default {
       if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {
         this.$emit('password-entered', this.passwordForm.password)
       } else {
-        this.addPasswordError('The Password field is required.')
+        this.addPasswordError(this.$t('forms.password_required'))
       }
     },
     addPasswordError (msg) {

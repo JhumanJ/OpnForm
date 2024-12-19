@@ -152,4 +152,8 @@ return [
         'message' => 'mensaje',
     ],
 
+    'invalid_json' => 'Entrada no válida. Por favor, corrija e intente nuevamente.',
+    'invalid_captcha' => 'Captcha no válido. Por favor, demuestre que no es un bot.',
+    'complete_captcha' => 'Por favor, complete el captcha.',
+
 ];

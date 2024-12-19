@@ -29,6 +29,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'visibility' => ['required', Rule::in(Form::VISIBILITY)],
 
             // Customization
+            'language' => ['required', Rule::in(Form::LANGUAGES)],
             'font_family' => 'string|nullable',
             'theme' => ['required', Rule::in(Form::THEMES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],
@@ -54,7 +55,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             're_fillable' => 'boolean',
             're_fill_button_text' => 'string|min:1|max:50',
             'submitted_text' => 'string|max:2000',
-            'redirect_url' => 'nullable|max:255',
+            'redirect_url' => 'nullable|string',
             'database_fields_update' => 'nullable|array',
             'max_submissions_count' => 'integer|nullable|min:1',
             'max_submissions_reached_text' => 'string|nullable',
@@ -117,6 +118,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
             'use_captcha' => 'boolean',
+            'captcha_provider' => ['sometimes', Rule::in(['recaptcha', 'hcaptcha'])],
 
             // Custom SEO
             'seo_meta' => 'nullable|array',

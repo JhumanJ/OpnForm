@@ -4,14 +4,12 @@
       v-if="integration.provider"
       class="hidden md:block space-y-1"
     >
-      <div
-        class="font-medium mr-2"
-      >
-        {{ integration.provider.name }}
-      </div>
-      <div class="text-sm">
-        {{ integration.provider.email }}
-      </div>
+      <UBadge
+        :label="mentionAsText(integration.provider.email)"
+        color="gray"
+        size="xs"
+        class="max-w-[300px] truncate"
+      />
     </div>
 
     <div
@@ -39,6 +37,8 @@
 </template>
 
 <script setup>
+import { mentionAsText } from '~/lib/utils.js'
+
 const props = defineProps({
   integration: {
     type: Object,

@@ -38,7 +38,7 @@ import CloudVersion from "/snippets/cloud-version.mdx";
 4. Start the application:
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 5. Access OpnForm at http://localhost
@@ -98,8 +98,8 @@ services:
 
 ### Clearing all resources
 
-To completely remove all Docker containers, networks, and volumes created by docker-compose and also remove all images used by these services, you can use the following command:
+To completely remove all Docker containers, networks, and volumes created by Docker Compose and also remove all images used by these services, you can use the following command:
 
 ```
-docker-compose down -v --rmi all
+docker compose down -v --rmi all
 ```
