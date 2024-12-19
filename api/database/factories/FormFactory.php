@@ -50,6 +50,7 @@ class FormFactory extends Factory
             'title' => $this->faker->text(30),
             'description' => $this->faker->randomHtml(1),
             'visibility' => 'public',
+            'format' => 'regular',
             'language' => 'en',
             'theme' => $this->faker->randomElement(Form::THEMES),
             'size' => $this->faker->randomElement(Form::SIZES),

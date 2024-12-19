@@ -10,6 +10,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     properties: withDefaultProperties ? getDefaultProperties() : [],
 
     // Customization
+    format: "regular",
     language: 'en',
     font_family: null,
     theme: "default",

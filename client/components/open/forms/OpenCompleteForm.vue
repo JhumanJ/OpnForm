@@ -108,13 +108,14 @@
         key="form"
       >
         <open-form
-          v-if="form && !form.is_closed"
+          v-if="form && !form.is_closed && form.format === 'regular'"
           :form="form"
           :loading="loading"
           :fields="form.properties"
           :theme="theme"
           :dark-mode="darkMode"
           :admin-preview="adminPreview"
+          :creating="creating"
           @submit="submitForm"
         >
           <template #submit-btn="{submitForm}">
@@ -130,6 +131,30 @@
             </open-form-button>
           </template>
         </open-form>
+        <open-form-focused
+          v-else-if="form && !form.is_closed && form.format === 'focused'"
+          :form="form"
+          :loading="loading"
+          :fields="form.properties"
+          :theme="theme"
+          :dark-mode="darkMode"
+          :admin-preview="adminPreview"
+          :creating="creating"
+          @submit="submitForm"
+        >
+          <template #submit-btn="{submitForm}">
+            <open-form-button
+              :loading="loading"
+              :theme="theme"
+              :color="form.color"
+              class="mt-2 px-8 mx-1"
+              :class="submitButtonClass"
+              @click.prevent="submitForm"
+            >
+              {{ form.submit_button_text }}
+            </open-form-button>
+          </template>
+        </open-form-focused>  
         <p
           v-if="!form.no_branding"
           class="text-center w-full mt-2"
@@ -202,6 +227,8 @@
 <script>
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
+import OpenFormFocused from './OpenFormFocused.vue'
+import FormTimer from './FormTimer.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
@@ -210,7 +237,7 @@ import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 
 export default {
-  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
+  components: { VTransition, OpenFormButton, OpenForm, OpenFormFocused, FormCleanings, FormTimer, FirstSubmissionModal },
 
   props: {
     form: { type: Object, required: true },

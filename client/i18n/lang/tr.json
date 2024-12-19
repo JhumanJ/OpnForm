@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "Geri",
+        "next": "İleri",
         "powered_by": "Tarafından desteklenmektedir",
         "password_protected": "Bu form şifre korumalıdır.",
         "invalid_password": "Geçersiz şifre.",
