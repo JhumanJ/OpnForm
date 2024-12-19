@@ -29,6 +29,7 @@
           </p>
         </resizable-th>
         <th
+          v-if="hasActions"
           class="n-table-cell p-0 relative"
           style="width: 100px"
         >
@@ -181,6 +182,8 @@ export default {
     return {
       workingFormStore,
       form: storeToRefs(workingFormStore).content,
+      user: useAuthStore().user,
+      workspace: useWorkspacesStore().getCurrent,
     }
   },
 
@@ -188,7 +191,6 @@ export default {
     return {
       tableHash: null,
       skip: false,
-      hasActions: true,
       internalColumns: [],
       rafId: null,
       fieldComponents: {
@@ -213,6 +215,9 @@ export default {
   },
 
   computed: {
+    hasActions() {
+      return !this.workspace.is_readonly
+    },
     formData() {
       return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     }

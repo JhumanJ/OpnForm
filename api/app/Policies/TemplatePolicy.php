@@ -12,8 +12,6 @@ class TemplatePolicy
 
     /**
      * Determine whether the user can create models.
-     *
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
     {
@@ -21,22 +19,20 @@ class TemplatePolicy
     }
 
     /**
-     * Determine whether the user can update the model.
-     *
-     * @return mixed
+     * Determine whether the user can perform write operations on the model.
      */
-    public function update(User $user, Template $template)
+    private function canPerformWriteOperation(User $user, Template $template): bool
     {
         return $user->admin || $user->template_editor || $template->creator_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @return mixed
-     */
+    public function update(User $user, Template $template)
+    {
+        return $this->canPerformWriteOperation($user, $template);
+    }
+
     public function delete(User $user, Template $template)
     {
-        return $user->admin || $user->template_editor || $template->creator_id === $user->id;
+        return $this->canPerformWriteOperation($user, $template);
     }
 }

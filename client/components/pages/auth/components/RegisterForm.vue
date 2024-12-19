@@ -24,6 +24,7 @@
       />
 
       <select-input
+        v-if="!disableEmail"
         name="hear_about_us"
         :options="hearAboutUsOptions"
         :form="form"
@@ -169,6 +170,7 @@ export default {
     form: useForm({
       name: "",
       email: "",
+      hear_about_us: "",
       password: "",
       password_confirmation: "",
       agree_terms: false,
@@ -216,6 +218,7 @@ export default {
     if (this.$route.query?.invite_token) {
       if (this.$route.query?.email) {
         this.form.email = this.$route.query?.email
+        this.form.hear_about_us = 'invite'
         this.disableEmail = true
       }
       this.form.invite_token = this.$route.query?.invite_token
