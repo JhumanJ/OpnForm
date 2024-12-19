@@ -16,6 +16,14 @@
       help="With form submission answers"
     />
     <toggle-switch-input
+      v-if="compVal.include_submission_data"
+      v-model="compVal.include_hidden_fields_submission_data"
+      name="include_hidden_fields_submission_data"
+      class="mt-4"
+      label="Include hidden fields"
+      help="If enabled then hidden fields will be included in the notification message"
+    />
+    <toggle-switch-input
       v-model="compVal.link_open_form"
       name="link_open_form"
       class="mt-4"
@@ -85,6 +93,7 @@ export default {
     [
       "message",
       "include_submission_data",
+      'include_hidden_fields_submission_data',
       "link_open_form",
       "link_edit_form",
       "views_submissions_count",
@@ -93,6 +102,8 @@ export default {
       if (this.compVal[keyname] === undefined) {
         if (keyname === 'message') {
           this.compVal[keyname] = 'New form submission'
+        } else if (['include_hidden_fields_submission_data'].includes(keyname)) {
+          this.compVal[keyname] = false
         } else {
           this.compVal[keyname] = true
         }
