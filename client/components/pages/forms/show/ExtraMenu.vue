@@ -102,6 +102,7 @@ const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const formEndpoint = "/open/forms/{id}"
 const user = computed(() => authStore.user)
+const workspace = computed(() => useWorkspacesStore().getCurrent)
 
 const loadingDuplicate = ref(false)
 const loadingDelete = ref(false)
@@ -131,7 +132,7 @@ const items = computed(() => {
         }
       }] : []
     ],
-    ...user.value.is_readonly ? [] : [
+    ...workspace.value.is_readonly ? [] : [
       [
         ...props.isMainPage ? [{
         label: 'Edit',

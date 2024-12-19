@@ -196,11 +196,19 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()
     {
         return $this->hasMany(Form::class);
+    }
+
+    public function isReadonlyUser(User $user)
+    {
+        return $this->users()
+            ->wherePivot('user_id', $user->id)
+            ->wherePivot('role', User::ROLE_READONLY)
+            ->exists();
     }
 }

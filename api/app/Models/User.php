@@ -128,11 +128,6 @@ class User extends Authenticatable implements JWTSubject
         return in_array($this->email, config('opnform.moderator_emails')) || $this->admin;
     }
 
-    public function getIsReadonlyAttribute()
-    {
-        return $this->workspaces()->where('role', self::ROLE_READONLY)->exists();
-    }
-
     public function getTemplateEditorAttribute()
     {
         return $this->admin || in_array($this->email, config('opnform.template_editor_emails'));

@@ -15,7 +15,7 @@ class TemplatePolicy
      */
     public function create(User $user)
     {
-        return $user !== null && !$user->is_readonly;
+        return $user !== null;
     }
 
     /**
@@ -23,7 +23,7 @@ class TemplatePolicy
      */
     private function canPerformWriteOperation(User $user, Template $template): bool
     {
-        return ($user->admin || $user->template_editor || $template->creator_id === $user->id) && !$user->is_readonly;
+        return $user->admin || $user->template_editor || $template->creator_id === $user->id;
     }
 
     public function update(User $user, Template $template)

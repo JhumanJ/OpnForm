@@ -183,6 +183,7 @@ export default {
       workingFormStore,
       form: storeToRefs(workingFormStore).content,
       user: useAuthStore().user,
+      workspace: useWorkspacesStore().getCurrent,
     }
   },
 
@@ -215,7 +216,7 @@ export default {
 
   computed: {
     hasActions() {
-      return !this.user.is_readonly
+      return !this.workspace.is_readonly
     },
     formData() {
       return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))

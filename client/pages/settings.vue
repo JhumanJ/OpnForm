@@ -56,17 +56,18 @@ useOpnSeoMeta({
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
+const workspace = computed(() => useWorkspacesStore().getCurrent)
 const tabsList = computed(() => {
   const tabs = [
     {
       name: "Profile",
       route: "settings-profile",
     },
-    ...user.value.is_readonly ? [] : [
-      {
-        name: "Workspace Settings",
-        route: "settings-workspace",
-      },
+    {
+      name: "Workspace Settings",
+      route: "settings-workspace",
+    },
+    ...workspace.value.is_readonly ? [] : [
       {
         name: "Access Tokens",
         route: "settings-access-tokens",

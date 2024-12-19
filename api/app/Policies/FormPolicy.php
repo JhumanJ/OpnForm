@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Forms\Form;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FormPolicy
@@ -35,9 +36,9 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Workspace $workspace)
     {
-        return !$user->is_readonly;
+        return !$workspace->isReadonlyUser($user);
     }
 
     /**
@@ -45,7 +46,7 @@ class FormPolicy
      */
     private function canPerformWriteOperation(User $user, Form $form): bool
     {
-        return $user->ownsForm($form) && !$user->is_readonly;
+        return $user->ownsForm($form) && !$form->workspace->isReadonlyUser($user);
     }
 
     /**
