@@ -36,6 +36,9 @@
         "signatureInput": {
             "uploadFileInstead": "Bunun yerine dosya yükle",
             "clear": "Temizle"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Kamera açmak için tıklayın"
         }
     }
 } 

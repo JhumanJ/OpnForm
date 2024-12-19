@@ -36,6 +36,9 @@
         "signatureInput": {
             "uploadFileInstead": "اس کے بجائے فائل اپلوڈ کریں",
             "clear": "صاف کریں"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "کیمرے کھولنے کے لیے کلک کریں"
         }
     }
 } 
