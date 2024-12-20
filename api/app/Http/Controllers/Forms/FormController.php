@@ -108,10 +108,9 @@ class FormController extends Controller
 
     public function store(StoreFormRequest $request)
     {
-        $this->authorize('create', Form::class);
-
         $workspace = Workspace::findOrFail($request->get('workspace_id'));
         $this->authorize('view', $workspace);
+        $this->authorize('create', [Form::class, $workspace]);
 
         $formData = $this->formCleaner
             ->processRequest($request)

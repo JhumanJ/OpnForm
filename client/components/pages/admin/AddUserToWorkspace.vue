@@ -48,7 +48,8 @@ const workspacesStore = useWorkspacesStore()
 
 const roleOptions = [
   {name: "User", value: "user"},
-  {name: "Admin", value: "admin"}
+  {name: "Admin", value: "admin"},
+  {name: "Read Only", value: "readonly"}
 ]
 
 const newUser = ref("")
