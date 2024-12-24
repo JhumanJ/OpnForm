@@ -23,6 +23,20 @@
       <div>
         <v-button
           color="light-gray"
+          size="small"
+          class="ml-1"
+          @click="showCopyToModal = true"
+        >
+          <Icon
+            name="lucide:copy-plus"
+            class="w-4 h-4 text-blue-600 inline mr-1 -mt-1"
+          />
+          Copy to
+        </v-button>
+      </div>
+      <div>
+        <v-button
+          color="light-gray"
           shade="light"
           size="small"
           class="ml-1"
@@ -103,6 +117,47 @@
         </div>
       </div>
     </modal>
+
+    <modal
+      :show="showCopyToModal"
+      @close="showCopyToModal = false"
+    >
+      <div class="min-h-[450px]">
+        <h3 class="font-semibold block text-lg">
+          Copy logic to other fields
+        </h3>
+        <p class="text-gray-400 text-xs mb-5">
+          Select fields to copy the logic from "{{ field.name }}" to them.
+        </p>
+        <select-input
+          v-model="copyTo"
+          name="copy_to"
+          emit-key="value"
+          label="Copy logic to"
+          placeholder="Choose fields..."
+          :options="copyToOptions"
+          :multiple="true"
+          :searchable="copyToOptions && copyToOptions.length > 5"
+        />
+        <div class="flex justify-between mb-6">
+          <v-button
+            color="blue"
+            shade="light"
+            @click="copyLogicToFields"
+          >
+            Confirm & Copy
+          </v-button>
+          <v-button
+            color="gray"
+            shade="light"
+            class="ml-1"
+            @click="showCopyToModal = false"
+          >
+            Close
+          </v-button>
+        </div>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -135,6 +190,8 @@ export default {
       },
       showCopyFormModal: false,
       copyFrom: null,
+      showCopyToModal: false,
+      copyTo: [],
     }
   },
 
@@ -148,6 +205,15 @@ export default {
             field.logic !== null &&
             field.logic !== {}
           )
+        })
+        .map((field) => {
+          return { name: field.name, value: field.id }
+        })
+    },
+    copyToOptions() {
+      return this.form.properties
+        .filter((field) => {
+          return field.id !== this.field.id
         })
         .map((field) => {
           return { name: field.name, value: field.id }
@@ -272,6 +338,20 @@ export default {
         }
       }
       this.showCopyFormModal = false
+    },
+    copyLogicToFields() {
+      if (this.copyTo.length) {
+        this.copyTo.forEach((fieldId) => {
+          const targetField = this.form.properties.find(
+            (property) => property.id === fieldId
+          )
+          if (targetField) {
+            targetField.logic = clonedeep(this.logic)
+          }
+        })
+      }
+      this.showCopyToModal = false
+      this.copyTo = []
     },
   },
 }
