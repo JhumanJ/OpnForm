@@ -32,6 +32,7 @@
               </h2>
               <div class="flex">
                 <extra-menu
+                  v-if="!workspace.is_readonly"
                   class="mr-2"
                   :form="form"
                 />
@@ -98,6 +99,7 @@
                   </svg>
                 </v-button>
                 <v-button
+                  v-if="!workspace.is_readonly"
                   class="text-white"
                   :to="{ name: 'forms-slug-edit', params: { slug: slug } }"
                 >
@@ -253,6 +255,7 @@ const slug = useRoute().params.slug
 
 formsStore.startLoading()
 const form = computed(() => formsStore.getByKey(slug))
+const workspace = computed(() => workspacesStore.getCurrent)
 
 const loading = computed(() => formsStore.loading || workspacesStore.loading)
 const displayClosesDate = computed(() => {
@@ -279,11 +282,13 @@ const tabsList = [
     route: "forms-slug-show-submissions",
     params: { 'slug': slug }
   },
-  {
-    name: "Integrations",
-    route: "forms-slug-show-integrations",
-    params: { 'slug': slug }
-  },
+  ...workspace.value.is_readonly ? [] : [
+    {
+      name: "Integrations",
+      route: "forms-slug-show-integrations",
+      params: { 'slug': slug }
+    },
+  ],
   {
     name: "Analytics",
     route: "forms-slug-show-stats",
