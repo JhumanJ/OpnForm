@@ -63,8 +63,14 @@ class AnswerFormRequest extends FormRequest
                 $property['logic'] = false;
             }*/
 
-            // For get values instead of Id for select/multi select options
             $data = $this->toArray();
+
+            // User custom validation
+            if (!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
+                $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
+            }
+
+            // For get values instead of Id for select/multi select options
             foreach ($selectionFields as $field) {
                 if (isset($data[$field['id']]) && is_array($data[$field['id']])) {
                     $data[$field['id']] = array_map(function ($val) use ($field) {
@@ -107,11 +113,6 @@ class AnswerFormRequest extends FormRequest
                 $this->requestRules[$propertyId . '.*'] = $this->getPropertyRules($property);
             } else {
                 $rules = array_merge($rules, $this->getPropertyRules($property));
-            }
-
-            // User custom validation
-            if (!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
-                $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
             }
 
             $this->requestRules[$propertyId] = $rules;
