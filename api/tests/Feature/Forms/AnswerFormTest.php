@@ -303,3 +303,51 @@ it('can validate form answer with precognition', function () {
     $this->assertEquals(sizeof($errors), 1);
     $response->assertStatus(422);
 });
+
+
+it('executes custom validation before required field validation', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailField = collect($form->properties)->where('name', 'Email')->first();
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $emailField['id'],
+                    'value' => [
+                        'operator' => 'contains',
+                        'property_meta' => [
+                            'id' => $emailField['id'],
+                            'type' => 'email',
+                        ],
+                        'value' => '@company.com',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $submissionData = [];
+    $validationMessage = 'Must use company email';
+    $form->properties = collect($form->properties)->map(function ($property) use (&$submissionData, &$condition, &$validationMessage, $emailField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['required'] = true;
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+            $submissionData[$emailField['id']] = 'test@other.com';
+        }
+        return $property;
+    })->toArray();
+    $form->update();
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
+        ]);
+});
