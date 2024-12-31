@@ -31,7 +31,7 @@ class WorkspaceUserController extends Controller
 
         $this->validate($request, [
             'email' => 'required|email',
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:' . implode(',', User::ROLES),
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -62,10 +62,11 @@ class WorkspaceUserController extends Controller
     {
         if (
             UserInvite::where('email', $email)
-                ->where('workspace_id', $workspace->id)
-                ->notExpired()
-                ->pending()
-                ->exists()) {
+            ->where('workspace_id', $workspace->id)
+            ->notExpired()
+            ->pending()
+            ->exists()
+        ) {
             return $this->success([
                 'message' => 'User has already been invited.'
             ]);
@@ -86,7 +87,7 @@ class WorkspaceUserController extends Controller
         $this->authorize('adminAction', $workspace);
 
         $this->validate($request, [
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:' . implode(',', User::ROLES),
         ]);
 
         $workspace->users()->sync([

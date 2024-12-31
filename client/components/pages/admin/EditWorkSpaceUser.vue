@@ -18,7 +18,8 @@
             :label="'New Role for '+props.user.name"
             :options="[
               { name: 'User', value: 'user' },
-              { name: 'Admin', value: 'admin' }
+              { name: 'Admin', value: 'admin' },
+              { name: 'Read Only', value: 'readonly' },
             ]"
             option-key="value"
             display-key="name"

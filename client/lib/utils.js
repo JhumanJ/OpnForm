@@ -109,3 +109,15 @@ export const customDomainUsed = function () {
 
   return host !== appDomain && getDomain(host) !== appDomain
 }
+
+export const mentionAsText = (content) => {
+  if (!content) return ''
+  
+  // Parse the content and style mentions
+  return content.replace(
+    /<span\s+mention-field-id="([^"]+)"\s+mention-field-name="([^"]+)"[^>]*>([^<]+)<\/span>/g,
+    (match, fieldId, fieldName, text) => {
+      return `${text}`
+    }
+  )
+}
