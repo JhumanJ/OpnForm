@@ -8,6 +8,7 @@
               Your Forms
             </h2>
             <v-button
+              v-if="!workspace.is_readonly"
               v-track.create_form_click
               :to="{ name: 'forms-create' }"
             >
@@ -86,7 +87,7 @@
               again.
             </div>
             <v-button
-              v-if="forms.length === 0"
+              v-if="!workspace.is_readonly && forms.length === 0"
               v-track.create_form_click
               class="mt-4"
               :to="{ name: 'forms-create' }"
