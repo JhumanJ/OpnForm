@@ -10,13 +10,11 @@
       v-else
       :items="items"
     >
-      <v-button
+      <UButton
         color="white"
-      >
-        <Icon
-          name="heroicons:ellipsis-horizontal"
-        />
-      </v-button>
+        icon="i-heroicons-ellipsis-horizontal"
+        size="md"
+      />
     </UDropdown>
 
     <!-- Delete Form Modal -->
