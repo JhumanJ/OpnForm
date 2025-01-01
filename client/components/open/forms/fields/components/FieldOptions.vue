@@ -634,12 +634,12 @@ export default {
       ],
       allCountries: countryCodes,
       barcodeDecodersOptions: [
-        { name: 'EAN-13', value: 'ean_reader' },
-        { name: 'EAN-8', value: 'ean_8_reader' },
+        { name: 'EAN-13 (European Article Number)', value: 'ean_reader' },
+        { name: 'EAN-8 (European Article Number)', value: 'ean_8_reader' },
+        { name: 'UPC-A (Universal Product Code)', value: 'upc_reader' },
+        { name: 'UPC-E (Universal Product Code)', value: 'upc_e_reader' },
         { name: 'Code 128', value: 'code_128_reader' },
         { name: 'Code 39', value: 'code_39_reader' },
-        { name: 'UPC-A', value: 'upc_reader' },
-        { name: 'UPC-E', value: 'upc_e_reader' }
       ]
     }
   },
@@ -859,7 +859,7 @@ export default {
           }
         },
         barcode: {
-          decoders: this.barcodeDecodersOptions.map(decoder => decoder.value)
+          decoders: ['ean_reader', 'upc_reader']
         }
       }
       if (this.field.type in defaultFieldValues) {
