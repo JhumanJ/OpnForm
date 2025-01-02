@@ -161,7 +161,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::put('/{id}/submissions/{submission_id}', [FormSubmissionController::class, 'update'])->name('submissions.update')->middleware([ResolveFormMiddleware::class]);
-            Route::get('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
+            Route::post('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
             Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
                 ->middleware('signed')
                 ->withoutMiddleware(['auth:api'])

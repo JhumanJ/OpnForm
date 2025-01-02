@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
@@ -46,12 +47,13 @@ class FormSubmissionController extends Controller
         ]);
     }
 
-    public function export(string $id)
+    public function export(Request $request, string $id)
     {
         $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
 
         $allRows = [];
+        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
         foreach ($form->submissions->toArray() as $row) {
             $formatter = (new FormSubmissionFormatter($form, $row['data']))
                 ->outputStringsOnly()
@@ -59,25 +61,32 @@ class FormSubmissionController extends Controller
                 ->showRemovedFields()
                 ->showHiddenFields()
                 ->useSignedUrlForFiles();
-            $allRows[] = [
-                'id' => Hashids::encode($row['id']),
-                'created_at' => date('Y-m-d H:i', strtotime($row['created_at'])),
-                ...$formatter->getCleanKeyValue(),
-            ];
+            $formattedData = $formatter->getCleanKeyValue();
+            $filteredData = ['id' => Hashids::encode($row['id'])];
+            foreach ($displayColumns as $column => $value) {
+                $key = collect($formattedData)->keys()->first(fn ($key) => str_contains($key, $column));
+                if ($key) {
+                    $filteredData[$key] = $formattedData[$key];
+                }
+            }
+            if (isset($displayColumns['created_at'])) {
+                $filteredData['created_at'] = date('Y-m-d H:i', strtotime($row['created_at']));
+            }
+            $allRows[] = $filteredData;
         }
         $csvExport = (new FormSubmissionExport($allRows));
 
         return Excel::download(
             $csvExport,
-            $form->slug.'-submission-data.csv',
+            $form->slug . '-submission-data.csv',
             \Maatwebsite\Excel\Excel::CSV
         );
     }
 
     public function submissionFile($id, $fileName)
     {
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id).'/'
-            .urldecode($fileName);
+        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id) . '/'
+            . urldecode($fileName);
 
         if (! Storage::exists($fileName)) {
             return $this->error([
