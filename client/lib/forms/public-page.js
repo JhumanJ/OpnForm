@@ -1,4 +1,4 @@
-let darkModeNodeParent = import.meta.client ? document.body : null
+let darkModeNodeParent = import.meta.client ? document.documentElement : null
 
 /**
  * Handle form public pages dark mode and transparent mode
@@ -7,7 +7,7 @@ export function handleDarkMode (darkMode, elem = null) {
   if (import.meta.server)
     return
 
-  darkModeNodeParent = elem ?? document.body
+  darkModeNodeParent = elem ?? document.documentElement
 
   // Dark mode
   if (['dark', 'light'].includes(darkMode))
@@ -66,7 +66,7 @@ export function useClassWatcher (elem, className) {
 export function useDarkMode (elem = ref(null)) {
   // Define a computed property to handle the element reference reactively
   const effectiveElem = computed(() => {
-    return elem.value || (process.client ? document.body : null)
+    return elem.value || (process.client ? document.documentElement : null)
   })
 
   // Pass the computed property to useClassWatcher
@@ -83,7 +83,7 @@ export function darkModeEnabled (elem = ref(null)) {
 
   // Update isDark based on the current class
   const updateIsDark = () => {
-    const finalElement = elem.value ?? document.body
+    const finalElement = elem.value ?? document.documentElement
     isDark.value = finalElement.classList.contains('dark')
   }
 
@@ -130,8 +130,8 @@ function handleDarkModeToggle (enabled) {
 export function disableDarkMode () {
   if (import.meta.server)
     return
-  const body = document.body
-  body.classList.remove('dark')
+  const html = document.documentElement
+  html.classList.remove('dark')
   // Remove event listener
   window
     .matchMedia('(prefers-color-scheme: dark)')

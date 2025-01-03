@@ -157,6 +157,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/{id}/workspace/{workspace_id}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
             Route::put('/{id}', [FormController::class, 'update'])->name('update');
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
             Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
             Route::put('/{id}/submissions/{submission_id}', [FormSubmissionController::class, 'update'])->name('submissions.update')->middleware([ResolveFormMiddleware::class]);

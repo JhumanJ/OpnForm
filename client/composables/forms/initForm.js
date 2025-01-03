@@ -37,6 +37,7 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     submitted_text:
       "Amazing, we saved your answers. Thank you for your time and have a great day!",
     use_captcha: false,
+    captcha_provider: 'recaptcha',
     max_submissions_count: null,
     max_submissions_reached_text:
       "This form has now reached the maximum number of allowed submissions and is now closed.",
@@ -106,6 +107,7 @@ export function setFormDefaults(formData) {
     bypass_success_page: false,
     can_be_indexed: true,
     use_captcha: false,
+    captcha_provider: 'recaptcha',
     properties: [],
   }
 

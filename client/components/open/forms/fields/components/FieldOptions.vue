@@ -77,6 +77,27 @@
       />
     </div>
 
+    <!-- Barcode Reader -->
+    <div
+      v-if="field.type === 'barcode'"
+      class="px-4"
+    >
+      <EditorSectionHeader
+        icon="i-material-symbols-barcode-scanner-rounded"
+        title="Barcode Reader"
+      />
+      <select-input
+        name="decoders"
+        class="mt-4"
+        :form="field"
+        :options="barcodeDecodersOptions"
+        label="Decoders"
+        :searchable="true"
+        :multiple="true"
+        help="Select the decoders you want to use"
+      />
+    </div>
+
     <div
       v-if="field.type === 'rating'"
       class="px-4"
@@ -210,7 +231,7 @@
         :form="field"
         class="mt-3"
         name="date_range"
-        label="End date"
+        label="Include end date"
         @update:model-value="onFieldDateRangeChange"
       />
       <toggle-switch-input
@@ -633,7 +654,15 @@ export default {
       editorToolbarCustom: [
         ['bold', 'italic', 'underline', 'link']
       ],
-      allCountries: countryCodes
+      allCountries: countryCodes,
+      barcodeDecodersOptions: [
+        { name: 'EAN-13 (European Article Number)', value: 'ean_reader' },
+        { name: 'EAN-8 (European Article Number)', value: 'ean_8_reader' },
+        { name: 'UPC-A (Universal Product Code)', value: 'upc_reader' },
+        { name: 'UPC-E (Universal Product Code)', value: 'upc_e_reader' },
+        { name: 'Code 128', value: 'code_128_reader' },
+        { name: 'Code 39', value: 'code_39_reader' },
+      ]
     }
   },
 
@@ -850,6 +879,9 @@ export default {
           selection_data:{
             'Row 1': null
           }
+        },
+        barcode: {
+          decoders: ['ean_reader', 'upc_reader']
         }
       }
       if (this.field.type in defaultFieldValues) {

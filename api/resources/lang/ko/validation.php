@@ -116,4 +116,6 @@ return [
     'attributes' => [],
 
     'invalid_json' => '잘못된 입력입니다. 수정 후 다시 시도해 주세요.',
+    'invalid_captcha' => '잘못된 캡차입니다. 봇이 아님을 증명해 주세요.',
+    'complete_captcha' => '캡차를 완료해 주세요.',
 ];

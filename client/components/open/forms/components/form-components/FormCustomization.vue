@@ -11,8 +11,8 @@
       class="mt-4"
       :options="[
         { name: 'Default', value: 'default' },
-        { name: 'Simple', value: 'simple' },
         { name: 'Notion', value: 'notion' },
+        { name: 'Simple (no shadows)', value: 'simple' },
       ]"
       :form="form"
       label="Form Theme"

@@ -38,6 +38,9 @@
         "signatureInput": {
             "uploadFileInstead": "改为上传文件",
             "clear": "清除"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "点击打开相机"
         }
     }
 } 

@@ -76,21 +76,16 @@
     </transition>
 
     <!-- Captcha -->
-    <template v-if="form.use_captcha && isLastPage">
-      <div class="mb-3 px-2 mt-2 mx-auto w-max">
-        <vue-hcaptcha
-          ref="hcaptcha"
-          :sitekey="hCaptchaSiteKey"
-          :theme="darkMode?'dark':'light'"
-          @opened="setMinHeight(500)"
-          @closed="setMinHeight(0)"
-        />
-        <has-error
-          :form="dataForm"
-          field-id="h-captcha-response"
-        />
-      </div>
-    </template>
+    <div class="mb-3 px-2 mt-4 mx-auto w-max">
+      <CaptchaInput
+        v-if="form.use_captcha && isLastPage"
+        ref="captcha"
+        :provider="form.captcha_provider"
+        :form="dataForm"
+        :language="form.language"
+        :dark-mode="darkMode"
+      />
+    </div>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
@@ -132,7 +127,7 @@
 import clonedeep from 'clone-deep'
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
-import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
+import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
@@ -143,7 +138,7 @@ import { storeToRefs } from 'pinia'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
+  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer},
   props: {
     form: {
       type: Object,
@@ -207,14 +202,10 @@ export default {
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
-      minHeight: 0
     }
   },
 
   computed: {
-    hCaptchaSiteKey() {
-      return useRuntimeConfig().public.hCaptchaSiteKey
-    },
     /**
      * Create field groups (or Page) using page breaks if any
      */
@@ -311,7 +302,6 @@ export default {
     },
     computedStyle() {
       return {
-        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {},
         '--form-color': this.form.color
       }
     }
@@ -371,8 +361,7 @@ export default {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
-        this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
-        this.$refs.hcaptcha.reset()
+        this.$refs.captcha?.reset()
       }
 
       if (this.form.editable_submissions && this.form.submission_id) {
@@ -586,16 +575,6 @@ export default {
       }
       this.formPageIndex = this.fieldGroups.length - 1
     },
-    setMinHeight(minHeight) {
-      if (!this.isIframe) return
-
-      this.minHeight = minHeight
-      try {
-        window.parentIFrame.size()
-      } catch (e) {
-        console.error(e)
-      }
-    }
   }
 }
 </script>

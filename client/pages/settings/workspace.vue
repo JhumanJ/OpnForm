@@ -9,8 +9,10 @@
           You can switch to another workspace in top left corner of the page.</small>
       </div>
       <div class="w-full flex flex-wrap gap-2">
-        <WorkSpaceCustomDomains v-if="useFeatureFlag('custom_domains') && !loading" />
-        <WorkSpaceEmailSettings v-if="!loading" />
+        <template v-if="!workspace.is_readonly">
+          <WorkSpaceCustomDomains v-if="useFeatureFlag('custom_domains') && !loading" />
+          <WorkSpaceEmailSettings v-if="!loading" />
+        </template>
         <UButton
           label="New Workspace"
           icon="i-heroicons-plus"
@@ -95,12 +97,10 @@
 </template>
 
 <script setup>
-import {watch, ref} from "vue"
 import {fetchAllWorkspaces} from "~/stores/workspaces.js"
 
-const crisp = useCrisp()
 const workspacesStore = useWorkspacesStore()
-const workspaces = computed(() => workspacesStore.getAll)
+const workspace = computed(() => workspacesStore.getCurrent)
 const loading = computed(() => workspacesStore.loading)
 
 useOpnSeoMeta({
@@ -115,8 +115,6 @@ const form = useForm({
   emoji: "",
 })
 const workspaceModal = ref(false)
-
-const workspace = computed(() => workspacesStore.getCurrent)
 
 onMounted(() => {
   fetchAllWorkspaces()

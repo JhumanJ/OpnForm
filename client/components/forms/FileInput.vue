@@ -23,6 +23,7 @@
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
       :class="[
         {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
+         '!bg-gray-200 dark:!bg-gray-800': disabled,
          [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
          ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
         theme.fileInput.input,

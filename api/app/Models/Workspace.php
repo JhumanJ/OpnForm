@@ -203,4 +203,12 @@ class Workspace extends Model implements CachableAttributes
     {
         return $this->hasMany(Form::class);
     }
+
+    public function isReadonlyUser(?User $user)
+    {
+        return $user ? $this->users()
+            ->wherePivot('user_id', $user->id)
+            ->wherePivot('role', User::ROLE_READONLY)
+            ->exists() : false;
+    }
 }
