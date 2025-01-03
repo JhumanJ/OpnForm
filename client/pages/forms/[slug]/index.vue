@@ -141,7 +141,9 @@ const loadForm = async (setup=false) => {
 
   // Remove 'hidden' class from html tag if present
   nextTick(() => {
-    document.documentElement.classList.remove('hidden')
+    if (import.meta.client) {
+      window.document.documentElement.classList.remove('hidden')
+    }
   })
 }
 
@@ -161,7 +163,9 @@ onMounted(() => {
 
     // Remove 'hidden' class from html tag if present
     nextTick(() => {
-      document.documentElement.classList.remove('hidden')
+      if (import.meta.client) {
+        window.document.documentElement.classList.remove('hidden')
+      }
     })
 
     if (import.meta.client) {
