@@ -85,6 +85,7 @@ class Form extends Model implements CachableAttributes
         'submitted_text',
         'redirect_url',
         'use_captcha',
+        'captcha_provider',
         'closes_at',
         'closed_text',
         'max_submissions_count',

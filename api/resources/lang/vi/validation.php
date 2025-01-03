@@ -116,4 +116,6 @@ return [
     'attributes' => [],
 
     'invalid_json' => 'Dữ liệu không hợp lệ. Vui lòng sửa và thử lại.',
+    'invalid_captcha' => 'Mã bảo vệ không đúng. Vui lòng nhập lại và thử lại.',
+    'complete_captcha' => 'Vui lòng nhập mã bảo vệ.',
 ];

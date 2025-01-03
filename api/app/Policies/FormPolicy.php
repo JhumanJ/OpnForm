@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Forms\Form;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FormPolicy
@@ -35,9 +36,17 @@ class FormPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Workspace $workspace)
     {
-        return true;
+        return !$workspace->isReadonlyUser($user);
+    }
+
+    /**
+     * Determine whether the user can perform write operations on the model.
+     */
+    private function canPerformWriteOperation(User $user, Form $form): bool
+    {
+        return $user->ownsForm($form) && !$form->workspace->isReadonlyUser($user);
     }
 
     /**
@@ -47,7 +56,7 @@ class FormPolicy
      */
     public function update(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -57,7 +66,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -67,7 +76,7 @@ class FormPolicy
      */
     public function restore(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $this->canPerformWriteOperation($user, $form);
     }
 
     /**
@@ -77,6 +86,6 @@ class FormPolicy
      */
     public function forceDelete(User $user, Form $form)
     {
-        return $user->ownsForm($form);
+        return $this->canPerformWriteOperation($user, $form);
     }
 }

@@ -5,6 +5,7 @@
         Workspace Members
       </h4>
       <UButton
+        v-if="!workspace.is_readonly"
         label="Invite User"
         icon="i-heroicons-user-plus-20-solid"
         :loading="loading"

@@ -228,6 +228,46 @@
       },
       "content_length_less_than_or_equal_to": {
         "expected_type": "number"
+      },
+      "matches_regex": {
+        "expected_type": "string",
+        "format": {
+          "type": "regex"
+        }
+      },
+      "does_not_match_regex": {
+        "expected_type": "string",
+        "format": {
+          "type": "regex"
+        }
+      }
+    }
+  },
+  "matrix": {
+    "comparators": {
+      "equals": {
+        "expected_type": "object",
+        "format": {
+          "type": "object"
+        }
+      },
+      "does_not_equal": {
+        "expected_type": "object",
+        "format": {
+          "type":"object"
+        }
+      },
+      "contains": {
+        "expected_type": "object",
+        "format": {
+          "type":"object"
+        }
+      },
+      "does_not_contain": {
+        "expected_type": "object",
+        "format": {
+          "type":"object"
+        }
       }
     }
   },

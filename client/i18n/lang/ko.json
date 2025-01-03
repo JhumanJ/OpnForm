@@ -38,6 +38,9 @@
         "signatureInput": {
             "uploadFileInstead": "대신 파일 업로드",
             "clear": "지우기"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "클릭하여 카메라 열기"
         }
     }
 } 

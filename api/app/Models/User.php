@@ -21,6 +21,13 @@ class User extends Authenticatable implements JWTSubject
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
+    public const ROLE_READONLY = 'readonly';
+
+    public const ROLES = [
+        self::ROLE_ADMIN,
+        self::ROLE_USER,
+        self::ROLE_READONLY,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +40,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'hear_about_us',
         'utm_data',
+        'meta'
     ];
 
     /**
@@ -44,6 +52,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
         'hear_about_us',
+        'meta'
     ];
 
     /**
@@ -56,6 +65,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'utm_data' => 'array',
+            'meta' => 'array',
         ];
     }
 

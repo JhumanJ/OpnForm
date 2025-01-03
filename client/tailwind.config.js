@@ -56,9 +56,7 @@ module.exports = {
         5.5: "1.4rem",
       },
       boxShadow: {
-        "inner-notion": "#0f0f0f1a 0px 0px 0px 1px inset",
-        "focus-notion":
-          "#2eaadcb3 0px 0px 0px 1px inset, #2eaadc66 0px 0px 0px 2px !important",
+        'custom-shadow':'0px 25px 75px 0px #5353531A'
       },
       colors: {
         gray: colors.slate,
@@ -78,6 +76,8 @@ module.exports = {
           backgroundDark: "#272B2C",
           help: "#37352f99",
           helpDark: "#fff9",
+          border: 'rgba(15, 15, 15, 0.1)',
+          borderDark: 'rgba(255, 255, 255, 0.1)'
         },
         "form-color": "var(--bg-form-color)",
       },

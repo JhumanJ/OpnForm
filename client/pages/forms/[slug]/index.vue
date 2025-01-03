@@ -142,8 +142,15 @@ const loadForm = async (setup=false) => {
   formsStore.stopLoading()
 
   // Adapt page to form: colors, custom code etc
-  handleDarkMode(form.value.dark_mode)
-  handleTransparentMode(form.value.transparent_background)
+  handleDarkMode(form.value?.dark_mode)
+  handleTransparentMode(form.value?.transparent_background)
+
+  // Remove 'hidden' class from html tag if present
+  nextTick(() => {
+    if (import.meta.client) {
+      window.document.documentElement.classList.remove('hidden')
+    }
+  })
 }
 
 await loadForm(true)
@@ -159,6 +166,13 @@ onMounted(() => {
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
     handleTransparentMode(form.value?.transparent_background)
+
+    // Remove 'hidden' class from html tag if present
+    nextTick(() => {
+      if (import.meta.client) {
+        window.document.documentElement.classList.remove('hidden')
+      }
+    })
 
     if (import.meta.client) {
       if (form.value.custom_code) {
@@ -243,9 +257,18 @@ useOpnSeoMeta({
   }
 })
 
+const getHtmlClass = computed(() => {
+  return {
+    dark: form.value?.dark_mode === 'dark',
+    hidden: form.value?.dark_mode === 'auto' && import.meta.server,
+  }
+})
+
 useHead({
   htmlAttrs: {
-    lang: (form.value?.language) ? form.value.language : 'en'
+    dir: () => form.value?.layout_rtl ? 'rtl' : 'ltr',
+    class: getHtmlClass.value,
+    lang: () => form.value?.language || 'en'
   },
   titleTemplate: (titleChunk) => {
     if (pageMeta.value.page_title) {
@@ -265,9 +288,6 @@ useHead({
       content: 'black-translucent'
     },
   ] : {},
-  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }],
-  htmlAttrs: () => ({
-    dir: form.value?.layout_rtl ? 'rtl' : 'ltr'
-  })
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }]
 })
 </script>

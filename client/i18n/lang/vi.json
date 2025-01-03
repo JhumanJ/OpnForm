@@ -38,6 +38,9 @@
         "signatureInput": {
             "uploadFileInstead": "Tải lên tệp thay thế",
             "clear": "Xóa"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Nhấp để mở Camera"
         }
     }
 } 

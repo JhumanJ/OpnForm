@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Handlers;
 
+use App\Models\Forms\Form;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Arr;
@@ -9,11 +10,12 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class DiscordIntegration extends AbstractIntegrationHandler
 {
-    public static function getValidationRules(): array
+    public static function getValidationRules(?Form $form): array
     {
         return [
             'discord_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks',
             'include_submission_data' => 'boolean',
+            'include_hidden_fields_submission_data' => ['nullable', 'boolean'],
             'link_open_form' => 'boolean',
             'link_edit_form' => 'boolean',
             'views_submissions_count' => 'boolean',
@@ -33,10 +35,14 @@ class DiscordIntegration extends AbstractIntegrationHandler
 
     protected function getWebhookData(): array
     {
+        $settings = (array) $this->integrationData ?? [];
+
         $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
+        if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
+            $formatter->showHiddenFields();
+        }
         $formattedData = $formatter->getFieldsWithValue();
 
-        $settings = (array) $this->integrationData ?? [];
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
             $externalLinks[] = '[**🔗 Open Form**](' . $this->form->share_url . ')';

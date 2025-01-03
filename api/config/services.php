@@ -40,6 +40,11 @@ return [
         'secret_key' => env('H_CAPTCHA_SECRET_KEY'),
     ],
 
+    're_captcha' => [
+        'site_key' => env('RE_CAPTCHA_SITE_KEY'),
+        'secret_key' => env('RE_CAPTCHA_SECRET_KEY'),
+    ],
+
     'canny' => [
         'api_key' => env('CANNY_API_KEY'),
     ],

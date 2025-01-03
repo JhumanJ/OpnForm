@@ -59,7 +59,7 @@
         </div>
       </button>
 
-      <template #panel="{ close }">
+      <template #panel>
         <DatePicker
           v-if="props.dateRange"
           v-model.range="modeledValue"
@@ -157,8 +157,10 @@ const inputClasses = computed(() => {
     classes.push('!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800')
   }
   if (input.hasError.value) {
-
     classes.push('!ring-red-500 !ring-2 !border-transparent')
+  }
+  if (!props.disabled && !input.hasError.value && pickerOpen.value) {
+    classes.push('ring-2 ring-opacity-100 border-transparent')
   }
   return classes.join(' ')
 })

@@ -119,6 +119,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'can_be_indexed' => 'boolean',
             'password' => 'sometimes|nullable',
             'use_captcha' => 'boolean',
+            'captcha_provider' => ['sometimes', Rule::in(['recaptcha', 'hcaptcha'])],
 
             // Custom SEO
             'seo_meta' => 'nullable|array',

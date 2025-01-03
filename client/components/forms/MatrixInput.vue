@@ -4,9 +4,11 @@
       <slot name="label" />
     </template>
     <div
-      class="border border-gray-300 overflow-x-auto"
+      class="border overflow-x-auto"
       :class="[
         theme.default.borderRadius,
+        theme.MatrixInput.cell,
+        theme.MatrixInput.table,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
         },
@@ -19,7 +21,8 @@
             <td
               v-for="column in columns"
               :key="column"
-              class="ltr:border-l rtl:border-r rtl:!border-l-0 border-gray-300 max-w-24 overflow-hidden"
+              class="ltr:border-l rtl:border-r rtl:!border-l-0 max-w-24 overflow-hidden"
+              :class="theme.MatrixInput.cell"
             >
               <div class="p-2 w-full flex items-center justify-center text-sm">
                 {{ column }}
@@ -41,10 +44,14 @@
             <td
               v-for="column in columns"
               :key="row + column"
-              class="ltr:border-l rtl:border-r rtl:!border-l-0 border-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800"
-              :class="{
-                '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800 hover:!bg-gray-200 dark:hover:!bg-gray-800': disabled,
-              }"
+              class="ltr:border-l rtl:border-r rtl:!border-l-0"
+              :class="[
+                theme.MatrixInput.cell,
+                theme.MatrixInput.cellHover,
+                {
+                  '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800 hover:!bg-gray-200 dark:hover:!bg-gray-800': disabled,
+                },
+              ]"
             >
               <div
                 v-if="compVal"

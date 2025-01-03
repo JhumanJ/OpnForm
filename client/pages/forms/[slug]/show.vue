@@ -30,95 +30,41 @@
               <h2 class="flex-grow text-gray-900 truncate">
                 {{ form.title }}
               </h2>
-              <div class="flex">
-                <extra-menu
-                  class="mr-2"
-                  :form="form"
-                />
-
-                <v-button
+              <div class="flex mt-4 gap-2 lg:mt-0">
+                <UButton
                   v-if="form.visibility === 'draft'"
                   color="white"
-                  class="mr-2 text-blue-600 hidden sm:block"
+                  class="hover:no-underline"
+                  icon="i-heroicons-eye"
                   @click="showDraftFormWarningNotification"
                 >
-                  <svg
-                    class="w-6 h-6 inline -mt-1"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </v-button>
-                <v-button
+                  <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
+                </UButton>
+                <UButton
                   v-else
-                  v-track.view_form_click="{
-                    form_id: form.id,
-                    form_slug: form.slug,
-                  }"
+                  v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
                   target="_blank"
-                  :href="form.share_url"
+                  :to="form.share_url"
                   color="white"
-                  class="mr-2 text-blue-600 hidden sm:block"
+                  class="hover:no-underline"
+                  icon="i-heroicons-eye"
                 >
-                  <svg
-                    class="w-6 h-6 inline -mt-1"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </v-button>
-                <v-button
-                  class="text-white"
-                  :to="{ name: 'forms-slug-edit', params: { slug: slug } }"
+                  <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
+                </UButton>
+                <UButton
+                  v-if="!workspace.is_readonly"
+                  v-track.edit_form_click="{form_id: form.id, form_slug: form.slug}"
+                  color="primary"
+                  icon="i-heroicons-pencil"
+                  class="hover:no-underline"
+                  :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
                 >
-                  <svg
-                    class="inline mr-1 -mt-1"
-                    width="18"
-                    height="17"
-                    viewBox="0 0 18 17"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M8.99998 15.6662H16.5M1.5 15.6662H2.89545C3.3031 15.6662 3.50693 15.6662 3.69874 15.6202C3.8688 15.5793 4.03138 15.512 4.1805 15.4206C4.34869 15.3175 4.49282 15.1734 4.78107 14.8852L15.25 4.4162C15.9404 3.72585 15.9404 2.60656 15.25 1.9162C14.5597 1.22585 13.4404 1.22585 12.75 1.9162L2.28105 12.3852C1.9928 12.6734 1.84867 12.8175 1.7456 12.9857C1.65422 13.1348 1.58688 13.2974 1.54605 13.4675C1.5 13.6593 1.5 13.8631 1.5 14.2708V15.6662Z"
-                      stroke="currentColor"
-                      stroke-width="1.67"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Edit form
-                </v-button>
+                  Edit <span class="hidden md:inline">form</span>
+                </UButton>
+                <extra-menu
+                  v-if="!workspace.is_readonly"
+                  :form="form"
+                />
               </div>
             </div>
 
@@ -253,6 +199,7 @@ const slug = useRoute().params.slug
 
 formsStore.startLoading()
 const form = computed(() => formsStore.getByKey(slug))
+const workspace = computed(() => workspacesStore.getCurrent)
 
 const loading = computed(() => formsStore.loading || workspacesStore.loading)
 const displayClosesDate = computed(() => {
@@ -279,11 +226,13 @@ const tabsList = [
     route: "forms-slug-show-submissions",
     params: { 'slug': slug }
   },
-  {
-    name: "Integrations",
-    route: "forms-slug-show-integrations",
-    params: { 'slug': slug }
-  },
+  ...workspace.value.is_readonly ? [] : [
+    {
+      name: "Integrations",
+      route: "forms-slug-show-integrations",
+      params: { 'slug': slug }
+    },
+  ],
   {
     name: "Analytics",
     route: "forms-slug-show-stats",

@@ -38,6 +38,9 @@
         "signatureInput": {
             "uploadFileInstead": "Unggah berkas ing panggone",
             "clear": "Resiki"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Klik kanggo nggawe kamera"
         }
     }
 } 

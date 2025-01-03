@@ -38,6 +38,9 @@
         "signatureInput": {
             "uploadFileInstead": "బదులుగా ఫైల్‌ను అప్‌లోడ్ చేయండి",
             "clear": "క్లియర్"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "క్లిక్ చేయండి కెమెరా తెరవండి"
         }
     }
 } 
