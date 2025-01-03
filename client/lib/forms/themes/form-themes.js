@@ -55,7 +55,9 @@ export const themes = {
     },
     SelectInput: {
       input:
-        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
+        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      background: 'bg-white dark:bg-notion-dark-light',
+      chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {
@@ -206,7 +208,9 @@ export const themes = {
     },
     SelectInput: {
       input:
-        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
+        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
+      background: 'bg-white dark:bg-notion-dark-light',
+      chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {
@@ -351,7 +355,9 @@ export const themes = {
     },
     SelectInput: {
       input:
-        'relative w-full border-transparent flex-1 appearance-none bg-notion-input-background shadow-inner-notion w-full text-gray-900 placeholder-gray-400 dark:bg-notion-dark-light dark:placeholder-gray-500 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
+        'relative w-full border-transparent flex-1 appearance-none shadow-inner-notion w-full text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-base focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-focus-notion',
+      background: 'bg-notion-input-background dark:bg-notion-dark-light',
+      chevronGradient: 'bg-gradient-to-r from-transparent to-notion-input-background dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
       option: 'rounded',
       minHeight: {

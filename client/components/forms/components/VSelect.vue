@@ -35,7 +35,8 @@
         <div
           class="flex items-center"
           :class="[
-            theme.SelectInput.minHeight
+            theme.SelectInput.minHeight,
+            'ltr:pr-8 rtl:pl-8'
           ]"
         >
           <transition
@@ -76,9 +77,12 @@
             </div>
           </transition>
         </div>
-        <span class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none">
+        <div
+          class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light"
+        />
+        <span class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none bg-white">
           <Icon
-            name="heroicons:chevron-up-down-16-solid"
+            name="heroicons:chevron-up-down-16-solid" 
             class="h-5 w-5 text-gray-500"
           />
         </span>
