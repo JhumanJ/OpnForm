@@ -18,6 +18,7 @@
       label="Form Theme"
     />
     <color-input
+      class="mt-4"
       name="color"
       :form="form"
     >
@@ -43,6 +44,20 @@
       :form="form"
       label="Color Mode"
       help="Use Auto to use device system preferences"
+    />
+    <FlatSelectInput
+      :form="form"
+      name="format"
+      :options="[
+        { name: 'Regular format', value: 'regular' },
+        { name: 'Focused format (1 question per page)', value: 'focused' },
+      ]"
+      label="Form format"
+      @update:model-value="onChangeFormat"
+    />
+    <FormatChangeModal
+      :show="showFormatChangeModal"
+      @close="showFormatChangeModal = false"
     />
 
     <EditorSectionHeader
@@ -145,7 +160,7 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Color image"
+      :label="form.format === 'focused' ? 'Background image' : 'Cover image'"
       help="Not visible when form is embedded"
     />
     <toggle-switch-input
@@ -212,6 +227,7 @@
 import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
+import FormatChangeModal from "../../../editors/FormatChangeModal.vue"
 import ProTag from "~/components/global/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
@@ -224,6 +240,7 @@ const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
+const showFormatChangeModal = ref(false)
 const { $i18n } = useNuxtApp()
 
 const user = computed(() => authStore.user)
@@ -262,5 +279,11 @@ const onChangeNoBranding = (val) => {
 const onApplyFont = (val) => {
   form.value.font_family = val
   showGoogleFontPicker.value = false
+}
+
+const onChangeFormat = (val) => {
+  if (val === 'focused') {
+    showFormatChangeModal.value = true
+  }
 }
 </script>

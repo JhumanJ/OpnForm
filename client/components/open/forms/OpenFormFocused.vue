@@ -45,23 +45,12 @@
     >
       <div
         :key="formPageIndex"
-        class="form-group flex flex-wrap w-full"
+        class="w-full shadow-lg rounded-lg bg-white dark:bg-gray-800 p-6"
       >
-        <draggable
-          :list="currentFields"
-          group="form-elements"
-          item-key="id"
-          class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
-          ghost-class="ghost-item"
-          filter=".not-draggable"
-          :animation="200"
-          :disabled="!adminPreview"
-          @change="handleDragDropped"
-        >
-          <template #item="{element}">
+        <div v-if="currentField">
+          <div>
             <open-form-field
-              :field="element"
+              :field="currentField"
               :show-hidden="showHidden"
               :form="form"
               :data-form="dataForm"
@@ -70,64 +59,64 @@
               :dark-mode="darkMode"
               :admin-preview="adminPreview"
             />
-          </template>
-        </draggable>
+          </div>
+          <div class="flex justify-between">
+            <open-form-button
+              v-if="formPageIndex > 0 && !loading"
+              native-type="button"
+              :color="form.color"
+              :theme="theme"
+              class="mt-2 px-8 mx-1"
+              @click="previousPage"
+            >
+              {{ currentField.focused_previous_button_text || $t('forms.back') }}
+            </open-form-button>
+            <open-form-button
+              v-if="formPageIndex >= 0 && !isLastPage && !loading"
+              native-type="button"
+              :color="form.color"
+              :theme="theme"
+              class="mt-2 px-8 mx-1"
+              @click="nextPage"
+            >
+              {{ currentField.focused_next_button_text || $t('forms.next') }}
+            </open-form-button>
+            <slot
+              v-if="isLastPage"
+              name="submit-btn"
+              :submit-form="submitForm"
+            />
+          </div>
+        </div>
+        <div v-else>
+          No fields found
+        </div>
       </div>
     </transition>
 
     <!-- Captcha -->
-    <div class="mb-3 px-2 mt-4 mx-auto w-max">
-      <CaptchaInput
-        v-if="form.use_captcha && isLastPage"
-        ref="captcha"
-        :provider="form.captcha_provider"
-        :form="dataForm"
-        :language="form.language"
-        :dark-mode="darkMode"
-      />
-    </div>
-
-    <!--  Submit, Next and previous buttons  -->
-    <div class="flex flex-wrap justify-center w-full">
-      <open-form-button
-        v-if="formPageIndex>0 && previousFieldsPageBreak && !loading"
-        native-type="button"
-        :color="form.color"
-        :theme="theme"
-        class="mt-2 px-8 mx-1"
-        @click="previousPage"
-      >
-        {{ previousFieldsPageBreak.previous_btn_text }}
-      </open-form-button>
-
-      <slot
-        v-if="isLastPage"
-        name="submit-btn"
-        :submit-form="submitForm"
-      />
-      <open-form-button
-        v-else-if="currentFieldsPageBreak"
-        native-type="button"
-        :color="form.color"
-        :theme="theme"
-        class="mt-2 px-8 mx-1"
-        :loading="dataForm.busy"
-        @click.stop="nextPage"
-      >
-        {{ currentFieldsPageBreak.next_btn_text }}
-      </open-form-button>
-      <div v-if="!currentFieldsPageBreak && !isLastPage">
-        {{ $t('forms.wrong_form_structure') }}
+    <template v-if="form.use_captcha && isLastPage">
+      <div class="mb-3 px-2 mt-2 mx-auto w-max">
+        <vue-hcaptcha
+          ref="hcaptcha"
+          :sitekey="hCaptchaSiteKey"
+          :theme="darkMode?'dark':'light'"
+          @opened="setMinHeight(500)"
+          @closed="setMinHeight(0)"
+        />
+        <has-error
+          :form="dataForm"
+          field-id="h-captcha-response"
+        />
       </div>
-    </div>
+    </template>
   </form>
 </template>
 
 <script>
 import clonedeep from 'clone-deep'
-import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
-import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
+import VueHcaptcha from "@hcaptcha/vue3-hcaptcha"
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
@@ -138,7 +127,7 @@ import { storeToRefs } from 'pinia'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer},
+  components: { OpenFormField, OpenFormButton, VueHcaptcha, FormTimer},
   props: {
     form: {
       type: Object,
@@ -202,27 +191,17 @@ export default {
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
+      minHeight: 0
     }
   },
 
   computed: {
-    /**
-     * Create field groups (or Page) using page breaks if any
-     */
+    hCaptchaSiteKey() {
+      return useRuntimeConfig().public.hCaptchaSiteKey
+    },
     fieldGroups() {
       if (!this.fields) return []
-      const groups = []
-      let currentGroup = []
-      this.fields.forEach((field) => {
-        if (field.type === 'nf-page-break' && this.isFieldHidden(field)) return
-        currentGroup.push(field)
-        if (field.type === 'nf-page-break') {
-          groups.push(currentGroup)
-          currentGroup = []
-        }
-      })
-      groups.push(currentGroup)
-      return groups
+      return this.fields.filter(field => !this.isFieldHidden(field))
     },
     formProgress() {
       const requiredFields = this.fields.filter(field => field.required)
@@ -233,41 +212,12 @@ export default {
       const progress = (completedFields.length / requiredFields.length) * 100
       return Math.round(progress)
     },
-    currentFields: {
-      get() {
-        return this.fieldGroups[this.formPageIndex]
-      },
-      set(val) {
-        // On re-order from the form, set the new order
-        // Add the previous groups and next to val, and set the properties on working form
-        const newFields = []
-        this.fieldGroups.forEach((group, index) => {
-          if (index < this.formPageIndex) {
-            newFields.push(...group)
-          } else if (index === this.formPageIndex) {
-            newFields.push(...val)
-          } else {
-            newFields.push(...group)
-          }
-        })
-        // set the properties on working_form store
-        this.workingFormStore.setProperties(newFields)
-      }
-    },
-    /**
-     * Returns the page break block for the current group of fields
-     */
-    currentFieldsPageBreak() {
-      // Last block from current group
-      if (!this.currentFields?.length) return null
-      const block = this.currentFields[this.currentFields.length - 1]
-      if (block && block.type === 'nf-page-break') return block
-      return null
+    currentField() {
+      return this.fieldGroups[this.formPageIndex]
     },
     previousFieldsPageBreak() {
       if (this.formPageIndex === 0) return null
       const previousFields = this.fieldGroups[this.formPageIndex - 1]
-      if (!previousFields?.length) return null
       const block = previousFields[previousFields.length - 1]
       if (block && block.type === 'nf-page-break') return block
       return null
@@ -302,6 +252,7 @@ export default {
     },
     computedStyle() {
       return {
+        ...this.minHeight ? {minHeight: this.minHeight + 'px'} : {},
         '--form-color': this.form.color
       }
     }
@@ -361,7 +312,8 @@ export default {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
-        this.$refs.captcha?.reset()
+        this.dataForm['h-captcha-response'] = document.getElementsByName('h-captcha-response')[0].value
+        this.$refs.hcaptcha.reset()
       }
 
       if (this.form.editable_submissions && this.form.submission_id) {
@@ -523,9 +475,8 @@ export default {
         this.scrollToTop()
         return false
       }
-      const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.busy = true
-      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
+      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, this.currentField)
         .then(() => {
           this.formPageIndex++
           this.dataForm.busy = false
@@ -564,17 +515,18 @@ export default {
     },
     setPageForField(fieldIndex) {
       if (fieldIndex === -1) return
-
-      let currentIndex = 0
-      for (let i = 0; i < this.fieldGroups.length; i++) {
-        currentIndex += this.fieldGroups[i].length
-        if (currentIndex > fieldIndex) {
-          this.formPageIndex = i
-          return
-        }
-      }
-      this.formPageIndex = this.fieldGroups.length - 1
+      this.formPageIndex = fieldIndex
     },
+    setMinHeight(minHeight) {
+      if (!this.isIframe) return
+
+      this.minHeight = minHeight
+      try {
+        window.parentIFrame.size()
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 }
 </script>

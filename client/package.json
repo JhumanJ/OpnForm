@@ -15,6 +15,7 @@
   "devDependencies": {
     "@iconify-json/clarity": "^1.2.1",
     "@iconify-json/ic": "^1.2.1",
+    "@iconify-json/mdi": "^1.2.1",
     "@iconify-json/octicon": "^1.2.1",
     "@nuxt/devtools": "^1.6.1",
     "@nuxt/eslint-config": "^0.2.0",

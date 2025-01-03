@@ -15,7 +15,7 @@
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col flex-grow"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 px-4 flex items-center gap-x-1.5">
@@ -45,7 +45,7 @@
           />
         </UTooltip>
       </div>
-      <div class="flex-grow overflow-y-auto">
+      <div class="flex-grow overflow-y-auto relative">
         <transition
           enter-active-class="linear duration-100 overflow-hidden"
           enter-from-class="max-h-0"
@@ -54,30 +54,35 @@
           leave-from-class="max-h-56"
           leave-to-class="max-h-0"
         >
-          <div v-if="(form.logo_picture || form.cover_picture)">
+          <div
+            v-if="(form.logo_picture || form.cover_picture || isFocused)"
+            class="relative z-0"
+          >
             <div v-if="form.cover_picture">
               <div
                 id="cover-picture"
-                class="h-[30vh] w-full overflow-hidden flex items-center justify-center"
+                class="w-full overflow-hidden flex items-center justify-center"
+                :class="{'h-[30vh]': !isFocused}"
               >
                 <img
                   alt="Form Cover Picture"
                   :src="coverPictureSrc(form.cover_picture)"
-                  class="object-cover w-full h-[30vh] object-center"
+                  class="object-cover w-full object-center"
+                  :class="{'h-[100vh]': isFocused, 'h-[30vh]': !isFocused}"
                 >
               </div>
             </div>
             <div
               v-if="form.logo_picture"
-              class="w-full mx-auto py-5 relative"
-              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+              class="w-full mx-auto"
+              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded, 'relative py-5': !isFocused}"
               :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
             >
               <img
                 alt="Logo Picture"
                 :src="coverPictureSrc(form.logo_picture)"
-                :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                class="max-w-60 h-20 object-contain absolute transition-all"
+                :class="{ 'top-5':!form.cover_picture && !isFocused, '-top-10':form.cover_picture && !isFocused, 'top-10':isFocused}"
+                class="max-w-60 h-20 object-contain transition-all absolute"
               >
             </div>
           </div>
@@ -87,19 +92,21 @@
             <loader class="h-6 w-6 text-nt-blue mx-auto" />
           </p>
         </div>
-        <open-complete-form
-          v-show="!recordLoading"
-          ref="formPreview"
-          class="w-full mx-auto py-5"
-          :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
-          :creating="creating"
-          :form="form"
-          :dark-mode="darkMode"
-          :admin-preview="!isExpanded"
-          :show-cleanings="false"
-          @restarted="previewFormSubmitted=false"
-          @submitted="previewFormSubmitted=true"
-        />
+        <div :class="{'absolute inset-0 flex items-center justify-center': isFocused}">
+          <open-complete-form
+            v-show="!recordLoading"
+            ref="formPreview"
+            class="w-full mx-auto py-5"
+            :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+            :creating="creating"
+            :form="form"
+            :dark-mode="darkMode"
+            :admin-preview="!isExpanded"
+            :show-cleanings="false"
+            @restarted="previewFormSubmitted=false"
+            @submitted="previewFormSubmitted=true"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -127,6 +134,8 @@ const recordLoading = computed(() => recordsStore.loading)
 const darkMode = useDarkMode(parent)
 
 const creating = computed(() => !_has(form.value, 'id'))
+
+const isFocused = computed(() => form.value.format === 'focused')
 
 defineShortcuts({
   escape: {

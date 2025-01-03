@@ -87,8 +87,11 @@ import BlockTypeIcon from '../BlockTypeIcon.vue'
 
 const workingFormStore = useWorkingFormStore()
 
+const form = computed(() => workingFormStore.content)
+const isFocused = computed(() => form.value?.format === 'focused')
+
 const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
-const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))
+const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-') && (isFocused.value ? !['nf-page-break','nf-divider','nf-image','nf-code'].includes(block.name) : true)))
 
 const closeSidebar = () => {
   workingFormStore.closeAddFieldSidebar()
