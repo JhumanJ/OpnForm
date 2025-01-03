@@ -231,7 +231,7 @@
         :form="field"
         class="mt-3"
         name="date_range"
-        label="End date"
+        label="Include end date"
         @update:model-value="onFieldDateRangeChange"
       />
       <toggle-switch-input
