@@ -40,6 +40,7 @@
     "@nuxt/ui": "^2.19.2",
     "@pinia/nuxt": "^0.5.5",
     "@popperjs/core": "^2.11.8",
+    "@sentry/nuxt": "^8.47.0",
     "@sentry/vite-plugin": "^2.22.6",
     "@sentry/vue": "^7.119.2",
     "@vueuse/components": "^11.2.0",

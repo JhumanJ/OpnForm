@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         '@nuxtjs/i18n',
         '@nuxt/icon', 
         ...process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : [],
+        ...process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@sentry/nuxt/module'] : [],
     ],
     build: {
         transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
@@ -55,7 +56,28 @@ export default defineNuxtConfig({
     },
     sentry: {
         dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
-        lazy: true,
+        // Performance monitoring
+        tracesSampleRate: process.env.SENTRY_TRACES_SAMPLE_RATE,
+        
+        // Session replay
+        replaysSessionSampleRate: process.env.SENTRY_REPLAY_SAMPLE_RATE,
+        replaysOnErrorSampleRate: process.env.SENTRY_ERROR_REPLAY_SAMPLE_RATE,
+
+        // Custom beforeSend configuration
+        beforeSend(event: any) {
+            console.log('beforeSend',event)
+            if (event.exception?.values?.length) {
+                // Don't send validation exceptions to Sentry
+                if (
+                event.exception.values[0].type === "FetchError" &&
+                (event.exception.values[0].value.includes("422") ||
+                    event.exception.values[0].value.includes("401"))
+                ) {
+                    return null
+                }
+            }
+            return event
+        },
     },
     gtag: {
         id: process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE,
