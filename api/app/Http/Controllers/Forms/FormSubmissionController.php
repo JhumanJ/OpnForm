@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Forms;
 use App\Exports\FormSubmissionExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerFormRequest;
+use App\Http\Requests\FormSubmissionExportRequest;
 use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
@@ -14,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
-use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
@@ -47,14 +47,9 @@ class FormSubmissionController extends Controller
         ]);
     }
 
-    public function export(Request $request, string $id)
+    public function export(FormSubmissionExportRequest $request, string $id)
     {
-        $request->validate([
-            'columns' => 'required|array',
-            'columns.*' => 'boolean'
-        ]);
-
-        $form = Form::findOrFail((int) $id);
+        $form = $request->form;
         $this->authorize('view', $form);
 
         $allRows = [];
