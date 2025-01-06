@@ -7,34 +7,29 @@
       Select a field, add some conditions, and finally add some actions.
     </p>
     <div class="relative flex">
-      <div>
-        <v-button
-          color="light-gray"
-          size="small"
+      <UButtonGroup size="xs">
+        <UButton
+          color="gray"
+          icon="i-heroicons-arrow-down-on-square"
           @click="showCopyFormModal = true"
         >
-          <Icon
-            name="lucide:copy"
-            class="w-4 h-4 text-blue-600 inline mr-1 -mt-1"
-          />
           Copy from
-        </v-button>
-      </div>
-      <div>
-        <v-button
-          color="light-gray"
-          shade="light"
-          size="small"
-          class="ml-1"
+        </UButton>
+        <UButton
+          color="gray"
+          icon="i-heroicons-arrow-up-on-square"
+          @click="showCopyToModal = true"
+        >
+          Copy to
+        </UButton>
+        <UButton
+          color="gray"
+          icon="i-mdi-clear-outline"
           @click="clearAll"
         >
-          <Icon
-            name="mdi:clear-outline"
-            class="w-4 h-4 text-red-600 inline mr-1 -mt-1"
-          />
           Clear
-        </v-button>
-      </div>
+        </UButton>
+      </UButtonGroup>
     </div>
 
     <h5 class="font-medium text-gray-700 mt-3">
@@ -63,44 +58,85 @@
     />
 
     <modal
+      max-width="sm"
+      
       :show="showCopyFormModal"
       @close="showCopyFormModal = false"
     >
-      <div class="min-h-[450px]">
-        <h3 class="font-semibold block text-lg">
-          Copy logic from another field
-        </h3>
-        <p class="text-gray-400 text-xs mb-5">
-          Select another field/block to copy its logic and apply it to "{{
-            field.name
-          }}".
-        </p>
-        <select-input
-          v-model="copyFrom"
-          name="copy_from"
-          emit-key="value"
-          label="Copy logic from"
-          placeholder="Choose a field/block..."
-          :options="copyFromOptions"
-          :searchable="copyFromOptions && copyFromOptions.options > 5"
-        />
-        <div class="flex justify-between mb-6">
-          <v-button
-            color="blue"
-            shade="light"
-            @click="copyLogic"
-          >
-            Confirm & Copy
-          </v-button>
-          <v-button
-            color="gray"
-            shade="light"
-            class="ml-1"
-            @click="showCopyFormModal = false"
-          >
-            Close
-          </v-button>
-        </div>
+      <h3 class="font-semibold block text-lg">
+        Copy logic from another field
+      </h3>
+      <p class="text-gray-400 text-xs mb-5">
+        Select another field/block to copy its logic and apply it to "{{
+          field.name
+        }}".
+      </p>
+      <select-input
+        v-model="copyFrom"
+        name="copy_from"
+        emit-key="value"
+        label="Copy logic from"
+        placeholder="Choose a field/block..."
+        :options="copyFromOptions"
+        :searchable="copyFromOptions && copyFromOptions.options > 5"
+      />
+      <div class="flex justify-between mt-2">
+        <UButton
+          color="primary"
+          icon="i-heroicons-check"
+          @click="copyLogic"
+        >
+          Confirm & Copy
+        </UButton>
+        <UButton
+          color="gray"
+          icon="i-heroicons-x-mark"
+          class="ml-1"
+          @click="showCopyFormModal = false"
+        >
+          Close
+        </UButton>
+      </div>
+    </modal>
+
+
+    <modal
+      max-width="sm"
+      :show="showCopyToModal"
+      @close="showCopyToModal = false"
+    >
+      <h3 class="font-semibold block text-lg">
+        Copy logic to other fields
+      </h3>
+      <p class="text-gray-400 text-xs mb-5">
+        Select fields to copy the logic from "{{ field.name }}" to them.
+      </p>
+      <select-input
+        v-model="copyTo"
+        name="copy_to"
+        emit-key="value"
+        label="Copy logic to"
+        placeholder="Choose fields..."
+        :options="copyToOptions"
+        :multiple="true"
+        :searchable="copyToOptions && copyToOptions.length > 5"
+      />
+      <div class="flex justify-between mt-2">
+        <UButton
+          color="primary"
+          icon="i-heroicons-check"
+          @click="copyLogicToFields"
+        >
+          Confirm & Copy
+        </UButton>
+        <UButton
+          color="gray"
+          icon="i-heroicons-x-mark"
+          class="ml-1"
+          @click="showCopyToModal = false"
+        >
+          Close
+        </UButton>
       </div>
     </modal>
   </div>
@@ -135,6 +171,8 @@ export default {
       },
       showCopyFormModal: false,
       copyFrom: null,
+      showCopyToModal: false,
+      copyTo: [],
     }
   },
 
@@ -148,6 +186,15 @@ export default {
             field.logic !== null &&
             field.logic !== {}
           )
+        })
+        .map((field) => {
+          return { name: field.name, value: field.id }
+        })
+    },
+    copyToOptions() {
+      return this.form.properties
+        .filter((field) => {
+          return field.id !== this.field.id
         })
         .map((field) => {
           return { name: field.name, value: field.id }
@@ -272,6 +319,20 @@ export default {
         }
       }
       this.showCopyFormModal = false
+    },
+    copyLogicToFields() {
+      if (this.copyTo.length) {
+        this.copyTo.forEach((fieldId) => {
+          const targetField = this.form.properties.find(
+            (property) => property.id === fieldId
+          )
+          if (targetField) {
+            targetField.logic = clonedeep(this.logic)
+          }
+        })
+      }
+      this.showCopyToModal = false
+      this.copyTo = []
     },
   },
 }

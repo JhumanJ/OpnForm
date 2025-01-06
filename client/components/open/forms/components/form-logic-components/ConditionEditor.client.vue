@@ -12,9 +12,9 @@
     >
       <template #groupOperator="props">
         <div
-          class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1 mb-"
+          class="query-builder-group-slot__group-selection flex items-center px-5 border-b py-1"
         >
-          <p class="mr-2 font-semibold">
+          <p class="mr-2 mt-1 font-semibold">
             Operator
           </p>
           <select-input

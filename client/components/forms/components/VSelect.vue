@@ -13,7 +13,7 @@
         { 
           '!ring-red-500 !ring-2 !border-transparent': hasError, 
           '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError
+          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError && !disabled
         },
         inputClass
       ]"
@@ -35,7 +35,8 @@
         <div
           class="flex items-center"
           :class="[
-            theme.SelectInput.minHeight
+            theme.SelectInput.minHeight,
+            'ltr:pr-8 rtl:pl-8'
           ]"
         >
           <transition
@@ -76,15 +77,22 @@
             </div>
           </transition>
         </div>
-        <span class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none">
+        <div
+          class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-[1]"
+          :class="[disabled ? 'bg-gradient-to-r from-transparent to-gray-200 dark:to-gray-800' : theme.SelectInput.chevronGradient]"
+        />
+        <span
+          class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none"
+          :class="[disabled ? 'bg-gray-200 dark:bg-gray-800' : theme.SelectInput.background]"
+        >
           <Icon
-            name="heroicons:chevron-up-down-16-solid"
+            name="heroicons:chevron-up-down-16-solid" 
             class="h-5 w-5 text-gray-500"
           />
         </span>
       </button>
       <button
-        v-if="clearable && showClearButton && !isEmpty"
+        v-if="clearable && showClearButton && !disabled && !isEmpty"
         class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:!border-l-0 rtl:border-r px-2 flex items-center"
         :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
@@ -204,47 +212,47 @@
 
 <script>
 import Collapsible from '~/components/global/transitions/Collapsible.vue'
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import debounce from 'debounce'
 import Fuse from 'fuse.js'
+import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
 
 export default {
   name: 'VSelect',
-  components: {Collapsible},
+  components: { Collapsible },
   directives: {},
   props: {
     data: Array,
-    modelValue: {default: null, type: [String, Number, Array, Object]},
-    inputClass: {type: String, default: null},
-    dropdownClass: {type: String, default: 'w-full'},
-    loading: {type: Boolean, default: false},
-    required: {type: Boolean, default: false},
-    multiple: {type: Boolean, default: false},
-    searchable: {type: Boolean, default: false},
-    clearable: {type: Boolean, default: false},
-    hasError: {type: Boolean, default: false},
-    remote: {type: Function, default: null},
-    searchKeys: {type: Array, default: () => ['name']},
-    optionKey: {type: String, default: 'id'},
-    emitKey: {type: String, default: null},
-    color: {type: String, default: '#3B82F6'},
-    placeholder: {type: String, default: null},
+    modelValue: { default: null, type: [String, Number, Array, Object, Boolean] },
+    inputClass: { type: String, default: null },
+    dropdownClass: { type: String, default: 'w-full' },
+    loading: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    multiple: { type: Boolean, default: false },
+    searchable: { type: Boolean, default: false },
+    clearable: { type: Boolean, default: false },
+    hasError: { type: Boolean, default: false },
+    remote: { type: Function, default: null },
+    searchKeys: { type: Array, default: () => ['name'] },
+    optionKey: { type: String, default: 'id' },
+    emitKey: { type: String, default: null },
+    color: { type: String, default: '#3B82F6' },
+    placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
     theme: {
       type: Object, default: () => {
-        const theme = inject("theme", null)
+        const theme = inject('theme', null)
         if (theme) {
           return theme.value
         }
         return CachedDefaultTheme.getInstance()
       }
     },
-    allowCreation: {type: Boolean, default: false},
-    disabled: {type: Boolean, default: false}
+    allowCreation: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
-  data() {
+  data () {
     return {
       isOpen: false,
       searchTerm: '',
@@ -253,46 +261,46 @@ export default {
     }
   },
   computed: {
-    optionStyle() {
+    optionStyle () {
       return {
         '--bg-form-color': this.color
       }
     },
-    inputStyle() {
+    inputStyle () {
       return {
         '--tw-ring-color': this.color
       }
     },
-    debouncedRemote() {
+    debouncedRemote () {
       if (this.remote) {
         return debounce(this.remote, 300)
       }
       return null
     },
-    filteredOptions() {
+    filteredOptions () {
       if (!this.data) return []
       if (!this.searchable || this.remote || this.searchTerm === '') {
         return this.data
       }
 
       // Fuse search
-      const fuse = new Fuse(this.data, {
-        keys: this.searchKeys,
-        includeScore: true
-      })
-      return fuse.search(this.searchTerm).filter((res) => res.score < 0.5).map((res) => {
+      const fuzeOptions = {
+        keys: this.searchKeys
+      }
+      const fuse = new Fuse(this.data, fuzeOptions)
+      return fuse.search(this.searchTerm).map((res) => {
         return res.item
       })
     },
-    isSearchable() {
+    isSearchable () {
       return this.searchable || this.remote !== null || this.allowCreation
     },
-    isEmpty() {
+    isEmpty () {
       return this.multiple ? !this.modelValue || this.modelValue.length === 0 : !this.modelValue
     }
   },
   watch: {
-    searchTerm(val) {
+    searchTerm (val) {
       if (!this.debouncedRemote) return
       if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
         return this.debouncedRemote(val)
@@ -300,13 +308,13 @@ export default {
     }
   },
   methods: {
-    onClickAway(event) {
+    onClickAway (event) {
       // Check that event target isn't children of dropdown
       if (this.$refs.select && !this.$refs.select.contains(event.target)) {
         this.isOpen = false
       }
     },
-    isSelected(value) {
+    isSelected (value) {
       if (!this.modelValue) return false
 
       if (this.emitKey && value[this.emitKey]) {
@@ -319,16 +327,18 @@ export default {
       return this.modelValue === value
     },
     onFocus(event) {
+      if (this.disabled) return
       this.isFocused = true
       this.$emit('focus', event)
     },
 
     onBlur(event) {
+      if (this.disabled) return
       this.isFocused = false
       this.$emit('blur', event)
     },
 
-    toggleDropdown() {
+    toggleDropdown () {
       if (this.disabled) {
         this.isOpen = false
       } else {
@@ -343,7 +353,7 @@ export default {
         this.searchTerm = ''
       }
     },
-    select(value) {
+    select (value) {
       if (!this.multiple) {
         // Close after select
         this.toggleDropdown()
@@ -378,10 +388,10 @@ export default {
         }
       }
     },
-    clear() {
+    clear () {
       this.$emit('update:modelValue', this.multiple ? [] : null)
     },
-    createOption(newOption) {
+    createOption (newOption) {
       if (newOption) {
         const newItem = {
           name: newOption,
@@ -396,3 +406,4 @@ export default {
   }
 }
 </script>
+
