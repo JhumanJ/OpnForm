@@ -42,7 +42,7 @@ class S3KeyCleaner
         }
 
         if (!$objectKey || (!is_string($objectKey) && !is_numeric($objectKey))) {
-            throw new \Exception("Expected non-empty string or number, got ${objectKey}");
+            throw new \Exception("Invalid object key: Expected non-empty string or number, received " . (is_object($objectKey) ? get_class($objectKey) : gettype($objectKey)));
         }
 
         if (is_numeric($objectKey)) {
