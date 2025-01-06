@@ -49,6 +49,11 @@ class FormSubmissionController extends Controller
 
     public function export(Request $request, string $id)
     {
+        $request->validate([
+            'columns' => 'required|array',
+            'columns.*' => 'boolean'
+        ]);
+
         $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
 
