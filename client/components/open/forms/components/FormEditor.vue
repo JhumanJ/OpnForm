@@ -150,7 +150,7 @@ export default {
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const isVisible = ref(breakpoints.smaller("md"))
     watch(isVisible, (newValue) => {
-      if (newValue) {
+      if (newValue && form?.value && form?.value?.id) {
         opnFetch('/open/forms/' + form.value.id + '/mobile-editor-email')
       }
     })
