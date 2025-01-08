@@ -14,7 +14,13 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       {
         name: 'google',
         title: 'Google',
-        icon: 'mdi:google',
+        icon: 'cib:google',
+        enabled: true
+      },
+      {
+        name: 'stripe',
+        title: 'Stripe',
+        icon: 'cib:stripe',
         enabled: true
       }
     ]
