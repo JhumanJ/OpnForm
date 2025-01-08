@@ -30,7 +30,6 @@
         v-model="compVal"
         :options="quillOptions"
         :disabled="disabled"
-        :placeholder="placeholder"
         :style="inputStyle"
       />
     </div>
@@ -104,6 +103,7 @@ if (props.enableMentions && !Quill.imports['blots/mention']) {
 
 const quillOptions = computed(() => {
   const defaultOptions = {
+    placeholder: props.placeholder || '',
     theme: 'snow',
     modules: {
       toolbar: [
