@@ -196,5 +196,14 @@
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
     "is_input": false
+  },
+  "nf-payment": {
+    "name": "nf-payment",
+    "title": "Payment",
+    "icon": "i-heroicons-credit-card",
+    "default_block_name": "Payment",
+    "bg_class": "bg-green-100",
+    "text_class": "text-green-900",
+    "is_input": false
   }
 }

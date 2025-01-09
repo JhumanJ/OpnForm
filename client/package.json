@@ -42,6 +42,7 @@
     "@popperjs/core": "^2.11.8",
     "@sentry/vite-plugin": "^2.22.6",
     "@sentry/vue": "^7.119.2",
+    "@stripe/stripe-js": "^5.5.0",
     "@vueuse/components": "^11.2.0",
     "@vueuse/core": "^11.2.0",
     "@vueuse/integrations": "^11.2.0",
@@ -75,6 +76,7 @@
     "vue-json-pretty": "^2.4.0",
     "vue-notion": "^3.0.0",
     "vue-signature-pad": "^3.0.2",
+    "vue-stripe-js": "^1.0.4",
     "vuedraggable": "next",
     "webcam-easy": "^1.1.1"
   },

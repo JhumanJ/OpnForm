@@ -31,6 +31,8 @@ export default {
     SENTRY_TRACES_SAMPLE_RATE: parseNumber(process.env.SENTRY_TRACES_SAMPLE_RATE),
     SENTRY_REPLAY_SAMPLE_RATE: parseNumber(process.env.SENTRY_REPLAY_SAMPLE_RATE),
     SENTRY_ERROR_REPLAY_SAMPLE_RATE: parseNumber(process.env.SENTRY_ERROR_REPLAY_SAMPLE_RATE),
+
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY ?? null
   },
 
   /**

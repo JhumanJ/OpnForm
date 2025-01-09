@@ -96,6 +96,13 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     addBlock(type, index = null, openSettings = true) {
+      if (type === 'nf-payment') {  // Can only have one payment block
+        if (this.content.properties.some(block => block.type === 'nf-payment')) {
+          useAlert().error('Only one payment block is allowed per form')
+          return
+        }
+      }
+      
       this.blockForm.type = type
       this.blockForm.name = blocksTypes[type].default_block_name
       const newBlock = this.prefillDefault(this.blockForm.data())
