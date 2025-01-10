@@ -109,66 +109,16 @@
       />
     </div>
 
-    <div
+    <PaymentFieldOptions
       v-else-if="field.type == 'nf-payment'"
-      class="border-t"
-    >
-      <select-input
-        name="currency"
-        class="mx-4"
-        label="Currency"
-        :options="currencyList"
-        :form="field"
-        :required="true"
-        :searchable="true"
-      />
-      <text-input
-        name="amount"
-        class="mx-4"
-        label="Amount"
-        :form="field"
-        :required="true"
-      />
-      <div v-if="stripeAccounts.length > 0">
-        <select-input
-          name="stripe_account_id"
-          class="mx-4"
-          label="Stripe Account"
-          :options="stripeAccounts"
-          :form="field"
-          :required="true"
-        />
-        <p class="mt-4 mx-4 text-sm text-center text-bold">
-          OR
-        </p>
-      </div>
-      <UButton
-        icon="i-heroicons-arrow-right"
-        class="mt-4 mx-4"
-        block
-        trailing
-        :loading="stripeLoading"
-        @click.prevent="connectStripe"
-      >
-        Connect with Stripe
-      </UButton>
-      <a
-        target="#"
-        class="mx-4 text-gray-500 cursor-pointer"
-        @click.prevent="crisp.openHelpdesk()"
-      >
-        <Icon
-          name="heroicons:information-circle-16-solid"
-          class="inline h-4 w-4"
-        />
-        Learn about collecting payments?
-      </a>
-    </div>
+      :field="field"
+    />
   </div>
 </template>
 
 <script setup>
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
+import PaymentFieldOptions from './PaymentFieldOptions.vue'
 
 const props = defineProps({
   field: {
@@ -180,23 +130,6 @@ const props = defineProps({
     required: false
   }
 })
-
-const providersStore = useOAuthProvidersStore()
-const crisp = useCrisp()
-const stripeLoading = ref(false)
-
-const currencyList = computed(() => {
-  const currencies = useFeatureFlag('services.stripe.currencies') || {}
-  return Object.keys(currencies).map((item) => ({
-    name: currencies[item],
-    value: item
-  }))
-})
-
-const stripeAccounts = computed(() => providersStore.getAll.filter((item) => item.provider === 'stripe').map((item) => ({
-  name: item.name + (item.email ? ' (' + item.email + ')' : ''),
-  value: item.id
-})))
 
 watch(() => props.field?.width, (val) => {
   if (val === undefined || val === null) {
@@ -210,28 +143,9 @@ watch(() => props.field?.align, (val) => {
   }
 }, { immediate: true })
 
-watch(() => props.field?.currency, (val) => {
-  if (val === undefined || val === null) {
-    props.field.currency = 'USD'
-  }
-}, { immediate: true })
-
-watch(() => props.field?.amount, (val) => {
-  if (val === undefined || val === null) {
-    props.field.amount = 10
-  }
-}, { immediate: true })
-
 onMounted(() => {
-  providersStore.fetchOAuthProviders()
-
   if (props.field?.width === undefined || props.field?.width === null) {
     props.field.width = 'full'
   }
 })
-
-const connectStripe = () => {
-  stripeLoading.value = true
-  providersStore.connect('stripe', true, true)
-}
 </script>

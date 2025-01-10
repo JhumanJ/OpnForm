@@ -46,7 +46,7 @@ export default {
 
   props: {
     ...inputProps,
-    currency: { type: String, default: 'usd' },
+    currency: { type: String, default: 'USD' },
     amount: { type: Number, default: 0 },
   },
 
