@@ -6,13 +6,15 @@ use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use SocialiteProviders\Stripe\Provider as StripeProvider;
 
 class OAuthStripeDriver implements OAuthDriver
 {
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
 
-    protected $provider;
+    protected StripeProvider $provider;
 
     public function __construct()
     {
@@ -26,13 +28,11 @@ class OAuthStripeDriver implements OAuthDriver
         $params = [
             'stripe_user[email]' => $user->email,
             'stripe_user[url]' => config('app.url'),
-            'stripe_user[business_name]' => $user->workspace->name ?? null,
+            'stripe_user[business_name]' => $user->name,
         ];
 
-        ray('params', $params);
-        \Log::info('Initiating Stripe Connect flow', [
-            'user_id' => $user->id,
-            'workspace_id' => $user->workspace_id
+        Log::info('Initiating Stripe Connect flow', [
+            'user_id' => $user->id
         ]);
 
         return $this->provider

@@ -131,7 +131,7 @@
       />
       <div v-if="stripeAccounts.length > 0">
         <select-input
-          name="stripe_account"
+          name="stripe_account_id"
           class="mx-4"
           label="Stripe Account"
           :options="stripeAccounts"
@@ -185,47 +185,13 @@ const providersStore = useOAuthProvidersStore()
 const crisp = useCrisp()
 const stripeLoading = ref(false)
 
-const currencyList = ref([
-  { name: 'AED - UAE Dirham', value: 'AED' },
-  { name: 'AUD - Australian Dollar', value: 'AUD' },
-  { name: 'BGN - Bulgarian lev', value: 'BGN' },
-  { name: 'BRL - Brazilian real', value: 'BRL' },
-  { name: 'CAD - Canadian dollar', value: 'CAD' },
-  { name: 'CHF - Swiss franc', value: 'CHF' },
-  { name: 'CNY - Yuan Renminbi', value: 'CNY' },
-  { name: 'CZK - Czech Koruna', value: 'CZK' },
-  { name: 'DKK - Danish Krone', value: 'DKK' },
-  { name: 'EUR - Euro', value: 'EUR' },
-  { name: 'GBP - Pound sterling', value: 'GBP' },
-  { name: 'HKD - Hong Kong dollar', value: 'HKD' },
-  { name: 'HRK - Croatian kuna', value: 'HRK' },
-  { name: 'HUF - Hungarian forint', value: 'HUF' },
-  { name: 'IDR - Indonesian Rupiah', value: 'IDR' },
-  { name: 'ILS - Israeli Shekel', value: 'ILS' },
-  { name: 'INR - Indian Rupee', value: 'INR' },
-  { name: 'ISK - Icelandic króna', value: 'ISK' },
-  { name: 'JPY - Japanese yen', value: 'JPY' },
-  { name: 'KRW - South Korean won', value: 'KRW' },
-  { name: 'MAD - Moroccan Dirham', value: 'MAD' },
-  { name: 'MXN - Mexican peso', value: 'MXN' },
-  { name: 'MYR - Malaysian ringgit', value: 'MYR' },
-  { name: 'NOK - Norwegian krone', value: 'NOK' },
-  { name: 'NZD - New Zealand dollar', value: 'NZD' },
-  { name: 'PHP - Philippine peso', value: 'PHP' },
-  { name: 'PLN - Polish złoty', value: 'PLN' },
-  { name: 'RON - Romanian leu', value: 'RON' },
-  { name: 'RSD - Serbian dinar', value: 'RSD' },
-  { name: 'RUB - Russian Rouble', value: 'RUB' },
-  { name: 'SAR - Saudi riyal', value: 'SAR' },
-  { name: 'SEK - Swedish krona', value: 'SEK' },
-  { name: 'SGD - Singapore dollar', value: 'SGD' },
-  { name: 'THB - Thai baht', value: 'THB' },
-  { name: 'TWD - New Taiwan dollar', value: 'TWD' },
-  { name: 'UAH - Ukrainian hryvnia', value: 'UAH' },
-  { name: 'USD - United States Dollar', value: 'USD' },
-  { name: 'VND - Vietnamese dong', value: 'VND' },
-  { name: 'ZAR - South African rand', value: 'ZAR' }
-])
+const currencyList = computed(() => {
+  const currencies = useFeatureFlag('services.stripe.currencies') || {}
+  return Object.keys(currencies).map((item) => ({
+    name: currencies[item],
+    value: item
+  }))
+})
 
 const stripeAccounts = computed(() => providersStore.getAll.filter((item) => item.provider === 'stripe').map((item) => ({
   name: item.name + ' (' + item.email + ')',

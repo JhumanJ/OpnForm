@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Rules\FormPropertyLogicRule;
+use App\Rules\PaymentBlockConfigurationRule;
 use Illuminate\Validation\Rule;
 
 /**
@@ -70,7 +71,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties' => 'required|array',
             'properties.*.id' => 'required',
             'properties.*.name' => 'required',
-            'properties.*.type' => 'required',
+            'properties.*.type' => ['required', new PaymentBlockConfigurationRule($this->properties)],
             'properties.*.placeholder' => 'sometimes|nullable',
             'properties.*.prefill' => 'sometimes|nullable',
             'properties.*.help' => 'sometimes|nullable',

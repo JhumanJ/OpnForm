@@ -2,17 +2,16 @@
 
 namespace App\Providers;
 
-use App\Integrations\OAuth\Drivers\OAuthStripeDriver;
 use App\Models\Billing\Subscription;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
 use Laravel\Dusk\DuskServiceProvider;
-use Laravel\Socialite\Facades\Socialite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,12 +42,8 @@ class AppServiceProvider extends ServiceProvider
 
         Validator::includeUnvalidatedArrayKeys();
 
-        Socialite::extend('stripe', function ($app) {
-            $config = $app['config']['services.stripe'];
-            return Socialite::buildProvider(
-                OAuthStripeDriver::class,
-                $config
-            );
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('stripe', \SocialiteProviders\Stripe\Provider::class);
         });
     }
 

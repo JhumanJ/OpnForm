@@ -13,7 +13,6 @@ enum OAuthProviderService: string
 
     public function getDriver(): OAuthDriver
     {
-        ray('getDriver', $this);
         return match ($this) {
             self::Google =>  new OAuthGoogleDriver(),
             self::Stripe =>  new OAuthStripeDriver()
