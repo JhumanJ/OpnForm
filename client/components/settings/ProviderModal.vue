@@ -25,7 +25,13 @@
       Connect account
     </template>
 
-    <div class="flex">
+    <div v-if="loading">
+      <Loader class="h-6 w-6 mx-auto" />
+    </div>
+    <div
+      v-else
+      class="flex"
+    >
       <div
         v-for="service in services"
         :key="service.name"
@@ -67,7 +73,10 @@ const emit = defineEmits(['close'])
 const providersStore = useOAuthProvidersStore()
 const services = computed(() => providersStore.services)
 
+const loading = ref(false)
+
 function connect(service) {
+  loading.value = true
   providersStore.connect(service.name)
 }
 </script>
