@@ -70,11 +70,7 @@ class OAuthStripeDriver implements OAuthDriver
     public function fullScopes(): OAuthDriver
     {
         return $this->setScopes([
-            'read_write',           // Basic account access
-            'payments',             // Process payments
-            'payment_method',       // Access to payment methods
-            'transfers',            // Required for platform fees/transfers
-            'application_fees',     // Required for platform fees
+            'read_write',
         ]);
     }
 }
