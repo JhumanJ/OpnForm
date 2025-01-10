@@ -10,6 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class PaymentBlockConfigurationRule implements ValidationRule
 {
     protected array $properties;
+    protected array $field;
 
     public function __construct(array $properties)
     {
@@ -18,7 +19,11 @@ class PaymentBlockConfigurationRule implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($value['type'] !== 'nf-payment') {
+        // Set the field
+        $fieldIndex = explode('.', $attribute)[1];
+        $this->field = $this->properties[$fieldIndex];
+
+        if ($this->field['type'] !== 'nf-payment') {
             return; // If not a payment block, validation passes
         }
 
@@ -34,25 +39,25 @@ class PaymentBlockConfigurationRule implements ValidationRule
 
 
         // Amount validation
-        if (!isset($value['amount']) || !is_numeric($value['amount']) || $value['amount'] < 0.5) {
+        if (!isset($this->field['amount']) || !is_numeric($this->field['amount']) || $this->field['amount'] < 0.5) {
             $fail('Amount must be a number greater than 0.5');
             return;
         }
 
         // Currency validation
-        if (!isset($value['currency']) || !in_array(strtoupper($value['currency']), array_keys(config('services.stripe.currencies')))) {
+        if (!isset($this->field['currency']) || !in_array(strtoupper($this->field['currency']), array_keys(config('services.stripe.currencies')))) {
             $fail('Currency must be a valid currency');
             return;
         }
 
         // Stripe account validation
-        if (!isset($value['stripe_account_id']) || empty($value['stripe_account_id'])) {
+        if (!isset($this->field['stripe_account_id']) || empty($this->field['stripe_account_id'])) {
             $fail('Stripe account is required');
             return;
         }
         try {
             $provider = OAuthProvider::where('provider', 'stripe')
-                ->where('provider_user_id', $value['stripe_account_id'])
+                ->where('provider_user_id', $this->field['stripe_account_id'])
                 ->first();
 
             if ($provider === null) {
@@ -62,7 +67,7 @@ class PaymentBlockConfigurationRule implements ValidationRule
         } catch (\Exception $e) {
             Log::error('Failed to validate Stripe account', [
                 'error' => $e->getMessage(),
-                'account_id' => $value['stripe_account_id']
+                'account_id' => $this->field['stripe_account_id']
             ]);
             $fail('Failed to validate Stripe account');
             return;
