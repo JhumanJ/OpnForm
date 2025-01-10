@@ -37,6 +37,8 @@ class OAuthStripeDriver implements OAuthDriver
 
         return $this->provider
             ->scopes($this->scopes ?? [])
+            ->stateless()
+            ->redirectUrl($this->redirectUrl ?? config('services.stripe.redirect'))
             ->with($params)
             ->redirect()
             ->getTargetUrl();

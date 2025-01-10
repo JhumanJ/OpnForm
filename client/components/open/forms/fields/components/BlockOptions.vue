@@ -194,7 +194,7 @@ const currencyList = computed(() => {
 })
 
 const stripeAccounts = computed(() => providersStore.getAll.filter((item) => item.provider === 'stripe').map((item) => ({
-  name: item.name + ' (' + item.email + ')',
+  name: item.name + (item.email ? ' (' + item.email + ')' : ''),
   value: item.id
 })))
 
