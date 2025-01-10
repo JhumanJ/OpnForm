@@ -56,10 +56,7 @@ class PaymentBlockConfigurationRule implements ValidationRule
             return;
         }
         try {
-            $provider = OAuthProvider::where('provider', 'stripe')
-                ->where('provider_user_id', $this->field['stripe_account_id'])
-                ->first();
-
+            $provider = OAuthProvider::find($this->field['stripe_account_id']);
             if ($provider === null) {
                 $fail('Failed to validate Stripe account');
                 return;
