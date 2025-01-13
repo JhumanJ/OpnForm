@@ -16,6 +16,7 @@
     <text-input
       name="amount"
       label="Amount"
+      native-type="number"
       :form="field"
       :required="true"
     />

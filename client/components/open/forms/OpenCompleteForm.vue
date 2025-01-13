@@ -299,6 +299,27 @@ export default {
       if (form.busy) return
       this.loading = true
 
+      const hasPaymentBlock = this.form.properties.some(prop => prop.type === 'nf-payment')
+      if (hasPaymentBlock) {
+        form.post('/forms/' + this.form.slug + '/payment-intent')
+          .then((paymentData) => {
+            console.log('paymentData', paymentData)
+            // TODO: Charge payment
+          })
+          .catch((error) => {
+            console.error(error)
+            if (error.response?.data?.message) {
+              useAlert().error(error.response.data.message)
+            }
+            this.loading = false
+            onFailure()
+          })
+      } else {
+        // Proceed with normal form submission
+        this.processFormSubmission(form)
+      }
+    },
+    processFormSubmission(form, paymentData = null) {
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {
