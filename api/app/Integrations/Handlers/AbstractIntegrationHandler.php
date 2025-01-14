@@ -10,6 +10,7 @@ use App\Service\Forms\FormSubmissionFormatter;
 use App\Service\Forms\FormLogicConditionChecker;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Vinkla\Hashids\Facades\Hashids;
 
 abstract class AbstractIntegrationHandler
@@ -74,6 +75,10 @@ abstract class AbstractIntegrationHandler
                 'status' => FormIntegrationsEvent::STATUS_ERROR,
                 'data' => $this->extractEventDataFromException($e),
             ]);
+            Log::error('Integration failed', array_merge([
+                'form_id' => $this->form->id,
+                'integration_id' => $this->formIntegration->id,
+            ], $this->extractEventDataFromException($e)));
         }
     }
 

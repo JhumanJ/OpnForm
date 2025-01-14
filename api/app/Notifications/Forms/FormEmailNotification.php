@@ -106,7 +106,14 @@ class FormEmailNotification extends Notification
             return $this->integrationData->sender_email;
         }
 
-        return config('mail.from.address');
+        $baseEmail = config('mail.from.address');
+        if (!config('app.self_hosted')) {
+            // Insert timestamp before the @ to prevent email grouping
+            $parts = explode('@', $baseEmail);
+            return $parts[0] . '+' . time() . '@' . $parts[1];
+        }
+
+        return $baseEmail;
     }
 
     private function getSenderName(): string
@@ -154,6 +161,9 @@ class FormEmailNotification extends Notification
 
         // Add our custom Message-ID as X-Custom-Message-ID
         $message->getHeaders()->addTextHeader('X-Custom-Message-ID', $messageId);
+
+        // Add X-Entity-Ref-ID header for Google+ notifications
+        $message->getHeaders()->addTextHeader('X-Entity-Ref-ID', $messageId);
 
         // Add References header
         $message->getHeaders()->addTextHeader('References', $references);
