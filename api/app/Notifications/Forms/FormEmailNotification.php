@@ -5,30 +5,49 @@ namespace App\Notifications\Forms;
 use App\Events\Forms\FormSubmitted;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
 use Symfony\Component\Mime\Email;
 
-class FormEmailNotification extends Notification implements ShouldQueue
+class FormEmailNotification extends Notification
 {
-    use Queueable;
-
     public FormSubmitted $event;
-    public string $mailer;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(FormSubmitted $event, private $integrationData, string $mailer)
+    public function __construct(FormSubmitted $event, private $integrationData)
     {
         $this->event = $event;
-        $this->mailer = $mailer;
+    }
+
+    private function getMailer(): string
+    {
+        $workspace = $this->event->form->workspace;
+        $emailSettings = $workspace->settings['email_settings'] ?? [];
+
+        if (
+            $workspace->is_pro
+            && $emailSettings
+            && !empty($emailSettings['host'])
+            && !empty($emailSettings['port'])
+            && !empty($emailSettings['username'])
+            && !empty($emailSettings['password'])
+        ) {
+            config([
+                'mail.mailers.custom_smtp.host' => $emailSettings['host'],
+                'mail.mailers.custom_smtp.port' => $emailSettings['port'],
+                'mail.mailers.custom_smtp.username' => $emailSettings['username'],
+                'mail.mailers.custom_smtp.password' => $emailSettings['password']
+            ]);
+            return 'custom_smtp';
+        }
+
+        return config('mail.default');
     }
 
     /**
@@ -51,7 +70,7 @@ class FormEmailNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage())
-            ->mailer($this->mailer)
+            ->mailer($this->getMailer())
             ->replyTo($this->getReplyToEmail($this->event->form->creator->email))
             ->from($this->getFromEmail(), $this->getSenderName())
             ->subject($this->getSubject())

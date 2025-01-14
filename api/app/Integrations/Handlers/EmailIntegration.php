@@ -11,7 +11,7 @@ use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Validation\ValidationException;
 
-class EmailIntegration extends AbstractEmailIntegrationHandler
+class EmailIntegration extends AbstractIntegrationHandler
 {
     public const RISKY_USERS_LIMIT = 120;
 
@@ -95,16 +95,15 @@ class EmailIntegration extends AbstractEmailIntegrationHandler
             ->filter(function ($email) {
                 return filter_var($email, FILTER_VALIDATE_EMAIL);
             });
-        Log::debug('Sending email notification', [
+        Log::info('Sending email notification', [
             'recipients' => $recipients->toArray(),
             'form_id' => $this->form->id,
             'form_slug' => $this->form->slug,
-            'mailer' => $this->mailer
         ]);
 
         $recipients->each(function ($subscriber) {
             Notification::route('mail', $subscriber)->notify(
-                new FormEmailNotification($this->event, $this->integrationData, $this->mailer)
+                new FormEmailNotification($this->event, $this->integrationData)
             );
         });
     }

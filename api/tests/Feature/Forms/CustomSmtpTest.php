@@ -3,6 +3,7 @@
 use App\Notifications\Forms\FormEmailNotification;
 use Tests\Helpers\FormSubmissionDataFactory;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification;
 
 it('can not save custom SMTP settings if not pro user', function () {
     $user = $this->actingAsUser();
@@ -54,8 +55,12 @@ it('send email with custom SMTP settings', function () {
         new AnonymousNotifiable(),
         FormEmailNotification::class,
         function (FormEmailNotification $notification, $channels, $notifiable) {
+            $renderedMail = $notification->toMail($notifiable);
             return $notifiable->routes['mail'] === 'test@test.com' &&
-                $notification->mailer === 'custom_smtp';
+                config('mail.mailers.custom_smtp.host') === 'custom.smtp.host' &&
+                config('mail.mailers.custom_smtp.port') === '587' &&
+                config('mail.mailers.custom_smtp.username') === 'custom_username' &&
+                config('mail.mailers.custom_smtp.password') === 'custom_password';
         }
     );
 });
