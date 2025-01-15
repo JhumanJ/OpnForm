@@ -30,17 +30,33 @@
         v-model="compVal"
         :options="quillOptions"
         :disabled="disabled"
-        :placeholder="placeholder"
         :style="inputStyle"
       />
     </div>
 
-    <template #help>
+    <template
+      v-if="$slots.help"
+      #help
+    >
       <slot name="help" />
     </template>
-    <template #error>
+
+    <template
+      v-if="maxCharLimit && showCharLimit"
+      #bottom_after_help
+    >
+      <small :class="theme.default.help">
+        {{ charCount }}/{{ maxCharLimit }}
+      </small>
+    </template>
+
+    <template
+      v-if="$slots.error"
+      #error
+    >
       <slot name="error" />
     </template>
+
     <MentionDropdown
       v-if="enableMentions && mentionState"
       :state="mentionState"
@@ -59,6 +75,7 @@ import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
 
 const props = defineProps({
   ...inputProps,
+  maxCharLimit: { type: Number, required: false, default: null },
   editorOptions: {
     type: Object,
     default: () => ({})
@@ -86,6 +103,7 @@ if (props.enableMentions && !Quill.imports['blots/mention']) {
 
 const quillOptions = computed(() => {
   const defaultOptions = {
+    placeholder: props.placeholder || '',
     theme: 'snow',
     modules: {
       toolbar: [
@@ -109,6 +127,10 @@ const quillOptions = computed(() => {
   }
   
   return mergedOptions
+})
+
+const charCount = computed(() => {
+  return compVal.value ? compVal.value.replace(/<[^>]*>/g, '').trim().length : 0
 })
 </script>
 

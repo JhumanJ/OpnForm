@@ -213,7 +213,7 @@ export default {
       if (!this.form) {
         return ''
       }
-      return this.runtimeConfig.public.apiBase + 'open/forms/' + this.form.id + '/submissions/export'
+      return this.runtimeConfig.public.apiBase + '/open/forms/' + this.form.id + '/submissions/export'
     },
     isLoading() {
       return this.recordStore.loading

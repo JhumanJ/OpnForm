@@ -3,6 +3,7 @@
 use App\Notifications\Forms\FormEmailNotification;
 use Tests\Helpers\FormSubmissionDataFactory;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification;
 
 it('send email with the submitted data', function () {
     $user = $this->actingAsUser();
@@ -159,7 +160,7 @@ it('does not use custom sender email in non-self-hosted mode', function () {
     $notifiable->route('mail', 'test@test.com');
     $renderedMail = $mailable->toMail($notifiable);
 
-    expect($renderedMail->from[0])->toBe('default@example.com');
+    expect($renderedMail->from[0])->toMatch('/^default\+\d+@example\.com$/');
     expect($renderedMail->from[1])->toBe('Custom Sender');
     expect($renderedMail->subject)->toBe('Custom Subject');
     expect(trim($renderedMail->render()))->toContain('Custom content');
@@ -225,4 +226,31 @@ it('send email with empty reply to', function () {
     $notifiable->route('mail', 'test@test.com');
     $renderedMail = $mailable->toMail($notifiable);
     expect($renderedMail->replyTo[0][0])->toBe($form->creator->email);
+});
+
+it('uses exact email address without timestamp in self-hosted mode', function () {
+    config(['app.self_hosted' => true]);
+    config(['mail.from.address' => 'default@example.com']);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => 'test@test.com',
+        'sender_name' => 'Custom Sender',
+        'subject' => 'Test Subject',
+        'email_content' => 'Test content',
+        'include_submission_data' => true,
+    ]);
+
+    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+
+    $event = new \App\Events\Forms\FormSubmitted($form, $formData);
+    $mailable = new FormEmailNotification($event, $integrationData, 'mail');
+    $notifiable = new AnonymousNotifiable();
+    $notifiable->route('mail', 'test@test.com');
+    $renderedMail = $mailable->toMail($notifiable);
+
+    // In self-hosted mode, the email should be exactly as configured without timestamp
+    expect($renderedMail->from[0])->toBe('default@example.com');
 });

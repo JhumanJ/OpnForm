@@ -68,31 +68,42 @@ class GenerateTaxExport extends Command
         $startDate = $this->option('start-date');
         $endDate = $this->option('end-date');
 
-        // Validate the date format
-        if ($startDate && ! Carbon::createFromFormat('Y-m-d', $startDate)) {
+        // If no start date, use first day of previous month
+        if (!$startDate) {
+            $startDate = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+            if (!$this->confirm("No start date specified. Use {$startDate}?", true)) {
+                return Command::FAILURE;
+            }
+        } elseif (!Carbon::createFromFormat('Y-m-d', $startDate)) {
             $this->error('Invalid start date format. Use YYYY-MM-DD.');
-
             return Command::FAILURE;
         }
 
-        if ($endDate && ! Carbon::createFromFormat('Y-m-d', $endDate)) {
+        // If no end date, use end of the month from start date
+        if (!$endDate) {
+            $endDate = Carbon::parse($startDate)->endOfMonth()->format('Y-m-d');
+            $this->info("Using end date: {$endDate}");
+        } elseif (!Carbon::createFromFormat('Y-m-d', $endDate)) {
             $this->error('Invalid end date format. Use YYYY-MM-DD.');
-
             return Command::FAILURE;
-        } elseif (! $endDate && $this->option('full-month')) {
-            $endDate = Carbon::parse($startDate)->endOfMonth()->endOfDay()->format('Y-m-d');
         }
 
-        $this->info('Start date: '.$startDate);
-        $this->info('End date: '.$endDate);
+        $this->info('Start date: ' . $startDate);
+        $this->info('End date: ' . $endDate);
 
         $processedInvoices = [];
 
         // Create a progress bar
         $queryOptions = [
             'limit' => 100,
-            'expand' => ['data.customer', 'data.customer.address', 'data.customer.tax_ids', 'data.payment_intent',
-                'data.payment_intent.payment_method', 'data.charge.balance_transaction'],
+            'expand' => [
+                'data.customer',
+                'data.customer.address',
+                'data.customer.tax_ids',
+                'data.payment_intent',
+                'data.payment_intent.payment_method',
+                'data.charge.balance_transaction'
+            ],
             'status' => 'paid',
         ];
         if ($startDate) {
@@ -135,14 +146,14 @@ class GenerateTaxExport extends Command
 
         $aggregatedReport = $this->aggregateReport($processedInvoices);
 
-        $filePath = 'opnform-tax-export-per-invoice_'.$startDate.'_'.$endDate.'.xlsx';
+        $filePath = 'opnform-tax-export-per-invoice_' . $startDate . '_' . $endDate . '.xlsx';
         $this->exportAsXlsx($processedInvoices, $filePath);
 
-        $aggregatedReportFilePath = 'opnform-tax-export-aggregated_'.$startDate.'_'.$endDate.'.xlsx';
+        $aggregatedReportFilePath = 'opnform-tax-export-aggregated_' . $startDate . '_' . $endDate . '.xlsx';
         $this->exportAsXlsx($aggregatedReport, $aggregatedReportFilePath);
 
         // Display the results
-        $this->info('Total invoices: '.$totalInvoice.' (with '.$paymentNotSuccessfulCount.' payment not successful or trial free invoice)');
+        $this->info('Total invoices: ' . $totalInvoice . ' (with ' . $paymentNotSuccessfulCount . ' payment not successful or trial free invoice)');
 
         return Command::SUCCESS;
     }
@@ -222,9 +233,11 @@ class GenerateTaxExport extends Command
     private function computeTaxRate($countryCode, $vatId)
     {
         // Since we're a French company, for France, always apply 20% VAT
-        if ($countryCode == 'FR' ||
+        if (
+            $countryCode == 'FR' ||
             is_null($countryCode) ||
-            empty($countryCode)) {
+            empty($countryCode)
+        ) {
             return self::EU_TAX_RATES['FR'];
         }
 
@@ -252,6 +265,6 @@ class GenerateTaxExport extends Command
         }
 
         (new ArrayExport($data))->store($filename, 'local', \Maatwebsite\Excel\Excel::XLSX);
-        $this->line('File generated: '.storage_path('app/'.$filename));
+        $this->line('File generated: ' . storage_path('app/' . $filename));
     }
 }
