@@ -11,7 +11,7 @@ use Stripe\Invoice;
  * This command generates an XML file for DES (Déclaration Européenne de Services) reporting
  * to French customs authorities. It processes Stripe invoices within a given date range
  * and creates an XML file following the official DES schema.
- * 
+ *
  * The XML file includes:
  * - Company VAT number
  * - Declaration period (month/year)
@@ -22,10 +22,10 @@ use Stripe\Invoice;
  *   - Value
  *   - Partner VAT number
  *   - Country code
- * 
+ *
  * Usage:
  * php artisan stripe:generate-des-xml --vat=FR12345678900 --start-date=2024-01-01 --end-date=2024-01-31
- * 
+ *
  * Options:
  * --start-date : Start date in YYYY-MM-DD format (defaults to first day of previous month)
  * --end-date   : End date in YYYY-MM-DD format (defaults to last day of start date's month)
