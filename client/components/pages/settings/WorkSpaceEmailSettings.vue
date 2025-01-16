@@ -71,6 +71,13 @@
         label="Password"
         placeholder="Password"
       />
+      <TextInput
+        :form="emailSettingsForm"
+        name="sender_address"
+        :disabled="!workspace.is_pro"
+        label="Sender address"
+        placeholder="sender@example.com"
+      />
 
       <div class="flex justify-between gap-2">
         <UButton
@@ -115,7 +122,8 @@ const emailSettingsForm = useForm({
   host: '',
   port: '',
   username: '',
-  password: ''
+  password: '',
+  sender_address: ''
 })
 const emailSettingsLoading = ref(false)
 const showEmailSettingsModal = ref(false)
@@ -148,6 +156,7 @@ const saveChanges = () => {
         port: emailSettingsForm?.port,
         username: emailSettingsForm?.username,
         password: emailSettingsForm?.password,
+        sender_address: emailSettingsForm?.sender_address,
       },
     })
     .then((data) => {
@@ -171,5 +180,6 @@ const initEmailSettings = () => {
   emailSettingsForm.port = emailSettings?.port
   emailSettingsForm.username = emailSettings?.username
   emailSettingsForm.password = emailSettings?.password
+  emailSettingsForm.sender_address = emailSettings?.sender_address
 }
 </script>
