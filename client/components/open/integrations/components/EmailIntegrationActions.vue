@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
 
 const firstEmail = computed(() => {
   const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
-  return emails[0] || ''
+  return emails[0].replace(/<[^>]*>/g, '') || ''
 })
 
 const additionalEmailsCount = computed(() => {
