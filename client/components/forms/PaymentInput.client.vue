@@ -5,24 +5,59 @@
     </template>
 
     <div
-      v-if="stripeLoaded"
-      class="my-4"
+      :class="[
+        theme.default.input,
+        theme.default.borderRadius,
+        theme.default.spacing.horizontal,
+        theme.default.spacing.vertical,
+        theme.default.fontSize,
+        {
+          '!ring-red-500 !ring-2 !border-transparent': hasError,
+          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+        },
+      ]"
     >
-      <p class="mb-2 text-sm text-gray-500">
-        Amount: {{ currency }} {{ amount }}
-      </p>
-      <StripeElements
-        v-slot="{ elements, instance }"
-        :stripe-key="stripeKey"
+      <div
+        v-if="stripeState.isLoaded"
+        class="my-4"
       >
-        <StripeElement
-          ref="card"
-          :elements="elements"
-        />
-      </StripeElements>
-    </div>
-    <div v-else>
-      <p>Loading...</p>
+        <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
+          <span class="text-sm font-medium text-gray-700">Amount to pay</span>
+          <span class="text-sm font-medium text-gray-900">{{ currency }} {{ amount }}</span>
+        </div>
+        <StripeElements
+          ref="stripeElements"
+          v-slot="{ elements }"
+          :stripe-key="stripeKey"
+          :instance-options="stripeOptions"
+          :elements-options="elementsOptions"
+        >
+          <div class="space-y-4">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <StripeElement
+                ref="card"
+                :elements="elements"
+                type="card"
+              />
+            </div>
+            <TextInput
+              v-model="cardHolderName"
+              placeholder="Name on card"
+              class="w-full"
+              :theme="theme"
+            />
+            <TextInput
+              v-model="cardHolderEmail"
+              placeholder="Email address"
+              class="w-full"
+              :theme="theme"
+            />
+          </div>
+        </StripeElements>         
+      </div>
+      <div v-else>
+        <Loader class="mx-auto h-6 w-6" />
+      </div>
     </div>
 
     <template #help>
@@ -34,35 +69,70 @@
   </InputWrapper>
 </template>
 
-<script>
-import { inputProps, useFormInput } from './useFormInput.js'
+<script setup>
+import { inputProps } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
 
-export default {
-  name: 'PaymentInput',
-  components: { InputWrapper, StripeElements, StripeElement },
+const props = defineProps({
+  ...inputProps,
+  currency: { type: String, default: 'USD' },
+  amount: { type: Number, default: 0 }
+})
 
-  props: {
-    ...inputProps,
-    currency: { type: String, default: 'USD' },
-    amount: { type: Number, default: 0 },
+const stripeKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
+const { state: stripeState } = useStripeElements()
+
+const card = ref(null)
+const cardHolderName = ref('')
+const cardHolderEmail = ref('')
+
+const onStripeReady = ({ stripe: stripeInstance, elements: elementsInstance }) => {
+  if (!stripeInstance || !elementsInstance) {
+    console.error('Stripe initialization failed')
+    return
+  }
+  
+  stripeState.value.isLoaded = true
+  stripeState.value.stripe = stripeInstance
+  stripeState.value.elements = elementsInstance
+  stripeState.value.card = card.value
+  stripeState.value.cardHolderName = cardHolderName.value
+  stripeState.value.cardHolderEmail = cardHolderEmail.value
+}
+
+const stripeOptions = computed(() => ({
+  locale: props.locale
+}))
+
+const elementsOptions = computed(() => ({
+  mode: "payment",
+  amount: props.amount,
+  currency: props.currency.toLowerCase(),
+  payment_method_types: ['card'],
+  appearance: {
+    theme: 'stripe',
+    labels: 'above',
   },
-
-  setup(props, context) {
-    const stripeKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
-    const stripeLoaded = ref(false)
-
-    onMounted(async () => {
-      await loadStripe(stripeKey)
-      stripeLoaded.value = true
-    })
-    return {
-      ...useFormInput(props, context),
-      stripeKey,
-      stripeLoaded
+  fields: {
+    billingDetails: {
+      name: 'always', // 'always', 'never', or 'auto'
+      email: 'always',
     }
   }
-}
+}))
+
+onMounted(async () => {
+  try {
+    const stripeInstance = await loadStripe(stripeKey)
+    if (!stripeInstance) {
+      useAlert().error('Failed to load Stripe')
+    }
+    onStripeReady({ stripe: stripeInstance, elements: stripeInstance.elements })
+  } catch (error) {
+    console.error('Stripe initialization error:', error)
+    stripeState.value.isLoaded = false
+  }
+})
 </script>

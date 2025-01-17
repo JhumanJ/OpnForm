@@ -233,7 +233,8 @@ export default {
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
-      confetti: useConfetti()
+      confetti: useConfetti(),
+      stripeState: useStripeElements()
     }
   },
 
@@ -289,7 +290,7 @@ export default {
   },
 
   methods: {
-    submitForm (form, onFailure) {
+    async submitForm(form, onFailure) {
       if (this.creating) {
         this.submitted = true
         this.$emit('submitted', true)
@@ -301,19 +302,20 @@ export default {
 
       const hasPaymentBlock = this.form.properties.some(prop => prop.type === 'nf-payment')
       if (hasPaymentBlock) {
-        form.post('/forms/' + this.form.slug + '/payment-intent')
-          .then((paymentData) => {
-            console.log('paymentData', paymentData)
-            // TODO: Charge payment
-          })
-          .catch((error) => {
-            console.error(error)
-            if (error.response?.data?.message) {
-              useAlert().error(error.response.data.message)
-            }
-            this.loading = false
-            onFailure()
-          })
+        try {
+          // Process the payment
+          const { processPayment } = useStripeElements()
+          const result = await processPayment(this.form.slug)
+          console.log('result', result)
+          
+          // If payment successful, submit the form
+          await this.processFormSubmission(form)
+        } catch (error) {
+          console.error(error)
+          useAlert().error(error.message || 'Payment failed')
+          this.loading = false
+          onFailure()
+        }
       } else {
         // Proceed with normal form submission
         this.processFormSubmission(form)

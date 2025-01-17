@@ -29,7 +29,7 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'nf-payment');
+        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'nf-payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
@@ -57,7 +57,7 @@ class FormPaymentController extends Controller
 
             $intent = PaymentIntent::create([
                 'amount' => (int) ($paymentBlock['amount'] * 100),  // Stripe requires amount in cents
-                'currency' => $paymentBlock['currency'],
+                'currency' => strtolower($paymentBlock['currency']),
                 'payment_method_types' => ['card'],
                 'metadata' => [
                     'form_id' => $form->id,
@@ -81,9 +81,9 @@ class FormPaymentController extends Controller
                 return $this->error(['message' => 'Failed to create payment intent']);
             }
         } catch (\Stripe\Exception\CardException $e) {
-            Log::warning('Card payment failed', [
+            Log::warning('Failed to create payment intent', [
                 'form_id' => $form->id,
-                'error_code' => $e->getStripeCode()
+                'message' => $e->getMessage()
             ]);
             return $this->error(['message' => $e->getMessage()]);
         } catch (\Exception $e) {
