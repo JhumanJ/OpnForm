@@ -37,7 +37,9 @@
               <StripeElement
                 ref="card"
                 :elements="elements"
-                type="card"
+                :options="cardOptions"
+                @ready="onCardReady"
+                @change="onCardChanged"
               />
             </div>
             <TextInput
@@ -85,22 +87,45 @@ const stripeKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
 const { state: stripeState } = useStripeElements()
 
 const card = ref(null)
+const stripeElements = ref(null)
 const cardHolderName = ref('')
 const cardHolderEmail = ref('')
 
-const onStripeReady = ({ stripe: stripeInstance, elements: elementsInstance }) => {
-  if (!stripeInstance || !elementsInstance) {
+const onCardChanged = (event) => {
+  console.log('card changed', event)
+}
+  
+const onCardReady = (element) => {
+  stripeState.value.card = card.value?.stripeElement
+}
+
+const onStripeReady = (stripeInstance) => {
+  if (!stripeInstance) {
     console.error('Stripe initialization failed')
     return
   }
   
   stripeState.value.isLoaded = true
   stripeState.value.stripe = stripeInstance
-  stripeState.value.elements = elementsInstance
-  stripeState.value.card = card.value
-  stripeState.value.cardHolderName = cardHolderName.value
-  stripeState.value.cardHolderEmail = cardHolderEmail.value
+  stripeState.value.elements = stripeElements
 }
+
+watch(cardHolderName, (newValue) => {
+  stripeState.value.cardHolderName = newValue
+})
+
+watch(cardHolderEmail, (newValue) => {
+  stripeState.value.cardHolderEmail = newValue
+})
+
+watch(card, (newValue) => {
+  stripeState.value.card = newValue
+})
+
+watch(stripeState.value.intentId, (newValue) => {
+  console.log('intentId changed', newValue)
+  compVal.value = newValue
+})
 
 const stripeOptions = computed(() => ({
   locale: props.locale
@@ -123,13 +148,19 @@ const elementsOptions = computed(() => ({
   }
 }))
 
+const cardOptions = computed(() => ({
+  type: 'card',
+  hidePostalCode: true,
+  disableLink: true,
+}))
+
 onMounted(async () => {
   try {
     const stripeInstance = await loadStripe(stripeKey)
     if (!stripeInstance) {
       useAlert().error('Failed to load Stripe')
     }
-    onStripeReady({ stripe: stripeInstance, elements: stripeInstance.elements })
+    onStripeReady(stripeInstance)
   } catch (error) {
     console.error('Stripe initialization error:', error)
     stripeState.value.isLoaded = false

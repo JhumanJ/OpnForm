@@ -8,7 +8,8 @@ export const useStripeElements = () => {
       elements: null,
       card: null,
       cardHolderName: '',
-      cardHolderEmail: ''
+      cardHolderEmail: '',
+      intentId: null
     })
   }
 
@@ -18,18 +19,20 @@ export const useStripeElements = () => {
     }
 
     await opnFetch('/forms/' + formSlug + '/payment-intent').then(async (responseIntent) => {
-      if(responseIntent?.type === 'success') {
+      if (responseIntent?.type === 'success') {
+        state.value.intentId = responseIntent?.intent?.id
         const intentSecret = responseIntent?.intent?.secret
-        console.log('intentSecret', intentSecret)
-
-        const result = await state.value.stripe.confirmCardPayment(intentSecret, {
+        const stripeInstance = state.value?.elements?.instance
+        
+        const result = await stripeInstance.confirmCardPayment(intentSecret, {
           payment_method: {
             card: state.value.card,
             billing_details: {
               name: state.value.cardHolderName,
               email: state.value.cardHolderEmail
             },
-          }
+          },
+          receipt_email: state.value.cardHolderEmail,
         })
         console.log('result', result)
     
