@@ -309,6 +309,7 @@ export default {
           console.log('result', result)
           if (result && result?.error) {
             form.errors.set(hasPaymentBlock.id, result.error.message)
+            useAlert().error(result.error.message)
             this.loading = false
             onFailure()
             return
