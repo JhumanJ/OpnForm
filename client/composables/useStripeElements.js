@@ -18,7 +18,7 @@ export const useStripeElements = () => {
       throw new Error('Stripe not initialized')
     }
 
-    await opnFetch('/forms/' + formSlug + '/payment-intent').then(async (responseIntent) => {
+    return await opnFetch('/forms/' + formSlug + '/payment-intent').then(async (responseIntent) => {
       if (responseIntent?.type === 'success') {
         state.value.intentId = responseIntent?.intent?.id
         const intentSecret = responseIntent?.intent?.secret
@@ -34,13 +34,7 @@ export const useStripeElements = () => {
           },
           receipt_email: state.value.cardHolderEmail,
         })
-        console.log('result', result)
-    
-        if (result.error) {
-          throw new Error(result.error.message)
-        }
-    
-        return result.paymentIntent
+        return result
       } else { 
         useAlert().error(responseIntent.message)
       }

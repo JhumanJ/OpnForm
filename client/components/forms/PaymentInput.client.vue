@@ -30,7 +30,6 @@
           v-slot="{ elements }"
           :stripe-key="stripeKey"
           :instance-options="stripeOptions"
-          :elements-options="elementsOptions"
         >
           <div class="space-y-4">
             <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -128,24 +127,7 @@ watch(stripeState.value.intentId, (newValue) => {
 })
 
 const stripeOptions = computed(() => ({
-  locale: props.locale
-}))
-
-const elementsOptions = computed(() => ({
-  mode: "payment",
-  amount: props.amount,
-  currency: props.currency.toLowerCase(),
-  payment_method_types: ['card'],
-  appearance: {
-    theme: 'stripe',
-    labels: 'above',
-  },
-  fields: {
-    billingDetails: {
-      name: 'always', // 'always', 'never', or 'auto'
-      email: 'always',
-    }
-  }
+  locale: props.locale || 'en'
 }))
 
 const cardOptions = computed(() => ({

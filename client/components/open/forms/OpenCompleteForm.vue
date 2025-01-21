@@ -300,19 +300,25 @@ export default {
       if (form.busy) return
       this.loading = true
 
-      const hasPaymentBlock = this.form.properties.some(prop => prop.type === 'nf-payment')
+      const hasPaymentBlock = this.form.properties.find(prop => prop.type === 'nf-payment')
       if (hasPaymentBlock) {
         try {
           // Process the payment
           const { processPayment } = useStripeElements()
           const result = await processPayment(this.form.slug)
           console.log('result', result)
-          
+          if (result && result?.error) {
+            form.errors.set(hasPaymentBlock.id, result.error.message)
+            this.loading = false
+            onFailure()
+            return
+          } 
           // If payment successful, submit the form
+          useAlert().success('Thank you! Your payment is successful.')
           await this.processFormSubmission(form)
         } catch (error) {
           console.error(error)
-          useAlert().error(error.message || 'Payment failed')
+          useAlert().error(error?.message || 'Payment failed')
           this.loading = false
           onFailure()
         }
