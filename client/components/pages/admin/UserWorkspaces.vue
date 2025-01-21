@@ -1,16 +1,16 @@
 <template>
-    <AdminCard
-      title="Workspaces"
-      icon="heroicons:globe-alt"
+  <AdminCard
+    title="Workspaces"
+    icon="heroicons:globe-alt"
+  >
+    <UTable
+      :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      :progress="{ color: 'primary', animation: 'carousel' }"
+      :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
+      :columns="columns"
+      :rows="rows"
+      class="-mx-6"
     >
-      <UTable
-        :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-        :progress="{ color: 'primary', animation: 'carousel' }"
-        :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
-        :columns="columns"
-        :rows="rows"
-        class="-mx-6"
-      >
       <template #plan-data="{ row }">
         <span
           class="text-xs select-all rounded-md px-2 py-1 border"
@@ -19,18 +19,19 @@
           {{ row.plan }}
         </span>
       </template>
-      </UTable>
-      <div 
-        v-if="workspaces?.length > pageCount"
-        class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-        <UPagination
-          v-model="page"
-          :page-count="pageCount"
-          :total="workspaces?.length"
-        />
-      </div>
-    </AdminCard>
-  </template>
+    </UTable>
+    <div 
+      v-if="workspaces?.length > pageCount"
+      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+    >
+      <UPagination
+        v-model="page"
+        :page-count="pageCount"
+        :total="workspaces?.length"
+      />
+    </div>
+  </AdminCard>
+</template>
   
 <script setup>
 

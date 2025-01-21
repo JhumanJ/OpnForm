@@ -1,7 +1,16 @@
 <template>
-  <div class="main-layout min-h-screen flex flex-col">
-    <Navbar />
+  <div class="main-layout min-h-screen flex flex-col h-full">
+    <!--    <Navbar />-->
+    <Header />
 
-    <slot class="flex-grow" />
+    <div class="flex w-full mx-auto max-w-[1440px] h-full">
+      <sidebar />
+
+      <slot class="flex-grow" />
+    </div>
   </div>
 </template>
+<script setup lang="ts">
+import Sidebar from "~/layouts/sidebar.vue"
+import Header from "~/components/global/Header.vue"
+</script>

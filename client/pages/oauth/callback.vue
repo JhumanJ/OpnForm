@@ -30,9 +30,9 @@
 </template>
 
 <script setup>
-import { useNuxtApp } from "nuxt/app";
+import { useNuxtApp } from "nuxt/app"
 
-const { $utm } = useNuxtApp();
+const { $utm } = useNuxtApp()
 
 const router = useRouter()
 const route = useRoute()

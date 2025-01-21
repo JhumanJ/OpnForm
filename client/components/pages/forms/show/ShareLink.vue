@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white p-4 rounded-2xl">
     <h3 class="font-semibold text-xl">
       Share Link
     </h3>
