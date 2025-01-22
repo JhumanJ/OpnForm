@@ -24,12 +24,12 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'nf-payment');
+        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
             ]);
-            return $this->error(['message' => 'Invalid form configuration.'], 400);
+            return $this->error(['message' => 'Form does not have a payment block.'], 400);
         }
 
         // Get provider

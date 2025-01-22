@@ -211,7 +211,7 @@ export default {
         email: shallowRef(OpenText),
         phone_number: shallowRef(OpenText),
         signature: shallowRef(OpenFile),
-        'nf-payment': shallowRef(OpenPayment),
+        payment: shallowRef(OpenPayment),
       },
     }
   },

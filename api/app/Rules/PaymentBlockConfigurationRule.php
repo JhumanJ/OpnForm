@@ -23,13 +23,13 @@ class PaymentBlockConfigurationRule implements ValidationRule
         $fieldIndex = explode('.', $attribute)[1];
         $this->field = $this->properties[$fieldIndex];
 
-        if ($this->field['type'] !== 'nf-payment') {
+        if ($this->field['type'] !== 'payment') {
             return; // If not a payment block, validation passes
         }
 
         // Only one payment block allowed
         $paymentBlocks = collect($this->properties)
-            ->filter(fn ($prop) => $prop['type'] === 'nf-payment')
+            ->filter(fn ($prop) => $prop['type'] === 'payment')
             ->count();
 
         if ($paymentBlocks > 1) {

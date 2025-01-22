@@ -17,7 +17,7 @@
         :field="field"
         :can-be-disabled="false"
         :can-be-hidden="true"
-        :can-be-required="['nf-payment'].includes(field.type)"
+        :can-be-required="false"
       />
       
       <div class="grid grid-cols-2 gap-2 mt-2">
@@ -108,17 +108,11 @@
         help="You can add any html code, including iframes"
       />
     </div>
-
-    <PaymentFieldOptions
-      v-else-if="field.type == 'nf-payment'"
-      :field="field"
-    />
   </div>
 </template>
 
 <script setup>
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
-import PaymentFieldOptions from './PaymentFieldOptions.vue'
 
 const props = defineProps({
   field: {

@@ -301,7 +301,7 @@ export default {
       this.loading = true
 
       const { state: stripeState,processPayment } = useStripeElements()
-      const hasPaymentBlock = this.form.properties.find(prop => prop.type === 'nf-payment')
+      const hasPaymentBlock = this.form.properties.find(prop => prop.type === 'payment')
       if (hasPaymentBlock && !stripeState.value.intentId) {
         try {
           // Process the payment

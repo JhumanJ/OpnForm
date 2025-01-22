@@ -208,9 +208,7 @@ export default {
       if (field.type === 'phone_number' && !field.use_simple_text_input) {
         return 'PhoneInput'
       }
-      if (field.type === 'nf-payment') {
-        return 'PaymentInput'
-      }
+
       return {
         text: 'TextInput',
         rich_text: 'RichTextAreaInput',
@@ -227,7 +225,8 @@ export default {
         email: 'TextInput',
         phone_number: 'TextInput',
         matrix: 'MatrixInput',
-        barcode: 'BarcodeInput'
+        barcode: 'BarcodeInput',
+        payment: 'PaymentInput'
       }[field.type]
     },
     isPublicFormPage() {
@@ -401,7 +400,7 @@ export default {
         inputProperties.unavailableCountries = field.unavailable_countries ?? []
       } else if (field.type === 'text' && field.secret_input) {
         inputProperties.nativeType = 'password'
-      } else if (field.type === 'nf-payment') {
+      } else if (field.type === 'payment') {
         inputProperties.currency = field.currency
         inputProperties.amount = field.amount
       }

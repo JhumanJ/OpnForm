@@ -1,5 +1,8 @@
 <template>
-  <div class="px-4">
+  <div
+    v-if="field.type === 'payment'"
+    class="px-4"
+  >
     <EditorSectionHeader
       icon="i-heroicons-credit-card-20-solid"
       title="Payment"
