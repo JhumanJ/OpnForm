@@ -145,6 +145,7 @@ import OpenMatrix from "./components/OpenMatrix.vue"
 import OpenDate from "./components/OpenDate.vue"
 import OpenFile from "./components/OpenFile.vue"
 import OpenCheckbox from "./components/OpenCheckbox.vue"
+import OpenPayment from "./components/OpenPayment.vue"
 import ResizableTh from "./components/ResizableTh.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import clonedeep from "clone-deep"
@@ -210,6 +211,7 @@ export default {
         email: shallowRef(OpenText),
         phone_number: shallowRef(OpenText),
         signature: shallowRef(OpenFile),
+        'nf-payment': shallowRef(OpenPayment),
       },
     }
   },

@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { inputProps } from './useFormInput.js'
+import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
@@ -81,6 +81,9 @@ const props = defineProps({
   currency: { type: String, default: 'USD' },
   amount: { type: Number, default: 0 }
 })
+
+const emit = defineEmits([])
+const { ...formInput } = useFormInput(props, { emit })
 
 const stripeKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
 const { state: stripeState } = useStripeElements()
@@ -121,9 +124,8 @@ watch(card, (newValue) => {
   stripeState.value.card = newValue
 })
 
-watch(stripeState.value.intentId, (newValue) => {
-  console.log('intentId changed', newValue)
-  compVal.value = newValue
+watch(() => stripeState.value.intentId, (newValue) => {
+  formInput.compVal.value = newValue
 })
 
 const stripeOptions = computed(() => ({

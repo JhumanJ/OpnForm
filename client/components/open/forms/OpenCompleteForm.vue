@@ -304,7 +304,7 @@ export default {
       if (hasPaymentBlock) {
         try {
           // Process the payment
-          const { processPayment } = useStripeElements()
+          const { state: stripeState,processPayment } = useStripeElements()
           const result = await processPayment(this.form.slug)
           console.log('result', result)
           if (result && result?.error) {
@@ -313,10 +313,15 @@ export default {
             this.loading = false
             onFailure()
             return
-          } 
-          // If payment successful, submit the form
-          useAlert().success('Thank you! Your payment is successful.')
-          await this.processFormSubmission(form)
+          }
+
+          if (result?.paymentIntent?.status === 'succeeded') {
+            stripeState.value.intentId = result.paymentIntent.id
+            useAlert().success('Thank you! Your payment is successful.')
+            await this.processFormSubmission(form)
+            return
+          }
+          useAlert().error('Something went wrong. Please try again.')
         } catch (error) {
           console.error(error)
           useAlert().error(error?.message || 'Payment failed')

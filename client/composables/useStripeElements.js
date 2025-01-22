@@ -30,7 +30,6 @@ export const useStripeElements = () => {
 
     return await opnFetch('/forms/' + formSlug + '/payment-intent').then(async (responseIntent) => {
       if (responseIntent?.type === 'success') {
-        state.value.intentId = responseIntent?.intent?.id
         const intentSecret = responseIntent?.intent?.secret
         const stripeInstance = state.value?.elements?.instance
         
