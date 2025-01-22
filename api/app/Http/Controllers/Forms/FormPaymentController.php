@@ -11,11 +11,6 @@ use Stripe\PaymentIntent;
 
 class FormPaymentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function createIntent(Request $request)
     {
         $form = $request->form;
