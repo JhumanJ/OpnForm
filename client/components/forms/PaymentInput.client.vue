@@ -1,5 +1,5 @@
 <template>
-  <InputWrapper v-bind="inputWrapperProps">
+  <InputWrapper v-bind="props">
     <template #label>
       <slot name="label" />
     </template>

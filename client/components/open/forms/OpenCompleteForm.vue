@@ -300,11 +300,11 @@ export default {
       if (form.busy) return
       this.loading = true
 
+      const { state: stripeState,processPayment } = useStripeElements()
       const hasPaymentBlock = this.form.properties.find(prop => prop.type === 'nf-payment')
-      if (hasPaymentBlock) {
+      if (hasPaymentBlock && !stripeState.value.intentId) {
         try {
           // Process the payment
-          const { state: stripeState,processPayment } = useStripeElements()
           const result = await processPayment(this.form.slug)
           console.log('result', result)
           if (result && result?.error) {
