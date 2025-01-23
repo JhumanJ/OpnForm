@@ -13,19 +13,25 @@ export const useStripeElements = () => {
     })
   }
 
-  const processPayment = async (formSlug) => {
+  const processPayment = async (formSlug, isRequired=true) => {
     if (!state.value.stripe || !state.value.elements) {
       throw new Error('Stripe not initialized')
     }
 
-    if(!state.value.cardHolderName) {
-      return { error: { message: 'Card holder name is required' } }
+    if (isRequired && state.value.card._empty) {
+      return { error: { message: 'Complete the payment before you can proceed' } }
     }
-    if(!state.value.cardHolderEmail) {
-      return { error: { message: 'Billing email address is required' } }
-    }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.value.cardHolderEmail)) {
-      return { error: { message: 'Invalid billing email address' } }
+    
+    if(isRequired || !state.value.card._empty){
+      if(!state.value.cardHolderName) {
+        return { error: { message: 'Card holder name is required' } }
+      }
+      if(!state.value.cardHolderEmail) {
+        return { error: { message: 'Billing email address is required' } }
+      }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.value.cardHolderEmail)) {
+        return { error: { message: 'Invalid billing email address' } }
+      }
     }
 
     return await opnFetch('/forms/' + formSlug + '/payment-intent').then(async (responseIntent) => {

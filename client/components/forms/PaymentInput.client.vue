@@ -17,48 +17,53 @@
         },
       ]"
     >
-      <div
-        v-if="stripeState.isLoaded"
-        class="my-4"
-      >
-        <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
-          <span class="text-sm font-medium text-gray-700">Amount to pay</span>
-          <span class="text-sm font-medium text-gray-900">{{ currency }} {{ amount }}</span>
-        </div>
-        <StripeElements
-          ref="stripeElements"
-          v-slot="{ elements }"
-          :stripe-key="stripeKey"
-          :instance-options="stripeOptions"
+      <div v-if="stripeState?.intentId">
+        <p>Payment successful</p>
+      </div>
+      <template v-else>
+        <div
+          v-if="stripeState.isLoaded"
+          class="my-4"
         >
-          <div class="space-y-4">
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <StripeElement
-                ref="card"
-                :elements="elements"
-                :options="cardOptions"
-                @ready="onCardReady"
-                @change="onCardChanged"
+          <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
+            <span class="text-sm font-medium text-gray-700">Amount to pay</span>
+            <span class="text-sm font-medium text-gray-900">{{ currency }} {{ amount }}</span>
+          </div>
+          <StripeElements
+            ref="stripeElements"
+            v-slot="{ elements }"
+            :stripe-key="stripeKey"
+            :instance-options="stripeOptions"
+          >
+            <div class="space-y-4">
+              <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <StripeElement
+                  ref="card"
+                  :elements="elements"
+                  :options="cardOptions"
+                  @ready="onCardReady"
+                  @change="onCardChanged"
+                />
+              </div>
+              <TextInput
+                v-model="cardHolderName"
+                placeholder="Name on card"
+                class="w-full"
+                :theme="theme"
+              />
+              <TextInput
+                v-model="cardHolderEmail"
+                placeholder="Email address"
+                class="w-full"
+                :theme="theme"
               />
             </div>
-            <TextInput
-              v-model="cardHolderName"
-              placeholder="Name on card"
-              class="w-full"
-              :theme="theme"
-            />
-            <TextInput
-              v-model="cardHolderEmail"
-              placeholder="Email address"
-              class="w-full"
-              :theme="theme"
-            />
-          </div>
-        </StripeElements>         
-      </div>
-      <div v-else>
-        <Loader class="mx-auto h-6 w-6" />
-      </div>
+          </StripeElements>         
+        </div>
+        <div v-else>
+          <Loader class="mx-auto h-6 w-6" />
+        </div>
+      </template>
     </div>
 
     <template #help>

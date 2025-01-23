@@ -355,8 +355,15 @@ export default {
   },
 
   methods: {
-    submitForm() {
+    async submitForm() {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
+
+      this.dataForm.busy = true
+      if (!await this.doPayment()) {
+        this.dataForm.busy = false
+        return
+      }
+      this.dataForm.busy = false
 
       if (this.form.use_captcha && import.meta.client) {
         this.$refs.captcha?.reset()
@@ -515,14 +522,20 @@ export default {
       this.formPageIndex--
       this.scrollToTop()
     },
-    nextPage() {
+    async nextPage() {
       if (this.adminPreview || this.urlPrefillPreview) {
         this.formPageIndex++
         this.scrollToTop()
         return false
       }
-      const fieldsToValidate = this.currentFields.map(f => f.id)
+
       this.dataForm.busy = true
+      if (!await this.doPayment()) {
+        this.dataForm.busy = false
+        return false
+      }
+      
+      const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
         .then(() => {
           this.formPageIndex++
@@ -530,6 +543,35 @@ export default {
           this.scrollToTop()
         }).catch(this.handleValidationError)
       return false
+    },
+    async doPayment() {
+      // If there is a payment block, process the payment
+      const { state: stripeState, processPayment } = useStripeElements()
+      const paymentBlock = this.currentFields.find(field => field.type === 'payment')
+      if (paymentBlock && !stripeState.value.intentId && (paymentBlock.required || !stripeState.value.card._empty)) {
+        try {
+          // Process the payment
+          const result = await processPayment(this.form.slug, paymentBlock.required)
+          console.log('result', result)
+          if (result && result?.error) {
+            this.dataForm.errors.set(paymentBlock.id, result.error.message)
+            useAlert().error(result.error.message)
+            return false
+          }
+
+          if (result?.paymentIntent?.status === 'succeeded') {
+            stripeState.value.intentId = result.paymentIntent.id
+            useAlert().success('Thank you! Your payment is successful.')
+            return true
+          }
+          useAlert().error('Something went wrong. Please try again.')
+        } catch (error) {
+          console.error(error)
+          useAlert().error(error?.message || 'Payment failed')
+        }
+        return false
+      }
+      return true
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })

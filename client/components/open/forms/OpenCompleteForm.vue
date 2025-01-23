@@ -299,41 +299,6 @@ export default {
 
       if (form.busy) return
       this.loading = true
-
-      const { state: stripeState,processPayment } = useStripeElements()
-      const hasPaymentBlock = this.form.properties.find(prop => prop.type === 'payment')
-      if (hasPaymentBlock && !stripeState.value.intentId) {
-        try {
-          // Process the payment
-          const result = await processPayment(this.form.slug)
-          console.log('result', result)
-          if (result && result?.error) {
-            form.errors.set(hasPaymentBlock.id, result.error.message)
-            useAlert().error(result.error.message)
-            this.loading = false
-            onFailure()
-            return
-          }
-
-          if (result?.paymentIntent?.status === 'succeeded') {
-            stripeState.value.intentId = result.paymentIntent.id
-            useAlert().success('Thank you! Your payment is successful.')
-            await this.processFormSubmission(form)
-            return
-          }
-          useAlert().error('Something went wrong. Please try again.')
-        } catch (error) {
-          console.error(error)
-          useAlert().error(error?.message || 'Payment failed')
-          this.loading = false
-          onFailure()
-        }
-      } else {
-        // Proceed with normal form submission
-        this.processFormSubmission(form)
-      }
-    },
-    processFormSubmission(form, paymentData = null) {
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {

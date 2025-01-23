@@ -29,7 +29,7 @@ class FormPaymentController extends Controller
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
             ]);
-            return $this->error(['message' => 'Form does not have a payment block.'], 400);
+            return $this->error(['message' => 'Form does not have a payment block.']);
         }
 
         // Get provider
@@ -38,7 +38,7 @@ class FormPaymentController extends Controller
             Log::error('Failed to find Stripe account', [
                 'stripe_account_id' => $paymentBlock['stripe_account_id']
             ]);
-            return $this->error(['message' => 'Failed to find Stripe account'], 400);
+            return $this->error(['message' => 'Failed to find Stripe account']);
         }
 
         try {
