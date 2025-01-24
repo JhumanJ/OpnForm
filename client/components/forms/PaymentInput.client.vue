@@ -135,6 +135,13 @@ watch(() => stripeState.value.intentId, (newValue) => {
   formInput.compVal.value = newValue
 })
 
+watch(() => props.direction, async (newValue) => {
+  await resetCard()
+})
+watch(() => props.locale, async (newValue) => {
+  await resetCard()
+})
+
 const stripeOptions = computed(() => ({
   locale: props.locale
 }))
@@ -157,4 +164,12 @@ onMounted(async () => {
     stripeState.value.isLoaded = false
   }
 })
+
+const resetCard = async () => {
+  if (card.value?.stripeElement) {
+    card.value.stripeElement.unmount()
+    await nextTick()
+    card.value.stripeElement.mount(card.value.$el)
+  }
+}
 </script>
