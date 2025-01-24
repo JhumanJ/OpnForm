@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Clique para abrir a câmera"
+        },
+        "payment": {
+            "amount_to_pay": "Valor a ser pago",
+            "success": "Pagamento realizado com sucesso",
+            "name_on_card": "Nome no cartão",
+            "billing_email": "Endereço de e-mail de faturamento"
         }
     }
 } 

@@ -401,6 +401,7 @@ export default {
       } else if (field.type === 'text' && field.secret_input) {
         inputProperties.nativeType = 'password'
       } else if (field.type === 'payment') {
+        inputProperties.direction = this.form.layout_rtl ? 'rtl' : 'ltr'
         inputProperties.currency = field.currency
         inputProperties.amount = field.amount
       }

@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "ਕਲਿੱਕ ਕਰੋ ਕੈਮਰਾ ਖੋਲਣ ਲਈ"
+        },
+        "payment": {
+            "amount_to_pay": "ਭੁਗਤਾਨ ਕਰਨ ਲਈ ਰਕਮ",
+            "success": "ਭੁਗਤਾਨ ਸਫਲ",
+            "name_on_card": "ਕਾਰਡ ਦਾ ਨਾਮ",
+            "billing_email": "ਬਿਲਿੰਗ ਈਮੇਲ ਪਤਾ"
         }
     }
 } 

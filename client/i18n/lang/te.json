@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "క్లిక్ చేయండి కెమెరా తెరవండి"
+        },
+        "payment": {
+            "amount_to_pay": "పరివర్తనం చేయడానికి రోలు",
+            "success": "పరివర్తనం సఫలం",
+            "name_on_card": "కార్డ్ పేరు",
+            "billing_email": "బిల్లింగ్ ఇమెయిల్ చిరునామా"
         }
     }
 } 

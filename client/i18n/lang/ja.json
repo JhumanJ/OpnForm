@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "クリックしてカメラを開く"
+        },
+        "payment": {
+            "amount_to_pay": "支払い金額",
+            "success": "支払い成功",
+            "name_on_card": "カード名",
+            "billing_email": "請求メールアドレス"
         }
     }
 } 

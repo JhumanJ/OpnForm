@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "انقر لفتح كاميرا"
+        },
+        "payment": {
+            "amount_to_pay": "المبلغ المستحق",
+            "success": "الدفع بنجاح",
+            "name_on_card": "اسم المستخدم على البطاقة",
+            "billing_email": "البريد الإلكتروني للفواتير"
         }
     }
 } 

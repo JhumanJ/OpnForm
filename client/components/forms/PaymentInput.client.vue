@@ -18,7 +18,7 @@
       ]"
     >
       <div v-if="stripeState?.intentId">
-        <p>Payment successful</p>
+        <p>{{ $t('forms.payment.success') }}</p>
       </div>
       <template v-else>
         <div
@@ -26,7 +26,7 @@
           class="my-4"
         >
           <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
-            <span class="text-sm font-medium text-gray-700">Amount to pay</span>
+            <span class="text-sm font-medium text-gray-700">{{ $t('forms.payment.amount_to_pay') }}</span>
             <span class="text-sm font-medium text-gray-900">{{ currency }} {{ amount }}</span>
           </div>
           <StripeElements
@@ -39,6 +39,7 @@
               <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
                 <StripeElement
                   ref="card"
+                  :dir="props.direction"
                   :elements="elements"
                   :options="cardOptions"
                   @ready="onCardReady"
@@ -47,13 +48,13 @@
               </div>
               <TextInput
                 v-model="cardHolderName"
-                placeholder="Name on card"
+                :placeholder="$t('forms.payment.name_on_card')"
                 class="w-full"
                 :theme="theme"
               />
               <TextInput
                 v-model="cardHolderEmail"
-                placeholder="Email address"
+                :placeholder="$t('forms.payment.billing_email')"
                 class="w-full"
                 :theme="theme"
               />
@@ -83,6 +84,7 @@ import { StripeElements, StripeElement } from 'vue-stripe-js'
 
 const props = defineProps({
   ...inputProps,
+  direction: { type: String, default: 'ltr' },
   currency: { type: String, default: 'USD' },
   amount: { type: Number, default: 0 }
 })
@@ -134,7 +136,7 @@ watch(() => stripeState.value.intentId, (newValue) => {
 })
 
 const stripeOptions = computed(() => ({
-  locale: props.locale || 'en'
+  locale: props.locale
 }))
 
 const cardOptions = computed(() => ({

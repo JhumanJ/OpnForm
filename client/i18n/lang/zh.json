@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "点击打开相机"
+        },
+        "payment": {
+            "amount_to_pay": "支付金额",
+            "success": "支付成功",
+            "name_on_card": "卡上姓名",
+            "billing_email": "账单电子邮件地址"
         }
     }
 } 

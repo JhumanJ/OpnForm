@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Nhấp để mở Camera"
+        },
+        "payment": {
+            "amount_to_pay": "Số tiền cần thanh toán",
+            "success": "Thanh toán thành công",
+            "name_on_card": "Tên trên thẻ",
+            "billing_email": "Email thanh toán"
         }
     }
 } 

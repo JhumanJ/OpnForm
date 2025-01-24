@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "클릭하여 카메라 열기"
+        },
+        "payment": {
+            "amount_to_pay": "결제 금액",
+            "success": "결제 성공",
+            "name_on_card": "카드 이름",
+            "billing_email": "청구 이메일 주소"
         }
     }
 } 
