@@ -1,0 +1,24 @@
+# Use the official Nginx image as a parent image
+FROM nginx:1.25.3-alpine
+
+# Create necessary directories
+RUN mkdir -p /defaults
+
+WORKDIR /etc/nginx/conf.d/
+
+# Copy the Nginx configuration file into the container
+COPY web/nginx.conf /defaults/nginx-default.conf
+COPY web/nginx-docker-entrypoint /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port 80
+EXPOSE 80
+
+# Set environment variables with default values
+ENV OPNFORM_UI_HOSTNAME=ui
+ENV OPNFORM_API_HOSTNAME=api
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

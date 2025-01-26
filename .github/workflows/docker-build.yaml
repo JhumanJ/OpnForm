@@ -1,0 +1,152 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+  pull_request:
+    branches:
+      - main
+
+  # schedule:
+  #   - cron: '0 0 * * *' # Runs every day
+
+env:
+  REGISTRY_NAME: ${{ vars.REGISTRY_NAME || 'docker.io' }} # Defaults to docker.io
+  REGISTRY_ORG: ${{ vars.REGISTRY_ORG || github.actor }} # Defaults to github actor
+
+  IMAGE_TAG_NAME: ${{ vars.IMAGE_TAG_NAME || 'latest' }} # Defaults to latest
+
+  IMAGE_PUSH_MODE: ${{ contains(vars.IMAGE_BUILD_MODE, 'push') }}
+  IMAGE_LOAD_MODE: ${{ contains(vars.IMAGE_BUILD_MODE, 'load') }}
+
+  CUSTOM_CERTIFICATE: ${{ vars.CUSTOM_CERTIFICATE || '' }} # Defaults to empty
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for updates in remote repository
+        id: check-updates
+        run: |
+          git clone --depth 1 https://github.com/JhumanJ/OpnForm.git /tmp/remote-repo
+          cd /tmp/remote-repo
+          REMOTE_LATEST_COMMIT=$(git rev-parse HEAD)
+          cd -
+          LOCAL_LATEST_COMMIT=$(git rev-parse HEAD)
+          if [ "$REMOTE_LATEST_COMMIT" != "$LOCAL_LATEST_COMMIT" ]; then
+            echo "Remote repository has updates."
+            echo "::set-output name=updates::true"
+          else
+            echo "No updates in remote repository."
+            echo "::set-output name=updates::false"
+          fi
+
+      - name: Copy custom certificate
+        if: ${{ env.CUSTOM_CERTIFICATE }}
+        continue-on-error: true
+        run: |
+          if [ -f /certs/${{ env.CUSTOM_CERTIFICATE }} ]; then
+            mkdir -p /etc/ssl/certs
+            cp /certs/${{ env.CUSTOM_CERTIFICATE }} /etc/ssl/certs/${{ env.CUSTOM_CERTIFICATE }}
+            update-ca-certificates
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          cleanup: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        if: ${{ env.IMAGE_PUSH_MODE }}
+        with:
+          registry: ${{ env.REGISTRY_NAME }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    #   - name: Dump environment variables
+    #     run: |
+    #       printenv | sort
+
+        ###############################################################################################################
+      - name: Extract Docker metadata for API image
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_ORG }}/opnform-api
+          tags: |
+            type=raw,value=${{ env.IMAGE_TAG_NAME }}
+            type=raw,value=latest
+            type=ref,event=tag
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        if: ${{ contains(vars.IMAGES_TO_BUILD, 'api') || contains(vars.IMAGES_TO_BUILD, 'all') || vars.IMAGES_TO_BUILD == '' }}
+        with:
+          context: .
+          push: ${{ env.IMAGE_PUSH_MODE }}
+          load: ${{ env.IMAGE_LOAD_MODE }}
+          tags: ${{ steps.meta-api.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: OPNFORM_VERSION=${{ env.IMAGE_TAG_NAME }}
+          file: docker/api/Dockerfile.api
+
+        ###############################################################################################################
+      - name: Extract Docker metadata for Client image
+        id: meta-client
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_ORG }}/opnform-client
+          tags: |
+            type=raw,value=${{ env.IMAGE_TAG_NAME }}
+            type=raw,value=latest
+            type=ref,event=tag
+
+      - name: Build and push Client image
+        uses: docker/build-push-action@v6
+        if: ${{ contains(vars.IMAGES_TO_BUILD, 'client') || contains(vars.IMAGES_TO_BUILD, 'all') || vars.IMAGES_TO_BUILD == '' }}
+        with:
+          context: .
+          push: ${{ env.IMAGE_PUSH_MODE }}
+          load: ${{ env.IMAGE_LOAD_MODE }}
+          tags: ${{ steps.meta-client.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: OPNFORM_VERSION=${{ env.IMAGE_TAG_NAME }}
+          file: docker/client/Dockerfile.client
+
+        ###############################################################################################################
+      - name: Extract Docker metadata for Web image
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_ORG }}/opnform-web
+          tags: |
+            type=raw,value=${{ env.IMAGE_TAG_NAME }}
+            type=raw,value=latest
+            type=ref,event=tag
+
+      - name: Build and push Web image
+        uses: docker/build-push-action@v6
+        if: ${{ contains(vars.IMAGES_TO_BUILD, 'web') || contains(vars.IMAGES_TO_BUILD, 'all') || vars.IMAGES_TO_BUILD == '' }}
+        with:
+          context: .
+          push: ${{ env.IMAGE_PUSH_MODE }}
+          load: ${{ env.IMAGE_LOAD_MODE }}
+          tags: ${{ steps.meta-web.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: OPNFORM_VERSION=${{ env.IMAGE_TAG_NAME }}
+          file: docker/web/Dockerfile.web

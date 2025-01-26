@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+[ "$DEBUG" == "true" ] || [ "$DEBUG" == "1" ] && env | sort
+
+if [ ! -f /defaults/nginx-default.conf ]; then
+  echo "Nginx default config not found, exiting..."
+  exit 1
+fi
+
+# Replace environment variables in the Nginx config
+envsubst '${OPNFORM_UI_HOSTNAME} ${OPNFORM_API_HOSTNAME}' < /defaults/nginx-default.conf > /etc/nginx/conf.d/default.conf.tmp
+mv /etc/nginx/conf.d/default.conf.tmp /etc/nginx/conf.d/default.conf
+
+[ "$DEBUG" == "true" ] || [ "$DEBUG" == "1" ] && cat /etc/nginx/conf.d/default.conf
+
+# Execute the CMD
+exec "$@"

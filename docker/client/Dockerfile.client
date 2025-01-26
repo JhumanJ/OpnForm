@@ -1,3 +1,18 @@
+# syntax=docker/dockerfile:1.3-labs
+
+FROM alpine:latest AS code
+
+WORKDIR /app
+
+ARG OPNFORM_VERSION=main
+ENV OPNFORM_VERSION=${OPNFORM_VERSION}
+
+RUN apk add --no-cache git \
+        && mkdir -p /app \
+        && echo "Cloning OpnForm tag/branch: ${OPNFORM_VERSION}" \
+        && git config --global advice.detachedHead false \
+        && git clone --depth 1 --branch ${OPNFORM_VERSION} https://github.com/JhumanJ/OpnForm.git /app
+
 FROM node:20-alpine AS javascript-builder
 WORKDIR /app
 
@@ -6,7 +21,7 @@ WORKDIR /app
 #
 # It's possible to run npm install with only the package.json and package-lock.json file.
 
-ADD ./client/package.json ./client/package-lock.json ./
+COPY --from=code /app/client/package.json /app/client/package-lock.json ./
 
 # Install git and other necessary build tools
 RUN apk add --no-cache git
@@ -19,12 +34,14 @@ RUN npm cache clean --force && \
 # Explicitly install the correct version of esbuild
 # RUN npm install esbuild@0.21.5
 
-ADD ./client/ /app/
+COPY --from=code /app/client/ /app/
 RUN npm run build
 
 FROM node:20-alpine
 WORKDIR /app
 COPY --from=javascript-builder /app/.output/ /app/
 RUN ls /app/
+
+EXPOSE 3000
 
 CMD [ "node", "./server/index.mjs" ]

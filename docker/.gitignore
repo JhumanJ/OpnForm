@@ -1,0 +1,4 @@
+.env.*
+!.env.*.sample
+docker-build.sh
+.actrc

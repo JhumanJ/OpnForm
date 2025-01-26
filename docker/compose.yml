@@ -1,7 +1,10 @@
+# syntax=docker/dockerfile
+
 ---
 services:
   api: &api
     image: jhumanj/opnform-api:latest
+    container_name: opnform-api
     environment: &api-environment  # Add this anchor
       DB_HOST: db
       REDIS_HOST: redis
@@ -11,32 +14,36 @@ services:
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
-    env_file: 
-    - ./api/.env
+    env_file:
+    - .env.api
     volumes:
     - opnform_storage:/usr/share/nginx/html/storage:rw
 
   api-worker:
     image: jhumanj/opnform-api:latest
+    container_name: opnform-api-worker
     command: php artisan queue:work
     environment:
       <<: *api-environment
       IS_API_WORKER: "true"
-    env_file: 
-    - ./api/.env
+    env_file:
+    - .env.api
     volumes:
     - opnform_storage:/usr/share/nginx/html/storage:rw
 
   ui:
     image: jhumanj/opnform-client:latest
-    env_file: 
-    - ./client/.env
+    container_name: opnform-ui
+    env_file:
+    - .env.client
 
   redis:
     image: redis:7
+    container_name: opnform-redis
 
   db:
     image: postgres:16
+    container_name: opnform-db
     environment:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
@@ -45,11 +52,12 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   ingress:
-    image: nginx:1
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
+    image: jhumanj/opnform-web:latest
+    container_name: opnform-web
+    env_file:
+    - .env.web
     ports:
-      - 80:80
+      - 8222:80
 
 volumes:
   postgres-data:

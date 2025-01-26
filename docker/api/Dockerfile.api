@@ -1,0 +1,65 @@
+# syntax=docker/dockerfile:1.3-labs
+
+FROM alpine:latest AS code
+
+WORKDIR /app
+
+ARG OPNFORM_VERSION=main
+ENV OPNFORM_VERSION=${OPNFORM_VERSION}
+
+RUN apk add --no-cache git \
+        && mkdir -p /app \
+        && if [ "${OPNFORM_VERSION}" = "latest" ]; then export OPNFORM_VERSION="main"; fi \
+        && echo "Cloning OpnForm tag/branch: ${OPNFORM_VERSION}" \
+        && git config --global advice.detachedHead false \
+        && git clone --depth 1 --branch ${OPNFORM_VERSION} https://github.com/JhumanJ/OpnForm.git /app
+
+FROM php:8.3-fpm
+
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libpng-dev \
+    postgresql-client \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN docker-php-ext-install pdo pgsql pdo_pgsql gd bcmath zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
+
+WORKDIR /usr/share/nginx/html/
+
+# Combine multiple ADD commands into one
+COPY --from=code /app/api/composer.json /app/api/composer.lock /app/api/artisan ./
+COPY --from=code /app/api/app ./app
+COPY --from=code /app/api/bootstrap ./bootstrap
+COPY --from=code /app/api/config ./config
+COPY --from=code /app/api/database ./database
+COPY --from=code /app/api/public ./public
+COPY --from=code /app/api/routes ./routes
+COPY --from=code /app/api/tests ./tests
+COPY --from=code /app/api/resources ./resources
+COPY --from=code /app/api/storage ./storage
+
+RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json \
+    && composer install --ignore-platform-req=php --no-dev --optimize-autoloader \
+    && composer clear-cache \
+    && php artisan package:discover --ansi \
+    && chmod -R 775 storage \
+    && chown -R www-data:www-data storage \
+    && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
+    && chown -R www-data:www-data storage \
+    && chmod -R 775 storage
+
+COPY --from=code /app/docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
+RUN chmod a+x /usr/local/bin/*
+
+ENV SELF_HOSTED=true
+
+EXPOSE 9000
+
+ENTRYPOINT ["/usr/local/bin/opnform-entrypoint"]
+CMD ["php-fpm"]

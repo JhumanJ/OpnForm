@@ -1,0 +1,20 @@
+# This is a local .actrc file (https://github.com/nektos/act)
+
+# Define the actor to use during the local build
+-a jhumanj
+
+# Define the registry information to be used for pushing the images
+--var REGISTRY_NAME=docker.io
+--var REGISTRY_ORG=jhumanj
+# -s REGISTRY_USERNAME=
+# -s REGISTRY_PASSWORD=
+
+# Define the image tag name, and the build mode to be used for the images
+--var IMAGE_TAG_NAME=latest
+# Valid Modes are: push, load, push-load
+--var IMAGE_BUILD_MODE=load
+# Valid Images to build are: all, api, client, web (blank or all will build everything)
+# --var IMAGES_TO_BUILD=api;client;web
+
+# Use this if you are mapping a custom certificate into the act container
+# --var CUSTOM_CERTIFICATE=
