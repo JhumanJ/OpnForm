@@ -98,6 +98,17 @@ class FormEmailNotification extends Notification
 
     private function getFromEmail(): string
     {
+        $workspace = $this->event->form->workspace;
+        $emailSettings = $workspace->settings['email_settings'] ?? [];
+
+        if (
+            $workspace->is_pro
+            && $emailSettings
+            && !empty($emailSettings['sender_address'])
+        ) {
+            return $emailSettings['sender_address'];
+        }
+
         if (
             config('app.self_hosted')
             && isset($this->integrationData->sender_email)
