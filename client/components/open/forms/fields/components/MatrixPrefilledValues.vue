@@ -1,15 +1,17 @@
 <template>
-    <p class="font-semibold">Prefilled values</p>
-    <select-input
-        v-for="row in matrixData"
-        :key="row.label"
-        name="prefill"
-        class="mt-3"
-        :options="row.options"
-        :label="row.label"
-        v-model="selection[row.label]"
-        @update:model-value="onSelection"
-      />
+  <p class="font-semibold">
+    Prefilled values
+  </p>
+  <select-input
+    v-for="row in matrixData"
+    :key="row.label"
+    v-model="selection[row.label]"
+    name="prefill"
+    class="mt-3"
+    :options="row.options"
+    :label="row.label"
+    @update:model-value="onSelection"
+  />
 </template>
 <script>
 export default {

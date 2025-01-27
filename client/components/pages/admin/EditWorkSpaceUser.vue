@@ -42,6 +42,7 @@
 <script setup>
 import {watch, ref} from "vue"
 
+// eslint-disable-next-line vue/require-prop-types
 const props = defineProps(['user', 'showEditUserModal'])
 const emit = defineEmits(['close', 'fetchUsers'])
 
@@ -73,7 +74,7 @@ const updateUserRole = () => {
     useAlert().success("User role updated.")
     emit('fetchUsers')
     emit('close')
-  }).catch((error) => {
+  }).catch(() => {
     useAlert().error("There was an error updating user role")
   }).finally(() => {
     updatingUserRoleState.value = false

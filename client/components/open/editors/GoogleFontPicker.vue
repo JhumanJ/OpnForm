@@ -80,7 +80,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close','apply'])
+defineEmits(['close','apply'])
 const loading = ref(false)
 const fonts = ref([])
 const selectedFont = ref(props.font || null)

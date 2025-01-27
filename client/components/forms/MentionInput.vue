@@ -56,7 +56,7 @@
 </template>
   
   <script setup>
-  import { ref, onMounted, watch, computed } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import { inputProps, useFormInput } from './useFormInput.js'
   import InputWrapper from './components/InputWrapper.vue'
   import MentionDropdown from './components/MentionDropdown.vue'
@@ -66,7 +66,7 @@
     disableMention: { type: Boolean, default: false },
   })
   const emit = defineEmits(['update:modelValue'])
-  const { compVal, inputStyle, hasValidation, hasError, inputWrapperProps } = useFormInput(props, { emit })
+  const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props, { emit })
   const editableDiv = ref(null)
   const savedRange = ref(null)
   const subscriptionModalStore = useSubscriptionModalStore()

@@ -56,7 +56,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:field'])
+defineEmits(['update:field'])
 
 const options = ref([
   { 

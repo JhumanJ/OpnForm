@@ -160,27 +160,6 @@ export const useWorkingFormStore = defineStore("working_form", {
         this.content.properties.splice(index, 1)
       }
     },
-    removeField(field) {
-      this.internalRemoveField(field)
-    },
-    internalRemoveField(field) {
-      const index = this.objectToIndex(field)
-
-      if (index !== -1) {
-        useAlert().success('Ctrl + Z to undo',10000,{
-          title: 'Field removed',
-          actions: [{
-            label: 'Undo',
-            icon:"i-material-symbols-undo",
-            click: () => {
-              this.undo()
-            }
-          }]
-        })
-        this.content.properties.splice(index, 1)
-      }
-    },
-
     moveField(oldIndex, newIndex) {
       const newFields = clonedeep(this.content.properties)
       const field = newFields.splice(oldIndex, 1)[0]

@@ -285,7 +285,7 @@ export default {
                 src: this.getFileSrc(file)
               })
               this.loading = false
-            }).catch((error) => {
+            }).catch(() => {
               this.loading = false
             })
           } else {
@@ -297,7 +297,7 @@ export default {
             this.loading = false
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.clearAll()
           this.loading = false
         })
