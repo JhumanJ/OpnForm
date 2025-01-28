@@ -67,7 +67,25 @@ We recommend using these official images for your OpnForm deployment.
 
 ## Building Your Own Docker Images
 
-If you prefer to build your own Docker images, you can do so using the provided Dockerfiles in the repository:
+By default, OpnForm uses pre-built images from Docker Hub. However, if you want to build the images yourself (for development or customization), you have two options:
+
+### Option 1: Using Docker Compose (Recommended)
+
+The simplest way to build the images is using Docker Compose:
+
+```bash
+docker compose build
+```
+
+This will build all the necessary images. You can then start the application as usual:
+
+```bash
+docker compose up -d
+```
+
+### Option 2: Building Images Manually
+
+You can also build the images manually using the provided Dockerfiles:
 
 1. Build the API image:
    ```bash
@@ -78,6 +96,8 @@ If you prefer to build your own Docker images, you can do so using the provided 
    ```bash
    docker build -t opnform-ui:local -f docker/Dockerfile.client .
    ```
+
+If you build the images manually, make sure to update your docker-compose.override.yml to use these local images (see below).
 
 ### Overriding Docker Compose Configuration
 

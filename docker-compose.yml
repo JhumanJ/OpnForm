@@ -2,6 +2,9 @@
 services:
   api: &api
     image: jhumanj/opnform-api:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
     environment: &api-environment  # Add this anchor
       DB_HOST: db
       REDIS_HOST: redis
@@ -18,6 +21,9 @@ services:
 
   api-worker:
     image: jhumanj/opnform-api:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
     command: php artisan queue:work
     environment:
       <<: *api-environment
@@ -29,6 +35,9 @@ services:
 
   ui:
     image: jhumanj/opnform-client:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
     env_file: 
     - ./client/.env
 
