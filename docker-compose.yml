@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+      args:
+        APP_ENV: production
     environment: &api-environment  # Add this anchor
       DB_HOST: db
       REDIS_HOST: redis
@@ -24,6 +26,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+      args:
+        APP_ENV: production
     command: php artisan queue:work
     environment:
       <<: *api-environment
@@ -50,6 +54,11 @@ services:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-forge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
