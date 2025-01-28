@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+      args:
+        APP_ENV: production
     environment: &api-environment  # Add this anchor
       DB_HOST: db
       REDIS_HOST: redis
@@ -24,6 +26,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+      args:
+        APP_ENV: production
     command: php artisan queue:work
     environment:
       <<: *api-environment

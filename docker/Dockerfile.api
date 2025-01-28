@@ -30,8 +30,13 @@ COPY api/tests ./tests
 COPY api/resources ./resources
 COPY api/storage ./storage
 
-RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json \
-    && composer install --ignore-platform-req=php --no-dev --optimize-autoloader \
+# Install dependencies based on environment
+ARG APP_ENV=production
+RUN if [ "$APP_ENV" = "production" ]; then \
+    composer install --ignore-platform-req=php --no-dev --optimize-autoloader; \
+    else \
+    composer install --ignore-platform-req=php --optimize-autoloader; \
+    fi \
     && composer clear-cache \
     && php artisan package:discover --ansi \
     && chmod -R 775 storage \
