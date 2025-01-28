@@ -11,6 +11,31 @@ use Stripe\PaymentIntent;
 
 class FormPaymentController extends Controller
 {
+    public function getAccount(Request $request)
+    {
+        $form = $request->form;
+
+        // Get payment block (only one allowed)
+        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+        if (!$paymentBlock) {
+            Log::warning('Form without payment block', [
+                'form_id' => $form->id
+            ]);
+            return $this->error(['message' => 'Form does not have a payment block.']);
+        }
+
+        // Get provider
+        $provider = OAuthProvider::find($paymentBlock['stripe_account_id']);
+        if ($provider === null) {
+            Log::error('Failed to find Stripe account', [
+                'stripe_account_id' => $paymentBlock['stripe_account_id']
+            ]);
+            return $this->error(['message' => 'Failed to find Stripe account']);
+        }
+
+        return $this->success(['stripeAccount' => $provider->provider_user_id]);
+    }
+
     public function createIntent(Request $request)
     {
         $form = $request->form;
@@ -24,7 +49,7 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id

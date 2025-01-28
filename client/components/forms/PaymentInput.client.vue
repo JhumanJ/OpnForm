@@ -32,7 +32,7 @@
           <StripeElements
             ref="stripeElements"
             v-slot="{ elements }"
-            :stripe-key="stripeKey"
+            :stripe-key="publishableKey"
             :instance-options="stripeOptions"
           >
             <div class="space-y-4">
@@ -91,10 +91,11 @@ const props = defineProps({
 
 const emit = defineEmits([])
 const { ...formInput } = useFormInput(props, { emit })
-
-const stripeKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
 const { state: stripeState } = useStripeElements()
+const route = useRoute()
 
+const accountId = ref(null)
+const publishableKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
 const card = ref(null)
 const stripeElements = ref(null)
 const cardHolderName = ref('')
@@ -106,17 +107,6 @@ const onCardChanged = (event) => {
   
 const onCardReady = (element) => {
   stripeState.value.card = card.value?.stripeElement
-}
-
-const onStripeReady = (stripeInstance) => {
-  if (!stripeInstance) {
-    console.error('Stripe initialization failed')
-    return
-  }
-  
-  stripeState.value.isLoaded = true
-  stripeState.value.stripe = stripeInstance
-  stripeState.value.elements = stripeElements
 }
 
 watch(cardHolderName, (newValue) => {
@@ -152,18 +142,40 @@ const cardOptions = computed(() => ({
   disableLink: true,
 }))
 
+const formSlug = computed(() => {
+  if (route.name && route.name.startsWith("forms-slug")) {
+    return route.params.slug
+  }
+  return null
+})
+
 onMounted(async () => {
+  initStripe()
+})
+
+const initStripe = async () => {
+  if (!formSlug.value) return
   try {
-    const stripeInstance = await loadStripe(stripeKey)
-    if (!stripeInstance) {
-      useAlert().error('Failed to load Stripe')
+    const response = await opnFetch('/forms/' + formSlug.value + '/stripe-connect/get-account')
+    if (response?.type === 'success') {
+      accountId.value = response?.stripeAccount
+      const stripeInstance = await loadStripe(publishableKey, { stripeAccount: accountId.value })
+      if (!stripeInstance) {
+        useAlert().error('Stripe initialization failed')
+        return
+      }
+      
+      stripeState.value.isLoaded = true
+      stripeState.value.stripe = stripeInstance
+      stripeState.value.elements = stripeElements
+    } else { 
+      useAlert().error(response.message)
     }
-    onStripeReady(stripeInstance)
   } catch (error) {
     console.error('Stripe initialization error:', error)
     stripeState.value.isLoaded = false
   }
-})
+}
 
 const resetCard = async () => {
   if (card.value?.stripeElement) {
