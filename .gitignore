@@ -9,3 +9,14 @@ public/.DS_Store
 *.DS_Store
 docker-compose.override.yml
 /.make.*
+
+# Environment files
+.env
+api/.env
+client/.env
+.env.*
+api/.env.*
+client/.env.*
+!.env.example
+!api/.env.example
+!client/.env.example

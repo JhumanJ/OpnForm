@@ -1,5 +1,6 @@
 services:
   api: &api-base
+    image: jhumanj/opnform-api:dev
     build:
       context: .
       dockerfile: docker/Dockerfile.api
@@ -23,8 +24,15 @@ services:
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
       XDEBUG_CONFIG: "client_host=host.docker.internal"
       APP_URL: "http://localhost"
+    depends_on:
+      db:
+        condition: service_healthy
 
   ui:
+    image: jhumanj/opnform-client:dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
     command: sh -c "npm install && NITRO_HOST=0.0.0.0 NITRO_PORT=3000 npm run dev"
     volumes:
       - ./client:/app:delegated
@@ -42,7 +50,6 @@ services:
       # API settings
       NUXT_PUBLIC_APP_URL_BASE: "http://localhost"
       NUXT_PUBLIC_API_BASE: "http://localhost/api"
-      # Add host.docker.internal to hosts file
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -51,7 +58,7 @@ services:
 
   ingress:
     volumes:
-      - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
+      - ./docker/nginx.dev.conf:/etc/nginx/templates/default.conf.template
     environment:
       NGINX_HOST: localhost
       NGINX_PORT: 80
@@ -64,4 +71,7 @@ services:
   api-worker:
     <<: *api-base
     environment:
-      IS_API_WORKER: "true" 
+      IS_API_WORKER: "true"
+    depends_on:
+      db:
+        condition: service_healthy 
