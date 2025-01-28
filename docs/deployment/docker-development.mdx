@@ -1,0 +1,139 @@
+---
+title: "Docker Development Setup"
+description: "Set up OpnForm locally for development using Docker"
+---
+
+import CloudVersion from "/snippets/cloud-version.mdx";
+
+<CloudVersion/>
+
+## Overview
+
+OpnForm provides a Docker-based development environment that offers:
+- Hot-reload for both frontend and backend
+- Xdebug support for PHP debugging
+- Automatic dependency management
+- PostgreSQL database and Redis setup
+- Nginx reverse proxy configuration
+
+This is the recommended way to get started with OpnForm development.
+
+## Prerequisites
+
+- Docker and Docker Compose installed on your machine
+- Git installed
+- Basic understanding of Docker concepts
+
+## Quick Start
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
+
+2. Create environment files:
+   ```bash
+   ./scripts/setup-env.sh
+   ```
+   This will create the necessary `.env` files for both the API and client. See our [Environment Variables](/configuration/environment-variables) guide for configuration details.
+
+3. Start the development environment:
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+   ```
+
+4. Access your development environment:
+   - Frontend: http://localhost:3000
+   - API: http://localhost/api
+
+### Initial Login
+
+After starting the development environment, use these credentials to access the app:
+
+-   Email: `admin@opnform.com`
+-   Password: `password`
+
+You will be prompted to change your email and password after your first login.
+
+<Note>Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.</Note>
+
+## Development Features
+
+### Hot Reload
+
+The development setup includes hot reload capabilities:
+- Frontend (Nuxt.js): Changes to files in the `client` directory trigger automatic rebuilds
+- Backend (Laravel): Changes to files in the `api` directory are immediately reflected, except for queued jobs which require restarting the api-worker container (`docker compose -f docker-compose.yml -f docker-compose.dev.yml restart api-worker`)
+
+### File Structure
+
+The development setup mounts your local directories into the containers:
+- `./api`: Mounted to the API container with vendor directory preserved
+- `./client`: Mounted to the UI container with node_modules preserved
+- Database and Redis data are persisted through Docker volumes
+
+### Container Services
+
+The development environment includes:
+- `api`: Laravel API service with hot reload
+- `ui`: Nuxt.js frontend with HMR
+- `api-worker`: Laravel queue worker
+- `db`: PostgreSQL database
+- `redis`: Redis server
+- `ingress`: Nginx reverse proxy
+
+## Common Tasks
+
+### Running Commands
+
+To run commands in the containers:
+
+```bash
+# Laravel Artisan commands
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api php artisan [command]
+
+# NPM commands
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec ui npm [command]
+```
+
+### Accessing Logs
+
+View container logs:
+
+```bash
+# All containers
+docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
+
+# Specific container
+docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f [service]
+```
+
+### Database Management
+
+The PostgreSQL database is accessible:
+- From containers: `host=db`
+- From your machine: `localhost:5432`
+- Default credentials: username=forge, password=forge, database=forge
+
+## Troubleshooting
+
+### Container Issues
+If containers aren't starting properly:
+```bash
+# Remove all containers and volumes
+docker compose down -v
+
+# Rebuild and start
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+```
+
+### Permission Issues
+If you encounter permission issues with storage or vendor directories:
+```bash
+# Fix storage permissions
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 storage
+
+# Fix vendor permissions
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 vendor
+``` 

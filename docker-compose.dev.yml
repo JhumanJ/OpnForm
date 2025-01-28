@@ -1,6 +1,5 @@
 services:
   api: &api-base
-    platform: linux/arm64/v8
     build:
       context: .
       dockerfile: docker/Dockerfile.api
@@ -26,7 +25,6 @@ services:
       APP_URL: "http://localhost"
 
   ui:
-    platform: linux/arm64/v8
     command: sh -c "npm install && NITRO_HOST=0.0.0.0 NITRO_PORT=3000 npm run dev"
     volumes:
       - ./client:/app:delegated
@@ -52,7 +50,6 @@ services:
       - "24678:24678"    # Vite HMR port
 
   ingress:
-    platform: linux/arm64/v8
     volumes:
       - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
     environment:
@@ -66,6 +63,5 @@ services:
 
   api-worker:
     <<: *api-base
-    platform: linux/arm64/v8
     environment:
       IS_API_WORKER: "true" 
