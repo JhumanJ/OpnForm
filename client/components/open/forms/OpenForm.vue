@@ -347,7 +347,11 @@ export default {
     this.initForm()
   },
   mounted() {
-    this.$refs['form-timer'].startTimer()
+    nextTick(() => {
+      if (this.$refs['form-timer']) {
+        this.$refs['form-timer'].startTimer()
+      }
+    })
     if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
