@@ -43,10 +43,10 @@ jobs:
           LOCAL_LATEST_COMMIT=$(git rev-parse HEAD)
           if [ "$REMOTE_LATEST_COMMIT" != "$LOCAL_LATEST_COMMIT" ]; then
             echo "Remote repository has updates."
-            echo "::set-output name=updates::true"
+            echo "updates=true" >> $GITHUB_OUTPUT
           else
             echo "No updates in remote repository."
-            echo "::set-output name=updates::false"
+            echo "updates=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Copy custom certificate
