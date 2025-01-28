@@ -15,6 +15,7 @@
       :form="field"
       :required="true"
       :searchable="true"
+      :disabled="stripeAccounts.length === 0"
     />
     <text-input
       name="amount"
@@ -22,6 +23,7 @@
       native-type="number"
       :form="field"
       :required="true"
+      :disabled="stripeAccounts.length === 0"
     />
     <div v-if="stripeAccounts.length > 0">
       <select-input
@@ -31,11 +33,12 @@
         :form="field"
         :required="true"
       />
-      <p class="m-4 text-sm text-center text-bold">
+      <p class="mt-4 text-sm text-center text-bold">
         OR
       </p>
     </div>
     <UButton
+      class="mt-4"
       icon="i-heroicons-arrow-right"
       block
       trailing
@@ -47,11 +50,11 @@
     <a
       target="#"
       class="text-gray-500 cursor-pointer"
-      @click.prevent="crisp.openHelpdesk()"
+      @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
     >
       <Icon
         name="heroicons:information-circle-16-solid"
-        class="inline h-4 w-4"
+        class="h-4 w-4 mt-1"
       />
       Learn about collecting payments?
     </a>

@@ -101,6 +101,7 @@ export const useWorkingFormStore = defineStore("working_form", {
           useAlert().error('Only one payment block is allowed per form')
           return
         }
+        openSettings = true // Always open settings for payment block
       }
       
       this.blockForm.type = type

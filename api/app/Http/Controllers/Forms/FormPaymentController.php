@@ -16,7 +16,7 @@ class FormPaymentController extends Controller
         $form = $request->form;
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Form without payment block', [
                 'form_id' => $form->id
@@ -49,7 +49,7 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
@@ -76,6 +76,7 @@ class FormPaymentController extends Controller
             Stripe::setApiKey(config('cashier.secret'));
 
             $intent = PaymentIntent::create([
+                'description' => 'Form - ' . $form->title,
                 'amount' => (int) ($paymentBlock['amount'] * 100),  // Stripe requires amount in cents
                 'currency' => strtolower($paymentBlock['currency']),
                 'payment_method_types' => ['card'],

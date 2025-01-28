@@ -17,7 +17,10 @@
         },
       ]"
     >
-      <div v-if="stripeState?.intentId">
+      <div v-if="!oauthProviderId">
+        <p>Connect Stripe account to continue</p>
+      </div>
+      <div v-else-if="stripeState?.intentId">
         <p>{{ $t('forms.payment.success') }}</p>
       </div>
       <template v-else>
@@ -86,7 +89,8 @@ const props = defineProps({
   ...inputProps,
   direction: { type: String, default: 'ltr' },
   currency: { type: String, default: 'USD' },
-  amount: { type: Number, default: 0 }
+  amount: { type: Number, default: 0 },
+  oauthProviderId: { type: String, default: null }
 })
 
 const emit = defineEmits([])
@@ -94,7 +98,7 @@ const { ...formInput } = useFormInput(props, { emit })
 const { state: stripeState } = useStripeElements()
 const route = useRoute()
 
-const accountId = ref(null)
+const stripeAccountId = ref(null)
 const publishableKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
 const card = ref(null)
 const stripeElements = ref(null)
@@ -158,8 +162,8 @@ const initStripe = async () => {
   try {
     const response = await opnFetch('/forms/' + formSlug.value + '/stripe-connect/get-account')
     if (response?.type === 'success') {
-      accountId.value = response?.stripeAccount
-      const stripeInstance = await loadStripe(publishableKey, { stripeAccount: accountId.value })
+      stripeAccountId.value = response?.stripeAccount
+      const stripeInstance = await loadStripe(publishableKey, { stripeAccount: stripeAccountId.value })
       if (!stripeInstance) {
         useAlert().error('Stripe initialization failed')
         return

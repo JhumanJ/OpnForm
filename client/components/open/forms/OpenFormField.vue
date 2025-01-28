@@ -404,6 +404,7 @@ export default {
         inputProperties.direction = this.form.layout_rtl ? 'rtl' : 'ltr'
         inputProperties.currency = field.currency
         inputProperties.amount = field.amount
+        inputProperties.oauthProviderId = field.stripe_account_id
       }
 
       return inputProperties
