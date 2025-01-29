@@ -9,16 +9,7 @@ import CloudVersion from "/snippets/cloud-version.mdx";
 
 ## Overview
 
-OpnForm provides a Docker-based development environment that offers:
-- Hot Module Replacement (HMR) for real-time frontend updates
-- Vue DevTools integration for debugging
-- PHP hot reload for backend changes
-- Xdebug support for PHP debugging
-- Automatic dependency management
-- PostgreSQL database and Redis setup
-- Nginx reverse proxy configuration
-
-For details about the Docker architecture and components, see our [Docker Deployment](/deployment/docker) guide.
+OpnForm provides a minimal Docker-based development environment optimized for local development. While the full architecture is detailed in our [Docker Deployment](/deployment/docker) guide, the development setup is intentionally lighter and focused on developer experience.
 
 ## Prerequisites
 
@@ -61,31 +52,42 @@ You will be prompted to change your email and password after your first login.
 
 <Note>Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.</Note>
 
-## Development Features
+## Architecture
 
-### Frontend Development
+While the full architecture is detailed in our [Docker Deployment](/deployment/docker) guide, the development setup is intentionally lighter and focused on developer experience.
 
-The development setup includes advanced frontend features:
+### Differences from Production
+
+- **No Redis**: Uses file-based caching and sessions instead
+  - Simpler setup
+  - No additional service to maintain
+  - Slightly slower but sufficient for development
+
+- **No Queue Workers**: Uses synchronous job processing
+  - Jobs run immediately in the main process
+  - Easier debugging of background tasks
+  - No need to restart workers after code changes
+
+- **No Scheduler**: Scheduled tasks don't run automatically
+  - Run scheduled tasks manually when needed
+  - Less resource usage
+  - Cleaner logs
+
+### Development Features
+
+The development setup includes:
+
+#### Frontend Development
 - **Hot Module Replacement (HMR)**: Changes to Vue components and styles are instantly reflected without page reload
 - **Vue DevTools**: Full integration for component inspection and state management debugging ([learn more](https://devtools.vuejs.org/))
 - **Source Maps**: Enabled for easier debugging
 - **Fast Refresh**: Preserves component state during updates
 - **Error Overlay**: Displays errors directly in the browser
 
-### Backend Development
-
-The Laravel API service provides:
+#### Backend Development
 - **PHP Hot Reload**: Changes to PHP files are immediately available
 - **Xdebug Integration**: Ready for step-by-step debugging
-- **Laravel Telescope**: Available for request and queue monitoring
 - **Artisan Commands**: Direct access to Laravel's CLI tools
-
-<Note>
-Queue workers require restart after code changes:
-```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml restart api-worker
-```
-</Note>
 
 ### Development URLs
 
@@ -120,13 +122,13 @@ To run commands in the containers:
 
 ```bash
 # Laravel Artisan commands
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api php artisan [command]
+docker compose -f docker-compose.dev.yml exec api php artisan [command]
 
 # NPM commands
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec ui npm [command]
+docker compose -f docker-compose.dev.yml exec ui npm [command]
 
 # Database commands
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec db psql -U forge
+docker compose -f docker-compose.dev.yml exec db psql -U forge
 ```
 
 ### Accessing Logs
@@ -135,10 +137,10 @@ View container logs:
 
 ```bash
 # All containers
-docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
+docker compose -f docker-compose.dev.yml logs -f
 
 # Specific container (e.g., frontend)
-docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f ui
+docker compose -f docker-compose.dev.yml logs -f ui
 ```
 
 ### Database Access
@@ -168,10 +170,10 @@ If containers aren't starting properly:
 If you encounter permission issues:
 ```bash
 # Fix storage permissions
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 storage
+docker compose -f docker-compose.dev.yml exec api chmod -R 775 storage
 
 # Fix vendor permissions
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 vendor
+docker compose -f docker-compose.dev.yml exec api chmod -R 775 vendor
 ```
 
 ### HMR Issues
@@ -180,5 +182,5 @@ If hot reload isn't working:
 2. Ensure ports 3000 and 24678 are available
 3. Try restarting the UI container:
    ```bash
-   docker compose -f docker-compose.yml -f docker-compose.dev.yml restart ui
+   docker compose -f docker-compose.dev.yml restart ui
    ```

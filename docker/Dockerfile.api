@@ -35,12 +35,12 @@ RUN mkdir -p storage/framework/sessions \
 COPY api/composer.json api/composer.lock ./
 COPY api/app/helpers.php ./app/helpers.php
 
+# Default to production settings unless overridden during build
+ARG APP_ENV=production
+ARG COMPOSER_FLAGS=--no-dev --optimize-autoloader --no-interaction
+
 # Install dependencies without running scripts
-RUN if [ "$APP_ENV" = "production" ] ; then \
-    composer install --no-dev --no-scripts --ignore-platform-req=php --optimize-autoloader ; \
-    else \
-    composer install --no-scripts --ignore-platform-req=php --optimize-autoloader ; \
-    fi
+RUN composer install ${COMPOSER_FLAGS} --no-scripts --ignore-platform-req=php
 
 # Copy the rest of the application
 COPY api/ .

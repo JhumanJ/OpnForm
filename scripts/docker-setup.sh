@@ -42,16 +42,18 @@ echo -e "${BLUE}Starting OpnForm Docker setup...${NC}"
 echo -e "${GREEN}Setting up environment files...${NC}"
 bash "$SCRIPT_DIR/setup-env.sh" --docker
 
-# Determine which compose files to use
-COMPOSE_FILES="-f docker-compose.yml"
+# Determine which compose file to use
 if [ "$DEV_MODE" = true ]; then
-    echo -e "${YELLOW}Development mode enabled - using docker-compose.dev.yml${NC}"
-    COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.dev.yml"
+    echo -e "${YELLOW}Development mode enabled - using minimal setup with docker-compose.dev.yml${NC}"
+    COMPOSE_FILE="docker-compose.dev.yml"
+else
+    echo -e "${YELLOW}Production mode - using docker-compose.yml${NC}"
+    COMPOSE_FILE="docker-compose.yml"
 fi
 
 # Start Docker containers
 echo -e "${GREEN}Starting Docker containers...${NC}"
-docker compose $COMPOSE_FILES up -d
+docker compose -f $COMPOSE_FILE up -d
 
 # Display access instructions
 if [ "$DEV_MODE" = true ]; then

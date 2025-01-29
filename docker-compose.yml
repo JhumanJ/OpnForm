@@ -3,11 +3,12 @@ services:
   api: &api-environment
     image: jhumanj/opnform-api:latest
     container_name: opnform-api
-    build:
+    build: &api-build
       context: .
       dockerfile: docker/Dockerfile.api
       args:
-        - APP_ENV=production
+        APP_ENV: production
+        COMPOSER_FLAGS: --no-dev
     volumes: &api-environment-volumes
       - ./api/storage:/usr/share/nginx/html/storage:rw
       - ./api/bootstrap/cache:/usr/share/nginx/html/bootstrap/cache:rw
@@ -35,6 +36,7 @@ services:
   api-worker:
     <<: *api-environment
     container_name: opnform-api-worker
+    build: *api-build
     command: ["php", "artisan", "queue:work"]
     volumes: *api-environment-volumes
     environment:
@@ -47,6 +49,7 @@ services:
   api-scheduler:
     <<: *api-environment
     container_name: opnform-api-scheduler
+    build: *api-build
     command: ["php", "artisan", "schedule:work"]
     volumes: *api-environment-volumes
     environment:

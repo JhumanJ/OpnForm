@@ -43,7 +43,7 @@ For a complete list of features and detailed documentation, visit our [Technical
 
 The easiest way to get started with OpnForm is through our [official managed service in the Cloud](https://opnform.com/).
 
-For self-hosted installations, please refer to our [Deployment Guides](https://docs.opnform.com/deployment). For detailed instructions on setting up a local environment, check out our [Local Deployment Documentation](https://docs.opnform.com/deployment/local-deployment).
+For self-hosted installations, please refer to our [Deployment Guides](https://docs.opnform.com/deployment). For local development, we provide a minimal Docker-based setup - check out our [Docker Development Guide](https://docs.opnform.com/deployment/docker-development).
 
 ## Support & Community
 

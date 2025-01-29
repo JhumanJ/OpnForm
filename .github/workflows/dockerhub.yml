@@ -59,6 +59,7 @@ jobs:
           push: true
           build-args: |
             APP_ENV=${{ env.VERSION == 'dev' && 'local' || 'production' }}
+            COMPOSER_FLAGS=${{ env.VERSION == 'dev' && '--optimize-autoloader --no-interaction' || '--no-dev --optimize-autoloader --no-interaction' }}
           tags: ${{ env.API_TAGS }}
           cache-from: type=registry,ref=${{secrets.DOCKER_API_REPO}}:dev
           cache-to: type=inline

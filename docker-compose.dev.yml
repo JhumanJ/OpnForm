@@ -1,27 +1,33 @@
+version: "3.8"
+
 services:
-  api: &api-base
+  api:
     image: jhumanj/opnform-api:dev
     container_name: opnform-api
     build:
       context: .
       dockerfile: docker/Dockerfile.api
       args:
-        - APP_ENV=local
-    volumes: &api-base-volumes
+        APP_ENV: local
+        COMPOSER_FLAGS: ""
+    volumes:
       - ./api:/usr/share/nginx/html:delegated
       - /usr/share/nginx/html/vendor # Exclude vendor directory from the mount
       - ./api/storage:/usr/share/nginx/html/storage:delegated
-    environment: &api-base-env
+    environment:
       APP_ENV: local
-      APP_DEV_CORS: "true"
-      IS_API_WORKER: "false"
+      APP_DEBUG: true
+      APP_DEV_CORS: true
       # Database settings
       DB_HOST: db
-      REDIS_HOST: redis
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      # Override production settings for minimal setup
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
       # Storage settings
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
@@ -34,33 +40,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
-
-  api-worker:
-    <<: *api-base
-    container_name: opnform-api-worker
-    command: ["php", "artisan", "queue:work"]
-    volumes: *api-base-volumes
-    environment:
-      <<: *api-base-env
-      APP_ENV: local
-      IS_API_WORKER: "true"
-
-  api-scheduler:
-    <<: *api-base
-    container_name: opnform-api-scheduler
-    command: ["php", "artisan", "schedule:work"]
-    volumes: *api-base-volumes
-    environment:
-      <<: *api-base-env
-      APP_ENV: local
-      IS_API_WORKER: "true"
-      AUTORUN_ENABLED: "false"
-      # Scheduler settings
-      CONTAINER_ROLE: scheduler
-      PHP_MEMORY_LIMIT: 512M
-      PHP_MAX_EXECUTION_TIME: 60
 
   ui:
     image: jhumanj/opnform-client:dev
@@ -91,6 +70,23 @@ services:
       - "3000:3000"      # Main dev server
       - "24678:24678"    # Vite HMR port
 
+  db:
+    image: postgres:16
+    container_name: opnform-db
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-forge}
+      POSTGRES_USER: ${DB_USERNAME:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-forge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   ingress:
     image: nginx:1
     container_name: opnform-ingress
@@ -105,4 +101,7 @@ services:
       api:
         condition: service_started
       ui:
-        condition: service_started 
+        condition: service_started
+
+volumes:
+  postgres-data: 
