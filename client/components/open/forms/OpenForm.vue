@@ -119,6 +119,17 @@
       <div v-if="!currentFieldsPageBreak && !isLastPage">
         {{ $t('forms.wrong_form_structure') }}
       </div>
+      <div
+        v-if="paymentBlock"
+        class="text-xs text-gray-500 mt-2"
+      >
+        <template v-if="isLastPage">
+          Your credit card will be charged upon clicking the "Submit" button. Payments are securely processed through Stripe.
+        </template>
+        <template v-else>
+          Your credit card will be charged upon clicking the "Next" button. Payments are securely processed through Stripe.
+        </template>
+      </div>
     </div>
   </form>
 </template>
@@ -302,6 +313,9 @@ export default {
       return {
         '--form-color': this.form.color
       }
+    },
+    paymentBlock() {
+      return this.currentFields.find(field => field.type === 'payment')
     }
   },
 
@@ -547,14 +561,13 @@ export default {
     async doPayment() {
       // If there is a payment block, process the payment
       const { state: stripeState, processPayment } = useStripeElements()
-      const paymentBlock = this.currentFields.find(field => field.type === 'payment')
-      if (paymentBlock && !stripeState.value.intentId && (paymentBlock.required || !stripeState.value.card._empty)) {
+      if (this.paymentBlock && !stripeState.value.intentId && (this.paymentBlock.required || !stripeState.value.card._empty)) {
         try {
           // Process the payment
-          const result = await processPayment(this.form.slug, paymentBlock.required)
+          const result = await processPayment(this.form.slug, this.paymentBlock.required)
           console.log('result', result)
           if (result && result?.error) {
-            this.dataForm.errors.set(paymentBlock.id, result.error.message)
+            this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
             useAlert().error(result.error.message)
             return false
           }
