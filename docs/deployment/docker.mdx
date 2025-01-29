@@ -8,49 +8,34 @@ import CloudVersion from "/snippets/cloud-version.mdx";
 <CloudVersion/>
 
 <Tip>
-This guide is for deploying OpnForm on a production server. If you're looking to **develop OpnForm locally**, check out our [Docker Development Setup](/deployment/docker-development) guide which provides **hot-reload and other development features**.
+Looking to develop OpnForm locally? Check out our [Docker Development Setup](/deployment/docker-development) guide which provides hot-reload and other development features.
 </Tip>
-
-## Prerequisites
-
-- Docker
-- Docker Compose
 
 ## Quick Start
 
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/JhumanJ/OpnForm.git
    cd OpnForm
    ```
 
-2. Set up environment files:
-
+2. Run the setup script:
    ```bash
-   ./scripts/setup-env.sh --docker
+   chmod +x scripts/docker-setup.sh
+   ./scripts/docker-setup.sh
    ```
 
-3. (Optional) Customize the environment variables:
-   
-   You can modify two environment files to customize your OpnForm installation:
-   - The `.env` file in the `api` directory for backend configuration
-   - The `.env` file in the `client` directory for frontend configuration
+   The script will:
+   - Create necessary environment files
+   - Pull required Docker images
+   - Start all containers in production mode
+   - Display access information
 
-   For more information on available environment variables, please refer to our [Environment Variables](/configuration/environment-variables) page.
-
-4. Start the application:
-
-   ```bash
-   docker compose up -d
-   ```
-
-5. Access OpnForm at http://localhost
-
+3. Access your OpnForm instance at `http://localhost`
 
 ### Initial Login
 
-After installation, use these credentials to access the app:
+After deployment, use these credentials to access the app:
 
 -   Email: `admin@opnform.com`
 -   Password: `password`
@@ -59,71 +44,171 @@ You will be prompted to change your email and password after your first login.
 
 <Note>Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.</Note>
 
+## Architecture
+
+```mermaid
+graph TD
+    A[Nginx Proxy] --> B[Frontend - Nuxt SSR]
+    A --> C[Backend - Laravel API]
+    C --> D[PostgreSQL]
+    C --> E[Redis]
+    C --> F[Queue Worker]
+    C --> G[Scheduler]
+```
+
+### Components
+
+<Tabs>
+  <Tab title="Frontend">
+    The Nuxt frontend service:
+    - Server-Side Rendered application
+    - Built with Vue 3 and Tailwind CSS
+    - Handles dynamic rendering and client-side interactivity
+    - Optimized for production performance
+  </Tab>
+  <Tab title="Backend">
+    The Laravel API service:
+    - Handles business logic and data persistence
+    - Provides REST API endpoints
+    - Manages file uploads and processing
+    - Includes required PHP extensions (pgsql, redis, etc.)
+    - Configured for PostgreSQL and Redis connections
+  </Tab>
+  <Tab title="Workers">
+    Background processing services:
+    - **API Worker**: Processes queued jobs (emails, exports, etc.)
+    - **API Scheduler**: Handles scheduled tasks and periodic cleanups
+    - Both share the same codebase as the main API
+  </Tab>
+  <Tab title="Databases">
+    Data storage services:
+    - **PostgreSQL**: Primary database for all application data
+    - **Redis**: Used for:
+      - Session storage
+      - Cache
+      - Queue management
+      - Real-time features
+  </Tab>
+  <Tab title="Proxy">
+    The Nginx proxy service:
+    - Routes requests between frontend and backend
+    - Handles SSL termination
+    - Manages file upload limits
+    - Serves static assets
+    - Configured for optimal performance
+  </Tab>
+</Tabs>
+
 ## Docker Images
 
-OpnForm provides pre-built Docker images for easy deployment. You can find our official Docker images on Docker Hub:
+OpnForm provides pre-built Docker images for easy deployment:
 
 - [OpnForm API Image](https://hub.docker.com/r/jhumanj/opnform-api)
 - [OpnForm Client Image](https://hub.docker.com/r/jhumanj/opnform-client)
 
-We recommend using these official images for your OpnForm deployment.
+### Building Custom Images
 
-
-## Building Your Own Docker Images
-
-By default, OpnForm uses pre-built images from Docker Hub. However, if you want to build the images yourself (for development or customization), you have two options:
-
-### Option 1: Using Docker Compose (Recommended)
-
-The simplest way to build the images is using Docker Compose:
+While we recommend using the official images, you can build custom images if needed:
 
 ```bash
+# Build all images
 docker compose build
+
+# Or build specific images
+docker build -t opnform-api:local -f docker/Dockerfile.api .
+docker build -t opnform-ui:local -f docker/Dockerfile.client .
 ```
 
-This will build all the necessary images. You can then start the application as usual:
-
-```bash
-docker compose up -d
-```
-
-### Option 2: Building Images Manually
-
-You can also build the images manually using the provided Dockerfiles:
-
-1. Build the API image:
-   ```bash
-   docker build -t opnform-api:local -f docker/Dockerfile.api .
-   ```
-
-2. Build the UI image:
-   ```bash
-   docker build -t opnform-ui:local -f docker/Dockerfile.client .
-   ```
-
-If you build the images manually, make sure to update your docker-compose.override.yml to use these local images (see below).
-
-### Overriding Docker Compose Configuration
-
-You can override the default Docker Compose configuration by creating a `docker-compose.override.yml` file. This allows you to customize various aspects of the deployment without modifying the main `docker-compose.yml` file.
-
-Example `docker-compose.override.yml`:
+### Custom Configuration
+Create a `docker-compose.override.yml` to customize your deployment:
 
 ```yaml
 services:
   api:
     image: opnform-api:local
+    environment:
+      PHP_MEMORY_LIMIT: 1G
   ui:
     image: opnform-ui:local
-  api-worker:
-    image: opnform-api:local
+  ingress:
+    volumes:
+      - ./custom-nginx.conf:/etc/nginx/conf.d/default.conf
 ```
 
+## Maintenance
 
-### Clearing all resources
+### Updates
 
-To completely remove all Docker containers, networks, and volumes created by Docker Compose and also remove all images used by these services, you can use the following command:
+1. Pull latest changes:
+   ```bash
+   git pull origin main
+   ```
 
+2. Update containers:
+   ```bash
+   docker compose pull
+   docker compose up -d
+   ```
+
+### Monitoring
+
+View container logs:
+```bash
+# All containers
+docker compose logs -f
+
+# Specific container
+docker compose logs -f api
 ```
-docker compose down -v --rmi all
+
+Monitor container health:
+```bash
+docker compose ps
+```
+
+## Troubleshooting
+
+### Container Issues
+
+If containers aren't starting:
+```bash
+# View detailed logs
+docker compose logs -f
+
+# Recreate containers
+docker compose down
+docker compose up -d
+```
+
+### Database Issues
+
+If database connections fail:
+```bash
+# Check database status
+docker compose exec db pg_isready
+
+# View database logs
+docker compose logs db
+```
+
+### Cache Issues
+
+Clear various caches:
+```bash
+# Clear application cache
+docker compose exec api php artisan cache:clear
+
+# Clear config cache
+docker compose exec api php artisan config:clear
+
+# Clear route cache
+docker compose exec api php artisan route:clear
+```
+
+### Permission Issues
+
+Fix storage permissions:
+```bash
+docker compose exec api chown -R www-data:www-data storage
+docker compose exec api chmod -R 775 storage
 ```

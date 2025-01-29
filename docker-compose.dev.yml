@@ -1,35 +1,70 @@
 services:
   api: &api-base
     image: jhumanj/opnform-api:dev
+    container_name: opnform-api
     build:
       context: .
       dockerfile: docker/Dockerfile.api
       args:
-        APP_ENV: local
-    volumes:
+        - APP_ENV=local
+    volumes: &api-base-volumes
       - ./api:/usr/share/nginx/html:delegated
       - /usr/share/nginx/html/vendor # Exclude vendor directory from the mount
-      - ./api/storage:/usr/share/nginx/html/storage:delegated # Mount storage directory directly
-    environment:
+      - ./api/storage:/usr/share/nginx/html/storage:delegated
+    environment: &api-base-env
+      APP_ENV: local
+      APP_DEV_CORS: "true"
+      IS_API_WORKER: "false"
+      # Database settings
       DB_HOST: db
       REDIS_HOST: redis
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      # Storage settings
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
-      APP_ENV: local
-      PHP_IDE_CONFIG: "serverName=Docker"
-      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
-      XDEBUG_CONFIG: "client_host=host.docker.internal"
-      APP_URL: "http://localhost"
+      # Development settings
+      PHP_IDE_CONFIG: serverName=Docker
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: client_host=host.docker.internal
+      APP_URL: http://localhost
+      FRONT_URL: http://localhost:3000
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
+
+  api-worker:
+    <<: *api-base
+    container_name: opnform-api-worker
+    command: ["php", "artisan", "queue:work"]
+    volumes: *api-base-volumes
+    environment:
+      <<: *api-base-env
+      APP_ENV: local
+      IS_API_WORKER: "true"
+
+  api-scheduler:
+    <<: *api-base
+    container_name: opnform-api-scheduler
+    command: ["php", "artisan", "schedule:work"]
+    volumes: *api-base-volumes
+    environment:
+      <<: *api-base-env
+      APP_ENV: local
+      IS_API_WORKER: "true"
+      AUTORUN_ENABLED: "false"
+      # Scheduler settings
+      CONTAINER_ROLE: scheduler
+      PHP_MEMORY_LIMIT: 512M
+      PHP_MAX_EXECUTION_TIME: 60
 
   ui:
     image: jhumanj/opnform-client:dev
+    container_name: opnform-client
     build:
       context: .
       dockerfile: docker/Dockerfile.client
@@ -57,6 +92,8 @@ services:
       - "24678:24678"    # Vite HMR port
 
   ingress:
+    image: nginx:1
+    container_name: opnform-ingress
     volumes:
       - ./docker/nginx.dev.conf:/etc/nginx/templates/default.conf.template
     environment:
@@ -65,13 +102,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - api
-      - ui
-
-  api-worker:
-    <<: *api-base
-    environment:
-      IS_API_WORKER: "true"
-    depends_on:
-      db:
-        condition: service_healthy 
+      api:
+        condition: service_started
+      ui:
+        condition: service_started 

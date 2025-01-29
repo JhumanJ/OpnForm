@@ -10,13 +10,15 @@ import CloudVersion from "/snippets/cloud-version.mdx";
 ## Overview
 
 OpnForm provides a Docker-based development environment that offers:
-- Hot-reload for both frontend and backend
+- Hot Module Replacement (HMR) for real-time frontend updates
+- Vue DevTools integration for debugging
+- PHP hot reload for backend changes
 - Xdebug support for PHP debugging
 - Automatic dependency management
 - PostgreSQL database and Redis setup
 - Nginx reverse proxy configuration
 
-This is the recommended way to get started with OpnForm development.
+For details about the Docker architecture and components, see our [Docker Deployment](/deployment/docker) guide.
 
 ## Prerequisites
 
@@ -32,18 +34,19 @@ This is the recommended way to get started with OpnForm development.
    cd OpnForm
    ```
 
-2. Create environment files:
+2. Run the setup script in development mode:
    ```bash
-   ./scripts/setup-env.sh
-   ```
-   This will create the necessary `.env` files for both the API and client. See our [Environment Variables](/configuration/environment-variables) guide for configuration details.
-
-3. Start the development environment:
-   ```bash
-   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+   chmod +x scripts/docker-setup.sh
+   ./scripts/docker-setup.sh --dev
    ```
 
-4. Access your development environment:
+   This script will:
+   - Create necessary environment files
+   - Pull or build required Docker images
+   - Start all containers in development mode
+   - Display access information
+
+3. Access your development environment:
    - Frontend: http://localhost:3000
    - API: http://localhost/api
 
@@ -60,28 +63,54 @@ You will be prompted to change your email and password after your first login.
 
 ## Development Features
 
-### Hot Reload
+### Frontend Development
 
-The development setup includes hot reload capabilities:
-- Frontend (Nuxt.js): Changes to files in the `client` directory trigger automatic rebuilds
-- Backend (Laravel): Changes to files in the `api` directory are immediately reflected, except for queued jobs which require restarting the api-worker container (`docker compose -f docker-compose.yml -f docker-compose.dev.yml restart api-worker`)
+The development setup includes advanced frontend features:
+- **Hot Module Replacement (HMR)**: Changes to Vue components and styles are instantly reflected without page reload
+- **Vue DevTools**: Full integration for component inspection and state management debugging ([learn more](https://devtools.vuejs.org/))
+- **Source Maps**: Enabled for easier debugging
+- **Fast Refresh**: Preserves component state during updates
+- **Error Overlay**: Displays errors directly in the browser
 
-### File Structure
+### Backend Development
+
+The Laravel API service provides:
+- **PHP Hot Reload**: Changes to PHP files are immediately available
+- **Xdebug Integration**: Ready for step-by-step debugging
+- **Laravel Telescope**: Available for request and queue monitoring
+- **Artisan Commands**: Direct access to Laravel's CLI tools
+
+<Note>
+Queue workers require restart after code changes:
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml restart api-worker
+```
+</Note>
+
+### Development URLs
+
+- **Frontend**: http://localhost:3000
+  - Direct access to Nuxt dev server
+  - Includes HMR websocket connection
+  - Vue DevTools available
+
+- **API**: http://localhost/api
+  - Handled by Nginx reverse proxy
+  - Automatic routing to PHP-FPM
+  - Supports file uploads and long requests
+
+## File Structure
 
 The development setup mounts your local directories into the containers:
-- `./api`: Mounted to the API container with vendor directory preserved
-- `./client`: Mounted to the UI container with node_modules preserved
-- Database and Redis data are persisted through Docker volumes
-
-### Container Services
-
-The development environment includes:
-- `api`: Laravel API service with hot reload
-- `ui`: Nuxt.js frontend with HMR
-- `api-worker`: Laravel queue worker
-- `db`: PostgreSQL database
-- `redis`: Redis server
-- `ingress`: Nginx reverse proxy
+```
+OpnForm/
+├── api/                    # Laravel API (mounted to api container)
+│   ├── vendor/            # Preserved in container
+│   └── storage/           # Mounted for logs and uploads
+├── client/                # Nuxt frontend (mounted to ui container)
+│   └── node_modules/      # Preserved in container
+└── docker/                # Docker configuration files
+```
 
 ## Common Tasks
 
@@ -95,6 +124,9 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api php arti
 
 # NPM commands
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec ui npm [command]
+
+# Database commands
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec db psql -U forge
 ```
 
 ### Accessing Logs
@@ -105,35 +137,48 @@ View container logs:
 # All containers
 docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
 
-# Specific container
-docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f [service]
+# Specific container (e.g., frontend)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f ui
 ```
 
-### Database Management
+### Database Access
 
 The PostgreSQL database is accessible:
 - From containers: `host=db`
 - From your machine: `localhost:5432`
-- Default credentials: username=forge, password=forge, database=forge
+- Default credentials:
+  ```
+  Host: localhost
+  Port: 5432
+  Database: forge
+  Username: forge
+  Password: forge
+  ```
 
 ## Troubleshooting
 
 ### Container Issues
 If containers aren't starting properly:
 ```bash
-# Remove all containers and volumes
-docker compose down -v
-
-# Rebuild and start
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+# Clean everything and restart
+./scripts/docker-setup.sh --dev
 ```
 
 ### Permission Issues
-If you encounter permission issues with storage or vendor directories:
+If you encounter permission issues:
 ```bash
 # Fix storage permissions
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 storage
 
 # Fix vendor permissions
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api chmod -R 775 vendor
-``` 
+```
+
+### HMR Issues
+If hot reload isn't working:
+1. Check browser console for WebSocket errors
+2. Ensure ports 3000 and 24678 are available
+3. Try restarting the UI container:
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.dev.yml restart ui
+   ```
