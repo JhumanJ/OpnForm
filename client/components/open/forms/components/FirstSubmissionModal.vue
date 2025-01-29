@@ -74,7 +74,7 @@ const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true }
 })
-const emit = defineEmits(['close'])
+defineEmits(['close'])
 const confetti = useConfetti()
 const crisp = useCrisp()
 const amplitude = useAmplitude()

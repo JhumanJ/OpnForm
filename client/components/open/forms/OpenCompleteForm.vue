@@ -117,14 +117,14 @@
           :admin-preview="adminPreview"
           @submit="submitForm"
         >
-          <template #submit-btn="{submitForm}">
+          <template #submit-btn="{submitForm: handleSubmit}">
             <open-form-button
               :loading="loading"
               :theme="theme"
               :color="form.color"
               class="mt-2 px-8 mx-1"
               :class="submitButtonClass"
-              @click.prevent="submitForm"
+              @click.prevent="handleSubmit"
             >
               {{ form.submit_button_text }}
             </open-form-button>
@@ -222,6 +222,8 @@ export default {
       default: false
     }
   },
+
+  emits: ['submitted', 'password-entered', 'restarted'],
 
   setup(props) {
     const { setLocale } = useI18n()

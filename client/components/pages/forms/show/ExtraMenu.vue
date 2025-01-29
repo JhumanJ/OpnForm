@@ -84,7 +84,6 @@
 
 <script setup>
 import { ref, defineProps, computed } from "vue"
-import Dropdown from "~/components/global/Dropdown.vue"
 import FormTemplateModal from "../../../open/forms/components/templates/FormTemplateModal.vue"
 import FormWorkspaceModal from "../../../open/forms/components/FormWorkspaceModal.vue"
 

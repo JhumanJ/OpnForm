@@ -3,6 +3,7 @@
     size="sm"
     color="white"
     icon="i-heroicons-eye-16-solid"
+    :loading="loading"
     @click="impersonate"
   >
     Impersonate User
@@ -18,13 +19,13 @@ const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 
-let loading = ref(false)
+const loading = ref(false)
 
 const impersonate = () => {
-  loading = true
+  loading.value = true
   authStore.startImpersonating()
   opnFetch(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
-    loading = false
+    loading.value = false
 
     // Save the token.
     authStore.setToken(data.token, false)
@@ -47,7 +48,7 @@ const impersonate = () => {
   })
     .catch((error) => {
       useAlert().error(error.data.message)
-      loading = false
+      loading.value = false
     })
 }
 </script>

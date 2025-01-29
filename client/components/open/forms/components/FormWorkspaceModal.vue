@@ -118,13 +118,4 @@ const onSubmit = () => {
       loading.value = false
     })
 }
-
-const isUrl = (str) => {
-  try {
-    new URL(str)
-  } catch (_) {
-    return false
-  }
-  return true
-}
 </script>

@@ -1,8 +1,8 @@
 <template>
-    <div
-      v-html="processedContent"
-    />
-  </template>
+  <div
+    v-html="processedContent"
+  />
+</template>
   
   <script setup>
   const props = defineProps({

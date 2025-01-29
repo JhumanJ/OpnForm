@@ -281,7 +281,7 @@ const removeUser = (index) => {
       ).then(() => {
         useAlert().success("User successfully removed.")
         getWorkspaceUsers()
-      }).catch((error) => {
+      }).catch(() => {
         useAlert().error("There was an error removing user")
       }).finally(() => {
         loadingUsers.value = false
@@ -319,7 +319,7 @@ const leaveWorkSpace = (workspaceId) => {
         useAlert().success("You have left the workspace.")
         workspacesStore.remove(workspaceId)
         getWorkspaceUsers()
-      }).catch((error) => {
+      }).catch(() => {
         useAlert().error("There was an error leaving the workspace.")
       }).finally(() => {
         leaveWorkspaceLoadingState.value = false

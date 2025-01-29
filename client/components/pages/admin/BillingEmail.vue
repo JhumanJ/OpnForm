@@ -63,7 +63,7 @@ onMounted(() => {
         loadingBillingEmail.value = false
         userCreated.value = true
         form.billing_email = data.billing_email
-    }).catch(error => {
+    }).catch(() => {
         loadingBillingEmail.value = false
         userCreated.value = false
     })

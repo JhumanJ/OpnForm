@@ -174,7 +174,7 @@ export default {
     adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
   },
 
-  setup(props) {
+  setup() {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,

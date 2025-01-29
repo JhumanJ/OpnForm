@@ -59,7 +59,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['select-font'])
+defineEmits(['select-font'])
 
 const getFontUrl = computed(() => {
   const family = props.fontName.replace(/ /g, '+')

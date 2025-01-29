@@ -1,37 +1,70 @@
-name: Publish Docker image
+name: Publish Docker Images
 
 on:
   push:
     tags:
       - "v*"
+    branches:
+      - main
+    paths:
+      - "api/**"
+      - "client/**"
+      - "docker/**"
+      - "docker-compose*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
     steps:
-      - name: Get tag name
+      - name: Get version info
         run: |
-          (
-            echo "TAG_NAME=${GITHUB_REF#refs/*/v}";
-            echo "DOCKER_UI_REPO=${{secrets.DOCKER_UI_REPO}}"
-            echo "DOCKER_API_REPO=${{secrets.DOCKER_API_REPO}}"
-          ) >> $GITHUB_ENV
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+            echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:latest,${{secrets.DOCKER_API_REPO}}:${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+            echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:latest,${{secrets.DOCKER_UI_REPO}}:${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+          else
+            echo "VERSION=dev" >> $GITHUB_ENV
+            echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:dev" >> $GITHUB_ENV
+            echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:dev" >> $GITHUB_ENV
+          fi
 
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to Docker Hub
-        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_ACCESS_TOKEN }}"
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-      - name: Build docker api image
-        run: docker build -f docker/Dockerfile.api . -t $DOCKER_API_REPO:latest -t $DOCKER_API_REPO:$TAG_NAME
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            APP_ENV=${{ env.VERSION == 'dev' && 'local' || 'production' }}
+          tags: ${{ env.API_TAGS }}
 
-      - name: Build docker ui image
-        run: docker build -f docker/Dockerfile.client . -t $DOCKER_UI_REPO:latest -t $DOCKER_UI_REPO:$TAG_NAME
-
-      - name: Push Docker api image
-        run: docker push $DOCKER_API_REPO:latest && docker push $DOCKER_API_REPO:$TAG_NAME
-
-      - name: Push Docker ui image
-        run: docker push $DOCKER_UI_REPO:latest && docker push $DOCKER_UI_REPO:$TAG_NAME
+      - name: Build and push Client image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.client
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.UI_TAGS }}

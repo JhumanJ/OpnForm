@@ -35,8 +35,8 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  isWorkspaceAdmin: {},
+defineProps({
+  isWorkspaceAdmin: { type: Boolean, default: false },
   disabled: {
     type: Boolean,
     default: false,

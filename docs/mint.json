@@ -73,6 +73,7 @@
       "group": "Deployment",
       "pages": [
         "deployment/docker",
+        "deployment/docker-development",
         "deployment/local-deployment",
         "deployment/cloud-vs-self-hosting"
       ]

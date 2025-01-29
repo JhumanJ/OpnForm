@@ -74,7 +74,6 @@ import {watch} from "vue"
 const crisp = useCrisp()
 const workspacesStore = useWorkspacesStore()
 const workspace = computed(() => workspacesStore.getCurrent)
-const loading = computed(() => workspacesStore.loading)
 
 const customDomainsForm = useForm({
   custom_domain: "",

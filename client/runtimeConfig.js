@@ -1,11 +1,3 @@
-function parseBoolean(value, defaultValue = false) {
-  if (typeof value === 'string') {
-    value = value.toLowerCase().trim()
-    if (value === 'true' || value === '1') return true
-    if (value === 'false' || value === '0') return false
-  }
-  return defaultValue
-}
 
 function parseNumber(value, defaultValue = 0) {
   const parsedValue = parseFloat(value)

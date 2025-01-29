@@ -33,47 +33,45 @@
   </ErrorBoundary>
 </template>
   
-  <script setup>
-  import { computed } from 'vue'
-  const crisp = useCrisp()
-  const workingFormStore = useWorkingFormStore()
-  const authStore = useAuthStore()
-  const form = storeToRefs(workingFormStore).content
-  const user = computed(() => authStore.user)
-  // Clear error and go back 1 step in history
-  const clearEditorError = (error, clearError) => {
-    crisp.enableChatbot()
-    workingFormStore.undo()
-    clearError()
+<script setup>
+const crisp = useCrisp()
+const workingFormStore = useWorkingFormStore()
+const form = storeToRefs(workingFormStore).content
+
+// Clear error and go back 1 step in history
+const clearEditorError = (error, clearError) => {
+  crisp.enableChatbot()
+  workingFormStore.undo()
+  clearError()
+}
+const onFormEditorError = (error) => {
+  console.error('Form Editor Error Handled', error)
+  crisp.pauseChatBot()
+  const eventData = {
+    message: error.message,
+    // take first 200 characters
+    stack: error.stack.substring(0, 100)
   }
-  const onFormEditorError = (error) => {
-    console.error('Form Editor Error Handled', error)
-    crisp.pauseChatBot()
-    const eventData = {
-      message: error.message,
-      // take first 200 characters
-      stack: error.stack.substring(0, 100)
-    }
-    try {
-      crisp.pushEvent('form-editor-error', eventData)
-    } catch (e) {
-      console.error('Failed to send event to crisp', e, eventData)
-    }
+  try {
+    crisp.pushEvent('form-editor-error', eventData)
+  } catch (e) {
+    console.error('Failed to send event to crisp', e, eventData)
   }
-  const onErrorContact = (error) => {
-    crisp.pauseChatBot()
-    let errorReport = 'Hi there, I have a technical issue with the form editor.'
-    if (form.value.slug) {
-      errorReport += ` The form I am editing is: \`${form.value.slug}\`.`
-    }
-    errorReport += ` And here are technical details about the error: \`\`\`${error.stack}\`\`\``
-    try {
-      crisp.openAndShowChat(errorReport)
-      crisp.showMessage(`Hi there, we're very sorry to hear you experienced an issue with OpnForm.
-          We'll be in touch about it very soon! In the meantime, I recommend that you try going back one step, and save your changes.`, 2000)
-    } catch (e) {
-      console.error('Crisp error', e)
-    }
+}
+const onErrorContact = (error) => {
+  crisp.pauseChatBot()
+  let errorReport = 'Hi there, I have a technical issue with the form editor.'
+  if (form.value.slug) {
+    errorReport += ` The form I am editing is: \`${form.value.slug}\`.`
   }
-  </script>
+  errorReport += ` And here are technical details about the error: \`\`\`${error.stack}\`\`\``
+  try {
+    crisp.openAndShowChat(errorReport)
+    crisp.showMessage(`Hi there, we're very sorry to hear you experienced an issue with OpnForm.
+        We'll be in touch about it very soon! In the meantime, I recommend that you try going back one step, and save your changes.`, 2000)
+  } catch (e) {
+    console.error('Crisp error', e)
+  }
+}
+</script>
   
