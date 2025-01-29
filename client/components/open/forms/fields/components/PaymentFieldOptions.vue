@@ -63,6 +63,7 @@
 
 <script setup>
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
+import stripeCurrencies from "~/data/stripe_currencies.json"
 
 const props = defineProps({
   field: {
@@ -92,10 +93,9 @@ const stripeAccounts = computed(() => providersStore.getAll.filter((item) => ite
 })))
 
 const currencyList = computed(() => {
-  const currencies = useFeatureFlag('services.stripe.currencies') || {}
-  return Object.keys(currencies).map((item) => ({
-    name: currencies[item],
-    value: item
+  return stripeCurrencies.map((item) => ({
+    name: item.name,
+    value: item.code
   }))
 })
 

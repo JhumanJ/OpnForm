@@ -45,7 +45,8 @@ class PaymentBlockConfigurationRule implements ValidationRule
         }
 
         // Currency validation
-        if (!isset($this->field['currency']) || !in_array(strtoupper($this->field['currency']), array_keys(config('services.stripe.currencies')))) {
+        $stripeCurrencies = json_decode(file_get_contents(resource_path('data/stripe_currencies.json')), true);
+        if (!isset($this->field['currency']) || !in_array(strtoupper($this->field['currency']), array_column($stripeCurrencies, 'code'))) {
             $fail('Currency must be a valid currency');
             return;
         }

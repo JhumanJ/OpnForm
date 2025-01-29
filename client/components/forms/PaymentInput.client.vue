@@ -30,7 +30,7 @@
         >
           <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
             <span class="text-sm font-medium text-gray-700">{{ $t('forms.payment.amount_to_pay') }}</span>
-            <span class="text-sm font-medium text-gray-900">{{ currency }} {{ amount }}</span>
+            <span class="text-sm font-medium text-gray-900">{{ currencySymbol }}{{ amount }}</span>
           </div>
           <StripeElements
             ref="stripeElements"
@@ -84,6 +84,7 @@ import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
+import stripeCurrencies from "~/data/stripe_currencies.json"
 
 const props = defineProps({
   ...inputProps,
@@ -134,6 +135,10 @@ watch(() => props.direction, async (newValue) => {
 })
 watch(() => props.locale, async (newValue) => {
   await resetCard()
+})
+
+const currencySymbol = computed(() => {
+  return stripeCurrencies.find(item => item.code === props.currency)?.symbol
 })
 
 const stripeOptions = computed(() => ({

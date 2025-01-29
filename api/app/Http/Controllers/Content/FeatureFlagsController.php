@@ -27,10 +27,7 @@ class FeatureFlagsController extends Controller
                     'google' => [
                         'fonts' => !empty(config('services.google.fonts_api_key')),
                         'auth' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
-                    ],
-                    'stripe' => [
-                        'currencies' => config('services.stripe.currencies'),
-                    ],
+                    ]
                 ],
                 'integrations' => [
                     'zapier' => config('services.zapier.enabled'),
