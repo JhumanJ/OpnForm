@@ -11,7 +11,6 @@ services:
         COMPOSER_FLAGS: --no-dev
     volumes: &api-environment-volumes
       - ./api/storage:/usr/share/nginx/html/storage:rw
-      - ./api/bootstrap/cache:/usr/share/nginx/html/bootstrap/cache:rw
     environment: &api-env
       APP_ENV: production
       IS_API_WORKER: "false"
