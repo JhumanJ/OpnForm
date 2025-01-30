@@ -27,6 +27,12 @@ class PaymentBlockConfigurationRule implements ValidationRule
             return; // If not a payment block, validation passes
         }
 
+        // Payment block not allowed if self hosted
+        if (config('app.self_hosted')) {
+            $fail('Payment block is not allowed on self hosted. Please use our hosted version.');
+            return;
+        }
+
         // Only one payment block allowed
         $paymentBlocks = collect($this->properties)
             ->filter(fn ($prop) => $prop['type'] === 'payment')

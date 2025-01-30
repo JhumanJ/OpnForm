@@ -159,7 +159,8 @@
     "default_block_name": "Payment",
     "bg_class": "bg-green-100",
     "text_class": "text-green-900",
-    "is_input": true
+    "is_input": true,
+    "self_hosted": false
   },
   "nf-text": {
     "name": "nf-text",
