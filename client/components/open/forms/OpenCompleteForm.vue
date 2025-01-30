@@ -235,8 +235,7 @@ export default {
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
-      confetti: useConfetti(),
-      stripeState: useStripeElements()
+      confetti: useConfetti()
     }
   },
 

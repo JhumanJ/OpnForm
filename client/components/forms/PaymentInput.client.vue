@@ -129,6 +129,11 @@ watch(card, (newValue) => {
 watch(() => stripeState.value.intentId, (newValue) => {
   formInput.compVal.value = newValue
 })
+watch(() => formInput.compVal.value, (newValue) => {
+  if (newValue && newValue !== stripeState.value.intentId) {
+    stripeState.value.intentId = newValue
+  }
+}, { immediate: true })
 
 watch(() => props.direction, async (newValue) => {
   await resetCard()
