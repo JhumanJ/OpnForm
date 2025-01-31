@@ -315,7 +315,7 @@ export default {
       }
     },
     paymentBlock() {
-      return this.currentFields.find(field => field.type === 'payment')
+      return (this.currentFields) ? this.currentFields.find(field => field.type === 'payment') : null
     }
   },
 
@@ -374,14 +374,12 @@ export default {
 
   methods: {
     async submitForm() {
-      if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
-
-      this.dataForm.busy = true
-      if (!await this.doPayment()) {
+      if (!await this.nextPage()) {
         this.dataForm.busy = false
         return
       }
-      this.dataForm.busy = false
+
+      if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
         this.$refs.captcha?.reset()
@@ -542,25 +540,37 @@ export default {
     },
     async nextPage() {
       if (this.adminPreview || this.urlPrefillPreview) {
-        this.formPageIndex++
+        if (!this.isLastPage) {
+          this.formPageIndex++
+        }
         this.scrollToTop()
-        return false
+        return true
       }
 
-      this.dataForm.busy = true
-      if (!await this.doPayment()) {
-        this.dataForm.busy = false
-        return false
-      }
-      
-      const fieldsToValidate = this.currentFields.map(f => f.id)
-      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
-        .then(() => {
+      try {
+        this.dataForm.busy = true
+        const fieldsToValidate = this.currentFields
+          .filter(f => f.type !== 'payment')
+          .map(f => f.id)
+
+        await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
+        
+        if (!await this.doPayment()) {
+          return false
+        }
+
+        if (!this.isLastPage) {
           this.formPageIndex++
-          this.dataForm.busy = false
           this.scrollToTop()
-        }).catch(this.handleValidationError)
-      return false
+        }
+        
+        return true
+      } catch (error) {
+        this.handleValidationError(error)
+        return false
+      } finally {
+        this.dataForm.busy = false
+      }
     },
     async doPayment() {
       // If there is a payment block, process the payment
@@ -568,8 +578,9 @@ export default {
       if (this.paymentBlock && !stripeState.value.intentId && (this.paymentBlock.required || !stripeState.value.card._empty)) {
         try {
           // Process the payment
+          this.dataForm.busy = true
           const result = await processPayment(this.form.slug, this.paymentBlock.required)
-          console.log('result', result)
+          this.dataForm.busy = false
           if (result && result?.error) {
             this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
             useAlert().error(result.error.message)
@@ -583,6 +594,7 @@ export default {
           }
           useAlert().error('Something went wrong. Please try again.')
         } catch (error) {
+          this.dataForm.busy = false
           console.error(error)
           useAlert().error(error?.message || 'Payment failed')
         }

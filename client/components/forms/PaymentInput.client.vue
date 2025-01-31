@@ -46,7 +46,6 @@
                   :elements="elements"
                   :options="cardOptions"
                   @ready="onCardReady"
-                  @change="onCardChanged"
                 />
               </div>
               <TextInput
@@ -105,10 +104,6 @@ const card = ref(null)
 const stripeElements = ref(null)
 const cardHolderName = ref('')
 const cardHolderEmail = ref('')
-
-const onCardChanged = (event) => {
-  console.log('card changed', event)
-}
   
 const onCardReady = (element) => {
   stripeState.value.card = card.value?.stripeElement
