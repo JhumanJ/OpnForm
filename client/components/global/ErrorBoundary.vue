@@ -1,12 +1,12 @@
 <template>
-    <slot v-if="!error" />
-    <slot
-      v-else
-      name="error"
-      :error="error"
-      :clear-error="clearError"
-    />
-  </template>
+  <slot v-if="!error" />
+  <slot
+    v-else
+    name="error"
+    :error="error"
+    :clear-error="clearError"
+  />
+</template>
   
 <script setup>
     const error = ref()

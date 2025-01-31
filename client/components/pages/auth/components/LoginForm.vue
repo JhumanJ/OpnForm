@@ -30,7 +30,7 @@
       />
 
       <!-- Remember Me -->
-      <div class="relative flex items-start mt-5">
+      <div class="relative flex items-center mt-3">
         <CheckboxInput
           v-model="remember"
           class="w-full md:w-1/2"
@@ -52,7 +52,7 @@
 
       <!-- Submit Button -->
       <v-button
-        class="w-full flex"
+        class="w-full flex mt-2"
         :loading="form.busy || loading"
       >
         Log in to continue

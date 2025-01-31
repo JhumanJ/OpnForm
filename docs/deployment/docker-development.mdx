@@ -1,0 +1,186 @@
+---
+title: "Docker Development Setup"
+description: "Set up OpnForm locally for development using Docker"
+---
+
+import CloudVersion from "/snippets/cloud-version.mdx";
+
+<CloudVersion/>
+
+## Overview
+
+OpnForm provides a minimal Docker-based development environment optimized for local development. While the full architecture is detailed in our [Docker Deployment](/deployment/docker) guide, the development setup is intentionally lighter and focused on developer experience.
+
+## Prerequisites
+
+- Docker and Docker Compose installed on your machine
+- Git installed
+- Basic understanding of Docker concepts
+
+## Quick Start
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/JhumanJ/OpnForm.git
+   cd OpnForm
+   ```
+
+2. Run the setup script in development mode:
+   ```bash
+   chmod +x scripts/docker-setup.sh
+   ./scripts/docker-setup.sh --dev
+   ```
+
+   This script will:
+   - Create necessary environment files
+   - Pull or build required Docker images
+   - Start all containers in development mode
+   - Display access information
+
+3. Access your development environment:
+   - Frontend: http://localhost:3000
+   - API: http://localhost/api
+
+### Initial Login
+
+After starting the development environment, use these credentials to access the app:
+
+-   Email: `admin@opnform.com`
+-   Password: `password`
+
+You will be prompted to change your email and password after your first login.
+
+<Note>Public registration is disabled in the self-hosted version. Use the admin account to invite additional users.</Note>
+
+## Architecture
+
+While the full architecture is detailed in our [Docker Deployment](/deployment/docker) guide, the development setup is intentionally lighter and focused on developer experience.
+
+### Differences from Production
+
+- **No Redis**: Uses file-based caching and sessions instead
+  - Simpler setup
+  - No additional service to maintain
+  - Slightly slower but sufficient for development
+
+- **No Queue Workers**: Uses synchronous job processing
+  - Jobs run immediately in the main process
+  - Easier debugging of background tasks
+  - No need to restart workers after code changes
+
+- **No Scheduler**: Scheduled tasks don't run automatically
+  - Run scheduled tasks manually when needed
+  - Less resource usage
+  - Cleaner logs
+
+### Development Features
+
+The development setup includes:
+
+#### Frontend Development
+- **Hot Module Replacement (HMR)**: Changes to Vue components and styles are instantly reflected without page reload
+- **Vue DevTools**: Full integration for component inspection and state management debugging ([learn more](https://devtools.vuejs.org/))
+- **Source Maps**: Enabled for easier debugging
+- **Fast Refresh**: Preserves component state during updates
+- **Error Overlay**: Displays errors directly in the browser
+
+#### Backend Development
+- **PHP Hot Reload**: Changes to PHP files are immediately available
+- **Xdebug Integration**: Ready for step-by-step debugging
+- **Artisan Commands**: Direct access to Laravel's CLI tools
+
+### Development URLs
+
+- **Frontend**: http://localhost:3000
+  - Direct access to Nuxt dev server
+  - Includes HMR websocket connection
+  - Vue DevTools available
+
+- **API**: http://localhost/api
+  - Handled by Nginx reverse proxy
+  - Automatic routing to PHP-FPM
+  - Supports file uploads and long requests
+
+## File Structure
+
+The development setup mounts your local directories into the containers:
+```
+OpnForm/
+├── api/                    # Laravel API (mounted to api container)
+│   ├── vendor/            # Preserved in container
+│   └── storage/           # Mounted for logs and uploads
+├── client/                # Nuxt frontend (mounted to ui container)
+│   └── node_modules/      # Preserved in container
+└── docker/                # Docker configuration files
+```
+
+## Common Tasks
+
+### Running Commands
+
+To run commands in the containers:
+
+```bash
+# Laravel Artisan commands
+docker compose -f docker-compose.dev.yml exec api php artisan [command]
+
+# NPM commands
+docker compose -f docker-compose.dev.yml exec ui npm [command]
+
+# Database commands
+docker compose -f docker-compose.dev.yml exec db psql -U forge
+```
+
+### Accessing Logs
+
+View container logs:
+
+```bash
+# All containers
+docker compose -f docker-compose.dev.yml logs -f
+
+# Specific container (e.g., frontend)
+docker compose -f docker-compose.dev.yml logs -f ui
+```
+
+### Database Access
+
+The PostgreSQL database is accessible:
+- From containers: `host=db`
+- From your machine: `localhost:5432`
+- Default credentials:
+  ```
+  Host: localhost
+  Port: 5432
+  Database: forge
+  Username: forge
+  Password: forge
+  ```
+
+## Troubleshooting
+
+### Container Issues
+If containers aren't starting properly:
+```bash
+# Clean everything and restart
+./scripts/docker-setup.sh --dev
+```
+
+### Permission Issues
+If you encounter permission issues:
+```bash
+# Fix storage permissions
+docker compose -f docker-compose.dev.yml exec api chmod -R 775 storage
+
+# Fix vendor permissions
+docker compose -f docker-compose.dev.yml exec api chmod -R 775 vendor
+```
+
+### HMR Issues
+If hot reload isn't working:
+1. Check browser console for WebSocket errors
+2. Ensure ports 3000 and 24678 are available
+3. Try restarting the UI container:
+   ```bash
+   docker compose -f docker-compose.dev.yml restart ui
+   ```

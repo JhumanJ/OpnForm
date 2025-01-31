@@ -87,7 +87,7 @@ const tabsList = computed(() => {
     },
   ]
 
-  if (user?.value?.is_subscribed) {
+  if (user?.value?.has_customer_id) {
     tabs.splice(1, 0, {
       name: "Billing",
       route: "settings-billing",

@@ -179,7 +179,6 @@
 
 <script setup>
 import { computed } from "vue"
-import VButton from "~/components/global/VButton.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
 

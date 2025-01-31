@@ -2,3 +2,38 @@
 /Dockerfile
 /data
 \.env
+
+# API ignores
+api/vendor/
+api/storage/framework/
+api/storage/logs/
+api/storage/app/
+api/.env
+api/.env.*
+api/.git/
+api/.idea/
+api/.vscode/
+api/node_modules/
+api/*.log
+
+# Client ignores
+client/node_modules/
+client/.nuxt/
+client/dist/
+client/.output/
+client/coverage/
+client/.env
+client/.env.*
+client/.git/
+client/.idea/
+client/.vscode/
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+
+# Global ignores
+**/.DS_Store
+**/*.log
+**/.git/
+**/.idea/
+**/.vscode/

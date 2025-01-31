@@ -333,8 +333,13 @@ export default {
         return
       }
       this.exportLoading = true
-      opnFetch(this.exportUrl, {responseType: "blob"})
-        .then(blob => {
+      opnFetch(this.exportUrl, {
+        responseType: "blob",
+        method: "POST",
+        body: {
+          columns: this.displayColumns
+        }
+      }).then(blob => {
           const filename = `${this.form.slug}-${Date.now()}-submissions.csv`
           const a = document.createElement("a")
           document.body.appendChild(a)

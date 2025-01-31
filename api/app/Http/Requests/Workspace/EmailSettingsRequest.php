@@ -22,28 +22,32 @@ class EmailSettingsRequest extends FormRequest
      */
     public function rules()
     {
-        $allFieldsPresent = $this->filled(['host', 'port', 'username', 'password']);
+        $allFieldsPresent = $this->filled(['host', 'port', 'username', 'password', 'sender_address']);
 
         return [
             'host' => [
                 $allFieldsPresent ? 'required' : 'nullable',
-                'required_with:port,username,password',
+                'required_with:port,username,password,sender_address',
                 'string',
             ],
             'port' => [
                 $allFieldsPresent ? 'required' : 'nullable',
-                'required_with:host,username,password',
+                'required_with:host,username,password,sender_address',
                 'integer',
             ],
             'username' => [
                 $allFieldsPresent ? 'required' : 'nullable',
-                'required_with:host,port,password',
+                'required_with:host,port,password,sender_address',
                 'string',
             ],
             'password' => [
                 $allFieldsPresent ? 'required' : 'nullable',
-                'required_with:host,port,username',
+                'required_with:host,port,username,sender_address',
                 'string',
+            ],
+            'sender_address' => [
+                'nullable',
+                'email',
             ],
         ];
     }

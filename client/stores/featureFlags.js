@@ -3,11 +3,15 @@ import { ref } from 'vue'
 
 export const useFeatureFlagsStore = defineStore('feature_flags', () => {
   const flags = ref({})
+  const isLoaded = ref(false)
 
   async function fetchFlags() {
+    if (isLoaded.value) return
+
     try {
       const { data } = await useOpnApi('content/feature-flags')
       flags.value = data.value
+      isLoaded.value = true
     } catch (error) {
       console.error('Failed to fetch feature flags:', error)
     }
@@ -20,5 +24,5 @@ export const useFeatureFlagsStore = defineStore('feature_flags', () => {
     }, flags.value)
   }
 
-  return { flags, fetchFlags, getFlag }
+  return { flags, isLoaded, fetchFlags, getFlag }
 })

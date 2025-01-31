@@ -552,7 +552,7 @@
         @update:model-value="onFieldHelpPositionChange"
       />
 
-      <template v-if="['text', 'number', 'url', 'email'].includes(field.type)">
+      <template v-if="['text', 'rich_text', 'number', 'url', 'email'].includes(field.type)">
         <text-input
           name="max_char_limit"
           native-type="number"
@@ -861,6 +861,9 @@ export default {
         },
         text: {
           multi_lines: false,
+          max_char_limit: 2000
+        },
+        rich_text: {
           max_char_limit: 2000
         },
         email: {

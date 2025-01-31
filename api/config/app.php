@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'dev_cors' => env('APP_DEV_CORS', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

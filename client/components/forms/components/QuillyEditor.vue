@@ -1,9 +1,9 @@
 <template>
-    <div
-      ref="container"
-      class="quilly-editor"
-    />
-  </template>
+  <div
+    ref="container"
+    class="quilly-editor"
+  />
+</template>
   
   <script setup>
   import Quill from 'quill'
