@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "戻る",
+        "next": "次へ",
         "powered_by": "開発者",
         "password_protected": "このフォームはパスワードで保護されています。",
         "invalid_password": "無効なパスワード。",

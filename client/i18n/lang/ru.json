@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "Назад",
+        "next": "Вперед",
         "powered_by": "Работает на",
         "password_protected": "Эта форма защищена паролем.",
         "invalid_password": "Неверный пароль.",

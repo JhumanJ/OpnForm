@@ -3,6 +3,8 @@
         "name": "OpnForm"
     },
     "forms": {
+        "back": "Kembali",
+        "next": "Lanjut",
         "powered_by": "Dipungkasi dening",
         "password_protected": "Formulir iki dilindhungi tembung sandi.",
         "invalid_password": "Tembung sandi ora bener.",
