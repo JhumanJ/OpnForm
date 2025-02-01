@@ -9,7 +9,7 @@ use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
-use App\Open\MentionParser;
+use App\Service\Forms\FormSubmissionProcessor;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
@@ -85,7 +85,7 @@ class PublicFormController extends Controller
         return redirect()->to($internal_url);
     }
 
-    public function answer(AnswerFormRequest $request)
+    public function answer(AnswerFormRequest $request, FormSubmissionProcessor $formSubmissionProcessor)
     {
         $form = $request->form;
         $isFirstSubmission = ($form->submissions_count === 0);
@@ -95,10 +95,13 @@ class PublicFormController extends Controller
         $completionTime = $request->get('completion_time') ?? null;
         unset($submissionData['completion_time']); // Remove completion_time from the main data array
 
-        if ($form->editable_submissions) {
-            $job = new StoreFormSubmissionJob($form, $submissionData, $completionTime);
+        $job = new StoreFormSubmissionJob($form, $submissionData, $completionTime);
+
+        if ($formSubmissionProcessor->shouldProcessSynchronously($form)) {
             $job->handle();
             $submissionId = Hashids::encode($job->getSubmissionId());
+            // Update submission data with generated values for redirect URL
+            $submissionData = $job->getProcessedData();
         } else {
             StoreFormSubmissionJob::dispatch($form, $submissionData, $completionTime);
         }
@@ -107,27 +110,7 @@ class PublicFormController extends Controller
             'message' => 'Form submission saved.',
             'submission_id' => $submissionId,
             'is_first_submission' => $isFirstSubmission,
-        ], $this->getRedirectData($request->form, $submissionData)));
-    }
-
-    private function getRedirectData($form, $submissionData)
-    {
-        $formattedData = collect($submissionData)->map(function ($value, $key) {
-            return ['id' => $key, 'value' => $value];
-        })->values()->all();
-
-        $redirectUrl = ($form->redirect_url) ? (new MentionParser($form->redirect_url, $formattedData))->urlFriendlyOutput()->parseAsText() : null;
-
-        if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
-            $redirectUrl = null;
-        }
-
-        return $form->is_pro && $redirectUrl ? [
-            'redirect' => true,
-            'redirect_url' => $redirectUrl,
-        ] : [
-            'redirect' => false,
-        ];
+        ], $formSubmissionProcessor->getRedirectData($form, $submissionData)));
     }
 
     public function fetchSubmission(Request $request, string $slug, string $submissionId)

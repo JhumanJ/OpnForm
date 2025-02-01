@@ -27,6 +27,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     use SerializesModels;
 
     public ?string $submissionId = null;
+    private ?array $formData = null;
 
     /**
      * Create a new job instance.
@@ -44,13 +45,13 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     public function handle()
     {
-        $formData = $this->getFormData();
-        $this->addHiddenPrefills($formData);
+        $this->formData = $this->getFormData();
+        $this->addHiddenPrefills($this->formData);
 
-        $this->storeSubmission($formData);
+        $this->storeSubmission($this->formData);
 
-        $formData['submission_id'] = $this->submissionId;
-        FormSubmitted::dispatch($this->form, $formData);
+        $this->formData['submission_id'] = $this->submissionId;
+        FormSubmitted::dispatch($this->form, $this->formData);
     }
 
     public function getSubmissionId()
@@ -257,5 +258,16 @@ class StoreFormSubmissionJob implements ShouldQueue
                 $formData[$property['id']] = $property['prefill'];
             }
         });
+    }
+
+    /**
+     * Get the processed form data after all transformations
+     */
+    public function getProcessedData(): array
+    {
+        if ($this->formData === null) {
+            $this->formData = $this->getFormData();
+        }
+        return $this->formData;
     }
 }
