@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-white" v-if="workspace">
+  <div
+    v-if="workspace"
+    class="bg-white"
+  >
     <div class="flex bg-gray-50 pb-5 border-b">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
         <div class="pt-4 pb-0">
@@ -276,7 +279,7 @@ const selectedTags = ref(new Set())
 
 const onTagClick = (tag) => {
   if (selectedTags?.value?.has(tag)) {
-    selectedTags.value.remove(tag)
+    selectedTags.value.delete(tag)
   } else {
     selectedTags.value.add(tag)
   }
