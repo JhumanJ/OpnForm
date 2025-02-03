@@ -37,57 +37,62 @@
           </svg>
         </template>
         <template #title>
-          Display columns
+          Manage Columns
         </template>
 
         <div class="px-4">
-          <template v-if="form.properties.length > 0">
-            <h4 class="font-bold mb-2">
-              Form Fields
-            </h4>
-            <div class="border border-gray-300 rounded-md">
-              <div
-                v-for="(field,index) in candidatesProperties"
-                :key="field.id"
-                class="p-2 border-gray-300 flex items-center"
-                :class="{'border-t':index!=0}"
+          <template
+            v-for="(section, sectionIndex) in sections"
+            :key="sectionIndex"
+          >
+            <template v-if="section.fields.length > 0">
+              <h4
+                class="font-bold mb-2"
+                :class="{ 'mt-4': sectionIndex > 0 }"
               >
-                <p class="flex-grow truncate">
-                  {{ field.name }}
-                </p>
-                <ToggleSwitchInput
-                  v-model="displayColumns[field.id]"
-                  wrapper-class="mb-0"
-                  label=""
-                  name="field.id"
-                  @update:model-value="onChangeDisplayColumns"
-                />
+                {{ section.title }}
+              </h4>
+              <div class="border border-gray-300">
+                <div class="grid grid-cols-[1fr,auto,auto] gap-4 px-4 py-2 bg-gray-50 border-b border-gray-300">
+                  <div class="font-bold text-sm">
+                    Field Name
+                  </div>
+                  <div class="font-bold text-sm text-center w-20">
+                    Display
+                  </div>
+                  <div class="font-bold text-sm text-center w-20">
+                    Wrap Text
+                  </div>
+                </div>
+                <div
+                  v-for="(field, index) in section.fields"
+                  :key="field.id"
+                  class="grid grid-cols-[1fr,auto,auto] gap-4 px-4 py-2 items-center"
+                  :class="{ 'border-t border-gray-300': index !== 0 }"
+                >
+                  <p class="truncate text-sm">
+                    {{ field.name }}
+                  </p>
+                  <div class="flex justify-center w-20">
+                    <ToggleSwitchInput
+                      v-model="displayColumns[field.id]"
+                      wrapper-class="mb-0"
+                      label=""
+                      :name="`display-${field.id}`"
+                      @update:model-value="onChangeDisplayColumns"
+                    />
+                  </div>
+                  <div class="flex justify-center w-20">
+                    <ToggleSwitchInput
+                      v-model="wrapColumns[field.id]"
+                      wrapper-class="mb-0"
+                      label=""
+                      :name="`wrap-${field.id}`"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </template>
-          <template v-if="removed_properties.length > 0">
-            <h4 class="font-bold mb-2 mt-4">
-              Removed Fields
-            </h4>
-            <div class="border border-gray-300 rounded-md">
-              <div
-                v-for="(field,index) in removed_properties"
-                :key="field.id"
-                class="p-2 border-gray-300 flex items-center"
-                :class="{'border-t':index!=0}"
-              >
-                <p class="flex-grow truncate">
-                  {{ field.name }}
-                </p>
-                <ToggleSwitchInput
-                  v-model="displayColumns[field.id]"
-                  wrapper-class="mb-0"
-                  label=""
-                  name="field.id"
-                  @update:model-value="onChangeDisplayColumns"
-                />
-              </div>
-            </div>
+            </template>
           </template>
         </div>
       </modal>
@@ -147,6 +152,7 @@
           ref="table"
           class="max-h-full"
           :columns="properties"
+          :wrap-columns="wrapColumns"
           :data="filteredData"
           :loading="isLoading"
           :scroll-parent="parentPage"
@@ -191,6 +197,7 @@ export default {
       properties: [],
       removed_properties: [],
       displayColumns: {},
+      wrapColumns: {},
       exportLoading: false,
       searchForm: useForm({
         search: ''
@@ -235,6 +242,18 @@ export default {
       return fuse.search(this.searchForm.search).map((res) => {
         return res.item
       })
+    },
+    sections() {
+      return [
+        {
+          title: 'Form Fields',
+          fields: this.candidatesProperties
+        },
+        {
+          title: 'Removed Fields',
+          fields: this.removed_properties
+        }
+      ]
     }
   },
   watch: {

@@ -74,6 +74,7 @@
             {
               'border-b': index !== data.length - 1,
               'border-r': colIndex !== columns.length - 1 || hasActions,
+              'whitespace-normal break-words': wrapColumns[col.id] === true,
             },
             colClasses(col),
           ]"
@@ -157,6 +158,10 @@ export default {
     columns: {
       type: Array,
       default: () => [],
+    },
+    wrapColumns: {
+      type: Object,
+      default: () => {},
     },
     data: {
       type: Array,
