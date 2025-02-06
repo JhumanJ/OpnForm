@@ -48,7 +48,10 @@ export default defineNuxtConfig({
         defaultLocale: 'en',
         lazy: true,
         langDir: 'lang/',
-        strategy: 'no_prefix'
+        strategy: 'no_prefix',
+        detectBrowserLanguage: {
+            cookieSecure: true
+        }
     },
     experimental: {
         inlineRouteRules: true
