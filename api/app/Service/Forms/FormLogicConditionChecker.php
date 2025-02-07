@@ -364,9 +364,9 @@ class FormLogicConditionChecker
     {
         switch ($propertyCondition['operator']) {
             case 'equals':
-                return $this->checkEquals($propertyCondition, $value);
+                return $value === false;
             case 'does_not_equal':
-                return !$this->checkEquals($propertyCondition, $value);
+                return $value === true;
         }
 
         return false;

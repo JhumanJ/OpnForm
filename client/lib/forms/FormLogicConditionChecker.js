@@ -333,9 +333,9 @@ function numberConditionMet(propertyCondition, value) {
 function checkboxConditionMet(propertyCondition, value) {
   switch (propertyCondition.operator) {
     case "equals":
-      return checkEquals(propertyCondition, value)
+      return value === false
     case "does_not_equal":
-      return !checkEquals(propertyCondition, value)
+      return value === true
   }
   return false
 }
