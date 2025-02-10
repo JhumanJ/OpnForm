@@ -89,7 +89,7 @@ class FormLogicConditionChecker
         if (is_array($fieldValue)) {
             return in_array($condition['value'], $fieldValue);
         }
-        return \Str::contains($fieldValue, $condition['value']);
+        return \Illuminate\Support\Str::contains($fieldValue, $condition['value']);
     }
 
     private function checkMatrixContains($condition, $fieldValue): bool
@@ -362,11 +362,21 @@ class FormLogicConditionChecker
 
     private function checkboxConditionMet(array $propertyCondition, $value): bool
     {
+        // Treat null or missing values as false
+        if ($value === null || !isset($value)) {
+            $value = false;
+        }
+
         switch ($propertyCondition['operator']) {
+            case 'is_checked':
+                return $value === true;
+            case 'is_not_checked':
+                return $value === false;
+                // Legacy operators
             case 'equals':
-                return $this->checkEquals($propertyCondition, $value);
+                return $value === true;
             case 'does_not_equal':
-                return !$this->checkEquals($propertyCondition, $value);
+                return $value === false;
         }
 
         return false;
