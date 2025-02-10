@@ -20,14 +20,35 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Install PHP extensions
-RUN if [ "$(uname -m)" = "aarch64" ]; then \
-    export CFLAGS="$CFLAGS -D_GNU_SOURCE"; \
-    fi && \
-    docker-php-ext-install -j$(nproc) pdo zip bcmath gd && \
+ENV CFLAGS="-O1 -D_GNU_SOURCE" \
+    CXXFLAGS="-O1 -D_GNU_SOURCE"
+
+# Install basic extensions first
+RUN set -eux; \
+    docker-php-ext-install -j$(nproc) pdo zip && \
+    php -m | grep -E 'pdo|zip'
+
+# Install GD
+RUN set -eux; \
+    docker-php-ext-install -j$(nproc) gd && \
+    php -m | grep -E 'gd'
+
+# Install PostgreSQL related extensions
+RUN set -eux; \
     docker-php-ext-configure pgsql && \
     docker-php-ext-install -j$(nproc) pgsql pdo_pgsql && \
+    php -m | grep -E 'pgsql|pdo_pgsql'
+
+# Install bcmath with optimization flags for stability
+RUN set -eux; \
+    docker-php-ext-install -j1 bcmath && \
+    php -m | grep -E 'bcmath'
+
+# Install Redis extension
+RUN set -eux; \
     pecl install -f --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no"' redis && \
-    docker-php-ext-enable redis
+    docker-php-ext-enable redis && \
+    php -m | grep -E 'redis'
 
 WORKDIR /usr/share/nginx/html/
 
