@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Honek sortua",
+        "password_protected": "Inprimaki hau pasahitz bidez babestuta dago.",
+        "invalid_password": "Pasahitz okerra.",
+        "password_required": "Pasahitza beharrezkoa da.",
+        "create_form_free": "Sortu zure inprimakia doan OpnForm-ekin",
+        "submit": "Bidali",
+        "wrong_form_structure": "Zerbait gaizki dago inprimaki honen egituran. Inprimakiaren jabea bazara, jar zaitez gurekin harremanetan.",
+        "cannot_access_here": "Ezin da eduki honetara hemen sartu. Egin klik beheko estekan sartzeko.",
+        "open_form": "Ireki inprimakia",
+        "restricted_to_workspace": "Notion Workspace-ko kideentzat mugatuta. Saioa hasi edukira sartzeko.",
+        "select": {
+            "search": "Bilatu",
+            "searchOrTypeToCreateNew": "Bilatu edo idatzi berria sortzeko",
+            "typeSomethingToAddAnOption": "Idatzi zerbait aukera bat gehitzeko",
+            "noOptionAvailable": "Ez dago aukerarik eskuragarri",
+            "create": "Sortu"
+        },
+        "fileInput": {
+            "chooseFiles": "Egin klik fitxategia(k) aukeratzeko edo arrastatu hona | Egin klik fitxategia aukeratzeko edo arrastatu hona",
+            "sizeLimit": "Tamaina muga: {count}MB fitxateko",
+            "uploadingFile": "Zure fitxategia kargatzen..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Onartu kameraren baimena",
+            "allowCameraPermissionDescription": "Kameraren baimena onartu behar duzu argazkiak atera aurretik. Joan nabigatzailearen ezarpenetara orri honetan kameraren baimena gaitzeko.",
+            "gotIt": "Ulertuta!",
+            "cameraDeviceError": "Kamera gailuaren errorea",
+            "cameraDeviceErrorDescription": "Errore ezezagun bat gertatu da webkamera abiarazten saiatzean.",
+            "goBack": "Itzuli"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Kargatu fitxategia ordez",
+            "clear": "Garbitu"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Egin klik kamera irekitzeko"
+        }
+    }
+} 

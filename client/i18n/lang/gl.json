@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Desenvolvido por",
+        "password_protected": "Este formulario está protexido por contrasinal.",
+        "invalid_password": "Contrasinal non válido.",
+        "password_required": "Requírese contrasinal.",
+        "create_form_free": "Crea o teu formulario de balde con OpnForm",
+        "submit": "Enviar",
+        "wrong_form_structure": "Algo está mal coa estrutura deste formulario. Se es o propietario do formulario, contacta connosco.",
+        "cannot_access_here": "Non se pode acceder a este contido aquí. Fai clic na ligazón de abaixo para acceder.",
+        "open_form": "Abrir formulario",
+        "restricted_to_workspace": "Restrinxido aos membros do Espazo de Traballo de Notion. Inicia sesión para acceder a este contido.",
+        "select": {
+            "search": "Buscar",
+            "searchOrTypeToCreateNew": "Busca ou escribe para crear novo",
+            "typeSomethingToAddAnOption": "Escribe algo para engadir unha opción",
+            "noOptionAvailable": "Non hai opcións dispoñibles",
+            "create": "Crear"
+        },
+        "fileInput": {
+            "chooseFiles": "Fai clic para escoller arquivo(s) ou arrastra aquí | Fai clic para escoller un arquivo ou arrastra aquí",
+            "sizeLimit": "Límite de tamaño: {count}MB por arquivo",
+            "uploadingFile": "Subindo o teu arquivo..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Permitir acceso á cámara",
+            "allowCameraPermissionDescription": "Necesitas permitir o acceso á cámara antes de poder tomar fotos. Vai á configuración do navegador para activar o permiso da cámara nesta páxina.",
+            "gotIt": "Entendido!",
+            "cameraDeviceError": "Erro do dispositivo de cámara",
+            "cameraDeviceErrorDescription": "Ocorreu un erro descoñecido ao tentar iniciar o dispositivo de webcam.",
+            "goBack": "Volver"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Subir arquivo no seu lugar",
+            "clear": "Limpar"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Fai clic para abrir a cámara"
+        }
+    }
+} 

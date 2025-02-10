@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Vytvořeno pomocí",
+        "password_protected": "Tento formulář je chráněn heslem.",
+        "invalid_password": "Neplatné heslo.",
+        "password_required": "Heslo je povinné.",
+        "create_form_free": "Vytvořte si svůj formulář zdarma s OpnForm",
+        "submit": "Odeslat",
+        "wrong_form_structure": "Něco není v pořádku se strukturou tohoto formuláře. Pokud jste vlastníkem formuláře, kontaktujte nás.",
+        "cannot_access_here": "K tomuto obsahu zde nelze přistupovat. Klikněte na odkaz níže pro přístup.",
+        "open_form": "Otevřít formulář",
+        "restricted_to_workspace": "Omezeno pro členy pracovního prostoru Notion. Pro přístup k obsahu se přihlaste.",
+        "select": {
+            "search": "Hledat",
+            "searchOrTypeToCreateNew": "Hledejte nebo napište pro vytvoření nového",
+            "typeSomethingToAddAnOption": "Napište něco pro přidání možnosti",
+            "noOptionAvailable": "Žádné dostupné možnosti",
+            "create": "Vytvořit"
+        },
+        "fileInput": {
+            "chooseFiles": "Klikněte pro výběr souboru(ů) nebo přetáhněte sem | Klikněte pro výběr souboru nebo přetáhněte sem",
+            "sizeLimit": "Limit velikosti: {count}MB na soubor",
+            "uploadingFile": "Nahrávání vašeho souboru..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Povolit přístup ke kameře",
+            "allowCameraPermissionDescription": "Před fotografováním musíte povolit přístup ke kameře. Přejděte do nastavení prohlížeče a povolte přístup ke kameře na této stránce.",
+            "gotIt": "Rozumím!",
+            "cameraDeviceError": "Chyba zařízení kamery",
+            "cameraDeviceErrorDescription": "Při pokusu o spuštění webkamery došlo k neznámé chybě.",
+            "goBack": "Zpět"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Místo toho nahrát soubor",
+            "clear": "Vymazat"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Klikněte pro otevření kamery"
+        }
+    }
+} 
