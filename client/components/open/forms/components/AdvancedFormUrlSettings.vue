@@ -25,15 +25,6 @@
       </div>
     </template>
     <toggle-switch-input
-      :model-value="modelValue.hide_title"
-      name="hide_title"
-      class="mt-4"
-      label="Hide Form Title"
-      :disabled="form.hide_title === true ? true : null"
-      :help="hideTitleHelp"
-      @update:model-value="onChangeHideTitle"
-    />
-    <toggle-switch-input
       :model-value="modelValue.auto_submit"
       name="auto_submit"
       class="mt-4"
@@ -64,22 +55,7 @@ export default {
     return {}
   },
 
-  computed: {
-    hideTitleHelp() {
-      return this.form.hide_title
-        ? "This option is disabled because the form title is already hidden"
-        : null
-    },
-  },
-
-  watch: {},
-
-  mounted() {},
-
   methods: {
-    onChangeHideTitle(val) {
-      this.modelValue.hide_title = val
-    },
     onChangeAutoSubmit(val) {
       this.modelValue.auto_submit = val
     },

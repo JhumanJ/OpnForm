@@ -69,7 +69,6 @@ useOpnSeoMeta({
 })
 
 const shareFormConfig = ref({
-  hide_title: false,
   auto_submit: false,
 })
 
