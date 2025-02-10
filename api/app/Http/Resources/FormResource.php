@@ -49,6 +49,7 @@ class FormResource extends JsonResource
             'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached,
             'form_pending_submission_key' => $this->form_pending_submission_key,
             'max_file_size' => $this->max_file_size / 1000000,
+            'auto_save' => $this->getAutoSave(),
         ]);
     }
 
@@ -111,5 +112,17 @@ class FormResource extends JsonResource
     private function getCleanigns()
     {
         return $this->extra?->cleanings ?? $this->cleanings;
+    }
+
+    private function hasPaymentBlock()
+    {
+        return array_filter($this->properties, function ($property) {
+            return $property['type'] === 'payment';
+        });
+    }
+
+    private function getAutoSave()
+    {
+        return $this->hasPaymentBlock() ? true : $this->auto_save;
     }
 }

@@ -119,6 +119,17 @@
       <div v-if="!currentFieldsPageBreak && !isLastPage">
         {{ $t('forms.wrong_form_structure') }}
       </div>
+      <div
+        v-if="paymentBlock"
+        class="text-xs text-gray-500 mt-2"
+      >
+        <template v-if="isLastPage">
+          Your credit card will be charged upon clicking the "Submit" button. Payments are securely processed through Stripe.
+        </template>
+        <template v-else>
+          Your credit card will be charged upon clicking the "Next" button. Payments are securely processed through Stripe.
+        </template>
+      </div>
     </div>
   </form>
 </template>
@@ -302,6 +313,9 @@ export default {
       return {
         '--form-color': this.form.color
       }
+    },
+    paymentBlock() {
+      return (this.currentFields) ? this.currentFields.find(field => field.type === 'payment') : null
     }
   },
 
@@ -359,7 +373,12 @@ export default {
   },
 
   methods: {
-    submitForm() {
+    async submitForm() {
+      if (!await this.nextPage()) {
+        this.dataForm.busy = false
+        return
+      }
+
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
 
       if (this.form.use_captcha && import.meta.client) {
@@ -519,21 +538,69 @@ export default {
       this.formPageIndex--
       this.scrollToTop()
     },
-    nextPage() {
+    async nextPage() {
       if (this.adminPreview || this.urlPrefillPreview) {
-        this.formPageIndex++
+        if (!this.isLastPage) {
+          this.formPageIndex++
+        }
         this.scrollToTop()
+        return true
+      }
+
+      try {
+        this.dataForm.busy = true
+        const fieldsToValidate = this.currentFields
+          .filter(f => f.type !== 'payment')
+          .map(f => f.id)
+
+        await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
+        
+        if (!await this.doPayment()) {
+          return false
+        }
+
+        if (!this.isLastPage) {
+          this.formPageIndex++
+          this.scrollToTop()
+        }
+        
+        return true
+      } catch (error) {
+        this.handleValidationError(error)
+        return false
+      } finally {
+        this.dataForm.busy = false
+      }
+    },
+    async doPayment() {
+      // If there is a payment block, process the payment
+      const { state: stripeState, processPayment } = useStripeElements()
+      if (this.paymentBlock && !stripeState.value.intentId && (this.paymentBlock.required || !stripeState.value.card._empty)) {
+        try {
+          // Process the payment
+          this.dataForm.busy = true
+          const result = await processPayment(this.form.slug, this.paymentBlock.required)
+          this.dataForm.busy = false
+          if (result && result?.error) {
+            this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
+            useAlert().error(result.error.message)
+            return false
+          }
+
+          if (result?.paymentIntent?.status === 'succeeded') {
+            stripeState.value.intentId = result.paymentIntent.id
+            useAlert().success('Thank you! Your payment is successful.')
+            return true
+          }
+          useAlert().error('Something went wrong. Please try again.')
+        } catch (error) {
+          this.dataForm.busy = false
+          console.error(error)
+          useAlert().error(error?.message || 'Payment failed')
+        }
         return false
       }
-      const fieldsToValidate = this.currentFields.map(f => f.id)
-      this.dataForm.busy = true
-      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
-        .then(() => {
-          this.formPageIndex++
-          this.dataForm.busy = false
-          this.scrollToTop()
-        }).catch(this.handleValidationError)
-      return false
+      return true
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })

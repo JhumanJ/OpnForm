@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "کیمرے کھولنے کے لیے کلک کریں"
+        },
+        "payment": {
+            "amount_to_pay": "پہلو کرنے کی رقم",
+            "success": "پہلو کرنا موفق",
+            "name_on_card": "کارڈ پر نام",
+            "billing_email": "بلندی کی ای میل ادرس"
         }
     }
 } 

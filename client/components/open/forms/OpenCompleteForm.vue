@@ -291,7 +291,7 @@ export default {
   },
 
   methods: {
-    submitForm (form, onFailure) {
+    async submitForm(form, onFailure) {
       if (this.creating) {
         this.submitted = true
         this.$emit('submitted', true)
@@ -300,7 +300,6 @@ export default {
 
       if (form.busy) return
       this.loading = true
-
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {

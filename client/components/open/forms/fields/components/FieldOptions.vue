@@ -194,6 +194,10 @@
       @update:model-value="field = $event"
     />
 
+    <PaymentFieldOptions
+      :field="field"
+    />
+
     <!--   Text Options   -->
     <div
       v-if="field.type === 'text' && displayBasedOnAdvanced"
@@ -477,7 +481,7 @@
         label="Pre-filled value"
       />
       <text-input
-        v-else-if="!['files', 'signature', 'rich_text'].includes(field.type)"
+        v-else-if="!['files', 'signature', 'rich_text', 'payment'].includes(field.type)"
         name="prefill"
         class="mt-3"
         :form="field"
@@ -605,6 +609,7 @@ import timezones from '~/data/timezones.json'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import MatrixFieldOptions from './MatrixFieldOptions.vue'
+import PaymentFieldOptions from './PaymentFieldOptions.vue'
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
 import { format } from 'date-fns'
@@ -612,7 +617,7 @@ import { default as _has } from 'lodash/has'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader },
+  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions },
   props: {
     field: {
       type: Object,
@@ -628,7 +633,7 @@ export default {
   },
   data() {
     return {
-      typesWithoutPlaceholder: ['date', 'checkbox', 'files'],
+      typesWithoutPlaceholder: ['date', 'checkbox', 'files', 'payment'],
       editorToolbarCustom: [
         ['bold', 'italic', 'underline', 'link']
       ],
