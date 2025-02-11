@@ -91,13 +91,15 @@
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
           style="width: 100px"
         >
-          <record-operations
-            :form="form"
-            :structure="columns"
-            :submission="row"
-            @deleted="(submission) => $emit('deleted', submission)"
-            @updated="(submission) => $emit('updated', submission)"
-          />
+          <div class="flex justify-center">
+            <record-operations
+              :form="form"
+              :structure="columns"
+              :submission="row"
+              @deleted="(submission) => $emit('deleted', submission)"
+              @updated="(submission) => $emit('updated', submission)"
+            />
+          </div>
         </td>
       </tr>
       <tr
