@@ -29,22 +29,28 @@ class FormLogicPropertyResolver
 
     public function shouldBeRequired(): bool
     {
-        if (! isset($this->property['required'])) {
-            return false;
-        }
+        // Default required to false if not set
+        $isRequired = $this->property['required'] ?? false;
 
         if (! $this->logic) {
-            return $this->property['required'];
+            return $isRequired;
         }
 
         $conditionsMet = FormLogicConditionChecker::conditionsMet($this->logic['conditions'], $this->formData);
-        if ($conditionsMet && $this->property['required'] && count($this->logic['actions']) > 0 && (in_array('make-it-optional', $this->logic['actions']) || in_array('hide-block', $this->logic['actions']))) {
-            return false;
-        } elseif ($conditionsMet && ! $this->property['required'] && count($this->logic['actions']) > 0 && in_array('require-answer', $this->logic['actions'])) {
-            return true;
-        } else {
-            return $this->property['required'];
+
+        // If conditions are met and we have actions
+        if ($conditionsMet && !empty($this->logic['actions'])) {
+            // If field is required but should be made optional
+            if ($isRequired && (in_array('make-it-optional', $this->logic['actions']) || in_array('hide-block', $this->logic['actions']))) {
+                return false;
+            }
+            // If field is not required but should be required
+            if (!$isRequired && in_array('require-answer', $this->logic['actions'])) {
+                return true;
+            }
         }
+
+        return $isRequired;
     }
 
     public function shouldBeHidden(): bool
