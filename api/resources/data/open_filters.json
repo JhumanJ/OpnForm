@@ -505,24 +505,8 @@
   },
   "checkbox": {
     "comparators": {
-      "equals": {
-        "expected_type": "boolean",
-        "format": {
-          "type": "enum",
-          "values": [
-            true
-          ]
-        }
-      },
-      "does_not_equal": {
-        "expected_type": "boolean",
-        "format": {
-          "type": "enum",
-          "values": [
-            true
-          ]
-        }
-      }
+      "is_checked": {},
+      "is_not_checked": {}
     }
   },
   "select": {

@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Drivs av",
+        "password_protected": "Detta formulär är lösenordsskyddat.",
+        "invalid_password": "Ogiltigt lösenord.",
+        "password_required": "Lösenord krävs.",
+        "create_form_free": "Skapa ditt formulär gratis med OpnForm",
+        "submit": "Skicka",
+        "wrong_form_structure": "Något är fel med formulärets struktur. Om du är formulärets ägare, kontakta oss.",
+        "cannot_access_here": "Detta innehåll kan inte nås här. Klicka på länken nedan för att få åtkomst.",
+        "open_form": "Öppna formulär",
+        "restricted_to_workspace": "Begränsad till medlemmar i Notion Workspace. Logga in för att få åtkomst till detta innehåll.",
+        "select": {
+            "search": "Sök",
+            "searchOrTypeToCreateNew": "Sök eller skriv för att skapa nytt",
+            "typeSomethingToAddAnOption": "Skriv något för att lägga till ett alternativ",
+            "noOptionAvailable": "Inga alternativ tillgängliga",
+            "create": "Skapa"
+        },
+        "fileInput": {
+            "chooseFiles": "Klicka för att välja fil(er) eller dra hit | Klicka för att välja en fil eller dra hit",
+            "sizeLimit": "Storleksgräns: {count}MB per fil",
+            "uploadingFile": "Laddar upp din fil..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Tillåt kameraåtkomst",
+            "allowCameraPermissionDescription": "Du måste tillåta kameraåtkomst innan du kan ta bilder. Gå till webbläsarens inställningar för att aktivera kameraåtkomst på denna sida.",
+            "gotIt": "Jag förstår!",
+            "cameraDeviceError": "Kameraenhetsfel",
+            "cameraDeviceErrorDescription": "Ett okänt fel uppstod när webbkameran skulle startas.",
+            "goBack": "Gå tillbaka"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Ladda upp fil istället",
+            "clear": "Rensa"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Klicka för att öppna kameran"
+        }
+    }
+} 

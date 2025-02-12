@@ -185,7 +185,6 @@ export default {
 
   data() {
     return {
-      currentPage: 1,
       fullyLoaded: false,
       showColumnsModal: false,
       properties: [],
@@ -290,18 +289,34 @@ export default {
         return
       }
       this.recordStore.startLoading()
-      opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + this.currentPage).then((resData) => {
-        this.recordStore.save(resData.data.map((record) => record.data))
-        this.dataChanged()
-        if (this.currentPage < resData.meta.last_page) {
-          this.currentPage += 1
-          this.getSubmissionsData()
-        } else {
-          this.recordStore.stopLoading()
-          this.fullyLoaded = true
+      
+      opnFetch('/open/forms/' + this.form.id + '/submissions?page=1').then((firstResponse) => {
+        this.recordStore.save(firstResponse.data.map((record) => record.data))
+        
+        const lastPage = firstResponse.meta.last_page
+        
+        if (lastPage > 1) {
+          // Create an array of promises for remaining pages
+          const remainingPages = Array.from({ length: lastPage - 1 }, (_, i) => {
+            const page = i + 2 // Start from page 2
+            return opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + page)
+          })
+          
+          // Fetch all remaining pages in parallel
+          return Promise.all(remainingPages)
         }
+        return []
+      }).then(responses => {
+        // Save all responses data
+        responses.forEach(response => {
+          this.recordStore.save(response.data.map((record) => record.data))
+        })
+        
+        this.fullyLoaded = true
+        this.recordStore.stopLoading()
+        this.dataChanged()
       }).catch(() => {
-        this.recordStore.startLoading()
+        this.recordStore.stopLoading()
       })
     },
     dataChanged() {

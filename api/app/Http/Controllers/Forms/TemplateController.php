@@ -14,7 +14,7 @@ class TemplateController extends Controller
 {
     private function getProdTemplates($slug = false)
     {
-        if (!config('app.self_hosted')) {
+        if (!config('app.self_hosted') || !config('opnform.show_official_templates')) {
             return [];
         }
 
