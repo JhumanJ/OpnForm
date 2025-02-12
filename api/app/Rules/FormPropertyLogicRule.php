@@ -18,6 +18,16 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
         'disable-block',
     ];
 
+    private static $conditionMappingData = null;
+
+    public static function getConditionMapping()
+    {
+        if (self::$conditionMappingData === null) {
+            self::$conditionMappingData = json_decode(file_get_contents(resource_path('data/open_filters.json')), true);
+        }
+        return self::$conditionMappingData;
+    }
+
     private $isConditionCorrect = true;
 
     private $isActionCorrect = true;
@@ -30,16 +40,8 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     private $operator = '';
 
-    private $conditionMapping = [];
-
-    public function __construct()
-    {
-        $this->conditionMapping = json_decode(file_get_contents(resource_path('data/open_filters.json')), true);
-    }
-
     private function checkBaseCondition($condition)
     {
-
         if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition body';
@@ -80,21 +82,21 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
         $this->operator = $operator;
         $value = $condition['value']['value'];
 
-        if (!isset($this->conditionMapping[$typeField])) {
+        if (!isset(self::getConditionMapping()[$typeField])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition type';
 
             return;
         }
 
-        if (!isset($this->conditionMapping[$typeField]['comparators'][$operator])) {
+        if (!isset(self::getConditionMapping()[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition operator';
 
             return;
         }
 
-        $type = $this->conditionMapping[$typeField]['comparators'][$operator]['expected_type'] ?? null;
+        $type = self::getConditionMapping()[$typeField]['comparators'][$operator]['expected_type'] ?? null;
 
         if (is_array($type)) {
             $foundCorrectType = false;
@@ -116,8 +118,8 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     private function valueHasCorrectType($type, $value)
     {
-        if ($type === 'string' && isset($this->conditionMapping[$this->field['type']]['comparators'][$this->operator]['format'])) {
-            $format = $this->conditionMapping[$this->field['type']]['comparators'][$this->operator]['format'];
+        if ($type === 'string' && isset(self::getConditionMapping()[$this->field['type']]['comparators'][$this->operator]['format'])) {
+            $format = self::getConditionMapping()[$this->field['type']]['comparators'][$this->operator]['format'];
             if ($format['type'] === 'regex') {
                 try {
                     preg_match('/' . $value . '/', '');
