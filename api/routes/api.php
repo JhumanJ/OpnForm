@@ -143,7 +143,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 )->name('forms.index');
                 Route::put('/custom-domains', [WorkspaceController::class, 'saveCustomDomain'])->name('save-custom-domains');
                 Route::put('/email-settings', [WorkspaceController::class, 'saveEmailSettings'])->name('save-email-settings');
-                Route::put('/update', [WorkspaceController::class, 'update'])->name('update');
+                Route::put('/', [WorkspaceController::class, 'update'])->name('update');
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::middleware('pro-form')->group(function () {

@@ -6,13 +6,15 @@
           <h3 class="font-semibold text-2xl text-gray-900">
             Workspace settings
           </h3>
-          <UButton
+          <UTooltip text="Edit workspace">
+            <UButton
               v-if="!workspace.is_readonly"
               size="xs"
               color="white"
               icon="i-heroicons-pencil-square"
               @click="editCurrentWorkspace"
             />
+          </UTooltip>
         </div>
         <small class="text-gray-500">You're currently editing the settings for the workspace "{{ workspace.name }}".
           You can switch to another workspace in top left corner of the page.</small>
@@ -129,7 +131,7 @@ const editCurrentWorkspace = () => {
 }
 
 const updateWorkspace = () => {
-  form.put(`/open/workspaces/${workspace.value.id}/update`).then((data) => {
+  form.put(`/open/workspaces/${workspace.value.id}/`).then((data) => {
     workspacesStore.save(data.workspace)
     workspaceModal.value = false
     isEditing.value = false
