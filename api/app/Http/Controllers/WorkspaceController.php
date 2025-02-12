@@ -66,7 +66,7 @@ class WorkspaceController extends Controller
 
     public function create(Request $request)
     {
-        $user = $request->user();
+        $user   = $request->user();
 
         $this->validate($request, [
             'name' => 'required',
@@ -88,6 +88,26 @@ class WorkspaceController extends Controller
         return $this->success([
             'message' => 'Workspace created.',
             'workspace_id' => $workspace->id,
+            'workspace' => new WorkspaceResource($workspace),
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $workspace = Auth::user()->workspaces()->findOrFail($id);
+        $this->authorize('update', $workspace);
+
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+
+        $workspace->update([
+            'name' => $request->name,
+            'icon' => $request->emoji ?? '',
+        ]);
+
+        return $this->success([
+            'message' => 'Workspace updated.',
             'workspace' => new WorkspaceResource($workspace),
         ]);
     }
