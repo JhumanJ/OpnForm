@@ -2,17 +2,18 @@
   <div>
     <div class="flex flex-wrap items-center gap-y-4">
       <div class="flex-grow">
-        <h3 class="font-semibold text-2xl text-gray-900 flex items-center gap-2">
-          Workspace settings
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-2xl text-gray-900">
+            Workspace settings
+          </h3>
           <UButton
-            v-if="!workspace.is_readonly"
-            size="xs"
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-pencil-square"
-            @click="editCurrentWorkspace"
-          />
-        </h3>
+              v-if="!workspace.is_readonly"
+              size="xs"
+              color="white"
+              icon="i-heroicons-pencil-square"
+              @click="editCurrentWorkspace"
+            />
+        </div>
         <small class="text-gray-500">You're currently editing the settings for the workspace "{{ workspace.name }}".
           You can switch to another workspace in top left corner of the page.</small>
       </div>
