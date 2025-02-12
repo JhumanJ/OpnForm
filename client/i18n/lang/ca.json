@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Desenvolupat per",
+        "password_protected": "Aquest formulari està protegit amb contrasenya.",
+        "invalid_password": "Contrasenya no vàlida.",
+        "password_required": "Es requereix contrasenya.",
+        "create_form_free": "Crea el teu formulari gratuïtament amb OpnForm",
+        "submit": "Enviar",
+        "wrong_form_structure": "Hi ha alguna cosa malament amb l'estructura d'aquest formulari. Si ets el propietari del formulari, contacta amb nosaltres.",
+        "cannot_access_here": "No es pot accedir a aquest contingut aquí. Fes clic a l'enllaç de sota per accedir-hi.",
+        "open_form": "Obrir formulari",
+        "restricted_to_workspace": "Restringit als membres de l'Espai de Treball de Notion. Inicia sessió per accedir a aquest contingut.",
+        "select": {
+            "search": "Cercar",
+            "searchOrTypeToCreateNew": "Cerca o escriu per crear nou",
+            "typeSomethingToAddAnOption": "Escriu alguna cosa per afegir una opció",
+            "noOptionAvailable": "No hi ha opcions disponibles",
+            "create": "Crear"
+        },
+        "fileInput": {
+            "chooseFiles": "Fes clic per triar arxiu(s) o arrossega aquí | Fes clic per triar un arxiu o arrossega aquí",
+            "sizeLimit": "Límit de mida: {count}MB per arxiu",
+            "uploadingFile": "Pujant el teu arxiu..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Permet l'accés a la càmera",
+            "allowCameraPermissionDescription": "Has de permetre l'accés a la càmera abans de poder fer fotos. Ves a la configuració del navegador per activar el permís de la càmera en aquesta pàgina.",
+            "gotIt": "Entès!",
+            "cameraDeviceError": "Error del dispositiu de càmera",
+            "cameraDeviceErrorDescription": "S'ha produït un error desconegut en intentar iniciar el dispositiu de webcam.",
+            "goBack": "Tornar"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Pujar arxiu en lloc seu",
+            "clear": "Netejar"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Fes clic per obrir la càmera"
+        }
+    }
+} 

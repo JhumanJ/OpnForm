@@ -107,4 +107,91 @@ it('can validate form logic property resolver', function ($property, $formData, 
         ['93ea3198-353f-440b-8dc9-2ac9a7bee124' => [], '93ea3198-353f-440b-8dc9-2ac9a7bee222' => ['abc']],
         false,
     ],
+    [
+        [
+            'id' => 'text_field',
+            'name' => 'Required if checked',
+            'type' => 'text',
+            'hidden' => false,
+            'logic' => [
+                'conditions' => [
+                    'operatorIdentifier' => 'and',
+                    'children' => [
+                        [
+                            'identifier' => 'checkbox',
+                            'value' => [
+                                'operator' => 'is_checked',
+                                'property_meta' => [
+                                    'id' => 'checkbox_field',
+                                    'type' => 'checkbox'
+                                ],
+                                'value' => true
+                            ]
+                        ]
+                    ]
+                ],
+                'actions' => ['require-answer']
+            ]
+        ],
+        ['checkbox_field' => true],
+        true
+    ],
+    [
+        [
+            'id' => 'text_field',
+            'name' => 'Required if checked',
+            'type' => 'text',
+            'hidden' => false,
+            'logic' => [
+                'conditions' => [
+                    'operatorIdentifier' => 'and',
+                    'children' => [
+                        [
+                            'identifier' => 'checkbox',
+                            'value' => [
+                                'operator' => 'is_checked',
+                                'property_meta' => [
+                                    'id' => 'checkbox_field',
+                                    'type' => 'checkbox'
+                                ],
+                                'value' => true
+                            ]
+                        ]
+                    ]
+                ],
+                'actions' => ['require-answer']
+            ]
+        ],
+        ['checkbox_field' => false],
+        false
+    ],
+    [
+        [
+            'id' => 'text_field',
+            'name' => 'Required if checked',
+            'type' => 'text',
+            'hidden' => false,
+            'logic' => [
+                'conditions' => [
+                    'operatorIdentifier' => 'and',
+                    'children' => [
+                        [
+                            'identifier' => 'checkbox',
+                            'value' => [
+                                'operator' => 'is_checked',
+                                'property_meta' => [
+                                    'id' => 'checkbox_field',
+                                    'type' => 'checkbox'
+                                ],
+                                'value' => true
+                            ]
+                        ]
+                    ]
+                ],
+                'actions' => ['require-answer']
+            ]
+        ],
+        ['checkbox_field' => null],
+        false
+    ]
 ]);

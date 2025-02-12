@@ -5,7 +5,7 @@ it('can create and delete Workspace', function () {
 
     for ($i = 1; $i <= 3; $i++) {
         $this->postJson(route('open.workspaces.create'), [
-            'name' => 'Workspace Test - '.$i,
+            'name' => 'Workspace Test - ' . $i,
             'icon' => '🧪',
         ])
             ->assertSuccessful()
@@ -33,4 +33,31 @@ it('can create and delete Workspace', function () {
                 ->assertStatus(403);
         }
     }
+});
+
+it('can update workspace', function () {
+    $user = $this->actingAsUser();
+
+    $this->postJson(route('open.workspaces.create'), [
+        'name' => 'Workspace Test',
+        'icon' => '🧪',
+    ])
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Workspace created.',
+        ]);
+
+    expect($user->workspaces()->count())->toBe(1);
+
+    $workspace = $user->workspaces()->first();
+    $this->putJson(route('open.workspaces.update', $workspace->id), [
+        'name' => 'Workspace Test Updated',
+        'icon' => '🔬',
+    ])
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Workspace updated.',
+        ]);
 });

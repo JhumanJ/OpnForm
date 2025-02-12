@@ -8,7 +8,7 @@
     </template>
 
     <div
-      class="rich-editor resize-y"
+      class="rich-editor resize-y notranslate"
       :class="[
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
