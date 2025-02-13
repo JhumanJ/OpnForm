@@ -186,6 +186,7 @@ class FormController extends Controller
         // Create copy
         $formCopy = $form->replicate();
         $formCopy->title = 'Copy of ' . $formCopy->title;
+        $formCopy->removed_properties = null;
         $formCopy->save();
 
         return $this->success([
