@@ -14,6 +14,21 @@ use Illuminate\Validation\Rule;
  */
 abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 {
+    protected function prepareForValidation()
+    {
+        $data = $this->all();
+
+        if (isset($data['properties']) && is_array($data['properties'])) {
+            foreach ($data['properties'] as &$property) {
+                if (isset($property['help']) && strip_tags($property['help']) === '') { // Remove help if it's empty
+                    $property['help'] = null;
+                }
+            }
+        }
+
+        $this->merge($data);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
