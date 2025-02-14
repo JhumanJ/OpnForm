@@ -19,11 +19,12 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         $data = $this->all();
 
         if (isset($data['properties']) && is_array($data['properties'])) {
-            foreach ($data['properties'] as &$property) {
-                if (isset($property['help']) && strip_tags($property['help']) === '') { // Remove help if it's empty
+            $data['properties'] = array_map(function ($property) {
+                if (isset($property['help']) && is_string($property['help']) && strip_tags($property['help']) === '') {
                     $property['help'] = null;
                 }
-            }
+                return $property;
+            }, $data['properties']);
         }
 
         $this->merge($data);
