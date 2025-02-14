@@ -25,6 +25,7 @@ environments:
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"
+      - "php artisan optimize"
     firewall:
       rate-limit: 1000
     timeout: 60
@@ -42,6 +43,7 @@ environments:
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"
+      - "php artisan optimize"
     firewall:
       rate-limit: 1000
     timeout: 60
