@@ -185,6 +185,13 @@ class FormController extends Controller
 
         // Create copy
         $formCopy = $form->replicate();
+        // generate new slug before changing title
+        if (Str::isUuid($formCopy->slug)) {
+            $formCopy->slug = Str::uuid();
+        } else { // it will generate a new slug
+            $formCopy->slug = null;
+            $formCopy->save();
+        }
         $formCopy->title = 'Copy of ' . $formCopy->title;
         $formCopy->removed_properties = [];
         $formCopy->save();
