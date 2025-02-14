@@ -22,10 +22,7 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     public static function getConditionMapping()
     {
-        if (self::$conditionMappingData === null) {
-            self::$conditionMappingData = config('opnform.condition_mapping');
-        }
-        return self::$conditionMappingData;
+        return config('opnform.condition_mapping');
     }
 
     private $isConditionCorrect = true;
