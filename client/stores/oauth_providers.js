@@ -14,7 +14,13 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       {
         name: 'google',
         title: 'Google',
-        icon: 'mdi:google',
+        icon: 'cib:google',
+        enabled: true
+      },
+      {
+        name: 'stripe',
+        title: 'Stripe',
+        icon: 'cib:stripe',
         enabled: true
       }
     ]
@@ -36,7 +42,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     )
   }
 
-  const connect = (service, redirect = false) => {
+  const connect = (service, redirect = false, newtab = false) => {
     contentStore.resetState()
     contentStore.startLoading()
 
@@ -49,7 +55,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       }
     })
       .then((data) => {
-        window.location.href = data.url
+        window.open(data.url, (newtab) ? '_blank' : '_self')
       })
       .catch((error) => {
         try {
