@@ -17,7 +17,6 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     layout_rtl: false,
     dark_mode: "auto",
     color: DEFAULT_COLOR,
-    hide_title: false,
     no_branding: false,
     uppercase_labels: false,
     transparent_background: false,
@@ -55,6 +54,12 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
 
 function getDefaultProperties() {
   return [
+    {
+      type: "nf-text",
+      content: "<h1>My Form</h1>",
+      name: "Title",
+      id: generateUUID(),
+    },
     {
       name: "Name",
       type: "text",
@@ -96,7 +101,6 @@ export function setFormDefaults(formData) {
     border_radius: 'small',
     dark_mode: 'light',
     color: '#3B82F6',
-    hide_title: false,
     uppercase_labels: false,
     no_branding: false,
     transparent_background: false,
