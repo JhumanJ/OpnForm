@@ -58,21 +58,21 @@ class IntegrationLogicRule implements DataAwareRule, ValidationRule
         $operator = $condition['value']['operator'];
         $value = $condition['value']['value'];
 
-        if (!isset(FormPropertyLogicRule::CONDITION_MAPPING[$typeField])) {
+        if (!isset(FormPropertyLogicRule::getConditionMapping()[$typeField])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition type';
 
             return;
         }
 
-        if (!isset(FormPropertyLogicRule::CONDITION_MAPPING[$typeField]['comparators'][$operator])) {
+        if (!isset(FormPropertyLogicRule::getConditionMapping()[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition operator';
 
             return;
         }
 
-        $type = FormPropertyLogicRule::CONDITION_MAPPING[$typeField]['comparators'][$operator]['expected_type'];
+        $type = FormPropertyLogicRule::getConditionMapping()[$typeField]['comparators'][$operator]['expected_type'];
 
         if (is_array($type)) {
             $foundCorrectType = false;
