@@ -74,6 +74,7 @@
             {
               'border-b': index !== data.length - 1,
               'border-r': colIndex !== columns.length - 1 || hasActions,
+              'whitespace-normal break-words': wrapColumns[col.id] === true,
             },
             colClasses(col),
           ]"
@@ -90,13 +91,15 @@
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
           style="width: 100px"
         >
-          <record-operations
-            :form="form"
-            :structure="columns"
-            :submission="row"
-            @deleted="(submission) => $emit('deleted', submission)"
-            @updated="(submission) => $emit('updated', submission)"
-          />
+          <div class="flex justify-center">
+            <record-operations
+              :form="form"
+              :structure="columns"
+              :submission="row"
+              @deleted="(submission) => $emit('deleted', submission)"
+              @updated="(submission) => $emit('updated', submission)"
+            />
+          </div>
         </td>
       </tr>
       <tr
@@ -157,6 +160,10 @@ export default {
     columns: {
       type: Array,
       default: () => [],
+    },
+    wrapColumns: {
+      type: Object,
+      default: () => {},
     },
     data: {
       type: Array,

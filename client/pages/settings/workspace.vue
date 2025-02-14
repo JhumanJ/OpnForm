@@ -2,9 +2,20 @@
   <div>
     <div class="flex flex-wrap items-center gap-y-4">
       <div class="flex-grow">
-        <h3 class="font-semibold text-2xl text-gray-900">
-          Workspace settings
-        </h3>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-2xl text-gray-900">
+            Workspace settings
+          </h3>
+          <UTooltip text="Edit workspace">
+            <UButton
+              v-if="!workspace.is_readonly"
+              size="xs"
+              color="white"
+              icon="i-heroicons-pencil-square"
+              @click="editCurrentWorkspace"
+            />
+          </UTooltip>
+        </div>
         <small class="text-gray-500">You're currently editing the settings for the workspace "{{ workspace.name }}".
           You can switch to another workspace in top left corner of the page.</small>
       </div>
@@ -39,30 +50,21 @@
     <modal
       :show="workspaceModal"
       max-width="lg"
+      :compact-header="true"
       @close="workspaceModal = false"
     >
       <template #icon>
-        <svg
+        <Icon
+          :name="isEditing ? 'heroicons:pencil-square' : 'heroicons:plus-circle'"
           class="w-8 h-8"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        />
       </template>
       <template #title>
-        Create Workspace
+        {{ isEditing ? 'Edit' : 'Create' }} Workspace
       </template>
       <div class="px-4">
         <form
-          @submit.prevent="createWorkspace"
+          @submit.prevent="isEditing ? updateWorkspace() : createWorkspace()"
           @keydown="form.onKeydown($event)"
         >
           <div>
@@ -115,10 +117,27 @@ const form = useForm({
   emoji: "",
 })
 const workspaceModal = ref(false)
+const isEditing = ref(false)
 
 onMounted(() => {
   fetchAllWorkspaces()
 })
+
+const editCurrentWorkspace = () => {
+  isEditing.value = true
+  form.name = workspace.value.name
+  form.emoji = workspace.value.icon || ''
+  workspaceModal.value = true
+}
+
+const updateWorkspace = () => {
+  form.put(`/open/workspaces/${workspace.value.id}/`).then((data) => {
+    workspacesStore.save(data.workspace)
+    workspaceModal.value = false
+    isEditing.value = false
+    useAlert().success('Workspace successfully updated!')
+  })
+}
 
 const createWorkspace = () => {
   form.post("/open/workspaces/create").then((data) => {
@@ -130,4 +149,11 @@ const createWorkspace = () => {
     )
   })
 }
+
+watch(workspaceModal, (newValue) => {
+  if (!newValue) {
+    isEditing.value = false
+    form.reset()
+  }
+})
 </script>
