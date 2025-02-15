@@ -21,11 +21,10 @@ environments:
     domain: api.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
-      - "php artisan event:cache"
+      - "php artisan optimize"
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"
-      - "php artisan optimize"
     firewall:
       rate-limit: 1000
     timeout: 60
@@ -39,11 +38,10 @@ environments:
     domain: api.stg.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
-      - "php artisan event:cache"
+      - "php artisan optimize"
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"
-      - "php artisan optimize"
     firewall:
       rate-limit: 1000
     timeout: 60
