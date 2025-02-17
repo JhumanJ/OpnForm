@@ -1,5 +1,8 @@
 <template>
-  <UButtonGroup size="xs" orientation="horizontal">
+  <UButtonGroup
+    size="xs"
+    orientation="horizontal"
+  >
     <UButton
       v-track.delete_record_click
       size="sm"

@@ -7,7 +7,7 @@
     <thead
       :id="'table-header-' + tableHash"
       ref="header"
-      class="n-table-head top-0"
+      class="n-table-head top-0 z-10"
       :class="{ absolute: data.length !== 0 }"
       style="will-change: transform; transform: translate3d(0px, 0px, 0px)"
     >
@@ -18,7 +18,7 @@
           :key="col.id"
           scope="col"
           :allow-resize="allowResize"
-          :width="col.cell_width ? col.cell_width + 'px' : 'auto'"
+          :width="col.width ? col.width + 'px' : '150px'"
           class="n-table-cell p-0 relative"
           @resize-width="resizeCol(col, $event)"
         >
@@ -68,7 +68,7 @@
         <td
           v-for="(col, colIndex) in columns"
           :key="col.id"
-          :style="{ width: col.cell_width + 'px' }"
+          :style="{ width: col.width ? col.width + 'px' : '150px' }"
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 overflow-hidden"
           :class="[
             {
@@ -179,7 +179,8 @@ export default {
       type: Boolean,
     },
     scrollParent: {
-      type: [Boolean]
+      type: [Boolean, Object],
+      default: null
     },
   },
   emits: ["updated", "deleted", "resize", "update-columns"],
@@ -294,7 +295,7 @@ export default {
       if (this.internalColumns) {
         this.$nextTick(() => {
           this.internalColumns.forEach((col) => {
-            if (!_has(col, "cell_width")) {
+            if (!_has(col, "width")) {
               if (
                 this.allowResize &&
                 this.internalColumns.length &&
@@ -315,7 +316,7 @@ export default {
     resizeCol(col, width) {
       if (!this.form) return
       const index = this.internalColumns.findIndex((c) => c.id === col.id)
-      this.internalColumns[index].cell_width = width
+      this.internalColumns[index].width = width
       this.setColumns(this.internalColumns)
       this.$nextTick(() => {
         this.$emit("resize")

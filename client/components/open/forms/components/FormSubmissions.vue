@@ -10,11 +10,14 @@
 
       <!-- Settings Modal -->
       <form-columns-settings-modal
+        v-if="form"
         :show="showColumnsModal"
         :form="form"
         :columns="properties"
-        v-model:display-columns="displayColumns"
-        v-model:wrap-columns="wrapColumns"
+        :display-columns="displayColumns"
+        :wrap-columns="wrapColumns"
+        @update:display-columns="displayColumns = $event"
+        @update:wrap-columns="wrapColumns = $event"
         @close="showColumnsModal = false"
         @update:columns="onColumnUpdated"
       />
@@ -225,6 +228,7 @@ export default {
     },
     onColumnUpdated(columns) {
       this.properties = columns
+      this.dataChanged()
     },
     onUpdateRecord(submission) {
       this.recordStore.save(submission)

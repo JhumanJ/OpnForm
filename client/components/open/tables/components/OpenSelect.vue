@@ -24,8 +24,14 @@ export default {
   components: { OpenTag },
   props: {
     value: {
-      type: Object,
+      type: [String, Object, Array],
+      required: false,
+      default: null
     },
+    property: {
+      type: Object,
+      required: true
+    }
   },
 
   data() {
@@ -34,10 +40,7 @@ export default {
 
   computed: {
     valueIsObject() {
-      if (typeof this.value === "object" && this.value !== null) {
-        return true
-      }
-      return false
+      return Array.isArray(this.value) || (typeof this.value === "object" && this.value !== null)
     },
   },
 }

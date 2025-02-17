@@ -2,10 +2,14 @@
   <modal
     compact-header
     :show="show"
+    v-bind="$attrs"
     @close="$emit('close')"
   >
     <template #icon>
-      <Icon name="heroicons:adjustments-horizontal" class="w-8 h-8" />
+      <Icon
+        name="heroicons:adjustments-horizontal"
+        class="w-8 h-8"
+      />
     </template>
     <template #title>
       Manage Columns
@@ -21,7 +25,24 @@
             class="font-semibold mb-2"
             :class="{ 'mt-4': sectionIndex > 0 }"
           >
-            {{ section.title }}
+            <div class="flex items-center justify-between">
+              <span>{{ section.title }}</span>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <button
+                  class="hover:text-gray-700"
+                  @click="toggleAllColumns(section.fields, true)"
+                >
+                  Show all
+                </button>
+                <span class="text-gray-300">|</span>
+                <button
+                  class="hover:text-gray-700"
+                  @click="toggleAllColumns(section.fields, false)"
+                >
+                  Hide all
+                </button>
+              </div>
+            </div>
           </h4>
           <div class="border border-gray-300">
             <div class="grid grid-cols-[1fr,auto,auto] gap-4 px-4 py-2 bg-gray-50 border-b border-gray-300">
@@ -46,8 +67,8 @@
               </p>
               <div class="flex justify-center w-20">
                 <ToggleSwitchInput
-                  v-model="displayColumns[field.id]"
-                  wrapper-class="mb-0"
+                  v-model="computedDisplayColumns[field.id]"
+                  wrapper-class="my-0"
                   label=""
                   :name="`display-${field.id}`"
                   @update:model-value="onChangeDisplayColumns"
@@ -55,8 +76,8 @@
               </div>
               <div class="flex justify-center w-20">
                 <ToggleSwitchInput
-                  v-model="wrapColumns[field.id]"
-                  wrapper-class="mb-0"
+                  v-model="computedWrapColumns[field.id]"
+                  wrapper-class="my-0"
                   label=""
                   :name="`wrap-${field.id}`"
                 />
@@ -85,6 +106,14 @@ const props = defineProps({
   columns: {
     type: Array,
     default: () => []
+  },
+  displayColumns: {
+    type: Object,
+    default: () => ({})
+  },
+  wrapColumns: {
+    type: Object,
+    default: () => ({})
   }
 })
 
@@ -122,16 +151,24 @@ const sections = computed(() => [
 ])
 
 // Column preferences storage
+const storageKey = computed(() => `column-preferences-formid-${props.form.id}`)
+
 const columnPreferences = useStorage(
-  computed(() => props.form ? `column-preferences-formid-${props.form.id}` : null),
+  storageKey.value,
   {
     display: {},
     wrap: {},
     widths: {}
+  },
+  localStorage,
+  {
+    onError: (error) => {
+      console.error('Storage error:', error)
+    }
   }
 )
 
-const displayColumns = computed({
+const computedDisplayColumns = computed({
   get: () => columnPreferences.value.display,
   set: (val) => {
     columnPreferences.value.display = val
@@ -139,7 +176,7 @@ const displayColumns = computed({
   }
 })
 
-const wrapColumns = computed({
+const computedWrapColumns = computed({
   get: () => columnPreferences.value.wrap,
   set: (val) => {
     columnPreferences.value.wrap = val
@@ -164,12 +201,18 @@ function preserveColumnWidths(newColumns, existingColumns = []) {
     // Then fallback to form properties
     const existing = existingColumns?.find(e => e.id === col.id)
     
-    const width = storedWidth || currentCol?.cell_width || currentCol?.width || existing?.cell_width || existing?.width || col.width || 150
+    // Convert any non-numeric width to default
+    const defaultWidth = 250
+    let width = storedWidth || currentCol?.width || existing?.width || defaultWidth
+    
+    // If width is not a number or is 'full', use default width
+    if (typeof width !== 'number' || isNaN(width)) {
+      width = defaultWidth
+    }
     
     return {
       ...col,
-      width,
-      cell_width: width
+      width
     }
   })
 }
@@ -187,8 +230,8 @@ watch(() => props.columns, (newColumns) => {
   
   const widths = {}
   newColumns.forEach(col => {
-    if (col.cell_width) {
-      widths[col.id] = col.cell_width
+    if (col.width) {
+      widths[col.id] = col.width
     }
   })
   
@@ -199,20 +242,34 @@ watch(() => props.columns, (newColumns) => {
 watch(() => props.form, (newForm) => {
   if (!newForm) return
   
-  const properties = newForm.properties || []
+  const properties = candidatesProperties.value
   const storedPrefs = columnPreferences.value
+  const removedProperties = newForm.removed_properties || []
 
   // Initialize display columns if not set
   if (!Object.keys(storedPrefs.display).length) {
+    // Set all non-removed properties to visible by default
     properties.forEach((field) => {
       storedPrefs.display[field.id] = true
+    })
+    // Also handle removed properties
+    removedProperties.forEach((field) => {
+      storedPrefs.display[field.id] = false
     })
   }
 
   // Initialize wrap columns if not set
   if (!Object.keys(storedPrefs.wrap).length) {
-    properties.forEach((field) => {
+    [...properties, ...removedProperties].forEach((field) => {
       storedPrefs.wrap[field.id] = false
+    })
+  }
+
+  // Initialize widths if not set
+  if (!Object.keys(storedPrefs.widths).length) {
+    [...properties, ...removedProperties].forEach((field) => {
+      const defaultWidth = 150
+      storedPrefs.widths[field.id] = field.width || defaultWidth
     })
   }
 
@@ -220,21 +277,28 @@ watch(() => props.form, (newForm) => {
   emit('update:displayColumns', storedPrefs.display)
   emit('update:wrapColumns', storedPrefs.wrap)
 
-  // Emit initial columns (all visible by default)
-  const initialColumns = clonedeep(candidatesProperties.value)
-    .concat(props.form?.removed_properties || [])
-    .filter((field) => storedPrefs.display[field.id] !== false) // Show all columns by default unless explicitly hidden
+  // Emit initial columns (all non-removed visible by default)
+  const initialColumns = clonedeep(properties)
+    .concat(removedProperties)
+    .filter((field) => storedPrefs.display[field.id] !== false)
 
   // Preserve any existing column widths
-  const columnsWithWidths = preserveColumnWidths(initialColumns, props.form.properties)
+  const columnsWithWidths = preserveColumnWidths(initialColumns, properties)
   emit('update:columns', columnsWithWidths)
 }, { immediate: true })
+
+function toggleAllColumns(fields, show) {
+  fields.forEach((field) => {
+    computedDisplayColumns.value[field.id] = show
+  })
+  onChangeDisplayColumns()
+}
 
 function onChangeDisplayColumns() {
   if (!import.meta.client) return
   const properties = clonedeep(candidatesProperties.value)
     .concat(props.form?.removed_properties || [])
-    .filter((field) => displayColumns.value[field.id] === true)
+    .filter((field) => computedDisplayColumns.value[field.id] === true)
   
   // Preserve existing column widths when toggling visibility
   const columnsWithWidths = preserveColumnWidths(properties, props.form.properties)
