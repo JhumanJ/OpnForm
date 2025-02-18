@@ -9,6 +9,7 @@ export const useWorkingFormStore = defineStore("working_form", {
     content: null,
     activeTab: 0,
     formPageIndex: 0,
+    submissionHash: {},
 
     // Field being edited
     selectedFieldIndex: null,
@@ -165,7 +166,13 @@ export const useWorkingFormStore = defineStore("working_form", {
       const field = newFields.splice(oldIndex, 1)[0]
       newFields.splice(newIndex, 0, field)
       this.content.properties = newFields
-    }
+    },
+    setSubmissionHash(key, hash) {
+      this.submissionHash[key] = hash
+    },
+    getSubmissionHash(key) {
+      return this.submissionHash[key] ?? null
+    },
   },
   history: {}
 })

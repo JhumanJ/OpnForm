@@ -91,6 +91,26 @@ class PublicFormController extends Controller
         $isFirstSubmission = ($form->submissions_count === 0);
         $submissionId = false;
 
+        $isPartial = $request->get('is-partial') ?? false;
+        if ($isPartial) {
+            $hash = $request->get('submission-hash') ?? null;
+            if ($hash) {
+                $hash = Hashids::decode($hash);
+                $hash = $hash[0] ?? null;
+            }
+            $submissionResponse = $form->submissions()->updateOrCreate([
+                'id' => $hash
+            ], [
+                'data' => $request->all(),
+                'status' => FormSubmission::STATUS_PARTIAL
+            ]);
+
+            return $this->success([
+                'message' => 'Partial submission saved',
+                'submission_hash' => Hashids::encode($submissionResponse->id)
+            ]);
+        }
+
         $submissionData = $request->validated();
         $completionTime = $request->get('completion_time') ?? null;
         unset($submissionData['completion_time']); // Remove completion_time from the main data array

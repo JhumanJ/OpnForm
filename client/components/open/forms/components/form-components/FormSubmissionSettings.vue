@@ -25,6 +25,14 @@
       label="Auto save form response"
       help="Saves form progress, allowing respondents to resume later."
     />
+
+    <ToggleSwitchInput
+      class="mt-4"
+      name="enable_partial_submissions"
+      :form="form"
+      label="Enable partial submissions"
+      help="Allow users to submit incomplete forms. Useful for long forms where you want to analyze drop-off points."
+    />
     
     <flat-select-input
       :form="submissionOptions"

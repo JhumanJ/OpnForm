@@ -29,6 +29,17 @@
           </p>
         </resizable-th>
         <th
+          v-if="hasStatus"
+          class="n-table-cell p-0 relative"
+          style="width: 100px"
+        >
+          <p
+            class="bg-gray-50 dark:bg-notion-dark truncate sticky top-0 border-b border-gray-200 dark:border-gray-800 px-4 py-2 text-gray-500 font-semibold tracking-wider uppercase text-xs"
+          >
+            Status
+          </p>
+        </th>
+        <th
           v-if="hasActions"
           class="n-table-cell p-0 relative"
           style="width: 100px"
@@ -85,6 +96,15 @@
             :property="col"
             :value="row[col.id]"
           />
+        </td>
+        <td
+          v-if="hasStatus"
+          class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
+          style="width: 100px"
+        >
+          <div class="flex justify-center">
+            {{ row.status }}
+          </div>
         </td>
         <td
           v-if="hasActions"
@@ -225,6 +245,9 @@ export default {
   computed: {
     hasActions() {
       return !this.workspace.is_readonly
+    },
+    hasStatus() {
+      return this.form.enable_partial_submissions ?? false
     },
     formData() {
       return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))

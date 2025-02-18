@@ -129,7 +129,8 @@ import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
+import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
@@ -186,6 +187,7 @@ export default {
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: pendingSubmission(props.form),
+      partialSubmission: usePartialSubmission(props.form, dataForm),
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
 
       // Used for admin previews
@@ -356,8 +358,15 @@ export default {
       this.isAutoSubmit = true
       this.submitForm()
     }
+    if (!this.adminPreview && this.form?.enable_partial_submissions) {
+      this.partialSubmission.startSync()
+    }
   },
-
+  beforeUnmount() {
+    if (!this.adminPreview && this.form?.enable_partial_submissions) {
+      this.partialSubmission.stopSync()
+    }
+  },
   methods: {
     submitForm() {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
