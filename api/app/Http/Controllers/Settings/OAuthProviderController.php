@@ -47,7 +47,7 @@ class OAuthProviderController extends Controller
                 [
                     'access_token' => $driverUser->token,
                     'refresh_token' => $driverUser->refreshToken,
-                    'name' => $driverUser->getName(),
+                    'name' => ($driverUser->getName()) ? $driverUser->getName() : $driverUser->getNickname(),
                     'email' => $driverUser->getEmail(),
                     'scopes' => $driverUser->approvedScopes
                 ]

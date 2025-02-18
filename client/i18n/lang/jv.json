@@ -39,6 +39,12 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Klik kanggo nggawe kamera"
+        },
+        "payment": {
+            "amount_to_pay": "Jumlah yang harus dibayar",
+            "success": "Pembayaran berhasil",
+            "name_on_card": "Nama di kartu",
+            "billing_email": "Alamat email penagihan"
         }
     }
 } 
