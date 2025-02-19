@@ -1,4 +1,3 @@
-
 <template>
   <div class="relative border">
     <video
@@ -41,6 +40,16 @@
         >
           <Icon
             name="heroicons:x-mark"
+            class="w-8 h-8"
+          />
+        </span>
+        <span
+          v-if="isMobileDevice"
+          class="text-white cursor-pointer"
+          @click="switchCamera"
+        >
+          <Icon
+            name="heroicons:arrow-path"
             class="w-8 h-8"
           />
         </span>
@@ -134,7 +143,9 @@ export default {
     isCapturing: false,
     capturedImage: null,
     cameraPermissionStatus: "loading",
-    quaggaInitialized: false
+    quaggaInitialized: false,
+    currentFacingMode: 'user',
+    mediaStream: null
   }),
   computed: {
     videoDisplay() {
@@ -143,6 +154,9 @@ export default {
     canvasDisplay() {
       return !this.isCapturing && this.capturedImage ? "" : "hidden"
     },
+    isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    }
   },
   mounted() {
     const webcamElement = document.getElementById("webcam")
@@ -152,39 +166,74 @@ export default {
   },
 
   methods: {
+    async cleanupCurrentStream() {
+      if (this.quaggaInitialized) {
+        Quagga.stop()
+        this.quaggaInitialized = false
+      }
+
+      if (this.mediaStream) {
+        this.mediaStream.getTracks().forEach(track => track.stop())
+        this.mediaStream = null
+      }
+
+      if (this.webcam) {
+        this.webcam.stop()
+      }
+
+      const webcamElement = document.getElementById("webcam")
+      if (webcamElement && webcamElement.srcObject) {
+        webcamElement.srcObject = null
+      }
+    },
+
+    async switchCamera() {
+      try {
+        // Stop current camera
+        if (this.quaggaInitialized) {
+          Quagga.stop()
+          this.quaggaInitialized = false
+        }
+        this.webcam.stop()
+
+        // Toggle facing mode considering barcode mode
+        this.currentFacingMode = this.isBarcodeMode ? 'environment' : 
+          (this.currentFacingMode === 'user' ? 'environment' : 'user')
+
+        // Restart camera
+        await this.openCameraUpload()
+      } catch (error) {
+        console.error('Error switching camera:', error)
+        this.cameraPermissionStatus = "unknown"
+      }
+    },
+
     async openCameraUpload() {
       this.isCapturing = true
       this.capturedImage = null
 
       try {
-        // Get video element
         const webcamElement = document.getElementById("webcam")
         const canvasElement = document.getElementById("canvas")
 
-        // iOS specific constraints
         const constraints = {
           audio: false,
           video: {
-            facingMode: this.isBarcodeMode ? 'environment' : 'user',
+            facingMode: this.isBarcodeMode ? 'environment' : this.currentFacingMode,
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
         }
 
-        // Try getting the stream directly first
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
-        
-        // Attach stream to video element
         webcamElement.srcObject = stream
         
-        // Create webcam instance with the stream
         this.webcam = new Webcam(
           webcamElement,
-          this.isBarcodeMode ? 'environment' : 'user',
+          this.isBarcodeMode ? 'environment' : this.currentFacingMode,
           canvasElement
         )
         
-        // Wait for video to be ready
         await new Promise((resolve) => {
           webcamElement.onloadedmetadata = () => {
             webcamElement.play()
@@ -266,10 +315,8 @@ export default {
         byteArrays.push(byteArray)
       }
 
-      // Create Blob from binary data
       const blob = new Blob(byteArrays, { type: "image/png" })
       const filename = Date.now()
-      // Create a File object from the Blob
       const file = new File([blob], `${filename}.png`, { type: "image/png" })
       this.$emit("uploadImage", file)
     },

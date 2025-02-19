@@ -609,6 +609,7 @@ import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
+import blocksTypes from '~/data/blocks_types.json'
 
 export default {
   name: 'FieldOptions',
@@ -821,56 +822,42 @@ export default {
     },
     setDefaultFieldValues() {
       const defaultFieldValues = {
-        slider: {
-          slider_min_value: 0,
-          slider_max_value: 100,
-          slider_step_value: 1
-        },
-        scale: {
-          scale_min_value: 1,
-          scale_max_value: 5,
-          scale_step_value: 1
-        },
-        rating: {
-          rating_max_value: 5
-        },
         files: {
           max_file_size: Math.min((this.field.max_file_size ?? this.mbLimit), this.mbLimit)
-        },
-        text: {
-          multi_lines: false,
-          max_char_limit: 2000
-        },
-        rich_text: {
-          max_char_limit: 2000
-        },
-        email: {
-          max_char_limit: 2000
-        },
-        url: {
-          max_char_limit: 2000
         },
         date: {
           date_format: this.dateFormatOptions[0].value,
           time_format: this.timeFormatOptions[0].value
-        },
-        matrix: {
-          rows:['Row 1'],
-          columns: [1 ,2 ,3],
-          selection_data:{
-            'Row 1': null
-          }
-        },
-        barcode: {
-          decoders: ['ean_reader', 'upc_reader']
         }
       }
+
+      // Apply type-specific defaults from blocks_types.json if available
+      if (this.field.type in blocksTypes && blocksTypes[this.field.type]?.default_values) {
+        Object.assign(this.field, blocksTypes[this.field.type].default_values)
+      }
+
+      // Apply additional defaults from defaultFieldValues if needed
       if (this.field.type in defaultFieldValues) {
         Object.keys(defaultFieldValues[this.field.type]).forEach(key => {
-          if (!_has(this.field,key)) {
+          if (!_has(this.field, key)) {
             this.field[key] = defaultFieldValues[this.field.type][key]
           }
         })
+      }
+
+      // Ensure critical defaults for specific types
+      if (this.field.type === "rating" && !this.field.rating_max_value) {
+        this.field.rating_max_value = 5
+      } else if (this.field.type === "scale" && (!this.field.scale_min_value || !this.field.scale_max_value || !this.field.scale_step_value)) {
+        this.field.scale_min_value = 1
+        this.field.scale_max_value = 5
+        this.field.scale_step_value = 1
+      } else if (this.field.type === "slider" && (!this.field.slider_min_value || !this.field.slider_max_value || !this.field.slider_step_value)) {
+        this.field.slider_min_value = 0
+        this.field.slider_max_value = 50
+        this.field.slider_step_value = 1
+      } else if (["select", "multi_select"].includes(this.field.type) && !this.field[this.field.type]?.options) {
+        this.field[this.field.type] = { options: [] }
       }
     },
     updateMatrixField(newField) {

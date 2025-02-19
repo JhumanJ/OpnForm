@@ -101,23 +101,14 @@ export const useWorkingFormStore = defineStore("working_form", {
       const newBlock = this.prefillDefault(this.blockForm.data())
       newBlock.id = generateUUID()
       newBlock.hidden = false
-      if (["select", "multi_select"].includes(this.blockForm.type)) {
-        newBlock[this.blockForm.type] = { options: [] }
-      }
-      if (this.blockForm.type === "rating") {
-        newBlock.rating_max_value = 5
-      }
-      if (this.blockForm.type === "scale") {
-        newBlock.scale_min_value = 1
-        newBlock.scale_max_value = 5
-        newBlock.scale_step_value = 1
-      }
-      if (this.blockForm.type === "slider") {
-        newBlock.slider_min_value = 0
-        newBlock.slider_max_value = 50
-        newBlock.slider_step_value = 1
-      }
       newBlock.help_position = "below_input"
+
+      // Apply default values from blocks_types.json if they exist
+      if (blocksTypes[type]?.default_values) {
+        Object.assign(newBlock, blocksTypes[type].default_values)
+      }
+
+      // Insert in right position
       if (
         (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) &&
         (index === null || index === undefined)
