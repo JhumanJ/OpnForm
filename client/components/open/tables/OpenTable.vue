@@ -102,9 +102,11 @@
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
           style="width: 100px"
         >
-          <div class="flex justify-center">
-            {{ row.status }}
-          </div>
+          <UBadge
+            :label="row.status"
+            :color="row.status === 'partial' ? 'yellow' : 'green'"
+            variant="soft"
+          />
         </td>
         <td
           v-if="hasActions"
