@@ -21,7 +21,7 @@ environments:
     domain: api.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
-      - "php artisan event:cache"
+      - "php artisan optimize"
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"
@@ -38,7 +38,7 @@ environments:
     domain: api.stg.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
-      - "php artisan event:cache"
+      - "php artisan optimize"
       - "php artisan disposable:update"
     deploy:
       - "php artisan migrate --force"

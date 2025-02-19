@@ -10,7 +10,8 @@ main() {
         prep_storage
         wait_for_db
         apply_db_migrations
-            run_init_project
+        run_init_project
+        optimize_application
         run_server "$@"
     fi
 }
@@ -55,6 +56,11 @@ apply_db_migrations() {
 run_init_project() {
     echo "Running app:init-project command"
     ./artisan app:init-project
+}
+
+optimize_application() {
+    echo "Optimizing application"
+    ./artisan optimize
 }
 
 run_server() {
