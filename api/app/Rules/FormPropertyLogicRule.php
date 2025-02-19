@@ -42,73 +42,72 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
         if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition body';
-
             return;
         }
 
         if (!isset($condition['value']['property_meta'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property';
-
             return;
         }
 
         if (!isset($condition['value']['property_meta']['type'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property type';
-
             return;
         }
 
         if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition operator';
-
-            return;
-        }
-
-        if (!isset($condition['value']['value'])) {
-            $this->isConditionCorrect = false;
-            $this->conditionErrors[] = 'missing condition value';
-
             return;
         }
 
         $typeField = $condition['value']['property_meta']['type'];
         $operator = $condition['value']['operator'];
         $this->operator = $operator;
-        $value = $condition['value']['value'];
 
         if (!isset(self::getConditionMapping()[$typeField])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition type';
-
             return;
         }
 
         if (!isset(self::getConditionMapping()[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition operator';
-
             return;
         }
 
-        $type = self::getConditionMapping()[$typeField]['comparators'][$operator]['expected_type'] ?? null;
+        $comparatorDef = self::getConditionMapping()[$typeField]['comparators'][$operator];
+        $needsValue = !empty((array)$comparatorDef);
 
-        if (is_array($type)) {
-            $foundCorrectType = false;
-            foreach ($type as $subtype) {
-                if ($this->valueHasCorrectType($subtype, $value)) {
-                    $foundCorrectType = true;
+        if ($needsValue && !isset($condition['value']['value'])) {
+            $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition value';
+            return;
+        }
+
+        if ($needsValue) {
+            $type = $comparatorDef['expected_type'] ?? null;
+            $value = $condition['value']['value'];
+
+            if (is_array($type)) {
+                $foundCorrectType = false;
+                foreach ($type as $subtype) {
+                    if ($this->valueHasCorrectType($subtype, $value)) {
+                        $foundCorrectType = true;
+                    }
                 }
-            }
-            if (!$foundCorrectType) {
-                $this->isConditionCorrect = false;
-            }
-        } else {
-            if (!$this->valueHasCorrectType($type, $value)) {
-                $this->isConditionCorrect = false;
-                $this->conditionErrors[] = 'wrong type of condition value';
+                if (!$foundCorrectType) {
+                    $this->isConditionCorrect = false;
+                    $this->conditionErrors[] = 'wrong type of condition value';
+                }
+            } else {
+                if (!$this->valueHasCorrectType($type, $value)) {
+                    $this->isConditionCorrect = false;
+                    $this->conditionErrors[] = 'wrong type of condition value';
+                }
             }
         }
     }

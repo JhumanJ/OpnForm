@@ -833,7 +833,11 @@ export default {
 
       // Apply type-specific defaults from blocks_types.json if available
       if (this.field.type in blocksTypes && blocksTypes[this.field.type]?.default_values) {
-        Object.assign(this.field, blocksTypes[this.field.type].default_values)
+        Object.keys(blocksTypes[this.field.type].default_values).forEach(key => {
+          if (!_has(this.field, key)) {
+            this.field[key] = blocksTypes[this.field.type].default_values[key]
+          }
+        })
       }
 
       // Apply additional defaults from defaultFieldValues if needed
