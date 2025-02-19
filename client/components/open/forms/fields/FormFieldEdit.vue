@@ -24,7 +24,7 @@
               :type="field.type"
             />
 
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-gray-500" v-if="blocksTypes[field.type]">
               {{ blocksTypes[field.type].title }}
             </p>
             
