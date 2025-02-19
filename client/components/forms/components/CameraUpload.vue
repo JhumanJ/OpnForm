@@ -1,12 +1,18 @@
+
 <template>
   <div class="relative border">
     <video
       id="webcam"
       autoplay
       playsinline
-      :class="[{ hidden: !isCapturing }, theme.fileInput.minHeight, theme.fileInput.borderRadius]"
-      width="1280"
-      height="720"
+      muted
+      :class="[
+        { hidden: !isCapturing }, 
+        theme.fileInput.minHeight, 
+        theme.fileInput.borderRadius,
+        'w-full h-full object-cover'
+      ]"
+      webkit-playsinline
     />
     <canvas
       id="canvas"
@@ -146,25 +152,58 @@ export default {
   },
 
   methods: {
-    openCameraUpload() {
+    async openCameraUpload() {
       this.isCapturing = true
       this.capturedImage = null
-      this.webcam
-        .start()
-        .then(() => {
-          this.cameraPermissionStatus = "allowed"
-          if (this.isBarcodeMode) {
-            this.initQuagga()
+
+      try {
+        // Get video element
+        const webcamElement = document.getElementById("webcam")
+        const canvasElement = document.getElementById("canvas")
+
+        // iOS specific constraints
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: this.isBarcodeMode ? 'environment' : 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        }
+
+        // Try getting the stream directly first
+        const stream = await navigator.mediaDevices.getUserMedia(constraints)
+        
+        // Attach stream to video element
+        webcamElement.srcObject = stream
+        
+        // Create webcam instance with the stream
+        this.webcam = new Webcam(
+          webcamElement,
+          this.isBarcodeMode ? 'environment' : 'user',
+          canvasElement
+        )
+        
+        // Wait for video to be ready
+        await new Promise((resolve) => {
+          webcamElement.onloadedmetadata = () => {
+            webcamElement.play()
+            resolve()
           }
         })
-        .catch((err) => {
-          console.error(err)
-          if (err.toString() === "NotAllowedError: Permission denied") {
-            this.cameraPermissionStatus = "blocked"
-            return
-          }
+
+        this.cameraPermissionStatus = "allowed"
+        if (this.isBarcodeMode) {
+          this.initQuagga()
+        }
+      } catch (err) {
+        console.error('Camera error:', err)
+        if (err.name === 'NotAllowedError' || err.toString().includes('Permission denied')) {
+          this.cameraPermissionStatus = "blocked"
+        } else {
           this.cameraPermissionStatus = "unknown"
-        })
+        }
+      }
     },
     initQuagga() {
       if (!this.quaggaInitialized) {
