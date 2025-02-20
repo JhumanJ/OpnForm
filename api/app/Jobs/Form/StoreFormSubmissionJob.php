@@ -34,7 +34,9 @@ class StoreFormSubmissionJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Form $form, public array $submissionData, public ?int $completionTime = null) {}
+    public function __construct(public Form $form, public array $submissionData, public ?int $completionTime = null)
+    {
+    }
 
     /**
      * Execute the job.
