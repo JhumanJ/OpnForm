@@ -55,7 +55,7 @@ class AnswerFormRequest extends FormRequest
     public function rules()
     {
         // Skip validation if this is a partial submission
-        if ($this->has('is-partial')) {
+        if ($this->has('is_partial')) {
             return [];
         }
 

@@ -90,30 +90,38 @@ class PublicFormController extends Controller
         $form = $request->form;
         $isFirstSubmission = ($form->submissions_count === 0);
         $submissionId = false;
+        $submissionHash = $request->get('submission_hash') ?? null;
+        if ($submissionHash) {
+            $submissionHash = Hashids::decode($submissionHash);
+            $submissionId = (int)($submissionHash[0] ?? null);
+        }
 
-        $isPartial = $request->get('is-partial') ?? false;
+        $isPartial = $request->get('is_partial') ?? false;
         if ($isPartial) {
-            $hash = $request->get('submission-hash') ?? null;
-            if ($hash) {
-                $hash = Hashids::decode($hash);
-                $hash = $hash[0] ?? null;
-            }
             $submissionResponse = $form->submissions()->updateOrCreate([
-                'id' => $hash
+                'id' => $submissionId
             ], [
                 'data' => $request->all(),
                 'status' => FormSubmission::STATUS_PARTIAL
             ]);
+            $submissionId = $submissionResponse->id;
 
             return $this->success([
                 'message' => 'Partial submission saved',
-                'submission_hash' => Hashids::encode($submissionResponse->id)
+                'submission_hash' => Hashids::encode($submissionId)
             ]);
         }
 
         $submissionData = $request->validated();
         $completionTime = $request->get('completion_time') ?? null;
-        unset($submissionData['completion_time']); // Remove completion_time from the main data array
+        // Remove extra fields from the main data array
+        unset($submissionData['completion_time']);
+        unset($submissionData['submission_hash']);
+
+        // Add submission_id to the submission data if it exists
+        if ($submissionId) {
+            $submissionData['submission_id'] = $submissionId;
+        }
 
         $job = new StoreFormSubmissionJob($form, $submissionData, $completionTime);
 

@@ -204,7 +204,8 @@ import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
+import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js"
 import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
@@ -235,6 +236,7 @@ export default {
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
+      partialSubmission: usePartialSubmission(props.form),
       confetti: useConfetti()
     }
   },
@@ -308,6 +310,10 @@ export default {
           form_id: this.form.id
         })
 
+        if (this.form?.enable_partial_submissions) {
+          this.partialSubmission.stopSync()
+        }
+    
         const payload = clonedeep({
           type: 'form-submitted',
           form: {

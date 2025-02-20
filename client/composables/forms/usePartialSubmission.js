@@ -2,7 +2,7 @@ import { opnFetch } from "./../useOpnApi.js"
 import { pendingSubmission as pendingSubmissionFunction } from "./pendingSubmission.js"
 import { useWorkingFormStore } from "~/stores/working_form.js"
 
-export const usePartialSubmission = (form, formData) => {
+export const usePartialSubmission = (form, formData = {}) => {
   const pendingSubmission = pendingSubmissionFunction(form)
   const workingFormStore = useWorkingFormStore()
 
@@ -26,8 +26,8 @@ export const usePartialSubmission = (form, formData) => {
         method: "POST",
         body: {
           ...formData.value.data(),
-          'is-partial': true,
-          'submission-hash': submissionHash
+          'is_partial': true,
+          'submission_hash': submissionHash
         }
       })
       if (response.submission_hash) {
@@ -36,6 +36,21 @@ export const usePartialSubmission = (form, formData) => {
     } catch (error) {
       console.error('Failed to sync partial submission', error)
     }
+  }
+
+  // Add these handlers as named functions so we can remove them later
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      debouncedSync()
+    }
+  }
+
+  const handleBlur = () => {
+    debouncedSync()
+  }
+
+  const handleBeforeUnload = () => {
+    syncToServer()
   }
 
   const startSync = () => {
@@ -49,22 +64,10 @@ export const usePartialSubmission = (form, formData) => {
       debouncedSync()
     }, SYNC_INTERVAL)
 
-    // Sync on visibility/focus changes
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        debouncedSync()
-      }
-    })
-
-    window.addEventListener('blur', () => {
-      debouncedSync()
-    })
-
-    // Sync before page unload
-    window.addEventListener('beforeunload', () => {
-      // For beforeunload, we want to sync immediately without debounce
-      syncToServer()
-    })
+    // Add event listeners
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('beforeunload', handleBeforeUnload)
   }
 
   const stopSync = () => {
@@ -76,6 +79,11 @@ export const usePartialSubmission = (form, formData) => {
       clearTimeout(syncTimeout)
       syncTimeout = null
     }
+
+    // Remove event listeners
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    window.removeEventListener('blur', handleBlur)
+    window.removeEventListener('beforeunload', handleBeforeUnload)
   }
 
   return {

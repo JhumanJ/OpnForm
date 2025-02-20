@@ -381,6 +381,9 @@ export default {
 
       this.$refs['form-timer'].stopTimer()
       this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+      if (this.form?.enable_partial_submissions) {
+        this.dataForm.submission_hash = this.workingFormStore.getSubmissionHash(this.pendingSubmission.formPendingSubmissionKey.value)
+      }
 
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
