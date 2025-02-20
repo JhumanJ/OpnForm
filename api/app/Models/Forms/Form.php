@@ -176,7 +176,7 @@ class Form extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->submissions()->count();
+        return $this->submissions()->where('status', FormSubmission::STATUS_COMPLETED)->count();
     }
 
     public function getViewsCountAttribute()

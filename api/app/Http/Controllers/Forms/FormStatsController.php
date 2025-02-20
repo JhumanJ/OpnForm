@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStatsRequest;
+use App\Models\Forms\FormSubmission;
 use Carbon\CarbonPeriod;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
@@ -21,13 +22,14 @@ class FormStatsController extends Controller
         $this->authorize('view', $form);
 
         $formStats = $form->statistics()->whereBetween('date', [$request->date_from, $request->date_to])->get();
-        $periodStats = ['views' => [], 'submissions' => []];
+        $periodStats = ['views' => [], 'submissions' => [], 'partial_submissions' => []];
         foreach (CarbonPeriod::create($request->date_from, $request->date_to) as $dateObj) {
             $date = $dateObj->format('d-m-Y');
 
             $statisticData = $formStats->where('date', $dateObj->format('Y-m-d'))->first();
             $periodStats['views'][$date] = $statisticData->data['views'] ?? 0;
-            $periodStats['submissions'][$date] = $form->submissions()->whereDate('created_at', $dateObj)->count();
+            $periodStats['submissions'][$date] = $form->submissions()->whereDate('created_at', $dateObj)->where('status', FormSubmission::STATUS_COMPLETED)->count();
+            $periodStats['partial_submissions'][$date] = $form->submissions()->whereDate('created_at', $dateObj)->where('status', FormSubmission::STATUS_PARTIAL)->count();
 
             if ($dateObj->toDateString() === now()->toDateString()) {
                 $periodStats['views'][$date] += $form->views()->count();
