@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Entrée invalide. Veuillez corriger et réessayer.',
     'invalid_captcha' => 'Captcha invalide. Veuillez prouver que vous n\'êtes pas un bot.',
     'complete_captcha' => 'Veuillez compléter le captcha.',
+    'yes' => 'Oui',
+    'no' => 'Non',
 ];
