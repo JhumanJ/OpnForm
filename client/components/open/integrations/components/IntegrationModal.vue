@@ -2,6 +2,7 @@
   <modal
     :show="show"
     compact-header
+    :closeable="false"
     @close="emit('close')"
   >
     <template #icon>
