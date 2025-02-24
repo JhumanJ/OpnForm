@@ -96,6 +96,20 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     addBlock(type, index = null, openSettings = true) {
+      const block = blocksTypes[type]
+      if (block?.self_hosted !== undefined && !block.self_hosted && useFeatureFlag('self_hosted')) {
+        useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
+        return
+      }
+
+      if (type === 'payment') {  // Can only have one payment block
+        if (this.content.properties.some(block => block.type === 'payment')) {
+          useAlert().error('Only one payment block is allowed per form')
+          return
+        }
+        openSettings = true // Always open settings for payment block
+      }
+      
       this.blockForm.type = type
       this.blockForm.name = blocksTypes[type].default_block_name
       const newBlock = this.prefillDefault(this.blockForm.data())
