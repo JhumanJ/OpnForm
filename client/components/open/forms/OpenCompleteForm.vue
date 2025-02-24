@@ -10,20 +10,6 @@
       rel="stylesheet"
       :href="getFontUrl"
     >
-    
-    <template v-if="!isHideTitle">
-      <EditableTag
-        v-if="adminPreview"
-        v-model="form.title"
-        element="h1"
-        class="mb-2"
-      />
-      <h1
-        v-else
-        class="mb-2 px-2"
-        v-text="form.title"
-      />
-    </template>
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -265,9 +251,6 @@ export default {
     },
     isPublicFormPage () {
       return this.$route.name === 'forms-slug'
-    },
-    isHideTitle () {
-      return this.form.hide_title || (import.meta.client && window.location.href.includes('hide_title=true'))
     },
     getFontUrl() {
       if(!this.form || !this.form.font_family) return null

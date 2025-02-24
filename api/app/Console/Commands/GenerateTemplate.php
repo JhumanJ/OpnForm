@@ -35,6 +35,11 @@ class GenerateTemplate extends Command
                 "title": "Contact Us",
                 "properties": [
                     {
+                        "name": "Title",
+                        "type": "nf-text",
+                        "content": "<h1>Contact Us</h1>"
+                    },
+                    {
                         "help": null,
                         "name": "What's your name?",
                         "type": "text",

@@ -149,11 +149,6 @@
       help="Not visible when form is embedded"
     />
     <toggle-switch-input
-      name="hide_title"
-      :form="form"
-      label="Hide Title"
-    />
-    <toggle-switch-input
       name="no_branding"
       :form="form"
       @update:model-value="onChangeNoBranding"
@@ -172,11 +167,6 @@
     <EditorSectionHeader
       icon="heroicons:cog-6-tooth-16-solid"
       title="Advanced Options"
-    />
-    <toggle-switch-input
-      name="hide_title"
-      :form="form"
-      label="Hide Form Title"
     />
     <toggle-switch-input
       name="show_progress_bar"
