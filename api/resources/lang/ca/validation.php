@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Entrada no vàlida. Corregeix-la i torna-ho a provar.',
     'invalid_captcha' => 'CAPTCHA no vàlid. Corregeix-lo i torna-ho a provar.',
     'complete_captcha' => 'Si us plau, completa el CAPTCHA.',
+    'yes' => 'Sí',
+    'no' => 'No',
 ];

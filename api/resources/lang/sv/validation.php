@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Ogiltig inmatning. Korrigera och försök igen.',
     'invalid_captcha' => 'Ogiltig CAPTCHA. Korrigera och försök igen.',
     'complete_captcha' => 'Vänligen fyll i CAPTCHA.',
+    'yes' => 'Ja',
+    'no' => 'Nej',
 ];

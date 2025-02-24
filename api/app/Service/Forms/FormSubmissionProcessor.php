@@ -57,8 +57,12 @@ class FormSubmissionProcessor
      */
     public function getRedirectData(Form $form, array $submissionData): array
     {
+        $formattedData = collect($submissionData)->map(function ($value, $key) {
+            return ['id' => $key, 'value' => $value];
+        })->values()->all();
+
         $redirectUrl = ($form->redirect_url)
-            ? (new MentionParser($form->redirect_url, array_values($submissionData)))->urlFriendlyOutput()->parseAsText()
+            ? (new MentionParser($form->redirect_url, $formattedData))->urlFriendlyOutput()->parseAsText()
             : null;
 
         if ($redirectUrl && !filter_var($redirectUrl, FILTER_VALIDATE_URL)) {

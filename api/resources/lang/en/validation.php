@@ -152,5 +152,6 @@ return [
     'invalid_json' => 'Invalid input. Please correct and try again.',
     'invalid_captcha' => 'Invalid CAPTCHA. Please prove you\'re not a bot.',
     'complete_captcha' => 'Please complete the captcha.',
-
+    'yes' => 'Yes',
+    'no' => 'No',
 ];

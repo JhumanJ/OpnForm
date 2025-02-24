@@ -50,7 +50,7 @@ class WorkspacePolicy
      */
     public function update(User $user, Workspace $workspace)
     {
-        return false;
+        return $user->ownsWorkspace($workspace);
     }
 
     /**
