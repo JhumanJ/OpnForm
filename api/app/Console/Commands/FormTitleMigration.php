@@ -43,6 +43,10 @@ class FormTitleMigration extends Command
 
         Form::chunk(100, function ($forms) {
             foreach ($forms as $form) {
+                if ($form?->hide_title ?? false) {
+                    continue;
+                }
+
                 $properties = $form->properties ?? [];
 
                 array_unshift($properties, [
