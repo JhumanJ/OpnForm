@@ -121,10 +121,7 @@ it('formats redirect data correctly for pro users', function () {
 
     $processor = new FormSubmissionProcessor();
     $redirectData = $processor->getRedirectData($form, [
-        'field_1' => [
-            'id' => 'field_1',
-            'value' => 'test-value'
-        ]
+        'field_1' => 'test-value'
     ]);
 
     expect($redirectData)->toBe([
@@ -142,10 +139,7 @@ it('returns no redirect for non-pro users', function () {
 
     $processor = new FormSubmissionProcessor();
     $redirectData = $processor->getRedirectData($form, [
-        'field_1' => [
-            'id' => 'field_1',
-            'value' => 'test-value'
-        ]
+        'field_1' => 'test-value'
     ]);
 
     expect($redirectData)->toBe([
