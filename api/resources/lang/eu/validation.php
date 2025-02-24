@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Sarrera baliogabea. Zuzendu eta saiatu berriro.',
     'invalid_captcha' => 'CAPTCHA baliogabea. Zuzendu eta saiatu berriro.',
     'complete_captcha' => 'Mesedez, bete CAPTCHA.',
+    'yes' => 'Bai',
+    'no' => 'Ez',
 ];

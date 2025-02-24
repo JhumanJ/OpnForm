@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Neplatný vstup. Opravte ho a skúste znova.',
     'invalid_captcha' => 'Neplatná CAPTCHA. Opravte ju a skúste znova.',
     'complete_captcha' => 'Prosím, vyplňte CAPTCHA.',
+    'yes' => 'Áno',
+    'no' => 'Nie',
 ];
