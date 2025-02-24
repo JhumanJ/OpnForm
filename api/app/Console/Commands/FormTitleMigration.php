@@ -14,7 +14,7 @@ class FormTitleMigration extends Command
      *
      * @var string
      */
-    protected $signature = 'forms:form-title-migration {--dry : Log changes without applying them}';
+    protected $signature = 'forms:form-title-migration';
 
     /**
      * The console command description.
