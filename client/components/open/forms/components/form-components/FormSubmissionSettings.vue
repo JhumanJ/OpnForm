@@ -30,14 +30,23 @@
       class="mt-4"
       name="enable_partial_submissions"
       :form="form"
-      label="Enable partial submissions"
       help="Allow users to submit incomplete forms. Useful for long forms where you want to analyze drop-off points."
-    />
+    >
+      <template #label>
+        <span class="text-sm">
+          Enable partial submissions
+        </span>
+        <ProTag
+          class="ml-1"
+          upgrade-modal-title="Upgrade to use Partial Submissions"
+        />
+      </template>
+    </ToggleSwitchInput>
     
     <flat-select-input
       :form="submissionOptions"
       name="databaseAction"
-      class="max-w-xs"
+      class="mt-4 max-w-xs"
       label="Database Submission Action"
       :options="[
         { name: 'Create new record', value: 'create' },

@@ -97,7 +97,7 @@ class PublicFormController extends Controller
         }
 
         $isPartial = $request->get('is_partial') ?? false;
-        if ($isPartial) {
+        if ($isPartial && $form->enable_partial_submissions && $form->is_pro) {
             $submissionResponse = $form->submissions()->updateOrCreate([
                 'id' => $submissionId
             ], [

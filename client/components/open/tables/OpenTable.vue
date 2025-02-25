@@ -249,7 +249,7 @@ export default {
       return !this.workspace.is_readonly
     },
     hasStatus() {
-      return this.form.enable_partial_submissions ?? false
+      return this.form.is_pro && (this.form.enable_partial_submissions ?? false)
     },
     formData() {
       return [...this.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
