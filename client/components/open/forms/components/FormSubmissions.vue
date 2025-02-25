@@ -134,8 +134,8 @@ export default {
       wrapColumns: {},
       statusList: [
         { label: 'All', value: 'all' },
-        { label: 'Completed', value: 'completed' },
-        { label: 'Partial', value: 'partial' }
+        { label: 'Submitted', value: 'completed' },
+        { label: 'In Progress', value: 'partial' }
       ],
       selectedStatus: 'all',
     }
