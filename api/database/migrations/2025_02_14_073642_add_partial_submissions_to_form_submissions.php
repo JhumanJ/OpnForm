@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Forms\FormSubmission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,16 +12,13 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('form_submissions', function (Blueprint $table) {
-            $table->enum('status', ['partial', 'completed'])
-                ->default('completed')
-                ->after('form_id')
+            $table->enum('status', [FormSubmission::STATUS_PARTIAL, FormSubmission::STATUS_COMPLETED])
+                ->default(FormSubmission::STATUS_COMPLETED)
                 ->index();
         });
 
         Schema::table('forms', function (Blueprint $table) {
-            $table->boolean('enable_partial_submissions')
-                ->default(false)
-                ->after('auto_save');
+            $table->boolean('enable_partial_submissions')->default(false);
         });
     }
 
