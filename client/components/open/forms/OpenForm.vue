@@ -433,6 +433,7 @@ export default {
       if (this.tryInitFormFromPendingSubmission()) return
 
       await nextTick(() => {
+        this.formPageIndex = 0
         this.initFormWithDefaultValues()
       })
     },
