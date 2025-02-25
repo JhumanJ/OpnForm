@@ -236,7 +236,6 @@ export default {
     saveForm() {
       // Apply defaults to the form
       const defaultedData = setFormDefaults(this.form.data())
-      console.log('defaultedData', defaultedData)
       this.form.fill(defaultedData)
   
       this.form.properties = validatePropertiesLogic(this.form.properties)

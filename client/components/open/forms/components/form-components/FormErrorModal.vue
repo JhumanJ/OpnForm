@@ -4,8 +4,8 @@
     @close="$emit('close')"
   >
     <div class="-mx-5">
-      <h2 class="text-red-600 text-2xl font-bold mb-4 px-4">
-        Error saving your form
+      <h2 class="text-red-600 text-2xl font-medium mb-4 px-4">
+        We couldn't save your form
       </h2>
 
       <div

@@ -4,9 +4,14 @@
       id="webcam"
       autoplay
       playsinline
-      :class="[{ hidden: !isCapturing }, theme.fileInput.minHeight, theme.fileInput.borderRadius]"
-      width="1280"
-      height="720"
+      muted
+      :class="[
+        { hidden: !isCapturing }, 
+        theme.fileInput.minHeight, 
+        theme.fileInput.borderRadius,
+        'w-full h-full object-cover'
+      ]"
+      webkit-playsinline
     />
     <canvas
       id="canvas"
@@ -35,6 +40,16 @@
         >
           <Icon
             name="heroicons:x-mark"
+            class="w-8 h-8"
+          />
+        </span>
+        <span
+          v-if="isMobileDevice"
+          class="text-white cursor-pointer"
+          @click="switchCamera"
+        >
+          <Icon
+            name="heroicons:arrow-path"
             class="w-8 h-8"
           />
         </span>
@@ -128,7 +143,9 @@ export default {
     isCapturing: false,
     capturedImage: null,
     cameraPermissionStatus: "loading",
-    quaggaInitialized: false
+    quaggaInitialized: false,
+    currentFacingMode: 'user',
+    mediaStream: null
   }),
   computed: {
     videoDisplay() {
@@ -137,6 +154,9 @@ export default {
     canvasDisplay() {
       return !this.isCapturing && this.capturedImage ? "" : "hidden"
     },
+    isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    }
   },
   mounted() {
     const webcamElement = document.getElementById("webcam")
@@ -146,25 +166,93 @@ export default {
   },
 
   methods: {
-    openCameraUpload() {
+    async cleanupCurrentStream() {
+      if (this.quaggaInitialized) {
+        Quagga.stop()
+        this.quaggaInitialized = false
+      }
+
+      if (this.mediaStream) {
+        this.mediaStream.getTracks().forEach(track => track.stop())
+        this.mediaStream = null
+      }
+
+      if (this.webcam) {
+        this.webcam.stop()
+      }
+
+      const webcamElement = document.getElementById("webcam")
+      if (webcamElement && webcamElement.srcObject) {
+        webcamElement.srcObject = null
+      }
+    },
+
+    async switchCamera() {
+      try {
+        // Stop current camera
+        if (this.quaggaInitialized) {
+          Quagga.stop()
+          this.quaggaInitialized = false
+        }
+        this.webcam.stop()
+
+        // Toggle facing mode considering barcode mode
+        this.currentFacingMode = this.isBarcodeMode ? 'environment' : 
+          (this.currentFacingMode === 'user' ? 'environment' : 'user')
+
+        // Restart camera
+        await this.openCameraUpload()
+      } catch (error) {
+        console.error('Error switching camera:', error)
+        this.cameraPermissionStatus = "unknown"
+      }
+    },
+
+    async openCameraUpload() {
       this.isCapturing = true
       this.capturedImage = null
-      this.webcam
-        .start()
-        .then(() => {
-          this.cameraPermissionStatus = "allowed"
-          if (this.isBarcodeMode) {
-            this.initQuagga()
+
+      try {
+        const webcamElement = document.getElementById("webcam")
+        const canvasElement = document.getElementById("canvas")
+
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: this.isBarcodeMode ? 'environment' : this.currentFacingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints)
+        webcamElement.srcObject = stream
+        
+        this.webcam = new Webcam(
+          webcamElement,
+          this.isBarcodeMode ? 'environment' : this.currentFacingMode,
+          canvasElement
+        )
+        
+        await new Promise((resolve) => {
+          webcamElement.onloadedmetadata = () => {
+            webcamElement.play()
+            resolve()
           }
         })
-        .catch((err) => {
-          console.error(err)
-          if (err.toString() === "NotAllowedError: Permission denied") {
-            this.cameraPermissionStatus = "blocked"
-            return
-          }
+
+        this.cameraPermissionStatus = "allowed"
+        if (this.isBarcodeMode) {
+          this.initQuagga()
+        }
+      } catch (err) {
+        console.error('Camera error:', err)
+        if (err.name === 'NotAllowedError' || err.toString().includes('Permission denied')) {
+          this.cameraPermissionStatus = "blocked"
+        } else {
           this.cameraPermissionStatus = "unknown"
-        })
+        }
+      }
     },
     initQuagga() {
       if (!this.quaggaInitialized) {
@@ -227,10 +315,8 @@ export default {
         byteArrays.push(byteArray)
       }
 
-      // Create Blob from binary data
       const blob = new Blob(byteArrays, { type: "image/png" })
       const filename = Date.now()
-      // Create a File object from the Blob
       const file = new File([blob], `${filename}.png`, { type: "image/png" })
       this.$emit("uploadImage", file)
     },

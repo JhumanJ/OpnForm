@@ -118,4 +118,6 @@ return [
     'invalid_json' => 'Nieprawidłowe dane wejściowe. Popraw je i spróbuj ponownie.',
     'invalid_captcha' => 'Nieprawidłowy kod CAPTCHA. Popraw go i spróbuj ponownie.',
     'complete_captcha' => 'Proszę wypełnić kod CAPTCHA.',
+    'yes' => 'Tak',
+    'no' => 'Nie',
 ];
