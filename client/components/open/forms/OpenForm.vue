@@ -131,7 +131,6 @@ import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
@@ -439,14 +438,19 @@ export default {
      */
     async initForm() {
       if (this.defaultDataForm) {
-        this.dataForm = useForm(this.defaultDataForm)
+        await nextTick(() => {
+          this.dataForm.resetAndFill(this.defaultDataForm)
+        })
         return
       }
-
+      
       if (await this.tryInitFormFromEditableSubmission()) return
       if (this.tryInitFormFromPendingSubmission()) return
 
-      this.initFormWithDefaultValues()
+      await nextTick(() => {
+        this.formPageIndex = 0
+        this.initFormWithDefaultValues()
+      })
     },
     async tryInitFormFromEditableSubmission() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
@@ -455,7 +459,7 @@ export default {
           this.form.submission_id = submissionId
           const data = await this.getSubmissionData()
           if (data) {
-            this.dataForm = useForm(data)
+            this.dataForm.resetAndFill(data)
             return true
           }
         }
@@ -467,7 +471,7 @@ export default {
         const pendingData = this.pendingSubmission.get()
         if (pendingData && Object.keys(pendingData).length !== 0) {
           this.updatePendingDataFields(pendingData)
-          this.dataForm = useForm(pendingData)
+          this.dataForm.resetAndFill(pendingData)
           return true
         }
       }
@@ -481,7 +485,7 @@ export default {
       })
     },
     initFormWithDefaultValues() {
-      const formData = clonedeep(this.dataForm?.data() || {})
+      const formData = {}
       const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
 
       this.fields.forEach(field => {
@@ -491,7 +495,7 @@ export default {
         this.handleDefaultPrefill(field, formData)
       })
 
-      this.dataForm = useForm(formData)
+      this.dataForm.resetAndFill(formData)
     },
     handleUrlPrefill(field, formData, urlPrefill) {
       if (!urlPrefill) return
