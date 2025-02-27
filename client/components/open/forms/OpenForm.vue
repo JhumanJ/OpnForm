@@ -203,6 +203,7 @@ export default {
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
+      partialSubmissionStarted: false,
     }
   },
 
@@ -322,9 +323,14 @@ export default {
     },
     dataFormValue: {
       deep: true,
-      handler() {
+      handler(newValue, oldValue) {
         if (this.isPublicFormPage && this.form && this.form.auto_save) {
           this.pendingSubmission.set(this.dataFormValue)
+        }
+        // Start partial submission sync on first form change
+        if (!this.adminPreview && this.form?.enable_partial_submissions && oldValue && Object.keys(oldValue).length > 0 && !this.partialSubmissionStarted) {
+          this.partialSubmission.startSync()
+          this.partialSubmissionStarted = true
         }
       }
     },
@@ -357,9 +363,6 @@ export default {
     if (import.meta.client && window.location.href.includes('auto_submit=true')) {
       this.isAutoSubmit = true
       this.submitForm()
-    }
-    if (!this.adminPreview && this.form?.enable_partial_submissions) {
-      this.partialSubmission.startSync()
     }
   },
   beforeUnmount() {
