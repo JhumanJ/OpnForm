@@ -106,6 +106,7 @@
             :label="row.status === 'partial' ? 'In Progress' : 'Submitted'"
             :color="row.status === 'partial' ? 'yellow' : 'green'"
             variant="soft"
+            size="xs"
           />
         </td>
         <td
