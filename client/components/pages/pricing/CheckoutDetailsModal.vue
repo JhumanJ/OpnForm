@@ -2,7 +2,7 @@
   <modal
     :show="show"
     max-width="lg"
-    @close="close"
+    @close="$emit('close')"
   >
     <text-input
       ref="companyName"
@@ -20,25 +20,24 @@
       :form="form"
       help="Where invoices will be sent"
     />
-    <v-button
+    <UButton
       :loading="form.busy || loading"
-      :disabled="form.busy || loading ? true : null"
+      :disabled="form.busy || loading || !form.name || !form.email"
       class="mt-6 block mx-auto"
-      :arrow="true"
-      @click="saveDetails"
+      :to="checkoutUrl"
+      target="_blank"
     >
       Go to checkout
-    </v-button>
+    </UButton>
   </modal>
 </template>
 
 <script>
 import { computed } from "vue"
-import TextInput from "../../forms/TextInput.vue"
-import VButton from "~/components/global/VButton.vue"
+import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 
 export default {
-  components: { VButton, TextInput },
+  components: {},
   props: {
     show: {
       type: Boolean,
@@ -51,6 +50,10 @@ export default {
     yearly: {
       type: Boolean,
       default: true,
+    },
+    currency: {
+      type: String,
+      default: 'usd',
     },
   },
   emits: ['close'],
@@ -70,7 +73,17 @@ export default {
     loading: false,
   }),
 
-  computed: {},
+  computed: {
+    checkoutUrl() {
+      return useCheckoutUrl({
+        name: this.form.name,
+        email: this.form.email,
+        plan: this.plan,
+        yearly: this.yearly,
+        currency: this.currency
+      })
+    }
+  },
 
   watch: {
     user() {
@@ -98,32 +111,6 @@ export default {
         this.form.name = this.user.name
         this.form.email = this.user.email
       }
-    },
-    saveDetails() {
-      if (this.form.busy) return
-      this.form.put("subscription/update-customer-details").then(() => {
-        this.loading = true
-        opnFetch(
-          "/subscription/new/" +
-            this.plan +
-            "/" +
-            (!this.yearly ? "monthly" : "yearly") +
-            "/checkout/with-trial",
-        )
-          .then((data) => {
-            window.location = data.checkout_url
-          })
-          .catch((error) => {
-            useAlert().error(error.data.message)
-          })
-          .finally(() => {
-            this.loading = false
-            this.close()
-          })
-      })
-    },
-    close() {
-      this.$emit("close")
     },
   },
 }

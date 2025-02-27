@@ -92,9 +92,9 @@
                       <v-button
                         v-else
                         :loading="billingLoading"
-                        class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
+                        :to="{ name: 'redirect-billing-portal' }"
                         target="_blank"
-                        @click="openBillingDashboard"
+                        class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
                       >
                         Manage Plan
                       </v-button>
@@ -301,7 +301,9 @@
                   size="md"
                   class="w-auto flex-grow"
                   :loading="form.busy || loading"
-                  @click="saveDetails"
+                  :disabled="form.busy || loading"
+                  :to="checkoutUrl"
+                  target="_blank"
                 >
                   <template v-if="isSubscribed">
                     Upgrade
@@ -329,6 +331,7 @@
 <script setup>
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
 import { fetchAllWorkspaces } from '~/stores/workspaces.js'
+import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 
 const router = useRouter()
 const subscriptionModalStore = useSubscriptionModalStore()
@@ -444,55 +447,11 @@ const goBackToStep1 = () => {
   currentStep.value = 1
 }
 
-const saveDetails = () => {
-  if (form.busy)
-    return
-  form.put('subscription/update-customer-details').then(() => {
-    loading.value = true
-
-    // Get param trial_duration from url
-    const urlParams = new URLSearchParams(window.location.search)
-    const trialDuration = urlParams.get('trial_duration') || null
-    if (trialDuration) {
-      useAmplitude().logEvent('extended_trial_used', {
-        duration: trialDuration
-      })
-    }
-
-    const params = {
-      trial_duration: trialDuration,
-      currency: currency
-    }
-    opnFetch(
-      `/subscription/new/${
-        currentPlan.value
-      }/${
-        !isYearly.value ? 'monthly' : 'yearly'
-      }/checkout/with-trial?${
-        new URLSearchParams(params).toString()}`
-    )
-      .then((data) => {
-        window.open(data.checkout_url, '_blank')
-      })
-      .catch((error) => {
-        useAlert().error(error.data.message)
-        loading.value = false
-      })
-      .finally(() => {
-
-      })
-  })
-}
-
-const openBillingDashboard = () => {
-  billingLoading.value = true
-  opnFetch('/subscription/billing-portal').then((data) => {
-    const url = data.portal_url
-    window.location = url
-  }).catch((error) => {
-    useAlert().error(error.data.message)
-  }).finally(() => {
-    billingLoading.value = false
-  })
-}
+const checkoutUrl = useCheckoutUrl({
+  name: form.name,
+  email: form.email,
+  plan: currentPlan.value,
+  yearly: isYearly.value,
+  currency: currency
+})
 </script>
