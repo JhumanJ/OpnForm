@@ -58,7 +58,7 @@
       </div>
     </template>
 
-    <div class="w-full border-t pt-4">
+    <div class="w-full border-t pt-4 mt-4">
       <h4 class="font-semibold">
         Link Privacy
       </h4>
