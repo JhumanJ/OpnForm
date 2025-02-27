@@ -68,16 +68,23 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     private function storeSubmission(array $formData)
     {
+        // If submission_id is set, use it
+        if (isset($this->submissionData['submission_id']) && $this->submissionData['submission_id'] && is_int($this->submissionData['submission_id'])) {
+            $this->submissionId = $this->submissionData['submission_id'];
+        }
+
         // Create or update record
         if ($previousSubmission = $this->submissionToUpdate()) {
             $previousSubmission->data = $formData;
             $previousSubmission->completion_time = $this->completionTime;
+            $previousSubmission->status = FormSubmission::STATUS_COMPLETED;
             $previousSubmission->save();
             $this->submissionId = $previousSubmission->id;
         } else {
             $response = $this->form->submissions()->create([
                 'data' => $formData,
                 'completion_time' => $this->completionTime,
+                'status' => FormSubmission::STATUS_COMPLETED,
             ]);
             $this->submissionId = $response->id;
         }
@@ -88,7 +95,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     private function submissionToUpdate(): ?FormSubmission
     {
-        if ($this->submissionId) {
+        if ($this->submissionId && is_int($this->submissionId)) {
             return $this->form->submissions()->findOrFail($this->submissionId);
         }
         if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {

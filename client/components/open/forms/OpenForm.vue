@@ -129,7 +129,8 @@ import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
+import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
@@ -191,6 +192,7 @@ export default {
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: pendingSubmission(props.form),
+      partialSubmission: usePartialSubmission(props.form, dataForm),
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
 
       // Used for admin previews
@@ -207,6 +209,7 @@ export default {
        * Used to force refresh components by changing their keys
        */
       isAutoSubmit: false,
+      partialSubmissionStarted: false,
     }
   },
 
@@ -335,9 +338,14 @@ export default {
     },
     dataFormValue: {
       deep: true,
-      handler() {
+      handler(newValue, oldValue) {
         if (this.isPublicFormPage && this.form && this.form.auto_save) {
           this.pendingSubmission.set(this.dataFormValue)
+        }
+        // Start partial submission sync on first form change
+        if (!this.adminPreview && this.form?.enable_partial_submissions && oldValue && Object.keys(oldValue).length > 0 && !this.partialSubmissionStarted) {
+          this.partialSubmission.startSync()
+          this.partialSubmissionStarted = true
         }
       }
     },
@@ -372,7 +380,11 @@ export default {
       this.submitForm()
     }
   },
-
+  beforeUnmount() {
+    if (!this.adminPreview && this.form?.enable_partial_submissions) {
+      this.partialSubmission.stopSync()
+    }
+  },
   methods: {
     submitForm() {
       if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
@@ -387,6 +399,9 @@ export default {
 
       this.$refs['form-timer'].stopTimer()
       this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+      if (this.form?.enable_partial_submissions) {
+        this.dataForm.submission_hash = this.workingFormStore.getSubmissionHash(this.pendingSubmission.formPendingSubmissionKey.value)
+      }
 
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
