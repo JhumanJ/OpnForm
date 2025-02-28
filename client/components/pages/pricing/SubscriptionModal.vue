@@ -357,6 +357,16 @@ const user = computed(() => authStore.user)
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
+const checkoutUrl = computed(() => {
+  return useCheckoutUrl(
+    form.name,
+    form.email,
+    currentPlan.value,
+    isYearly.value,
+    currency
+  ).value
+})
+
 // When opening modal with a plan already (and user not subscribed yet) - skip first step
 watch(() => subscriptionModalStore.show, () => {
   currentStep.value = 1
@@ -446,12 +456,4 @@ const onSelectPlan = (planName) => {
 const goBackToStep1 = () => {
   currentStep.value = 1
 }
-
-const checkoutUrl = useCheckoutUrl({
-  name: form.name,
-  email: form.email,
-  plan: currentPlan.value,
-  yearly: isYearly.value,
-  currency: currency
-})
 </script>

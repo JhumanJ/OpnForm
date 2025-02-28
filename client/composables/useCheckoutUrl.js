@@ -1,4 +1,4 @@
-export const useCheckoutUrl = ({ name, email, plan, yearly, currency }) => {
+export const useCheckoutUrl = (name, email, plan, yearly, currency) => {
   return computed(() => {
     const params = {
       plan,

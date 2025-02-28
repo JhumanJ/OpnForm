@@ -75,13 +75,13 @@ export default {
 
   computed: {
     checkoutUrl() {
-      return useCheckoutUrl({
-        name: this.form.name,
-        email: this.form.email,
-        plan: this.plan,
-        yearly: this.yearly,
-        currency: this.currency
-      })
+      return useCheckoutUrl(
+        this.form.name,
+        this.form.email,
+        this.plan,
+        this.yearly,
+        this.currency
+      ).value
     }
   },
 
