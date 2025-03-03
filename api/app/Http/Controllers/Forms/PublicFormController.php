@@ -85,6 +85,23 @@ class PublicFormController extends Controller
         return redirect()->to($internal_url);
     }
 
+    private function handlePartialSubmissions(Request $request, $submissionId)
+    {
+        $form = $request->form;
+        $submissionResponse = $form->submissions()->updateOrCreate([
+            'id' => $submissionId
+        ], [
+            'data' => $request->all(),
+            'status' => FormSubmission::STATUS_PARTIAL
+        ]);
+        $submissionId = $submissionResponse->id;
+
+        return $this->success([
+            'message' => 'Partial submission saved',
+            'submission_hash' => Hashids::encode($submissionId)
+        ]);
+    }
+
     public function answer(AnswerFormRequest $request, FormSubmissionProcessor $formSubmissionProcessor)
     {
         $form = $request->form;
@@ -98,18 +115,7 @@ class PublicFormController extends Controller
 
         $isPartial = $request->get('is_partial') ?? false;
         if ($isPartial && $form->enable_partial_submissions && $form->is_pro) {
-            $submissionResponse = $form->submissions()->updateOrCreate([
-                'id' => $submissionId
-            ], [
-                'data' => $request->all(),
-                'status' => FormSubmission::STATUS_PARTIAL
-            ]);
-            $submissionId = $submissionResponse->id;
-
-            return $this->success([
-                'message' => 'Partial submission saved',
-                'submission_hash' => Hashids::encode($submissionId)
-            ]);
+            return $this->handlePartialSubmissions($request, $submissionId);
         }
 
         $submissionData = $request->validated();
