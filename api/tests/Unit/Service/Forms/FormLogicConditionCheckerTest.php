@@ -150,6 +150,82 @@ describe('FormLogicConditionChecker', function () {
             expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
         });
 
+        it('handles zero values correctly', function () {
+            $condition = [
+                'value' => [
+                    'property_meta' => [
+                        'id' => 'number_field',
+                        'type' => 'number'
+                    ],
+                    'operator' => 'equals',
+                    'value' => 0
+                ]
+            ];
+
+            // Test zero equality
+            $formData = ['number_field' => 0];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            $formData = ['number_field' => 1];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+
+            // Test less than with zero
+            $condition['value']['operator'] = 'less_than';
+            $condition['value']['value'] = 0;
+            $formData = ['number_field' => -1];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            $formData = ['number_field' => 0];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+
+            // Test greater than with zero
+            $condition['value']['operator'] = 'greater_than';
+            $condition['value']['value'] = 0;
+            $formData = ['number_field' => 1];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            $formData = ['number_field' => 0];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+        });
+
+        it('handles negative numbers correctly', function () {
+            $condition = [
+                'value' => [
+                    'property_meta' => [
+                        'id' => 'number_field',
+                        'type' => 'number'
+                    ],
+                    'operator' => 'equals',
+                    'value' => -5
+                ]
+            ];
+
+            // Test negative number equality
+            $formData = ['number_field' => -5];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            // Test less than with negative numbers
+            $condition['value']['operator'] = 'less_than';
+            $condition['value']['value'] = -5;
+            $formData = ['number_field' => -10];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            $formData = ['number_field' => -5];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+
+            $formData = ['number_field' => 0];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+
+            // Test greater than with negative numbers
+            $condition['value']['operator'] = 'greater_than';
+            $condition['value']['value'] = -10;
+            $formData = ['number_field' => -5];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeTrue();
+
+            $formData = ['number_field' => -10];
+            expect(FormLogicConditionChecker::conditionsMet($condition, $formData))->toBeFalse();
+        });
+
         it('handles empty checks correctly', function () {
             $condition = [
                 'value' => [
