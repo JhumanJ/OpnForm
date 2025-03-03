@@ -95,7 +95,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     private function submissionToUpdate(): ?FormSubmission
     {
-        if ($this->submissionId && is_int($this->submissionId)) {
+        if ($this->submissionId) {
             return $this->form->submissions()->findOrFail($this->submissionId);
         }
         if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
