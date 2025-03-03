@@ -78,7 +78,7 @@
     <!-- Captcha -->
     <div class="mb-3 px-2 mt-4 mx-auto w-max">
       <CaptchaInput
-        v-if="form.use_captcha && isLastPage"
+        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
         ref="captcha"
         :provider="form.captcha_provider"
         :form="dataForm"
@@ -177,6 +177,11 @@ export default {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
     const dataForm = ref(useForm())
+    const config = useRuntimeConfig()
+
+    const hasCaptchaProviders = computed(() => {
+      return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
+    })
 
     return {
       dataForm,
@@ -190,6 +195,7 @@ export default {
       // Used for admin previews
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
+      hasCaptchaProviders
     }
   },
 
@@ -301,6 +307,15 @@ export default {
       return {
         '--form-color': this.form.color
       }
+    },
+    isCaptchaProviderAvailable() {
+      const config = useRuntimeConfig()
+      if (this.form.captcha_provider === 'recaptcha') {
+        return !!config.public.recaptchaSiteKey
+      } else if (this.form.captcha_provider === 'hcaptcha') {
+        return !!config.public.hCaptchaSiteKey
+      }
+      return false
     }
   },
 
