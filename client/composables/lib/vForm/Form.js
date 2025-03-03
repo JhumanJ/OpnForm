@@ -85,6 +85,17 @@ class Form {
     clearTimeout(this.recentlySuccessfulTimeoutId)
   }
 
+  resetAndFill(data = {}) {
+    // Clear form state
+    this.clear()
+    
+    // Reset and update form data using the existing update method
+    this.originalData = {}
+    this.update(data)
+    
+    return this
+  }
+
   reset() {
     Object.keys(this)
       .filter((key) => !Form.ignore.includes(key))
