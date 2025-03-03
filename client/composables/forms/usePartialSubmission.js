@@ -1,14 +1,23 @@
 import { opnFetch } from "./../useOpnApi.js"
 import { pendingSubmission as pendingSubmissionFunction } from "./pendingSubmission.js"
-import { useWorkingFormStore } from "~/stores/working_form.js"
+
+// Create a Map to store submission hashes for different forms
+const submissionHashes = ref(new Map())
 
 export const usePartialSubmission = (form, formData = {}) => {
   const pendingSubmission = pendingSubmissionFunction(form)
-  const workingFormStore = useWorkingFormStore()
 
   const SYNC_INTERVAL = 30000 // 30 seconds
   let syncInterval = null
   let syncTimeout = null
+
+  const getSubmissionHash = () => {
+    return submissionHashes.value.get(pendingSubmission.formPendingSubmissionKey.value)
+  }
+
+  const setSubmissionHash = (hash) => {
+    submissionHashes.value.set(pendingSubmission.formPendingSubmissionKey.value, hash)
+  }
 
   const debouncedSync = () => {
     if (syncTimeout) clearTimeout(syncTimeout)
@@ -21,17 +30,16 @@ export const usePartialSubmission = (form, formData = {}) => {
     if (!form?.enable_partial_submissions || !formData.value.data() || Object.keys(formData.value.data()).length === 0) return
 
     try {
-      const submissionHash = workingFormStore.getSubmissionHash(pendingSubmission.formPendingSubmissionKey.value)
       const response = await opnFetch(`/forms/${form.slug}/answer`, {
         method: "POST",
         body: {
           ...formData.value.data(),
           'is_partial': true,
-          'submission_hash': submissionHash
+          'submission_hash': getSubmissionHash()
         }
       })
       if (response.submission_hash) {
-        workingFormStore.setSubmissionHash(pendingSubmission.formPendingSubmissionKey.value, response.submission_hash)
+        setSubmissionHash(response.submission_hash)
       }
     } catch (error) {
       console.error('Failed to sync partial submission', error)
@@ -89,6 +97,8 @@ export const usePartialSubmission = (form, formData = {}) => {
   return {
     startSync,
     stopSync,
-    syncToServer
+    syncToServer,
+    getSubmissionHash,
+    setSubmissionHash
   }
 }
