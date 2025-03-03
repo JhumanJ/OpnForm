@@ -38,7 +38,7 @@ class WorkspaceUsersUpdated implements ShouldQueue
     public function handle(): void
     {
         // If self-hosted, no need to update billing
-        if (!pricing_enabled() || \App::environment('testing')) {
+        if (!pricing_enabled() || app()->environment('testing')) {
             return;
         }
 
@@ -80,16 +80,27 @@ class WorkspaceUsersUpdated implements ShouldQueue
         $subscriptionInterval = BillingHelper::getLineItemInterval($mainSubscriptionItem);
 
         $extraUserLineItem = $this->getLineItem($lineItems, 'extra_user');
-        if ($extraUserLineItem) {
-            $stripe->subscriptionItems->update(
-                $extraUserLineItem->id,
-                ['quantity' => $quantity]
-            );
+
+        if ($quantity === 0) {
+            // If quantity is 0, remove the line item if it exists
+            if ($extraUserLineItem) {
+                $stripe->subscriptionItems->delete($extraUserLineItem->id);
+            }
         } else {
-            $stripeSub->items->create([
-                'price' => $extraUserPricing[$subscriptionInterval],
-                'quantity' => $quantity,
-            ]);
+            // If quantity is greater than 0
+            if ($extraUserLineItem) {
+                // Update existing line item
+                $stripe->subscriptionItems->update(
+                    $extraUserLineItem->id,
+                    ['quantity' => $quantity]
+                );
+            } else {
+                // Create new line item
+                $stripeSub->items->create([
+                    'price' => $extraUserPricing[$subscriptionInterval],
+                    'quantity' => $quantity,
+                ]);
+            }
         }
     }
 
