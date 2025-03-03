@@ -69,7 +69,7 @@
       <checkbox-input
         :form="form"
         name="agree_terms"
-        class="mb-3"
+        class="my-3"
         :required="true"
       >
         <template #label>

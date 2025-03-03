@@ -357,27 +357,31 @@ const user = computed(() => authStore.user)
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
-const checkoutUrl = computed(() => {
-  return useCheckoutUrl(
-    form.name,
-    form.email,
-    currentPlan.value,
-    isYearly.value,
-    currency
-  ).value
-})
+const checkoutUrl = useCheckoutUrl(
+  form.name,
+  form.email,
+  currentPlan.value,
+  isYearly.value,
+  currency
+)
 
 // When opening modal with a plan already (and user not subscribed yet) - skip first step
 watch(() => subscriptionModalStore.show, () => {
   currentStep.value = 1
-  if (subscriptionModalStore.show && subscriptionModalStore.plan) {
-    if (user.value.is_subscribed) {
-      return
+  
+  // Update user data when modal opens
+  if (subscriptionModalStore.show) {
+    updateUser()
+    
+    if (subscriptionModalStore.plan) {
+      if (user.value.is_subscribed) {
+        return
+      }
+      isYearly.value = subscriptionModalStore.yearly
+      shouldShowUpsell.value = !isYearly.value
+      currentStep.value = 2
+      currentPlan.value = subscriptionModalStore.plan
     }
-    isYearly.value = subscriptionModalStore.yearly
-    shouldShowUpsell.value = !isYearly.value
-    currentStep.value = 2
-    currentPlan.value = subscriptionModalStore.plan
   }
 })
 
@@ -434,11 +438,28 @@ watch(broadcastData, () => {
 })
 
 onMounted(() => {
-  if (user && user.value) {
-    form.name = user.value.name
-    form.email = user.value.email
-  }
+  updateUser()
 })
+
+// Update form with user data - sets company name to user name by default
+const updateUser = () => {
+  if (user.value) {
+    // Set company name to user name by default
+    if (user.value.name && !form.name) {
+      form.name = user.value.name
+    }
+    
+    // Set email if available
+    if (user.value.email && !form.email) {
+      form.email = user.value.email
+    }
+  }
+}
+
+// Watch for user changes
+watch(user, () => {
+  updateUser()
+}, { immediate: true })
 
 const onSelectPlan = (planName) => {
   if (!authenticated.value) {

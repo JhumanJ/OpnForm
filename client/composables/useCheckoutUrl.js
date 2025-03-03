@@ -1,11 +1,20 @@
+import { computed, unref } from 'vue'
+
 export const useCheckoutUrl = (name, email, plan, yearly, currency) => {
   return computed(() => {
+    // Unwrap refs if they are passed
+    const nameValue = unref(name)
+    const emailValue = unref(email)
+    const planValue = unref(plan)
+    const yearlyValue = unref(yearly)
+    const currencyValue = unref(currency)
+
     const params = {
-      plan,
-      yearly: yearly.toString(),
-      currency,
-      name,
-      email
+      plan: planValue,
+      yearly: yearlyValue.toString(),
+      currency: currencyValue,
+      name: nameValue,
+      email: emailValue
     }
 
     // Get trial duration if exists - only in client side
@@ -21,6 +30,7 @@ export const useCheckoutUrl = (name, email, plan, yearly, currency) => {
 
     // Filter out empty params
     const filteredParams = Object.fromEntries(
+      // eslint-disable-next-line no-unused-vars
       Object.entries(params).filter(([_, value]) => value !== null && value !== undefined && value !== '')
     )
 
