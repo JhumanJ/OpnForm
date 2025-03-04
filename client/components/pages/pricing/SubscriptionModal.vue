@@ -358,10 +358,10 @@ const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
 const checkoutUrl = useCheckoutUrl(
-  form.name,
-  form.email,
-  currentPlan.value,
-  isYearly.value,
+  computed(() => form.name),
+  computed(() => form.email),
+  currentPlan,
+  isYearly,
   currency
 )
 
