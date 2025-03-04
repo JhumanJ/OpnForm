@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 it('create form with logic', function () {
     $user = $this->actingAsUser();
@@ -390,7 +389,7 @@ it('can submit form with passed regex validation condition', function () {
     })->toArray();
 
     $form->update();
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
     $response->assertSuccessful()
@@ -439,7 +438,7 @@ it('can not submit form with failed regex validation condition', function () {
     })->toArray();
 
     $form->update();
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -487,7 +486,7 @@ it('can submit form with does not match regex validation condition', function ()
     })->toArray();
 
     $form->update();
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
     $response->assertSuccessful()
@@ -536,7 +535,7 @@ it('handles invalid regex patterns gracefully', function () {
     })->toArray();
 
     $form->update();
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Helpers;
+namespace App\Service\Forms;
 
 use App\Models\Forms\Form;
 use Faker;
@@ -89,38 +89,33 @@ class FormSubmissionDataFactory
 
     private function formatAsSubmissionData($data)
     {
-        collect($this->form->properties)->each(function ($property) use (&$data) {
-            if ($property['type'] === 'phone_number') {
-                $data[$property['id']] = '+33749119783';
-            }
-        });
         return $data;
     }
 
     private function generateSelectValue($property)
     {
-        $values = [];
-        if (isset($property['select']['options']) && count($property['select']['options']) > 0) {
-            $values = collect($property['select']['options'])->map(function ($option) {
-                return $option['name'];
-            })->toArray();
+        if (empty($property['options'])) {
+            return null;
         }
 
-        return ($values) ? $this->faker->randomElement($values) : null;
+        $option = $this->faker->randomElement($property['options']);
+        return $option['id'];
     }
 
     private function generateMultiSelectValues($property)
     {
-        $values = [];
-        if (isset($property['multi_select']['options']) && count($property['multi_select']['options']) > 0) {
-            $values = collect($property['multi_select']['options'])->map(function ($option) {
-                return $option['name'];
-            })->toArray();
+        if (empty($property['options'])) {
+            return [];
         }
 
-        return ($values) ? $this->faker->randomElements(
-            $values,
-            $this->faker->numberBetween(1, count($values))
-        ) : null;
+        $numOptions = count($property['options']);
+        $numToSelect = $this->faker->numberBetween(1, min(3, $numOptions));
+
+        $selectedOptions = $this->faker->randomElements(
+            array_column($property['options'], 'id'),
+            $numToSelect
+        );
+
+        return $selectedOptions;
     }
 }

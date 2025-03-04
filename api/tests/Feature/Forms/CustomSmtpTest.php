@@ -1,7 +1,6 @@
 <?php
 
 use App\Notifications\Forms\FormEmailNotification;
-use Tests\Helpers\FormSubmissionDataFactory;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 
@@ -40,7 +39,7 @@ it('send email with custom SMTP settings', function () {
         'reply_to' => 'reply@example.com',
     ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     Notification::fake();
 
