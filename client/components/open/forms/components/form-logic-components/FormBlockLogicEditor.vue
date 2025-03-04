@@ -57,6 +57,14 @@
       @update:model-value="onActionInput"
     />
 
+    <UAlert
+      icon="i-heroicons-information-circle"
+      color="yellow"
+      variant="subtle"
+      size="sm"
+      description="Hidden field can never be required."
+    />
+
     <modal
       max-width="sm"
       

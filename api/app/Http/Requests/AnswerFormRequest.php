@@ -87,7 +87,7 @@ class AnswerFormRequest extends FormRequest
                     $data[$field['id']] = isset($tmpop['name']) ? $tmpop['name'] : $data[$field['id']];
                 }
             }
-            if (FormLogicPropertyResolver::isRequired($property, $data)) {
+            if (FormLogicPropertyResolver::isRequired($property, $data) && (!isset($property['hidden']) || !$property['hidden'])) {
                 $rules[] = 'required';
 
                 if ($property['type'] == 'checkbox') {
