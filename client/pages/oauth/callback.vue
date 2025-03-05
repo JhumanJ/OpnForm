@@ -74,7 +74,11 @@ function handleCallback() {
             } catch (error) {
                 console.error(error)
             }
-            router.push({ name: "home" })
+            // Call afterLogin on parent window before closing
+            if (window.opener) {
+              window.opener.document.dispatchEvent(new CustomEvent('quick-login-complete'))
+            }
+            window.close()
             return
         } else {
             logEvent("register", { source: provider })

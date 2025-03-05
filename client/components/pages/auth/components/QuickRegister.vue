@@ -2,9 +2,9 @@
   <div>
     <!--  Login modal  -->
     <modal
-      :show="showLoginModal"
+      :show="appStore.quickLoginModal"
       max-width="lg"
-      @close="showLoginModal = false"
+      @close="appStore.quickLoginModal=false"
     >
       <template #icon>
         <svg
@@ -36,9 +36,9 @@
 
     <!--  Register modal  -->
     <modal
-      :show="showRegisterModal"
+      :show="appStore.quickRegisterModal"
       max-width="lg"
-      @close="$emit('close')"
+      @close="appStore.quickRegisterModal=false"
     >
       <template #icon>
         <svg
@@ -70,43 +70,41 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import LoginForm from "./LoginForm.vue"
 import RegisterForm from "./RegisterForm.vue"
 
-export default {
-  name: "QuickRegister",
-  components: {
-    LoginForm,
-    RegisterForm,
-  },
-  props: {
-    showRegisterModal: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: ['afterLogin', 'close', 'reopen'],
+const appStore = useAppStore()
+const emit = defineEmits(['afterLogin', 'close', 'reopen'])
 
-  data: () => ({
-    showLoginModal: false,
-  }),
+onMounted(() => {
+  document.addEventListener('quick-login-complete', () => {
+    afterQuickLogin()
+  })
+})
 
-  mounted() {},
+onUnmounted(() => {
+  document.removeEventListener('quick-login-complete', () => {
+    afterQuickLogin()
+  })
+})
 
-  methods: {
-    openLogin() {
-      this.showLoginModal = true
-      this.$emit("close")
-    },
-    openRegister() {
-      this.showLoginModal = false
-      this.$emit("reopen")
-    },
-    afterQuickLogin() {
-      this.showLoginModal = false
-      this.$emit("afterLogin")
-    },
-  },
+const openLogin = () => {
+  appStore.quickLoginModal = true
+  appStore.quickRegisterModal = false
+  emit('close')
+}
+
+const openRegister = () => {
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = true
+  emit('reopen')
+}
+
+const afterQuickLogin = () => {
+  setTimeout(() => {
+    appStore.quickLoginModal = false
+    emit('afterLogin')
+  }, 2000)
 }
 </script>
