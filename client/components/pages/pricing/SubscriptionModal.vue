@@ -92,9 +92,9 @@
                       <v-button
                         v-else
                         :loading="billingLoading"
-                        class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
+                        :to="{ name: 'redirect-billing-portal' }"
                         target="_blank"
-                        @click="openBillingDashboard"
+                        class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
                       >
                         Manage Plan
                       </v-button>
@@ -301,7 +301,9 @@
                   size="md"
                   class="w-auto flex-grow"
                   :loading="form.busy || loading"
-                  @click="saveDetails"
+                  :disabled="form.busy || loading"
+                  :to="checkoutUrl"
+                  target="_blank"
                 >
                   <template v-if="isSubscribed">
                     Upgrade
@@ -329,6 +331,7 @@
 <script setup>
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
 import { fetchAllWorkspaces } from '~/stores/workspaces.js'
+import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 
 const router = useRouter()
 const subscriptionModalStore = useSubscriptionModalStore()
@@ -354,17 +357,31 @@ const user = computed(() => authStore.user)
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
+const checkoutUrl = useCheckoutUrl(
+  computed(() => form.name),
+  computed(() => form.email),
+  currentPlan,
+  isYearly,
+  currency
+)
+
 // When opening modal with a plan already (and user not subscribed yet) - skip first step
 watch(() => subscriptionModalStore.show, () => {
   currentStep.value = 1
-  if (subscriptionModalStore.show && subscriptionModalStore.plan) {
-    if (user.value.is_subscribed) {
-      return
+  
+  // Update user data when modal opens
+  if (subscriptionModalStore.show) {
+    updateUser()
+    
+    if (subscriptionModalStore.plan) {
+      if (user.value.is_subscribed) {
+        return
+      }
+      isYearly.value = subscriptionModalStore.yearly
+      shouldShowUpsell.value = !isYearly.value
+      currentStep.value = 2
+      currentPlan.value = subscriptionModalStore.plan
     }
-    isYearly.value = subscriptionModalStore.yearly
-    shouldShowUpsell.value = !isYearly.value
-    currentStep.value = 2
-    currentPlan.value = subscriptionModalStore.plan
   }
 })
 
@@ -421,11 +438,28 @@ watch(broadcastData, () => {
 })
 
 onMounted(() => {
-  if (user && user.value) {
-    form.name = user.value.name
-    form.email = user.value.email
-  }
+  updateUser()
 })
+
+// Update form with user data - sets company name to user name by default
+const updateUser = () => {
+  if (user.value) {
+    // Set company name to user name by default
+    if (user.value.name && !form.name) {
+      form.name = user.value.name
+    }
+    
+    // Set email if available
+    if (user.value.email && !form.email) {
+      form.email = user.value.email
+    }
+  }
+}
+
+// Watch for user changes
+watch(user, () => {
+  updateUser()
+}, { immediate: true })
 
 const onSelectPlan = (planName) => {
   if (!authenticated.value) {
@@ -442,57 +476,5 @@ const onSelectPlan = (planName) => {
 
 const goBackToStep1 = () => {
   currentStep.value = 1
-}
-
-const saveDetails = () => {
-  if (form.busy)
-    return
-  form.put('subscription/update-customer-details').then(() => {
-    loading.value = true
-
-    // Get param trial_duration from url
-    const urlParams = new URLSearchParams(window.location.search)
-    const trialDuration = urlParams.get('trial_duration') || null
-    if (trialDuration) {
-      useAmplitude().logEvent('extended_trial_used', {
-        duration: trialDuration
-      })
-    }
-
-    const params = {
-      trial_duration: trialDuration,
-      currency: currency
-    }
-    opnFetch(
-      `/subscription/new/${
-        currentPlan.value
-      }/${
-        !isYearly.value ? 'monthly' : 'yearly'
-      }/checkout/with-trial?${
-        new URLSearchParams(params).toString()}`
-    )
-      .then((data) => {
-        window.open(data.checkout_url, '_blank')
-      })
-      .catch((error) => {
-        useAlert().error(error.data.message)
-        loading.value = false
-      })
-      .finally(() => {
-
-      })
-  })
-}
-
-const openBillingDashboard = () => {
-  billingLoading.value = true
-  opnFetch('/subscription/billing-portal').then((data) => {
-    const url = data.portal_url
-    window.location = url
-  }).catch((error) => {
-    useAlert().error(error.data.message)
-  }).finally(() => {
-    billingLoading.value = false
-  })
 }
 </script>

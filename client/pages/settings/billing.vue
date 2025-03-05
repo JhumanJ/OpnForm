@@ -19,7 +19,8 @@
           color="gray"
           icon="i-heroicons-credit-card"
           :loading="billingLoading"
-          @click="openBillingDashboard"
+          :to="{ name: 'redirect-billing-portal' }"
+          target="_blank"
         >
           <span v-if="canCancel">Manage Subscription & Invoices</span>
           <span else>Billing & Invoices</span>
@@ -117,15 +118,4 @@ const cancelSubscription = () => {
   })
 }
 
-const openBillingDashboard = () => {
-  billingLoading.value = true
-  opnFetch('/subscription/billing-portal').then((data) => {
-    const url = data.portal_url
-    window.location = url
-  }).catch((error) => {
-    useAlert().error(error.data.message)
-  }).finally(() => {
-    billingLoading.value = false
-  })
-}
 </script>
