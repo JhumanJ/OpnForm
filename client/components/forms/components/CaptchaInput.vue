@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="showCaptcha">
+    <div v-if="showCaptcha && isSiteKeyAvailable">
       <RecaptchaV2
         v-if="provider === 'recaptcha'"
         :key="`recaptcha-${componentKey}`"
@@ -67,6 +67,15 @@ const showCaptcha = ref(true)
 const componentKey = ref(0)
 
 const formFieldName = computed(() => props.provider === 'recaptcha' ? 'g-recaptcha-response' : 'h-captcha-response')
+
+const isSiteKeyAvailable = computed(() => {
+  if (props.provider === 'recaptcha') {
+    return !!recaptchaSiteKey
+  } else if (props.provider === 'hcaptcha') {
+    return !!hCaptchaSiteKey
+  }
+  return false
+})
 
 // Watch for provider changes to reset the form field
 watch(() => props.provider, async (newProvider, oldProvider) => {

@@ -67,7 +67,25 @@ function propertyConditionMet(propertyCondition, value) {
   return false
 }
 
+// Helper function to safely parse numeric values
+function safeParseFloat(value) {
+  if (value === undefined || value === null) return null
+  const parsed = parseFloat(value)
+  return isNaN(parsed) ? null : parsed
+}
+
+// Helper function to check if values are valid for numeric comparison
+function areValidNumbers(condition, fieldValue) {
+  const conditionValue = safeParseFloat(condition.value)
+  const parsedFieldValue = safeParseFloat(fieldValue)
+  return conditionValue !== null && parsedFieldValue !== null
+}
+
 function checkEquals(condition, fieldValue) {
+  // For numeric values, convert to numbers before comparison
+  if (areValidNumbers(condition, fieldValue)) {
+    return parseFloat(condition.value) === parseFloat(fieldValue)
+  }
   return condition.value === fieldValue
 }
 
@@ -116,35 +134,23 @@ function checkIsEmpty(condition, fieldValue) {
 }
 
 function checkGreaterThan(condition, fieldValue) {
-  return (
-    condition.value &&
-    fieldValue &&
-    parseFloat(fieldValue) > parseFloat(condition.value)
-  )
+  if (!areValidNumbers(condition, fieldValue)) return false
+  return parseFloat(fieldValue) > parseFloat(condition.value)
 }
 
 function checkGreaterThanEqual(condition, fieldValue) {
-  return (
-    condition.value &&
-    fieldValue &&
-    parseFloat(fieldValue) >= parseFloat(condition.value)
-  )
+  if (!areValidNumbers(condition, fieldValue)) return false
+  return parseFloat(fieldValue) >= parseFloat(condition.value)
 }
 
 function checkLessThan(condition, fieldValue) {
-  return (
-    condition.value &&
-    fieldValue &&
-    parseFloat(fieldValue) < parseFloat(condition.value)
-  )
+  if (!areValidNumbers(condition, fieldValue)) return false
+  return parseFloat(fieldValue) < parseFloat(condition.value)
 }
 
 function checkLessThanEqual(condition, fieldValue) {
-  return (
-    condition.value &&
-    fieldValue &&
-    parseFloat(fieldValue) <= parseFloat(condition.value)
-  )
+  if (!areValidNumbers(condition, fieldValue)) return false
+  return parseFloat(fieldValue) <= parseFloat(condition.value)
 }
 
 function checkBefore(condition, fieldValue) {
@@ -313,7 +319,7 @@ function numberConditionMet(propertyCondition, value) {
     case "is_empty":
       return checkIsEmpty(propertyCondition, value)
     case "is_not_empty":
-      return checkIsEmpty(propertyCondition, value)
+      return !checkIsEmpty(propertyCondition, value)
     case "content_length_equals":
       return checkLength(propertyCondition, value, "===")
     case "content_length_does_not_equal":

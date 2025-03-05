@@ -81,6 +81,15 @@ class FormLogicConditionChecker
 
     private function checkEquals($condition, $fieldValue): bool
     {
+        // For numeric values, convert to numbers before comparison
+        if (
+            $this->areValidNumbers($condition, $fieldValue) &&
+            is_numeric($condition['value']) &&
+            is_numeric($fieldValue)
+        ) {
+            return (float) $condition['value'] === (float) $fieldValue;
+        }
+
         return $condition['value'] === $fieldValue;
     }
 
@@ -152,24 +161,44 @@ class FormLogicConditionChecker
         return $fieldValue == '' || $fieldValue == null || !$fieldValue;
     }
 
+    /**
+     * Helper function to check if values are valid for numeric comparison
+     */
+    private function areValidNumbers($condition, $fieldValue): bool
+    {
+        return isset($condition['value']) && $fieldValue !== null && $fieldValue !== '';
+    }
+
     private function checkGreaterThan($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue > (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue > (float) $condition['value'];
     }
 
     private function checkGreaterThanEqual($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue >= (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue >= (float) $condition['value'];
     }
 
     private function checkLessThan($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue < (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue < (float) $condition['value'];
     }
 
     private function checkLessThanEqual($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue <= (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue <= (float) $condition['value'];
     }
 
     private function checkBefore($condition, $fieldValue): bool

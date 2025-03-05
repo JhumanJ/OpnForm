@@ -19,40 +19,46 @@
     >
       <div
         v-if="adminPreview"
-        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
+        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block z-50"
       >
         <div
-          class="flex lg:flex-col bg-gray-100 dark:bg-gray-800 border rounded-md"
+          class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-md shadow-sm z-50 p-[1px] relative"
         >
           <div
-            class="p-1 lg:pt-0 -mb-2 hover:text-blue-500 cursor-pointer text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer !text-gray-500 dark:!text-gray-500 flex items-center justify-center rounded-md"
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
-            <Icon
-              name="heroicons:plus-16-solid"
-              class="w-6 h-6"
-            />
+            <UTooltip text="Add new field" :popper="{ placement: 'right' }" class="z-[100]">
+              <Icon
+                name="i-heroicons-plus-circle-20-solid"
+                class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
+              />
+            </UTooltip>
           </div>
           <div
-            class="p-1 lg:pt-0 hover:text-blue-500 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer flex items-center justify-center text-center !text-gray-500 dark:!text-gray-500 rounded-md"
             role="button"
             @click.prevent="editFieldOptions"
           >
-            <Icon
-              name="heroicons:cog-8-tooth-20-solid"
-              class="w-5 h-5"
-            />
+            <UTooltip text="Edit field settings" :popper="{ placement: 'right' }" class="z-[100]">
+              <Icon
+                name="heroicons:cog-8-tooth-20-solid"
+                class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
+              />
+            </UTooltip>
           </div>
           <div
-            class="p-1 pt-0 hover:text-blue-500 mt-1 cursor-pointer flex items-center justify-center text-center text-gray-400 dark:text-gray-500 dark:border-gray-500"
+            class="p-1 hover:!text-red-600 dark:hover:!text-red-600 hover:bg-red-50 cursor-pointer flex items-center justify-center text-center !text-red-500 dark:!text-red-500 rounded-md"
             role="button"
             @click.prevent="removeField"
           >
-            <Icon
-              name="heroicons:trash-20-solid"
-              class="w-5 h-5"
-            />
+            <UTooltip text="Delete field" :popper="{ placement: 'right' }" class="z-[100]">
+              <Icon
+                name="heroicons:trash-20-solid"
+                class="w-5 h-5 !text-red-500 dark:!text-red-500 hover:!text-red-600 dark:hover:!text-red-600"
+              />
+            </UTooltip>
           </div>
         </div>
       </div>
