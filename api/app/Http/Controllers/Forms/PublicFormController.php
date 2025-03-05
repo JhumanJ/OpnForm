@@ -85,13 +85,25 @@ class PublicFormController extends Controller
         return redirect()->to($internal_url);
     }
 
-    private function handlePartialSubmissions(Request $request, $submissionId)
+    /**
+     * Handle partial form submissions
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handlePartialSubmissions(Request $request)
     {
         $form = $request->form;
+        $submissionId = null;
+
+        // Process submission data to extract submission ID
+        $submissionData = $this->processSubmissionIdentifiers($request, $request->all());
+        $submissionId = $submissionData['submission_id'] ?? null;
+
         $submissionResponse = $form->submissions()->updateOrCreate([
             'id' => $submissionId
         ], [
-            'data' => $request->all(),
+            'data' => $submissionData,
             'status' => FormSubmission::STATUS_PARTIAL
         ]);
         $submissionId = $submissionResponse->id;
@@ -106,51 +118,77 @@ class PublicFormController extends Controller
     {
         $form = $request->form;
         $isFirstSubmission = ($form->submissions_count === 0);
-        $submissionId = false;
-        $submissionHash = $request->get('submission_hash') ?? null;
-        if ($submissionHash) {
-            $submissionHash = Hashids::decode($submissionHash);
-            $submissionId = (int)($submissionHash[0] ?? null);
-        }
 
+        // Handle partial submissions
         $isPartial = $request->get('is_partial') ?? false;
         if ($isPartial && $form->enable_partial_submissions && $form->is_pro) {
-            return $this->handlePartialSubmissions($request, $submissionId);
+            return $this->handlePartialSubmissions($request);
         }
 
+        // Get validated data (includes all metadata)
         $submissionData = $request->validated();
-        $completionTime = $request->get('completion_time') ?? null;
-        // Remove extra fields from the main data array
-        unset($submissionData['completion_time']);
-        unset($submissionData['submission_hash']);
 
-        // Add submission_id to the submission data if it exists
-        if ($submissionId) {
-            $submissionData['submission_id'] = $submissionId;
-        }
+        // Process submission hash and ID
+        $submissionData = $this->processSubmissionIdentifiers($request, $submissionData);
 
-        $job = new StoreFormSubmissionJob($form, $submissionData, $completionTime);
+        // Create the job with all data (including metadata)
+        $job = new StoreFormSubmissionJob($form, $submissionData);
 
+        // Process the submission
         if ($formSubmissionProcessor->shouldProcessSynchronously($form)) {
             $job->handle();
-            $submissionId = Hashids::encode($job->getSubmissionId());
+            $encodedSubmissionId = Hashids::encode($job->getSubmissionId());
             // Update submission data with generated values for redirect URL
             $submissionData = $job->getProcessedData();
         } else {
-            StoreFormSubmissionJob::dispatch($form, $submissionData, $completionTime);
+            $job->handle();
+            $encodedSubmissionId = Hashids::encode($job->getSubmissionId());
         }
 
+        // Return the response
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
-            'submission_id' => $submissionId,
+            'submission_id' => $encodedSubmissionId,
             'is_first_submission' => $isFirstSubmission,
         ], $formSubmissionProcessor->getRedirectData($form, $submissionData)));
     }
 
+    /**
+     * Process submission hash and ID to ensure consistent format
+     * 
+     * @param Request $request
+     * @param array $submissionData
+     * @return array
+     */
+    private function processSubmissionIdentifiers(Request $request, array $submissionData): array
+    {
+        // Handle submission hash if present (convert to numeric submission_id)
+        $submissionHash = $request->get('submission_hash');
+        if ($submissionHash) {
+            $decodedHash = Hashids::decode($submissionHash);
+            if (!empty($decodedHash)) {
+                $submissionData['submission_id'] = (int)($decodedHash[0] ?? null);
+            }
+            unset($submissionData['submission_hash']);
+        }
+
+        // Handle string submission_id if present (convert to numeric)
+        if (isset($submissionData['submission_id']) && is_string($submissionData['submission_id']) && !is_numeric($submissionData['submission_id'])) {
+            $decodedId = Hashids::decode($submissionData['submission_id']);
+            if (!empty($decodedId)) {
+                $submissionData['submission_id'] = (int)($decodedId[0] ?? null);
+            }
+        }
+
+        return $submissionData;
+    }
+
     public function fetchSubmission(Request $request, string $slug, string $submissionId)
     {
-        $submissionId = ($submissionId) ? Hashids::decode($submissionId) : false;
-        $submissionId = isset($submissionId[0]) ? $submissionId[0] : false;
+        // Decode the submission ID using the same approach as in processSubmissionIdentifiers
+        $decodedId = Hashids::decode($submissionId);
+        $submissionId = !empty($decodedId) ? (int)($decodedId[0]) : false;
+
         $form = Form::whereSlug($slug)->whereVisibility('public')->firstOrFail();
         if ($form->workspace == null || !$form->editable_submissions || !$submissionId) {
             return $this->error([

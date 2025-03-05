@@ -43,6 +43,7 @@
           </div>
           <div class="font-semibold flex gap-2">
             <USelectMenu
+              class="w-32"
               v-if="form.enable_partial_submissions"
               v-model="selectedStatus"
               :options="statusList"

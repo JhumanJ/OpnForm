@@ -31,6 +31,7 @@
         <th
           v-if="hasStatus"
           class="n-table-cell p-0 relative"
+          :class="{ 'border-r': hasActions }"
           style="width: 100px"
         >
           <p
@@ -100,6 +101,7 @@
         <td
           v-if="hasStatus"
           class="n-table-cell border-gray-100 dark:border-gray-900 text-sm p-2 border-b"
+          :class="{ 'border-r': hasActions }"
           style="width: 100px"
         >
           <UBadge
