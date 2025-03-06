@@ -31,74 +31,42 @@
 import { useNuxtApp } from "nuxt/app"
 
 const { $utm } = useNuxtApp()
-
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
-const workspacesStore = useWorkspacesStore()
-const formsStore = useFormsStore()
-const logEvent = useAmplitude().logEvent
 const loading = ref(true)
-const form = useForm({
-    code: '',
-    utm_data: null,
-})
 
 definePageMeta({
     alias: '/oauth/:provider/callback'
 })
 
-function handleCallback() {
+const handleCallback = async () => {
+  const auth = useAuth()
+  const provider = route.params.provider
+  
+  try {
+    const { isNewUser } = await auth.handleSocialCallback(
+      provider,
+      route.query.code,
+      $utm.value
+    )
 
-    const provider = route.params.provider
-    form.code = route.query.code
-    form.utm_data = $utm.value
-    form.post(`/oauth/${provider}/callback`).then(async (data) => {
-        authStore.setToken(data.token)
-        const [userDataResponse, workspacesResponse] = await Promise.all([
-            opnFetch("user"),
-            fetchAllWorkspaces(),
-        ])
-        authStore.setUser(userDataResponse)
-        workspacesStore.set(workspacesResponse.data.value)
-
-        // Load forms
-        formsStore.loadAll(workspacesStore.currentId)
-        if (!data.new_user) {
-            logEvent("login", { source: provider })
-            try {
-                useGtm().trackEvent({
-                    event: 'login',
-                    source: provider
-                })
-            } catch (error) {
-                console.error(error)
-            }
-            // Call afterLogin on parent window before closing
-            if (window.opener) {
-              window.opener.document.dispatchEvent(new CustomEvent('quick-login-complete'))
-            }
-            window.close()
-            return
-        } else {
-            logEvent("register", { source: provider })
-            router.push({ name: "forms-create" })
-            useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
-            try {
-                useGtm().trackEvent({
-                    event: 'register',
-                    source: provider
-                })
-            } catch (error) {
-                console.error(error)
-                useAlert().error(error)
-            }
-        }
-    }).catch(error => {
-        useAlert().error(error.response._data.message)
-        loading.value = false
-    })
+    if (!isNewUser) {
+      // Handle existing user login
+      if (window.opener) {
+        window.opener.document.dispatchEvent(new CustomEvent('quick-login-complete'))
+      }
+      window.close()
+    } else {
+      // Handle new user registration
+      router.push({ name: "forms-create" })
+      useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
+    }
+  } catch (error) {
+    useAlert().error(error.response._data.message)
+    loading.value = false
+  }
 }
+
 onMounted(() => {
     handleCallback()
 })

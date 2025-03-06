@@ -63,7 +63,7 @@ export function getOpnRequestsOptions(request, opts) {
         if (authStore.check) {
           console.log("Logging out due to 401")
           authStore.logout()
-          useAppStore().quickRegisterModal = true
+          useAppStore().quickLoginModal = true
         }
       } else if (status === 420) {
         // If invalid domain, redirect to main domain
