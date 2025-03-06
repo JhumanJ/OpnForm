@@ -54,6 +54,11 @@ class AnswerFormRequest extends FormRequest
      */
     public function rules()
     {
+        // Skip validation if this is a partial submission
+        if ($this->has('is_partial')) {
+            return [];
+        }
+
         $selectionFields = collect($this->form->properties)->filter(function ($pro) {
             return in_array($pro['type'], ['select', 'multi_select']);
         });

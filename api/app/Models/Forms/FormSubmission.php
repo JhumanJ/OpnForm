@@ -9,9 +9,13 @@ class FormSubmission extends Model
 {
     use HasFactory;
 
+    public const STATUS_PARTIAL = 'partial';
+    public const STATUS_COMPLETED = 'completed';
+
     protected $fillable = [
         'data',
         'completion_time',
+        'status'
     ];
 
     protected function casts(): array

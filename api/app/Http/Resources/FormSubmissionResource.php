@@ -40,6 +40,7 @@ class FormSubmissionResource extends JsonResource
     private function addExtraData()
     {
         $this->data = array_merge($this->data, [
+            'status' => $this->status,
             'created_at' => $this->created_at->toDateTimeString(),
             'id' => $this->id,
         ]);
