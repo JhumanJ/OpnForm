@@ -52,7 +52,7 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
+          :class="{'rounded-md bg-blue-50 dark:bg-gray-800':draggingNewBlock}"
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"

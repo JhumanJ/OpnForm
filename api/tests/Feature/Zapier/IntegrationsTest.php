@@ -3,7 +3,6 @@
 use App\Models\Integration\FormIntegration;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\delete;
@@ -157,7 +156,7 @@ test('poll for the latest submission', function () {
     ]);
 
     // Create a submission for the form
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()

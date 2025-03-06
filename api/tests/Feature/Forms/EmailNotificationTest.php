@@ -1,7 +1,6 @@
 <?php
 
 use App\Notifications\Forms\FormEmailNotification;
-use Tests\Helpers\FormSubmissionDataFactory;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 
@@ -19,7 +18,7 @@ it('send email with the submitted data', function () {
         'reply_to' => 'reply@example.com',
     ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new FormEmailNotification($event, $integrationData, 'mail');
@@ -119,7 +118,7 @@ it('uses custom sender email in self-hosted mode', function () {
         'reply_to' => 'reply@example.com',
     ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new FormEmailNotification($event, $integrationData, 'mail');
@@ -152,7 +151,7 @@ it('does not use custom sender email in non-self-hosted mode', function () {
         'reply_to' => 'reply@example.com',
     ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new FormEmailNotification($event, $integrationData, 'mail');
@@ -243,7 +242,7 @@ it('uses exact email address without timestamp in self-hosted mode', function ()
         'include_submission_data' => true,
     ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $event = new \App\Events\Forms\FormSubmitted($form, $formData);
     $mailable = new FormEmailNotification($event, $integrationData, 'mail');

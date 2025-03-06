@@ -69,10 +69,11 @@
       <checkbox-input
         :form="form"
         name="agree_terms"
-        class="mb-3"
+        class="my-3"
         :required="true"
       >
         <template #label>
+          <label for="agree_terms">
           I agree with the
           <NuxtLink
             :to="{ name: 'terms-conditions' }"
@@ -90,6 +91,7 @@
             Privacy policy
           </NuxtLink>
           of the website and I accept them.
+          </label>
         </template>
       </checkbox-input>
 

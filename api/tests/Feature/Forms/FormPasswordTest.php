@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 beforeEach(function () {
     $this->password = '12345';
@@ -10,7 +9,7 @@ beforeEach(function () {
     $this->form = $this->createForm($user, $workspace, [
         'password' => $this->password,
     ]);
-    $this->formData = FormSubmissionDataFactory::generateSubmissionData($this->form);
+    $this->formData = $this->generateFormSubmissionData($this->form);
 });
 
 it('can allow form owner to access and submit form without password', function () {

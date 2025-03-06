@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Forms\Form;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can answer a form', function () {
     $user = $this->actingAsUser();
@@ -17,7 +16,7 @@ it('can submit form if close date is in future', function () {
     $form = $this->createForm($user, $workspace, [
         'closes_at' => \Carbon\Carbon::now()->addDays(1)->toDateTimeString(),
     ]);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
@@ -33,7 +32,7 @@ it('can not submit closed form', function () {
     $form = $this->createForm($user, $workspace, [
         'closes_at' => \Carbon\Carbon::now()->subDays(1)->toDateTimeString(),
     ]);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(403);
@@ -45,7 +44,7 @@ it('can submit form till max submissions count is not reached at limit', functio
     $form = $this->createForm($user, $workspace, [
         'max_submissions_count' => 3,
     ]);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     // Can submit form
     for ($i = 1; $i <= 3; $i++) {
@@ -79,7 +78,7 @@ it('can not submit draft form', function () {
     $form = $this->createForm($user, $workspace, [
         'visibility' => 'draft',
     ]);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(403);
@@ -91,7 +90,7 @@ it('can not submit visibility closed form', function () {
     $form = $this->createForm($user, $workspace, [
         'visibility' => 'closed',
     ]);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(403);
@@ -113,7 +112,7 @@ it('can not submit form with past dates', function () {
     })->toArray();
     $form->update();
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -138,7 +137,7 @@ it('can not submit form with future dates', function () {
     })->toArray();
     $form->update();
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -183,7 +182,7 @@ it('can submit form with passed custom validation condition', function () {
     })->toArray();
 
     $form->update();
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
     $response->assertSuccessful()
@@ -229,7 +228,7 @@ it('can not submit form with failed custom validation condition', function () {
 
     $form->update();
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -343,7 +342,7 @@ it('executes custom validation before required field validation', function () {
     })->toArray();
     $form->update();
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)

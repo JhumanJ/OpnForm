@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can export form submissions with selected columns', function () {
     $user = $this->actingAsProUser();
@@ -31,7 +30,7 @@ it('can export form submissions with selected columns', function () {
     ];
 
     foreach ($submissions as $submission) {
-        $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submission);
+        $formData = $this->generateFormSubmissionData($form, $submission);
         $this->postJson(route('forms.answer', $form->slug), $formData)
             ->assertSuccessful();
     }
