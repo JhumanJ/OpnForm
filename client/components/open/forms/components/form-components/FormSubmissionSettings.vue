@@ -25,23 +25,6 @@
       label="Auto save form response"
       help="Saves form progress, allowing respondents to resume later."
     />
-
-    <ToggleSwitchInput
-      class="mt-4"
-      name="enable_partial_submissions"
-      :form="form"
-      help="Allow users to submit incomplete forms. Useful for long forms where you want to analyze drop-off points."
-    >
-      <template #label>
-        <span class="text-sm">
-          Enable partial submissions
-        </span>
-        <ProTag
-          class="ml-1"
-          upgrade-modal-title="Upgrade to use Partial Submissions"
-        />
-      </template>
-    </ToggleSwitchInput>
     
     <flat-select-input
       :form="submissionOptions"
@@ -83,6 +66,31 @@
         />
       </div>
     </div>
+
+    <!-- Advanced Submission Settings -->
+    <h4 class="font-semibold mt-4 border-t pt-4">
+      Advanced Submission Options <pro-tag />
+    </h4>
+    <p class="text-gray-500 text-sm mb-4">
+      Configure advanced options for form submissions and data collection.
+    </p>
+    
+    <ToggleSwitchInput
+      name="enable_partial_submissions"
+      :form="form"
+      help="Capture incomplete form submissions to analyze user drop-off points and collect partial data even when users don't complete the entire form."
+    >
+      <template #label>
+        <span class="text-sm">
+          Collect partial submissions
+        </span>
+        <ProTag
+          class="ml-1"
+          upgrade-modal-title="Upgrade to collect partial submissions"
+          upgrade-modal-description="Capture valuable data from incomplete form submissions. Analyze where users drop off and collect partial information even when they don't complete the entire form."
+        />
+      </template>
+    </ToggleSwitchInput>
 
     <!-- Post-Submission Behavior -->
     <h4 class="font-semibold mt-4 border-t pt-4">
