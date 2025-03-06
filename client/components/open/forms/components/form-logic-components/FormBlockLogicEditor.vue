@@ -45,6 +45,9 @@
     <h5 class="font-medium text-gray-700 mt-3">
       2. Actions
     </h5>
+    <p class="text-gray-500 text-xs mb-3">
+      Action(s) triggered when above conditions are true.
+    </p>
     <flat-select-input
       :key="resetKey"
       v-model="logic.actions"
@@ -52,10 +55,13 @@
       :multiple="true"
       class="mt-1"
       placeholder="Actions..."
-      help="Action(s) triggered when above conditions are true"
       :options="actionOptions"
       @update:model-value="onActionInput"
     />
+
+    <p class="text-gray-500 text-xs mb-3">
+      Note that hidden fields can never be required.
+    </p>
 
     <modal
       max-width="sm"
