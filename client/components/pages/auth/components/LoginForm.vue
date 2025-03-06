@@ -97,8 +97,6 @@
 
 <script>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
-import { opnFetch } from "~/composables/useOpnApi.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
 
 export default {
   name: "LoginForm",
@@ -136,39 +134,32 @@ export default {
 
   computed: {},
 
+  mounted() {
+    document.addEventListener('quick-login-complete', () => {
+      this.redirect()
+    })
+  },
+  unmounted() {
+    document.removeEventListener('quick-login-complete', () => {
+      this.redirect()
+    })
+  },
+
   methods: {
-    login() {
-      // Submit the form.
+    async login() {
       this.loading = true
-      this.form
-        .post("login")
-        .then(async (data) => {
-          // Save the token.
-          this.authStore.setToken(data.token)
-
-          const [userDataResponse, workspacesResponse] = await Promise.all([
-            opnFetch("user"),
-            fetchAllWorkspaces(),
-          ])
-          this.authStore.setUser(userDataResponse)
-          this.workspaceStore.set(workspacesResponse.data.value)
-
-          // Load forms
-          this.formsStore.loadAll(this.workspaceStore.currentId)
-
-          // Redirect home.
+      const auth = useAuth()
+      
+      try {
+        await auth.loginWithCredentials(this.form)
+        this.redirect()
+      } catch (error) {
+        if (error.response?._data?.message == "You must change your credentials when in self host mode") {
           this.redirect()
-        })
-        .catch((error) => {
-          if (error.response?._data?.message == "You must change your credentials when in self host mode") {
-            // this.showForgotModal = true
-            this.redirect()
-          }
-
-        })
-        .finally(() => {
-          this.loading = false
-        })
+        }
+      } finally {
+        this.loading = false
+      }
     },
 
     redirect() {
