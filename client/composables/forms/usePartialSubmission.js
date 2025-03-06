@@ -1,5 +1,6 @@
 import { opnFetch } from "./../useOpnApi.js"
 import { pendingSubmission as pendingSubmissionFunction } from "./pendingSubmission.js"
+import { watch, onBeforeUnmount, ref } from 'vue'
 
 // Create a Map to store submission hashes for different forms
 const submissionHashes = ref(new Map())
@@ -7,9 +8,8 @@ const submissionHashes = ref(new Map())
 export const usePartialSubmission = (form, formData = {}) => {
   const pendingSubmission = pendingSubmissionFunction(form)
 
-  const SYNC_INTERVAL = 30000 // 30 seconds
-  let syncInterval = null
   let syncTimeout = null
+  let dataWatcher = null
 
   const getSubmissionHash = () => {
     return submissionHashes.value.get(pendingSubmission.formPendingSubmissionKey.value)
@@ -27,13 +27,22 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const syncToServer = async () => {
-    if (!form?.enable_partial_submissions || !formData.value.data() || Object.keys(formData.value.data()).length === 0) return
+    // Check if partial submissions are enabled and if we have data
+    if (!form?.enable_partial_submissions) return
+    
+    // Get current form data - handle both function and direct object patterns
+    const currentData = typeof formData.value?.data === 'function' 
+      ? formData.value.data() 
+      : formData.value
+      
+    // Skip if no data or empty data
+    if (!currentData || Object.keys(currentData).length === 0) return
 
     try {
       const response = await opnFetch(`/forms/${form.slug}/answer`, {
         method: "POST",
         body: {
-          ...formData.value.data(),
+          ...currentData,
           'is_partial': true,
           'submission_hash': getSubmissionHash()
         }
@@ -62,27 +71,32 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const startSync = () => {
-    if (syncInterval) return
+    if (dataWatcher) return
 
     // Initial sync
     debouncedSync()
 
-    // Regular interval sync
-    syncInterval = setInterval(() => {
-      debouncedSync()
-    }, SYNC_INTERVAL)
+    // Watch formData directly with Vue's reactivity
+    dataWatcher = watch(
+      formData,
+      () => {
+        debouncedSync()
+      },
+      { deep: true }
+    )
 
-    // Add event listeners
+    // Add event listeners for critical moments
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('blur', handleBlur)
     window.addEventListener('beforeunload', handleBeforeUnload)
   }
 
   const stopSync = () => {
-    if (syncInterval) {
-      clearInterval(syncInterval)
-      syncInterval = null
+    if (dataWatcher) {
+      dataWatcher()
+      dataWatcher = null
     }
+    
     if (syncTimeout) {
       clearTimeout(syncTimeout)
       syncTimeout = null
@@ -93,6 +107,14 @@ export const usePartialSubmission = (form, formData = {}) => {
     window.removeEventListener('blur', handleBlur)
     window.removeEventListener('beforeunload', handleBeforeUnload)
   }
+
+  // Ensure cleanup when component is unmounted
+  onBeforeUnmount(() => {
+    stopSync()
+    
+    // Final sync attempt before unmounting
+    syncToServer()
+  })
 
   return {
     startSync,

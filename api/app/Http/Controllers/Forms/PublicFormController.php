@@ -94,19 +94,19 @@ class PublicFormController extends Controller
     private function handlePartialSubmissions(Request $request)
     {
         $form = $request->form;
-        $submissionId = null;
 
         // Process submission data to extract submission ID
         $submissionData = $this->processSubmissionIdentifiers($request, $request->all());
-        $submissionId = $submissionData['submission_id'] ?? null;
 
-        $submissionResponse = $form->submissions()->updateOrCreate([
-            'id' => $submissionId
-        ], [
-            'data' => $submissionData,
-            'status' => FormSubmission::STATUS_PARTIAL
-        ]);
-        $submissionId = $submissionResponse->id;
+        // Explicitly mark this as a partial submission
+        $submissionData['is_partial'] = true;
+
+        // Use the same job as regular submissions to ensure consistent processing
+        $job = new StoreFormSubmissionJob($form, $submissionData);
+        $job->handle();
+
+        // Get the submission ID
+        $submissionId = $job->getSubmissionId();
 
         return $this->success([
             'message' => 'Partial submission saved',
