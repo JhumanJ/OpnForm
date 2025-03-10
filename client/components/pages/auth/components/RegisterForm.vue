@@ -244,10 +244,10 @@ export default {
       }
 
       // Log in the user.
-      const tokenData = await this.form.post("/login")
+      const tokenData = await this.form.post("/login", { data: { remember: true } })
 
-      // Save the token.
-      this.authStore.setToken(tokenData.token)
+      // Save the token with its expiration time.
+      this.authStore.setToken(tokenData.token, tokenData.expires_in)
 
       const userData = await opnFetch("user")
       this.authStore.setUser(userData)

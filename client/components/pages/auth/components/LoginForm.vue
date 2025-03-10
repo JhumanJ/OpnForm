@@ -141,10 +141,10 @@ export default {
       // Submit the form.
       this.loading = true
       this.form
-        .post("login")
+        .post("login", { data: { remember: this.remember } })
         .then(async (data) => {
-          // Save the token.
-          this.authStore.setToken(data.token)
+          // Save the token with its expiration time
+          this.authStore.setToken(data.token, data.expires_in)
 
           const [userDataResponse, workspacesResponse] = await Promise.all([
             opnFetch("user"),
