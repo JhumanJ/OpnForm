@@ -12,11 +12,12 @@ export const usePartialSubmission = (form, formData = {}) => {
   let dataWatcher = null
 
   const getSubmissionHash = () => {
-    return submissionHashes.value.get(pendingSubmission.formPendingSubmissionKey.value)
+    return pendingSubmission.getSubmissionHash() ?? submissionHashes.value.get(pendingSubmission.formPendingSubmissionKey.value)
   }
 
   const setSubmissionHash = (hash) => {
     submissionHashes.value.set(pendingSubmission.formPendingSubmissionKey.value, hash)
+    pendingSubmission.setSubmissionHash(hash)
   }
 
   const debouncedSync = () => {
@@ -92,6 +93,8 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const stopSync = () => {
+    submissionHashes.value = new Map()
+
     if (dataWatcher) {
       dataWatcher()
       dataWatcher = null
@@ -113,7 +116,9 @@ export const usePartialSubmission = (form, formData = {}) => {
     stopSync()
     
     // Final sync attempt before unmounting
-    syncToServer()
+    if(getSubmissionHash()) {
+      syncToServer()
+    }
   })
 
   return {

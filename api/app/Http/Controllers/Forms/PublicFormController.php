@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Support\Str;
 
 class PublicFormController extends Controller
 {
@@ -97,6 +98,20 @@ class PublicFormController extends Controller
 
         // Process submission data to extract submission ID
         $submissionData = $this->processSubmissionIdentifiers($request, $request->all());
+
+        // Validate that at least one field has a value
+        $hasValue = false;
+        foreach ($submissionData as $key => $value) {
+            if (Str::isUuid($key) && !empty($value)) {
+                $hasValue = true;
+                break;
+            }
+        }
+        if (!$hasValue) {
+            return $this->error([
+                'message' => 'At least one field must have a value for partial submissions.'
+            ], 422);
+        }
 
         // Explicitly mark this as a partial submission
         $submissionData['is_partial'] = true;

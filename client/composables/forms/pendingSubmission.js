@@ -31,6 +31,17 @@ export const pendingSubmission = (form) => {
     return pendingSubmission ? JSON.parse(pendingSubmission) : defaultValue
   }
 
+  const setSubmissionHash = (hash) => {
+    set({
+      ...get(),
+      submission_hash: hash
+    })
+  }
+
+  const getSubmissionHash = () => {
+    return get()?.submission_hash ?? null
+  }
+
   const setTimer = (value) => {
     if (import.meta.server) return
     useStorage(formPendingSubmissionTimerKey.value).value = value
@@ -51,6 +62,8 @@ export const pendingSubmission = (form) => {
     set,
     get,
     remove,
+    setSubmissionHash,
+    getSubmissionHash,
     setTimer,
     removeTimer,
     getTimer,

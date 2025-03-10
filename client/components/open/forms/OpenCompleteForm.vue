@@ -303,16 +303,16 @@ export default {
       if (form.busy) return
       this.loading = true
 
+      if (this.form?.enable_partial_submissions) {
+        this.partialSubmission.stopSync()
+      }
+
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {
           workspace_id: this.form.workspace_id,
           form_id: this.form.id
         })
-
-        if (this.form?.enable_partial_submissions) {
-          this.partialSubmission.stopSync()
-        }
     
         const payload = clonedeep({
           type: 'form-submitted',
@@ -351,6 +351,10 @@ export default {
           this.confetti.play()
         }
       }).catch((error) => {
+        if (this.form?.enable_partial_submissions) {
+          this.partialSubmission.startSync()
+        }
+      
         console.error(error)
         if (error.response && error.data && error.data.message) {
           useAlert().error(error.data.message)
