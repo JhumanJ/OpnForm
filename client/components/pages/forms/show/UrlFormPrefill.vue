@@ -75,10 +75,9 @@
             v-if="form"
             :theme="theme"
             :loading="false"
-            :show-hidden="true"
             :form="form"
             :fields="form.properties"
-            :url-prefill-preview="true"
+            :mode="FormMode.PREFILL"
             @submit="generateUrl"
           >
             <template #submit-btn="{ submitForm }">
@@ -111,6 +110,7 @@
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 export default {
   name: "UrlFormPrefill",
@@ -132,6 +132,9 @@ export default {
         borderRadius: this.form.border_radius
       }).getAllComponents()
     },
+    FormMode() {
+      return FormMode
+    }
   },
 
   methods: {

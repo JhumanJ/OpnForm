@@ -25,6 +25,7 @@ class AiFormCompletion extends Model
         'status',
         'result',
         'ip',
+        'error',
     ];
 
     protected $attributes = [
