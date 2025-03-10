@@ -2,7 +2,13 @@ import { fetchAllWorkspaces } from "~/stores/workspaces.js"
 
 export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
-  authStore.initStore(useCookie("token").value, useCookie("admin_token").value)
+  
+  // Get tokens from cookies
+  const tokenValue = useCookie("token").value
+  const adminTokenValue = useCookie("admin_token").value
+  
+  // Initialize the store with the tokens
+  authStore.initStore(tokenValue, adminTokenValue)
 
   if (authStore.token && !authStore.user) {
     const workspaceStore = useWorkspacesStore()
