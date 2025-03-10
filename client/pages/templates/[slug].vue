@@ -89,20 +89,18 @@
       </section>
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
-        
-          <div
-            class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
-          >
-            <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
-              Template Preview
-            </p>
-            <open-complete-form
-              ref="open-complete-form"
-              :form="form"
-              :mode="FormMode.TEST"
-              class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
-            />
-          
+        <div
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
+        >
+          <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
+            Template Preview
+          </p>
+          <open-complete-form
+            ref="open-complete-form"
+            :form="form"
+            :mode="FormMode.TEST"
+            class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
+          />
         </div>
 
         <div class="absolute bottom-0 translate-y-full inset-x-0">
