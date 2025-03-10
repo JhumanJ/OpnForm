@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Template;
 use App\Service\AI\Prompts\Form\GenerateFormPrompt;
+use App\Service\AI\Prompts\Template\GenerateTemplateMetadataPrompt;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -36,21 +37,22 @@ class GenerateTemplate extends Command
         // Get form structure using the form prompt class
         $formData = GenerateFormPrompt::run($this->argument('prompt'));
 
-        // Since GenerateTemplateMetadataPrompt was removed, we'll use default values
-        // or you can implement a different approach to generate metadata
-        $formTitle = "Form Template for " . $this->argument('prompt');
-        $formShortDescription = "A form template for " . $this->argument('prompt');
-        $formDescription = "<p>This is a form template for " . $this->argument('prompt') . "</p>";
-        $industry = [];
-        $types = [];
-        $formQAs = [];
-        $imageSearchQuery = $this->argument('prompt');
+        // Generate all template metadata using the consolidated prompt
+        $metadata = GenerateTemplateMetadataPrompt::run($this->argument('prompt'));
+
+        // Extract metadata components
+        $formShortDescription = $metadata['short_description'];
+        $formDescription = $metadata['detailed_description'];
+        $formTitle = $metadata['title'];
+        $industry = $metadata['industries'];
+        $types = $metadata['types'];
+        $formQAs = $metadata['qa_content'];
 
         // Get Related Templates
         $relatedTemplates = $this->getRelatedTemplates($industry, $types);
 
         // Get image cover URL
-        $imageUrl = $this->getImageCoverUrl($imageSearchQuery);
+        $imageUrl = $this->getImageCoverUrl($metadata['image_search_query']);
 
         $template = $this->createFormTemplate(
             $formData,
