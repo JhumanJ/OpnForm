@@ -170,7 +170,7 @@ class PublicFormController extends Controller
 
     /**
      * Process submission hash and ID to ensure consistent format
-     * 
+     *
      * @param Request $request
      * @param array $submissionData
      * @return array

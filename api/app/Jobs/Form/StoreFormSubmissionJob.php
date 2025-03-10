@@ -21,18 +21,18 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Job to store form submissions
- * 
+ *
  * This job handles the storage of form submissions, including processing of metadata
  * and special field types like files and signatures.
- * 
+ *
  * The job accepts all data in the submissionData array, including metadata fields:
  * - submission_id: ID of an existing submission to update (must be an integer)
  * - completion_time: Time in seconds it took to complete the form
  * - is_partial: Whether this is a partial submission (will be stored with STATUS_PARTIAL)
  *   If not specified, submissions are treated as complete by default.
- * 
+ *
  * These metadata fields will be automatically extracted and removed from the stored form data.
- * 
+ *
  * For partial submissions:
  * - The submission will be stored with STATUS_PARTIAL
  * - All file uploads and signatures will be processed normally
@@ -57,7 +57,9 @@ class StoreFormSubmissionJob implements ShouldQueue
      * @param array $submissionData Form data including metadata fields (submission_id, completion_time, etc.)
      * @return void
      */
-    public function __construct(public Form $form, public array $submissionData) {}
+    public function __construct(public Form $form, public array $submissionData)
+    {
+    }
 
     /**
      * Execute the job.
@@ -87,7 +89,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     /**
      * Extract metadata from submission data
-     * 
+     *
      * This method extracts and removes metadata fields from the submission data:
      * - submission_id
      * - completion_time
@@ -128,7 +130,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     /**
      * Store the submission in the database
-     * 
+     *
      * @param array $formData
      */
     private function storeSubmission(array $formData)
@@ -318,7 +320,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
     /**
      * Get the processed form data including the submission ID
-     * 
+     *
      * @return array
      */
     public function getProcessedData(): array
