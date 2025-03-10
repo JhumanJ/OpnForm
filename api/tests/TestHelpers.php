@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\Forms\Form;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Service\Forms\FormSubmissionDataFactory;
 use Database\Factories\FormFactory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -35,9 +36,12 @@ trait TestHelpers
     }
 
     /**
-     * Generates a Form instance (not saved)
+     * Creates a form model instance without saving it to the database
      *
-     * @return array
+     * @param User $user The user who owns the form
+     * @param Workspace $workspace The workspace the form belongs to
+     * @param array $data Additional data for the form
+     * @return Form The form model instance
      */
     public function makeForm(User $user, Workspace $workspace, array $data = [])
     {
@@ -151,6 +155,14 @@ trait TestHelpers
             ->make($data);
     }
 
+    /**
+     * Creates a form with the given data
+     *
+     * @param User $user The user who owns the form
+     * @param Workspace $workspace The workspace the form belongs to
+     * @param array $data Additional data for the form
+     * @return Form The created form
+     */
     public function createForm(User $user, Workspace $workspace, array $data = [])
     {
         $form = $this->makeForm($user, $workspace, $data);
@@ -256,5 +268,24 @@ trait TestHelpers
             ]);
 
         return (object) $response->json('form_integration.data');
+    }
+
+    /**
+     * Generates fake form submission data for testing
+     *
+     * @param Form $form The form to generate data for
+     * @param array $data Additional data to merge with the generated data
+     * @param bool $asFormSubmissionData If true, formats data as stored in FormSubmission
+     * @return array The generated submission data
+     */
+    public function generateFormSubmissionData(Form $form, array $data = [], bool $asFormSubmissionData = false)
+    {
+        $factory = new FormSubmissionDataFactory($form);
+
+        if ($asFormSubmissionData) {
+            $factory->asFormSubmissionData();
+        }
+
+        return $factory->createSubmissionData($data);
     }
 }

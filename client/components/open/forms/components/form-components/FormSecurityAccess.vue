@@ -72,7 +72,7 @@
     <p class="text-gray-500 text-sm">
       Protect your form, and your sensitive files.
     </p>
-    <div class="flex items-start gap-6 flex-wrap">
+    <div v-if="hasCaptchaProviders" class="flex items-start gap-6 flex-wrap">
       <ToggleSwitchInput
         name="use_captcha"
         :form="form"
@@ -95,9 +95,23 @@
 <script setup>
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
+const config = useRuntimeConfig()
 
-const captchaOptions = [
-  { name: 'reCAPTCHA', value: 'recaptcha' },
-  { name: 'hCaptcha', value: 'hcaptcha' },
-]
+const hasCaptchaProviders = computed(() => {
+  return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
+})
+
+const captchaOptions = computed(() => {
+  const options = []
+  
+  if (config.public.recaptchaSiteKey) {
+    options.push({ name: 'reCAPTCHA', value: 'recaptcha' })
+  }
+  
+  if (config.public.hCaptchaSiteKey) {
+    options.push({ name: 'hCaptcha', value: 'hcaptcha' })
+  }
+  
+  return options
+})
 </script>

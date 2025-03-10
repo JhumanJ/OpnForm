@@ -1,6 +1,6 @@
 <?php
 
-use Tests\Helpers\FormSubmissionDataFactory;
+
 
 it('can update form with existing record', function () {
     $user = $this->actingAsProUser();
@@ -23,7 +23,7 @@ it('can update form with existing record', function () {
     expect($submissionId)->toBeString();
 
     if ($submissionId) {
-        $formData = FormSubmissionDataFactory::generateSubmissionData($form, ['submission_id' => $submissionId, $nameProperty['id'] => 'Testing Updated']);
+        $formData = $this->generateFormSubmissionData($form, ['submission_id' => $submissionId, $nameProperty['id'] => 'Testing Updated']);
         $response = $this->postJson(route('forms.answer', $form->slug), $formData)
             ->assertSuccessful()
             ->assertJson([
@@ -36,6 +36,6 @@ it('can update form with existing record', function () {
 
         $response = $this->getJson(route('forms.fetchSubmission', [$form->slug, $submissionId]))
             ->assertSuccessful();
-        expect($response->json('data.'.$nameProperty['id']))->toBe('Testing Updated');
+        expect($response->json('data.' . $nameProperty['id']))->toBe('Testing Updated');
     }
 });

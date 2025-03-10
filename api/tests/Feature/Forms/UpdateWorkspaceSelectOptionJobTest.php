@@ -1,13 +1,12 @@
 <?php
 
 use App\Models\User;
-use Tests\Helpers\FormSubmissionDataFactory;
 
 it('can validate Update Workspace Select Option Job', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
@@ -16,7 +15,7 @@ it('can validate Update Workspace Select Option Job', function () {
             'message' => 'Form submission saved.',
         ]);
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form);
+    $formData = $this->generateFormSubmissionData($form);
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
         ->assertJson([

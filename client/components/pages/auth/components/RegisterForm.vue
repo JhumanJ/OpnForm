@@ -69,10 +69,11 @@
       <checkbox-input
         :form="form"
         name="agree_terms"
-        class="mb-3"
+        class="my-3"
         :required="true"
       >
         <template #label>
+          <label for="agree_terms">
           I agree with the
           <NuxtLink
             :to="{ name: 'terms-conditions' }"
@@ -90,6 +91,7 @@
             Privacy policy
           </NuxtLink>
           of the website and I accept them.
+          </label>
         </template>
       </checkbox-input>
 
@@ -242,10 +244,10 @@ export default {
       }
 
       // Log in the user.
-      const tokenData = await this.form.post("/login")
+      const tokenData = await this.form.post("/login", { data: { remember: true } })
 
-      // Save the token.
-      this.authStore.setToken(tokenData.token)
+      // Save the token with its expiration time.
+      this.authStore.setToken(tokenData.token, tokenData.expires_in)
 
       const userData = await opnFetch("user")
       this.authStore.setUser(userData)

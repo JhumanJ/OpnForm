@@ -52,7 +52,7 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
+          :class="{'rounded-md bg-blue-50 dark:bg-gray-800':draggingNewBlock}"
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"
@@ -78,7 +78,7 @@
     <!-- Captcha -->
     <div class="mb-3 px-2 mt-4 mx-auto w-max">
       <CaptchaInput
-        v-if="form.use_captcha && isLastPage"
+        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
         ref="captcha"
         :provider="form.captcha_provider"
         :form="dataForm"
@@ -131,7 +131,6 @@ import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
@@ -178,6 +177,11 @@ export default {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
     const dataForm = ref(useForm())
+    const config = useRuntimeConfig()
+
+    const hasCaptchaProviders = computed(() => {
+      return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
+    })
 
     return {
       dataForm,
@@ -191,6 +195,7 @@ export default {
       // Used for admin previews
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
+      hasCaptchaProviders
     }
   },
 
@@ -320,6 +325,15 @@ export default {
       return {
         '--form-color': this.form.color
       }
+    },
+    isCaptchaProviderAvailable() {
+      const config = useRuntimeConfig()
+      if (this.form.captcha_provider === 'recaptcha') {
+        return !!config.public.recaptchaSiteKey
+      } else if (this.form.captcha_provider === 'hcaptcha') {
+        return !!config.public.hCaptchaSiteKey
+      }
+      return false
     }
   },
 
@@ -448,14 +462,19 @@ export default {
      */
     async initForm() {
       if (this.defaultDataForm) {
-        this.dataForm = useForm(this.defaultDataForm)
+        await nextTick(() => {
+          this.dataForm.resetAndFill(this.defaultDataForm)
+        })
         return
       }
-
+      
       if (await this.tryInitFormFromEditableSubmission()) return
       if (this.tryInitFormFromPendingSubmission()) return
 
-      this.initFormWithDefaultValues()
+      await nextTick(() => {
+        this.formPageIndex = 0
+        this.initFormWithDefaultValues()
+      })
     },
     async tryInitFormFromEditableSubmission() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
@@ -464,7 +483,7 @@ export default {
           this.form.submission_id = submissionId
           const data = await this.getSubmissionData()
           if (data) {
-            this.dataForm = useForm(data)
+            this.dataForm.resetAndFill(data)
             return true
           }
         }
@@ -476,7 +495,7 @@ export default {
         const pendingData = this.pendingSubmission.get()
         if (pendingData && Object.keys(pendingData).length !== 0) {
           this.updatePendingDataFields(pendingData)
-          this.dataForm = useForm(pendingData)
+          this.dataForm.resetAndFill(pendingData)
           return true
         }
       }
@@ -490,7 +509,7 @@ export default {
       })
     },
     initFormWithDefaultValues() {
-      const formData = clonedeep(this.dataForm?.data() || {})
+      const formData = {}
       const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
 
       this.fields.forEach(field => {
@@ -500,7 +519,7 @@ export default {
         this.handleDefaultPrefill(field, formData)
       })
 
-      this.dataForm = useForm(formData)
+      this.dataForm.resetAndFill(formData)
     },
     handleUrlPrefill(field, formData, urlPrefill) {
       if (!urlPrefill) return
