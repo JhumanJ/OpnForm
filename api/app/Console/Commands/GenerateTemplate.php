@@ -65,10 +65,11 @@ class GenerateTemplate extends Command
             $types,
             $relatedTemplates
         );
-        $this->info('/form-templates/' . $template->slug);
 
         // Set reverse related Templates
         $this->setReverseRelatedTemplates($template);
+
+        $this->info(front_url('/form-templates/' . $template->slug));
 
         return Command::SUCCESS;
     }

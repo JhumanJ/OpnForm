@@ -28,13 +28,13 @@ class GenerateFormPrompt extends Prompt
         Available field types:
         - text: Text input (use multi_lines: true for multi-line text)
         - rich_text: Rich text input
-        - date: Date picker
+        - date: Date picker (use with_time: true to include time selection)
         - url: URL input with validation
         - phone_number: Phone number input
         - email: Email input with validation
-        - checkbox: Single checkbox for yes/no
-        - select: Dropdown selection 
-        - multi_select: Multiple selection 
+        - checkbox: Single checkbox for yes/no (use use_toggle_switch: true for toggle switch)
+        - select: Dropdown selection (use without_dropdown: true for radio buttons, recommended for <5 options)
+        - multi_select: Multiple selection (use without_dropdown: true for checkboxes, recommended for <5 options)
         - matrix: Matrix input with rows and columns
         - number: Numeric input
         - rating: Star rating 
@@ -48,6 +48,28 @@ class GenerateFormPrompt extends Prompt
         - nf-divider: Visual divider (not an input field)
         - nf-image: Image element
         - nf-code: Code block
+        
+        HTML formatting for nf-text:
+        - Headers: <h1>, <h2> for section titles and subtitles
+        - Text formatting: <b> or <strong> for bold, <i> or <em> for italic, <u> for underline, <s> for strikethrough
+        - Links: <a href="url">link text</a> for hyperlinks
+        - Lists: <ul><li>item</li></ul> for bullet lists, <ol><li>item</li></ol> for numbered lists
+        - Colors: <span style="color: #hexcode">colored text</span> for colored text
+        - Paragraphs: <p>paragraph text</p> for text blocks with spacing
+        Use these HTML tags to create well-structured and visually appealing form content.
+        
+        Field width options:
+        - width: "full" (default, takes entire width)
+        - width: "1/2" (takes half width)
+        - width: "1/3" (takes a third of the width)
+        - width: "2/3" (takes two thirds of the width)
+        - width: "1/4" (takes a quarter of the width)
+        - width: "3/4" (takes three quarters of the width)
+        Fields with width less than "full" will be placed on the same line if there's enough room. For example:
+        - Two 1/2 width fields will be placed side by side
+        - Three 1/3 width fields will be placed on the same line
+        - etc.
+        No need for lines width to be complete. Don't abuse putting multiple fields on the same line if it doens't make sense. For First name and Last name, it works well for instance.
         
         If the form is too long, you can paginate it by adding one or multiple page breaks (nf-page-break).
         
@@ -117,9 +139,9 @@ class GenerateFormPrompt extends Prompt
                         ['$ref' => '#/definitions/phoneNumberProperty'],
                         ['$ref' => '#/definitions/emailProperty'],
                         ['$ref' => '#/definitions/checkboxProperty'],
-                        // ['$ref' => '#/definitions/selectProperty'],
-                        // ['$ref' => '#/definitions/multiSelectProperty'],
-                        // // ['$ref' => '#/definitions/matrixProperty'],
+                        ['$ref' => '#/definitions/selectProperty'],
+                        ['$ref' => '#/definitions/multiSelectProperty'],
+                        ['$ref' => '#/definitions/matrixProperty'],
                         ['$ref' => '#/definitions/numberProperty'],
                         ['$ref' => '#/definitions/ratingProperty'],
                         ['$ref' => '#/definitions/scaleProperty'],
@@ -137,30 +159,30 @@ class GenerateFormPrompt extends Prompt
             ]
         ],
         'definitions' => [
-            // 'option' => [
-            //     'type' => 'object',
-            //     'required' => ['name', 'id'],
-            //     'additionalProperties' => false,
-            //     'properties' => [
-            //         'name' => ['type' => ['string']],
-            //         'id' => ['type' => ['string']]
-            //     ]
-            // ],
-            // 'selectOptions' => [
-            //     'type' => 'object',
-            //     'required' => ['options'],
-            //     'additionalProperties' => false,
-            //     'properties' => [
-            //         'options' => [
-            //             'type' => 'array',
-            //             'items' => ['$ref' => '#/definitions/option'],
-            //             'description' => 'Options for select fields (default: two options with name/id "Option 1" and "Option 2")'
-            //         ]
-            //     ]
-            // ],
+            'option' => [
+                'type' => 'object',
+                'required' => ['name', 'id'],
+                'additionalProperties' => false,
+                'properties' => [
+                    'name' => ['type' => 'string'],
+                    'id' => ['type' => 'string']
+                ]
+            ],
+            'selectOptions' => [
+                'type' => 'object',
+                'required' => ['options'],
+                'additionalProperties' => false,
+                'properties' => [
+                    'options' => [
+                        'type' => 'array',
+                        'items' => ['$ref' => '#/definitions/option'],
+                        'description' => 'Options for select fields'
+                    ]
+                ]
+            ],
             'baseProperty' => [
                 'type' => 'object',
-                'required' => ['name', 'help', 'hidden', 'required'],
+                'required' => ['name', 'help', 'hidden', 'required', 'placeholder', 'width'],
                 'additionalProperties' => false,
                 'properties' => [
                     'name' => [
@@ -179,10 +201,15 @@ class GenerateFormPrompt extends Prompt
                         'type' => 'boolean',
                         'description' => 'Whether the field is required (default: false)'
                     ],
-                    // 'placeholder' => [
-                    //     'type' => ['string', 'null'],
-                    //     'description' => 'Placeholder text for the field (default: null)'
-                    // ]
+                    'placeholder' => [
+                        'type' => 'string',
+                        'description' => 'Placeholder text for the field. Leave empty if not needed (default: "")'
+                    ],
+                    'width' => [
+                        'type' => 'string',
+                        'enum' => ['full', '1/2', '1/3', '2/3', '1/4', '3/4'],
+                        'description' => 'Width of the field in the form layout. "full" takes the entire width, "1/2" takes half width, "1/3" takes a third, etc. (default: "full")',
+                    ]
                 ]
             ],
             'textProperty' => [
@@ -193,7 +220,7 @@ class GenerateFormPrompt extends Prompt
                     'type' => ['type' => 'string', 'enum' => ['text']],
                     'multi_lines' => [
                         'type' => 'boolean',
-                        'description' => 'Whether the text field should have multiple lines (default: false)'
+                        'description' => 'Whether the text field should have multiple lines (default: false)',
                     ],
                     'generates_uuid' => [
                         'type' => 'boolean',
@@ -229,11 +256,15 @@ class GenerateFormPrompt extends Prompt
             ],
             'dateProperty' => [
                 'type' => 'object',
-                'required' => ['core', 'type'],
+                'required' => ['core', 'type', 'with_time'],
                 'additionalProperties' => false,
                 'properties' => [
                     'type' => ['type' => 'string', 'enum' => ['date']],
                     'core' => ['$ref' => '#/definitions/baseProperty'],
+                    'with_time' => [
+                        'type' => 'boolean',
+                        'description' => 'Whether to include time selection with the date (default: false)',
+                    ]
                 ]
             ],
             'urlProperty' => [
@@ -273,56 +304,64 @@ class GenerateFormPrompt extends Prompt
             ],
             'checkboxProperty' => [
                 'type' => 'object',
-                'required' => ['core', 'type'],
+                'required' => ['core', 'type', 'use_toggle_switch'],
                 'additionalProperties' => false,
                 'properties' => [
                     'type' => ['type' => 'string', 'enum' => ['checkbox']],
                     'core' => ['$ref' => '#/definitions/baseProperty'],
+                    'use_toggle_switch' => [
+                        'type' => 'boolean',
+                        'description' => 'Whether to display the checkbox as a toggle switch (default: false)',
+                    ]
                 ]
             ],
-            // 'selectProperty' => [
-            //     'type' => 'object',
-            //     'required' => ['core', 'type', 'select', 'without_dropdown'],
-            //     'additionalProperties' => false,
-            //     'properties' => [
-            //         'core' => ['$ref' => '#/definitions/baseProperty'],
-            //         'type' => ['type' => 'string', 'enum' => ['select']],
-            //         'select' => ['$ref' => '#/definitions/selectOptions'],
-            //         'without_dropdown' => [
-            //             'type' => 'boolean',
-            //             'description' => 'Whether to display select options as radio buttons instead of a dropdown (default: false)'
-            //         ]
-            //     ]
-            // ],
-            // 'multiSelectProperty' => [
-            //     'type' => 'object',
-            //     'required' => ['core', 'type', 'multi_select'],
-            //     'additionalProperties' => false,
-            //     'properties' => [
-            //         'core' => ['$ref' => '#/definitions/baseProperty'],
-            //         'type' => ['type' => 'string', 'enum' => ['multi_select']],
-            //         'multi_select' => ['$ref' => '#/definitions/selectOptions']
-            //     ]
-            // ],
-            // // 'matrixProperty' => [
-            // //     'type' => 'object',
-            // //     'required' => ['core', 'type', 'rows', 'columns'],
-            // //     'additionalProperties' => false,
-            // //     'properties' => [
-            // //         'core' => ['$ref' => '#/definitions/baseProperty'],
-            // //         'type' => ['type' => 'string', 'enum' => ['matrix']],
-            // //         'rows' => [
-            // //             'type' => 'array',
-            // //             'items' => ['type' => ['string', 'number']],
-            // //             'description' => 'Rows for matrix fields (default: ["Row 1"])'
-            // //         ],
-            // //         'columns' => [
-            // //             'type' => 'array',
-            // //             'items' => ['type' => ['string', 'number']],
-            // //             'description' => 'Columns for matrix fields (default: [1, 2, 3])'
-            // //         ]
-            // //     ]
-            // // ],
+            'selectProperty' => [
+                'type' => 'object',
+                'required' => ['core', 'type', 'select', 'without_dropdown'],
+                'additionalProperties' => false,
+                'properties' => [
+                    'type' => ['type' => 'string', 'enum' => ['select']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
+                    'select' => ['$ref' => '#/definitions/selectOptions'],
+                    'without_dropdown' => [
+                        'type' => 'boolean',
+                        'description' => 'Whether to display select options as radio buttons instead of a dropdown using FlatSelectInput. Recommended for small choices (<5 options) (default: false)',
+                    ]
+                ]
+            ],
+            'multiSelectProperty' => [
+                'type' => 'object',
+                'required' => ['core', 'type', 'multi_select', 'without_dropdown'],
+                'additionalProperties' => false,
+                'properties' => [
+                    'type' => ['type' => 'string', 'enum' => ['multi_select']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
+                    'multi_select' => ['$ref' => '#/definitions/selectOptions'],
+                    'without_dropdown' => [
+                        'type' => 'boolean',
+                        'description' => 'Whether to display multi-select options as checkboxes instead of a dropdown using FlatSelectInput. Recommended for small choices (<5 options) (default: false)',
+                    ]
+                ]
+            ],
+            'matrixProperty' => [
+                'type' => 'object',
+                'required' => ['core', 'type', 'rows', 'columns'],
+                'additionalProperties' => false,
+                'properties' => [
+                    'type' => ['type' => 'string', 'enum' => ['matrix']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
+                    'rows' => [
+                        'type' => 'array',
+                        'items' => ['type' => 'string'],
+                        'description' => 'Rows for matrix fields (ex: ["Row 1"])'
+                    ],
+                    'columns' => [
+                        'type' => 'array',
+                        'items' => ['type' => 'string'],
+                        'description' => 'Columns for matrix fields (ex: ["1", "2", "3"])'
+                    ]
+                ]
+            ],
             'numberProperty' => [
                 'type' => 'object',
                 'required' => ['core', 'type'],
@@ -428,7 +467,7 @@ class GenerateFormPrompt extends Prompt
                     'core' => ['$ref' => '#/definitions/baseProperty'],
                     'content' => [
                         'type' => 'string',
-                        'description' => 'HTML content for text elements (default: "<p>Text content</p>")'
+                        'description' => 'HTML content for text elements. Supports headers (<h1>, <h2>), formatting (<b>, <i>, <u>, <s>), links (<a>), lists (<ul>, <ol>), colors (<span style="color: #hexcode">), and paragraphs (<p>). Example: "<h1>Form Title</h1><p>Please fill out this form.</p>"'
                     ]
                 ]
             ],
