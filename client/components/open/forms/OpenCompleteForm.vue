@@ -6,7 +6,7 @@
     :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
     <link
-      v-if="adminPreview && form.font_family"
+      v-if="formModeStrategy.display.showFontLink && form.font_family"
       rel="stylesheet"
       :href="getFontUrl"
     >
@@ -81,7 +81,7 @@
     </div>
 
     <form-cleanings
-      v-if="!adminPreview"
+      v-if="formModeStrategy.display.showFormCleanings"
       :hideable="true"
       class="mb-4 mx-2"
       :form="form"
@@ -100,7 +100,7 @@
           :fields="form.properties"
           :theme="theme"
           :dark-mode="darkMode"
-          :admin-preview="adminPreview"
+          :mode="mode"
           @submit="submitForm"
         >
           <template #submit-btn="{submitForm: handleSubmit}">
@@ -194,14 +194,18 @@ import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
 
   props: {
     form: { type: Object, required: true },
-    creating: { type: Boolean, default: false }, // If true, fake form submit
-    adminPreview: { type: Boolean, default: false }, // If used in FormEditorPreview
+    mode: {
+      type: String,
+      default: FormMode.LIVE,
+      validator: (value) => Object.values(FormMode).includes(value)
+    },
     submitButtonClass: { type: String, default: '' },
     darkMode: {
       type: Boolean,
@@ -240,6 +244,12 @@ export default {
   },
 
   computed: {
+    /**
+     * Gets the comprehensive strategy based on the form mode
+     */
+    formModeStrategy() {
+      return createFormModeStrategy(this.mode)
+    },
     isEmbedPopup () {
       return import.meta.client && window.location.href.includes('popup=true')
     },
@@ -275,7 +285,8 @@ export default {
 
   methods: {
     submitForm (form, onFailure) {
-      if (this.creating) {
+      // Check if we should perform actual submission based on the mode
+      if (!this.formModeStrategy.validation.performActualSubmission) {
         this.submitted = true
         this.$emit('submitted', true)
         return
