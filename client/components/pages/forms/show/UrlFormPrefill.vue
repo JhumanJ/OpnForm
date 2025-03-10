@@ -132,6 +132,9 @@ export default {
         borderRadius: this.form.border_radius
       }).getAllComponents()
     },
+    FormMode() {
+      return FormMode
+    }
   },
 
   methods: {

@@ -52,12 +52,12 @@ export function createFormModeStrategy(mode) {
   // Apply mode-specific overrides
   switch (mode) {
     case FormMode.PREVIEW:
-      // Admin preview - no validation, show admin controls
+      // Admin preview - no validation, show admin controls but NOT hidden fields
       strategy.validation.validateOnNextPage = false
       strategy.validation.validateOnSubmit = false
       strategy.validation.performActualSubmission = false
       
-      strategy.display.showHiddenFields = true
+      strategy.display.showHiddenFields = false
       strategy.display.showFormCleanings = false
       strategy.display.showFontLink = true
       
@@ -75,13 +75,14 @@ export function createFormModeStrategy(mode) {
       break
 
     case FormMode.EDIT:
-      // Editing submission - full validation, show hidden fields
+      // Editing submission - same validation as LIVE mode, but show hidden fields
+      // This ensures edit mode behaves like live mode for validation
       strategy.display.showHiddenFields = true
       strategy.admin.isEditingMode = true
       break
 
     case FormMode.TEST:
-      // Test mode - validate but don't submit
+      // Test mode - validate on submit but don't submit, and don't validate on next page
       strategy.validation.performActualSubmission = false
       strategy.validation.validateOnNextPage = false
       break
