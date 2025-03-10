@@ -15,86 +15,16 @@ class GenerateFormPrompt extends Prompt
      * The prompt template for generating forms
      */
     public const PROMPT_TEMPLATE = <<<'EOD'
-        I need to build a form for: "{formPrompt}"
+        Help me build the json structure for the form described below, be as accurate as possible.
+
+        <form_description>
+            {formPrompt}
+        </form_description>
         
-        Forms are represented as Json objects. Here's an example form:
-        ```json
-         {
-                "title": "Contact Us",
-                "properties": [
-                    {
-                        "name": "Title",
-                        "type": "nf-text",
-                        "content": "<h1>Contact Us</h1>"
-                    },
-                    {
-                        "help": null,
-                        "name": "What's your name?",
-                        "type": "text",
-                        "hidden": false,
-                        "required": true,
-                        "placeholder": "Steve Jobs",
-                        "multi_lines": false
-                    },
-                    {
-                        "help": "We will never share your email with anyone else.",
-                        "name": "Email",
-                        "type": "email",
-                        "hidden": false,
-                        "required": true,
-                        "placeholder": "steve@apple.com"
-                    },
-                    {
-                      "help": null,
-                      "name": "How would you rate your overall experience?",
-                      "type": "select",
-                      "hidden": false,
-                      "select": {
-                        "options": [
-                            {"name": 1, "id": 1},
-                            {"name": 2, "id": 2},
-                            {"name": 3, "id": 3},
-                            {"name": 4, "id": 4},
-                            {"name": 5, "id": 5}
-                        ]
-                      },
-                      "prefill": 5,
-                      "required": true,
-                      "placeholder": null
-                    },
-                    {
-                        "help": null,
-                        "name": "How can we help?",
-                        "type": "text",
-                        "hidden": false,
-                        "required": true,
-                        "multi_lines": true,
-                        "placeholder": null,
-                        "generates_uuid": false,
-                        "max_char_limit": 2000,
-                        "hide_field_name": false,
-                        "show_char_limit": false
-                    },
-                    {
-                        "help": "Upload any relevant files here.",
-                        "name": "Have any attachments?",
-                        "type": "files",
-                        "hidden": false,
-                        "placeholder": null
-                    }
-                ],
-                "description": "<p>Looking for a real person to speak to?</p><p>We're here for you! Just drop in your queries below and we'll connect with you as soon as we can.</p>",
-                "re_fillable": false,
-                "use_captcha": false,
-                "redirect_url": null,
-                "submitted_text": "<p>Great, we've received your message. We'll get back to you as soon as we can :)</p>",
-                "uppercase_labels": false,
-                "submit_button_text": "Submit",
-                "re_fill_button_text": "Fill Again",
-                "color": "#64748b"
-            }
-        ```
-        
+        Forms are represented as Json objects. There are several input types and layout block types (type start with nf-).
+        You can use for instance nf-text to add a title or text to the form using some basic html (h1, p, b, i, u etc).
+        Order of blocks matters.
+
         Available field types:
         - text: Text input (use multi_lines: true for multi-line text)
         - rich_text: Rich text input
@@ -103,13 +33,13 @@ class GenerateFormPrompt extends Prompt
         - phone_number: Phone number input
         - email: Email input with validation
         - checkbox: Single checkbox for yes/no
-        - select: Dropdown selection (requires select.options array)
-        - multi_select: Multiple selection (requires multi_select.options array)
+        - select: Dropdown selection 
+        - multi_select: Multiple selection 
         - matrix: Matrix input with rows and columns
         - number: Numeric input
-        - rating: Star rating (requires rating_max_value integer)
-        - scale: Numeric scale (requires scale_min_value and scale_max_value integers)
-        - slider: Slider selection (requires slider_min_value, slider_max_value, slider_step_value)
+        - rating: Star rating 
+        - scale: Numeric scale 
+        - slider: Slider selection
         - files: File upload
         - signature: Signature pad
         - barcode: Barcode scanner
@@ -119,38 +49,16 @@ class GenerateFormPrompt extends Prompt
         - nf-image: Image element
         - nf-code: Code block
         
-        For select and multi_select fields, use this format for options:
-        ```json
-        {
-           "select": {
-              "options": [
-                 {"name": "Option 1", "id": "Option 1"},
-                 {"name": "Option 2", "id": "Option 2"}
-              ]
-           }
-        }
-        ```
-        
-        If the form is too long, you can paginate it by adding a page break:
-        ```json
-        {
-            "name": "Page Break",
-            "next_btn_text": "Next",
-            "previous_btn_text": "Previous",
-            "type": "nf-page-break"
-        }
-        ```
+        If the form is too long, you can paginate it by adding one or multiple page breaks (nf-page-break).
         
         Create a complete form with appropriate fields based on the description. Include:
-        - A clear title
-        - A descriptive introduction using the description field
+        - A clear `title` (internal for form admin)
+        - `nf-text` blocks to add a title or text to the form using some basic html (h1, p, b, i, u etc)
         - Logical field grouping
         - Required fields where necessary
         - Help text for complex fields
         - Appropriate validation
         - Customized submission text
-        
-        Reply with a valid JSON object containing the complete form structure.
     EOD;
 
     /**
@@ -158,392 +66,416 @@ class GenerateFormPrompt extends Prompt
      */
     protected ?array $jsonSchema = [
         'type' => 'object',
-        'required' => ['title', 'properties', 'description', 're_fillable', 'use_captcha', 'submitted_text', 'submit_button_text'],
+        'required' => ['title', 'properties', 're_fillable', 'use_captcha', 'redirect_url', 'submitted_text', 'uppercase_labels', 'submit_button_text', 're_fill_button_text', 'color'],
+        'additionalProperties' => false,
         'properties' => [
             'title' => [
                 'type' => 'string',
-                'description' => 'The title of the form'
-            ],
-            'description' => [
-                'type' => 'string',
-                'description' => 'HTML description for the form'
+                'description' => 'The title of the form (default: "New Form")'
             ],
             're_fillable' => [
                 'type' => 'boolean',
-                'description' => 'Whether the form can be refilled after submission'
+                'description' => 'Whether the form can be refilled after submission (default: false)'
             ],
             'use_captcha' => [
                 'type' => 'boolean',
-                'description' => 'Whether to use CAPTCHA for spam protection'
+                'description' => 'Whether to use CAPTCHA for spam protection (default: false)'
             ],
             'redirect_url' => [
                 'type' => ['string', 'null'],
-                'description' => 'URL to redirect to after submission'
+                'description' => 'URL to redirect to after submission (default: null)'
             ],
             'submitted_text' => [
                 'type' => 'string',
-                'description' => 'Text to display after form submission'
+                'description' => 'Text to display after form submission (default: "<p>Thank you for your submission!</p>")'
             ],
             'uppercase_labels' => [
                 'type' => 'boolean',
-                'description' => 'Whether to display field labels in uppercase'
+                'description' => 'Whether to display field labels in uppercase (default: false)'
             ],
             'submit_button_text' => [
                 'type' => 'string',
-                'description' => 'Text for the submit button'
+                'description' => 'Text for the submit button (default: "Submit")'
             ],
             're_fill_button_text' => [
                 'type' => 'string',
-                'description' => 'Text for the refill button'
+                'description' => 'Text for the refill button (default: "Fill Again")'
             ],
             'color' => [
                 'type' => 'string',
-                'description' => 'Primary color for the form'
+                'description' => 'Primary color for the form (default: "#64748b")'
             ],
             'properties' => [
                 'type' => 'array',
                 'description' => 'Array of form fields and elements',
                 'items' => [
-                    'type' => 'object',
-                    'required' => ['name', 'type'],
                     'anyOf' => [
-                        {'$ref' => '#/definitions/textProperty'},
-                        {'$ref' => '#/definitions/richTextProperty'},
-                        {'$ref' => '#/definitions/dateProperty'},
-                        {'$ref' => '#/definitions/urlProperty'},
-                        {'$ref' => '#/definitions/phoneNumberProperty'},
-                        {'$ref' => '#/definitions/emailProperty'},
-                        {'$ref' => '#/definitions/checkboxProperty'},
-                        {'$ref' => '#/definitions/selectProperty'},
-                        {'$ref' => '#/definitions/multiSelectProperty'},
-                        {'$ref' => '#/definitions/matrixProperty'},
-                        {'$ref' => '#/definitions/numberProperty'},
-                        {'$ref' => '#/definitions/ratingProperty'},
-                        {'$ref' => '#/definitions/scaleProperty'},
-                        {'$ref' => '#/definitions/sliderProperty'},
-                        {'$ref' => '#/definitions/filesProperty'},
-                        {'$ref' => '#/definitions/signatureProperty'},
-                        {'$ref' => '#/definitions/barcodeProperty'},
-                        {'$ref' => '#/definitions/nfTextProperty'},
-                        {'$ref' => '#/definitions/nfPageBreakProperty'},
-                        {'$ref' => '#/definitions/nfDividerProperty'},
-                        {'$ref' => '#/definitions/nfImageProperty'},
-                        {'$ref' => '#/definitions/nfCodeProperty'}
+                        ['$ref' => '#/definitions/textProperty'],
+                        ['$ref' => '#/definitions/richTextProperty'],
+                        ['$ref' => '#/definitions/dateProperty'],
+                        ['$ref' => '#/definitions/urlProperty'],
+                        ['$ref' => '#/definitions/phoneNumberProperty'],
+                        ['$ref' => '#/definitions/emailProperty'],
+                        ['$ref' => '#/definitions/checkboxProperty'],
+                        // ['$ref' => '#/definitions/selectProperty'],
+                        // ['$ref' => '#/definitions/multiSelectProperty'],
+                        // // ['$ref' => '#/definitions/matrixProperty'],
+                        ['$ref' => '#/definitions/numberProperty'],
+                        ['$ref' => '#/definitions/ratingProperty'],
+                        ['$ref' => '#/definitions/scaleProperty'],
+                        ['$ref' => '#/definitions/sliderProperty'],
+                        ['$ref' => '#/definitions/filesProperty'],
+                        ['$ref' => '#/definitions/signatureProperty'],
+                        ['$ref' => '#/definitions/barcodeProperty'],
+                        ['$ref' => '#/definitions/nfTextProperty'],
+                        ['$ref' => '#/definitions/nfPageBreakProperty'],
+                        ['$ref' => '#/definitions/nfDividerProperty'],
+                        ['$ref' => '#/definitions/nfImageProperty'],
+                        ['$ref' => '#/definitions/nfCodeProperty']
                     ]
                 ]
             ]
         ],
         'definitions' => [
-            'option' => [
-                'type' => 'object',
-                'required' => ['name', 'id'],
-                'properties' => [
-                    'name' => ['type' => ['string', 'number']],
-                    'id' => ['type' => ['string', 'number']]
-                ]
-            ],
-            'selectOptions' => [
-                'type' => 'object',
-                'required' => ['options'],
-                'properties' => [
-                    'options' => [
-                        'type' => 'array',
-                        'items' => {'$ref' => '#/definitions/option'}
-                    ]
-                ]
-            ],
+            // 'option' => [
+            //     'type' => 'object',
+            //     'required' => ['name', 'id'],
+            //     'additionalProperties' => false,
+            //     'properties' => [
+            //         'name' => ['type' => ['string']],
+            //         'id' => ['type' => ['string']]
+            //     ]
+            // ],
+            // 'selectOptions' => [
+            //     'type' => 'object',
+            //     'required' => ['options'],
+            //     'additionalProperties' => false,
+            //     'properties' => [
+            //         'options' => [
+            //             'type' => 'array',
+            //             'items' => ['$ref' => '#/definitions/option'],
+            //             'description' => 'Options for select fields (default: two options with name/id "Option 1" and "Option 2")'
+            //         ]
+            //     ]
+            // ],
             'baseProperty' => [
                 'type' => 'object',
-                'required' => ['name', 'type'],
+                'required' => ['name', 'help', 'hidden', 'required'],
+                'additionalProperties' => false,
                 'properties' => [
                     'name' => [
                         'type' => 'string',
                         'description' => 'The name/label of the field'
                     ],
-                    'type' => [
-                        'type' => 'string',
-                        'enum' => [
-                            'text', 'rich_text', 'date', 'url', 'phone_number', 'email', 
-                            'checkbox', 'select', 'multi_select', 'matrix', 'number', 
-                            'rating', 'scale', 'slider', 'files', 'signature', 'barcode',
-                            'nf-text', 'nf-page-break', 'nf-divider', 'nf-image', 'nf-code'
-                        ],
-                        'description' => 'The type of the field'
-                    ],
                     'help' => [
-                        'type' => ['string', 'null'],
-                        'description' => 'Help text for the field'
+                        'type' => 'string',
+                        'description' => 'Help text for the field (default: null)'
                     ],
                     'hidden' => [
                         'type' => 'boolean',
-                        'description' => 'Whether the field is hidden'
+                        'description' => 'Whether the field is hidden (default: false)'
                     ],
                     'required' => [
                         'type' => 'boolean',
-                        'description' => 'Whether the field is required'
+                        'description' => 'Whether the field is required (default: false)'
                     ],
-                    'placeholder' => [
-                        'type' => ['string', 'null'],
-                        'description' => 'Placeholder text for the field'
-                    ],
-                    'prefill' => [
-                        'type' => ['string', 'number', 'null'],
-                        'description' => 'Prefilled value for the field'
-                    ]
+                    // 'placeholder' => [
+                    //     'type' => ['string', 'null'],
+                    //     'description' => 'Placeholder text for the field (default: null)'
+                    // ]
                 ]
             ],
             'textProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['type', 'core', 'multi_lines', 'generates_uuid', 'max_char_limit', 'hide_field_name', 'show_char_limit'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'core' => ['$ref' => '#/definitions/baseProperty'],
-                    'type' => ['enum' => ['text']],
+                    'type' => ['type' => 'string', 'enum' => ['text']],
                     'multi_lines' => [
                         'type' => 'boolean',
-                        'description' => 'Whether the text field should have multiple lines'
+                        'description' => 'Whether the text field should have multiple lines (default: false)'
                     ],
                     'generates_uuid' => [
                         'type' => 'boolean',
-                        'description' => 'Whether the field should generate a UUID'
+                        'description' => 'Whether the field should generate a UUID (default: false)'
                     ],
                     'max_char_limit' => [
                         'type' => ['integer', 'string'],
-                        'description' => 'Maximum character limit for text fields'
+                        'description' => 'Maximum character limit for text fields (default: 500)'
                     ],
                     'hide_field_name' => [
                         'type' => 'boolean',
-                        'description' => 'Whether to hide the field name'
+                        'description' => 'Whether to hide the field name (default: false)'
                     ],
                     'show_char_limit' => [
                         'type' => 'boolean',
-                        'description' => 'Whether to show the character limit'
-                    ]
+                        'description' => 'Whether to show the character limit (default: false)'
+                    ],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'richTextProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['type', 'core', 'max_char_limit'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['rich_text']],
+                    'type' => ['type' => 'string', 'enum' => ['rich_text']],
                     'max_char_limit' => [
                         'type' => ['integer', 'string'],
-                        'description' => 'Maximum character limit for rich text fields'
-                    ]
+                        'description' => 'Maximum character limit for rich text fields (default: 1000)'
+                    ],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'dateProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['date']]
+                    'type' => ['type' => 'string', 'enum' => ['date']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'urlProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type', 'max_char_limit'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['url']],
+                    'type' => ['type' => 'string', 'enum' => ['url']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'max_char_limit' => [
                         'type' => ['integer', 'string'],
-                        'description' => 'Maximum character limit for URL fields'
+                        'description' => 'Maximum character limit for URL fields (default: 500)'
                     ]
                 ]
             ],
             'phoneNumberProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['phone_number']]
+                    'type' => ['type' => 'string', 'enum' => ['phone_number']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'emailProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type', 'max_char_limit'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['email']],
+                    'type' => ['type' => 'string', 'enum' => ['email']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'max_char_limit' => [
                         'type' => ['integer', 'string'],
-                        'description' => 'Maximum character limit for email fields'
+                        'description' => 'Maximum character limit for email fields (default: 320)'
                     ]
                 ]
             ],
             'checkboxProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['checkbox']]
+                    'type' => ['type' => 'string', 'enum' => ['checkbox']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
-            'selectProperty' => [
-                'type' => 'object',
-                'required' => ['type', 'select'],
-                'properties' => [
-                    'type' => ['enum' => ['select']],
-                    'select' => {'$ref' => '#/definitions/selectOptions'},
-                    'without_dropdown' => [
-                        'type' => 'boolean',
-                        'description' => 'Whether to display select options as radio buttons instead of a dropdown'
-                    ]
-                ]
-            },
-            'multiSelectProperty' => [
-                'type' => 'object',
-                'required' => ['type', 'multi_select'],
-                'properties' => [
-                    'type' => ['enum' => ['multi_select']],
-                    'multi_select' => {'$ref' => '#/definitions/selectOptions'}
-                ]
-            },
-            'matrixProperty' => [
-                'type' => 'object',
-                'required' => ['type', 'rows', 'columns', 'selection_data'],
-                'properties' => [
-                    'type' => ['enum' => ['matrix']],
-                    'rows' => [
-                        'type' => 'array',
-                        'items' => ['type' => 'string'],
-                        'description' => 'Rows for matrix fields'
-                    ],
-                    'columns' => [
-                        'type' => 'array',
-                        'items' => ['type' => ['string', 'number']],
-                        'description' => 'Columns for matrix fields'
-                    ],
-                    'selection_data' => [
-                        'type' => 'object',
-                        'description' => 'Selection data for matrix fields'
-                    ]
-                ]
-            ],
+            // 'selectProperty' => [
+            //     'type' => 'object',
+            //     'required' => ['core', 'type', 'select', 'without_dropdown'],
+            //     'additionalProperties' => false,
+            //     'properties' => [
+            //         'core' => ['$ref' => '#/definitions/baseProperty'],
+            //         'type' => ['type' => 'string', 'enum' => ['select']],
+            //         'select' => ['$ref' => '#/definitions/selectOptions'],
+            //         'without_dropdown' => [
+            //             'type' => 'boolean',
+            //             'description' => 'Whether to display select options as radio buttons instead of a dropdown (default: false)'
+            //         ]
+            //     ]
+            // ],
+            // 'multiSelectProperty' => [
+            //     'type' => 'object',
+            //     'required' => ['core', 'type', 'multi_select'],
+            //     'additionalProperties' => false,
+            //     'properties' => [
+            //         'core' => ['$ref' => '#/definitions/baseProperty'],
+            //         'type' => ['type' => 'string', 'enum' => ['multi_select']],
+            //         'multi_select' => ['$ref' => '#/definitions/selectOptions']
+            //     ]
+            // ],
+            // // 'matrixProperty' => [
+            // //     'type' => 'object',
+            // //     'required' => ['core', 'type', 'rows', 'columns'],
+            // //     'additionalProperties' => false,
+            // //     'properties' => [
+            // //         'core' => ['$ref' => '#/definitions/baseProperty'],
+            // //         'type' => ['type' => 'string', 'enum' => ['matrix']],
+            // //         'rows' => [
+            // //             'type' => 'array',
+            // //             'items' => ['type' => ['string', 'number']],
+            // //             'description' => 'Rows for matrix fields (default: ["Row 1"])'
+            // //         ],
+            // //         'columns' => [
+            // //             'type' => 'array',
+            // //             'items' => ['type' => ['string', 'number']],
+            // //             'description' => 'Columns for matrix fields (default: [1, 2, 3])'
+            // //         ]
+            // //     ]
+            // // ],
             'numberProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['number']]
+                    'type' => ['type' => 'string', 'enum' => ['number']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'ratingProperty' => [
                 'type' => 'object',
-                'required' => ['type', 'rating_max_value'],
+                'required' => ['core', 'type', 'rating_max_value'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['rating']],
+                    'type' => ['type' => 'string', 'enum' => ['rating']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'rating_max_value' => [
                         'type' => 'integer',
-                        'description' => 'Maximum rating for rating fields'
+                        'description' => 'Maximum rating for rating fields (default: 5)'
                     ]
                 ]
             ],
             'scaleProperty' => [
                 'type' => 'object',
-                'required' => ['type', 'scale_min_value', 'scale_max_value', 'scale_step_value'],
+                'required' => ['core', 'type', 'scale_min_value', 'scale_max_value', 'scale_step_value'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['scale']],
+                    'type' => ['type' => 'string', 'enum' => ['scale']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'scale_min_value' => [
                         'type' => 'integer',
-                        'description' => 'Minimum value for scale fields'
+                        'description' => 'Minimum value for scale fields (default: 1)'
                     ],
                     'scale_max_value' => [
                         'type' => 'integer',
-                        'description' => 'Maximum value for scale fields'
+                        'description' => 'Maximum value for scale fields (default: 5)'
                     ],
                     'scale_step_value' => [
                         'type' => 'integer',
-                        'description' => 'Step value for scale fields'
+                        'description' => 'Step value for scale fields (default: 1)'
                     ]
                 ]
             ],
             'sliderProperty' => [
                 'type' => 'object',
-                'required' => ['type', 'slider_min_value', 'slider_max_value', 'slider_step_value'],
+                'required' => ['core', 'type', 'slider_min_value', 'slider_max_value', 'slider_step_value'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['slider']],
+                    'type' => ['type' => 'string', 'enum' => ['slider']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'slider_min_value' => [
                         'type' => 'integer',
-                        'description' => 'Minimum value for slider fields'
+                        'description' => 'Minimum value for slider fields (default: 0)'
                     ],
                     'slider_max_value' => [
                         'type' => 'integer',
-                        'description' => 'Maximum value for slider fields'
+                        'description' => 'Maximum value for slider fields (default: 50)'
                     ],
                     'slider_step_value' => [
                         'type' => 'integer',
-                        'description' => 'Step value for slider fields'
+                        'description' => 'Step value for slider fields (default: 1)'
                     ]
                 ]
             ],
             'filesProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['files']]
+                    'type' => ['type' => 'string', 'enum' => ['files']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'signatureProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['signature']]
+                    'type' => ['type' => 'string', 'enum' => ['signature']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'barcodeProperty' => [
                 'type' => 'object',
-                'required' => ['type', 'decoders'],
+                'required' => ['core', 'type', 'decoders'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['barcode']],
+                    'type' => ['type' => 'string', 'enum' => ['barcode']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'decoders' => [
                         'type' => 'array',
                         'items' => ['type' => 'string'],
-                        'description' => 'Decoders for barcode fields'
+                        'description' => 'Decoders for barcode fields (default: ["ean_reader", "ean_8_reader"])'
                     ]
                 ]
             ],
             'nfTextProperty' => [
                 'type' => 'object',
-                'required' => ['type', 'content'],
+                'required' => ['core', 'type', 'content'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['nf-text']],
+                    'type' => ['type' => 'string', 'enum' => ['nf-text']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'content' => [
                         'type' => 'string',
-                        'description' => 'HTML content for text elements'
+                        'description' => 'HTML content for text elements (default: "<p>Text content</p>")'
                     ]
                 ]
             ],
             'nfPageBreakProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type', 'next_btn_text', 'previous_btn_text'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['nf-page-break']],
+                    'type' => ['type' => 'string', 'enum' => ['nf-page-break']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                     'next_btn_text' => [
                         'type' => 'string',
-                        'description' => 'Text for the next button in page breaks'
+                        'description' => 'Text for the next button in page breaks (default: "Next")'
                     ],
                     'previous_btn_text' => [
                         'type' => 'string',
-                        'description' => 'Text for the previous button in page breaks'
+                        'description' => 'Text for the previous button in page breaks (default: "Previous")'
                     ]
                 ]
             ],
             'nfDividerProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['nf-divider']]
+                    'type' => ['type' => 'string', 'enum' => ['nf-divider']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'nfImageProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['nf-image']]
+                    'type' => ['type' => 'string', 'enum' => ['nf-image']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
             ],
             'nfCodeProperty' => [
                 'type' => 'object',
-                'required' => ['type'],
+                'required' => ['core', 'type'],
+                'additionalProperties' => false,
                 'properties' => [
-                    'type' => ['enum' => ['nf-code']]
+                    'type' => ['type' => 'string', 'enum' => ['nf-code']],
+                    'core' => ['$ref' => '#/definitions/baseProperty'],
                 ]
-            }
+            ]
         ]
     ];
 
@@ -568,17 +500,7 @@ class GenerateFormPrompt extends Prompt
      */
     public function execute(): array
     {
-        $this->initialize();
-        $prompt = $this->buildPrompt();
-
-        $this->completer->expectsJson();
-        $this->completer->completeChat(
-            [['role' => 'user', 'content' => $prompt]],
-            $this->maxTokens,
-            $this->temperature
-        );
-
-        $formData = $this->completer->getArray();
+        $formData = parent::execute();
         return $this->processOutput($formData);
     }
 
@@ -592,161 +514,26 @@ class GenerateFormPrompt extends Prompt
             foreach ($formData['properties'] as $index => $property) {
                 // Add a unique ID to each property
                 $formData['properties'][$index]['id'] = Str::uuid()->toString();
-                
-                // Fix types for specific field types
-                if (isset($property['type'])) {
-                    // Handle rating fields
-                    if ($property['type'] === 'rating' && !isset($property['rating_max_value'])) {
-                        $formData['properties'][$index]['rating_max_value'] = 5;
+
+                // Flatten core properties if they exist
+                if (isset($property['core']) && is_array($property['core'])) {
+                    foreach ($property['core'] as $coreKey => $coreValue) {
+                        $formData['properties'][$index][$coreKey] = $coreValue;
                     }
-                    
-                    // Handle scale fields
-                    if ($property['type'] === 'scale') {
-                        if (!isset($property['scale_min_value'])) {
-                            $formData['properties'][$index]['scale_min_value'] = 1;
-                        }
-                        if (!isset($property['scale_max_value'])) {
-                            $formData['properties'][$index]['scale_max_value'] = 5;
-                        }
-                        if (!isset($property['scale_step_value'])) {
-                            $formData['properties'][$index]['scale_step_value'] = 1;
-                        }
-                    }
-                    
-                    // Handle slider fields
-                    if ($property['type'] === 'slider') {
-                        if (!isset($property['slider_min_value'])) {
-                            $formData['properties'][$index]['slider_min_value'] = 0;
-                        }
-                        if (!isset($property['slider_max_value'])) {
-                            $formData['properties'][$index]['slider_max_value'] = 50;
-                        }
-                        if (!isset($property['slider_step_value'])) {
-                            $formData['properties'][$index]['slider_step_value'] = 1;
-                        }
-                    }
-                    
-                    // Handle barcode fields
-                    if ($property['type'] === 'barcode' && !isset($property['decoders'])) {
-                        $formData['properties'][$index]['decoders'] = ["ean_reader", "ean_8_reader"];
-                    }
-                    
-                    // Handle matrix fields
-                    if ($property['type'] === 'matrix') {
-                        if (!isset($property['rows'])) {
-                            $formData['properties'][$index]['rows'] = ["Row 1"];
-                        }
-                        if (!isset($property['columns'])) {
-                            $formData['properties'][$index]['columns'] = [1, 2, 3];
-                        }
-                        if (!isset($property['selection_data'])) {
-                            $formData['properties'][$index]['selection_data'] = [
-                                "Row 1" => null
-                            ];
-                        }
-                    }
-                    
-                    // Fix any incorrect textarea type to text with multi_lines
-                    if ($property['type'] === 'textarea') {
-                        $formData['properties'][$index]['type'] = 'text';
-                        $formData['properties'][$index]['multi_lines'] = true;
-                    }
-                    
-                    // Set default values for select/multi_select if not provided
-                    if ($property['type'] === 'select' && !isset($property['select'])) {
-                        $formData['properties'][$index]['select'] = [
-                            'options' => [
-                                ['name' => 'Option 1', 'id' => 'Option 1'],
-                                ['name' => 'Option 2', 'id' => 'Option 2']
-                            ]
-                        ];
-                    }
-                    
-                    if ($property['type'] === 'multi_select' && !isset($property['multi_select'])) {
-                        $formData['properties'][$index]['multi_select'] = [
-                            'options' => [
-                                ['name' => 'Option 1', 'id' => 'Option 1'],
-                                ['name' => 'Option 2', 'id' => 'Option 2']
-                            ]
-                        ];
-                    }
-                    
-                    // Fix options format for select/multi_select
-                    if ($property['type'] === 'select' && isset($property['select']['options'])) {
-                        foreach ($property['select']['options'] as $optIndex => $option) {
-                            if (isset($option['value']) && !isset($option['id'])) {
-                                $formData['properties'][$index]['select']['options'][$optIndex]['id'] = $option['value'];
-                                unset($formData['properties'][$index]['select']['options'][$optIndex]['value']);
-                            }
-                        }
-                    }
-                    
-                    if ($property['type'] === 'multi_select' && isset($property['multi_select']['options'])) {
-                        foreach ($property['multi_select']['options'] as $optIndex => $option) {
-                            if (isset($option['value']) && !isset($option['id'])) {
-                                $formData['properties'][$index]['multi_select']['options'][$optIndex]['id'] = $option['value'];
-                                unset($formData['properties'][$index]['multi_select']['options'][$optIndex]['value']);
-                            }
-                        }
-                    }
-                    
-                    // Ensure text fields have multi_lines property
-                    if ($property['type'] === 'text' && !isset($property['multi_lines'])) {
-                        $formData['properties'][$index]['multi_lines'] = false;
-                    }
-                    
-                    // Ensure nf-text has content
-                    if ($property['type'] === 'nf-text' && !isset($property['content'])) {
-                        $formData['properties'][$index]['content'] = '<p>Text content</p>';
-                    }
-                }
-                
-                // Ensure all properties have required base fields
-                if (!isset($property['hidden'])) {
-                    $formData['properties'][$index]['hidden'] = false;
-                }
-                
-                if (!isset($property['required']) && in_array($property['type'], ['text', 'rich_text', 'date', 'url', 'phone_number', 'email', 'checkbox', 'select', 'multi_select', 'matrix', 'number', 'rating', 'scale', 'slider', 'files', 'signature', 'barcode'])) {
-                    $formData['properties'][$index]['required'] = false;
+                    // Remove the core property after flattening
+                    unset($formData['properties'][$index]['core']);
                 }
             }
         }
-        
-        // Set default form-level properties if not provided
-        if (!isset($formData['description'])) {
-            $formData['description'] = '';
-        }
-        
-        if (!isset($formData['re_fillable'])) {
-            $formData['re_fillable'] = false;
-        }
-        
-        if (!isset($formData['use_captcha'])) {
-            $formData['use_captcha'] = false;
-        }
-        
-        if (!isset($formData['submitted_text'])) {
-            $formData['submitted_text'] = '<p>Thank you for your submission!</p>';
-        }
-        
-        if (!isset($formData['submit_button_text'])) {
-            $formData['submit_button_text'] = 'Submit';
-        }
-        
-        if (!isset($formData['uppercase_labels'])) {
-            $formData['uppercase_labels'] = false;
-        }
-        
-        if (!isset($formData['re_fill_button_text'])) {
-            $formData['re_fill_button_text'] = 'Fill Again';
-        }
-        
+
         // Clean title data
         if (isset($formData['title'])) {
             // Remove quotes if the title is enclosed in them
             $formData['title'] = preg_replace('/^["\'](.*)["\']$/', '$1', $formData['title']);
         }
-        
+
+        ray($formData);
+
         return $formData;
     }
 }

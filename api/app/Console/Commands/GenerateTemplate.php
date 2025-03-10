@@ -4,13 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Template;
 use App\Service\AI\Prompts\Form\GenerateFormPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateDescriptionPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateImageKeywordsPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateIndustryPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateQAPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateShortDescriptionPrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateTitlePrompt;
-use App\Service\AI\Prompts\Template\GenerateTemplateTypePrompt;
+use App\Service\AI\Prompts\Template\GenerateTemplateMetadataPrompt;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -43,35 +37,22 @@ class GenerateTemplate extends Command
         // Get form structure using the form prompt class
         $formData = GenerateFormPrompt::run($this->argument('prompt'));
 
-        // Get short description
-        $formShortDescription = GenerateTemplateShortDescriptionPrompt::run($this->argument('prompt'));
+        // Generate all template metadata using the consolidated prompt
+        $metadata = GenerateTemplateMetadataPrompt::run($this->argument('prompt'));
 
-        // Get form description
-        $formDescription = GenerateTemplateDescriptionPrompt::run($this->argument('prompt'));
-
-        // Get industry & types
-        $industry = GenerateTemplateIndustryPrompt::run(
-            $this->argument('prompt'),
-            Template::getAllIndustries()->pluck('slug')->toArray()
-        )['industries'];
-
-        $types = GenerateTemplateTypePrompt::run(
-            $this->argument('prompt'),
-            Template::getAllTypes()->pluck('slug')->toArray()
-        )['types'];
+        // Extract metadata components
+        $formShortDescription = $metadata['short_description'];
+        $formDescription = $metadata['detailed_description'];
+        $formTitle = $metadata['title'];
+        $industry = $metadata['industries'];
+        $types = $metadata['types'];
+        $formQAs = $metadata['qa_content'];
 
         // Get Related Templates
         $relatedTemplates = $this->getRelatedTemplates($industry, $types);
 
-        // Get image keywords
-        $formCoverKeywords = GenerateTemplateImageKeywordsPrompt::run($formDescription);
-        $imageUrl = $this->getImageCoverUrl($formCoverKeywords['search_query']);
-
-        // Get Q&As
-        $formQAs = GenerateTemplateQAPrompt::run($formDescription);
-
-        // Get title
-        $formTitle = GenerateTemplateTitlePrompt::run($formDescription);
+        // Get image cover URL
+        $imageUrl = $this->getImageCoverUrl($metadata['image_search_query']);
 
         $template = $this->createFormTemplate(
             $formData,

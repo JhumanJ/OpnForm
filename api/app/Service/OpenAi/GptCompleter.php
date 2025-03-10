@@ -75,7 +75,11 @@ class GptCompleter
     {
         $this->completionInput['response_format'] = [
             'type' => 'json_schema',
-            'schema' => $schema
+            'json_schema' => [
+                'name' => 'response_schema',
+                'strict' => true,
+                'schema' => $schema
+            ]
         ];
 
         return $this;
