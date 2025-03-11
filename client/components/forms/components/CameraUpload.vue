@@ -165,6 +165,10 @@ export default {
     this.openCameraUpload()
   },
 
+  beforeUnmount() {
+    this.cleanupCurrentStream()
+  },
+
   methods: {
     async cleanupCurrentStream() {
       if (this.quaggaInitialized) {
@@ -183,6 +187,8 @@ export default {
 
       const webcamElement = document.getElementById("webcam")
       if (webcamElement && webcamElement.srcObject) {
+        const tracks = webcamElement.srcObject.getTracks()
+        tracks.forEach(track => track.stop())
         webcamElement.srcObject = null
       }
     },
@@ -226,6 +232,7 @@ export default {
         }
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
+        this.mediaStream = stream  // Store the stream reference
         webcamElement.srcObject = stream
         
         this.webcam = new Webcam(
@@ -289,12 +296,8 @@ export default {
     },
     cancelCamera() {
       this.isCapturing = false
-      this.capturedImage = null
-      if (this.quaggaInitialized) {
-        Quagga.stop()
-        this.quaggaInitialized = false
-      }
-      this.webcam.stop()
+      this.capturedImage = null 
+      this.cleanupCurrentStream()  // Use the cleanup method
       this.$emit("stopWebcam")
     },
     processCapturedImage() {
