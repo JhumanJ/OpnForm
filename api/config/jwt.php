@@ -101,7 +101,19 @@ return [
     |
     */
 
-    'ttl' => (int) env('JWT_TTL', 60),
+    'ttl' => (int) env('JWT_TTL', 60 * 24 * 7),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Extended JWT time to live (Remember Me)
+    |--------------------------------------------------------------------------
+    |
+    | Specify the length of time (in minutes) that the token will be valid for
+    | when the "Remember me" option is selected. Defaults to 30 days.
+    |
+    */
+
+    'remember_ttl' => (int) env('JWT_REMEMBER_TTL', 60 * 24 * 30),
 
     /*
     |--------------------------------------------------------------------------

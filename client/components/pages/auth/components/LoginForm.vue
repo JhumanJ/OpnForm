@@ -151,7 +151,7 @@ export default {
       const auth = useAuth()
       
       try {
-        await auth.loginWithCredentials(this.form)
+        await auth.loginWithCredentials(this.form, this.remember)
         this.redirect()
       } catch (error) {
         if (error.response?._data?.message == "You must change your credentials when in self host mode") {

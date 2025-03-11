@@ -7,9 +7,9 @@ export const useAuth = () => {
   /**
    * Core authentication logic used by both social and direct login
    */
-  const authenticateUser = async ({ token, source, isNewUser = false }) => {
+  const authenticateUser = async ({ tokenData, source, isNewUser = false }) => {
     // Set token first
-    authStore.setToken(token)
+    authStore.setToken(tokenData.token, tokenData.expires_in)
 
     // Fetch initial data
     const [userData, workspaces] = await Promise.all([
@@ -43,11 +43,11 @@ export const useAuth = () => {
   /**
    * Handle direct login with form validation
    */
-  const loginWithCredentials = async (form) => {
-    const { token } = await form.submit('post', '/login')
+  const loginWithCredentials = async (form, remember) => {
+    const tokenData = await form.submit('post', '/login', { data: { remember: remember } })
     
     return authenticateUser({ 
-      token, 
+      tokenData, 
       source: 'credentials'
     })
   }
@@ -56,15 +56,15 @@ export const useAuth = () => {
    * Handle social login callback
    */
   const handleSocialCallback = async (provider, code, utmData) => {
-    const { token, new_user } = await opnFetch(`/oauth/${provider}/callback`, {
+    const tokenData = await opnFetch(`/oauth/${provider}/callback`, {
       method: 'POST',
       body: { code, utm_data: utmData }
     })
 
     return authenticateUser({ 
-      token, 
+      tokenData, 
       source: provider,
-      isNewUser: new_user
+      isNewUser: tokenData.new_user
     })
   }
 
@@ -76,10 +76,10 @@ export const useAuth = () => {
     const data = await form.submit('post', '/register')
     
     // Login the user
-    const { token } = await form.submit('post', '/login')
+    const tokenData = await form.submit('post', '/login')
     
     const result = await authenticateUser({ 
-      token, 
+      tokenData, 
       source: form.hear_about_us,
       isNewUser: true 
     })
