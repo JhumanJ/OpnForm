@@ -52,7 +52,7 @@ Make sure these components are properly installed and configured on your local m
    ```bash
    ./scripts/setup-env.sh
    ```
-   This script will create the necessary `.env` files for both the API and client.
+   This script will create the necessary `.env` files for both the API and client, it will not overwrite any existing `.env`, so it's better to make sure there already no `.env` file in both the `/api` and `/client` directory.
 
 5. Run the migrations:
 
@@ -72,3 +72,5 @@ Make sure these components are properly installed and configured on your local m
 8. Access your local OpnForm installation:
    - The API will be available at the domain provided by Herd (e.g., `http://opnform.test`)
    - The frontend will be accessible at `http://localhost:3000`
+
+9. For the frontend to communicate with the backend correctly, make sure both of `NUXT_PUBLIC_APP_URL=http://localhost:3000` and `NUXT_PUBLIC_API_BASE=http://localhost:8000` are set on `/client/.env`
