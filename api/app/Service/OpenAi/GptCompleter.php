@@ -26,13 +26,14 @@ class GptCompleter
 
     protected bool $expectsJson = false;
 
-    protected int $tokenUsed = 0;
+    protected int $inputTokens = 0;
+    protected int $outputTokens = 0;
 
     protected bool $useStreaming = false;
 
-    public function __construct(string $apiKey, protected int $retries = 2, protected string $model = self::AI_MODEL)
+    public function __construct(?string $apiKey = null, protected int $retries = 2, protected string $model = self::AI_MODEL)
     {
-        $this->openAi = \OpenAI::client($apiKey);
+        $this->openAi = \OpenAI::client($apiKey ?? config('services.openai.api_key'));
     }
 
     public function setAiModel(string $model)
@@ -66,6 +67,20 @@ class GptCompleter
     public function doesNotExpectJson(): self
     {
         $this->expectsJson = false;
+
+        return $this;
+    }
+
+    public function setJsonSchema(array $schema): self
+    {
+        $this->completionInput['response_format'] = [
+            'type' => 'json_schema',
+            'json_schema' => [
+                'name' => 'response_schema',
+                'strict' => true,
+                'schema' => $schema
+            ]
+        ];
 
         return $this;
     }
@@ -136,9 +151,14 @@ class GptCompleter
         return trim($this->result);
     }
 
-    public function getTokenUsed(): int
+    public function getInputTokens(): int
     {
-        return $this->tokenUsed;
+        return $this->inputTokens;
+    }
+
+    public function getOutputTokens(): int
+    {
+        return $this->outputTokens;
     }
 
     protected function computeChatCompletion(array $messages, int $maxTokens = 4096, float $temperature = 0.81): self
@@ -157,10 +177,12 @@ class GptCompleter
             'temperature' => $temperature,
         ];
 
-        if ($this->expectsJson) {
+        if ($this->expectsJson && !isset($this->completionInput['response_format'])) {
             $completionInput['response_format'] = [
                 'type' => 'json_object',
             ];
+        } elseif (isset($this->completionInput['response_format'])) {
+            $completionInput['response_format'] = $this->completionInput['response_format'];
         }
 
         $this->completionInput = $completionInput;
@@ -174,23 +196,30 @@ class GptCompleter
             return $this->queryStreamedCompletion();
         }
 
-        try {
-            Log::debug('Open AI query: '.json_encode($this->completionInput));
-            $response = $this->openAi->chat()->create($this->completionInput);
-        } catch (ErrorException $errorException) {
-            // Retry once
-            Log::warning("Open AI error, retrying: {$errorException->getMessage()}");
-            $response = $this->openAi->chat()->create($this->completionInput);
-        }
-        $this->tokenUsed += $response->usage->totalTokens;
-        $this->result = $response->choices[0]->message->content;
+        $attempt = 1;
+        $lastError = null;
 
-        return $this;
+        while ($attempt <= $this->retries) {
+            try {
+                Log::debug('Open AI query: ' . json_encode($this->completionInput));
+                $response = $this->openAi->chat()->create($this->completionInput);
+                $this->inputTokens = $response->usage->promptTokens;
+                $this->outputTokens = $response->usage->completionTokens;
+                $this->result = $response->choices[0]->message->content;
+                return $this;
+            } catch (ErrorException $errorException) {
+                $lastError = $errorException;
+                Log::warning("Open AI error, retrying: {$errorException->getMessage()}");
+                $attempt++;
+            }
+        }
+
+        throw $lastError ?? new \Exception('Failed to complete OpenAI request after multiple attempts');
     }
 
     protected function queryStreamedCompletion(): self
     {
-        Log::debug('Open AI query: '.json_encode($this->completionInput));
+        Log::debug('Open AI query: ' . json_encode($this->completionInput));
         $this->result = '';
         $response = $this->openAi->chat()->createStreamed($this->completionInput);
         foreach ($response as $chunk) {

@@ -57,17 +57,15 @@
       <section class="pt-12 bg-gray-50 sm:pt-16 border-b pb-[250px] relative">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div
-            class="flex flex-col items-center justify-center max-w-4xl gap-8 mx-auto md:gap-12 md:flex-row"
+            class="flex flex-col items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 md:flex-row"
           >
             <div
-              class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group max-w-sm"
+              class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group w-full max-w-sm relative"
             >
               <img
-                class="object-cover w-full transition-all duration-200 group-hover:scale-110 h-[240px]"
+                class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110 absolute inset-0"
                 :src="template.image_url"
                 alt="Template cover image"
-                width="500px"
-                height="380px"
               >
             </div>
 
@@ -90,21 +88,19 @@
         </div>
       </section>
 
-      <section class="relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
-        <div class="max-w-7xl">
-          <div
-            class="max-w-2xl p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
-          >
-            <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
-              Template Preview
-            </p>
-            <open-complete-form
-              ref="open-complete-form"
-              :form="form"
-              :creating="true"
-              class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
-            />
-          </div>
+      <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
+        <div
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
+        >
+          <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
+            Template Preview
+          </p>
+          <open-complete-form
+            ref="open-complete-form"
+            :form="form"
+            :mode="FormMode.TEST"
+            class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
+          />
         </div>
 
         <div class="absolute bottom-0 translate-y-full inset-x-0">
@@ -132,7 +128,7 @@
       <section class="pt-20 pb-12 bg-white sm:pb-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div
-            class="max-w-2xl mx-auto mt-16 space-y-12 sm:mt-16 sm:space-y-16"
+            class="max-w-4xl mx-auto mt-16 space-y-12 sm:mt-16 sm:space-y-16"
           >
             <div
               class="nf-text"
@@ -216,7 +212,7 @@
             </h4>
           </div>
 
-          <div class="grid grid-cols-1 mt-12 md:grid-cols-2 gap-x-8 gap-y-12">
+          <div class="grid grid-cols-1 mt-12 md:grid-cols-2 gap-x-8 gap-y-12 max-w-5xl mx-auto">
             <div
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
@@ -276,6 +272,7 @@ import Breadcrumb from "~/components/global/Breadcrumb.vue"
 import SingleTemplate from "../../components/pages/templates/SingleTemplate.vue"
 import { fetchTemplate } from "~/stores/templates.js"
 import FormTemplateModal from "~/components/open/forms/components/templates/FormTemplateModal.vue"
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 defineRouteRules({
   swr: 3600,
