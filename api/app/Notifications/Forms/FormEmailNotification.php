@@ -161,14 +161,11 @@ class FormEmailNotification extends Notification
     {
         $formId = $this->event->form->id;
         $submissionId = $this->event->data['submission_id'] ?? 'unknown';
+        $hashedSubmissionId = md5($submissionId);
         $domain = Str::after(config('app.url'), '://');
-        $timestamp = time();
 
-        // Create a unique Message-ID for each submission
-        $messageId = "<form-{$formId}-submission-{$submissionId}-{$timestamp}@{$domain}>";
-
-        // Create a References header that links to the form, but not to specific submissions
-        $references = "<form-{$formId}@{$domain}>";
+        // Create a unique Message-ID for each submission (without timestamp)
+        $messageId = "<form-{$formId}-submission-{$hashedSubmissionId}@{$domain}>";
 
         // Add our custom Message-ID as X-Custom-Message-ID
         $message->getHeaders()->addTextHeader('X-Custom-Message-ID', $messageId);
@@ -176,11 +173,12 @@ class FormEmailNotification extends Notification
         // Add X-Entity-Ref-ID header for Google+ notifications
         $message->getHeaders()->addTextHeader('X-Entity-Ref-ID', $messageId);
 
-        // Add References header
-        $message->getHeaders()->addTextHeader('References', $references);
+        // Add References header with the same value as Message-ID
+        // This ensures emails are only threaded by submission ID, not by form ID
+        $message->getHeaders()->addTextHeader('References', $messageId);
 
         // Add a unique Thread-Index to further prevent grouping
-        $threadIndex = base64_encode(pack('H*', md5($formId . $submissionId . $timestamp)));
+        $threadIndex = base64_encode(pack('H*', md5($formId . $submissionId)));
         $message->getHeaders()->addTextHeader('Thread-Index', $threadIndex);
     }
 

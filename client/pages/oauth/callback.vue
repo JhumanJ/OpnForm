@@ -54,7 +54,7 @@ function handleCallback() {
     form.code = route.query.code
     form.utm_data = $utm.value
     form.post(`/oauth/${provider}/callback`).then(async (data) => {
-        authStore.setToken(data.token)
+        authStore.setToken(data.token, data.expires_in)
         const [userDataResponse, workspacesResponse] = await Promise.all([
             opnFetch("user"),
             fetchAllWorkspaces(),
