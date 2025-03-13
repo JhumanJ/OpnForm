@@ -218,6 +218,7 @@ export default {
         email: shallowRef(OpenText),
         phone_number: shallowRef(OpenText),
         signature: shallowRef(OpenFile),
+        barcode: shallowRef(OpenText),
       },
     }
   },
