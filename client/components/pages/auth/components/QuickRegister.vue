@@ -4,6 +4,7 @@
     <modal
       :show="appStore.quickLoginModal"
       max-width="lg"
+      :closeable="!appStore.isUnauthorizedError"
       @close="appStore.quickLoginModal=false"
     >
       <template #icon>
@@ -31,6 +32,24 @@
           @open-register="openRegister"
           @after-quick-login="afterQuickLogin"
         />
+
+        <template v-if="appStore.isUnauthorizedError">
+          <p class="text-gray-500 text-sm text-center my-4">
+            OR
+          </p>
+          <UButton
+            icon="i-heroicons-arrow-right-on-rectangle"
+            type="button"
+            variant="outline"
+            color="neutral"
+            label="Logout"
+            :block="true"
+            @click="logout"
+          />
+          <p class="text-gray-500 text-sm text-center">
+            progress will be lost
+          </p>
+        </template>
       </div>
     </modal>
 
@@ -38,6 +57,7 @@
     <modal
       :show="appStore.quickRegisterModal"
       max-width="lg"
+      :closeable="!appStore.isUnauthorizedError"
       @close="appStore.quickRegisterModal=false"
     >
       <template #icon>
@@ -84,6 +104,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  appStore.isUnauthorizedError = false
   document.removeEventListener('quick-login-complete', () => {
     afterQuickLogin()
   })
@@ -106,5 +127,12 @@ const afterQuickLogin = () => {
     appStore.quickLoginModal = false
     emit('afterLogin')
   }, 1000)
+}
+
+const logout = async () => {
+  appStore.isUnauthorizedError = false
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = false
+  useRouter().push('/login')
 }
 </script>

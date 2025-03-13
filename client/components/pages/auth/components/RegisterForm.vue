@@ -104,8 +104,8 @@
       </v-button>
 
       <template v-if="useFeatureFlag('services.google.auth')">
-        <p class="text-gray-600/50 text-sm text-center my-4">
-          Or
+        <p class="text-gray-500 text-sm text-center my-4">
+          OR
         </p>
         <v-button
           native-type="buttom"

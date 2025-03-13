@@ -9,6 +9,7 @@ export const useAppStore = defineStore("app", {
       chatOpened: false,
       hidden: false
     },
+    isUnauthorizedError: false,
     quickLoginModal: false,
     quickRegisterModal: false,
     

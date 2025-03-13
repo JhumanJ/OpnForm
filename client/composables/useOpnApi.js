@@ -63,6 +63,7 @@ export function getOpnRequestsOptions(request, opts) {
         if (authStore.check) {
           console.log("Logging out due to 401")
           authStore.logout()
+          useAppStore().isUnauthorizedError = true
           useAppStore().quickLoginModal = true
         }
       } else if (status === 420) {
