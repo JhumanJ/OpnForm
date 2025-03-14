@@ -54,6 +54,22 @@
       },
       "content_length_less_than_or_equal_to": {
         "expected_type": "number"
+      },
+      "exists_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
+      },
+      "does_not_exist_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
       }
     }
   },
@@ -112,6 +128,22 @@
       },
       "content_length_less_than_or_equal_to": {
         "expected_type": "number"
+      },
+      "exists_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
+      },
+      "does_not_exist_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
       }
     }
   },
@@ -170,6 +202,22 @@
       },
       "content_length_less_than_or_equal_to": {
         "expected_type": "number"
+      },
+      "exists_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
+      },
+      "does_not_exist_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
       }
     }
   },
@@ -240,6 +288,22 @@
         "format": {
           "type": "regex"
         }
+      },
+      "exists_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
+      },
+      "does_not_exist_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
       }
     }
   },
@@ -326,6 +390,22 @@
       },
       "content_length_less_than_or_equal_to": {
         "expected_type": "number"
+      },
+      "exists_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
+      },
+      "does_not_exist_in_submissions": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        },
+        "exclude_in_logic": true
       }
     }
   },

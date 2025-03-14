@@ -61,6 +61,7 @@ export default {
   props: {
     form: { type: Object, required: true },
     modelValue: { type: Object, required: false },
+    isLogic: { type: Boolean, default: true },
   },
   emits:  ['update:modelValue'],
 
@@ -79,12 +80,19 @@ export default {
         .map((property) => {
           const workspaceId = this.form.workspace_id
           const formSlug = this.form.slug
+          const isLogic = this.isLogic
           return {
             identifier: property.id,
             name: property.name,
             component: (function () {
               return defineComponent({
                 extends: ColumnCondition,
+                props: {
+                  isLogic: {
+                    type: Boolean,
+                    default: isLogic
+                  }
+                },
                 computed: {
                   property() {
                     return property

@@ -36,6 +36,7 @@ export default {
   components: {},
   props: {
     modelValue: { type: Object, required: true },
+    isLogic: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
@@ -102,14 +103,14 @@ export default {
       return componentData
     },
     operators() {
-      return Object.keys(
-        this.available_filters[this.property.type].comparators,
-      ).map((key) => {
-        return {
-          value: key,
-          name: this.optionFilterNames(key),
-        }
-      })
+      return Object.entries(this.available_filters[this.property.type].comparators)
+        .filter(([key, value]) => !this.isLogic || !value.exclude_in_logic)
+        .map(([key]) => {
+          return {
+            value: key,
+            name: this.optionFilterNames(key),
+          }
+        })
     },
     needsInput() {
       const operator = this.selectedOperator()
