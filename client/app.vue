@@ -50,6 +50,7 @@
     <NotificationsWrapper />
     <feature-base />
     <SubscriptionModal />
+    <QuickRegister @after-login="handleAfterLogin" />
   </div>
 </template>
 
@@ -104,9 +105,16 @@ export default {
 
     const appStore = useAppStore()
 
+    const handleAfterLogin = () => {
+      // Emit a global event that can be listened to by any page
+      const event = new CustomEvent('after-quick-login')
+      window.dispatchEvent(event)
+    }
+
     return {
       layout: computed(() => appStore.layout),
       isIframe: useIsIframe(),
+      handleAfterLogin
     }
   },
 

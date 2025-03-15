@@ -104,8 +104,8 @@
       </v-button>
 
       <template v-if="useFeatureFlag('services.google.auth')">
-        <p class="text-gray-600/50 text-sm text-center my-4">
-          Or
+        <p class="text-gray-500 text-sm text-center my-4">
+          OR
         </p>
         <v-button
           native-type="buttom"
@@ -140,9 +140,6 @@
 </template>
 
 <script>
-import {opnFetch} from "~/composables/useOpnApi.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
-
 export default {
   name: "RegisterForm",
   components: {},
@@ -209,6 +206,10 @@ export default {
   },
 
   mounted() {
+    document.addEventListener('quick-login-complete', () => {
+      this.redirect()
+    })
+
     // Set appsumo license
     if (
       this.$route.query.appsumo_license !== undefined &&
@@ -226,62 +227,31 @@ export default {
       this.form.invite_token = this.$route.query?.invite_token
     }
   },
+  unmounted() {
+    document.removeEventListener('quick-login-complete', () => {
+      this.redirect()
+    })
+  },
 
   methods: {
     async register() {
-      let data
-      this.form.utm_data = this.$utm.value
+      const auth = useAuth()
+      
       // Reset captcha after submission
       if (import.meta.client && this.recaptchaSiteKey) {
         this.$refs.captcha.reset()
       }
+
       try {
-        // Register the user.
-        data = await this.form.post("/register")
+        this.form.utm_data = this.$utm.value
+        await auth.registerUser(this.form)
+
+        this.redirect()
       } catch (err) {
         useAlert().error(err.response?._data?.message)
-        return false
       }
-
-      // Log in the user.
-      const tokenData = await this.form.post("/login", { data: { remember: true } })
-
-      // Save the token with its expiration time.
-      this.authStore.setToken(tokenData.token, tokenData.expires_in)
-
-      const userData = await opnFetch("user")
-      this.authStore.setUser(userData)
-
-      const workspaces = await fetchAllWorkspaces()
-      this.workspaceStore.set(workspaces.data.value)
-
-      // Load forms
-      this.formsStore.loadAll(this.workspaceStore.currentId)
-
-      this.logEvent("register", {source: this.form.hear_about_us})
-      try {
-        useGtm().trackEvent({
-          event: 'register',
-          source: this.form.hear_about_us
-        })
-      } catch (error) {
-        console.error(error)
-      }
-
-      // AppSumo License
-      if (data.appsumo_license === false) {
-        useAlert().error(
-          "Invalid AppSumo license. This probably happened because this license was already" +
-          " attached to another OpnForm account. Please contact support.",
-        )
-      } else if (data.appsumo_license === true) {
-        useAlert().success(
-          "Your AppSumo license was successfully activated! You now have access to all the" +
-          " features of the AppSumo deal.",
-        )
-      }
-
-      // Redirect
+    },
+    redirect() {
       if (this.isQuick) {
         this.$emit("afterQuickLogin")
       } else {

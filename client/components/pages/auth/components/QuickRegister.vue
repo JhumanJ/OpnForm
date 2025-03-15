@@ -2,9 +2,10 @@
   <div>
     <!--  Login modal  -->
     <modal
-      :show="showLoginModal"
+      :show="appStore.quickLoginModal"
       max-width="lg"
-      @close="showLoginModal = false"
+      :closeable="!appStore.isUnauthorizedError"
+      @close="appStore.quickLoginModal=false"
     >
       <template #icon>
         <svg
@@ -31,14 +32,33 @@
           @open-register="openRegister"
           @after-quick-login="afterQuickLogin"
         />
+
+        <template v-if="appStore.isUnauthorizedError">
+          <p class="text-gray-500 text-sm text-center my-4">
+            OR
+          </p>
+          <UButton
+            icon="i-heroicons-arrow-right-on-rectangle"
+            type="button"
+            variant="outline"
+            color="neutral"
+            label="Logout"
+            :block="true"
+            @click="logout"
+          />
+          <p class="text-gray-500 text-sm text-center">
+            progress will be lost
+          </p>
+        </template>
       </div>
     </modal>
 
     <!--  Register modal  -->
     <modal
-      :show="showRegisterModal"
+      :show="appStore.quickRegisterModal"
       max-width="lg"
-      @close="$emit('close')"
+      :closeable="!appStore.isUnauthorizedError"
+      @close="appStore.quickRegisterModal=false"
     >
       <template #icon>
         <svg
@@ -70,43 +90,49 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import LoginForm from "./LoginForm.vue"
 import RegisterForm from "./RegisterForm.vue"
 
-export default {
-  name: "QuickRegister",
-  components: {
-    LoginForm,
-    RegisterForm,
-  },
-  props: {
-    showRegisterModal: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: ['afterLogin', 'close', 'reopen'],
+const appStore = useAppStore()
+const emit = defineEmits(['afterLogin', 'close', 'reopen'])
 
-  data: () => ({
-    showLoginModal: false,
-  }),
+onMounted(() => {
+  document.addEventListener('quick-login-complete', () => {
+    afterQuickLogin()
+  })
+})
 
-  mounted() {},
+onUnmounted(() => {
+  appStore.isUnauthorizedError = false
+  document.removeEventListener('quick-login-complete', () => {
+    afterQuickLogin()
+  })
+})
 
-  methods: {
-    openLogin() {
-      this.showLoginModal = true
-      this.$emit("close")
-    },
-    openRegister() {
-      this.showLoginModal = false
-      this.$emit("reopen")
-    },
-    afterQuickLogin() {
-      this.showLoginModal = false
-      this.$emit("afterLogin")
-    },
-  },
+const openLogin = () => {
+  appStore.quickLoginModal = true
+  appStore.quickRegisterModal = false
+  emit('close')
+}
+
+const openRegister = () => {
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = true
+  emit('reopen')
+}
+
+const afterQuickLogin = () => {
+  setTimeout(() => {
+    appStore.quickLoginModal = false
+    emit('afterLogin')
+  }, 1000)
+}
+
+const logout = async () => {
+  appStore.isUnauthorizedError = false
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = false
+  useRouter().push('/login')
 }
 </script>
