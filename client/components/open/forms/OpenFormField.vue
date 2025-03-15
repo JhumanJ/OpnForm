@@ -29,7 +29,11 @@
             role="button"
             @click.prevent="openAddFieldSidebar"
           >
-            <UTooltip text="Add new field" :popper="{ placement: 'right' }" class="z-[100]">
+            <UTooltip
+              text="Add new field"
+              :popper="{ placement: 'right' }"
+              class="z-[100]"
+            >
               <Icon
                 name="i-heroicons-plus-circle-20-solid"
                 class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
@@ -41,7 +45,11 @@
             role="button"
             @click.prevent="editFieldOptions"
           >
-            <UTooltip text="Edit field settings" :popper="{ placement: 'right' }" class="z-[100]">
+            <UTooltip
+              text="Edit field settings"
+              :popper="{ placement: 'right' }"
+              class="z-[100]"
+            >
               <Icon
                 name="heroicons:cog-8-tooth-20-solid"
                 class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
@@ -53,7 +61,11 @@
             role="button"
             @click.prevent="removeField"
           >
-            <UTooltip text="Delete field" :popper="{ placement: 'right' }" class="z-[100]">
+            <UTooltip
+              text="Delete field"
+              :popper="{ placement: 'right' }"
+              class="z-[100]"
+            >
               <Icon
                 name="heroicons:trash-20-solid"
                 class="w-5 h-5 !text-red-500 dark:!text-red-500 hover:!text-red-600 dark:hover:!text-red-600"

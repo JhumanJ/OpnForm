@@ -124,7 +124,6 @@
 </template>
 
 <script>
-import clonedeep from 'clone-deep'
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
