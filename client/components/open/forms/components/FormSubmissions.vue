@@ -42,6 +42,14 @@
             </VForm>
           </div>
           <div class="font-semibold flex gap-2">
+            <USelectMenu
+              class="w-32"
+              v-if="form.enable_partial_submissions"
+              v-model="selectedStatus"
+              :options="statusList"
+              value-attribute="value"
+              option-attribute="label"
+            />
             <UButton
               size="sm"
               color="white"
@@ -125,6 +133,12 @@ export default {
       }),
       displayColumns: {},
       wrapColumns: {},
+      statusList: [
+        { label: 'All', value: 'all' },
+        { label: 'Submitted', value: 'completed' },
+        { label: 'In Progress', value: 'partial' }
+      ],
+      selectedStatus: 'all',
     }
   },
 
@@ -147,7 +161,11 @@ export default {
     filteredData() {
       if (!this.tableData) return []
 
-      const filteredData = clonedeep(this.tableData)
+      let filteredData = clonedeep(this.tableData)
+
+      if (this.selectedStatus !== 'all') {
+        filteredData = filteredData.filter((submission) => submission.status === this.selectedStatus)
+      }
 
       if (this.searchForm.search === '' || this.searchForm.search === null) {
         return filteredData
@@ -169,6 +187,9 @@ export default {
       this.onFormChange()
     },
     'searchForm.search'() {
+      this.dataChanged()
+    },
+    'selectedStatus'() {
       this.dataChanged()
     }
   },
