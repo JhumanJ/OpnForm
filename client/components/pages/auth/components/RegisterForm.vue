@@ -74,23 +74,23 @@
       >
         <template #label>
           <label for="agree_terms">
-          I agree with the
-          <NuxtLink
-            :to="{ name: 'terms-conditions' }"
-            target="_blank"
-            class="underline"
-          >
-            Terms and conditions
-          </NuxtLink>
-          and
-          <NuxtLink
-            :to="{ name: 'privacy-policy' }"
-            target="_blank"
-            class="underline"
-          >
-            Privacy policy
-          </NuxtLink>
-          of the website and I accept them.
+            I agree with the
+            <NuxtLink
+              :to="{ name: 'terms-conditions' }"
+              target="_blank"
+              class="underline"
+            >
+              Terms and conditions
+            </NuxtLink>
+            and
+            <NuxtLink
+              :to="{ name: 'privacy-policy' }"
+              target="_blank"
+              class="underline"
+            >
+              Privacy policy
+            </NuxtLink>
+            of the website and I accept them.
           </label>
         </template>
       </checkbox-input>

@@ -1,5 +1,8 @@
 <template>
-  <div class="relative overflow-hidden" :class="[theme.fileInput.borderRadius]">
+  <div
+    class="relative overflow-hidden"
+    :class="[theme.fileInput.borderRadius]"
+  >
     <video
       id="webcam"
       autoplay
@@ -29,19 +32,22 @@
       class="absolute inset-0 pointer-events-none"
     >
       <!-- Semi-transparent overlay -->
-      <div class="absolute inset-0 bg-black/30"></div>
+      <div class="absolute inset-0 bg-black/30" />
       
       <!-- Scanning area (transparent window) -->
-      <div class="absolute inset-0 flex items-center justify-center" style="padding-bottom: 60px;">
+      <div
+        class="absolute inset-0 flex items-center justify-center"
+        style="padding-bottom: 60px;"
+      >
         <div class="relative w-4/5 h-3/5">
           <!-- Transparent window -->
-          <div class="absolute inset-0 bg-transparent border-0"></div>
+          <div class="absolute inset-0 bg-transparent border-0" />
           
           <!-- Corner indicators -->
-          <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white"></div>
-          <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white"></div>
-          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white"></div>
-          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white"></div>
+          <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white" />
+          <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white" />
+          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white" />
+          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white" />
         </div>
       </div>
     </div>
@@ -257,7 +263,7 @@ export default {
         }
 
         // Create constraints based on device capabilities
-        let constraints = {
+        const constraints = {
           audio: false,
           video: {
             width: { ideal: 1280 },
