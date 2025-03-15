@@ -1,5 +1,5 @@
 <template>
-  <div class="relative border">
+  <div class="relative overflow-hidden" :class="[theme.fileInput.borderRadius]">
     <video
       id="webcam"
       autoplay
@@ -9,59 +9,89 @@
         { hidden: !isCapturing }, 
         theme.fileInput.minHeight, 
         theme.fileInput.borderRadius,
-        'w-full h-full object-cover'
+        'w-full h-full object-cover border border-gray-400/30'
       ]"
       webkit-playsinline
     />
     <canvas
       id="canvas"
-      :class="{ hidden: !capturedImage }"
+      :class="[
+        { hidden: !capturedImage },
+        theme.fileInput.borderRadius,
+        theme.fileInput.minHeight,
+        'w-full h-full object-cover border border-gray-400/30'
+      ]"
     />
+    
+    <!-- Barcode scanning overlay -->
+    <div 
+      v-if="isCapturing && isBarcodeMode" 
+      class="absolute inset-0 pointer-events-none"
+    >
+      <!-- Semi-transparent overlay -->
+      <div class="absolute inset-0 bg-black/30"></div>
+      
+      <!-- Scanning area (transparent window) -->
+      <div class="absolute inset-0 flex items-center justify-center" style="padding-bottom: 60px;">
+        <div class="relative w-4/5 h-3/5">
+          <!-- Transparent window -->
+          <div class="absolute inset-0 bg-transparent border-0"></div>
+          
+          <!-- Corner indicators -->
+          <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white"></div>
+          <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white"></div>
+          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white"></div>
+          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white"></div>
+        </div>
+      </div>
+    </div>
+    
     <div
       v-if="cameraPermissionStatus === 'allowed'"
       class="absolute inset-x-0 grid place-content-center bottom-2"
     >
       <div
         v-if="isCapturing"
-        class="p-2 px-4 flex items-center justify-center text-xs space-x-2"
+        class="p-2 px-4 flex items-center justify-center text-xs space-x-3"
       >
         <span
           v-if="!isBarcodeMode"
-          class="cursor-pointer rounded-full w-14 h-14 border-2 grid place-content-center"
+          class="cursor-pointer rounded-full w-12 h-12 border-2 grid place-content-center bg-white/20 backdrop-blur-sm shadow-md"
           @click="processCapturedImage"
         >
           <span
-            class="cursor-pointer bg-gray-100 rounded-full w-10 h-10 grid place-content-center"
+            class="cursor-pointer bg-white rounded-full w-8 h-8 grid place-content-center"
           />
         </span>
         <span
-          class="text-white cursor-pointer"
+          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-sm shadow-md w-12 h-12 grid place-content-center"
           @click="cancelCamera"
         >
           <Icon
             name="heroicons:x-mark"
-            class="w-8 h-8"
+            class="w-6 h-6"
           />
         </span>
         <span
           v-if="isMobileDevice"
-          class="text-white cursor-pointer"
+          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-sm shadow-md w-12 h-12 grid place-content-center"
           @click="switchCamera"
         >
           <Icon
             name="heroicons:arrow-path"
-            class="w-8 h-8"
+            class="w-6 h-6"
           />
         </span>
       </div>
     </div>
     <div
       v-else-if="cameraPermissionStatus === 'blocked'"
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center rounded border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      :class="[theme.fileInput.borderRadius]"
       @click="openCameraUpload"
     >
       <Icon
-        name="heroicons:camera"
+        :name="isBarcodeMode ? 'i-material-symbols-barcode-scanner-rounded' : 'i-heroicons-camera'"
         class="w-6 h-6"
       />
       <p class="text-center font-bold">
@@ -80,7 +110,8 @@
 
     <div
       v-else-if="cameraPermissionStatus === 'loading'"
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center rounded border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      :class="[theme.fileInput.borderRadius]"
     >
       <div class="w-6 h-6">
         <Loader />
@@ -88,11 +119,12 @@
     </div>
     <div
       v-else
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center rounded border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      :class="[theme.fileInput.borderRadius]"
       @click="openCameraUpload"
     >
       <Icon
-        name="heroicons:video-camera-slash"
+        :name="isBarcodeMode ? 'i-material-symbols-barcode-scanner-rounded' : 'heroicons:video-camera-slash'"
         class="w-6 h-6"
       />
       <p class="text-center font-bold">
@@ -195,16 +227,11 @@ export default {
 
     async switchCamera() {
       try {
-        // Stop current camera
-        if (this.quaggaInitialized) {
-          Quagga.stop()
-          this.quaggaInitialized = false
-        }
-        this.webcam.stop()
+        // Stop current camera and clean up resources
+        this.cleanupCurrentStream()
 
-        // Toggle facing mode considering barcode mode
-        this.currentFacingMode = this.isBarcodeMode ? 'environment' : 
-          (this.currentFacingMode === 'user' ? 'environment' : 'user')
+        // Toggle facing mode
+        this.currentFacingMode = this.currentFacingMode === 'user' ? 'environment' : 'user'
 
         // Restart camera
         await this.openCameraUpload()
@@ -222,22 +249,49 @@ export default {
         const webcamElement = document.getElementById("webcam")
         const canvasElement = document.getElementById("canvas")
 
-        const constraints = {
+        // Determine the facing mode to use
+        let facingMode = this.currentFacingMode
+        if (this.isBarcodeMode && this.currentFacingMode === 'user') {
+          // Force environment mode for barcode scanning
+          facingMode = 'environment'
+        }
+
+        // Create constraints based on device capabilities
+        let constraints = {
           audio: false,
           video: {
-            facingMode: this.isBarcodeMode ? 'environment' : this.currentFacingMode,
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia(constraints)
+        // Use exact constraints for mobile devices to ensure proper camera selection
+        if (this.isMobileDevice) {
+          constraints.video.facingMode = { exact: facingMode }
+        } else {
+          constraints.video.facingMode = facingMode
+        }
+
+        // Try to get the stream with the specified constraints
+        let stream
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints)
+        } catch (err) {
+          // If exact constraint fails, fall back to preference
+          if (this.isMobileDevice && err.name === 'OverconstrainedError') {
+            constraints.video.facingMode = facingMode
+            stream = await navigator.mediaDevices.getUserMedia(constraints)
+          } else {
+            throw err
+          }
+        }
+
         this.mediaStream = stream  // Store the stream reference
         webcamElement.srcObject = stream
         
         this.webcam = new Webcam(
           webcamElement,
-          this.isBarcodeMode ? 'environment' : this.currentFacingMode,
+          facingMode,
           canvasElement
         )
         
@@ -269,9 +323,18 @@ export default {
             type: "LiveStream",
             target: document.getElementById("webcam"),
             constraints: {
-              facingMode: "environment"
+              facingMode: this.currentFacingMode,
+              width: { min: 640 },
+              height: { min: 480 },
+              aspectRatio: { min: 1, max: 2 }
             },
           },
+          locator: {
+            patchSize: "medium",
+            halfSample: true
+          },
+          numOfWorkers: navigator.hardwareConcurrency || 4,
+          frequency: 10,
           decoder: {
             readers: this.decoders || []
           },
@@ -326,3 +389,4 @@ export default {
   },
 }
 </script>
+
