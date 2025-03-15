@@ -26,6 +26,10 @@ UI and Styling
 - Implement responsive design with Tailwind CSS; use a mobile-first approach.
 - Build UI components using atomic design principles, organizing them from smallest to largest (e.g., atoms, molecules, organisms, pages).
 
+Forms
+- For forms inputs, use the components in client/components/forms such as <TextInput> etc.
+- Wrap then in @VForm.vue
+
 Performance Optimization
 - Leverage VueUse functions where applicable to enhance reactivity and performance.
 - Wrap asynchronous components in Suspense with a fallback UI made with <USkeleton/> components.
