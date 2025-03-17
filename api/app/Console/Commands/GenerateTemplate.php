@@ -24,6 +24,8 @@ class GenerateTemplate extends Command
      */
     protected $description = 'Generates a new form template from a prompt';
 
+    public $generatedTemplate;
+
     public const MAX_RELATED_TEMPLATES = 8;
 
     public const FORM_STRUCTURE_PROMPT = <<<'EOD'
@@ -281,6 +283,7 @@ class GenerateTemplate extends Command
             $relatedTemplates
         );
         $this->info('/form-templates/' . $template->slug);
+        $this->generatedTemplate = $template;
 
         // Set reverse related Templates
         $this->setReverseRelatedTemplates($template);

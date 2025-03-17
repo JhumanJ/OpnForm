@@ -225,6 +225,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::group(['middleware' => 'moderator', 'prefix' => 'moderator'], function () {
+        Route::post(
+            'create-template',
+            [\App\Http\Controllers\Admin\AdminController::class, 'createTemplate']
+        );
         Route::get(
             'fetch-user/{identifier}',
             [\App\Http\Controllers\Admin\AdminController::class, 'fetchUser']
