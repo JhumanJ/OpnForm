@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Console\Commands\GenerateTemplate;
 use App\Http\Controllers\Controller;
 use App\Models\Forms\Form;
 use App\Models\User;
@@ -16,6 +17,28 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('moderator');
+    }
+
+    public function createTemplate(Request $request)
+    {
+        $request->validate([
+            'template_prompt' => 'required|string|max:1000'
+        ]);
+
+        $command = new GenerateTemplate();
+        $command->setLaravel(app());
+
+        $input = new \Symfony\Component\Console\Input\ArrayInput([
+            'prompt' => $request->template_prompt
+        ]);
+        $output = new \Symfony\Component\Console\Output\BufferedOutput();
+
+        $command->run($input, $output);
+        $template = $command->generatedTemplate ?? null;
+
+        return $this->success([
+            'template_slug' => $template?->slug ?? null
+        ]);
     }
 
     public function fetchUser($identifier)
