@@ -22,7 +22,7 @@ class AdminController extends Controller
     public function createTemplate(Request $request)
     {
         $request->validate([
-            'template_prompt' => 'required|string|max:1000'
+            'template_prompt' => 'required|string|max:4000'
         ]);
 
         $command = new GenerateTemplate();
