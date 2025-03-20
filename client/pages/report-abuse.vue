@@ -6,7 +6,7 @@
     >
       <iframe
         id="opnform-form-abuse-report-wnociq"
-        style="border:none;width:100%;min-height: 600px;"
+        style="border:none;width:100%;min-height: 1000px;"
         src="https://opnform.com/forms/opnform-form-abuse-report-wnociq"
       />
     </div>
