@@ -15,6 +15,19 @@
         :theme="theme"
       />
       <div>
+        <slot
+          v-if="helpPosition === 'above_input'"
+          name="help"
+        >
+          <InputHelp
+            :help="help"
+            :help-classes="theme.default.help"
+          >
+            <template #after-help>
+              <slot name="bottom_after_help" />
+            </template>
+          </InputHelp>
+        </slot>
         <slot name="label">
           <label
             :aria-label="id ? id : name"
@@ -28,7 +41,10 @@
             >*</span>
           </label>
         </slot>
-        <slot name="help">
+        <slot
+          v-if="helpPosition === 'below_input'"
+          name="help"
+        >
           <InputHelp
             :help="help"
             :help-classes="theme.default.help"
