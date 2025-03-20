@@ -15,7 +15,7 @@
         class="m-6 flex flex-col items-center space-y-4"
       >
         <p class="text-center">
-          Unable to sign it at the moment.
+          Unable to sign in at the moment.
         </p>
         <v-button
           :to="{ name: 'login' }"
@@ -29,6 +29,7 @@
 
 <script setup>
 import { useNuxtApp } from "nuxt/app"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const { $utm } = useNuxtApp()
 const router = useRouter()
@@ -53,22 +54,52 @@ const handleCallback = async () => {
     if (!isNewUser) {
       // Handle existing user login
       if (window.opener) {
-        window.opener.document.dispatchEvent(new CustomEvent('quick-login-complete'))
+        try {
+          // Use the WindowMessage composable for more reliable communication
+          const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+          
+          // Send the login-complete message and wait for acknowledgment
+          await windowMessage.send(window.opener, {
+            waitForAcknowledgment: true,
+            timeout: 500
+          })
+          
+          // Now we can safely close the window
+          window.close()
+          
+          // If window doesn't close (some browsers prevent it), show a message
+          loading.value = false
+        } catch (err) {
+          console.error("Error in social callback:", err)
+          loading.value = false
+        }
+      } else {
+        // No opener, redirect to home
+        router.push({ name: "home" })
       }
-      window.close()
     } else {
       // Handle new user registration
       router.push({ name: "forms-create" })
       useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
     }
   } catch (error) {
-    useAlert().error(error.response._data.message)
+    console.error("Social login error:", error)
+    useAlert().error(error.response?._data?.message || "Authentication failed")
     loading.value = false
   }
 }
 
 onMounted(() => {
-    handleCallback()
+  // Set a timeout to ensure we don't get stuck in loading state
+  const timeoutId = setTimeout(() => {
+    if (loading.value) {
+      loading.value = false
+      console.error("Social login timed out")
+    }
+  }, 10000) // 10 second timeout
+  
+  handleCallback().finally(() => {
+    clearTimeout(timeoutId)
+  })
 })
-
 </script>

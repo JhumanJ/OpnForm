@@ -28,6 +28,7 @@ import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFo
 import { initForm } from "~/composables/forms/initForm.js"
 import { fetchTemplate } from "~/stores/templates.js"
 import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
 const templatesStore = useTemplatesStore()
@@ -84,13 +85,11 @@ onMounted(() => {
   }
   stateReady.value = true
 
-  // Add event listener for after quick login
-  window.addEventListener('after-quick-login', afterLogin)
-})
-
-onUnmounted(() => {
-  // Clean up the event listener
-  window.removeEventListener('after-quick-login', afterLogin)
+  // Set up window message listener for after-login
+  const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+  afterLoginMessage.listen(() => {
+    afterLogin()
+  }, { useMessageChannel: false })
 })
 
 const afterLogin = () => {

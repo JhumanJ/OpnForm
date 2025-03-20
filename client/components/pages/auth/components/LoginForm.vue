@@ -97,6 +97,7 @@
 
 <script>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 export default {
   name: "LoginForm",
@@ -111,7 +112,7 @@ export default {
     },
   },
 
-  emits: ['afterQuickLogin', 'openRegister'],
+  emits: ['openRegister'],
   setup() {
     return {
       appStore: useAppStore(),
@@ -135,12 +136,11 @@ export default {
   computed: {},
 
   mounted() {
-    document.addEventListener('quick-login-complete', () => {
-      this.redirect()
-    })
-  },
-  unmounted() {
-    document.removeEventListener('quick-login-complete', () => {
+    // Use the window message composable
+    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+    
+    // Listen for login complete messages
+    windowMessage.listen(() => {
       this.redirect()
     })
   },
@@ -164,7 +164,9 @@ export default {
 
     redirect() {
       if (this.isQuick) {
-        this.$emit("afterQuickLogin")
+        // Use window message instead of event
+        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+        afterLoginMessage.send(window)
         return
       }
 

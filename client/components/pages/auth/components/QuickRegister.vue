@@ -2,6 +2,7 @@
   <div>
     <!--  Login modal  -->
     <modal
+      compact-header
       :show="appStore.quickLoginModal"
       max-width="lg"
       :closeable="!appStore.isUnauthorizedError"
@@ -27,27 +28,36 @@
         Login to OpnForm
       </template>
       <div class="px-4">
+        <template v-if="appStore.isUnauthorizedError">
+          <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-md">
+            <p class="text-amber-800 dark:text-amber-200 text-sm font-medium">
+              Your session has expired. Please log in again to continue.
+            </p>
+          </div>
+        </template>
         <login-form
           :is-quick="true"
           @open-register="openRegister"
-          @after-quick-login="afterQuickLogin"
         />
 
         <template v-if="appStore.isUnauthorizedError">
-          <p class="text-gray-500 text-sm text-center my-4">
-            OR
-          </p>
+          <div class="flex items-center my-6">
+            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1"></div>
+            <div class="px-4 text-gray-500 text-sm">or</div>
+            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1"></div>
+          </div>
           <UButton
             icon="i-heroicons-arrow-right-on-rectangle"
             type="button"
-            variant="outline"
-            color="neutral"
+            variant="solid"
+            color="white"
             label="Logout"
             :block="true"
             @click="logout"
+            size="lg"
           />
-          <p class="text-gray-500 text-sm text-center">
-            progress will be lost
+          <p class="text-gray-500 text-sm text-center mt-2">
+            Progress will be lost.
           </p>
         </template>
       </div>
@@ -83,7 +93,6 @@
         <register-form
           :is-quick="true"
           @open-login="openLogin"
-          @after-quick-login="afterQuickLogin"
         />
       </div>
     </modal>
@@ -93,22 +102,55 @@
 <script setup>
 import LoginForm from "./LoginForm.vue"
 import RegisterForm from "./RegisterForm.vue"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
-const emit = defineEmits(['afterLogin', 'close', 'reopen'])
+const props = defineProps({
+  redirectUrl: {
+    type: String,
+    default: '',
+  },
+})
+
+// Define emits for component interactions
+const emit = defineEmits(['close', 'reopen'])
+
+const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+
+// Set up a listener for after-login messages
+const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
 
 onMounted(() => {
-  document.addEventListener('quick-login-complete', () => {
+  // Listen for login-complete messages from popup window
+  windowMessage.listen(() => {
+    // Handle social login completion
+    handleSocialLogin()
+  })
+  
+  // Set up after-login listener for component communication
+  afterLoginMessage.listen(() => {
     afterQuickLogin()
+  })
+  
+  // Reset the unauthorized error flag when component is unmounted
+  onUnmounted(() => {
+    appStore.isUnauthorizedError = false
   })
 })
 
-onUnmounted(() => {
-  appStore.isUnauthorizedError = false
-  document.removeEventListener('quick-login-complete', () => {
-    afterQuickLogin()
-  })
-})
+// Handle social login completion
+const handleSocialLogin = () => {
+  // This function is only called for social logins, so we refresh tokens
+  const authStore = useAuthStore()
+  const tokenValue = useCookie("token").value
+  const adminTokenValue = useCookie("admin_token").value
+  
+  // Re-initialize the store with the latest tokens from cookies
+  authStore.initStore(tokenValue, adminTokenValue)
+  
+  // Then proceed with normal login flow
+  afterQuickLogin()
+}
 
 const openLogin = () => {
   appStore.quickLoginModal = true
@@ -122,11 +164,23 @@ const openRegister = () => {
   emit('reopen')
 }
 
-const afterQuickLogin = () => {
-  setTimeout(() => {
-    appStore.quickLoginModal = false
-    emit('afterLogin')
-  }, 1000)
+const afterQuickLogin = async () => {
+  // Reset unauthorized error flag immediately
+  appStore.isUnauthorizedError = false
+  
+  // Verify authentication is complete using the useAuth composable
+  const auth = useAuth()
+  await auth.verifyAuthentication()
+  
+  // Close both login and register modals
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = false
+  
+  // Show success alert
+  useAlert().success("Successfully logged in. Welcome back!")
+  
+  // Use the window message for after-login instead of emitting the event
+  afterLoginMessage.send(window, { useMessageChannel: false })
 }
 
 const logout = async () => {

@@ -140,6 +140,8 @@
 </template>
 
 <script>
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
+
 export default {
   name: "RegisterForm",
   components: {},
@@ -150,7 +152,7 @@ export default {
       default: false,
     },
   },
-  emits: ['afterQuickLogin', 'openLogin'],
+  emits: ['openLogin'],
 
   setup() {
     const { $utm } = useNuxtApp()
@@ -206,7 +208,11 @@ export default {
   },
 
   mounted() {
-    document.addEventListener('quick-login-complete', () => {
+    // Use the window message composable
+    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+    
+    // Listen for login complete messages
+    windowMessage.listen(() => {
       this.redirect()
     })
 
@@ -226,11 +232,6 @@ export default {
       }
       this.form.invite_token = this.$route.query?.invite_token
     }
-  },
-  unmounted() {
-    document.removeEventListener('quick-login-complete', () => {
-      this.redirect()
-    })
   },
 
   methods: {
@@ -253,7 +254,9 @@ export default {
     },
     redirect() {
       if (this.isQuick) {
-        this.$emit("afterQuickLogin")
+        // Use window message instead of event
+        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+        afterLoginMessage.send(window)
       } else {
         // If is invite just redirect to home
         if (this.form.invite_token) {
