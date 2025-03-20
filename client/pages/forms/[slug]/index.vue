@@ -35,18 +35,7 @@
       :class="{'mt-6':!isIframe, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && (form.width === 'centered'), 'max-w-7xl': (form && form.width === 'full' && !isIframe)}"
     >
       <div v-if="!formLoading && !form">
-        <h1
-          class="mt-6"
-          v-text="'Whoops'"
-        />
-        <p class="mt-6">
-          Unfortunately we could not find this form. It may have been deleted.
-        </p>
-        <p class="mb-10 mt-4">
-          <router-link :to="{name:'index'}">
-            Create your form for free with OpnForm
-          </router-link>
-        </p>
+        <NotFoundForm />
       </div>
       <div v-else-if="formLoading">
         <p class="text-center mt-6 p-4">
@@ -115,12 +104,14 @@ const passwordEntered = function (password) {
 
 const loadForm = async (setup=false) => {
   if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
+  const event = useRequestEvent()
 
   if (setup) {
     const {data, error} = await formsStore.publicLoad(slug)
     if (error.value) {
       console.error(`Error loading form [${slug}]:`,error.value)
       formsStore.stopLoading()
+      setResponseStatus(event, 404, 'Page Not Found')
       return
     }
     formsStore.save(data.value)
@@ -130,6 +121,7 @@ const loadForm = async (setup=false) => {
       formsStore.save(data)
     } catch (e) {
       formsStore.stopLoading()
+      setResponseStatus(event, 404, 'Page Not Found')
       return
     }
   }
