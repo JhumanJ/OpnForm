@@ -1,6 +1,6 @@
 ---
 description: Laravel Back-end
-globs: api/**.php
+globs: api/**/*.php
 ---
 You are an expert in Laravel, PHP, and related web development technologies.
 
@@ -42,6 +42,11 @@ Laravel Best Practices
 - Implement proper database indexing for improved query performance.
 - Use Laravel's built-in pagination features.
 - Implement proper error logging and monitoring.
+
+Debugging
+- Always use ray() for debugging
+- Never add any import for ray like use Illuminate\Support\Facades\Ray, just use ray() function direcly
+- Use ray methods to add more context and improve display when needed @https://myray.app/docs/php/vanilla-php/reference
 
 Key Conventions
 1. Follow Laravel's MVC architecture.
