@@ -11,7 +11,7 @@
       class="w-full flex flex-grow"
       :error="error"
       :is-guest="isGuest"
-      @open-register="registerModal = true"
+      @open-register="appStore.quickRegisterModal = true"
     />
     <div
       v-else
@@ -19,25 +19,18 @@
     >
       <Loader class="h-6 w-6 text-nt-blue mx-auto" />
     </div>
-    
-
-    <quick-register
-      :show-register-modal="registerModal"
-      @close="registerModal = false"
-      @reopen="registerModal = true"
-      @after-login="afterLogin"
-    />
   </div>
 </template>
 
 <script setup>
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
-import QuickRegister from "~/components/pages/auth/components/QuickRegister.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
 import { fetchTemplate } from "~/stores/templates.js"
 import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
+const appStore = useAppStore()
 const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
@@ -63,7 +56,6 @@ definePageMeta({
 // Data
 const stateReady = ref(false)
 const error = ref("")
-const registerModal = ref(false)
 const isGuest = ref(true)
 const showInitialFormModal = ref(false)
 
@@ -92,10 +84,15 @@ onMounted(() => {
     showInitialFormModal.value = true
   }
   stateReady.value = true
+
+  // Set up window message listener for after-login
+  const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+  afterLoginMessage.listen(() => {
+    afterLogin()
+  }, { useMessageChannel: false })
 })
 
 const afterLogin = () => {
-  registerModal.value = false
   isGuest.value = false
   fetchAllWorkspaces()
   setTimeout(() => {

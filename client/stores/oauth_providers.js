@@ -76,7 +76,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       }
     })
       .then((data) => {
-        window.location.href = data.url
+        window.open(data.url, '_blank')
       })
       .catch((error) => {
         try {

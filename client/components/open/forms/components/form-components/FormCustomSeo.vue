@@ -114,7 +114,7 @@ export default {
         this.form.seo_meta[keyname] = null
     })
 
-    if (this.form.custom_domain && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
+    if (this.form.custom_domain && this.workspace?.custom_domains && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
       this.form.custom_domain = null
     }
   }

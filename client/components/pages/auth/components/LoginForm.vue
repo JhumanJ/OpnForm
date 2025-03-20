@@ -97,8 +97,7 @@
 
 <script>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
-import { opnFetch } from "~/composables/useOpnApi.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 export default {
   name: "LoginForm",
@@ -113,7 +112,7 @@ export default {
     },
   },
 
-  emits: ['afterQuickLogin', 'openRegister'],
+  emits: ['openRegister'],
   setup() {
     return {
       appStore: useAppStore(),
@@ -136,44 +135,38 @@ export default {
 
   computed: {},
 
+  mounted() {
+    // Use the window message composable
+    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+    
+    // Listen for login complete messages
+    windowMessage.listen(() => {
+      this.redirect()
+    })
+  },
+
   methods: {
-    login() {
-      // Submit the form.
+    async login() {
       this.loading = true
-      this.form
-        .post("login", { data: { remember: this.remember } })
-        .then(async (data) => {
-          // Save the token with its expiration time
-          this.authStore.setToken(data.token, data.expires_in)
-
-          const [userDataResponse, workspacesResponse] = await Promise.all([
-            opnFetch("user"),
-            fetchAllWorkspaces(),
-          ])
-          this.authStore.setUser(userDataResponse)
-          this.workspaceStore.set(workspacesResponse.data.value)
-
-          // Load forms
-          this.formsStore.loadAll(this.workspaceStore.currentId)
-
-          // Redirect home.
+      const auth = useAuth()
+      
+      try {
+        await auth.loginWithCredentials(this.form, this.remember)
+        this.redirect()
+      } catch (error) {
+        if (error.response?._data?.message == "You must change your credentials when in self host mode") {
           this.redirect()
-        })
-        .catch((error) => {
-          if (error.response?._data?.message == "You must change your credentials when in self host mode") {
-            // this.showForgotModal = true
-            this.redirect()
-          }
-
-        })
-        .finally(() => {
-          this.loading = false
-        })
+        }
+      } finally {
+        this.loading = false
+      }
     },
 
     redirect() {
       if (this.isQuick) {
-        this.$emit("afterQuickLogin")
+        // Use window message instead of event
+        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+        afterLoginMessage.send(window)
         return
       }
 
