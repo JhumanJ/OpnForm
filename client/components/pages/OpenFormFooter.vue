@@ -63,6 +63,13 @@
             >
               Terms & Conditions
             </router-link>
+
+            <router-link
+              :to="{ name: 'report-abuse' }"
+              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            >
+              Report Abuse
+            </router-link>
           </template>
         </div>
       </div>
