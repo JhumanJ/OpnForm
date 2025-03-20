@@ -31,8 +31,8 @@
               class="w-8 h-8 mb-2 text-nt-blue"
             />
             <span class="font-medium">
-            {{ action.text }}
-          </span>
+              {{ action.text }}
+            </span>
           </NuxtLink>
         </div>
         
@@ -80,8 +80,8 @@ const crisp = useCrisp()
 const actions = [
   {
     to: { name: 'forms-create-guest' },
-    icon: 'i-heroicons-check-circle',
-    text: 'Start Fresh'
+    icon: 'i-heroicons-rocket-launch',
+    text: 'Create Form'
   },
   {
     to: { name: 'login' },
