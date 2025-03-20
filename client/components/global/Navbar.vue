@@ -21,8 +21,7 @@
           </NuxtLink>
           <workspace-dropdown class="ml-6" />
         </div>
-        <div
-          v-if="showAuth"
+        <div 
           class="hidden md:flex gap-x-2 ml-auto"
         >
           <NuxtLink
@@ -86,11 +85,9 @@
           </NuxtLink>
         </div>
         <div
-          v-if="showAuth"
           class="hidden md:block pl-5 border-gray-300 border-r h-5"
         />
         <div
-          v-if="showAuth"
           class="block"
         >
           <div class="flex items-center">
@@ -316,20 +313,15 @@ export default {
     workspace() {
       return this.workspacesStore.getCurrent
     },
-    showAuth() {
-      return this.$route.name && this.$route.name !== "forms-slug"
-    },
     hasNavbar() {
       if (this.isIframe) return false
 
       if (this.$route.name && this.$route.name === "forms-slug") {
         if (this.form) {
-          // If there is a cover, or if branding is hidden remove nav
-          if (this.form.cover_picture || this.form.no_branding) {
-            return false
-          }
-        } else {
           return false
+        } else {
+          // Form not found/404 case - show the navbar
+          return true
         }
       }
       return !this.appStore.navbarHidden
