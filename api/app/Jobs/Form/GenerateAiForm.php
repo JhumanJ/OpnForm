@@ -22,7 +22,9 @@ class GenerateAiForm implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public AiFormCompletion $completion) {}
+    public function __construct(public AiFormCompletion $completion)
+    {
+    }
 
     /**
      * Execute the job.

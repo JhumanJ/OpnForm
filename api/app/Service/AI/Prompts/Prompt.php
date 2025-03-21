@@ -23,7 +23,7 @@ abstract class Prompt
 
     /**
      * Static method to create and execute a prompt in one step
-     * 
+     *
      * @param array $args Arguments to pass to the prompt constructor
      * @return mixed The result of executing the prompt
      */
