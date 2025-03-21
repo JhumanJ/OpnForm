@@ -54,6 +54,7 @@
           :form="form"
           class="mb-10"
           :dark-mode="darkMode"
+          :mode="FormMode.LIVE"
           @password-entered="passwordEntered"
         />
       </template>
@@ -72,6 +73,7 @@ import {
   focusOnFirstFormElement,
   useDarkMode
 } from '~/lib/forms/public-page'
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const crisp = useCrisp()
 const formsStore = useFormsStore()

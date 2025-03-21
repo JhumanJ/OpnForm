@@ -68,7 +68,6 @@ class Form extends Model implements CachableAttributes
         'color',
         'uppercase_labels',
         'no_branding',
-        'hide_title',
         'transparent_background',
 
         // Custom Code
