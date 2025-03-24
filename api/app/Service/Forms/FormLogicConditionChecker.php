@@ -393,9 +393,9 @@ class FormLogicConditionChecker
                     return true;
                 }
             case 'exists_in_submissions':
-                return !$this->checkExistsInSubmissions($propertyCondition, $value);
-            case 'does_not_exist_in_submissions':
                 return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;
@@ -433,9 +433,9 @@ class FormLogicConditionChecker
             case 'content_length_less_than_or_equal_to':
                 return $this->checkLength($propertyCondition, $value, '<=');
             case 'exists_in_submissions':
-                return !$this->checkExistsInSubmissions($propertyCondition, $value);
-            case 'does_not_exist_in_submissions':
                 return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;
