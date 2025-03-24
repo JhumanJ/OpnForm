@@ -22,7 +22,6 @@ class FormPropertyLogicRule {
 
   isValid() {
     if (this.logic && this.logic["conditions"]) {
-      console.log('logic', this.logic)
       this.checkConditions(this.logic["conditions"])
       this.checkActions(
         this.logic && this.logic["actions"] ? this.logic["actions"] : null,

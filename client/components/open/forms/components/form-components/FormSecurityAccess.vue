@@ -72,7 +72,10 @@
     <p class="text-gray-500 text-sm">
       Protect your form, and your sensitive files.
     </p>
-    <div v-if="hasCaptchaProviders" class="flex items-start gap-6 flex-wrap">
+    <div
+      v-if="hasCaptchaProviders"
+      class="flex items-start gap-6 flex-wrap"
+    >
       <ToggleSwitchInput
         name="use_captcha"
         :form="form"

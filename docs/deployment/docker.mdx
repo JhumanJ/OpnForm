@@ -19,6 +19,19 @@ Looking to develop OpnForm locally? Check out our [Docker Development Setup](/de
    cd OpnForm
    ```
 
+<Warning>
+**Important for Windows Users**: Ensure script files maintain LF (Unix-style) line endings. If you're using Windows, configure Git to preserve line endings:
+```bash
+git config core.autocrlf false
+```
+And check/fix the artisan script before running setup:
+```bash
+# Using Git Bash or WSL
+dos2unix api/artisan
+```
+Otherwise, Docker containers may hang at "Waiting for DB to be ready" during startup.
+</Warning>
+
 2. Run the setup script:
    ```bash
    chmod +x scripts/docker-setup.sh
@@ -194,6 +207,22 @@ docker compose exec db pg_isready
 # View database logs
 docker compose logs db
 ```
+
+If the API container is stuck on "Waiting for DB to be ready":
+```bash
+# Check for line ending issues in the artisan script
+# The file should use LF (Unix) line endings, not CRLF (Windows)
+
+# Fix line endings on Unix/Mac:
+sed -i 's/\r$//' api/artisan
+
+# Fix line endings on Windows (using Git Bash or WSL):
+dos2unix api/artisan
+```
+
+<Note>
+**Line Ending Issue**: When using Git or code editors on Windows, line endings in the `artisan` script may be converted from LF (Unix-style) to CRLF (Windows-style). This prevents the Docker container from properly executing the script, causing it to hang at "Waiting for DB to be ready". Always ensure script files maintain LF line endings.
+</Note>
 
 ### Cache Issues
 
