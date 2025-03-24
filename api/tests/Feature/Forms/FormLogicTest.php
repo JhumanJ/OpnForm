@@ -648,13 +648,6 @@ it('cannot submit form with failed exists_in_submissions validation condition', 
     $formData = [$targetField['id'] => 'existing@test.com'];
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
-        ->assertSuccessful()
-        ->assertJson([
-            'type' => 'success',
-            'message' => 'Form submission saved.',
-        ]);
-
-    $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
         ->assertJson([
             'message' => $validationMessage,
@@ -699,6 +692,13 @@ it('cannot submit form with failed does_not_exist_in_submissions validation cond
     $form->update();
 
     $formData = [$targetField['id'] => 'existing@test.com'];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
