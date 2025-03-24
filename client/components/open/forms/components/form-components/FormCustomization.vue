@@ -145,13 +145,8 @@
     <image-input
       name="cover_picture"
       :form="form"
-      label="Color image"
+      label="Cover image"
       help="Not visible when form is embedded"
-    />
-    <toggle-switch-input
-      name="hide_title"
-      :form="form"
-      label="Hide Title"
     />
     <toggle-switch-input
       name="no_branding"
@@ -172,11 +167,6 @@
     <EditorSectionHeader
       icon="heroicons:cog-6-tooth-16-solid"
       title="Advanced Options"
-    />
-    <toggle-switch-input
-      name="hide_title"
-      :form="form"
-      label="Hide Form Title"
     />
     <toggle-switch-input
       name="show_progress_bar"
