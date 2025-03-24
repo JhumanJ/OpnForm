@@ -36,7 +36,7 @@ export default {
   components: {},
   props: {
     modelValue: { type: Object, required: true },
-    isLogic: { type: Boolean, default: false },
+    customValidation: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
@@ -104,7 +104,7 @@ export default {
     },
     operators() {
       return Object.entries(this.available_filters[this.property.type].comparators)
-        .filter(([key, value]) => !this.isLogic || !value.exclude_in_logic)
+        .filter(([key, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
         .map(([key]) => {
           return {
             value: key,

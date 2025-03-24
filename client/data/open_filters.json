@@ -73,7 +73,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       },
       "does_not_exist_in_submissions": {
         "expected_type": "boolean",
@@ -81,7 +81,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       }
     }
   },
@@ -159,7 +159,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       },
       "does_not_exist_in_submissions": {
         "expected_type": "boolean",
@@ -167,7 +167,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       }
     }
   },
@@ -245,7 +245,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       },
       "does_not_exist_in_submissions": {
         "expected_type": "boolean",
@@ -253,7 +253,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       }
     }
   },
@@ -331,7 +331,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       },
       "does_not_exist_in_submissions": {
         "expected_type": "boolean",
@@ -339,7 +339,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       }
     }
   },
@@ -433,7 +433,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       },
       "does_not_exist_in_submissions": {
         "expected_type": "boolean",
@@ -441,7 +441,7 @@
           "type": "enum",
           "values": [true]
         },
-        "exclude_in_logic": true
+        "custom_validation_only": true
       }
     }
   },
