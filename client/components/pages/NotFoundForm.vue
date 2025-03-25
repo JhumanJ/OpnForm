@@ -46,19 +46,28 @@
           <ul class="mt-4 space-y-2 text-sm">
             <li>
               Do you want to know why users choose OpnForm? 
-              <NuxtLink class="text-blue-500 hover:text-blue-600" :to="{ name: 'ai-form-builder' }">
+              <NuxtLink
+                class="text-blue-500 hover:text-blue-600"
+                :to="{ name: 'ai-form-builder' }"
+              >
                 Learn more here!
               </NuxtLink>
             </li>
             <li>
               Browse Templates
-              <NuxtLink class="text-blue-500 hover:text-blue-600" :to="{ name: 'templates' }">
+              <NuxtLink
+                class="text-blue-500 hover:text-blue-600"
+                :to="{ name: 'templates' }"
+              >
                 Get inspired with ready-to-use form templates!
               </NuxtLink>
             </li>
             <li>
               Check Out Our Help Center
-              <NuxtLink class="text-blue-500 hover:text-blue-600" to="https://help.opnform.com/en/">
+              <NuxtLink
+                class="text-blue-500 hover:text-blue-600"
+                to="https://help.opnform.com/en/"
+              >
                 Find quick answers to common questions.
               </NuxtLink>
             </li>
@@ -69,7 +78,6 @@
       <div class="mt-20 border-t">
         <OpenFormFooter />
       </div>
-      
     </section>
   </main>
 </template>

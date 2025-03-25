@@ -124,6 +124,14 @@ const field = computed(() => {
     : null
 })
 
+// Only set the page once when the component is mounted
+// This prevents page jumps when editing field properties
+onMounted(() => {
+  if (selectedFieldIndex.value !== null) {
+    workingFormStore.setPageForField(selectedFieldIndex.value)
+  }
+})
+
 const isBlockField = computed(() => {
   return field.value && field.value.type.startsWith('nf')
 })
@@ -147,6 +155,8 @@ function removeBlock() {
 }
 
 function closeSidebar() {
+  // Explicitly clear the selected field index to prevent issues with subsequent block additions
+  workingFormStore.selectedFieldIndex = null
   workingFormStore.closeEditFieldSidebar()
 }
 

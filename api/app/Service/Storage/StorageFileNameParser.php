@@ -33,7 +33,7 @@ class StorageFileNameParser
             $fileName = substr($this->fileName, 0, 50) . '_' . $this->uuid . '.' . $this->extension;
             $fileName = preg_replace('#\p{C}+#u', '', $fileName); // avoid CorruptedPathDetected exceptions
 
-            return S3KeyCleaner::sanitize($fileName);
+            return $fileName ? S3KeyCleaner::sanitize($fileName) : null;
         }
 
         return $this->uuid;

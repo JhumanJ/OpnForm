@@ -104,11 +104,11 @@ export default {
     },
     operators() {
       return Object.entries(this.available_filters[this.property.type].comparators)
-        .filter(([key, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
-        .map(([key]) => {
+        .filter(([filterKey, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
+        .map(([filterKey]) => {
           return {
-            value: key,
-            name: this.optionFilterNames(key),
+            value: filterKey,
+            name: this.optionFilterNames(filterKey),
           }
         })
     },
