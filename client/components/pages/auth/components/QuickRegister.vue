@@ -42,9 +42,11 @@
 
         <template v-if="appStore.isUnauthorizedError">
           <div class="flex items-center my-6">
-            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1"></div>
-            <div class="px-4 text-gray-500 text-sm">or</div>
-            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1"></div>
+            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1" />
+            <div class="px-4 text-gray-500 text-sm">
+              or
+            </div>
+            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1" />
           </div>
           <UButton
             icon="i-heroicons-arrow-right-on-rectangle"
@@ -53,8 +55,8 @@
             color="white"
             label="Logout"
             :block="true"
-            @click="logout"
             size="lg"
+            @click="logout"
           />
           <p class="text-gray-500 text-sm text-center mt-2">
             Progress will be lost.
@@ -65,6 +67,7 @@
 
     <!--  Register modal  -->
     <modal
+      compact-header
       :show="appStore.quickRegisterModal"
       max-width="lg"
       :closeable="!appStore.isUnauthorizedError"
