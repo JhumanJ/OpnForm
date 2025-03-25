@@ -56,7 +56,7 @@
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"
-          :disabled="!adminPreview"
+          :disabled="!formModeStrategy.admin.allowDragging"
           @change="handleDragDropped"
         >
           <template #item="{element}">
@@ -68,7 +68,7 @@
               :data-form-value="dataFormValue"
               :theme="theme"
               :dark-mode="darkMode"
-              :admin-preview="adminPreview"
+              :mode="mode"
             />
           </template>
         </draggable>
@@ -133,6 +133,7 @@ import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 
 export default {
   name: 'OpenForm',
@@ -155,17 +156,16 @@ export default {
       type: Boolean,
       required: true
     },
-    showHidden: {
-      type: Boolean,
-      default: false
-    },
     fields: {
       type: Array,
       required: true
     },
     defaultDataForm: { type: [Object, null] },
-    adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
-    urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
+    mode: {
+      type: String,
+      default: FormMode.LIVE,
+      validator: (value) => Object.values(FormMode).includes(value)
+    },
     darkMode: {
       type: Boolean,
       default: false
@@ -226,6 +226,24 @@ export default {
       })
       groups.push(currentGroup)
       return groups
+    },
+    /**
+     * Gets the comprehensive strategy based on the form mode
+     */
+    formModeStrategy() {
+      return createFormModeStrategy(this.mode)
+    },
+    /**
+     * Determines if hidden fields should be shown based on the mode
+     */
+    showHidden() {
+      return this.formModeStrategy.display.showHiddenFields
+    },
+    /**
+     * Determines if the form is in admin preview mode
+     */
+    isAdminPreview() {
+      return this.formModeStrategy.admin.showAdminControls
     },
     formProgress() {
       const requiredFields = this.fields.filter(field => field.required)
@@ -343,14 +361,14 @@ export default {
     // These watchers ensure the form shows the correct page for the field being edited in admin preview
     selectedFieldIndex: {
       handler(newIndex) {
-        if (this.adminPreview && this.showEditFieldSidebar) {
+        if (this.isAdminPreview && this.showEditFieldSidebar) {
           this.setPageForField(newIndex)
         }
       }
     },
     showEditFieldSidebar: {
       handler(newValue) {
-        if (this.adminPreview && newValue) {
+        if (this.isAdminPreview && newValue) {
           this.setPageForField(this.selectedFieldIndex)
         }
       }
@@ -385,6 +403,12 @@ export default {
 
       this.$refs['form-timer'].stopTimer()
       this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+
+      // Add validation strategy check
+      if (!this.formModeStrategy.validation.validateOnSubmit) {
+        this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+        return
+      }
 
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
@@ -538,11 +562,12 @@ export default {
       this.scrollToTop()
     },
     nextPage() {
-      if (this.adminPreview || this.urlPrefillPreview) {
+      if (!this.formModeStrategy.validation.validateOnNextPage) {
         this.formPageIndex++
         this.scrollToTop()
         return false
       }
+      
       const fieldsToValidate = this.currentFields.map(f => f.id)
       this.dataForm.busy = true
       this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)

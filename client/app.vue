@@ -50,6 +50,7 @@
     <NotificationsWrapper />
     <feature-base />
     <SubscriptionModal />
+    <QuickRegister />
   </div>
 </template>
 

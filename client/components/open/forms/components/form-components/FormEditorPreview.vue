@@ -92,11 +92,9 @@
           ref="formPreview"
           class="w-full mx-auto py-5"
           :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
-          :creating="creating"
           :form="form"
           :dark-mode="darkMode"
-          :admin-preview="!isExpanded"
-          :show-cleanings="false"
+          :mode="formMode"
           @restarted="previewFormSubmitted=false"
           @submitted="previewFormSubmitted=true"
         />
@@ -113,6 +111,7 @@ import { default as _has } from 'lodash/has'
 import { useRecordsStore } from '~/stores/records'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const recordsStore = useRecordsStore()
 const workingFormStore = useWorkingFormStore()
@@ -126,7 +125,8 @@ const { content: form } = storeToRefs(workingFormStore)
 const recordLoading = computed(() => recordsStore.loading)
 const darkMode = useDarkMode(parent)
 
-const creating = computed(() => !_has(form.value, 'id'))
+// Use PREVIEW mode when not expanded, TEST mode when expanded
+const formMode = computed(() => isExpanded.value ? FormMode.TEST : FormMode.PREVIEW)
 
 defineShortcuts({
   escape: {
