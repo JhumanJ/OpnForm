@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Console\Commands\GenerateTemplate;
 use App\Http\Controllers\Controller;
+use App\Jobs\Template\GenerateTemplateJob;
 use App\Models\Forms\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
 
@@ -25,19 +27,11 @@ class AdminController extends Controller
             'template_prompt' => 'required|string|max:4000'
         ]);
 
-        $command = new GenerateTemplate();
-        $command->setLaravel(app());
-
-        $input = new \Symfony\Component\Console\Input\ArrayInput([
-            'prompt' => $request->template_prompt
-        ]);
-        $output = new \Symfony\Component\Console\Output\BufferedOutput();
-
-        $command->run($input, $output);
-        $template = $command->generatedTemplate ?? null;
+        $job = new GenerateTemplateJob($request->template_prompt);
+        $job->handle();
 
         return $this->success([
-            'template_slug' => $template?->slug ?? null
+            'template_slug' => $job->generatedTemplate?->slug ?? null
         ]);
     }
 
