@@ -176,9 +176,9 @@ class StoreFormSubmissionJob implements ShouldQueue
      * - file_name-{uuid}.{ext}
      * - {uuid}
      */
-    private function storeFile(?string $value)
+    private function storeFile($value, ?bool $isPublic = null)
     {
-        if ($value == null) {
+        if (is_null($value) || empty($value)) {
             return null;
         }
 
@@ -196,6 +196,9 @@ class StoreFormSubmissionJob implements ShouldQueue
         }
 
         $fileNameParser = StorageFileNameParser::parse($value);
+        if (!$fileNameParser || !$fileNameParser->uuid) {
+            return null;
+        }
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
         $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . '/' . $fileNameParser->uuid;

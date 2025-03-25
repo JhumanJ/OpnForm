@@ -25,6 +25,7 @@
 <script>
 import { computed } from "vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
+import { storeToRefs } from 'pinia'
 import EditorRightSidebar from "../../../editors/EditorRightSidebar.vue"
 import FormFieldEdit from "../../fields/FormFieldEdit.vue"
 import AddFormBlock from "./AddFormBlock.vue"
@@ -35,13 +36,20 @@ export default {
   props: {},
   setup() {
     const workingFormStore = useWorkingFormStore()
+    
+    const editFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
+    const form = storeToRefs(workingFormStore).content
+    const showEditFieldSidebar = computed(() => workingFormStore.showEditFieldSidebar)
+    const showAddFieldSidebar = computed(() => workingFormStore.showAddFieldSidebar)
+    
+    // The store now handles setting the page automatically in openSettingsForField
+    
     return {
       workingFormStore,
-      editFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
-      showEditFieldSidebar: computed(
-        () => workingFormStore.showEditFieldSidebar,
-      ),
-      showAddFieldSidebar: computed(() => workingFormStore.showAddFieldSidebar),
+      editFieldIndex,
+      form,
+      showEditFieldSidebar,
+      showAddFieldSidebar,
     }
   },
   data() {
@@ -50,15 +58,6 @@ export default {
   computed: {
     isOpen() {
       return this.form !== null && (this.showEditFieldSidebar || this.showAddFieldSidebar)
-    },
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set(value) {
-        this.workingFormStore.set(value)
-      },
     },
   },
   watch: {},
