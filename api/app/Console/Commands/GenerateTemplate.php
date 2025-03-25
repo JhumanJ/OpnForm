@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Jobs\Template\GenerateTemplateJob;
-use App\Models\Template;
 use Illuminate\Console\Command;
 
 class GenerateTemplate extends Command

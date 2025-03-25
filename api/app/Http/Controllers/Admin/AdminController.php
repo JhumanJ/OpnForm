@@ -7,8 +7,6 @@ use App\Jobs\Template\GenerateTemplateJob;
 use App\Models\Forms\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
 

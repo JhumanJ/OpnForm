@@ -26,7 +26,9 @@ class GenerateTemplateJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public string $prompt) {}
+    public function __construct(public string $prompt)
+    {
+    }
 
     /**
      * Execute the job.
