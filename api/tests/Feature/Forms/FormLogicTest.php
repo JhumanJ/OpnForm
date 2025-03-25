@@ -607,3 +607,102 @@ it('skips validation for fields hidden by logic conditions', function () {
             ],
         ]);
 });
+
+it('cannot submit form with failed exists_in_submissions validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // First set up the validation condition
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'exists_in_submissions',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $validationMessage = 'Email already exists in previous submissions';
+
+    $form->properties = collect($form->properties)->map(function ($property) use ($condition, $validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+
+    $formData = [$targetField['id'] => 'existing@test.com'];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
+        ]);
+});
+
+it('cannot submit form with failed does_not_exist_in_submissions validation condition', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $targetField = collect($form->properties)->where('name', 'Email')->first();
+
+    // First set up the validation condition
+    $condition = [
+        'actions' => [],
+        'conditions' => [
+            'operatorIdentifier' => 'and',
+            'children' => [
+                [
+                    'identifier' => $targetField['id'],
+                    'value' => [
+                        'operator' => 'does_not_exist_in_submissions',
+                        'property_meta' => [
+                            'id' => $targetField['id'],
+                            'type' => 'text',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $validationMessage = 'Email already exists in previous submissions';
+
+    $form->properties = collect($form->properties)->map(function ($property) use ($condition, $validationMessage, $targetField) {
+        if (in_array($property['name'], ['Name'])) {
+            $property['validation'] = ['error_conditions' => $condition, 'error_message' => $validationMessage];
+        }
+        return $property;
+    })->toArray();
+
+    $form->update();
+
+    $formData = [$targetField['id'] => 'existing@test.com'];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => $validationMessage,
+        ]);
+});

@@ -7,19 +7,19 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': adminPreview,
-        'cursor-pointer':workingFormStore.showEditFieldSidebar && adminPreview,
+        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': isAdminPreview,
+        'cursor-pointer':workingFormStore.showEditFieldSidebar && isAdminPreview,
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
     @click="setFieldAsSelected"
   >
     <div
       class="-m-[1px] w-full max-w-full mx-auto"
-      :class="{'relative transition-colors':adminPreview}"
+      :class="{'relative transition-colors':isAdminPreview}"
     >
       <div
-        v-if="adminPreview"
-        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block z-50"
+        v-if="isAdminPreview"
+        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
       >
         <div
           class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-md shadow-sm z-50 p-[1px] relative"
@@ -151,6 +151,7 @@ import {computed} from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import {default as _has} from 'lodash/has'
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 
 export default {
   name: 'OpenFormField',
@@ -189,16 +190,21 @@ export default {
       type: Object,
       required: true
     },
-    adminPreview: {type: Boolean, default: false} // If used in FormEditorPreview
+    mode: {
+      type: String,
+      default: FormMode.LIVE
+    }
   },
 
-  setup() {
+  setup(props) {
     const workingFormStore = useWorkingFormStore()
     return {
       workingFormStore,
       currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
-      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar)
+      showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
+      formModeStrategy: computed(() => createFormModeStrategy(props.mode)),
+      isAdminPreview: computed(() => createFormModeStrategy(props.mode).admin.showAdminControls)
     }
   },
 
@@ -261,7 +267,7 @@ export default {
       return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
     },
     beingEdited() {
-      return this.adminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {
+      return this.isAdminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {
         return item.id === this.field.id
       }) === this.selectedFieldIndex
     },
@@ -281,7 +287,7 @@ export default {
       return fieldsOptions
     },
     fieldSideBarOpened() {
-      return this.adminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
+      return this.isAdminPreview && (this.form && this.selectedFieldIndex !== null) ? (this.form.properties[this.selectedFieldIndex] && this.showEditFieldSidebar) : false
     }
   },
 
@@ -292,19 +298,19 @@ export default {
 
   methods: {
     editFieldOptions() {
-      if (!this.adminPreview) return
+      if (!this.formModeStrategy.admin.showAdminControls) return
       this.workingFormStore.openSettingsForField(this.field)
     },
     setFieldAsSelected () {
-      if (!this.adminPreview || !this.workingFormStore.showEditFieldSidebar) return
+      if (!this.formModeStrategy.admin.showAdminControls || !this.workingFormStore.showEditFieldSidebar) return
       this.workingFormStore.openSettingsForField(this.field)
     },
     openAddFieldSidebar() {
-      if (!this.adminPreview) return
+      if (!this.formModeStrategy.admin.showAdminControls) return
       this.workingFormStore.openAddFieldSidebar(this.field)
     },
     removeField () {
-      if (!this.adminPreview)  return
+      if (!this.formModeStrategy.admin.showAdminControls) return
       this.workingFormStore.removeField(this.field)
     },
     getFieldWidthClasses(field) {
