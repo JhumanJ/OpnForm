@@ -321,7 +321,7 @@ class FormLogicConditionChecker
             ->where(function ($query) use ($condition, $fieldValue) {
                 $fieldId = $condition['property_meta']['id'];
 
-                if (env('DB_CONNECTION') == 'mysql') {
+                if (config('database.default') === 'mysql') {
                     // For scalar values
                     $query->where(function ($q) use ($fieldId, $fieldValue) {
                         $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.\"$fieldId\"')) = ?", [$fieldValue]);
