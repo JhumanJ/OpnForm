@@ -317,7 +317,7 @@ export default {
       if (this.isIframe) return false
 
       if (this.$route.name && this.$route.name === "forms-slug") {
-        if (this.form) {
+        if (this.form || import.meta.server) {
           return false
         } else {
           // Form not found/404 case - show the navbar
