@@ -60,7 +60,7 @@ export default {
 
   computed: {
     parsedFiles() {
-      return this.value
+      return this.value && Array.isArray(this.value)
         ? this.value.map((file) => {
             return {
               file_name: file.file_name,
