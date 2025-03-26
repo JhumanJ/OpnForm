@@ -61,6 +61,9 @@ const updateForm = (form, onFailure) => {
     })
     .catch((error) => {
       console.error(error)
+      if (error?.data) {
+        useAlert().formValidationError(error.data)
+      }
       loading.value = false
       onFailure()
     })

@@ -456,7 +456,11 @@ export default {
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
           return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
         }).catch((error) => {
-          useAlert().error(error?.data?.message || 'Something went wrong')
+          if (error?.data?.errors) {
+            useAlert().formValidationError(error.data)
+          } else {
+            useAlert().error(error?.data?.message || 'Something went wrong')
+          }
           return null
         })
       )
@@ -628,8 +632,8 @@ export default {
     },
     handleValidationError(error) {
       console.error(error)
-      if (error?.data?.message) {
-        useAlert().error(error.data.message)
+      if (error?.data) {
+        useAlert().formValidationError(error.data)
       }
       this.dataForm.busy = false
     },
