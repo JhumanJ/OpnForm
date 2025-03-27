@@ -104,7 +104,7 @@ export default {
     },
     operators() {
       return Object.entries(this.available_filters[this.property.type].comparators)
-        .filter(([filterKey, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
+        .filter(([_, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
         .map(([filterKey]) => {
           return {
             value: filterKey,

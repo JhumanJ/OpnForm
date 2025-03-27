@@ -134,6 +134,7 @@ import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import clonedeep from 'clone-deep'
 
 export default {
   name: 'OpenForm',

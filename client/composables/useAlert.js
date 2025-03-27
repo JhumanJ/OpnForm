@@ -66,11 +66,11 @@ export function useAlert () {
     let description = ''
     if (Object.keys(error.errors).length > 0) {
       const errorLines = Object.entries(error.errors)
-        .map(([field, messages]) => {
+        .map(([_, messages]) => {
           // Format each message
           const formattedMessages = messages.map(message => {
             return `<li>${message}</li>`
-          });
+          })
           
           return formattedMessages.join('')
         })

@@ -14,5 +14,7 @@ module.exports = {
         "prefer-rest-params": "off",
         "vue/valid-template-root": "off",
         "no-undef": "off",
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
     },
 };
