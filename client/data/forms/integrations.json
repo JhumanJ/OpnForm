@@ -26,7 +26,7 @@
   },
   "telegram": {
     "name": "Telegram Notification",
-    "icon": "ic:baseline-telegram",
+    "icon": "mdi:telegram",
     "section_name": "Notifications",
     "file_name": "TelegramIntegration",
     "actions_file_name": "TelegramIntegrationActions",

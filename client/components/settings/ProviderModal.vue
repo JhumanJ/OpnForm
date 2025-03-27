@@ -25,12 +25,18 @@
       Connect account
     </template>
 
-    <div class="px-4">
+    <div v-if="loading">
+      <Loader class="h-6 w-6 mx-auto" />
+    </div>
+    <div
+      v-else
+      class="flex"
+    >
       <div
         v-for="service in services"
         :key="service.name"
         role="button"
-        class="bg-gray-50 border border-gray-200 rounded-md transition-colors p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative"
+        class="mr-2 bg-gray-50 border border-gray-200 rounded-md transition-colors p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative"
         :class="{
           'hover:bg-blue-50 group cursor-pointer': service.enabled,
           'cursor-not-allowed': !service.enabled,
@@ -55,6 +61,14 @@
       </div>
     </div>
   </modal>
+
+  <!-- Add widget modal -->
+  <SettingsProviderWidgetModal
+    v-if="showWidgetModal"
+    :show="showWidgetModal"
+    :service="selectedService"
+    @close="showWidgetModal = false"
+  />
 </template>
 
 <script setup>
@@ -67,7 +81,19 @@ const emit = defineEmits(['close'])
 const providersStore = useOAuthProvidersStore()
 const services = computed(() => providersStore.services)
 
+const loading = ref(false)
+const showWidgetModal = ref(false)
+const selectedService = ref(null)
+
 function connect(service) {
-  providersStore.connect(service.name)
+  if (service.auth_type === 'widget') {
+    emit('close')
+    selectedService.value = service
+    showWidgetModal.value = true
+  } else {
+    // Use existing redirect flow
+    loading.value = true
+    providersStore.connect(service.name)
+  }
 }
 </script>

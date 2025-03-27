@@ -4,64 +4,73 @@
     :integration="props.integration"
     :form="form"
   >
-    <text-input
-      :form="integrationData"
-      name="settings.telegram_bot_token"
-      label="Telegram Bot Token"
-      help="help"
-      required
-    >
-      <template #help>
-        <InputHelp>
-          <span>
-            Receive Telegram messages on each form submission.
-            <a
-              href="https://core.telegram.org/bots#how-do-i-create-a-bot"
-              target="_blank"
-              class="text-nt-blue"
-            >
-              Click here
-            </a>
-            to learn how to create a Telegram bot and get the token
-          </span>
-        </InputHelp>
-      </template>
-    </text-input>
+    <div class="mb-4">
+      <p class="text-gray-500 mb-4">
+        Receive Telegram messages on each form submission.
+      </p>
+      <template v-if="providers.length">
+        <FlatSelectInput
+          v-model="integrationData.oauth_id"
+          name="provider"
+          :options="providers"
+          display-key="email"
+          option-key="id"
+          emit-key="id"
+          :required="true"
+          label="Select Telegram Account"
+        >
+          <template #help>
+            <InputHelp>
+              <span>
+                <NuxtLink
+                  class="text-blue-500"
+                  :to="{ name: 'settings-connections' }"
+                >
+                  Click here
+                </NuxtLink>
+                to connect another account.
+              </span>
+            </InputHelp>
+          </template>
+        </FlatSelectInput>
 
-    <text-input
-      :form="integrationData"
-      name="settings.telegram_chat_id"
-      label="Telegram Chat ID"
-      help="help"
-      required
-    >
-      <template #help>
-        <InputHelp>
-          <span>
-            The chat ID where messages will be sent. <b>Example: 1234567890</b>
-          </span>
-        </InputHelp>
+        <h4 class="font-bold mt-4">
+          Telegram message actions
+        </h4>
+        <notifications-message-actions
+          v-model="integrationData.settings"
+          :form="form"
+        />
       </template>
-    </text-input>
 
-    <h4 class="font-bold mt-4">
-      Telegram message actions
-    </h4>
-    <notifications-message-actions
-      v-model="integrationData.settings"
-      :form="form"
-    />
+      <v-button
+        v-else
+        color="white"
+        :loading="providersStore.loading"
+        @click.prevent="connect"
+      >
+        Connect Telegram account
+      </v-button>
+    </div>
   </IntegrationWrapper>
 </template>
 
 <script setup>
-import IntegrationWrapper from "./components/IntegrationWrapper.vue"
-import NotificationsMessageActions from "./components/NotificationsMessageActions.vue"
+import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
+import IntegrationWrapper from './components/IntegrationWrapper.vue'
+import NotificationsMessageActions from './components/NotificationsMessageActions.vue'
 
 const props = defineProps({
   integration: { type: Object, required: true },
   form: { type: Object, required: true },
   integrationData: { type: Object, required: true },
-  formIntegrationId: { type: Number, required: false, default: null },
+  formIntegrationId: { type: Number, required: false, default: null }
 })
+
+const providersStore = useOAuthProvidersStore()
+const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
+
+function connect () {
+  providersStore.connect('telegram', true)
+}
 </script> 

@@ -79,6 +79,13 @@ return [
         'fonts_api_key' => env('GOOGLE_FONTS_API_KEY'),
     ],
 
+    'telegram' => [
+        'bot' => env('TELEGRAM_BOT_NAME'),
+        'client_id' => null,
+        'client_secret' => env('TELEGRAM_BOT_TOKEN'),
+        'redirect' => env('TELEGRAM_REDIRECT_URL'),
+    ],
+
     'zapier' => [
         'enabled' => env('ZAPIER_ENABLED', false),
     ],

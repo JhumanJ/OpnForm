@@ -15,7 +15,15 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         name: 'google',
         title: 'Google',
         icon: 'mdi:google',
-        enabled: true
+        enabled: true,
+        auth_type: 'redirect'
+      },
+      {
+        name: 'telegram',
+        title: 'Telegram',
+        icon: 'mdi:telegram',
+        enabled: true,
+        auth_type: 'widget'
       }
     ]
   })
@@ -41,15 +49,22 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     contentStore.startLoading()
 
     const intention = new URL(window.location.href).pathname
+    const serviceConfig = getService(service)
 
-    opnFetch(`/settings/providers/connect/${service}`, {
+    return opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
         ...redirect ? { intention } : {},
       }
     })
       .then((data) => {
-        window.location.href = data.url
+        if (serviceConfig.auth_type === 'widget') {
+          contentStore.stopLoading()
+          return data // Return the data for widget
+        } else {
+          // Redirect flow
+          window.location.href = data.url
+        }
       })
       .catch((error) => {
         try {
@@ -57,9 +72,12 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         } catch (e) {
           alert.error("An error occurred while connecting an account")
         }
+        throw error
       })
       .finally(() => {
-        contentStore.stopLoading()
+        if (serviceConfig.auth_type !== 'widget') {
+          contentStore.stopLoading()
+        }
       })
   }
 

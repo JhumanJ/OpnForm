@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
 use Laravel\Dusk\DuskServiceProvider;
@@ -40,6 +41,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Validator::includeUnvalidatedArrayKeys();
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('telegram', \SocialiteProviders\Telegram\Provider::class);
+        });
     }
 
     /**
