@@ -23,7 +23,8 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         title: 'Telegram',
         icon: 'mdi:telegram',
         enabled: true,
-        auth_type: 'widget'
+        auth_type: 'widget',
+        widget_file: 'TelegramWidget'
       }
     ]
   })
@@ -45,26 +46,24 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   }
 
   const connect = (service, redirect = false) => {
-    contentStore.resetState()
-    contentStore.startLoading()
+    contentStore.resetState()    
 
-    const intention = new URL(window.location.href).pathname
     const serviceConfig = getService(service)
+    if (serviceConfig.auth_type !== 'redirect') {
+      return
+    }
 
-    return opnFetch(`/settings/providers/connect/${service}`, {
+    contentStore.startLoading()
+    const intention = new URL(window.location.href).pathname
+    opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
         ...redirect ? { intention } : {},
       }
     })
       .then((data) => {
-        if (serviceConfig.auth_type === 'widget') {
-          contentStore.stopLoading()
-          return data // Return the data for widget
-        } else {
-          // Redirect flow
-          window.location.href = data.url
-        }
+        // Redirect flow
+        window.location.href = data.url
       })
       .catch((error) => {
         try {
@@ -72,12 +71,9 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         } catch (e) {
           alert.error("An error occurred while connecting an account")
         }
-        throw error
       })
       .finally(() => {
-        if (serviceConfig.auth_type !== 'widget') {
-          contentStore.stopLoading()
-        }
+        contentStore.stopLoading()
       })
   }
 

@@ -63,7 +63,7 @@
   </modal>
 
   <!-- Add widget modal -->
-  <SettingsProviderWidgetModal
+  <ProviderWidgetModal
     v-if="showWidgetModal"
     :show="showWidgetModal"
     :service="selectedService"

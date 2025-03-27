@@ -71,6 +71,6 @@ const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
 
 function connect () {
-  providersStore.connect('telegram', true)
+  useRouter().push({ name: 'settings-connections' })
 }
 </script> 

@@ -15,9 +15,11 @@
     </template>
 
     <div class="p-4 flex items-center justify-center">
-      <div
-        ref="widgetContainer"
-        v-html="widgetHtml"
+      <!-- Dynamic component loading based on service -->
+      <component
+        :is="widgetComponent"
+        v-if="widgetComponent"
+        :service="service"
       />
     </div>
   </modal>
@@ -30,17 +32,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
-const widgetContainer = ref(null)
-const widgetHtml = ref('')
-const providersStore = useOAuthProvidersStore()
 
-onMounted(() => {
-  fetchWidget()
+// Dynamically compute which widget component to load
+const widgetComponent = computed(() => {
+  if (!props.service?.widget_file) return null
+  return resolveComponent(props.service.widget_file)
 })
-
-const fetchWidget = () => {
-  providersStore.connect(props.service.name).then((response) => {
-    widgetHtml.value = response.url
-  })
-}
 </script>
