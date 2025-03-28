@@ -37,12 +37,6 @@ class SlackIntegration extends AbstractIntegrationHandler
     {
         $settings = (array) $this->integrationData ?? [];
 
-        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-        if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
-            $formatter->showHiddenFields();
-        }
-        $formattedData = $formatter->getFieldsWithValue();
-
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
             $externalLinks[] = '*<' . $this->form->share_url . '|🔗 Open Form>*';
@@ -56,6 +50,7 @@ class SlackIntegration extends AbstractIntegrationHandler
             $externalLinks[] = '*<' . $this->form->share_url . '?submission_id=' . $submissionId . '|✍️ ' . $this->form->editable_submissions_button_text . '>*';
         }
 
+        $formattedData = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly()->showHiddenFields()->getFieldsWithValue();
         $message = Arr::get($settings, 'message', 'New form submission');
         $blocks = [
             [
@@ -68,6 +63,12 @@ class SlackIntegration extends AbstractIntegrationHandler
         ];
 
         if (Arr::get($settings, 'include_submission_data', true)) {
+            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
+            if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
+                $formatter->showHiddenFields();
+            }
+            $formattedData = $formatter->getFieldsWithValue();
+
             $submissionString = '';
             foreach ($formattedData as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
