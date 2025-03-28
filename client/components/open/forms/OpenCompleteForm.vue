@@ -274,7 +274,11 @@ export default {
   watch: {
     'form.language': {
       handler(newLanguage) {
-        this.setLocale(newLanguage)
+        if (newLanguage && typeof newLanguage === 'string') {
+          this.setLocale(newLanguage)
+        } else {
+          this.setLocale('en')  // Default to English if invalid locale
+        }
       },
       immediate: true
     }
