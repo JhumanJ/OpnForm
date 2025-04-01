@@ -26,7 +26,7 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "nuxt": "^3.14.1592",
+    "nuxt": "^3.16.1",
     "nuxt-utm": "^0.2.2",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
@@ -40,8 +40,9 @@
     "@nuxt/ui": "^2.19.2",
     "@pinia/nuxt": "^0.5.5",
     "@popperjs/core": "^2.11.8",
-    "@sentry/vite-plugin": "^2.22.6",
-    "@sentry/vue": "^7.119.2",
+    "@sentry/nuxt": "^9.8.0",
+    "@sentry/vite-plugin": "^3.2.2",
+    "@sentry/vue": "^9.8.0",
     "@vueuse/components": "^11.2.0",
     "@vueuse/core": "^11.2.0",
     "@vueuse/integrations": "^11.2.0",
@@ -80,5 +81,8 @@
   },
   "eslintIgnore": [
     "/lib/jaro-winkler.js"
-  ]
+  ],
+  "overrides": {
+    "@vercel/nft": "^0.27.4"
+  }
 }
