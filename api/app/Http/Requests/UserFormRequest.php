@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
 use App\Rules\FormPropertyLogicRule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
 /**
@@ -28,6 +31,37 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         }
 
         $this->merge($data);
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        // Log validation errors to default log and Slack
+        $errors = $validator->errors()->toArray();
+        $requestData = $this->except(['password']); // Exclude sensitive data
+
+        $logData = [
+            'errors' => $errors,
+            'request_data' => $requestData,
+            'ip' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'route' => request()->route()->getName() ?? request()->path()
+        ];
+
+        // Log to both default channel and Slack
+        Log::channel('combined')->warning(
+            'Frontend validation bypass detected in form submission',
+            $logData
+        );
+
+        throw new ValidationException($validator);
     }
 
     /**
