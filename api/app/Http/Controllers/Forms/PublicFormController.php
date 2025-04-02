@@ -170,7 +170,7 @@ class PublicFormController extends Controller
 
     /**
      * Processes submission identifiers to ensure consistent numeric format
-     * 
+     *
      * Takes a submission hash or string ID and converts it to a numeric submission_id.
      * This allows submissions to be identified by either a hashed value or direct ID
      * while ensuring consistent internal storage format.
