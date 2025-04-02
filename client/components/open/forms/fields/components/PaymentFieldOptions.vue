@@ -45,25 +45,28 @@
       :loading="stripeLoading"
       @click.prevent="connectStripe"
     >
-      Connect with Stripe
+      Connect Stripe Account
     </UButton>
+    <p class="text-sm text-gray-500 mt-3">
     <a
       target="#"
-      class="text-gray-500 cursor-pointer"
+      class="text-gray-500 cursor-pointer text-sm"
       @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
     >
       <Icon
         name="heroicons:information-circle-16-solid"
-        class="h-4 w-4 mt-1"
+        class="h-3 w-3 mt-1"
       />
-      Learn about collecting payments?
+      Learn how to accept payments
     </a>
+    </p>
   </div>
 </template>
 
 <script setup>
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
 import stripeCurrencies from "~/data/stripe_currencies.json"
+import { useWindowMessage, WindowMessageTypes } from '~/composables/useWindowMessage'
 
 const props = defineProps({
   field: {
@@ -76,8 +79,11 @@ const crisp = useCrisp()
 const providersStore = useOAuthProvidersStore()
 const stripeLoading = ref(false)
 
-onMounted(() => {
-  providersStore.fetchOAuthProviders()
+// Setup window message listener for Stripe connection
+const { listen, cleanup } = useWindowMessage()
+
+onMounted(async () => {
+  await providersStore.fetchOAuthProviders()
 
   if(props.field?.currency === undefined || props.field?.currency === null) {
     props.field.currency = 'USD'
@@ -85,6 +91,29 @@ onMounted(() => {
   if(props.field?.amount === undefined || props.field?.amount === null) {
     props.field.amount = 10
   }
+  
+  // Auto-select first Stripe account if none is selected
+  if (!props.field.stripe_account_id && stripeAccounts.value.length > 0) {
+    props.field.stripe_account_id = stripeAccounts.value[0].value
+  }
+
+  // Listen for Stripe connection message
+  listen(async () => {
+    await providersStore.fetchOAuthProviders()
+    // Auto-select first Stripe account after refresh if one isn't already selected (or maybe always select the newest? for now, first)
+    if (stripeAccounts.value.length > 0) {
+      props.field.stripe_account_id = stripeAccounts.value[0].value
+    }
+    useAlert().success('Stripe accounts updated.')
+  }, { 
+    useMessageChannel: false, 
+    acknowledge: false 
+  }, `${WindowMessageTypes.OAUTH_PROVIDER_CONNECTED}:stripe`)
+})
+
+onUnmounted(() => {
+  // Cleanup listener (optional, as useWindowMessage handles it)
+  cleanup()
 })
 
 const stripeAccounts = computed(() => providersStore.getAll.filter((item) => item.provider === 'stripe').map((item) => ({
@@ -102,6 +131,9 @@ const currencyList = computed(() => {
 
 const connectStripe = () => {
   stripeLoading.value = true
-  providersStore.connect('stripe', true, true)
+  providersStore.connect('stripe', false, true, true)
+  setTimeout(() => {
+    stripeLoading.value = false
+  }, 10000)
 }
 </script>

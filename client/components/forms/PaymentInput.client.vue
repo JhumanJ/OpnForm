@@ -18,14 +18,26 @@
       ]"
     >
       <div v-if="!oauthProviderId">
-        <p>Connect Stripe account to continue</p>
+        <div class="space-y-4 mt-3">
+            <div class="animate-pulse flex flex-col gap-3">
+              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
+          </div>
+          <p class="text-sm text-gray-500 text-center">Connect Stripe account to continue</p>
+        </div>
       </div>
       <div v-else-if="stripeState?.intentId">
         <p>{{ $t('forms.payment.success') }}</p>
       </div>
       <template v-else>
+        <!-- Add preview message block -->
+        <div v-if="showPreviewMessage" class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 rounded-md">
+          <p>Please save the form to activate the payment preview.</p>
+        </div>
+        <!-- Existing Stripe Elements block -->
         <div
-          v-if="stripeState.isLoaded"
+          v-else-if="stripeState.isLoaded"
           class="my-4"
         >
           <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
@@ -63,6 +75,7 @@
             </div>
           </StripeElements>         
         </div>
+        <!-- Loader block -->
         <div v-else>
           <Loader class="mx-auto h-6 w-6" />
         </div>
@@ -90,7 +103,8 @@ const props = defineProps({
   direction: { type: String, default: 'ltr' },
   currency: { type: String, default: 'USD' },
   amount: { type: Number, default: 0 },
-  oauthProviderId: { type: String, default: null }
+  oauthProviderId: { type: String, default: null },
+  isEditorPreview: { type: Boolean, default: false }
 })
 
 const emit = defineEmits([])
@@ -104,9 +118,16 @@ const card = ref(null)
 const stripeElements = ref(null)
 const cardHolderName = ref('')
 const cardHolderEmail = ref('')
+const showPreviewMessage = ref(false)
   
 const onCardReady = (element) => {
   stripeState.value.card = card.value?.stripeElement
+  // Reset Stripe state AND preview message if provider ID is removed
+  stripeState.value.isLoaded = false;
+  stripeState.value.stripe = null;
+  stripeState.value.elements = null;
+  stripeAccountId.value = null;
+  showPreviewMessage.value = false;
 }
 
 watch(cardHolderName, (newValue) => {
@@ -158,31 +179,75 @@ const formSlug = computed(() => {
   return null
 })
 
-onMounted(async () => {
-  initStripe()
-})
+// Watch for changes in the selected OAuth Provider ID
+watch(() => props.oauthProviderId, (newProviderId) => {
+  if (newProviderId) {
+    initStripe(newProviderId); // Pass the new ID to initStripe
+  } else {
+    // Reset Stripe state if provider ID is removed
+    stripeState.value.isLoaded = false;
+    stripeState.value.stripe = null;
+    stripeState.value.elements = null;
+    stripeAccountId.value = null; // Clear the account ID used by loadStripe
+  }
+}, { immediate: true }); // Run immediately on component mount
 
-const initStripe = async () => {
-  if (!formSlug.value) return
+// Modified initStripe to accept providerId
+const initStripe = async (providerId) => { 
+  if (!formSlug.value || !providerId) {
+    stripeState.value.isLoaded = false;
+    return;
+  }
+  
+  // Reset state before initializing
+  stripeState.value.isLoaded = false;
+  stripeState.value.stripe = null;
+  stripeState.value.elements = null;
+  stripeAccountId.value = null;
+  showPreviewMessage.value = false; // Reset preview message on init
+
   try {
-    const response = await opnFetch('/forms/' + formSlug.value + '/stripe-connect/get-account')
-    if (response?.type === 'success') {
-      stripeAccountId.value = response?.stripeAccount
-      const stripeInstance = await loadStripe(publishableKey, { stripeAccount: stripeAccountId.value })
+    // Conditionally add the preview parameter if in editor context
+    const fetchOptions = {};
+    if (props.isEditorPreview) {
+      fetchOptions.params = { oauth_provider_id: providerId };
+    }
+
+    const response = await opnFetch(`/forms/${formSlug.value}/stripe-connect/get-account`, fetchOptions);
+    
+    if (response?.type === 'success' && response?.stripeAccount) {
+      // Success: Proceed with Stripe initialization
+      stripeAccountId.value = response.stripeAccount;
+      const stripeInstance = await loadStripe(publishableKey, { stripeAccount: stripeAccountId.value });
       if (!stripeInstance) {
-        useAlert().error('Stripe initialization failed')
-        return
+        useAlert().error('Stripe initialization failed: Could not load Stripe.js');
+        return;
       }
-      
-      stripeState.value.isLoaded = true
-      stripeState.value.stripe = stripeInstance
-      stripeState.value.elements = stripeElements
-    } else { 
-      useAlert().error(response.message)
+      stripeState.value.isLoaded = true;
+      stripeState.value.stripe = stripeInstance;
+      stripeState.value.elements = stripeElements.value; 
+    } else {
+      // Handle potential non-exception failure from backend (e.g., validation)
+      const message = response?.message || 'Failed to get Stripe account details.';
+      // Check if it's the specific message asking to save
+      if (message.includes('save the form and try again')) {
+        showPreviewMessage.value = true;
+      } else {
+        useAlert().error(message);
+      }
+      stripeState.value.isLoaded = false;
     }
   } catch (error) {
-    console.error('Stripe initialization error:', error)
-    stripeState.value.isLoaded = false
+    // Handle fetch exception
+    const message = error?.data?.message || 'An error occurred during Stripe setup.';
+    console.error('Stripe initialization error:', error);
+    // Check if it's the specific message asking to save
+    if (message.includes('save the form and try again')) {
+      showPreviewMessage.value = true;
+    } else {
+      useAlert().error(message);
+    }
+    stripeState.value.isLoaded = false;
   }
 }
 

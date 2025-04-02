@@ -218,7 +218,8 @@
     "bg_class": "bg-green-100",
     "text_class": "text-green-900",
     "is_input": true,
-    "self_hosted": false
+    "self_hosted": false,
+    "max_count": 1
   },
   "nf-text": {
     "name": "nf-text",

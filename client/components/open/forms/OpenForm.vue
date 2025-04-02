@@ -121,14 +121,9 @@
       </div>
       <div
         v-if="paymentBlock"
-        class="text-xs text-gray-500 mt-2"
+        class="text-xs text-gray-500 mt-2 text-center"
       >
-        <template v-if="isLastPage">
-          Your credit card will be charged upon clicking the "Submit" button. Payments are securely processed through Stripe.
-        </template>
-        <template v-else>
-          Your credit card will be charged upon clicking the "Next" button. Payments are securely processed through Stripe.
-        </template>
+          {{ $t('forms.payment_disclaimer') }}
       </div>
     </div>
   </form>

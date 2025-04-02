@@ -4,35 +4,61 @@ namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
 use App\Models\OAuthProvider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Forms\GetStripeAccountRequest;
+use Illuminate\Support\Facades\Auth;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 
 class FormPaymentController extends Controller
 {
-    public function getAccount(Request $request)
+    /**
+     * Get the Stripe Connect Account ID for the form's payment block.
+     *
+     * Handles two cases:
+     * 1. Editor Preview: `oauth_provider_id` is provided in the request by an authenticated user.
+     * 2. Public Form/Saved: Loads the ID from the form's saved payment block properties.
+     *
+     * @param GetStripeAccountRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAccount(GetStripeAccountRequest $request)
     {
         $form = $request->form;
+        $provider = null;
 
-        // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
-        if (!$paymentBlock) {
-            Log::warning('Form without payment block', [
-                'form_id' => $form->id
-            ]);
-            return $this->error(['message' => 'Form does not have a payment block.']);
+        // Case 1: Editor Preview (Validated by GetStripeAccountRequest)
+        if ($request->isPreview()) {
+            $provider = $request->getPreviewProvider();
+            if ($provider === null) {
+                // Should not happen if validation passes, but defensively handle
+                return $this->error(['message' => 'Invalid Stripe account selection.'], 400);
+            }
+        }
+        // Case 2: Public Form / Loading from Saved Form Data
+        else {
+            $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+
+            if (!$paymentBlock || !isset($paymentBlock['stripe_account_id'])) {
+                // Allow preview by returning a specific, non-blocking error message
+                if (Auth::check()) { // Only return this hint to authenticated users (in editor)
+                    return $this->error(['message' => 'Please save the form and try again.'], 400);
+                } else {
+                    return $this->error(['message' => 'Payment configuration not found.'], 404); // Public error
+                }
+            }
+
+            // Load provider based on saved ID
+            $provider = OAuthProvider::find($paymentBlock['stripe_account_id']);
+            if ($provider === null) {
+                return $this->error(['message' => 'Configured Stripe account not found.'], 404);
+            }
+            // Ownership check (important for public forms accessing saved data)
+            if ($form->workspace->user_id !== $provider->user_id) {
+                return $this->error(['message' => 'Access denied to the configured Stripe account.'], 403);
+            }
         }
 
-        // Get provider
-        $provider = OAuthProvider::find($paymentBlock['stripe_account_id']);
-        if ($provider === null) {
-            Log::error('Failed to find Stripe account', [
-                'stripe_account_id' => $paymentBlock['stripe_account_id']
-            ]);
-            return $this->error(['message' => 'Failed to find Stripe account']);
-        }
-
+        // Return the Stripe Connect Account ID
         return $this->success(['stripeAccount' => $provider->provider_user_id]);
     }
 
@@ -49,12 +75,12 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
             ]);
-            return $this->error(['message' => 'Form does not have a payment block.']);
+            return $this->error(['message' => 'Form does not have a payment block. If you just added a payment block, please save the form and try again.']);
         }
 
         // Get provider

@@ -42,16 +42,17 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     )
   }
 
-  const connect = (service, redirect = false, newtab = false) => {
+  const connect = (service, redirect = false, newtab = false, autoClose = false) => {
     contentStore.resetState()
     contentStore.startLoading()
 
-    const intention = new URL(window.location.href).pathname
-
+    const intention = redirect ? new URL(window.location.href).pathname : undefined
+    
     opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
-        ...redirect ? { intention } : {},
+        ...(intention && { intention }),
+        autoClose: autoClose 
       }
     })
       .then((data) => {

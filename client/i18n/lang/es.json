@@ -38,13 +38,14 @@
             "clear": "Borrar"
         },
         "barcodeInput": {
-            "clickToOpenCamera": "Haga clic para abrir una cámara"
+            "clickToOpenCamera": "Haga clic para abrir la cámara"
         },
         "payment": {
             "amount_to_pay": "Cantidad a pagar",
             "success": "Pago exitoso",
             "name_on_card": "Nombre en la tarjeta",
-            "billing_email": "Correo electrónico de facturación"
-        }
+            "billing_email": "Dirección de correo electrónico de facturación"
+        },
+        "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
     }
 } 

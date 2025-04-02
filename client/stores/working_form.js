@@ -236,12 +236,15 @@ export const useWorkingFormStore = defineStore("working_form", {
         return
       }
 
-      if (type === 'payment') {  // Can only have one payment block
-        if (this.content.properties.some(block => block.type === 'payment')) {
-          useAlert().error('Only one payment block is allowed per form')
+      // Check if block type has a maximum count defined
+      if (block?.max_count !== undefined) {
+        const currentCount = this.content.properties.filter(prop => prop.type === type).length
+        if (currentCount >= block.max_count) {
+          useAlert().error(`Only ${block.max_count} '${block.title}' block(s) allowed per form.`)
           return
         }
-        openSettings = true // Always open settings for payment block
+        // If a max_count is defined, always open settings like we did for payment
+        openSettings = true 
       }
       
       this.blockForm.type = type

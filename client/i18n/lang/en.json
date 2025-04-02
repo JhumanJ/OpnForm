@@ -45,6 +45,7 @@
             "success": "Payment successful",
             "name_on_card": "Name on card",
             "billing_email": "Billing email address"
-        }
+        },
+        "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
     }
 } 
