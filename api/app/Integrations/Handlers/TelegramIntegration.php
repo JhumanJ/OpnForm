@@ -102,6 +102,6 @@ class TelegramIntegration extends AbstractIntegrationHandler
     protected function escapeMarkdownV2(string $text): string
     {
         $specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-        return str_replace($specialChars, array_map(fn($char) => '\\' . $char, $specialChars), $text);
+        return str_replace($specialChars, array_map(fn ($char) => '\\' . $char, $specialChars), $text);
     }
 }
