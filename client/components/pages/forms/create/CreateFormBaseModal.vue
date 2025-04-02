@@ -151,8 +151,14 @@
         help="Give us a description of the form you want to build (the more details the better)"
         placeholder="A simple contact form, with a name, email and message field"
       />
+      <div
+        v-if="loading"
+        class="my-4"
+      >
+        <AIFormLoadingMessages />
+      </div>
       <v-button
-        class="w-full"
+        class="w-full mt-4"
         :loading="loading"
         @click.prevent="generateForm"
       >
@@ -166,7 +172,12 @@
 </template>
 
 <script>
+import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoadingMessages.vue"
+
 export default {
+  components: {
+    AIFormLoadingMessages,
+  },
   props: {
     show: { type: Boolean, required: true },
   },
