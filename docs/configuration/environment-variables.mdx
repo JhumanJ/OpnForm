@@ -47,6 +47,7 @@ There are dedicated configuration pages available for more detailed setup instru
 | `TEMPLATE_EDITOR_EMAILS`     | Comma-separated list of template editor emails.  |
 | `EXTRA_PRO_USERS_EMAILS`     | Comma-separated list of extra pro user emails.   |
 | `MODERATOR_EMAILS`           | Comma-separated list of moderator email addresses. |
+| `SHOW_OFFICIAL_TEMPLATES`    | Set to `false` to hide official templates from OpnForm's template gallery (defaults to `true`). |
 
 
 ## Front-end Environment Variables
@@ -65,3 +66,27 @@ There are dedicated configuration pages available for more detailed setup instru
 import CloudVersion from "/snippets/cloud-version.mdx";
 
 <CloudVersion/>
+
+## Docker Environment Variables
+
+When running OpnForm with Docker, there are some important considerations for handling environment variables:
+
+### Updating Environment Variables
+
+When changing environment variables in your `.env` files, you need to recreate the containers for the changes to take effect. Simply restarting the containers is not sufficient as Docker only loads environment variables when containers are created.
+
+To apply new environment variable changes:
+
+```bash
+# For a specific service (e.g., ui)
+docker compose down ui
+docker compose up -d ui
+
+# For all services
+docker compose down
+docker compose up -d
+```
+
+<Warning>
+A simple `docker compose restart` will not reload environment variables from your `.env` files. You must use `down` and `up` commands to recreate the containers.
+</Warning>

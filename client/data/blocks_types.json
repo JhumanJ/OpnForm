@@ -6,7 +6,11 @@
     "default_block_name": "Your name",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "multi_lines": false,
+      "max_char_limit": 2000
+    }
   },
   "rich_text": {
     "name": "rich_text",
@@ -15,7 +19,10 @@
     "default_block_name": "Description",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "max_char_limit": 2000
+    }
   },
   "date": {
     "name": "date",
@@ -24,7 +31,8 @@
     "default_block_name": "Date",
     "bg_class": "bg-green-100",
     "text_class": "text-green-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "url": {
     "name": "url",
@@ -33,7 +41,10 @@
     "default_block_name": "Link",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "max_char_limit": 2000
+    }
   },
   "phone_number": {
     "name": "phone_number",
@@ -42,7 +53,8 @@
     "default_block_name": "Phone Number",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "email": {
     "name": "email",
@@ -51,7 +63,10 @@
     "default_block_name": "Email",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "max_char_limit": 2000
+    }
   },
   "checkbox": {
     "name": "checkbox",
@@ -60,7 +75,8 @@
     "default_block_name": "Checkbox",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "select": {
     "name": "select",
@@ -69,7 +85,15 @@
     "default_block_name": "Select",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "select": {
+        "options": [
+          { "name": "Option 1", "id": "Option 1" },
+          { "name": "Option 2", "id": "Option 2" }
+        ]
+      }
+    }
   },
   "multi_select": {
     "name": "multi_select",
@@ -78,16 +102,31 @@
     "default_block_name": "Multi Select",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "multi_select": {
+        "options": [
+          { "name": "Option 1", "id": "Option 1" },
+          { "name": "Option 2", "id": "Option 2" }
+        ]
+      }
+    }
   },
   "matrix": {
     "name": "matrix",
     "title": "Matrix Input",
     "icon": "i-heroicons-table-cells-20-solid",
     "default_block_name": "Matrix",
-     "bg_class": "bg-red-100",
+    "bg_class": "bg-red-100",
     "text_class": "text-red-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "rows": ["Row 1"],
+      "columns": [1, 2, 3],
+      "selection_data": {
+        "Row 1": null
+      }
+    }
   },
   "number": {
     "name": "number",
@@ -96,16 +135,20 @@
     "default_block_name": "Number",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "rating": {
     "name": "rating",
     "title": "Rating Input",
     "icon": "i-heroicons-star",
     "default_block_name": "Rating",
-     "bg_class": "bg-purple-100",
+    "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "rating_max_value": 5
+    }
   },
   "scale": {
     "name": "scale",
@@ -114,7 +157,12 @@
     "default_block_name": "Scale",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "scale_min_value": 1,
+      "scale_max_value": 5,
+      "scale_step_value": 1
+    }
   },
   "slider": {
     "name": "slider",
@@ -123,7 +171,12 @@
     "default_block_name": "Slider",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "slider_min_value": 0,
+      "slider_max_value": 50,
+      "slider_step_value": 1
+    }
   },
   "files": {
     "name": "files",
@@ -132,7 +185,8 @@
     "default_block_name": "Files",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "signature": {
     "name": "signature",
@@ -141,7 +195,8 @@
     "default_block_name": "Signature",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {}
   },
   "barcode": {
     "name": "barcode",
@@ -150,7 +205,10 @@
     "default_block_name": "Scan Barcode",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
-    "is_input": true
+    "is_input": true,
+    "default_values": {
+      "decoders": ["ean_reader", "ean_8_reader"]
+    }
   },
   "payment": {
     "name": "payment",
@@ -169,7 +227,8 @@
     "default_block_name": "Text",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
-    "is_input": false
+    "is_input": false,
+    "default_values": {}
   },
   "nf-page-break": {
     "name": "nf-page-break",
@@ -178,7 +237,8 @@
     "default_block_name": "Page Break",
     "bg_class": "bg-gray-100",
     "text_class": "text-gray-900",
-    "is_input": false
+    "is_input": false,
+    "default_values": {}
   },
   "nf-divider": {
     "name": "nf-divider",
@@ -187,7 +247,8 @@
     "default_block_name": "Divider",
     "bg_class": "bg-gray-100",
     "text_class": "text-gray-900",
-    "is_input": false
+    "is_input": false,
+    "default_values": {}
   },
   "nf-image": {
     "name": "nf-image",
@@ -196,7 +257,8 @@
     "default_block_name": "Image",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
-    "is_input": false
+    "is_input": false,
+    "default_values": {}
   },
   "nf-code": {
     "name": "nf-code",
@@ -205,6 +267,7 @@
     "default_block_name": "Code Block",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
-    "is_input": false
+    "is_input": false,
+    "default_values": {}
   }
 }

@@ -27,8 +27,8 @@ const impersonate = () => {
   opnFetch(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
     loading.value = false
 
-    // Save the token.
-    authStore.setToken(data.token, false)
+    // Save the token with its expiration time.
+    authStore.setToken(data.token, data.expires_in)
 
     // Fetch the user.
     const userData = await opnFetch('user')

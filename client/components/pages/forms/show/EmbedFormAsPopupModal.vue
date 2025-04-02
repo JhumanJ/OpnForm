@@ -108,14 +108,6 @@
             </div>
           </template>
           <div class="border-t mt-4 -mx-4" />
-          <toggle-switch-input
-            v-model="advancedOptions.hide_title"
-            name="hide_title"
-            class="mt-4"
-            label="Hide Form Title"
-            :disabled="form.hide_title === true ? true : null"
-            :help="hideTitleHelp"
-          />
           <color-input
             v-model="advancedOptions.bgcolor"
             name="bgcolor"
@@ -175,22 +167,14 @@ const props = defineProps({
 const embedScriptUrl = "/widgets/embed-min.js"
 const showEmbedFormAsPopupModal = ref(false)
 const advancedOptions = ref({
-  hide_title: false,
   emoji: "💬",
   position: "right",
   bgcolor: "#3B82F6",
   width: "500",
 })
 
-const hideTitleHelp = computed(() => {
-  return props.form.hide_title
-    ? "This option is disabled because the form title is already hidden"
-    : null
-})
 const shareUrl = computed(() => {
-  return advancedOptions.value.hide_title
-    ? props.form.share_url + "?hide_title=true"
-    : props.form.share_url
+  return props.form.share_url
 })
 const embedPopupCode = computed(() => {
   const nfData = {

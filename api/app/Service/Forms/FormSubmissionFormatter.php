@@ -213,7 +213,7 @@ class FormSubmissionFormatter
             } elseif ($this->createLinks && $field['type'] == 'email') {
                 $field['value'] = '<a href="mailto:' . $data[$field['id']] . '">' . $data[$field['id']] . '</a>';
             } elseif ($field['type'] == 'checkbox') {
-                $field['value'] = $data[$field['id']] ? 'Yes' : 'No';
+                $field['value'] = $data[$field['id']] ? trans('validation.yes') : trans('validation.no');
             } elseif ($field['type'] == 'date') {
                 $dateFormat = ($field['date_format'] ?? 'dd/MM/yyyy') == 'dd/MM/yyyy' ? 'd/m/Y' : 'm/d/Y';
                 if (isset($field['with_time']) && $field['with_time']) {

@@ -36,6 +36,7 @@ export default {
   components: {},
   props: {
     modelValue: { type: Object, required: true },
+    customValidation: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
@@ -102,33 +103,36 @@ export default {
       return componentData
     },
     operators() {
-      return Object.keys(
-        this.available_filters[this.property.type].comparators,
-      ).map((key) => {
-        return {
-          value: key,
-          name: this.optionFilterNames(key, this.property.type),
-        }
-      })
+      return Object.entries(this.available_filters[this.property.type].comparators)
+        .filter(([_, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
+        .map(([filterKey]) => {
+          return {
+            value: filterKey,
+            name: this.optionFilterNames(filterKey),
+          }
+        })
     },
     needsInput() {
       const operator = this.selectedOperator()
       if (!operator) {
         return false
       }
-      const operatorFormat = operator.format
-      if (!operatorFormat) return true
+      
+      // If operator has no format and no expected_type, it means it doesn't need input
+      if (!operator.format && !operator.expected_type) {
+        return false
+      }
 
       if (
         operator.expected_type === "boolean" &&
-        operatorFormat.type === "enum" &&
-        operatorFormat.values.length === 1
+        operator.format?.type === "enum" &&
+        operator.format.values.length === 1
       ) {
         return false
       } else if (
         operator.expected_type === "object" &&
-        operatorFormat.type === "empty" &&
-        operatorFormat.values === "{}"
+        operator.format?.type === "empty" &&
+        operator.format.values === "{}"
       ) {
         return false
       }
@@ -205,13 +209,7 @@ export default {
         this.content.operator
       ]
     },
-    optionFilterNames(key, propertyType) {
-      if (propertyType === "checkbox") {
-        return {
-          equals: "Is checked",
-          does_not_equal: "Is not checked",
-        }[key]
-      }
+    optionFilterNames(key) {
       return key
         .split("_")
         .map(function (item) {
@@ -223,9 +221,20 @@ export default {
       this.$emit("update:modelValue", this.castContent(this.content))
     },
     refreshContent() {
+      const modelValue = { ...this.modelValue }
+      
+      // Migrate legacy checkbox operators
+      if (this.property.type === 'checkbox') {
+        if (modelValue?.operator === 'equals') {
+          modelValue.operator = 'is_checked'
+        } else if (modelValue?.operator === 'does_not_equal') {
+          modelValue.operator = 'is_not_checked'
+        }
+      }
+
       this.content = {
         operator: this.operators[0].value,
-        ...this.modelValue,
+        ...modelValue,
         property_meta: {
           id: this.property.id,
           type: this.property.type,

@@ -1,6 +1,6 @@
 <?php
 
-use Tests\Helpers\FormSubmissionDataFactory;
+
 
 it('can submit form with valid matrix input', function () {
     $user = $this->actingAsUser();
@@ -27,7 +27,7 @@ it('can submit form with valid matrix input', function () {
         ]
     ];
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
@@ -62,7 +62,7 @@ it('cannot submit form with invalid matrix input', function () {
         ]
     ];
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -97,7 +97,7 @@ it('can submit form with optional matrix input left empty', function () {
         'matrix_field' => []
     ];
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertSuccessful()
@@ -128,7 +128,7 @@ it('cannot submit form with required matrix input left empty', function () {
         'matrix_field' => []
     ];
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $this->postJson(route('forms.answer', $form->slug), $formData)
         ->assertStatus(422)
@@ -167,7 +167,7 @@ it('can validate matrix input with precognition', function () {
         ]
     ];
 
-    $formData = FormSubmissionDataFactory::generateSubmissionData($form, $submissionData);
+    $formData = $this->generateFormSubmissionData($form, $submissionData);
 
     $response = $this->withPrecognition()->withHeaders([
         'Precognition-Validate-Only' => 'matrix_field'

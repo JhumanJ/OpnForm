@@ -7,7 +7,8 @@ use App\Http\Requests\Zapier\CreateIntegrationRequest;
 use App\Http\Requests\Zapier\DeleteIntegrationRequest;
 use App\Integrations\Handlers\ZapierIntegration;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Tests\Helpers\FormSubmissionDataFactory;
+use App\Service\Forms\FormSubmissionDataFactory;
+use Illuminate\Support\Facades\Cache;
 
 class IntegrationController
 {
@@ -58,9 +59,8 @@ class IntegrationController
             $submissionData = (new FormSubmissionDataFactory($form))->asFormSubmissionData()->createSubmissionData();
         }
         $cacheKey = "zapier-poll-submissions-{$form->id}";
-        return (array) \Cache::remember($cacheKey, 60 * 5, function () use ($form, $submissionData, $lastSubmission) {
+        return (array) Cache::remember($cacheKey, 60 * 5, function () use ($form, $submissionData, $lastSubmission) {
             return [ZapierIntegration::formatWebhookData($form, $submissionData ?? $lastSubmission->data)];
         });
-
     }
 }

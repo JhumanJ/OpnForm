@@ -118,4 +118,6 @@ return [
     'invalid_json' => '输入无效。请修正后重试。',
     'invalid_captcha' => '验证码错误。请重新输入并重试。',
     'complete_captcha' => '请完成验证码。',
+    'yes' => '是',
+    'no' => '否',
 ];

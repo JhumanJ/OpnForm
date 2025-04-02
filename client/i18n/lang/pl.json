@@ -1,0 +1,44 @@
+{
+    "app": {
+        "name": "OpnForm"
+    },
+    "forms": {
+        "powered_by": "Obsługiwane przez",
+        "password_protected": "Ten formularz jest chroniony hasłem.",
+        "invalid_password": "Nieprawidłowe hasło.",
+        "password_required": "Hasło jest wymagane.",
+        "create_form_free": "Utwórz swój formularz za darmo z OpnForm",
+        "submit": "Wyślij",
+        "wrong_form_structure": "Coś jest nie tak ze strukturą tego formularza. Jeśli jesteś właścicielem formularza, skontaktuj się z nami.",
+        "cannot_access_here": "Nie można uzyskać dostępu do tej treści tutaj. Kliknij poniższy link, aby uzyskać dostęp.",
+        "open_form": "Otwórz formularz",
+        "restricted_to_workspace": "Dostęp ograniczony do członków przestrzeni roboczej Notion. Zaloguj się, aby uzyskać dostęp do tej treści.",
+        "select": {
+            "search": "Szukaj",
+            "searchOrTypeToCreateNew": "Szukaj lub wpisz, aby utworzyć nowy",
+            "typeSomethingToAddAnOption": "Wpisz coś, aby dodać opcję",
+            "noOptionAvailable": "Brak dostępnych opcji",
+            "create": "Utwórz"
+        },
+        "fileInput": {
+            "chooseFiles": "Kliknij, aby wybrać plik(i) lub przeciągnij tutaj | Kliknij, aby wybrać plik lub przeciągnij tutaj",
+            "sizeLimit": "Limit rozmiaru: {count}MB na plik",
+            "uploadingFile": "Przesyłanie pliku..."
+        },
+        "cameraUpload": {
+            "allowCameraPermission": "Zezwól na dostęp do kamery",
+            "allowCameraPermissionDescription": "Musisz zezwolić na dostęp do kamery przed robieniem zdjęć. Przejdź do ustawień przeglądarki, aby włączyć uprawnienia kamery na tej stronie.",
+            "gotIt": "Rozumiem!",
+            "cameraDeviceError": "Błąd urządzenia kamery",
+            "cameraDeviceErrorDescription": "Wystąpił nieznany błąd podczas próby uruchomienia kamery internetowej.",
+            "goBack": "Wróć"
+        },
+        "signatureInput": {
+            "uploadFileInstead": "Zamiast tego prześlij plik",
+            "clear": "Wyczyść"
+        },
+        "barcodeInput": {
+            "clickToOpenCamera": "Kliknij, aby otworzyć kamerę"
+        }
+    }
+} 

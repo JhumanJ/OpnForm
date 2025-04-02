@@ -118,4 +118,6 @@ return [
     'invalid_json' => '無効な入力です。修正して再度お試しください。',
     'invalid_captcha' => '無効なCAPTCHAです。ボットではないことを証明してください。',
     'complete_captcha' => 'CAPTCHAを完了してください。',
+    'yes' => 'はい',
+    'no' => 'いいえ',
 ];

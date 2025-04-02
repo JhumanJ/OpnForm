@@ -27,6 +27,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     use SerializesModels;
 
     public ?string $submissionId = null;
+    private ?array $formData = null;
 
     /**
      * Create a new job instance.
@@ -44,13 +45,13 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     public function handle()
     {
-        $formData = $this->getFormData();
-        $this->addHiddenPrefills($formData);
+        $this->formData = $this->getFormData();
+        $this->addHiddenPrefills($this->formData);
 
-        $this->storeSubmission($formData);
+        $this->storeSubmission($this->formData);
 
-        $formData['submission_id'] = $this->submissionId;
-        FormSubmitted::dispatch($this->form, $formData);
+        $this->formData['submission_id'] = $this->submissionId;
+        FormSubmitted::dispatch($this->form, $this->formData);
     }
 
     public function getSubmissionId()
@@ -135,7 +136,7 @@ class StoreFormSubmissionJob implements ShouldQueue
                 }
             } else {
                 if ($field['type'] == 'text' && isset($field['generates_uuid']) && $field['generates_uuid']) {
-                    $finalData[$field['id']] = ($this->form->is_pro) ? Str::uuid() : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                    $finalData[$field['id']] = ($this->form->is_pro) ? Str::uuid()->toString() : 'Please upgrade your OpenForm subscription to use our ID generation features';
                 } else {
                     if ($field['type'] == 'text' && isset($field['generates_auto_increment_id']) && $field['generates_auto_increment_id']) {
                         $finalData[$field['id']] = ($this->form->is_pro) ? (string) ($this->form->submissions_count + 1) : 'Please upgrade your OpenForm subscription to use our ID generation features';
@@ -175,9 +176,9 @@ class StoreFormSubmissionJob implements ShouldQueue
      * - file_name-{uuid}.{ext}
      * - {uuid}
      */
-    private function storeFile(?string $value)
+    private function storeFile($value, ?bool $isPublic = null)
     {
-        if ($value == null) {
+        if (is_null($value) || empty($value)) {
             return null;
         }
 
@@ -195,6 +196,9 @@ class StoreFormSubmissionJob implements ShouldQueue
         }
 
         $fileNameParser = StorageFileNameParser::parse($value);
+        if (!$fileNameParser || !$fileNameParser->uuid) {
+            return null;
+        }
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
         $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . '/' . $fileNameParser->uuid;
@@ -257,5 +261,16 @@ class StoreFormSubmissionJob implements ShouldQueue
                 $formData[$property['id']] = $property['prefill'];
             }
         });
+    }
+
+    /**
+     * Get the processed form data after all transformations
+     */
+    public function getProcessedData(): array
+    {
+        if ($this->formData === null) {
+            $this->formData = $this->getFormData();
+        }
+        return $this->formData;
     }
 }

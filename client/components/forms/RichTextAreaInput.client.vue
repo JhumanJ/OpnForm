@@ -8,7 +8,7 @@
     </template>
 
     <div
-      class="rich-editor resize-y"
+      class="rich-editor resize-y notranslate"
       :class="[
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
@@ -95,6 +95,14 @@ const emit = defineEmits(['update:modelValue'])
 const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props, { emit })
 const editor = ref(null)
 const mentionState = ref(null)
+
+// Add this watch to clean up empty HTML content
+watch(compVal, (val) => {
+  if (val && val.replace(/<[^>]*>/g, '').trim() === '') {
+    compVal.value = null
+  }
+}, { immediate: true })
+
 // Move the mention extension registration to onMounted
 
 if (props.enableMentions && !Quill.imports['blots/mention']) {

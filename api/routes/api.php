@@ -144,6 +144,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 )->name('forms.index');
                 Route::put('/custom-domains', [WorkspaceController::class, 'saveCustomDomain'])->name('save-custom-domains');
                 Route::put('/email-settings', [WorkspaceController::class, 'saveEmailSettings'])->name('save-email-settings');
+                Route::put('/', [WorkspaceController::class, 'update'])->name('update');
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::middleware('pro-form')->group(function () {
@@ -225,6 +226,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::group(['middleware' => 'moderator', 'prefix' => 'moderator'], function () {
+        Route::post(
+            'create-template',
+            [\App\Http\Controllers\Admin\AdminController::class, 'createTemplate']
+        );
         Route::get(
             'fetch-user/{identifier}',
             [\App\Http\Controllers\Admin\AdminController::class, 'fetchUser']

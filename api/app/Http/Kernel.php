@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\AcceptsJsonMiddleware;
 use App\Http\Middleware\AuthenticateJWT;
 use App\Http\Middleware\CustomDomainRestriction;
+use App\Http\Middleware\DevCorsMiddleware;
 use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsModerator;
@@ -25,6 +26,7 @@ class Kernel extends HttpKernel
     protected $middleware = [
         //         \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
+        DevCorsMiddleware::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
@@ -66,7 +68,7 @@ class Kernel extends HttpKernel
         ],
 
         'api-external' => [
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

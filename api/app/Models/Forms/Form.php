@@ -41,7 +41,7 @@ class Form extends Model implements CachableAttributes
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
-    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr'];
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr', 'sk', 'cs', 'eu', 'gl', 'ca', 'sv', 'pl'];
 
     protected $fillable = [
         'workspace_id',
@@ -68,7 +68,6 @@ class Form extends Model implements CachableAttributes
         'color',
         'uppercase_labels',
         'no_branding',
-        'hide_title',
         'transparent_background',
 
         // Custom Code
@@ -180,7 +179,7 @@ class Form extends Model implements CachableAttributes
     public function getViewsCountAttribute()
     {
         return $this->remember('views_count', 15 * 60, function (): int {
-            if (env('DB_CONNECTION') == 'mysql') {
+            if (config('database.default') === 'mysql') {
                 return (int) ($this->views()->count() +
                     $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
             }

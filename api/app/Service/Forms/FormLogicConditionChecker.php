@@ -2,6 +2,8 @@
 
 namespace App\Service\Forms;
 
+use App\Models\Forms\FormSubmission;
+
 class FormLogicConditionChecker
 {
     public function __construct(private ?array $conditions, private ?array $formData)
@@ -81,6 +83,15 @@ class FormLogicConditionChecker
 
     private function checkEquals($condition, $fieldValue): bool
     {
+        // For numeric values, convert to numbers before comparison
+        if (
+            $this->areValidNumbers($condition, $fieldValue) &&
+            is_numeric($condition['value']) &&
+            is_numeric($fieldValue)
+        ) {
+            return (float) $condition['value'] === (float) $fieldValue;
+        }
+
         return $condition['value'] === $fieldValue;
     }
 
@@ -89,7 +100,7 @@ class FormLogicConditionChecker
         if (is_array($fieldValue)) {
             return in_array($condition['value'], $fieldValue);
         }
-        return \Str::contains($fieldValue, $condition['value']);
+        return \Illuminate\Support\Str::contains($fieldValue, $condition['value']);
     }
 
     private function checkMatrixContains($condition, $fieldValue): bool
@@ -152,24 +163,44 @@ class FormLogicConditionChecker
         return $fieldValue == '' || $fieldValue == null || !$fieldValue;
     }
 
+    /**
+     * Helper function to check if values are valid for numeric comparison
+     */
+    private function areValidNumbers($condition, $fieldValue): bool
+    {
+        return isset($condition['value']) && $fieldValue !== null && $fieldValue !== '';
+    }
+
     private function checkGreaterThan($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue > (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue > (float) $condition['value'];
     }
 
     private function checkGreaterThanEqual($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue >= (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue >= (float) $condition['value'];
     }
 
     private function checkLessThan($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue < (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue < (float) $condition['value'];
     }
 
     private function checkLessThanEqual($condition, $fieldValue): bool
     {
-        return $condition['value'] && $fieldValue && (float) $fieldValue <= (float) $condition['value'];
+        if (!$this->areValidNumbers($condition, $fieldValue)) {
+            return false;
+        }
+        return (float) $fieldValue <= (float) $condition['value'];
     }
 
     private function checkBefore($condition, $fieldValue): bool
@@ -275,6 +306,48 @@ class FormLogicConditionChecker
         return false;
     }
 
+    private function checkExistsInSubmissions($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !isset($condition['property_meta']['id'])) {
+            return false;
+        }
+
+        $formId = $this->formData['form']['id'] ?? null;
+        if (!$formId) {
+            return false;
+        }
+
+        return FormSubmission::where('form_id', $formId)
+            ->where(function ($query) use ($condition, $fieldValue) {
+                $fieldId = $condition['property_meta']['id'];
+
+                if (config('database.default') === 'mysql') {
+                    // For scalar values
+                    $query->where(function ($q) use ($fieldId, $fieldValue) {
+                        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.\"$fieldId\"')) = ?", [$fieldValue]);
+
+                        // For array values
+                        if (is_array($fieldValue)) {
+                            $q->orWhereRaw("JSON_CONTAINS(JSON_EXTRACT(data, '$.\"$fieldId\"'), ?)", [json_encode($fieldValue)]);
+                        }
+                    });
+                } else {
+                    $query->where(function ($q) use ($fieldId, $fieldValue) {
+                        // For scalar values
+                        $q->whereRaw("data->? = ?::jsonb", [$fieldId, json_encode($fieldValue)]);
+
+                        // For array values
+                        if (is_array($fieldValue)) {
+                            $q->orWhereRaw("data->? @> ?::jsonb", [
+                                $fieldId,
+                                json_encode($fieldValue)
+                            ]);
+                        }
+                    });
+                }
+            })->exists();
+    }
+
     private function textConditionMet(array $propertyCondition, $value): bool
     {
         switch ($propertyCondition['operator']) {
@@ -319,6 +392,10 @@ class FormLogicConditionChecker
                 } catch (\Exception $e) {
                     return true;
                 }
+            case 'exists_in_submissions':
+                return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;
@@ -355,6 +432,10 @@ class FormLogicConditionChecker
                 return $this->checkLength($propertyCondition, $value, '<');
             case 'content_length_less_than_or_equal_to':
                 return $this->checkLength($propertyCondition, $value, '<=');
+            case 'exists_in_submissions':
+                return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;
@@ -362,11 +443,21 @@ class FormLogicConditionChecker
 
     private function checkboxConditionMet(array $propertyCondition, $value): bool
     {
+        // Treat null or missing values as false
+        if ($value === null || !isset($value)) {
+            $value = false;
+        }
+
         switch ($propertyCondition['operator']) {
+            case 'is_checked':
+                return $value === true;
+            case 'is_not_checked':
+                return $value === false;
+                // Legacy operators
             case 'equals':
-                return $this->checkEquals($propertyCondition, $value);
+                return $value === true;
             case 'does_not_equal':
-                return !$this->checkEquals($propertyCondition, $value);
+                return $value === false;
         }
 
         return false;

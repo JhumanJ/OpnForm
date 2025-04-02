@@ -1,55 +1,83 @@
 ---
 services:
-  api: &api
+  api: &api-environment
     image: jhumanj/opnform-api:latest
-    build:
+    container_name: opnform-api
+    build: &api-build
       context: .
       dockerfile: docker/Dockerfile.api
       args:
         APP_ENV: production
-    environment: &api-environment  # Add this anchor
+        COMPOSER_FLAGS: --no-dev
+    volumes: &api-environment-volumes
+      - ./api/storage:/usr/share/nginx/html/storage:rw
+    environment: &api-env
+      APP_ENV: production
+      IS_API_WORKER: "false"
+      # Database settings
       DB_HOST: db
       REDIS_HOST: redis
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      # Storage settings
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
     env_file: 
-    - ./api/.env
-    volumes:
-    - opnform_storage:/usr/share/nginx/html/storage:rw
+      - ./api/.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   api-worker:
-    image: jhumanj/opnform-api:latest
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.api
-      args:
-        APP_ENV: production
-    command: php artisan queue:work
+    <<: *api-environment
+    container_name: opnform-api-worker
+    build: *api-build
+    command: ["php", "artisan", "queue:work"]
+    volumes: *api-environment-volumes
     environment:
-      <<: *api-environment
+      <<: *api-env
+      APP_ENV: production
       IS_API_WORKER: "true"
     env_file: 
-    - ./api/.env
-    volumes:
-    - opnform_storage:/usr/share/nginx/html/storage:rw
+      - ./api/.env
+
+  api-scheduler:
+    <<: *api-environment
+    container_name: opnform-api-scheduler
+    build: *api-build
+    command: ["php", "artisan", "schedule:work"]
+    volumes: *api-environment-volumes
+    environment:
+      <<: *api-env
+      APP_ENV: production
+      IS_API_WORKER: "true"
+      # Scheduler settings
+      CONTAINER_ROLE: scheduler
+      PHP_MEMORY_LIMIT: 512M
+      PHP_MAX_EXECUTION_TIME: 60
+    env_file: 
+      - ./api/.env
 
   ui:
     image: jhumanj/opnform-client:latest
+    container_name: opnform-client
     build:
       context: .
       dockerfile: docker/Dockerfile.client
     env_file: 
-    - ./client/.env
+      - ./client/.env
 
   redis:
     image: redis:7
+    container_name: opnform-redis
 
   db:
     image: postgres:16
+    container_name: opnform-db
     environment:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
@@ -64,10 +92,16 @@ services:
 
   ingress:
     image: nginx:1
+    container_name: opnform-ingress
     volumes:
       - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
     ports:
       - 80:80
+    depends_on:
+      api:
+        condition: service_started
+      ui:
+        condition: service_started
 
 volumes:
   postgres-data:

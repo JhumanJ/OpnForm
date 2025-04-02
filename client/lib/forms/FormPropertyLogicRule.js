@@ -62,8 +62,7 @@ class FormPropertyLogicRule {
       condition["value"] === undefined ||
       condition["value"]["property_meta"] === undefined ||
       condition["value"]["property_meta"]["type"] === undefined ||
-      condition["value"]["operator"] === undefined ||
-      condition["value"]["value"] === undefined
+      condition["value"]["operator"] === undefined
     ) {
       this.isConditionCorrect = false
       return
@@ -71,8 +70,7 @@ class FormPropertyLogicRule {
 
     const typeField = condition["value"]["property_meta"]["type"]
     const operator = condition["value"]["operator"]
-    const value = condition["value"]["value"]
-
+    
     if (
       this.CONDITION_MAPPING[typeField] === undefined ||
       this.CONDITION_MAPPING[typeField]["comparators"][operator] === undefined
@@ -81,23 +79,34 @@ class FormPropertyLogicRule {
       return
     }
 
-    const type =
-      this.CONDITION_MAPPING[typeField]["comparators"][operator][
-        "expected_type"
-      ]
-    if (Array.isArray(type)) {
-      let foundCorrectType = false
-      type.forEach((subtype) => {
-        if (this.valueHasCorrectType(subtype, value)) {
-          foundCorrectType = true
+    // Check if operator needs a value based on comparator definition
+    const comparatorDef = this.CONDITION_MAPPING[typeField]["comparators"][operator]
+    const needsValue = Object.keys(comparatorDef).length > 0
+    
+    if (needsValue && condition["value"]["value"] === undefined) {
+      this.isConditionCorrect = false
+      return
+    }
+
+    // Only check value type if comparator expects one
+    if (needsValue) {
+      const type = comparatorDef["expected_type"]
+      const value = condition["value"]["value"]
+      
+      if (Array.isArray(type)) {
+        let foundCorrectType = false
+        type.forEach((subtype) => {
+          if (this.valueHasCorrectType(subtype, value)) {
+            foundCorrectType = true
+          }
+        })
+        if (!foundCorrectType) {
+          this.isConditionCorrect = false
         }
-      })
-      if (!foundCorrectType) {
-        this.isConditionCorrect = false
-      }
-    } else {
-      if (!this.valueHasCorrectType(type, value)) {
-        this.isConditionCorrect = false
+      } else {
+        if (!this.valueHasCorrectType(type, value)) {
+          this.isConditionCorrect = false
+        }
       }
     }
   }
@@ -151,3 +160,4 @@ class FormPropertyLogicRule {
 }
 
 export default FormPropertyLogicRule
+

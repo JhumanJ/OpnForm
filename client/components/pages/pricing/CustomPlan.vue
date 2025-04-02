@@ -155,8 +155,8 @@
               </div>
               <p class="flex flex-col items-center">
                 <span class="text-6xl font-semibold tracking-tight text-gray-950">
-                  <template v-if="isYearly">$160</template>
-                  <template v-else>$200</template>
+                  <template v-if="isYearly">$79</template>
+                  <template v-else>$100</template>
                 </span>
                 <span class="text-sm font-medium leading-6 text-gray-600">
                   starting from per month

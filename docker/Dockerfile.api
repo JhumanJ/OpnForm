@@ -1,65 +1,89 @@
-# Stage 1: Composer dependencies
-FROM composer:latest as composer
-WORKDIR /app
-COPY api/composer.* ./
-
-ARG APP_ENV=production
-RUN if [ "$APP_ENV" = "production" ]; then \
-    composer install --ignore-platform-req=php --no-dev --optimize-autoloader; \
-    else \
-    composer install --ignore-platform-req=php --optimize-autoloader; \
-    fi
-
-# Stage 2: Final image
 FROM php:8.3-fpm
 
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
+    libzip-dev \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
+    postgresql-client \
     libpq-dev \
-    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd \
-    && pecl install redis \
-    && docker-php-ext-enable redis
+    unzip \
+    gcc \
+    make \
+    autoconf \
+    libc-dev \
+    pkg-config \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install xdebug if not in production
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Install PHP extensions
+ENV CFLAGS="-O1 -D_GNU_SOURCE" \
+    CXXFLAGS="-O1 -D_GNU_SOURCE"
+
+# Install basic extensions first
+RUN set -eux; \
+    docker-php-ext-install -j$(nproc) pdo zip && \
+    php -m | grep -E 'pdo|zip'
+
+# Install GD
+RUN set -eux; \
+    docker-php-ext-install -j$(nproc) gd && \
+    php -m | grep -E 'gd'
+
+# Install PostgreSQL related extensions
+RUN set -eux; \
+    docker-php-ext-configure pgsql && \
+    docker-php-ext-install -j$(nproc) pgsql pdo_pgsql && \
+    php -m | grep -E 'pgsql|pdo_pgsql'
+
+# Install bcmath with optimization flags for stability
+RUN set -eux; \
+    docker-php-ext-install -j1 bcmath && \
+    php -m | grep -E 'bcmath'
+
+# Install Redis extension
+RUN set -eux; \
+    pecl install -f --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no"' redis && \
+    docker-php-ext-enable redis && \
+    php -m | grep -E 'redis'
+
+WORKDIR /usr/share/nginx/html/
+
+# Create storage directories
+RUN mkdir -p storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    storage/logs \
+    storage/app/public \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Copy composer files and helpers.php first
+COPY api/composer.json api/composer.lock ./
+COPY api/app/helpers.php ./app/helpers.php
+
+# Default to production settings unless overridden during build
 ARG APP_ENV=production
-RUN if [ "$APP_ENV" != "production" ]; then \
-    pecl install xdebug && \
-    docker-php-ext-enable xdebug; \
-    fi
+ARG COMPOSER_FLAGS=--no-dev --optimize-autoloader --no-interaction
 
-# Configure PHP
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
-COPY docker/php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+# Install dependencies without running scripts
+RUN composer install ${COMPOSER_FLAGS} --no-scripts --ignore-platform-req=php
 
-WORKDIR /usr/share/nginx/html
+# Copy the rest of the application
+COPY api/ .
 
-# Copy application files
-COPY api/artisan artisan
-COPY api/bootstrap ./bootstrap
-COPY api/config ./config
-COPY api/app ./app
-COPY api/database ./database
-COPY api/public ./public
-COPY api/routes ./routes
-COPY api/tests ./tests
-COPY api/resources ./resources
-COPY api/storage ./storage
+# Run composer scripts and clear cache
+RUN composer dump-autoload -o \
+    && php artisan package:discover --ansi \
+    && composer clear-cache \
+    && chmod -R 775 storage \
+    && chown -R www-data:www-data storage
 
-# Copy vendor directory from composer stage
-COPY --from=composer /app/vendor ./vendor
-
-# Set permissions
-RUN chmod -R 775 storage \
-    && chmod -R 775 bootstrap/cache \
-    && chown -R www-data:www-data /usr/share/nginx/html
-
+# Setup entrypoint
 COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
 RUN chmod a+x /usr/local/bin/*
 

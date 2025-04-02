@@ -18,661 +18,12 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
         'disable-block',
     ];
 
-    public const CONDITION_MAPPING = [
-        'text' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'string',
-                ],
-                'contains' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_contain' => [
-                    'expected_type' => 'string',
-                ],
-                'starts_with' => [
-                    'expected_type' => 'string',
-                ],
-                'ends_with' => [
-                    'expected_type' => 'string',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'matches_regex' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'regex'
-                    ]
-                ],
-                'does_not_match_regex' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'regex'
-                    ]
-                ],
-            ],
-        ],
-        'matrix' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'object',
-                    ],
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'object',
-                    ],
-                ],
-                'contains' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'object',
-                    ],
-                ],
-                'does_not_contain' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'object',
-                    ],
-                ],
-            ],
-        ],
-        'url' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'string',
-                ],
-                'contains' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_contain' => [
-                    'expected_type' => 'string',
-                ],
-                'starts_with' => [
-                    'expected_type' => 'string',
-                ],
-                'ends_with' => [
-                    'expected_type' => 'string',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'email' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'string',
-                ],
-                'contains' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_contain' => [
-                    'expected_type' => 'string',
-                ],
-                'starts_with' => [
-                    'expected_type' => 'string',
-                ],
-                'ends_with' => [
-                    'expected_type' => 'string',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'phone_number' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'string',
-                ],
-                'contains' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_contain' => [
-                    'expected_type' => 'string',
-                ],
-                'starts_with' => [
-                    'expected_type' => 'string',
-                ],
-                'ends_with' => [
-                    'expected_type' => 'string',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'number' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'number',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'rating' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'number',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'scale' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'number',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'slider' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'number',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'content_length_equals' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_does_not_equal' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_greater_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than' => [
-                    'expected_type' => 'number',
-                ],
-                'content_length_less_than_or_equal_to' => [
-                    'expected_type' => 'number',
-                ],
-            ],
-        ],
-        'checkbox' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
+    private static $conditionMappingData = null;
 
-            ],
-        ],
-        'select' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                ],
-                'does_not_equal' => [
-                    'expected_type' => 'string',
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-            ],
-        ],
-        'multi_select' => [
-            'comparators' => [
-                'contains' => [
-                    'expected_type' => ['object', 'string'],
-                    'format' => [
-                        'type' => 'uuid',
-                    ],
-                ],
-                'does_not_contain' => [
-                    'expected_type' => ['object', 'string'],
-                    'format' => [
-                        'type' => 'uuid',
-                    ],
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-            ],
-        ],
-        'date' => [
-            'comparators' => [
-                'equals' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'date',
-                    ],
-                ],
-                'before' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'date',
-                    ],
-                ],
-                'after' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'date',
-                    ],
-                ],
-                'on_or_before' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'date',
-                    ],
-                ],
-                'on_or_after' => [
-                    'expected_type' => 'string',
-                    'format' => [
-                        'type' => 'date',
-                    ],
-                ],
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'past_week' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-                'past_month' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-                'past_year' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-                'next_week' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-                'next_month' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-                'next_year' => [
-                    'expected_type' => 'object',
-                    'format' => [
-                        'type' => 'empty',
-                        'values' => '{}',
-                    ],
-                ],
-            ],
-        ],
-        'files' => [
-            'comparators' => [
-                'is_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-                'is_not_empty' => [
-                    'expected_type' => 'boolean',
-                    'format' => [
-                        'type' => 'enum',
-                        'values' => [true],
-                    ],
-                ],
-            ],
-        ],
-    ];
+    public static function getConditionMapping()
+    {
+        return config('opnform.condition_mapping');
+    }
 
     private $isConditionCorrect = true;
 
@@ -688,85 +39,83 @@ class FormPropertyLogicRule implements DataAwareRule, ValidationRule
 
     private function checkBaseCondition($condition)
     {
-
         if (!isset($condition['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition body';
-
             return;
         }
 
         if (!isset($condition['value']['property_meta'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property';
-
             return;
         }
 
         if (!isset($condition['value']['property_meta']['type'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition property type';
-
             return;
         }
 
         if (!isset($condition['value']['operator'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition operator';
-
-            return;
-        }
-
-        if (!isset($condition['value']['value'])) {
-            $this->isConditionCorrect = false;
-            $this->conditionErrors[] = 'missing condition value';
-
             return;
         }
 
         $typeField = $condition['value']['property_meta']['type'];
         $operator = $condition['value']['operator'];
         $this->operator = $operator;
-        $value = $condition['value']['value'];
 
-        if (!isset(self::CONDITION_MAPPING[$typeField])) {
+        if (!isset(self::getConditionMapping()[$typeField])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition type';
-
             return;
         }
 
-        if (!isset(self::CONDITION_MAPPING[$typeField]['comparators'][$operator])) {
+        if (!isset(self::getConditionMapping()[$typeField]['comparators'][$operator])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'configuration not found for condition operator';
-
             return;
         }
 
-        $type = self::CONDITION_MAPPING[$typeField]['comparators'][$operator]['expected_type'];
+        $comparatorDef = self::getConditionMapping()[$typeField]['comparators'][$operator];
+        $needsValue = !empty((array)$comparatorDef);
 
-        if (is_array($type)) {
-            $foundCorrectType = false;
-            foreach ($type as $subtype) {
-                if ($this->valueHasCorrectType($subtype, $value)) {
-                    $foundCorrectType = true;
+        if ($needsValue && !isset($condition['value']['value'])) {
+            $this->isConditionCorrect = false;
+            $this->conditionErrors[] = 'missing condition value';
+            return;
+        }
+
+        if ($needsValue) {
+            $type = $comparatorDef['expected_type'] ?? null;
+            $value = $condition['value']['value'];
+
+            if (is_array($type)) {
+                $foundCorrectType = false;
+                foreach ($type as $subtype) {
+                    if ($this->valueHasCorrectType($subtype, $value)) {
+                        $foundCorrectType = true;
+                    }
                 }
-            }
-            if (!$foundCorrectType) {
-                $this->isConditionCorrect = false;
-            }
-        } else {
-            if (!$this->valueHasCorrectType($type, $value)) {
-                $this->isConditionCorrect = false;
-                $this->conditionErrors[] = 'wrong type of condition value';
+                if (!$foundCorrectType) {
+                    $this->isConditionCorrect = false;
+                    $this->conditionErrors[] = 'wrong type of condition value';
+                }
+            } else {
+                if (!$this->valueHasCorrectType($type, $value)) {
+                    $this->isConditionCorrect = false;
+                    $this->conditionErrors[] = 'wrong type of condition value';
+                }
             }
         }
     }
 
     private function valueHasCorrectType($type, $value)
     {
-        if ($type === 'string' && isset(self::CONDITION_MAPPING[$this->field['type']]['comparators'][$this->operator]['format'])) {
-            $format = self::CONDITION_MAPPING[$this->field['type']]['comparators'][$this->operator]['format'];
+        if ($type === 'string' && isset(self::getConditionMapping()[$this->field['type']]['comparators'][$this->operator]['format'])) {
+            $format = self::getConditionMapping()[$this->field['type']]['comparators'][$this->operator]['format'];
             if ($format['type'] === 'regex') {
                 try {
                     preg_match('/' . $value . '/', '');

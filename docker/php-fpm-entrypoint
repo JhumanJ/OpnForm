@@ -11,6 +11,7 @@ main() {
         wait_for_db
         apply_db_migrations
         run_init_project
+        optimize_application
         run_server "$@"
     fi
 }
@@ -49,7 +50,7 @@ wait_for_db() {
 
 apply_db_migrations() {
     echo "Running DB Migrations"
-    ./artisan migrate
+    ./artisan migrate --force
 }
 
 run_init_project() {
@@ -57,9 +58,14 @@ run_init_project() {
     ./artisan app:init-project
 }
 
+optimize_application() {
+    echo "Optimizing application"
+    ./artisan optimize
+}
+
 run_server() {
     echo "Starting server $@"
-    exec /usr/local/bin/docker-php-entrypoint "$@"
+    exec "$@"
 }
 
 main "$@"

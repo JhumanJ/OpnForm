@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-white">
+  <div
+    v-if="workspace"
+    class="bg-white"
+  >
     <div class="flex bg-gray-50 pb-5 border-b">
       <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
         <div class="pt-4 pb-0">
@@ -8,7 +11,7 @@
               Your Forms
             </h2>
             <v-button
-              v-if="!workspace.is_readonly"
+              v-if="!workspace?.is_readonly"
               v-track.create_form_click
               :to="{ name: 'forms-create' }"
             >
@@ -87,7 +90,7 @@
               again.
             </div>
             <v-button
-              v-if="!workspace.is_readonly && forms.length === 0"
+              v-if="!workspace?.is_readonly && forms.length === 0"
               v-track.create_form_click
               class="mt-4"
               :to="{ name: 'forms-create' }"
@@ -182,7 +185,7 @@
               </div>
             </div>
             <div
-              v-if="!workspace.is_pro"
+              v-if="!workspace?.is_pro"
               class="px-4"
             >
               <UAlert
@@ -276,7 +279,7 @@ const selectedTags = ref(new Set())
 
 const onTagClick = (tag) => {
   if (selectedTags?.value?.has(tag)) {
-    selectedTags.value.remove(tag)
+    selectedTags.value.delete(tag)
   } else {
     selectedTags.value.add(tag)
   }

@@ -58,7 +58,7 @@
       </div>
     </template>
 
-    <div class="w-full border-t pt-4">
+    <div class="w-full border-t pt-4 mt-4">
       <h4 class="font-semibold">
         Link Privacy
       </h4>
@@ -114,7 +114,7 @@ export default {
         this.form.seo_meta[keyname] = null
     })
 
-    if (this.form.custom_domain && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
+    if (this.form.custom_domain && this.workspace?.custom_domains && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
       this.form.custom_domain = null
     }
   }

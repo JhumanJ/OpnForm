@@ -52,11 +52,11 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50':draggingNewBlock}"
+          :class="{'rounded-md bg-blue-50 dark:bg-gray-800':draggingNewBlock}"
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"
-          :disabled="!adminPreview"
+          :disabled="!formModeStrategy.admin.allowDragging"
           @change="handleDragDropped"
         >
           <template #item="{element}">
@@ -68,7 +68,7 @@
               :data-form-value="dataFormValue"
               :theme="theme"
               :dark-mode="darkMode"
-              :admin-preview="adminPreview"
+              :mode="mode"
             />
           </template>
         </draggable>
@@ -78,7 +78,7 @@
     <!-- Captcha -->
     <div class="mb-3 px-2 mt-4 mx-auto w-max">
       <CaptchaInput
-        v-if="form.use_captcha && isLastPage"
+        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
         ref="captcha"
         :provider="form.captcha_provider"
         :form="dataForm"
@@ -135,17 +135,17 @@
 </template>
 
 <script>
-import clonedeep from 'clone-deep'
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import {computed} from "vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import clonedeep from 'clone-deep'
 
 export default {
   name: 'OpenForm',
@@ -168,17 +168,16 @@ export default {
       type: Boolean,
       required: true
     },
-    showHidden: {
-      type: Boolean,
-      default: false
-    },
     fields: {
       type: Array,
       required: true
     },
     defaultDataForm: { type: [Object, null] },
-    adminPreview: {type: Boolean, default: false}, // If used in FormEditorPreview
-    urlPrefillPreview: {type: Boolean, default: false}, // If used in UrlFormPrefill
+    mode: {
+      type: String,
+      default: FormMode.LIVE,
+      validator: (value) => Object.values(FormMode).includes(value)
+    },
     darkMode: {
       type: Boolean,
       default: false
@@ -189,6 +188,11 @@ export default {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
     const dataForm = ref(useForm())
+    const config = useRuntimeConfig()
+
+    const hasCaptchaProviders = computed(() => {
+      return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
+    })
 
     return {
       dataForm,
@@ -202,16 +206,16 @@ export default {
       // Used for admin previews
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
+      hasCaptchaProviders
     }
   },
 
   data() {
     return {
-      // Page index
-      /**
-       * Used to force refresh components by changing their keys
-       */
       isAutoSubmit: false,
+      isInitialLoad: true,
+      // Flag to prevent recursion in field group updates
+      isUpdatingFieldGroups: false,
     }
   },
 
@@ -233,6 +237,24 @@ export default {
       })
       groups.push(currentGroup)
       return groups
+    },
+    /**
+     * Gets the comprehensive strategy based on the form mode
+     */
+    formModeStrategy() {
+      return createFormModeStrategy(this.mode)
+    },
+    /**
+     * Determines if hidden fields should be shown based on the mode
+     */
+    showHidden() {
+      return this.formModeStrategy.display.showHiddenFields
+    },
+    /**
+     * Determines if the form is in admin preview mode
+     */
+    isAdminPreview() {
+      return this.formModeStrategy.admin.showAdminControls
     },
     formProgress() {
       const requiredFields = this.fields.filter(field => field.required)
@@ -316,20 +338,37 @@ export default {
     },
     paymentBlock() {
       return (this.currentFields) ? this.currentFields.find(field => field.type === 'payment') : null
+    },
+    isCaptchaProviderAvailable() {
+      const config = useRuntimeConfig()
+      if (this.form.captcha_provider === 'recaptcha') {
+        return !!config.public.recaptchaSiteKey
+      } else if (this.form.captcha_provider === 'hcaptcha') {
+        return !!config.public.hCaptchaSiteKey
+      }
+      return false
     }
   },
 
   watch: {
-    form: {
-      deep: true,
-      handler() {
-        this.initForm()
-      }
+    // Monitor only critical changes that require full reinitialization
+    'form.database_id': function() {
+      // Only reinitialize when database changes
+      this.initForm()
     },
-    fields: {
+    'fields.length': function() {
+      // Only reinitialize when fields are added or removed
+      this.updateFieldGroupsSafely()
+    },
+    // Watch for changes to individual field properties
+    'fields': {
       deep: true,
       handler() {
-        this.initForm()
+        // Skip update if only triggered by internal fieldGroups changes
+        if (this.isUpdatingFieldGroups) return
+        
+        // Safely update field groups without causing recursive updates
+        this.updateFieldGroupsSafely()
       }
     },
     dataFormValue: {
@@ -344,14 +383,14 @@ export default {
     // These watchers ensure the form shows the correct page for the field being edited in admin preview
     selectedFieldIndex: {
       handler(newIndex) {
-        if (this.adminPreview && this.showEditFieldSidebar) {
+        if (this.isAdminPreview && this.showEditFieldSidebar) {
           this.setPageForField(newIndex)
         }
       }
     },
     showEditFieldSidebar: {
       handler(newValue) {
-        if (this.adminPreview && newValue) {
+        if (this.isAdminPreview && newValue) {
           this.setPageForField(this.selectedFieldIndex)
         }
       }
@@ -392,6 +431,12 @@ export default {
       this.$refs['form-timer'].stopTimer()
       this.dataForm.completion_time = this.$refs['form-timer'].completionTime
 
+      // Add validation strategy check
+      if (!this.formModeStrategy.validation.validateOnSubmit) {
+        this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+        return
+      }
+
       this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
@@ -431,7 +476,11 @@ export default {
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
           return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
         }).catch((error) => {
-          useAlert().error(error?.data?.message || 'Something went wrong')
+          if (error?.data?.errors) {
+            useAlert().formValidationError(error.data)
+          } else {
+            useAlert().error(error?.data?.message || 'Something went wrong')
+          }
           return null
         })
       )
@@ -442,16 +491,48 @@ export default {
      * Form initialization
      */
     async initForm() {
+      // Only do a full initialization when necessary
+      // Store current page index and form data to avoid overwriting existing values
+      const currentFormData = this.dataForm ? clonedeep(this.dataForm.data()) : {}
+
+      // Handle special cases first
       if (this.defaultDataForm) {
-        this.dataForm = useForm(this.defaultDataForm)
+        // If we have default data form, initialize with that
+        await nextTick(() => {
+          this.dataForm.resetAndFill(this.defaultDataForm)
+        })
+        this.updateFieldGroupsSafely()
         return
       }
 
-      if (await this.tryInitFormFromEditableSubmission()) return
-      if (this.tryInitFormFromPendingSubmission()) return
+      // Initialize the field groups without resetting form data
+      this.updateFieldGroupsSafely()
 
-      this.initFormWithDefaultValues()
+      // Check if we need to handle form submission states
+      if (await this.checkForEditableSubmission()) {
+        return
+      }
+
+      if (this.checkForPendingSubmission()) {
+        return
+      }
+
+      // Standard initialization with default values
+      this.initFormWithDefaultValues(currentFormData)
     },
+    
+    checkForEditableSubmission() {
+      return this.tryInitFormFromEditableSubmission()
+    },
+
+    checkForPendingSubmission() {
+      if (this.tryInitFormFromPendingSubmission()) {
+        this.updateFieldGroupsSafely()
+        return true
+      }
+      return false
+    },
+    
     async tryInitFormFromEditableSubmission() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
         const submissionId = useRoute().query?.submission_id
@@ -459,24 +540,26 @@ export default {
           this.form.submission_id = submissionId
           const data = await this.getSubmissionData()
           if (data) {
-            this.dataForm = useForm(data)
+            this.dataForm.resetAndFill(data)
             return true
           }
         }
       }
       return false
     },
+    
     tryInitFormFromPendingSubmission() {
       if (this.isPublicFormPage && this.form.auto_save) {
         const pendingData = this.pendingSubmission.get()
         if (pendingData && Object.keys(pendingData).length !== 0) {
           this.updatePendingDataFields(pendingData)
-          this.dataForm = useForm(pendingData)
+          this.dataForm.resetAndFill(pendingData)
           return true
         }
       }
       return false
     },
+    
     updatePendingDataFields(pendingData) {
       this.fields.forEach(field => {
         if (field.type === 'date' && field.prefill_today) {
@@ -484,18 +567,27 @@ export default {
         }
       })
     },
-    initFormWithDefaultValues() {
-      const formData = clonedeep(this.dataForm?.data() || {})
+    
+    initFormWithDefaultValues(currentFormData = {}) {
+      // Only set page 0 on first load, otherwise maintain current position
+      if (this.formPageIndex === undefined || this.isInitialLoad) {
+        this.formPageIndex = 0
+        this.isInitialLoad = false
+      }
+      
+      // Initialize form data with default values
+      const formData = { ...currentFormData }
       const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
 
       this.fields.forEach(field => {
-        if (field.type.startsWith('nf-')) return
+        if (field.type.startsWith('nf-') && !['nf-page-body-input', 'nf-page-logo', 'nf-page-cover'].includes(field.type)) return
 
         this.handleUrlPrefill(field, formData, urlPrefill)
         this.handleDefaultPrefill(field, formData)
       })
-
-      this.dataForm = useForm(formData)
+      
+      // Reset form with new data
+      this.dataForm.resetAndFill(formData)
     },
     handleUrlPrefill(field, formData, urlPrefill) {
       if (!urlPrefill) return
@@ -539,7 +631,7 @@ export default {
       this.scrollToTop()
     },
     async nextPage() {
-      if (this.adminPreview || this.urlPrefillPreview) {
+      if (!this.formModeStrategy.validation.validateOnNextPage) {
         if (!this.isLastPage) {
           this.formPageIndex++
         }
@@ -553,17 +645,22 @@ export default {
           .filter(f => f.type !== 'payment')
           .map(f => f.id)
 
-        await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
-        
-        if (!await this.doPayment()) {
-          return false
+        // Validate non-payment fields first
+        if (fieldsToValidate.length > 0) {
+            await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
         }
 
+        // Process payment if needed
+        if (!await this.doPayment()) {
+          return false // Payment failed or was required but not completed
+        }
+
+        // If validation and payment are successful, proceed
         if (!this.isLastPage) {
           this.formPageIndex++
           this.scrollToTop()
         }
-        
+
         return true
       } catch (error) {
         this.handleValidationError(error)
@@ -600,15 +697,15 @@ export default {
         }
         return false
       }
-      return true
+      return true // Payment not required or already processed
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     handleValidationError(error) {
       console.error(error)
-      if (error?.data?.message) {
-        useAlert().error(error.data.message)
+      if (error?.data) {
+        useAlert().formValidationError(error.data)
       }
       this.dataForm.busy = false
     },
@@ -644,6 +741,59 @@ export default {
       }
       this.formPageIndex = this.fieldGroups.length - 1
     },
+    
+    // New method for updating field groups
+    updateFieldGroups() {
+      if (!this.fields || this.fields.length === 0) return
+
+      // Preserve the current page index if possible
+      const currentPageIndex = this.formPageIndex
+      
+      // Use a local variable instead of directly modifying computed property
+      // We'll use this to determine totalPages and currentPageIndex
+      const calculatedGroups = this.fields.reduce((groups, field, index) => {
+        // If the field is a page break, start a new group
+        if (field.type === 'nf-page-break' && index !== 0) {
+          groups.push([])
+        }
+        // Add the field to the current group
+        if (groups.length === 0) groups.push([])
+        groups[groups.length - 1].push(field)
+        return groups
+      }, [])
+
+      // If we don't have any groups (shouldn't happen), create a default group
+      if (calculatedGroups.length === 0) {
+        calculatedGroups.push([])
+      }
+
+      // Update page navigation
+      const totalPages = calculatedGroups.length
+      
+      // Try to maintain the current page index if valid
+      if (currentPageIndex !== undefined && currentPageIndex < totalPages) {
+        this.formPageIndex = currentPageIndex
+      } else {
+        this.formPageIndex = 0
+      }
+
+      // Force a re-render of the component, which will update fieldGroups computed property
+      this.$forceUpdate()
+    },
+
+    // Helper method to prevent recursive updates
+    updateFieldGroupsSafely() {
+      // Set flag to prevent recursive updates
+      this.isUpdatingFieldGroups = true
+      
+      // Call the actual update method
+      this.updateFieldGroups()
+      
+      // Clear the flag after a short delay to allow Vue to process the update
+      this.$nextTick(() => {
+        this.isUpdatingFieldGroups = false
+      })
+    }
   }
 }
 </script>

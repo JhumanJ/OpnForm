@@ -7,8 +7,9 @@ export default {
   components: {},
   props: {
     value: {
-      type: String,
-      required: true,
+      type: [String, Number],
+      required: false,
+      default: null
     },
   },
 }

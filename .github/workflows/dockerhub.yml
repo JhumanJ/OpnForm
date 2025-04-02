@@ -11,6 +11,7 @@ on:
       - "client/**"
       - "docker/**"
       - "docker-compose*.yml"
+      - ".github/workflows/dockerhub.yml"
   workflow_dispatch:
 
 permissions:
@@ -30,8 +31,8 @@ jobs:
             echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:latest,${{secrets.DOCKER_UI_REPO}}:${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
           else
             echo "VERSION=dev" >> $GITHUB_ENV
-            echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:dev" >> $GITHUB_ENV
-            echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:dev" >> $GITHUB_ENV
+            echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:dev,${{secrets.DOCKER_API_REPO}}:dev-${GITHUB_SHA::7}" >> $GITHUB_ENV
+            echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:dev,${{secrets.DOCKER_UI_REPO}}:dev-${GITHUB_SHA::7}" >> $GITHUB_ENV
           fi
 
       - name: Check out the repo
@@ -58,7 +59,10 @@ jobs:
           push: true
           build-args: |
             APP_ENV=${{ env.VERSION == 'dev' && 'local' || 'production' }}
+            COMPOSER_FLAGS=${{ env.VERSION == 'dev' && '--optimize-autoloader --no-interaction' || '--no-dev --optimize-autoloader --no-interaction' }}
           tags: ${{ env.API_TAGS }}
+          cache-from: type=registry,ref=${{secrets.DOCKER_API_REPO}}:dev
+          cache-to: type=inline
 
       - name: Build and push Client image
         uses: docker/build-push-action@v5
@@ -68,3 +72,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.UI_TAGS }}
+          cache-from: type=registry,ref=${{secrets.DOCKER_UI_REPO}}:dev
+          cache-to: type=inline

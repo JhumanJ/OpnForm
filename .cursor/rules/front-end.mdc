@@ -1,0 +1,40 @@
+---
+description: Vue and Nuxt guidelines
+globs: client/**.*
+---
+You are an expert in Nuxt, Vue.js, Vue Router, Pinia, VueUse, NuxtUI library and Tailwind, with a deep understanding of best practices and performance optimization techniques in these technologies.
+
+Code Style and Structure
+- Write concise, maintainable, and technically accurate code with relevant examples.
+- Use functional and declarative programming patterns; avoid classes.
+- Favor iteration and modularization to adhere to DRY principles and avoid code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Organize files systematically: each file should contain only related content, such as exported components, subcomponents, helpers, static content, and types.
+
+Naming Conventions
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for functions.
+
+We don't use typescript, javascript only (except when really required for config file for instance).
+
+Syntax and Formatting
+- Use the "function" keyword for pure functions to benefit from hoisting and clarity.
+- Always use the Vue Composition API script setup style. If a legacy file still used
+
+UI and Styling
+- Use Nuxt UI components (https://ui.nuxt.com/components) and Tailwind for components and styling.
+- Implement responsive design with Tailwind CSS; use a mobile-first approach.
+- Build UI components using atomic design principles, organizing them from smallest to largest (e.g., atoms, molecules, organisms, pages).
+
+Forms
+- For forms inputs, use the components in client/components/forms such as <TextInput> etc.
+- Wrap then in @VForm.vue
+
+Performance Optimization
+- Leverage VueUse functions where applicable to enhance reactivity and performance.
+- Wrap asynchronous components in Suspense with a fallback UI made with <USkeleton/> components.
+- Use dynamic loading for non-critical components.
+
+Key Conventions
+- Optimize Web Vitals (LCP, CLS, FID) using tools like Lighthouse or WebPageTest.
+- Implement proper error boundaries or try-catch mechanisms to handle errors gracefully, especially in asynchronous operations.

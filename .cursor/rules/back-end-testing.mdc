@@ -1,0 +1,121 @@
+---
+description: Laravel Back-end Tests
+globs: api/tests/**/*.php
+---
+
+You are an expert in Laravel testing, particularly with Pest PHP for the Laravel back-end.
+
+Key Principles
+- Write concise, isolated tests that verify specific functionality.
+- Follow the Arrange-Act-Assert pattern for test structure.
+- Use descriptive test names that explain what is being tested.
+- Prefer Pest PHP's expressive syntax over traditional PHPUnit syntax.
+- Use mocking and test doubles appropriately to isolate components.
+- Organize tests by the component they are testing.
+
+Test Structure
+- `tests/Feature/`: Contains feature tests that test the application as a whole.
+- `tests/Unit/`: Contains unit tests that test individual components in isolation.
+  - `Unit/Rules/`: Tests for validation rules.
+  - `Unit/Service/`: Tests for service classes.
+  - `Unit/Services/`: Tests for service classes (alternative structure).
+- `tests/Helpers/`: Contains helper classes used across tests.
+- `tests/Browser/`: Contains browser tests using Laravel Dusk.
+
+Test Configuration
+- Use `tests/Pest.php` for Pest PHP configuration.
+- Use `tests/TestCase.php` as the base test case class.
+- Use `tests/TestHelpers.php` for common helper methods.
+
+Unit Testing Best Practices
+1. **Test in Isolation**: Mock dependencies to ensure true unit testing.
+2. **Single Responsibility**: Each test should verify one specific behavior.
+3. **Descriptive Names**: Use descriptive test names that explain what is being tested.
+4. **Arrange-Act-Assert**: Structure tests with clear arrangement, action, and assertion phases.
+5. **Test Edge Cases**: Include tests for edge cases and error conditions.
+6. **Use describe()**: Group related tests using describe() blocks.
+7. **Use beforeEach()**: Set up common test state using beforeEach() hooks.
+8. **Avoid Test Dependencies**: Tests should not depend on the state from other tests.
+9. **Test Public API**: Focus on testing the public API of classes, not implementation details.
+10. **Consistent Patterns**: Follow consistent patterns for similar types of tests.
+
+Writing Unit Tests
+- Use Pest PHP's expressive syntax:
+  ```php
+  it('can parse filenames', function () {
+      $fileName = 'example_85e16d7b-58ed-43bc-8dce-7d3ff7d69f41.png';
+      $parsedFilename = StorageFileNameParser::parse($fileName);
+      expect($parsedFilename->fileName)->toBe('example');
+  });
+  ```
+
+- Group related tests with describe():
+  ```php
+  describe('StorageFile validation', function () {
+      it('accepts valid URLs without validation', function () {
+          $validator = new StorageFile();
+          expect($validator->passes('file', 'https://example.com/file.pdf'))->toBeTrue();
+      });
+
+      it('rejects files with invalid UUID format', function () {
+          $validator = new StorageFile();
+          expect($validator->passes('file', 'invalid-uuid.jpg'))->toBeFalse();
+      });
+  });
+  ```
+
+- Use beforeEach() for common setup:
+  ```php
+  beforeEach(function () {
+      Storage::fake('local');
+  });
+  ```
+
+- Mock dependencies:
+  ```php
+  it('rejects non-existent files', function () {
+      $uuid = Str::uuid();
+      $fileName = 'file-name_' . $uuid . '.jpg';
+
+      Storage::shouldReceive('exists')
+          ->with('tmp/' . $uuid)
+          ->andReturn(false);
+
+      $validator = new StorageFile();
+      expect($validator->passes('file', $fileName))->toBeFalse();
+  });
+  ```
+
+- Test edge cases:
+  ```php
+  it('can clean non-utf characters', function () {
+      $fileName = 'Образец_для_заполнения_85e16d7b-58ed-43bc-8dce-7d3ff7d69f41.png';
+      $parsedFilename = StorageFileNameParser::parse($fileName);
+      expect($parsedFilename->getMovedFileName())->toBe('___85e16d7b-58ed-43bc-8dce-7d3ff7d69f41.png');
+  });
+  ```
+
+Testing Validation Rules
+- Create instances of the rule class.
+- Test both valid and invalid inputs.
+- Verify error messages for invalid inputs.
+- Test edge cases and boundary conditions.
+
+Testing Service Classes
+- Mock dependencies using Mockery.
+- Test each public method in isolation.
+- Verify correct behavior for both success and failure cases.
+- Test edge cases and error handling.
+
+Running Tests
+- Run all tests: `php artisan test`
+- Run unit tests only: `php artisan test --testsuite=Unit`
+- Run a specific test file: `php artisan test --filter=StorageFileTest`
+- Run tests with coverage: `php artisan test --coverage`
+
+Debugging Tests
+- Use ray() for debugging test execution.
+- Use dd() or dump() for quick inspection of variables.
+- Check for race conditions in asynchronous tests.
+- Verify that the database is being properly reset between tests.
+- Ensure that tests are not dependent on each other. 

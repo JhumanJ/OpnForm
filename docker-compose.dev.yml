@@ -1,35 +1,49 @@
+version: "3.8"
+
 services:
-  api: &api-base
+  api:
     image: jhumanj/opnform-api:dev
+    container_name: opnform-api
     build:
       context: .
       dockerfile: docker/Dockerfile.api
       args:
         APP_ENV: local
+        COMPOSER_FLAGS: ""
     volumes:
       - ./api:/usr/share/nginx/html:delegated
       - /usr/share/nginx/html/vendor # Exclude vendor directory from the mount
-      - ./api/storage:/usr/share/nginx/html/storage:delegated # Mount storage directory directly
+      - ./api/storage:/usr/share/nginx/html/storage:delegated
     environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      APP_DEV_CORS: true
+      # Database settings
       DB_HOST: db
-      REDIS_HOST: redis
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      # Override production settings for minimal setup
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
+      # Storage settings
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
-      APP_ENV: local
-      PHP_IDE_CONFIG: "serverName=Docker"
-      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
-      XDEBUG_CONFIG: "client_host=host.docker.internal"
-      APP_URL: "http://localhost"
+      # Development settings
+      PHP_IDE_CONFIG: serverName=Docker
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: client_host=host.docker.internal
+      APP_URL: http://localhost
+      FRONT_URL: http://localhost:3000
     depends_on:
       db:
         condition: service_healthy
 
   ui:
     image: jhumanj/opnform-client:dev
+    container_name: opnform-client
     build:
       context: .
       dockerfile: docker/Dockerfile.client
@@ -56,7 +70,26 @@ services:
       - "3000:3000"      # Main dev server
       - "24678:24678"    # Vite HMR port
 
+  db:
+    image: postgres:16
+    container_name: opnform-db
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-forge}
+      POSTGRES_USER: ${DB_USERNAME:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-forge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   ingress:
+    image: nginx:1
+    container_name: opnform-ingress
     volumes:
       - ./docker/nginx.dev.conf:/etc/nginx/templates/default.conf.template
     environment:
@@ -65,13 +98,10 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - api
-      - ui
+      api:
+        condition: service_started
+      ui:
+        condition: service_started
 
-  api-worker:
-    <<: *api-base
-    environment:
-      IS_API_WORKER: "true"
-    depends_on:
-      db:
-        condition: service_healthy 
+volumes:
+  postgres-data: 
