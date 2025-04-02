@@ -15,8 +15,6 @@ class TelegramIntegration extends AbstractIntegrationHandler
     public static function getValidationRules(?Form $form): array
     {
         return [
-            'telegram_bot_token' => 'required|string',
-            'telegram_chat_id' => 'required|string',
             'include_submission_data' => 'boolean',
             'include_hidden_fields_submission_data' => ['nullable', 'boolean'],
             'link_open_form' => 'boolean',
@@ -26,19 +24,14 @@ class TelegramIntegration extends AbstractIntegrationHandler
         ];
     }
 
-    protected function getBotToken(): ?string
-    {
-        return $this->integrationData->telegram_bot_token;
-    }
-
     protected function getChatId(): ?string
     {
-        return $this->integrationData->telegram_chat_id;
+        return $this->provider->provider_user_id;
     }
 
     protected function getWebhookUrl(): ?string
     {
-        $token = $this->getBotToken();
+        $token = config('services.telegram.bot_token');
         if (!$token) {
             return null;
         }
@@ -47,7 +40,7 @@ class TelegramIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl()) && !is_null($this->getChatId()) && $this->form->is_pro && parent::shouldRun();
+        return !is_null($this->getWebhookUrl()) && $this->formIntegration->oauth_id && $this->form->is_pro && parent::shouldRun();
     }
 
     protected function getWebhookData(): array

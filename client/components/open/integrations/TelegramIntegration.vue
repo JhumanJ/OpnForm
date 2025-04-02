@@ -13,7 +13,7 @@
           v-model="integrationData.oauth_id"
           name="provider"
           :options="providers"
-          display-key="email"
+          display-key="name"
           option-key="id"
           emit-key="id"
           :required="true"
