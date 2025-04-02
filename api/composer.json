@@ -33,7 +33,6 @@
         "openai-php/client": "*",
         "propaganistas/laravel-disposable-email": "*",
         "sentry/sentry-laravel": "*",
-        "socialiteproviders/telegram": "^4.1",
         "spatie/laravel-data": "^4.6",
         "spatie/laravel-sitemap": "*",
         "spatie/laravel-sluggable": "*",

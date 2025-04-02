@@ -80,10 +80,8 @@ return [
     ],
 
     'telegram' => [
-        'bot' => env('TELEGRAM_BOT_NAME'),
-        'client_id' => null,
-        'client_secret' => env('TELEGRAM_BOT_TOKEN'),
-        'redirect' => env('TELEGRAM_REDIRECT_URL'),
+        'bot_id' => env('TELEGRAM_BOT_ID'),
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
     ],
 
     'zapier' => [

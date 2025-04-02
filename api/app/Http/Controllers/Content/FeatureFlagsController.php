@@ -29,8 +29,7 @@ class FeatureFlagsController extends Controller
                         'auth' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
                     ],
                     'telegram' => [
-                        'bot' => config('services.telegram.bot') ?? false,
-                        'redirect' => config('services.telegram.redirect') ?? false,
+                        'bot_id' => config('services.telegram.bot_id') ?? false
                     ]
                 ],
                 'integrations' => [

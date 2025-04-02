@@ -20,6 +20,7 @@
         :is="widgetComponent"
         v-if="widgetComponent"
         :service="service"
+        @auth-data="handleAuthData"
       />
     </div>
   </modal>
@@ -31,6 +32,9 @@ const props = defineProps({
   service: Object
 })
 
+const providersStore = useOAuthProvidersStore()
+const router = useRouter()
+const alert = useAlert()
 const emit = defineEmits(['close'])
 
 // Dynamically compute which widget component to load
@@ -38,4 +42,29 @@ const widgetComponent = computed(() => {
   if (!props.service?.widget_file) return null
   return resolveComponent(props.service.widget_file)
 })
+
+const handleAuthData = async (data) => {
+  try {
+    if (!data) {
+      alert.error('Authentication failed')
+      return
+    }
+
+    const response = await opnFetch(`/settings/providers/widget-callback/${props.service.name}`, {
+      method: 'POST',
+      body: data
+    })
+
+    if (response.intention) {
+      router.push(response.intention)
+    } else {
+      alert.success('Successfully connected')
+      emit('close')
+      providersStore.fetchOAuthProviders()
+    }
+  } catch (error) {
+    alert.error(error?.data?.message || 'Failed to authenticate')
+    providersStore.fetchOAuthProviders()
+  }
+}
 </script>

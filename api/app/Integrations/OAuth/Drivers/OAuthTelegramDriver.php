@@ -2,43 +2,34 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
-use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Laravel\Socialite\Contracts\User;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\AbstractProvider;
 
-class OAuthTelegramDriver implements OAuthDriver
+class OAuthTelegramDriver implements WidgetOAuthDriver
 {
-    private ?string $redirectUrl = null;
-    private ?array $scopes = [];
-
-    protected AbstractProvider $provider;
-
-    public function __construct()
-    {
-        $this->provider = Socialite::driver('telegram');
-    }
+    protected string $redirectUrl;
+    protected array $scopes = [];
 
     public function getRedirectUrl(): string
     {
-        $provider = $this->provider
-            ->stateless()
-            ->redirectUrl($this->redirectUrl ?? config('services.telegram.redirect'))
-            ->with([
-                'bot_id' => config('services.telegram.bot'),
-                'origin' => url('/'),
-            ]);
+        return '';  // Not used for widget-based auth
+    }
 
-        // For Telegram, redirect() returns the widget HTML as a string
-        return $provider->redirect();
+    public function setRedirectUrl(string $url): self
+    {
+        $this->redirectUrl = $url;
+        return $this;
+    }
+
+    public function setScopes(array $scopes): self
+    {
+        $this->scopes = $scopes;
+        return $this;
     }
 
     public function getUser(): User
     {
-        return $this->provider
-            ->stateless()
-            ->redirectUrl($this->redirectUrl ?? config('services.telegram.redirect'))
-            ->user();
+        throw new \Exception('Use getUserFromWidgetData for Widget based authentication');
     }
 
     public function canCreateUser(): bool
@@ -46,21 +37,46 @@ class OAuthTelegramDriver implements OAuthDriver
         return true;
     }
 
-    public function setRedirectUrl(string $url): OAuthDriver
+    public function fullScopes(): self
     {
-        $this->redirectUrl = $url;
         return $this;
     }
 
-    public function setScopes(array $scopes): OAuthDriver
+    public function isWidgetBased(): bool
     {
-        $this->scopes = $scopes;
-        return $this;
+        return true;
     }
 
-    public function fullScopes(): OAuthDriver
+    public function verifyWidgetData(array $data): bool
     {
-        // Telegram doesn't use scopes
-        return $this->setScopes([]);
+        $checkHash = $data['hash'];
+        unset($data['hash']);
+
+        $dataCheckArr = [];
+        foreach ($data as $key => $value) {
+            $dataCheckArr[] = $key . '=' . $value;
+        }
+
+        sort($dataCheckArr);
+        $dataCheckString = implode("\n", $dataCheckArr);
+        $secretKey = hash('sha256', config('services.telegram.bot_token'), true);
+        $hash = hash_hmac('sha256', $dataCheckString, $secretKey);
+
+        return hash_equals($hash, $checkHash);
+    }
+
+    public function getUserFromWidgetData(array $data): array
+    {
+        return [
+            'id' => $data['id'],
+            'name' => trim($data['first_name'] . ' ' . ($data['last_name'] ?? '')),
+            'email' => $data['email'] ?? null,
+            'provider_user_id' => $data['id'],
+            'provider' => 'telegram',
+            'access_token' => $data['hash'],
+            'refresh_token' => 'NO NEED',
+            'avatar' => $data['photo_url'] ?? null,
+            'scopes' => []
+        ];
     }
 }
