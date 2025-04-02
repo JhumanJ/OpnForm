@@ -14,6 +14,7 @@
           v-model="validation.conditions"
           class="mt-1 border-t border rounded-md"
           :form="form"
+          :custom-validation="true"
         />
       </div>
 

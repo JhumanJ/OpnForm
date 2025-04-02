@@ -12,12 +12,10 @@ function mergeOptions(options) {
     max: 30,
     persistent: false,
     persistentStrategy: {
-      // eslint-disable-next-line no-unused-vars
-      get: function (store, type) {
+      get: function (_store, _type) {
         // Todo
       },
-      // eslint-disable-next-line no-unused-vars
-      set: function (store, type, value) {
+      set: function (_store, _type, _value) {
         // Todo
       },
       remove: function (store, type) {

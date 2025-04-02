@@ -62,6 +62,28 @@
           Fetch User
         </v-button>
       </form>
+
+      <form
+        class="pb-8 max-w-lg"
+        @submit.prevent="createTemplate"
+        @keydown="createTemplateForm.onKeydown($event)"
+      >
+        <text-area-input
+          name="template_prompt"
+          :form="createTemplateForm"
+          label="Template Description"
+          :required="true"
+          help="Describe the template you want to create"
+        />
+        <v-button
+          :loading="templateLoading"
+          type="success"
+          color="blue"
+          class="mt-4 w-full"
+        >
+          Create Template
+        </v-button>
+      </form>
     </template>
 
     <div
@@ -136,7 +158,11 @@ export default {
     fetchUserForm: useForm({
       identifier: ''
     }),
-    loading: false
+    createTemplateForm: useForm({
+      template_prompt: ''
+    }),
+    loading: false,
+    templateLoading: false
   }),
 
   computed: {
@@ -193,6 +219,29 @@ export default {
       } else if (workspaces.some(w => w.plan === 'pro')) {
         this.userPlan = 'pro'
       }
+    },
+    async createTemplate() {
+      if (!this.createTemplateForm.template_prompt) {
+        this.useAlert.error('Template prompt is required.')
+        return  
+      }
+
+      this.templateLoading = true
+      opnFetch(`/moderator/create-template`, {
+        method: 'POST',
+        body: {
+          template_prompt: this.createTemplateForm.template_prompt
+        }
+      }).then((data) => {
+        this.templateLoading = false
+        this.createTemplateForm.reset()
+        this.useAlert.success('Template created.')
+        useRouter().push({ name: 'templates-slug', params: { slug: data.template_slug } })
+      })
+      .catch((error) => {
+        this.templateLoading = false
+        this.useAlert.error(error.data.message)
+      })
     }
   }
 }

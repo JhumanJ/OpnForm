@@ -21,12 +21,22 @@ export const useAuthStore = defineStore("auth", {
     },
     // Stop admin impersonation
     stopImpersonating() {
-      this.setToken(this.admin_token)
+      // When stopping impersonation, we don't have expiration info for the admin token
+      // Use a default long expiration (24 hours) to ensure the admin can continue working
+      this.setToken(this.admin_token, 60 * 60 * 24)
       this.setAdminToken(null)
     },
 
-    setToken(token) {
-      this.setCookie("token", token)
+    setToken(token, expiresIn) {
+      // Set cookie with expiration if provided
+      const cookieOptions = {}
+      
+      if (expiresIn) {
+        // expiresIn is in seconds, maxAge also needs to be in seconds
+        cookieOptions.maxAge = expiresIn
+      }
+      
+      this.setCookie("token", token, cookieOptions)
       this.token = token
     },
 
@@ -35,9 +45,9 @@ export const useAuthStore = defineStore("auth", {
       this.admin_token = token
     },
 
-    setCookie(name, value) {
+    setCookie(name, value, options = {}) {
       if (import.meta.client) {
-        useCookie(name).value = value
+        useCookie(name, options).value = value
       }
     },
 
@@ -49,7 +59,8 @@ export const useAuthStore = defineStore("auth", {
     setUser(user) {
       if (!user) {
         console.error("No user, logging out.")
-        this.setToken(null)
+        // When logging out due to no user, clear the token with maxAge 0
+        this.setToken(null, 0)
       }
 
       this.user = user
@@ -73,7 +84,10 @@ export const useAuthStore = defineStore("auth", {
       opnFetch("logout", { method: "POST" }).catch(() => {})
 
       this.user = null
-      this.setToken(null)
+      
+      // Clear the token cookie by setting maxAge to 0
+      this.setCookie("token", null, { maxAge: 0 })
+      this.token = null
     },
 
     // async fetchOauthUrl() {

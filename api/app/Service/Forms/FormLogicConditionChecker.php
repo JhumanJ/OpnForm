@@ -2,6 +2,8 @@
 
 namespace App\Service\Forms;
 
+use App\Models\Forms\FormSubmission;
+
 class FormLogicConditionChecker
 {
     public function __construct(private ?array $conditions, private ?array $formData)
@@ -304,6 +306,48 @@ class FormLogicConditionChecker
         return false;
     }
 
+    private function checkExistsInSubmissions($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !isset($condition['property_meta']['id'])) {
+            return false;
+        }
+
+        $formId = $this->formData['form']['id'] ?? null;
+        if (!$formId) {
+            return false;
+        }
+
+        return FormSubmission::where('form_id', $formId)
+            ->where(function ($query) use ($condition, $fieldValue) {
+                $fieldId = $condition['property_meta']['id'];
+
+                if (config('database.default') === 'mysql') {
+                    // For scalar values
+                    $query->where(function ($q) use ($fieldId, $fieldValue) {
+                        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.\"$fieldId\"')) = ?", [$fieldValue]);
+
+                        // For array values
+                        if (is_array($fieldValue)) {
+                            $q->orWhereRaw("JSON_CONTAINS(JSON_EXTRACT(data, '$.\"$fieldId\"'), ?)", [json_encode($fieldValue)]);
+                        }
+                    });
+                } else {
+                    $query->where(function ($q) use ($fieldId, $fieldValue) {
+                        // For scalar values
+                        $q->whereRaw("data->? = ?::jsonb", [$fieldId, json_encode($fieldValue)]);
+
+                        // For array values
+                        if (is_array($fieldValue)) {
+                            $q->orWhereRaw("data->? @> ?::jsonb", [
+                                $fieldId,
+                                json_encode($fieldValue)
+                            ]);
+                        }
+                    });
+                }
+            })->exists();
+    }
+
     private function textConditionMet(array $propertyCondition, $value): bool
     {
         switch ($propertyCondition['operator']) {
@@ -348,6 +392,10 @@ class FormLogicConditionChecker
                 } catch (\Exception $e) {
                     return true;
                 }
+            case 'exists_in_submissions':
+                return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;
@@ -384,6 +432,10 @@ class FormLogicConditionChecker
                 return $this->checkLength($propertyCondition, $value, '<');
             case 'content_length_less_than_or_equal_to':
                 return $this->checkLength($propertyCondition, $value, '<=');
+            case 'exists_in_submissions':
+                return $this->checkExistsInSubmissions($propertyCondition, $value);
+            case 'does_not_exist_in_submissions':
+                return !$this->checkExistsInSubmissions($propertyCondition, $value);
         }
 
         return false;

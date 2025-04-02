@@ -36,6 +36,7 @@ export default {
   components: {},
   props: {
     modelValue: { type: Object, required: true },
+    customValidation: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
@@ -102,14 +103,14 @@ export default {
       return componentData
     },
     operators() {
-      return Object.keys(
-        this.available_filters[this.property.type].comparators,
-      ).map((key) => {
-        return {
-          value: key,
-          name: this.optionFilterNames(key),
-        }
-      })
+      return Object.entries(this.available_filters[this.property.type].comparators)
+        .filter(([_, value]) => this.customValidation || (!this.customValidation && !value.custom_validation_only))
+        .map(([filterKey]) => {
+          return {
+            value: filterKey,
+            name: this.optionFilterNames(filterKey),
+          }
+        })
     },
     needsInput() {
       const operator = this.selectedOperator()

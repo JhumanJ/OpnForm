@@ -7,7 +7,7 @@
     >
       <div class="flex justify-center items-center self-start py-px">
         <Icon
-          name="bi:stars"
+          name="i-heroicons-sparkles-16-solid"
           class="w-6 h-6 text-nt-blue"
         />
       </div>

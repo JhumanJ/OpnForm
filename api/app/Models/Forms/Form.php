@@ -68,7 +68,6 @@ class Form extends Model implements CachableAttributes
         'color',
         'uppercase_labels',
         'no_branding',
-        'hide_title',
         'transparent_background',
 
         // Custom Code
@@ -182,7 +181,7 @@ class Form extends Model implements CachableAttributes
     public function getViewsCountAttribute()
     {
         return $this->remember('views_count', 15 * 60, function (): int {
-            if (env('DB_CONNECTION') == 'mysql') {
+            if (config('database.default') === 'mysql') {
                 return (int) ($this->views()->count() +
                     $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
             }

@@ -30,7 +30,15 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        $token = $this->guard()->attempt($this->credentials($request));
+        // Only set custom TTL if remember me is checked
+        $guard = $this->guard();
+
+        if ($request->remember) {
+            // Use the extended TTL from config for "Remember me"
+            $guard->setTTL(config('jwt.remember_ttl'));
+        }
+
+        $token = $guard->attempt($this->credentials($request));
 
         if (! $token) {
             return false;

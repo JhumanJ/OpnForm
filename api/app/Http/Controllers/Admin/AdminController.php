@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Template\GenerateTemplateJob;
 use App\Models\Forms\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,20 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('moderator');
+    }
+
+    public function createTemplate(Request $request)
+    {
+        $request->validate([
+            'template_prompt' => 'required|string|max:4000'
+        ]);
+
+        $job = new GenerateTemplateJob($request->template_prompt);
+        $job->handle();
+
+        return $this->success([
+            'template_slug' => $job->generatedTemplate?->slug ?? null
+        ]);
     }
 
     public function fetchUser($identifier)

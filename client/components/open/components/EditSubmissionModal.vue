@@ -7,10 +7,10 @@
     <open-form
       :theme="theme"
       :loading="false"
-      :show-hidden="true"
       :form="form"
       :fields="form.properties"
       :default-data-form="submission"
+      :mode="FormMode.EDIT"
       @submit="updateForm"
     >
       <template #submit-btn="{ submitForm }">
@@ -29,6 +29,7 @@
 import { ref, defineProps, defineEmits } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -60,6 +61,9 @@ const updateForm = (form, onFailure) => {
     })
     .catch((error) => {
       console.error(error)
+      if (error?.data) {
+        useAlert().formValidationError(error.data)
+      }
       loading.value = false
       onFailure()
     })

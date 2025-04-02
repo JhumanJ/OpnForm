@@ -64,6 +64,9 @@ class GenerateTaxExport extends Command
      */
     public function handle()
     {
+        // Start the processing timer
+        $startTime = microtime(true);
+
         // iterate through all Stripe invoices
         $startDate = $this->option('start-date');
         $endDate = $this->option('end-date');
@@ -95,14 +98,16 @@ class GenerateTaxExport extends Command
 
         // Create a progress bar
         $queryOptions = [
-            'limit' => 100,
+            'limit' => 100, // Maximum allowed by Stripe API
             'expand' => [
                 'data.customer',
                 'data.customer.address',
                 'data.customer.tax_ids',
                 'data.payment_intent',
                 'data.payment_intent.payment_method',
-                'data.charge.balance_transaction'
+                'data.charge.balance_transaction',
+                'data.automatic_tax',
+                'data.total_tax_amounts'
             ],
             'status' => 'paid',
         ];
@@ -116,29 +121,89 @@ class GenerateTaxExport extends Command
         $invoices = Cashier::stripe()->invoices->all($queryOptions);
         $bar = $this->output->createProgressBar();
         $bar->start();
+
+        // Improved counters for better tracking
         $paymentNotSuccessfulCount = 0;
+        $refundedInvoicesCount = 0;
+        $missingDataInvoicesCount = 0;
         $totalInvoice = 0;
+        $processedInvoiceCount = 0;
+        $defaultedToFranceCount = 0;
+        $totalResults = 0;
+
+        // Volume metrics
+        $grossVolumeUsd = 0;
+        $netVolumeUsd = 0;
+        $taxTotalUsd = 0;
+        $grossVolumeEur = 0;
+        $netVolumeEur = 0;
+        $taxTotalEur = 0;
 
         do {
+            $batchSize = count($invoices->data);
+            $totalResults += $batchSize;
+
             foreach ($invoices as $invoice) {
-                // Ignore if payment was refunded
+                $totalInvoice++;
+
+                // Ignore if payment was refunded or not successful
                 if (($invoice->payment_intent->status ?? null) !== 'succeeded') {
                     $paymentNotSuccessfulCount++;
-
                     continue;
                 }
 
-                $processedInvoices[] = $this->formatInvoice($invoice);
-                $totalInvoice++;
+                // Check if invoice was refunded
+                if (isset($invoice->charge) && isset($invoice->charge->refunded) && $invoice->charge->refunded) {
+                    $refundedInvoicesCount++;
+                    continue;
+                }
+
+                try {
+                    $formattedInvoice = $this->formatInvoice($invoice);
+
+                    // Check if we defaulted to France
+                    if ($formattedInvoice['cust_country'] === 'FR' && $formattedInvoice['_defaulted_to_fr'] === true) {
+                        $defaultedToFranceCount++;
+                    }
+
+                    // Remove the internal tracking field
+                    unset($formattedInvoice['_defaulted_to_fr']);
+
+                    $processedInvoices[] = $formattedInvoice;
+                    $processedInvoiceCount++;
+
+                    // Track volume metrics
+                    $grossVolumeUsd += $formattedInvoice['total_usd'];
+                    $netVolumeUsd += $formattedInvoice['total_after_tax_usd'];
+                    $taxTotalUsd += $formattedInvoice['tax_total_usd'];
+                    $grossVolumeEur += $formattedInvoice['total_eur'];
+                    $netVolumeEur += $formattedInvoice['total_after_tax_eur'];
+                    $taxTotalEur += $formattedInvoice['tax_total_eur'];
+                } catch (\Exception $e) {
+                    $this->warn("Error processing invoice {$invoice->id}: {$e->getMessage()}");
+                    $missingDataInvoicesCount++;
+                    continue;
+                }
 
                 // Advance the progress bar
                 $bar->advance();
             }
 
-            $queryOptions['starting_after'] = end($invoices->data)->id;
+            // Safe pagination
+            try {
+                $lastInvoice = end($invoices->data);
+                if ($lastInvoice) {
+                    $queryOptions['starting_after'] = $lastInvoice->id;
+                } else {
+                    break;
+                }
 
-            sleep(5);
-            $invoices = $invoices->all($queryOptions);
+                // No need for sleep - Stripe API can handle the request rate
+                $invoices = Cashier::stripe()->invoices->all($queryOptions);
+            } catch (\Exception $e) {
+                $this->error("Error fetching next batch of invoices: {$e->getMessage()}");
+                break;
+            }
         } while ($invoices->has_more);
 
         $bar->finish();
@@ -152,8 +217,32 @@ class GenerateTaxExport extends Command
         $aggregatedReportFilePath = 'opnform-tax-export-aggregated_' . $startDate . '_' . $endDate . '.xlsx';
         $this->exportAsXlsx($aggregatedReport, $aggregatedReportFilePath);
 
-        // Display the results
-        $this->info('Total invoices: ' . $totalInvoice . ' (with ' . $paymentNotSuccessfulCount . ' payment not successful or trial free invoice)');
+        // Calculate processing time
+        $endTime = microtime(true);
+        $executionTime = round($endTime - $startTime, 2);
+
+        // Display the results with improved statistics
+        $this->info('Processing completed in ' . $executionTime . ' seconds');
+        $this->info('Total invoices found: ' . $totalInvoice);
+        $this->info('Processed invoices: ' . $processedInvoiceCount);
+        $this->info('Excluded invoices:');
+        $this->info(' - Payment not successful: ' . $paymentNotSuccessfulCount);
+        $this->info(' - Refunded: ' . $refundedInvoicesCount);
+        $this->info(' - Missing required data: ' . $missingDataInvoicesCount);
+        $this->info(' - Defaulted to France: ' . $defaultedToFranceCount);
+
+        // Display volume metrics
+        $this->line('');
+        $this->info('Volume Metrics (USD):');
+        $this->info(' - Gross volume: $' . number_format($grossVolumeUsd, 2));
+        $this->info(' - Tax collected: $' . number_format($taxTotalUsd, 2));
+        $this->info(' - Net volume: $' . number_format($netVolumeUsd, 2));
+
+        $this->line('');
+        $this->info('Volume Metrics (EUR):');
+        $this->info(' - Gross volume: €' . number_format($grossVolumeEur, 2));
+        $this->info(' - Tax collected: €' . number_format($taxTotalEur, 2));
+        $this->info(' - Net volume: €' . number_format($netVolumeEur, 2));
 
         return Command::SUCCESS;
     }
@@ -205,28 +294,82 @@ class GenerateTaxExport extends Command
 
     private function formatInvoice(Invoice $invoice): array
     {
-        $country = $invoice->customer->address->country ?? $invoice->payment_intent->payment_method->card->country ?? null;
+        // Enhanced country detection logic with multiple fallbacks
+        $country = null;
+        $taxLocationFound = false;
+        $defaultedToFrance = false;
 
-        $vatId = $invoice->customer->tax_ids->data[0]->value ?? null;
+        // Try to get country from customer's billing address
+        if (isset($invoice->customer->address) && !empty($invoice->customer->address->country)) {
+            $country = $invoice->customer->address->country;
+            $taxLocationFound = true;
+        }
+        // Try to get country from payment method
+        elseif (
+            isset($invoice->payment_intent) && isset($invoice->payment_intent->payment_method) &&
+            isset($invoice->payment_intent->payment_method->card) &&
+            !empty($invoice->payment_intent->payment_method->card->country)
+        ) {
+            $country = $invoice->payment_intent->payment_method->card->country;
+            $taxLocationFound = true;
+        }
+        // Try to get country from automatic tax calculation
+        elseif (
+            isset($invoice->automatic_tax) && isset($invoice->automatic_tax->tax_location) &&
+            !empty($invoice->automatic_tax->tax_location->country)
+        ) {
+            $country = $invoice->automatic_tax->tax_location->country;
+            $taxLocationFound = true;
+        }
+        // Try to get country from tax breakdown
+        elseif (isset($invoice->total_tax_amounts) && !empty($invoice->total_tax_amounts->data)) {
+            foreach ($invoice->total_tax_amounts->data as $taxAmount) {
+                if (isset($taxAmount->tax_rate) && isset($taxAmount->tax_rate->country)) {
+                    $country = $taxAmount->tax_rate->country;
+                    $taxLocationFound = true;
+                    break;
+                }
+            }
+        }
+
+        // Default to France if no country found
+        if (!$taxLocationFound || is_null($country) || empty($country)) {
+            $country = 'FR';
+            $defaultedToFrance = true;
+        }
+
+        $vatId = null;
+        if (isset($invoice->customer->tax_ids) && !empty($invoice->customer->tax_ids->data)) {
+            $vatId = $invoice->customer->tax_ids->data[0]->value ?? null;
+        }
+
         $taxRate = $this->computeTaxRate($country, $vatId);
 
-        $taxAmountCollectedUsd = $taxRate > 0 ? $invoice->total * $taxRate / ($taxRate + 100) : 0;
-        $totalEur = $invoice->charge->balance_transaction->amount;
+        // Safely calculate tax amounts
+        $total = $invoice->total ?? 0;
+        $taxAmountCollectedUsd = $taxRate > 0 ? $total * $taxRate / ($taxRate + 100) : 0;
+
+        $totalEur = 0;
+        if (isset($invoice->charge) && isset($invoice->charge->balance_transaction)) {
+            $totalEur = $invoice->charge->balance_transaction->amount ?? 0;
+        }
+
         $taxAmountCollectedEur = $taxRate > 0 ? $totalEur * $taxRate / ($taxRate + 100) : 0;
 
         return [
             'invoice_id' => $invoice->id,
             'created_at' => Carbon::createFromTimestamp($invoice->created)->format('Y-m-d H:i:s'),
-            'cust_id' => $invoice->customer->id,
+            'cust_id' => $invoice->customer->id ?? 'unknown',
             'cust_vat_id' => $vatId,
             'cust_country' => $country,
             'tax_rate' => $taxRate,
-            'total_usd' => $invoice->total / 100,
+            'total_usd' => $total / 100,
             'tax_total_usd' => $taxAmountCollectedUsd / 100,
-            'total_after_tax_usd' => ($invoice->total - $taxAmountCollectedUsd) / 100,
+            'total_after_tax_usd' => ($total - $taxAmountCollectedUsd) / 100,
             'total_eur' => $totalEur / 100,
             'tax_total_eur' => $taxAmountCollectedEur / 100,
             'total_after_tax_eur' => ($totalEur - $taxAmountCollectedEur) / 100,
+            '_defaulted_to_fr' => $defaultedToFrance,
         ];
     }
 

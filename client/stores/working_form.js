@@ -17,6 +17,80 @@ export const useWorkingFormStore = defineStore("working_form", {
     blockForm: null,
     draggingNewBlock: false,
   }),
+  getters: {
+    // Get all blocks/properties in the form
+    formBlocks() {
+      return this.content?.properties || []
+    },
+    
+    // Get page break indices to determine page boundaries
+    pageBreakIndices() {
+      if (!this.content?.properties || this.content.properties.length === 0) return []
+      
+      // Find all indices of page break blocks
+      const indices = []
+      this.content.properties.forEach((prop, index) => {
+        if (prop.type === 'nf-page-break' && !prop.hidden) {
+          indices.push(index)
+        }
+      })
+      
+      return indices
+    },
+    
+    // Calculate page boundaries (start/end indices for each page)
+    pageBoundaries() {
+      if (!this.content?.properties || this.content.properties.length === 0) {
+        return [{ start: 0, end: 0 }]
+      }
+      
+      const boundaries = []
+      const breaks = this.pageBreakIndices
+      
+      // If no page breaks, return a single page boundary
+      if (breaks.length === 0) {
+        return [{ 
+          start: 0, 
+          end: this.formBlocks.length - 1 
+        }]
+      }
+      
+      // First page starts at 0
+      let startIndex = 0
+      
+      // For each page break, create a boundary
+      breaks.forEach(breakIndex => {
+        boundaries.push({
+          start: startIndex,
+          end: breakIndex
+        })
+        startIndex = breakIndex + 1
+      })
+      
+      // Add the last page
+      boundaries.push({
+        start: startIndex,
+        end: this.formBlocks.length - 1
+      })
+      
+      return boundaries
+    },
+    
+    // Get the current page's boundary
+    currentPageBoundary() {
+      return this.pageBoundaries[this.formPageIndex] || { start: 0, end: this.formBlocks.length - 1 }
+    },
+    
+    // Count total pages
+    pageCount() {
+      return this.pageBoundaries.length
+    },
+    
+    // Whether this is the last page
+    isLastPage() {
+      return this.formPageIndex === this.pageCount - 1
+    }
+  },
   actions: {
     set(form) {
       this.content = form
@@ -39,6 +113,19 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.setEditingField(field)
       this.showEditFieldSidebar = true
       this.showAddFieldSidebar = false
+      
+      // Set the page to the one containing this field
+      // But only do this when initially opening settings, not during editing
+      if (typeof field === 'number' || (typeof field === 'object' && field !== null)) {
+        // Only navigate to the field's page if we're newly selecting it
+        // Not if we're just updating an already selected field
+        const previousIndex = this.selectedFieldIndex
+        const currentIndex = this.objectToIndex(field)
+        
+        if (previousIndex !== currentIndex) {
+          this.setPageForField(this.selectedFieldIndex)
+        }
+      }
     },
     closeEditFieldSidebar() {
       this.selectedFieldIndex = null
@@ -69,7 +156,54 @@ export const useWorkingFormStore = defineStore("working_form", {
         type: null,
         name: null,
       })
+    },
 
+    /**
+     * Determine where to insert a new block
+     * @param {number|null} explicitIndex - Optional explicit index to insert at
+     * @returns {number} The index where the block should be inserted
+     */
+    determineInsertIndex(explicitIndex) {
+      // If an explicit index is provided, use that
+      if (explicitIndex !== null && typeof explicitIndex === 'number') {
+        return explicitIndex
+      }
+      
+      // If a field is selected, insert after it
+      // This handles the case when adding from a field's "Add new field" button
+      if (this.selectedFieldIndex !== null && this.selectedFieldIndex !== undefined) {
+        return this.selectedFieldIndex + 1
+      }
+      
+      // Early validation
+      if (!this.content?.properties || this.content.properties.length === 0) {
+        return 0
+      }
+      
+      // Get the current page's boundaries
+      const pageBreaks = this.pageBreakIndices
+      
+      // If no page breaks, insert at the end of the form
+      if (pageBreaks.length === 0) {
+        return this.content.properties.length
+      }
+      
+      // For first page
+      if (this.formPageIndex === 0) {
+        return pageBreaks[0]
+      }
+      
+      // For pages after the first one
+      // Find the end of the current page (the page break index)
+      const nextPageBreakIndex = pageBreaks[this.formPageIndex] || this.content.properties.length
+      
+      // Insert at the end of the current page, right before the next page break
+      // If this is the last page, insert at the very end
+      if (this.formPageIndex >= pageBreaks.length) {
+        return this.content.properties.length
+      }
+      
+      return nextPageBreakIndex
     },
 
     prefillDefault(data) {
@@ -108,27 +242,16 @@ export const useWorkingFormStore = defineStore("working_form", {
         Object.assign(newBlock, blocksTypes[type].default_values)
       }
 
-      // Insert in right position
-      if (
-        (this.selectedFieldIndex === null || this.selectedFieldIndex === undefined) &&
-        (index === null || index === undefined)
-      ) {
-        const newFields = clonedeep(this.content.properties)
-        newFields.push(newBlock)
-        this.content.properties = newFields
-        if (openSettings) {
-          this.openSettingsForField(
-            this.content.properties.length - 1,
-          )
-        }
-      } else {
-        const fieldIndex = typeof index === "number" ? index : this.selectedFieldIndex + 1
-        const newFields = clonedeep(this.content.properties)
-        newFields.splice(fieldIndex, 0, newBlock)
-        this.content.properties = newFields
-        if (openSettings) {
-          this.openSettingsForField(fieldIndex)
-        }
+      // Determine the insert index
+      const insertIndex = this.determineInsertIndex(index)
+      
+      // Insert at the determined position
+      const newFields = clonedeep(this.content.properties)
+      newFields.splice(insertIndex, 0, newBlock)
+      this.content.properties = newFields
+      
+      if (openSettings) {
+        this.openSettingsForField(insertIndex)
       }
     },
     removeField(field) {
@@ -156,6 +279,45 @@ export const useWorkingFormStore = defineStore("working_form", {
       const field = newFields.splice(oldIndex, 1)[0]
       newFields.splice(newIndex, 0, field)
       this.content.properties = newFields
+    },
+    
+    /**
+     * Find which page a field belongs to and navigate to it
+     * @param {number} fieldIndex - The index of the field to navigate to
+     */
+    setPageForField(fieldIndex) {
+      if (fieldIndex === -1 || fieldIndex === null) return
+      
+      // Early return if no fields or field is out of range
+      if (!this.content?.properties || 
+          this.content.properties.length === 0 || 
+          fieldIndex >= this.content.properties.length) {
+        return
+      }
+      
+      // If there are no page breaks, everything is on page 0
+      if (this.pageBreakIndices.length === 0) {
+        this.formPageIndex = 0
+        return
+      }
+      
+      // Find which page contains this field
+      for (let i = 0; i < this.pageBoundaries.length; i++) {
+        const { start, end } = this.pageBoundaries[i]
+        if (fieldIndex >= start && fieldIndex <= end) {
+          // Only set page if it's different to avoid unnecessary rerenders
+          if (this.formPageIndex !== i) {
+            this.formPageIndex = i
+          }
+          return
+        }
+      }
+      
+      // Fallback to last page if field not found in any boundaries
+      const lastPageIndex = this.pageBoundaries.length - 1
+      if (this.formPageIndex !== lastPageIndex) {
+        this.formPageIndex = lastPageIndex
+      }
     }
   },
   history: {}

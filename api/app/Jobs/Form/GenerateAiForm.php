@@ -2,15 +2,13 @@
 
 namespace App\Jobs\Form;
 
-use App\Console\Commands\GenerateTemplate;
 use App\Models\Forms\AI\AiFormCompletion;
-use App\Service\OpenAi\GptCompleter;
+use App\Service\AI\Prompts\Form\GenerateFormPrompt;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 
 class GenerateAiForm implements ShouldQueue
 {
@@ -26,7 +24,6 @@ class GenerateAiForm implements ShouldQueue
      */
     public function __construct(public AiFormCompletion $completion)
     {
-
     }
 
     /**
@@ -40,25 +37,17 @@ class GenerateAiForm implements ShouldQueue
             'status' => AiFormCompletion::STATUS_PROCESSING,
         ]);
 
-        $completer = (new GptCompleter(config('services.openai.api_key')))
-            ->useStreaming()
-            ->setSystemMessage('You are a robot helping to generate forms.')
-            ->expectsJson();
-
         try {
-            $completer->completeChat([
-                ['role' => 'user', 'content' => Str::of(GenerateTemplate::FORM_STRUCTURE_PROMPT)
-                    ->replace('[REPLACE]', $this->completion->form_prompt)->toString()],
-            ], 3000);
+            // Use the static run method to execute the prompt
+            $formData = GenerateFormPrompt::run($this->completion->form_prompt);
 
             $this->completion->update([
                 'status' => AiFormCompletion::STATUS_COMPLETED,
-                'result' => GenerateTemplate::cleanAiOutput($completer->getArray())
+                'result' => $formData
             ]);
         } catch (\Exception $e) {
             $this->onError($e);
         }
-
     }
 
     /**
@@ -73,7 +62,7 @@ class GenerateAiForm implements ShouldQueue
     {
         $this->completion->update([
             'status' => AiFormCompletion::STATUS_FAILED,
-            'result' => ['error' => $e->getMessage()],
+            'error' => $e->getMessage(),
         ]);
     }
 }

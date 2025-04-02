@@ -41,6 +41,8 @@ class ImpersonationController extends Controller
 
         return $this->success([
             'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->getPayload()->get('exp') - time(),
         ]);
     }
 }
