@@ -90,8 +90,18 @@ class TelegramIntegration extends AbstractIntegrationHandler
 
         return [
             'chat_id' => $this->getChatId(),
-            'text' => $messageText,
+            'text' => $this->escapeMarkdownV2($messageText),
             'parse_mode' => 'MarkdownV2'
         ];
+    }
+
+    /**
+     * Escape special characters for Telegram MarkdownV2 format
+     * @see https://core.telegram.org/bots/api#markdownv2-style
+     */
+    protected function escapeMarkdownV2(string $text): string
+    {
+        $specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+        return str_replace($specialChars, array_map(fn($char) => '\\' . $char, $specialChars), $text);
     }
 }
