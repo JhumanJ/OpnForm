@@ -108,12 +108,6 @@ import RegisterForm from "./RegisterForm.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
-const props = defineProps({
-  redirectUrl: {
-    type: String,
-    default: '',
-  },
-})
 
 // Define emits for component interactions
 const emit = defineEmits(['close', 'reopen'])

@@ -274,7 +274,11 @@ export default {
   watch: {
     'form.language': {
       handler(newLanguage) {
-        this.setLocale(newLanguage)
+        if (newLanguage && typeof newLanguage === 'string') {
+          this.setLocale(newLanguage)
+        } else {
+          this.setLocale('en')  // Default to English if invalid locale
+        }
       },
       immediate: true
     }
@@ -340,8 +344,8 @@ export default {
         }
       }).catch((error) => {
         console.error(error)
-        if (error.response && error.data && error.data.message) {
-          useAlert().error(error.data.message)
+        if (error.response && error.data) {
+          useAlert().formValidationError(error.data)
         }
         this.loading = false
         onFailure()

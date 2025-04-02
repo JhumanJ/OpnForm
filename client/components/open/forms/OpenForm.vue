@@ -134,6 +134,7 @@ import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import clonedeep from 'clone-deep'
 
 export default {
   name: 'OpenForm',
@@ -200,11 +201,10 @@ export default {
 
   data() {
     return {
-      // Page index
-      /**
-       * Used to force refresh components by changing their keys
-       */
       isAutoSubmit: false,
+      isInitialLoad: true,
+      // Flag to prevent recursion in field group updates
+      isUpdatingFieldGroups: false,
     }
   },
 
@@ -337,16 +337,24 @@ export default {
   },
 
   watch: {
-    form: {
-      deep: true,
-      handler() {
-        this.initForm()
-      }
+    // Monitor only critical changes that require full reinitialization
+    'form.database_id': function() {
+      // Only reinitialize when database changes
+      this.initForm()
     },
-    fields: {
+    'fields.length': function() {
+      // Only reinitialize when fields are added or removed
+      this.updateFieldGroupsSafely()
+    },
+    // Watch for changes to individual field properties
+    'fields': {
       deep: true,
       handler() {
-        this.initForm()
+        // Skip update if only triggered by internal fieldGroups changes
+        if (this.isUpdatingFieldGroups) return
+        
+        // Safely update field groups without causing recursive updates
+        this.updateFieldGroupsSafely()
       }
     },
     dataFormValue: {
@@ -449,7 +457,11 @@ export default {
         opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
           return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
         }).catch((error) => {
-          useAlert().error(error?.data?.message || 'Something went wrong')
+          if (error?.data?.errors) {
+            useAlert().formValidationError(error.data)
+          } else {
+            useAlert().error(error?.data?.message || 'Something went wrong')
+          }
           return null
         })
       )
@@ -460,21 +472,48 @@ export default {
      * Form initialization
      */
     async initForm() {
+      // Only do a full initialization when necessary
+      // Store current page index and form data to avoid overwriting existing values
+      const currentFormData = this.dataForm ? clonedeep(this.dataForm.data()) : {}
+
+      // Handle special cases first
       if (this.defaultDataForm) {
+        // If we have default data form, initialize with that
         await nextTick(() => {
           this.dataForm.resetAndFill(this.defaultDataForm)
         })
+        this.updateFieldGroupsSafely()
         return
       }
-      
-      if (await this.tryInitFormFromEditableSubmission()) return
-      if (this.tryInitFormFromPendingSubmission()) return
 
-      await nextTick(() => {
-        this.formPageIndex = 0
-        this.initFormWithDefaultValues()
-      })
+      // Initialize the field groups without resetting form data
+      this.updateFieldGroupsSafely()
+
+      // Check if we need to handle form submission states
+      if (await this.checkForEditableSubmission()) {
+        return
+      }
+
+      if (this.checkForPendingSubmission()) {
+        return
+      }
+
+      // Standard initialization with default values
+      this.initFormWithDefaultValues(currentFormData)
     },
+    
+    checkForEditableSubmission() {
+      return this.tryInitFormFromEditableSubmission()
+    },
+
+    checkForPendingSubmission() {
+      if (this.tryInitFormFromPendingSubmission()) {
+        this.updateFieldGroupsSafely()
+        return true
+      }
+      return false
+    },
+    
     async tryInitFormFromEditableSubmission() {
       if (this.isPublicFormPage && this.form.editable_submissions) {
         const submissionId = useRoute().query?.submission_id
@@ -489,6 +528,7 @@ export default {
       }
       return false
     },
+    
     tryInitFormFromPendingSubmission() {
       if (this.isPublicFormPage && this.form.auto_save) {
         const pendingData = this.pendingSubmission.get()
@@ -500,6 +540,7 @@ export default {
       }
       return false
     },
+    
     updatePendingDataFields(pendingData) {
       this.fields.forEach(field => {
         if (field.type === 'date' && field.prefill_today) {
@@ -507,17 +548,26 @@ export default {
         }
       })
     },
-    initFormWithDefaultValues() {
-      const formData = {}
+    
+    initFormWithDefaultValues(currentFormData = {}) {
+      // Only set page 0 on first load, otherwise maintain current position
+      if (this.formPageIndex === undefined || this.isInitialLoad) {
+        this.formPageIndex = 0
+        this.isInitialLoad = false
+      }
+      
+      // Initialize form data with default values
+      const formData = { ...currentFormData }
       const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
 
       this.fields.forEach(field => {
-        if (field.type.startsWith('nf-')) return
+        if (field.type.startsWith('nf-') && !['nf-page-body-input', 'nf-page-logo', 'nf-page-cover'].includes(field.type)) return
 
         this.handleUrlPrefill(field, formData, urlPrefill)
         this.handleDefaultPrefill(field, formData)
       })
-
+      
+      // Reset form with new data
       this.dataForm.resetAndFill(formData)
     },
     handleUrlPrefill(field, formData, urlPrefill) {
@@ -583,8 +633,8 @@ export default {
     },
     handleValidationError(error) {
       console.error(error)
-      if (error?.data?.message) {
-        useAlert().error(error.data.message)
+      if (error?.data) {
+        useAlert().formValidationError(error.data)
       }
       this.dataForm.busy = false
     },
@@ -620,6 +670,59 @@ export default {
       }
       this.formPageIndex = this.fieldGroups.length - 1
     },
+    
+    // New method for updating field groups
+    updateFieldGroups() {
+      if (!this.fields || this.fields.length === 0) return
+
+      // Preserve the current page index if possible
+      const currentPageIndex = this.formPageIndex
+      
+      // Use a local variable instead of directly modifying computed property
+      // We'll use this to determine totalPages and currentPageIndex
+      const calculatedGroups = this.fields.reduce((groups, field, index) => {
+        // If the field is a page break, start a new group
+        if (field.type === 'nf-page-break' && index !== 0) {
+          groups.push([])
+        }
+        // Add the field to the current group
+        if (groups.length === 0) groups.push([])
+        groups[groups.length - 1].push(field)
+        return groups
+      }, [])
+
+      // If we don't have any groups (shouldn't happen), create a default group
+      if (calculatedGroups.length === 0) {
+        calculatedGroups.push([])
+      }
+
+      // Update page navigation
+      const totalPages = calculatedGroups.length
+      
+      // Try to maintain the current page index if valid
+      if (currentPageIndex !== undefined && currentPageIndex < totalPages) {
+        this.formPageIndex = currentPageIndex
+      } else {
+        this.formPageIndex = 0
+      }
+
+      // Force a re-render of the component, which will update fieldGroups computed property
+      this.$forceUpdate()
+    },
+
+    // Helper method to prevent recursive updates
+    updateFieldGroupsSafely() {
+      // Set flag to prevent recursive updates
+      this.isUpdatingFieldGroups = true
+      
+      // Call the actual update method
+      this.updateFieldGroups()
+      
+      // Clear the flag after a short delay to allow Vue to process the update
+      this.$nextTick(() => {
+        this.isUpdatingFieldGroups = false
+      })
+    }
   }
 }
 </script>

@@ -107,7 +107,6 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
 import {handleDarkMode, useDarkMode} from "~/lib/forms/public-page.js"
-import { default as _has } from 'lodash/has'
 import { useRecordsStore } from '~/stores/records'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
