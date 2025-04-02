@@ -49,7 +49,7 @@ class FormSubmissionProcessor
      */
     private function isFieldUsedInRedirectUrl(Form $form, string $fieldId): bool
     {
-        return str_contains($form->redirect_url, '{' . $fieldId . '}');
+        return str_contains($form->redirect_url, $fieldId);
     }
 
     /**
