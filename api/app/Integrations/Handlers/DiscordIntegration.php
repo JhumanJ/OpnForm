@@ -37,12 +37,6 @@ class DiscordIntegration extends AbstractIntegrationHandler
     {
         $settings = (array) $this->integrationData ?? [];
 
-        $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
-        if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
-            $formatter->showHiddenFields();
-        }
-        $formattedData = $formatter->getFieldsWithValue();
-
         $externalLinks = [];
         if (Arr::get($settings, 'link_open_form', true)) {
             $externalLinks[] = '[**🔗 Open Form**](' . $this->form->share_url . ')';
@@ -59,6 +53,12 @@ class DiscordIntegration extends AbstractIntegrationHandler
         $color = hexdec(str_replace('#', '', $this->form->color));
         $blocks = [];
         if (Arr::get($settings, 'include_submission_data', true)) {
+            $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
+            if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
+                $formatter->showHiddenFields();
+            }
+            $formattedData = $formatter->getFieldsWithValue();
+
             $submissionString = '';
             foreach ($formattedData as $field) {
                 $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
@@ -89,6 +89,7 @@ class DiscordIntegration extends AbstractIntegrationHandler
             ];
         }
 
+        $formattedData = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly()->showHiddenFields()->getFieldsWithValue();
         $message = Arr::get($settings, 'message', 'New form submission');
         return [
             'content' => (new MentionParser($message, $formattedData))->parse(),
