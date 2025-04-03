@@ -196,12 +196,26 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()
     {
         return $this->hasMany(Form::class);
+    }
+
+    /**
+     * Check if the given OAuthProvider ID belongs to any user in this workspace.
+     *
+     * @param int $providerId
+     * @return bool
+     */
+    public function hasProvider(int $providerId): bool
+    {
+        // Check if there's an intersection between workspace users and the provider owner
+        return $this->users()->whereHas('oauthProviders', function ($query) use ($providerId) {
+            $query->where('id', $providerId);
+        })->exists();
     }
 
     public function isReadonlyUser(?User $user)

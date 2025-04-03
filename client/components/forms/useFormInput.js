@@ -30,6 +30,7 @@ export const inputProps = {
   color: {type: String, default: "#3B82F6"},
   wrapperClass: { type: String, default: "" },
   locale: { type: String, default: "en" },
+  isAdminPreview: { type: Boolean, default: false }
 }
 
 export function useFormInput(props, context, options = {}) {

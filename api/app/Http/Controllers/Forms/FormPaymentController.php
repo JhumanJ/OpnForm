@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\OAuthProvider;
 use App\Http\Requests\Forms\GetStripeAccountRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 
@@ -52,9 +54,17 @@ class FormPaymentController extends Controller
             if ($provider === null) {
                 return $this->error(['message' => 'Configured Stripe account not found.'], 404);
             }
-            // Ownership check (important for public forms accessing saved data)
-            if ($form->workspace->user_id !== $provider->user_id) {
-                return $this->error(['message' => 'Access denied to the configured Stripe account.'], 403);
+
+            // Use the new workspace method to check if the provider belongs to *any* workspace user
+            if (!$form->workspace->hasProvider($provider->id)) {
+                Log::error('User attempted to use Stripe account not associated with the workspace', [
+                    'form_id' => $form->id,
+                    'stripe_account_id' => $paymentBlock['stripe_account_id'],
+                    'provider_id' => $provider->id,
+                    'workspace_id' => $form->workspace_id,
+                    'auth_user_id' => Auth::id(), // Keep auth user for logging context
+                ]);
+                return $this->error(['message' => 'The configured Stripe account is not associated with this workspace.'], 403);
             }
         }
 

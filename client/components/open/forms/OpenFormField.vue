@@ -80,6 +80,7 @@
         v-bind="inputProperties(field)"
         :required="isFieldRequired"
         :disabled="isFieldDisabled ? true : null"
+        :is-admin-preview="isAdminPreview"
       />
       <template v-else>
         <div

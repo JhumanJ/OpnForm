@@ -52,7 +52,9 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50 dark:bg-gray-800':draggingNewBlock}"
+          :class="[
+            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-gray-800' : '',
+          ]"
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"
@@ -104,6 +106,7 @@
         v-if="isLastPage"
         name="submit-btn"
         :submit-form="submitForm"
+        :loading="dataForm.busy"
       />
       <open-form-button
         v-else-if="currentFieldsPageBreak"
@@ -121,9 +124,9 @@
       </div>
       <div
         v-if="paymentBlock"
-        class="text-xs text-gray-500 mt-2 text-center"
+        class="mt-6 flex justify-center w-full"
       >
-          {{ $t('forms.payment_disclaimer') }}
+          <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">{{ $t('forms.payment_disclaimer') }}</p>
       </div>
     </div>
   </form>
@@ -141,6 +144,7 @@ import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import clonedeep from 'clone-deep'
+import { provideStripeElements, useStripeElements } from '~/composables/useStripeElements'
 
 export default {
   name: 'OpenForm',
@@ -185,6 +189,9 @@ export default {
     const dataForm = ref(useForm())
     const config = useRuntimeConfig()
 
+    // Provide Stripe elements to be used by child components
+    const stripeElements = provideStripeElements()
+    
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
     })
@@ -193,9 +200,10 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
+      stripeElements,
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
-      pendingSubmission: pendingSubmission(props.form),
+      pendingSubmission: import.meta.client ? pendingSubmission(props.form) : { get: () => ({}), set: () => {} },
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
 
       // Used for admin previews
@@ -408,31 +416,41 @@ export default {
 
   methods: {
     async submitForm() {
-      if (!await this.nextPage()) {
-        this.dataForm.busy = false
-        return
-      }
+      this.dataForm.busy = true
+      
+      try {
+        if (!await this.nextPage()) {
+          this.dataForm.busy = false
+          return
+        }
 
-      if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
+        if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) {
+          this.dataForm.busy = false
+          return
+        }
 
-      if (this.form.use_captcha && import.meta.client) {
-        this.$refs.captcha?.reset()
-      }
+        if (this.form.use_captcha && import.meta.client) {
+          this.$refs.captcha?.reset()
+        }
 
-      if (this.form.editable_submissions && this.form.submission_id) {
-        this.dataForm.submission_id = this.form.submission_id
-      }
+        if (this.form.editable_submissions && this.form.submission_id) {
+          this.dataForm.submission_id = this.form.submission_id
+        }
 
-      this.$refs['form-timer'].stopTimer()
-      this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+        this.$refs['form-timer'].stopTimer()
+        this.dataForm.completion_time = this.$refs['form-timer'].completionTime
 
-      // Add validation strategy check
-      if (!this.formModeStrategy.validation.validateOnSubmit) {
+        // Add validation strategy check
+        if (!this.formModeStrategy.validation.validateOnSubmit) {
+          this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+          return
+        }
+
         this.$emit('submit', this.dataForm, this.onSubmissionFailure)
-        return
+      } catch (error) {
+        this.handleValidationError(error)
+        this.dataForm.busy = false
       }
-
-      this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
      *   Handle form submission failure
@@ -440,6 +458,8 @@ export default {
     onSubmissionFailure() {
       this.$refs['form-timer'].startTimer()
       this.isAutoSubmit = false
+      this.dataForm.busy = false
+      
       if (this.fieldGroups.length > 1) {
         this.showFirstPageWithError()
       }
@@ -544,15 +564,18 @@ export default {
     },
     
     tryInitFormFromPendingSubmission() {
-      if (this.isPublicFormPage && this.form.auto_save) {
-        const pendingData = this.pendingSubmission.get()
-        if (pendingData && Object.keys(pendingData).length !== 0) {
-          this.updatePendingDataFields(pendingData)
-          this.dataForm.resetAndFill(pendingData)
-          return true
-        }
+      if (!this.pendingSubmission || !this.isPublicFormPage || !this.form.auto_save) {
+        return false;
       }
-      return false
+      
+      const pendingData = this.pendingSubmission.get();
+      if (pendingData && Object.keys(pendingData).length !== 0) {
+        this.updatePendingDataFields(pendingData);
+        this.dataForm.resetAndFill(pendingData);
+        return true;
+      }
+      
+      return false;
     },
     
     updatePendingDataFields(pendingData) {
@@ -665,34 +688,98 @@ export default {
       }
     },
     async doPayment() {
-      // If there is a payment block, process the payment
-      const { state: stripeState, processPayment } = useStripeElements()
-      if (this.paymentBlock && !stripeState.value.intentId && (this.paymentBlock.required || !stripeState.value.card._empty)) {
+      // Use the stripeElements from setup instead of calling useStripeElements
+      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
+      
+      // Check if there's a payment block in the current step
+      if (!this.paymentBlock) {
+        return true // No payment needed for this step
+      }
+      
+      // Skip if payment is already processed
+      if (stripeState.intentId) {
+        return true
+      }
+      
+      // Check for the stripe object itself, not just the ready flag
+      if (stripeState.isStripeInstanceReady && !stripeState.stripe) {
+        stripeState.isStripeInstanceReady = false;
+      }
+      
+      // Only process payment if required or card has data
+      const shouldProcessPayment = this.paymentBlock.required || isCardPopulated.value
+      
+      if (shouldProcessPayment) {
+        // If not ready yet, try a brief wait
+        if (!isReadyForPayment.value) {
+          try {
+            this.dataForm.busy = true
+            
+            // Just wait a second to see if state updates (it should be reactive now)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            
+            // Check if we're ready now
+            if (!isReadyForPayment.value) {
+              // Provide detailed diagnostics
+              let errorMsg = 'Payment system not ready. '
+              let details = []
+              
+              if (!stripeState.stripeAccountId) {
+                details.push('No Stripe account connected')
+              }
+              
+              if (!stripeState.isStripeInstanceReady) {
+                details.push('Stripe.js not initialized')
+              }
+              
+              if (!stripeState.isCardElementReady) {
+                details.push('Card element not initialized')
+              }
+              
+              errorMsg += details.join(', ') + '. Please refresh and try again.'
+              useAlert().error(errorMsg)
+              return false
+            }
+          } catch (error) {
+            return false
+          } finally {
+            this.dataForm.busy = false
+          }
+        }
+        
         try {
-          // Process the payment
           this.dataForm.busy = true
           const result = await processPayment(this.form.slug, this.paymentBlock.required)
-          this.dataForm.busy = false
-          if (result && result?.error) {
-            this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
-            useAlert().error(result.error.message)
+          
+          if (!result.success) {
+            // Handle payment error
+            if (result.error?.message) {
+              this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
+              useAlert().error(result.error.message)
+            } else {
+              useAlert().error('Payment processing failed. Please try again.')
+            }
             return false
           }
-
-          if (result?.paymentIntent?.status === 'succeeded') {
-            stripeState.value.intentId = result.paymentIntent.id
+          
+          // Payment successful
+          if (result.paymentIntent?.status === 'succeeded') {
             useAlert().success('Thank you! Your payment is successful.')
             return true
           }
-          useAlert().error('Something went wrong. Please try again.')
+          
+          // Fallback error
+          useAlert().error('Something went wrong with the payment. Please try again.')
+          return false
         } catch (error) {
-          this.dataForm.busy = false
-          console.error(error)
           useAlert().error(error?.message || 'Payment failed')
+          return false
+        } finally {
+          this.dataForm.busy = false
         }
-        return false
       }
-      return true // Payment not required or already processed
+      
+      return true // Payment not required or no card data
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })

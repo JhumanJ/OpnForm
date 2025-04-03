@@ -49,16 +49,13 @@ class OAuthProviderController extends Controller
         $intention = $context['intention'];
 
         try {
-            // Use stateless() for API-driven OAuth callbacks as there's no session state.
-            // The getUser() method likely uses the 'code' from the $request implicitly or via Socialite state handling.
-            // $driverUser = $service->getDriver()->stateless()->user(); // This driver does not have stateless()
-            $driverUser = $service->getDriver()->user(); // Use user() directly
+            $driverUser = $service->getDriver()->getUser();
 
             $provider = OAuthProvider::query()
                 ->updateOrCreate(
                     [
                         'user_id' => $userId,
-                        'provider' => $service->getProviderName(),
+                        'provider' => $service,
                         'provider_user_id' => $driverUser->getId(),
                     ],
                     [
