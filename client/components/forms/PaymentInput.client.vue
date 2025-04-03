@@ -72,6 +72,11 @@
                    theme.default.spacing.horizontal,
                    theme.default.spacing.vertical,
                    theme.default.fontSize,
+                   theme.PaymentInput?.cardContainer || '',
+                   {
+                     [theme.PaymentInput?.focusRing || 'ring-2 ring-primary-500 border-transparent']: isCardFocused && !hasError,
+                     '!ring-red-500 !ring-2 !border-transparent': hasError
+                   },
                    'dark:bg-gray-800 dark:border-gray-700'
                  ]">
                    <StripeElement
@@ -80,7 +85,9 @@
                      type="card"
                      :elements="elements"
                      :options="cardOptions"
-                     @ready="onCardReady" 
+                     @ready="onCardReady"
+                     @focus="onCardFocus" 
+                     @blur="onCardBlur"
                    />
                  </div>
                  <TextInput
@@ -158,6 +165,7 @@ const card = ref(null)
 const stripeElementsRef = ref(null)
 const cardHolderName = ref('')
 const cardHolderEmail = ref('')
+const isCardFocused = ref(false)
 
 // Keep the flag for Stripe.js loading but remove manual instance creation
 const isStripeJsLoaded = ref(false)
@@ -229,6 +237,15 @@ const onStripeReady = ({ stripe, elements }) => {
 
 const onStripeError = (error) => {
   alert.error('Failed to load payment component. Please check configuration or refresh.')
+}
+
+// Card focus/blur event handlers
+const onCardFocus = () => {
+  isCardFocused.value = true
+}
+
+const onCardBlur = () => {
+  isCardFocused.value = false
 }
 
 const onCardReady = (element) => {
