@@ -15,6 +15,7 @@
           '!ring-red-500 !ring-2 !border-transparent': hasError,
           '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
         },
+        'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200'
       ]"
     >
       <div v-if="!oauthProviderId">
@@ -24,10 +25,10 @@
               <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
               <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
           </div>
-          <p class="text-sm text-gray-500 text-center">Connect Stripe account to continue</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Connect Stripe account to continue</p>
         </div>
       </div>
-      <div class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 rounded-md" v-else-if="showSuccessState">
+      <div class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 dark:bg-green-900/50 dark:text-green-300 rounded-md" v-else-if="showSuccessState">
         <div class="flex items-center justify-center gap-2">
           <Icon name="heroicons:check-circle" class="w-5 h-5" />
           <p>{{ $t('forms.payment.success') }}.</p>
@@ -37,16 +38,22 @@
         <div v-if="stripeState.isLoadingAccount" class="my-4 flex justify-center">
           <Loader class="mx-auto h-6 w-6" />
         </div>
-        <div v-else-if="stripeState.showPreviewMessage" class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 rounded-md">
+        <div v-else-if="stripeState.showPreviewMessage" class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md">
           <p>Please save the form to activate the payment preview.</p>
         </div>
-        <div v-else-if="stripeState.hasAccountLoadingError" class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 rounded-md">
+        <div v-else-if="stripeState.hasAccountLoadingError" class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md">
           <p>{{ stripeState.errorMessage || 'Failed to load payment configuration' }}</p>
         </div>
-        <div v-else-if="stripeState.stripeAccountId && isStripeJsLoaded" class="my-4">
-           <div class="mb-4 flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
-             <span class="text-sm font-medium text-gray-700">{{ $t('forms.payment.amount_to_pay') }}</span>
-             <span class="text-sm font-medium text-gray-900">{{ currencySymbol }}{{ amount }}</span>
+        <div v-else-if="stripeState.stripeAccountId && isStripeJsLoaded" class="my-2">
+           <div :class="[
+                   theme.default.borderRadius,
+                   theme.default.spacing.horizontal,
+                   theme.default.spacing.vertical,
+                   theme.default.fontSize,
+                 ]"
+                 class="mb-4 flex border border-gray-300 dark:border-gray-600 items-center justify-between bg-gray-50 dark:bg-gray-800">
+             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('forms.payment.amount_to_pay') }}</span>
+             <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ currencySymbol }}{{ amount }}</span>
            </div>
            <StripeElements
              ref="stripeElementsRef"
@@ -59,7 +66,14 @@
            >
              <template #default="{ elements }">
                <div class="space-y-4">
-                 <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                 <div :class="[
+                   theme.default.input,
+                   theme.default.borderRadius,
+                   theme.default.spacing.horizontal,
+                   theme.default.spacing.vertical,
+                   theme.default.fontSize,
+                   'dark:bg-gray-800 dark:border-gray-700'
+                 ]">
                    <StripeElement
                      v-if="elements"
                      ref="card"
@@ -103,13 +117,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { inputProps, useFormInput } from './useFormInput.js'
 import InputWrapper from './components/InputWrapper.vue'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"
 import { useStripeElements } from '~/composables/useStripeElements'
+import { useAlert } from '~/composables/useAlert'
 
 const props = defineProps({
   ...inputProps,
@@ -117,7 +132,9 @@ const props = defineProps({
   currency: { type: String, default: 'USD' },
   amount: { type: Number, default: 0 },
   oauthProviderId: { type: [String, Number], default: null },
-  isAdminPreview: { type: Boolean, default: false }
+  isAdminPreview: { type: Boolean, default: false },
+  color: { type: String, default: '#000000' },
+  isDark: { type: Boolean, default: false }
 })
 
 const emit = defineEmits([])
@@ -261,9 +278,23 @@ const stripeOptions = computed(() => ({
 }))
 
 const cardOptions = computed(() => ({
-  type: 'card',
   hidePostalCode: true,
   disableLink: true,
+  style: {
+    base: {
+      iconColor: props.color,
+      color: props.isDark ? '#D1D5DB' : '#374151',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: props.isDark ? '#6B7280' : '#9CA3AF'
+      }
+    },
+    invalid: {
+      iconColor: '#df1b41',
+      color: '#df1b41'
+    }
+  }
 }))
 
 const formSlug = computed(() => {

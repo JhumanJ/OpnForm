@@ -48,8 +48,8 @@ class PaymentBlockConfigurationRule implements ValidationRule
 
 
         // Amount validation
-        if (!isset($this->field['amount']) || !is_numeric($this->field['amount']) || $this->field['amount'] < 0.5) {
-            $fail('Amount must be a number greater than 0.5');
+        if (!isset($this->field['amount']) || !is_numeric($this->field['amount']) || $this->field['amount'] < 1) {
+            $fail('Amount must be a number greater than 1');
             return;
         }
 

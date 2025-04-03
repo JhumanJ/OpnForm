@@ -66,7 +66,7 @@ export const createStripeElements = () => {
   const prepareStripeState = async (formSlug, providerId, isEditorPreview = false) => {
     if (!formSlug || !providerId) {
       resetStripeState();
-      return { success: false, message: 'Missing form slug or provider ID' };
+      return { success: false, message: 'Missing form slug or provider ID.' };
     }
     
     resetStripeState();
@@ -214,7 +214,7 @@ export const createStripeElements = () => {
     if (isRequired && state.card._empty) {
       return { 
         success: false,
-        error: { message: 'Complete the payment before you can proceed' } 
+        error: { message: 'Complete the payment before you can proceed.' } 
       };
     }
     
@@ -224,7 +224,7 @@ export const createStripeElements = () => {
       if (!state.cardHolderName) {
         return { 
           success: false,
-          error: { message: 'Card holder name is required' } 
+          error: { message: 'Card holder name is required.' } 
         };
       }
       
@@ -232,7 +232,7 @@ export const createStripeElements = () => {
       if (!state.cardHolderEmail) {
         return { 
           success: false,
-          error: { message: 'Billing email address is required' } 
+          error: { message: 'Billing email address is required.' } 
         };
       }
       
@@ -240,7 +240,7 @@ export const createStripeElements = () => {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.cardHolderEmail)) {
         return { 
           success: false,
-          error: { message: 'Invalid billing email address' } 
+          error: { message: 'Invalid billing email address.' } 
         };
       }
     }
@@ -276,12 +276,12 @@ export const createStripeElements = () => {
       } else {
         return { 
           success: false,
-          error: { message: responseIntent?.message || 'Failed to create payment intent' } 
+          error: { message: responseIntent?.message || 'Failed to create payment intent.' } 
         };
       }
     } catch (error) {
       // Include more details about the error
-      const errorMessage = error?.message || 'Payment processing failed';
+      const errorMessage = error?.message || 'Payment processing failed.';
       const errorType = error?.type || 'unknown';
       const errorCode = error?.code || 'unknown';
       

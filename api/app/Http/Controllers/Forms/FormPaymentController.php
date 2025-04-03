@@ -25,6 +25,11 @@ class FormPaymentController extends Controller
      */
     public function getAccount(GetStripeAccountRequest $request)
     {
+        // Disable payment features on self-hosted instances
+        if (config('app.self_hosted')) {
+            return $this->error(['message' => 'Payment features are not available in the self-hosted version.'], 403);
+        }
+
         $form = $request->form;
         $provider = null;
 
@@ -74,6 +79,11 @@ class FormPaymentController extends Controller
 
     public function createIntent(Request $request)
     {
+        // Disable payment features on self-hosted instances
+        if (config('app.self_hosted')) {
+            return $this->error(['message' => 'Payment features are not available in the self-hosted version.'], 403);
+        }
+
         $form = $request->form;
 
         // Verify form exists and is accessible
