@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Klicka för att öppna kameran"
+        },
+        "payment": {
+            "amount_to_pay": "Belopp att betala",
+            "success": "Betalning lyckades",
+            "name_on_card": "Namn på kortet",
+            "billing_email": "Fakturerings-e-postadress",
+            "payment_disclaimer": "Ditt kreditkort kommer att debiteras när du klickar på den här knappen. Betalningar behandlas säkert via Stripe."
         }
     }
 } 

@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Models\OAuthProvider;
+use App\Models\Workspace;
 use Closure;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -11,10 +12,12 @@ class PaymentBlockConfigurationRule implements ValidationRule
 {
     protected array $properties;
     protected array $field;
+    protected ?Workspace $workspace;
 
-    public function __construct(array $properties)
+    public function __construct(array $properties, ?Workspace $workspace = null)
     {
         $this->properties = $properties;
+        $this->workspace = $workspace;
     }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -35,7 +38,7 @@ class PaymentBlockConfigurationRule implements ValidationRule
 
         // Only one payment block allowed
         $paymentBlocks = collect($this->properties)
-            ->filter(fn ($prop) => $prop['type'] === 'payment')
+            ->filter(fn($prop) => $prop['type'] === 'payment')
             ->count();
 
         if ($paymentBlocks > 1) {
@@ -66,6 +69,17 @@ class PaymentBlockConfigurationRule implements ValidationRule
             $provider = OAuthProvider::find($this->field['stripe_account_id']);
             if ($provider === null) {
                 $fail('Failed to validate Stripe account');
+                return;
+            }
+
+            // Check if the provider is associated with the workspace (if workspace is provided)
+            if ($this->workspace && !$this->workspace->hasProvider($provider->id)) {
+                Log::error('Attempted to use Stripe account not associated with the workspace', [
+                    'stripe_account_id' => $this->field['stripe_account_id'],
+                    'provider_id' => $provider->id,
+                    'workspace_id' => $this->workspace->id,
+                ]);
+                $fail('The configured Stripe account is not associated with this workspace');
                 return;
             }
         } catch (\Exception $e) {

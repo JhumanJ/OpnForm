@@ -44,8 +44,8 @@
             "amount_to_pay": "Cantidad a pagar",
             "success": "Pago exitoso",
             "name_on_card": "Nombre en la tarjeta",
-            "billing_email": "Dirección de correo electrónico de facturación"
-        },
-        "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
+            "billing_email": "Dirección de correo electrónico de facturación",
+            "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
+        }
     }
 } 

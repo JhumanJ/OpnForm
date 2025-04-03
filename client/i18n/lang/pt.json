@@ -44,7 +44,8 @@
             "amount_to_pay": "Valor a ser pago",
             "success": "Pagamento realizado com sucesso",
             "name_on_card": "Nome no cartão",
-            "billing_email": "Endereço de e-mail de faturamento"
+            "billing_email": "Endereço de e-mail de faturamento",
+            "payment_disclaimer": "Seu cartão de crédito será cobrado ao clicar neste botão. Os pagamentos são processados com segurança pelo Stripe."
         }
     }
 } 

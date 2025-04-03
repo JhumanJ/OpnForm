@@ -44,7 +44,8 @@
             "amount_to_pay": "결제 금액",
             "success": "결제 성공",
             "name_on_card": "카드 이름",
-            "billing_email": "청구 이메일 주소"
+            "billing_email": "청구 이메일 주소",
+            "payment_disclaimer": "이 버튼을 클릭하면 신용카드로 결제됩니다. 결제는 Stripe를 통해 안전하게 처리됩니다."
         }
     }
 } 

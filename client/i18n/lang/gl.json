@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Fai clic para abrir a cámara"
+        },
+        "payment": {
+            "amount_to_pay": "Importe a pagar",
+            "success": "Pagamento realizado con éxito",
+            "name_on_card": "Nome na tarxeta",
+            "billing_email": "Enderezo de correo electrónico de facturación",
+            "payment_disclaimer": "A túa tarxeta de crédito será cargada ao facer clic neste botón. Os pagamentos procésanse de forma segura a través de Stripe."
         }
     }
 } 

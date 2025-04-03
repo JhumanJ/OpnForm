@@ -44,8 +44,8 @@
             "amount_to_pay": "Zu zahlender Betrag",
             "success": "Zahlung erfolgreich",
             "name_on_card": "Name auf der Karte",
-            "billing_email": "Rechnungs-E-Mail-Adresse"
-        },
-        "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
+            "billing_email": "Rechnungs-E-Mail-Adresse",
+            "payment_disclaimer": "Your credit card will be charged upon clicking this button. Payments are securely processed through Stripe."
+        }
     }
 } 

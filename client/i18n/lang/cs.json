@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Klikněte pro otevření kamery"
+        },
+        "payment": {
+            "amount_to_pay": "Částka k zaplacení",
+            "success": "Platba úspěšná",
+            "name_on_card": "Jméno na kartě",
+            "billing_email": "Fakturační e-mailová adresa",
+            "payment_disclaimer": "Vaše kreditní karta bude stržena po kliknutí na toto tlačítko. Platby jsou bezpečně zpracovávány prostřednictvím Stripe."
         }
     }
 } 

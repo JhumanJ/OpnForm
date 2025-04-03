@@ -72,6 +72,22 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
      */
     public function rules()
     {
+        // Get the workspace from the form being updated or the current user's workspace
+        $workspace = null;
+
+        // For update requests, try to get the workspace from the form
+        if ($this->route('form')) {
+            $workspace = $this->route('form')->workspace;
+        }
+        // For create requests, get the workspace from the workspace parameter
+        elseif ($this->route('workspace')) {
+            $workspace = $this->route('workspace');
+        }
+        // Otherwise, try to get from the request attribute
+        elseif ($this->get('workspace_id')) {
+            $workspace = \App\Models\Workspace::find($this->get('workspace_id'));
+        }
+
         return [
             // Form Info
             'title' => 'required|string|max:60',
@@ -120,7 +136,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties' => 'required|array',
             'properties.*.id' => 'required',
             'properties.*.name' => 'required',
-            'properties.*.type' => ['required', new PaymentBlockConfigurationRule($this->properties)],
+            'properties.*.type' => ['required', new PaymentBlockConfigurationRule($this->properties, $workspace)],
             'properties.*.placeholder' => 'sometimes|nullable',
             'properties.*.prefill' => 'sometimes|nullable',
             'properties.*.help' => 'sometimes|nullable',

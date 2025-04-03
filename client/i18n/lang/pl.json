@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Kliknij, aby otworzyć kamerę"
+        },
+        "payment": {
+            "amount_to_pay": "Kwota do zapłaty",
+            "success": "Płatność udana",
+            "name_on_card": "Imię i nazwisko na karcie",
+            "billing_email": "Adres e-mail do rozliczeń",
+            "payment_disclaimer": "Twoja karta kredytowa zostanie obciążona po kliknięciu tego przycisku. Płatności są bezpiecznie przetwarzane przez Stripe."
         }
     }
 } 

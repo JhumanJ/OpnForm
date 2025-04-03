@@ -27,7 +27,7 @@
           <p class="text-sm text-gray-500 text-center">Connect Stripe account to continue</p>
         </div>
       </div>
-      <div class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 rounded-md" v-else-if="stripeState.intentId">
+      <div class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 rounded-md" v-else-if="showSuccessState">
         <div class="flex items-center justify-center gap-2">
           <Icon name="heroicons:check-circle" class="w-5 h-5" />
           <p>{{ $t('forms.payment.success') }}.</p>
@@ -144,8 +144,16 @@ const cardHolderEmail = ref('')
 
 // Keep the flag for Stripe.js loading but remove manual instance creation
 const isStripeJsLoaded = ref(false)
-// Don't create our own stripeInstance
-// let stripeInstance = null
+
+// Computed to determine if we should show success state
+const showSuccessState = computed(() => {
+  return stripeState?.intentId || (compVal.value && isPaymentIntentId(compVal.value))
+})
+
+// Helper function to check if a string looks like a Stripe payment intent ID
+const isPaymentIntentId = (value) => {
+  return typeof value === 'string' && value.startsWith('pi_')
+}
 
 // Initialize Stripe.js if needed
 onMounted(async () => {
@@ -156,6 +164,11 @@ onMounted(async () => {
       isStripeJsLoaded.value = true
     } else {
       isStripeJsLoaded.value = true
+    }
+
+    // If compVal already contains a payment intent ID, sync it to stripeState
+    if (compVal.value && isPaymentIntentId(compVal.value) && stripeState) {
+      stripeState.intentId = compVal.value
     }
 
     // Fetch account but don't manually create Stripe instance

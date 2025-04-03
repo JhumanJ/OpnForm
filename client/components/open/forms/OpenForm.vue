@@ -126,7 +126,7 @@
         v-if="paymentBlock"
         class="mt-6 flex justify-center w-full"
       >
-          <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">{{ $t('forms.payment_disclaimer') }}</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">{{ $t('forms.payment.payment_disclaimer') }}</p>
       </div>
     </div>
   </form>
@@ -696,8 +696,16 @@ export default {
         return true // No payment needed for this step
       }
       
-      // Skip if payment is already processed
+      // Skip if payment is already processed in the stripe state
       if (stripeState.intentId) {
+        return true
+      }
+      
+      // Skip if payment ID already exists in the form data
+      const paymentFieldValue = this.dataFormValue[this.paymentBlock.id]
+      if (paymentFieldValue && typeof paymentFieldValue === 'string' && paymentFieldValue.startsWith('pi_')) {
+        // If we have a valid payment intent ID in the form data, sync it to the stripe state
+        stripeState.intentId = paymentFieldValue
         return true
       }
       

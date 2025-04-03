@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Egin klik kamera irekitzeko"
+        },
+        "payment": {
+            "amount_to_pay": "Ordaintzeko zenbatekoa",
+            "success": "Ordainketa arrakastatsua",
+            "name_on_card": "Txarteleko izena",
+            "billing_email": "Fakturazio helbide elektronikoa",
+            "payment_disclaimer": "Zure kreditu-txartela kargatuko da botoi honetan klik egitean. Ordainketak modu seguruan prozesatzen dira Stripe bidez."
         }
     }
 } 

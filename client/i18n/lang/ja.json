@@ -44,7 +44,8 @@
             "amount_to_pay": "支払い金額",
             "success": "支払い成功",
             "name_on_card": "カード名",
-            "billing_email": "請求メールアドレス"
+            "billing_email": "請求メールアドレス",
+            "payment_disclaimer": "このボタンをクリックすると、クレジットカードに請求されます。支払いは Stripe を通じて安全に処理されます。"
         }
     }
 } 

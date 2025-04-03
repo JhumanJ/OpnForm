@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Fes clic per obrir la càmera"
+        },
+        "payment": {
+            "amount_to_pay": "Import a pagar",
+            "success": "Pagament realitzat amb èxit",
+            "name_on_card": "Nom a la targeta",
+            "billing_email": "Adreça de correu electrònic de facturació",
+            "payment_disclaimer": "La teva targeta de crèdit serà carregada en fer clic en aquest botó. Els pagaments es processen de forma segura a través de Stripe."
         }
     }
 } 

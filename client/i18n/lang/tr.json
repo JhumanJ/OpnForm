@@ -44,7 +44,8 @@
             "amount_to_pay": "Ödeme miktarı",
             "success": "Ödeme başarılı",
             "name_on_card": "Kart üzerindeki ad",
-            "billing_email": "Fatura e-posta adresi"
+            "billing_email": "Fatura e-posta adresi",
+            "payment_disclaimer": "Bu düğmeye tıkladığınızda kredi kartınızdan ücret alınacaktır. Ödemeler Stripe aracılığıyla güvenli bir şekilde işlenir."
         }
     }
 } 
