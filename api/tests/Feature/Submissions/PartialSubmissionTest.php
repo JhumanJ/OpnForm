@@ -101,7 +101,7 @@ it('calculates stats correctly for partial vs completed submissions', function (
 });
 
 it('handles file uploads in partial submissions', function () {
-    Storage::fake('local');
+    Storage::fake();
 
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
@@ -138,7 +138,7 @@ it('handles file uploads in partial submissions', function () {
 });
 
 it('handles signature field in partial submissions', function () {
-    Storage::fake('local');
+    Storage::fake();
 
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
