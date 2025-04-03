@@ -43,7 +43,7 @@ class FormPaymentController extends Controller
         }
         // Case 2: Public Form / Loading from Saved Form Data
         else {
-            $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+            $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
 
             if (!$paymentBlock || !isset($paymentBlock['stripe_account_id'])) {
                 // Allow preview by returning a specific, non-blocking error message
@@ -95,7 +95,7 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id

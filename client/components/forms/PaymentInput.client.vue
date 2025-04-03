@@ -20,93 +20,117 @@
     >
       <div v-if="!oauthProviderId">
         <div class="space-y-4 mt-3">
-            <div class="animate-pulse flex flex-col gap-3">
-              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
-              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
-              <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
+          <div class="animate-pulse flex flex-col gap-3">
+            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
+            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
+            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
           </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Connect Stripe account to continue</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+            Connect Stripe account to continue
+          </p>
         </div>
       </div>
-      <div class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 dark:bg-green-900/50 dark:text-green-300 rounded-md" v-else-if="showSuccessState">
+      <div
+        v-else-if="showSuccessState"
+        class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 dark:bg-green-900/50 dark:text-green-300 rounded-md"
+      >
         <div class="flex items-center justify-center gap-2">
-          <Icon name="heroicons:check-circle" class="w-5 h-5" />
+          <Icon
+            name="heroicons:check-circle"
+            class="w-5 h-5"
+          />
           <p>{{ $t('forms.payment.success') }}.</p>
         </div>
       </div>
       <template v-else>
-        <div v-if="stripeState.isLoadingAccount" class="my-4 flex justify-center">
+        <div
+          v-if="stripeState.isLoadingAccount"
+          class="my-4 flex justify-center"
+        >
           <Loader class="mx-auto h-6 w-6" />
         </div>
-        <div v-else-if="stripeState.showPreviewMessage" class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md">
+        <div
+          v-else-if="stripeState.showPreviewMessage"
+          class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md"
+        >
           <p>Please save the form to activate the payment preview.</p>
         </div>
-        <div v-else-if="stripeState.hasAccountLoadingError" class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md">
+        <div
+          v-else-if="stripeState.hasAccountLoadingError"
+          class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md"
+        >
           <p>{{ stripeState.errorMessage || 'Failed to load payment configuration' }}</p>
         </div>
-        <div v-else-if="stripeState.stripeAccountId && isStripeJsLoaded" class="my-2">
-           <div :class="[
-                   theme.default.borderRadius,
-                   theme.default.spacing.horizontal,
-                   theme.default.spacing.vertical,
-                   theme.default.fontSize,
-                 ]"
-                 class="mb-4 flex border border-gray-300 dark:border-gray-600 items-center justify-between bg-gray-50 dark:bg-gray-800">
-             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('forms.payment.amount_to_pay') }}</span>
-             <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ currencySymbol }}{{ amount }}</span>
-           </div>
-           <StripeElements
-             ref="stripeElementsRef"
-             :stripe-key="publishableKey"
-             :stripe-account="stripeState.stripeAccountId"
-             :instance-options="{ stripeAccount: stripeState.stripeAccountId }"
-             :elements-options="{ locale: props.locale }"
-             @ready="onStripeReady"
-             @error="onStripeError"
-           >
-             <template #default="{ elements }">
-               <div class="space-y-4">
-                 <div :class="[
-                   theme.default.input,
-                   theme.default.borderRadius,
-                   theme.default.spacing.horizontal,
-                   theme.default.spacing.vertical,
-                   theme.default.fontSize,
-                   theme.PaymentInput?.cardContainer || '',
-                   {
-                     [theme.PaymentInput?.focusRing || 'ring-2 ring-primary-500 border-transparent']: isCardFocused && !hasError,
-                     '!ring-red-500 !ring-2 !border-transparent': hasError
-                   },
-                   'dark:bg-gray-800 dark:border-gray-700'
-                 ]">
-                   <StripeElement
-                     v-if="elements"
-                     ref="card"
-                     type="card"
-                     :elements="elements"
-                     :options="cardOptions"
-                     @ready="onCardReady"
-                     @focus="onCardFocus" 
-                     @blur="onCardBlur"
-                   />
-                 </div>
-                 <TextInput
-                   v-model="cardHolderName"
-                   name="cardholder_name"
-                   :placeholder="$t('forms.payment.name_on_card')"
-                   class="w-full"
-                   :theme="theme"
-                 />
-                 <TextInput
-                   v-model="cardHolderEmail"
-                   name="billing_email"
-                   :placeholder="$t('forms.payment.billing_email')"
-                   class="w-full"
-                   :theme="theme"
-                 />
-               </div>
-             </template>
-           </StripeElements>
+        <div
+          v-else-if="stripeState.stripeAccountId && isStripeJsLoaded"
+          class="my-2"
+        >
+          <div
+            :class="[
+              theme.default.borderRadius,
+              theme.default.spacing.horizontal,
+              theme.default.spacing.vertical,
+              theme.default.fontSize,
+            ]"
+            class="mb-4 flex border border-gray-300 dark:border-gray-600 items-center justify-between bg-gray-50 dark:bg-gray-800"
+          >
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('forms.payment.amount_to_pay') }}</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ currencySymbol }}{{ amount }}</span>
+          </div>
+          <StripeElements
+            ref="stripeElementsRef"
+            :stripe-key="publishableKey"
+            :stripe-account="stripeState.stripeAccountId"
+            :instance-options="{ stripeAccount: stripeState.stripeAccountId }"
+            :elements-options="{ locale: props.locale }"
+            @ready="onStripeReady"
+            @error="onStripeError"
+          >
+            <template #default="{ elements }">
+              <div class="space-y-4">
+                <div
+                  :class="[
+                    theme.default.input,
+                    theme.default.borderRadius,
+                    theme.default.spacing.horizontal,
+                    theme.default.spacing.vertical,
+                    theme.default.fontSize,
+                    theme.PaymentInput?.cardContainer || '',
+                    {
+                      [theme.PaymentInput?.focusRing || 'ring-2 ring-primary-500 border-transparent']: isCardFocused && !hasError,
+                      '!ring-red-500 !ring-2 !border-transparent': hasError
+                    },
+                    'dark:bg-gray-800 dark:border-gray-700'
+                  ]"
+                >
+                  <StripeElement
+                    v-if="elements"
+                    ref="card"
+                    type="card"
+                    :elements="elements"
+                    :options="cardOptions"
+                    @ready="onCardReady"
+                    @focus="onCardFocus" 
+                    @blur="onCardBlur"
+                  />
+                </div>
+                <TextInput
+                  v-model="cardHolderName"
+                  name="cardholder_name"
+                  :placeholder="$t('forms.payment.name_on_card')"
+                  class="w-full"
+                  :theme="theme"
+                />
+                <TextInput
+                  v-model="cardHolderEmail"
+                  name="billing_email"
+                  :placeholder="$t('forms.payment.billing_email')"
+                  class="w-full"
+                  :theme="theme"
+                />
+              </div>
+            </template>
+          </StripeElements>
         </div>
         <div v-else>
           <Loader class="mx-auto h-6 w-6" />
@@ -153,8 +177,7 @@ const {
   setStripeInstance, 
   setElementsInstance,
   setCardElement,
-  setBillingDetails,
-  isReadyForPayment
+  setBillingDetails
 } = stripeElements || {}
 
 const route = useRoute()
@@ -223,19 +246,19 @@ watch(() => props.oauthProviderId, async (newVal, oldVal) => {
 // Update onStripeReady to always use the stripe instance from the component
 const onStripeReady = ({ stripe, elements }) => {
   if (!stripe) {
-    return;
+    return
   }
   
   if (setStripeInstance) {
-    setStripeInstance(stripe);
+    setStripeInstance(stripe)
   }
   
   if (elements && setElementsInstance) {
-    setElementsInstance(elements);
+    setElementsInstance(elements)
   }
 }
 
-const onStripeError = (error) => {
+const onStripeError = (_error) => {
   alert.error('Failed to load payment component. Please check configuration or refresh.')
 }
 
@@ -248,7 +271,7 @@ const onCardBlur = () => {
   isCardFocused.value = false
 }
 
-const onCardReady = (element) => {
+const onCardReady = (_element) => {
   if (card.value?.stripeElement) {
     if (setCardElement) {
       setCardElement(card.value.stripeElement)
@@ -289,10 +312,6 @@ watch(() => props.locale, async () => {
 const currencySymbol = computed(() => {
   return stripeCurrencies.find(item => item.code === props.currency)?.symbol
 })
-
-const stripeOptions = computed(() => ({
-  locale: props.locale
-}))
 
 const cardOptions = computed(() => ({
   hidePostalCode: true,
@@ -341,12 +360,12 @@ watch(() => stripeElementsRef.value, async (newRef) => {
   if (newRef) {
     // If @ready event hasn't fired, try accessing the instance directly
     if (newRef.instance && setStripeInstance && !stripeState.isStripeInstanceReady) {
-      setStripeInstance(newRef.instance);
+      setStripeInstance(newRef.instance)
     }
     
     if (newRef.elements && setElementsInstance) {
-      setElementsInstance(newRef.elements);
+      setElementsInstance(newRef.elements)
     }
   }
-}, { immediate: true });
+}, { immediate: true })
 </script>

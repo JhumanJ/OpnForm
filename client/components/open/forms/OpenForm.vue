@@ -126,7 +126,9 @@
         v-if="paymentBlock"
         class="mt-6 flex justify-center w-full"
       >
-          <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">{{ $t('forms.payment.payment_disclaimer') }}</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">
+          {{ $t('forms.payment.payment_disclaimer') }}
+        </p>
       </div>
     </div>
   </form>
@@ -144,7 +146,7 @@ import FormTimer from './FormTimer.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import clonedeep from 'clone-deep'
-import { provideStripeElements, useStripeElements } from '~/composables/useStripeElements'
+import { provideStripeElements } from '~/composables/useStripeElements'
 
 export default {
   name: 'OpenForm',
@@ -565,17 +567,17 @@ export default {
     
     tryInitFormFromPendingSubmission() {
       if (!this.pendingSubmission || !this.isPublicFormPage || !this.form.auto_save) {
-        return false;
+        return false
       }
       
-      const pendingData = this.pendingSubmission.get();
+      const pendingData = this.pendingSubmission.get()
       if (pendingData && Object.keys(pendingData).length !== 0) {
-        this.updatePendingDataFields(pendingData);
-        this.dataForm.resetAndFill(pendingData);
-        return true;
+        this.updatePendingDataFields(pendingData)
+        this.dataForm.resetAndFill(pendingData)
+        return true
       }
       
-      return false;
+      return false
     },
     
     updatePendingDataFields(pendingData) {
@@ -711,7 +713,7 @@ export default {
       
       // Check for the stripe object itself, not just the ready flag
       if (stripeState.isStripeInstanceReady && !stripeState.stripe) {
-        stripeState.isStripeInstanceReady = false;
+        stripeState.isStripeInstanceReady = false
       }
       
       // Only process payment if required or card has data
@@ -730,7 +732,7 @@ export default {
             if (!isReadyForPayment.value) {
               // Provide detailed diagnostics
               let errorMsg = 'Payment system not ready. '
-              let details = []
+              const details = []
               
               if (!stripeState.stripeAccountId) {
                 details.push('No Stripe account connected')

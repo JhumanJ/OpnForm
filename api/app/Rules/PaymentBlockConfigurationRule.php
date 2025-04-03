@@ -38,7 +38,7 @@ class PaymentBlockConfigurationRule implements ValidationRule
 
         // Only one payment block allowed
         $paymentBlocks = collect($this->properties)
-            ->filter(fn($prop) => $prop['type'] === 'payment')
+            ->filter(fn ($prop) => $prop['type'] === 'payment')
             ->count();
 
         if ($paymentBlocks > 1) {

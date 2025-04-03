@@ -1,4 +1,4 @@
-import { ref, computed, provide, inject, reactive, readonly } from 'vue'
+import { computed, provide, inject, reactive } from 'vue'
 
 // Symbol for injection key
 export const STRIPE_ELEMENTS_KEY = Symbol('stripe-elements')
@@ -32,28 +32,28 @@ export const createStripeElements = () => {
   const isReadyForPayment = computed(() => {
     return state.isStripeInstanceReady && 
            state.isCardElementReady && 
-           state.stripeAccountId;
+           state.stripeAccountId
   })
 
   const isCardPopulated = computed(() => {
-    return state.card && !state.card._empty;
+    return state.card && !state.card._empty
   })
 
   /**
    * Resets the Stripe state to its initial values
    */
   const resetStripeState = () => {
-    state.isLoadingAccount = false;
-    state.hasAccountLoadingError = false;
-    state.isStripeInstanceReady = false;
-    state.isCardElementReady = false;
-    state.stripe = null;
-    state.elements = null;
-    state.card = null;
-    state.intentId = null;
-    state.showPreviewMessage = false;
-    state.stripeAccountId = null;
-    state.errorMessage = '';
+    state.isLoadingAccount = false
+    state.hasAccountLoadingError = false
+    state.isStripeInstanceReady = false
+    state.isCardElementReady = false
+    state.stripe = null
+    state.elements = null
+    state.card = null
+    state.intentId = null
+    state.showPreviewMessage = false
+    state.stripeAccountId = null
+    state.errorMessage = ''
   }
 
   /**
@@ -65,61 +65,61 @@ export const createStripeElements = () => {
    */
   const prepareStripeState = async (formSlug, providerId, isEditorPreview = false) => {
     if (!formSlug || !providerId) {
-      resetStripeState();
-      return { success: false, message: 'Missing form slug or provider ID.' };
+      resetStripeState()
+      return { success: false, message: 'Missing form slug or provider ID.' }
     }
     
-    resetStripeState();
-    state.isLoadingAccount = true;
+    resetStripeState()
+    state.isLoadingAccount = true
     
     try {
-      const fetchOptions = {};
+      const fetchOptions = {}
       if (isEditorPreview) {
-        fetchOptions.query = { oauth_provider_id: providerId };
+        fetchOptions.query = { oauth_provider_id: providerId }
       }
       
-      const response = await opnFetch(`/forms/${formSlug}/stripe-connect/get-account`, fetchOptions);
+      const response = await opnFetch(`/forms/${formSlug}/stripe-connect/get-account`, fetchOptions)
 
       if (response?.type === 'success' && response?.stripeAccount) {
         // Explicitly set the account ID in state
-        state.stripeAccountId = response.stripeAccount;
-        state.isLoadingAccount = false;
+        state.stripeAccountId = response.stripeAccount
+        state.isLoadingAccount = false
         
         // We'll rely on the StripeElements component to create the Stripe instance
         // Don't try to create it here
         
-        return { success: true, accountId: response.stripeAccount };
+        return { success: true, accountId: response.stripeAccount }
       } else {
-        state.hasAccountLoadingError = true;
-        state.isLoadingAccount = false;
+        state.hasAccountLoadingError = true
+        state.isLoadingAccount = false
         
         if (response?.message?.includes('save the form and try again')) {
-          state.showPreviewMessage = true;
+          state.showPreviewMessage = true
         }
         
-        state.errorMessage = response?.message || 'Failed to get Stripe account details.';
+        state.errorMessage = response?.message || 'Failed to get Stripe account details.'
         return { 
           success: false, 
           message: state.errorMessage,
           requiresSave: state.showPreviewMessage
-        };
+        }
       }
     } catch (error) {
-      state.hasAccountLoadingError = true;
-      state.isLoadingAccount = false;
+      state.hasAccountLoadingError = true
+      state.isLoadingAccount = false
       
-      const message = error?.data?.message || 'An error occurred during Stripe setup.';
+      const message = error?.data?.message || 'An error occurred during Stripe setup.'
       
       if (message.includes('save the form and try again')) {
-        state.showPreviewMessage = true;
+        state.showPreviewMessage = true
       }
       
-      state.errorMessage = message;
+      state.errorMessage = message
       return { 
         success: false, 
         message: state.errorMessage,
         requiresSave: state.showPreviewMessage
-      };
+      }
     }
   }
 
@@ -132,17 +132,17 @@ export const createStripeElements = () => {
     const isValidStripeInstance = instance && 
       typeof instance === 'object' && 
       typeof instance.confirmCardPayment === 'function' &&
-      typeof instance.createToken === 'function';
+      typeof instance.createToken === 'function'
     
     if (instance && isValidStripeInstance) {
       // Only set if the instance is different to avoid unnecessary updates
       if (state.stripe !== instance) {
-        state.stripe = instance;
-        state.isStripeInstanceReady = true;
+        state.stripe = instance
+        state.isStripeInstanceReady = true
       }
     } else {
-      state.stripe = null;
-      state.isStripeInstanceReady = false;
+      state.stripe = null
+      state.isStripeInstanceReady = false
     }
   }
 
@@ -152,7 +152,7 @@ export const createStripeElements = () => {
    */
   const setElementsInstance = (elementsInstance) => {
     if (elementsInstance) {
-      state.elements = elementsInstance;
+      state.elements = elementsInstance
     }
   }
   
@@ -162,11 +162,11 @@ export const createStripeElements = () => {
    */
   const setCardElement = (cardElement) => {
     if (cardElement) {
-      state.card = cardElement;
-      state.isCardElementReady = true;
+      state.card = cardElement
+      state.isCardElementReady = true
     } else {
-      state.card = null;
-      state.isCardElementReady = false;
+      state.card = null
+      state.isCardElementReady = false
     }
   }
   
@@ -175,8 +175,8 @@ export const createStripeElements = () => {
    * @param {Object} details - The billing details object {name, email}
    */
   const setBillingDetails = ({ name, email }) => {
-    if (name !== undefined) state.cardHolderName = name;
-    if (email !== undefined) state.cardHolderEmail = email;
+    if (name !== undefined) state.cardHolderName = name
+    if (email !== undefined) state.cardHolderEmail = email
   }
 
   /**
@@ -191,7 +191,7 @@ export const createStripeElements = () => {
       return { 
         success: false,
         error: { message: 'Payment system not ready. Please wait a moment and try again.' } 
-      };
+      }
     }
 
     // Check if the stripe instance exists
@@ -199,7 +199,7 @@ export const createStripeElements = () => {
       return {
         success: false,
         error: { message: 'Payment system misconfigured. Please refresh and try again.' }
-      };
+      }
     }
     
     // Additional validation for card
@@ -207,7 +207,7 @@ export const createStripeElements = () => {
       return {
         success: false,
         error: { message: 'Payment system not fully ready. Please refresh and try again.' }
-      };
+      }
     }
     
     // Check if payment is required but card is empty
@@ -215,7 +215,7 @@ export const createStripeElements = () => {
       return { 
         success: false,
         error: { message: 'Complete the payment before you can proceed.' } 
-      };
+      }
     }
     
     // Only validate billing details if payment is required or card has data
@@ -225,7 +225,7 @@ export const createStripeElements = () => {
         return { 
           success: false,
           error: { message: 'Card holder name is required.' } 
-        };
+        }
       }
       
       // Validate billing email
@@ -233,7 +233,7 @@ export const createStripeElements = () => {
         return { 
           success: false,
           error: { message: 'Billing email address is required.' } 
-        };
+        }
       }
       
       // Validate email format
@@ -241,16 +241,16 @@ export const createStripeElements = () => {
         return { 
           success: false,
           error: { message: 'Invalid billing email address.' } 
-        };
+        }
       }
     }
 
     try {
       // Get payment intent from server
-      const responseIntent = await opnFetch('/forms/' + formSlug + '/stripe-connect/payment-intent');
+      const responseIntent = await opnFetch('/forms/' + formSlug + '/stripe-connect/payment-intent')
       
       if (responseIntent?.type === 'success') {
-        const intentSecret = responseIntent?.intent?.secret;
+        const intentSecret = responseIntent?.intent?.secret
         
         // Confirm card payment with Stripe
         const result = await state.stripe.confirmCardPayment(intentSecret, {
@@ -262,28 +262,28 @@ export const createStripeElements = () => {
             },
           },
           receipt_email: state.cardHolderEmail,
-        });
+        })
         
         // Store payment intent ID on success
         if (result?.paymentIntent?.status === 'succeeded') {
-          state.intentId = result.paymentIntent.id;
+          state.intentId = result.paymentIntent.id
         }
         
         return {
           success: result?.paymentIntent?.status === 'succeeded',
           ...result
-        };
+        }
       } else {
         return { 
           success: false,
           error: { message: responseIntent?.message || 'Failed to create payment intent.' } 
-        };
+        }
       }
     } catch (error) {
       // Include more details about the error
-      const errorMessage = error?.message || 'Payment processing failed.';
-      const errorType = error?.type || 'unknown';
-      const errorCode = error?.code || 'unknown';
+      const errorMessage = error?.message || 'Payment processing failed.'
+      const errorType = error?.type || 'unknown'
+      const errorCode = error?.code || 'unknown'
       
       return { 
         success: false,
@@ -292,7 +292,7 @@ export const createStripeElements = () => {
           type: errorType,
           code: errorCode
         } 
-      };
+      }
     }
   }
 

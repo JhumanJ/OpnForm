@@ -48,17 +48,17 @@
       Connect Stripe Account
     </UButton>
     <p class="text-sm text-gray-500 mt-3">
-    <a
-      target="#"
-      class="text-gray-500 cursor-pointer text-sm"
-      @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
-    >
-      <Icon
-        name="heroicons:information-circle-16-solid"
-        class="h-3 w-3 mt-1"
-      />
-      Learn how to accept payments
-    </a>
+      <a
+        target="#"
+        class="text-gray-500 cursor-pointer text-sm"
+        @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
+      >
+        <Icon
+          name="heroicons:information-circle-16-solid"
+          class="h-3 w-3 mt-1"
+        />
+        Learn how to accept payments
+      </a>
     </p>
   </div>
 </template>
