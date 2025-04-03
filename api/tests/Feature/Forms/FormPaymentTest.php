@@ -31,7 +31,7 @@ it('can get stripe account for form', function () {
         ->assertSuccessful()
         ->assertJson(function (AssertableJson $json) {
             return $json->has('stripeAccount')
-                ->where('stripeAccount', fn ($id) => str_starts_with($id, 'acct_'))
+                ->where('stripeAccount', fn($id) => str_starts_with($id, 'acct_'))
                 ->etc();
         });
 });
@@ -50,7 +50,7 @@ it('cannot create payment intent for non-public form', function () {
 it('cannot create payment intent for form without payment block', function () {
     // Remove payment block entirely
     $properties = collect($this->form->properties)
-        ->reject(fn ($block) => $block['type'] === 'payment')
+        ->reject(fn($block) => $block['type'] === 'payment')
         ->values()
         ->all();
 
@@ -59,7 +59,8 @@ it('cannot create payment intent for form without payment block', function () {
     $this->getJson(route('forms.stripe-connect.create-intent', $this->form->slug))
         ->assertStatus(400)
         ->assertJson([
-            'message' => 'Form does not have a payment block.'
+            'type' => 'error',
+            'message' => 'Form does not have a payment block. If you just added a payment block, please save the form and try again.'
         ]);
 });
 

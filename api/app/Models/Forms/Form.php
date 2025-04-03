@@ -109,7 +109,8 @@ class Form extends Model implements CachableAttributes
             'closes_at' => 'datetime',
             'tags' => 'array',
             'removed_properties' => 'array',
-            'seo_meta' => 'object'
+            'seo_meta' => 'object',
+            'auto_save' => 'boolean',
         ];
     }
 
