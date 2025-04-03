@@ -71,6 +71,7 @@ class FormFactory extends Factory
             'tags' => [],
             'editable_submissions_button_text' => 'Edit submission',
             'confetti_on_submission' => false,
+            'auto_save' => false,
             'seo_meta' => [],
         ];
     }

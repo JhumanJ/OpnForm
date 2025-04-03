@@ -101,6 +101,10 @@
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
     },
+    PaymentInput: {
+      cardContainer: 'transition-all duration-200',
+      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-100'
+    },
     CheckboxInput:{
       size: {
         sm: 'w-4 h-4',
@@ -256,7 +260,11 @@
       }
     },
     DateInput: {
-      input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+      input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+    },
+    PaymentInput: {
+      cardContainer: 'transition-all duration-200',
+      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-100'
     },
     CheckboxInput:{
       size: {
@@ -409,6 +417,10 @@
     },
     DateInput: {
       input: 'border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent'
+    },
+    PaymentInput: {
+      cardContainer: 'transition-all duration-200',
+      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-40'
     },
     CheckboxInput:{
       size: {

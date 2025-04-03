@@ -298,7 +298,6 @@ export default {
 
       if (form.busy) return
       this.loading = true
-
       form.post('/forms/' + this.form.slug + '/answer').then((data) => {
         this.submittedData = form.data()
         useAmplitude().logEvent('form_submission', {

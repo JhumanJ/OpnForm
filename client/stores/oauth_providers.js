@@ -14,7 +14,13 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       {
         name: 'google',
         title: 'Google',
-        icon: 'mdi:google',
+        icon: 'cib:google',
+        enabled: true
+      },
+      {
+        name: 'stripe',
+        title: 'Stripe',
+        icon: 'cib:stripe',
         enabled: true
       }
     ]
@@ -36,20 +42,21 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     )
   }
 
-  const connect = (service, redirect = false) => {
+  const connect = (service, redirect = false, newtab = false, autoClose = false) => {
     contentStore.resetState()
     contentStore.startLoading()
 
-    const intention = new URL(window.location.href).pathname
-
+    const intention = redirect ? new URL(window.location.href).pathname : undefined
+    
     opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
-        ...redirect ? { intention } : {},
+        ...(intention && { intention }),
+        autoClose: autoClose 
       }
     })
       .then((data) => {
-        window.location.href = data.url
+        window.open(data.url, (newtab) ? '_blank' : '_self')
       })
       .catch((error) => {
         try {

@@ -1,3 +1,5 @@
+<template></template>
+
 <script setup>
 import { pendingSubmission as pendingSubmissionFun } from "~/composables/forms/pendingSubmission.js"
 

@@ -7,7 +7,8 @@
 // Define common message types as constants
 export const WindowMessageTypes = {
   LOGIN_COMPLETE: 'login-complete',
-  AFTER_LOGIN: 'after-login'
+  AFTER_LOGIN: 'after-login',
+  OAUTH_PROVIDER_CONNECTED: 'oauth-provider-connected'
 }
 
 export const useWindowMessage = (messageType = null) => {
