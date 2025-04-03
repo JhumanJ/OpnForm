@@ -1,9 +1,13 @@
 import { computed, provide, inject, reactive } from 'vue'
+import { useI18n } from '#imports'
 
 // Symbol for injection key
 export const STRIPE_ELEMENTS_KEY = Symbol('stripe-elements')
 
 export const createStripeElements = () => {
+  // Get the translation function
+  const { t } = useI18n()
+
   // Use reactive for the state to ensure changes propagate
   const state = reactive({
     // Loading states
@@ -66,7 +70,7 @@ export const createStripeElements = () => {
   const prepareStripeState = async (formSlug, providerId, isEditorPreview = false) => {
     if (!formSlug || !providerId) {
       resetStripeState()
-      return { success: false, message: 'Missing form slug or provider ID.' }
+      return { success: false, message: t('forms.payment.errors.missingFormOrProvider') }
     }
     
     resetStripeState()
@@ -97,7 +101,7 @@ export const createStripeElements = () => {
           state.showPreviewMessage = true
         }
         
-        state.errorMessage = response?.message || 'Failed to get Stripe account details.'
+        state.errorMessage = response?.message || t('forms.payment.errors.failedAccountDetails')
         return { 
           success: false, 
           message: state.errorMessage,
@@ -108,7 +112,7 @@ export const createStripeElements = () => {
       state.hasAccountLoadingError = true
       state.isLoadingAccount = false
       
-      const message = error?.data?.message || 'An error occurred during Stripe setup.'
+      const message = error?.data?.message || t('forms.payment.errors.setupError')
       
       if (message.includes('save the form and try again')) {
         state.showPreviewMessage = true
@@ -190,7 +194,7 @@ export const createStripeElements = () => {
     if (!isReadyForPayment.value) {
       return { 
         success: false,
-        error: { message: 'Payment system not ready. Please wait a moment and try again.' } 
+        error: { message: t('forms.payment.errors.systemNotReady') } 
       }
     }
 
@@ -198,7 +202,7 @@ export const createStripeElements = () => {
     if (!state.stripe) {
       return {
         success: false,
-        error: { message: 'Payment system misconfigured. Please refresh and try again.' }
+        error: { message: t('forms.payment.errors.misconfigured') }
       }
     }
     
@@ -206,7 +210,7 @@ export const createStripeElements = () => {
     if (!state.card) {
       return {
         success: false,
-        error: { message: 'Payment system not fully ready. Please refresh and try again.' }
+        error: { message: t('forms.payment.errors.notFullyReady') }
       }
     }
     
@@ -214,7 +218,7 @@ export const createStripeElements = () => {
     if (isRequired && state.card._empty) {
       return { 
         success: false,
-        error: { message: 'Complete the payment before you can proceed.' } 
+        error: { message: t('forms.payment.errors.paymentRequired') } 
       }
     }
     
@@ -224,7 +228,7 @@ export const createStripeElements = () => {
       if (!state.cardHolderName) {
         return { 
           success: false,
-          error: { message: 'Card holder name is required.' } 
+          error: { message: t('forms.payment.errors.nameRequired') } 
         }
       }
       
@@ -232,7 +236,7 @@ export const createStripeElements = () => {
       if (!state.cardHolderEmail) {
         return { 
           success: false,
-          error: { message: 'Billing email address is required.' } 
+          error: { message: t('forms.payment.errors.emailRequired') } 
         }
       }
       
@@ -240,7 +244,7 @@ export const createStripeElements = () => {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.cardHolderEmail)) {
         return { 
           success: false,
-          error: { message: 'Invalid billing email address.' } 
+          error: { message: t('forms.payment.errors.invalidEmail') } 
         }
       }
     }
@@ -276,12 +280,12 @@ export const createStripeElements = () => {
       } else {
         return { 
           success: false,
-          error: { message: responseIntent?.message || 'Failed to create payment intent.' } 
+          error: { message: responseIntent?.message || t('forms.payment.errors.failedIntent') } 
         }
       }
     } catch (error) {
       // Include more details about the error
-      const errorMessage = error?.message || 'Payment processing failed.'
+      const errorMessage = error?.message || t('forms.payment.errors.processingFailed')
       const errorType = error?.type || 'unknown'
       const errorCode = error?.code || 'unknown'
       

@@ -44,8 +44,22 @@
             "amount_to_pay": "支付金额",
             "success": "支付成功",
             "name_on_card": "卡上姓名",
-            "billing_email": "账单电子邮件地址",
-            "payment_disclaimer": "点击此按钮将从您的信用卡中扣款。付款通过 Stripe 安全处理。"
+            "billing_email": "账单邮箱地址",
+            "payment_disclaimer": "点击此按钮后，将从您的信用卡中扣款。付款通过 Stripe 安全处理。",
+            "errors": {
+                "missingFormOrProvider": "Missing form slug or provider ID.",
+                "failedAccountDetails": "Failed to get Stripe account details.",
+                "setupError": "An error occurred during Stripe setup.",
+                "systemNotReady": "Payment system not ready. Please wait a moment and try again.",
+                "misconfigured": "Payment system misconfigured. Please refresh and try again.",
+                "notFullyReady": "Payment system not fully ready. Please refresh and try again.",
+                "paymentRequired": "Complete the payment before you can proceed.",
+                "nameRequired": "Card holder name is required.",
+                "emailRequired": "Billing email address is required.",
+                "invalidEmail": "Invalid billing email address.",
+                "failedIntent": "Failed to create payment intent.",
+                "processingFailed": "Payment processing failed."
+            }
         }
     }
 } 

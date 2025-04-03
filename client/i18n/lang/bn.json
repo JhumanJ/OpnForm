@@ -41,11 +41,25 @@
             "clickToOpenCamera": "ক্লিক করুন ক্যামেরা খোলা করতে"
         },
         "payment": {
-            "amount_to_pay": "প্রদেয় পরিমাণ",
+            "amount_to_pay": "পরিশোধের পরিমাণ",
             "success": "পেমেন্ট সফল হয়েছে",
             "name_on_card": "কার্ডে নাম",
-            "billing_email": "বিলিং ইমেল ঠিকানা",
-            "payment_disclaimer": "এই বোতামে ক্লিক করলে আপনার ক্রেডিট কার্ড থেকে চার্জ করা হবে। পেমেন্টগুলি Stripe-এর মাধ্যমে নিরাপদে প্রক্রিয়া করা হয়।"
+            "billing_email": "বিলিং ইমেইল ঠিকানা",
+            "payment_disclaimer": "এই বোতামে ক্লিক করলে আপনার ক্রেডিট কার্ড থেকে চার্জ করা হবে। পেমেন্টগুলি নিরাপদে স্ট্রাইপের মাধ্যমে প্রসেস করা হয়।",
+            "errors": {
+                "missingFormOrProvider": "Missing form slug or provider ID.",
+                "failedAccountDetails": "Failed to get Stripe account details.",
+                "setupError": "An error occurred during Stripe setup.",
+                "systemNotReady": "Payment system not ready. Please wait a moment and try again.",
+                "misconfigured": "Payment system misconfigured. Please refresh and try again.",
+                "notFullyReady": "Payment system not fully ready. Please refresh and try again.",
+                "paymentRequired": "Complete the payment before you can proceed.",
+                "nameRequired": "Card holder name is required.",
+                "emailRequired": "Billing email address is required.",
+                "invalidEmail": "Invalid billing email address.",
+                "failedIntent": "Failed to create payment intent.",
+                "processingFailed": "Payment processing failed."
+            }
         }
     }
 } 
