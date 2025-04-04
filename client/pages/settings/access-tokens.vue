@@ -24,14 +24,14 @@
     </div>
 
     <div class="py-6">
-      <SettingsAccessTokenCard
+      <AccessTokenCard
         v-for="token in tokens"
         :key="token.id"
         :token="token"
       />
     </div>
 
-    <SettingsAccessTokenModal
+    <AccessTokenModal
       :show="accessTokenModal"
       @close="accessTokenModal = false"
     />

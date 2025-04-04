@@ -1,10 +1,12 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
+import { useFeatureFlagsStore } from '~/stores/featureFlags'
 
 export const providersEndpoint = "/open/providers"
 
 export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
+  const featureFlagsStore = useFeatureFlagsStore()
   const alert = useAlert()
 
   const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
@@ -15,7 +17,16 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         name: 'google',
         title: 'Google',
         icon: 'mdi:google',
-        enabled: true
+        enabled: featureFlagsStore.getFlag('services.google.auth', false),
+        auth_type: 'redirect'
+      },
+      {
+        name: 'telegram',
+        title: 'Telegram',
+        icon: 'mdi:telegram',
+        enabled: featureFlagsStore.getFlag('services.telegram.bot_id', false),
+        auth_type: 'widget',
+        widget_file: 'TelegramWidget'
       }
     ]
   })
@@ -37,11 +48,15 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   }
 
   const connect = (service, redirect = false) => {
-    contentStore.resetState()
+    contentStore.resetState()    
+
+    const serviceConfig = getService(service)
+    if (serviceConfig.auth_type !== 'redirect') {
+      return
+    }
+
     contentStore.startLoading()
-
     const intention = new URL(window.location.href).pathname
-
     opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
@@ -49,6 +64,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       }
     })
       .then((data) => {
+        // Redirect flow
         window.location.href = data.url
       })
       .catch((error) => {

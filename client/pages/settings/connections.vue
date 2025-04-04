@@ -23,14 +23,14 @@
     </div>
 
     <div class="py-6">
-      <SettingsProviderCard
+      <ProviderCard
         v-for="provider in providers"
         :key="provider.id"
         :provider="provider"
       />
     </div>
 
-    <SettingsProviderModal
+    <ProviderModal
       :show="providerModal"
       @close="providerModal = false"
     />

@@ -28,6 +28,9 @@ class FeatureFlagsController extends Controller
                         'fonts' => !empty(config('services.google.fonts_api_key')),
                         'auth' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
                     ],
+                    'telegram' => [
+                        'bot_id' => config('services.telegram.bot_id') ?? false
+                    ]
                 ],
                 'integrations' => [
                     'zapier' => config('services.zapier.enabled'),

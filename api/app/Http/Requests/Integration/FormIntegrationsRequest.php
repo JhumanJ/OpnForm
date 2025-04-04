@@ -97,4 +97,17 @@ class FormIntegrationsRequest extends FormRequest
             'oauth_id' => $this->validated('oauth_id'),
         ]);
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'oauth_id.required' => 'Please select a connected account for this integration.',
+            'oauth_id.exists' => 'The selected account is not valid or no longer connected.',
+        ];
+    }
 }
