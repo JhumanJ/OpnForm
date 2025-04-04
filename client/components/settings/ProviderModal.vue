@@ -86,6 +86,11 @@ const showWidgetModal = ref(false)
 const selectedService = ref(null)
 
 function connect(service) {
+  if (!service.enabled) {
+    useAlert().error('This service is not enabled. Please contact support.')
+    return
+  }
+
   if (service.auth_type === 'widget') {
     emit('close')
     selectedService.value = service

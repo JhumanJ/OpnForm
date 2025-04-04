@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Content;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class FeatureFlagsController extends Controller
 {

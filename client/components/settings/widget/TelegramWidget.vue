@@ -1,18 +1,27 @@
 <template>
   <div
     id="widget_login"
-    class="tgme_widget_login medium nouserpic"
+    class="flex flex-col gap-4"
   >
-    <button
-      class="btn tgme_widget_login_button"
-      @click.prevent="handleAuth"
+    <p class="text-sm text-gray-500">
+      <a href="https://telegram.org" target="_blank" class="text-primary-500 hover:underline">Telegram</a> is a secure messaging app that works across all devices and platforms. 
+      Connect your account to receive instant notifications whenever someone submits this form!
+    </p>
+    <div class="flex justify-center">
+      <UButton
+        :disabled="!botId"
+        icon="i-mdi-telegram"
+        @click.prevent="handleAuth"
     >
-      <i class="tgme_widget_login_button_icon" />Log in with Telegram
-    </button>
+        Log in with Telegram
+      </UButton>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { useFeatureFlagsStore } from '~/stores/featureFlags'
+
 defineProps({
   service: {
     type: Object,
@@ -22,7 +31,8 @@ defineProps({
 
 const emit = defineEmits(['auth-data'])
 
-const botId = computed(() => useFeatureFlag('services.telegram.bot_id'))
+const featureFlagsStore = useFeatureFlagsStore()
+const botId = computed(() => featureFlagsStore.getFlag('services.telegram.bot_id'))
 
 const loadTelegramWidget = () => {
   if (!botId.value) return
@@ -34,7 +44,8 @@ const loadTelegramWidget = () => {
 }
 
 const handleAuth = () => {
-  if (window.Telegram.Login) {
+  console.log(parseInt(botId.value))
+  if (window.Telegram?.Login) {
     window.Telegram.Login.auth(
       { bot_id: botId.value, request_access: true },
       (data) => {
@@ -51,33 +62,3 @@ onMounted(() => {
 })
 </script>
 
-<style>
-.tgme_widget_login {
-  margin: 0;
-  padding: 0;
-}
-.tgme_widget_login_button {
-  display: inline-block;
-  padding: 8px 16px;
-  background-color: #54a9eb;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 20px;
-  text-decoration: none;
-}
-.tgme_widget_login_button:hover {
-  background-color: #4a96d1;
-}
-.tgme_widget_login_button_icon {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 8px;
-  width: 20px;
-  height: 20px;
-  background: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTkuNzggMTguNjVsLjI4LTQuMjMgNy42OC02Ljk0Yy4zNC0uMy0uMDctLjQ2LS41Mi0uMTlMMy42NyAxMS4xN2wtMy45NC0xLjJjLS44NS0uMjQtLjg1LS44Mi4xOS0xLjI1bDE1LjM3LTUuOTFjLjcxLS4yNyAxLjM5LjE5IDEuMTIgMS4zN2wtMi42MSAxMi4yOGMtLjE5Ljg5LS43MyAxLjExLTEuNDguNjlsLTQuMDctMy0yLjQ3IDIuNGMtLjI4LjI4LS41Mi41Mi0uOTQuNTJ6IiBmaWxsPSIjZmZmIi8+PC9zdmc+') 0 0 no-repeat;
-  background-size: contain;
-}
-</style>

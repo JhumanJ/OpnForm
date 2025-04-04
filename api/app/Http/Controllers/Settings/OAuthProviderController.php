@@ -81,7 +81,7 @@ class OAuthProviderController extends Controller
                 ],
                 [
                     'access_token' => $userData['access_token'],
-                    'refresh_token' => $userData['refresh_token'],
+                    'refresh_token' => $userData['refresh_token'] ?? '',
                     'name' => $userData['name'],
                     'email' => $userData['email'],
                     'scopes' => $userData['scopes']

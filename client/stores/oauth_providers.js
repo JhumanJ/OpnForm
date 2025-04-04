@@ -1,10 +1,12 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
+import { useFeatureFlagsStore } from '~/stores/featureFlags'
 
 export const providersEndpoint = "/open/providers"
 
 export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
+  const featureFlagsStore = useFeatureFlagsStore()
   const alert = useAlert()
 
   const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
@@ -15,14 +17,14 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         name: 'google',
         title: 'Google',
         icon: 'mdi:google',
-        enabled: true,
+        enabled: featureFlagsStore.getFlag('services.google.auth', false),
         auth_type: 'redirect'
       },
       {
         name: 'telegram',
         title: 'Telegram',
         icon: 'mdi:telegram',
-        enabled: true,
+        enabled: featureFlagsStore.getFlag('services.telegram.bot_id', false),
         auth_type: 'widget',
         widget_file: 'TelegramWidget'
       }

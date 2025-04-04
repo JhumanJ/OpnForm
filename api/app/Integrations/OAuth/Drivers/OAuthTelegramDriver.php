@@ -74,7 +74,6 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
             'provider_user_id' => $data['id'],
             'provider' => 'telegram',
             'access_token' => $data['hash'],
-            'refresh_token' => 'NO NEED',
             'avatar' => $data['photo_url'] ?? null,
             'scopes' => []
         ];
