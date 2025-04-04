@@ -1,7 +1,5 @@
 <?php
 
-
-
 it('can update form submission', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);

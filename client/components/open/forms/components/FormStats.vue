@@ -118,7 +118,12 @@ export default {
             borderColor: "rgba(16, 185, 129, 1)",
             data: [],
           },
-        ],
+        ].concat(this.form.enable_partial_submissions ? [{
+            label: "Partial Submissions",
+            backgroundColor: "rgba(255, 193, 7, 1)",
+            borderColor: "rgba(255, 193, 7, 1)",
+            data: [],
+          }] : []),
       },
       chartOptions: {
         scales: {
@@ -172,6 +177,9 @@ export default {
           this.chartData.labels = Object.keys(statsData.views)
           this.chartData.datasets[0].data = statsData.views
           this.chartData.datasets[1].data = statsData.submissions
+          if (this.form.enable_partial_submissions) {
+            this.chartData.datasets[2].data = statsData.partial_submissions
+          }
           this.isLoading = false
         }
       }).catch((error) => {

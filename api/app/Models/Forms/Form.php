@@ -92,6 +92,7 @@ class Form extends Model implements CachableAttributes
         'show_progress_bar',
         'auto_save',
         'auto_focus',
+        'enable_partial_submissions',
 
         // Security & Privacy
         'can_be_indexed',
@@ -109,7 +110,8 @@ class Form extends Model implements CachableAttributes
             'closes_at' => 'datetime',
             'tags' => 'array',
             'removed_properties' => 'array',
-            'seo_meta' => 'object'
+            'seo_meta' => 'object',
+            'enable_partial_submissions' => 'boolean',
         ];
     }
 
@@ -173,7 +175,7 @@ class Form extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->submissions()->count();
+        return $this->submissions()->where('status', FormSubmission::STATUS_COMPLETED)->count();
     }
 
     public function getViewsCountAttribute()

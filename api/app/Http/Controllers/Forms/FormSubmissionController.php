@@ -36,8 +36,11 @@ class FormSubmissionController extends Controller
     {
         $form = $request->form;
         $this->authorize('update', $form);
-        $job = new StoreFormSubmissionJob($request->form, $request->validated());
-        $job->setSubmissionId($submissionId)->handle();
+
+        $submissionData = $request->validated();
+        $submissionData['submission_id'] = $submissionId;
+        $job = new StoreFormSubmissionJob($request->form, $submissionData);
+        $job->handle();
 
         $data = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
 
