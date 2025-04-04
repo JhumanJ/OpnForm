@@ -5,6 +5,7 @@ namespace App\Integrations\Handlers;
 use App\Models\Forms\Form;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Arr;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -26,7 +27,7 @@ class TelegramIntegration extends AbstractIntegrationHandler
 
     protected function getChatId(): ?string
     {
-        return $this->provider->provider_user_id;
+        return $this->provider?->provider_user_id;
     }
 
     protected function getWebhookUrl(): ?string
@@ -40,12 +41,15 @@ class TelegramIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return !is_null($this->getWebhookUrl()) && $this->formIntegration->oauth_id && $this->form->is_pro && parent::shouldRun();
+        $hasValidProvider = $this->formIntegration->oauth_id && $this->provider;
+        $shouldRun = !is_null($this->getWebhookUrl()) && $hasValidProvider && $this->form->is_pro && parent::shouldRun();
+        return $shouldRun;
     }
 
     protected function getWebhookData(): array
     {
         $settings = (array) $this->integrationData ?? [];
+        $messageParts = [];
 
         $formatter = (new FormSubmissionFormatter($this->form, $this->submissionData))->outputStringsOnly();
         if (Arr::get($settings, 'include_hidden_fields_submission_data', false)) {
@@ -53,46 +57,53 @@ class TelegramIntegration extends AbstractIntegrationHandler
         }
         $formattedData = $formatter->getFieldsWithValue();
 
-        $message = Arr::get($settings, 'message', 'New form submission');
-        $messageText = (new MentionParser($message, $formattedData))->parse();
+        $mentionMessage = Arr::get($settings, 'message', 'New form submission');
+        $parsedMentionMessage = (new MentionParser($mentionMessage, $formattedData))->parse();
+        $messageParts[] = $this->escapeMarkdownV2($parsedMentionMessage);
 
         if (Arr::get($settings, 'include_submission_data', true)) {
-            $messageText .= "\n\n📝 *Submission Details:*\n";
+            $messageParts[] = "\n\n📝 *Submission Details:*";
             foreach ($formattedData as $field) {
-                $tmpVal = is_array($field['value']) ? implode(',', $field['value']) : $field['value'];
-                $messageText .= "*" . ucfirst($field['name']) . "*: " . $tmpVal . "\n";
+                $fieldName = ucfirst($field['name']);
+                $fieldValue = is_array($field['value']) ? implode(', ', $field['value']) : $field['value'];
+                $messageParts[] = "*" . $this->escapeMarkdownV2($fieldName) . "*: " . $this->escapeMarkdownV2($fieldValue ?? '');
             }
         }
 
         if (Arr::get($settings, 'views_submissions_count', true)) {
-            $messageText .= "\n📊 *Form Statistics:*\n";
-            $messageText .= "👀 *Views*: " . (string) $this->form->views_count . "\n";
-            $messageText .= "🖊️ *Submissions*: " . (string) $this->form->submissions_count . "\n";
+            $messageParts[] = "\n📊 *Form Statistics:*";
+            $messageParts[] = "👀 *Views*: " . (string) $this->form->views_count;
+            $messageParts[] = "🖊️ *Submissions*: " . (string) $this->form->submissions_count;
         }
 
-        // Add links section
         $links = [];
         if (Arr::get($settings, 'link_open_form', true)) {
-            $links[] = "[🔗 Open Form](" . $this->form->share_url . ")";
+            $url = $this->escapeMarkdownV2($this->form->share_url);
+            $links[] = "[🔗 Open Form](" . $url . ")";
         }
         if (Arr::get($settings, 'link_edit_form', true)) {
-            $editFormURL = front_url('forms/' . $this->form->slug . '/show');
-            $links[] = "[✍️ Edit Form](" . $editFormURL . ")";
+            $url = $this->escapeMarkdownV2(front_url('forms/' . $this->form->slug . '/show'));
+            $links[] = "[✍️ Edit Form](" . $url . ")";
         }
         if (Arr::get($settings, 'link_edit_submission', true) && $this->form->editable_submissions) {
             $submissionId = Hashids::encode($this->submissionData['submission_id']);
-            $links[] = "[✍️ " . $this->form->editable_submissions_button_text . "](" . $this->form->share_url . "?submission_id=" . $submissionId . ")";
+            $buttonText = $this->escapeMarkdownV2($this->form->editable_submissions_button_text);
+            $url = $this->escapeMarkdownV2($this->form->share_url . "?submission_id=" . $submissionId);
+            $links[] = "[✍️ " . $buttonText . "](" . $url . ")";
         }
-
         if (count($links) > 0) {
-            $messageText .= "\n" . implode(" • ", $links);
+            $messageParts[] = "\n" . implode("\n", $links);
         }
 
-        return [
+        $finalMessageText = implode("\n", $messageParts);
+
+        $payload = [
             'chat_id' => $this->getChatId(),
-            'text' => $this->escapeMarkdownV2($messageText),
+            'text' => $finalMessageText,
             'parse_mode' => 'MarkdownV2'
         ];
+
+        return $payload;
     }
 
     /**
@@ -102,6 +113,57 @@ class TelegramIntegration extends AbstractIntegrationHandler
     protected function escapeMarkdownV2(string $text): string
     {
         $specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+        $text = str_replace('\\', '\\\\', $text);
         return str_replace($specialChars, array_map(fn ($char) => '\\' . $char, $specialChars), $text);
+    }
+
+    public static function isOAuthRequired(): bool
+    {
+        return true;
+    }
+
+    public function handle(): void
+    {
+        if (!$this->shouldRun()) {
+            return;
+        }
+        $url = $this->getWebhookUrl();
+        if (!$url) {
+            logger()->error('TelegramIntegration failed: Missing bot token.', [
+                'form_id' => $this->form?->id,
+                'integration_id' => $this->formIntegration?->id,
+            ]);
+            return;
+        }
+
+        $data = $this->getWebhookData();
+        if (empty($data['chat_id'])) {
+            logger()->error('TelegramIntegration failed: Missing chat_id.', [
+                'form_id' => $this->form?->id,
+                'integration_id' => $this->formIntegration?->id,
+                'provider_id' => $this->provider?->id
+            ]);
+            return;
+        }
+
+        try {
+            $response = Http::post($url, $data);
+
+            if ($response->failed()) {
+                logger()->warning('TelegramIntegration request failed', [
+                    'form_id' => $this->form->id,
+                    'integration_id' => $this->formIntegration->id,
+                    'status' => $response->status(),
+                    'response' => $response->json() ?? $response->body()
+                ]);
+            }
+        } catch (\Exception $e) {
+            logger()->error('TelegramIntegration failed during API call', [
+                'form_id' => $this->form->id,
+                'integration_id' => $this->formIntegration->id,
+                'message' => $e->getMessage(),
+                'exception' => $e
+            ]);
+        }
     }
 }

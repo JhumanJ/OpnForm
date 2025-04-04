@@ -17,7 +17,7 @@
 <script setup>
 import { mentionAsText } from '~/lib/utils.js'
 
-const props = defineProps({
+defineProps({
   integration: {
     type: Object,
     required: true,

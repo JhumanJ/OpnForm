@@ -4,7 +4,11 @@
     class="flex flex-col gap-4"
   >
     <p class="text-sm text-gray-500">
-      <a href="https://telegram.org" target="_blank" class="text-primary-500 hover:underline">Telegram</a> is a secure messaging app that works across all devices and platforms. 
+      <a
+        href="https://telegram.org"
+        target="_blank"
+        class="text-primary-500 hover:underline"
+      >Telegram</a> is a secure messaging app that works across all devices and platforms. 
       Connect your account to receive instant notifications whenever someone submits this form!
     </p>
     <div class="flex justify-center">
@@ -12,7 +16,7 @@
         :disabled="!botId"
         icon="i-mdi-telegram"
         @click.prevent="handleAuth"
-    >
+      >
         Log in with Telegram
       </UButton>
     </div>
@@ -44,10 +48,9 @@ const loadTelegramWidget = () => {
 }
 
 const handleAuth = () => {
-  console.log(parseInt(botId.value))
   if (window.Telegram?.Login) {
     window.Telegram.Login.auth(
-      { bot_id: botId.value, request_access: true },
+      { bot_id: botId.value, request_access: 'write' },
       (data) => {
         emit('auth-data', data)
       }
