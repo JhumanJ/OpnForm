@@ -13,8 +13,7 @@
 </template>
 
 <script setup>
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({
+defineProps({
   service: {
     type: Object,
     required: true
