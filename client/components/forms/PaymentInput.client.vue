@@ -120,6 +120,7 @@
                   :placeholder="$t('forms.payment.name_on_card')"
                   class="w-full"
                   :theme="theme"
+                  :disabled="disabled"
                 />
                 <TextInput
                   v-model="cardHolderEmail"
@@ -127,6 +128,7 @@
                   :placeholder="$t('forms.payment.billing_email')"
                   class="w-full"
                   :theme="theme"
+                  :disabled="disabled"
                 />
               </div>
             </template>
@@ -316,6 +318,7 @@ const currencySymbol = computed(() => {
 const cardOptions = computed(() => ({
   hidePostalCode: true,
   disableLink: true,
+  disabled: props.disabled || false,
   style: {
     base: {
       iconColor: props.color,
