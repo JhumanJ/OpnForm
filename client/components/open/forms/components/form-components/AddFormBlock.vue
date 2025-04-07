@@ -43,7 +43,7 @@
               {{ element.title }}
             </p>
             <Icon
-              v-if="element.auth_required"
+              v-if="element.auth_required && !authenticated"
               name="heroicons:lock-closed"
               class="text-gray-400 w-4 h-4"
             />
@@ -79,7 +79,7 @@
               {{ element.title }}
             </p>
             <Icon
-              v-if="element.auth_required"
+              v-if="element.auth_required && !authenticated"
               name="heroicons:lock-closed"
               class="text-gray-400 w-4 h-4"
             />
@@ -96,6 +96,8 @@ import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
 
 const workingFormStore = useWorkingFormStore()
+const authStore = useAuthStore()
+const authenticated = computed(() => authStore.check)
 
 const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
 const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))
@@ -106,7 +108,7 @@ const closeSidebar = () => {
 
 const addBlock = (type) => {
   const blockType = blocksTypes[type]
-  if (blockType.auth_required) {
+  if (blockType.auth_required && !authenticated.value) {
     useAlert().error('Please login first to add this block')
     return
   }
@@ -114,7 +116,7 @@ const addBlock = (type) => {
 }
 
 const handleInputClone = (item) => {
-  if (item.auth_required) {
+  if (item.auth_required && !authenticated.value) {
     useAlert().error('Please login first to add this block')
     return false
   }
