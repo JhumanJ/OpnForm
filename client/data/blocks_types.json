@@ -219,7 +219,8 @@
     "text_class": "text-green-900",
     "is_input": true,
     "self_hosted": false,
-    "max_count": 1
+    "max_count": 1,
+    "auth_required": true
   },
   "nf-text": {
     "name": "nf-text",

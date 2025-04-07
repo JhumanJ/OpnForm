@@ -195,6 +195,7 @@
     />
 
     <PaymentFieldOptions
+      v-if="field.type === 'payment'"
       :field="field"
     />
 

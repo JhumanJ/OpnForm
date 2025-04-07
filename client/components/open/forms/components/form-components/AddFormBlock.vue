@@ -42,6 +42,11 @@
             >
               {{ element.title }}
             </p>
+            <Icon
+              v-if="element.auth_required"
+              name="heroicons:lock-closed"
+              class="text-gray-400 w-4 h-4"
+            />
           </div>
         </template>
       </draggable>
@@ -73,6 +78,11 @@
             >
               {{ element.title }}
             </p>
+            <Icon
+              v-if="element.auth_required"
+              name="heroicons:lock-closed"
+              class="text-gray-400 w-4 h-4"
+            />
           </div>
         </template>
       </draggable>
@@ -95,10 +105,19 @@ const closeSidebar = () => {
 }
 
 const addBlock = (type) => {
+  const blockType = blocksTypes[type]
+  if (blockType.auth_required) {
+    useAlert().error('Please login first to add this block')
+    return
+  }
   workingFormStore.addBlock(type)
 }
 
 const handleInputClone = (item) => {
+  if (item.auth_required) {
+    useAlert().error('Please login first to add this block')
+    return false
+  }
   return item.name
 }
 
