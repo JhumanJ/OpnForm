@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
             Route::post('/callback/{service}', [OAuthProviderController::class, 'handleRedirect'])->name('callback');
+            Route::post('widget-callback/{service}', [OAuthProviderController::class, 'handleWidgetRedirect'])->name('widget.callback');
             Route::delete('/{provider}', [OAuthProviderController::class, 'destroy'])->name('destroy');
         });
     });

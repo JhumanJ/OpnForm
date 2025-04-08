@@ -18,6 +18,7 @@ abstract class AbstractIntegrationHandler
     protected $form = null;
     protected $submissionData = null;
     protected $integrationData = null;
+    protected $provider = null;
 
     public function __construct(
         protected FormSubmitted $event,
@@ -27,6 +28,7 @@ abstract class AbstractIntegrationHandler
         $this->form = $event->form;
         $this->submissionData = $event->data;
         $this->integrationData = $formIntegration->data;
+        $this->provider = $formIntegration->provider;
     }
 
     protected function getProviderName(): string
