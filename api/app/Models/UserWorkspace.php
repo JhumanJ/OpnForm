@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\EnsureUserHasWorkspace;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserWorkspace extends Model
 {
     use HasFactory;
+    use EnsureUserHasWorkspace;
+
     protected $table = 'user_workspace';
 
     protected $fillable = [
@@ -24,5 +27,14 @@ class UserWorkspace extends Model
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function (UserWorkspace $userWorkspace) {
+            $userWorkspace->ensureUserHasWorkspace($userWorkspace->user);
+        });
     }
 }
