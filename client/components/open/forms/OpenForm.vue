@@ -13,32 +13,11 @@
       ref="form-timer"
       :form="form"
     />
-    <template v-if="form.show_progress_bar">
-      <div
-        v-if="isIframe"
-        class="mb-4 p-2"
-      >
-        <div class="w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden">
-          <div
-            class="h-full transition-all duration-300 rounded-r-full"
-            :class="{ 'w-0': formProgress === 0 }"
-            :style="{ width: formProgress + '%', background: form.color }"
-          />
-        </div>
-      </div>
-      <div
-        v-else
-        class="fixed top-0 left-0 right-0 z-50"
-      >
-        <div class="w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden">
-          <div
-            class="h-full transition-all duration-300"
-            :class="{ 'w-0': formProgress === 0 }"
-            :style="{ width: formProgress + '%', background: form.color }"
-          />
-        </div>
-      </div>
-    </template>
+    <FormProgressbar
+      :form="form"
+      :fields="fields"
+      :form-data="dataFormValue"
+    />
     <transition
       name="fade"
       mode="out-in"
@@ -132,13 +111,14 @@ import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
+import FormProgressbar from './FormProgressbar.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import clonedeep from 'clone-deep'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer},
+  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer, FormProgressbar},
   props: {
     form: {
       type: Object,
@@ -244,15 +224,6 @@ export default {
      */
     isAdminPreview() {
       return this.formModeStrategy.admin.showAdminControls
-    },
-    formProgress() {
-      const requiredFields = this.fields.filter(field => field.required)
-      if (requiredFields.length === 0) {
-        return 100
-      }
-      const completedFields = requiredFields.filter(field => ![null, undefined, ''].includes(this.dataFormValue[field.id]))
-      const progress = (completedFields.length / requiredFields.length) * 100
-      return Math.round(progress)
     },
     currentFields: {
       get() {
