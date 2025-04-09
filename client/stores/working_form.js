@@ -3,6 +3,7 @@ import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
+import { useAuthStore } from '~/stores/auth'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
@@ -233,6 +234,12 @@ export const useWorkingFormStore = defineStore("working_form", {
       const block = blocksTypes[type]
       if (block?.self_hosted !== undefined && !block.self_hosted && useFeatureFlag('self_hosted')) {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
+        return
+      }
+
+      // Check if authentication is required for this block type
+      if (block?.auth_required && !useAuthStore().check) {
+        useAlert().error('Please login first to add this block')
         return
       }
 

@@ -107,19 +107,12 @@ const closeSidebar = () => {
 }
 
 const addBlock = (type) => {
-  const blockType = blocksTypes[type]
-  if (blockType.auth_required && !authenticated.value) {
-    useAlert().error('Please login first to add this block')
-    return
-  }
+  
   workingFormStore.addBlock(type)
 }
 
 const handleInputClone = (item) => {
-  if (item.auth_required && !authenticated.value) {
-    useAlert().error('Please login first to add this block')
-    return false
-  }
+ 
   return item.name
 }
 
