@@ -44,25 +44,25 @@
       </div>
       <template v-else>
         <div
-          v-if="stripeState.isLoadingAccount"
-          class="my-4 flex justify-center"
-        >
-          <Loader class="mx-auto h-6 w-6" />
-        </div>
-        <div
-          v-else-if="stripeState.showPreviewMessage"
+          v-if="shouldShowPreviewMessage"
           class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md"
         >
           <p>Please save the form to activate the payment preview.</p>
         </div>
         <div
-          v-else-if="stripeState.hasAccountLoadingError"
+          v-else-if="stripeState && stripeState.isLoadingAccount"
+          class="my-4 flex justify-center"
+        >
+          <Loader class="mx-auto h-6 w-6" />
+        </div>
+        <div
+          v-else-if="stripeState && stripeState.hasAccountLoadingError"
           class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md"
         >
           <p>{{ stripeState.errorMessage || 'Failed to load payment configuration' }}</p>
         </div>
         <div
-          v-else-if="stripeState.stripeAccountId && isStripeJsLoaded"
+          v-else-if="stripeState && stripeState.stripeAccountId && isStripeJsLoaded && publishableKey"
           class="my-2"
         >
           <div
@@ -158,6 +158,7 @@ import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"
 import { useStripeElements } from '~/composables/useStripeElements'
 import { useAlert } from '~/composables/useAlert'
+import { useFeatureFlag } from '~/composables/useFeatureFlag'
 
 const props = defineProps({
   ...inputProps,
@@ -185,7 +186,9 @@ const {
 const route = useRoute()
 const alert = useAlert()
 
-const publishableKey = useRuntimeConfig().public.STRIPE_PUBLISHABLE_KEY
+const publishableKey = computed(() => {
+  return useFeatureFlag('billing.stripe_publishable_key', '')
+})
 const card = ref(null)
 const stripeElementsRef = ref(null)
 const cardHolderName = ref('')
@@ -200,6 +203,11 @@ const showSuccessState = computed(() => {
   return stripeState?.intentId || (compVal.value && isPaymentIntentId(compVal.value))
 })
 
+// Computed to determine if we should always show preview message in editor
+const shouldShowPreviewMessage = computed(() => {
+  return props.isAdminPreview && (!formSlug.value || !stripeState || !stripeElements)
+})
+
 // Helper function to check if a string looks like a Stripe payment intent ID
 const isPaymentIntentId = (value) => {
   return typeof value === 'string' && value.startsWith('pi_')
@@ -208,17 +216,40 @@ const isPaymentIntentId = (value) => {
 // Initialize Stripe.js if needed
 onMounted(async () => {
   try {
+    // Validate publishable key
+    if (!publishableKey.value || typeof publishableKey.value !== 'string' || publishableKey.value.trim() === '') {
+      if (stripeState) {
+        stripeState.isLoadingAccount = false;
+        stripeState.hasAccountLoadingError = true;
+        stripeState.errorMessage = 'Missing Stripe configuration. Please check your settings.';
+      }
+      return;
+    }
+
     // We'll check if Stripe is already available globally
     if (typeof window !== 'undefined' && !window.Stripe) {
-      await loadStripe(publishableKey)
+      await loadStripe(publishableKey.value)
       isStripeJsLoaded.value = true
     } else {
       isStripeJsLoaded.value = true
     }
 
+    // If stripeElements or stripeState is not available, we need to handle that
+    if (!stripeElements || !stripeState) {
+      console.warn('Stripe elements provider not found or not properly initialized.');
+      return;
+    }
+
     // If compVal already contains a payment intent ID, sync it to stripeState
     if (compVal.value && isPaymentIntentId(compVal.value) && stripeState) {
       stripeState.intentId = compVal.value
+    }
+
+    // For unsaved forms in admin preview, show the preview message
+    if (props.isAdminPreview && !formSlug.value && stripeState) {
+      stripeState.isLoadingAccount = false
+      stripeState.showPreviewMessage = true
+      return
     }
 
     // Fetch account but don't manually create Stripe instance
@@ -229,6 +260,10 @@ onMounted(async () => {
       if (!result.success && result.message && !result.requiresSave) {
         alert.error(result.message)
       }
+    } else if (props.isAdminPreview && stripeState) {
+      // If we're in admin preview and any required parameter is missing, show preview message
+      stripeState.isLoadingAccount = false
+      stripeState.showPreviewMessage = true
     }
   } catch (error) {
     alert.error('Failed to initialize Stripe. Please refresh and try again.')
@@ -315,29 +350,36 @@ const currencySymbol = computed(() => {
   return stripeCurrencies.find(item => item.code === props.currency)?.symbol
 })
 
-const cardOptions = computed(() => ({
-  hidePostalCode: true,
-  disableLink: true,
-  disabled: props.disabled || false,
-  style: {
-    base: {
-      iconColor: props.color,
-      color: props.isDark ? '#D1D5DB' : '#374151',
-      fontSmoothing: 'antialiased',
-      fontSize: '16px',
-      '::placeholder': {
-        color: props.isDark ? '#6B7280' : '#9CA3AF'
+const cardOptions = computed(() => {
+  // Extract placeholder color from theme
+  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF';
+  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0';
+  
+  return {
+    hidePostalCode: true,
+    disableLink: true,
+    disabled: props.disabled || false,
+    style: {
+      base: {
+        iconColor: props.color,
+        color: props.isDark ? '#D1D5DB' : '#374151',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: props.isDark ? darkPlaceholderColor : lightPlaceholderColor
+        }
+      },
+      invalid: {
+        iconColor: '#df1b41',
+        color: '#df1b41'
       }
-    },
-    invalid: {
-      iconColor: '#df1b41',
-      color: '#df1b41'
     }
-  }
-}))
+  };
+})
 
 const formSlug = computed(() => {
-  if (route.name && route.name.startsWith("forms-slug")) {
+  // Return the slug from route params regardless of route name
+  if (route.params && route.params.slug) {
     return route.params.slug
   }
   return null
