@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\Integration\FormIntegration;
 use App\Models\OAuthProvider;
 use App\Models\User;
@@ -62,6 +63,20 @@ class OAuthProviderPolicy
         if ($integrations->count() > 0) {
             return $this->denyWithStatus(400, 'This connection cannot be removed because there is already an integration using it.');
         }
+
+        if ($provider->provider->value === OAuthProviderService::Stripe->value) {
+            $formsUsingStripe = $user->forms()
+                ->get()
+                ->filter(function ($form) use ($provider) {
+                    return collect($form->properties)
+                        ->some(fn ($prop) => ($prop['stripe_account_id'] ?? null) === $provider->id);
+                })
+                ->isNotEmpty();
+            if ($formsUsingStripe) {
+                return $this->denyWithStatus(400, 'This Stripe connection cannot be removed because it is being used in a form payment field.');
+            }
+        }
+
         return $provider->user()->is($user);
     }
 

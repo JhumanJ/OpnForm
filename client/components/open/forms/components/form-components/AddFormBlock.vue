@@ -42,6 +42,11 @@
             >
               {{ element.title }}
             </p>
+            <Icon
+              v-if="element.auth_required && !authenticated"
+              name="heroicons:lock-closed"
+              class="text-gray-400 w-4 h-4"
+            />
           </div>
         </template>
       </draggable>
@@ -73,6 +78,11 @@
             >
               {{ element.title }}
             </p>
+            <Icon
+              v-if="element.auth_required && !authenticated"
+              name="heroicons:lock-closed"
+              class="text-gray-400 w-4 h-4"
+            />
           </div>
         </template>
       </draggable>
@@ -86,6 +96,8 @@ import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
 
 const workingFormStore = useWorkingFormStore()
+const authStore = useAuthStore()
+const authenticated = computed(() => authStore.check)
 
 const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
 const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))
@@ -95,10 +107,12 @@ const closeSidebar = () => {
 }
 
 const addBlock = (type) => {
+  
   workingFormStore.addBlock(type)
 }
 
 const handleInputClone = (item) => {
+ 
   return item.name
 }
 
