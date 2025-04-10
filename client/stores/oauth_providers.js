@@ -24,7 +24,8 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         name: 'stripe',
         title: 'Stripe',
         icon: 'cib:stripe',
-        enabled: true
+        enabled: featureFlagsStore.getFlag('billing.stripe_publishable_key', false),
+        auth_type: 'redirect'
       },
       {
         name: 'telegram',
@@ -57,7 +58,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     contentStore.resetState()    
 
     const serviceConfig = getService(service)
-    if (serviceConfig && serviceConfig.auth_type !== 'redirect') {
+    if (serviceConfig && serviceConfig.auth_type && serviceConfig.auth_type !== 'redirect') {
       return
     }
 
