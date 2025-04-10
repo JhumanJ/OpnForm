@@ -106,6 +106,11 @@ export default defineNuxtConfig({
           pathPrefix: false,
           global: true,
       },
+      {
+          path: '~/components/settings',
+          pathPrefix: false,
+          global: true,
+      },
       '~/components',
   ],
 

@@ -219,11 +219,11 @@ onMounted(async () => {
     // Validate publishable key
     if (!publishableKey.value || typeof publishableKey.value !== 'string' || publishableKey.value.trim() === '') {
       if (stripeState) {
-        stripeState.isLoadingAccount = false;
-        stripeState.hasAccountLoadingError = true;
-        stripeState.errorMessage = 'Missing Stripe configuration. Please check your settings.';
+        stripeState.isLoadingAccount = false
+        stripeState.hasAccountLoadingError = true
+        stripeState.errorMessage = 'Missing Stripe configuration. Please check your settings.'
       }
-      return;
+      return
     }
 
     // We'll check if Stripe is already available globally
@@ -236,8 +236,8 @@ onMounted(async () => {
 
     // If stripeElements or stripeState is not available, we need to handle that
     if (!stripeElements || !stripeState) {
-      console.warn('Stripe elements provider not found or not properly initialized.');
-      return;
+      console.warn('Stripe elements provider not found or not properly initialized.')
+      return
     }
 
     // If compVal already contains a payment intent ID, sync it to stripeState
@@ -352,8 +352,8 @@ const currencySymbol = computed(() => {
 
 const cardOptions = computed(() => {
   // Extract placeholder color from theme
-  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF';
-  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0';
+  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF'
+  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0'
   
   return {
     hidePostalCode: true,
@@ -374,7 +374,7 @@ const cardOptions = computed(() => {
         color: '#df1b41'
       }
     }
-  };
+  }
 })
 
 const formSlug = computed(() => {

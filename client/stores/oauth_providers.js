@@ -1,10 +1,12 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
+import { useFeatureFlagsStore } from '~/stores/featureFlags'
 
 export const providersEndpoint = "/open/providers"
 
 export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   const contentStore = useContentStore()
+  const featureFlagsStore = useFeatureFlagsStore()
   const alert = useAlert()
 
   const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
@@ -14,14 +16,23 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       {
         name: 'google',
         title: 'Google',
-        icon: 'cib:google',
-        enabled: true
+        icon: 'mdi:google',
+        enabled: featureFlagsStore.getFlag('services.google.auth', false),
+        auth_type: 'redirect'
       },
       {
         name: 'stripe',
         title: 'Stripe',
         icon: 'cib:stripe',
         enabled: true
+      },
+      {
+        name: 'telegram',
+        title: 'Telegram',
+        icon: 'mdi:telegram',
+        enabled: featureFlagsStore.getFlag('services.telegram.bot_id', false),
+        auth_type: 'widget',
+        widget_file: 'TelegramWidget'
       }
     ]
   })
@@ -43,9 +54,14 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
   }
 
   const connect = (service, redirect = false, newtab = false, autoClose = false) => {
-    contentStore.resetState()
-    contentStore.startLoading()
+    contentStore.resetState()    
 
+    const serviceConfig = getService(service)
+    if (serviceConfig && serviceConfig.auth_type !== 'redirect') {
+      return
+    }
+
+    contentStore.startLoading()
     const intention = redirect ? new URL(window.location.href).pathname : undefined
     
     opnFetch(`/settings/providers/connect/${service}`, {
@@ -56,7 +72,11 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       }
     })
       .then((data) => {
-        window.open(data.url, (newtab) ? '_blank' : '_self')
+        if (newtab) {
+          window.open(data.url, '_blank')
+        } else {
+          window.location.href = data.url
+        }
       })
       .catch((error) => {
         try {

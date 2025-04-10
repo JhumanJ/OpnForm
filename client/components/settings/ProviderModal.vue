@@ -61,6 +61,14 @@
       </div>
     </div>
   </modal>
+
+  <!-- Add widget modal -->
+  <ProviderWidgetModal
+    v-if="showWidgetModal"
+    :show="showWidgetModal"
+    :service="selectedService"
+    @close="showWidgetModal = false"
+  />
 </template>
 
 <script setup>
@@ -72,11 +80,24 @@ const emit = defineEmits(['close'])
 
 const providersStore = useOAuthProvidersStore()
 const services = computed(() => providersStore.services)
-
 const loading = ref(false)
+const showWidgetModal = ref(false)
+const selectedService = ref(null)
 
 function connect(service) {
-  loading.value = true
-  providersStore.connect(service.name)
+  if (!service.enabled) {
+    useAlert().error('This service is not enabled. Please contact support.')
+    return
+  }
+
+  if (service.auth_type === 'widget') {
+    emit('close')
+    selectedService.value = service
+    showWidgetModal.value = true
+  } else {
+    // Use existing redirect flow
+    loading.value = true
+    providersStore.connect(service.name)
+  }
 }
 </script>
