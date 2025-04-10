@@ -85,7 +85,7 @@ return [
 
     'stripe' => [
         'client_id' => env('STRIPE_CLIENT_ID'),
-        'client_secret' => env('STRIPE_CLIENT_SECRET'),
-        'redirect' => env('STRIPE_REDIRECT_URI'),
+        'client_secret' => env('STRIPE_CLIENT_SECRET', env('STRIPE_SECRET')),
+        'redirect' => env('STRIPE_REDIRECT_URI', front_url('/settings/connections/callback/stripe')),
     ]
 ];
