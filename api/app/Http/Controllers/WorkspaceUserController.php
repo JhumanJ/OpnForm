@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\Billing\WorkspaceUsersUpdated;
 use App\Models\UserInvite;
+use App\Traits\EnsureUserHasWorkspace;
 use Illuminate\Http\Request;
 use App\Models\Workspace;
 use App\Models\User;
@@ -11,6 +12,8 @@ use App\Service\WorkspaceHelper;
 
 class WorkspaceUserController extends Controller
 {
+    use EnsureUserHasWorkspace;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -106,7 +109,9 @@ class WorkspaceUserController extends Controller
         $workspace = Workspace::findOrFail($workspaceId);
         $this->authorize('adminAction', $workspace);
 
+        $user = User::findOrFail($userId);
         $workspace->users()->detach($userId);
+        $this->ensureUserHasWorkspace($user);
         WorkspaceUsersUpdated::dispatch($workspace);
 
         return $this->success([
@@ -119,7 +124,9 @@ class WorkspaceUserController extends Controller
         $workspace = Workspace::findOrFail($workspaceId);
         $this->authorize('view', $workspace);
 
-        $workspace->users()->detach($request->user()->id);
+        $user = $request->user();
+        $workspace->users()->detach($user->id);
+        $this->ensureUserHasWorkspace($user);
 
         return $this->success([
             'message' => 'You have left the workspace successfully.'
