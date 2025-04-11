@@ -57,16 +57,21 @@
     </transition>
 
     <!-- Captcha -->
-    <div class="mb-3 px-2 mt-4 mx-auto w-max">
-      <CaptchaInput
-        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
-        ref="captcha"
-        :provider="form.captcha_provider"
-        :form="dataForm"
-        :language="form.language"
-        :dark-mode="darkMode"
-      />
-    </div>
+    
+    <ClientOnly>
+      <div v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable" class="mb-3 px-2 mt-4 mx-auto w-max">
+        <CaptchaInput
+          ref="captcha"
+          :provider="form.captcha_provider"
+          :form="dataForm"
+          :language="form.language"
+          :dark-mode="darkMode"
+        />
+      </div>
+      <template #fallback>
+          <USkeleton class="h-[78px] w-[304px]" />
+        </template>
+    </ClientOnly>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
