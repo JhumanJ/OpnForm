@@ -191,13 +191,13 @@ import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
-import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { FormInitializationService } from '~/services/form/services/FormInitializationService'
 import { FormPaymentService } from '~/services/form/services/FormPaymentService'
 import { FormValidationService } from '~/services/form/services/FormValidationService'
+import { FormSubmissionService } from '~/services/form/services/FormSubmissionService'
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
@@ -224,25 +224,35 @@ export default {
     const route = useRoute()
     const stripeElements = provideStripeElements()
     const dataForm = ref(useForm())
+    const confetti = useConfetti()
+    const isIframe = useIsIframe()
     
     // Initialize FormPaymentService
     const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
 
     // Initialize FormValidationService
     const formValidation = computed(() => new FormValidationService(props.form, dataForm.value))
+
+    // Initialize FormSubmissionService
+    const formSubmission = computed(() => new FormSubmissionService(props.form, dataForm.value, {
+      isIframe: isIframe,
+      pendingSubmission: pendingSubmission(props.form),
+      confetti: confetti
+    }))
     
     return {
       setLocale,
       authStore,
       route,
       authenticated: computed(() => authStore.check),
-      isIframe: useIsIframe(),
+      isIframe,
       pendingSubmission: pendingSubmission(props.form),
-      confetti: useConfetti(),
+      confetti,
       dataForm,
       stripeElements,
       formPayment,
-      formValidation
+      formValidation,
+      formSubmission
     }
   },
 
@@ -329,7 +339,7 @@ export default {
       this.formPayment.reset()
     },
 
-    submitForm(form, onFailure) {
+    async submitForm(form, onFailure) {
       // Check if we should perform actual submission based on the mode
       if (!this.formModeStrategy.validation.performActualSubmission) {
         this.submitted = true
@@ -337,60 +347,31 @@ export default {
         return
       }
 
-      if (form.busy) return
       this.loading = true
-      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
+      const result = await this.formSubmission.submit()
+      
+      if (result.success) {
+        const data = result.data
         this.submittedData = form.data()
-        useAmplitude().logEvent('form_submission', {
-          workspace_id: this.form.workspace_id,
-          form_id: this.form.id
-        })
-
-        const payload = clonedeep({
-          type: 'form-submitted',
-          form: {
-            slug: this.form.slug,
-            id: this.form.id,
-            redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
-          },
-          submission_data: form.data(),
-          completion_time: form['completion_time']
-        })
-
-        if (this.isIframe) {
-          window.parent.postMessage(payload, '*')
-        }
-        window.postMessage(payload, '*')
-        this.pendingSubmission.remove()
-        this.pendingSubmission.removeTimer()
-
-        if (data.redirect && data.redirect_url) {
-          window.location.href = data.redirect_url
-        }
-
+        
         if (data.submission_id) {
           this.submissionId = data.submission_id
         }
+        
         if (this.isFormOwner && !this.isIframe && data?.is_first_submission) {
           this.showFirstSubmissionModal = true
         }
+        
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)
 
         // Reset payment service after successful submission
         this.formPayment.reset()
-
-        // If enabled display confetti
-        if (this.form.confetti_on_submission) {
-          this.confetti.play()
-        }
-      }).catch((error) => {
-        console.error(error)
-        this.formValidation.handleValidationError(error)
+      } else {
         this.loading = false
         onFailure()
-      })
+      }
     },
     restart () {
       this.submitted = false
