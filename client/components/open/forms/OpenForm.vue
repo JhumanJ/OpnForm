@@ -134,6 +134,7 @@ import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { FormStructureService } from '~/services/form/services/FormStructureService'
 import { FormInitializationService } from '~/services/form/services/FormInitializationService'
+import { FormPaymentService } from '~/services/form/services/FormPaymentService'
 
 export default {
   name: 'OpenForm',
@@ -184,6 +185,9 @@ export default {
     
     // Initialize FormStructureService
     const formStructure = new FormStructureService(props.form)
+    
+    // Initialize FormPaymentService
+    const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
 
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
@@ -204,7 +208,8 @@ export default {
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
       hasCaptchaProviders,
-      formStructure
+      formStructure,
+      formPayment
     }
   },
 
@@ -456,8 +461,7 @@ export default {
     async initForm() {
       const formInitService = new FormInitializationService(this.form, this.dataForm, {
         formPageIndex: this.formPageIndex,
-        isInitialLoad: this.isInitialLoad,
-        stripeElements: this.stripeElements
+        isInitialLoad: this.isInitialLoad
       })
       
       const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
@@ -587,18 +591,16 @@ export default {
       }
 
       try {
-        // Create service instance for validation and payment
-        const formInitService = new FormInitializationService(this.form, this.dataForm, {
-          stripeElements: this.stripeElements
-        })
+        // Create service instance for validation
+        const formInitService = new FormInitializationService(this.form, this.dataForm)
 
         // Validate current page
         if (!await formInitService.validateCurrentPage(this.currentFields, this.isLastPage, this.formModeStrategy)) {
           return false
         }
 
-        // Process payment if needed
-        if (!await formInitService.handlePayment(this.paymentBlock)) {
+        // Process payment if needed using FormPaymentService
+        if (!await this.formPayment.processPayment(this.paymentBlock)) {
           return false
         }
 

@@ -196,6 +196,7 @@ import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { FormInitializationService } from '~/services/form/services/FormInitializationService'
+import { FormPaymentService } from '~/services/form/services/FormPaymentService'
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
@@ -220,6 +221,11 @@ export default {
     const { setLocale } = useI18n()
     const authStore = useAuthStore()
     const route = useRoute()
+    const stripeElements = provideStripeElements()
+    const dataForm = ref(useForm())
+    
+    // Initialize FormPaymentService
+    const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
     
     return {
       setLocale,
@@ -228,7 +234,10 @@ export default {
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
-      confetti: useConfetti()
+      confetti: useConfetti(),
+      dataForm,
+      stripeElements,
+      formPayment
     }
   },
 
@@ -242,8 +251,7 @@ export default {
       hidePasswordDisabledMsg: false,
       submissionId: false,
       submittedData: null,
-      showFirstSubmissionModal: false,
-      dataForm: useForm()
+      showFirstSubmissionModal: false
     }
   },
 
@@ -311,6 +319,9 @@ export default {
         submissionId: this.route.query?.submission_id,
         urlParams
       })
+
+      // Reset payment service
+      this.formPayment.reset()
     },
 
     submitForm (form, onFailure) {
@@ -361,6 +372,9 @@ export default {
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)
+
+        // Reset payment service after successful submission
+        this.formPayment.reset()
 
         // If enabled display confetti
         if (this.form.confetti_on_submission) {

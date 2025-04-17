@@ -7,7 +7,6 @@ export class FormInitializationService {
       this.isPublicFormPage = this.checkIfPublicFormPage()
       this.formPageIndex = options.formPageIndex
       this.isInitialLoad = options.isInitialLoad
-      this.stripeElements = options.stripeElements
     }
   
     async initialize(options = {}) {
@@ -148,112 +147,6 @@ export class FormInitializationService {
     checkIfPublicFormPage() {
       if (import.meta.server) return false
       return window.location.pathname.startsWith('/forms/')
-    }
-
-    /**
-     * Payment handling
-     */
-    async handlePayment(paymentBlock) {
-      if (!this.stripeElements) return true
-      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
-      
-      // Check if there's a payment block in the current step
-      if (!paymentBlock) {
-        return true // No payment needed for this step
-      }
-      
-      // Skip if payment is already processed in the stripe state
-      if (stripeState.intentId) {
-        return true
-      }
-      
-      // Skip if payment ID already exists in the form data
-      const paymentFieldValue = this.formData.data()[paymentBlock.id]
-      if (paymentFieldValue && typeof paymentFieldValue === 'string' && paymentFieldValue.startsWith('pi_')) {
-        // If we have a valid payment intent ID in the form data, sync it to the stripe state
-        stripeState.intentId = paymentFieldValue
-        return true
-      }
-      
-      // Check for the stripe object itself, not just the ready flag
-      if (stripeState.isStripeInstanceReady && !stripeState.stripe) {
-        stripeState.isStripeInstanceReady = false
-      }
-      
-      // Only process payment if required or card has data
-      const shouldProcessPayment = paymentBlock.required || isCardPopulated.value
-      
-      if (shouldProcessPayment) {
-        // If not ready yet, try a brief wait
-        if (!isReadyForPayment.value) {
-          try {
-            this.formData.busy = true
-            
-            // Just wait a second to see if state updates (it should be reactive now)
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            
-            // Check if we're ready now
-            if (!isReadyForPayment.value) {
-              // Provide detailed diagnostics
-              let errorMsg = 'Payment system not ready. '
-              const details = []
-              
-              if (!stripeState.stripeAccountId) {
-                details.push('No Stripe account connected')
-              }
-              
-              if (!stripeState.isStripeInstanceReady) {
-                details.push('Stripe.js not initialized')
-              }
-              
-              if (!stripeState.isCardElementReady) {
-                details.push('Card element not initialized')
-              }
-              
-              errorMsg += details.join(', ') + '. Please refresh and try again.'
-              useAlert().error(errorMsg)
-              return false
-            }
-          } catch (error) {
-            return false
-          } finally {
-            this.formData.busy = false
-          }
-        }
-        
-        try {
-          this.formData.busy = true
-          const result = await processPayment(this.form.slug, paymentBlock.required)
-          
-          if (!result.success) {
-            // Handle payment error
-            if (result.error?.message) {
-              this.formData.errors.set(paymentBlock.id, result.error.message)
-              useAlert().error(result.error.message)
-            } else {
-              useAlert().error('Payment processing failed. Please try again.')
-            }
-            return false
-          }
-          
-          // Payment successful
-          if (result.paymentIntent?.status === 'succeeded') {
-            useAlert().success('Thank you! Your payment is successful.')
-            return true
-          }
-          
-          // Fallback error
-          useAlert().error('Something went wrong with the payment. Please try again.')
-          return false
-        } catch (error) {
-          useAlert().error(error?.message || 'Payment failed')
-          return false
-        } finally {
-          this.formData.busy = false
-        }
-      }
-      
-      return true // Payment not required or no card data
     }
 
     /**
