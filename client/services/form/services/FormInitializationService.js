@@ -148,35 +148,5 @@ export class FormInitializationService {
       if (import.meta.server) return false
       return window.location.pathname.startsWith('/forms/')
     }
-
-    /**
-     * Page validation
-     */
-    async validateCurrentPage(currentFields, isLastPage, formModeStrategy) {
-      if (!formModeStrategy.validation.validateOnNextPage) {
-        return true
-      }
-
-      try {
-        this.formData.busy = true
-        const fieldsToValidate = currentFields
-          .filter(f => f.type !== 'payment')
-          .map(f => f.id)
-
-        // Validate non-payment fields first
-        if (fieldsToValidate.length > 0) {
-          await this.formData.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
-        }
-
-        return true
-      } catch (error) {
-        if (error?.data?.errors) {
-          useAlert().formValidationError(error.data)
-        }
-        return false
-      } finally {
-        this.formData.busy = false
-      }
-    }
 }
   

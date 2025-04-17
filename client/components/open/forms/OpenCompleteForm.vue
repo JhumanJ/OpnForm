@@ -197,6 +197,7 @@ import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmis
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { FormInitializationService } from '~/services/form/services/FormInitializationService'
 import { FormPaymentService } from '~/services/form/services/FormPaymentService'
+import { FormValidationService } from '~/services/form/services/FormValidationService'
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
@@ -226,6 +227,9 @@ export default {
     
     // Initialize FormPaymentService
     const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
+
+    // Initialize FormValidationService
+    const formValidation = computed(() => new FormValidationService(props.form, dataForm.value))
     
     return {
       setLocale,
@@ -237,7 +241,8 @@ export default {
       confetti: useConfetti(),
       dataForm,
       stripeElements,
-      formPayment
+      formPayment,
+      formValidation
     }
   },
 
@@ -324,7 +329,7 @@ export default {
       this.formPayment.reset()
     },
 
-    submitForm (form, onFailure) {
+    submitForm(form, onFailure) {
       // Check if we should perform actual submission based on the mode
       if (!this.formModeStrategy.validation.performActualSubmission) {
         this.submitted = true
@@ -382,9 +387,7 @@ export default {
         }
       }).catch((error) => {
         console.error(error)
-        if (error.response && error.data) {
-          useAlert().formValidationError(error.data)
-        }
+        this.formValidation.handleValidationError(error)
         this.loading = false
         onFailure()
       })

@@ -135,6 +135,7 @@ import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.j
 import { FormStructureService } from '~/services/form/services/FormStructureService'
 import { FormInitializationService } from '~/services/form/services/FormInitializationService'
 import { FormPaymentService } from '~/services/form/services/FormPaymentService'
+import { FormValidationService } from '~/services/form/services/FormValidationService'
 
 export default {
   name: 'OpenForm',
@@ -189,6 +190,9 @@ export default {
     // Initialize FormPaymentService
     const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
 
+    // Initialize FormValidationService
+    const formValidation = computed(() => new FormValidationService(props.form, dataForm.value))
+
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
     })
@@ -209,7 +213,8 @@ export default {
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
       hasCaptchaProviders,
       formStructure,
-      formPayment
+      formPayment,
+      formValidation
     }
   },
 
@@ -411,18 +416,28 @@ export default {
         this.$refs['form-timer']?.stopTimer()
         this.dataForm.completion_time = this.$refs['form-timer']?.completionTime
 
-        // Add validation strategy check
+        // Skip validation if not required by mode strategy
         if (!this.formModeStrategy.validation.validateOnSubmit) {
-          this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+          this.emitSubmit()
           return
         }
 
-        this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+        this.emitSubmit()
       } catch (error) {
-        this.handleValidationError(error)
+        this.formValidation.handleValidationError(error)
         this.dataForm.busy = false
       }
     },
+
+    emitSubmit() {
+      const onFailure = () => this.formValidation.onSubmissionFailure(
+        this.fieldGroups,
+        (index) => this.formPageIndex = index,
+        this.$refs['form-timer']
+      )
+      this.$emit('submit', this.dataForm, onFailure)
+    },
+
     /**
      *   Handle form submission failure
      */
@@ -478,11 +493,7 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     handleValidationError(error) {
-      console.error(error)
-      if (error?.data) {
-        useAlert().formValidationError(error.data)
-      }
-      this.dataForm.busy = false
+      this.formValidation.handleValidationError(error)
     },
     isFieldHidden(field) {
       return this.formStructure.isFieldHidden(field, this.dataFormValue)
@@ -591,11 +602,8 @@ export default {
       }
 
       try {
-        // Create service instance for validation
-        const formInitService = new FormInitializationService(this.form, this.dataForm)
-
         // Validate current page
-        if (!await formInitService.validateCurrentPage(this.currentFields, this.isLastPage, this.formModeStrategy)) {
+        if (!await this.formValidation.validateCurrentPage(this.currentFields, this.formModeStrategy)) {
           return false
         }
 
@@ -612,7 +620,7 @@ export default {
 
         return true
       } catch (error) {
-        this.handleValidationError(error)
+        this.formValidation.handleValidationError(error)
         return false
       }
     },
