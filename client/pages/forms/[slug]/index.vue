@@ -143,10 +143,6 @@ const loadForm = async (setup=false) => {
 
 await loadForm(true)
 
-// Start loader if record needs to be loaded
-if (useRoute().query?.submission_id) {
-  recordsStore.startLoading()
-}
 
 onMounted(() => {
   crisp.hideChat()

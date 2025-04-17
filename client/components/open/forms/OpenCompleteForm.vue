@@ -195,6 +195,7 @@ import clonedeep from "clone-deep"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import { FormInitializationService } from '~/services/form/services/FormInitializationService'
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
@@ -218,10 +219,12 @@ export default {
   setup(props) {
     const { setLocale } = useI18n()
     const authStore = useAuthStore()
+    const route = useRoute()
     
     return {
       setLocale,
       authStore,
+      route,
       authenticated: computed(() => authStore.check),
       isIframe: useIsIframe(),
       pendingSubmission: pendingSubmission(props.form),
@@ -239,7 +242,8 @@ export default {
       hidePasswordDisabledMsg: false,
       submissionId: false,
       submittedData: null,
-      showFirstSubmissionModal: false
+      showFirstSubmissionModal: false,
+      dataForm: useForm()
     }
   },
 
@@ -281,6 +285,14 @@ export default {
         }
       },
       immediate: true
+    },
+    form: {
+      handler() {
+        if (this.form) {
+          this.initializeForm()
+        }
+      },
+      immediate: true
     }
   },
   beforeUnmount() {
@@ -288,6 +300,19 @@ export default {
   },
 
   methods: {
+    async initializeForm() {
+      const formInitService = new FormInitializationService(this.form, this.dataForm)
+      
+      // Get URL parameters if we're on the client side
+      const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
+      
+      // Initialize with options
+      await formInitService.initialize({
+        submissionId: this.route.query?.submission_id,
+        urlParams
+      })
+    },
+
     submitForm (form, onFailure) {
       // Check if we should perform actual submission based on the mode
       if (!this.formModeStrategy.validation.performActualSubmission) {

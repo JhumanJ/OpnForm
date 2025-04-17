@@ -59,7 +59,10 @@
     <!-- Captcha -->
     
     <ClientOnly>
-      <div v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable" class="mb-3 px-2 mt-4 mx-auto w-max">
+      <div
+        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
+        class="mb-3 px-2 mt-4 mx-auto w-max"
+      >
         <CaptchaInput
           ref="captcha"
           :provider="form.captcha_provider"
@@ -69,8 +72,8 @@
         />
       </div>
       <template #fallback>
-          <USkeleton class="h-[78px] w-[304px]" />
-        </template>
+        <USkeleton class="h-[78px] w-[304px]" />
+      </template>
     </ClientOnly>
 
     <!--  Submit, Next and previous buttons  -->
@@ -124,14 +127,13 @@ import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
 import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
-import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
-import clonedeep from 'clone-deep'
-import { provideStripeElements } from '~/composables/useStripeElements'
+import { FormStructureService } from '~/services/form/services/FormStructureService'
+import { FormInitializationService } from '~/services/form/services/FormInitializationService'
 
 export default {
   name: 'OpenForm',
@@ -175,10 +177,14 @@ export default {
     const workingFormStore = useWorkingFormStore()
     const dataForm = ref(useForm())
     const config = useRuntimeConfig()
+    const route = useRoute()
 
     // Provide Stripe elements to be used by child components
     const stripeElements = provideStripeElements()
     
+    // Initialize FormStructureService
+    const formStructure = new FormStructureService(props.form)
+
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
     })
@@ -192,11 +198,13 @@ export default {
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: import.meta.client ? pendingSubmission(props.form) : { get: () => ({}), set: () => {} },
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
+      route,
 
       // Used for admin previews
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
-      hasCaptchaProviders
+      hasCaptchaProviders,
+      formStructure
     }
   },
 
@@ -214,19 +222,7 @@ export default {
      * Create field groups (or Page) using page breaks if any
      */
     fieldGroups() {
-      if (!this.fields) return []
-      const groups = []
-      let currentGroup = []
-      this.fields.forEach((field) => {
-        if (field.type === 'nf-page-break' && this.isFieldHidden(field)) return
-        currentGroup.push(field)
-        if (field.type === 'nf-page-break') {
-          groups.push(currentGroup)
-          currentGroup = []
-        }
-      })
-      groups.push(currentGroup)
-      return groups
+      return this.formStructure.getFieldGroups()
     },
     /**
      * Gets the comprehensive strategy based on the form mode
@@ -248,7 +244,7 @@ export default {
     },
     currentFields: {
       get() {
-        return this.fieldGroups[this.formPageIndex]
+        return this.formStructure.getPageFields(this.formPageIndex)
       },
       set(val) {
         // On re-order from the form, set the new order
@@ -271,25 +267,17 @@ export default {
      * Returns the page break block for the current group of fields
      */
     currentFieldsPageBreak() {
-      // Last block from current group
-      if (!this.currentFields?.length) return null
-      const block = this.currentFields[this.currentFields.length - 1]
-      if (block && block.type === 'nf-page-break') return block
-      return null
+      return this.formStructure.getPageBreakBlock(this.formPageIndex)
     },
     previousFieldsPageBreak() {
-      if (this.formPageIndex === 0) return null
-      const previousFields = this.fieldGroups[this.formPageIndex - 1]
-      const block = previousFields[previousFields.length - 1]
-      if (block && block.type === 'nf-page-break') return block
-      return null
+      return this.formStructure.getPreviousPageBreakBlock(this.formPageIndex)
     },
     /**
      * Returns true if we're on the last page
      * @returns {boolean}xs
      */
     isLastPage() {
-      return this.formPageIndex === (this.fieldGroups.length - 1)
+      return this.formStructure.isLastPage(this.formPageIndex)
     },
     isPublicFormPage() {
       return this.$route.name === 'forms-slug'
@@ -318,7 +306,7 @@ export default {
       }
     },
     paymentBlock() {
-      return (this.currentFields) ? this.currentFields.find(field => field.type === 'payment') : null
+      return this.formStructure.getPaymentBlock(this.formPageIndex)
     },
     isCaptchaProviderAvailable() {
       const config = useRuntimeConfig()
@@ -415,8 +403,8 @@ export default {
           this.dataForm.submission_id = this.form.submission_id
         }
 
-        this.$refs['form-timer'].stopTimer()
-        this.dataForm.completion_time = this.$refs['form-timer'].completionTime
+        this.$refs['form-timer']?.stopTimer()
+        this.dataForm.completion_time = this.$refs['form-timer']?.completionTime
 
         // Add validation strategy check
         if (!this.formModeStrategy.validation.validateOnSubmit) {
@@ -461,311 +449,26 @@ export default {
         })
       }
     },
-    async getSubmissionData() {
-      if (!this.form || !this.form.editable_submissions || !this.form.submission_id) {
-        return null
-      }
-      await this.recordsStore.loadRecord(
-        opnFetch('/forms/' + this.form.slug + '/submissions/' + this.form.submission_id).then((data) => {
-          return {submission_id: this.form.submission_id, id: this.form.submission_id, ...data.data}
-        }).catch((error) => {
-          if (error?.data?.errors) {
-            useAlert().formValidationError(error.data)
-          } else {
-            useAlert().error(error?.data?.message || 'Something went wrong')
-          }
-          return null
-        })
-      )
-      return this.recordsStore.getByKey(this.form.submission_id)
-    },
 
      /**
      * Form initialization
      */
     async initForm() {
-      // Only do a full initialization when necessary
-      // Store current page index and form data to avoid overwriting existing values
-      const currentFormData = this.dataForm ? clonedeep(this.dataForm.data()) : {}
+      const formInitService = new FormInitializationService(this.form, this.dataForm, {
+        formPageIndex: this.formPageIndex,
+        isInitialLoad: this.isInitialLoad,
+        stripeElements: this.stripeElements
+      })
+      
+      const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
+      
+      await formInitService.initialize({
+        defaultData: this.defaultDataForm,
+        submissionId: this.route.query?.submission_id,
+        urlParams
+      })
 
-      // Handle special cases first
-      if (this.defaultDataForm) {
-        // If we have default data form, initialize with that
-        await nextTick(() => {
-          this.dataForm.resetAndFill(this.defaultDataForm)
-        })
-        this.updateFieldGroupsSafely()
-        return
-      }
-
-      // Initialize the field groups without resetting form data
       this.updateFieldGroupsSafely()
-
-      // Check if we need to handle form submission states
-      if (await this.checkForEditableSubmission()) {
-        return
-      }
-
-      if (this.checkForPendingSubmission()) {
-        return
-      }
-
-      // Standard initialization with default values
-      this.initFormWithDefaultValues(currentFormData)
-    },
-    
-    checkForEditableSubmission() {
-      return this.tryInitFormFromEditableSubmission()
-    },
-
-    checkForPendingSubmission() {
-      if (this.tryInitFormFromPendingSubmission()) {
-        this.updateFieldGroupsSafely()
-        return true
-      }
-      return false
-    },
-    
-    async tryInitFormFromEditableSubmission() {
-      if (this.isPublicFormPage && this.form.editable_submissions) {
-        const submissionId = useRoute().query?.submission_id
-        if (submissionId) {
-          this.form.submission_id = submissionId
-          const data = await this.getSubmissionData()
-          if (data) {
-            this.dataForm.resetAndFill(data)
-            return true
-          }
-        }
-      }
-      return false
-    },
-    
-    tryInitFormFromPendingSubmission() {
-      if (!this.pendingSubmission || !this.isPublicFormPage || !this.form.auto_save) {
-        return false
-      }
-      
-      const pendingData = this.pendingSubmission.get()
-      if (pendingData && Object.keys(pendingData).length !== 0) {
-        this.updatePendingDataFields(pendingData)
-        this.dataForm.resetAndFill(pendingData)
-        return true
-      }
-      
-      return false
-    },
-    
-    updatePendingDataFields(pendingData) {
-      this.fields.forEach(field => {
-        if (field.type === 'date' && field.prefill_today) {
-          pendingData[field.id] = new Date().toISOString()
-        }
-      })
-    },
-    
-    initFormWithDefaultValues(currentFormData = {}) {
-      // Only set page 0 on first load, otherwise maintain current position
-      if (this.formPageIndex === undefined || this.isInitialLoad) {
-        this.formPageIndex = 0
-        this.isInitialLoad = false
-      }
-      
-      // Initialize form data with default values
-      const formData = { ...currentFormData }
-      const urlPrefill = this.isPublicFormPage ? new URLSearchParams(window.location.search) : null
-
-      this.fields.forEach(field => {
-        if (field.type.startsWith('nf-') && !['nf-page-body-input', 'nf-page-logo', 'nf-page-cover'].includes(field.type)) return
-
-        this.handleUrlPrefill(field, formData, urlPrefill)
-        this.handleDefaultPrefill(field, formData)
-      })
-      
-      // Reset form with new data
-      this.dataForm.resetAndFill(formData)
-    },
-    handleUrlPrefill(field, formData, urlPrefill) {
-      if (!urlPrefill) return
-
-      const prefillValue = (() => {
-        const val = urlPrefill.get(field.id)
-        try {
-          return typeof val === 'string' && val.startsWith('{') ? JSON.parse(val) : val
-        } catch (e) {
-          return val
-        }
-      })()
-      const arrayPrefillValue = urlPrefill.getAll(field.id + '[]')
-
-      if (typeof prefillValue === 'object' && prefillValue !== null) {
-        formData[field.id] = { ...prefillValue }
-      } else if (prefillValue !== null) {
-        formData[field.id] = field.type === 'checkbox' ? this.parseBooleanValue(prefillValue) : prefillValue
-      } else if (arrayPrefillValue.length > 0) {
-        formData[field.id] = arrayPrefillValue
-      }
-    },
-    parseBooleanValue(value) {
-      return value === 'true' || value === '1'
-    },
-    handleDefaultPrefill(field, formData) {
-      if (field.type === 'date' && field.prefill_today) {
-        formData[field.id] = new Date().toISOString()
-      } else if (field.type === 'matrix' && !formData[field.id]) {
-        formData[field.id] = {...field.prefill}
-      } else if (!(field.id in formData)) {
-        formData[field.id] = field.prefill
-      }
-    },
-    
-    /**
-     * Page Navigation
-     */
-    previousPage() {
-      this.formPageIndex--
-      this.scrollToTop()
-    },
-    async nextPage() {
-      if (!this.formModeStrategy.validation.validateOnNextPage) {
-        if (!this.isLastPage) {
-          this.formPageIndex++
-        }
-        this.scrollToTop()
-        return true
-      }
-
-      try {
-        this.dataForm.busy = true
-        const fieldsToValidate = this.currentFields
-          .filter(f => f.type !== 'payment')
-          .map(f => f.id)
-
-        // Validate non-payment fields first
-        if (fieldsToValidate.length > 0) {
-            await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
-        }
-
-        // Process payment if needed
-        if (!await this.doPayment()) {
-          return false // Payment failed or was required but not completed
-        }
-
-        // If validation and payment are successful, proceed
-        if (!this.isLastPage) {
-          this.formPageIndex++
-          this.scrollToTop()
-        }
-
-        return true
-      } catch (error) {
-        this.handleValidationError(error)
-        return false
-      } finally {
-        this.dataForm.busy = false
-      }
-    },
-    async doPayment() {
-      // Use the stripeElements from setup instead of calling useStripeElements
-      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
-      
-      // Check if there's a payment block in the current step
-      if (!this.paymentBlock) {
-        return true // No payment needed for this step
-      }
-      
-      // Skip if payment is already processed in the stripe state
-      if (stripeState.intentId) {
-        return true
-      }
-      
-      // Skip if payment ID already exists in the form data
-      const paymentFieldValue = this.dataFormValue[this.paymentBlock.id]
-      if (paymentFieldValue && typeof paymentFieldValue === 'string' && paymentFieldValue.startsWith('pi_')) {
-        // If we have a valid payment intent ID in the form data, sync it to the stripe state
-        stripeState.intentId = paymentFieldValue
-        return true
-      }
-      
-      // Check for the stripe object itself, not just the ready flag
-      if (stripeState.isStripeInstanceReady && !stripeState.stripe) {
-        stripeState.isStripeInstanceReady = false
-      }
-      
-      // Only process payment if required or card has data
-      const shouldProcessPayment = this.paymentBlock.required || isCardPopulated.value
-      
-      if (shouldProcessPayment) {
-        // If not ready yet, try a brief wait
-        if (!isReadyForPayment.value) {
-          try {
-            this.dataForm.busy = true
-            
-            // Just wait a second to see if state updates (it should be reactive now)
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            
-            // Check if we're ready now
-            if (!isReadyForPayment.value) {
-              // Provide detailed diagnostics
-              let errorMsg = 'Payment system not ready. '
-              const details = []
-              
-              if (!stripeState.stripeAccountId) {
-                details.push('No Stripe account connected')
-              }
-              
-              if (!stripeState.isStripeInstanceReady) {
-                details.push('Stripe.js not initialized')
-              }
-              
-              if (!stripeState.isCardElementReady) {
-                details.push('Card element not initialized')
-              }
-              
-              errorMsg += details.join(', ') + '. Please refresh and try again.'
-              useAlert().error(errorMsg)
-              return false
-            }
-          } catch (error) {
-            return false
-          } finally {
-            this.dataForm.busy = false
-          }
-        }
-        
-        try {
-          this.dataForm.busy = true
-          const result = await processPayment(this.form.slug, this.paymentBlock.required)
-          
-          if (!result.success) {
-            // Handle payment error
-            if (result.error?.message) {
-              this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
-              useAlert().error(result.error.message)
-            } else {
-              useAlert().error('Payment processing failed. Please try again.')
-            }
-            return false
-          }
-          
-          // Payment successful
-          if (result.paymentIntent?.status === 'succeeded') {
-            useAlert().success('Thank you! Your payment is successful.')
-            return true
-          }
-          
-          // Fallback error
-          useAlert().error('Something went wrong with the payment. Please try again.')
-          return false
-        } catch (error) {
-          useAlert().error(error?.message || 'Payment failed')
-          return false
-        } finally {
-          this.dataForm.busy = false
-        }
-      }
-      
-      return true // Payment not required or no card data
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -778,7 +481,7 @@ export default {
       this.dataForm.busy = false
     },
     isFieldHidden(field) {
-      return (new FormLogicPropertyResolver(field, this.dataFormValue)).isHidden()
+      return this.formStructure.isFieldHidden(field, this.dataFormValue)
     },
     getTargetFieldIndex(currentFieldPageIndex) {
       return this.formPageIndex > 0
@@ -787,27 +490,30 @@ export default {
     },
     handleDragDropped(data) {
       if (data.added) {
-        const targetIndex = this.getTargetFieldIndex(data.added.newIndex)
+        const targetIndex = this.formStructure.getTargetFieldIndex(
+          data.added.newIndex,
+          this.selectedFieldIndex,
+          this.formPageIndex
+        )
         this.workingFormStore.addBlock(data.added.element, targetIndex, false)
       }
       if (data.moved) {
-        const oldTargetIndex = this.getTargetFieldIndex(data.moved.oldIndex)
-        const newTargetIndex = this.getTargetFieldIndex(data.moved.newIndex)
+        const oldTargetIndex = this.formStructure.getTargetFieldIndex(
+          data.moved.oldIndex,
+          this.selectedFieldIndex,
+          this.formPageIndex
+        )
+        const newTargetIndex = this.formStructure.getTargetFieldIndex(
+          data.moved.newIndex,
+          this.selectedFieldIndex,
+          this.formPageIndex
+        )
         this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
       }
     },
     setPageForField(fieldIndex) {
       if (fieldIndex === -1) return
-
-      let currentIndex = 0
-      for (let i = 0; i < this.fieldGroups.length; i++) {
-        currentIndex += this.fieldGroups[i].length
-        if (currentIndex > fieldIndex) {
-          this.formPageIndex = i
-          return
-        }
-      }
-      this.formPageIndex = this.fieldGroups.length - 1
+      this.formPageIndex = this.formStructure.getPageForField(fieldIndex)
     },
     
     // New method for updating field groups
@@ -861,7 +567,53 @@ export default {
       this.$nextTick(() => {
         this.isUpdatingFieldGroups = false
       })
-    }
+    },
+
+    /**
+     * Page Navigation
+     */
+    previousPage() {
+      this.formPageIndex--
+      this.scrollToTop()
+    },
+
+    async nextPage() {
+      if (!this.formModeStrategy.validation.validateOnNextPage) {
+        if (!this.isLastPage) {
+          this.formPageIndex++
+        }
+        this.scrollToTop()
+        return true
+      }
+
+      try {
+        // Create service instance for validation and payment
+        const formInitService = new FormInitializationService(this.form, this.dataForm, {
+          stripeElements: this.stripeElements
+        })
+
+        // Validate current page
+        if (!await formInitService.validateCurrentPage(this.currentFields, this.isLastPage, this.formModeStrategy)) {
+          return false
+        }
+
+        // Process payment if needed
+        if (!await formInitService.handlePayment(this.paymentBlock)) {
+          return false
+        }
+
+        // If validation and payment are successful, proceed
+        if (!this.isLastPage) {
+          this.formPageIndex++
+          this.scrollToTop()
+        }
+
+        return true
+      } catch (error) {
+        this.handleValidationError(error)
+        return false
+      }
+    },
   }
 }
 </script>
