@@ -132,10 +132,6 @@ import FormTimer from './FormTimer.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
-import { FormStructureService } from '~/services/form/services/FormStructureService'
-import { FormInitializationService } from '~/services/form/services/FormInitializationService'
-import { FormPaymentService } from '~/services/form/services/FormPaymentService'
-import { FormValidationService } from '~/services/form/services/FormValidationService'
 
 export default {
   name: 'OpenForm',
@@ -171,38 +167,28 @@ export default {
     darkMode: {
       type: Boolean,
       default: false
+    },
+    formManager: {
+      type: Object,
+      required: true
     }
   },
   emits: ['submit'],
   setup(props) {
     const recordsStore = useRecordsStore()
     const workingFormStore = useWorkingFormStore()
-    const dataForm = ref(useForm())
     const config = useRuntimeConfig()
     const route = useRoute()
-
-    // Provide Stripe elements to be used by child components
-    const stripeElements = provideStripeElements()
-    
-    // Initialize FormStructureService
-    const formStructure = new FormStructureService(props.form)
-    
-    // Initialize FormPaymentService
-    const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
-
-    // Initialize FormValidationService
-    const formValidation = computed(() => new FormValidationService(props.form, dataForm.value))
+    const isIframe = useIsIframe()
 
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
     })
 
     return {
-      dataForm,
       recordsStore,
       workingFormStore,
-      stripeElements,
-      isIframe: useIsIframe(),
+      isIframe,
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: import.meta.client ? pendingSubmission(props.form) : { get: () => ({}), set: () => {} },
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
@@ -212,9 +198,6 @@ export default {
       selectedFieldIndex: computed(() => workingFormStore.selectedFieldIndex),
       showEditFieldSidebar: computed(() => workingFormStore.showEditFieldSidebar),
       hasCaptchaProviders,
-      formStructure,
-      formPayment,
-      formValidation
     }
   },
 
@@ -232,7 +215,7 @@ export default {
      * Create field groups (or Page) using page breaks if any
      */
     fieldGroups() {
-      return this.formStructure.getFieldGroups()
+      return this.formManager?.structureService.getFieldGroups() || []
     },
     /**
      * Gets the comprehensive strategy based on the form mode
@@ -254,7 +237,7 @@ export default {
     },
     currentFields: {
       get() {
-        return this.formStructure.getPageFields(this.formPageIndex)
+        return this.formManager?.structureService.getPageFields(this.formPageIndex) || []
       },
       set(val) {
         // On re-order from the form, set the new order
@@ -277,38 +260,23 @@ export default {
      * Returns the page break block for the current group of fields
      */
     currentFieldsPageBreak() {
-      return this.formStructure.getPageBreakBlock(this.formPageIndex)
+      return this.formManager?.structureService.getPageBreakBlock(this.formPageIndex)
     },
     previousFieldsPageBreak() {
-      return this.formStructure.getPreviousPageBreakBlock(this.formPageIndex)
+      return this.formManager?.structureService.getPreviousPageBreakBlock(this.formPageIndex)
     },
     /**
      * Returns true if we're on the last page
      * @returns {boolean}xs
      */
     isLastPage() {
-      return this.formStructure.isLastPage(this.formPageIndex)
+      return this.formManager?.structureService.isLastPage(this.formPageIndex) || false
     },
     isPublicFormPage() {
       return this.$route.name === 'forms-slug'
     },
     dataFormValue() {
-      // For get values instead of Id for select/multi select options
-      const data = this.dataForm.data()
-      const selectionFields = this.fields.filter((field) => {
-        return ['select', 'multi_select'].includes(field.type)
-      })
-      selectionFields.forEach((field) => {
-        if (data[field.id] !== undefined && data[field.id] !== null && Array.isArray(data[field.id])) {
-          data[field.id] = data[field.id].map(option_nfid => {
-            const tmpop = field[field.type].options.find((op) => {
-              return (op.id === option_nfid)
-            })
-            return (tmpop) ? tmpop.name : option_nfid
-          })
-        }
-      })
-      return data
+      return this.formManager?.data || {}
     },
     computedStyle() {
       return {
@@ -316,7 +284,7 @@ export default {
       }
     },
     paymentBlock() {
-      return this.formStructure.getPaymentBlock(this.formPageIndex)
+      return this.formManager?.structureService.getPaymentBlock(this.formPageIndex)
     },
     isCaptchaProviderAvailable() {
       const config = useRuntimeConfig()
@@ -392,16 +360,18 @@ export default {
 
   methods: {
     async submitForm() {
-      this.dataForm.busy = true
+      if (!this.formManager) return
+
+      this.formManager.form.busy = true
       
       try {
         if (!await this.nextPage()) {
-          this.dataForm.busy = false
+          this.formManager.form.busy = false
           return
         }
 
         if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) {
-          this.dataForm.busy = false
+          this.formManager.form.busy = false
           return
         }
 
@@ -410,11 +380,11 @@ export default {
         }
 
         if (this.form.editable_submissions && this.form.submission_id) {
-          this.dataForm.submission_id = this.form.submission_id
+          this.formManager.form.submission_id = this.form.submission_id
         }
 
         this.$refs['form-timer']?.stopTimer()
-        this.dataForm.completion_time = this.$refs['form-timer']?.completionTime
+        this.formManager.setCompletionTime(this.$refs['form-timer']?.completionTime)
 
         // Skip validation if not required by mode strategy
         if (!this.formModeStrategy.validation.validateOnSubmit) {
@@ -424,18 +394,14 @@ export default {
 
         this.emitSubmit()
       } catch (error) {
-        this.formValidation.handleValidationError(error)
-        this.dataForm.busy = false
+        this.formManager.validationService.handleValidationError(error)
+        this.formManager.form.busy = false
       }
     },
 
     emitSubmit() {
-      const onFailure = () => this.formValidation.onSubmissionFailure(
-        this.fieldGroups,
-        (index) => this.formPageIndex = index,
-        this.$refs['form-timer']
-      )
-      this.$emit('submit', this.dataForm, onFailure)
+      const onFailure = () => this.onSubmissionFailure()
+      this.$emit('submit', this.formManager.form, onFailure)
     },
 
     /**
@@ -444,7 +410,7 @@ export default {
     onSubmissionFailure() {
       this.$refs['form-timer'].startTimer()
       this.isAutoSubmit = false
-      this.dataForm.busy = false
+      this.formManager.form.busy = false
       
       if (this.fieldGroups.length > 1) {
         this.showFirstPageWithError()
@@ -453,7 +419,7 @@ export default {
     },
     showFirstPageWithError() {
       for (let i = 0; i < this.fieldGroups.length; i++) {
-        if (this.fieldGroups[i].some(field => this.dataForm.errors.has(field.id))) {
+        if (this.fieldGroups[i].some(field => this.formManager.errors.has(field.id))) {
           this.formPageIndex = i
           break
         }
@@ -474,29 +440,15 @@ export default {
      * Form initialization
      */
     async initForm() {
-      const formInitService = new FormInitializationService(this.form, this.dataForm, {
-        formPageIndex: this.formPageIndex,
-        isInitialLoad: this.isInitialLoad
-      })
-      
-      const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
-      
-      await formInitService.initialize({
-        defaultData: this.defaultDataForm,
-        submissionId: this.route.query?.submission_id,
-        urlParams
-      })
+      if (!this.formManager) return
 
       this.updateFieldGroupsSafely()
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
-    handleValidationError(error) {
-      this.formValidation.handleValidationError(error)
-    },
     isFieldHidden(field) {
-      return this.formStructure.isFieldHidden(field, this.dataFormValue)
+      return this.formManager?.structureService.isFieldHidden(field, this.dataFormValue) || false
     },
     getTargetFieldIndex(currentFieldPageIndex) {
       return this.formPageIndex > 0
@@ -504,8 +456,10 @@ export default {
         : currentFieldPageIndex
     },
     handleDragDropped(data) {
+      if (!this.formManager) return
+
       if (data.added) {
-        const targetIndex = this.formStructure.getTargetFieldIndex(
+        const targetIndex = this.formManager.structureService.getTargetFieldIndex(
           data.added.newIndex,
           this.selectedFieldIndex,
           this.formPageIndex
@@ -513,12 +467,12 @@ export default {
         this.workingFormStore.addBlock(data.added.element, targetIndex, false)
       }
       if (data.moved) {
-        const oldTargetIndex = this.formStructure.getTargetFieldIndex(
+        const oldTargetIndex = this.formManager.structureService.getTargetFieldIndex(
           data.moved.oldIndex,
           this.selectedFieldIndex,
           this.formPageIndex
         )
-        const newTargetIndex = this.formStructure.getTargetFieldIndex(
+        const newTargetIndex = this.formManager.structureService.getTargetFieldIndex(
           data.moved.newIndex,
           this.selectedFieldIndex,
           this.formPageIndex
@@ -527,8 +481,8 @@ export default {
       }
     },
     setPageForField(fieldIndex) {
-      if (fieldIndex === -1) return
-      this.formPageIndex = this.formStructure.getPageForField(fieldIndex)
+      if (fieldIndex === -1 || !this.formManager) return
+      this.formPageIndex = this.formManager.structureService.getPageForField(fieldIndex)
     },
     
     // New method for updating field groups
@@ -593,6 +547,8 @@ export default {
     },
 
     async nextPage() {
+      if (!this.formManager) return false
+
       if (!this.formModeStrategy.validation.validateOnNextPage) {
         if (!this.isLastPage) {
           this.formPageIndex++
@@ -602,13 +558,7 @@ export default {
       }
 
       try {
-        // Validate current page
-        if (!await this.formValidation.validateCurrentPage(this.currentFields, this.formModeStrategy)) {
-          return false
-        }
-
-        // Process payment if needed using FormPaymentService
-        if (!await this.formPayment.processPayment(this.paymentBlock)) {
+        if (!await this.formManager.nextPage()) {
           return false
         }
 
@@ -620,10 +570,10 @@ export default {
 
         return true
       } catch (error) {
-        this.formValidation.handleValidationError(error)
+        this.formManager.validationService.handleValidationError(error)
         return false
       }
-    },
+    }
   }
 }
 </script>

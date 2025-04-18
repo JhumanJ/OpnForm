@@ -94,13 +94,14 @@
         key="form"
       >
         <open-form
-          v-if="form && !form.is_closed"
+          v-if="form && !form.is_closed && formManager"
           :form="form"
           :loading="loading"
           :fields="form.properties"
           :theme="theme"
           :dark-mode="darkMode"
           :mode="mode"
+          :form-manager="formManager"
           @submit="submitForm"
         >
           <template #submit-btn="{submitForm: handleSubmit}">
@@ -194,10 +195,7 @@ import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
-import { FormInitializationService } from '~/services/form/services/FormInitializationService'
-import { FormPaymentService } from '~/services/form/services/FormPaymentService'
-import { FormValidationService } from '~/services/form/services/FormValidationService'
-import { FormSubmissionService } from '~/services/form/services/FormSubmissionService'
+import { FormManager } from '~/services/form/FormManager'
 
 export default {
   components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
@@ -222,23 +220,48 @@ export default {
     const { setLocale } = useI18n()
     const authStore = useAuthStore()
     const route = useRoute()
-    const stripeElements = provideStripeElements()
-    const dataForm = ref(useForm())
-    const confetti = useConfetti()
     const isIframe = useIsIframe()
+    const confetti = useConfetti()
     
-    // Initialize FormPaymentService
-    const formPayment = computed(() => new FormPaymentService(props.form, dataForm.value, stripeElements))
-
-    // Initialize FormValidationService
-    const formValidation = computed(() => new FormValidationService(props.form, dataForm.value))
-
-    // Initialize FormSubmissionService
-    const formSubmission = computed(() => new FormSubmissionService(props.form, dataForm.value, {
-      isIframe: isIframe,
-      pendingSubmission: pendingSubmission(props.form),
-      confetti: confetti
-    }))
+    // Initialize FormManager
+    const formManager = ref(null)
+    const isInitializing = ref(false)
+    
+    const initializeFormManager = async (newForm) => {
+      if (!newForm || isInitializing.value) return
+      if (formManager.value?.isInitialized) {
+        console.log('FormManager already initialized')
+        return
+      }
+      
+      try {
+        isInitializing.value = true
+        console.log('Creating new FormManager instance')
+        formManager.value = new FormManager(newForm)
+        
+        // Get URL parameters if we're on the client side
+        const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
+        
+        console.log('Initializing FormManager with options')
+        await formManager.value.initialize({
+          submissionId: route.query?.submission_id,
+          urlParams
+        })
+        console.log('FormManager initialized successfully')
+      } catch (error) {
+        console.error('Error during FormManager initialization:', error)
+        formManager.value = null
+      } finally {
+        isInitializing.value = false
+      }
+    }
+    
+    // Only watch for form changes when not initialized
+    watch(() => props.form, (newForm) => {
+      if (!formManager.value?.isInitialized) {
+        initializeFormManager(newForm)
+      }
+    }, { immediate: true })
     
     return {
       setLocale,
@@ -248,11 +271,8 @@ export default {
       isIframe,
       pendingSubmission: pendingSubmission(props.form),
       confetti,
-      dataForm,
-      stripeElements,
-      formPayment,
-      formValidation,
-      formSubmission
+      formManager,
+      isInitializing
     }
   },
 
@@ -324,19 +344,14 @@ export default {
 
   methods: {
     async initializeForm() {
-      const formInitService = new FormInitializationService(this.form, this.dataForm)
-      
       // Get URL parameters if we're on the client side
       const urlParams = import.meta.client ? new URLSearchParams(window.location.search) : null
       
       // Initialize with options
-      await formInitService.initialize({
+      await this.formManager.initialize({
         submissionId: this.route.query?.submission_id,
         urlParams
       })
-
-      // Reset payment service
-      this.formPayment.reset()
     },
 
     async submitForm(form, onFailure) {
@@ -348,11 +363,11 @@ export default {
       }
 
       this.loading = true
-      const result = await this.formSubmission.submit()
+      const result = await this.formManager.submit()
       
       if (result.success) {
         const data = result.data
-        this.submittedData = form.data()
+        this.submittedData = this.formManager.data
         
         if (data.submission_id) {
           this.submissionId = data.submission_id
@@ -365,9 +380,6 @@ export default {
         this.loading = false
         this.submitted = true
         this.$emit('submitted', true)
-
-        // Reset payment service after successful submission
-        this.formPayment.reset()
       } else {
         this.loading = false
         onFailure()
