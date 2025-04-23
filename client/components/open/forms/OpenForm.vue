@@ -5,7 +5,7 @@
     </p>
   </div>
   <form
-    v-else-if="dataForm"
+    v-else-if="dataFormValue"
     :style="computedStyle"
     @submit.prevent=""
   >
@@ -45,7 +45,7 @@
               :field="element"
               :show-hidden="showHidden"
               :form="form"
-              :data-form="dataForm"
+              :data-form="dataFormValue"
               :data-form-value="dataFormValue"
               :theme="theme"
               :dark-mode="darkMode"
