@@ -19,7 +19,7 @@
     >
       <div
         v-if="isAdminPreview"
-        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block"
+        class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block z-10"
       >
         <div
           class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-md shadow-sm z-50 p-[1px] relative"
@@ -32,7 +32,7 @@
             <UTooltip
               text="Add new field"
               :popper="{ placement: 'right' }"
-              class="z-[100]"
+              :ui="{ container: 'z-50' }"
             >
               <Icon
                 name="i-heroicons-plus-circle-20-solid"
@@ -48,7 +48,7 @@
             <UTooltip
               text="Edit field settings"
               :popper="{ placement: 'right' }"
-              class="z-[100]"
+              :ui="{ container: 'z-50' }"
             >
               <Icon
                 name="heroicons:cog-8-tooth-20-solid"
@@ -64,7 +64,7 @@
             <UTooltip
               text="Delete field"
               :popper="{ placement: 'right' }"
-              class="z-[100]"
+              :ui="{ container: 'z-50' }"
             >
               <Icon
                 name="heroicons:trash-20-solid"
@@ -80,6 +80,7 @@
         v-bind="inputProperties(field)"
         :required="isFieldRequired"
         :disabled="isFieldDisabled ? true : null"
+        :is-admin-preview="isAdminPreview"
       />
       <template v-else>
         <div
@@ -232,6 +233,7 @@ export default {
       if (field.type === 'phone_number' && !field.use_simple_text_input) {
         return 'PhoneInput'
       }
+
       return {
         text: 'TextInput',
         rich_text: 'RichTextAreaInput',
@@ -248,7 +250,8 @@ export default {
         email: 'TextInput',
         phone_number: 'TextInput',
         matrix: 'MatrixInput',
-        barcode: 'BarcodeInput'
+        barcode: 'BarcodeInput',
+        payment: 'PaymentInput'
       }[field.type]
     },
     isPublicFormPage() {
@@ -422,6 +425,11 @@ export default {
         inputProperties.unavailableCountries = field.unavailable_countries ?? []
       } else if (field.type === 'text' && field.secret_input) {
         inputProperties.nativeType = 'password'
+      } else if (field.type === 'payment') {
+        inputProperties.direction = this.form.layout_rtl ? 'rtl' : 'ltr'
+        inputProperties.currency = field.currency
+        inputProperties.amount = field.amount
+        inputProperties.oauthProviderId = field.stripe_account_id
       }
 
       return inputProperties

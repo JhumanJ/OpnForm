@@ -106,16 +106,13 @@ export default defineNuxtConfig({
           pathPrefix: false,
           global: true,
       },
+      {
+          path: '~/components/settings',
+          pathPrefix: false,
+          global: true,
+      },
       '~/components',
   ],
-
-  vite: {
-      server: {
-          hmr: {
-              clientPort: 3000
-          }
-      }
-  },
 
   tailwindcss: {
       cssPath: ['~/scss/app.scss']
@@ -134,6 +131,11 @@ export default defineNuxtConfig({
           },
       },
     },
+
+  devServer: {
+    host: process.env.NUXT_HOST || 'localhost',
+    port: Number(process.env.NUXT_PORT) || 3000,
+  },
 
   sitemap,
   runtimeConfig,

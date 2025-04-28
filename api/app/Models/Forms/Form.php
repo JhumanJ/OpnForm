@@ -112,6 +112,7 @@ class Form extends Model implements CachableAttributes
             'removed_properties' => 'array',
             'seo_meta' => 'object',
             'enable_partial_submissions' => 'boolean',
+            'auto_save' => 'boolean',
         ];
     }
 

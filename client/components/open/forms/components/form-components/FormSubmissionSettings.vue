@@ -24,6 +24,15 @@
       :form="form"
       label="Auto save form response"
       help="Saves form progress, allowing respondents to resume later."
+      class="mt-4"
+      :disabled="hasPaymentBlock"
+    />
+    <UAlert
+      v-if="hasPaymentBlock"
+      color="primary"
+      variant="subtle"
+      title="Must be enabled with a payment block."
+      class="max-w-md"
     />
     
     <flat-select-input
@@ -158,7 +167,7 @@
           enable-mentions
           :mentions="form.properties"
           name="submitted_text"
-          class="w-full"
+          class="w-full mt-4"
           :form="form"
           label="Success page text"
           :required="false"
@@ -256,4 +265,8 @@ watch(submissionOptions, (val) => {
   if (val.submissionMode === 'default') form.value.redirect_url = null
   if (val.databaseAction === 'create') form.value.database_fields_update = null
 }, { deep: true })
+
+const hasPaymentBlock = computed(() => {
+  return form.value.properties.some(property => property.type === 'payment')
+})
 </script>

@@ -13,32 +13,11 @@
       ref="form-timer"
       :form="form"
     />
-    <template v-if="form.show_progress_bar">
-      <div
-        v-if="isIframe"
-        class="mb-4 p-2"
-      >
-        <div class="w-full h-2 bg-gray-200 dark:bg-gray-600 relative border rounded-full overflow-hidden">
-          <div
-            class="h-full transition-all duration-300 rounded-r-full"
-            :class="{ 'w-0': formProgress === 0 }"
-            :style="{ width: formProgress + '%', background: form.color }"
-          />
-        </div>
-      </div>
-      <div
-        v-else
-        class="fixed top-0 left-0 right-0 z-50"
-      >
-        <div class="w-full h-[0.2rem] bg-gray-200 dark:bg-gray-600 relative overflow-hidden">
-          <div
-            class="h-full transition-all duration-300"
-            :class="{ 'w-0': formProgress === 0 }"
-            :style="{ width: formProgress + '%', background: form.color }"
-          />
-        </div>
-      </div>
-    </template>
+    <FormProgressbar
+      :form="form"
+      :fields="fields"
+      :form-data="dataFormValue"
+    />
     <transition
       name="fade"
       mode="out-in"
@@ -52,7 +31,9 @@
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
-          :class="{'rounded-md bg-blue-50 dark:bg-gray-800':draggingNewBlock}"
+          :class="[
+            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-gray-800' : '',
+          ]"
           ghost-class="ghost-item"
           filter=".not-draggable"
           :animation="200"
@@ -76,16 +57,21 @@
     </transition>
 
     <!-- Captcha -->
-    <div class="mb-3 px-2 mt-4 mx-auto w-max">
-      <CaptchaInput
-        v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable"
-        ref="captcha"
-        :provider="form.captcha_provider"
-        :form="dataForm"
-        :language="form.language"
-        :dark-mode="darkMode"
-      />
-    </div>
+    
+    <ClientOnly>
+      <div v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable" class="mb-3 px-2 mt-4 mx-auto w-max">
+        <CaptchaInput
+          ref="captcha"
+          :provider="form.captcha_provider"
+          :form="dataForm"
+          :language="form.language"
+          :dark-mode="darkMode"
+        />
+      </div>
+      <template #fallback>
+          <USkeleton class="h-[78px] w-[304px]" />
+        </template>
+    </ClientOnly>
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
@@ -104,6 +90,7 @@
         v-if="isLastPage"
         name="submit-btn"
         :submit-form="submitForm"
+        :loading="dataForm.busy"
       />
       <open-form-button
         v-else-if="currentFieldsPageBreak"
@@ -119,6 +106,14 @@
       <div v-if="!currentFieldsPageBreak && !isLastPage">
         {{ $t('forms.wrong_form_structure') }}
       </div>
+      <div
+        v-if="paymentBlock"
+        class="mt-6 flex justify-center w-full"
+      >
+        <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">
+          {{ $t('forms.payment.payment_disclaimer') }}
+        </p>
+      </div>
     </div>
   </form>
 </template>
@@ -133,13 +128,15 @@ import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.j
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
+import FormProgressbar from './FormProgressbar.vue'
 import { storeToRefs } from 'pinia'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import clonedeep from 'clone-deep'
+import { provideStripeElements } from '~/composables/useStripeElements'
 
 export default {
   name: 'OpenForm',
-  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer},
+  components: {draggable, OpenFormField, OpenFormButton, CaptchaInput, FormTimer, FormProgressbar},
   props: {
     form: {
       type: Object,
@@ -180,6 +177,9 @@ export default {
     const dataForm = ref(useForm())
     const config = useRuntimeConfig()
 
+    // Provide Stripe elements to be used by child components
+    const stripeElements = provideStripeElements()
+    
     const hasCaptchaProviders = computed(() => {
       return config.public.hCaptchaSiteKey || config.public.recaptchaSiteKey
     })
@@ -188,10 +188,11 @@ export default {
       dataForm,
       recordsStore,
       workingFormStore,
+      stripeElements,
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
-      pendingSubmission: pendingSubmission(props.form),
-      partialSubmission: usePartialSubmission(props.form, dataForm),
+      pendingSubmission: import.meta.client ? pendingSubmission(props.form) : { get: () => ({}), set: () => {} },
+      partialSubmission: import.meta.client ? usePartialSubmission(props.form, dataForm) : { startSync: () => {}, stopSync: () => {} },
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
 
       // Used for admin previews
@@ -247,15 +248,6 @@ export default {
      */
     isAdminPreview() {
       return this.formModeStrategy.admin.showAdminControls
-    },
-    formProgress() {
-      const requiredFields = this.fields.filter(field => field.required)
-      if (requiredFields.length === 0) {
-        return 100
-      }
-      const completedFields = requiredFields.filter(field => ![null, undefined, ''].includes(this.dataFormValue[field.id]))
-      const progress = (completedFields.length / requiredFields.length) * 100
-      return Math.round(progress)
     },
     currentFields: {
       get() {
@@ -327,6 +319,9 @@ export default {
       return {
         '--form-color': this.form.color
       }
+    },
+    paymentBlock() {
+      return (this.currentFields) ? this.currentFields.find(field => field.type === 'payment') : null
     },
     isCaptchaProviderAvailable() {
       const config = useRuntimeConfig()
@@ -410,30 +405,40 @@ export default {
     }
   },
   methods: {
-    submitForm() {
-      if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) return
+    async submitForm() {
+      try {
+        // Process payment if needed
+        if (!await this.doPayment()) {
+          return false // Payment failed or was required but not completed
+        }
+        this.dataForm.busy = false
 
-      if (this.form.use_captcha && import.meta.client) {
-        this.$refs.captcha?.reset()
-      }
+        // Add submission_id for editable submissions (from main)
+        if (this.form.editable_submissions && this.form.submission_id) {
+          this.dataForm.submission_id = this.form.submission_id
+        }
 
-      if (this.form.editable_submissions && this.form.submission_id) {
-        this.dataForm.submission_id = this.form.submission_id
-      }
+        // Stop timer and get completion time (from main)
+        this.$refs['form-timer'].stopTimer()
+        this.dataForm.completion_time = this.$refs['form-timer'].completionTime
 
-      this.$refs['form-timer'].stopTimer()
-      this.dataForm.completion_time = this.$refs['form-timer'].completionTime
-      if (this.form?.enable_partial_submissions) {
-        this.dataForm.submission_hash = this.partialSubmission.getSubmissionHash()
-      }
+        // Add submission hash for partial submissions (from HEAD)
+        if (this.form?.enable_partial_submissions) {
+          this.dataForm.submission_hash = this.partialSubmission.getSubmissionHash()
+        }
 
-      // Add validation strategy check
-      if (!this.formModeStrategy.validation.validateOnSubmit) {
+        // Add validation strategy check (from main)
+        if (!this.formModeStrategy.validation.validateOnSubmit) {
+          this.$emit('submit', this.dataForm, this.onSubmissionFailure)
+          return
+        }
+
         this.$emit('submit', this.dataForm, this.onSubmissionFailure)
-        return
+      } catch (error) {
+        this.handleValidationError(error)
+      } finally {
+        this.dataForm.busy = false
       }
-
-      this.$emit('submit', this.dataForm, this.onSubmissionFailure)
     },
     /**
      *   Handle form submission failure
@@ -441,6 +446,8 @@ export default {
     onSubmissionFailure() {
       this.$refs['form-timer'].startTimer()
       this.isAutoSubmit = false
+      this.dataForm.busy = false
+      
       if (this.fieldGroups.length > 1) {
         this.showFirstPageWithError()
       }
@@ -545,14 +552,17 @@ export default {
     },
     
     tryInitFormFromPendingSubmission() {
-      if (this.isPublicFormPage && this.form.auto_save) {
-        const pendingData = this.pendingSubmission.get()
-        if (pendingData && Object.keys(pendingData).length !== 0) {
-          this.updatePendingDataFields(pendingData)
-          this.dataForm.resetAndFill(pendingData)
-          return true
-        }
+      if (!this.pendingSubmission || !this.isPublicFormPage || !this.form.auto_save) {
+        return false
       }
+      
+      const pendingData = this.pendingSubmission.get()
+      if (pendingData && Object.keys(pendingData).length !== 0) {
+        this.updatePendingDataFields(pendingData)
+        this.dataForm.resetAndFill(pendingData)
+        return true
+      }
+      
       return false
     },
     
@@ -626,22 +636,147 @@ export default {
       this.formPageIndex--
       this.scrollToTop()
     },
-    nextPage() {
+    async nextPage() {
       if (!this.formModeStrategy.validation.validateOnNextPage) {
-        this.formPageIndex++
+        if (!this.isLastPage) {
+          this.formPageIndex++
+        }
         this.scrollToTop()
+        return true
+      }
+
+      try {
+        this.dataForm.busy = true
+        const fieldsToValidate = this.currentFields
+          .filter(f => f.type !== 'payment')
+          .map(f => f.id)
+
+        // Validate non-payment fields first
+        if (fieldsToValidate.length > 0) {
+            await this.dataForm.validate('POST', `/forms/${this.form.slug}/answer`, {}, fieldsToValidate)
+        }
+
+        // Process payment if needed
+        if (!await this.doPayment()) {
+          return false // Payment failed or was required but not completed
+        }
+
+        // If validation and payment are successful, proceed
+        if (!this.isLastPage) {
+          this.formPageIndex++
+          this.scrollToTop()
+        }
+
+        return true
+      } catch (error) {
+        this.handleValidationError(error)
         return false
+      } finally {
+        this.dataForm.busy = false
+      }
+    },
+    async doPayment() {
+      // Check if there's a payment block in the current step
+      if (!this.paymentBlock) {
+        return true // No payment needed for this step
+      }
+      this.dataForm.busy = true
+
+      // Use the stripeElements from setup instead of calling useStripeElements
+      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
+      
+      // Skip if payment is already processed in the stripe state
+      if (stripeState.intentId) {
+        return true
       }
       
-      const fieldsToValidate = this.currentFields.map(f => f.id)
-      this.dataForm.busy = true
-      this.dataForm.validate('POST', '/forms/' + this.form.slug + '/answer', {}, fieldsToValidate)
-        .then(() => {
-          this.formPageIndex++
+      // Skip if payment ID already exists in the form data
+      const paymentFieldValue = this.dataFormValue[this.paymentBlock.id]
+      if (paymentFieldValue && typeof paymentFieldValue === 'string' && paymentFieldValue.startsWith('pi_')) {
+        // If we have a valid payment intent ID in the form data, sync it to the stripe state
+        stripeState.intentId = paymentFieldValue
+        return true
+      }
+      
+      // Check for the stripe object itself, not just the ready flag
+      if (stripeState.isStripeInstanceReady && !stripeState.stripe) {
+        stripeState.isStripeInstanceReady = false
+      }
+      
+      // Only process payment if required or card has data
+      const shouldProcessPayment = this.paymentBlock.required || isCardPopulated.value
+      
+      if (shouldProcessPayment) {
+        // If not ready yet, try a brief wait
+        if (!isReadyForPayment.value) {
+          try {
+            this.dataForm.busy = true
+            
+            // Just wait a second to see if state updates (it should be reactive now)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            
+            // Check if we're ready now
+            if (!isReadyForPayment.value) {
+              // Provide detailed diagnostics
+              let errorMsg = 'Payment system not ready. '
+              const details = []
+              
+              if (!stripeState.stripeAccountId) {
+                details.push('No Stripe account connected')
+              }
+              
+              if (!stripeState.isStripeInstanceReady) {
+                details.push('Stripe.js not initialized')
+              }
+              
+              if (!stripeState.isCardElementReady) {
+                details.push('Card element not initialized')
+              }
+              
+              errorMsg += details.join(', ') + '. Please refresh and try again.'
+              useAlert().error(errorMsg)
+              return false
+            }
+          } catch (error) {
+            return false
+          } finally {
+            this.dataForm.busy = false
+          }
+        }
+        
+        try {
+          this.dataForm.busy = true
+          const result = await processPayment(this.form.slug, this.paymentBlock.required)
+          
+          if (!result.success) {
+            // Handle payment error
+            if (result.error?.message) {
+              this.dataForm.errors.set(this.paymentBlock.id, result.error.message)
+              useAlert().error(result.error.message)
+            } else {
+              useAlert().error('Payment processing failed. Please try again.')
+            }
+            return false
+          }
+          
+          // Payment successful
+          if (result.paymentIntent?.status === 'succeeded') {
+            useAlert().success('Thank you! Your payment is successful.')
+            return true
+          }
+          
+          // Fallback error
+          useAlert().error('Something went wrong with the payment. Please try again.')
+          return false
+        } catch (error) {
+          useAlert().error(error?.message || 'Payment failed')
+          return false
+        } finally {
           this.dataForm.busy = false
-          this.scrollToTop()
-        }).catch(this.handleValidationError)
-      return false
+        }
+      }
+      
+      return true // Payment not required or no card data
     },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })

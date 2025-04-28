@@ -22,6 +22,7 @@ use App\Http\Controllers\Settings\TokenController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Forms\TemplateController;
 use App\Http\Controllers\Auth\UserInviteController;
+use App\Http\Controllers\Forms\FormPaymentController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceUserController;
 use App\Http\Middleware\Form\ResolveFormMiddleware;
@@ -61,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
             Route::post('/callback/{service}', [OAuthProviderController::class, 'handleRedirect'])->name('callback');
+            Route::post('widget-callback/{service}', [OAuthProviderController::class, 'handleWidgetRedirect'])->name('widget.callback');
             Route::delete('/{provider}', [OAuthProviderController::class, 'destroy'])->name('destroy');
         });
     });
@@ -295,6 +297,8 @@ Route::group(['prefix' => 'appsumo'], function () {
 Route::prefix('forms')->name('forms.')->group(function () {
     Route::middleware('protected-form')->group(function () {
         Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer')->middleware(HandlePrecognitiveRequests::class);
+        Route::get('{slug}/stripe-connect/get-account', [FormPaymentController::class, 'getAccount'])->name('stripe-connect.get-account')->middleware(HandlePrecognitiveRequests::class);
+        Route::get('{slug}/stripe-connect/payment-intent', [FormPaymentController::class, 'createIntent'])->name('stripe-connect.create-intent')->middleware(HandlePrecognitiveRequests::class);
 
         // Form content endpoints (user lists, relation lists etc.)
         Route::get(
