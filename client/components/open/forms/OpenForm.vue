@@ -123,7 +123,8 @@ import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
 import OpenFormField from './OpenFormField.vue'
-import {pendingSubmission} from "~/composables/forms/pendingSubmission.js"
+import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
+import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js"
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import FormTimer from './FormTimer.vue'
@@ -191,6 +192,7 @@ export default {
       isIframe: useIsIframe(),
       draggingNewBlock: computed(() => workingFormStore.draggingNewBlock),
       pendingSubmission: import.meta.client ? pendingSubmission(props.form) : { get: () => ({}), set: () => {} },
+      partialSubmission: import.meta.client ? usePartialSubmission(props.form, dataForm) : { startSync: () => {}, stopSync: () => {} },
       formPageIndex: storeToRefs(workingFormStore).formPageIndex,
 
       // Used for admin previews
@@ -203,6 +205,7 @@ export default {
   data() {
     return {
       isAutoSubmit: false,
+      partialSubmissionStarted: false,
       isInitialLoad: true,
       // Flag to prevent recursion in field group updates
       isUpdatingFieldGroups: false,
@@ -354,9 +357,14 @@ export default {
     },
     dataFormValue: {
       deep: true,
-      handler() {
+      handler(newValue, oldValue) {
         if (this.isPublicFormPage && this.form && this.form.auto_save) {
           this.pendingSubmission.set(this.dataFormValue)
+        }
+        // Start partial submission sync on first form change
+        if (!this.adminPreview && this.form?.enable_partial_submissions && oldValue && Object.keys(oldValue).length > 0 && !this.partialSubmissionStarted) {
+          this.partialSubmission.startSync()
+          this.partialSubmissionStarted = true
         }
       }
     },
@@ -391,34 +399,35 @@ export default {
       this.submitForm()
     }
   },
-
+  beforeUnmount() {
+    if (!this.adminPreview && this.form?.enable_partial_submissions) {
+      this.partialSubmission.stopSync()
+    }
+  },
   methods: {
     async submitForm() {
-      this.dataForm.busy = true
-      
       try {
-        if (!await this.nextPage()) {
-          this.dataForm.busy = false
-          return
+        // Process payment if needed
+        if (!await this.doPayment()) {
+          return false // Payment failed or was required but not completed
         }
+        this.dataForm.busy = false
 
-        if (!this.isAutoSubmit && this.formPageIndex !== this.fieldGroups.length - 1) {
-          this.dataForm.busy = false
-          return
-        }
-
-        if (this.form.use_captcha && import.meta.client) {
-          this.$refs.captcha?.reset()
-        }
-
+        // Add submission_id for editable submissions (from main)
         if (this.form.editable_submissions && this.form.submission_id) {
           this.dataForm.submission_id = this.form.submission_id
         }
 
+        // Stop timer and get completion time (from main)
         this.$refs['form-timer'].stopTimer()
         this.dataForm.completion_time = this.$refs['form-timer'].completionTime
 
-        // Add validation strategy check
+        // Add submission hash for partial submissions (from HEAD)
+        if (this.form?.enable_partial_submissions) {
+          this.dataForm.submission_hash = this.partialSubmission.getSubmissionHash()
+        }
+
+        // Add validation strategy check (from main)
         if (!this.formModeStrategy.validation.validateOnSubmit) {
           this.$emit('submit', this.dataForm, this.onSubmissionFailure)
           return
@@ -427,6 +436,7 @@ export default {
         this.$emit('submit', this.dataForm, this.onSubmissionFailure)
       } catch (error) {
         this.handleValidationError(error)
+      } finally {
         this.dataForm.busy = false
       }
     },
@@ -666,13 +676,14 @@ export default {
       }
     },
     async doPayment() {
-      // Use the stripeElements from setup instead of calling useStripeElements
-      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
-      
       // Check if there's a payment block in the current step
       if (!this.paymentBlock) {
         return true // No payment needed for this step
       }
+      this.dataForm.busy = true
+
+      // Use the stripeElements from setup instead of calling useStripeElements
+      const { state: stripeState, processPayment, isCardPopulated, isReadyForPayment } = this.stripeElements
       
       // Skip if payment is already processed in the stripe state
       if (stripeState.intentId) {

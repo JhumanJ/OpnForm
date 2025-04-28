@@ -131,6 +131,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'show_progress_bar' => 'boolean',
             'auto_save' => 'boolean',
             'auto_focus' => 'boolean',
+            'enable_partial_submissions' => 'boolean',
 
             // Properties
             'properties' => 'required|array',

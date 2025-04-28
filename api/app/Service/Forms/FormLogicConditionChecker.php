@@ -320,6 +320,7 @@ class FormLogicConditionChecker
         }
 
         return FormSubmission::where('form_id', $formId)
+            ->where('status', '!=', FormSubmission::STATUS_PARTIAL)
             ->where(function ($query) use ($condition, $fieldValue) {
                 $fieldId = $condition['property_meta']['id'];
 

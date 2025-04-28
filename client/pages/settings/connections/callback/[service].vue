@@ -63,16 +63,10 @@ async function handleCallback() {
 
     // Get autoClose preference from the API response data
     const shouldAutoClose = data?.autoClose === true
-    console.log('[CallbackPage] Checking autoClose status from API data:', { 
-      apiValue: data?.autoClose, 
-      shouldAutoClose 
-    })
-
     alert.success('Account connected successfully.')
     
     // Close window if autoClose is set from API data, otherwise redirect
     if (shouldAutoClose) {
-      console.log('[CallbackPage] Attempting window.close() based on API data.')
       window.close()
       // Add a fallback check in case window.close is blocked
       setTimeout(() => {
@@ -83,7 +77,6 @@ async function handleCallback() {
         }
       }, 500) // Check after 500ms
     } else {
-      console.log('[CallbackPage] autoClose is false or not detected in API data, redirecting.')
       router.push('/settings/connections')
     }
 
