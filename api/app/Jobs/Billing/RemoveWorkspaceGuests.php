@@ -4,11 +4,13 @@ namespace App\Jobs\Billing;
 
 use App\Models\User;
 use App\Models\Workspace;
+use App\Traits\EnsureUserHasWorkspace;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class RemoveWorkspaceGuests implements ShouldQueue
 {
@@ -16,6 +18,7 @@ class RemoveWorkspaceGuests implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+    use EnsureUserHasWorkspace;
 
     /**
      * Create a new job instance.
@@ -50,13 +53,14 @@ class RemoveWorkspaceGuests implements ShouldQueue
 
             // Detach all users from the workspace (except the owner)
             foreach ($workspace->users()->where('users.id', '!=', $this->user->id)->get() as $user) {
-                \Log::info('Detaching user from workspace', [
+                Log::info('Detaching user from workspace', [
                     'workspace_id' => $workspace->id,
                     'workspace_name' => $workspace->name,
                     'user_id' => $user->id,
                     'user_email' => $user->email,
                 ]);
                 $workspace->users()->detach($user);
+                $this->ensureUserHasWorkspace($user);
             }
         });
     }
