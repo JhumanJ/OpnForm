@@ -1,6 +1,7 @@
 <template>
   <div>
     <form
+      method="POST"
       @submit.prevent="register"
       @keydown="form.onKeydown($event)"
     >

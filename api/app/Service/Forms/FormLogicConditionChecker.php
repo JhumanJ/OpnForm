@@ -76,6 +76,8 @@ class FormLogicConditionChecker
                 return $this->filesConditionMet($propertyCondition, $value);
             case 'matrix':
                 return $this->matrixConditionMet($propertyCondition, $value);
+            case 'payment':
+                return $this->paymentConditionMet($propertyCondition, $value);
         }
 
         return false;
@@ -318,6 +320,7 @@ class FormLogicConditionChecker
         }
 
         return FormSubmission::where('form_id', $formId)
+            ->where('status', '!=', FormSubmission::STATUS_PARTIAL)
             ->where(function ($query) use ($condition, $fieldValue) {
                 $fieldId = $condition['property_meta']['id'];
 
@@ -553,5 +556,22 @@ class FormLogicConditionChecker
         }
 
         return false;
+    }
+
+    private function paymentConditionMet(array $propertyCondition, $value): bool
+    {
+        switch ($propertyCondition['operator']) {
+            case 'paid':
+                return $this->checkPaid($propertyCondition, $value);
+            case 'not_paid':
+                return !$this->checkPaid($propertyCondition, $value);
+        }
+
+        return false;
+    }
+
+    private function checkPaid($propertyCondition, $value): bool
+    {
+        return ($value) ? str_starts_with($value, 'pi_') : false;
     }
 }

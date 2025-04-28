@@ -210,6 +210,18 @@
       "decoders": ["ean_reader", "ean_8_reader"]
     }
   },
+  "payment": {
+    "name": "payment",
+    "title": "Payment",
+    "icon": "i-heroicons-credit-card",
+    "default_block_name": "Payment",
+    "bg_class": "bg-green-100",
+    "text_class": "text-green-900",
+    "is_input": true,
+    "self_hosted": false,
+    "max_count": 1,
+    "auth_required": true
+  },
   "nf-text": {
     "name": "nf-text",
     "title": "Text",

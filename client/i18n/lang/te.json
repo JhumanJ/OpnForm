@@ -10,7 +10,7 @@
         "create_form_free": "OpnForm తో మీ ఫారమ్‌ను ఉచితంగా సృష్టించండి",
         "submit": "సమర్పించండి",
         "wrong_form_structure": "ఈ ఫారమ్ నిర్మాణంలో ఏదో తప్పు ఉంది. మీరు ఫారమ్ యజమాని అయితే, దయచేసి మమ్మల్ని సంప్రదించండి.",
-        "cannot_access_here": "ఈ కంటెంట్‌ను ఇక్కడ యాక్సెస్ చేయలేరు. దీన్ని యాక్సెస్ చేయడానికి దిగువ లింక���‌పై క్లిక్ చేయండి.",
+        "cannot_access_here": "ఈ కంటెంట్‌ను ఇక్కడ యాక్సెస్ చేయలేరు. దీన్ని యాక్సెస్ చేయడానికి దిగువ లింక్‌పై క్లిక్ చేయండి.",
         "open_form": "ఫారమ్ తెరవండి",
         "restricted_to_workspace": "Notion వర్క్‌స్పేస్ సభ్యులకు మాత్రమే పరిమితం. ఈ కంటెంట్‌ను యాక్సెస్ చేయడానికి లాగిన్ చేయండి.",
         "select": {
@@ -21,7 +21,7 @@
             "create": "సృష్టించండి"
         },
         "fileInput": {
-            "chooseFiles": "ఫైల్(లు) ఎంచుకోవడానికి క్లిక్ చేయండి లేదా ఇక్కడ డ్రాగ్ చేయండి | ఫైల్ ఎంచుకోవడానికి క్లిక్ చేయండి లేదా ఇక్కడ డ్రాగ్ ��ేయండి",
+            "chooseFiles": "ఫైల్(లు) ఎంచుకోవడానికి క్లిక్ చేయండి లేదా ఇక్కడ డ్రాగ్ చేయండి | ఫైల్ ఎంచుకోవడానికి క్లిక్ చేయండి లేదా ఇక్కడ డ్రాగ్ చేయండి",
             "sizeLimit": "పరిమాణ పరిమితి: ప్రతి ఫైల్‌కు {count}MB",
             "uploadingFile": "మీ ఫైల్ అప్‌లోడ్ అవుతోంది..."
         },
@@ -39,6 +39,27 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "క్లిక్ చేయండి కెమెరా తెరవండి"
+        },
+        "payment": {
+            "amount_to_pay": "చెల్లించవలసిన మొత్తం",
+            "success": "చెల్లింపు విజయవంతమైంది",
+            "name_on_card": "కార్డుపై పేరు",
+            "billing_email": "బిల్లింగ్ ఇమెయిల్ చిరునామా",
+            "payment_disclaimer": "ఈ బటన్‌ను క్లిక్ చేసినప్పుడు మీ క్రెడిట్ కార్డ్‌కు ఛార్జీ విధించబడుతుంది. చెల్లింపులు Stripe ద్వారా సురక్షితంగా ప్రాసెస్ చేయబడతాయి.",
+            "errors": {
+                "missingFormOrProvider": "Missing form slug or provider ID.",
+                "failedAccountDetails": "Failed to get Stripe account details.",
+                "setupError": "An error occurred during Stripe setup.",
+                "systemNotReady": "Payment system not ready. Please wait a moment and try again.",
+                "misconfigured": "Payment system misconfigured. Please refresh and try again.",
+                "notFullyReady": "Payment system not fully ready. Please refresh and try again.",
+                "paymentRequired": "Complete the payment before you can proceed.",
+                "nameRequired": "Card holder name is required.",
+                "emailRequired": "Billing email address is required.",
+                "invalidEmail": "Invalid billing email address.",
+                "failedIntent": "Failed to create payment intent.",
+                "processingFailed": "Payment processing failed."
+            }
         }
     }
 } 

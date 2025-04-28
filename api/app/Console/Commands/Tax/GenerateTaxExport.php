@@ -36,7 +36,7 @@ class GenerateTaxExport extends Command
         'CZ' => 21,
         'DK' => 25,
         'EE' => 22,
-        'FI' => 24,
+        "FI" => 25.5,
         'FR' => 20,
         'DE' => 19,
         'GR' => 24,

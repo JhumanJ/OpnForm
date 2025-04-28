@@ -41,6 +41,12 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'combined' => [
+            'driver' => 'stack',
+            'channels' => [env('LOG_CHANNEL') === 'combined' ? 'stack' : env('LOG_CHANNEL', 'stack'), 'slack'],
+            'ignore_exceptions' => false,
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

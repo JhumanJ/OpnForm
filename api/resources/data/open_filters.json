@@ -884,5 +884,23 @@
         "expected_type": "number"
       }
     }
+  },
+  "payment": {
+    "comparators": {
+      "paid": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        }
+      },
+      "not_paid": {
+        "expected_type": "boolean",
+        "format": {
+          "type": "enum",
+          "values": [true]
+        }
+      }
+    }
   }
 }

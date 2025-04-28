@@ -17,8 +17,27 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Job to store form submissions
+ *
+ * This job handles the storage of form submissions, including processing of metadata
+ * and special field types like files and signatures.
+ *
+ * The job accepts all data in the submissionData array, including metadata fields:
+ * - submission_id: ID of an existing submission to update (must be an integer)
+ * - completion_time: Time in seconds it took to complete the form
+ * - is_partial: Whether this is a partial submission (will be stored with STATUS_PARTIAL)
+ *   If not specified, submissions are treated as complete by default.
+ *
+ * These metadata fields will be automatically extracted and removed from the stored form data.
+ *
+ * For partial submissions:
+ * - The submission will be stored with STATUS_PARTIAL
+ * - All file uploads and signatures will be processed normally
+ * - The submission can later be updated to STATUS_COMPLETED when the user completes the form
+ */
 class StoreFormSubmissionJob implements ShouldQueue
 {
     use Dispatchable;
@@ -26,15 +45,19 @@ class StoreFormSubmissionJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public ?string $submissionId = null;
+    public ?int $submissionId = null;
     private ?array $formData = null;
+    private ?int $completionTime = null;
+    private bool $isPartial = false;
 
     /**
      * Create a new job instance.
      *
+     * @param Form $form The form being submitted
+     * @param array $submissionData Form data including metadata fields (submission_id, completion_time, etc.)
      * @return void
      */
-    public function __construct(public Form $form, public array $submissionData, public ?int $completionTime = null)
+    public function __construct(public Form $form, public array $submissionData)
     {
     }
 
@@ -45,60 +68,95 @@ class StoreFormSubmissionJob implements ShouldQueue
      */
     public function handle()
     {
+        // Extract metadata from submission data
+        $this->extractMetadata();
+
+        // Process form data
         $this->formData = $this->getFormData();
         $this->addHiddenPrefills($this->formData);
 
+        // Store the submission
         $this->storeSubmission($this->formData);
 
+        // Add the submission ID to the form data after storing the submission
         $this->formData['submission_id'] = $this->submissionId;
-        FormSubmitted::dispatch($this->form, $this->formData);
+
+        // Only trigger integrations for completed submissions, not partial ones
+        if (!$this->isPartial) {
+            FormSubmitted::dispatch($this->form, $this->formData);
+        }
     }
 
+    /**
+     * Extract metadata from submission data
+     *
+     * This method extracts and removes metadata fields from the submission data:
+     * - submission_id
+     * - completion_time
+     * - is_partial
+     */
+    private function extractMetadata(): void
+    {
+        // Extract completion time
+        if (isset($this->submissionData['completion_time'])) {
+            $this->completionTime = $this->submissionData['completion_time'];
+            unset($this->submissionData['completion_time']);
+        }
+
+        // Extract direct submission ID if present
+        if (isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
+            if (is_numeric($this->submissionData['submission_id'])) {
+                $this->submissionId = (int)$this->submissionData['submission_id'];
+            }
+            unset($this->submissionData['submission_id']);
+        }
+
+        // Extract is_partial flag if present, otherwise default to false
+        if (isset($this->submissionData['is_partial'])) {
+            $this->isPartial = (bool)$this->submissionData['is_partial'];
+            unset($this->submissionData['is_partial']);
+        }
+    }
+
+    /**
+     * Get the submission ID
+     *
+     * @return int|null
+     */
     public function getSubmissionId()
     {
         return $this->submissionId;
     }
 
-    public function setSubmissionId(int $id)
-    {
-        $this->submissionId = $id;
-
-        return $this;
-    }
-
+    /**
+     * Store the submission in the database
+     *
+     * @param array $formData
+     */
     private function storeSubmission(array $formData)
     {
-        // Create or update record
-        if ($previousSubmission = $this->submissionToUpdate()) {
-            $previousSubmission->data = $formData;
-            $previousSubmission->completion_time = $this->completionTime;
-            $previousSubmission->save();
-            $this->submissionId = $previousSubmission->id;
-        } else {
-            $response = $this->form->submissions()->create([
-                'data' => $formData,
-                'completion_time' => $this->completionTime,
-            ]);
-            $this->submissionId = $response->id;
-        }
-    }
+        // Find existing submission or create a new one
+        $submission = $this->submissionId
+            ? $this->form->submissions()->findOrFail($this->submissionId)
+            : new FormSubmission();
 
-    /**
-     * Search for Submission record to update and returns it
-     */
-    private function submissionToUpdate(): ?FormSubmission
-    {
-        if ($this->submissionId) {
-            return $this->form->submissions()->findOrFail($this->submissionId);
-        }
-        if ($this->form->editable_submissions && isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
-            $submissionId = $this->submissionData['submission_id'] ? Hashids::decode($this->submissionData['submission_id']) : false;
-            $submissionId = $submissionId[0] ?? null;
-
-            return $this->form->submissions()->findOrFail($submissionId);
+        // Set submission properties
+        if (!$this->submissionId) {
+            $submission->form_id = $this->form->id;
         }
 
-        return null;
+        $submission->data = $formData;
+        $submission->completion_time = $this->completionTime;
+
+        // Set the status based on whether this is a partial submission
+        $submission->status = $this->isPartial
+            ? FormSubmission::STATUS_PARTIAL
+            : FormSubmission::STATUS_COMPLETED;
+
+        $submission->save();
+
+        // Store the submission ID
+        $this->submissionId = $submission->id;
     }
 
     /**
@@ -209,7 +267,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         $newPath = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $this->form->id);
         $completeNewFilename = $newPath . '/' . $fileNameParser->getMovedFileName();
 
-        \Log::debug('Moving file to permanent storage.', [
+        Log::debug('Moving file to permanent storage.', [
             'uuid' => $fileNameParser->uuid,
             'destination' => $completeNewFilename,
             'form_id' => $this->form->id,
@@ -264,13 +322,20 @@ class StoreFormSubmissionJob implements ShouldQueue
     }
 
     /**
-     * Get the processed form data after all transformations
+     * Get the processed form data including the submission ID
+     *
+     * @return array
      */
     public function getProcessedData(): array
     {
         if ($this->formData === null) {
             $this->formData = $this->getFormData();
         }
-        return $this->formData;
+
+        // Ensure the submission ID is included in the returned data
+        $data = $this->formData;
+        $data['submission_id'] = $this->submissionId;
+
+        return $data;
     }
 }
