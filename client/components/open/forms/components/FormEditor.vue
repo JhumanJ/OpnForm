@@ -84,6 +84,14 @@
       :validation-error-response="validationErrorResponse"
       @close="showFormErrorModal = false"
     />
+
+    <!-- Logic Confirmation Modal -->
+    <LogicConfirmationModal
+      :is-visible="showLogicConfirmationModal"
+      :errors="logicErrors"
+      @cancel="handleLogicConfirmationCancel"
+      @confirm="handleLogicConfirmationConfirm"
+    />
   </div>
   <div
     v-else
@@ -100,13 +108,14 @@ import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormFieldsEditor from './FormFieldsEditor.vue'
 import FormCustomization from "./form-components/FormCustomization.vue"
 import FormEditorPreview from "./form-components/FormEditorPreview.vue"
-import { validatePropertiesLogic } from "~/composables/forms/validatePropertiesLogic.js"
+import { useFormLogic } from "~/composables/forms/useFormLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
 import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import LogicConfirmationModal from '~/components/forms/LogicConfirmationModal.vue'
 
 export default {
   name: "FormEditor",
@@ -118,7 +127,8 @@ export default {
     FormCustomization,
     FormFieldsEditor,
     FormErrorModal,
-    FormSettings
+    FormSettings,
+    LogicConfirmationModal
   },
   props: {
     isEdit: {
@@ -179,9 +189,11 @@ export default {
   data() {
     return {
       showFormErrorModal: false,
+      showLogicConfirmationModal: false,
       validationErrorResponse: null,
       updateFormLoading: false,
       createdFormSlug: null,
+      logicErrors: [],
     }
   },
 
@@ -238,7 +250,24 @@ export default {
       const defaultedData = setFormDefaults(this.form.data())
       this.form.fill(defaultedData)
   
-      this.form.properties = validatePropertiesLogic(this.form.properties)
+      // Check for logic errors
+      const { getLogicErrors } = useFormLogic()
+      this.logicErrors = getLogicErrors(this.form.properties)
+      
+      if (this.logicErrors.length > 0) {
+        this.showLogicConfirmationModal = true
+        return
+      }
+      
+      this.proceedWithSave()
+    },
+    proceedWithSave() {
+      if (this.logicErrors.length > 0) {
+        // Clean invalid logic before saving using the comprehensive validator
+        const { validatePropertiesLogic } = useFormLogic()
+        this.form.properties = validatePropertiesLogic(this.form.properties)
+      }
+
       if (this.isGuest) {
         this.saveFormGuest()
       } else if (this.isEdit) {
@@ -246,6 +275,13 @@ export default {
       } else {
         this.saveFormCreate()
       }
+    },
+    handleLogicConfirmationCancel() {
+      this.showLogicConfirmationModal = false
+    },
+    handleLogicConfirmationConfirm() {
+      this.showLogicConfirmationModal = false
+      this.proceedWithSave()
     },
     saveFormEdit() {
       if (this.updateFormLoading) return
