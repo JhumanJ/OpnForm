@@ -21,6 +21,13 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
         auth_type: 'redirect'
       },
       {
+        name: 'stripe',
+        title: 'Stripe',
+        icon: 'cib:stripe',
+        enabled: featureFlagsStore.getFlag('billing.stripe_publishable_key', false),
+        auth_type: 'redirect'
+      },
+      {
         name: 'telegram',
         title: 'Telegram',
         icon: 'mdi:telegram',
@@ -47,25 +54,30 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     )
   }
 
-  const connect = (service, redirect = false) => {
+  const connect = (service, redirect = false, newtab = false, autoClose = false) => {
     contentStore.resetState()    
 
     const serviceConfig = getService(service)
-    if (serviceConfig.auth_type !== 'redirect') {
+    if (serviceConfig && serviceConfig.auth_type && serviceConfig.auth_type !== 'redirect') {
       return
     }
 
     contentStore.startLoading()
-    const intention = new URL(window.location.href).pathname
+    const intention = redirect ? new URL(window.location.href).pathname : undefined
+    
     opnFetch(`/settings/providers/connect/${service}`, {
       method: 'POST',
       body: {
-        ...redirect ? { intention } : {},
+        ...(intention && { intention }),
+        autoClose: autoClose 
       }
     })
       .then((data) => {
-        // Redirect flow
-        window.location.href = data.url
+        if (newtab) {
+          window.open(data.url, '_blank')
+        } else {
+          window.location.href = data.url
+        }
       })
       .catch((error) => {
         try {

@@ -40,6 +40,7 @@
     "@nuxt/ui": "^2.19.2",
     "@pinia/nuxt": "^0.5.5",
     "@popperjs/core": "^2.11.8",
+    "@stripe/stripe-js": "^5.5.0",
     "@sentry/nuxt": "^9.8.0",
     "@sentry/vite-plugin": "^3.2.2",
     "@sentry/vue": "^9.8.0",
@@ -76,6 +77,7 @@
     "vue-json-pretty": "^2.4.0",
     "vue-notion": "^3.0.0",
     "vue-signature-pad": "^3.0.2",
+    "vue-stripe-js": "^1.0.4",
     "vuedraggable": "next",
     "webcam-easy": "^1.1.1"
   },

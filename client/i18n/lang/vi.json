@@ -39,6 +39,13 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "Nhấp để mở Camera"
+        },
+        "payment": {
+            "amount_to_pay": "Số tiền cần thanh toán",
+            "success": "Thanh toán thành công",
+            "name_on_card": "Tên trên thẻ",
+            "billing_email": "Email thanh toán",
+            "payment_disclaimer": "Thẻ tín dụng của bạn sẽ bị tính phí khi nhấp vào nút này. Các khoản thanh toán được xử lý an toàn qua Stripe."
         }
     }
 } 

@@ -21,7 +21,7 @@
             "create": "உருவாக்கு"
         },
         "fileInput": {
-            "chooseFiles": "கோப்புகளைத் தேர்ந்தெடுக்க கிளிக் செய்யவும் அல்லது இ���்கே இழுக்கவும் | கோப்பைத் தேர்ந்தெடுக்க கிளிக் செய்யவும் அல்லது இங்கே இழுக்கவும்",
+            "chooseFiles": "கோப்புகளைத் தேர்ந்தெடுக்க கிளிக் செய்யவும் அல்லது இங்கே இழுக்கவும் | கோப்பைத் தேர்ந்தெடுக்க கிளிக் செய்யவும் அல்லது இங்கே இழுக்கவும்",
             "sizeLimit": "அளவு வரம்பு: ஒரு கோப்புக்கு {count}MB",
             "uploadingFile": "உங்கள் கோப்பு பதிவேற்றப்படுகிறது..."
         },
@@ -30,7 +30,7 @@
             "allowCameraPermissionDescription": "புகைப்படங்களை எடுக்கும் முன் நீங்கள் கேமரா அணுகலை அனுமதிக்க வேண்டும். இந்தப் பக்கத்தில் கேமரா அனுமதியை இயக்க உலாவி அமைப்புகளுக்குச் செல்லவும்.",
             "gotIt": "புரிந்தது!",
             "cameraDeviceError": "கேமரா சாதனப் பிழை",
-            "cameraDeviceErrorDescription": "வெப்கேம் சாதனத்தைத் தொடங்க முயற்���ிக்கும்போது அறியப்படாத பிழை ஏற்பட்டது.",
+            "cameraDeviceErrorDescription": "வெப்கேம் சாதனத்தைத் தொடங்க முயற்சிக்கும்போது அறியப்படாத பிழை ஏற்பட்டது.",
             "goBack": "திரும்பிச் செல்"
         },
         "signatureInput": {
@@ -39,6 +39,27 @@
         },
         "barcodeInput": {
             "clickToOpenCamera": "கிளிக் செய்யவும் கேமரா திறக்கவும்"
+        },
+        "payment": {
+            "amount_to_pay": "செலுத்த வேண்டிய தொகை",
+            "success": "பணம் செலுத்துதல் வெற்றி",
+            "name_on_card": "கார்டில் உள்ள பெயர்",
+            "billing_email": "பில்லிங் மின்னஞ்சல் முகவரி",
+            "payment_disclaimer": "இந்த பொத்தானைக் கிளிக் செய்யும் போது உங்கள் கிரெடிட் கார்டில் கட்டணம் வசூலிக்கப்படும். பணம் செலுத்துதல்கள் பாதுகாப்பாக Stripe மூலம் செயலாக்கப்படுகின்றன.",
+            "errors": {
+                "missingFormOrProvider": "Missing form slug or provider ID.",
+                "failedAccountDetails": "Failed to get Stripe account details.",
+                "setupError": "An error occurred during Stripe setup.",
+                "systemNotReady": "Payment system not ready. Please wait a moment and try again.",
+                "misconfigured": "Payment system misconfigured. Please refresh and try again.",
+                "notFullyReady": "Payment system not fully ready. Please refresh and try again.",
+                "paymentRequired": "Complete the payment before you can proceed.",
+                "nameRequired": "Card holder name is required.",
+                "emailRequired": "Billing email address is required.",
+                "invalidEmail": "Invalid billing email address.",
+                "failedIntent": "Failed to create payment intent.",
+                "processingFailed": "Payment processing failed."
+            }
         }
     }
 } 

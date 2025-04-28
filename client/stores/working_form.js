@@ -3,6 +3,7 @@ import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
+import { useAuthStore } from '~/stores/auth'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
@@ -230,6 +231,29 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
 
     addBlock(type, index = null, openSettings = true) {
+      const block = blocksTypes[type]
+      if (block?.self_hosted !== undefined && !block.self_hosted && useFeatureFlag('self_hosted')) {
+        useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
+        return
+      }
+
+      // Check if authentication is required for this block type
+      if (block?.auth_required && !useAuthStore().check) {
+        useAlert().error('Please login first to add this block')
+        return
+      }
+
+      // Check if block type has a maximum count defined
+      if (block?.max_count !== undefined) {
+        const currentCount = this.content.properties.filter(prop => prop.type === type).length
+        if (currentCount >= block.max_count) {
+          useAlert().error(`Only ${block.max_count} '${block.title}' block(s) allowed per form.`)
+          return
+        }
+        // If a max_count is defined, always open settings like we did for payment
+        openSettings = true 
+      }
+      
       this.blockForm.type = type
       this.blockForm.name = blocksTypes[type].default_block_name
       const newBlock = this.prefillDefault(this.blockForm.data())

@@ -18,6 +18,7 @@ class FeatureFlagsController extends Controller
                 'billing' => [
                     'enabled' => !empty(config('cashier.key')) && !empty(config('cashier.secret')),
                     'appsumo' => !empty(config('services.appsumo.api_key')) && !empty(config('services.appsumo.api_secret')),
+                    'stripe_publishable_key' => config('cashier.key'),
                 ],
                 'storage' => [
                     'local' => config('filesystems.default') === 'local',

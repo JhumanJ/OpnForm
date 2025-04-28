@@ -63,6 +63,8 @@ function propertyConditionMet(propertyCondition, value) {
       return filesConditionMet(propertyCondition, value)
     case "matrix":
       return matrixConditionMet(propertyCondition, value)
+    case "payment":
+      return paymentConditionMet(propertyCondition, value)
   }
   return false
 }
@@ -431,4 +433,18 @@ function matrixConditionMet(propertyCondition, value) {
      return !checkMatrixContains(propertyCondition, value)
   }
   return false
+}
+
+function paymentConditionMet(propertyCondition, value) {
+  switch (propertyCondition.operator) {
+    case "paid":
+      return checkPaid(propertyCondition, value)
+    case "not_paid":
+      return !checkPaid(propertyCondition, value)
+  }
+  return false
+}
+
+function checkPaid(propertyCondition, value) {
+  return (value) ? value.startsWith('pi_') : false
 }

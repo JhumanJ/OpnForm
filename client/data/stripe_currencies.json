@@ -1,0 +1,197 @@
+[
+    {
+        "name": "AED - UAE Dirham",
+        "code": "AED",
+        "symbol": "د.إ"
+    },
+    {
+        "name": "AUD - Australian Dollar",
+        "code": "AUD",
+        "symbol": "A$"
+    },
+    {
+        "name": "BGN - Bulgarian Lev",
+        "code": "BGN",
+        "symbol": "лв"
+    },
+    {
+        "name": "BRL - Brazilian Real",
+        "code": "BRL",
+        "symbol": "R$"
+    },
+    {
+        "name": "CAD - Canadian Dollar",
+        "code": "CAD",
+        "symbol": "C$"
+    },
+    {
+        "name": "CHF - Swiss Franc",
+        "code": "CHF",
+        "symbol": "CHF"
+    },
+    {
+        "name": "CNY - Yuan Renminbi",
+        "code": "CNY",
+        "symbol": "¥"
+    },
+    {
+        "name": "CZK - Czech Koruna",
+        "code": "CZK",
+        "symbol": "Kč"
+    },
+    {
+        "name": "DKK - Danish Krone",
+        "code": "DKK",
+        "symbol": "kr"
+    },
+    {
+        "name": "EUR - Euro",
+        "code": "EUR",
+        "symbol": "€"
+    },
+    {
+        "name": "GBP - Pound Sterling",
+        "code": "GBP",
+        "symbol": "£"
+    },
+    {
+        "name": "HKD - Hong Kong Dollar",
+        "code": "HKD",
+        "symbol": "HK$"
+    },
+    {
+        "name": "HRK - Croatian Kuna",
+        "code": "HRK",
+        "symbol": "kn"
+    },
+    {
+        "name": "HUF - Hungarian Forint",
+        "code": "HUF",
+        "symbol": "Ft"
+    },
+    {
+        "name": "IDR - Indonesian Rupiah",
+        "code": "IDR",
+        "symbol": "Rp"
+    },
+    {
+        "name": "ILS - Israeli Shekel",
+        "code": "ILS",
+        "symbol": "₪"
+    },
+    {
+        "name": "INR - Indian Rupee",
+        "code": "INR",
+        "symbol": "₹"
+    },
+    {
+        "name": "ISK - Icelandic Króna",
+        "code": "ISK",
+        "symbol": "kr"
+    },
+    {
+        "name": "JPY - Japanese Yen",
+        "code": "JPY",
+        "symbol": "¥"
+    },
+    {
+        "name": "KRW - South Korean Won",
+        "code": "KRW",
+        "symbol": "₩"
+    },
+    {
+        "name": "MAD - Moroccan Dirham",
+        "code": "MAD",
+        "symbol": "د.م."
+    },
+    {
+        "name": "MXN - Mexican Peso",
+        "code": "MXN",
+        "symbol": "$"
+    },
+    {
+        "name": "MYR - Malaysian Ringgit",
+        "code": "MYR",
+        "symbol": "RM"
+    },
+    {
+        "name": "NOK - Norwegian Krone",
+        "code": "NOK",
+        "symbol": "kr"
+    },
+    {
+        "name": "NZD - New Zealand Dollar",
+        "code": "NZD",
+        "symbol": "NZ$"
+    },
+    {
+        "name": "PHP - Philippine Peso",
+        "code": "PHP",
+        "symbol": "₱"
+    },
+    {
+        "name": "PLN - Polish Złoty",
+        "code": "PLN",
+        "symbol": "zł"
+    },
+    {
+        "name": "RON - Romanian Leu",
+        "code": "RON",
+        "symbol": "lei"
+    },
+    {
+        "name": "RSD - Serbian Dinar",
+        "code": "RSD",
+        "symbol": "дин."
+    },
+    {
+        "name": "RUB - Russian Rouble",
+        "code": "RUB",
+        "symbol": "₽"
+    },
+    {
+        "name": "SAR - Saudi Riyal",
+        "code": "SAR",
+        "symbol": "﷼"
+    },
+    {
+        "name": "SEK - Swedish Krona",
+        "code": "SEK",
+        "symbol": "kr"
+    },
+    {
+        "name": "SGD - Singapore Dollar",
+        "code": "SGD",
+        "symbol": "S$"
+    },
+    {
+        "name": "THB - Thai Baht",
+        "code": "THB",
+        "symbol": "฿"
+    },
+    {
+        "name": "TWD - New Taiwan Dollar",
+        "code": "TWD",
+        "symbol": "NT$"
+    },
+    {
+        "name": "UAH - Ukrainian Hryvnia",
+        "code": "UAH",
+        "symbol": "₴"
+    },
+    {
+        "name": "USD - United States Dollar",
+        "code": "USD",
+        "symbol": "$"
+    },
+    {
+        "name": "VND - Vietnamese Dong",
+        "code": "VND",
+        "symbol": "₫"
+    },
+    {
+        "name": "ZAR - South African Rand",
+        "code": "ZAR",
+        "symbol": "R"
+    }
+]

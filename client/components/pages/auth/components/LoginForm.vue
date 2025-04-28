@@ -6,6 +6,7 @@
     />
 
     <form
+      method="POST"
       class="mt-4"
       @submit.prevent="login"
       @keydown="form.onKeydown($event)"

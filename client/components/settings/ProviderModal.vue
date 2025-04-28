@@ -80,7 +80,6 @@ const emit = defineEmits(['close'])
 
 const providersStore = useOAuthProvidersStore()
 const services = computed(() => providersStore.services)
-
 const loading = ref(false)
 const showWidgetModal = ref(false)
 const selectedService = ref(null)
