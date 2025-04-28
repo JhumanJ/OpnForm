@@ -108,8 +108,7 @@ import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormFieldsEditor from './FormFieldsEditor.vue'
 import FormCustomization from "./form-components/FormCustomization.vue"
 import FormEditorPreview from "./form-components/FormEditorPreview.vue"
-import { useLogicValidation } from "~/composables/forms/useLogicValidation.js"
-import { useLogicCleaner } from "~/composables/forms/useLogicCleaner.js"
+import { useFormLogic } from "~/composables/forms/useFormLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
 import FormSettings from './form-components/FormSettings.vue'
@@ -252,7 +251,7 @@ export default {
       this.form.fill(defaultedData)
   
       // Check for logic errors
-      const { getLogicErrors } = useLogicValidation()
+      const { getLogicErrors } = useFormLogic()
       this.logicErrors = getLogicErrors(this.form.properties)
       
       if (this.logicErrors.length > 0) {
@@ -264,9 +263,9 @@ export default {
     },
     proceedWithSave() {
       if (this.logicErrors.length > 0) {
-        // Clean invalid logic before saving
-        const { cleanInvalidLogic } = useLogicCleaner()
-        this.form.properties = cleanInvalidLogic(this.form.properties)
+        // Clean invalid logic before saving using the comprehensive validator
+        const { validatePropertiesLogic } = useFormLogic()
+        this.form.properties = validatePropertiesLogic(this.form.properties)
       }
 
       if (this.isGuest) {
