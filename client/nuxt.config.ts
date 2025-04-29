@@ -115,7 +115,7 @@ export default defineNuxtConfig({
   ],
 
   tailwindcss: {
-      cssPath: ['~/scss/app.scss']
+      cssPath: '~/scss/app.scss'
   },
 
   colorMode: {
