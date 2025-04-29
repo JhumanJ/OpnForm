@@ -72,18 +72,19 @@
 
         <div class="rounded-lg p-5 bg-gray-100 dark:bg-gray-900 mt-4">
           <open-form
-            v-if="form"
+            v-if="formManager"
             :theme="theme"
-            :loading="false"
-            :form="form"
-            :fields="form.properties"
+            :form-manager="formManager"
+            :dark-mode="false"
             :mode="FormMode.PREFILL"
+            :form-properties="form.properties"
             @submit="generateUrl"
           >
-            <template #submit-btn="{ submitForm }">
+            <template #submit-btn="{loading}">
               <v-button
                 class="mt-2 px-8 mx-1"
-                @click.prevent="submitForm"
+                :loading="loading"
+                @click.prevent="generateUrl"
               >
                 Generate Pre-filled URL
               </v-button>
@@ -111,6 +112,7 @@ import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { FormManager } from '~/lib/forms/FormManager'
 
 export default {
   name: "UrlFormPrefill",
@@ -123,6 +125,7 @@ export default {
   data: () => ({
     prefillFormData: null,
     showUrlFormPrefillModal: false,
+    formManager: null,
   }),
 
   computed: {
@@ -137,8 +140,30 @@ export default {
     }
   },
 
+  watch: {
+    form: {
+      handler(newForm) {
+        if (newForm) {
+          this.initializeManager();
+        }
+      },
+      immediate: true,
+      deep: false
+    }
+  },
+
   methods: {
-    generateUrl(formData) {
+    initializeManager() {
+      console.log("Initializing FormManager for UrlFormPrefill...");
+      this.formManager = new FormManager(this.form, FormMode.PREFILL);
+      console.log("FormManager for UrlFormPrefill initialized.");
+    },
+    generateUrl() {
+      if (!this.formManager) return;
+      
+      const formData = this.formManager.form.data();
+      
+      console.log("Generating URL with data:", formData);
       this.prefillFormData = formData
       this.$nextTick().then(() => {
         if (this.$refs.content) {

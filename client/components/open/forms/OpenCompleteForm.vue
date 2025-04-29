@@ -6,14 +6,14 @@
     :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
     <link
-      v-if="formModeStrategy.display.showFontLink && form.font_family"
+      v-if="showFontLink && form.font_family"
       rel="stylesheet"
       :href="getFontUrl"
     >
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
-        {{ $t('forms.password_protected') }}
+        {{ t('forms.password_protected') }}
       </p>
       <div class="form-group flex flex-wrap w-full">
         <div class="relative mb-3 w-full px-2">
@@ -33,7 +33,7 @@
           class="my-4"
           @click="passwordEntered"
         >
-          {{ $t('forms.submit') }}
+          {{ t('forms.submit') }}
         </open-form-button>
       </div>
     </div>
@@ -81,7 +81,7 @@
     </div>
 
     <form-cleanings
-      v-if="formModeStrategy.display.showFormCleanings"
+      v-if="showFormCleanings"
       :hideable="true"
       class="mb-4 mx-2"
       :form="form"
@@ -90,27 +90,26 @@
 
     <v-transition name="fade">
       <div
-        v-if="!submitted"
+        v-if="!isFormSubmitted"
         key="form"
       >
         <open-form
-          v-if="form && !form.is_closed"
-          :form="form"
-          :loading="loading"
-          :fields="form.properties"
+          v-if="formManager && form && !form.is_closed"
+          :form-manager="formManager"
           :theme="theme"
           :dark-mode="darkMode"
           :mode="mode"
-          @submit="submitForm"
+          :form-properties="form.properties"
+          @submit="triggerSubmit"
         >
-          <template #submit-btn="{submitForm: handleSubmit}">
+          <template #submit-btn="{loading}">
             <open-form-button
-              :loading="loading"
+              :loading="loading || isProcessing"
               :theme="theme"
               :color="form.color"
               class="mt-2 px-8 mx-1"
               :class="submitButtonClass"
-              @click.prevent="handleSubmit"
+              @click.prevent="triggerSubmit"
             >
               {{ form.submit_button_text }}
             </open-form-button>
@@ -125,12 +124,12 @@
             class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
             target="_blank"
           >
-            {{ $t('forms.powered_by') }} <span class="font-semibold">{{ $t('app.name') }}</span>
+            {{ t('forms.powered_by') }} <span class="font-semibold">{{ t('app.name') }}</span>
           </a>
         </p>
       </div>
       <div
-        v-else
+        v-else-if="isFormSubmitted"
         key="submitted"
         class="px-2"
       >
@@ -172,7 +171,7 @@
             href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
             class="text-nt-blue hover:underline"
           >
-            {{ $t('forms.create_form_free') }}
+            {{ t('forms.create_form_free') }}
           </a>
         </p>
       </div>
@@ -185,197 +184,155 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { FormManager } from '~/lib/forms/FormManager'
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
-import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
-import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js"
-import clonedeep from "clone-deep"
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import TextBlock from '~/components/forms/TextBlock.vue'
 
-export default {
-  components: { VTransition, OpenFormButton, OpenForm, FormCleanings, FirstSubmissionModal },
-
-  props: {
-    form: { type: Object, required: true },
-    mode: {
-      type: String,
-      default: FormMode.LIVE,
-      validator: (value) => Object.values(FormMode).includes(value)
-    },
-    submitButtonClass: { type: String, default: '' },
-    darkMode: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  form: { type: Object, required: true },
+  mode: {
+    type: String,
+    default: FormMode.LIVE,
+    validator: (value) => Object.values(FormMode).includes(value)
   },
+  submitButtonClass: { type: String, default: '' },
+  darkMode: {
+    type: Boolean,
+    default: false
+  }
+})
 
-  emits: ['submitted', 'password-entered', 'restarted'],
+const emit = defineEmits(['submitted', 'password-entered', 'restarted'])
 
-  setup(props) {
-    const { setLocale } = useI18n()
-    const authStore = useAuthStore()
-    
-    return {
-      setLocale,
-      authStore,
-      authenticated: computed(() => authStore.check),
-      isIframe: useIsIframe(),
-      pendingSubmission: pendingSubmission(props.form),
-      partialSubmission: usePartialSubmission(props.form),
-      confetti: useConfetti()
-    }
-  },
+const { t, setLocale } = useI18n()
+const route = useRoute()
+const authStore = useAuthStore()
+const alert = useAlert()
 
-  data () {
-    return {
-      loading: false,
-      submitted: false,
-      passwordForm: useForm({
-        password: null
-      }),
-      hidePasswordDisabledMsg: false,
-      submissionId: false,
-      submittedData: null,
-      showFirstSubmissionModal: false
-    }
-  },
+const formManager = ref(null)
+const passwordForm = useForm({ password: null })
+const hidePasswordDisabledMsg = ref(false)
+const submissionId = ref(route.query.submission_id || null)
+const submittedData = ref(null)
+const showFirstSubmissionModal = ref(false)
 
-  computed: {
-    /**
-     * Gets the comprehensive strategy based on the form mode
-     */
-    formModeStrategy() {
-      return createFormModeStrategy(this.mode)
-    },
-    isEmbedPopup () {
-      return import.meta.client && window.location.href.includes('popup=true')
-    },
-    theme () {
-      return new ThemeBuilder(this.form.theme, {
-        size: this.form.size,
-        borderRadius: this.form.border_radius
-      }).getAllComponents()
-    },
-    isPublicFormPage () {
-      return this.$route.name === 'forms-slug'
-    },
-    getFontUrl() {
-      if(!this.form || !this.form.font_family) return null
-      const family = this.form?.font_family.replace(/ /g, '+')
-      return `https://fonts.googleapis.com/css?family=${family}:wght@400,500,700,800,900&display=swap`
-    },
-    isFormOwner() {
-      return this.authenticated && this.form && this.form.creator_id === this.authStore.user.id
-    }
-  },
-  watch: {
-    'form.language': {
-      handler(newLanguage) {
-        if (newLanguage && typeof newLanguage === 'string') {
-          this.setLocale(newLanguage)
-        } else {
-          this.setLocale('en')  // Default to English if invalid locale
-        }
-      },
-      immediate: true
-    }
-  },
-  beforeUnmount() {
-    this.setLocale('en')
-  },
+const theme = computed(() => {
+  return new ThemeBuilder(props.form.theme, {
+    size: props.form.size,
+    borderRadius: props.form.border_radius
+  }).getAllComponents()
+})
 
-  methods: {
-    submitForm (form, onFailure) {
-      // Check if we should perform actual submission based on the mode
-      if (!this.formModeStrategy.validation.performActualSubmission) {
-        this.submitted = true
-        this.$emit('submitted', true)
-        return
-      }
+const isPublicFormPage = computed(() => {
+  return route.name === 'forms-slug'
+})
 
-      if (form.busy) return
-      this.loading = true
+const getFontUrl = computed(() => {
+  if(!props.form?.font_family) return null
+  const family = props.form.font_family.replace(/ /g, '+')
+  return `https://fonts.googleapis.com/css?family=${family}:wght@400,500,700,800,900&display=swap`
+})
 
-      if (this.form?.enable_partial_submissions) {
-        this.partialSubmission.stopSync()
-      }
+const isFormOwner = computed(() => {
+  return authStore.check && props.form && props.form.creator_id === authStore.user.id
+})
 
-      form.post('/forms/' + this.form.slug + '/answer').then((data) => {
-        this.submittedData = form.data()
-        useAmplitude().logEvent('form_submission', {
-          workspace_id: this.form.workspace_id,
-          form_id: this.form.id
-        })
-    
-        const payload = clonedeep({
-          type: 'form-submitted',
-          form: {
-            slug: this.form.slug,
-            id: this.form.id,
-            redirect_target_url: (this.form.is_pro && data.redirect && data.redirect_url) ? data.redirect_url : null
-          },
-          submission_data: form.data(),
-          completion_time: form['completion_time']
-        })
+const isFormSubmitted = computed(() => formManager.value?.state.isSubmitted ?? false)
+const isProcessing = computed(() => formManager.value?.state.isProcessing ?? false)
+const showFormCleanings = computed(() => formManager.value?.strategy.display.showFormCleanings ?? false)
+const showFontLink = computed(() => formManager.value?.strategy.display.showFontLink ?? false)
 
-        if (this.isIframe) {
-          window.parent.postMessage(payload, '*')
-        }
-        window.postMessage(payload, '*')
-        this.pendingSubmission.remove()
-        this.pendingSubmission.removeTimer()
+watch(() => props.form.language, (newLanguage) => {
+  if (newLanguage && typeof newLanguage === 'string') {
+    setLocale(newLanguage)
+  } else {
+    setLocale('en')
+  }
+}, { immediate: true })
 
-        if (data.redirect && data.redirect_url) {
-          window.location.href = data.redirect_url
-        }
-
-        if (data.submission_id) {
-          this.submissionId = data.submission_id
-        }
-        if (this.isFormOwner && !this.isIframe && data?.is_first_submission) {
-          this.showFirstSubmissionModal = true
-        }
-        this.loading = false
-        this.submitted = true
-        this.$emit('submitted', true)
-
-        // If enabled display confetti
-        if (this.form.confetti_on_submission) {
-          this.confetti.play()
-        }
-      }).catch((error) => {
-        if (this.form?.enable_partial_submissions) {
-          this.partialSubmission.startSync()
-        }
-      
-        console.error(error)
-        if (error.response && error.data) {
-          useAlert().formValidationError(error.data)
-        }
-        this.loading = false
-        onFailure()
+onMounted(async () => {
+  if (props.form) {
+    formManager.value = new FormManager(props.form, props.mode)
+    try {
+      console.log("Initializing manager in OpenCompleteForm...")
+      await formManager.value.initialize({
+        submissionId: route.query.submission_id,
+        urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
       })
-    },
-    restart () {
-      this.submitted = false
-      this.$emit('restarted', true)
-    },
-    passwordEntered () {
-      if (this.passwordForm.password !== '' && this.passwordForm.password !== null) {
-        this.$emit('password-entered', this.passwordForm.password)
-      } else {
-        this.addPasswordError(this.$t('forms.password_required'))
-      }
-    },
-    addPasswordError (msg) {
-      this.passwordForm.errors.set('password', msg)
+      console.log("Manager initialized.")
+    } catch (initError) {
+      console.error("Failed to initialize FormManager:", initError)
+      alert.error('Could not initialize the form. Please try again.')
     }
   }
+})
+
+onBeforeUnmount(() => {
+  setLocale('en')
+})
+
+const triggerSubmit = async () => {
+  if (!formManager.value || isProcessing.value) return
+
+  console.log('Submit triggered in OpenCompleteForm.')
+
+  try {
+    const result = await formManager.value.submit()
+    
+    if (result.success) {
+      console.log('Form submission successful via manager.', result)
+      submittedData.value = result.submissionData
+      
+      if (result.backendResponse?.submission_id) {
+        submissionId.value = result.backendResponse.submission_id
+      }
+
+      if (isFormOwner.value && !useIsIframe() && result.backendResponse?.is_first_submission) {
+        showFirstSubmissionModal.value = true
+      }
+      
+      emit('submitted', true)
+      
+    } else {
+      console.warn('Form submission failed via manager, but no error thrown?', result)
+      alert.error(t('forms.submission_error'))
+    }
+
+  } catch (error) {
+    console.error('Form submission error caught in OpenCompleteForm:', error)
+    if (error && typeof error === 'object' && !error.errors) {
+      alert.error(error.message || t('forms.submission_error'))
+    } else if (!error) {
+      alert.error(t('forms.submission_error'))
+    }
+  }
+}
+
+const restart = async () => {
+  if (!formManager.value) return
+  await formManager.value.restart()
+  submittedData.value = null
+  submissionId.value = null
+  emit('restarted', true)
+}
+
+const passwordEntered = () => {
+  if (passwordForm.password) {
+    emit('password-entered', passwordForm.password)
+  } else {
+    addPasswordError(t('forms.password_required'))
+  }
+}
+
+const addPasswordError = (msg) => {
+  passwordForm.errors.set('password', msg)
 }
 </script>
 
