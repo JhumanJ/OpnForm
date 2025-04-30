@@ -27,9 +27,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     isProcessing: false, // Unified flag for async ops
   });
 
-  // Store registered component APIs (e.g., for Captcha, Stripe Elements)
-  const registeredComponents = reactive({});
-
   // --- Initialize pendingSubmission for localStorage handling ---
   const pendingSubmissionService = import.meta.server ? null : pendingSubmission(toValue(config));
   
@@ -49,18 +46,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
   const validation = useFormValidation(config, form, state, structure.isLastPage);
   const payment = useFormPayment(config, form);
   const submission = useFormSubmission(config, form);
-
-  /**
-   * Registers a component's API (e.g., its ref) with the manager.
-   * @param {String} id - Unique identifier for the component (e.g., 'captcha', 'stripeElement').
-   * @param {Object} api - The component's exposed API (usually its ref).
-   */
-  const registerComponent = (id, api) => {
-    if (!id) {
-      return;
-    }
-    registeredComponents[id] = api;
-  };
 
   /**
    * Initializes the form: loads data, resets state, starts timer.
@@ -168,46 +153,25 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
         isCurrentlyLastPage // Pass the reactive value
       );
 
-      // 3. Get Captcha Token if required
-      let captchaToken = submitOptions.captchaToken;
-      const requiresCaptcha = validation.isCaptchaRequired.value;
-
-      if (requiresCaptcha && !captchaToken) {
-        const captchaApi = registeredComponents['captcha']; // Access registered component
-        if (captchaApi && typeof captchaApi.getToken === 'function') {
-          try {
-            captchaToken = await captchaApi.getToken();
-            if (!captchaToken) {
-              throw new Error("Captcha component returned empty token.");
-            }
-          } catch (captchaError) {
-            throw new Error("Could not process Captcha. Please try again.");
-          }
-        } else {
-          throw new Error("Captcha is required but could not be processed.");
-        }
-      }
-
-      // 4. Get submission hash from partialSubmission if enabled
+      // 3. Get submission hash from partialSubmission if enabled
       let submissionHash = null;
       if (!import.meta.server && toValue(config).enable_partial_submissions) {
         submissionHash = partialSubmissionService.getSubmissionHash();
       }
 
-      // 5. Perform Submission (using submission composable)
+      // 4. Perform Submission (using submission composable)
       const submissionResult = await submission.submit({
         formModeStrategy: strategy.value,
         completionTime: completionTime,
-        captchaToken: captchaToken,
         submissionHash: submissionHash,
         ...submitOptions
       });
 
-      // 6. Update State on Success
+      // 5. Update State on Success
       state.isSubmitted = true;
       state.isProcessing = false;
       
-      // 7. Clear pending submission data on successful submit
+      // 6. Clear pending submission data on successful submit
       pendingSubmissionService?.clear();
       
       return submissionResult; // Return result from submission composable
@@ -262,7 +226,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     config,         // Form configuration (ref)
     form,           // The vForm instance (from useForm)
     strategy,       // Current mode strategy (computed)
-    registeredComponents, // Registered child component APIs
     pendingSubmission: pendingSubmissionService, // Expose pendingSubmission service
     partialSubmission: partialSubmissionService, // Expose partialSubmission service with debounced sync
 
@@ -275,7 +238,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     previousPage,
     submit,
     restart,
-    registerComponent,
 
     // Convenience Computed Getters for vForm state
     data: computed(() => form.data()),

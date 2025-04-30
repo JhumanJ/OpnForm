@@ -43,22 +43,12 @@
       </div>
     </transition>
 
-    <!-- Captcha -->
-    
-    <ClientOnly>
-      <div v-if="form.use_captcha && isLastPage && hasCaptchaProviders && isCaptchaProviderAvailable" class="mb-3 px-2 mt-4 mx-auto w-max">
-        <CaptchaInput
-          ref="captcha"
-          :provider="form.captcha_provider"
-          :form="form"
-          :language="form.language"
-          :dark-mode="darkMode"
-        />
-      </div>
-      <template #fallback>
-          <USkeleton class="h-[78px] w-[304px]" />
-        </template>
-    </ClientOnly>
+    <!-- Replace Captcha with CaptchaWrapper -->
+    <CaptchaWrapper
+      v-if="form.use_captcha"
+      :form-manager="formManager"
+      :dark-mode="darkMode"
+    />
 
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
@@ -105,10 +95,9 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, onMounted, provide, reactive, watch } from 'vue'
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
-import CaptchaInput from '~/components/forms/components/CaptchaInput.vue'
+import CaptchaWrapper from '~/components/forms/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
@@ -124,8 +113,6 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const workingFormStore = useWorkingFormStore()
-
-const captcha = ref(null)
 
 const state = computed(() => props.formManager.state)
 const form = computed(() => props.formManager.config.value)
@@ -188,19 +175,6 @@ const handleDragDropped = (data) => {
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }
-
-onMounted(() => {
-  if (props.formManager && captcha.value) {
-    props.formManager.registerComponent('captcha', captcha.value);
-    console.log("Captcha ref registered with useFormManager.");
-  }
-});
-
-provide('registerComponent', (id, api) => {
-  if (props.formManager) {
-    props.formManager.registerComponent(id, api);
-  }
-});
 </script>
 
 <style lang='scss' scoped>

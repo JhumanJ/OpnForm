@@ -9,41 +9,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
   const configRef = computed(() => toValue(formConfig)); // Ensure reactivity with config
 
   /**
-   * Reactive computed property to determine if CAPTCHA is required for the current state.
-   * Depends on form config, manager state, and whether it's the last page.
-   */
-  const isCaptchaRequired = computed(() => {
-    const config = configRef.value;
-    if (!config?.use_captcha || !toValue(managerState)) {
-      return false;
-    }
-
-    // Use the isLastPage computed property passed from useFormStructure
-    if (!isLastPage.value) {
-        return false;
-    }
-
-    // Assuming useRuntimeConfig is globally available or keys are passed differently
-    // TODO: Refactor runtime config access if possible (e.g., pass keys via formConfig)
-    let runtimeConfig = {};
-    if (typeof useRuntimeConfig === 'function') {
-        runtimeConfig = useRuntimeConfig().public;
-    } else {
-        // Attempt to get from formConfig as a fallback?
-        runtimeConfig.recaptchaSiteKey = config.recaptcha_site_key;
-        runtimeConfig.hCaptchaSiteKey = config.hcaptcha_site_key;
-    }
-
-    const provider = config.captcha_provider;
-    if (provider === 'recaptcha') {
-      return !!runtimeConfig.recaptchaSiteKey;
-    } else if (provider === 'hcaptcha') {
-      return !!runtimeConfig.hCaptchaSiteKey;
-    }
-    return false;
-  });
-
-  /**
    * Validates specific fields using the vForm instance's validate method.
    * @param {Array<String>} fieldIds - Array of field IDs to validate.
    * @param {String} [httpMethod='POST'] - HTTP method for the validation request.
@@ -129,13 +94,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
     }
   };
 
-  /**
-   * Handles validation errors, primarily for logging.
-   * Assumes vForm instance already populates its errors object.
-   */
-  const handleValidationError = (error) => {
-    // Scrolling logic should be handled in the UI component
-  };
 
   /**
    * Finds the index of the first page containing validation errors.
@@ -181,14 +139,10 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
 
   // --- Exposed API ---
   return {
-    // Computed Properties
-    isCaptchaRequired,
-
     // Methods
     validateFields,
     validateCurrentPage,
     validateSubmissionIfNotLastPage,
-    handleValidationError,
     findFirstPageWithError,
     onValidationFailure,
   };
