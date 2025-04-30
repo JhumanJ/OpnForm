@@ -4,7 +4,8 @@ import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
 import { useAuthStore } from '~/stores/auth'
-import { FormStructureService } from '~/lib/forms/services/FormStructureService'
+import { useFormStructure } from '~/lib/forms/composables/useFormStructure'
+import { reactive } from 'vue'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
@@ -18,6 +19,9 @@ export const useWorkingFormStore = defineStore("working_form", {
     showAddFieldSidebar: null,
     blockForm: null,
     draggingNewBlock: false,
+    
+    // Structure service instance
+    _structureService: null,
   }),
   getters: {
     // Get all blocks/properties in the form
@@ -25,58 +29,52 @@ export const useWorkingFormStore = defineStore("working_form", {
       return this.content?.properties || []
     },
     
-    // Add getter for current page fields based on formPageIndex and raw properties
-    // Note: This ignores hidden status, unlike the real StructureService
-    currentPageFields() {
-      if (!this.content?.properties) return [];
-      
-      let pageStartIndex = 0;
-      let currentPage = 0;
-      for (let i = 0; i < this.content.properties.length; i++) {
-        if (currentPage === this.formPageIndex) {
-            // Find the end of the current page
-            let pageEndIndex = this.content.properties.length - 1;
-            for (let j = i; j < this.content.properties.length; j++) {
-                if (this.content.properties[j]?.type === 'nf-page-break') {
-                    pageEndIndex = j;
-                    break;
-                }
-            }
-            return this.content.properties.slice(pageStartIndex, pageEndIndex + 1);
-        }
+    // Get structure service instance, creating it if needed
+    structureService() {
+      if (!this._structureService && this.content) {
+        // Create a mock manager state for the service
+        const managerState = reactive({ currentPage: this.formPageIndex })
         
-        if (this.content.properties[i]?.type === 'nf-page-break') {
-          currentPage++;
-          pageStartIndex = i + 1;
-        }
+        // Initialize service with current content and state
+        this._structureService = useFormStructure(
+          this.content, 
+          managerState,
+          this.content // Use form content as mock form data for logic checks
+        )
+        
+        // Add a way to access the managerState from outside
+        this._structureService.managerState = managerState
       }
-      // Fallback for last page if no breaks found after target index
-      return this.content.properties.slice(pageStartIndex);
+      return this._structureService
+    },
+    
+    // Get current page fields using structure service
+    currentPageFields() {
+      if (!this.structureService) return []
+      return this.structureService.getPageFields(this.formPageIndex) || []
     },
 
-    // Simple page count based on raw properties (ignores hidden status)
+    // Get page count using structure service
     simplePageCount() {
-       if (!this.content?.properties) return 1;
-       let count = 1;
-       this.content.properties.forEach(prop => {
-           if (prop?.type === 'nf-page-break') {
-               count++;
-           }
-       });
-       return count;
+      if (!this.structureService) return 1
+      return this.structureService.pageCount.value
     }
   },
   actions: {
     set(form) {
       this.content = form
+      // Reset structure service whenever form changes
+      this._structureService = null
       // Ensure page index is valid after loading new form
-      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1);
+      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1)
     },
     setProperties(properties) {
       if (!this.content) return
       this.content.properties = [...properties]
+      // Reset structure service when properties change
+      this._structureService = null
       // Ensure page index is valid after properties change
-      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1);
+      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1)
     },
     objectToIndex(field) {
       if (!this.content?.properties) return -1
@@ -102,7 +100,11 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.showAddFieldSidebar = false
       
       if (this.selectedFieldIndex !== -1 && previousIndex !== this.selectedFieldIndex) {
-        this.setPageIndex(this.selectedFieldIndex)
+        // Find which page contains the selected field and set to that page
+        if (this.structureService) {
+          const pageForField = this.structureService.getPageForField(this.selectedFieldIndex)
+          this.setPageIndex(pageForField)
+        }
       }
     },
     closeEditFieldSidebar() {
@@ -128,6 +130,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.showAddFieldSidebar = false
       this.formPageIndex = 0
       this.blockForm = null
+      this._structureService = null
     },
 
     resetBlockForm() {
@@ -139,44 +142,31 @@ export const useWorkingFormStore = defineStore("working_form", {
 
     /**
      * Determine where to insert a new block based on current page index and selection.
-     * This provides a basic insertion point; drag/drop uses its own index.
+     * Uses the FormStructureService if available.
      * @param {number|null} explicitIndex - Optional explicit index to insert at
      * @returns {number} The index where the block should be inserted relative to all properties
      */
     determineInsertIndex(explicitIndex) {
+      // If we have a structure service, use its method
+      if (this.structureService) {
+        return this.structureService.determineInsertIndex(
+          this.selectedFieldIndex,
+          this.formPageIndex,
+          explicitIndex
+        )
+      }
+      
+      // Fallback to old logic
       if (explicitIndex !== null && typeof explicitIndex === 'number') {
-        return explicitIndex;
+        return explicitIndex
       }
 
       if (this.selectedFieldIndex !== null && this.selectedFieldIndex >= 0) {
-          return this.selectedFieldIndex + 1;
+        return this.selectedFieldIndex + 1
       }
       
-      // Fallback: Insert at the end of the current page
-      if (!this.content?.properties) return 0;
-
-      let pageStartIndex = 0;
-      let currentPage = 0;
-      for (let i = 0; i < this.content.properties.length; i++) {
-          if (currentPage === this.formPageIndex) {
-              // Find the end index of the current page
-              for (let j = i; j < this.content.properties.length; j++) {
-                  if (this.content.properties[j]?.type === 'nf-page-break') {
-                      return j + 1; // Insert after the page break (which is end of page)
-                  }
-              }
-              // If no break found, insert at the end of the form
-              return this.content.properties.length;
-          }
-          
-          if (this.content.properties[i]?.type === 'nf-page-break') {
-              currentPage++;
-              pageStartIndex = i + 1; // This isn't actually used in this logic path
-          }
-      }
-      
-      // Default to end of form if page calculation fails
-      return this.content?.properties?.length || 0;
+      // Default: end of properties array
+      return this.content?.properties?.length || 0
     },
 
     prefillDefault(data) {
@@ -278,7 +268,6 @@ export const useWorkingFormStore = defineStore("working_form", {
     moveField(oldIndex, newIndex) {
       if (!this.content?.properties || oldIndex === newIndex) return
       
-      // Simplified: Just move in the flat array. Page consistency relies on UI interaction.
       const newFields = clonedeep(this.content.properties)
       if (oldIndex < 0 || oldIndex >= newFields.length) return
       
@@ -291,15 +280,22 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
     
     /**
-     * Sets the current page index. Calculation of the target page should happen externally 
-     * (using FormManager's StructureService) before calling this action.
+     * Sets the current page index.
      * @param {number} targetPageIndex - The page index to navigate to.
      */
     setPageIndex(targetPageIndex) {
-        const newIndex = Math.max(0, Math.min(targetPageIndex, this.simplePageCount - 1));
+        const newIndex = Math.max(0, Math.min(targetPageIndex, this.simplePageCount - 1))
         if (this.formPageIndex !== newIndex) {
-            console.log(`WorkingFormStore: Setting page index to ${newIndex}`);
-            this.formPageIndex = newIndex;
+            console.log(`WorkingFormStore: Setting page index to ${newIndex}`)
+            this.formPageIndex = newIndex
+            
+            // Update the manager state object if structure service exists
+            if (this._structureService) {
+                const managerState = this._structureService.managerState
+                if (managerState && managerState.currentPage !== undefined) {
+                    managerState.currentPage = newIndex
+                }
+            }
         }
     }
   },

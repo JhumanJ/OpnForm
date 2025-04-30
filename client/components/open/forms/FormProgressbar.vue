@@ -29,7 +29,6 @@
 
 <script setup>
 import { useIsIframe } from '~/composables/useIsIframe'
-import { computed } from 'vue'
 
 const props = defineProps({
   formManager: {
@@ -38,14 +37,14 @@ const props = defineProps({
   }
 })
 
-const config = computed(() => props.formManager?.config.value)
-const structure = computed(() => props.formManager?.structure)
-const formData = computed(() => props.formManager?.data.value)
+const config = computed(() => props.formManager?.config)
+const structureService = computed(() => props.formManager?.structureService)
+const formData = computed(() => props.formManager?.data)
 
 const isIframe = useIsIframe()
 
 const formProgress = computed(() => {
-  const allFields = config.value?.properties ?? []
+  const allFields = structureService.value?.getAllFields() ?? []
   const requiredFields = allFields.filter(field => field?.required)
   
   if (requiredFields.length === 0) {

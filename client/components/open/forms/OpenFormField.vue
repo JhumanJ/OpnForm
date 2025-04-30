@@ -166,10 +166,6 @@ export default {
       type: Object,
       required: true
     },
-    dataFormValue: {
-      type: Object,
-      required: true
-    },
     theme: {
       type: Object, default: () => {
         const theme = inject("theme", null)
@@ -261,13 +257,13 @@ export default {
       return !this.showHidden && this.shouldBeHidden
     },
     shouldBeHidden() {
-      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isHidden()
+      return (new FormLogicPropertyResolver(this.field, this.dataForm)).isHidden()
     },
     isFieldRequired() {
-      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isRequired()
+      return (new FormLogicPropertyResolver(this.field, this.dataForm)).isRequired()
     },
     isFieldDisabled() {
-      return (new FormLogicPropertyResolver(this.field, this.dataFormValue)).isDisabled()
+      return (new FormLogicPropertyResolver(this.field, this.dataForm)).isDisabled()
     },
     beingEdited() {
       return this.isAdminPreview && this.showEditFieldSidebar && this.form.properties.findIndex((item) => {

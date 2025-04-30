@@ -39,8 +39,7 @@
               :field="element"
               :show-hidden="showHidden"
               :form="form"
-              :data-form="form"
-              :data-form-value="dataFormValue"
+              :data-form="formManager.form"
               :theme="theme"
               :dark-mode="darkMode"
               :mode="mode"
@@ -138,7 +137,6 @@ const state = computed(() => props.formManager.state)
 const form = computed(() => props.formManager.config.value)
 
 const formPageIndex = computed(() => props.formManager.state.currentPage)
-const dataFormValue = computed(() => props.formManager.data.value)
 
 const strategy = computed(() => props.formManager.strategy.value)
 const structure = computed(() => props.formManager.structure)

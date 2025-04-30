@@ -226,12 +226,21 @@ const route = useRoute()
 const authStore = useAuthStore()
 const alert = useAlert()
 
-let formManager = null
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
 const submissionId = ref(route.query.submission_id || null)
 const submittedData = ref(null)
 const showFirstSubmissionModal = ref(false)
+
+// Initialize formManager outside onMounted for SSR compatibility
+let formManager = null
+if (props.form) {
+  formManager = useFormManager(props.form, props.mode)
+  // formManager.initialize({
+  //   submissionId: route.query.submission_id,
+  //   urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
+  // })
+}
 
 const theme = computed(() => {
   return new ThemeBuilder(props.form.theme, {
@@ -267,33 +276,14 @@ watch(() => props.form.language, (newLanguage) => {
   }
 }, { immediate: true })
 
-onMounted(async () => {
-  if (props.form) {
-    formManager = useFormManager(props.form, props.mode)
-    try {
-      console.log("Initializing manager in OpenCompleteForm...")
-      await formManager.initialize({
-        submissionId: route.query.submission_id,
-        urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
-      })
-      console.log("Manager initialized via composable.")
-    } catch (initError) {
-      console.error("Failed to initialize useFormManager:", initError)
-      alert.error('Could not initialize the form. Please try again.')
-    }
-  }
-})
-
 onBeforeUnmount(() => {
   setLocale('en')
 })
 
 const handleScrollToError = () => {
   if (import.meta.server) return;
-  // Use nextTick or setTimeout to ensure DOM reflects errors
+
   nextTick(() => {
-      // Use a selector common to fields with errors (adjust if needed)
-      // Prioritize the [error] attribute, then fallback to .has-error for broader compatibility
       const firstErrorElement = document.querySelector('.form-group [error], .form-group .has-error');
       if (firstErrorElement) {
         const headerOffset = 60; // Offset for fixed headers, adjust as needed
@@ -308,46 +298,40 @@ const handleScrollToError = () => {
       } else {
           console.log('[OpenCompleteForm] No error element found to scroll to.');
       }
-  }); // Use nextTick instead of setTimeout for potentially faster response
-};
+  })
+}
 
 const triggerSubmit = async () => {
   if (!formManager || isProcessing.value) return
 
   console.log('Submit triggered in OpenCompleteForm.')
+  formManager.submit()
+    .then(result => {
+      if (result) {
+        console.log('Form submission successful via composable.', result)
+        submittedData.value = result.data || {}
+        
+        if (result.data?.submission_id) {
+          submissionId.value = result.data.submission_id
+        }
 
-  try {
-    const result = await formManager.submit()
-    
-    if (result) {
-      console.log('Form submission successful via composable.', result)
-      submittedData.value = result.data || {}
-      
-      if (result.data?.submission_id) {
-        submissionId.value = result.data.submission_id
+        if (isFormOwner.value && !useIsIframe() && result.data?.is_first_submission) {
+          showFirstSubmissionModal.value = true
+        }
+        
+        emit('submitted', true)
+      } else {
+        console.warn('Form submission failed via composable, but no error thrown?')
+        alert.error(t('forms.submission_error'))
       }
-
-      if (isFormOwner.value && !useIsIframe() && result.data?.is_first_submission) {
-        showFirstSubmissionModal.value = true
+    })
+    .catch(error => {
+      console.error('Form submission error caught in OpenCompleteForm:', error)
+      if (error.response && error.response.status === 422 && error.data) {
+        useAlert().formValidationError(error.data)
       }
-      
-      emit('submitted', true)
-      
-    } else {
-      console.warn('Form submission failed via composable, but no error thrown?')
-      alert.error(t('forms.submission_error'))
-    }
-
-    handleScrollToError()
-
-  } catch (error) {
-    console.error('Form submission error caught in OpenCompleteForm:', error)
-    if (!formManager.errors.value.any()) {
-        alert.error(error.message || t('forms.submission_error'))
-    }
-
-    handleScrollToError()
-  }
+      handleScrollToError()
+    })
 }
 
 const restart = async () => {
