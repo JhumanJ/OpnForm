@@ -3,7 +3,7 @@
  * Initializes and coordinates various form services (Structure, Init, Validation, Payment, Submission, Timer)
  * based on the provided form configuration and mode. Manages core reactive state like currentPage and isProcessing.
  */
-import { reactive, computed } from 'vue'
+import { reactive, computed, nextTick } from 'vue'
 import { useForm } from '~/composables/useForm.js' // Adjust path if needed
 import { FormMode, createFormModeStrategy } from './FormModeStrategy'
 import { FormStructureService } from './services/FormStructureService'
@@ -46,7 +46,7 @@ export class FormManager {
     this.structureService = new FormStructureService(this.config, this.state)
     this.initService = new FormInitializationService(this.config, this.form)
     // Pass structureService instance to validation service
-    this.validationService = new FormValidationService(this.config, this.form, this.state, this.structureService) 
+    this.validationService = new FormValidationService(this.config, this.form, this.state, this.structureService.computedIsLastPage) 
     this.paymentService = new FormPaymentService(this.config, this.form)
     this.submissionService = new FormSubmissionService(this.config, this.form)
     this.timerService = new FormTimerService(this.config)
@@ -148,7 +148,8 @@ export class FormManager {
       // Handle validation or payment errors using the validation service's failure handler
       this.validationService.onValidationFailure({
           fieldGroups: this.structureService.getFieldGroups(),
-          setPageIndexCallback: (index) => { this.state.currentPage = index; } // Pass callback to update manager state
+          setPageIndexCallback: (index) => { this.state.currentPage = index; }, // Pass callback to update manager state
+          timerService: this.timerService // Pass the timer service instance
       });
       this.state.isProcessing = false;
       return false;
@@ -182,8 +183,15 @@ export class FormManager {
         console.log(`Form submitted. Completion time: ${completionTime}s`);
 
         // 2. Final Validation (if required by strategy)
-        await this.validationService.validateBeforeSubmit(this.config.properties || [], this.strategy);
-        console.log('Pre-submit validation successful (or skipped).');
+        // Read the computed value from the authoritative source service
+        const isOnLastPage = this.structureService.computedIsLastPage.value;
+        console.log(`[FormManager.submit] Reading structureService.computedIsLastPage.value: ${isOnLastPage}`);
+        
+        await this.validationService.validateSubmissionIfNotLastPage(
+            this.config.properties || [], 
+            this.strategy,
+            isOnLastPage // Pass the read boolean value
+        );
         
         // 3. Get Captcha Token (Updated Logic)
         let captchaToken = submitOptions.captchaToken;
@@ -230,7 +238,8 @@ export class FormManager {
         // Handle validation or submission errors using the validation service's failure handler
          this.validationService.onValidationFailure({
             fieldGroups: this.structureService.getFieldGroups(),
-            setPageIndexCallback: (index) => { this.state.currentPage = index; }
+            setPageIndexCallback: (index) => { this.state.currentPage = index; },
+            timerService: this.timerService // Pass the timer service instance
         });
         this.state.isProcessing = false;
         // Ensure the error being thrown is useful

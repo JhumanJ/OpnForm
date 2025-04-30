@@ -12,6 +12,7 @@ import { useIsIframe } from '~/composables/useIsIframe'
 import { pendingSubmission } from "~/composables/forms/pendingSubmission.js"
 import { usePartialSubmission } from "~/composables/forms/usePartialSubmission.js" // Assuming vForm instance is passed correctly
 import clonedeep from "clone-deep"
+import { ref } from 'vue'
 
 export class FormSubmissionService {
   constructor(form, formData) {
@@ -20,10 +21,10 @@ export class FormSubmissionService {
     // Instantiate composables needed for submission logic
     this.amplitude = useAmplitude()
     this.confetti = useConfetti()
-    this.isIframe = useIsIframe()
+   
     // Initialize pending/partial submission handlers - ensure they are client-side safe
-    this.pendingSubmission = import.meta.client ? pendingSubmission(this.form) : { remove: () => {}, removeTimer: () => {} }
-    this.partialSubmission = import.meta.client ? usePartialSubmission(this.form, this.formData) : { stopSync: () => {}, startSync: () => {}, getSubmissionHash: () => null }
+    this.pendingSubmission = pendingSubmission(this.form)
+    this.partialSubmission = usePartialSubmission(this.form, this.formData)
   }
 
   /**
@@ -122,7 +123,7 @@ export class FormSubmissionService {
       completion_time: this.formData.completion_time // Get completion time from vForm
     })
 
-    if (this.isIframe.value && import.meta.client) {
+    if (useIsIframe() && import.meta.client) {
       window.parent.postMessage(payload, '*')
       console.log('Posted message to parent window.')
     }

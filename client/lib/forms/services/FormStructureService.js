@@ -17,9 +17,10 @@ export class FormStructureService {
         return this._calculateFieldGroups();
     });
     this.computedPageCount = computed(() => {
-        // Directly use getFieldGroups (with its fallback) to ensure count is available
-        const groups = this.getFieldGroups();
-        return groups ? groups.length : 0; // Return 0 if groups is somehow null/undefined
+        const groups = this.computedFieldGroups.value;
+        const count = groups ? groups.length : 0;
+        console.log(`[FormStructureService] computedPageCount evaluated: count=${count}`);
+        return count;
     });
     this.computedPageBoundaries = computed(() => {
         console.log("Recomputing Page Boundaries due to properties change:", this.form.properties?.length);
@@ -54,6 +55,20 @@ export class FormStructureService {
       
       const lastField = previousPageFields[previousPageFields.length - 1];
       return (lastField && lastField.type === 'nf-page-break') ? lastField : null;
+    });
+
+    // NEW: computedIsLastPage
+    this.computedIsLastPage = computed(() => {
+        const pageIndex = this.managerState?.currentPage;
+        const pageCount = this.computedPageCount.value;
+        // Add checks for valid pageIndex and pageCount
+        if (pageIndex === undefined || pageIndex === null || pageCount === undefined) {
+            console.warn('[FormStructureService] computedIsLastPage: Invalid state, returning default true.');
+            return true; // Default to true if state is invalid to avoid blocking simple forms
+        }
+        const result = pageIndex === pageCount - 1;
+        console.log(`[FormStructureService] computedIsLastPage evaluated: pageIndex=${pageIndex}, computedPageCount=${pageCount}, result=${result}`);
+        return result;
     });
   }
 
@@ -118,24 +133,6 @@ export class FormStructureService {
     }
     // Original logic: Return the specific page group or an empty array
     return groups[pageIndex] || [];
-  }
-
-  isLastPage(pageIndex) {
-    return pageIndex === this.computedPageCount.value - 1;
-  }
-
-  _calculatePageBreakIndices() {
-    if (!this.form.properties || this.form.properties.length === 0) return []
-
-    const indices = []
-    this.form.properties.forEach((prop, index) => {
-      // Assuming isFieldHidden requires the field
-      if (prop.type === 'nf-page-break' && !this.isFieldHidden(prop)) {
-        indices.push(index)
-      }
-    })
-
-    return indices
   }
 
   getPageBreakIndices() {

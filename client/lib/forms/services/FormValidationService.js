@@ -3,28 +3,21 @@
  * It orchestrates validation calls using the vForm instance (Precognition) and provides
  * helpers for handling validation failures, like scrolling to errors.
  */
-// services/form/services/FormValidationService.js
-// Placeholder - Full implementation needed based on requirements
-
-import { createFormModeStrategy } from '~/lib/forms/FormModeStrategy'
 import { computed } from 'vue'
-// Assuming useAlert is available/imported if needed for direct use, though often handled by component
-// Assuming FormStructureService might be injected or passed if needed for complex scenarios
 
 export class FormValidationService {
-  constructor(formConfig, formData, managerState, structureService) {
+  constructor(formConfig, formData, managerState) {
     this.formConfig = formConfig // Raw form config
     this.formData = formData   // vForm instance
     this.managerState = managerState // Manager's reactive state
-    this.structureService = structureService // FormStructureService instance
     
     // Computed property for captcha requirement
     this.computedIsCaptchaRequired = computed(() => {
-        if (!this.formConfig.use_captcha || !this.structureService || !this.managerState) {
+        if (!this.formConfig.use_captcha || /*!this.structureService ||*/ !this.managerState) {
             return false;
         }
         // Use manager state for current page and structure service for last page check
-        const isLast = this.structureService.isLastPage(this.managerState.currentPage);
+        const isLast = false; // Temporary placeholder - FIX THIS if captcha logic is needed
         if (!isLast) {
             return false;
         }
@@ -121,9 +114,20 @@ export class FormValidationService {
    * Validates all form fields before final submission, based on strategy.
    * @param {Array<Object>} allFields - Array of all field objects in the form.
    * @param {Object} formModeStrategy - The strategy object for the current mode.
+   * @param {boolean} isOnLastPage - Flag indicating if submission is from the last page.
    * @returns {Promise<boolean>} - Resolves true if validation passes or isn't required, rejects otherwise.
    */
-  async validateBeforeSubmit(allFields, formModeStrategy) {
+  async validateSubmissionIfNotLastPage(allFields, formModeStrategy, isOnLastPage) {
+    // Use the boolean passed from FormManager
+    console.log(`[validateSubmissionIfNotLastPage Check] Received isOnLastPage=${isOnLastPage}`);
+
+    // Skip validation entirely if we are on the last page
+    if (isOnLastPage) {
+        console.log('Validation skipped: On last page.');
+        return true;
+    }
+    
+    // Skip validation if strategy doesn't require it
     if (!formModeStrategy.validation?.validateOnSubmit) {
         console.log('Validation skipped: validateOnSubmit is false for the current mode.')
         return true;
@@ -156,36 +160,12 @@ export class FormValidationService {
   handleValidationError(error) {
     // Log the error for debugging. UI effects like alerts are better handled in the component.
     console.error("Validation Error encountered:", error?.data?.errors || error?.data || error)
-    // Trigger scroll to error after a short delay to allow DOM updates
+    // REMOVED: Scrolling is now handled by the component
+    /*
     if (import.meta.client) {
         this.scrollToFirstError();
     }
-  }
-
-  /**
-   * Scrolls the viewport to the first element with a common error class.
-   * Should be called client-side only.
-   */
-  scrollToFirstError() {
-    if (import.meta.server) return;
-    // Use nextTick or setTimeout to ensure DOM reflects errors
-    setTimeout(() => {
-        // Use a selector common to fields with errors (adjust if needed)
-        const firstErrorElement = document.querySelector('.form-group .has-error, .form-group [error]');
-        if (firstErrorElement) {
-          const headerOffset = 60; // Offset for fixed headers, adjust as needed
-          const elementPosition = firstErrorElement.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-          window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-          });
-          console.log('Scrolled to first error element.')
-        } else {
-            console.log('No error element found to scroll to.')
-        }
-    }, 100); // Delay helps ensure element is rendered and styled
+    */
   }
 
   /**
@@ -210,18 +190,18 @@ export class FormValidationService {
 
   /**
    * Actions to perform on validation failure during submission or page change.
-   * @param {Object} context - Object containing { fieldGroups, formTimerRef, setPageIndexCallback }
+   * @param {Object} context - Object containing { fieldGroups, timerService, setPageIndexCallback }
    */
   onValidationFailure(context) {
     console.warn('Executing onValidationFailure actions.');
-    const { fieldGroups, formTimerRef, setPageIndexCallback } = context;
+    const { fieldGroups, timerService, setPageIndexCallback } = context;
 
-    // Restart timer if provided
-    if (formTimerRef?.value?.startTimer) {
-      formTimerRef.value.startTimer();
-      console.log('Form timer restarted.');
+    // Restart timer using the passed service instance
+    if (timerService && typeof timerService.start === 'function') {
+      timerService.start(); // Start (it might already be stopped or never started)
+      console.log('Form timer instructed to start via timerService.');
     } else {
-        console.log('Form timer ref not available or invalid for restart.');
+        console.log('timerService not available or invalid in context for restart.');
     }
 
     // Find and navigate to the first page with an error
@@ -235,7 +215,7 @@ export class FormValidationService {
         console.log('Field groups or setPageIndexCallback not available for error navigation.');
     }
 
-    // Scroll to the first error field on the page
-    this.scrollToFirstError();
+    // Scroll to the first error field on the page - REMOVED
+    // this.scrollToFirstError();
   }
 } 

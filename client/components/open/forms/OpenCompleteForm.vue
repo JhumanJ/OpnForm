@@ -5,11 +5,18 @@
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
     :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
   >
-    <link
-      v-if="showFontLink && form.font_family"
-      rel="stylesheet"
-      :href="getFontUrl"
-    >
+    <ClientOnly>
+      <Teleport to="head">
+        <link
+          v-if="showFontLink && form.font_family"
+          :key="form.font_family"
+          :href="getFontUrl"
+          rel="stylesheet"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+        >
+      </Teleport>
+    </ClientOnly>
 
     <div v-if="isPublicFormPage && form.is_password_protected">
       <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
@@ -99,7 +106,6 @@
           :theme="theme"
           :dark-mode="darkMode"
           :mode="mode"
-          :form-properties="form.properties"
           @submit="triggerSubmit"
         >
           <template #submit-btn="{loading}">
@@ -185,7 +191,7 @@
 </template>
 
 <script setup>
-import { FormManager } from '~/lib/forms/FormManager'
+import { useFormManager } from '~/lib/forms/composables/useFormManager'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
@@ -194,6 +200,10 @@ import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
 import TextBlock from '~/components/forms/TextBlock.vue'
+import { useForm } from '~/composables/useForm'
+import { useAlert } from '~/composables/useAlert'
+import { useI18n } from 'vue-i18n'
+import { useIsIframe } from '~/composables/useIsIframe'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -216,7 +226,7 @@ const route = useRoute()
 const authStore = useAuthStore()
 const alert = useAlert()
 
-const formManager = ref(null)
+let formManager = null
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
 const submissionId = ref(route.query.submission_id || null)
@@ -244,10 +254,10 @@ const isFormOwner = computed(() => {
   return authStore.check && props.form && props.form.creator_id === authStore.user.id
 })
 
-const isFormSubmitted = computed(() => formManager.value?.state.isSubmitted ?? false)
-const isProcessing = computed(() => formManager.value?.state.isProcessing ?? false)
-const showFormCleanings = computed(() => formManager.value?.strategy.display.showFormCleanings ?? false)
-const showFontLink = computed(() => formManager.value?.strategy.display.showFontLink ?? false)
+const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
+const isProcessing = computed(() => formManager?.state.isProcessing ?? false)
+const showFormCleanings = computed(() => formManager?.strategy.value.display.showFormCleanings ?? false)
+const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
 
 watch(() => props.form.language, (newLanguage) => {
   if (newLanguage && typeof newLanguage === 'string') {
@@ -259,16 +269,16 @@ watch(() => props.form.language, (newLanguage) => {
 
 onMounted(async () => {
   if (props.form) {
-    formManager.value = new FormManager(props.form, props.mode)
+    formManager = useFormManager(props.form, props.mode)
     try {
       console.log("Initializing manager in OpenCompleteForm...")
-      await formManager.value.initialize({
+      await formManager.initialize({
         submissionId: route.query.submission_id,
         urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
       })
-      console.log("Manager initialized.")
+      console.log("Manager initialized via composable.")
     } catch (initError) {
-      console.error("Failed to initialize FormManager:", initError)
+      console.error("Failed to initialize useFormManager:", initError)
       alert.error('Could not initialize the form. Please try again.')
     }
   }
@@ -278,46 +288,71 @@ onBeforeUnmount(() => {
   setLocale('en')
 })
 
+const handleScrollToError = () => {
+  if (import.meta.server) return;
+  // Use nextTick or setTimeout to ensure DOM reflects errors
+  nextTick(() => {
+      // Use a selector common to fields with errors (adjust if needed)
+      // Prioritize the [error] attribute, then fallback to .has-error for broader compatibility
+      const firstErrorElement = document.querySelector('.form-group [error], .form-group .has-error');
+      if (firstErrorElement) {
+        const headerOffset = 60; // Offset for fixed headers, adjust as needed
+        const elementPosition = firstErrorElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+        console.log('[OpenCompleteForm] Scrolled to first error element.');
+      } else {
+          console.log('[OpenCompleteForm] No error element found to scroll to.');
+      }
+  }); // Use nextTick instead of setTimeout for potentially faster response
+};
+
 const triggerSubmit = async () => {
-  if (!formManager.value || isProcessing.value) return
+  if (!formManager || isProcessing.value) return
 
   console.log('Submit triggered in OpenCompleteForm.')
 
   try {
-    const result = await formManager.value.submit()
+    const result = await formManager.submit()
     
-    if (result.success) {
-      console.log('Form submission successful via manager.', result)
-      submittedData.value = result.submissionData
+    if (result) {
+      console.log('Form submission successful via composable.', result)
+      submittedData.value = result.data || {}
       
-      if (result.backendResponse?.submission_id) {
-        submissionId.value = result.backendResponse.submission_id
+      if (result.data?.submission_id) {
+        submissionId.value = result.data.submission_id
       }
 
-      if (isFormOwner.value && !useIsIframe() && result.backendResponse?.is_first_submission) {
+      if (isFormOwner.value && !useIsIframe() && result.data?.is_first_submission) {
         showFirstSubmissionModal.value = true
       }
       
       emit('submitted', true)
       
     } else {
-      console.warn('Form submission failed via manager, but no error thrown?', result)
+      console.warn('Form submission failed via composable, but no error thrown?')
       alert.error(t('forms.submission_error'))
     }
 
+    handleScrollToError()
+
   } catch (error) {
     console.error('Form submission error caught in OpenCompleteForm:', error)
-    if (error && typeof error === 'object' && !error.errors) {
-      alert.error(error.message || t('forms.submission_error'))
-    } else if (!error) {
-      alert.error(t('forms.submission_error'))
+    if (!formManager.errors.value.any()) {
+        alert.error(error.message || t('forms.submission_error'))
     }
+
+    handleScrollToError()
   }
 }
 
 const restart = async () => {
-  if (!formManager.value) return
-  await formManager.value.restart()
+  if (!formManager) return
+  await formManager.restart()
   submittedData.value = null
   submissionId.value = null
   emit('restarted', true)

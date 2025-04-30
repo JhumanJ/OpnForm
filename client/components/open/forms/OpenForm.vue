@@ -83,7 +83,6 @@
       <slot
         v-if="isLastPage"
         name="submit-btn"
-        :submit-form="submitForm"
         :loading="form.busy"
       />
       <open-form-button
@@ -101,7 +100,7 @@
         {{ $t('forms.wrong_form_structure') }}
       </div>
       <div
-        v-if="hasPymentBlock"
+        v-if="hasPaymentBlock"
         class="mt-6 flex justify-center w-full"
       >
         <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">
@@ -136,31 +135,32 @@ const workingFormStore = useWorkingFormStore()
 const captcha = ref(null)
 
 const state = computed(() => props.formManager.state)
-const form = computed(() => props.formManager.form)
+const form = computed(() => props.formManager.config.value)
 
 const formPageIndex = computed(() => props.formManager.state.currentPage)
-const dataFormValue = computed(() => props.formManager.data)
+const dataFormValue = computed(() => props.formManager.data.value)
 
-const strategy = computed(() => props.formManager.strategy)
-const structureService = computed(() => props.formManager.structureService)
+const strategy = computed(() => props.formManager.strategy.value)
+const structure = computed(() => props.formManager.structure)
 
-const hasPymentBlock = computed(() => {
-  return props.formManager?.structureService?.hasPaymentBlock(state.value.currentPage);
+const hasPaymentBlock = computed(() => {
+  return structure.value?.hasPaymentBlock(state.value.currentPage);
 })
 
 const currentFields = computed(() => {
-  return props.formManager?.structureService?.getPageFields(state.value.currentPage) ?? [];
+  return structure.value?.getPageFields(state.value.currentPage) ?? [];
 })
 
 const isLastPage = computed(() => {
-  return props.formManager?.structureService?.isLastPage(state.value.currentPage) ?? true;
+  const result = structure.value?.isLastPage.value ?? true;
+  return result;
 })
 
 const currentFieldsPageBreak = computed(() => 
-  props.formManager?.structureService?.computedCurrentPageBreak
+  structure.value?.currentPageBreak.value
 )
 const previousFieldsPageBreak = computed(() => 
-  props.formManager?.structureService?.computedPreviousPageBreak
+  structure.value?.previousPageBreak.value
 )
 
 const showHidden = computed(() => strategy.value.display.showHiddenFields)
@@ -169,7 +169,7 @@ const draggingNewBlock = computed(() => workingFormStore.draggingNewBlock)
 
 const computedStyle = computed(() => {
   return {
-    '--form-color': form.value.color
+    '--form-color': props.formManager.config.value.color
   }
 })
 
@@ -184,45 +184,37 @@ const handleNextClick = async () => {
 }
 
 const handleDragDropped = (data) => {
-  if (!structureService.value) return;
+  if (!structure.value) return;
 
   const getAbsoluteIndex = (relativeIndex) => {
-      let precedingFields = 0;
-      const groups = structureService.value.getFieldGroups();
-      for(let i = 0; i < state.value.currentPage; i++) {
-          precedingFields += groups[i]?.length || 0;
-      }
-      return precedingFields + relativeIndex;
+    return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage);
   };
 
-      if (data.added) {
+  if (data.added) {
     const targetIndex = getAbsoluteIndex(data.added.newIndex);
     console.log(`Adding block at absolute index: ${targetIndex}`);
     workingFormStore.addBlock(data.added.element, targetIndex, false)
-      }
-      if (data.moved) {
+  }
+  if (data.moved) {
     const oldTargetIndex = getAbsoluteIndex(data.moved.oldIndex);
     const newTargetIndex = getAbsoluteIndex(data.moved.newIndex);
-     console.log(`Moving block from ${oldTargetIndex} to ${newTargetIndex}`);
+    console.log(`Moving block from ${oldTargetIndex} to ${newTargetIndex}`);
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }
 
 onMounted(() => {
   if (props.formManager && captcha.value) {
-    props.formManager.componentRefs = {
-        ...props.formManager.componentRefs,
-        captchaRef: captcha
-    };
-    console.log("Captcha ref passed to FormManager.");
+    props.formManager.registerComponent('captcha', captcha.value);
+    console.log("Captcha ref registered with useFormManager.");
   }
 });
 
 // --- Provide the manager's registration method --- 
 provide('registerComponent', (id, api) => {
-    if (props.formManager) {
-        props.formManager.registerComponent(id, api);
-    }
+  if (props.formManager) {
+    props.formManager.registerComponent(id, api);
+  }
 });
 </script>
 

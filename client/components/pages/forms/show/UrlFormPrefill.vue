@@ -112,7 +112,8 @@ import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
-import { FormManager } from '~/lib/forms/FormManager'
+import { useFormManager } from '~/lib/forms/composables/useFormManager'
+import { watch, ref, computed } from 'vue'
 
 export default {
   name: "UrlFormPrefill",
@@ -122,10 +123,27 @@ export default {
     extraQueryParam: { type: String, default: "" },
   },
 
+  setup(props) {
+    const formManager = ref(null);
+
+    watch(() => props.form, (newForm) => {
+      if (newForm) {
+        console.log("Initializing useFormManager for UrlFormPrefill...");
+        formManager.value = useFormManager(newForm, FormMode.PREFILL);
+        console.log("useFormManager for UrlFormPrefill initialized.");
+      } else {
+        formManager.value = null;
+      }
+    }, { immediate: true });
+
+    return {
+      formManager,
+    };
+  },
+
   data: () => ({
     prefillFormData: null,
     showUrlFormPrefillModal: false,
-    formManager: null,
   }),
 
   computed: {
@@ -140,28 +158,11 @@ export default {
     }
   },
 
-  watch: {
-    form: {
-      handler(newForm) {
-        if (newForm) {
-          this.initializeManager();
-        }
-      },
-      immediate: true,
-      deep: false
-    }
-  },
-
   methods: {
-    initializeManager() {
-      console.log("Initializing FormManager for UrlFormPrefill...");
-      this.formManager = new FormManager(this.form, FormMode.PREFILL);
-      console.log("FormManager for UrlFormPrefill initialized.");
-    },
     generateUrl() {
       if (!this.formManager) return;
       
-      const formData = this.formManager.form.data();
+      const formData = this.formManager.data.value;
       
       console.log("Generating URL with data:", formData);
       this.prefillFormData = formData
