@@ -56,6 +56,11 @@ export const pendingSubmission = (form) => {
     return useStorage(formPendingSubmissionTimerKey.value).value ?? defaultValue
   }
 
+  const clear = () => {
+    remove();
+    removeTimer();
+  }
+
   return {
     formPendingSubmissionKey,
     enabled,
@@ -67,5 +72,6 @@ export const pendingSubmission = (form) => {
     setTimer,
     removeTimer,
     getTimer,
+    clear,
   }
 }

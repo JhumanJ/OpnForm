@@ -3,7 +3,7 @@
     v-if="form"
     class="open-complete-form"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
-    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
+    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color }"
   >
     <ClientOnly>
       <Teleport to="head">
@@ -18,175 +18,185 @@
       </Teleport>
     </ClientOnly>
 
-    <div v-if="isPublicFormPage && form.is_password_protected">
-      <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
-        {{ t('forms.password_protected') }}
-      </p>
-      <div class="form-group flex flex-wrap w-full">
-        <div class="relative mb-3 w-full px-2">
-          <text-input
-            :theme="theme"
-            :form="passwordForm"
-            name="password"
-            native-type="password"
-            label="Password"
-          />
-        </div>
+    <v-transition name="fade" mode="out-in">
+      <!-- Auto-submit loading state -->
+      <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
+        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
       </div>
-      <div class="flex flex-wrap justify-center w-full text-center">
-        <open-form-button
-          :theme="theme"
-          :color="form.color"
-          class="my-4"
-          @click="passwordEntered"
-        >
-          {{ t('forms.submit') }}
-        </open-form-button>
-      </div>
-    </div>
 
-    <v-transition name="fade">
-      <div
-        v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
-        class="m-2 my-4 flex flex-grow items-end p-4 rounded-md dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-600/20 dark:border-yellow-500"
-      >
-        <p class="mb-0 text-yellow-600 dark:text-yellow-600 text-sm">
-          We disabled the password protection for this form because you are an owner of it.
-        </p>
-        <UButton
-          color="yellow"
-          size="xs"
-          @click="hidePasswordDisabledMsg = true"
-        >
-          Close
-        </ubutton>
-      </div>
-    </v-transition>
-
-    <div
-      v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
-      class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
-    >
-      <div class="flex-grow">
-        <div
-          class="mb-0 py-2 px-4 text-yellow-600"
-          v-html="form.closed_text"
-        />
-      </div>
-    </div>
-
-    <div
-      v-if="isPublicFormPage && form.max_number_of_submissions_reached"
-      class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
-    >
-      <div class="flex-grow">
-        <div
-          class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600"
-          v-html="form.max_submissions_reached_text"
-        />
-      </div>
-    </div>
-
-    <form-cleanings
-      v-if="showFormCleanings"
-      :hideable="true"
-      class="mb-4 mx-2"
-      :form="form"
-      :specify-form-owner="true"
-    />
-
-    <v-transition name="fade">
-      <div
-        v-if="!isFormSubmitted"
-        key="form"
-      >
-        <open-form
-          v-if="formManager && form && !form.is_closed"
-          :form-manager="formManager"
-          :theme="theme"
-          :dark-mode="darkMode"
-          :mode="mode"
-          @submit="triggerSubmit"
-        >
-          <template #submit-btn="{loading}">
+      <!-- Main form content -->
+      <div v-else key="form-content">
+        <div v-if="isPublicFormPage && form.is_password_protected">
+          <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
+            {{ t('forms.password_protected') }}
+          </p>
+          <div class="form-group flex flex-wrap w-full">
+            <div class="relative mb-3 w-full px-2">
+              <text-input
+                :theme="theme"
+                :form="passwordForm"
+                name="password"
+                native-type="password"
+                label="Password"
+              />
+            </div>
+          </div>
+          <div class="flex flex-wrap justify-center w-full text-center">
             <open-form-button
-              :loading="loading || isProcessing"
               :theme="theme"
               :color="form.color"
-              class="mt-2 px-8 mx-1"
-              :class="submitButtonClass"
-              @click.prevent="triggerSubmit"
+              class="my-4"
+              @click="passwordEntered"
             >
-              {{ form.submit_button_text }}
+              {{ t('forms.submit') }}
             </open-form-button>
-          </template>
-        </open-form>
-        <p
-          v-if="!form.no_branding"
-          class="text-center w-full mt-2"
-        >
-          <a
-            href="https://opnform.com?utm_source=form&utm_content=powered_by"
-            class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
-            target="_blank"
+          </div>
+        </div>
+
+        <v-transition name="fade">
+          <div
+            v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
+            class="m-2 my-4 flex flex-grow items-end p-4 rounded-md dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-600/20 dark:border-yellow-500"
           >
-            {{ t('forms.powered_by') }} <span class="font-semibold">{{ t('app.name') }}</span>
-          </a>
-        </p>
-      </div>
-      <div
-        v-else-if="isFormSubmitted"
-        key="submitted"
-        class="px-2"
-      >
-        <TextBlock
-          v-if="form.submitted_text"
-          class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
-          :content="form.submitted_text"
-          :mentions-allowed="true"
+            <p class="mb-0 text-yellow-600 dark:text-yellow-600 text-sm">
+              We disabled the password protection for this form because you are an owner of it.
+            </p>
+            <UButton
+              color="yellow"
+              size="xs"
+              @click="hidePasswordDisabledMsg = true"
+            >
+              Close
+            </ubutton>
+          </div>
+        </v-transition>
+
+        <div
+          v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
+          class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
+        >
+          <div class="flex-grow">
+            <div
+              class="mb-0 py-2 px-4 text-yellow-600"
+              v-html="form.closed_text"
+            />
+          </div>
+        </div>
+
+        <div
+          v-if="isPublicFormPage && form.max_number_of_submissions_reached"
+          class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
+        >
+          <div class="flex-grow">
+            <div
+              class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600"
+              v-html="form.max_submissions_reached_text"
+            />
+          </div>
+        </div>
+
+        <form-cleanings
+          v-if="showFormCleanings"
+          :hideable="true"
+          class="mb-4 mx-2"
           :form="form"
-          :form-data="submittedData"
+          :specify-form-owner="true"
         />
-        <open-form-button
-          v-if="form.re_fillable"
-          :theme="theme"
-          :color="form.color"
-          class="my-4"
-          @click="restart"
-        >
-          {{ form.re_fill_button_text }}
-        </open-form-button>
-        <p
-          v-if="form.editable_submissions && submissionId"
-          class="mt-5"
-        >
-          <a
-            target="_parent"
-            :href="form.share_url+'?submission_id='+submissionId"
-            class="text-nt-blue hover:underline"
+
+        <v-transition name="fade">
+          <div
+            v-if="!isFormSubmitted"
+            key="form"
           >
-            {{ form.editable_submissions_button_text }}
-          </a>
-        </p>
-        <p
-          v-if="!form.no_branding"
-          class="mt-5"
-        >
-          <a
-            target="_parent"
-            href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-            class="text-nt-blue hover:underline"
+            <open-form
+              v-if="formManager && form && !form.is_closed"
+              :form-manager="formManager"
+              :theme="theme"
+              :dark-mode="darkMode"
+              :mode="mode"
+              @submit="triggerSubmit"
+            >
+              <template #submit-btn="{loading}">
+                <open-form-button
+                  :loading="loading || isProcessing"
+                  :theme="theme"
+                  :color="form.color"
+                  class="mt-2 px-8 mx-1"
+                  :class="submitButtonClass"
+                  @click.prevent="triggerSubmit"
+                >
+                  {{ form.submit_button_text }}
+                </open-form-button>
+              </template>
+            </open-form>
+            <p
+              v-if="!form.no_branding"
+              class="text-center w-full mt-2"
+            >
+              <a
+                href="https://opnform.com?utm_source=form&utm_content=powered_by"
+                class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
+                target="_blank"
+              >
+                {{ t('forms.powered_by') }} <span class="font-semibold">{{ t('app.name') }}</span>
+              </a>
+            </p>
+          </div>
+          <div
+            v-else
+            key="submitted"
+            class="px-2"
           >
-            {{ t('forms.create_form_free') }}
-          </a>
-        </p>
+            <TextBlock
+              v-if="form.submitted_text"
+              class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+              :content="form.submitted_text"
+              :mentions-allowed="true"
+              :form="form"
+              :form-data="submittedData"
+            />
+            <open-form-button
+              v-if="form.re_fillable"
+              :theme="theme"
+              :color="form.color"
+              class="my-4"
+              @click="restart"
+            >
+              {{ form.re_fill_button_text }}
+            </open-form-button>
+            <p
+              v-if="form.editable_submissions && submissionId"
+              class="mt-5"
+            >
+              <a
+                target="_parent"
+                :href="form.share_url+'?submission_id='+submissionId"
+                class="text-nt-blue hover:underline"
+              >
+                {{ form.editable_submissions_button_text }}
+              </a>
+            </p>
+            <p
+              v-if="!form.no_branding"
+              class="mt-5"
+            >
+              <a
+                target="_parent"
+                href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
+                class="text-nt-blue hover:underline"
+              >
+                {{ t('forms.create_form_free') }}
+              </a>
+            </p>
+          </div>
+        </v-transition>
+        <FirstSubmissionModal
+          :show="showFirstSubmissionModal"
+          :form="form"
+          @close="showFirstSubmissionModal=false"
+        />
       </div>
     </v-transition>
-    <FirstSubmissionModal
-      :show="showFirstSubmissionModal"
-      :form="form"
-      @close="showFirstSubmissionModal=false"
-    />
   </div>
 </template>
 
@@ -204,6 +214,7 @@ import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
 import { useIsIframe } from '~/composables/useIsIframe'
+import Loader from '~/components/global/Loader.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -232,15 +243,28 @@ const submissionId = ref(route.query.submission_id || null)
 const submittedData = ref(null)
 const showFirstSubmissionModal = ref(false)
 
-// Initialize formManager outside onMounted for SSR compatibility
+// Check for auto_submit parameter during setup
+const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
+
 let formManager = null
 if (props.form) {
   formManager = useFormManager(props.form, props.mode)
-  // formManager.initialize({
-  //   submissionId: route.query.submission_id,
-  //   urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
-  // })
+  formManager.initialize({
+    submissionId: route.query.submission_id,
+    urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
+  })
 }
+
+// If auto_submit is true, trigger submit after component is mounted
+onMounted(() => {
+  if (isAutoSubmit.value && formManager) {
+    console.log('Auto-submit parameter detected, will submit form automatically');
+    // Using nextTick to ensure form is fully rendered and initialized
+    nextTick(() => {
+      triggerSubmit();
+    });
+  }
+})
 
 const theme = computed(() => {
   return new ThemeBuilder(props.form.theme, {
@@ -326,11 +350,12 @@ const triggerSubmit = async () => {
       }
     })
     .catch(error => {
-      console.error('Form submission error caught in OpenCompleteForm:', error)
       if (error.response && error.response.status === 422 && error.data) {
         useAlert().formValidationError(error.data)
       }
       handleScrollToError()
+    }).finally(() => {
+      isAutoSubmit.value = false
     })
 }
 

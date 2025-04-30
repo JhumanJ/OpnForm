@@ -7,6 +7,7 @@ import { useFormValidation } from './useFormValidation';
 import { useFormSubmission } from './useFormSubmission';
 import { useFormPayment } from './useFormPayment';
 import { useFormTimer } from './useFormTimer';
+import { pendingSubmission } from '~/composables/forms/pendingSubmission.js';
 
 /**
  * @fileoverview Main orchestrator composable for form operations.
@@ -30,17 +31,16 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
   // Store registered component APIs (e.g., for Captcha, Stripe Elements)
   const registeredComponents = reactive({});
 
+  // --- Initialize pendingSubmission for localStorage handling ---
+  const pendingSubmissionService = import.meta.server ? null : pendingSubmission(toValue(config));
+
   // --- Instantiate Composables (Services) ---
-  // Pass reactive refs/state where needed
-  const timer = useFormTimer(config);
-  const initialization = useFormInitialization(config, form);
-  // Pass form.data() for structure logic dependency if needed, or the whole form instance
+  const timer = useFormTimer(config, pendingSubmissionService);
+  const initialization = useFormInitialization(config, form, pendingSubmissionService);
   const structure = useFormStructure(config, state, form); 
   const validation = useFormValidation(config, form, state, structure.isLastPage);
   const payment = useFormPayment(config, form);
   const submission = useFormSubmission(config, form);
-
-  // --- Core Methods --- 
 
   /**
    * Registers a component's API (e.g., its ref) with the manager.
@@ -64,25 +64,17 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     state.isProcessing = true;
     state.isSubmitted = false;
     state.currentPage = 0;
-    console.log('useFormManager initializing...', options);
+   
+    await initialization.initialize({
+      ...options,
+      fields: toValue(config).properties // Pass form fields for special handling
+    });
 
-    try {
-      // Ensure latest config is used if it's replaceable
-      // (Handled by passing config ref to initialization composable)
-      await initialization.initialize(options);
-      console.log('Form data initialized via composable.');
+    timer.reset();
+    timer.start();
+    console.log('Form timer started via composable.');
+    state.isProcessing = false;
 
-      timer.reset();
-      timer.start();
-      console.log('Form timer started via composable.');
-
-    } catch (error) {
-      console.error("Error during useFormManager initialization:", error);
-      // Handle initialization error (e.g., set error state on form instance)
-       form.errors.set('initialization', 'Failed to initialize form. Please refresh.');
-    } finally {
-      state.isProcessing = false;
-    }
   };
 
   /**
@@ -214,6 +206,10 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
       // 5. Update State on Success
       state.isSubmitted = true;
       state.isProcessing = false;
+      
+      // 6. Clear pending submission data on successful submit
+      pendingSubmissionService?.clear();
+      
       return submissionResult; // Return result from submission composable
 
     } catch (error) {
@@ -224,13 +220,8 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
         setPageIndexCallback: (index) => { state.currentPage = index; },
         timerService: timer
       });
-      state.isProcessing = false;
-       // Rethrow a meaningful error
-       const message = error?.response?.data?.message || error?.message || 'An unknown submission error occurred.';
-       if (!form.errors.any()) { // Add a general error if vform didn't catch specific ones
-           form.errors.set('submission', message);
-       }
-       throw new Error(message);
+      state.isProcessing = false; 
+      throw error;
     }
   };
 
@@ -256,13 +247,10 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     form,           // The vForm instance (from useForm)
     strategy,       // Current mode strategy (computed)
     registeredComponents, // Registered child component APIs
+    pendingSubmission: pendingSubmissionService, // Expose pendingSubmission service
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,
-    // validation,
-    // timer,
-    // payment,
-    // submission,
 
     // Core Methods
     initialize,

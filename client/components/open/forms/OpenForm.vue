@@ -1,12 +1,6 @@
 <template>
-  <div v-if="autoSubmit">
-    <p class="text-center p-4">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-    </p>
-  </div>
   <form
-    v-else-if="form"
-    :style="computedStyle"
+    v-if="form"
     @submit.prevent=""
   >
     <FormProgressbar
@@ -164,12 +158,6 @@ const previousFieldsPageBreak = computed(() =>
 const showHidden = computed(() => strategy.value.display.showHiddenFields)
 const allowDragging = computed(() => strategy.value.admin.allowDragging)
 const draggingNewBlock = computed(() => workingFormStore.draggingNewBlock)
-
-const computedStyle = computed(() => {
-  return {
-    '--form-color': props.formManager.config.value.color
-  }
-})
 
 const handlePreviousClick = () => {
   props.formManager.previousPage()

@@ -2,26 +2,69 @@ import { ref } from 'vue';
 
 /**
  * @fileoverview Composable for managing form completion time.
+ * Includes persistence in localStorage via pendingSubmission.
  */
-export function useFormTimer(formConfig) {
+export function useFormTimer(formConfig, pendingSubmission) {
   // Reactive state for timer
   const startTime = ref(null);
   const completionTime = ref(null);
   const isTimerActive = ref(false);
+  const isInitialized = ref(false);
 
   /**
-   * Starts the timer if enabled in formConfig and not already active.
+   * Loads timer data from localStorage if available.
+   * @returns {Boolean} Whether data was loaded successfully
+   */
+  const loadFromLocalStorage = () => {
+    if (import.meta.server || !pendingSubmission) return false;
+    
+    const savedTimer = pendingSubmission.getTimer();
+    if (savedTimer) {
+      startTime.value = parseInt(savedTimer);
+      console.log(`Loaded timer from localStorage: ${startTime.value}`);
+      return true;
+    }
+    return false;
+  };
+
+  /**
+   * Saves the current start time to localStorage.
+   */
+  const saveToLocalStorage = () => {
+    if (import.meta.server || !pendingSubmission) return;
+    
+    if (startTime.value) {
+      pendingSubmission.setTimer(startTime.value.toString());
+      console.log(`Saved timer to localStorage: ${startTime.value}`);
+    } else {
+      pendingSubmission.removeTimer();
+      console.log('Removed timer from localStorage');
+    }
+  };
+
+  /**
+   * Starts the timer if not already active.
+   * Will load from localStorage on first call if available.
    */
   const start = () => {
-    if (!formConfig?.value?.track_completion_time || isTimerActive.value) {
-      if (isTimerActive.value) console.log('Timer already active.');
-      else console.log('Timer disabled by config.');
+    if (isTimerActive.value) {
+      console.log('Timer already active.');
       return;
     }
-    if (!startTime.value) {
-        startTime.value = Date.now(); // Set start time only if not already set (e.g., after reset)
+    
+    // If this is the first time starting, try to load from localStorage
+    if (!isInitialized.value) {
+      isInitialized.value = true;
+      loadFromLocalStorage();
     }
+    
+    // Only set a new start time if one doesn't exist already
+    if (!startTime.value) {
+      startTime.value = Date.now();
+    }
+    
     isTimerActive.value = true;
+    saveToLocalStorage();
     console.log('Form timer started.');
   };
 
@@ -33,22 +76,31 @@ export function useFormTimer(formConfig) {
       console.log('Timer not active or already stopped.');
       return;
     }
-    if (startTime.value && formConfig?.value?.track_completion_time) {
+    
+    if (startTime.value) {
       completionTime.value = Math.round((Date.now() - startTime.value) / 1000); // Time in seconds
       console.log(`Form timer stopped. Completion time: ${completionTime.value}s`);
     } else {
-        completionTime.value = null; // Ensure null if tracking disabled or timer never started properly
+      completionTime.value = null;
     }
+    
     isTimerActive.value = false;
+    
+    // Don't clear local storage on stop - only on reset or explicit removal
   };
 
   /**
-   * Resets the timer state.
+   * Resets the timer state and clears localStorage.
    */
   const reset = () => {
     startTime.value = null;
     completionTime.value = null;
     isTimerActive.value = false;
+    
+    if (pendingSubmission) {
+      pendingSubmission.removeTimer();
+    }
+    
     console.log('Form timer reset.');
   };
 
