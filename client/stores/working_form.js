@@ -11,8 +11,7 @@ export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
     content: null,
     activeTab: 0,
-    formPageIndex: 0,
-
+    
     // Field being edited
     selectedFieldIndex: null,
     showEditFieldSidebar: null,
@@ -32,8 +31,8 @@ export const useWorkingFormStore = defineStore("working_form", {
     // Get structure service instance, creating it if needed
     structureService() {
       if (!this._structureService && this.content) {
-        // Create a mock manager state for the service
-        const managerState = reactive({ currentPage: this.formPageIndex })
+        // Create a manager state for the service
+        const managerState = reactive({ currentPage: 0 })
         
         // Initialize service with current content and state
         this._structureService = useFormStructure(
@@ -58,6 +57,12 @@ export const useWorkingFormStore = defineStore("working_form", {
     simplePageCount() {
       if (!this.structureService) return 1
       return this.structureService.pageCount.value
+    },
+    
+    // Current page index from structure service
+    formPageIndex() {
+      if (!this.structureService) return 0
+      return this.structureService.managerState.currentPage
     }
   },
   actions: {
@@ -65,16 +70,12 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.content = form
       // Reset structure service whenever form changes
       this._structureService = null
-      // Ensure page index is valid after loading new form
-      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1)
     },
     setProperties(properties) {
       if (!this.content) return
       this.content.properties = [...properties]
       // Reset structure service when properties change
       this._structureService = null
-      // Ensure page index is valid after properties change
-      this.formPageIndex = Math.min(this.formPageIndex, this.simplePageCount - 1)
     },
     objectToIndex(field) {
       if (!this.content?.properties) return -1
@@ -102,8 +103,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       if (this.selectedFieldIndex !== -1 && previousIndex !== this.selectedFieldIndex) {
         // Find which page contains the selected field and set to that page
         if (this.structureService) {
-          const pageForField = this.structureService.getPageForField(this.selectedFieldIndex)
-          this.setPageIndex(pageForField)
+          this.structureService.setPageForField(this.selectedFieldIndex)
         }
       }
     },
@@ -128,7 +128,6 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.selectedFieldIndex = null
       this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
-      this.formPageIndex = 0
       this.blockForm = null
       this._structureService = null
     },
@@ -277,26 +276,6 @@ export const useWorkingFormStore = defineStore("working_form", {
       
       newFields.splice(validNewIndex, 0, field)
       this.setProperties(newFields)
-    },
-    
-    /**
-     * Sets the current page index.
-     * @param {number} targetPageIndex - The page index to navigate to.
-     */
-    setPageIndex(targetPageIndex) {
-        const newIndex = Math.max(0, Math.min(targetPageIndex, this.simplePageCount - 1))
-        if (this.formPageIndex !== newIndex) {
-            console.log(`WorkingFormStore: Setting page index to ${newIndex}`)
-            this.formPageIndex = newIndex
-            
-            // Update the manager state object if structure service exists
-            if (this._structureService) {
-                const managerState = this._structureService.managerState
-                if (managerState && managerState.currentPage !== undefined) {
-                    managerState.currentPage = newIndex
-                }
-            }
-        }
     }
   },
   history: {}

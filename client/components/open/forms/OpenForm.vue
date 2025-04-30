@@ -196,7 +196,6 @@ onMounted(() => {
   }
 });
 
-// --- Provide the manager's registration method --- 
 provide('registerComponent', (id, api) => {
   if (props.formManager) {
     props.formManager.registerComponent(id, api);

@@ -203,7 +203,12 @@ export function useFormStructure(formConfig, managerState, formData) {
    * @returns {Number} The page index (0-based).
    */
   const getPageForField = (fieldIndex) => {
-    if (fieldIndex === -1 || fieldIndex === null || fieldIndex === undefined) return 0;
+    // Basic validation for field index
+    if (fieldIndex === null || fieldIndex === undefined || 
+        typeof fieldIndex !== 'number' || isNaN(fieldIndex) || fieldIndex < 0) {
+      console.warn(`Invalid field index passed to getPageForField: ${fieldIndex}`);
+      return 0; // Default to first page for invalid indexes
+    }
 
     const properties = form.value.properties || [];
     if (properties.length === 0 || fieldIndex >= properties.length) {
@@ -267,6 +272,29 @@ export function useFormStructure(formConfig, managerState, formData) {
   };
 
   /**
+   * Sets the current page to the page containing the specified field.
+   * @param {Number} fieldIndex - The index of the field in the form.properties array.
+   * @returns {Number} The page index that was set.
+   */
+  const setPageForField = (fieldIndex) => {
+    // Get the page index, with additional validation
+    const pageIndex = getPageForField(fieldIndex);
+    
+    // Ensure we have a valid numeric page index
+    if (typeof pageIndex !== 'number' || isNaN(pageIndex) || pageIndex < 0) {
+      return
+    }
+    
+    // Update the manager state with validated page index
+    const state = toValue(managerState);
+    if (state && state.currentPage !== undefined) {
+      state.currentPage = pageIndex;
+    }
+    
+    return pageIndex;
+  };
+
+  /**
    * Determines the correct index to insert a new field.
    * Considers selected field index and current page boundaries.
    * @param {Number|null} selectedFieldIndex - The index of the currently selected field in form.properties.
@@ -319,6 +347,7 @@ export function useFormStructure(formConfig, managerState, formData) {
     getPaymentBlock,  // Get the payment block from a page
     isFieldHidden,    // Check if a specific field is hidden by logic
     getTargetDropIndex, // Calculate absolute index for drag/drop
-    determineInsertIndex // Calculate where to insert a new field
+    determineInsertIndex, // Calculate where to insert a new field
+    setPageForField // Set the current page to the page containing the specified field
   };
 } 
