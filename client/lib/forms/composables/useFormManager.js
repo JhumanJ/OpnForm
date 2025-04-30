@@ -1,4 +1,4 @@
-import { reactive, computed, ref, toValue } from 'vue';
+import { reactive, computed, ref, toValue, onBeforeUnmount, watch } from 'vue';
 import { useForm } from '~/composables/useForm.js'; // Assuming useForm handles vForm setup
 import { FormMode, createFormModeStrategy } from '../FormModeStrategy';
 import { useFormStructure } from './useFormStructure';
@@ -8,6 +8,7 @@ import { useFormSubmission } from './useFormSubmission';
 import { useFormPayment } from './useFormPayment';
 import { useFormTimer } from './useFormTimer';
 import { pendingSubmission } from '~/composables/forms/pendingSubmission.js';
+import { usePartialSubmission } from '~/composables/forms/usePartialSubmission.js';
 
 /**
  * @fileoverview Main orchestrator composable for form operations.
@@ -15,8 +16,6 @@ import { pendingSubmission } from '~/composables/forms/pendingSubmission.js';
  * based on the provided form configuration and mode.
  */
 export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
-  console.log(`Initializing useFormManager in ${mode} mode.`);
-
   // --- Reactive State ---
   const config = ref(initialFormConfig); // Use ref for potentially replaceable config
   const form = useForm(); // Core vForm instance
@@ -33,6 +32,15 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
 
   // --- Initialize pendingSubmission for localStorage handling ---
   const pendingSubmissionService = import.meta.server ? null : pendingSubmission(toValue(config));
+  
+  // --- Initialize partialSubmission for auto-saving partial submissions ---
+  // Create a reactive reference to the form data for usePartialSubmission to watch
+  const formDataRef = computed(() => form.data());
+
+  // Initialize the partial submission service with form config and reactive form data ref
+  const partialSubmissionService = import.meta.server ? 
+    { startSync: () => {}, stopSync: () => {}, syncToServer: () => {}, getSubmissionHash: () => null } : 
+    usePartialSubmission(toValue(config), formDataRef);
 
   // --- Instantiate Composables (Services) ---
   const timer = useFormTimer(config, pendingSubmissionService);
@@ -49,10 +57,8 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
    */
   const registerComponent = (id, api) => {
     if (!id) {
-      console.warn("useFormManager: Attempted to register component without an ID.");
       return;
     }
-    console.log(`useFormManager: Registering component API for ID: ${id}`);
     registeredComponents[id] = api;
   };
 
@@ -72,9 +78,13 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
 
     timer.reset();
     timer.start();
-    console.log('Form timer started via composable.');
+    
+    // Start partial submission sync if enabled
+    if (import.meta.client && config.value.enable_partial_submissions) {
+      partialSubmissionService.startSync();
+    }
+    
     state.isProcessing = false;
-
   };
 
   /**
@@ -82,7 +92,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
    */
   const nextPage = async () => {
     if (state.isProcessing) return false;
-    console.log(`Attempting to navigate to next page from ${state.currentPage}`);
     state.isProcessing = true;
 
     try {
@@ -92,34 +101,25 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
 
       // 1. Validate current page
       await validation.validateCurrentPage(currentPageFields, strategy.value);
-      console.log('Current page validation successful (or skipped).');
 
       // 2. Process payment (Create Payment Intent if applicable)
       const paymentBlock = structure.getPaymentBlock(state.currentPage);
       if (paymentBlock) {
-        console.log('Payment block found, processing payment intent...');
         // Pass required refs if Stripe needs them now (unlikely for just intent creation)
         const paymentResult = await payment.processPayment(paymentBlock /*, potentially stripeRef, elementsRef */);
         if (!paymentResult.success) {
-          console.error('Payment intent creation failed:', paymentResult.error);
           throw paymentResult.error || new Error('Payment intent creation failed');
         }
-        console.log('Payment intent processed successfully.');
       }
 
       // 3. Move to the next page if not the last
       if (!isCurrentlyLastPage) {
         state.currentPage++;
-        console.log(`Navigated to page ${state.currentPage}`);
-        // Scrolling should be handled by the component watching currentPage
-      } else {
-           console.log('Already on the last page, cannot navigate next.');
       }
       state.isProcessing = false;
       return true;
 
     } catch (error) {
-      console.error('Error during nextPage navigation:', error);
       // Use validation composable's failure handler
       validation.onValidationFailure({
         fieldGroups: structure.fieldGroups.value, // Pass reactive groups
@@ -135,8 +135,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
   const previousPage = () => {
     if (state.currentPage > 0 && !state.isProcessing) {
       state.currentPage--;
-      console.log(`Navigated to previous page ${state.currentPage}`);
-      // Scrolling handled by component
     }
   };
 
@@ -148,27 +146,27 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
    */
   const submit = async (submitOptions = {}) => {
     if (state.isProcessing) {
-        console.warn('Submission attempt ignored, already processing.');
         return Promise.reject('Processing');
     }
-    console.log('Attempting final form submission via useFormManager...');
     state.isProcessing = true;
 
     try {
+      // Stop partial submission sync during submission if enabled
+      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+        partialSubmissionService.stopSync(); // This will sync immediately before stopping
+      }
+      
       // 1. Stop Timer & Get Time
       timer.stop();
       const completionTime = timer.getCompletionTime();
-      console.log(`Form submit initiated. Completion time: ${completionTime}s`);
 
       // 2. Final Validation (if not on last page or required by strategy)
       const isCurrentlyLastPage = structure.isLastPage.value;
-      console.log(`[useFormManager.submit] Checking validation. Is last page: ${isCurrentlyLastPage}`);
       await validation.validateSubmissionIfNotLastPage(
         config.value.properties || [],
         strategy.value,
         isCurrentlyLastPage // Pass the reactive value
       );
-      console.log('Final validation successful (or skipped).');
 
       // 3. Get Captcha Token if required
       let captchaToken = submitOptions.captchaToken;
@@ -177,43 +175,49 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
       if (requiresCaptcha && !captchaToken) {
         const captchaApi = registeredComponents['captcha']; // Access registered component
         if (captchaApi && typeof captchaApi.getToken === 'function') {
-          console.log("Captcha required, calling registered component getToken...");
           try {
             captchaToken = await captchaApi.getToken();
             if (!captchaToken) {
               throw new Error("Captcha component returned empty token.");
             }
-            console.log("Captcha token obtained via registered component.");
           } catch (captchaError) {
-            console.error("Error obtaining captcha token:", captchaError);
             throw new Error("Could not process Captcha. Please try again.");
           }
         } else {
-          console.warn("Captcha required, but no compatible component registered at ID 'captcha'.");
           throw new Error("Captcha is required but could not be processed.");
         }
       }
 
-      // 4. Perform Submission (using submission composable)
+      // 4. Get submission hash from partialSubmission if enabled
+      let submissionHash = null;
+      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+        submissionHash = partialSubmissionService.getSubmissionHash();
+      }
+
+      // 5. Perform Submission (using submission composable)
       const submissionResult = await submission.submit({
         formModeStrategy: strategy.value,
         completionTime: completionTime,
         captchaToken: captchaToken,
+        submissionHash: submissionHash,
         ...submitOptions
       });
-      console.log('Submission composable call successful.');
 
-      // 5. Update State on Success
+      // 6. Update State on Success
       state.isSubmitted = true;
       state.isProcessing = false;
       
-      // 6. Clear pending submission data on successful submit
+      // 7. Clear pending submission data on successful submit
       pendingSubmissionService?.clear();
       
       return submissionResult; // Return result from submission composable
 
     } catch (error) {
-      console.error('Error during final submission process:', error);
+      // Restart partial submission sync if there was an error and it's enabled
+      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+        partialSubmissionService.startSync();
+      }
+      
       // Handle validation or submission errors using validation composable's handler
       validation.onValidationFailure({
         fieldGroups: structure.fieldGroups.value,
@@ -227,7 +231,6 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
 
   /** Resets the form to its initial state for refilling. */
   const restart = async () => {
-    console.log('useFormManager restarting...');
     state.isSubmitted = false;
     state.currentPage = 0;
     state.isProcessing = false;
@@ -235,9 +238,22 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     form.errors.clear(); // Clear vForm errors
     timer.reset(); // Reset timer via composable
     timer.start(); // Restart timer
-    console.log('useFormManager restart complete.');
-    // Note: Does not re-run initialize automatically. Call initialize() again if needed.
+    
+    // Restart partial submission if enabled
+    if (!import.meta.server && toValue(config).enable_partial_submissions) {
+      partialSubmissionService.stopSync(); // This will sync immediately before stopping
+      partialSubmissionService.startSync(); // Start fresh sync
+    }
   };
+  
+  // Clean up when component using the manager is unmounted
+  if (import.meta.client) {
+    onBeforeUnmount(() => {
+      if (toValue(config).enable_partial_submissions) {
+        partialSubmissionService.stopSync();
+      }
+    });
+  }
 
   // --- Exposed API --- 
   return {
@@ -248,6 +264,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     strategy,       // Current mode strategy (computed)
     registeredComponents, // Registered child component APIs
     pendingSubmission: pendingSubmissionService, // Expose pendingSubmission service
+    partialSubmission: partialSubmissionService, // Expose partialSubmission service with debounced sync
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,

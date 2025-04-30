@@ -21,23 +21,42 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const debouncedSync = () => {
-    if (syncTimeout) clearTimeout(syncTimeout)
+    // Clear existing timeout to reset the timer
+    if (syncTimeout) {
+      clearTimeout(syncTimeout);
+    }
+    
+    // Set a new timeout - increased to 2 seconds for less frequent syncing
     syncTimeout = setTimeout(() => {
-      syncToServer()
-    }, 1000) // 1 second debounce
+      syncToServer();
+    }, 2000); // 2 second debounce
+  }
+
+  // Add a function to execute sync immediately without debouncing
+  // This is used for critical moments like page unload
+  const syncImmediately = () => {
+    if (syncTimeout) {
+      clearTimeout(syncTimeout);
+      syncTimeout = null;
+    }
+    return syncToServer();
   }
 
   const syncToServer = async () => {
     // Check if partial submissions are enabled and if we have data
-    if (!form?.enable_partial_submissions) return
+    if (!form?.enable_partial_submissions) {
+      return;
+    }
     
-    // Get current form data - handle both function and direct object patterns
-    const currentData = typeof formData.value?.data === 'function' 
-      ? formData.value.data() 
-      : formData.value
+    // Get current form data - now handling the computed ref pattern
+    const currentData = typeof formData === 'function' 
+      ? formData() 
+      : formData.value;
       
     // Skip if no data or empty data
-    if (!currentData || Object.keys(currentData).length === 0) return
+    if (!currentData || Object.keys(currentData).length === 0) {
+      return;
+    }
 
     try {
       const response = await opnFetch(`/forms/${form.slug}/answer`, {
@@ -47,84 +66,90 @@ export const usePartialSubmission = (form, formData = {}) => {
           'is_partial': true,
           'submission_hash': getSubmissionHash()
         }
-      })
+      });
       if (response.submission_hash) {
-        setSubmissionHash(response.submission_hash)
+        setSubmissionHash(response.submission_hash);
       }
     } catch (error) {
-      console.error('Failed to sync partial submission', error)
+      // Error handling without console.log
     }
   }
 
   // Add these handlers as named functions so we can remove them later
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
-      debouncedSync()
+      // When tab becomes hidden, sync immediately
+      syncImmediately();
     }
   }
 
   const handleBlur = () => {
-    debouncedSync()
+    // When window loses focus, sync immediately
+    syncImmediately();
   }
 
   const handleBeforeUnload = () => {
-    syncToServer()
+    // Before page unloads, sync immediately
+    syncImmediately();
   }
 
   const startSync = () => {
-    if (dataWatcher) return
+    if (dataWatcher) {
+      return;
+    }
 
     // Initial sync
-    debouncedSync()
+    debouncedSync();
 
-    // Watch formData directly with Vue's reactivity
+    // Watch formData using Vue's reactivity
     dataWatcher = watch(
       formData,
-      () => {
-        debouncedSync()
+      (newValue) => {
+        debouncedSync();
       },
       { deep: true }
-    )
+    );
 
     // Add event listeners for critical moments
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('blur', handleBlur)
-    window.addEventListener('beforeunload', handleBeforeUnload)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('beforeunload', handleBeforeUnload);
   }
 
   const stopSync = () => {
-    submissionHashes.value = new Map()
+    // Final sync before stopping if we have a hash
+    if (getSubmissionHash()) {
+      syncImmediately();
+    }
+    
+    submissionHashes.value = new Map();
 
     if (dataWatcher) {
-      dataWatcher()
-      dataWatcher = null
+      dataWatcher();
+      dataWatcher = null;
     }
     
     if (syncTimeout) {
-      clearTimeout(syncTimeout)
-      syncTimeout = null
+      clearTimeout(syncTimeout);
+      syncTimeout = null;
     }
 
     // Remove event listeners
-    document.removeEventListener('visibilitychange', handleVisibilityChange)
-    window.removeEventListener('blur', handleBlur)
-    window.removeEventListener('beforeunload', handleBeforeUnload)
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.removeEventListener('blur', handleBlur);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
   }
 
   // Ensure cleanup when component is unmounted
   onBeforeUnmount(() => {
-    stopSync()
-    
-    // Final sync attempt before unmounting
-    if(getSubmissionHash()) {
-      syncToServer()
-    }
-  })
+    stopSync();
+  });
 
   return {
     startSync,
     stopSync,
-    syncToServer,
+    syncToServer: debouncedSync, // Expose the debounced version externally
+    syncImmediately, // Also expose the immediate sync for critical situations
     getSubmissionHash,
     setSubmissionHash
   }

@@ -12,8 +12,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   const applyUrlParameters = (params) => {
     if (!params) return;
     
-    console.log('Applying URL parameters');
-    
     // First, handle regular parameters
     params.forEach((value, key) => {
       // Skip array parameters for now
@@ -26,7 +24,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
           : value;
           
         form[key] = parsedValue;
-        console.log(`URL parameter set: ${key}=${value}`);
       } catch (e) {
         // If parsing fails, use the original value
         form[key] = value;
@@ -41,7 +38,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
         if (arrayValues.length > 0) {
           const baseKey = key.slice(0, -2);
           form[baseKey] = arrayValues;
-          console.log(`Array parameter set: ${baseKey}=[${arrayValues.join(', ')}]`);
         }
       }
     });
@@ -54,7 +50,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   const applyDefaultValues = (defaultData) => {
     if (!defaultData || Object.keys(defaultData).length === 0) return;
     
-    console.log('Applying default data');
     for (const key in defaultData) {
       if (Object.hasOwnProperty.call(defaultData, key) && form[key] === undefined) {
         form[key] = defaultData[key];
@@ -90,13 +85,10 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   const tryLoadFromSubmissionId = async (submissionId) => {
     if (!submissionId) return false;
     
-    console.log(`Loading data for submission ID: ${submissionId}`);
     try {
       await form.get(`/submissions/${submissionId}`);
-      console.log('Submission data loaded successfully.');
       return true;
     } catch (error) {
-      console.error(`Failed to load submission: ${error}`);
       form.reset(); // Reset if load failed
       return false;
     }
@@ -109,26 +101,21 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   const tryLoadFromPendingSubmission = () => {
     // Skip on server or if pendingSubmission is not available
     if (import.meta.server || !pendingSubmission) {
-      console.log('Skipping pendingSubmission check on server or missing pendingSubmission object');
       return false;
     }
     
     // Check if auto-save is enabled for this form
     if (!pendingSubmission.enabled?.value) {
-      console.log('PendingSubmission is disabled (auto_save is false)');
       return false;
     }
     
     // Get the saved data
     const pendingData = pendingSubmission.get();
-    console.log('pendingSubmission found:', pendingData ? 'Yes' : 'No', 
-                pendingData ? `(keys: ${Object.keys(pendingData).join(', ')})` : '');
     
     if (!pendingData || Object.keys(pendingData).length === 0) {
       return false;
     }
     
-    console.log('Loading data from pending submission in localStorage');
     form.resetAndFill(pendingData);
     return true;
   };
@@ -148,13 +135,11 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    * @param {Array} [options.fields] - Form fields for special handling
    */
   const initialize = async (options = {}) => {
-    console.log('Initializing form data with options:', options);
     const config = toValue(formConfig);
     
     // 1. Reset form state
     form.reset();
     form.errors.clear();
-    console.log('Form reset complete');
     
     // 2. Try loading from submission ID
     if (options.submissionId) {
@@ -197,14 +182,11 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     if (Object.keys(formData).length > 0) {
       form.resetAndFill(formData);
     }
-    
-    console.log('Form initialization complete. Current form data:', form.data());
   };
 
   // Setup watcher for form data changes to save to localStorage - client-side only
   if (!import.meta.server && pendingSubmission && pendingSubmission.enabled?.value) {
     watch(() => form.data(), (newValue) => {
-      console.log('Form data changed, saving to localStorage');
       pendingSubmission.set(newValue);
     }, { deep: true });
   }

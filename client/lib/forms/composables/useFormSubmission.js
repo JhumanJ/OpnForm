@@ -34,7 +34,6 @@ export function useFormSubmission(formConfig, form) {
       metadata.submission_id = options.submissionId;
     }
 
-    console.log('Prepared submission metadata:', metadata);
     return metadata;
   };
 
@@ -62,8 +61,6 @@ export function useFormSubmission(formConfig, form) {
       const response = await toValue(form).post(url, { 
         data: metadata
       });
-
-      console.log('Submission successful:', response);
       
       // Optionally reset form after successful submission based on strategy
       const formModeStrategy = options.formModeStrategy;
@@ -73,7 +70,6 @@ export function useFormSubmission(formConfig, form) {
       
       return response;
     } catch (error) {
-      console.error('Submission failed:', error);
       throw error;
     }
   };

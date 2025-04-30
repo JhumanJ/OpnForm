@@ -18,7 +18,6 @@ export function useFormPayment(formConfig, form) {
     const formData = toValue(form); // Access the vForm instance
     const url = `/forms/${config.slug}/payment/stripe/intent`;
 
-    console.log('Fetching Stripe client secret...');
     try {
       // Use the vForm instance's post method to make the request
       const response = await formData.post(url, {
@@ -34,10 +33,8 @@ export function useFormPayment(formConfig, form) {
           throw new Error('Invalid response structure from payment intent endpoint.');
       }
 
-      console.log('Stripe client secret received.');
       return response.data.client_secret;
     } catch (error) {
-      console.error('Failed to get Stripe client secret:', error?.response?.data || error);
       // Propagate error details if possible
       const errorMessage = error?.response?.data?.message || 'Could not initiate payment. Please check your details and try again.';
       // Set error on the form instance if possible, e.g., using a general payment error key
@@ -62,7 +59,6 @@ export function useFormPayment(formConfig, form) {
     // TODO: Construct the return URL properly based on form config/mode
     const returnUrl = `${window.location.origin}/forms/${config.slug}/payment/complete`; // Example
 
-    console.log('Confirming Stripe payment...');
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements: paymentElement, // Use the mounted PaymentElement
       clientSecret,
@@ -73,13 +69,11 @@ export function useFormPayment(formConfig, form) {
     });
 
     if (error) {
-      console.error('Stripe payment confirmation failed:', error);
       // Set error on the form instance
       toValue(form).errors.set('payment', error.message || 'Payment failed. Please try again.');
       throw error; // Rethrow to signal failure
     }
 
-    console.log('Stripe payment confirmed. Status:', paymentIntent?.status);
     // Handle different paymentIntent statuses (succeeded, processing, requires_action)
     if (paymentIntent?.status !== 'succeeded' && paymentIntent?.status !== 'processing') {
         const failMessage = `Payment status: ${paymentIntent?.status}. Please contact support.`;
@@ -108,7 +102,6 @@ export function useFormPayment(formConfig, form) {
     }
 
     const provider = paymentBlock.provider || 'stripe'; // Default to stripe
-    console.log(`Processing payment for provider: ${provider}`);
     toValue(form).errors.clear('payment'); // Clear previous payment errors
 
     if (provider === 'stripe') {
@@ -118,19 +111,16 @@ export function useFormPayment(formConfig, form) {
         // This function mainly ensures the intent is created.
         // We might store the clientSecret in the form data temporarily if needed before submission
         toValue(form).set('_stripe_client_secret', clientSecret); // Temporary store
-        console.log('Stripe payment intent created successfully.');
         return { success: true }; // Indicate intent creation was successful
 
         // --- Client-side confirmation logic (moved to component/submit) ---
         // const confirmationResult = await _confirmStripePayment(clientSecret, paymentElement, stripe);
         // return confirmationResult;
       } catch (error) {
-        console.error('Stripe payment processing failed:', error);
         // Error should already be set on the form by internal methods
         return { success: false, error: error };
       }
     } else {
-      console.warn(`Unsupported payment provider: ${provider}`);
       return { success: false, error: new Error(`Unsupported payment provider: ${provider}`) };
     }
   };

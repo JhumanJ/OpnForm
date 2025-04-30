@@ -29,7 +29,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
     if (typeof useRuntimeConfig === 'function') {
         runtimeConfig = useRuntimeConfig().public;
     } else {
-        console.warn('useRuntimeConfig not available in useFormValidation. Captcha keys might be missing.');
         // Attempt to get from formConfig as a fallback?
         runtimeConfig.recaptchaSiteKey = config.recaptcha_site_key;
         runtimeConfig.hCaptchaSiteKey = config.hcaptcha_site_key;
@@ -52,21 +51,17 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
    */
   const validateFields = async (fieldIds, httpMethod = 'POST') => {
     if (!fieldIds || fieldIds.length === 0) {
-      console.log('No fields provided for validation.');
       return true; // Nothing to validate
     }
 
-    console.log(`Validating fields: [${fieldIds.join(', ')}] using ${httpMethod}`);
     const config = configRef.value;
     const validationUrl = `/forms/${config.slug}/answer`; // Use reactive config
 
     try {
       // Use the reactive formRef
       await formRef.value.validate(httpMethod, validationUrl, {}, fieldIds);
-      console.log('Validation successful for fields:', fieldIds);
       return true; // Validation passed
     } catch (error) {
-      console.log('Validation failed for fields:', fieldIds, 'Errors:', error?.data?.errors || error);
       // vForm handles setting errors. Just rethrow.
       throw error;
     }
@@ -81,7 +76,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
    */
   const validateCurrentPage = async (currentPageFields, formModeStrategy) => {
     if (!formModeStrategy?.validation?.validateOnNextPage) {
-      console.log('Validation skipped: validateOnNextPage is false for the current mode.');
       return true;
     }
 
@@ -90,7 +84,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       .map(field => field.id);
 
     if (fieldIdsToValidate.length === 0) {
-      console.log('No fields to validate on the current page.');
       return true;
     }
 
@@ -98,8 +91,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       await validateFields(fieldIdsToValidate);
       return true;
     } catch (errors) {
-      console.log('Validation errors on current page.');
-      handleValidationError(errors); // Log or perform other actions
       throw errors; // Rethrow to signal failure
     }
   };
@@ -112,17 +103,13 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
    * @returns {Promise<boolean>} Resolves true if validation passes or isn't required/skipped, rejects otherwise.
    */
   const validateSubmissionIfNotLastPage = async (allFields, formModeStrategy, isCurrentlyLastPage) => {
-    console.log(`[validateSubmissionIfNotLastPage Check] Received isCurrentlyLastPage=${isCurrentlyLastPage}`);
-
     // Skip validation if we are already determined to be on the last page
     if (isCurrentlyLastPage) {
-      console.log('Validation skipped: On last page.');
       return true;
     }
 
     // Skip validation if strategy doesn't require it
     if (!formModeStrategy?.validation?.validateOnSubmit) {
-      console.log('Validation skipped: validateOnSubmit is false for the current mode.');
       return true;
     }
 
@@ -131,7 +118,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       .map(field => field.id);
 
     if (fieldIdsToValidate.length === 0) {
-      console.log('No fields to validate before submission (not on last page).');
       return true;
     }
 
@@ -139,8 +125,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       await validateFields(fieldIdsToValidate);
       return true;
     } catch (errors) {
-      console.log('Validation errors before submission (not on last page).');
-      handleValidationError(errors);
       throw errors;
     }
   };
@@ -150,7 +134,6 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
    * Assumes vForm instance already populates its errors object.
    */
   const handleValidationError = (error) => {
-    console.error("Validation Error encountered:", error?.data?.errors || error?.data || error?.message || error);
     // Scrolling logic should be handled in the UI component
   };
 
@@ -169,11 +152,9 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
     for (let i = 0; i < fieldGroups.length; i++) {
       const pageHasError = fieldGroups[i]?.some(field => field && field.id && errors.has(field.id));
       if (pageHasError) {
-        console.log(`First page with error found: index ${i}`);
         return i;
       }
     }
-    console.log('No page found containing current validation errors.');
     return -1;
   };
 
@@ -182,29 +163,20 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
    * @param {Object} context - Object containing { fieldGroups, timerService, setPageIndexCallback }.
    */
   const onValidationFailure = (context) => {
-    console.warn('Executing onValidationFailure actions.');
     const { fieldGroups, timerService, setPageIndexCallback } = context;
 
     // Restart timer using the timer composable instance
     if (timerService && typeof timerService.start === 'function') {
       timerService.start();
-      console.log('Form timer instructed to start via timer composable.');
-    } else {
-      console.log('timerService (composable) not available or invalid in context for restart.');
     }
 
     // Find and navigate to the first page with an error
     if (fieldGroups && fieldGroups.length > 1 && typeof setPageIndexCallback === 'function') {
       const errorPageIndex = findFirstPageWithError(fieldGroups);
       if (errorPageIndex !== -1 && errorPageIndex !== toValue(managerState)?.currentPage) {
-        console.log(`Validation failed, navigating to error page index: ${errorPageIndex}`);
         setPageIndexCallback(errorPageIndex);
-      } else if (errorPageIndex !== -1) {
-          console.log(`Validation failed, error is on the current page (${errorPageIndex}). No navigation needed.`);
       }
     }
-
-    // Scrolling is handled by the component listening for errors
   };
 
   // --- Exposed API ---

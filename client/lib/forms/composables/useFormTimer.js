@@ -21,7 +21,6 @@ export function useFormTimer(formConfig, pendingSubmission) {
     const savedTimer = pendingSubmission.getTimer();
     if (savedTimer) {
       startTime.value = parseInt(savedTimer);
-      console.log(`Loaded timer from localStorage: ${startTime.value}`);
       return true;
     }
     return false;
@@ -35,10 +34,8 @@ export function useFormTimer(formConfig, pendingSubmission) {
     
     if (startTime.value) {
       pendingSubmission.setTimer(startTime.value.toString());
-      console.log(`Saved timer to localStorage: ${startTime.value}`);
     } else {
       pendingSubmission.removeTimer();
-      console.log('Removed timer from localStorage');
     }
   };
 
@@ -48,7 +45,6 @@ export function useFormTimer(formConfig, pendingSubmission) {
    */
   const start = () => {
     if (isTimerActive.value) {
-      console.log('Timer already active.');
       return;
     }
     
@@ -65,7 +61,6 @@ export function useFormTimer(formConfig, pendingSubmission) {
     
     isTimerActive.value = true;
     saveToLocalStorage();
-    console.log('Form timer started.');
   };
 
   /**
@@ -73,13 +68,11 @@ export function useFormTimer(formConfig, pendingSubmission) {
    */
   const stop = () => {
     if (!isTimerActive.value) {
-      console.log('Timer not active or already stopped.');
       return;
     }
     
     if (startTime.value) {
       completionTime.value = Math.round((Date.now() - startTime.value) / 1000); // Time in seconds
-      console.log(`Form timer stopped. Completion time: ${completionTime.value}s`);
     } else {
       completionTime.value = null;
     }
@@ -100,8 +93,6 @@ export function useFormTimer(formConfig, pendingSubmission) {
     if (pendingSubmission) {
       pendingSubmission.removeTimer();
     }
-    
-    console.log('Form timer reset.');
   };
 
   /**
