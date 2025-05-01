@@ -1,5 +1,5 @@
 <template>
-  <input-wrapper v-bind="inputWrapperProps">
+  <InputWrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
@@ -7,6 +7,7 @@
     <div
       v-if="loading || file"
       :class="[
+        theme.default.input,
         theme.SignatureInput.input,
         theme.SignatureInput.spacing.horizontal,
         theme.SignatureInput.spacing.vertical,
@@ -43,6 +44,7 @@
       ref="signaturePad"
       class="not-draggable"
       :class="[
+        theme.default.input,
         theme.SignatureInput.input,
         theme.SignatureInput.spacing.horizontal,
         theme.SignatureInput.spacing.vertical,
@@ -91,17 +93,17 @@
     <template #error>
       <slot name="error" />
     </template>
-  </input-wrapper>
+  </InputWrapper>
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import { VueSignaturePad } from "vue-signature-pad"
-import { storeFile } from "~/lib/file-uploads.js"
+import { VueSignaturePad } from 'vue-signature-pad'
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
+import { storeFile } from '~/lib/file-uploads.js'
 
 export default {
-  name: "SignatureInput",
+  name: 'SignatureInput',
   components: { InputWrapper, VueSignaturePad },
 
   props: {
@@ -124,7 +126,32 @@ export default {
       handler(file) {
         this.compVal = file?.url || null
       }
+    },
+    modelValue: {
+      immediate: true,
+      handler(value) {
+        // Reset the value if it's an array (coming from Notion database)
+        if (Array.isArray(value) && this.form) {
+          this.form[this.name] = ''
+        }
+      }
     }
+  },
+
+  created() {
+    // Handle Notion array data by resetting the value if it's an array
+    if (Array.isArray(this.compVal)) {
+      // Reset the signature field value to empty string when it's an array (from Notion)
+      this.form[this.name] = ''
+    }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      if (this.$refs.signaturePad) {
+        this.$refs.signaturePad.resizeCanvas()
+      }
+    })
   },
 
   methods: {
@@ -138,7 +165,7 @@ export default {
         this.form[this.name] = null
         return
       }
-      
+
       if (this.disabled) {
         this.$refs.signaturePad.clearSignature()
       } else {
@@ -169,7 +196,7 @@ export default {
           }
           this.loading = false
         })
-        .catch(() => {
+        .catch((error) => {
           this.loading = false
           this.file = null
         })
