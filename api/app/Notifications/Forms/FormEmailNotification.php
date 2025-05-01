@@ -196,7 +196,11 @@ class FormEmailNotification extends Notification
 
     private function getEmailContent(): string
     {
-        $parser = new MentionParser($this->integrationData->email_content ?? '', $this->formatSubmissionData());
+        // Convert bullet list to email-safe HTML
+        $content = $this->integrationData->email_content ?? '';
+        $content = preg_replace('/<li data-list="bullet">(.*?)<\/li>/', '<li style="list-style-type: disc; margin-left: 20px;">$1</li>', $content);
+
+        $parser = new MentionParser($content, $this->formatSubmissionData());
         return $parser->parse();
     }
 
