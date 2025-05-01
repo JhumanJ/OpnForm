@@ -15,11 +15,16 @@ import { usePartialSubmission } from '~/composables/forms/usePartialSubmission.j
  * Initializes and coordinates various form composables (Structure, Init, Validation, etc.)
  * based on the provided form configuration and mode.
  */
-export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
+export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options = {}) {
   // --- Reactive State ---
   const config = ref(initialFormConfig); // Use ref for potentially replaceable config
   const form = useForm(); // Core vForm instance
   const strategy = computed(() => createFormModeStrategy(mode)); // Strategy based on mode
+  
+  // Use the passed darkMode ref if it's a ref, otherwise create a new ref
+  const darkMode = options.darkMode && typeof options.darkMode === 'object' && 'value' in options.darkMode 
+    ? options.darkMode 
+    : ref(options.darkMode || false);
 
   const state = reactive({
     currentPage: 0,
@@ -88,7 +93,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
       await validation.validateCurrentPage(currentPageFields, strategy.value);
 
       // 2. Process payment (Create Payment Intent if applicable)
-      const paymentBlock = structure.getPaymentBlock(state.currentPage);
+      const paymentBlock = structure.currentPagePaymentBlock.value;
       if (paymentBlock) {
         // Pass required refs if Stripe needs them now (unlikely for just intent creation)
         const paymentResult = await payment.processPayment(paymentBlock /*, potentially stripeRef, elementsRef */);
@@ -228,6 +233,10 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE) {
     strategy,       // Current mode strategy (computed)
     pendingSubmission: pendingSubmissionService, // Expose pendingSubmission service
     partialSubmission: partialSubmissionService, // Expose partialSubmission service with debounced sync
+
+    // UI-related properties
+    darkMode,       // Dark mode setting
+    setDarkMode: (isDark) => { darkMode.value = isDark }, // Method to update dark mode
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,

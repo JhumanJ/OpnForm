@@ -23,10 +23,6 @@ const props = defineProps({
   formManager: {
     type: Object,
     required: true
-  },
-  darkMode: {
-    type: Boolean,
-    default: false
   }
 })
 
@@ -40,6 +36,7 @@ const structure = computed(() => props.formManager.structure)
 const isLastPage = computed(() => structure.value?.isLastPage.value ?? true)
 const language = computed(() => config.value?.language || 'en')
 const provider = computed(() => config.value?.captcha_provider || 'recaptcha')
+const darkMode = computed(() => props.formManager.darkMode.value)
 
 // Determine if captcha should be shown
 const isCaptchaRequired = computed(() => {

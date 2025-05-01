@@ -112,8 +112,6 @@
               v-if="formManager && form && !form.is_closed"
               :form-manager="formManager"
               :theme="theme"
-              :dark-mode="darkMode"
-              :mode="mode"
               @submit="triggerSubmit"
             >
               <template #submit-btn="{loading}">
@@ -246,14 +244,34 @@ const showFirstSubmissionModal = ref(false)
 // Check for auto_submit parameter during setup
 const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
 
+// Create a reactive reference directly from the prop
+const darkModeRef = toRef(props, 'darkMode')
+
+// Add back the local theme computation
+const theme = computed(() => {
+  return new ThemeBuilder(props.form.theme, {
+    size: props.form.size,
+    borderRadius: props.form.border_radius
+  }).getAllComponents()
+})
+
 let formManager = null
 if (props.form) {
-  formManager = useFormManager(props.form, props.mode)
+  formManager = useFormManager(props.form, props.mode, {
+    darkMode: darkModeRef
+  })
   formManager.initialize({
     submissionId: route.query.submission_id,
     urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
   })
 }
+
+// Add a watcher to update formManager's darkMode whenever darkModeRef changes
+watch(darkModeRef, (newDarkMode) => {
+  if (formManager) {
+    formManager.setDarkMode(newDarkMode)
+  }
+})
 
 // If auto_submit is true, trigger submit after component is mounted
 onMounted(() => {
@@ -264,13 +282,6 @@ onMounted(() => {
       triggerSubmit();
     });
   }
-})
-
-const theme = computed(() => {
-  return new ThemeBuilder(props.form.theme, {
-    size: props.form.size,
-    borderRadius: props.form.border_radius
-  }).getAllComponents()
 })
 
 const isPublicFormPage = computed(() => {

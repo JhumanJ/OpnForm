@@ -184,6 +184,28 @@ export function useFormStructure(formConfig, managerState, formData) {
   });
 
   /**
+   * Reactive computed property checking if current page has a payment block
+   */
+  const currentPageHasPaymentBlock = computed(() => {
+    const state = toValue(managerState);
+    const pageIndex = state?.currentPage;
+    if (pageIndex === undefined || pageIndex === null) return false;
+    
+    return hasPaymentBlock(pageIndex);
+  });
+
+  /**
+   * Reactive computed property returning the payment block from the current page, if any
+   */
+  const currentPagePaymentBlock = computed(() => {
+    const state = toValue(managerState);
+    const pageIndex = state?.currentPage;
+    if (pageIndex === undefined || pageIndex === null) return undefined;
+    
+    return getPaymentBlock(pageIndex);
+  });
+
+  /**
    * Gets the fields for a specific page index.
    * @param {Number} pageIndex - The index of the page.
    * @returns {Array<Object>} Array of field objects for the page.
@@ -339,6 +361,8 @@ export function useFormStructure(formConfig, managerState, formData) {
     currentPageBreak,
     previousPageBreak,
     isLastPage,
+    currentPageHasPaymentBlock,
+    currentPagePaymentBlock,
 
     // Methods
     getPageFields,    // Get fields for a specific page

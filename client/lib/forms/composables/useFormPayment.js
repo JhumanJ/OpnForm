@@ -1,4 +1,5 @@
-import { toValue } from 'vue';
+import { toValue, ref, computed } from 'vue';
+import { createStripeElements } from '~/composables/useStripeElements';
 // Assume Stripe is loaded globally or via another mechanism if needed client-side
 // For server-side/Nuxt API routes, import Stripe library properly.
 
@@ -6,6 +7,29 @@ import { toValue } from 'vue';
  * @fileoverview Composable for handling payment processing, currently focused on Stripe.
  */
 export function useFormPayment(formConfig, form) {
+  // Lazily-initialized Stripe elements
+  const stripeElements = ref(null);
+  
+  /**
+   * Gets payment-related data for a specific payment block
+   * @param {Object} paymentBlock - The payment field configuration
+   * @returns {Object|null} Payment data including stripeElements or null if not applicable
+   */
+  const getPaymentData = (paymentBlock) => {
+    if (!paymentBlock || paymentBlock.type !== 'payment') return null;
+    
+    // Create Stripe elements if needed and this is a Stripe payment
+    if (paymentBlock.provider === 'stripe' || !paymentBlock.provider) {
+      if (!stripeElements.value) {
+        stripeElements.value = createStripeElements();
+      }
+      return {
+        stripeElements: stripeElements.value,
+        oauthProviderId: paymentBlock.stripe_account_id
+      };
+    }
+    return null;
+  };
 
   /**
    * Gets the Stripe client secret from the backend.
@@ -106,6 +130,11 @@ export function useFormPayment(formConfig, form) {
 
     if (provider === 'stripe') {
       try {
+        // Ensure Stripe elements are initialized
+        if (!stripeElements.value) {
+          stripeElements.value = createStripeElements();
+        }
+        
         const clientSecret = await _getStripeClientSecret(paymentBlock);
         // Confirmation now likely happens on submit, triggered by the component
         // This function mainly ensures the intent is created.
@@ -128,8 +157,6 @@ export function useFormPayment(formConfig, form) {
   // Expose the main payment processing function
   return {
     processPayment,
-    // Expose internal methods only if needed externally (unlikely)
-    // _getStripeClientSecret,
-    // _confirmStripePayment
+    getPaymentData
   };
 } 

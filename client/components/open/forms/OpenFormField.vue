@@ -148,56 +148,40 @@
 </template>
 
 <script setup>
-import { computed, inject } from 'vue'
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { default as _has } from 'lodash/has'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import { useWorkingFormStore } from '~/stores/working_form'
 
 // Define props
 const props = defineProps({
-  form: {
-    type: Object,
-    required: true
-  },
-  dataForm: {
-    type: Object,
-    required: true
-  },
-  theme: {
-    type: Object, 
-    default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
-      }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
-  showHidden: {
-    type: Boolean,
-    default: false
-  },
-  darkMode: {
-    type: Boolean,
-    default: false
-  },
   field: {
     type: Object,
     required: true
   },
-  mode: {
-    type: String,
-    default: FormMode.LIVE
+  formManager: {
+    type: Object,
+    required: true
+  },
+  theme: {
+    type: Object,
+    required: true
   }
 })
+
+// Derive everything from formManager
+const form = computed(() => props.formManager?.config?.value || {});
+const dataForm = computed(() => props.formManager?.form || {});
+const darkMode = computed(() => props.formManager?.darkMode?.value || false);
+const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false);
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
 const selectedFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
 const showEditFieldSidebar = computed(() => workingFormStore.showEditFieldSidebar)
-const formModeStrategy = computed(() => createFormModeStrategy(props.mode))
-const isAdminPreview = computed(() => formModeStrategy.value.admin.showAdminControls)
+const strategy = computed(() => props.formManager?.strategy?.value || createFormModeStrategy(FormMode.LIVE))
+const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls || false)
 
 // Computed properties
 const getFieldComponents = computed(() => {
@@ -244,44 +228,44 @@ const getFieldComponents = computed(() => {
 
 const isPublicFormPage = computed(() => useRoute().name === 'forms-slug')
 
-const isFieldHidden = computed(() => !props.showHidden && shouldBeHidden.value)
+const isFieldHidden = computed(() => !showHidden.value && shouldBeHidden.value)
 
 const shouldBeHidden = computed(() => 
-  (new FormLogicPropertyResolver(props.field, props.dataForm)).isHidden()
+  (new FormLogicPropertyResolver(props.field, dataForm.value)).isHidden()
 )
 
 const isFieldRequired = computed(() => 
-  (new FormLogicPropertyResolver(props.field, props.dataForm)).isRequired()
+  (new FormLogicPropertyResolver(props.field, dataForm.value)).isRequired()
 )
 
 const isFieldDisabled = computed(() => 
-  (new FormLogicPropertyResolver(props.field, props.dataForm)).isDisabled()
+  (new FormLogicPropertyResolver(props.field, dataForm.value)).isDisabled()
 )
 
 const beingEdited = computed(() => 
   isAdminPreview.value && 
   showEditFieldSidebar.value && 
-  props.form.properties.findIndex((item) => item.id === props.field.id) === selectedFieldIndex.value
+  form.value.properties.findIndex((item) => item.id === props.field.id) === selectedFieldIndex.value
 )
 
 // Methods
 function editFieldOptions() {
-  if (!formModeStrategy.value.admin.showAdminControls) return
+  if (!isAdminPreview.value) return
   workingFormStore.openSettingsForField(props.field)
 }
 
 function setFieldAsSelected() {
-  if (!formModeStrategy.value.admin.showAdminControls || !workingFormStore.showEditFieldSidebar) return
+  if (!isAdminPreview.value || !workingFormStore.showEditFieldSidebar) return
   workingFormStore.openSettingsForField(props.field)
 }
 
 function openAddFieldSidebar() {
-  if (!formModeStrategy.value.admin.showAdminControls) return
+  if (!isAdminPreview.value) return
   workingFormStore.openAddFieldSidebar(props.field)
 }
 
 function removeField() {
-  if (!formModeStrategy.value.admin.showAdminControls) return
+  if (!isAdminPreview.value) return
   workingFormStore.removeField(props.field)
 }
 
@@ -318,19 +302,20 @@ function inputProperties(field) {
   const inputProperties = {
     key: field.id,
     name: field.id,
-    form: props.dataForm,
+    form: dataForm.value,
     label: (field.hide_field_name) ? null : field.name + ((shouldBeHidden.value) ? ' (Hidden Field)' : ''),
-    color: props.form.color,
+    color: form.value.color,
     placeholder: field.placeholder,
     help: field.help,
     helpPosition: (field.help_position) ? field.help_position : 'below_input',
-    uppercaseLabels: props.form.uppercase_labels == 1 || props.form.uppercase_labels == true,
-    theme: props.theme,
+    uppercaseLabels: form.value.uppercase_labels == 1 || form.value.uppercase_labels == true,
+    theme: props.theme || CachedDefaultTheme.getInstance(),
     maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : null,
     showCharLimit: field.show_char_limit || false,
-    isDark: props.darkMode,
-    locale: (props.form?.language) ? props.form.language : 'en'
+    isDark: darkMode.value,
+    locale: (form.value?.language) ? form.value.language : 'en'
   }
+
 
   if (field.type === 'matrix') {
     inputProperties.rows = field.rows
@@ -374,12 +359,12 @@ function inputProperties(field) {
   } else if (field.type === 'files' || (field.type === 'url' && field.file_upload)) {
     inputProperties.multiple = (field.multiple !== undefined && field.multiple)
     inputProperties.cameraUpload = (field.camera_upload !== undefined && field.camera_upload)
-    let maxFileSize = (props.form?.workspace && props.form?.workspace.max_file_size) ? props.form?.workspace?.max_file_size : 10
+    let maxFileSize = (form.value?.workspace && form.value?.workspace.max_file_size) ? form.value?.workspace?.max_file_size : 10
     if (field?.max_file_size > 0) {
       maxFileSize = Math.min(field.max_file_size, maxFileSize)
     }
     inputProperties.mbLimit = maxFileSize
-    inputProperties.accept = (props.form.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
+    inputProperties.accept = (form.value.is_pro && field.allowed_file_types) ? field.allowed_file_types : ''
   } else if (field.type === 'rating') {
     inputProperties.numberOfStars = parseInt(field.rating_max_value) ?? 5
   } else if (field.type === 'scale') {
@@ -397,10 +382,22 @@ function inputProperties(field) {
   } else if (field.type === 'text' && field.secret_input) {
     inputProperties.nativeType = 'password'
   } else if (field.type === 'payment') {
-    inputProperties.direction = props.form.layout_rtl ? 'rtl' : 'ltr'
+    inputProperties.direction = form.value.layout_rtl ? 'rtl' : 'ltr'
     inputProperties.currency = field.currency
     inputProperties.amount = field.amount
     inputProperties.oauthProviderId = field.stripe_account_id
+    
+    // Get paymentData from formManager if available
+    if (props.formManager?.payment) {
+      try {
+        const paymentData = props.formManager.payment.getPaymentData(field);
+        if (paymentData) {
+          inputProperties.paymentData = paymentData;
+        }
+      } catch (error) {
+        console.error("Error getting payment data:", error);
+      }
+    }
   }
 
   return inputProperties

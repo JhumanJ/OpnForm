@@ -1,9 +1,10 @@
-import { computed, provide, inject, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useI18n } from '#imports'
 
-// Symbol for injection key
-export const STRIPE_ELEMENTS_KEY = Symbol('stripe-elements')
-
+/**
+ * Creates a Stripe elements instance with state management
+ * @returns {Object} Stripe elements API with state and methods
+ */
 export const createStripeElements = () => {
   // Get the translation function
   const { t } = useI18n()
@@ -314,24 +315,5 @@ export const createStripeElements = () => {
   }
 
   // Return the API
-  return stripeElements
-}
-
-// Use this in the provider component (OpenForm)
-export const provideStripeElements = () => {
-  const stripeElements = createStripeElements()
-  
-  // Provide the entire stripeElements object to ensure reactivity
-  provide(STRIPE_ELEMENTS_KEY, stripeElements)
-  
-  return stripeElements
-}
-
-// Use this in consumer components (PaymentInput)
-export const useStripeElements = () => {
-  const stripeElements = inject(STRIPE_ELEMENTS_KEY)
-  if (!stripeElements) {
-    console.error('stripeElements was not provided. Make sure to call provideStripeElements in a parent component')
-  }
   return stripeElements
 }

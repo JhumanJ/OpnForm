@@ -5,6 +5,7 @@
   >
     <FormProgressbar
       :form-manager="formManager"
+      :theme="theme"
     />
     <transition
       name="fade"
@@ -31,12 +32,8 @@
           <template #item="{element}">
             <open-form-field
               :field="element"
-              :show-hidden="showHidden"
-              :form="form"
-              :data-form="formManager.form"
+              :form-manager="formManager"
               :theme="theme"
-              :dark-mode="darkMode"
-              :mode="mode"
             />
           </template>
         </draggable>
@@ -47,7 +44,7 @@
     <CaptchaWrapper
       v-if="form.use_captcha"
       :form-manager="formManager"
-      :dark-mode="darkMode"
+      :theme="theme"
     />
 
     <!--  Submit, Next and previous buttons  -->
@@ -101,29 +98,25 @@ import CaptchaWrapper from '~/components/forms/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
-import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const props = defineProps({
   formManager: { type: Object, required: true },
-  theme: { type: Object, required: true },
-  darkMode: { type: Boolean, default: false },
-  mode: { type: String, default: FormMode.LIVE },
+  theme: { type: Object, required: true }
 })
 
 const emit = defineEmits(['submit'])
 
 const workingFormStore = useWorkingFormStore()
 
+// Derive everything from formManager
 const state = computed(() => props.formManager.state)
 const form = computed(() => props.formManager.config.value)
-
 const formPageIndex = computed(() => props.formManager.state.currentPage)
-
 const strategy = computed(() => props.formManager.strategy.value)
 const structure = computed(() => props.formManager.structure)
 
 const hasPaymentBlock = computed(() => {
-  return structure.value?.hasPaymentBlock(state.value.currentPage);
+  return structure.value?.currentPageHasPaymentBlock.value ?? false;
 })
 
 const currentFields = computed(() => {
@@ -142,7 +135,6 @@ const previousFieldsPageBreak = computed(() =>
   structure.value?.previousPageBreak.value
 )
 
-const showHidden = computed(() => strategy.value.display.showHiddenFields)
 const allowDragging = computed(() => strategy.value.admin.allowDragging)
 const draggingNewBlock = computed(() => workingFormStore.draggingNewBlock)
 
