@@ -75,9 +75,6 @@
             v-if="formManager"
             :theme="theme"
             :form-manager="formManager"
-            :dark-mode="false"
-            :mode="FormMode.PREFILL"
-            :form-properties="form.properties"
             @submit="generateUrl"
           >
             <template #submit-btn="{loading}">
@@ -107,72 +104,73 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
-import { watch, ref, computed } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 
-export default {
-  name: "UrlFormPrefill",
-  components: { FormUrlPrefill, OpenForm },
-  props: {
-    form: { type: Object, required: true },
-    extraQueryParam: { type: String, default: "" },
-  },
+const props = defineProps({
+  form: { type: Object, required: true },
+  extraQueryParam: { type: String, default: "" },
+})
 
-  setup(props) {
-    const formManager = ref(null);
+// State variables
+const prefillFormData = ref(null)
+const showUrlFormPrefillModal = ref(false)
+const content = ref(null)
 
-    watch(() => props.form, (newForm) => {
-      if (newForm) {
-        console.log("Initializing useFormManager for UrlFormPrefill...");
-        formManager.value = useFormManager(newForm, FormMode.PREFILL);
-        console.log("useFormManager for UrlFormPrefill initialized.");
-      } else {
-        formManager.value = null;
-      }
-    }, { immediate: true });
+// Theme computation
+const theme = computed(() => {
+  return new ThemeBuilder(props.form.theme, {
+    size: props.form.size,
+    borderRadius: props.form.border_radius
+  }).getAllComponents()
+})
 
-    return {
-      formManager,
-    };
-  },
+// Set up form manager with proper mode
+let formManager = null
+const setupFormManager = () => {
+  if (!props.form) return null;
+  
+  console.log("Initializing useFormManager for UrlFormPrefill...")
+  formManager = useFormManager(props.form, FormMode.PREFILL, {
+    darkMode: false
+  })
+  formManager.initialize()
+  console.log("useFormManager for UrlFormPrefill initialized.")
+  
+  return formManager
+}
 
-  data: () => ({
-    prefillFormData: null,
-    showUrlFormPrefillModal: false,
-  }),
+// Initialize form manager
+formManager = setupFormManager()
 
-  computed: {
-    theme () {
-      return new ThemeBuilder(this.form.theme, {
-        size: this.form.size,
-        borderRadius: this.form.border_radius
-      }).getAllComponents()
-    },
-    FormMode() {
-      return FormMode
+// Watch for form changes to reinitialize form manager
+watch(() => props.form, (newForm) => {
+  if (newForm) {
+    formManager = setupFormManager()
+  } else {
+    formManager = null
+  }
+}, { deep: true })
+
+// Method to generate URL
+const generateUrl = () => {
+  if (!formManager) return
+  
+  const formData = formManager.data.value
+  
+  console.log("Generating URL with data:", formData)
+  prefillFormData.value = formData
+  
+  nextTick().then(() => {
+    if (content.value) {
+      content.value.parentElement.parentElement.parentElement.scrollTop =
+        content.value.offsetHeight
     }
-  },
-
-  methods: {
-    generateUrl() {
-      if (!this.formManager) return;
-      
-      const formData = this.formManager.data.value;
-      
-      console.log("Generating URL with data:", formData);
-      this.prefillFormData = formData
-      this.$nextTick().then(() => {
-        if (this.$refs.content) {
-          this.$refs.content.parentElement.parentElement.parentElement.scrollTop =
-            this.$refs.content.offsetHeight
-        }
-      })
-    },
-  },
+  })
 }
 </script>
