@@ -2,7 +2,7 @@
   <modal
     :show="show"
     compact-header
-    ;backdrop-blur="true"
+    :backdrop-blur="true"
     @close="$emit('close')"
   >
     <template #title>

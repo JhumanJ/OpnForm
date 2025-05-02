@@ -133,10 +133,9 @@ export function useFormStructure(formConfig, managerState, formData) {
    */
   const currentPageBreak = computed(() => {
     const groups = fieldGroups.value;
-    const state = toValue(managerState);
-    if (!state || !groups) return null;
+    if (!managerState || !groups) return null;
 
-    const currentPageIndex = state.currentPage;
+    const currentPageIndex = managerState.currentPage;
     if (currentPageIndex < 0 || currentPageIndex >= groups.length) return null;
 
     const currentPageFields = groups[currentPageIndex] || [];
@@ -152,10 +151,9 @@ export function useFormStructure(formConfig, managerState, formData) {
    */
   const previousPageBreak = computed(() => {
     const groups = fieldGroups.value;
-    const state = toValue(managerState);
-    if (!state || !groups || state.currentPage <= 0) return null;
+    if (!managerState || !groups || managerState.currentPage <= 0) return null;
 
-    const previousPageIndex = state.currentPage - 1;
+    const previousPageIndex = managerState.currentPage - 1;
     if (previousPageIndex < 0 || previousPageIndex >= groups.length) return null;
 
     const previousPageFields = groups[previousPageIndex] || [];
@@ -170,16 +168,12 @@ export function useFormStructure(formConfig, managerState, formData) {
    * Reactive computed property indicating if the current page is the last one.
    */
   const isLastPage = computed(() => {
-    const state = toValue(managerState);
-    const pageIndex = state?.currentPage;
-    const count = pageCount.value;
-
-    if (pageIndex === undefined || pageIndex === null || count === undefined) {
+    if (managerState?.currentPage === undefined || managerState?.currentPage === null || pageCount.value === undefined) {
       // console.warn('[useFormStructure] isLastPage: Invalid state, returning default true.');
       return true; // Default true for safety in simple forms
     }
-    const result = pageIndex === count - 1;
-    // console.log(`[useFormStructure] isLastPage evaluated: pageIndex=${pageIndex}, pageCount=${count}, result=${result}`);
+    const result = managerState.currentPage === pageCount.value - 1;
+    // console.log(`[useFormStructure] isLastPage evaluated: pageIndex=${managerState.currentPage}, pageCount=${pageCount.value}, result=${result}`);
     return result;
   });
 
@@ -187,22 +181,18 @@ export function useFormStructure(formConfig, managerState, formData) {
    * Reactive computed property checking if current page has a payment block
    */
   const currentPageHasPaymentBlock = computed(() => {
-    const state = toValue(managerState);
-    const pageIndex = state?.currentPage;
-    if (pageIndex === undefined || pageIndex === null) return false;
+    if (managerState?.currentPage === undefined || managerState?.currentPage === null) return false;
     
-    return hasPaymentBlock(pageIndex);
+    return hasPaymentBlock(managerState.currentPage);
   });
 
   /**
    * Reactive computed property returning the payment block from the current page, if any
    */
   const currentPagePaymentBlock = computed(() => {
-    const state = toValue(managerState);
-    const pageIndex = state?.currentPage;
-    if (pageIndex === undefined || pageIndex === null) return undefined;
+    if (managerState?.currentPage === undefined || managerState?.currentPage === null) return undefined;
     
-    return getPaymentBlock(pageIndex);
+    return getPaymentBlock(managerState.currentPage);
   });
 
   /**
@@ -300,17 +290,22 @@ export function useFormStructure(formConfig, managerState, formData) {
    */
   const setPageForField = (fieldIndex) => {
     // Get the page index, with additional validation
+    console.log('[useFormStructure] setPageForField: Getting page index for field', fieldIndex);
     const pageIndex = getPageForField(fieldIndex);
+    console.log('[useFormStructure] setPageForField: Got page index', pageIndex);
     
     // Ensure we have a valid numeric page index
     if (typeof pageIndex !== 'number' || isNaN(pageIndex) || pageIndex < 0) {
+      console.warn('[useFormStructure] setPageForField: Invalid page index', pageIndex);
       return
     }
     
-    // Update the manager state with validated page index
-    const state = toValue(managerState);
-    if (state && state.currentPage !== undefined) {
-      state.currentPage = pageIndex;
+    // Update the manager state with validated page index - DON'T USE toValue HERE
+    console.log('[useFormStructure] setPageForField: Current state', managerState);
+    if (managerState && managerState.currentPage !== undefined) {
+      managerState.currentPage = pageIndex;
+      console.log('[useFormStructure] setPageForField: managerState', managerState);
+      console.log('[useFormStructure] setPageForField: Updated managerState.currentPage to', pageIndex);
     }
     
     return pageIndex;
@@ -339,8 +334,8 @@ export function useFormStructure(formConfig, managerState, formData) {
     }
 
     const boundaries = pageBoundaries.value;
-    const state = toValue(managerState);
-    const pageIdx = currentPageIndex ?? state?.currentPage ?? 0; // Use provided or state page index
+    // Use managerState directly without toValue
+    const pageIdx = currentPageIndex ?? managerState?.currentPage ?? 0; // Use provided or state page index
 
     if (!boundaries || boundaries.length === 0 || pageIdx >= boundaries.length || pageIdx < 0) {
       // Fallback to end of the form if boundaries/page index is invalid

@@ -32,6 +32,11 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
     isProcessing: false, // Unified flag for async ops
   });
 
+  // Watch for changes in currentPage for debugging
+  watch(() => state.currentPage, (newPage, oldPage) => {
+    console.log(`[useFormManager] state.currentPage changed from ${oldPage} to ${newPage}`);
+  });
+
   // --- Initialize pendingSubmission for localStorage handling ---
   const pendingSubmissionService = import.meta.server ? null : pendingSubmission(toValue(config));
   
@@ -95,8 +100,11 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       // 2. Process payment (Create Payment Intent if applicable)
       const paymentBlock = structure.currentPagePaymentBlock.value;
       if (paymentBlock) {
+        // In editor/test mode (not LIVE), skip payment validation
+        const isPaymentRequired = mode === FormMode.LIVE ? !!paymentBlock.required : false;
+        
         // Pass required refs if Stripe needs them now (unlikely for just intent creation)
-        const paymentResult = await payment.processPayment(paymentBlock);
+        const paymentResult = await payment.processPayment(paymentBlock, isPaymentRequired);
         if (!paymentResult.success) {
           throw paymentResult.error || new Error('Payment intent creation failed');
         }
@@ -155,7 +163,10 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       if (paymentBlock) {
         console.log('Processing payment for block:', paymentBlock.id);
         
-        const paymentResult = await payment.processPayment(paymentBlock, !!paymentBlock.required);
+        // In editor/test mode (not LIVE), skip payment validation
+        const isPaymentRequired = mode === FormMode.LIVE ? !!paymentBlock.required : false;
+        
+        const paymentResult = await payment.processPayment(paymentBlock, isPaymentRequired);
         console.log('Payment result:', paymentResult);
         
         if (!paymentResult.success) {

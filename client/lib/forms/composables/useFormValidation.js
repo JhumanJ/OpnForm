@@ -131,7 +131,7 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
     // Find and navigate to the first page with an error
     if (fieldGroups && fieldGroups.length > 1 && typeof setPageIndexCallback === 'function') {
       const errorPageIndex = findFirstPageWithError(fieldGroups);
-      if (errorPageIndex !== -1 && errorPageIndex !== toValue(managerState)?.currentPage) {
+      if (errorPageIndex !== -1 && errorPageIndex !== managerState?.currentPage) {
         setPageIndexCallback(errorPageIndex);
       }
     }

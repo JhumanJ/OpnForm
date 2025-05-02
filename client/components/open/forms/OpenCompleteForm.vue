@@ -234,6 +234,7 @@ const { t, setLocale } = useI18n()
 const route = useRoute()
 const authStore = useAuthStore()
 const alert = useAlert()
+const workingFormStore = useWorkingFormStore()
 
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
@@ -265,6 +266,13 @@ if (props.form) {
     urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
   })
 }
+
+// Share the structure service with the working form store only when in admin edit context
+watch(() => formManager?.strategy?.value?.admin?.showAdminControls, (showAdminControls) => {
+  if (workingFormStore && formManager?.structure && showAdminControls) {
+    workingFormStore.setStructureService(formManager.structure)
+  }
+}, { immediate: true }) 
 
 // Add a watcher to update formManager's darkMode whenever darkModeRef changes
 watch(darkModeRef, (newDarkMode) => {

@@ -19,32 +19,13 @@ export const useWorkingFormStore = defineStore("working_form", {
     blockForm: null,
     draggingNewBlock: false,
     
-    // Structure service instance
-    _structureService: null,
+    // Structure service instance - will be set from useFormManager
+    structureService: null,
   }),
   getters: {
     // Get all blocks/properties in the form
     formBlocks() {
       return this.content?.properties || []
-    },
-    
-    // Get structure service instance, creating it if needed
-    structureService() {
-      if (!this._structureService && this.content) {
-        // Create a manager state for the service
-        const managerState = reactive({ currentPage: 0 })
-        
-        // Initialize service with current content and state
-        this._structureService = useFormStructure(
-          this.content, 
-          managerState,
-          this.content // Use form content as mock form data for logic checks
-        )
-        
-        // Add a way to access the managerState from outside
-        this._structureService.managerState = managerState
-      }
-      return this._structureService
     },
     
     // Get current page fields using structure service
@@ -68,14 +49,15 @@ export const useWorkingFormStore = defineStore("working_form", {
   actions: {
     set(form) {
       this.content = form
-      // Reset structure service whenever form changes
-      this._structureService = null
+      // Don't reset structure service here - it's externally managed now
+    },
+    setStructureService(service) {
+      this.structureService = service
     },
     setProperties(properties) {
       if (!this.content) return
       this.content.properties = [...properties]
-      // Reset structure service when properties change
-      this._structureService = null
+      // No need to reset structure service as it's externally managed
     },
     objectToIndex(field) {
       if (!this.content?.properties) return -1
@@ -129,7 +111,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
       this.blockForm = null
-      this._structureService = null
+      this.structureService = null
     },
 
     resetBlockForm() {
