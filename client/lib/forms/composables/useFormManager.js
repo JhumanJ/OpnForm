@@ -67,8 +67,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
     state.currentPage = 0;
    
     await initialization.initialize({
-      ...options,
-      fields: toValue(config).properties // Pass form fields for special handling
+      ...options
     });
 
     timer.reset();

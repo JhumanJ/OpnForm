@@ -356,6 +356,7 @@ export function useFormStructure(formConfig, managerState, formData) {
     currentPageBreak,
     previousPageBreak,
     isLastPage,
+    currentPage: computed(() => managerState?.currentPage ?? 0),
     currentPageHasPaymentBlock,
     currentPagePaymentBlock,
 

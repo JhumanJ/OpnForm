@@ -50,7 +50,7 @@
     <!--  Submit, Next and previous buttons  -->
     <div class="flex flex-wrap justify-center w-full">
       <open-form-button
-        v-if="formPageIndex>0 && previousFieldsPageBreak && !loading"
+        v-if="formPageIndex>0 && previousFieldsPageBreak"
         native-type="button"
         :color="form.color"
         :theme="theme"

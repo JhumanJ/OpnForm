@@ -62,17 +62,17 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    * @param {Array} fields - Form fields
    * @param {Object} formData - Current form data
    */
-  const updateSpecialFields = (fields, formData) => {
-    if (!fields) return;
-    
-    fields.forEach(field => {
+  const updateSpecialFields = () => {
+    formConfig.value.properties.forEach(field => {
       // Handle date fields with prefill_today
       if (field.type === 'date' && field.prefill_today) {
-        formData[field.id] = new Date().toISOString();
+        form[field.id] = new Date().toISOString();
       }
       // Handle matrix fields with prefill data
       else if (field.type === 'matrix' && !formData[field.id] && field.prefill) {
-        formData[field.id] = {...field.prefill};
+        form[field.id] = {...field.prefill};
+      } else if (field.id && !form[field.id]) {
+        form[field.id] = field.prefill;
       }
     });
   };
@@ -149,9 +149,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     
     // 3. Try loading from pendingSubmission
     if (tryLoadFromPendingSubmission()) {
-      if (options.fields) {
-        updateSpecialFields(options.fields, form.data());
-      }
+      updateSpecialFields();
       return; // Exit if loaded successfully
     }
     
@@ -164,9 +162,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     }
     
     // 6. Apply special field handling
-    if (options.fields) {
-      updateSpecialFields(options.fields, formData);
-    }
+    updateSpecialFields();
     
     // 7. Apply default data from config or options
     const defaultData = options.defaultData || config?.default_data;

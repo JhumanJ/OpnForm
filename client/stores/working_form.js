@@ -4,8 +4,7 @@ import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
 import { useAuthStore } from '~/stores/auth'
-import { useFormStructure } from '~/lib/forms/composables/useFormStructure'
-import { reactive } from 'vue'
+import { useForm } from '~/composables/useForm'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
@@ -27,12 +26,6 @@ export const useWorkingFormStore = defineStore("working_form", {
     formBlocks() {
       return this.content?.properties || []
     },
-    
-    // Get current page fields using structure service
-    currentPageFields() {
-      if (!this.structureService) return []
-      return this.structureService.getPageFields(this.formPageIndex) || []
-    },
 
     // Get page count using structure service
     simplePageCount() {
@@ -43,7 +36,7 @@ export const useWorkingFormStore = defineStore("working_form", {
     // Current page index from structure service
     formPageIndex() {
       if (!this.structureService) return 0
-      return this.structureService.managerState.currentPage
+      return this.structureService.currentPage
     }
   },
   actions: {

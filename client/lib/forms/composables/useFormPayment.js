@@ -249,6 +249,13 @@ export function useFormPayment(formConfig, form) {
     const paymentBlockId = paymentBlock.id;
     console.log(`Processing payment for block ${paymentBlockId}, required: ${isRequired}`);
 
+    // First check for existing payment in form data
+    const existingPaymentId = form[paymentBlockId];
+    if (existingPaymentId && isPaymentIntentId(existingPaymentId)) {
+      console.log(`Payment already processed with intent in form data: ${existingPaymentId}`);
+      return { success: true, intentId: existingPaymentId };
+    }
+
     // Check if Stripe elements are initialized
     if (!stripeElements.value || !stripeElements.value.state) {
       console.error('Stripe elements not initialized');
@@ -295,12 +302,6 @@ export function useFormPayment(formConfig, form) {
       console.log('Missing cardholder email');
       if (paymentBlockId) form.errors.set(paymentBlockId, error);
       return { success: false, error };
-    }
-
-    // Check for existing payment intent
-    if (state.intentId) {
-      console.log(`Payment already processed with intent: ${state.intentId}`);
-      return { success: true, intentId: state.intentId };
     }
 
     try {
@@ -356,6 +357,11 @@ export function useFormPayment(formConfig, form) {
     }
     
     return await _confirmStripePayment(clientSecret, paymentBlockId);
+  };
+
+  // Helper function to check if a value looks like a Stripe payment intent ID
+  const isPaymentIntentId = (value) => {
+    return typeof value === 'string' && value.startsWith('pi_');
   };
 
   // Expose the main payment processing function
