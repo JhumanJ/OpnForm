@@ -96,7 +96,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       const paymentBlock = structure.currentPagePaymentBlock.value;
       if (paymentBlock) {
         // Pass required refs if Stripe needs them now (unlikely for just intent creation)
-        const paymentResult = await payment.processPayment(paymentBlock /*, potentially stripeRef, elementsRef */);
+        const paymentResult = await payment.processPayment(paymentBlock);
         if (!paymentResult.success) {
           throw paymentResult.error || new Error('Payment intent creation failed');
         }
@@ -150,14 +150,27 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       timer.stop();
       const completionTime = timer.getCompletionTime();
 
-      // 2. Final Validation (if not on last page or required by strategy)
-      const isCurrentlyLastPage = structure.isLastPage.value;
-      await validation.validateSubmissionIfNotLastPage(
-        config.value.properties || [],
-        strategy.value,
-        isCurrentlyLastPage // Pass the reactive value
-      );
-
+      // 2. Process payment if applicable
+      const paymentBlock = structure.currentPagePaymentBlock.value;
+      if (paymentBlock) {
+        console.log('Processing payment for block:', paymentBlock.id);
+        
+        const paymentResult = await payment.processPayment(paymentBlock, !!paymentBlock.required);
+        console.log('Payment result:', paymentResult);
+        
+        if (!paymentResult.success) {
+          // If payment was skipped because it's not required, we continue
+          if (paymentResult.skipped) {
+            console.log('Payment skipped (not required)');
+          } else {
+            // Payment error - don't proceed with submission
+            console.error('Payment failed:', paymentResult.error);
+            state.isProcessing = false;
+            throw new Error(paymentResult.error || 'Payment failed');
+          }
+        }
+      }
+      
       // 3. Get submission hash from partialSubmission if enabled
       let submissionHash = null;
       if (!import.meta.server && toValue(config).enable_partial_submissions) {
@@ -240,6 +253,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,
+    payment,        // Expose payment service
 
     // Core Methods
     initialize,

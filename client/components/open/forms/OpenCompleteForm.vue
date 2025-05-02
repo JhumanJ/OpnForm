@@ -339,7 +339,6 @@ const handleScrollToError = () => {
 const triggerSubmit = async () => {
   if (!formManager || isProcessing.value) return
 
-  console.log('Submit triggered in OpenCompleteForm.')
   formManager.submit()
     .then(result => {
       if (result) {
@@ -363,6 +362,8 @@ const triggerSubmit = async () => {
     .catch(error => {
       if (error.response && error.response.status === 422 && error.data) {
         useAlert().formValidationError(error.data)
+      } else if (error.message) {
+        useAlert().error(error.message)
       }
       handleScrollToError()
     }).finally(() => {

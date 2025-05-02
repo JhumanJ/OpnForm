@@ -44,10 +44,17 @@
       </div>
       <template v-else>
         <div
-          v-if="shouldShowPreviewMessage"
+          v-if="shouldShowPreviewMessage || (props.isAdminPreview && (!stripeState.stripeAccountId || !publishableKey || !isStripeJsLoaded))"
           class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md"
         >
-          <p>Please save the form to activate the payment preview.</p>
+          <p v-if="shouldShowPreviewMessage">Please save the form to activate the payment preview.</p>
+          <p v-else>
+            Payment component configuration incomplete. 
+            {{ !stripeState?.stripeAccountId ? 'Stripe account not connected': 'Stripe account connected' }}.
+            {{ !publishableKey ? 'Missing Stripe publishable key.' : '' }}
+            {{ !isStripeJsLoaded ? 'Stripe.js not loaded.' : '' }}
+          </p>
+          <p class="mt-2">The complete payment form will be visible to users when viewing the published form.</p>
         </div>
         <div
           v-else-if="stripeState && stripeState.isLoadingAccount"
@@ -80,8 +87,8 @@
           <StripeElements
             ref="stripeElementsRef"
             :stripe-key="publishableKey"
-            :stripe-account="stripeState.stripeAccountId"
-            :instance-options="{ stripeAccount: stripeState.stripeAccountId }"
+            :stripe-account="String(stripeState.stripeAccountId)"
+            :instance-options="{ stripeAccount: String(stripeState.stripeAccountId) }"
             :elements-options="{ locale: props.locale }"
             @ready="onStripeReady"
             @error="onStripeError"
@@ -135,7 +142,16 @@
           </StripeElements>
         </div>
         <div v-else>
-          <Loader class="mx-auto h-6 w-6" />
+          <div v-if="props.isAdminPreview" class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md">
+            <p>Payment component initializing. {{ !!stripeState?.stripeAccountId ? 'Stripe account connected': 'No Stripe account connected' }}.</p>
+            <p class="mt-2">The payment form will be visible to users when viewing the published form.</p>
+            <p v-if="!publishableKey" class="mt-2 text-red-500">Missing Stripe publishable key in configuration.</p>
+            <p v-if="!stripeState?.stripeAccountId" class="mt-2 text-red-500">Missing Stripe account connection. ID: {{ props.oauthProviderId }}</p>
+          </div>
+          <div v-else class="flex flex-col items-center justify-center py-4">
+            <Loader class="mx-auto h-6 w-6" />
+            <p class="text-sm text-gray-500 mt-2">Initializing payment system...</p>
+          </div>
         </div>
       </template>
     </div>
@@ -144,7 +160,12 @@
       <slot name="help" />
     </template>
     <template #error>
-      <slot name="error" />
+      <!-- If we have a specific error for this block, show it -->
+      <div v-if="props.error" class="text-sm text-red-500 mt-1">
+        {{ props.error }}
+      </div>
+      <!-- Otherwise, show the default error slot -->
+      <slot v-else name="error" />
     </template>
   </InputWrapper>
 </template>
@@ -156,7 +177,6 @@ import InputWrapper from './components/InputWrapper.vue'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"
-import { createStripeElements } from '~/composables/useStripeElements'
 import { useAlert } from '~/composables/useAlert'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
 
@@ -175,51 +195,28 @@ const props = defineProps({
 const emit = defineEmits([])
 const { compVal, hasError, inputWrapperProps } = useFormInput(props, { emit })
 
-// Local instance for fallback when not provided via props
-const stripeElementsInstance = ref(null)
-
-// Use stripeElements from paymentData when available, or create it lazily
-const stripeElements = computed(() => {
-  // First priority: Use paymentData when available
-  if (props.paymentData?.stripeElements) {
-    return props.paymentData.stripeElements
-  }
-  
-  // Return local instance if already created
-  if (stripeElementsInstance.value) {
-    return stripeElementsInstance.value
-  }
-  
-  // Create local instance if we have an oauthProviderId
-  if (props.oauthProviderId && !stripeElementsInstance.value) {
-    stripeElementsInstance.value = createStripeElements()
-  }
-  
-  return stripeElementsInstance.value
-})
-
-// Get state and methods from stripeElements
-const stripeState = computed(() => stripeElements.value?.state || {})
-const prepareStripeState = computed(() => stripeElements.value?.prepareStripeState)
-const setStripeInstance = computed(() => stripeElements.value?.setStripeInstance)
-const setElementsInstance = computed(() => stripeElements.value?.setElementsInstance)
-const setCardElement = computed(() => stripeElements.value?.setCardElement)
-const setBillingDetails = computed(() => stripeElements.value?.setBillingDetails)
-
 const route = useRoute()
 const alert = useAlert()
 
 const publishableKey = computed(() => {
   return useFeatureFlag('billing.stripe_publishable_key', '')
 })
+
 const card = ref(null)
 const stripeElementsRef = ref(null)
 const cardHolderName = ref('')
 const cardHolderEmail = ref('')
 const isCardFocused = ref(false)
-
-// Keep the flag for Stripe.js loading but remove manual instance creation
 const isStripeJsLoaded = ref(false)
+
+// Get Stripe elements from paymentData
+const stripeElements = computed(() => props.paymentData?.stripeElements)
+const stripeState = computed(() => stripeElements.value?.state || {})
+const setStripeInstance = computed(() => stripeElements.value?.setStripeInstance)
+const setElementsInstance = computed(() => stripeElements.value?.setElementsInstance)
+const setCardElement = computed(() => stripeElements.value?.setCardElement)
+const setBillingDetails = computed(() => stripeElements.value?.setBillingDetails)
+const prepareStripeState = computed(() => stripeElements.value?.prepareStripeState)
 
 // Computed to determine if we should show success state
 const showSuccessState = computed(() => {
@@ -228,7 +225,7 @@ const showSuccessState = computed(() => {
 
 // Computed to determine if we should always show preview message in editor
 const shouldShowPreviewMessage = computed(() => {
-  return props.isAdminPreview && (!formSlug.value || !stripeElements.value)
+  return props.isAdminPreview && stripeState.value?.showPreviewMessage;
 })
 
 // Helper function to check if a string looks like a Stripe payment intent ID
@@ -239,146 +236,187 @@ const isPaymentIntentId = (value) => {
 // Initialize Stripe.js if needed
 onMounted(async () => {
   try {
-    // Validate publishable key
-    if (!publishableKey.value || typeof publishableKey.value !== 'string' || publishableKey.value.trim() === '') {
-      if (stripeState.value) {
-        stripeState.value.isLoadingAccount = false
-        stripeState.value.hasAccountLoadingError = true
-        stripeState.value.errorMessage = 'Missing Stripe configuration. Please check your settings.'
+    console.debug('[PaymentInput] Mounting with:', {
+      oauthProviderId: props.oauthProviderId,
+      hasPaymentData: !!props.paymentData,
+      publishableKey: publishableKey.value,
+      stripeElementsInstance: !!stripeElements.value
+    });
+
+    // Initialize Stripe.js globally first if needed
+    if (typeof window !== 'undefined' && !window.Stripe && publishableKey.value) {
+      console.debug('[PaymentInput] Loading Stripe.js with key:', publishableKey.value);
+      await loadStripe(publishableKey.value);
+      isStripeJsLoaded.value = true;
+    } else if (typeof window !== 'undefined' && window.Stripe) {
+      isStripeJsLoaded.value = true;
+    }
+    console.debug('[PaymentInput] Stripe.js loaded status:', isStripeJsLoaded.value);
+
+    // Skip initialization if missing essential data
+    if (!props.oauthProviderId || !props.paymentData || !publishableKey.value) {
+      console.debug('[PaymentInput] Skipping initialization - missing requirements:', { 
+        oauthProviderId: props.oauthProviderId,
+        paymentData: !!props.paymentData,
+        publishableKey: !!publishableKey.value
+      });
+      
+      // Set error state if publishable key is missing
+      if (!publishableKey.value && stripeState.value) {
+        stripeState.value.hasAccountLoadingError = true;
+        stripeState.value.errorMessage = 'Missing Stripe configuration. Please check your settings.';
       }
-      return
-    }
-
-    // We'll check if Stripe is already available globally
-    if (typeof window !== 'undefined' && !window.Stripe) {
-      await loadStripe(publishableKey.value)
-      isStripeJsLoaded.value = true
-    } else {
-      isStripeJsLoaded.value = true
-    }
-
-    // If stripeElements is not available, we need to handle that
-    if (!stripeElements.value) {
-      console.warn('Stripe elements not found or not properly initialized.')
-      return
+      return;
     }
 
     // If compVal already contains a payment intent ID, sync it to stripeState
     if (compVal.value && isPaymentIntentId(compVal.value) && stripeState.value) {
-      stripeState.value.intentId = compVal.value
+      console.debug('[PaymentInput] Syncing existing payment intent:', compVal.value);
+      stripeState.value.intentId = compVal.value;
     }
 
-    // For unsaved forms in admin preview, show the preview message
-    if (props.isAdminPreview && !formSlug.value && stripeState.value) {
-      stripeState.value.isLoadingAccount = false
-      stripeState.value.showPreviewMessage = true
-      return
-    }
-
-    // Fetch account
-    const slug = formSlug.value
+    // Fetch account details from the API, even in preview mode
+    const slug = formSlug.value;
     if (slug && props.oauthProviderId && prepareStripeState.value) {
-      const result = await prepareStripeState.value(slug, props.oauthProviderId, props.isAdminPreview)
+      console.debug('[PaymentInput] Preparing Stripe state with:', { 
+        slug, 
+        oauthProviderId: props.oauthProviderId,
+        isAdminPreview: props.isAdminPreview
+      });
+      const result = await prepareStripeState.value(slug, props.oauthProviderId, props.isAdminPreview);
+      console.debug('[PaymentInput] Stripe state preparation result:', result);
       
       if (!result.success && result.message && !result.requiresSave) {
-        alert.error(result.message)
+        // Show error only if it's not the "Save the form" message
+        alert.error(result.message);
       }
-    } else if (props.isAdminPreview && stripeState.value) {
-      // If we're in admin preview and any required parameter is missing, show preview message
-      stripeState.value.isLoadingAccount = false
-      stripeState.value.showPreviewMessage = true
     }
   } catch (error) {
-    alert.error('Failed to initialize Stripe. Please refresh and try again.')
+    console.error('[PaymentInput] Stripe initialization error:', error);
+    if (stripeState.value) {
+      stripeState.value.hasAccountLoadingError = true;
+      stripeState.value.errorMessage = 'Failed to initialize Stripe. Please refresh and try again.';
+    }
+    alert.error('Failed to initialize Stripe. Please refresh and try again.');
   }
-})
+});
 
 // Watch for provider ID changes
 watch(() => props.oauthProviderId, async (newVal, oldVal) => {
   if (newVal && newVal !== oldVal && prepareStripeState.value) {
-    const slug = formSlug.value
+    const slug = formSlug.value;
     if (slug) {
-      await prepareStripeState.value(slug, newVal, props.isAdminPreview)
+      await prepareStripeState.value(slug, newVal, props.isAdminPreview);
     }
   }
-})
+});
 
 // Update onStripeReady to use the computed methods
 const onStripeReady = ({ stripe, elements }) => {
+  console.debug('[PaymentInput] onStripeReady called with:', { 
+    hasStripe: !!stripe,
+    hasElements: !!elements,
+    setStripeInstance: !!setStripeInstance.value,
+    setElementsInstance: !!setElementsInstance.value
+  });
+
   if (!stripe) {
-    return
+    console.warn('[PaymentInput] No Stripe instance in onStripeReady');
+    return;
   }
   
   if (setStripeInstance.value) {
-    setStripeInstance.value(stripe)
+    console.debug('[PaymentInput] Setting Stripe instance');
+    setStripeInstance.value(stripe);
+  } else {
+    console.warn('[PaymentInput] No setStripeInstance method available');
   }
   
   if (elements && setElementsInstance.value) {
-    setElementsInstance.value(elements)
+    console.debug('[PaymentInput] Setting Elements instance');
+    setElementsInstance.value(elements);
+  } else {
+    console.warn('[PaymentInput] Missing elements or setElementsInstance');
   }
-}
+};
 
-const onStripeError = (_error) => {
-  alert.error('Failed to load payment component. Please check configuration or refresh.')
+const onStripeError = (error) => {
+  console.error('[PaymentInput] Stripe initialization error:', error);
+  const errorMessage = error?.message || 'Failed to load payment component';
+  
+  alert.error('Failed to load payment component. ' + errorMessage);
+  
+  if (stripeState.value) {
+    stripeState.value.hasAccountLoadingError = true;
+    stripeState.value.errorMessage = errorMessage + '. Please check configuration or refresh.';
+  }
 }
 
 // Card focus/blur event handlers
 const onCardFocus = () => {
-  isCardFocused.value = true
+  isCardFocused.value = true;
 }
 
 const onCardBlur = () => {
-  isCardFocused.value = false
+  isCardFocused.value = false;
 }
 
 const onCardReady = (_element) => {
+  console.debug('[PaymentInput] Card ready:', {
+    hasCardRef: !!card.value,
+    hasStripeElement: !!card.value?.stripeElement,
+    hasSetCardElement: !!setCardElement.value
+  });
+
   if (card.value?.stripeElement && setCardElement.value) {
-    setCardElement.value(card.value.stripeElement)
+    console.debug('[PaymentInput] Setting card element');
+    setCardElement.value(card.value.stripeElement);
+  } else {
+    console.warn('[PaymentInput] Cannot set card element - missing dependencies');
   }
 }
 
 // Billing details
 watch(cardHolderName, (newValue) => {
   if (setBillingDetails.value) {
-    setBillingDetails.value({ name: newValue })
+    setBillingDetails.value({ name: newValue });
   }
 })
 
 watch(cardHolderEmail, (newValue) => {
   if (setBillingDetails.value) {
-    setBillingDetails.value({ email: newValue })
+    setBillingDetails.value({ email: newValue });
   }
 })
 
 // Payment intent sync
 watch(() => stripeState.value?.intentId, (newValue) => {
-  if (newValue) compVal.value = newValue
+  if (newValue) compVal.value = newValue;
 })
 
 watch(compVal, (newValue) => {
   if (newValue && stripeState.value && newValue !== stripeState.value.intentId) {
-    stripeState.value.intentId = newValue
+    stripeState.value.intentId = newValue;
   }
 }, { immediate: true })
 
 // Direction and locale handling
 watch(() => props.direction, async () => {
-  await resetCard()
+  await resetCard();
 })
 
 watch(() => props.locale, async () => {
-  await resetCard()
+  await resetCard();
 })
 
 // Computed properties
 const currencySymbol = computed(() => {
-  return stripeCurrencies.find(item => item.code === props.currency)?.symbol
+  return stripeCurrencies.find(item => item.code === props.currency)?.symbol;
 })
 
 const cardOptions = computed(() => {
-  // Extract placeholder color from theme
-  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF'
-  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0'
+  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF';
+  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0';
   
   return {
     hidePostalCode: true,
@@ -403,26 +441,25 @@ const cardOptions = computed(() => {
 })
 
 const formSlug = computed(() => {
-  // Return the slug from route params regardless of route name
   if (route.params && route.params.slug) {
-    return route.params.slug
+    return route.params.slug;
   }
-  return null
+  return null;
 })
 
 // Reset card element
 const resetCard = async () => {
   if (card.value?.stripeElement) {
-    card.value.stripeElement.unmount()
-    await nextTick()
+    card.value.stripeElement.unmount();
+    await nextTick();
     
     if (stripeElementsRef.value?.elements) {
-      card.value.stripeElement.mount(stripeElementsRef.value.elements)
+      card.value.stripeElement.mount(stripeElementsRef.value.elements);
       if (setCardElement.value) {
-        setCardElement.value(card.value.stripeElement)
+        setCardElement.value(card.value.stripeElement);
       }
     } else {
-      console.error('Cannot remount card, Stripe Elements instance not found.')
+      console.error('Cannot remount card, Stripe Elements instance not found.');
     }
   }
 }
@@ -430,13 +467,20 @@ const resetCard = async () => {
 // Add watcher to check when stripeElementsRef becomes available for fallback access
 watch(() => stripeElementsRef.value, async (newRef) => {
   if (newRef) {
+    console.debug('[PaymentInput] StripeElementsRef updated:', {
+      hasInstance: !!newRef.instance,
+      hasElements: !!newRef.elements
+    });
+    
     // If @ready event hasn't fired, try accessing the instance directly
     if (newRef.instance && setStripeInstance.value && !stripeState.value?.isStripeInstanceReady) {
-      setStripeInstance.value(newRef.instance)
+      console.debug('[PaymentInput] Setting Stripe instance from ref');
+      setStripeInstance.value(newRef.instance);
     }
     
     if (newRef.elements && setElementsInstance.value) {
-      setElementsInstance.value(newRef.elements)
+      console.debug('[PaymentInput] Setting Elements instance from ref');
+      setElementsInstance.value(newRef.elements);
     }
   }
 }, { immediate: true })

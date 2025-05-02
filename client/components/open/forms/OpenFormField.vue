@@ -390,10 +390,7 @@ function inputProperties(field) {
     // Get paymentData from formManager if available
     if (props.formManager?.payment) {
       try {
-        const paymentData = props.formManager.payment.getPaymentData(field);
-        if (paymentData) {
-          inputProperties.paymentData = paymentData;
-        }
+        inputProperties.paymentData = props.formManager.payment.getPaymentData(field);
       } catch (error) {
         console.error("Error getting payment data:", error);
       }

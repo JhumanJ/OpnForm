@@ -1,5 +1,6 @@
 import { toValue, ref, computed } from 'vue';
 import { createStripeElements } from '~/composables/useStripeElements';
+import { opnFetch } from '~/composables/useOpnApi.js';
 // Assume Stripe is loaded globally or via another mechanism if needed client-side
 // For server-side/Nuxt API routes, import Stripe library properly.
 
@@ -7,7 +8,6 @@ import { createStripeElements } from '~/composables/useStripeElements';
  * @fileoverview Composable for handling payment processing, currently focused on Stripe.
  */
 export function useFormPayment(formConfig, form) {
-  // Lazily-initialized Stripe elements
   const stripeElements = ref(null);
   
   /**
@@ -16,147 +16,356 @@ export function useFormPayment(formConfig, form) {
    * @returns {Object|null} Payment data including stripeElements or null if not applicable
    */
   const getPaymentData = (paymentBlock) => {
-    if (!paymentBlock || paymentBlock.type !== 'payment') return null;
+    if (!import.meta.client || !paymentBlock || paymentBlock.type !== 'payment') return null;
     
     // Create Stripe elements if needed and this is a Stripe payment
     if (paymentBlock.provider === 'stripe' || !paymentBlock.provider) {
+      // Ensure account ID is a string (Stripe.js requires a string)
+      const accountId = paymentBlock.stripe_account_id ? String(paymentBlock.stripe_account_id) : null;
+      
       if (!stripeElements.value) {
-        stripeElements.value = createStripeElements();
+        // Create the Stripe elements with the account ID
+        stripeElements.value = createStripeElements(accountId);
+      } else if (stripeElements.value && accountId) {
+        // Update the account ID if the instance already exists
+        // Use the proper setter method to avoid readonly errors
+        if (typeof stripeElements.value.setAccountId === 'function') {
+          stripeElements.value.setAccountId(accountId);
+        }
       }
+      
       return {
         stripeElements: stripeElements.value,
-        oauthProviderId: paymentBlock.stripe_account_id
+        oauthProviderId: accountId
       };
     }
     return null;
   };
 
   /**
-   * Gets the Stripe client secret from the backend.
-   * Assumes a specific API endpoint.
-   * @param {Object} paymentBlock - The payment field configuration.
-   * @returns {Promise<String>} The client secret.
+   * Creates a payment intent with the Stripe API.
+   * @param {Number} amount - The amount to charge in cents.
+   * @param {String} currency - The currency code (e.g., 'usd').
+   * @param {String} description - A description for the payment.
+   * @returns {Promise<Object>} The result of creating the payment intent.
    */
-  const _getStripeClientSecret = async (paymentBlock) => {
-    const config = toValue(formConfig);
-    const formData = toValue(form); // Access the vForm instance
-    const url = `/forms/${config.slug}/payment/stripe/intent`;
+  const _createPaymentIntent = async (amount, currency, description) => {
+    if (!import.meta.client) {
+      return { success: false, error: 'Client-side only operation' };
+    }
 
     try {
-      // Use the vForm instance's post method to make the request
-      const response = await formData.post(url, {
-        amount: paymentBlock.amount, // Pass amount from payment block config
-        currency: paymentBlock.currency || 'usd', // Default or from config
-        metadata: { // Add any relevant metadata
-          form_slug: config.slug,
-          // potentially other form data ids if needed
-        }
-      });
-
-      if (!response || !response.data || !response.data.client_secret) {
-          throw new Error('Invalid response structure from payment intent endpoint.');
+      console.log('Creating payment intent for:', { amount, currency });
+      
+      // Get form slug from config
+      const config = toValue(formConfig);
+      const formSlug = config.slug;
+      
+      if (!formSlug) {
+        console.error('Missing form slug in config');
+        return { success: false, error: 'Invalid form configuration' };
       }
-
-      return response.data.client_secret;
+      
+      // Construct URL with query parameters
+      const params = new URLSearchParams({
+        amount: amount,
+        currency: currency.toLowerCase(),
+        description: description || ''
+      });
+      
+      const url = `/forms/${formSlug}/stripe-connect/payment-intent?${params.toString()}`;
+      console.log('Requesting payment intent from:', url);
+      
+      // Use opnFetch from useOpnApi.js
+      const response = await opnFetch(url);
+      console.log('Payment intent API response:', response);
+      
+      // Handle response structure with type and intent fields
+      if (response?.type === 'success' && response?.intent?.secret) {
+        return {
+          success: true,
+          client_secret: response.intent.secret,
+          intentId: response.intent.id
+        };
+      }
+      
+      // Handle error response
+      console.error('Invalid payment intent response:', response);
+      return { 
+        success: false, 
+        error: response?.message || 'Could not create payment: Invalid response from server' 
+      };
     } catch (error) {
-      // Propagate error details if possible
-      const errorMessage = error?.response?.data?.message || 'Could not initiate payment. Please check your details and try again.';
-      // Set error on the form instance if possible, e.g., using a general payment error key
-      formData.errors.set('payment', errorMessage);
-      throw new Error(errorMessage); // Re-throw to stop processing
+      console.error('Error creating payment intent:', error);
+      return {
+        success: false,
+        error: error.message || 'Failed to create payment'
+      };
     }
   };
 
   /**
    * Confirms the Stripe payment on the client-side using Stripe.js.
-   * Requires Stripe.js to be loaded.
    * @param {String} clientSecret - The Stripe client secret.
-   * @param {Object} paymentElement - The Stripe Payment Element instance.
-   * @param {Object} stripe - The Stripe.js instance.
+   * @param {String} paymentBlockId - The ID of the payment block for setting errors.
    * @returns {Promise<Object>} The result of the payment confirmation.
    */
-  const _confirmStripePayment = async (clientSecret, paymentElement, stripe) => {
-    if (!stripe || !paymentElement) {
-      throw new Error('Stripe.js or Payment Element not available for confirmation.');
+  const _confirmStripePayment = async (clientSecret, paymentBlockId) => {
+    if (!import.meta.client) {
+      return { success: false, error: 'Client-side only operation' };
     }
-    const config = toValue(formConfig);
-    // TODO: Construct the return URL properly based on form config/mode
-    const returnUrl = `${window.location.origin}/forms/${config.slug}/payment/complete`; // Example
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements: paymentElement, // Use the mounted PaymentElement
-      clientSecret,
-      confirmParams: {
-        return_url: returnUrl, // URL for redirection after success/failure
-      },
-      redirect: 'if_required', // Handle redirection manually if needed
-    });
-
-    if (error) {
-      // Set error on the form instance
-      toValue(form).errors.set('payment', error.message || 'Payment failed. Please try again.');
-      throw error; // Rethrow to signal failure
+    
+    if (!stripeElements.value || !stripeElements.value.state) {
+      return { success: false, error: 'Stripe elements not initialized' };
     }
-
-    // Handle different paymentIntent statuses (succeeded, processing, requires_action)
-    if (paymentIntent?.status !== 'succeeded' && paymentIntent?.status !== 'processing') {
-        const failMessage = `Payment status: ${paymentIntent?.status}. Please contact support.`;
-        toValue(form).errors.set('payment', failMessage);
-        throw new Error(failMessage);
+    
+    const state = stripeElements.value.state;
+    const { stripe, card } = state;
+    
+    if (!stripe || !card) {
+      const error = 'Stripe or card element not available';
+      if (paymentBlockId) form.errors.set(paymentBlockId, error);
+      return { success: false, error };
     }
-
-    // Optionally store payment intent ID or status in form data
-    toValue(form).set('stripe_payment_intent_id', paymentIntent.id);
-    toValue(form).set('payment_status', paymentIntent.status);
-
-    return { success: true, paymentIntent };
+    
+    try {
+      console.log('Confirming payment with client secret');
+      
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: card,
+          billing_details: {
+            name: state.cardHolderName || '',
+            email: state.cardHolderEmail || ''
+          }
+        },
+        receipt_email: state.cardHolderEmail
+      });
+      
+      // Check for errors
+      if (result.error) {
+        console.error('Payment confirmation error:', result.error);
+        const errorMessage = result.error.message || 'Payment failed. Please try again.';
+        
+        if (paymentBlockId) {
+          form.errors.set(paymentBlockId, errorMessage);
+        }
+        
+        return { 
+          success: false, 
+          error: errorMessage,
+          code: result.error.code,
+          type: result.error.type 
+        };
+      }
+      
+      // Handle payment intent status
+      if (result.paymentIntent) {
+        const status = result.paymentIntent.status;
+        const intentId = result.paymentIntent.id;
+        
+        // Store successful payment intent ID
+        if (status === 'succeeded' || status === 'processing') {
+          // Update form data with payment information
+          const updateData = {};
+          updateData['stripe_payment_intent_id'] = intentId;
+          updateData['payment_status'] = status;
+          
+          // Update payment block field with intent ID
+          if (paymentBlockId) {
+            updateData[paymentBlockId] = intentId;
+          }
+          
+          // Update form data
+          form.update(updateData);
+          
+          // Also update the Stripe state
+          if (state.intentId !== intentId && stripeElements.value.setIntentId) {
+            stripeElements.value.setIntentId(intentId);
+          }
+          
+          console.log('Payment confirmed successfully:', status);
+          return { 
+            success: true, 
+            paymentIntent: result.paymentIntent,
+            status: status,
+            intentId: intentId
+          };
+        } else {
+          // Payment intent exists but status is not successful
+          const failMessage = `Payment failed with status: ${status}`;
+          console.error(failMessage);
+          
+          if (paymentBlockId) {
+            form.errors.set(paymentBlockId, failMessage);
+          }
+          
+          return { success: false, error: failMessage };
+        }
+      }
+      
+      // If we get here, something unexpected happened
+      const unexpectedError = 'Payment failed with an unexpected error';
+      if (paymentBlockId) {
+        form.errors.set(paymentBlockId, unexpectedError);
+      }
+      
+      return { success: false, error: unexpectedError };
+      
+    } catch (error) {
+      console.error('Payment confirmation error:', error);
+      
+      const errorMessage = error.message || 'Payment confirmation failed';
+      
+      if (paymentBlockId) {
+        form.errors.set(paymentBlockId, errorMessage);
+      }
+      
+      return { 
+        success: false, 
+        error: errorMessage,
+        code: error.code,
+        type: error.type
+      };
+    }
   };
 
   /**
-   * Processes payment for a given payment block.
-   * Currently supports Stripe.
-   * @param {Object} paymentBlock - The payment field configuration.
-   * @param {Object} stripe - The Stripe.js instance (passed from component).
-   * @param {Object} paymentElement - The Stripe Payment Element instance (passed from component).
-   * @returns {Promise<Object>} Result object { success: boolean, error?: any, paymentIntent?: object }
+   * Process a payment for the form
+   * @param {Object} paymentBlock - The payment block from the form config
+   * @param {Boolean} isRequired - Whether payment is required
+   * @returns {Promise<Object>} The result of the payment processing
    */
-  const processPayment = async (paymentBlock, stripe, paymentElement) => {
+  const processPayment = async (paymentBlock, isRequired = true) => {
+    // Only process payments on the client side
+    if (!import.meta.client) {
+      console.warn('Payment processing attempted on server');
+      return { success: false, error: 'Payment can only be processed in the browser' };
+    }
+
+    // Validate the payment block
     if (!paymentBlock || paymentBlock.type !== 'payment') {
-      return { success: true }; // No payment block or not a payment type
+      console.error('Invalid payment block provided:', paymentBlock);
+      return { success: false, error: 'Invalid payment block' };
     }
 
-    const provider = paymentBlock.provider || 'stripe'; // Default to stripe
-    toValue(form).errors.clear('payment'); // Clear previous payment errors
+    const paymentBlockId = paymentBlock.id;
+    console.log(`Processing payment for block ${paymentBlockId}, required: ${isRequired}`);
 
-    if (provider === 'stripe') {
-      try {
-        // Ensure Stripe elements are initialized
-        if (!stripeElements.value) {
-          stripeElements.value = createStripeElements();
-        }
-        
-        const clientSecret = await _getStripeClientSecret(paymentBlock);
-        // Confirmation now likely happens on submit, triggered by the component
-        // This function mainly ensures the intent is created.
-        // We might store the clientSecret in the form data temporarily if needed before submission
-        toValue(form).set('_stripe_client_secret', clientSecret); // Temporary store
-        return { success: true }; // Indicate intent creation was successful
+    // Check if Stripe elements are initialized
+    if (!stripeElements.value || !stripeElements.value.state) {
+      console.error('Stripe elements not initialized');
+      if (paymentBlockId) form.errors.set(paymentBlockId, 'Payment system not ready');
+      return { success: false, error: 'Stripe elements not initialized' };
+    }
 
-        // --- Client-side confirmation logic (moved to component/submit) ---
-        // const confirmationResult = await _confirmStripePayment(clientSecret, paymentElement, stripe);
-        // return confirmationResult;
-      } catch (error) {
-        // Error should already be set on the form by internal methods
-        return { success: false, error: error };
+    const state = stripeElements.value.state;
+    const { stripe, card } = state;
+
+    // Check if Stripe is loaded
+    if (!stripe) {
+      const error = 'Stripe.js not initialized';
+      console.error(error);
+      if (paymentBlockId) form.errors.set(paymentBlockId, error);
+      return { success: false, error };
+    }
+
+    // Check if card is complete
+    const cardComplete = card && !card._empty;
+    if (!cardComplete) {
+      // If payment is not required and card is empty, just skip payment
+      if (!isRequired) {
+        console.log('Payment not required, skipping with empty card');
+        return { success: true, skipped: true };
       }
-    } else {
-      return { success: false, error: new Error(`Unsupported payment provider: ${provider}`) };
+      
+      const error = 'Please enter your card details';
+      console.log('Card incomplete:', error);
+      if (paymentBlockId) form.errors.set(paymentBlockId, error);
+      return { success: false, error };
     }
+
+    // Validate billing details
+    if (!state.cardHolderName) {
+      const error = 'Please enter the name on your card';
+      console.log('Missing cardholder name');
+      if (paymentBlockId) form.errors.set(paymentBlockId, error);
+      return { success: false, error };
+    }
+
+    if (!state.cardHolderEmail) {
+      const error = 'Please enter your billing email';
+      console.log('Missing cardholder email');
+      if (paymentBlockId) form.errors.set(paymentBlockId, error);
+      return { success: false, error };
+    }
+
+    // Check for existing payment intent
+    if (state.intentId) {
+      console.log(`Payment already processed with intent: ${state.intentId}`);
+      return { success: true, intentId: state.intentId };
+    }
+
+    try {
+      // Step 1: Create payment intent
+      const config = toValue(formConfig);
+      const formSlug = config.slug;
+      
+      if (!formSlug) {
+        const error = 'Missing form slug';
+        if (paymentBlockId) form.errors.set(paymentBlockId, error);
+        return { success: false, error };
+      }
+      
+      // Create payment intent
+      const intentResult = await _createPaymentIntent(
+        paymentBlock.amount,
+        paymentBlock.currency || 'usd',
+        paymentBlock.description || ''
+      );
+      
+      if (!intentResult.success || !intentResult.client_secret) {
+        const error = intentResult.error || 'Failed to create payment intent';
+        console.error('Payment intent creation failed:', error);
+        if (paymentBlockId) form.errors.set(paymentBlockId, error);
+        return { success: false, error };
+      }
+      
+      // Step 2: Confirm payment with Stripe
+      const confirmResult = await _confirmStripePayment(intentResult.client_secret, paymentBlockId);
+      
+      // Return the result from confirmation
+      return confirmResult;
+      
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      const errorMessage = error.message || 'Payment processing failed';
+      if (paymentBlockId) form.errors.set(paymentBlockId, errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  /**
+   * Confirms a Stripe payment with given client secret.
+   * This method is available for direct usage if needed.
+   * @param {String} clientSecret - The client secret from a payment intent
+   * @param {String} [paymentBlockId] - Optional ID of payment block for error display
+   * @returns {Promise<Object>} The result of payment confirmation
+   */
+  const confirmStripePayment = async (clientSecret, paymentBlockId) => {
+    if (!clientSecret) {
+      console.error('Missing client secret for payment confirmation');
+      return { success: false, error: 'Invalid payment data' };
+    }
+    
+    return await _confirmStripePayment(clientSecret, paymentBlockId);
   };
 
   // Expose the main payment processing function
   return {
     processPayment,
-    getPaymentData
+    getPaymentData,
+    createPaymentIntent: _createPaymentIntent,
+    confirmStripePayment
   };
 } 
