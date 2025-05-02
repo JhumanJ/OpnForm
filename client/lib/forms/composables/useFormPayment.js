@@ -43,7 +43,7 @@ export function useFormPayment(formConfig, form) {
   };
 
   /**
-   * Creates a payment intent with the Stripe API.
+   * Creates a payment intent with the Stripe API using a POST request.
    * @param {Number} amount - The amount to charge in cents.
    * @param {String} currency - The currency code (e.g., 'usd').
    * @param {String} description - A description for the payment.
@@ -55,7 +55,7 @@ export function useFormPayment(formConfig, form) {
     }
 
     try {
-      console.log('Creating payment intent for:', { amount, currency });
+      console.log('Creating payment intent (POST) for:', { amount, currency, description });
       
       // Get form slug from config
       const config = toValue(formConfig);
@@ -66,18 +66,15 @@ export function useFormPayment(formConfig, form) {
         return { success: false, error: 'Invalid form configuration' };
       }
       
-      // Construct URL with query parameters
-      const params = new URLSearchParams({
-        amount: amount,
-        currency: currency.toLowerCase(),
-        description: description || ''
+      // Construct the URL (no query params needed for POST)
+      const url = `/forms/${formSlug}/stripe-connect/payment-intent`;
+      console.log('Requesting payment intent from POST:', url);
+      
+      // Use opnFetch with POST method and an empty body
+      const response = await opnFetch(url, {
+        method: 'POST',
+        body: {}
       });
-      
-      const url = `/forms/${formSlug}/stripe-connect/payment-intent?${params.toString()}`;
-      console.log('Requesting payment intent from:', url);
-      
-      // Use opnFetch from useOpnApi.js
-      const response = await opnFetch(url);
       console.log('Payment intent API response:', response);
       
       // Handle response structure with type and intent fields

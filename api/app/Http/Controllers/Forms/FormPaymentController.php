@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Models\OAuthProvider;
 use App\Http\Requests\Forms\GetStripeAccountRequest;
+use App\Http\Requests\Forms\CreatePaymentIntentRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -43,7 +44,7 @@ class FormPaymentController extends Controller
         }
         // Case 2: Public Form / Loading from Saved Form Data
         else {
-            $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
+            $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
 
             if (!$paymentBlock || !isset($paymentBlock['stripe_account_id'])) {
                 // Allow preview by returning a specific, non-blocking error message
@@ -77,7 +78,7 @@ class FormPaymentController extends Controller
         return $this->success(['stripeAccount' => $provider->provider_user_id]);
     }
 
-    public function createIntent(Request $request)
+    public function createIntent(CreatePaymentIntentRequest $request)
     {
         // Disable payment features on self-hosted instances
         if (config('app.self_hosted')) {
@@ -95,7 +96,7 @@ class FormPaymentController extends Controller
         }
 
         // Get payment block (only one allowed)
-        $paymentBlock = collect($form->properties)->first(fn ($prop) => $prop['type'] === 'payment');
+        $paymentBlock = collect($form->properties)->first(fn($prop) => $prop['type'] === 'payment');
         if (!$paymentBlock) {
             Log::warning('Attempt to create payment for form without payment block', [
                 'form_id' => $form->id
@@ -122,7 +123,8 @@ class FormPaymentController extends Controller
             Stripe::setApiKey(config('cashier.secret'));
 
             $intent = PaymentIntent::create([
-                'description' => 'Form - ' . $form->title,
+                // Use description from payment block if available, fallback to form title
+                'description' => $paymentBlock['description'] ?? ('Form - ' . $form->title),
                 'amount' => (int) ($paymentBlock['amount'] * 100),  // Stripe requires amount in cents
                 'currency' => strtolower($paymentBlock['currency']),
                 'payment_method_types' => ['card'],
