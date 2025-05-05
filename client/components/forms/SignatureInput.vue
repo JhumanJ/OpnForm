@@ -126,26 +126,9 @@ export default {
       handler(file) {
         this.compVal = file?.url || null
       }
-    },
-    modelValue: {
-      immediate: true,
-      handler(value) {
-        // Reset the value if it's an array (coming from Notion database)
-        if (Array.isArray(value) && this.form) {
-          this.form[this.name] = ''
-        }
-      }
     }
   },
-
-  created() {
-    // Handle Notion array data by resetting the value if it's an array
-    if (Array.isArray(this.compVal)) {
-      // Reset the signature field value to empty string when it's an array (from Notion)
-      this.form[this.name] = ''
-    }
-  },
-
+  
   mounted() {
     this.$nextTick(() => {
       if (this.$refs.signaturePad) {
