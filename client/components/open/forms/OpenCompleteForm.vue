@@ -357,7 +357,7 @@ const triggerSubmit = async () => {
         }
         
         emit('submitted', true)
-      } else {
+              } else {
         console.warn('Form submission failed via composable, but no error thrown?')
         alert.error(t('forms.submission_error'))
       }

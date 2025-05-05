@@ -9,6 +9,9 @@ import { useFormPayment } from './useFormPayment'
 import { useFormTimer } from './useFormTimer'
 import { usePendingSubmission } from '~/lib/forms/composables/usePendingSubmission.js'
 import { usePartialSubmission } from '~/composables/forms/usePartialSubmission.js'
+import { useIsIframe } from '~/composables/useIsIframe'
+import { useAmplitude } from '~/composables/useAmplitude'
+import { cloneDeep } from 'lodash'
 
 /**
  * @fileoverview Main orchestrator composable for form operations.
@@ -189,6 +192,45 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       
       // 6. Clear pending submission data on successful submit
       pendingSubmissionService?.clear()
+      
+      // 7. Handle amplitude logging
+      if (import.meta.client) {
+        const amplitude = useAmplitude()
+        amplitude.logEvent('form_submission', {
+          workspace_id: toValue(config).workspace_id,
+          form_id: toValue(config).id
+        })
+      }
+      
+      // 8. Handle postMessage communication for iframe integration
+      if (import.meta.client) {
+        const isIframe = useIsIframe()
+        const formConfig = toValue(config)
+        const payload = cloneDeep({
+          type: 'form-submitted',
+          form: {
+            slug: formConfig.slug,
+            id: formConfig.id,
+            redirect_target_url: (formConfig.is_pro && submissionResult?.redirect && submissionResult?.redirect_url) 
+                              ? submissionResult.redirect_url 
+                              : null
+          },
+          submission_data: form.data(),
+          completion_time: completionTime
+        })
+        
+        // Send message to parent if in iframe
+        if (isIframe) {
+          window.parent.postMessage(payload, '*')
+        }
+        // Also send to current window for potential internal listeners
+        window.postMessage(payload, '*')
+      }
+      
+      // 9. Handle redirect if server response includes redirect info
+      if (import.meta.client && submissionResult?.redirect && submissionResult?.redirect_url) {
+        window.location.href = submissionResult.redirect_url
+      }
       
       return submissionResult // Return result from submission composable
 

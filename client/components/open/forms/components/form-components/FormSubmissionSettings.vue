@@ -115,7 +115,7 @@
       class="w-full"
       :class="{'flex flex-wrap gap-x-4':submissionOptions.submissionMode === 'redirect'}"
     >
-      <select-input
+      <flat-select-input
         :form="submissionOptions"
         name="submissionMode"
         class="w-full max-w-xs"
@@ -150,7 +150,7 @@
             </span>
           </span>
         </template>
-      </select-input>
+      </flat-select-input>
       <template v-if="submissionOptions.submissionMode === 'redirect'">
         <MentionInput
           name="redirect_url"
