@@ -43,13 +43,7 @@
         </p>
       </div>
       <template v-else>
-        <div v-if="recordLoading">
-          <p class="text-center mt-6 p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
-          </p>
-        </div>
         <OpenCompleteForm
-          v-show="!recordLoading"
           ref="openCompleteForm"
           :form="form"
           class="mb-10"
@@ -77,11 +71,9 @@ import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const crisp = useCrisp()
 const formsStore = useFormsStore()
-const recordsStore = useRecordsStore()
 const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const formLoading = computed(() => formsStore.loading)
-const recordLoading = computed(() => recordsStore.loading)
 const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
 const $t = useI18n()
@@ -142,11 +134,6 @@ const loadForm = async (setup=false) => {
 }
 
 await loadForm(true)
-
-// Start loader if record needs to be loaded
-if (useRoute().query?.submission_id) {
-  recordsStore.startLoading()
-}
 
 onMounted(() => {
   crisp.hideChat()

@@ -1,4 +1,5 @@
-import { watch, toValue } from 'vue';
+import { toValue } from 'vue';
+import { opnFetch } from '~/composables/useOpnApi.js';
 
 /**
  * @fileoverview Composable for initializing form data, with complete handling of 
@@ -83,15 +84,35 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    * @returns {Promise<Boolean>} - Whether loading was successful
    */
   const tryLoadFromSubmissionId = async (submissionId) => {
-    if (!submissionId) return false;
-    
-    try {
-      await form.get(`/submissions/${submissionId}`);
-      return true;
-    } catch (error) {
-      form.reset(); // Reset if load failed
+    const submissionIdValue = toValue(submissionId);
+    if (!submissionIdValue) return false;
+    const config = toValue(formConfig); // Get the form config value
+    const slug = config?.slug; // Extract the slug
+
+    if (!slug) {
+      console.error('Cannot load submission: Form slug is missing from config.');
+      form.reset(); // Reset if config is invalid
       return false;
     }
+
+    // Use the correct route format: /forms/{slug}/submissions/{submission_id}
+    return opnFetch(`/forms/${slug}/submissions/${submissionIdValue}`)
+      .then(submissionData => {
+        console.log('submissionData', submissionData);
+        if (submissionData.data) {
+          form.resetAndFill(submissionData.data);
+          return true;
+        } else {
+          console.warn(`Submission ${submissionIdValue} for form ${slug} loaded but returned no data.`);
+          form.reset();
+          return false;
+        }
+      })
+      .catch(error => {
+        console.error(`Error loading submission ${submissionIdValue} for form ${slug}:`, error);
+        form.reset();
+        return false;
+      });
   };
 
   /**
@@ -179,13 +200,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
       form.resetAndFill(formData);
     }
   };
-
-  // Setup watcher for form data changes to save to localStorage - client-side only
-  if (!import.meta.server && pendingSubmission && pendingSubmission.enabled?.value) {
-    watch(() => form.data(), (newValue) => {
-      pendingSubmission.set(newValue);
-    }, { deep: true });
-  }
 
   return {
     initialize,

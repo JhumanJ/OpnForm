@@ -4,7 +4,7 @@ import { ref } from 'vue';
  * @fileoverview Composable for managing form completion time.
  * Includes persistence in localStorage via pendingSubmission.
  */
-export function useFormTimer(formConfig, pendingSubmission) {
+export function useFormTimer(pendingSubmission) {
   // Reactive state for timer
   const startTime = ref(null);
   const completionTime = ref(null);

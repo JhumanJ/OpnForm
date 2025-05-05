@@ -1,23 +1,38 @@
 import { opnFetch } from "./../useOpnApi.js"
-import { pendingSubmission as pendingSubmissionFunction } from "./pendingSubmission.js"
-import { watch, onBeforeUnmount, ref } from 'vue'
+import { watch, onBeforeUnmount, ref, toValue } from 'vue'
 
 // Create a Map to store submission hashes for different forms
+// This map might be better managed globally or passed if needed across instances
 const submissionHashes = ref(new Map())
 
-export const usePartialSubmission = (form, formData = {}) => {
-  const pendingSubmission = pendingSubmissionFunction(form)
+/**
+ * Composable for handling partial form submissions (auto-syncing to server).
+ *
+ * @param {Object} formConfig - The form configuration object (not reactive needed here, just for slug).
+ * @param {import('vue').ComputedRef<Object>} formDataRef - Computed reference to the reactive form data.
+ * @param {Object} pendingSubmissionService - The instantiated service from usePendingSubmission.
+ */
+export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionService) {
 
   let syncTimeout = null
   let dataWatcher = null
 
   const getSubmissionHash = () => {
-    return pendingSubmission.getSubmissionHash() ?? submissionHashes.value.get(pendingSubmission.formPendingSubmissionKey.value)
+    // Prioritize hash from the pendingSubmission service (localStorage)
+    const storedHash = pendingSubmissionService.getSubmissionHash();
+    if (storedHash) return storedHash;
+    // Fallback to the in-memory map for this instance if needed (should ideally be synced)
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value; // Use optional chaining
+    return key ? submissionHashes.value.get(key) : null;
   }
 
   const setSubmissionHash = (hash) => {
-    submissionHashes.value.set(pendingSubmission.formPendingSubmissionKey.value, hash)
-    pendingSubmission.setSubmissionHash(hash)
+    // Set in both localStorage (via service) and the local map
+    pendingSubmissionService.setSubmissionHash(hash);
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value;
+    if (key) {
+      submissionHashes.value.set(key, hash)
+    }
   }
 
   const debouncedSync = () => {
@@ -43,15 +58,14 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const syncToServer = async () => {
+    const config = toValue(formConfig); // Ensure we have the latest config value
     // Check if partial submissions are enabled and if we have data
-    if (!form?.enable_partial_submissions) {
+    if (!config?.enable_partial_submissions) {
       return;
     }
     
-    // Get current form data - now handling the computed ref pattern
-    const currentData = typeof formData === 'function' 
-      ? formData() 
-      : formData.value;
+    // Get current form data from the reactive ref
+    const currentData = formDataRef.value; // Directly use .value from computed ref
       
     // Skip if no data or empty data
     if (!currentData || Object.keys(currentData).length === 0) {
@@ -59,19 +73,20 @@ export const usePartialSubmission = (form, formData = {}) => {
     }
 
     try {
-      const response = await opnFetch(`/forms/${form.slug}/answer`, {
+      const response = await opnFetch(`/forms/${config.slug}/answer`, {
         method: "POST",
         body: {
           ...currentData,
           'is_partial': true,
-          'submission_hash': getSubmissionHash()
+          'submission_hash': getSubmissionHash() // Use the updated getter
         }
       });
       if (response.submission_hash) {
-        setSubmissionHash(response.submission_hash);
+        setSubmissionHash(response.submission_hash); // Use the updated setter
       }
     } catch (error) {
       // Error handling without console.log
+      // Consider adding more robust error handling/logging if needed
     }
   }
 
@@ -94,16 +109,16 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const startSync = () => {
-    if (dataWatcher) {
+    if (dataWatcher || import.meta.server) { // Prevent starting multiple times or on server
       return;
     }
 
     // Initial sync
     debouncedSync();
 
-    // Watch formData using Vue's reactivity
+    // Watch formDataRef using Vue's reactivity
     dataWatcher = watch(
-      formData,
+      formDataRef,
       (newValue) => {
         debouncedSync();
       },
@@ -117,12 +132,17 @@ export const usePartialSubmission = (form, formData = {}) => {
   }
 
   const stopSync = () => {
+    if (import.meta.server) return;
+    
     // Final sync before stopping if we have a hash
     if (getSubmissionHash()) {
       syncImmediately();
     }
     
-    submissionHashes.value = new Map();
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value;
+    if (key) {
+      submissionHashes.value.delete(key); // Clear from instance map on stop
+    }
 
     if (dataWatcher) {
       dataWatcher();
@@ -150,7 +170,7 @@ export const usePartialSubmission = (form, formData = {}) => {
     stopSync,
     syncToServer: debouncedSync, // Expose the debounced version externally
     syncImmediately, // Also expose the immediate sync for critical situations
-    getSubmissionHash,
-    setSubmissionHash
+    getSubmissionHash, // Use the getter that prioritizes localStorage
+    setSubmissionHash // Use the setter that updates both
   }
 }

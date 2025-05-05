@@ -7,7 +7,7 @@ import { useFormValidation } from './useFormValidation';
 import { useFormSubmission } from './useFormSubmission';
 import { useFormPayment } from './useFormPayment';
 import { useFormTimer } from './useFormTimer';
-import { pendingSubmission } from '~/composables/forms/pendingSubmission.js';
+import { usePendingSubmission } from '~/lib/forms/composables/usePendingSubmission.js';
 import { usePartialSubmission } from '~/composables/forms/usePartialSubmission.js';
 
 /**
@@ -37,20 +37,18 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
     console.log(`[useFormManager] state.currentPage changed from ${oldPage} to ${newPage}`);
   });
 
-  // --- Initialize pendingSubmission for localStorage handling ---
-  const pendingSubmissionService = import.meta.server ? null : pendingSubmission(toValue(config));
-  
-  // --- Initialize partialSubmission for auto-saving partial submissions ---
-  // Create a reactive reference to the form data for usePartialSubmission to watch
+  // --- Initialize services that depend on config and form data ---
+  // Create a reactive reference to the form data for dependent composables to watch
   const formDataRef = computed(() => form.data());
 
-  // Initialize the partial submission service with form config and reactive form data ref
-  const partialSubmissionService = import.meta.server ? 
-    { startSync: () => {}, stopSync: () => {}, syncToServer: () => {}, getSubmissionHash: () => null } : 
-    usePartialSubmission(toValue(config), formDataRef);
+  // Instantiate pending submission service (handles localStorage saving)
+  const pendingSubmissionService = usePendingSubmission(config, formDataRef);
+  
+  // Instantiate partial submission service (handles server auto-sync)
+  const partialSubmissionService = usePartialSubmission(config, formDataRef, pendingSubmissionService);
 
-  // --- Instantiate Composables (Services) ---
-  const timer = useFormTimer(config, pendingSubmissionService);
+  // --- Instantiate Other Composables (Services) ---
+  const timer = useFormTimer(pendingSubmissionService);
   const initialization = useFormInitialization(config, form, pendingSubmissionService);
   const structure = useFormStructure(config, state, form); 
   const validation = useFormValidation(config, form, state, structure.isLastPage);

@@ -262,7 +262,7 @@ if (props.form) {
     darkMode: darkModeRef
   })
   formManager.initialize({
-    submissionId: route.query.submission_id,
+    submissionId: submissionId,
     urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
   })
 }
@@ -351,13 +351,13 @@ const triggerSubmit = async () => {
     .then(result => {
       if (result) {
         console.log('Form submission successful via composable.', result)
-        submittedData.value = result.data || {}
+        submittedData.value = result || {}
         
-        if (result.data?.submission_id) {
-          submissionId.value = result.data.submission_id
+        if (result?.submission_id) {
+          submissionId.value = result.submission_id
         }
 
-        if (isFormOwner.value && !useIsIframe() && result.data?.is_first_submission) {
+        if (isFormOwner.value && !useIsIframe() && result?.is_first_submission) {
           showFirstSubmissionModal.value = true
         }
         
