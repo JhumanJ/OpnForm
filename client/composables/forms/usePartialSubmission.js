@@ -118,7 +118,7 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
     // Watch formDataRef using Vue's reactivity
     dataWatcher = watch(
       formDataRef,
-      (newValue) => {
+      (_newValue) => {
         debouncedSync()
       },
       { deep: true }

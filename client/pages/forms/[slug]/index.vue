@@ -113,7 +113,7 @@ const loadForm = async (setup=false) => {
     try {
       const data = await formsStore.publicFetch(slug)
       formsStore.save(data)
-    } catch (e) {
+    } catch {
       formsStore.stopLoading()
       setResponseStatus(event, 404, 'Page Not Found')
       return

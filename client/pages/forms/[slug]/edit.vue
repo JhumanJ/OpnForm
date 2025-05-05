@@ -48,7 +48,7 @@ function isDirty() {
       formInitialHash.value !==
         hash(JSON.stringify(updatedForm?.value?.data() ?? null))
     )
-  } catch (e) {
+  } catch {
     return false
   }
 }

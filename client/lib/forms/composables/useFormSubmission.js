@@ -56,22 +56,18 @@ export function useFormSubmission(formConfig, form) {
     // Prepare metadata only (form data will be auto-merged by Form.js)
     const metadata = _prepareMetadata(options)
 
-    try {
-      // Use the vForm post method, which will automatically merge form data with metadata
-      const response = await toValue(form).post(url, { 
-        data: metadata
-      })
-      
-      // Optionally reset form after successful submission based on strategy
-      const formModeStrategy = options.formModeStrategy
-      if (formModeStrategy?.submission?.resetAfterSubmit) {
-        toValue(form).reset()
-      }
-      
-      return response
-    } catch (error) {
-      throw error
+    // Use the vForm post method, which will automatically merge form data with metadata
+    const response = await toValue(form).post(url, { 
+      data: metadata
+    })
+    
+    // Optionally reset form after successful submission based on strategy
+    const formModeStrategy = options.formModeStrategy
+    if (formModeStrategy?.submission?.resetAfterSubmit) {
+      toValue(form).reset()
     }
+    
+    return response
   }
 
   // Expose the main submission function

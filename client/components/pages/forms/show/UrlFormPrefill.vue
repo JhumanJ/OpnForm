@@ -110,7 +110,6 @@ import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
-import { ref, computed, watch, nextTick, onMounted } from 'vue'
 
 const props = defineProps({
   form: { type: Object, required: true },

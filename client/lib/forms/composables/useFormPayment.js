@@ -1,4 +1,4 @@
-import { toValue, ref, computed } from 'vue'
+import { toValue, ref } from 'vue'
 import { createStripeElements } from '~/composables/useStripeElements'
 import { opnFetch } from '~/composables/useOpnApi.js'
 // Assume Stripe is loaded globally or via another mechanism if needed client-side
@@ -49,7 +49,7 @@ export function useFormPayment(formConfig, form) {
    * @param {String} description - A description for the payment.
    * @returns {Promise<Object>} The result of creating the payment intent.
    */
-  const _createPaymentIntent = async (amount, currency, description) => {
+  const _createPaymentIntent = async (_amount, _currency, _description) => {
     if (!import.meta.client) {
       return { success: false, error: 'Client-side only operation' }
     }

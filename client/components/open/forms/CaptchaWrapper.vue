@@ -3,9 +3,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-
-const props = defineProps({
+defineProps({
   formManager: { type: Object, required: true },
   theme: { type: Object, required: false }
 })

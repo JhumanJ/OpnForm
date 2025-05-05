@@ -1,4 +1,4 @@
-import { reactive, computed, ref, toValue, onBeforeUnmount, watch } from 'vue'
+import { reactive, computed, ref, toValue, onBeforeUnmount } from 'vue'
 import { useForm } from '~/composables/useForm.js' // Assuming useForm handles vForm setup
 import { FormMode, createFormModeStrategy } from '../FormModeStrategy'
 import { useFormStructure } from './useFormStructure'
@@ -49,7 +49,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
   const timer = useFormTimer(pendingSubmissionService)
   const initialization = useFormInitialization(config, form, pendingSubmissionService)
   const structure = useFormStructure(config, state, form) 
-  const validation = useFormValidation(config, form, state, structure.isLastPage)
+  const validation = useFormValidation(config, form, state)
   const payment = useFormPayment(config, form)
   const submission = useFormSubmission(config, form)
 
@@ -112,7 +112,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       state.isProcessing = false
       return true
 
-    } catch (error) {
+    } catch {
       // Use validation composable's failure handler
       validation.onValidationFailure({
         fieldGroups: structure.fieldGroups.value, // Pass reactive groups

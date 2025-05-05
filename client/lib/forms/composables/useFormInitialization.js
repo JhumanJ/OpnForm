@@ -25,7 +25,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
           : value
           
         form[key] = parsedValue
-      } catch (e) {
+      } catch {
         // If parsing fails, use the original value
         form[key] = value
       }

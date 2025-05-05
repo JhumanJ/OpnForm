@@ -104,8 +104,6 @@ const props = defineProps({
   theme: { type: Object, required: true }
 })
 
-const emit = defineEmits(['submit'])
-
 const workingFormStore = useWorkingFormStore()
 
 // Derive everything from formManager

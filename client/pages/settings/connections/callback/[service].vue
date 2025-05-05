@@ -56,7 +56,7 @@ async function handleCallback() {
               waitForAcknowledgment: false,
               targetOrigin: window.location.origin
           })
-      } catch (sendError) {
+      } catch {
           // Silently handle error when sending window message - continue flow regardless
       }
     }
@@ -84,7 +84,7 @@ async function handleCallback() {
     try {
       errorMessage.value = error?.data?.message || "An error occurred while connecting the account."
       alert.error(errorMessage.value)
-    } catch (e) {
+    } catch {
       errorMessage.value = "An unknown error occurred while connecting the account."
       alert.error(errorMessage.value)
     }

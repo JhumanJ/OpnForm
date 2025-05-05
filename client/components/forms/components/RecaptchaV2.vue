@@ -129,7 +129,7 @@ const renderRecaptcha = async () => {
         }
       }
     })
-  } catch (error) {
+  } catch {
     scriptLoadPromise = null // Reset promise on error
   }
 }
@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
   if (window.grecaptcha && widgetId !== null) {
     try {
       window.grecaptcha.reset(widgetId)
-    } catch (e) {
+    } catch {
       // Silently handle error
     }
   }

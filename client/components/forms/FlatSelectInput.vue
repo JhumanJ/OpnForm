@@ -146,13 +146,13 @@ export default {
   },
   computed: {
     selectedOptions() {
-      if (!this.compVal) return [];
+      if (!this.compVal) return []
       
       if (this.multiple) {
-        return this.options.filter(option => this.compVal.includes(option[this.optionKey]));
+        return this.options.filter(option => this.compVal.includes(option[this.optionKey]))
       }
       
-      return this.options.find(option => option[this.optionKey] === this.compVal) || null;
+      return this.options.find(option => option[this.optionKey] === this.compVal) || null
     },
   },
   methods: {
@@ -191,16 +191,16 @@ export default {
       return this.compVal === value
     },
     getOptionName(option) {
-      return option ? option[this.displayKey] : '';
+      return option ? option[this.displayKey] : ''
     },
     getSelectedOptionsNames() {
-      if (!this.compVal) return [];
+      if (!this.compVal) return []
       
       if (this.multiple) {
-        return this.selectedOptions.map(option => option[this.displayKey]);
+        return this.selectedOptions.map(option => option[this.displayKey])
       }
       
-      return [this.getOptionName(this.selectedOptions)];
+      return [this.getOptionName(this.selectedOptions)]
     },
   },
 }

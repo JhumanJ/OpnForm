@@ -3,7 +3,7 @@ import { computed, toValue } from 'vue'
 /**
  * @fileoverview Composable for handling form validation logic.
  */
-export function useFormValidation(formConfig, form, managerState, isLastPage) {
+export function useFormValidation(formConfig, form, managerState) {
 
   const formRef = computed(() => toValue(form)) // Ensure reactivity with the form instance
   const configRef = computed(() => toValue(formConfig)) // Ensure reactivity with config
@@ -22,14 +22,9 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
     const config = configRef.value
     const validationUrl = `/forms/${config.slug}/answer` // Use reactive config
 
-    try {
-      // Use the reactive formRef
-      await formRef.value.validate(httpMethod, validationUrl, {}, fieldIds)
-      return true // Validation passed
-    } catch (error) {
-      // vForm handles setting errors. Just rethrow.
-      throw error
-    }
+    // Use the reactive formRef
+    await formRef.value.validate(httpMethod, validationUrl, {}, fieldIds)
+    return true // Validation passed
   }
 
   /**
@@ -52,12 +47,8 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       return true
     }
 
-    try {
-      await validateFields(fieldIdsToValidate)
-      return true
-    } catch (errors) {
-      throw errors // Rethrow to signal failure
-    }
+    await validateFields(fieldIdsToValidate)
+    return true
   }
 
   /**
@@ -86,35 +77,11 @@ export function useFormValidation(formConfig, form, managerState, isLastPage) {
       return true
     }
 
-    try {
-      await validateFields(fieldIdsToValidate)
-      return true
-    } catch (errors) {
-      throw errors
-    }
+    await validateFields(fieldIdsToValidate)
+    return true
   }
 
 
-  /**
-   * Finds the index of the first page containing validation errors.
-   * @param {Array<Array<Object>>} fieldGroups - Nested array of fields per page (from useFormStructure).
-   * @returns {number} Index of the first page with errors, or -1 if no errors found.
-   */
-  const findFirstPageWithError = (fieldGroups) => {
-    const errors = formRef.value.errors
-    if (!errors || !errors.any()) {
-      return -1 // No errors exist
-    }
-    if (!fieldGroups) return -1 // No groups to check
-
-    for (let i = 0; i < fieldGroups.length; i++) {
-      const pageHasError = fieldGroups[i]?.some(field => field && field.id && errors.has(field.id))
-      if (pageHasError) {
-        return i
-      }
-    }
-    return -1
-  }
 
   /**
    * Actions to perform on validation failure (e.g., during submit or page change).

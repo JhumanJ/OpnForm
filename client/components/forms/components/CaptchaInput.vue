@@ -138,7 +138,7 @@ const resizeIframe = (height) => {
   
   try {
     window.parentIFrame?.size(height)
-  } catch (e) {
+  } catch {
     // Silently handle error
   }
 }

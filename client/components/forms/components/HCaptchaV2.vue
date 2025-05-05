@@ -148,7 +148,7 @@ const renderHcaptcha = async () => {
       'open-callback': () => emit('opened'),
       'close-callback': () => emit('closed')
     })
-  } catch (error) {
+  } catch {
     scriptLoadPromise = null // Reset promise on error
   }
 }
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
   if (window.hcaptcha && widgetId !== null) {
     try {
       window.hcaptcha.remove(widgetId)
-    } catch (e) {
+    } catch {
       // Silently handle error
     }
   }

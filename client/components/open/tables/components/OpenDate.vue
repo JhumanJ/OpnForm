@@ -45,13 +45,13 @@ export default {
       if (this.property?.with_time) {
         try {
           return format(new Date(val), dateFormat + (timeFormat == 12 ? ' p':' HH:mm'))
-        } catch (e) {
+        } catch {
           return ''
         }
       }
       try {
         return format(new Date(val), dateFormat)
-      } catch (e) {
+      } catch {
         return ''
       }
     }
