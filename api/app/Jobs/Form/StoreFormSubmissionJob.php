@@ -78,6 +78,8 @@ class StoreFormSubmissionJob implements ShouldQueue
         // Store the submission
         $this->storeSubmission($this->formData);
 
+        ray($this->formData, $this->completionTime)->red();
+
         // Add the submission ID to the form data after storing the submission
         $this->formData['submission_id'] = $this->submissionId;
 
