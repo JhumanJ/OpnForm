@@ -27,11 +27,11 @@
       <!-- Main form content -->
       <div v-else key="form-content">
         <div v-if="isPublicFormPage && form.is_password_protected">
-          <p class="form-description mb-4 text-gray-700 dark:text-gray-300 px-2">
+          <p class="form-description text-gray-700 dark:text-gray-300 px-2">
             {{ t('forms.password_protected') }}
           </p>
           <div class="form-group flex flex-wrap w-full">
-            <div class="relative mb-3 w-full px-2">
+            <div class="relative w-full px-2">
               <text-input
                 :theme="theme"
                 :form="passwordForm"
@@ -103,7 +103,7 @@
           :specify-form-owner="true"
         />
 
-        <v-transition name="fade">
+        <v-transition name="fade" v-if="form && !form.is_password_protected">
           <div
             v-if="!isFormSubmitted"
             key="form"
@@ -398,6 +398,11 @@ const passwordEntered = () => {
 const addPasswordError = (msg) => {
   passwordForm.errors.set('password', msg)
 }
+
+defineExpose({
+  addPasswordError
+})
+
 </script>
 
 <style lang="scss">
