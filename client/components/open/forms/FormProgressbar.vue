@@ -1,5 +1,5 @@
 <template>
-  <template v-if="config?.show_progress_bar">
+  <template v-if="showProgressBar">
     <div
       v-if="isIframe"
       class="mb-4 p-2"
@@ -37,21 +37,24 @@ const props = defineProps({
   }
 })
 
-const config = computed(() => props.formManager?.config)
-const structureService = computed(() => props.formManager?.structureService)
-const formData = computed(() => props.formManager?.data)
+const config = computed(() => props.formManager?.config.value)
+const form = computed(() => props.formManager?.form)
+const showProgressBar = computed(() => {
+  return config.value?.show_progress_bar
+})
+
 
 const isIframe = useIsIframe()
 
 const formProgress = computed(() => {
-  const allFields = structureService.value?.getAllFields() ?? []
+  const allFields = config.value?.properties ?? []
   const requiredFields = allFields.filter(field => field?.required)
   
   if (requiredFields.length === 0) {
     return 100
   }
   
-  const currentFormData = formData.value || {}
+  const currentFormData = form.value.data() || {}
   const completedFields = requiredFields.filter(field => field && ![null, undefined, ''].includes(currentFormData[field.id]))
   const progress = (completedFields.length / requiredFields.length) * 100
   return Math.round(progress)
