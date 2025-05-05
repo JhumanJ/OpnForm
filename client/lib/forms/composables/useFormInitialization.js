@@ -61,7 +61,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   /**
    * Updates special fields like dates with today's date if configured.
    * @param {Array} fields - Form fields
-   * @param {Object} formData - Current form data
    */
   const updateSpecialFields = () => {
     formConfig.value.properties.forEach(field => {
@@ -70,7 +69,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
         form[field.id] = new Date().toISOString()
       }
       // Handle matrix fields with prefill data
-      else if (field.type === 'matrix' && !formData[field.id] && field.prefill) {
+      else if (field.type === 'matrix' && !form[field.id] && field.prefill) {
         form[field.id] = {...field.prefill}
       } else if (field.id && !form[field.id]) {
         form[field.id] = field.prefill
