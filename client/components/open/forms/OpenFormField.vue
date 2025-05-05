@@ -171,10 +171,10 @@ const props = defineProps({
 })
 
 // Derive everything from formManager
-const form = computed(() => props.formManager?.config?.value || {});
-const dataForm = computed(() => props.formManager?.form || {});
-const darkMode = computed(() => props.formManager?.darkMode?.value || false);
-const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false);
+const form = computed(() => props.formManager?.config?.value || {})
+const dataForm = computed(() => props.formManager?.form || {})
+const darkMode = computed(() => props.formManager?.darkMode?.value || false)
+const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false)
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
@@ -390,9 +390,9 @@ function inputProperties(field) {
     // Get paymentData from formManager if available
     if (props.formManager?.payment) {
       try {
-        inputProperties.paymentData = props.formManager.payment.getPaymentData(field);
+        inputProperties.paymentData = props.formManager.payment.getPaymentData(field)
       } catch (error) {
-        console.error("Error getting payment data:", error);
+        console.error("Error getting payment data:", error)
       }
     }
   }

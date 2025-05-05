@@ -133,14 +133,12 @@ const theme = computed(() => {
 // Set up form manager with proper mode
 let formManager = null
 const setupFormManager = () => {
-  if (!props.form) return null;
+  if (!props.form) return null
   
-  console.log("Initializing useFormManager for UrlFormPrefill...")
   formManager = useFormManager(props.form, FormMode.PREFILL, {
     darkMode: false
   })
   formManager.initialize()
-  console.log("useFormManager for UrlFormPrefill initialized.")
   
   return formManager
 }
@@ -163,7 +161,6 @@ const generateUrl = () => {
   
   const formData = formManager.data.value
   
-  console.log("Generating URL with data:", formData)
   prefillFormData.value = formData
   
   nextTick().then(() => {

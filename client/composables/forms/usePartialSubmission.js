@@ -19,17 +19,17 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
 
   const getSubmissionHash = () => {
     // Prioritize hash from the pendingSubmission service (localStorage)
-    const storedHash = pendingSubmissionService.getSubmissionHash();
-    if (storedHash) return storedHash;
+    const storedHash = pendingSubmissionService.getSubmissionHash()
+    if (storedHash) return storedHash
     // Fallback to the in-memory map for this instance if needed (should ideally be synced)
-    const key = pendingSubmissionService.formPendingSubmissionKey?.value; // Use optional chaining
-    return key ? submissionHashes.value.get(key) : null;
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value // Use optional chaining
+    return key ? submissionHashes.value.get(key) : null
   }
 
   const setSubmissionHash = (hash) => {
     // Set in both localStorage (via service) and the local map
-    pendingSubmissionService.setSubmissionHash(hash);
-    const key = pendingSubmissionService.formPendingSubmissionKey?.value;
+    pendingSubmissionService.setSubmissionHash(hash)
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value
     if (key) {
       submissionHashes.value.set(key, hash)
     }
@@ -38,38 +38,38 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
   const debouncedSync = () => {
     // Clear existing timeout to reset the timer
     if (syncTimeout) {
-      clearTimeout(syncTimeout);
+      clearTimeout(syncTimeout)
     }
     
     // Set a new timeout - increased to 2 seconds for less frequent syncing
     syncTimeout = setTimeout(() => {
-      syncToServer();
-    }, 2000); // 2 second debounce
+      syncToServer()
+    }, 2000) // 2 second debounce
   }
 
   // Add a function to execute sync immediately without debouncing
   // This is used for critical moments like page unload
   const syncImmediately = () => {
     if (syncTimeout) {
-      clearTimeout(syncTimeout);
-      syncTimeout = null;
+      clearTimeout(syncTimeout)
+      syncTimeout = null
     }
-    return syncToServer();
+    return syncToServer()
   }
 
   const syncToServer = async () => {
-    const config = toValue(formConfig); // Ensure we have the latest config value
+    const config = toValue(formConfig) // Ensure we have the latest config value
     // Check if partial submissions are enabled and if we have data
     if (!config?.enable_partial_submissions) {
-      return;
+      return
     }
     
     // Get current form data from the reactive ref
-    const currentData = formDataRef.value; // Directly use .value from computed ref
+    const currentData = formDataRef.value // Directly use .value from computed ref
       
     // Skip if no data or empty data
     if (!currentData || Object.keys(currentData).length === 0) {
-      return;
+      return
     }
 
     try {
@@ -80,13 +80,12 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
           'is_partial': true,
           'submission_hash': getSubmissionHash() // Use the updated getter
         }
-      });
+      })
       if (response.submission_hash) {
-        setSubmissionHash(response.submission_hash); // Use the updated setter
+        setSubmissionHash(response.submission_hash) // Use the updated setter
       }
     } catch (error) {
-      // Error handling without console.log
-      // Consider adding more robust error handling/logging if needed
+      console.error(error)
     }
   }
 
@@ -94,76 +93,76 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
       // When tab becomes hidden, sync immediately
-      syncImmediately();
+      syncImmediately()
     }
   }
 
   const handleBlur = () => {
     // When window loses focus, sync immediately
-    syncImmediately();
+    syncImmediately()
   }
 
   const handleBeforeUnload = () => {
     // Before page unloads, sync immediately
-    syncImmediately();
+    syncImmediately()
   }
 
   const startSync = () => {
     if (dataWatcher || import.meta.server) { // Prevent starting multiple times or on server
-      return;
+      return
     }
 
     // Initial sync
-    debouncedSync();
+    debouncedSync()
 
     // Watch formDataRef using Vue's reactivity
     dataWatcher = watch(
       formDataRef,
       (newValue) => {
-        debouncedSync();
+        debouncedSync()
       },
       { deep: true }
-    );
+    )
 
     // Add event listeners for critical moments
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('beforeunload', handleBeforeUnload)
   }
 
   const stopSync = () => {
-    if (import.meta.server) return;
+    if (import.meta.server) return
     
     // Final sync before stopping if we have a hash
     if (getSubmissionHash()) {
-      syncImmediately();
+      syncImmediately()
     }
     
-    const key = pendingSubmissionService.formPendingSubmissionKey?.value;
+    const key = pendingSubmissionService.formPendingSubmissionKey?.value
     if (key) {
-      submissionHashes.value.delete(key); // Clear from instance map on stop
+      submissionHashes.value.delete(key) // Clear from instance map on stop
     }
 
     if (dataWatcher) {
-      dataWatcher();
-      dataWatcher = null;
+      dataWatcher()
+      dataWatcher = null
     }
     
     if (syncTimeout) {
-      clearTimeout(syncTimeout);
-      syncTimeout = null;
+      clearTimeout(syncTimeout)
+      syncTimeout = null
     }
 
     // Remove event listeners
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
-    window.removeEventListener('blur', handleBlur);
-    window.removeEventListener('beforeunload', handleBeforeUnload);
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    window.removeEventListener('blur', handleBlur)
+    window.removeEventListener('beforeunload', handleBeforeUnload)
   }
 
   // Ensure cleanup when component is unmounted
   onBeforeUnmount(() => {
-    stopSync();
-  });
+    stopSync()
+  })
 
   return {
     startSync,

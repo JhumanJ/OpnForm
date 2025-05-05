@@ -84,7 +84,7 @@ export default {
       if (props.nativeType !== "file") return
 
       const file = event.target.files[0]
-      // eslint-disable-next-line vue/no-mutating-props
+       
       props.form[props.name] = file
     }
 

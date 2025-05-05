@@ -116,16 +116,16 @@ const strategy = computed(() => props.formManager.strategy.value)
 const structure = computed(() => props.formManager.structure)
 
 const hasPaymentBlock = computed(() => {
-  return structure.value?.currentPageHasPaymentBlock.value ?? false;
+  return structure.value?.currentPageHasPaymentBlock.value ?? false
 })
 
 const currentFields = computed(() => {
-  return structure.value?.getPageFields(state.value.currentPage) ?? [];
+  return structure.value?.getPageFields(state.value.currentPage) ?? []
 })
 
 const isLastPage = computed(() => {
-  const result = structure.value?.isLastPage.value ?? true;
-  return result;
+  const result = structure.value?.isLastPage.value ?? true
+  return result
 })
 
 const currentFieldsPageBreak = computed(() => 
@@ -140,30 +140,28 @@ const draggingNewBlock = computed(() => workingFormStore.draggingNewBlock)
 
 const handlePreviousClick = () => {
   props.formManager.previousPage()
-  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const handleNextClick = async () => {
-  await props.formManager.nextPage();
-  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' });
+  await props.formManager.nextPage()
+  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const handleDragDropped = (data) => {
-  if (!structure.value) return;
+  if (!structure.value) return
 
   const getAbsoluteIndex = (relativeIndex) => {
-    return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage);
-  };
+    return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage)
+  }
 
   if (data.added) {
-    const targetIndex = getAbsoluteIndex(data.added.newIndex);
-    console.log(`Adding block at absolute index: ${targetIndex}`);
+    const targetIndex = getAbsoluteIndex(data.added.newIndex)
     workingFormStore.addBlock(data.added.element, targetIndex, false)
   }
   if (data.moved) {
-    const oldTargetIndex = getAbsoluteIndex(data.moved.oldIndex);
-    const newTargetIndex = getAbsoluteIndex(data.moved.newIndex);
-    console.log(`Moving block from ${oldTargetIndex} to ${newTargetIndex}`);
+    const oldTargetIndex = getAbsoluteIndex(data.moved.oldIndex)
+    const newTargetIndex = getAbsoluteIndex(data.moved.newIndex)
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }

@@ -15,11 +15,11 @@ import { default as _has } from 'lodash/has'
 export default {
   components: {},
   props: {
-    // eslint-disable-next-line vue/require-prop-types
+     
     property: {
       required: true
     },
-    // eslint-disable-next-line vue/require-prop-types
+     
     value: {
       required: true
     }

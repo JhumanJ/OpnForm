@@ -10,12 +10,12 @@ import { opnFetch } from '~/composables/useOpnApi.js'
 export const createStripeElements = (initialAccountId = null) => {
   // Ensure we're on the client side
   if (import.meta.server) {
-    console.warn('Stripe Elements can only be initialized in the browser');
-    return null;
+    console.warn('Stripe Elements can only be initialized in the browser')
+    return null
   }
 
   // Initialize i18n at the top level
-  const { t } = useI18n();
+  const { t } = useI18n()
 
   // Use reactive for the state to ensure changes propagate
   const state = reactive({
@@ -39,15 +39,15 @@ export const createStripeElements = (initialAccountId = null) => {
     intentId: null,
     showPreviewMessage: false,
     error: null
-  });
+  })
 
   // Reset state on initialization
-  state.stripe = null;
-  state.elements = null;
-  state.card = null;
-  state.isStripeInstanceReady = false;
-  state.isCardElementReady = false;
-  state.error = null;
+  state.stripe = null
+  state.elements = null
+  state.card = null
+  state.isStripeInstanceReady = false
+  state.isCardElementReady = false
+  state.error = null
 
   // Computed properties
   const isReadyForPayment = computed(() => {
@@ -86,73 +86,73 @@ export const createStripeElements = (initialAccountId = null) => {
    */
   const prepareStripeState = async (formSlug, providerId, isEditorPreview = false) => {
     if (!formSlug || !providerId) {
-      resetStripeState();
-      return { success: false, message: 'Missing form slug or OAuth provider ID' };
+      resetStripeState()
+      return { success: false, message: 'Missing form slug or OAuth provider ID' }
     }
     
     // Always ensure provider ID is a string
-    const providerIdStr = String(providerId);
+    const providerIdStr = String(providerId)
     
-    resetStripeState();
-    state.isLoadingAccount = true;
+    resetStripeState()
+    state.isLoadingAccount = true
     
     try {
-      console.debug('[useStripeElements] Preparing Stripe state for:', { formSlug, providerId: providerIdStr, isEditorPreview });
+      console.debug('[useStripeElements] Preparing Stripe state for:', { formSlug, providerId: providerIdStr, isEditorPreview })
       
       // Construct fetch options, adding providerId only for editor preview
-      const fetchOptions = {};
+      const fetchOptions = {}
       if (isEditorPreview) {
-        fetchOptions.query = { oauth_provider_id: providerIdStr };
+        fetchOptions.query = { oauth_provider_id: providerIdStr }
       }
       
-      const response = await opnFetch(`/forms/${formSlug}/stripe-connect/get-account`, fetchOptions);
-      console.debug('[useStripeElements] Got account response:', response);
+      const response = await opnFetch(`/forms/${formSlug}/stripe-connect/get-account`, fetchOptions)
+      console.debug('[useStripeElements] Got account response:', response)
 
       if (response?.type === 'success' && response?.stripeAccount) {
         // Ensure account ID is stored as string
-        state.stripeAccountId = String(response.stripeAccount);
-        state.isLoadingAccount = false;
+        state.stripeAccountId = String(response.stripeAccount)
+        state.isLoadingAccount = false
         
         // If card is already set, mark card element as ready
         if (state.card && state.stripe) {
-          state.isCardElementReady = true;
+          state.isCardElementReady = true
         }
         
-        return { success: true, accountId: String(response.stripeAccount) };
+        return { success: true, accountId: String(response.stripeAccount) }
       } else {
-        state.hasAccountLoadingError = true;
-        state.isLoadingAccount = false;
+        state.hasAccountLoadingError = true
+        state.isLoadingAccount = false
         
         if (response?.message?.includes('save the form and try again')) {
-          state.showPreviewMessage = true;
+          state.showPreviewMessage = true
         }
         
-        state.errorMessage = response?.message || 'Failed to get account details';
+        state.errorMessage = response?.message || 'Failed to get account details'
         return { 
           success: false, 
           message: state.errorMessage,
           requiresSave: state.showPreviewMessage
-        };
+        }
       }
     } catch (error) {
-      console.error('[useStripeElements] Error preparing state:', error);
-      state.hasAccountLoadingError = true;
-      state.isLoadingAccount = false;
+      console.error('[useStripeElements] Error preparing state:', error)
+      state.hasAccountLoadingError = true
+      state.isLoadingAccount = false
       
-      const message = error?.data?.message || 'Payment setup error';
+      const message = error?.data?.message || 'Payment setup error'
       
       if (message.includes('save the form and try again')) {
-        state.showPreviewMessage = true;
+        state.showPreviewMessage = true
       }
       
-      state.errorMessage = message;
+      state.errorMessage = message
       return { 
         success: false, 
         message: state.errorMessage,
         requiresSave: state.showPreviewMessage
-      };
+      }
     }
-  };
+  }
 
   /**
    * Sets the Stripe instance in the state
@@ -160,37 +160,37 @@ export const createStripeElements = (initialAccountId = null) => {
   const setStripeInstance = (instance) => {
     console.debug('[useStripeElements] Setting Stripe instance:', {
       hasInstance: !!instance
-    });
+    })
 
     try {
       if (!instance) {
-        console.warn('[useStripeElements] No Stripe instance provided');
-        return;
+        console.warn('[useStripeElements] No Stripe instance provided')
+        return
       }
 
       const isValidStripeInstance = instance && 
         typeof instance === 'object' && 
         typeof instance.confirmCardPayment === 'function' &&
-        typeof instance.createToken === 'function';
+        typeof instance.createToken === 'function'
       
       if (isValidStripeInstance) {
-        console.debug('[useStripeElements] Valid Stripe instance detected');
-        state.stripe = instance;
-        state.isStripeInstanceReady = true;
+        console.debug('[useStripeElements] Valid Stripe instance detected')
+        state.stripe = instance
+        state.isStripeInstanceReady = true
 
         // If we have all required components, ensure card element is ready
         if (state.card && state.stripeAccountId) {
-          console.debug('[useStripeElements] Card element ready with account');
-          state.isCardElementReady = true;
+          console.debug('[useStripeElements] Card element ready with account')
+          state.isCardElementReady = true
         }
       } else {
-        console.warn('[useStripeElements] Invalid Stripe instance provided');
-        state.isStripeInstanceReady = false;
+        console.warn('[useStripeElements] Invalid Stripe instance provided')
+        state.isStripeInstanceReady = false
       }
     } catch (error) {
-      console.error('[useStripeElements] Error setting Stripe instance:', error);
+      console.error('[useStripeElements] Error setting Stripe instance:', error)
     }
-  };
+  }
 
   /**
    * Sets the Elements instance in the state
@@ -329,11 +329,11 @@ export const createStripeElements = (initialAccountId = null) => {
    * @param {String} intentId - The payment intent ID
    */
   const setIntentId = (intentId) => {
-    console.debug('[useStripeElements] Setting intentId:', intentId);
+    console.debug('[useStripeElements] Setting intentId:', intentId)
     if (intentId && typeof intentId === 'string' && intentId.startsWith('pi_')) {
-      state.intentId = intentId;
+      state.intentId = intentId
     }
-  };
+  }
 
   /**
    * Sets the Stripe Account ID in the state
@@ -342,13 +342,13 @@ export const createStripeElements = (initialAccountId = null) => {
   const setAccountId = (accountId) => {
     if (accountId) {
       // Always convert to string - Stripe.js requires a string account ID
-      const accountIdStr = String(accountId);
-      console.debug('[useStripeElements] Setting Stripe account ID:', accountIdStr);
-      state.stripeAccountId = accountIdStr;
+      const accountIdStr = String(accountId)
+      console.debug('[useStripeElements] Setting Stripe account ID:', accountIdStr)
+      state.stripeAccountId = accountIdStr
       
       // If we have all required components, ensure card element is ready
       if (state.card && state.stripe) {
-        state.isCardElementReady = true;
+        state.isCardElementReady = true
       }
     }
   }

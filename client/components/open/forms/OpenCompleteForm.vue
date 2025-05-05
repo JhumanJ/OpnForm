@@ -284,11 +284,10 @@ watch(darkModeRef, (newDarkMode) => {
 // If auto_submit is true, trigger submit after component is mounted
 onMounted(() => {
   if (isAutoSubmit.value && formManager) {
-    console.log('Auto-submit parameter detected, will submit form automatically');
     // Using nextTick to ensure form is fully rendered and initialized
     nextTick(() => {
-      triggerSubmit();
-    });
+      triggerSubmit()
+    })
   }
 })
 
@@ -324,23 +323,20 @@ onBeforeUnmount(() => {
 })
 
 const handleScrollToError = () => {
-  if (import.meta.server) return;
+  if (import.meta.server) return
 
   nextTick(() => {
-      const firstErrorElement = document.querySelector('.form-group [error], .form-group .has-error');
+      const firstErrorElement = document.querySelector('.form-group [error], .form-group .has-error')
       if (firstErrorElement) {
-        const headerOffset = 60; // Offset for fixed headers, adjust as needed
-        const elementPosition = firstErrorElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        const headerOffset = 60 // Offset for fixed headers, adjust as needed
+        const elementPosition = firstErrorElement.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.scrollY - headerOffset
 
         window.scrollTo({
             top: offsetPosition,
             behavior: 'smooth'
-        });
-        console.log('[OpenCompleteForm] Scrolled to first error element.');
-      } else {
-          console.log('[OpenCompleteForm] No error element found to scroll to.');
-      }
+        })
+      } 
   })
 }
 
@@ -350,7 +346,6 @@ const triggerSubmit = async () => {
   formManager.submit()
     .then(result => {
       if (result) {
-        console.log('Form submission successful via composable.', result)
         submittedData.value = result || {}
         
         if (result?.submission_id) {
