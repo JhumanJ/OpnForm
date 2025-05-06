@@ -11,6 +11,7 @@ import { usePendingSubmission } from '~/lib/forms/composables/usePendingSubmissi
 import { usePartialSubmission } from '~/composables/forms/usePartialSubmission.js'
 import { useIsIframe } from '~/composables/useIsIframe'
 import { useAmplitude } from '~/composables/useAmplitude'
+import { useConfetti } from '~/composables/useConfetti'
 import { cloneDeep } from 'lodash'
 
 /**
@@ -190,10 +191,15 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       state.isSubmitted = true
       state.isProcessing = false
       
-      // 6. Clear pending submission data on successful submit
+      // 6. Play confetti if enabled in config
+      if (import.meta.client && toValue(config).confetti_on_submission) {
+        useConfetti().play()
+      }
+      
+      // 7. Clear pending submission data on successful submit
       pendingSubmissionService?.clear()
       
-      // 7. Handle amplitude logging
+      // 8. Handle amplitude logging
       if (import.meta.client) {
         const amplitude = useAmplitude()
         amplitude.logEvent('form_submission', {
@@ -202,7 +208,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
         })
       }
       
-      // 8. Handle postMessage communication for iframe integration
+      // 9. Handle postMessage communication for iframe integration
       if (import.meta.client) {
         const isIframe = useIsIframe()
         const formConfig = toValue(config)
@@ -227,7 +233,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
         window.postMessage(payload, '*')
       }
       
-      // 9. Handle redirect if server response includes redirect info
+      // 10. Handle redirect if server response includes redirect info
       if (import.meta.client && submissionResult?.redirect && submissionResult?.redirect_url) {
         window.location.href = submissionResult.redirect_url
       }

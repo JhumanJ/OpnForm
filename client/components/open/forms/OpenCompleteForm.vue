@@ -84,7 +84,7 @@
         </div>
 
         <div
-          v-if="isPublicFormPage && form.max_number_of_submissions_reached"
+          v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
           class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
         >
           <div class="flex-grow">
@@ -109,7 +109,7 @@
             key="form"
           >
             <open-form
-              v-if="formManager && form && !form.is_closed"
+              v-if="formManager && form && shouldDisplayForm"
               :form-manager="formManager"
               :theme="theme"
               @submit="triggerSubmit"
@@ -309,6 +309,9 @@ const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
 const isProcessing = computed(() => formManager?.state.isProcessing ?? false)
 const showFormCleanings = computed(() => formManager?.strategy.value.display.showFormCleanings ?? false)
 const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
+const shouldDisplayForm = computed(() => {
+  return (!props.form.is_closed && !props.form.max_number_of_submissions_reached) || formManager?.strategy?.value.admin?.showAdminControls
+})
 
 watch(() => props.form.language, (newLanguage) => {
   if (newLanguage && typeof newLanguage === 'string') {
