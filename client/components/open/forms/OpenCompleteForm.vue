@@ -53,23 +53,17 @@
           </div>
         </div>
 
-        <v-transition name="fade">
-          <div
-            v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"
-            class="m-2 my-4 flex flex-grow items-end p-4 rounded-md dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-600/20 dark:border-yellow-500"
-          >
-            <p class="mb-0 text-yellow-600 dark:text-yellow-600 text-sm">
-              We disabled the password protection for this form because you are an owner of it.
-            </p>
-            <UButton
-              color="yellow"
-              size="xs"
-              @click="hidePasswordDisabledMsg = true"
-            >
-              Close
-            </ubutton>
-          </div>
-        </v-transition>
+        <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" class="m-2 my-4">
+          <UAlert
+            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
+            color="yellow"
+            variant="subtle"
+            icon="i-material-symbols-info-outline"
+            @close="hidePasswordDisabledMsg = true"
+            title="Password protection has been disabled since you are the owner of this form."
+          />
+        </div>
+
 
         <div
           v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
