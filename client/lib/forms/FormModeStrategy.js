@@ -29,6 +29,7 @@ export function createFormModeStrategy(mode) {
     // Display behaviors
     display: {
       showHiddenFields: false,
+      enableDisabledFields: false,
       showFormCleanings: true,
       showFontLink: false
     },
@@ -71,6 +72,7 @@ export function createFormModeStrategy(mode) {
       strategy.validation.performActualSubmission = false
       
       strategy.display.showHiddenFields = true
+      strategy.display.enableDisabledFields = true
       break
 
     case FormMode.EDIT:

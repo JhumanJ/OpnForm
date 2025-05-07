@@ -41,7 +41,6 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
       clearTimeout(syncTimeout)
     }
     
-    // Set a new timeout - increased to 2 seconds for less frequent syncing
     syncTimeout = setTimeout(() => {
       syncToServer()
     }, 2000) // 2 second debounce
@@ -93,13 +92,13 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
       // When tab becomes hidden, sync immediately
-      syncImmediately()
+      debouncedSync()
     }
   }
 
   const handleBlur = () => {
     // When window loses focus, sync immediately
-    syncImmediately()
+    debouncedSync()
   }
 
   const handleBeforeUnload = () => {

@@ -79,7 +79,7 @@
         v-if="getFieldComponents"
         v-bind="inputProperties(field)"
         :required="isFieldRequired"
-        :disabled="isFieldDisabled ? true : null"
+        :disabled="isFieldDisabled"
         :is-admin-preview="isAdminPreview"
       />
       <template v-else>
@@ -175,6 +175,7 @@ const form = computed(() => props.formManager?.config?.value || {})
 const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false)
+const enableDisabledFields = computed(() => props.formManager?.strategy?.value?.display?.enableDisabledFields || false)
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
@@ -238,9 +239,10 @@ const isFieldRequired = computed(() =>
   (new FormLogicPropertyResolver(props.field, dataForm.value)).isRequired()
 )
 
-const isFieldDisabled = computed(() => 
-  (new FormLogicPropertyResolver(props.field, dataForm.value)).isDisabled()
-)
+const isFieldDisabled = computed(() => {
+  if (enableDisabledFields.value) return false
+  return (new FormLogicPropertyResolver(props.field, dataForm.value)).isDisabled()
+})
 
 const beingEdited = computed(() => 
   isAdminPreview.value && 

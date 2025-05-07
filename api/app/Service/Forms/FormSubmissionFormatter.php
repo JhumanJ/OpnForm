@@ -163,7 +163,9 @@ class FormSubmissionFormatter
                     $formId = $this->form->id;
                     $returnArray[$field['name']] = implode(
                         ', ',
-                        collect($data[$field['id']])->map(function ($file) use ($formId) {
+                        collect($data[$field['id']])->filter(function ($file) {
+                            return !is_null($file) && !empty($file);
+                        })->map(function ($file) use ($formId) {
                             return $this->getFileUrl($formId, $file);
                         })->toArray()
                     );
@@ -289,9 +291,14 @@ class FormSubmissionFormatter
 
     private function getFileUrl($formId, $file)
     {
-        return $this->useSignedUrlForFiles ? \URL::signedRoute(
-            'open.forms.submissions.file',
-            [$formId, $file]
-        ) : route('open.forms.submissions.file', [$formId, $file]);
+        try {
+            return $this->useSignedUrlForFiles ? \URL::signedRoute(
+                'open.forms.submissions.file',
+                [$formId, $file]
+            ) : route('open.forms.submissions.file', [$formId, $file]);
+        } catch (\Exception $e) {
+            throw $e;
+            return null;
+        }
     }
 }
