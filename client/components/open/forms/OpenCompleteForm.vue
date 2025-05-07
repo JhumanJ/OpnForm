@@ -53,7 +53,8 @@
           </div>
         </div>
 
-        <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg"v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" class="m-2 my-4">
+        <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" 
+          class="m-2 my-4">
           <UAlert
             :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
             color="yellow"

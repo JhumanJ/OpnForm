@@ -14,7 +14,9 @@ class StorageFile implements ValidationRule
 {
     public string $error = 'Invalid file.';
 
-    public function __construct(public int $maxSize, public array $fileTypes = [], public ?Form $form = null) {}
+    public function __construct(public int $maxSize, public array $fileTypes = [], public ?Form $form = null)
+    {
+    }
 
     /**
      * File can have 2 formats:
