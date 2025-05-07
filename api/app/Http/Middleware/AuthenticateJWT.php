@@ -16,6 +16,11 @@ class AuthenticateJWT
      */
     public function handle(Request $request, Closure $next)
     {
+        // If skipping IP and UA validation is enabled in config, skip the rest
+        if (config('app.jwt_skip_ip_ua_validation')) {
+            return $next($request);
+        }
+
         // Parse JWT Payload
         try {
             $payload = \JWTAuth::parseToken()->getPayload();
