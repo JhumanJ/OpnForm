@@ -138,7 +138,7 @@ class Form {
     if (method.toLowerCase() === "get") {
       config.params = { ...this.data(), ...config.params }
     } else {
-      config.body = { ...this.data(), ...config.data }
+      config.body = { ...this.data(), ...config.data, ...config.body }
 
       if (hasFiles(config.data) && !config.transformRequest) {
         config.transformRequest = [(data) => serialize(data)]

@@ -150,7 +150,7 @@ function coverPictureSrc(val) {
   try {
     // Is valid url
     new URL(val)
-  } catch (_) {
+  } catch {
     // Is file
     return URL.createObjectURL(val)
   }

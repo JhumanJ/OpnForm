@@ -37,7 +37,6 @@ export function createFormModeStrategy(mode) {
     admin: {
       allowDragging: false,
       showAdminControls: false,
-      isEditingMode: false
     }
   }
 
@@ -78,7 +77,6 @@ export function createFormModeStrategy(mode) {
       // Editing submission - same validation as LIVE mode, but show hidden fields
       // This ensures edit mode behaves like live mode for validation
       strategy.display.showHiddenFields = true
-      strategy.admin.isEditingMode = true
       break
 
     case FormMode.TEST:

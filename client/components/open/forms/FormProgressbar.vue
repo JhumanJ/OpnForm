@@ -1,5 +1,5 @@
 <template>
-  <template v-if="form.show_progress_bar">
+  <template v-if="showProgressBar">
     <div
       v-if="isIframe"
       class="mb-4 p-2"
@@ -8,7 +8,7 @@
         <div
           class="h-full transition-all duration-300 rounded-r-full"
           :class="{ 'w-0': formProgress === 0 }"
-          :style="{ width: formProgress + '%', background: form.color }"
+          :style="{ width: formProgress + '%', background: config?.color }"
         />
       </div>
     </div>
@@ -20,7 +20,7 @@
         <div
           class="h-full transition-all duration-300"
           :class="{ 'w-0': formProgress === 0 }"
-          :style="{ width: formProgress + '%', background: form.color }"
+          :style="{ width: formProgress + '%', background: config?.color }"
         />
       </div>
     </div>
@@ -31,28 +31,31 @@
 import { useIsIframe } from '~/composables/useIsIframe'
 
 const props = defineProps({
-  form: {
-    type: Object,
-    required: true
-  },
-  fields: {
-    type: Array,
-    required: true
-  },
-  formData: {
+  formManager: {
     type: Object,
     required: true
   }
 })
 
+const config = computed(() => props.formManager?.config.value)
+const form = computed(() => props.formManager?.form)
+const showProgressBar = computed(() => {
+  return config.value?.show_progress_bar
+})
+
+
 const isIframe = useIsIframe()
 
 const formProgress = computed(() => {
-  const requiredFields = props.fields.filter(field => field.required)
+  const allFields = config.value?.properties ?? []
+  const requiredFields = allFields.filter(field => field?.required)
+  
   if (requiredFields.length === 0) {
     return 100
   }
-  const completedFields = requiredFields.filter(field => ![null, undefined, ''].includes(props.formData[field.id]))
+  
+  const currentFormData = form.value.data() || {}
+  const completedFields = requiredFields.filter(field => field && ![null, undefined, ''].includes(currentFormData[field.id]))
   const progress = (completedFields.length / requiredFields.length) * 100
   return Math.round(progress)
 })

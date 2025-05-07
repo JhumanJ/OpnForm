@@ -128,7 +128,9 @@ const field = computed(() => {
 // This prevents page jumps when editing field properties
 onMounted(() => {
   if (selectedFieldIndex.value !== null) {
-    workingFormStore.setPageForField(selectedFieldIndex.value)
+    if (workingFormStore.structureService) {
+      workingFormStore.structureService.setPageForField(selectedFieldIndex.value)
+    }
   }
 })
 

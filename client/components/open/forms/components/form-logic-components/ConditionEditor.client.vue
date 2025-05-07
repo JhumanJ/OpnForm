@@ -45,7 +45,7 @@
 </template>
 
 <script>
-/* eslint-disable vue/one-component-per-file */
+ 
 import { defineComponent } from "vue"
 import QueryBuilder from "query-builder-vue-3"
 import ColumnCondition from "./ColumnCondition.vue"

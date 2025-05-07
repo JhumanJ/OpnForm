@@ -31,7 +31,7 @@ onMounted(async () => {
           method: 'PUT',
           body: { name, email }
         })
-      } catch (error) {
+      } catch {
         useAlert().error('Failed to update customer details, but proceeding with checkout')
       }
     }
@@ -52,7 +52,7 @@ onMounted(async () => {
     }
     
     window.location.href = checkout_url
-  } catch (error) {
+  } catch {
     useAlert().error('Unable to start checkout process. Please try again or contact support.')
     setTimeout(() => {
       navigateTo({ name: 'pricing' })

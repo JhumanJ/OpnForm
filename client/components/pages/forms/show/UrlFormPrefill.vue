@@ -72,18 +72,16 @@
 
         <div class="rounded-lg p-5 bg-gray-100 dark:bg-gray-900 mt-4">
           <open-form
-            v-if="form"
+            v-if="formManager"
             :theme="theme"
-            :loading="false"
-            :form="form"
-            :fields="form.properties"
-            :mode="FormMode.PREFILL"
+            :form-manager="formManager"
             @submit="generateUrl"
           >
-            <template #submit-btn="{ submitForm }">
+            <template #submit-btn="{loading}">
               <v-button
                 class="mt-2 px-8 mx-1"
-                @click.prevent="submitForm"
+                :loading="loading"
+                @click.prevent="generateUrl"
               >
                 Generate Pre-filled URL
               </v-button>
@@ -106,47 +104,69 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "../../../open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { useFormManager } from '~/lib/forms/composables/useFormManager'
 
-export default {
-  name: "UrlFormPrefill",
-  components: { FormUrlPrefill, OpenForm },
-  props: {
-    form: { type: Object, required: true },
-    extraQueryParam: { type: String, default: "" },
-  },
+const props = defineProps({
+  form: { type: Object, required: true },
+  extraQueryParam: { type: String, default: "" },
+})
 
-  data: () => ({
-    prefillFormData: null,
-    showUrlFormPrefillModal: false,
-  }),
+// State variables
+const prefillFormData = ref(null)
+const showUrlFormPrefillModal = ref(false)
+const content = ref(null)
 
-  computed: {
-    theme () {
-      return new ThemeBuilder(this.form.theme, {
-        size: this.form.size,
-        borderRadius: this.form.border_radius
-      }).getAllComponents()
-    },
-    FormMode() {
-      return FormMode
+// Theme computation
+const theme = computed(() => {
+  return new ThemeBuilder(props.form.theme, {
+    size: props.form.size,
+    borderRadius: props.form.border_radius
+  }).getAllComponents()
+})
+
+// Set up form manager with proper mode
+let formManager = null
+const setupFormManager = () => {
+  if (!props.form) return null
+  
+  formManager = useFormManager(props.form, FormMode.PREFILL, {
+    darkMode: false
+  })
+  formManager.initialize()
+  
+  return formManager
+}
+
+// Initialize form manager
+formManager = setupFormManager()
+
+// Watch for form changes to reinitialize form manager
+watch(() => props.form, (newForm) => {
+  if (newForm) {
+    formManager = setupFormManager()
+  } else {
+    formManager = null
+  }
+}, { deep: true })
+
+// Method to generate URL
+const generateUrl = () => {
+  if (!formManager) return
+  
+  const formData = formManager.data.value
+  
+  prefillFormData.value = formData
+  
+  nextTick().then(() => {
+    if (content.value) {
+      content.value.parentElement.parentElement.parentElement.scrollTop =
+        content.value.offsetHeight
     }
-  },
-
-  methods: {
-    generateUrl(formData) {
-      this.prefillFormData = formData
-      this.$nextTick().then(() => {
-        if (this.$refs.content) {
-          this.$refs.content.parentElement.parentElement.parentElement.scrollTop =
-            this.$refs.content.offsetHeight
-        }
-      })
-    },
-  },
+  })
 }
 </script>

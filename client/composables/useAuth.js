@@ -119,21 +119,14 @@ export const useAuth = () => {
       body: { code, utm_data: utmData }
     })
     
-    console.log(`[useAuth] handleSocialCallback executed for provider: ${provider}`)
-    console.log(`[useAuth] Checking window.opener:`, window.opener, `Is closed:`, window.opener ? window.opener.closed : 'N/A')
-
     // Send message to parent window if applicable
     if (window.opener && !window.opener.closed) {
-      console.log(`[useAuth] Attempting to send message ${WindowMessageTypes.OAUTH_PROVIDER_CONNECTED}:${provider} to opener`, window.opener)
       useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED).send(window.opener, {
         eventType: `${WindowMessageTypes.OAUTH_PROVIDER_CONNECTED}:${provider}`,
         useMessageChannel: false,
         waitForAcknowledgment: false
       })
-      console.log(`[useAuth] Message supposedly sent for ${provider}`)
-    } else {
-      console.log('[useAuth] Not sending message: window.opener check failed.', { opener: window.opener, closed: window.opener ? window.opener.closed : 'N/A' })
-    }
+    } 
 
     return authenticateUser({ 
       tokenData, 
