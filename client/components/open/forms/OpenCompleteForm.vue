@@ -341,8 +341,9 @@ const handleScrollToError = () => {
 const triggerSubmit = async () => {
   if (!formManager || isProcessing.value) return
 
-  formManager.submit()
-    .then(result => {
+  formManager.submit({
+    submissionId: submissionId.value
+  }).then(result => {
       if (result) {
         submittedData.value = result || {}
         
