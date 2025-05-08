@@ -119,5 +119,5 @@ export const mentionAsText = (content) => {
     (match, fieldId, fieldName, text) => {
       return `${text}`
     }
-  )
+  ).replace(/<[^>]*>/g, '')
 }
