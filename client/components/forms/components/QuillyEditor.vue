@@ -44,6 +44,10 @@
     isInternalChange = false
   }
   
+  const formatBulletLists = (html) => {
+    return html.replace(/<li data-list="bullet">(.*?)<\/li>/g, '<li style="list-style-type: disc; margin-left: 20px;">$1</li>')
+  }
+  
   const initializeQuill = () => {
     if (container.value) {
       quillInstance = new Quill(container.value, props.options)
@@ -59,7 +63,7 @@
   
       quillInstance.on('text-change', (delta, oldContents, source) => {
         if (!isInternalChange) {
-          const html = quillInstance.root.innerHTML
+          const html = formatBulletLists(quillInstance.root.innerHTML)
           emit('text-change', { delta, oldContents, source })
           emit('update:modelValue', html)
         }
