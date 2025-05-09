@@ -6,7 +6,7 @@
           Terms & Conditions
         </h1>
         <NotionPage
-          :block-map="blockMap"
+          :block-map="page.blocks"
           :loading="loading"
         />
       </div>
@@ -16,26 +16,19 @@
 </template>
 
 <script setup>
-import { useNotionPagesStore } from "~/stores/notion_pages.js"
-import { computed } from "vue"
-
-useOpnSeoMeta({
-  title: "Terms & Conditions",
-})
-
 definePageMeta({
   middleware: ["self-hosted"]
 })
-
+useOpnSeoMeta({
+  title: "Terms & Conditions",
+})
 defineRouteRules({
-  swr: 3600,
+  swr: 3600
 })
 
-const notionPageStore = useNotionPagesStore()
-await notionPageStore.load("246420da2834480ca04047b0c5a00929")
-
-const loading = computed(() => notionPageStore.loading)
-const blockMap = computed(() =>
-  notionPageStore.getByKey("246420da2834480ca04047b0c5a00929"),
-)
+const pageId = '246420da2834480ca04047b0c5a00929'
+const notionCmsStore = useNotionCmsStore()
+const loading = computed(() => notionCmsStore.loading)
+await notionCmsStore.loadPage(pageId)
+const page = notionCmsStore.getPage(pageId)
 </script>

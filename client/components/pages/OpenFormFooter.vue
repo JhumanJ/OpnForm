@@ -70,6 +70,13 @@
             >
               Report Abuse
             </router-link>
+
+            <router-link
+              :to="{ name: 'integrations' }"
+              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            >
+              Integrations
+            </router-link>
           </template>
         </div>
       </div>
