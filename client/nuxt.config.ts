@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import runtimeConfig from "./runtimeConfig"
 import sitemap from "./sitemap"
-import gtm from "./gtm"
 
 export default defineNuxtConfig({
   loglevel: process.env.NUXT_LOG_LEVEL || 'info',
@@ -17,8 +16,7 @@ export default defineNuxtConfig({
       'nuxt-utm', 
       '@nuxtjs/i18n',
       '@nuxt/icon', 
-      '@sentry/nuxt/module',
-      ...(process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : []),
+      '@sentry/nuxt/module'
   ],
 
   build: {
@@ -139,6 +137,5 @@ export default defineNuxtConfig({
 
   sitemap,
   runtimeConfig,
-  gtm,
   compatibilityDate: '2024-10-30'
 })

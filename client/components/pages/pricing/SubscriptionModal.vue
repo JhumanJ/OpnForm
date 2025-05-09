@@ -401,7 +401,6 @@ watch(broadcastData, () => {
         }
         useAmplitude().logEvent('subscribed', eventData)
         useCrisp().pushEvent('subscribed', eventData)
-        useGtm().trackEvent({ event: 'subscribed', ...eventData })
         if (import.meta.client && window.rewardful) {
           window.rewardful('convert', { email: user.value.email })
         }

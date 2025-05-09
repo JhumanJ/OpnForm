@@ -29,19 +29,6 @@ export const useAuth = () => {
     // Track analytics
     const eventName = isNewUser ? 'register' : 'login'
     logEvent(eventName, { source })
-    
-    try {
-      // Check if GTM is available before using it
-      const gtm = typeof useGtm === 'function' ? useGtm() : null
-      if (gtm && typeof gtm.trackEvent === 'function') {
-        gtm.trackEvent({
-          event: eventName,
-          source
-        })
-      }
-    } catch (error) {
-      console.error(error)
-    }
 
     return { userData, workspaces, isNewUser }
   }
