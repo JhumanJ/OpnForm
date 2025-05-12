@@ -1,7 +1,6 @@
 import { reactive } from 'vue'
 import Quill from 'quill'
 const Inline = Quill.import('blots/inline')
-const Delta = Quill.import('delta')
 const Clipboard = Quill.import('modules/clipboard')
 
 export default function registerMentionExtension(Quill) {
@@ -9,17 +8,42 @@ export default function registerMentionExtension(Quill) {
   class MentionClipboard extends Clipboard {
     convert(html) {
       const delta = super.convert(html)
-      // Remove any mention formatting from pasted content
-      return delta.reduce((newDelta, op) => {
+      const processedDelta = delta.ops.reduce((newDelta, op) => {
         if (op.attributes && op.attributes.mention) {
-          // Only keep mentions that have valid field IDs
-          if (!op.attributes.mention['mention-field-id']) {
+          const mentionData = op.attributes.mention
+          let isValid = false
+          // Check for nested structure
+          if (
+            mentionData &&
+            typeof mentionData === 'object' &&
+            mentionData.field &&
+            typeof mentionData.field === 'object' &&
+            mentionData.field.id
+          ) {
+            isValid = true
+          } else if (
+            mentionData &&
+            typeof mentionData === 'object' &&
+            mentionData['mention-field-id']
+          ) {
+            // Transform flat structure to nested structure
+            op.attributes.mention = {
+              field: {
+                id: mentionData['mention-field-id'],
+                name: mentionData['mention-field-name'] || '',
+              },
+              fallback: mentionData['mention-fallback'] || '',
+            }
+            isValid = true
+          }
+          if (!isValid) {
             delete op.attributes.mention
           }
         }
         newDelta.push(op)
         return newDelta
-      }, new Delta())
+      }, [])
+      return processedDelta
     }
   }
   Quill.register('modules/clipboard', MentionClipboard, true)
@@ -43,7 +67,6 @@ export default function registerMentionExtension(Quill) {
       if (!data || !data.field || !data.field.id) {
         return
       }
-
       node.setAttribute('contenteditable', 'false')
       node.setAttribute('mention', 'true')
       node.setAttribute('mention-field-id', data.field.id || '')
@@ -70,7 +93,7 @@ export default function registerMentionExtension(Quill) {
 
     formats() {
       let formats = super.formats()
-      formats['mention'] = MentionBlot.formats(this.domNode)
+      formats['mention'] = MentionBlot.value(this.domNode)
       return formats
     }
 
