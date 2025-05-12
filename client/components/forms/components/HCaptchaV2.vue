@@ -148,7 +148,7 @@ const renderHcaptcha = async () => {
       'open-callback': () => emit('opened'),
       'close-callback': () => emit('closed')
     })
-  } catch (error) {
+  } catch {
     scriptLoadPromise = null // Reset promise on error
   }
 }
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
   if (window.hcaptcha && widgetId !== null) {
     try {
       window.hcaptcha.remove(widgetId)
-    } catch (e) {
+    } catch {
       // Silently handle error
     }
   }
@@ -179,6 +179,17 @@ onBeforeUnmount(() => {
 // Expose reset method that properly reloads the captcha
 defineExpose({
   reset: async () => {
+    if (window.hcaptcha && widgetId !== null) {
+      try {
+        // Use the official API to reset the captcha widget
+        window.hcaptcha.reset(widgetId)
+        return true
+      } catch (error) {
+        console.error('Error resetting hCaptcha, falling back to re-render', error)
+      }
+    }
+    
+    // Fall back to full re-render if reset fails or hcaptcha isn't available
     cleanupHcaptcha()
     await renderHcaptcha()
   }

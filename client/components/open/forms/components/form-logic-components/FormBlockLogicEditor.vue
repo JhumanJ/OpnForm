@@ -190,7 +190,7 @@ export default {
             field.id !== this.field.id &&
             _has(field, "logic") &&
             field.logic !== null &&
-            field.logic !== {}
+            Object.keys(field.logic || {}).length > 0
           )
         })
         .map((field) => {

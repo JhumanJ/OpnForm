@@ -30,7 +30,7 @@ export const useCheckoutUrl = (name, email, plan, yearly, currency) => {
 
     // Filter out empty params
     const filteredParams = Object.fromEntries(
-      // eslint-disable-next-line no-unused-vars
+       
       Object.entries(params).filter(([_, value]) => value !== null && value !== undefined && value !== '')
     )
 

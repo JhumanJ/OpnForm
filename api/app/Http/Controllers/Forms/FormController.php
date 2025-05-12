@@ -228,7 +228,7 @@ class FormController extends Controller
         $fileNameParser = StorageFileNameParser::parse($request->url);
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
-        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . '/' . $fileNameParser->uuid;
+        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . $fileNameParser->uuid;
         if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;

@@ -156,14 +156,13 @@ class PublicFormController extends Controller
             // Update submission data with generated values for redirect URL
             $submissionData = $job->getProcessedData();
         } else {
-            $job->handle();
-            $encodedSubmissionId = Hashids::encode($job->getSubmissionId());
+            dispatch($job);
         }
 
         // Return the response
         return $this->success(array_merge([
             'message' => 'Form submission saved.',
-            'submission_id' => $encodedSubmissionId,
+            'submission_id' => $encodedSubmissionId ?? null,
             'is_first_submission' => $isFirstSubmission,
         ], $formSubmissionProcessor->getRedirectData($form, $submissionData)));
     }

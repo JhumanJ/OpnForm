@@ -37,7 +37,7 @@ export default {
       try {
         new URL(str)
       }
-      catch (_) {
+      catch {
         return false
       }
       return true

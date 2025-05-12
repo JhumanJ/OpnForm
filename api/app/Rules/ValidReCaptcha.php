@@ -32,6 +32,7 @@ class ValidReCaptcha implements ImplicitRule
             'response' => $value,
         ])->json('success');
     }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!$this->passes($attribute, $value)) {

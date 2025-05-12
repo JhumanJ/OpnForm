@@ -82,7 +82,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       .catch((error) => {
         try {
           alert.error(error.data.message)
-        } catch (e) {
+        } catch {
           alert.error("An error occurred while connecting an account")
         }
       })
@@ -109,7 +109,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
       .catch((error) => {
         try {
           alert.error(error.data.message)
-        } catch (e) {
+        } catch {
           alert.error("An error occurred while connecting an account")
         }
       })
