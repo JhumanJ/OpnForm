@@ -173,7 +173,8 @@ defineRouteRules({
   swr: 3600
 })
 definePageMeta({
-  stickyNavbar: true
+  stickyNavbar: true,
+  middleware: ['root-redirect']
 })
 const crisp = useCrisp()
 
