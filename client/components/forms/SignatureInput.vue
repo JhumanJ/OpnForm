@@ -179,7 +179,7 @@ export default {
           }
           this.loading = false
         })
-        .catch((error) => {
+        .catch(() => {
           this.loading = false
           this.file = null
         })
