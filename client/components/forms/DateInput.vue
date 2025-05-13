@@ -204,14 +204,14 @@ const formattedDate = (value) => {
   if (props.withTime) {
     try {
       return format(new Date(value), props.dateFormat + (props.timeFormat == 12 ? ' p':' HH:mm'))
-    } catch (e) {
-      console.error('Error formatting date', e)
+    } catch {
+      console.error('Error formatting date')
       return ''
     }
   }
   try {
     return format(new Date(value), props.dateFormat)
-  } catch (e) {
+  } catch {
     return ''
   }
 }

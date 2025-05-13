@@ -40,7 +40,7 @@ it('cannot create payment intent for non-public form', function () {
     // Update form visibility to private
     $this->form->update(['visibility' => 'private']);
 
-    $this->getJson(route('forms.stripe-connect.create-intent', $this->form->slug))
+    $this->postJson(route('forms.stripe-connect.create-intent', $this->form->slug))
         ->assertStatus(404)
         ->assertJson([
             'message' => 'Form not found.'
@@ -56,7 +56,7 @@ it('cannot create payment intent for form without payment block', function () {
 
     $this->form->update(['properties' => $properties]);
 
-    $this->getJson(route('forms.stripe-connect.create-intent', $this->form->slug))
+    $this->postJson(route('forms.stripe-connect.create-intent', $this->form->slug))
         ->assertStatus(400)
         ->assertJson([
             'type' => 'error',
@@ -75,7 +75,7 @@ it('cannot create payment intent with invalid stripe account', function () {
 
     $this->form->update(['properties' => $properties]);
 
-    $this->getJson(route('forms.stripe-connect.create-intent', $this->form->slug))
+    $this->postJson(route('forms.stripe-connect.create-intent', $this->form->slug))
         ->assertStatus(400)
         ->assertJson([
             'message' => 'Failed to find Stripe account'

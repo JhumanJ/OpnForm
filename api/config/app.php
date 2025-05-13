@@ -70,6 +70,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | JWT IP and User Agent Validation
+    |--------------------------------------------------------------------------
+    |
+    | This value determines if the IP and User Agent validation for JWT tokens
+    | should be skipped. This can be useful for self-hosting users with dynamic IPs.
+    | Set this in your ".env" file.
+    |
+    */
+
+    'jwt_skip_ip_ua_validation' => env('JWT_SKIP_IP_UA_VALIDATION', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

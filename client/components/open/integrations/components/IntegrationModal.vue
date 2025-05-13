@@ -117,7 +117,7 @@ const save = () => {
     .catch((error) => {
       try {
         alert.error(error.data.message)
-      } catch (e) {
+      } catch {
         alert.error("An error occurred while saving the integration")
       }
     })

@@ -34,7 +34,7 @@ const hexToHSL = (hex) => {
     }
 
     return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) }
-  } catch (error) {
+  } catch {
     console.error('Invalid HEX color', hex)
     return { h: 0, s: 0, l: 0 }
   }

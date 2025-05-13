@@ -140,6 +140,10 @@ class AnswerFormRequest extends FormRequest
             $this->requestRules['submission_id'] = 'string';
         }
 
+        // Add rules for metadata fields
+        $this->requestRules['completion_time'] = 'nullable|integer';
+        $this->requestRules['submission_id'] = 'nullable|string';
+
         return $this->requestRules;
     }
 

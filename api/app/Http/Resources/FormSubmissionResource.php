@@ -61,7 +61,7 @@ class FormSubmissionResource extends JsonResource
         foreach ($fileFields as $field) {
             if (isset($data[$field['id']]) && !empty($data[$field['id']])) {
                 $data[$field['id']] = collect($data[$field['id']])->filter(function ($file) {
-                    return $file !== null && $file;
+                    return !is_null($file) && !empty($file);
                 })->map(function ($file) {
                     return [
                         'file_url' => \URL::signedRoute(

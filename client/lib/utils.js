@@ -92,7 +92,7 @@ export const getDomain = function (url) {
   try {
     if (!url.startsWith("http")) url = "https://" + url
     return new URL(url).hostname
-  } catch (e) {
+  } catch {
     return url
   }
 }

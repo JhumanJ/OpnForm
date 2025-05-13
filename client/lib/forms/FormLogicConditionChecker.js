@@ -290,14 +290,14 @@ function textConditionMet(propertyCondition, value) {
       try {
         const regex = new RegExp(propertyCondition.value)
         return regex.test(value)
-      } catch (e) {
+      } catch {
         return false
       }
     case 'does_not_match_regex':
       try {
         const regex = new RegExp(propertyCondition.value)
         return !regex.test(value)
-      } catch (e) {
+      } catch {
         return true
       }
   }

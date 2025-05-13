@@ -19,7 +19,7 @@ onMounted(async () => {
       throw new Error('No portal URL returned')
     }
     window.location.href = portal_url
-  } catch (error) {
+  } catch {
     useAlert().error('Unable to access billing portal. Please try again or contact support.')
     setTimeout(() => {
       navigateTo({ name: 'settings-billing' })

@@ -129,7 +129,7 @@ const renderRecaptcha = async () => {
         }
       }
     })
-  } catch (error) {
+  } catch {
     scriptLoadPromise = null // Reset promise on error
   }
 }
@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
   if (window.grecaptcha && widgetId !== null) {
     try {
       window.grecaptcha.reset(widgetId)
-    } catch (e) {
+    } catch {
       // Silently handle error
     }
   }
@@ -164,16 +164,15 @@ defineExpose({
       try {
         // Try simple reset first
         window.grecaptcha.reset(widgetId)
-      } catch (e) {
-        // If simple reset fails, do a full cleanup and reload
-        cleanupRecaptcha()
-        await renderRecaptcha()
+        return true
+      } catch (error) {
+        console.error('Error resetting reCAPTCHA, falling back to re-render', error)
       }
-    } else {
-      // If no widget exists, do a full reload
-      cleanupRecaptcha()
-      await renderRecaptcha()
     }
+    
+    // If simple reset fails or no widget exists, do a full reload
+    cleanupRecaptcha()
+    await renderRecaptcha()
   }
 })
 </script>

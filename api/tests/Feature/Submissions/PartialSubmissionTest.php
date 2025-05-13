@@ -20,7 +20,6 @@ it('can submit form partially and complete it later using submission hash', func
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
-            'message' => 'Partial submission saved',
         ]);
 
     $submissionHash = $partialResponse->json('submission_hash');

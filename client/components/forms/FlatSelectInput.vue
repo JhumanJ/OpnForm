@@ -24,6 +24,24 @@
       <template
         v-if="options && options.length"
       >
+        <div v-if="multiple && compVal && compVal.length" class="px-3 py-2">
+          <slot
+            name="selected"
+            :option="selectedOptions"
+            :option-name="multiple ? getSelectedOptionsNames().join(', ') : getOptionName(selectedOptions)"
+          >
+            <div class="flex items-center truncate">
+              <span
+                class="truncate"
+                :class="[
+                  theme.FlatSelectInput.fontSize,
+                ]"
+              >
+                {{ getSelectedOptionsNames().join(', ') }}
+              </span>
+            </div>
+          </slot>
+        </div>
         <div
           v-for="(option) in options"
           :key="option[optionKey]"
@@ -58,9 +76,15 @@
             :prevent="!disableOptions.includes(option[optionKey])"
             class="w-full"
           >
-            <p class="flex-grow">
-              {{ option[displayKey] }}
-            </p>
+            <slot
+              name="option"
+              :option="option"
+              :selected="isSelected(option[optionKey])"
+            >
+              <p class="flex-grow">
+                {{ option[displayKey] }}
+              </p>
+            </slot>
           </UTooltip>
         </div>
       </template>
@@ -120,7 +144,17 @@ export default {
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    selectedOptions() {
+      if (!this.compVal) return []
+      
+      if (this.multiple) {
+        return this.options.filter(option => this.compVal.includes(option[this.optionKey]))
+      }
+      
+      return this.options.find(option => option[this.optionKey] === this.compVal) || null
+    },
+  },
   methods: {
     onSelect(value) {
       if (this.disabled || this.disableOptions.includes(value)) {
@@ -155,6 +189,18 @@ export default {
         return this.compVal.includes(value)
       }
       return this.compVal === value
+    },
+    getOptionName(option) {
+      return option ? option[this.displayKey] : ''
+    },
+    getSelectedOptionsNames() {
+      if (!this.compVal) return []
+      
+      if (this.multiple) {
+        return this.selectedOptions.map(option => option[this.displayKey])
+      }
+      
+      return [this.getOptionName(this.selectedOptions)]
     },
   },
 }

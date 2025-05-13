@@ -43,13 +43,7 @@
         </p>
       </div>
       <template v-else>
-        <div v-if="recordLoading">
-          <p class="text-center mt-6 p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
-          </p>
-        </div>
         <OpenCompleteForm
-          v-show="!recordLoading"
           ref="openCompleteForm"
           :form="form"
           class="mb-10"
@@ -77,14 +71,12 @@ import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const crisp = useCrisp()
 const formsStore = useFormsStore()
-const recordsStore = useRecordsStore()
 const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const formLoading = computed(() => formsStore.loading)
-const recordLoading = computed(() => recordsStore.loading)
 const slug = useRoute().params.slug
 const form = computed(() => formsStore.getByKey(slug))
-const $t = useI18n()
+const { t } = useI18n()
 
 const openCompleteForm = ref(null)
 
@@ -98,7 +90,7 @@ const passwordEntered = function (password) {
   nextTick(() => {
     loadForm().then(() => {
       if (form.value?.is_password_protected) {
-        openCompleteForm.value.addPasswordError($t('forms.invalid_password'))
+        openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
       }
     })
   })
@@ -121,7 +113,7 @@ const loadForm = async (setup=false) => {
     try {
       const data = await formsStore.publicFetch(slug)
       formsStore.save(data)
-    } catch (e) {
+    } catch {
       formsStore.stopLoading()
       setResponseStatus(event, 404, 'Page Not Found')
       return
@@ -142,11 +134,6 @@ const loadForm = async (setup=false) => {
 }
 
 await loadForm(true)
-
-// Start loader if record needs to be loaded
-if (useRoute().query?.submission_id) {
-  recordsStore.startLoading()
-}
 
 onMounted(() => {
   crisp.hideChat()

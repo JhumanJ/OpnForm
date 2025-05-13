@@ -42,7 +42,7 @@
 <script setup>
 import {watch, ref} from "vue"
 
-// eslint-disable-next-line vue/require-prop-types
+ 
 const props = defineProps(['user', 'showEditUserModal'])
 const emit = defineEmits(['close', 'fetchUsers'])
 
