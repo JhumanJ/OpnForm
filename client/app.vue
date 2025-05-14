@@ -48,9 +48,11 @@
     <ToolsStopImpersonation />
 
     <NotificationsWrapper />
-    <feature-base />
-    <SubscriptionModal />
-    <QuickRegister />
+    <ClientOnly>
+      <feature-base />
+      <SubscriptionModal />
+      <QuickRegister />
+    </ClientOnly>
   </div>
 </template>
 
