@@ -173,8 +173,10 @@ defineRouteRules({
   swr: 3600
 })
 definePageMeta({
-  stickyNavbar: true
+  stickyNavbar: true,
+  middleware: ["self-hosted"]
 })
+
 const crisp = useCrisp()
 
 const dbId = '1eda631bec208005bd8ed9988b380263'

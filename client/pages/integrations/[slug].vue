@@ -84,7 +84,8 @@ defineRouteRules({
   swr: 3600
 })
 definePageMeta({
-  stickyNavbar: true
+  stickyNavbar: true,
+  middleware: ["self-hosted"]
 })
 
 useOpnSeoMeta({
