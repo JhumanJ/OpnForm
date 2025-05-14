@@ -121,6 +121,11 @@ class FormController extends Controller
             'creator_id' => $request->user()->id,
         ]));
 
+        if (config('app.self_hosted') && !empty($formData['slug'])) {
+            $form->slug = $formData['slug'];
+            $form->save();
+        }
+
         if ($this->formCleaner->hasCleaned()) {
             $formStatus = $form->workspace->is_trialing ? 'Non-trial' : 'Pro';
             $message =  'Form successfully created, but the ' . $formStatus . ' features you used will be disabled when sharing your form:';
@@ -149,6 +154,8 @@ class FormController extends Controller
         $formData['removed_properties'] = array_merge($form->removed_properties, collect($form->properties)->filter(function ($field) use ($formData) {
             return !Str::of($field['type'])->startsWith('nf-') && !in_array($field['id'], collect($formData['properties'])->pluck('id')->toArray());
         })->toArray());
+
+        $form->slug = (config('app.self_hosted') && !empty($formData['slug'])) ? $formData['slug'] : $form->slug;
 
         $form->update($formData);
 

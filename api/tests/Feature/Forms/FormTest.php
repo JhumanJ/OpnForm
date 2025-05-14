@@ -189,3 +189,112 @@ it('can create form with custom scripts', function () {
             'custom_code'  => null
         ]);
 })->skip(true, 'Trialing custom script form cleaning disabled for now.');
+
+it('can not set custom slug when not self hosted', function () {
+    config(['app.self_hosted' => false]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->makeForm($user, $workspace);
+    $form->slug = 'my-custom-slug-123';
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+
+    $response = $this->postJson(route('open.forms.store', $formData))
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form created.'
+        ]);
+    $this->assertNotEquals($response->json('form.slug'), 'my-custom-slug-123');
+});
+
+it('can set custom slug when self hosted', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->makeForm($user, $workspace);
+    $form->slug = 'my-custom-slug-123';
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+
+    $response = $this->postJson(route('open.forms.store', $formData))
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form created.'
+        ]);
+    $this->assertEquals($response->json('form.slug'), 'my-custom-slug-123');
+});
+
+it('rejects invalid custom slug format when self hosted', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->makeForm($user, $workspace);
+    $form->slug = 'Invalid Slug!@#';
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+
+    $this->postJson(route('open.forms.store', $formData))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['slug']);
+});
+
+it('rejects duplicate custom slug when self hosted', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+
+    // Create first form with custom slug
+    $form1 = $this->createForm($user, $workspace);
+    $form1->update(['slug' => 'duplicate-slug']);
+
+    // Try to create second form with same slug
+    $form2 = $this->makeForm($user, $workspace);
+    $form2->slug = $form1->slug;
+    $formData = (new \App\Http\Resources\FormResource($form2))->toArray(request());
+
+    $this->postJson(route('open.forms.store', $formData))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['slug']);
+});
+
+it('allows empty custom slug when self hosted', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->makeForm($user, $workspace);
+    $form->slug = null;
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+
+    $this->postJson(route('open.forms.store', $formData))
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form created.',
+        ]);
+});
+
+it('can update form with custom slug when self hosted', function () {
+    config(['app.self_hosted' => true]);
+
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+    $form->slug = 'updated-custom-slug';
+    $formData = (new \App\Http\Resources\FormResource($form))->toArray(request());
+
+    $this->putJson(route('open.forms.update', $form->id), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form updated.',
+        ]);
+
+    $this->assertDatabaseHas('forms', [
+        'id' => $form->id,
+        'slug' => 'updated-custom-slug'
+    ]);
+});

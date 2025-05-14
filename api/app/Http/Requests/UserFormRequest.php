@@ -4,12 +4,14 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Workspace\CustomDomainRequest;
 use App\Models\Forms\Form;
+use App\Rules\CustomSlugRule;
 use App\Rules\FormPropertyLogicRule;
 use App\Rules\PaymentBlockConfigurationRule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 /**
  * Abstract class to validate create/update forms
@@ -18,6 +20,13 @@ use Illuminate\Validation\Rule;
  */
 abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 {
+    public ?Form $form;
+
+    public function __construct(Request $request)
+    {
+        $this->form = $request?->form ?? null;
+    }
+
     protected function prepareForValidation()
     {
         $data = $this->all();
@@ -76,8 +85,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         $workspace = null;
 
         // For update requests, try to get the workspace from the form
-        if ($this->route('form')) {
-            $workspace = $this->route('form')->workspace;
+        if ($this->form) {
+            $workspace = $this->form->workspace;
         }
         // For create requests, get the workspace from the workspace parameter
         elseif ($this->route('workspace')) {
@@ -186,6 +195,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'password' => 'sometimes|nullable',
             'use_captcha' => 'boolean',
             'captcha_provider' => ['sometimes', Rule::in(['recaptcha', 'hcaptcha'])],
+            'slug' => [new CustomSlugRule($this->form)],
 
             // Custom SEO
             'seo_meta' => 'nullable|array',
