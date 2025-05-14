@@ -19,12 +19,10 @@
     </ClientOnly>
 
     <v-transition name="fade" mode="out-in">
-      <!-- Auto-submit loading state -->
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
         <Loader class="h-6 w-6 text-nt-blue mx-auto" />
       </div>
 
-      <!-- Main form content -->
       <div v-else key="form-content">
         <div v-if="isPublicFormPage && form.is_password_protected">
           <p class="form-description text-gray-700 dark:text-gray-300 px-2">
