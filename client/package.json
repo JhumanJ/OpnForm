@@ -20,7 +20,6 @@
     "@nuxt/icon": "^1.12.0",
     "@nuxtjs/i18n": "^9.0.0",
     "@nuxtjs/sitemap": "^7.2.0",
-    "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
