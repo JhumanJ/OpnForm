@@ -5,19 +5,16 @@
     @close="emit('close')"
   >
     <open-form
+      v-if="form"
+      :form-manager="formManager"
       :theme="theme"
-      :loading="false"
-      :form="form"
-      :fields="form.properties"
-      :default-data-form="submission"
-      :mode="FormMode.EDIT"
       @submit="updateForm"
     >
-      <template #submit-btn="{ submitForm }">
+      <template #submit-btn="{ loading }">
         <v-button
           :loading="loading"
           class="mt-2 px-8 mx-1"
-          @click.prevent="submitForm"
+          @click.prevent="updateForm"
         >
           Update Submission
         </v-button>
@@ -25,11 +22,13 @@
     </open-form>
   </modal>
 </template>
+
 <script setup>
 import { ref, defineProps, defineEmits } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { useFormManager } from '~/lib/forms/composables/useFormManager'
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -46,13 +45,37 @@ const props = defineProps({
   submission: { type: Object },
 })
 
+// Set up form manager with proper mode
+let formManager = null
+const setupFormManager = () => {
+  if (!props.form) return null
+  
+  formManager = useFormManager(props.form, FormMode.EDIT)
+  
+  return formManager
+}
+
+// Initialize form manager
+formManager = setupFormManager()
+
+watch(() => props.show, (newShow) => {
+  if (newShow) {
+    nextTick(() => {
+      formManager.initialize({
+        skipPendingSubmission: true,
+        skipUrlParams: true,
+        defaultData: props.submission
+      })
+    })
+  }
+})
+
 const loading = ref(false)
 
 const emit = defineEmits(["close", "updated"])
-const updateForm = (form, onFailure) => {
+const updateForm = () => {
   loading.value = true
-  form
-    .put("/open/forms/" + props.form.id + "/submissions/" + props.submission.id)
+  formManager.form.put("/open/forms/" + props.form.id + "/submissions/" + props.submission.id)
     .then((res) => {
       useAlert().success(res.message)
       loading.value = false
@@ -65,7 +88,6 @@ const updateForm = (form, onFailure) => {
         useAlert().formValidationError(error.data)
       }
       loading.value = false
-      onFailure()
     })
 }
 </script>
