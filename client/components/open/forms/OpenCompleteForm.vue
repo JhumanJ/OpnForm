@@ -343,7 +343,7 @@ const triggerSubmit = async () => {
     submissionId: submissionId.value
   }).then(result => {
       if (result) {
-        submittedData.value = result || {}
+        submittedData.value = formManager.form.data()
         
         if (result?.submission_id) {
           submissionId.value = result.submission_id

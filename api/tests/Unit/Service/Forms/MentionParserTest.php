@@ -35,6 +35,18 @@ describe('MentionParser', function () {
         expect($result)->toBe('<div>Hello !</div>');
     });
 
+    it('supports mention="true" syntax', function () {
+        $content = '<p>Hello <span mention="true" mention-field-id="123" mention-fallback="">Full Name</span></p>';
+        $data = [
+            ['id' => '123', 'value' => 'John Doe']
+        ];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello John Doe</p>');
+    });
+
     describe('parseAsText', function () {
         it('converts HTML to plain text with proper line breaks', function () {
             $content = '<div>First line</div><div>Second line</div>';
@@ -144,6 +156,29 @@ describe('MentionParser', function () {
         expect($result)->toBe('<p>Tags: PHP, Laravel, Testing</p>');
     });
 
+    test('it supports mention="true" attributes', function () {
+        $content = '<p>Hello <span contenteditable="false" mention="true" mention-field-id="123" mention-field-name="Full Name" mention-fallback="">Full Name</span></p>';
+        $data = [['id' => '123', 'value' => 'John Doe']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello John Doe</p>');
+    });
+
+    test('it handles multiple mentions with mention="true" syntax', function () {
+        $content = '<p><span contenteditable="false" mention="true" mention-field-id="123" mention-field-name="Name" mention-fallback="">Name</span> and <span contenteditable="false" mention="true" mention-field-id="456" mention-field-name="Title" mention-fallback="">Title</span></p>';
+        $data = [
+            ['id' => '123', 'value' => 'John Doe'],
+            ['id' => '456', 'value' => 'Developer'],
+        ];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>John Doe and Developer</p>');
+    });
+
     test('it preserves HTML structure', function () {
         $content = '<div><p>Hello <span mention mention-field-id="123">Placeholder</span></p><p>How are you?</p></div>';
         $data = [['id' => '123', 'value' => 'World']];
@@ -172,6 +207,53 @@ describe('MentionParser', function () {
         $result = $parser->parse();
 
         expect($result)->toBe('some text replaced text dewde');
+    });
+
+    test('it handles URL-encoded field IDs', function () {
+        $content = '<p>Hello <span mention mention-field-id="%3ARGE" mention-fallback="">Full Name</span></p>';
+        $data = [['id' => '%3ARGE', 'value' => 'John Doe']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello John Doe</p>');
+    });
+
+    test('it handles URL-encoded field IDs with mention="true" syntax', function () {
+        $content = '<p>Hello <span contenteditable="false" mention="true" mention-field-id="%3ARGE" mention-field-name="Full Name" mention-fallback="">Full Name</span></p>';
+        $data = [['id' => '%3ARGE', 'value' => 'John Doe']];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello John Doe</p>');
+    });
+
+    test('it handles multiple mentions with URL-encoded IDs and mention="true" syntax', function () {
+        $content = '<p><span contenteditable="false" mention="true" mention-field-id="%3ARGE" mention-field-name="Full Name" mention-fallback="">Full Name</span> and <span contenteditable="false" mention="true" mention-field-id="V%7D%40S" mention-field-name="Phone Number" mention-fallback="">Phone</span></p>';
+        $data = [
+            ['id' => '%3ARGE', 'value' => 'John Doe'],
+            ['id' => 'V%7D%40S', 'value' => '123-456-7890'],
+        ];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>John Doe and 123-456-7890</p>');
+    });
+
+    test('it recreates real-world example with URL-encoded IDs', function () {
+        $content = '<p>Hello there 👋 </p><p>This is a confirmation that your submission was successfully saved.</p><p><span contenteditable="false" mention="true" mention-field-id="%3ARGE" mention-field-name="Full Name" mention-fallback="">Full Name</span><span contenteditable="false" mention="true" mention-field-id="title" mention-field-name="Contact Form" mention-fallback="">Contact Form</span><span contenteditable="false" mention="true" mention-field-id="V%7D%40S" mention-field-name="Phone Number" mention-fallback="">Phone Number</span></p>';
+        $data = [
+            ['id' => '%3ARGE', 'value' => 'jujujujuju'],
+            ['id' => 'title', 'value' => 'jujuuj'],
+            ['id' => 'V%7D%40S', 'value' => '555-1234'],
+        ];
+
+        $parser = new MentionParser($content, $data);
+        $result = $parser->parse();
+
+        expect($result)->toBe('<p>Hello there 👋 </p><p>This is a confirmation that your submission was successfully saved.</p><p>jujujujujujujuuj555-1234</p>');
     });
 
     describe('urlFriendlyOutput', function () {
