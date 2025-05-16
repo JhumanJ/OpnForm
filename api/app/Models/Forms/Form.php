@@ -223,7 +223,7 @@ class Form extends Model implements CachableAttributes
 
     public function getIsClosedAttribute()
     {
-        return $this->closes_at && now()->gt($this->closes_at);
+        return $this->visibility === 'closed' || ($this->closes_at && now()->gt($this->closes_at));
     }
 
     public function getFormPendingSubmissionKeyAttribute()

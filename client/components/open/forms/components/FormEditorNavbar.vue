@@ -23,7 +23,7 @@
       ]"
     />
 
-    <div class="flex-grow flex justify-center">
+    <div class="flex-grow flex justify-center gap-2">
       <EditableTag
         id="form-editor-title"
         v-model="form.title"
@@ -34,12 +34,14 @@
         v-if="form.visibility == 'draft'"
         color="yellow"
         variant="soft"
+        icon="i-heroicons-pencil-square"
         label="Draft"
       />
       <UBadge
         v-else-if="form.visibility == 'closed'"
         color="gray"
         variant="soft"
+        icon="i-heroicons-lock-closed-20-solid"
         label="Closed"
       />
     </div>
