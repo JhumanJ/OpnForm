@@ -21,26 +21,26 @@ There are dedicated configuration pages available for more detailed setup instru
 
 ### Configuration Environment Variables
 
-| Variable Name              | Description                                   |
-| -------------------------- | --------------------------------------------- |
-| `JWT_TTL`                  | Time to live for JSON Web Tokens (JWT).       |
-| `JWT_SECRET`               | Secret key used to sign JWTs.                 |
-| `H_CAPTCHA_SITE_KEY`       | Site key for hCaptcha integration.            |
-| `H_CAPTCHA_SECRET_KEY`     | Secret key for hCaptcha integration.          |
-| `RE_CAPTCHA_SITE_KEY`      | Site key for reCAPTCHA integration.           |
-| `RE_CAPTCHA_SECRET_KEY`    | Secret key for reCAPTCHA integration.         |
-| `OPEN_AI_API_KEY`          | API key for accessing OpenAI services.        |
-| `UNSPLASH_ACCESS_KEY`      | Access key for Unsplash API.                  |
-| `UNSPLASH_SECRET_KEY`      | Secret key for Unsplash API.                  |
-| `GOOGLE_CLIENT_ID`         | Client ID for Google OAuth.                   |
-| `GOOGLE_CLIENT_SECRET`     | Client secret for Google OAuth.               |
-| `GOOGLE_REDIRECT_URL`      | Redirect URL for Google OAuth.                |
-| `GOOGLE_AUTH_REDIRECT_URL` | Authentication redirect URL for Google OAuth. |
-| `GOOGLE_FONTS_API_KEY`     | API key for accessing Google Fonts.           |
-| `FRONT_URL`                | Public facing URL of the front-end.           |
-| `FRONT_API_SECRET`         | Shared secret with the front-end.             |
-| `TELEGRAM_BOT_ID`          | ID of your Telegram bot for notifications.    |
-| `TELEGRAM_BOT_TOKEN`       | Authentication token for your Telegram bot.   |
+| Variable Name               | Description                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `JWT_TTL`                   | Time to live for JSON Web Tokens (JWT).                                                                  |
+| `JWT_SECRET`                | Secret key used to sign JWTs.                                                                            |
+| `H_CAPTCHA_SITE_KEY`        | Site key for hCaptcha integration.                                                                       |
+| `H_CAPTCHA_SECRET_KEY`      | Secret key for hCaptcha integration.                                                                     |
+| `RE_CAPTCHA_SITE_KEY`       | Site key for reCAPTCHA integration.                                                                      |
+| `RE_CAPTCHA_SECRET_KEY`     | Secret key for reCAPTCHA integration.                                                                    |
+| `OPEN_AI_API_KEY`           | API key for accessing OpenAI services.                                                                   |
+| `UNSPLASH_ACCESS_KEY`       | Access key for Unsplash API.                                                                             |
+| `UNSPLASH_SECRET_KEY`       | Secret key for Unsplash API.                                                                             |
+| `GOOGLE_CLIENT_ID`          | Client ID for Google OAuth.                                                                              |
+| `GOOGLE_CLIENT_SECRET`      | Client secret for Google OAuth.                                                                          |
+| `GOOGLE_REDIRECT_URL`       | Redirect URL for Google OAuth.                                                                           |
+| `GOOGLE_AUTH_REDIRECT_URL`  | Authentication redirect URL for Google OAuth.                                                            |
+| `GOOGLE_FONTS_API_KEY`      | API key for accessing Google Fonts.                                                                      |
+| `FRONT_URL`                 | Public facing URL of the front-end.                                                                      |
+| `FRONT_API_SECRET`          | Shared secret with the front-end.                                                                        |
+| `TELEGRAM_BOT_ID`           | ID of your Telegram bot for notifications.                                                               |
+| `TELEGRAM_BOT_TOKEN`        | Authentication token for your Telegram bot.                                                              |
 | `JWT_SKIP_IP_UA_VALIDATION` | Set to `true` to disable JWT IP and User Agent validation (defaults to `false`). Useful for dynamic IPs. |
 
 ### User Options Environment Variables
@@ -57,13 +57,14 @@ There are dedicated configuration pages available for more detailed setup instru
 
 ### Front-end Environment Variables
 
-| Variable Name                     | Description                                          |
-| --------------------------------- | ---------------------------------------------------- |
-| `NUXT_PUBLIC_APP_URL`             | Public facing URL of the Nuxt application.           |
-| `NUXT_PUBLIC_API_BASE`            | Base URL for the Laravel API.                        |
-| `NUXT_PUBLIC_H_CAPTCHA_SITE_KEY`  | Site key for hCaptcha integration on the front-end.  |
-| `NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY` | Site key for reCAPTCHA integration on the front-end. |
-| `NUXT_API_SECRET`                 | Shared secret key between Nuxt and Laravel backend.  |
+| Variable Name                     | Description                                                                                                                                                                                                       |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NUXT_PUBLIC_APP_URL`             | Public facing URL of the Nuxt application.                                                                                                                                                                        |
+| `NUXT_PUBLIC_API_BASE`            | Base URL for the Laravel API.                                                                                                                                                                                     |
+| `NUXT_PUBLIC_H_CAPTCHA_SITE_KEY`  | Site key for hCaptcha integration on the front-end.                                                                                                                                                               |
+| `NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY` | Site key for reCAPTCHA integration on the front-end.                                                                                                                                                              |
+| `NUXT_API_SECRET`                 | Shared secret key between Nuxt and Laravel backend.                                                                                                                                                               |
+| `NUXT_PUBLIC_ROOT_REDIRECT_URL`   | If set, permanently redirects users visiting the root path (/), /integrations, or any non-existent (404) page to the specified URL. Useful for self-hosted subdomains to avoid exposing the default landing page. |
 
 import CloudVersion from "/snippets/cloud-version.mdx";
 
