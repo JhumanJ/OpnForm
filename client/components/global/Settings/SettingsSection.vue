@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="isActive"
+    v-if="isActive"
     class="settings-section"
   >
     <h3 class="text-xl font-medium mb-1">
