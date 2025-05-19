@@ -6,7 +6,7 @@
           Privacy Policy
         </h1>
         <NotionPage
-          :block-map="blockMap"
+          :block-map="page.blocks"
           :loading="loading"
         />
       </div>
@@ -16,26 +16,19 @@
 </template>
 
 <script setup>
-import { useNotionPagesStore } from "~/stores/notion_pages.js"
-import { computed } from "vue"
-
-useOpnSeoMeta({
-  title: "Privacy Policy",
-})
-
 definePageMeta({
   middleware: ["self-hosted"]
 })
-
+useOpnSeoMeta({
+  title: "Privacy Policy",
+})
 defineRouteRules({
-  swr: 3600,
+  swr: 3600
 })
 
-const notionPageStore = useNotionPagesStore()
-await notionPageStore.load("9c97349ceda7455aab9b341d1ff70f79")
-
-const loading = computed(() => notionPageStore.loading)
-const blockMap = computed(() =>
-  notionPageStore.getByKey("9c97349ceda7455aab9b341d1ff70f79"),
-)
+const pageId = '9c97349ceda7455aab9b341d1ff70f79'
+const notionCmsStore = useNotionCmsStore()
+const loading = computed(() => notionCmsStore.loading)
+await notionCmsStore.loadPage(pageId)
+const page = notionCmsStore.getPage(pageId)
 </script>
