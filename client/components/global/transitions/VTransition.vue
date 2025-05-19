@@ -22,6 +22,17 @@
   >
     <slot />
   </transition>
+  <transition
+    v-else-if="name === 'fadeHeight'"
+    enter-active-class="transition-all duration-500 ease-in-out overflow-hidden"
+    enter-from-class="opacity-0 -translate-y-2 max-h-0"
+    enter-to-class="opacity-100 translate-y-0 max-h-screen"
+    leave-active-class="transition-all duration-300 ease-in-out overflow-hidden"
+    leave-from-class="opacity-100 translate-y-0 max-h-screen"
+    leave-to-class="opacity-0 -translate-y-2 max-h-0"
+  >
+    <slot />
+  </transition>
 </template>
 
 <script setup>

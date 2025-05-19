@@ -174,18 +174,20 @@ defineRouteRules({
 })
 definePageMeta({
   stickyNavbar: true,
-  middleware: ['root-redirect']
+  middleware: ['root-redirect','self-hosted']
 })
+
 const crisp = useCrisp()
 
 const dbId = '1eda631bec208005bd8ed9988b380263'
 const notionCmsStore = useNotionCmsStore()
 const loading = computed(() => notionCmsStore.loading)
 await notionCmsStore.loadDatabase(dbId)
+const pages = notionCmsStore.databasePages(dbId)
 
 const integrationsList = computed(() => {
-  if (!notionCmsStore.pages) return []
-  return Object.values(notionCmsStore.pages).filter(page => page.Published).map(page => ({
+  if (!pages.value) return []
+  return Object.values(pages.value).filter(page => page.Published).map(page => ({
     title: page['Integration Name'] ?? page.Name,
     description: page.Summary ?? '',
     icon: page.Icon ?? 'i-heroicons-envelope-20-solid',

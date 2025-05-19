@@ -1,11 +1,133 @@
 import { toValue } from 'vue'
 import { opnFetch } from '~/composables/useOpnApi.js'
+import clonedeep from 'clone-deep'
 
 /**
  * @fileoverview Composable for initializing form data, with complete handling of 
  * form state persistence, URL parameters, and default values.
  */
 export function useFormInitialization(formConfig, form, pendingSubmission) {
+
+  /**
+     * Main method to initialize the form data.
+     * Follows a clear priority order:
+     * 1. Load from submission ID (if provided)
+     * 2. Load from pendingSubmission (localStorage) - client-side only
+     * 3. Apply URL parameters
+     * 4. Apply default values for fields
+     * 
+     * @param {Object} options - Initialization options
+     * @param {String} [options.submissionId] - ID of submission to load
+     * @param {URLSearchParams} [options.urlParams] - URL parameters
+     * @param {Object} [options.defaultData] - Default data to apply
+     * @param {Array} [options.fields] - Form fields for special handling
+     */
+  const initialize = async (options = {}) => {
+    const config = toValue(formConfig)
+    
+    // 1. Reset form state
+    form.reset()
+    form.errors.clear()
+    
+    // 2. Try loading from submission ID
+    if (options.submissionId) {
+      const loaded = await tryLoadFromSubmissionId(options.submissionId)
+      if (loaded) return // Exit if loaded successfully
+    }
+    
+    // 3. Try loading from pendingSubmission
+    if (!(options.skipPendingSubmission ?? false) && tryLoadFromPendingSubmission()) {
+      updateSpecialFields()
+      return // Exit if loaded successfully
+    }
+    
+    // 4. Apply URL parameters
+    if (!(options.skipUrlParams ?? false) && options.urlParams) {
+      applyUrlParameters(options.urlParams)
+    }
+    
+    // 5. Apply special field handling
+    updateSpecialFields()
+    
+    // 6. Apply default data from config or options
+    const defaultValuesToApply = options.defaultData || config?.default_data
+    if (defaultValuesToApply) {
+      applyDefaultValues(defaultValuesToApply, config?.properties)
+    }
+    
+    // 7. Process any select fields to ensure IDs are converted to names
+    // This is crucial when receiving data that might contain IDs instead of names
+    const currentData = form.data()
+    if (Object.keys(currentData).length > 0) {
+      resetAndFill(currentData)
+    }
+  }
+  
+  /**
+   * Wrapper for form.resetAndFill that converts select option IDs to names
+   * @param {Object} formData - Form data to clean and fill
+   */
+  const resetAndFill = (formData) => {
+    if (!formData) {
+      form.reset()
+      return
+    }
+    
+    // Clone the data to avoid mutating the original
+    const cleanData = clonedeep(formData)
+    
+    // Process select fields to convert IDs to names
+    if (!formConfig.value || !formConfig.value.properties || !Array.isArray(formConfig.value.properties)) {
+      // If properties aren't available, just use the data as is
+      form.resetAndFill(cleanData)
+      return
+    }
+    
+    // Iterate through form fields to process select fields
+    formConfig.value.properties.forEach(field => {
+      // Basic validation
+      if (!field || typeof field !== 'object') return
+      if (!field.id || !field.type) return
+      // Skip only when value is truly undefined or null
+      if (cleanData[field.id] === undefined || cleanData[field.id] === null) return
+      
+      // Process checkbox fields - convert string and numeric values to boolean
+      if (field.type === 'checkbox') {
+        const value = cleanData[field.id]
+        if (typeof value === 'string' && value.toLowerCase() === 'true' || value === '1' || value === 1) {
+          cleanData[field.id] = true
+        } else if (typeof value === 'string' && value.toLowerCase() === 'false' || value === '0' || value === 0) {
+          cleanData[field.id] = false
+        }
+      }
+      // Only process select, multi_select fields
+      else if (['select', 'multi_select'].includes(field.type)) {
+        // Make sure the field has options
+        if (!field[field.type] || !Array.isArray(field[field.type].options)) return
+        
+        const options = field[field.type].options
+        
+        // Process array values (multi-select)
+        if (Array.isArray(cleanData[field.id])) {
+          cleanData[field.id] = cleanData[field.id].map(optionId => {
+            const option = options.find(opt => opt.id === optionId)
+            return option ? option.name : optionId
+          })
+        } 
+        // Process single values (select)
+        else {
+          const option = options.find(opt => opt.id === cleanData[field.id])
+          if (option) {
+            cleanData[field.id] = option.name
+          }
+        }
+      }
+    })
+    
+    // Fill with cleaned data
+    form.resetAndFill(cleanData)
+  }
+
   /**
    * Applies URL parameters to the form data.
    * @param {URLSearchParams} params - The URL search parameters.
@@ -50,12 +172,8 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    */
   const applyDefaultValues = (defaultData) => {
     if (!defaultData || Object.keys(defaultData).length === 0) return
-    
-    for (const key in defaultData) {
-      if (Object.hasOwnProperty.call(defaultData, key) && form[key] === undefined) {
-        form[key] = defaultData[key]
-      }
-    }
+
+    form.resetAndFill(defaultData)
   }
 
   /**
@@ -98,7 +216,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     return opnFetch(`/forms/${slug}/submissions/${submissionIdValue}`)
       .then(submissionData => {
         if (submissionData.data) {
-          form.resetAndFill(submissionData.data)
+          resetAndFill(submissionData.data)
           return true
         } else {
           console.warn(`Submission ${submissionIdValue} for form ${slug} loaded but returned no data.`)
@@ -135,73 +253,14 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
       return false
     }
     
-    form.resetAndFill(pendingData)
+    resetAndFill(pendingData)
     return true
-  }
-
-  /**
-   * Main method to initialize the form data.
-   * Follows a clear priority order:
-   * 1. Load from submission ID (if provided)
-   * 2. Load from pendingSubmission (localStorage) - client-side only
-   * 3. Apply URL parameters
-   * 4. Apply default values for fields
-   * 
-   * @param {Object} options - Initialization options
-   * @param {String} [options.submissionId] - ID of submission to load
-   * @param {URLSearchParams} [options.urlParams] - URL parameters
-   * @param {Object} [options.defaultData] - Default data to apply
-   * @param {Array} [options.fields] - Form fields for special handling
-   */
-  const initialize = async (options = {}) => {
-    const config = toValue(formConfig)
-    
-    // 1. Reset form state
-    form.reset()
-    form.errors.clear()
-    
-    // 2. Try loading from submission ID
-    if (options.submissionId) {
-      const loaded = await tryLoadFromSubmissionId(options.submissionId)
-      if (loaded) return // Exit if loaded successfully
-    }
-    
-    // 3. Try loading from pendingSubmission
-    if (tryLoadFromPendingSubmission()) {
-      updateSpecialFields()
-      return // Exit if loaded successfully
-    }
-    
-    // 4. Start with empty form data
-    const formData = {}
-    
-    // 5. Apply URL parameters
-    if (options.urlParams) {
-      applyUrlParameters(options.urlParams)
-    }
-    
-    // 6. Apply special field handling
-    updateSpecialFields()
-    
-    // 7. Apply default data from config or options
-    const defaultData = options.defaultData || config?.default_data
-    if (defaultData) {
-      for (const key in defaultData) {
-        if (!formData[key]) { // Only if not already set
-          formData[key] = defaultData[key]
-        }
-      }
-    }
-    
-    // 8. Fill the form with the collected data
-    if (Object.keys(formData).length > 0) {
-      form.resetAndFill(formData)
-    }
   }
 
   return {
     initialize,
     applyUrlParameters,
-    applyDefaultValues
+    applyDefaultValues,
+    resetAndFill // Export our wrapped function for use elsewhere
   }
 } 

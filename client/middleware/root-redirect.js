@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware((to) => {
   const redirectRoutes = ['index', 'integrations']
   if (!redirectRoutes.includes(to.name) && to.name !== 'all') return
 
-  if (process.server) {
+  if (import.meta.server) {
     return navigateTo(redirectUrl, { redirectCode: 301 })
   } else {
     window.location.replace(redirectUrl)
