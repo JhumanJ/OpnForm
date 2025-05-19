@@ -30,11 +30,13 @@
           @change="handleDragDropped"
         >
           <template #item="{element}">
-            <open-form-field
-              :field="element"
-              :form-manager="formManager"
-              :theme="theme"
-            />
+            <VTransition name="fadeHeight">
+              <open-form-field
+                :field="element"
+                :form-manager="formManager"
+                :theme="theme"
+              />
+            </VTransition>
           </template>
         </draggable>
       </div>
