@@ -158,7 +158,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('forms')->name('forms.')->group(function () {
             Route::post('/', [FormController::class, 'store'])->name('store');
             Route::post('/{id}/workspace/{workspace_id}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
-            Route::put('/{id}', [FormController::class, 'update'])->name('update');
+            Route::put('/{id}', [FormController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
             Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
