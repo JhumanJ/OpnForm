@@ -78,60 +78,11 @@
               </span>
               <span>- Edited {{ form.last_edited_human }}</span>
             </p>
-            <div
-              v-if="
-                ['draft', 'closed'].includes(form.visibility) ||
-                  (form.tags && form.tags.length > 0)
-              "
-              class="mt-2 flex items-center flex-wrap gap-3"
-            >
-              <span
-                v-if="form.visibility == 'draft'"
-                class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
-              >
-                Draft - not publicly accessible
-              </span>
-              <span
-                v-else-if="form.visibility == 'closed'"
-                class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
-              >
-                Closed - won't accept new submissions
-              </span>
-              <span
-                v-for="(tag) in form.tags"
-                :key="tag"
-                class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:text-white dark:bg-gray-700"
-              >
-                {{ tag }}
-              </span>
-            </div>
-
-            <p
-              v-if="form.closes_at"
-              class="text-yellow-500"
-            >
-              <span v-if="form.is_closed">
-                This form stopped accepting submissions on the
-                {{ displayClosesDate }}
-              </span>
-              <span v-else>
-                This form will stop accepting submissions on the
-                {{ displayClosesDate }}
-              </span>
-            </p>
-            <p
-              v-if="form.max_submissions_count > 0"
-              class="text-yellow-500"
-            >
-              <span v-if="form.max_number_of_submissions_reached">
-                The form is now closed because it reached its limit of
-                {{ form.max_submissions_count }} submissions.
-              </span>
-              <span v-else>
-                This form will stop accepting submissions after
-                {{ form.max_submissions_count }} submissions.
-              </span>
-            </p>
+            
+            <FormStatusBadges 
+              :form="form"
+              class="mt-2"
+            />
 
             <form-cleanings
               class="mt-4"
@@ -181,6 +132,7 @@
 import { computed } from "vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
+import FormStatusBadges from "../../../components/open/forms/components/FormStatusBadges.vue"
 
 definePageMeta({
   middleware: "auth",
@@ -201,23 +153,6 @@ const form = computed(() => formsStore.getByKey(slug))
 const workspace = computed(() => workspacesStore.getCurrent)
 
 const loading = computed(() => formsStore.loading || workspacesStore.loading)
-const displayClosesDate = computed(() => {
-  if (form.value && form.value.closes_at) {
-    const dateObj = new Date(form.value.closes_at)
-    return (
-      dateObj.getFullYear() +
-      "-" +
-      String(dateObj.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(dateObj.getDate()).padStart(2, "0") +
-      " " +
-      String(dateObj.getHours()).padStart(2, "0") +
-      ":" +
-      String(dateObj.getMinutes()).padStart(2, "0")
-    )
-  }
-  return ""
-})
 
 const tabsList = [
   {

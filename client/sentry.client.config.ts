@@ -24,23 +24,37 @@ Sentry.init({
 
   beforeSend (event) {
     if (event.exception?.values?.length) {
+      const errorType = event.exception.values[0]?.type || '';
+      const errorValue = event.exception.values[0]?.value || '';
+      
       // Don't send validation exceptions to Sentry
       if (
-        event.exception.values[0]?.type === 'FetchError'
-        && (event.exception.values[0]?.value?.includes('422')
-          || event.exception.values[0]?.value?.includes('401'))
-      )
+        errorType === 'FetchError' &&
+        (errorValue.includes('422') || errorValue.includes('401'))
+      ) {
         return null
+      }
+      
+      // Filter out chunk loading errors
+      if (
+        errorValue.includes('Failed to fetch dynamically imported module') ||
+        errorValue.includes('Loading chunk') ||
+        errorValue.includes('Failed to load resource')
+      ) {
+        return null
+      }
     }
+
     const authStore = useAuthStore()
     if (authStore.check) {
+      const user = authStore.user as { id?: string; email?: string } | null
       Sentry.setUser({
-        id: authStore.user?.id,
-        email: authStore.user?.email
+        id: user?.id,
+        email: user?.email
       })
       event.user = {
-        id: authStore.user?.id,
-        email: authStore.user?.email
+        id: user?.id,
+        email: user?.email
       }
     }
     return event
