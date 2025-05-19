@@ -98,7 +98,10 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     return opnFetch(`/forms/${slug}/submissions/${submissionIdValue}`)
       .then(submissionData => {
         if (submissionData.data) {
-          form.resetAndFill(submissionData.data)
+          form.resetAndFill({
+            ...submissionData.data, 
+            submission_id: submissionIdValue
+          })
           return true
         } else {
           console.warn(`Submission ${submissionIdValue} for form ${slug} loaded but returned no data.`)

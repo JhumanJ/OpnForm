@@ -74,7 +74,7 @@
 
     <div v-if="useFeatureFlag('self_hosted')" class="w-full border-t pt-4 mt-4">
       <h4 class="font-semibold">
-        Custom URL Slug
+        Custom Form URL
       </h4>
       <p class="text-gray-500 text-sm mb-4">
         Create a custom URL for your form. This will be the unique identifier in your form's URL.
@@ -83,7 +83,7 @@
         :form="form"
         name="slug"
         class="mt-4 max-w-xs"
-        label="Custom URL Slug"
+        label="Custom Form URL"
         help="Use only lowercase letters, numbers, and hyphens. Example: my-custom-form"
       />
     </div>

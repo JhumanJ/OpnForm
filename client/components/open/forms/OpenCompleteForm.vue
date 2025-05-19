@@ -255,7 +255,7 @@ if (props.form) {
     darkMode: darkModeRef
   })
   formManager.initialize({
-    submissionId: submissionId,
+    submissionId: submissionId.value,
     urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
   })
 }
