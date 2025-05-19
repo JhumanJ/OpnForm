@@ -8,6 +8,7 @@
 <script setup>
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
+import '../../../lib/quill/quillPatches'
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -35,13 +36,40 @@ let quillInstance = null
 const container = ref(null)
 const model = ref(props.modelValue)
 
+// Safely paste HTML content with handling for empty content
 const pasteHTML = (instance) => {
-  instance.clipboard.dangerouslyPasteHTML(props.modelValue || '', 'silent')
+  if (!props.modelValue) {
+    instance.setContents([])
+    return
+  }
+  
+  try {
+    instance.clipboard.dangerouslyPasteHTML(props.modelValue, 'silent')
+  } catch (error) {
+    console.error('Error pasting HTML:', error)
+    // Fallback to setting empty content
+    instance.setContents([])
+  }
 }
 
 const initializeQuill = () => {
   if (container.value) {
-    quillInstance = new Quill(container.value, props.options)
+    // Merge default options with user options
+    const defaultOptions = {
+      formats: ['bold', 'color', 'font', 'code', 'italic', 'link', 'size', 'strike', 'script', 'underline', 'header', 'list', 'mention']
+    }
+    
+    const mergedOptions = {
+      ...defaultOptions,
+      ...props.options,
+      modules: {
+        ...defaultOptions.modules,
+        ...(props.options.modules || {})
+      }
+    }
+    
+    // Initialize Quill with merged options
+    quillInstance = new Quill(container.value, mergedOptions)
 
     quillInstance.on('selection-change', (range, oldRange, source) => {
       if (!range) {

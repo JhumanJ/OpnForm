@@ -1,7 +1,7 @@
 <template>
   <UPopover
     ref="popover"
-    v-model:open="open"
+    v-model:open="mentionState.open"
     class="h-0"
     @close="cancel"
   >
@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-            
+          
         <div class="flex border-t pt-2 -mx-2 px-2 justify-end space-x-2">
           <UButton
             size="sm"
@@ -66,51 +66,62 @@
     </template>
   </UPopover>
 </template>
-      
-  <script setup>
-  import { ref, toRefs } from 'vue'
-  import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
-  import blocksTypes from '~/data/blocks_types.json'
-  const props = defineProps({
-    state: Object,
-    mentions: Array
-  })
-  defineShortcuts({
-    escape: () => {
-      open.value = false
-    }
-  })
-  const { open, onInsert, onCancel } = toRefs(props.state)
-  const selectedField = ref(null)
-  const fallbackValue = ref('')
-  const filteredMentions = computed(() => {
-    return props.mentions.filter(mention => blocksTypes[mention.type]?.is_input ?? false)
-  })
-  function selectField(field, insert = false) {
-    selectedField.value = {...field}
-    if (insert) {
-      insertMention()
-    }
+    
+<script setup>
+import { ref, computed, watch } from 'vue'
+import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
+import blocksTypes from '~/data/blocks_types.json'
+
+const props = defineProps({
+  mentionState: {
+    type: Object,
+    required: true
+  },
+  mentions: {
+    type: Array,
+    required: true
   }
-  watch(open, (newValue) => {
-    if (newValue) {
-      selectedField.value = null
-      fallbackValue.value = ''
-    }
-  })
-  const insertMention = () => {
-    if (selectedField.value && onInsert.value) {
-      onInsert.value({
-        field: selectedField.value,
-        fallback: fallbackValue.value
-      })
-      open.value = false
-    }
+})
+
+defineShortcuts({
+  escape: () => {
+    props.mentionState.open = false
   }
-  const cancel = () => {
-    if (onCancel.value) {
-      onCancel.value()
-    }
-    open.value = false
+})
+
+const selectedField = ref(null)
+const fallbackValue = ref('')
+
+const filteredMentions = computed(() => {
+  return props.mentions.filter(mention => blocksTypes[mention.type]?.is_input ?? false)
+})
+
+function selectField(field, insert = false) {
+  selectedField.value = {...field}
+  if (insert) {
+    insertMention()
   }
-  </script>
+}
+
+watch(() => props.mentionState.open, (newValue) => {
+  if (newValue) {
+    selectedField.value = null
+    fallbackValue.value = ''
+  }
+})
+
+const insertMention = () => {
+  if (selectedField.value && props.mentionState.onInsert) {
+    props.mentionState.onInsert({
+      field: selectedField.value,
+      fallback: fallbackValue.value
+    })
+  }
+}
+
+const cancel = () => {
+  if (props.mentionState.onCancel) {
+    props.mentionState.onCancel()
+  }
+}
+</script>

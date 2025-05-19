@@ -31,6 +31,7 @@
         :options="quillOptions"
         :disabled="disabled"
         :style="inputStyle"
+        @ready="onEditorReady"
       />
     </div>
 
@@ -59,7 +60,7 @@
 
     <MentionDropdown
       v-if="enableMentions && mentionState"
-      :state="mentionState"
+      :mention-state="mentionState"
       :mentions="mentions"
     />
   </InputWrapper>
@@ -103,10 +104,21 @@ watch(compVal, (val) => {
   }
 }, { immediate: true })
 
-// Move the mention extension registration to onMounted
-
-if (props.enableMentions && !Quill.imports['blots/mention']) {
+// Initialize mention extension
+if (props.enableMentions) {
+  // Register the mention extension with Quill
   mentionState.value = registerMentionExtension(Quill)
+}
+
+// Handle editor ready event
+const onEditorReady = (quillInstance) => {
+  // If we have a mention module, get its state
+  if (props.enableMentions && quillInstance) {
+    const mentionModule = quillInstance.getModule('mention')
+    if (mentionModule && mentionModule.state) {
+      mentionState.value = mentionModule.state
+    }
+  }
 }
 
 const quillOptions = computed(() => {

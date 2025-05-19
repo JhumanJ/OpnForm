@@ -50,12 +50,8 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    */
   const applyDefaultValues = (defaultData) => {
     if (!defaultData || Object.keys(defaultData).length === 0) return
-    
-    for (const key in defaultData) {
-      if (Object.hasOwnProperty.call(defaultData, key) && form[key] === undefined) {
-        form[key] = defaultData[key]
-      }
-    }
+
+    form.resetAndFill(defaultData)
   }
 
   /**
@@ -167,7 +163,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     }
     
     // 3. Try loading from pendingSubmission
-    if (tryLoadFromPendingSubmission()) {
+    if (!(options.skipPendingSubmission ?? false) && tryLoadFromPendingSubmission()) {
       updateSpecialFields()
       return // Exit if loaded successfully
     }
@@ -176,7 +172,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     const formData = {}
     
     // 5. Apply URL parameters
-    if (options.urlParams) {
+    if (!(options.skipUrlParams ?? false) && options.urlParams) {
       applyUrlParameters(options.urlParams)
     }
     
@@ -184,13 +180,9 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     updateSpecialFields()
     
     // 7. Apply default data from config or options
-    const defaultData = options.defaultData || config?.default_data
-    if (defaultData) {
-      for (const key in defaultData) {
-        if (!formData[key]) { // Only if not already set
-          formData[key] = defaultData[key]
-        }
-      }
+    const defaultValuesToApply = options.defaultData || config?.default_data
+    if (defaultValuesToApply) {
+      applyDefaultValues(defaultValuesToApply, config?.properties)
     }
     
     // 8. Fill the form with the collected data

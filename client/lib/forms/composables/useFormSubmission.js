@@ -56,13 +56,29 @@ export function useFormSubmission(formConfig, form) {
     // Prepare metadata only (form data will be auto-merged by Form.js)
     const metadata = _prepareMetadata(options)
 
-    // Use the vForm post method, which will automatically merge form data with metadata
-    const response = await toValue(form).post(url, { 
-      data: metadata
-    })
+    // Check if we should actually perform the submission based on mode strategy
+    const formModeStrategy = options.formModeStrategy
+    const shouldSubmit = formModeStrategy?.validation?.performActualSubmission !== false
+    
+    let response
+    
+    if (shouldSubmit) {
+      // Only perform the actual API call if the strategy allows it
+      response = await toValue(form).post(url, { 
+        data: metadata
+      })
+    } else {
+      // Return a mock successful response when in preview/test mode
+      response = {
+        success: true,
+        data: {
+          message: 'Form preview submission (no actual submission performed)',
+          mock: true
+        }
+      }
+    }
     
     // Optionally reset form after successful submission based on strategy
-    const formModeStrategy = options.formModeStrategy
     if (formModeStrategy?.submission?.resetAfterSubmit) {
       toValue(form).reset()
     }

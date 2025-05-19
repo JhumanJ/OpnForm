@@ -4,6 +4,7 @@ namespace App\Open;
 
 use DOMDocument;
 use DOMXPath;
+use DOMElement;
 
 class MentionParser
 {
@@ -39,21 +40,24 @@ class MentionParser
         libxml_use_internal_errors($internalErrors);
 
         $xpath = new DOMXPath($doc);
-        $mentionElements = $xpath->query("//span[@mention]");
+
+        $mentionElements = $xpath->query("//span[@mention or @mention='true']");
 
         foreach ($mentionElements as $element) {
-            $fieldId = $element->getAttribute('mention-field-id');
-            $fallback = $element->getAttribute('mention-fallback');
-            $value = $this->getData($fieldId);
+            if ($element instanceof DOMElement) {
+                $fieldId = $element->getAttribute('mention-field-id');
+                $fallback = $element->getAttribute('mention-fallback');
+                $value = $this->getData($fieldId);
 
-            if ($value !== null) {
-                $textNode = $doc->createTextNode(is_array($value) ? implode($this->urlFriendly ? ',+' : ', ', $value) : $value);
-                $element->parentNode->replaceChild($textNode, $element);
-            } elseif ($fallback) {
-                $textNode = $doc->createTextNode($fallback);
-                $element->parentNode->replaceChild($textNode, $element);
-            } else {
-                $element->parentNode->removeChild($element);
+                if ($value !== null) {
+                    $textNode = $doc->createTextNode(is_array($value) ? implode($this->urlFriendly ? ',+' : ', ', $value) : $value);
+                    $element->parentNode->replaceChild($textNode, $element);
+                } elseif ($fallback) {
+                    $textNode = $doc->createTextNode($fallback);
+                    $element->parentNode->replaceChild($textNode, $element);
+                } else {
+                    $element->parentNode->removeChild($element);
+                }
             }
         }
 

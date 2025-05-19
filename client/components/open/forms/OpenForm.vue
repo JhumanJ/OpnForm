@@ -63,7 +63,7 @@
       <slot
         v-if="isLastPage"
         name="submit-btn"
-        :loading="form.busy"
+        :loading="isProcessing"
       />
       <open-form-button
         v-else-if="currentFieldsPageBreak"
@@ -71,7 +71,7 @@
         :color="form.color"
         :theme="theme"
         class="mt-2 px-8 mx-1"
-        :loading="form.busy"
+        :loading="isProcessing"
         @click.stop="handleNextClick"
       >
         {{ currentFieldsPageBreak.next_btn_text }}
@@ -163,6 +163,8 @@ const handleDragDropped = (data) => {
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }
+
+const isProcessing = computed(() => props.formManager.state.isProcessing)
 </script>
 
 <style lang='scss' scoped>
