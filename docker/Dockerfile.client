@@ -20,7 +20,8 @@ RUN npm cache clean --force && \
 # RUN npm install esbuild@0.21.5
 
 ADD ./client/ /app/
-RUN npm run build
+# Increase Node memory limit to prevent out of memory error during build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 FROM node:20-alpine
 WORKDIR /app

@@ -55,7 +55,7 @@
           class="m-2 my-4">
           <UAlert
             :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
-            color="yellow"
+            color="amber"
             variant="subtle"
             icon="i-material-symbols-info-outline"
             @close="hidePasswordDisabledMsg = true"
@@ -64,29 +64,35 @@
         </div>
 
 
-        <div
+        <UAlert
           v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
-          class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
+          icon="i-heroicons-lock-closed-20-solid"
+          color="amber"
+          variant="subtle"
+          class="m-2 my-4"
         >
-          <div class="flex-grow">
+          <template #description>
             <div
-              class="mb-0 py-2 px-4 text-yellow-600"
+              class="py-2"
               v-html="form.closed_text"
             />
-          </div>
-        </div>
+          </template>
+        </UAlert>
 
-        <div
+        <UAlert
           v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
-          class="border shadow-sm p-2 my-4 flex items-center rounded-md bg-yellow-100 dark:bg-yellow-600/20 border-yellow-500 dark:border-yellow-500/20"
+          icon="i-heroicons-lock-closed-20-solid"
+          color="amber"
+          variant="subtle"
+          class="m-2 my-4"
         >
-          <div class="flex-grow">
+          <template #description>
             <div
-              class="mb-0 py-2 px-4 text-yellow-600 dark:text-yellow-600"
+              class="py-2"
               v-html="form.max_submissions_reached_text"
             />
-          </div>
-        </div>
+          </template>
+        </UAlert>
 
         <form-cleanings
           v-if="showFormCleanings"
@@ -343,7 +349,7 @@ const triggerSubmit = async () => {
     submissionId: submissionId.value
   }).then(result => {
       if (result) {
-        submittedData.value = result || {}
+        submittedData.value = formManager.form.data()
         
         if (result?.submission_id) {
           submissionId.value = result.submission_id
@@ -392,7 +398,9 @@ const addPasswordError = (msg) => {
 }
 
 defineExpose({
-  addPasswordError
+  addPasswordError,
+  restart,
+  formManager
 })
 
 </script>

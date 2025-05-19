@@ -35,7 +35,7 @@
       :options="visibilityOptions"
     />
     <div
-      v-if="form.closes_at || form.visibility == 'closed'"
+      v-if="isFormClosingOrClosed"
       class="bg-gray-50 border rounded-lg px-4 py-2"
     >
       <rich-text-area-input
@@ -112,119 +112,103 @@
   </modal>
 </template>
 
-<script>
-import clonedeep from "clone-deep"
-import { default as _has } from "lodash/has"
+<script setup>
+import clonedeep from 'clone-deep'
+import { default as _has } from 'lodash/has'
 
-export default {
-  setup() {
-    const formsStore = useFormsStore()
-    const workingFormStore = useWorkingFormStore()
-    const { getAll: forms } = storeToRefs(formsStore)
+// Store setup
+const formsStore = useFormsStore()
+const workingFormStore = useWorkingFormStore()
+const { content: form } = storeToRefs(workingFormStore)
+const forms = computed(() => formsStore.getAll)
+
+// Reactive state
+const showCopyFormSettingsModal = ref(false)
+const copyFormId = ref(null)
+
+// Computed properties
+const visibilityOptions = [
+  {
+    name: 'Published',
+    value: 'public',
+  },
+  {
+    name: 'Draft - not publicly accessible',
+    value: 'draft',
+  },
+  {
+    name: 'Closed - won\'t accept new submissions',
+    value: 'closed',
+  },
+]
+
+const copyFormOptions = computed(() => {
+  return forms.value
+    .filter((formItem) => {
+      return form.value.id !== formItem.id
+    })
+    .map((formItem) => {
+      return {
+        name: formItem.title,
+        value: formItem.id,
+      }
+    })
+})
+
+const allTagsOptions = computed(() => {
+  return formsStore.allTags.map((tagname) => {
     return {
-      forms,
-      formsStore,
-      workingFormStore,
+      name: tagname,
+      value: tagname,
     }
-  },
+  })
+})
 
-  data() {
-    return {
-      showCopyFormSettingsModal: false,
-      copyFormId: null,
-      visibilityOptions: [
-        {
-          name: "Published",
-          value: "public",
-        },
-        {
-          name: "Draft - not publicly accessible",
-          value: "draft",
-        },
-        {
-          name: "Closed - won't accept new submissions",
-          value: "closed",
-        },
-      ],
-    }
-  },
+// New computed property for v-if condition
+const isFormClosingOrClosed = computed(() => {
+  return form.value.closes_at || form.value.visibility === 'closed'
+})
 
-  computed: {
-    copyFormOptions() {
-      return this.forms
-        .filter((form) => {
-          return this.form.id !== form.id
-        })
-        .map((form) => {
-          return {
-            name: form.title,
-            value: form.id,
-          }
-        })
-    },
-    form: {
-      get() {
-        return this.workingFormStore.content
-      },
-      /* We add a setter */
-      set(value) {
-        this.workingFormStore.set(value)
-      },
-    },
-    allTagsOptions() {
-      return this.formsStore.allTags.map((tagname) => {
-        return {
-          name: tagname,
-          value: tagname,
-        }
-      })
-    },
-  },
+// Methods
+const copySettings = () => {
+  if (copyFormId.value == null)
+    return
+  const copyForm = clonedeep(
+    forms.value.find(form => form.id === copyFormId.value),
+  )
+  if (!copyForm)
+    return;
 
-  watch: {},
+  // Clean copy from form
+  [
+    "title",
+    "properties",
+    "cleanings",
+    "views_count",
+    "submissions_count",
+    "workspace",
+    "workspace_id",
+    "updated_at",
+    "share_url",
+    "slug",
+    "notion_database_url",
+    "id",
+    "database_id",
+    "database_fields_update",
+    "creator",
+    "created_at",
+    "deleted_at",
+    "last_edited_human",
+  ].forEach((property) => {
+    if (_has(copyForm, property))
+      delete copyForm[property]
+  })
 
-  mounted() {},
-
-  methods: {
-    copySettings() {
-      if (this.copyFormId == null) return
-      const copyForm = clonedeep(
-        this.forms.find((form) => form.id === this.copyFormId),
-      )
-      if (!copyForm) return;
-
-      // Clean copy from form
-      [
-        "title",
-        "properties",
-        "cleanings",
-        "views_count",
-        "submissions_count",
-        "workspace",
-        "workspace_id",
-        "updated_at",
-        "share_url",
-        "slug",
-        "notion_database_url",
-        "id",
-        "database_id",
-        "database_fields_update",
-        "creator",
-        "created_at",
-        "deleted_at",
-        "last_edited_human",
-      ].forEach((property) => {
-        if (_has(copyForm, property)) {
-          delete copyForm[property]
-        }
-      })
-
-      // Apply changes
-      Object.keys(copyForm).forEach((property) => {
-        this.form[property] = copyForm[property]
-      })
-      this.showCopyFormSettingsModal = false
-    },
-  },
+  // Apply changes
+  Object.keys(copyForm).forEach((property) => {
+    form.value[property] = copyForm[property]
+  })
+  showCopyFormSettingsModal.value = false
+  useAlert().success('Form settings copied.')
 }
 </script>

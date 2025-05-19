@@ -142,6 +142,13 @@ watch(() => form.value.dark_mode, () => {
   handleDarkModeChange()
 })
 
+// Watch for form mode changes to reset the form when switching modes
+watch(formMode, () => {
+  if (previewFormSubmitted.value) {
+    restartForm()
+  }
+})
+
 onMounted(() => {
   handleDarkModeChange()
 })
@@ -163,7 +170,16 @@ function handleDarkModeChange() {
 
 function restartForm() {
   previewFormSubmitted.value = false
-  formPreview.value.restart()
+  
+  try {
+    // Try using the component reference first
+    if (formPreview.value && typeof formPreview.value.restart === 'function') {
+      formPreview.value.restart()
+      return
+    }
+  } catch (error) {
+    console.error('Error restarting form:', error)
+  }
 }
 
 function toggleExpand() {

@@ -4,7 +4,7 @@
     orientation="horizontal"
   >
     <UButton
-      v-track.delete_record_click
+      v-track.edit_record_click
       size="sm"
       color="white"
       icon="heroicons:pencil-square"

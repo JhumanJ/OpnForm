@@ -4,12 +4,6 @@ services:
   api:
     image: jhumanj/opnform-api:dev
     container_name: opnform-api
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.api
-      args:
-        APP_ENV: local
-        COMPOSER_FLAGS: ""
     volumes:
       - ./api:/usr/share/nginx/html:delegated
       - /usr/share/nginx/html/vendor # Exclude vendor directory from the mount
@@ -44,9 +38,6 @@ services:
   ui:
     image: jhumanj/opnform-client:dev
     container_name: opnform-client
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.client
     command: sh -c "npm install && NITRO_HOST=0.0.0.0 NITRO_PORT=3000 npm run dev"
     volumes:
       - ./client:/app:delegated
