@@ -398,7 +398,9 @@ const addPasswordError = (msg) => {
 }
 
 defineExpose({
-  addPasswordError
+  addPasswordError,
+  restart,
+  formManager
 })
 
 </script>
