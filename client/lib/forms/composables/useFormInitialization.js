@@ -88,7 +88,8 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
       // Basic validation
       if (!field || typeof field !== 'object') return
       if (!field.id || !field.type) return
-      if (!cleanData[field.id]) return
+      // Skip only when value is truly undefined or null
+      if (cleanData[field.id] === undefined || cleanData[field.id] === null) return
       
       // Process checkbox fields - convert string and numeric values to boolean
       if (field.type === 'checkbox') {
