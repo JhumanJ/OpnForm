@@ -53,7 +53,7 @@
             </a>
           </template>
           <NuxtLink
-            v-if="($route.name !== 'ai-form-builder' && user === null) && (!useFeatureFlag('self_hosted') || useFeatureFlag('ai_features'))"
+            v-if="($route.name !== 'ai-form-builder' && user === null) && (!useFeatureFlag('self_hosted') && useFeatureFlag('ai_features'))"
             :to="{ name: 'ai-form-builder' }"
             :class="navLinkClasses"
             class="hidden lg:inline"

@@ -629,7 +629,7 @@
 <script setup>
 const authStore = useAuthStore()
 definePageMeta({
-  middleware: ["self-hosted",]
+  middleware: ['root-redirect','self-hosted']
 })
 useOpnSeoMeta({
   title: "Free AI form builder",

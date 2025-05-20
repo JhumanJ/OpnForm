@@ -174,7 +174,7 @@ defineRouteRules({
 })
 definePageMeta({
   stickyNavbar: true,
-  middleware: ["self-hosted"]
+  middleware: ['root-redirect','self-hosted']
 })
 
 const crisp = useCrisp()

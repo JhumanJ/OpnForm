@@ -323,6 +323,9 @@ export default {
     defineRouteRules({
       swr: 3600,
     })
+    definePageMeta({
+      middleware: ['root-redirect']
+    })
 
     return {
       authenticated: computed(() => authStore.check),
