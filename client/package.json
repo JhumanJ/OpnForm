@@ -65,7 +65,6 @@
     "pinia": "^3.0.2",
     "prismjs": "^1.29.0",
     "qrcode": "^1.5.4",
-    "quagga": "^0.12.1",
     "query-builder-vue-3": "^1.0.1",
     "quill": "^2.0.2",
     "tailwind-merge": "^2.5.4",
