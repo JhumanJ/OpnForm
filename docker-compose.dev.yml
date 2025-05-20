@@ -25,6 +25,11 @@ services:
       # Storage settings
       FILESYSTEM_DISK: local
       LOCAL_FILESYSTEM_VISIBILITY: public
+      # PHP Configuration
+      PHP_MEMORY_LIMIT: "1G"
+      PHP_MAX_EXECUTION_TIME: "600"
+      PHP_UPLOAD_MAX_FILESIZE: "64M"
+      PHP_POST_MAX_SIZE: "64M"
       # Development settings
       PHP_IDE_CONFIG: serverName=Docker
       XDEBUG_MODE: ${XDEBUG_MODE:-off}
@@ -86,6 +91,7 @@ services:
     environment:
       NGINX_HOST: localhost
       NGINX_PORT: 80
+      NGINX_MAX_BODY_SIZE: 64m
     ports:
       - "80:80"
     depends_on:
