@@ -1,54 +1,64 @@
-FROM php:8.3-fpm
+# Build stage - using PHP CLI image with extensions
+FROM php:8.3-cli AS builder
 
-# Install system dependencies
+# Install composer and extensions needed for dependency installation
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpng-dev \
-    postgresql-client \
-    libpq-dev \
     unzip \
-    gcc \
-    make \
-    autoconf \
-    libc-dev \
-    pkg-config \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    git \
+    && docker-php-ext-install -j$(nproc) \
+    bcmath \
+    gd \
+    zip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
+WORKDIR /app
 
-# Install PHP extensions
-ENV CFLAGS="-O1 -D_GNU_SOURCE" \
-    CXXFLAGS="-O1 -D_GNU_SOURCE"
+# Copy the entire source code for proper installation
+COPY api/ .
 
-# Install basic extensions first
-RUN set -eux; \
-    docker-php-ext-install -j$(nproc) pdo zip && \
-    php -m | grep -E 'pdo|zip'
+# Install dependencies including dev dependencies
+RUN composer install --optimize-autoloader --no-interaction \
+    --ignore-platform-req=php \
+    --ignore-platform-req=ext-bcmath \
+    --ignore-platform-req=ext-gd
 
-# Install GD
-RUN set -eux; \
-    docker-php-ext-install -j$(nproc) gd && \
-    php -m | grep -E 'gd'
+# Final stage - smaller runtime image
+FROM php:8.3-fpm-alpine
 
-# Install PostgreSQL related extensions
-RUN set -eux; \
-    docker-php-ext-configure pgsql && \
-    docker-php-ext-install -j$(nproc) pgsql pdo_pgsql && \
-    php -m | grep -E 'pgsql|pdo_pgsql'
+# Install runtime dependencies
+RUN apk add --no-cache \
+    libzip \
+    libpng \
+    postgresql-client \
+    libpq \
+    procps \
+    unzip \
+    bash \
+    icu-libs \
+    && rm -rf /var/cache/apk/*
 
-# Install bcmath with optimization flags for stability
-RUN set -eux; \
-    docker-php-ext-install -j1 bcmath && \
-    php -m | grep -E 'bcmath'
-
-# Install Redis extension
-RUN set -eux; \
-    pecl install -f --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no"' redis && \
-    docker-php-ext-enable redis && \
-    php -m | grep -E 'redis'
+# Install build dependencies and PHP extensions
+RUN apk add --no-cache --virtual .build-deps \
+    $PHPIZE_DEPS \
+    libzip-dev \
+    libpng-dev \
+    postgresql-dev \
+    oniguruma-dev \
+    icu-dev \
+    && docker-php-ext-configure pgsql \
+    && docker-php-ext-configure gd \
+    && docker-php-ext-install -j$(nproc) \
+    pdo \
+    zip \
+    gd \
+    pgsql \
+    pdo_pgsql \
+    bcmath \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apk del .build-deps
 
 WORKDIR /usr/share/nginx/html/
 
@@ -62,26 +72,8 @@ RUN mkdir -p storage/framework/sessions \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Copy composer files and helpers.php first
-COPY api/composer.json api/composer.lock ./
-COPY api/app/helpers.php ./app/helpers.php
-
-# Default to production settings unless overridden during build
-ARG APP_ENV=production
-ARG COMPOSER_FLAGS=--no-dev --optimize-autoloader --no-interaction
-
-# Install dependencies without running scripts
-RUN composer install ${COMPOSER_FLAGS} --no-scripts --ignore-platform-req=php
-
-# Copy the rest of the application
-COPY api/ .
-
-# Run composer scripts and clear cache
-RUN composer dump-autoload -o \
-    && php artisan package:discover --ansi \
-    && composer clear-cache \
-    && chmod -R 775 storage \
-    && chown -R www-data:www-data storage
+# Copy the entire application from the builder stage
+COPY --from=builder /app/ ./
 
 # Setup entrypoint
 COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint

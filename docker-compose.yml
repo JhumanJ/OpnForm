@@ -15,54 +15,75 @@ services:
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
-      # Storage settings
-      FILESYSTEM_DISK: local
-      LOCAL_FILESYSTEM_VISIBILITY: public
-    env_file: 
+      # PHP Configuration
+      PHP_MEMORY_LIMIT: "1G"
+      PHP_MAX_EXECUTION_TIME: "600"
+      PHP_UPLOAD_MAX_FILESIZE: "64M"
+      PHP_POST_MAX_SIZE: "64M"
+    env_file:
       - ./api/.env
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy # Depend on redis being healthy too
+    healthcheck:
+      test: ["CMD-SHELL", "php /usr/share/nginx/html/artisan about || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
 
   api-worker:
     <<: *api-environment
     container_name: opnform-api-worker
     command: ["php", "artisan", "queue:work"]
-    volumes: *api-environment-volumes
     environment:
       <<: *api-env
       APP_ENV: production
       IS_API_WORKER: "true"
-    env_file: 
-      - ./api/.env
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'php artisan queue:work' > /dev/null || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   api-scheduler:
     <<: *api-environment
     container_name: opnform-api-scheduler
     command: ["php", "artisan", "schedule:work"]
-    volumes: *api-environment-volumes
     environment:
       <<: *api-env
       APP_ENV: production
-      IS_API_WORKER: "true"
-      # Scheduler settings
+      IS_API_WORKER: "true" # This might not be strictly true for scheduler, but consistent with setup
       CONTAINER_ROLE: scheduler
-      PHP_MEMORY_LIMIT: 512M
-      PHP_MAX_EXECUTION_TIME: 60
-    env_file: 
-      - ./api/.env
+    healthcheck:
+      test: ["CMD-SHELL", "php /usr/share/nginx/html/artisan app:scheduler-status --mode=check --max-minutes=3 || exit 1"]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 70s # Allow time for first scheduled run and cache write
 
   ui:
     image: jhumanj/opnform-client:latest
     container_name: opnform-client
-    env_file: 
+    env_file:
       - ./client/.env
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/login || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
 
   redis:
     image: redis:7
     container_name: opnform-redis
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 30s
+      timeout: 5s
 
   db:
     image: postgres:16
@@ -73,9 +94,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-forge}"]
-      interval: 5s
+      interval: 30s
       timeout: 5s
-      retries: 5
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -86,11 +106,19 @@ services:
       - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
     ports:
       - 80:80
+    environment:
+      - NGINX_MAX_BODY_SIZE=64m
     depends_on:
       api:
         condition: service_started
       ui:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t && curl -f http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 volumes:
   postgres-data:
