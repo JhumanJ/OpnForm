@@ -152,7 +152,7 @@
 <script>
 import Webcam from "webcam-easy"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
-import Quagga from 'quagga'
+import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library'
 
 export default {
   name: "CameraUpload",
@@ -181,7 +181,7 @@ export default {
     isCapturing: false,
     capturedImage: null,
     cameraPermissionStatus: "loading",
-    quaggaInitialized: false,
+    zxingReader: null,
     currentFacingMode: 'user',
     mediaStream: null
   }),
@@ -209,9 +209,9 @@ export default {
 
   methods: {
     async cleanupCurrentStream() {
-      if (this.quaggaInitialized) {
-        Quagga.stop()
-        this.quaggaInitialized = false
+      if (this.zxingReader) {
+        this.zxingReader.reset()
+        this.zxingReader = null
       }
 
       if (this.mediaStream) {
@@ -310,7 +310,7 @@ export default {
 
         this.cameraPermissionStatus = "allowed"
         if (this.isBarcodeMode) {
-          this.initQuagga()
+          this.initZxing()
         }
       } catch (err) {
         console.error('Camera error:', err)
@@ -321,51 +321,59 @@ export default {
         }
       }
     },
-    initQuagga() {
-      if (!this.quaggaInitialized) {
-        Quagga.init({
-          inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: document.getElementById("webcam"),
-            constraints: {
-              facingMode: this.currentFacingMode,
-              width: { min: 640 },
-              height: { min: 480 },
-              aspectRatio: { min: 1, max: 2 }
-            },
-          },
-          locator: {
-            patchSize: "medium",
-            halfSample: true
-          },
-          numOfWorkers: navigator.hardwareConcurrency || 4,
-          frequency: 10,
-          decoder: {
-            readers: this.decoders || []
-          },
-          locate: true
-        }, (err) => {
-          if (err) {
-            console.error('Quagga initialization failed:', err)
-            return
+    initZxing() {
+      if (!this.zxingReader) {
+        const hints = new Map()
+        const formats = (this.decoders || []).map(decoder => {
+          // Map decoder strings to BarcodeFormat enum values
+          switch(decoder.toLowerCase()) {
+            case 'ean_8': return BarcodeFormat.EAN_8
+            case 'ean_13': return BarcodeFormat.EAN_13
+            case 'upc_a': return BarcodeFormat.UPC_A
+            case 'upc_e': return BarcodeFormat.UPC_E
+            case 'code_39': return BarcodeFormat.CODE_39
+            case 'code_93': return BarcodeFormat.CODE_93
+            case 'code_128': return BarcodeFormat.CODE_128
+            case 'codabar': return BarcodeFormat.CODABAR
+            case 'itf': return BarcodeFormat.ITF
+            case 'qr_code': return BarcodeFormat.QR_CODE
+            case 'data_matrix': return BarcodeFormat.DATA_MATRIX
+            case 'aztec': return BarcodeFormat.AZTEC
+            case 'pdf_417': return BarcodeFormat.PDF_417
+            case 'qr_reader': return BarcodeFormat.QR_CODE
+            default: return null // Or handle unsupported formats appropriately
           }
-          
-          this.quaggaInitialized = true
-          Quagga.start()
-          
-          Quagga.onDetected((result) => {
-            if (result.codeResult) {
-              this.$emit('barcodeDetected', result.codeResult.code)
-              this.cancelCamera()
+        }).filter(format => format !== null)
+
+        if (formats.length > 0) {
+          hints.set(DecodeHintType.POSSIBLE_FORMATS, formats)
+        }
+
+        this.zxingReader = new BrowserMultiFormatReader(hints)
+
+        const webcamElement = document.getElementById("webcam")
+        if (webcamElement && this.zxingReader) {
+          this.zxingReader.decodeFromVideoElement(webcamElement, (result, error) => {
+            if (result) {
+              console.log('ZXing Barcode detected:', result.text)
+              this.$emit('barcodeDetected', result.text)
+              // Optionally stop the reader and camera after detection
+              // this.cancelCamera()
+            }
+            // Note: ZXing continuously tries to decode, errors are frequent and expected until a code is found.
+            // We only log errors if the reader is still active to avoid excessive console output.
+            if (error && !(error instanceof Error) && this.zxingReader) {
+                // console.error('ZXing decoding error:', error);
             }
           })
-        })
+        } else {
+          console.error('Webcam element not found for ZXing')
+        }
       }
     },
     cancelCamera() {
       this.isCapturing = false
-      this.capturedImage = null 
+      this.capturedImage = null
       this.cleanupCurrentStream()  // Use the cleanup method
       this.$emit("stopWebcam")
     },
