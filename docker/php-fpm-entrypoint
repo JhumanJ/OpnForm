@@ -3,17 +3,56 @@
 main() {
     if [ "$IS_API_WORKER" = "true" ]; then
         # This is the API worker, skip setup and just run the command
+        apply_php_configuration
         exec "$@"
     else
-        # This is the API service, run full setup
+        # This is the API service or scheduler, run full setup
+        apply_php_configuration
         prep_file_permissions
         prep_storage
         wait_for_db
         apply_db_migrations
         run_init_project
         optimize_application
+
+        if [ "$CONTAINER_ROLE" = "scheduler" ]; then
+            echo "Initializing scheduler status for first run (entrypoint)"
+            ./artisan app:scheduler-status --mode=record
+        fi
+
         run_server "$@"
     fi
+}
+
+apply_php_configuration() {
+    echo "Applying PHP configuration from environment variables"
+    
+    # Create custom PHP config file
+    PHP_CUSTOM_CONFIG_FILE="/usr/local/etc/php/conf.d/99-custom.ini"
+    
+    # Apply memory limit if provided
+    if [ -n "$PHP_MEMORY_LIMIT" ]; then
+        echo "memory_limit = $PHP_MEMORY_LIMIT" >> $PHP_CUSTOM_CONFIG_FILE
+    fi
+    
+    # Apply max execution time if provided
+    if [ -n "$PHP_MAX_EXECUTION_TIME" ]; then
+        echo "max_execution_time = $PHP_MAX_EXECUTION_TIME" >> $PHP_CUSTOM_CONFIG_FILE
+    fi
+    
+    # Apply upload max filesize if provided
+    if [ -n "$PHP_UPLOAD_MAX_FILESIZE" ]; then
+        echo "upload_max_filesize = $PHP_UPLOAD_MAX_FILESIZE" >> $PHP_CUSTOM_CONFIG_FILE
+    fi
+    
+    # Apply post max size if provided
+    if [ -n "$PHP_POST_MAX_SIZE" ]; then
+        echo "post_max_size = $PHP_POST_MAX_SIZE" >> $PHP_CUSTOM_CONFIG_FILE
+    fi
+    
+    # Log applied configuration
+    echo "Applied PHP configuration:"
+    cat $PHP_CUSTOM_CONFIG_FILE
 }
 
 prep_file_permissions() {
@@ -21,24 +60,25 @@ prep_file_permissions() {
 }
 
 prep_storage() {
-    # Create Laravel-specific directories
-    mkdir -p /persist/storage/framework/cache/data
-    mkdir -p /persist/storage/framework/sessions
-    mkdir -p /persist/storage/framework/views
+    local app_storage_path="/usr/share/nginx/html/storage"
+
+    # Create Laravel-specific directories directly in the mounted volume
+    mkdir -p "$app_storage_path/app/public"
+    mkdir -p "$app_storage_path/framework/cache/data"
+    mkdir -p "$app_storage_path/framework/sessions"
+    mkdir -p "$app_storage_path/framework/views"
+    mkdir -p "$app_storage_path/logs"
 
     # Set permissions for the entire storage directory
-    chown -R www-data:www-data /persist/storage
-    chmod -R 775 /persist/storage
-
-    # Create symlink to the correct storage location
-    ln -sf /persist/storage /usr/share/nginx/html/storage
+    chown -R www-data:www-data "$app_storage_path"
+    chmod -R 775 "$app_storage_path"
 
     touch /var/log/opnform.log
     chown www-data /var/log/opnform.log
 
-    # Ensure proper permissions for the storage directory
-    chown -R www-data:www-data /usr/share/nginx/html/storage
-    chmod -R 775 /usr/share/nginx/html/storage
+    # Run Laravel's storage link command (ensure script is run from app root or adjust path to artisan)
+    echo "Creating public storage symlink"
+    ./artisan storage:link
 }
 
 wait_for_db() {
