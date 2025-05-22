@@ -17,14 +17,10 @@ There are dedicated configuration pages available for more detailed setup instru
 -   [Email Configuration (SMTP)](../configuration/email-setup)
 -   [Custom Domain](../configuration/custom-domain)
 
-### Other Environment Variables
-
 ### Configuration Environment Variables
 
 | Variable Name               | Description                                                                                              |
 | --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `JWT_TTL`                   | Time to live for JSON Web Tokens (JWT).                                                                  |
-| `JWT_SECRET`                | Secret key used to sign JWTs.                                                                            |
 | `H_CAPTCHA_SITE_KEY`        | Site key for hCaptcha integration.                                                                       |
 | `H_CAPTCHA_SECRET_KEY`      | Secret key for hCaptcha integration.                                                                     |
 | `RE_CAPTCHA_SITE_KEY`       | Site key for reCAPTCHA integration.                                                                      |
@@ -41,6 +37,8 @@ There are dedicated configuration pages available for more detailed setup instru
 | `FRONT_API_SECRET`          | Shared secret with the front-end.                                                                        |
 | `TELEGRAM_BOT_ID`           | ID of your Telegram bot for notifications.                                                               |
 | `TELEGRAM_BOT_TOKEN`        | Authentication token for your Telegram bot.                                                              |
+| `JWT_TTL`                   | Time to live for JSON Web Tokens (JWT).                                                                  |
+| `JWT_SECRET`                | Secret key used to sign JWTs.                                                                            |
 | `JWT_SKIP_IP_UA_VALIDATION` | Set to `true` to disable JWT IP and User Agent validation (defaults to `false`). Useful for dynamic IPs. |
 
 ### User Options Environment Variables
@@ -53,9 +51,31 @@ There are dedicated configuration pages available for more detailed setup instru
 | `MODERATOR_EMAILS`        | Comma-separated list of moderator email addresses.                                              |
 | `SHOW_OFFICIAL_TEMPLATES` | Set to `false` to hide official templates from OpnForm's template gallery (defaults to `true`). |
 
-## Front-end Environment Variables
+### PHP Configuration Environment Variables
 
-### Front-end Environment Variables
+| Variable Name               | Description                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `PHP_MEMORY_LIMIT`          | Maximum amount of memory a script may consume.                                                           |
+| `PHP_MAX_EXECUTION_TIME`    | Maximum time in seconds a script is allowed to run.                                                      |
+| `PHP_UPLOAD_MAX_FILESIZE`   | Maximum size of an uploaded file.                                                                        |
+| `PHP_POST_MAX_SIZE`         | Maximum size of POST data that PHP will accept.                                                          |
+
+These PHP configuration variables are particularly important when handling file uploads and processing large amounts of data. If any of these variables are not set, PHP will use its default values from the php.ini configuration. When using Docker, these values are set in the docker-compose.yml file. For non-Docker installations, you'll need to configure these values in your PHP configuration (php.ini) file.
+
+### Database Configuration Environment Variables
+
+These variables are essential for connecting the Laravel backend to your database.
+
+| Variable Name     | Description                                      |
+| ----------------- | ------------------------------------------------ |
+| `DB_CONNECTION`   | The database driver (e.g., `mysql`, `pgsql`).    |
+| `DB_HOST`         | The database server host (e.g., `127.0.0.1`).    |
+| `DB_PORT`         | The database server port (e.g., `3306`).         |
+| `DB_DATABASE`     | The name of the database.                        |
+| `DB_USERNAME`     | The username for connecting to the database.     |
+| `DB_PASSWORD`     | The password for the database user.              |
+
+## Front-end Environment Variables
 
 | Variable Name                     | Description                                                                                                                                                                                                       |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
