@@ -54,24 +54,32 @@ apply_php_configuration() {
     # Create custom PHP config file
     PHP_CUSTOM_CONFIG_FILE="/usr/local/etc/php/conf.d/99-custom.ini"
     
-    # Apply memory limit if provided
+    # Apply memory limit if provided, otherwise default to 1G
     if [ -n "$PHP_MEMORY_LIMIT" ]; then
         echo "memory_limit = $PHP_MEMORY_LIMIT" >> $PHP_CUSTOM_CONFIG_FILE
+    else
+        echo "memory_limit = 1G" >> $PHP_CUSTOM_CONFIG_FILE
     fi
     
-    # Apply max execution time if provided
+    # Apply max execution time if provided, otherwise default to 300s
     if [ -n "$PHP_MAX_EXECUTION_TIME" ]; then
         echo "max_execution_time = $PHP_MAX_EXECUTION_TIME" >> $PHP_CUSTOM_CONFIG_FILE
+    else
+        echo "max_execution_time = 300" >> $PHP_CUSTOM_CONFIG_FILE
     fi
     
-    # Apply upload max filesize if provided
+    # Apply upload max filesize if provided, otherwise default to 50M
     if [ -n "$PHP_UPLOAD_MAX_FILESIZE" ]; then
         echo "upload_max_filesize = $PHP_UPLOAD_MAX_FILESIZE" >> $PHP_CUSTOM_CONFIG_FILE
+    else
+        echo "upload_max_filesize = 50M" >> $PHP_CUSTOM_CONFIG_FILE
     fi
     
-    # Apply post max size if provided
+    # Apply post max size if provided, otherwise default to 55M
     if [ -n "$PHP_POST_MAX_SIZE" ]; then
         echo "post_max_size = $PHP_POST_MAX_SIZE" >> $PHP_CUSTOM_CONFIG_FILE
+    else
+        echo "post_max_size = 55M" >> $PHP_CUSTOM_CONFIG_FILE
     fi
     
     # Log applied configuration
