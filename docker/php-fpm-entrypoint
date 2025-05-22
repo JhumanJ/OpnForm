@@ -1,26 +1,50 @@
 #!/bin/bash
 
 main() {
-    if [ "$IS_API_WORKER" = "true" ]; then
-        # This is the API worker, skip setup and just run the command
-        apply_php_configuration
-        exec "$@"
-    else
-        # This is the API service or scheduler, run full setup
-        apply_php_configuration
-        prep_file_permissions
-        prep_storage
-        wait_for_db
+    local COMMAND_AS_STRING="$*"
+    local ROLE="api" # Default role
+
+    case "$COMMAND_AS_STRING" in
+        *"artisan queue:work"*)
+            ROLE="worker"
+            ;;
+        *"artisan schedule:work"*)
+            ROLE="scheduler"
+            ;;
+        *)
+            # Defaults to "api" for any other command (e.g., php-fpm)
+            ROLE="api"
+            ;;
+    esac
+
+    echo "Determined role: $ROLE for command: $COMMAND_AS_STRING"
+
+    apply_php_configuration
+    prep_file_permissions 
+    prep_storage          
+    wait_for_db           
+
+    if [ "$ROLE" = "api" ]; then
+        echo "Running setup for API role..."
         apply_db_migrations
         run_init_project
         optimize_application
-
-        if [ "$CONTAINER_ROLE" = "scheduler" ]; then
-            echo "Initializing scheduler status for first run (entrypoint)"
-            ./artisan app:scheduler-status --mode=record
-        fi
-
-        run_server "$@"
+        echo "Starting server for API role with command: $@"
+        exec "$@"
+    elif [ "$ROLE" = "scheduler" ]; then
+        echo "Running setup for Scheduler role..."
+        echo "Initializing scheduler status for first run (entrypoint)"
+        php ./artisan app:scheduler-status --mode=record
+        echo "Starting scheduler with command: $@"
+        exec "$@"
+    elif [ "$ROLE" = "worker" ]; then
+        echo "Running setup for Worker role..."
+        echo "Starting worker with command: $@"
+        exec "$@"
+    else
+        # This case should ideally not be reached if ROLE defaults to "api"
+        echo "Error: Unknown role '$ROLE' determined from command '$COMMAND_AS_STRING'. Exiting."
+        exit 1
     fi
 }
 
@@ -78,34 +102,29 @@ prep_storage() {
 
     # Run Laravel's storage link command (ensure script is run from app root or adjust path to artisan)
     echo "Creating public storage symlink"
-    ./artisan storage:link
+    php ./artisan storage:link
 }
 
 wait_for_db() {
     echo "Waiting for DB to be ready"
-    until ./artisan migrate:status 2>&1 | grep -q -E "(Migration table not found|Migration name)"; do
+    until php ./artisan migrate:status 2>&1 | grep -q -E "(Migration table not found|Migration name)"; do
         sleep 1
     done
 }
 
 apply_db_migrations() {
     echo "Running DB Migrations"
-    ./artisan migrate --force
+    php ./artisan migrate --force
 }
 
 run_init_project() {
     echo "Running app:init-project command"
-    ./artisan app:init-project
+    php ./artisan app:init-project
 }
 
 optimize_application() {
     echo "Optimizing application"
-    ./artisan optimize
-}
-
-run_server() {
-    echo "Starting server $@"
-    exec "$@"
+    php ./artisan optimize
 }
 
 main "$@"

@@ -7,7 +7,6 @@ services:
       - ./api/storage:/usr/share/nginx/html/storage:rw
     environment: &api-env
       APP_ENV: production
-      IS_API_WORKER: "false"
       # Database settings
       DB_HOST: db
       REDIS_HOST: redis
@@ -41,7 +40,6 @@ services:
     environment:
       <<: *api-env
       APP_ENV: production
-      IS_API_WORKER: "true"
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'php artisan queue:work' > /dev/null || exit 1"]
       interval: 60s
@@ -56,8 +54,6 @@ services:
     environment:
       <<: *api-env
       APP_ENV: production
-      IS_API_WORKER: "true" # This might not be strictly true for scheduler, but consistent with setup
-      CONTAINER_ROLE: scheduler
     healthcheck:
       test: ["CMD-SHELL", "php /usr/share/nginx/html/artisan app:scheduler-status --mode=check --max-minutes=3 || exit 1"]
       interval: 60s
