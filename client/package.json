@@ -49,6 +49,7 @@
     "@vueuse/integrations": "^11.2.0",
     "@vueuse/motion": "^2.2.6",
     "@vueuse/nuxt": "^11.2.0",
+    "@zxing/library": "^0.21.3",
     "amplitude-js": "^8.21.9",
     "chart.js": "^4.4.5",
     "clone-deep": "^4.0.1",
