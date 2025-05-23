@@ -55,6 +55,26 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
   const submission = useFormSubmission(config, form)
 
   /**
+   * Updates the form configuration when the entire form reference changes.
+   * @param {Object} newConfig - The new form configuration
+   * @param {Object} options - Optional initialization options
+   * @returns {Promise<void>}
+   */
+  const updateConfig = async (newConfig, options = {}) => {
+    if (!newConfig) return
+
+    // Update the config reference
+    config.value = newConfig
+    
+    // Reset form state
+    state.isSubmitted = false
+    state.currentPage = 0
+    
+    // Reinitialize with new config
+    return initialize(options)
+  }
+
+  /**
    * Initializes the form: loads data, resets state, starts timer.
    * @param {Object} options - Initialization options (passed to useFormInitialization).
    */
@@ -303,6 +323,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
 
     // Core Methods
     initialize,
+    updateConfig,   // New method to update form config
     nextPage,
     previousPage,
     submit,

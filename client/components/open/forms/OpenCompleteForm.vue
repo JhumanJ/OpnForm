@@ -266,6 +266,18 @@ if (props.form) {
   })
 }
 
+// Watch for changes to the form prop and update formManager
+watch(() => props.form, (newForm) => {
+  // Only update if the form has changed and formManager is initialized
+  if (formManager && newForm) {
+    // Update form manager with the new config
+    formManager.updateConfig(newForm, {
+      submissionId: submissionId.value,
+      urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
+    })
+  }
+})
+
 // Share the structure service with the working form store only when in admin edit context
 watch(() => formManager?.strategy?.value?.admin?.showAdminControls, (showAdminControls) => {
   if (workingFormStore && formManager?.structure && showAdminControls) {
