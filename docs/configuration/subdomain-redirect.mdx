@@ -1,0 +1,102 @@
+---
+title: Subdomain Redirect
+description: Hide OpnForm's public pages by redirecting users to your main website
+---
+
+The `NUXT_PUBLIC_ROOT_REDIRECT_URL` environment variable allows you to "hide" OpnForm's public pages (landing page, integrations page, etc.) by redirecting users to your main website or any other destination when they access certain routes.
+
+## Use Case
+
+This feature is particularly useful when you're running OpnForm on a subdomain (e.g., `forms.yourdomain.com`) and want to:
+
+-   Hide the default OpnForm landing page and branding
+-   Prevent users from discovering your form creation interface
+-   Redirect visitors to your main website instead
+-   Keep only the essential form and admin functionality accessible
+
+## How It Works
+
+When `NUXT_PUBLIC_ROOT_REDIRECT_URL` is set, OpnForm will permanently redirect (301) users visiting these routes:
+
+-   **Root path** (`/`) - The landing page
+-   **Integrations page** (`/integrations`) - The integrations showcase
+-   **Any non-existent pages** (404 errors) - Undefined routes
+
+### What Still Works
+
+The following routes remain fully accessible and will **NOT** be redirected:
+
+-   **Form URLs**: `forms.yourdomain.com/forms/my-form` ✅
+-   **Admin login**: `forms.yourdomain.com/login` ✅
+-   **Admin dashboard**: `forms.yourdomain.com/home` ✅
+-   **All admin pages**: Settings, workspaces, templates, etc. ✅
+
+## Configuration
+
+### Environment Variable Setup
+
+Add this to your **client** `.env` file (located in the `client` directory):
+
+```bash
+NUXT_PUBLIC_ROOT_REDIRECT_URL=https://yourdomain.com
+```
+
+### Example Scenarios
+
+**Scenario 1: Redirect to main website**
+
+```bash
+NUXT_PUBLIC_ROOT_REDIRECT_URL=https://mycompany.com
+```
+
+-   Visiting `forms.mycompany.com` → redirects to `https://mycompany.com`
+-   Visiting `forms.mycompany.com/forms/contact` → works normally ✅
+
+**Scenario 2: Redirect to specific landing page**
+
+```bash
+NUXT_PUBLIC_ROOT_REDIRECT_URL=https://mycompany.com/contact
+```
+
+-   Visiting `forms.mycompany.com` → redirects to `https://mycompany.com/contact`
+
+**Scenario 3: Redirect to documentation**
+
+```bash
+NUXT_PUBLIC_ROOT_REDIRECT_URL=https://docs.mycompany.com
+```
+
+## User Experience
+
+### For Form Respondents
+
+-   Can access shared forms normally via direct links
+-   If they accidentally visit the root domain, they're redirected to your main site
+-   No exposure to OpnForm branding or interface
+
+### For Administrators
+
+-   Can still access the admin panel via `/login`
+-   All admin functionality remains fully accessible
+-   Forms can be managed and created as usual
+
+## Implementation Notes
+
+-   The redirect is a **permanent redirect** (HTTP 301)
+-   The redirect happens on the client-side (Nuxt)
+-   You must recreate your Docker containers after changing this environment variable
+-   The URL should include the protocol (`https://` or `http://`)
+
+## Updating the Configuration
+
+If you're using Docker, remember to recreate your containers after changing this environment variable:
+
+```bash
+docker compose down ui
+docker compose up -d ui
+```
+
+<Warning>
+    A simple `docker compose restart` will not reload the new environment
+    variable. You must use `down` and `up` to recreate the container.
+</Warning>{" "}
