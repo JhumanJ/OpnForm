@@ -131,6 +131,9 @@ run_init_project() {
 }
 
 optimize_application() {
+    echo "Clearing application cache"
+    php ./artisan optimize:clear
+
     echo "Optimizing application"
     php ./artisan optimize
 }
