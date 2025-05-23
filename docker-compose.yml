@@ -4,7 +4,7 @@ services:
     image: jhumanj/opnform-api:latest
     container_name: opnform-api
     volumes: &api-environment-volumes
-      - ./api/storage:/usr/share/nginx/html/storage:rw
+      - opnform_storage:/usr/share/nginx/html/storage:rw
     environment: &api-env
       APP_ENV: production
       # Database settings
