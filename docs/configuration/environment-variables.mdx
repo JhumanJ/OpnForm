@@ -16,6 +16,7 @@ There are dedicated configuration pages available for more detailed setup instru
 -   [File Storage (S3)](../configuration/aws-s3)
 -   [Email Configuration (SMTP)](../configuration/email-setup)
 -   [Custom Domain](../configuration/custom-domain)
+-   [Subdomain Redirect Configuration](../configuration/subdomain-redirect)
 
 ### Configuration Environment Variables
 
@@ -53,12 +54,12 @@ There are dedicated configuration pages available for more detailed setup instru
 
 ### PHP Configuration Environment Variables
 
-| Variable Name               | Description                                                                                              |
-| --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `PHP_MEMORY_LIMIT`          | Maximum amount of memory a script may consume.                                                           |
-| `PHP_MAX_EXECUTION_TIME`    | Maximum time in seconds a script is allowed to run.                                                      |
-| `PHP_UPLOAD_MAX_FILESIZE`   | Maximum size of an uploaded file.                                                                        |
-| `PHP_POST_MAX_SIZE`         | Maximum size of POST data that PHP will accept.                                                          |
+| Variable Name             | Description                                         |
+| ------------------------- | --------------------------------------------------- |
+| `PHP_MEMORY_LIMIT`        | Maximum amount of memory a script may consume.      |
+| `PHP_MAX_EXECUTION_TIME`  | Maximum time in seconds a script is allowed to run. |
+| `PHP_UPLOAD_MAX_FILESIZE` | Maximum size of an uploaded file.                   |
+| `PHP_POST_MAX_SIZE`       | Maximum size of POST data that PHP will accept.     |
 
 These PHP configuration variables are particularly important when handling file uploads and processing large amounts of data. If any of these variables are not set, PHP will use its default values from the php.ini configuration. When using Docker, these values are set in the docker-compose.yml file. For non-Docker installations, you'll need to configure these values in your PHP configuration (php.ini) file.
 
@@ -66,25 +67,25 @@ These PHP configuration variables are particularly important when handling file 
 
 These variables are essential for connecting the Laravel backend to your database.
 
-| Variable Name     | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| `DB_CONNECTION`   | The database driver (e.g., `mysql`, `pgsql`).    |
-| `DB_HOST`         | The database server host (e.g., `127.0.0.1`).    |
-| `DB_PORT`         | The database server port (e.g., `3306`).         |
-| `DB_DATABASE`     | The name of the database.                        |
-| `DB_USERNAME`     | The username for connecting to the database.     |
-| `DB_PASSWORD`     | The password for the database user.              |
+| Variable Name   | Description                                   |
+| --------------- | --------------------------------------------- |
+| `DB_CONNECTION` | The database driver (e.g., `mysql`, `pgsql`). |
+| `DB_HOST`       | The database server host (e.g., `127.0.0.1`). |
+| `DB_PORT`       | The database server port (e.g., `3306`).      |
+| `DB_DATABASE`   | The name of the database.                     |
+| `DB_USERNAME`   | The username for connecting to the database.  |
+| `DB_PASSWORD`   | The password for the database user.           |
 
 ## Front-end Environment Variables
 
-| Variable Name                     | Description                                                                                                                                                                                                       |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NUXT_PUBLIC_APP_URL`             | Public facing URL of the Nuxt application.                                                                                                                                                                        |
-| `NUXT_PUBLIC_API_BASE`            | Base URL for the Laravel API.                                                                                                                                                                                     |
-| `NUXT_PUBLIC_H_CAPTCHA_SITE_KEY`  | Site key for hCaptcha integration on the front-end.                                                                                                                                                               |
-| `NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY` | Site key for reCAPTCHA integration on the front-end.                                                                                                                                                              |
-| `NUXT_API_SECRET`                 | Shared secret key between Nuxt and Laravel backend.                                                                                                                                                               |
-| `NUXT_PUBLIC_ROOT_REDIRECT_URL`   | If set, permanently redirects users visiting the root path (/), /integrations, or any non-existent (404) page to the specified URL. Useful for self-hosted subdomains to avoid exposing the default landing page. |
+| Variable Name                     | Description                                                                                                                                                                                                                                                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NUXT_PUBLIC_APP_URL`             | Public facing URL of the Nuxt application.                                                                                                                                                                                                                                                                                                       |
+| `NUXT_PUBLIC_API_BASE`            | Base URL for the Laravel API.                                                                                                                                                                                                                                                                                                                    |
+| `NUXT_PUBLIC_H_CAPTCHA_SITE_KEY`  | Site key for hCaptcha integration on the front-end.                                                                                                                                                                                                                                                                                              |
+| `NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY` | Site key for reCAPTCHA integration on the front-end.                                                                                                                                                                                                                                                                                             |
+| `NUXT_API_SECRET`                 | Shared secret key between Nuxt and Laravel backend.                                                                                                                                                                                                                                                                                              |
+| `NUXT_PUBLIC_ROOT_REDIRECT_URL`   | Permanently redirects users visiting the root path (/), /integrations, or any non-existent (404) page to the specified URL. This effectively "hides" OpnForm's public pages while keeping forms and admin functionality accessible. See [Subdomain Redirect Configuration](../configuration/subdomain-redirect) for detailed setup and examples. |
 
 import CloudVersion from "/snippets/cloud-version.mdx";
 
