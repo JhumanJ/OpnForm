@@ -24,24 +24,6 @@
       <template
         v-if="options && options.length"
       >
-        <div v-if="multiple && compVal && compVal.length" class="px-3 py-2">
-          <slot
-            name="selected"
-            :option="selectedOptions"
-            :option-name="multiple ? getSelectedOptionsNames().join(', ') : getOptionName(selectedOptions)"
-          >
-            <div class="flex items-center truncate">
-              <span
-                class="truncate"
-                :class="[
-                  theme.FlatSelectInput.fontSize,
-                ]"
-              >
-                {{ getSelectedOptionsNames().join(', ') }}
-              </span>
-            </div>
-          </slot>
-        </div>
         <div
           v-for="(option) in options"
           :key="option[optionKey]"

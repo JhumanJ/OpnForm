@@ -62,21 +62,21 @@ const options = ref([
   { 
     name: 'required', 
     label: 'Required', 
-    icon: 'ph:asterisk-bold',
-    selectedIcon: 'ph:asterisk-bold',
+    icon: 'i-ph-asterisk-bold',
+    selectedIcon: 'i-ph-asterisk-bold',
     iconClass: (isActive) => isActive ? 'text-red-500' : '',
   },
   { 
     name: 'hidden', 
     label: 'Hidden', 
-    icon: 'heroicons:eye',
-    selectedIcon: 'heroicons:eye-slash-solid',
+    icon: 'i-heroicons-eye',
+    selectedIcon: 'i-heroicons-eye-slash-solid',
   },
   { 
     name: 'disabled', 
     label: 'Disabled', 
-    icon: 'heroicons:lock-open',
-    selectedIcon: 'heroicons:lock-closed-solid',
+    icon: 'i-heroicons-lock-open',
+    selectedIcon: 'i-heroicons-lock-closed-solid',
   }
 ])
 
