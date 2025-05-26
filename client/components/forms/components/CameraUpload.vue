@@ -12,7 +12,7 @@
         { hidden: !isCapturing }, 
         theme.fileInput.minHeight, 
         theme.fileInput.borderRadius,
-        'w-full h-full object-cover border border-gray-400/30'
+        'w-full h-full object-cover'
       ]"
       webkit-playsinline
     />
@@ -22,7 +22,7 @@
         { hidden: !capturedImage },
         theme.fileInput.borderRadius,
         theme.fileInput.minHeight,
-        'w-full h-full object-cover border border-gray-400/30'
+        'w-full h-full object-cover'
       ]"
     />
     
@@ -31,23 +31,16 @@
       v-if="isCapturing && isBarcodeMode" 
       class="absolute inset-0 pointer-events-none"
     >
-      <!-- Semi-transparent overlay -->
-      <div class="absolute inset-0 bg-black/30" />
-      
       <!-- Scanning area (transparent window) -->
       <div
-        class="absolute inset-0 flex items-center justify-center"
-        style="padding-bottom: 60px;"
+        class="absolute inset-0 flex items-strech justify-center px-8 py-12"
       >
-        <div class="relative w-4/5 h-3/5">
-          <!-- Transparent window -->
-          <div class="absolute inset-0 bg-transparent border-0" />
-          
+        <div class="flex-grow w-full relative">
           <!-- Corner indicators -->
-          <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white" />
-          <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white" />
-          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white" />
-          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white" />
+          <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-md border-white" />
+          <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-md border-white" />
+          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-md border-white" />
+          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-md border-white" />
         </div>
       </div>
     </div>
@@ -322,54 +315,57 @@ export default {
       }
     },
     initZxing() {
-      if (!this.zxingReader) {
-        const hints = new Map()
-        const formats = (this.decoders || []).map(decoder => {
-          // Map decoder strings to BarcodeFormat enum values
-          switch(decoder.toLowerCase()) {
-            case 'ean_8': return BarcodeFormat.EAN_8
-            case 'ean_13': return BarcodeFormat.EAN_13
-            case 'upc_a': return BarcodeFormat.UPC_A
-            case 'upc_e': return BarcodeFormat.UPC_E
-            case 'code_39': return BarcodeFormat.CODE_39
-            case 'code_93': return BarcodeFormat.CODE_93
-            case 'code_128': return BarcodeFormat.CODE_128
-            case 'codabar': return BarcodeFormat.CODABAR
-            case 'itf': return BarcodeFormat.ITF
-            case 'qr_code': return BarcodeFormat.QR_CODE
-            case 'data_matrix': return BarcodeFormat.DATA_MATRIX
-            case 'aztec': return BarcodeFormat.AZTEC
-            case 'pdf_417': return BarcodeFormat.PDF_417
-            case 'qr_reader': return BarcodeFormat.QR_CODE
-            default: return null // Or handle unsupported formats appropriately
-          }
-        }).filter(format => format !== null)
-
-        if (formats.length > 0) {
-          hints.set(DecodeHintType.POSSIBLE_FORMATS, formats)
-        }
-
-        this.zxingReader = new BrowserMultiFormatReader(hints)
-
-        const webcamElement = document.getElementById("webcam")
-        if (webcamElement && this.zxingReader) {
-          this.zxingReader.decodeFromVideoElement(webcamElement, (result, error) => {
-            if (result) {
-              console.log('ZXing Barcode detected:', result.text)
-              this.$emit('barcodeDetected', result.text)
-              // Optionally stop the reader and camera after detection
-              // this.cancelCamera()
-            }
-            // Note: ZXing continuously tries to decode, errors are frequent and expected until a code is found.
-            // We only log errors if the reader is still active to avoid excessive console output.
-            if (error && !(error instanceof Error) && this.zxingReader) {
-                // console.error('ZXing decoding error:', error);
-            }
-          })
-        } else {
-          console.error('Webcam element not found for ZXing')
-        }
+      if (this.zxingReader) {
+        return
       }
+
+      const hints = new Map()
+      const formats = (this.decoders || []).map(decoder => {
+        // Map decoder strings to BarcodeFormat enum values
+        switch(decoder.toLowerCase()) {
+          case 'ean_8': return BarcodeFormat.EAN_8
+          case 'ean_13': return BarcodeFormat.EAN_13
+          case 'upc_a': return BarcodeFormat.UPC_A
+          case 'upc_e': return BarcodeFormat.UPC_E
+          case 'code_39': return BarcodeFormat.CODE_39
+          case 'code_93': return BarcodeFormat.CODE_93
+          case 'code_128': return BarcodeFormat.CODE_128
+          case 'codabar': return BarcodeFormat.CODABAR
+          case 'itf': return BarcodeFormat.ITF
+          case 'qr_code': return BarcodeFormat.QR_CODE
+          case 'data_matrix': return BarcodeFormat.DATA_MATRIX
+          case 'aztec': return BarcodeFormat.AZTEC
+          case 'pdf_417': return BarcodeFormat.PDF_417
+          case 'qr_reader': return BarcodeFormat.QR_CODE
+          default: return null // Or handle unsupported formats appropriately
+        }
+      }).filter(format => format !== null)
+
+      if (formats.length > 0) {
+        hints.set(DecodeHintType.POSSIBLE_FORMATS, formats)
+      }
+
+      this.zxingReader = new BrowserMultiFormatReader(hints)
+
+      const webcamElement = document.getElementById("webcam")
+      if (webcamElement && this.zxingReader) {
+        this.zxingReader.decodeFromVideoElement(webcamElement, (result, error) => {
+          if (result) {
+            console.log('ZXing Barcode detected:', result.text)
+            this.$emit('barcodeDetected', result.text)
+            // Optionally stop the reader and camera after detection
+            // this.cancelCamera()
+          }
+          // Note: ZXing continuously tries to decode, errors are frequent and expected until a code is found.
+          // We only log errors if the reader is still active to avoid excessive console output.
+          if (error && !(error instanceof Error) && this.zxingReader) {
+              console.error('ZXing decoding error:', error)
+          }
+        })
+      } else {
+        console.error('Webcam element not found for ZXing')
+      }
+      
     },
     cancelCamera() {
       this.isCapturing = false
