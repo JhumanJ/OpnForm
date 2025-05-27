@@ -4,7 +4,7 @@
     :class="[theme.fileInput.borderRadius]"
   >
     <video
-      id="webcam"
+      ref="webcamRef"
       autoplay
       playsinline
       muted
@@ -12,12 +12,12 @@
         { hidden: !isCapturing }, 
         theme.fileInput.minHeight, 
         theme.fileInput.borderRadius,
-        'w-full h-full object-cover'
+        'w-full h-full object-cover bg-gray-500'
       ]"
       webkit-playsinline
     />
     <canvas
-      id="canvas"
+      ref="canvasRef"
       :class="[
         { hidden: !capturedImage },
         theme.fileInput.borderRadius,
@@ -190,9 +190,10 @@ export default {
     }
   },
   mounted() {
-    const webcamElement = document.getElementById("webcam")
-    const canvasElement = document.getElementById("canvas")
-    this.webcam = new Webcam(webcamElement, "user", canvasElement)
+    // For regular camera mode, we still need the webcam.js setup
+    if (!this.isBarcodeMode) {
+      this.webcam = new Webcam(this.$refs.webcamRef, "user", this.$refs.canvasRef)
+    }
     this.openCameraUpload()
   },
 
@@ -207,24 +208,22 @@ export default {
         this.zxingReader = null
       }
 
-      if (this.mediaStream) {
-        this.mediaStream.getTracks().forEach(track => track.stop())
-        this.mediaStream = null
-      }
-
       if (this.webcam) {
         this.webcam.stop()
+        this.webcam = null
       }
 
-      const webcamElement = document.getElementById("webcam")
-      if (webcamElement && webcamElement.srcObject) {
-        const tracks = webcamElement.srcObject.getTracks()
+      // Clean up video element if needed
+      if (this.$refs.webcamRef && this.$refs.webcamRef.srcObject) {
+        const tracks = this.$refs.webcamRef.srcObject.getTracks()
         tracks.forEach(track => track.stop())
-        webcamElement.srcObject = null
+        this.$refs.webcamRef.srcObject = null
       }
     },
 
     async switchCamera() {
+      if (!this.isMobileDevice) return
+      
       try {
         // Stop current camera and clean up resources
         this.cleanupCurrentStream()
@@ -233,7 +232,13 @@ export default {
         this.currentFacingMode = this.currentFacingMode === 'user' ? 'environment' : 'user'
 
         // Restart camera
-        await this.openCameraUpload()
+        if (this.isBarcodeMode) {
+          setTimeout(() => {
+            this.initZxingDirect()
+          }, 500)
+        } else {
+          await this.openCameraUpload()
+        }
       } catch (error) {
         console.error('Error switching camera:', error)
         this.cameraPermissionStatus = "unknown"
@@ -245,15 +250,18 @@ export default {
       this.capturedImage = null
 
       try {
-        const webcamElement = document.getElementById("webcam")
-        const canvasElement = document.getElementById("canvas")
+        if (this.isBarcodeMode) {
+          // For barcode mode, let ZXing handle everything
+          this.cameraPermissionStatus = "allowed"
+          setTimeout(() => {
+            this.initZxingDirect()
+          }, 500)
+          return
+        }
 
+        // Regular camera mode - use existing logic
         // Determine the facing mode to use
         let facingMode = this.currentFacingMode
-        if (this.isBarcodeMode && this.currentFacingMode === 'user') {
-          // Force environment mode for barcode scanning
-          facingMode = 'environment'
-        }
 
         // Create constraints based on device capabilities
         const constraints = {
@@ -286,25 +294,26 @@ export default {
         }
 
         this.mediaStream = stream  // Store the stream reference
-        webcamElement.srcObject = stream
+        this.$refs.webcamRef.srcObject = stream
         
         this.webcam = new Webcam(
-          webcamElement,
+          this.$refs.webcamRef,
           facingMode,
-          canvasElement
+          this.$refs.canvasRef
         )
         
         await new Promise((resolve) => {
-          webcamElement.onloadedmetadata = () => {
-            webcamElement.play()
-            resolve()
+          this.$refs.webcamRef.onloadedmetadata = () => {
+            this.$refs.webcamRef.play().then(() => {
+              resolve()
+            }).catch(err => {
+              console.error('Error playing video:', err)
+              resolve() // Continue anyway
+            })
           }
         })
 
         this.cameraPermissionStatus = "allowed"
-        if (this.isBarcodeMode) {
-          this.initZxing()
-        }
       } catch (err) {
         console.error('Camera error:', err)
         if (err.name === 'NotAllowedError' || err.toString().includes('Permission denied')) {
@@ -314,17 +323,23 @@ export default {
         }
       }
     },
-    initZxing() {
+    initZxingDirect() {
       if (this.zxingReader) {
-        return
+        this.zxingReader.reset()
+        this.zxingReader = null
       }
 
       const hints = new Map()
       const formats = (this.decoders || []).map(decoder => {
         // Map decoder strings to BarcodeFormat enum values
-        switch(decoder.toLowerCase()) {
+        // Remove _reader suffix for mapping
+        const cleanDecoder = decoder.replace('_reader', '').toLowerCase()
+        
+        switch(cleanDecoder) {
           case 'ean_8': return BarcodeFormat.EAN_8
+          case 'ean': 
           case 'ean_13': return BarcodeFormat.EAN_13
+          case 'upc':
           case 'upc_a': return BarcodeFormat.UPC_A
           case 'upc_e': return BarcodeFormat.UPC_E
           case 'code_39': return BarcodeFormat.CODE_39
@@ -332,12 +347,14 @@ export default {
           case 'code_128': return BarcodeFormat.CODE_128
           case 'codabar': return BarcodeFormat.CODABAR
           case 'itf': return BarcodeFormat.ITF
+          case 'qr':
           case 'qr_code': return BarcodeFormat.QR_CODE
           case 'data_matrix': return BarcodeFormat.DATA_MATRIX
           case 'aztec': return BarcodeFormat.AZTEC
           case 'pdf_417': return BarcodeFormat.PDF_417
-          case 'qr_reader': return BarcodeFormat.QR_CODE
-          default: return null // Or handle unsupported formats appropriately
+          default: 
+            console.warn('Unsupported barcode format:', decoder)
+            return null
         }
       }).filter(format => format !== null)
 
@@ -347,25 +364,39 @@ export default {
 
       this.zxingReader = new BrowserMultiFormatReader(hints)
 
-      const webcamElement = document.getElementById("webcam")
-      if (webcamElement && this.zxingReader) {
-        this.zxingReader.decodeFromVideoElement(webcamElement, (result, error) => {
-          if (result) {
-            console.log('ZXing Barcode detected:', result.text)
-            this.$emit('barcodeDetected', result.text)
-            // Optionally stop the reader and camera after detection
-            // this.cancelCamera()
-          }
-          // Note: ZXing continuously tries to decode, errors are frequent and expected until a code is found.
-          // We only log errors if the reader is still active to avoid excessive console output.
-          if (error && !(error instanceof Error) && this.zxingReader) {
-              console.error('ZXing decoding error:', error)
-          }
-        })
-      } else {
-        console.error('Webcam element not found for ZXing')
+      // Use simple constraints approach instead of device enumeration
+      const facingMode = this.isMobileDevice && this.currentFacingMode === 'user' ? 'environment' : this.currentFacingMode
+      const constraints = {
+        audio: false,
+        video: {
+          facingMode: facingMode,
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
       }
-      
+
+      // Use ZXing's decodeFromConstraints method
+      this.zxingReader.decodeFromConstraints(constraints, this.$refs.webcamRef, (result, error) => {
+        if (result) {
+          this.$emit('barcodeDetected', result.text)
+        }
+        // Don't log NotFoundException errors - they're expected during scanning
+        // Only log other types of errors
+        else if (error && error.name && !error.name.includes('NotFoundException') && !error.message?.includes('No MultiFormat Readers')) {
+          console.error('ZXing decoding error:', error.name, error.message)
+        }
+      })
+      .then(() => {
+        this.cameraPermissionStatus = "allowed"
+      })
+      .catch(err => {
+        console.error('Camera error in ZXing Direct:', err)
+        if (err.name === 'NotAllowedError' || err.toString().includes('Permission denied')) {
+          this.cameraPermissionStatus = "blocked"
+        } else {
+          this.cameraPermissionStatus = "unknown"
+        }
+      })
     },
     cancelCamera() {
       this.isCapturing = false
@@ -374,6 +405,10 @@ export default {
       this.$emit("stopWebcam")
     },
     processCapturedImage() {
+      if (!this.webcam) {
+        return
+      }
+      
       this.capturedImage = this.webcam.snap()
       this.isCapturing = false
       this.webcam.stop()
