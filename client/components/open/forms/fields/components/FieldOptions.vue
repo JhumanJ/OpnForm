@@ -635,7 +635,7 @@ export default {
   },
   data() {
     return {
-      typesWithoutPlaceholder: ['date', 'checkbox', 'files', 'payment'],
+      typesWithoutPlaceholder: ['date', 'checkbox', 'files', 'payment', 'matrix', 'signature', 'barcode', 'scale', 'slider', 'rating'],
       editorToolbarCustom: [
         ['bold', 'italic', 'underline', 'link']
       ],
