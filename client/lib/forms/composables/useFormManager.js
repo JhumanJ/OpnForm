@@ -19,11 +19,17 @@ import { cloneDeep } from 'lodash'
  * Initializes and coordinates various form composables (Structure, Init, Validation, etc.)
  * based on the provided form configuration and mode.
  */
-export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options = {}) {
+export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, options = {}) {
   // --- Reactive State ---
   const config = ref(initialFormConfig) // Use ref for potentially replaceable config
   const form = useForm() // Core vForm instance
-  const strategy = computed(() => createFormModeStrategy(mode)) // Strategy based on mode
+  
+  // Make mode reactive - accept either a ref or a static value
+  const mode = options.mode && typeof options.mode === 'object' && 'value' in options.mode 
+    ? options.mode 
+    : ref(initialMode)
+  
+  const strategy = computed(() => createFormModeStrategy(mode.value)) // Strategy based on reactive mode
   
   // Use the passed darkMode ref if it's a ref, otherwise create a new ref
   const darkMode = options.darkMode && typeof options.darkMode === 'object' && 'value' in options.darkMode 
@@ -117,7 +123,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       const paymentBlock = structure.currentPagePaymentBlock.value
       if (paymentBlock) {
         // In editor/test mode (not LIVE), skip payment validation
-        const isPaymentRequired = mode === FormMode.LIVE ? !!paymentBlock.required : false
+        const isPaymentRequired = mode.value === FormMode.LIVE ? !!paymentBlock.required : false
         
         // Pass required refs if Stripe needs them now (unlikely for just intent creation)
         const paymentResult = await payment.processPayment(paymentBlock, isPaymentRequired)
@@ -179,7 +185,7 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
       if (paymentBlock) {
         
         // In editor/test mode (not LIVE), skip payment validation
-        const isPaymentRequired = mode === FormMode.LIVE ? !!paymentBlock.required : false
+        const isPaymentRequired = mode.value === FormMode.LIVE ? !!paymentBlock.required : false
         
         const paymentResult = await payment.processPayment(paymentBlock, isPaymentRequired)
         
@@ -316,6 +322,8 @@ export function useFormManager(initialFormConfig, mode = FormMode.LIVE, options 
     // UI-related properties
     darkMode,       // Dark mode setting
     setDarkMode: (isDark) => { darkMode.value = isDark }, // Method to update dark mode
+    mode,           // Form mode setting (ref)
+    setMode: (newMode) => { mode.value = newMode }, // Method to update form mode
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,
