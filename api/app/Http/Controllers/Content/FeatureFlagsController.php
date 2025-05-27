@@ -14,6 +14,7 @@ class FeatureFlagsController extends Controller
                 'self_hosted' => config('app.self_hosted', true),
                 'custom_domains' => config('custom-domains.enabled', false),
                 'ai_features' => !empty(config('services.openai.api_key')),
+                'version' => $this->getAppVersion(),
 
                 'billing' => [
                     'enabled' => !empty(config('cashier.key')) && !empty(config('cashier.secret')),
@@ -43,5 +44,18 @@ class FeatureFlagsController extends Controller
         });
 
         return response()->json($featureFlags);
+    }
+
+    /**
+     * Get the application version from Docker environment or fallback
+     */
+    private function getAppVersion(): ?string
+    {
+        // Only return version for self-hosted installations
+        if (!config('app.self_hosted', true)) {
+            return null;
+        }
+
+        return config('app.docker_version');
     }
 }
