@@ -60,6 +60,7 @@ jobs:
           build-args: |
             APP_ENV=${{ env.VERSION == 'dev' && 'local' || 'production' }}
             COMPOSER_FLAGS=${{ env.VERSION == 'dev' && '--optimize-autoloader --no-interaction' || '--no-dev --optimize-autoloader --no-interaction' }}
+            APP_VERSION=${{ env.VERSION }}
           tags: ${{ env.API_TAGS }}
           cache-from: type=registry,ref=${{secrets.DOCKER_API_REPO}}:dev
           cache-to: type=inline
@@ -71,6 +72,8 @@ jobs:
           file: docker/Dockerfile.client
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            APP_VERSION=${{ env.VERSION }}
           tags: ${{ env.UI_TAGS }}
           cache-from: type=registry,ref=${{secrets.DOCKER_UI_REPO}}:dev
           cache-to: type=inline

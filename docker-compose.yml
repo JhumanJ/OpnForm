@@ -1,7 +1,11 @@
 ---
 services:
   api: &api-environment
-    image: jhumanj/opnform-api:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+      args:
+        APP_VERSION: "local-test-1.0.0"
     container_name: opnform-api
     volumes: &api-environment-volumes
       - opnform_storage:/usr/share/nginx/html/storage:rw
@@ -62,7 +66,11 @@ services:
       start_period: 70s # Allow time for first scheduled run and cache write
 
   ui:
-    image: jhumanj/opnform-client:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
+      args:
+        APP_VERSION: "local-test-1.0.0"
     container_name: opnform-client
     env_file:
       - ./client/.env

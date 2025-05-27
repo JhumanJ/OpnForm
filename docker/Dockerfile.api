@@ -27,6 +27,9 @@ RUN composer install --optimize-autoloader --no-interaction \
 # Final stage - smaller runtime image
 FROM php:8.3-fpm-alpine
 
+# Accept version build argument
+ARG APP_VERSION=unknown
+
 # Install runtime dependencies
 RUN apk add --no-cache \
     libzip \
@@ -74,6 +77,9 @@ RUN mkdir -p storage/framework/sessions \
 
 # Copy the entire application from the builder stage
 COPY --from=builder /app/ ./
+
+# Set version as environment variable (more reliable than file approach)
+ENV APP_VERSION_DOCKER=$APP_VERSION
 
 # Setup entrypoint
 COPY docker/php-fpm-entrypoint /usr/local/bin/opnform-entrypoint
