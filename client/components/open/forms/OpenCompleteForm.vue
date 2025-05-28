@@ -246,6 +246,8 @@ const isAutoSubmit = ref(import.meta.client && window.location.href.includes('au
 
 // Create a reactive reference directly from the prop
 const darkModeRef = toRef(props, 'darkMode')
+// Create a reactive reference for the mode prop
+const modeRef = toRef(props, 'mode')
 
 // Add back the local theme computation
 const theme = computed(() => {
@@ -258,7 +260,8 @@ const theme = computed(() => {
 let formManager = null
 if (props.form) {
   formManager = useFormManager(props.form, props.mode, {
-    darkMode: darkModeRef
+    darkMode: darkModeRef,
+    mode: modeRef
   })
   formManager.initialize({
     submissionId: submissionId.value,
