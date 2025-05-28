@@ -47,6 +47,14 @@ class IntegrationLogicRule implements DataAwareRule, ValidationRule
             return;
         }
 
+        $typeField = $condition['value']['property_meta']['type'];
+        $operator = $condition['value']['operator'];
+
+        // If operator has no format and no expected_type, it means it doesn't need input
+        if (!isset(FormPropertyLogicRule::getConditionMapping()[$typeField]['comparators'][$operator]['expected_type'])) {
+            return;
+        }
+
         if (!isset($condition['value']['value'])) {
             $this->isConditionCorrect = false;
             $this->conditionErrors[] = 'missing condition value';
@@ -54,8 +62,6 @@ class IntegrationLogicRule implements DataAwareRule, ValidationRule
             return;
         }
 
-        $typeField = $condition['value']['property_meta']['type'];
-        $operator = $condition['value']['operator'];
         $value = $condition['value']['value'];
 
         if (!isset(FormPropertyLogicRule::getConditionMapping()[$typeField])) {
