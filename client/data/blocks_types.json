@@ -207,8 +207,21 @@
     "text_class": "text-pink-900",
     "is_input": true,
     "default_values": {
-      "decoders": ["ean_reader", "ean_8_reader"]
+      "decoders": ["qr_reader", "ean_reader", "ean_8_reader"]
     }
+  },
+  "qrcode": {
+    "name": "qrcode",
+    "title": "QR Code Reader",
+    "icon": "i-material-symbols-qr-code-scanner-rounded", 
+    "default_block_name": "Scan QR Code",
+    "bg_class": "bg-pink-100",
+    "text_class": "text-pink-900",
+    "is_input": true,
+    "default_values": {
+      "decoders": ["qr_reader", "ean_reader", "ean_8_reader"]
+    },
+    "actual_input": "barcode"
   },
   "payment": {
     "name": "payment",
