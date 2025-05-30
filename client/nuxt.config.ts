@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   ],
 
   build: {
-      transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad"],
+      transpile: ["vue-notion", "query-builder-vue-3", "vue-signature-pad", "@zxing/library"],
   },
 
   i18n: {

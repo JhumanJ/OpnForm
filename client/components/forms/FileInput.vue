@@ -10,12 +10,14 @@
         theme.fileInput.minHeight
       ]"
     >
-      <camera-upload
+      <ClientOnly>
+      <CameraUpload
         v-if="cameraUpload"
         :theme="theme"
         @upload-image="cameraFileUpload"
         @stop-webcam="isInWebcam=false"
       />
+      </ClientOnly>
     </div>
     <div
       v-else

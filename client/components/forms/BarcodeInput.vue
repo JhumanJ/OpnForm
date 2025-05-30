@@ -8,12 +8,14 @@
       v-if="isScanning"
       class="relative w-full"
     >
+      <ClientOnly>
       <CameraUpload
         :is-barcode-mode="true"
         :decoders="decoders"
         @stop-webcam="stopScanning"
         @barcode-detected="handleBarcodeDetected"
       />
+      </ClientOnly>
     </div>
 
     <div
