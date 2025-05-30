@@ -175,35 +175,42 @@ export const useWorkingFormStore = defineStore("working_form", {
       }
       if (!this.content) return
       
-      const block = blocksTypes[type]
-      if (block?.self_hosted !== undefined && !block.self_hosted && useFeatureFlag('self_hosted')) {
+      const originalBlockDefinition = blocksTypes[type]
+      const effectiveType = originalBlockDefinition?.actual_input || type
+      const effectiveBlockDefinition = blocksTypes[effectiveType]
+
+      if (originalBlockDefinition?.self_hosted !== undefined && !originalBlockDefinition.self_hosted && useFeatureFlag('self_hosted')) {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
         return
       }
-
-      if (block?.auth_required && !useAuthStore().check) {
+      if (originalBlockDefinition?.auth_required && !useAuthStore().check) {
         useAlert().error('Please login first to add this block')
         return
       }
 
-      if (block?.max_count !== undefined) {
+      if (originalBlockDefinition?.max_count !== undefined) {
         const currentCount = this.content.properties.filter(prop => prop && prop.type === type).length
-        if (currentCount >= block.max_count) {
-          useAlert().error(`Only ${block.max_count} '${block.title}' block(s) allowed per form.`)
+        if (currentCount >= originalBlockDefinition.max_count) {
+          useAlert().error(`Only ${originalBlockDefinition.max_count} '${originalBlockDefinition.title}' block(s) allowed per form.`)
           return
         }
         openSettings = true 
       }
       
-      this.blockForm.type = type
-      this.blockForm.name = blocksTypes[type]?.default_block_name || 'New Block'
+      this.blockForm.type = effectiveType
+      this.blockForm.name = effectiveBlockDefinition?.default_block_name || 'New Block'
       const newBlock = this.prefillDefault({ ...this.blockForm.data() })
       newBlock.id = generateUUID()
       newBlock.hidden = false
       newBlock.help_position = "below_input"
 
-      if (blocksTypes[type]?.default_values) {
-        Object.assign(newBlock, blocksTypes[type].default_values)
+      // If the type was changed due to actual_input, apply original type's change settings
+      if (originalBlockDefinition?.actual_input && originalBlockDefinition?.type_change_settings) {
+        Object.assign(newBlock, originalBlockDefinition.type_change_settings)
+      }
+
+      if (effectiveBlockDefinition?.default_values) {
+        Object.assign(newBlock, effectiveBlockDefinition.default_values)
       }
 
       const insertIndex = this.determineInsertIndex(index)
