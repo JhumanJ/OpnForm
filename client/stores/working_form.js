@@ -260,5 +260,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       this.setProperties(newFields)
     }
   },
-  history: {}
+  history: {
+    ignoreKeys: ['structureService', 'blockForm']
+  }
 })
