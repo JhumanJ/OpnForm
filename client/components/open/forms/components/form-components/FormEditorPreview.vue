@@ -18,7 +18,7 @@
       class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
-      <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 px-4 flex items-center gap-x-1.5">
+      <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
         <div class="bg-red-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-yellow-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-green-500 rounded-full w-2.5 h-2.5" />
