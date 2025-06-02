@@ -182,6 +182,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Select / Multi Select field
             'properties.*.allow_creation' => 'boolean|nullable',
             'properties.*.without_dropdown' => 'boolean|nullable',
+            'properties.*.min_selection' => 'integer|nullable|min:0',
+            'properties.*.max_selection' => 'integer|nullable|min:1',
 
             // Advanced Options
             'properties.*.generates_uuid' => 'boolean|nullable',

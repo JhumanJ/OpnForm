@@ -344,6 +344,12 @@ function inputProperties(field) {
     inputProperties.multiple = (field.type === 'multi_select')
     inputProperties.allowCreation = (field.allow_creation === true)
     inputProperties.searchable = (inputProperties.options.length > 4)
+    
+    // Add min/max selection constraints for multi_select
+    if (field.type === 'multi_select') {
+      inputProperties.minSelection = field.min_selection || null
+      inputProperties.maxSelection = field.max_selection || null
+    }
   } else if (field.type === 'date') {
     inputProperties.dateFormat = field.date_format
     inputProperties.timeFormat = field.time_format
