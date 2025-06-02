@@ -1,10 +1,10 @@
 <template>
-  <input-wrapper v-bind="inputWrapperProps">
+  <InputWrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
 
-    <span class="inline-block w-full rounded-md shadow-sm">
+    <span class="inline-block w-full rounded-md shadow-xs">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -12,7 +12,7 @@
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
         :class="[
-          theme.default.input,
+          theme.default.input, 
           theme.default.spacing.horizontal,
           theme.default.spacing.vertical,
           theme.default.fontSize,
@@ -24,52 +24,37 @@
       >
         <div
           v-if="currentUrl == null"
-          class="text-gray-600 dark:text-gray-400"
+          class="text-gray-600 dark:text-gray-400 flex justify-center"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 inline"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            />
-          </svg>
-          Upload image
+          <Icon
+            name="heroicons:cloud-arrow-up"
+            class="h-5 w-5"
+          />
+          <span class="ml-2">
+            Upload
+          </span>
+
         </div>
         <div
           v-else
-          class="h-6 text-gray-600 dark:text-gray-400 flex"
+          class=" text-gray-600 dark:text-gray-400 flex"
         >
           <div class="flex-grow">
             <img
-              :src="currentUrl"
-              class="h-6 rounded shadow-md"
+              :src="tmpFile ?? currentUrl"
+              class="h-5 rounded shadow-md border"
             >
           </div>
           <a
             href="#"
-            class="hover:text-nt-blue flex"
+            class="text-gray-500 hover:text-red-500 flex items-center"
             @click.prevent="clearUrl"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              /></svg></a>
+            <Icon
+              name="heroicons:trash"
+              class="h-5 w-5"
+            />
+          </a>
         </div>
       </button>
     </span>
@@ -105,7 +90,7 @@
                 v-if="loading"
                 class="text-gray-600 dark:text-gray-400"
               >
-                <Loader class="h-6 w-6 mx-auto m-10" />
+                <loader class="h-5 w-5 mx-auto m-10" />
                 <p class="text-center mt-6">
                   Uploading your file...
                 </p>
@@ -127,20 +112,10 @@
                     accept="image/png, image/gif, image/jpeg, image/bmp, image/svg+xml"
                     @change="manualFileUpload"
                   >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="mx-auto h-24 w-24 text-gray-200"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    />
-                  </svg>
+                  <Icon
+                    name="heroicons:cloud-arrow-up"
+                    class="x-auto h-24 w-24 text-gray-200"
+                  />
                   <p class="mt-5 text-sm text-gray-600">
                     <button
                       type="button"
@@ -161,7 +136,7 @@
         </div>
       </div>
     </modal>
-  </input-wrapper>
+  </InputWrapper>
 </template>
 
 <script>

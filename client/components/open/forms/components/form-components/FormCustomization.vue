@@ -17,70 +17,84 @@
       :form="form"
       label="Form Theme"
     />
+
     <color-input
       name="color"
       :form="form"
+      label="Accent Color"
+      class="my-4"
     >
-      <template #help>
-        <InputHelp>
-          <span class="text-gray-500">
-            Color (for buttons & inputs border) - <a
-              class="text-blue-500"
-              href="#"
-              @click.prevent="form.color = DEFAULT_COLOR"
-            >Reset</a>
-          </span>
-        </InputHelp>
+      <template #label>
+        <InputLabel>Accent Color - <a
+          href="#" class="text-blue-500"
+          @click.prevent="form.color = DEFAULT_COLOR"
+        >Reset</a></InputLabel>
       </template>
     </color-input>
-    <select-input
-      name="dark_mode"
-      :options="[
-        { name: 'Auto', value: 'auto' },
-        { name: 'Light Mode', value: 'light' },
-        { name: 'Dark Mode', value: 'dark' },
-      ]"
+
+    <OptionSelectorInput
+      v-model="form.dark_mode"
       :form="form"
+      name="dark_mode"
       label="Color Mode"
-      help="Use Auto to use device system preferences"
+      :options="[
+        { name: 'auto', label: 'System', icon: 'i-heroicons-computer-desktop' },
+        { name: 'light', label: 'Light', icon: 'i-heroicons-sun' },
+        { name: 'dark', label: 'Dark', icon: 'i-heroicons-moon' },
+      ]"
+      :multiple="false"
+      :columns="3"
+      class="mb-4"
     />
 
     <EditorSectionHeader
       icon="octicon:typography-16"
-      title="Typography"
+      title="Text & Language"
     />
-    <template v-if="useFeatureFlag('services.google.fonts')">
-      <label class="text-gray-700 font-medium text-sm">Font Style</label>
-      <v-button
-        color="white"
-        class="w-full mb-4"
-        size="small"
-        @click="showGoogleFontPicker = true"
-      >
-        <span :style="{ 'font-family': (form.font_family?form.font_family+' !important':null) }">
-          {{ form.font_family || 'Default' }}
-        </span>
-      </v-button>
-      <GoogleFontPicker
-        :show="showGoogleFontPicker"
-        :font="form.font_family || null"
-        @close="showGoogleFontPicker=false"
-        @apply="onApplyFont"
-      />
-    </template>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex-grow my-1" v-if="useFeatureFlag('services.google.fonts')">
+        <label class="text-gray-700 font-semibold text-sm mb-1 block">Font Family</label>
+        <v-button
+          color="white"
+          class="w-full py-1.5"
+          size="small"
+          @click="showGoogleFontPicker = true"
+        >
+          <span :style="{ 'font-family': (form.font_family ? form.font_family + ' !important' : null) }">
+            {{ form.font_family || 'Default' }}
+          </span>
+        </v-button>
+        <GoogleFontPicker
+          :show="showGoogleFontPicker"
+          :font="form.font_family || null"
+          @close="showGoogleFontPicker = false"
+          @apply="onApplyFont"
+        />
+      </div>
+
+      <div class="flex-grow">
+        <select-input
+          name="language"
+          searchable
+          :options="availableLocales"
+          :form="form"
+          label="Language"
+        />
+      </div>
+    </div>
+
+    <ToggleSwitchInput
+      name="layout_rtl"
+      :form="form"
+      class="mt-4"
+      label="Right-to-Left Layout"
+    />
+    
     <toggle-switch-input
       name="uppercase_labels"
       :form="form"
-      label="Uppercase Input Labels"
-    />
-
-    <select-input
-      name="language"
       class="mt-4"
-      searchable
-      :options="availableLocales"
-      :form="form"
-      label="Form Language"
+      label="Uppercase Input Labels"
     />
 
     <EditorSectionHeader
@@ -88,74 +102,87 @@
       title="Layout & Sizing"
     />
     <div class="flex space-x-4 justify-stretch">
-      <select-input
-        name="size"
-        class="flex-grow"
-        :options="[
-          { name: 'Small', value: 'sm' },
-          { name: 'Medium', value: 'md' },
-          { name: 'Large', value: 'lg' },
-        ]"
-        :form="form"
-        label="Input Size"
-      />
+      <div class="flex-grow">
+        <OptionSelectorInput
+          seamless
+          label="Input Size"
+          v-model="form.size"
+          :form="form"
+          name="size"
+          :options="[
+            { name: 'sm', label:'S'},
+            { name: 'md', label:'M' },
+            { name: 'lg', label:'L' },
+          ]"
+          :multiple="false"
+          :columns="3"
+          class="mb-4"
+        />
+      </div>
 
-      <select-input
-        name="border_radius"
-        class="flex-grow"
-        :options="[
-          { name: 'None', value: 'none' },
-          { name: 'Small', value: 'small' },
-          { name: 'Full', value: 'full' },
-        ]"
-        :form="form"
-        label="Input Roundness"
-      />
+      <div class="flex-grow">
+        <OptionSelectorInput
+          label="Input Roundness"
+          v-model="form.border_radius"
+          seamless
+          :form="form"
+          name="border_radius"
+          :options="[
+            { name: 'none', icon: 'i-tabler-border-corner-square' },
+            { name: 'small', icon: 'i-tabler-border-corner-rounded' },
+            { name: 'full', icon: 'i-tabler-border-corner-pill' },
+          ]"
+          :multiple="false"
+          :columns="3"
+          class="mb-4"
+        />
+      </div>
     </div>
-    <select-input
-      name="width"
-      :options="[
-        { name: 'Centered', value: 'centered' },
-        { name: 'Full Width', value: 'full' },
-      ]"
-      :form="form"
+
+    <OptionSelectorInput
+      v-model="form.width"
       label="Form Width"
-      help="Useful when embedding your form"
-    />
-    
-    <ToggleSwitchInput
-      name="layout_rtl"
       :form="form"
-      class="mt-4"
-      label="Right-to-Left Layout"
-      help="Adjusts layout for RTL languages"
+      name="width"
+      seamless
+      :options="[
+        { name: 'centered', label: 'Centered' },
+        { name: 'full', label: 'Full Width' },
+      ]"
+      :multiple="false"
+      :columns="2"
+      class="mb-4 w-2/3"
     />
 
     <EditorSectionHeader
       icon="heroicons:tag-16-solid"
       title="Branding & Media"
     />
-    <image-input
-      name="logo_picture"
-      :form="form"
-      label="Logo"
-      help="Not visible when form is embedded"
-      :required="false"
-    />
-    <image-input
-      name="cover_picture"
-      :form="form"
-      label="Cover image"
-      help="Not visible when form is embedded"
-    />
+    <div class="grid grid-cols-2 gap-4">
+      <image-input
+        name="logo_picture"
+        :form="form"
+        label="Logo"
+        :required="false"
+      />
+
+      <image-input
+        name="cover_picture"
+        :form="form"
+        label="Cover (~1500px)"
+        :required="false"
+      />
+    </div>
+
     <toggle-switch-input
       name="no_branding"
       :form="form"
+      class="mt-4"
       @update:model-value="onChangeNoBranding"
     >
       <template #label>
         <span class="text-sm">
-          Remove OpnForm Branding
+          Hide OpnForm Branding
         </span>
         <pro-tag
           upgrade-modal-title="Upgrade today to remove OpnForm branding"
@@ -182,7 +209,7 @@
       name="transparent_background"
       :form="form"
       label="Transparent Background"
-      help="Only applies when form is embedded"
+      help="When form is embedded"
     />
     <toggle-switch-input
       name="confetti_on_submission"
