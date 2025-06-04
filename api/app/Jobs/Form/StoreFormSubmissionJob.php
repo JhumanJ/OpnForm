@@ -179,9 +179,9 @@ class StoreFormSubmissionJob implements ShouldQueue
                 }
             } else {
                 // Standard field processing (text, ID generation, etc.)
-                if ($field['type'] == 'text' && isset($field['generates_uuid']) && $field['generates_uuid']) {
+                if (!$answerValue && $field['type'] == 'text' && isset($field['generates_uuid']) && $field['generates_uuid']) {
                     $finalData[$field['id']] = ($this->form->is_pro) ? Str::uuid()->toString() : 'Please upgrade your OpenForm subscription to use our ID generation features';
-                } elseif ($field['type'] == 'text' && isset($field['generates_auto_increment_id']) && $field['generates_auto_increment_id']) {
+                } elseif (!$answerValue && $field['type'] == 'text' && isset($field['generates_auto_increment_id']) && $field['generates_auto_increment_id']) {
                     $finalData[$field['id']] = ($this->form->is_pro) ? (string) ($this->form->submissions_count + 1) : 'Please upgrade your OpenForm subscription to use our ID generation features';
                 } else {
                     $finalData[$field['id']] = $answerValue;
