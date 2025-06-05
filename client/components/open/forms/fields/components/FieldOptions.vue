@@ -501,8 +501,15 @@
       </div>
 
       <!--    Placeholder    -->
+      <text-area-input
+        v-if="hasPlaceholder && field.type === 'text' && field.multi_lines"
+        name="placeholder"
+        class="mt-3"
+        :form="field"
+        label="Empty Input Text (Placeholder)"
+      />
       <text-input
-        v-if="hasPlaceholder"
+        v-else-if="hasPlaceholder"
         name="placeholder"
         class="mt-3"
         :form="field"
