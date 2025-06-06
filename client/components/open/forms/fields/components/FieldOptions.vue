@@ -221,6 +221,16 @@
         help="Hide input content with * for privacy"
         @update:model-value="onFieldSecretInputChange"
       />
+
+      <text-input
+        v-if="!field.multi_lines"
+        name="input_mask"
+        class="mt-3"
+        :form="field"
+        label="Input Mask Pattern"
+        placeholder="(999) 999-9999"
+        help="Format: 9=number, a=letter, *=both. Examples: (999) 999-9999, 999-99-9999, a*-999"
+      />
     </div>
 
     <!--   Date Options   -->

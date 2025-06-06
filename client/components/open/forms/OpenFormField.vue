@@ -318,6 +318,9 @@ function inputProperties(field) {
     locale: (form.value?.language) ? form.value.language : 'en'
   }
 
+  if(field.type === 'text' && field.input_mask) {
+    inputProperties.mask = field.input_mask
+  }
 
   if (field.type === 'matrix') {
     inputProperties.rows = field.rows
