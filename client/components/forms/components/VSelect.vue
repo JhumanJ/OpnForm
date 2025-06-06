@@ -172,9 +172,13 @@
               theme.SelectInput.spacing.horizontal,
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
+              { 
+                'opacity-50 cursor-not-allowed': isOptionDisabled(item),
+                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !isOptionDisabled(item)
+              }
             ]"
-            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
-            @click="select(item)"
+            class="text-gray-900 select-none relative group rounded focus:outline-none"
+            @click="isOptionDisabled(item) ? null : select(item)"
           >
             <slot
               name="option"
@@ -249,7 +253,9 @@ export default {
       }
     },
     allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    minSelection: { type: Number, default: null },
+    maxSelection: { type: Number, default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
@@ -297,6 +303,14 @@ export default {
     },
     isEmpty () {
       return this.multiple ? !this.modelValue || this.modelValue.length === 0 : !this.modelValue
+    },
+    selectedCount () {
+      if (!this.multiple || !Array.isArray(this.modelValue)) return 0
+      return this.modelValue.length
+    },
+    maxSelectionReached () {
+      if (!this.multiple || !this.maxSelection) return false
+      return this.selectedCount >= this.maxSelection
     }
   },
   watch: {
@@ -402,6 +416,12 @@ export default {
         this.select(newItem)
         this.searchTerm = ''
       }
+    },
+    isOptionDisabled (option) {
+      if (!this.multiple || !this.maxSelection) return false
+      // Allow deselection of already selected options
+      const isSelected = this.isSelected(option)
+      return !isSelected && this.maxSelectionReached
     }
   }
 }

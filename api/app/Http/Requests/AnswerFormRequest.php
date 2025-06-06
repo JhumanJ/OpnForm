@@ -118,6 +118,15 @@ class AnswerFormRequest extends FormRequest
             $propertyId = $property['id'];
             if (in_array($property['type'], ['multi_select'])) {
                 $rules[] = 'array';
+
+                // Add min/max selection constraints for multi_select
+                if (isset($property['min_selection']) && $property['min_selection'] > 0) {
+                    $rules[] = 'min:' . $property['min_selection'];
+                }
+                if (isset($property['max_selection']) && $property['max_selection'] > 0) {
+                    $rules[] = 'max:' . $property['max_selection'];
+                }
+
                 $this->requestRules[$propertyId . '.*'] = $this->getPropertyRules($property);
             } else {
                 $rules = array_merge($rules, $this->getPropertyRules($property));
@@ -178,6 +187,14 @@ class AnswerFormRequest extends FormRequest
             }
             if ($property['type'] == 'rating') {
                 $messages[$property['id'] . '.min'] = 'A rating must be selected';
+            }
+            if ($property['type'] == 'multi_select') {
+                if (isset($property['min_selection']) && $property['min_selection'] > 0) {
+                    $messages[$property['id'] . '.min'] = 'Please select at least ' . $property['min_selection'] . ' options';
+                }
+                if (isset($property['max_selection']) && $property['max_selection'] > 0) {
+                    $messages[$property['id'] . '.max'] = 'Please select no more than ' . $property['max_selection'] . ' options';
+                }
             }
         }
 
