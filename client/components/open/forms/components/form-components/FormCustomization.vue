@@ -101,42 +101,37 @@
       icon="heroicons:rectangle-stack-16-solid"
       title="Layout & Sizing"
     />
-    <div class="flex space-x-4 justify-stretch">
-      <div class="flex-grow">
-        <OptionSelectorInput
-          seamless
-          label="Input Size"
-          v-model="form.size"
-          :form="form"
-          name="size"
-          :options="[
-            { name: 'sm', label:'S'},
-            { name: 'md', label:'M' },
-            { name: 'lg', label:'L' },
-          ]"
-          :multiple="false"
-          :columns="3"
-          class="mb-4"
-        />
-      </div>
-
-      <div class="flex-grow">
-        <OptionSelectorInput
-          label="Input Roundness"
-          v-model="form.border_radius"
-          seamless
-          :form="form"
-          name="border_radius"
-          :options="[
-            { name: 'none', icon: 'i-tabler-border-corner-square' },
-            { name: 'small', icon: 'i-tabler-border-corner-rounded' },
-            { name: 'full', icon: 'i-tabler-border-corner-pill' },
-          ]"
-          :multiple="false"
-          :columns="3"
-          class="mb-4"
-        />
-      </div>
+    <div class="grid grid-cols-2 gap-4">
+      <OptionSelectorInput
+        seamless
+        label="Input Size"
+        v-model="form.size"
+        :form="form"
+        name="size"
+        :options="[
+          { name: 'sm', label:'S'},
+          { name: 'md', label:'M' },
+          { name: 'lg', label:'L' },
+        ]"
+        :multiple="false"
+        :columns="3"
+        class="mb-4"
+      />
+      <OptionSelectorInput
+        label="Input Roundness"
+        v-model="form.border_radius"
+        seamless
+        :form="form"
+        name="border_radius"
+        :options="[
+          { name: 'none', icon: 'i-tabler-border-corner-square' },
+          { name: 'small', icon: 'i-tabler-border-corner-rounded' },
+          { name: 'full', icon: 'i-tabler-border-corner-pill' },
+        ]"
+        :multiple="false"
+        :columns="3"
+        class="mb-4"
+      />
     </div>
 
     <OptionSelectorInput

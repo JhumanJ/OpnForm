@@ -4,6 +4,7 @@
     :style="inputStyle"
   >
     <slot name="label">
+      <VTransition name="fadeHeight">
       <InputLabel
         v-if="label && !hideFieldName"
         :label="label"
@@ -12,7 +13,9 @@
         :native-for="id ? id : name"
         :uppercase-labels="uppercaseLabels"
       />
+      </VTransition>
     </slot>
+    <VTransition name="fadeHeight">
     <slot
       v-if="helpPosition === 'above_input'"
       name="help"
@@ -26,8 +29,10 @@
         </template>
       </InputHelp>
     </slot>
+    </VTransition>
     <slot />
 
+    <VTransition name="fadeHeightDown">
     <slot
       v-if="helpPosition === 'below_input'"
       name="help"
@@ -49,36 +54,37 @@
         :field-name="label"
       />
     </slot>
+    </VTransition>
   </div>
 </template>
 
 <script setup>
-import InputLabel from "./InputLabel.vue"
-import InputHelp from "./InputHelp.vue"
+import InputLabel from './InputLabel.vue'
+import InputHelp from './InputHelp.vue'
 import {twMerge} from "tailwind-merge"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
 
 defineProps({
-  id: {type: String, required: false},
-  name: {type: String, required: false},
-  label: {type: String, required: false},
-  form: {type: Object, required: false},
+  id: { type: String, required: false },
+  name: { type: String, required: false },
+  label: { type: String, required: false },
+  form: { type: Object, required: false },
   theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
+      type: Object, default: () => {
+        const theme = inject('theme', null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
       }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
-  wrapperClass: {type: String, required: false},
-  inputStyle: {type: Object, required: false},
-  help: {type: String, required: false},
-  helpPosition: {type: String, default: "below_input"},
-  uppercaseLabels: {type: Boolean, default: true},
-  hideFieldName: {type: Boolean, default: true},
-  required: {type: Boolean, default: false},
-  hasValidation: {type: Boolean, default: true},
+    },
+  wrapperClass: { type: String, required: false },
+  inputStyle: { type: Object, required: false },
+  help: { type: String, required: false },
+  helpPosition: { type: String, default: 'below_input' },
+  uppercaseLabels: { type: Boolean, default: true },
+  hideFieldName: { type: Boolean, default: true },
+  required: { type: Boolean, default: false },
+  hasValidation: { type: Boolean, default: true },
 })
 </script>
