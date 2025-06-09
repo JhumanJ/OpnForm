@@ -45,6 +45,7 @@ class FormCleaner
     private array $fieldDefaults = [
         // 'name' => '' TODO: prevent name changing, use alias for column and keep original name as it is
         'file_upload' => false,
+        'secret_input' => false,
     ];
 
     private array $cleaningMessages = [
@@ -60,6 +61,7 @@ class FormCleaner
         // For fields
         'file_upload' => 'Link field is not a file upload.',
         'custom_block' => 'The custom block was removed.',
+        'secret_input' => 'Secret input was disabled.',
     ];
 
     /**
