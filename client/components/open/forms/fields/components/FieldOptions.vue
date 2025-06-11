@@ -217,10 +217,19 @@
       <toggle-switch-input
         :form="field"
         name="secret_input"
-        label="Secret input"
         help="Hide input content with * for privacy"
         @update:model-value="onFieldSecretInputChange"
-      />
+      >
+        <template #label>
+          <span class="text-sm">
+            Secret input
+          </span>
+          <pro-tag
+            upgrade-modal-title="Upgrade today to enable secret input"
+            class="-mt-1"
+          />
+        </template>
+      </toggle-switch-input>
     </div>
 
     <!--   Date Options   -->
