@@ -24,8 +24,9 @@
       help="Add one email per line"
     /> 
     <div class="flex space-x-4">
-      <text-input
+      <MentionInput
         :form="integrationData"
+        :mentions="form.properties"
         name="settings.sender_name"
         label="Sender Name"
         class="flex-1"
