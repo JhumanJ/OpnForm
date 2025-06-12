@@ -5,8 +5,9 @@
     </template>
 
     <div
-      class="grid"
-      :class="[gridClass, { 'gap-2': !seamless }]"
+      :class="[
+        seamless ? 'flex -space-x-px' : `grid ${gridClass} gap-2`
+      ]"
       :style="optionStyle"
       role="listbox"
       :aria-multiselectable="multiple ? 'true' : 'false'"
@@ -14,60 +15,71 @@
       @keydown="onKeydown"
       ref="root"
     >
-      <button
+      <UTooltip
         v-for="(option, idx) in options"
+        
         :key="option[optionKey]"
-        class="flex flex-col items-center justify-center p-1.5 border transition-colors text-gray-500 focus:outline-none"
+        :text="option.tooltip"
+        :disabled="!option.tooltip"
         :class="[
-          option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {},
+          'w-full border transition-colors shadow-xs',
           {
-            'border-form-color text-form-color bg-form-color/10': isSelected(option),
-            'hover:bg-gray-100 border-gray-300': !isSelected(option),
-            'opacity-50 pointer-events-none': disabled || option.disabled,
-            // Seamless mode: only first and last have radius
+            // Background colors
+            'bg-form/10': isSelected(option),
+            'hover:bg-gray-100': !isSelected(option),
+            // Border colors
+            'border-form': isSelected(option),
+            'border-gray-300': !isSelected(option),
+            // Border radius for seamless mode
             'rounded-lg': !seamless,
-            'rounded-l-lg': seamless && idx === 0,
-            'rounded-r-lg': seamless && idx === options.length - 1,
-            // Seamless mode: overlap borders with negative margin, keep all borders
-            '-ml-px': seamless && idx > 0,
-            // Seamless mode: z-index hierarchy - selected > hovered/focused > default
-            'relative z-20': seamless && isSelected(option),
-            'relative z-10': seamless && !isSelected(option) && focusedIdx === idx,
-            'relative z-0': seamless && !isSelected(option) && focusedIdx !== idx,
-            // Add hover z-index for seamless mode (but lower than selected)
-            'hover:z-10': seamless && !isSelected(option)
+            'first:rounded-l-lg': seamless,
+            'last:rounded-r-lg': seamless,
+            'not-first:not-last:rounded-none': seamless,
+            // Z-index
+            'relative focus-within:z-10': seamless,
+            'relative z-10': seamless && isSelected(option),
           }
         ]"
-        :aria-selected="isSelected(option) ? 'true' : 'false'"
-        :tabindex="disabled || option.disabled ? -1 : 0"
-        :disabled="disabled || option.disabled"
-        @click="selectOption(option)"
-        @focus="focusedIdx = idx"
-        @mouseenter="focusedIdx = idx"
-        :title="option.tooltip || ''"
-        role="option"
       >
-        <slot name="icon" :option="option" :selected="isSelected(option)">
-          <Icon
-            v-if="option.icon"
-            :name="isSelected(option) && option.selectedIcon ? option.selectedIcon : option.icon"
-            :class="[
-              'w-4 h-4',
-              option.label ? 'mb-1' : '',
-              isSelected(option) ? 'text-form-color' : 'text-inherit',
-              option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {}
-            ]"
-          />
-        </slot>
-        <span
-          v-if="option.label || !option.icon"
-          class="text-xs"
-          :class="{
-            'text-form-color': isSelected(option),
-            'text-inherit': !isSelected(option),
-          }"
-        >{{ isSelected(option) ? option.selectedLabel ?? option.label : option.label }}</span>
-      </button>
+        <button
+          class="flex flex-col items-center justify-center p-1.5 transition-colors text-gray-500 focus:outline-none w-full h-full"
+          :class="[
+            option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {},
+            {
+              'text-form-color': isSelected(option),
+              'opacity-50 pointer-events-none': disabled || option.disabled,
+            }
+          ]"
+          :aria-selected="isSelected(option) ? 'true' : 'false'"
+          :tabindex="disabled || option.disabled ? -1 : 0"
+          :disabled="disabled || option.disabled"
+          @click="selectOption(option)"
+          @focus="focusedIdx = idx"
+          @mouseenter="focusedIdx = idx"
+          role="option"
+        >
+          <slot name="icon" :option="option" :selected="isSelected(option)">
+            <Icon
+              v-if="option.icon"
+              :name="isSelected(option) && option.selectedIcon ? option.selectedIcon : option.icon"
+              :class="[
+                'w-4 h-4',
+                option.label ? 'mb-1' : '',
+                isSelected(option) ? 'text-form-color' : 'text-inherit',
+                option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {}
+              ]"
+            />
+          </slot>
+          <span
+            v-if="option.label || !option.icon"
+            class="text-xs"
+            :class="{
+              'text-form-color': isSelected(option),
+              'text-inherit': !isSelected(option),
+            }"
+          >{{ isSelected(option) ? option.selectedLabel ?? option.label : option.label }}</span>
+        </button>
+      </UTooltip>
     </div>
 
     <template #help>
