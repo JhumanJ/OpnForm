@@ -29,7 +29,7 @@ export default function registerMentionExtension(QuillInstance) {
         return (
           domNode instanceof HTMLElement && 
           domNode.tagName === this.tagName && 
-          domNode.hasAttribute('mention')
+          domNode.getAttribute('mention') === 'true'
         )
       }
 
@@ -78,25 +78,6 @@ export default function registerMentionExtension(QuillInstance) {
     QuillInstance.register('formats/mention', MentionBlot)
   }
 
-  // Add clipboard matcher for handling mentions in pasted/loaded HTML
-  if (QuillInstance.clipboard && typeof QuillInstance.clipboard.addMatcher === 'function') {
-    QuillInstance.clipboard.addMatcher('span[mention]', (node, delta) => {
-      if (node.hasAttribute('mention')) {
-        const mentionData = {
-          field: {
-            id: node.getAttribute('mention-field-id') || '',
-            name: node.getAttribute('mention-field-name') || ''
-          },
-          fallback: node.getAttribute('mention-fallback') || ''
-        }
-        
-        return new Delta().insert({ mention: mentionData })
-      }
-      
-      return delta
-    })
-  }
-
   /**
    * MentionModule - Handles mention UI integration with Quill
    */
@@ -114,6 +95,30 @@ export default function registerMentionExtension(QuillInstance) {
         })
         
         this.setupMentions()
+        this.addClipboardMatcher()
+      }
+      
+      addClipboardMatcher() {
+        if (this.quill.clipboard && typeof this.quill.clipboard.addMatcher === 'function') {
+          this.quill.clipboard.addMatcher('span', (node, delta) => {
+            const isRealMention = node.getAttribute('mention') === 'true'
+            const isInterpretedAsMention = delta.ops.some(op => op.insert && typeof op.insert.mention === 'object')
+
+            if (isRealMention) {
+              // This is a real mention. Quill's conversion is correct.
+              return delta
+            }
+
+            if (isInterpretedAsMention) {
+              // This span was wrongly converted. We revert it to text with its formats.
+              const attributes = delta.ops[0].attributes || {}
+              return new Delta().insert(node.innerText, attributes)
+            }
+
+            // This is a regular span that Quill handled correctly.
+            return delta
+          })
+        }
       }
       
       setupMentions() {
