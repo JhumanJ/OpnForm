@@ -10,7 +10,7 @@ export default {
     appUrl: process.env.NUXT_PUBLIC_APP_URL || '',
     env: process.env.NUXT_PUBLIC_ENV || 'local',
     hCaptchaSiteKey: process.env.NUXT_PUBLIC_H_CAPTCHA_SITE_KEY || null,
-    recaptchaSiteKey: process.env.NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY || null,
+    reCaptchaSiteKey: process.env.NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY || null,
     gtmCode: process.env.NUXT_PUBLIC_GTM_CODE || null,
     amplitudeCode: process.env.NUXT_PUBLIC_AMPLITUDE_CODE || null,
     crispWebsiteId: process.env.NUXT_PUBLIC_CRISP_WEBSITE_ID || null,

@@ -56,7 +56,7 @@
 
       <!-- Captcha -->
       <div
-        v-if="recaptchaSiteKey"
+        v-if="reCaptchaSiteKey"
         class="my-4 px-2 mx-auto w-max"
       >
         <CaptchaInput
@@ -184,8 +184,8 @@ export default {
   }),
 
   computed: {
-    recaptchaSiteKey() {
-      return this.runtimeConfig.public.recaptchaSiteKey
+    reCaptchaSiteKey() {
+      return this.runtimeConfig.public.reCaptchaSiteKey
     },
     hearAboutUsOptions() {
       const options = [
@@ -240,7 +240,7 @@ export default {
       const auth = useAuth()
       
       // Reset captcha after submission
-      if (import.meta.client && this.recaptchaSiteKey) {
+      if (import.meta.client && this.reCaptchaSiteKey) {
         this.$refs.captcha.reset()
       }
 
