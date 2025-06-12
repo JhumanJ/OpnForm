@@ -296,6 +296,11 @@ class StoreFormSubmissionJob implements ShouldQueue
                 && !in_array($property['type'], ['files'])
                 && !($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
         })->each(function (array $property) use (&$formData) {
+            // Do not override if a value is already set. We want to allow `0` and `false` as valid values.
+            if (isset($formData[$property['id']]) && $formData[$property['id']] !== '' && $formData[$property['id']] !== []) {
+                return;
+            }
+
             if ($property['type'] === 'date' && isset($property['prefill_today']) && $property['prefill_today']) {
                 $formData[$property['id']] = now()->format((isset($property['with_time']) && $property['with_time']) ? 'Y-m-d H:i' : 'Y-m-d');
             } else {
