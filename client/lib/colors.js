@@ -110,5 +110,21 @@ const tailwindcssPaletteGenerator = (options) => {
   return palette
 }
 
+// Notion default color palette (text colors)
+const notionColors = [
+  '#37352F', // default (almost black)
+  '#9B9A97', // gray
+  '#64473A', // brown
+  '#D9730D', // orange
+  '#DFAB01', // yellow
+  '#0F7B6C', // green
+  '#0B6E99', // blue
+  '#6940A5', // purple
+  '#AD1A72', // pink
+  '#E03E3E', // red
+  '#FFFFFF', // white
+  '#000000'  // black
+]
+
 // Exporting the functions
-export { generateColor, tailwindcssPaletteGenerator }
+export { generateColor, tailwindcssPaletteGenerator, notionColors }

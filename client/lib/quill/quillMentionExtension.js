@@ -27,9 +27,9 @@ export default function registerMentionExtension(QuillInstance) {
       // Match any span with a 'mention' attribute
       static matches(domNode) {
         return (
-          domNode instanceof HTMLElement && 
-          domNode.tagName === this.tagName && 
-          domNode.hasAttribute('mention')
+          domNode instanceof HTMLElement &&
+          domNode.tagName === this.tagName &&
+          domNode.getAttribute('mention') === 'true'
         )
       }
 
@@ -78,25 +78,6 @@ export default function registerMentionExtension(QuillInstance) {
     QuillInstance.register('formats/mention', MentionBlot)
   }
 
-  // Add clipboard matcher for handling mentions in pasted/loaded HTML
-  if (QuillInstance.clipboard && typeof QuillInstance.clipboard.addMatcher === 'function') {
-    QuillInstance.clipboard.addMatcher('span[mention]', (node, delta) => {
-      if (node.hasAttribute('mention')) {
-        const mentionData = {
-          field: {
-            id: node.getAttribute('mention-field-id') || '',
-            name: node.getAttribute('mention-field-name') || ''
-          },
-          fallback: node.getAttribute('mention-fallback') || ''
-        }
-        
-        return new Delta().insert({ mention: mentionData })
-      }
-      
-      return delta
-    })
-  }
-
   /**
    * MentionModule - Handles mention UI integration with Quill
    */
@@ -114,6 +95,7 @@ export default function registerMentionExtension(QuillInstance) {
         })
         
         this.setupMentions()
+        this.addClipboardMatcher()
       }
       
       setupMentions() {
@@ -164,6 +146,33 @@ export default function registerMentionExtension(QuillInstance) {
           this.quill.focus()
           this.quill.setSelection(index + 1, 0, QuillInstance.sources.SILENT)
         })
+      }
+
+      /**
+       * Adds a clipboard matcher that ensures styled spans are not
+       * incorrectly interpreted as mentions when pasting HTML.
+       */
+      addClipboardMatcher() {
+        if (this.quill.clipboard && typeof this.quill.clipboard.addMatcher === 'function') {
+          this.quill.clipboard.addMatcher('span', (node, delta) => {
+            const isRealMention = node.getAttribute && node.getAttribute('mention') === 'true'
+            const isInterpretedAsMention = Array.isArray(delta.ops) && delta.ops.some(op => op.insert && typeof op.insert.mention === 'object')
+
+            // Correctly recognised mention – leave as is
+            if (isRealMention) {
+              return delta
+            }
+
+            // Span was mis-identified as a mention – revert to simple text keeping its attributes
+            if (isInterpretedAsMention) {
+              const attributes = (delta.ops[0] && delta.ops[0].attributes) || {}
+              return new Delta().insert(node.innerText, attributes)
+            }
+
+            // Regular span – keep default behaviour
+            return delta
+          })
+        }
       }
     }
     

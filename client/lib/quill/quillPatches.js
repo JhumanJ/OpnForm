@@ -1,7 +1,13 @@
 import Quill from 'quill'
+import { notionColors } from '../colors.js'
 
 // Self-executing function to patch Quill's prototype
 ;(function installQuillFixes() {
+  // Whitelist Notion colors
+  const ColorAttributor = Quill.import('attributors/style/color')
+  ColorAttributor.whitelist = notionColors
+  Quill.register(ColorAttributor, true)
+
   // Store the original method
   const originalGetSemanticHTML = Quill.prototype.getSemanticHTML
 
