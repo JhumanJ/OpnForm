@@ -200,15 +200,6 @@ function focusButton(idx) {
   })
 }
 
-function isAdjacentToSelected(idx) {
-  const len = props.options.length
-  // Check if previous option is selected (and this isn't the first option)
-  if (idx > 0 && isSelected(props.options[idx - 1])) return true
-  // Check if next option is selected (and this isn't the last option)  
-  if (idx < len - 1 && isSelected(props.options[idx + 1])) return true
-  return false
-}
-
 // Watchers
 watch(compVal, (val) => {
   // Keep focus on selected

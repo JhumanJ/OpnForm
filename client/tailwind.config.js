@@ -79,6 +79,7 @@ module.exports = {
           border: 'rgba(15, 15, 15, 0.1)',
           borderDark: 'rgba(255, 255, 255, 0.1)'
         },
+        'form': 'rgb(from var(--form-color, var(--bg-form-color)) r g b / <alpha-value>)',
         'form-color': 'rgb(from var(--form-color, var(--bg-form-color)) r g b / <alpha-value>)'
       },
       transitionProperty: {

@@ -3,7 +3,7 @@
     v-if="form"
     class="open-complete-form"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
-    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color }"
+    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color, '--form': form.color }"
   >
     <ClientOnly>
       <Teleport to="head">
