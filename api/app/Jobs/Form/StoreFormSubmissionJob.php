@@ -297,7 +297,7 @@ class StoreFormSubmissionJob implements ShouldQueue
                 && !($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
         })->each(function (array $property) use (&$formData) {
             // Do not override if a value is already set. We want to allow `0` and `false` as valid values.
-            if (isset($formData[$property['id']]) && $formData[$property['id']] !== '' && $formData[$property['id']] !== []) {
+            if (array_key_exists($property['id'], $formData) && $formData[$property['id']] !== '' && $formData[$property['id']] !== []) {
                 return;
             }
 
