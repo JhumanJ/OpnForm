@@ -46,7 +46,7 @@ const isCaptchaRequired = computed(() => {
 
   const captchaProvider = config.value.captcha_provider
   if (captchaProvider === 'recaptcha') {
-    return !!runtimeConfig.recaptchaSiteKey
+    return !!runtimeConfig.reCaptchaSiteKey
   } else if (captchaProvider === 'hcaptcha') {
     return !!runtimeConfig.hCaptchaSiteKey
   }
