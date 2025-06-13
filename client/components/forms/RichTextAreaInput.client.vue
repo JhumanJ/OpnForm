@@ -132,7 +132,17 @@ const quillOptions = computed(() => {
         ['link'],
         [{ list: 'ordered' }, { list: 'bullet' }],
         [{ color: [] }],
-      ]
+      ],
+      keyboard: {
+        bindings: {
+          tab: {
+            key: 9,
+            handler (range) {
+              this.quill.insertText(range.index, '    ', 'user')
+            }
+          }
+        }
+      }
     }
   }
 

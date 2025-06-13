@@ -12,8 +12,9 @@ import Quill from 'quill'
     
     // Apply fixes:
     return html
-      // 1. Replace &nbsp; with regular spaces
-      .replace(/&nbsp;/g, ' ')
+      // 1. Replace double &nbsp; with a non-breaking and a regular space.
+      // This preserves spacing while allowing wrapping, fixing overflow issues.
+      .replace(/&nbsp;&nbsp;/g, '&nbsp; ')
       // 2. Fix line breaks by replacing empty paragraphs with paragraphs containing <br/>
       .replace(/<p><\/p>/g, '<p><br/></p>')
   }
