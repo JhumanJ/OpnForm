@@ -10,7 +10,7 @@
       <slot>
         <span
           v-if="help"
-          class="field-help"
+          class="field-help break-words whitespace-break-spaces"
           v-html="help"
         />
       </slot>

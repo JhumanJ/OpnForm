@@ -24,7 +24,7 @@
             following features are disabled on the published form:
           </p>
           <div
-            class="text-slate-500"
+            class="text-slate-500 break-words whitespace-break-spaces"
             v-html="cleaningContent"
           />
         </div>

@@ -73,7 +73,7 @@
         >
           <template #description>
             <div
-              class="py-2"
+              class="break-words whitespace-break-spaces"
               v-html="form.closed_text"
             />
           </template>
@@ -88,7 +88,7 @@
         >
           <template #description>
             <div
-              class="py-2"
+              class="break-words whitespace-break-spaces"
               v-html="form.max_submissions_reached_text"
             />
           </template>
