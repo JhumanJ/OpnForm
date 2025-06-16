@@ -1,5 +1,6 @@
 <template>
   <div
+    class="wrap-anywhere break-all"
     v-html="processedContent"
   />
 </template>

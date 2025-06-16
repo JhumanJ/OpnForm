@@ -87,7 +87,7 @@
           v-if="field.type === 'nf-text' && field.content"
           :id="field.id"
           :key="field.id"
-          class="nf-text w-full my-1.5"
+          class="nf-text w-full my-1.5 wrap-anywhere break-all"
           :class="[getFieldAlignClasses(field)]"
           v-html="field.content"
         />

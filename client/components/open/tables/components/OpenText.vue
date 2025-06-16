@@ -1,5 +1,5 @@
 <template>
-  <div v-html="value" />
+  <div class="wrap-anywhere break-all" v-html="value" />
 </template>
 
 <script>

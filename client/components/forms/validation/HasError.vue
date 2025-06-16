@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="errorMessage"
-      class="has-error text-xs text-red-500 mt-1"
+      class="has-error text-xs text-red-500 mt-1 wrap-anywhere break-all"
       v-html="errorMessage"
     />
   </transition>
