@@ -84,7 +84,7 @@ export default {
   setup(props, context) {
     const { formatValue, isComplete, getMaskPlaceholder, isValidMask } = useInputMask(() => props.mask)
 
-    const { compVal, inputWrapperProps } = useFormInput(
+    const { compVal } = useFormInput(
       props,
       context,
       {
