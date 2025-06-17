@@ -28,6 +28,12 @@ class FormPolicy
      */
     public function view(User $user, Form $form)
     {
+        // Check if authenticated via Sanctum token
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('forms:read') && $user->ownsForm($form);
+        }
+
+        // Fallback to JWT / session logic
         return $user->ownsForm($form);
     }
 
@@ -46,7 +52,14 @@ class FormPolicy
      */
     private function canPerformWriteOperation(User $user, Form $form): bool
     {
-        return $user->ownsForm($form) && !$form->workspace->isReadonlyUser($user);
+        $ownsAndWritable = $user->ownsForm($form) && !$form->workspace->isReadonlyUser($user);
+
+        // If using Sanctum token, ensure the token has write ability
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('forms:write') && $ownsAndWritable;
+        }
+
+        return $ownsAndWritable;
     }
 
     /**
