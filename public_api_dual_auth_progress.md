@@ -10,6 +10,7 @@ _Last updated: 2025-06-17 00:43 UTC_
 _Last updated: 2025-06-17 00:47 UTC_
 _Last updated: 2025-06-17 00:52 UTC_
 _Last updated: 2025-06-17 00:57 UTC_
+_Last updated: 2025-06-17 01:02 UTC_
 
 ## Overview
 This document tracks the implementation progress for introducing a dual-authentication layer (JWT & Sanctum) to expose a public API while reusing existing endpoints. All updates to this file should refresh the **Last updated** timestamp and append a brief note to the **Progress log**.
@@ -44,3 +45,4 @@ This document tracks the implementation progress for introducing a dual-authenti
 - 2025-06-17 00:47 UTC – Added Sanctum write ability enforcement to workspace admin actions.
 - 2025-06-17 00:52 UTC – Updated token modal and store to include granular abilities and enable selection.
 - 2025-06-17 00:57 UTC – Added new paths to `openapi.json` and created markdown doc `open-forms-list.mdx`.
+- 2025-06-17 01:02 UTC – Completed docs for Submissions, Workspaces, Workspace Users and updated OpenAPI accordingly.

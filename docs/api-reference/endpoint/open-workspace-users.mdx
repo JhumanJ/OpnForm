@@ -1,0 +1,25 @@
+# Workspace Users (Public API)
+
+## List Users in Workspace
+
+```http
+GET /open/workspaces/{workspaceId}/users HTTP/1.1
+Authorization: Bearer <token with `workspace-users:read`>
+```
+
+## Add User to Workspace
+
+```http
+POST /open/workspaces/{workspaceId}/users/add HTTP/1.1
+Authorization: Bearer <token with `workspace-users:write`>
+Content-Type: application/json
+
+{ "email": "user@example.com", "role": "member" }
+```
+
+## Remove User from Workspace
+
+```http
+DELETE /open/workspaces/{workspaceId}/users/{userId}/remove HTTP/1.1
+Authorization: Bearer <token with `workspace-users:write`>
+```

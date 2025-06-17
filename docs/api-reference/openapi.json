@@ -193,6 +193,39 @@
       },
       "put": {"summary": "Update Form", "description": "Update an existing form.", "security": [{"bearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"200": {"description": "Updated"}, "403": {"description": "Forbidden – token lacks forms:write ability"}}},
       "delete": {"summary": "Delete Form", "description": "Delete a form.", "security": [{"bearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Deleted"}, "403": {"description": "Forbidden"}}}
+    },
+    "/open/forms/{id}/submissions": {
+      "get": {
+        "summary": "List Submissions (Public API)",
+        "description": "Retrieve submissions for a specific form. Requires `submissions:read` ability.",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "Successful"}, "403": {"description": "Forbidden – token lacks submissions:read ability"}}
+      },
+      "post": {
+        "summary": "Export Submissions (CSV)",
+        "description": "Export submissions as CSV. Requires `submissions:read`.",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {"required": false},
+        "responses": {"200": {"description": "Export file"}, "403": {"description": "Forbidden"}}
+      }
+    },
+    "/open/forms/{id}/submissions/{submission_id}": {
+      "put": {"summary": "Update Submission", "description": "Update a submission. Requires `submissions:write` ability.", "security": [{"bearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}, {"name": "submission_id", "in": "path", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"200": {"description": "Updated"}, "403": {"description": "Forbidden – token lacks submissions:write ability"}}}
+    },
+    "/open/workspaces": {
+      "get": {"summary": "List Workspaces", "description": "Requires `workspaces:read`.", "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Successful"}, "403": {"description": "Forbidden"}}},
+      "post": {"summary": "Create Workspace", "description": "Requires `workspaces:write`.", "security": [{"bearerAuth": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"201": {"description": "Created"}, "403": {"description": "Forbidden"}}}
+    },
+    "/open/workspaces/{workspaceId}": {
+      "put": {"summary": "Update Workspace", "description": "Requires `workspaces:write`.", "security": [{"bearerAuth": []}], "parameters": [{"name": "workspaceId", "in": "path", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"200": {"description": "Updated"}, "403": {"description": "Forbidden"}}},
+      "delete": {"summary": "Delete Workspace", "description": "Requires `workspaces:write`.", "security": [{"bearerAuth": []}], "parameters": [{"name": "workspaceId", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Deleted"}, "403": {"description": "Forbidden"}}}
+    },
+    "/open/workspaces/{workspaceId}/users": {
+      "get": {"summary": "List Workspace Users", "description": "Requires `workspace-users:read`.", "security": [{"bearerAuth": []}], "parameters": [{"name": "workspaceId", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Successful"}, "403": {"description": "Forbidden"}}}
+    },
+    "/open/workspaces/{workspaceId}/users/add": {
+      "post": {"summary": "Add Workspace User", "description": "Requires `workspace-users:write`.", "security": [{"bearerAuth": []}], "parameters": [{"name": "workspaceId", "in": "path", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"200": {"description": "User added"}, "403": {"description": "Forbidden"}}}
     }
   },
   "components": {
