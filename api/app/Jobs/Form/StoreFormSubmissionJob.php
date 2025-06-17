@@ -114,12 +114,54 @@ class StoreFormSubmissionJob implements ShouldQueue
     }
 
     /**
+     * Resolve the record to update
+     *
+     * @param array $submissionData
+     * @return int|null
+     */
+    private function resolveRecordToUpdate(array $submissionData)
+    {
+        if (!$this->form->is_pro || !isset($this->form->database_fields_update) || $this->submissionId) {
+            return null;
+        }
+
+        $propertyIds = $this->form->database_fields_update;
+        $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
+            return in_array($property['id'], $propertyIds);
+        });
+
+        // Build query to find record based on database_fields_update fields
+        $query = $this->form->submissions();
+        foreach ($properties as $property) {
+            $fieldId = $property['id'];
+            if (isset($submissionData[$fieldId]) && $submissionData[$fieldId]) {
+                $newValue = $submissionData[$fieldId];
+
+                // Remove country code from phone number
+                if ($property['type'] == 'phone_number' && (!$property['use_simple_text_input'] ?? false)) {
+                    $newValue = substr($newValue, 2);
+                }
+
+                $query->where("data->$fieldId", $newValue);
+            }
+        }
+        $record = $query->first();
+
+        return $record ? $record->id : null;
+    }
+
+    /**
      * Store the submission in the database
      *
      * @param array $formData
      */
     private function storeSubmission(array $formData)
     {
+        // Handle record update
+        if ($recordToUpdate = $this->resolveRecordToUpdate($this->submissionData)) {
+            $this->submissionId = $recordToUpdate;
+        }
+
         $submission = $this->submissionId
             ? $this->form->submissions()->findOrFail($this->submissionId)
             : new FormSubmission();
