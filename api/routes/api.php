@@ -47,7 +47,7 @@ if (config('app.self_hosted')) {
     Route::get('/healthcheck', [HealthCheckController::class, 'apiCheck']);
 }
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'auth.multi'], function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
 
@@ -172,7 +172,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
             Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
                 ->middleware('signed')
-                ->withoutMiddleware(['auth:api'])
+                ->withoutMiddleware(['auth.multi'])
                 ->name('submissions.file');
 
             Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
@@ -193,7 +193,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post(
                 '/assets/upload',
                 [FormController::class, 'uploadAsset']
-            )->withoutMiddleware(['auth:api'])->name('assets.upload');
+            )->withoutMiddleware(['auth.multi'])->name('assets.upload');
             Route::get(
                 '/{id}/uploaded-file/{filename}',
                 [FormController::class, 'viewFile']
