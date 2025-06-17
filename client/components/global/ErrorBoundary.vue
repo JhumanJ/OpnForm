@@ -16,6 +16,7 @@
     }
     onErrorCaptured(err => {
         error.value = err
+        console.error(err)
         emit('on-error', err)
         return false
     })

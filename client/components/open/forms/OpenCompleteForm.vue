@@ -3,7 +3,7 @@
     v-if="form"
     class="open-complete-form"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
-    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color }"
+    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color, '--form': form.color }"
   >
     <ClientOnly>
       <Teleport to="head">
@@ -73,7 +73,7 @@
         >
           <template #description>
             <div
-              class="py-2"
+              class="break-words whitespace-break-spaces"
               v-html="form.closed_text"
             />
           </template>
@@ -88,7 +88,7 @@
         >
           <template #description>
             <div
-              class="py-2"
+              class="break-words whitespace-break-spaces"
               v-html="form.max_submissions_reached_text"
             />
           </template>

@@ -111,9 +111,7 @@ const saveChanges = () => {
       useAlert().success("Custom domains saved.")
     })
     .catch((error) => {
-      useAlert().error(
-        "Failed to update custom domains: " + error.response.data.message,
-      )
+      useAlert().error(error.response._data.message ?? 'Failed to update custom domains')
     })
     .finally(() => {
       customDomainsLoading.value = false

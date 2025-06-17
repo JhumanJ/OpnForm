@@ -129,7 +129,8 @@ class FormEmailNotification extends Notification
 
     private function getSenderName(): string
     {
-        return $this->integrationData->sender_name ?? config('app.name');
+        $parser = new MentionParser($this->integrationData->sender_name ?? config('app.name'), $this->formatSubmissionData(false));
+        return $parser->parseAsText();
     }
 
     private function getReplyToEmail($default): string

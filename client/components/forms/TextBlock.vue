@@ -1,5 +1,6 @@
 <template>
   <div
+    class="break-words whitespace-break-spaces"
     v-html="processedContent"
   />
 </template>

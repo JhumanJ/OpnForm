@@ -5,7 +5,7 @@
         v-if="provider === 'recaptcha'"
         :key="`recaptcha-${componentKey}`"
         ref="captchaRef"
-        :sitekey="recaptchaSiteKey"
+        :sitekey="reCaptchaSiteKey"
         :theme="darkMode ? 'dark' : 'light'"
         :language="language"
         @verify="onCaptchaVerify"
@@ -58,7 +58,7 @@ const props = defineProps({
 })
 
 const config = useRuntimeConfig()
-const recaptchaSiteKey = config.public.recaptchaSiteKey
+const reCaptchaSiteKey = config.public.reCaptchaSiteKey
 const hCaptchaSiteKey = config.public.hCaptchaSiteKey
 
 const captchaRef = ref(null)
@@ -70,7 +70,7 @@ const formFieldName = computed(() => props.provider === 'recaptcha' ? 'g-recaptc
 
 const isSiteKeyAvailable = computed(() => {
   if (props.provider === 'recaptcha') {
-    return !!recaptchaSiteKey
+    return !!reCaptchaSiteKey
   } else if (props.provider === 'hcaptcha') {
     return !!hCaptchaSiteKey
   }

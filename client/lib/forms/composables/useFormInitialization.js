@@ -182,14 +182,16 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    */
   const updateSpecialFields = () => {
     formConfig.value.properties.forEach(field => {
-      // Handle date fields with prefill_today
-      if (field.type === 'date' && field.prefill_today) {
+      // Handle date fields with prefill_today, only if no value is set
+      if (field.type === 'date' && field.prefill_today && form[field.id] == null) {
         form[field.id] = new Date().toISOString()
       }
-      // Handle matrix fields with prefill data
-      else if (field.type === 'matrix' && !form[field.id] && field.prefill) {
+      // Handle matrix fields with prefill data, only if no value is set
+      else if (field.type === 'matrix' && form[field.id] == null && field.prefill) {
         form[field.id] = {...field.prefill}
-      } else if (field.id && !form[field.id]) {
+      } 
+      // Handle other fields with prefill data, only if no value is set
+      else if (field.id && form[field.id] == null && field.prefill) {
         form[field.id] = field.prefill
       }
     })
