@@ -30,6 +30,10 @@ class WorkspacePolicy
      */
     public function view(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces:read') && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -50,6 +54,10 @@ class WorkspacePolicy
      */
     public function update(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces:write') && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -60,7 +68,17 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace)
     {
-        return !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+        $basePermission = !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+
+        if (! $basePermission) {
+            return false;
+        }
+
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces:write');
+        }
+
+        return true;
     }
 
     /**
@@ -104,6 +122,13 @@ class WorkspacePolicy
             $userActiveMembers = (new UserHelper($billingOwner))->getActiveMembersCount();
             if ($userActiveMembers >= $license->max_users_limit_count) {
                 return Response::deny('You have reached the maximum number of users allowed with your license.');
+            }
+        }
+
+        // If using Sanctum token, require write ability first
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces:write')) {
+                return Response::deny('Token lacks workspaces:write ability.');
             }
         }
 
