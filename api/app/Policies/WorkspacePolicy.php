@@ -142,6 +142,13 @@ class WorkspacePolicy
      */
     public function adminAction(User $user, Workspace $workspace)
     {
+        // Sanctum token must include write ability
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces:write')) {
+                return false;
+            }
+        }
+
         $userWorkspace = UserWorkspace::where('user_id', $user->id)
             ->where('workspace_id', $workspace->id)
             ->first();
