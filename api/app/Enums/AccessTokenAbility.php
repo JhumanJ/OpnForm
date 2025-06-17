@@ -7,6 +7,23 @@ use Illuminate\Support\Arr;
 enum AccessTokenAbility: string
 {
     case ManageIntegrations = 'manage-integrations';
+    // Granular scopes
+    // Forms
+    case FormsRead = 'forms:read';
+    case FormsWrite = 'forms:write';
+
+    // Submissions
+    case SubmissionsRead = 'submissions:read';
+    case SubmissionsWrite = 'submissions:write';
+
+    // Workspaces
+    case WorkspacesRead = 'workspaces:read';
+    case WorkspacesWrite = 'workspaces:write';
+
+    // Workspace Users
+    case WorkspaceUsersRead = 'workspace-users:read';
+    case WorkspaceUsersWrite = 'workspace-users:write';
+
     case ListForms = 'list-forms';
     case ListWorkspaces = 'list-workspaces';
 
