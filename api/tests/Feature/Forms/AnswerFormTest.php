@@ -350,3 +350,39 @@ it('executes custom validation before required field validation', function () {
             'message' => $validationMessage,
         ]);
 });
+
+it('can update form submission if database fields update is set', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailField = collect($form->properties)->where('type', 'email')->first();
+    $nameField = collect($form->properties)->where('name', 'Name')->first();
+    $form->database_fields_update = [$emailField['id']];
+    $form->update();
+
+    $this->postJson(route('forms.answer', $form->slug), [
+        $emailField['id'] => 'test@test.com',
+        $nameField['id'] => 'Test',
+    ])
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    // Update submission
+    $this->postJson(route('forms.answer', $form->slug), [
+        $emailField['id'] => 'test@test.com',
+        $nameField['id'] => 'Test 1',
+    ])
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    $submission = $form->submissions()->first();
+    $this->assertEquals('test@test.com', $submission->data[$emailField['id']]);
+    $this->assertEquals('Test 1', $submission->data[$nameField['id']]);
+});

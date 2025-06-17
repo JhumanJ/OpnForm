@@ -241,7 +241,7 @@ const filterableFields = computed(() => {
     .filter((field) => {
       return (
         !field.hidden &&
-        !["files", "signature", "multi_select"].includes(field.type)
+        !["files", "signature", "multi_select", "matrix", 'payment'].includes(field.type)
       )
     })
     .map((field) => {
