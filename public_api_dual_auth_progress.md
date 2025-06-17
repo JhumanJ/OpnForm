@@ -5,6 +5,7 @@ _Last updated: 2025-06-17 00:08 UTC_
 _Last updated: 2025-06-17 00:11 UTC_
 _Last updated: 2025-06-17 00:25 UTC_
 _Last updated: 2025-06-17 00:32 UTC_
+_Last updated: 2025-06-17 00:38 UTC_
 
 ## Overview
 This document tracks the implementation progress for introducing a dual-authentication layer (JWT & Sanctum) to expose a public API while reusing existing endpoints. All updates to this file should refresh the **Last updated** timestamp and append a brief note to the **Progress log**.
@@ -18,7 +19,7 @@ This document tracks the implementation progress for introducing a dual-authenti
 - [x] Register the middleware alias `auth.multi` in `api/app/Http/Kernel.php`.
 - [x] Change `auth:api` to `auth.multi` in `api/routes/api.php`.
 - [x] Create/Update `FormPolicy` with Sanctum ability checks.
-- [ ] Create/Update Policy for Submissions with Sanctum ability checks.
+- [x] Create/Update Policy for Submissions with Sanctum ability checks.
 - [ ] Create/Update `WorkspacePolicy` with Sanctum ability checks.
 - [ ] Create/Update Policy for Workspace Users with Sanctum ability checks.
 - [ ] Update `client/components/AccessTokenModal.vue` (or similar) to display new abilities.
@@ -34,3 +35,4 @@ This document tracks the implementation progress for introducing a dual-authenti
 - 2025-06-17 00:11 UTC – Implemented `AuthenticateWithJwtOrSanctum` middleware.
 - 2025-06-17 00:25 UTC – Added `auth.multi` alias to Kernel and updated routes to use new middleware.
 - 2025-06-17 00:32 UTC – Added Sanctum ability checks to `FormPolicy`.
+- 2025-06-17 00:38 UTC – Added `SubmissionPolicy` with Sanctum read/write checks and registered it.
