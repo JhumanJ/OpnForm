@@ -96,12 +96,51 @@ export function useInputMask(maskPattern) {
     return /^[9a*().?\s-]*$/.test(mask.value)
   })
 
+  const getDisplayValue = (value) => {
+    if (!mask.value) return value || ''
+
+    const tokens = parsedMask.value
+    const cleanValue = value ? value.replace(/[^\w]/g, '') : ''
+    let display = ''
+    let valueIndex = 0
+    
+    for (const token of tokens) {
+      if (token.literal) {
+        display += token.char
+        continue
+      }
+      
+      if (valueIndex >= cleanValue.length) {
+        if (token.optional) {
+          // For optional tokens, show underscore if we have a value but not enough characters
+          if (cleanValue.length > 0) {
+            display += '_'
+          }
+        } else {
+          // For required tokens, always show underscore
+          display += '_'
+        }
+        continue
+      }
+      
+      if (token.regex && token.regex.test(cleanValue[valueIndex])) {
+        display += cleanValue[valueIndex]
+        valueIndex++
+      } else if (!token.optional) {
+        display += '_'
+      }
+    }
+    
+    return display
+  }
+
   return {
     formatValue,
     getUnmaskedValue,
     isComplete,
     getMaskPlaceholder,
     parsedMask,
-    isValidMask
+    isValidMask,
+    getDisplayValue
   }
 }

@@ -82,7 +82,7 @@ export default {
   },
 
   setup(props, context) {
-    const { formatValue, getMaskPlaceholder, isValidMask } = useInputMask(() => props.mask)
+    const { formatValue, isValidMask, getDisplayValue } = useInputMask(() => props.mask)
 
     const { compVal } = useFormInput(
       props,
@@ -98,7 +98,7 @@ export default {
     const displayValue = computed({
       get() {
         if (props.mask && isValidMask.value) {
-          return maskedValue.value
+          return getDisplayValue(compVal.value)
         } else {
           return compVal.value
         }
@@ -121,18 +121,21 @@ export default {
         return
       }
 
+      // Remove underscores from input value for processing
+      const cleanInputValue = inputValue.replace(/_/g, '')
+      
       // Get the previous formatted value to compare
       const previousFormatted = maskedValue.value
-      const formatted = formatValue(inputValue)
+      const formatted = formatValue(cleanInputValue)
 
       // If the formatted value is the same as before, it means the new character was invalid
       // In this case, we should revert to the previous state
-      if (formatted === previousFormatted && inputValue.length > previousFormatted.length) {
+      if (formatted === previousFormatted && cleanInputValue.length > previousFormatted.length) {
         // Invalid character entered - revert the input
         nextTick(() => {
           if (inputRef.value) {
             const cursorPos = inputRef.value.selectionStart - 1
-            inputRef.value.value = previousFormatted
+            inputRef.value.value = getDisplayValue(previousFormatted)
             // Set cursor position to where it was before the invalid character
             if (inputRef.value.setSelectionRange && cursorPos >= 0) {
               inputRef.value.setSelectionRange(cursorPos, cursorPos)
@@ -148,12 +151,15 @@ export default {
 
       // Update input display value
       nextTick(() => {
-        if (inputRef.value && inputRef.value.value !== formatted) {
-          const cursorPos = inputRef.value.selectionStart
-          inputRef.value.value = formatted
-          // Maintain cursor position logic here
-          if (inputRef.value.setSelectionRange) {
-            inputRef.value.setSelectionRange(cursorPos, cursorPos)
+        if (inputRef.value) {
+          const displayValue = getDisplayValue(formatted)
+          if (inputRef.value.value !== displayValue) {
+            const cursorPos = inputRef.value.selectionStart
+            inputRef.value.value = displayValue
+            // Maintain cursor position logic here
+            if (inputRef.value.setSelectionRange) {
+              inputRef.value.setSelectionRange(cursorPos, cursorPos)
+            }
           }
         }
       })
@@ -161,7 +167,7 @@ export default {
 
     const effectivePlaceholder = computed(() => {
       if (props.placeholder) return props.placeholder
-      if (props.mask && isValidMask.value) return getMaskPlaceholder.value
+      if (props.mask && isValidMask.value) return getDisplayValue('')
       return null
     })
 
