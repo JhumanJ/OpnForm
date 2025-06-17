@@ -1,0 +1,119 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "OpnForm Technical Docs",
+  "colors": {
+    "primary": "#3b82f6",
+    "light": "#60a5fa",
+    "dark": "#2563eb"
+  },
+  "favicon": "/logo.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "tech-stack"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": [
+              "deployment/docker",
+              "deployment/docker-development",
+              "deployment/local-deployment",
+              "deployment/cloud-vs-self-hosting"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/environment-variables",
+              "configuration/aws-s3",
+              "configuration/email-setup",
+              "configuration/custom-domain",
+              "configuration/subdomain-redirect"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Reference",
+            "openapi": "/api-reference/openapi.json"
+          }
+        ]
+      },
+      {
+        "tab": "Contributing",
+        "groups": [
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/getting-started",
+              "contributing/new-form-block",
+              "contributing/new-integration"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Product Documentation",
+          "href": "https://help.opnform.com",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/YTSjU2a9TS",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Changelog",
+          "href": "https://feedback.opnform.com/changelog",
+          "icon": "sparkles"
+        },
+        {
+          "anchor": "Roadmap",
+          "href": "https://feedback.opnform.com/roadmap",
+          "icon": "road"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "OpnForm",
+        "href": "https://opnform.com?utm_source=docs&utm_medium=topbar&utm_campaign=technical_docs"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/JhumanJ/OpnForm"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://opnform.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "twitter": "https://twitter.com/opnform",
+      "github": "https://github.com/JhumanJ/OpnForm"
+    }
+  }
+}

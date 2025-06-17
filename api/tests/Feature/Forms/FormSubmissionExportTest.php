@@ -77,21 +77,18 @@ it('cannot export form submissions with invalid columns', function () {
 
 it('cannot export form submissions from another user form', function () {
     $user = User::factory()->create();
-    $user2 = User::factory()->create();
-    $workspace = createUserWorkspace($user2);
+    $workspace = createUserWorkspace($user);
 
     $form = createForm($user, $workspace);
 
-    Sanctum::actingAs($user2);
+    $this->actingAsProUser();
 
     $response = $this->postJson(route('open.forms.submissions.export', [
         'id' => $form->id,
-        'columns' => [
-            'name_field' => true
-        ]
+        'columns' => []
     ]));
 
     $response->assertJson([
-        'message' => 'Unauthenticated.'
+        'message' => 'This action is unauthorized.'
     ]);
 });

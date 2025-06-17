@@ -4,7 +4,7 @@ Retrieve the submissions of a specific form.
 
 ```http
 GET /open/forms/{formId}/submissions HTTP/1.1
-Authorization: Bearer <token with `submissions:read`>
+Authorization: Bearer <token with `submissions-read`>
 ```
 
 ### Response
@@ -20,7 +20,7 @@ Status: 200 OK
 
 ```http
 PUT /open/forms/{formId}/submissions/{submissionId} HTTP/1.1
-Authorization: Bearer <token with `submissions:write`>
+Authorization: Bearer <token with `submissions-write`>
 Content-Type: application/json
 
 { "data": { /* patched fields */ } }

@@ -30,7 +30,8 @@ class FormPolicy
     {
         // Check if authenticated via Sanctum token
         if ($token = $user->currentAccessToken()) {
-            return $token->can('forms:read') && $user->ownsForm($form);
+            $canAccess = $token->can('forms-read') || $token->can('manage-integrations');
+            return $canAccess && $user->ownsForm($form);
         }
 
         // Fallback to JWT / session logic
@@ -56,7 +57,7 @@ class FormPolicy
 
         // If using Sanctum token, ensure the token has write ability
         if ($token = $user->currentAccessToken()) {
-            return $token->can('forms:write') && $ownsAndWritable;
+            return $token->can('forms-write') && $ownsAndWritable;
         }
 
         return $ownsAndWritable;

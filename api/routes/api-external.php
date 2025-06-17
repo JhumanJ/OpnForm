@@ -7,6 +7,7 @@
 use App\Http\Controllers\Integrations\Zapier;
 use App\Http\Controllers\Integrations\Zapier\ListFormsController;
 use App\Http\Controllers\Integrations\Zapier\ListWorkspacesController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('external')
     ->middleware('auth:sanctum')
@@ -28,11 +29,11 @@ Route::prefix('external')
                 });
 
             Route::get('workspaces', ListWorkspacesController::class)
-                ->middleware('ability:list-workspaces')
+                ->middleware('ability:workspaces-read,list-workspaces')
                 ->name('workspaces');
 
             Route::get('forms', ListFormsController::class)
-                ->middleware('ability:list-forms')
+                ->middleware('ability:forms-read,list-forms')
                 ->name('forms');
         });
     });

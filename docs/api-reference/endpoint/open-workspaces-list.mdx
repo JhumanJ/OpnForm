@@ -4,14 +4,14 @@
 
 ```http
 GET /open/workspaces HTTP/1.1
-Authorization: Bearer <token with `workspaces:read`>
+Authorization: Bearer <token with `workspaces-read`>
 ```
 
 ## Create Workspace
 
 ```http
 POST /open/workspaces HTTP/1.1
-Authorization: Bearer <token with `workspaces:write`>
+Authorization: Bearer <token with `workspaces-write`>
 Content-Type: application/json
 
 { "name": "My Workspace" }
@@ -21,12 +21,12 @@ Content-Type: application/json
 
 ```http
 PUT /open/workspaces/{workspaceId} HTTP/1.1
-Authorization: Bearer <token with `workspaces:write`>
+Authorization: Bearer <token with `workspaces-write`>
 ```
 
 ## Delete Workspace
 
 ```http
 DELETE /open/workspaces/{workspaceId} HTTP/1.1
-Authorization: Bearer <token with `workspaces:write`>
+Authorization: Bearer <token with `workspaces-write`>
 ```

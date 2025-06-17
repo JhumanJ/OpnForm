@@ -25,7 +25,7 @@ class SubmissionPolicy
     {
         // Sanctum token logic
         if ($token = $user->currentAccessToken()) {
-            return $token->can('submissions:read') && $user->ownsForm($submission->form);
+            return $token->can('submissions-read') && $user->ownsForm($submission->form);
         }
 
         // Fallback to JWT / session logic
@@ -46,7 +46,7 @@ class SubmissionPolicy
         }
 
         if ($token = $user->currentAccessToken()) {
-            return $token->can('submissions:write');
+            return $token->can('submissions-write');
         }
 
         return true;

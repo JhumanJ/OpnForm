@@ -10,44 +10,36 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
       name: 'manage-integrations',
     },
     {
-      title: 'List forms',
-      name: 'list-forms',
-    },
-    {
       title: 'Forms – Read',
-      name: 'forms:read',
+      name: 'forms-read',
     },
     {
       title: 'Forms – Write',
-      name: 'forms:write',
+      name: 'forms-write',
     },
     {
       title: 'Submissions – Read',
-      name: 'submissions:read',
+      name: 'submissions-read',
     },
     {
       title: 'Submissions – Write',
-      name: 'submissions:write',
+      name: 'submissions-write',
     },
     {
       title: 'Workspaces – Read',
-      name: 'workspaces:read',
+      name: 'workspaces-read',
     },
     {
       title: 'Workspaces – Write',
-      name: 'workspaces:write',
+      name: 'workspaces-write',
     },
     {
       title: 'Workspace Users – Read',
-      name: 'workspace-users:read',
+      name: 'workspace-users-read',
     },
     {
       title: 'Workspace Users – Write',
-      name: 'workspace-users:write',
-    },
-    {
-      title: 'List workspaces',
-      name: 'list-workspaces',
+      name: 'workspace-users-write',
     },
   ]
 
