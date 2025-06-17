@@ -82,7 +82,7 @@ export default {
   },
 
   setup(props, context) {
-    const { formatValue, isComplete, getMaskPlaceholder, isValidMask } = useInputMask(() => props.mask)
+    const { formatValue, getMaskPlaceholder, isValidMask } = useInputMask(() => props.mask)
 
     const { compVal } = useFormInput(
       props,
@@ -121,20 +121,28 @@ export default {
         return
       }
 
+      // Get the previous formatted value to compare
+      const previousFormatted = maskedValue.value
       const formatted = formatValue(inputValue)
 
-      // Auto-clear if incomplete and user is backspacing/clearing
-      if (!isComplete(formatted) && inputValue.length > formatted.length) {
-        maskedValue.value = ''
-        compVal.value = ''
+      // If the formatted value is the same as before, it means the new character was invalid
+      // In this case, we should revert to the previous state
+      if (formatted === previousFormatted && inputValue.length > previousFormatted.length) {
+        // Invalid character entered - revert the input
         nextTick(() => {
           if (inputRef.value) {
-            inputRef.value.value = ''
+            const cursorPos = inputRef.value.selectionStart - 1
+            inputRef.value.value = previousFormatted
+            // Set cursor position to where it was before the invalid character
+            if (inputRef.value.setSelectionRange && cursorPos >= 0) {
+              inputRef.value.setSelectionRange(cursorPos, cursorPos)
+            }
           }
         })
         return
       }
 
+      // Valid input - update the values
       maskedValue.value = formatted
       compVal.value = formatted
 
