@@ -155,6 +155,44 @@
           }
         }
       }
+    },
+    "/open/forms": {
+      "get": {
+        "summary": "List Forms (Public API)",
+        "description": "Retrieve all forms accessible to the token holder.",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {"$ref": "#/components/schemas/Form"}
+                }
+              }
+            }
+          },
+          "403": {"description": "Forbidden – token lacks forms:read ability"}
+        }
+      },
+      "post": {
+        "summary": "Create Form (Public API)",
+        "description": "Create a new form; requires forms:write ability.",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}},
+        "responses": {"201": {"description": "Form created"}, "403": {"description": "Forbidden – token lacks forms:write ability"}}
+      }
+    },
+    "/open/forms/{id}": {
+      "get": {
+        "summary": "Get Form", "description": "Retrieve a single form.",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "Successful", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Form"}}}}, "404": {"description": "Not Found"}, "403": {"description": "Forbidden"}}
+      },
+      "put": {"summary": "Update Form", "description": "Update an existing form.", "security": [{"bearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}}, "responses": {"200": {"description": "Updated"}, "403": {"description": "Forbidden – token lacks forms:write ability"}}},
+      "delete": {"summary": "Delete Form", "description": "Delete a form.", "security": [{"bearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Deleted"}, "403": {"description": "Forbidden"}}}
     }
   },
   "components": {
