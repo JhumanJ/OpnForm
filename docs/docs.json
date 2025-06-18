@@ -46,7 +46,10 @@
         "groups": [
           {
             "group": "API Reference",
-            "openapi": "/api-reference/openapi.json"
+            "openapi": {
+              "source": "/api-reference/openapi.yaml",
+              "directory": "api-reference"
+            }
           }
         ]
       },

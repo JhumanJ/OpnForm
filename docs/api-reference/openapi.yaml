@@ -1,0 +1,508 @@
+openapi: 3.0.1
+info:
+    title: OpnForm API
+    description: API for interacting with OpnForm, primarily used for Zapier integration
+    version: 1.0.0
+servers:
+    - url: https://api.opnform.com
+security:
+    - bearerAuth: []
+tags:
+    - name: Workspaces
+      description: Create and manage workspaces.
+    - name: Workspace Users
+      description: Manage users within a workspace.
+    - name: Forms
+      description: Manage and retrieve forms.
+    - name: Submissions
+      description: Access and manage form submissions.
+    - name: Zapier
+      description: Legacy endpoints for the Zapier integration.
+paths:
+    "/open/workspaces":
+        get:
+            tags:
+                - Workspaces
+            summary: List Workspaces
+            description: "Requires `workspaces-read`."
+            security:
+                - bearerAuth: []
+            responses:
+                "200":
+                    description: Successful
+                "403":
+                    description: Forbidden
+        post:
+            tags:
+                - Workspaces
+            summary: Create Workspace
+            description: "Requires `workspaces-write`."
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "201":
+                    description: Created
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}":
+        put:
+            tags:
+                - Workspaces
+            summary: Update Workspace
+            description: "Requires `workspaces-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "200":
+                    description: Updated
+                "403":
+                    description: Forbidden
+        delete:
+            tags:
+                - Workspaces
+            summary: Delete Workspace
+            description: "Requires `workspaces-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: Deleted
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/users":
+        get:
+            tags:
+                - Workspace Users
+            summary: List Workspace Users
+            description: "Requires `workspace-users-read`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/users/add":
+        post:
+            tags:
+                - Workspace Users
+            summary: Add Workspace User
+            description: "Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "200":
+                    description: User added
+                "403":
+                    description: Forbidden
+    "/open/forms":
+        get:
+            tags:
+                - Forms
+            summary: List Forms
+            description: Retrieve all forms accessible to the token holder.
+            security:
+                - bearerAuth: []
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Form"
+                "403":
+                    description: Forbidden – token lacks forms-read ability
+        post:
+            tags:
+                - Forms
+            summary: Create Form
+            description: "Create a new form; requires forms-write ability."
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "201":
+                    description: Form created
+                "403":
+                    description: Forbidden – token lacks forms-write ability
+    "/open/forms/{id}":
+        get:
+            tags:
+                - Forms
+            summary: Get Form
+            description: Retrieve a single form.
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Form"
+                "404":
+                    description: Not Found
+                "403":
+                    description: Forbidden
+        put:
+            tags:
+                - Forms
+            summary: Update Form
+            description: Update an existing form.
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "200":
+                    description: Updated
+                "403":
+                    description: Forbidden – token lacks forms-write ability
+        delete:
+            tags:
+                - Forms
+            summary: Delete Form
+            description: Delete a form.
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: Deleted
+                "403":
+                    description: Forbidden
+    "/open/forms/{id}/submissions":
+        get:
+            tags:
+                - Submissions
+            summary: List Submissions
+            description: "Retrieve submissions for a specific form. Requires `submissions-read` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful
+                "403":
+                    description: "Forbidden – token lacks submissions-read ability"
+        post:
+            tags:
+                - Submissions
+            summary: Export Submissions (CSV)
+            description: "Export submissions as CSV. Requires `submissions-read`."
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: false
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "200":
+                    description: Export file
+                "403":
+                    description: Forbidden
+    "/open/forms/{id}/submissions/{submission_id}":
+        put:
+            tags:
+                - Submissions
+            summary: Update Submission
+            description: "Update a submission. Requires `submissions-write` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: submission_id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+            responses:
+                "200":
+                    description: Updated
+                "403":
+                    description: "Forbidden – token lacks submissions-write ability"
+    "/external/zapier/validate":
+        get:
+            tags:
+                - Zapier
+            summary: Validate API Key
+            description: This endpoint is used by Zapier to test the validity of the API key.
+            responses:
+                "200":
+                    description: API key is valid
+                "401":
+                    description: Invalid API key
+    "/external/zapier/forms":
+        get:
+            tags:
+                - Zapier
+            summary: List Forms
+            description: Retrieve a list of forms available in a specific workspace.
+            parameters:
+                - name: workspace_id
+                  in: query
+                  description: The ID of the workspace for which to list forms
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Form"
+    "/external/zapier/webhook":
+        post:
+            tags:
+                - Zapier
+            summary: New Submission Trigger
+            description: This endpoint is used to set up a webhook for new form submissions.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                hookUrl:
+                                    type: string
+                                    description: The URL provided by Zapier to send the submission data
+                                form_id:
+                                    type: string
+                                    description: The ID of the form for which to trigger the webhook
+                            required:
+                                - hookUrl
+                                - form_id
+            responses:
+                "200":
+                    description: Webhook successfully set up
+        delete:
+            tags:
+                - Zapier
+            summary: Unsubscribe Webhook
+            description: This endpoint is used to unsubscribe from the webhook.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                hookUrl:
+                                    type: string
+                                    description: The URL provided by Zapier to stop sending the submission data
+                                form_id:
+                                    type: string
+                                    description: The ID of the form for which to unsubscribe the webhook
+                            required:
+                                - hookUrl
+                                - form_id
+            responses:
+                "200":
+                    description: Webhook successfully unsubscribed
+    "/external/zapier/submissions/recent":
+        get:
+            tags:
+                - Zapier
+            summary: Sample Submission Polling
+            description: Retrieves the most recent submissions for a specified form.
+            parameters:
+                - name: form_id
+                  in: query
+                  description: The ID of the form to retrieve submissions for
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Submission"
+
+components:
+    schemas:
+        Workspace:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The unique identifier for the workspace.
+                    example: "ws_abc123"
+                name:
+                    type: string
+                    description: The name of the workspace.
+                    example: "My Marketing Team"
+                icon:
+                    type: string
+                    description: The emoji or icon representing the workspace.
+                    example: "🚀"
+                is_trialing:
+                    type: boolean
+                    description: Indicates if the workspace is currently in a trial period.
+                settings:
+                    type: object
+                    description: General settings for the workspace.
+        Form:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The unique identifier for the form.
+                slug:
+                    type: string
+                    description: The URL-friendly slug for the form.
+                title:
+                    type: string
+                    description: The title of the form.
+                visibility:
+                    type: string
+                    enum: [public, draft, closed]
+                    description: The current visibility state of the form.
+                properties:
+                    type: array
+                    description: An array of field and layout blocks that make up the form.
+                    items:
+                        $ref: "#/components/schemas/FormProperty"
+        FormProperty:
+            type: object
+            description: A single field or layout block within a form.
+            discriminator:
+                propertyName: type
+            properties:
+                id:
+                    type: string
+                    description: A unique identifier for the block.
+                type:
+                    type: string
+                    description: The type of block.
+                name:
+                    type: string
+                    description: The label or name of the field.
+                help:
+                    type: string
+                    description: "Help text displayed with the field."
+                hidden:
+                    type: boolean
+                    description: Whether the field is hidden from view.
+                required:
+                    type: boolean
+                    description: "Whether the field is required."
+                placeholder:
+                    type: string
+                    description: Placeholder text for the input.
+                width:
+                    type: string
+                    enum: [full, "1/2", "1/3", "2/3", "1/4", "3/4"]
+                    description: The width of the block in the form layout.
+                additionalProperties: true
+        Submission:
+            type: object
+            properties:
+                submission_id:
+                    type: string
+                form_id:
+                    type: string
+                submitted_at:
+                    type: string
+                    format: date-time
+                data:
+                    type: object
+                    additionalProperties: true
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
