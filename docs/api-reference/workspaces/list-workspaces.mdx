@@ -1,3 +1,44 @@
 ---
 openapi: get /open/workspaces
 ---
+
+# List Workspaces
+
+Return the workspaces the authenticated user belongs to.
+
+## Authentication & Scope
+
+Requires the `workspaces-read` ability.
+
+## Request
+
+```http
+GET /open/workspaces HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+No query parameters are supported.
+
+## Response
+
+`200 OK` – An array of Workspace objects.
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Marketing",
+    "icon": "🚀",
+    "settings": {
+      "email_settings": {
+        "from_name": "OpnForm"
+      }
+    },
+    "max_file_size": 25,
+    "is_readonly": false
+  }
+]
+```
+
+`403 Forbidden` – The token lacks `workspaces-read` or you do not have the necessary permissions.

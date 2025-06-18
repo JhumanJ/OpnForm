@@ -7,7 +7,7 @@
 - [x] open.forms.submissions.update
 - [x] open.forms.submissions.export
 - [x] open.forms.submissions.destroy
-- [ ] open.workspaces.index
+- [x] open.workspaces.index
 - [ ] open.workspaces.create
 - [ ] open.workspaces.update
 - [ ] open.workspaces.delete
