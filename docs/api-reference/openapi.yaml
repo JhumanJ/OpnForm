@@ -189,7 +189,7 @@ paths:
             tags:
                 - Workspace Users
             summary: Remove Workspace User
-            description: "Requires `workspace-users-write`."
+            description: "Requires `workspace-users-write`. Removes a specified user from the workspace."
             security:
                 - bearerAuth: []
             parameters:
@@ -206,6 +206,14 @@ paths:
             responses:
                 "200":
                     description: User removed
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User removed from workspace successfully.
                 "403":
                     description: Forbidden
     "/open/workspaces/{workspaceId}/users/{userId}/update-role":

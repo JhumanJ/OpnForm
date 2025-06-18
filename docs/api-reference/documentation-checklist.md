@@ -13,7 +13,7 @@
 - [x] open.workspaces.delete
 - [x] open.workspaces.users.index
 - [x] open.workspaces.users.add
-- [ ] open.workspaces.users.remove
+- [x] open.workspaces.users.remove
 - [ ] open.workspaces.users.update-role
 - [ ] open.workspaces.leave
 - [ ] open.workspaces.invites.index
