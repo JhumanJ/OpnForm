@@ -110,7 +110,7 @@ paths:
             tags:
                 - Workspaces
             summary: Delete Workspace
-            description: "Requires `workspaces-write`."
+            description: "Permanently delete a workspace. Requires `workspaces-write`."
             security:
                 - bearerAuth: []
             parameters:
