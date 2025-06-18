@@ -277,7 +277,7 @@ paths:
             tags:
                 - Workspace Users
             summary: List Workspace Invites
-            description: "Requires `workspace-users-read`."
+            description: "Requires `workspace-users-read`. Lists pending & accepted invites."
             security:
                 - bearerAuth: []
             parameters:
@@ -289,6 +289,12 @@ paths:
             responses:
                 "200":
                     description: Successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Invite"
                 "403":
                     description: Forbidden
     "/open/workspaces/{workspaceId}/invites/{inviteId}/resend":
@@ -840,6 +846,24 @@ components:
                 role:
                     type: string
                     description: Role of the user inside the workspace (admin, member, viewer).
+        Invite:
+            type: object
+            properties:
+                id:
+                    type: number
+                email:
+                    type: string
+                    format: email
+                role:
+                    type: string
+                    enum: [admin, user, readonly]
+                status:
+                    type: string
+                    enum: [pending, accepted]
+                valid_until:
+                    type: string
+                    format: date-time
+                    description: Expiration timestamp for the invite
     securitySchemes:
         bearerAuth:
             type: http

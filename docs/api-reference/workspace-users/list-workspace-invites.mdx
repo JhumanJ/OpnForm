@@ -1,3 +1,43 @@
 ---
 openapi: get /open/workspaces/{workspaceId}/invites
 ---
+
+# List Workspace Invites
+
+Retrieve all pending or accepted invitations for a workspace.
+
+## Authentication & Scope
+
+Requires `workspace-users-read` ability. The requester must be a member of the workspace.
+
+## Request
+
+```http
+GET /open/workspaces/{workspaceId}/invites HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                 |
+|-------------|--------|-----------------------------|
+| workspaceId | number | ID of the workspace.        |
+
+## Response
+
+`200 OK` – Array of Invite objects.
+
+```json
+[
+  {
+    "id": 55,
+    "email": "invitee@example.com",
+    "role": "user",
+    "status": "pending",
+    "valid_until": "2024-06-25T23:59:59Z"
+  }
+]
+```
+
+`403 Forbidden` – Token lacks `workspace-users-read` or you lack access.

@@ -57,6 +57,7 @@
             "group": "Workspace Users",
             "pages": [
               "api-reference/workspace-users/list-workspace-users",
+              "api-reference/workspace-users/list-workspace-invites",
               "api-reference/workspace-users/add-workspace-user",
               "api-reference/workspace-users/remove-workspace-user",
               "api-reference/workspace-users/update-workspace-user-role",
