@@ -221,7 +221,7 @@ paths:
             tags:
                 - Workspace Users
             summary: Update Workspace User Role
-            description: "Requires `workspace-users-write`."
+            description: "Requires `workspace-users-write`. Update a member's role."
             security:
                 - bearerAuth: []
             parameters:
@@ -241,9 +241,12 @@ paths:
                     application/json:
                         schema:
                             type: object
+                            required:
+                                - role
                             properties:
                                 role:
                                     type: string
+                                    enum: [admin, user, readonly]
                                     description: New role for the user.
             responses:
                 "200":

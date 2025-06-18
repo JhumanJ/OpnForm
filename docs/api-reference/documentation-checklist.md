@@ -14,7 +14,7 @@
 - [x] open.workspaces.users.index
 - [x] open.workspaces.users.add
 - [x] open.workspaces.users.remove
-- [ ] open.workspaces.users.update-role
+- [x] open.workspaces.users.update-role
 - [ ] open.workspaces.leave
 - [ ] open.workspaces.invites.index
 - [ ] open.workspaces.invites.resend
