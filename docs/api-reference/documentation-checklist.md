@@ -3,7 +3,7 @@
 - [x] open.forms.show
 - [x] open.forms.update
 - [x] open.forms.destroy
-- [ ] open.forms.submissions.index
+- [x] open.forms.submissions.index
 - [ ] open.forms.submissions.update
 - [ ] open.forms.submissions.export
 - [ ] open.forms.submissions.destroy

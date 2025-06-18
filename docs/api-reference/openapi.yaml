@@ -414,7 +414,7 @@ paths:
             tags:
                 - Submissions
             summary: List Submissions
-            description: "Requires `forms-read`."
+            description: "Requires `forms-read`. Supports pagination via the `page` query parameter."
             security:
                 - bearerAuth: []
             parameters:
@@ -423,6 +423,12 @@ paths:
                   required: true
                   schema:
                       type: number
+                - name: page
+                  in: query
+                  required: false
+                  schema:
+                      type: number
+                      minimum: 1
             responses:
                 "200":
                     description: Successful

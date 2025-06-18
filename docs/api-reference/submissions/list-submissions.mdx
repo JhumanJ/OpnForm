@@ -1,3 +1,68 @@
 ---
 openapi: get /open/forms/{id}/submissions
 ---
+
+# List Submissions
+
+Retrieve submissions for a specific form.
+
+## Authentication & Scope
+
+Requires `forms-read` ability.
+
+## Request
+
+```http
+GET /open/forms/{id}/submissions?page=1 HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter | Type   | Description                 |
+|-----------|--------|-----------------------------|
+| id        | number | Numeric ID of the form.     |
+
+### Query Parameters
+
+| Parameter | Type   | Required | Description                                        |
+|-----------|--------|----------|----------------------------------------------------|
+| page      | number | No       | Pagination page number (default `1`). 100 results per page. |
+
+## Response
+
+`200 OK` – Returns a paginated collection of `Submission` objects.
+
+```json
+{
+  "data": [
+    {
+      "submission_id": 1,
+      "form_id": 123,
+      "submitted_at": "2024-06-12T09:15:23Z",
+      "data": {
+        "First name": "Alice",
+        "Email": "alice@example.com"
+      }
+    }
+  ],
+  "links": {
+    "first": "https://api.opnform.com/open/forms/123/submissions?page=1",
+    "last": "https://api.opnform.com/open/forms/123/submissions?page=3",
+    "prev": null,
+    "next": "https://api.opnform.com/open/forms/123/submissions?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 3,
+    "path": "https://api.opnform.com/open/forms/123/submissions",
+    "per_page": 100,
+    "to": 100,
+    "total": 250
+  }
+}
+```
+
+`403 Forbidden` – The token lacks `forms-read`.
