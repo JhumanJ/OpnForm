@@ -1,37 +1,87 @@
 ---
 title: "Introduction"
-description: "API Documentation for OpnForm"
+description: "Overview of the OpnForm REST API, base URL, authentication, and rate limits."
 ---
 
-Welcome to the OpnForm API documentation. This guide provides information on how to interact with the OpnForm API to automate your workflows and integrate OpnForm with your applications.
+Welcome to the **OpnForm REST API** – a straightforward, JWT-based interface that lets you manage workspaces, forms and submissions from your own tools or backend jobs.
+
+If you've ever used the dashboard you already know the objects you'll be working with: **workspaces**, **forms**, **submissions**, and **users**. The API exposes almost the same capabilities – you can list items, create new ones, update them or delete them, all with predictable HTTP verbs.
+
+## Base URL
+
+```text
+https://api.opnform.com
+```
+
+All endpoints documented in this reference are relative to that URL.
+
+## Versioning
+
+The current version is **v1** (implicit in the paths). We follow semantic versioning – backwards-compatible improvements don't bump the major version, breaking changes will.
 
 ## Authentication
 
-To authenticate with the OpnForm API, you need an API key. Here's how to create and use an API key.
+Every request must include a **Personal Access Token** in the `Authorization` header:
 
-### Creating an API Key
-
-<Frame>
-  <img
-    src="/api-reference/images/create-token.png"
-    alt="Creating an API Key in OpnForm"
-  />
-</Frame>
-
-1. Log in to your OpnForm account.
-2. Navigate to the Access Tokens page at https://opnform.com/settings/access-tokens.
-3. Click on the "Create new token" button.
-4. Give your token a name (e.g., "My API Integration").
-5. Click "Create" to generate your API key. 6. Copy the generated API key immediately, as it won't be displayed again for security reasons.
-
-### Using the API Key
-
-To use the API key, you need to include it in the header of every request you make to the API as a Bearer token. Here's how to do it:
-
-1. Take your API key that you generated earlier.
-2. Add it to the `Authorization` header of your HTTP request.
-3. Prefix the key with the word "Bearer" followed by a space.
-
+```http
+Authorization: Bearer <access_token>
 ```
-Authorization: Bearer YOUR_API_KEY
+
+Tokens can be created in your OpnForm dashboard (see the [API Keys](./api-keys) section). Each token is associated with one or more **abilities / scopes** that restrict what it can do.
+
+| Ability | Description |
+|---------|-------------|
+| workspaces-read | Read workspaces the user belongs to |
+| workspaces-write | Create, update or delete workspaces |
+| workspace-users-read | List workspace members & invites |
+| workspace-users-write | Manage workspace members & invites |
+| forms-read | Read forms & submissions |
+| forms-write | Create or modify forms & submissions |
+
+When your request attempts an operation outside the abilities attached to the token, the API responds with **403 Forbidden**.
+
+## Pagination
+
+List endpoints are paginated. The default page size is **100** items. Use the `page` query parameter (`?page=2`) to retrieve subsequent pages.
+
+## Rate limits
+
+Each IP address is limited to **1000 requests per minute**. Responses include the following headers so you can stay within the limit:
+
+| Header | Meaning |
+|--------|---------|
+| `X-RateLimit-Limit` | Total requests allowed in the current window |
+| `X-RateLimit-Remaining` | Requests left in the current window |
+| `Retry-After` | Seconds to wait before retrying (only present when limit exceeded) |
+
+Exceeding the limit returns **429 Too Many Requests**.
+
+## Errors
+
+Errors are returned in JSON with an HTTP status code that reflects the problem:
+
+```json
+{
+  "message": "Validation failed.",
+  "errors": {
+    "title": ["The title field is required."]
+  }
+}
+```
+
+See the status-code table below for the most common cases:
+
+| Status | Meaning |
+|--------|---------|
+| 400 | Bad request / validation error |
+| 401 | Missing or invalid token |
+| 403 | Token lacks required ability |
+| 404 | Resource not found |
+| 429 | Rate limit exceeded |
+| 500 | Server error – something went wrong on our side |
+
+That's all you need to know to get started – head over to the endpoint sections or grab a token and make your first call:
+
+```bash
+curl -H "Authorization: Bearer <access_token>" https://api.opnform.com/open/workspaces
 ```

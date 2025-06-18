@@ -88,6 +88,14 @@
               "api-reference/zapier/unsubscribe-webhook",
               "api-reference/zapier/sample-submission-polling"
             ]
+          },
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/api-keys",
+              "api-reference/changelog"
+            ]
           }
         ]
       },
