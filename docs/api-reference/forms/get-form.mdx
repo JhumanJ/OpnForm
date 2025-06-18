@@ -1,3 +1,43 @@
 ---
 openapi: get /open/forms/{slug}
 ---
+
+# Get Form
+
+Retrieve a single form by its **slug** (UUID or human-readable slug).
+
+## Authentication & Scope
+
+Requires a token with the `forms-read` ability.
+
+## Request
+
+```http
+GET /open/forms/{slug} HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter | Type   | Description                           |
+|-----------|--------|---------------------------------------|
+| slug      | string | The form slug or UUID (see dashboard) |
+
+## Response
+
+`200 OK` – Returns a `Form` object.
+
+```json
+{
+  "id": 42,
+  "slug": "customer-feedback",
+  "title": "Customer Feedback",
+  "visibility": "public",
+  "properties": [...]
+}
+```
+
+`404 Not Found` – No form matches the provided slug.
+
+`403 Forbidden` – The token lacks the required ability or you do not have permission to view the form.
