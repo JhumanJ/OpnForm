@@ -230,6 +230,34 @@
           />
         </template>
       </toggle-switch-input>
+
+      <text-input
+        v-if="!field.multi_lines"
+        name="input_mask"
+        class="mt-3"
+        :form="field"
+        label="Input Mask Pattern"
+        placeholder="(999) 999-9999"
+        @update:model-value="onInputMaskChange"
+      >
+        <template #help>
+          <InputHelp>
+            <span>
+              Format: 9=number, a=letter, *=both. 
+              <br/>
+              Examples: (999) 999-9999, 999-99-9999, a*-999
+              <br/>
+              <a
+                href="#"
+                class="text-blue-500 hover:underline"
+                @click.prevent="crisp.openHelpdeskArticle('how-to-set-mask-pattern-197qqps')"
+            >
+              Learn more?
+            </a>
+            </span>
+          </InputHelp>
+        </template>
+      </text-input>
     </div>
 
     <!--   Date Options   -->
@@ -656,7 +684,10 @@ export default {
     }
   },
   setup() {
-    return { currentWorkspace: computed(() => useWorkspacesStore().getCurrent), }
+    return {
+      currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
+      crisp: useCrisp()
+    }
   },
   data() {
     return {
@@ -903,6 +934,20 @@ export default {
       this.field.max_char_limit = val
       if(!this.field.max_char_limit) {
         this.field.show_char_limit = false
+      }
+    },
+    onInputMaskChange(val) {
+      // Ensure val is a string
+      if (typeof val !== 'string') {
+        return
+      }
+      
+      // Only allow characters: a, 9, *, and common punctuation for input masks
+      const allowedChars = /^[a9*()\-_.,/\s]+$/
+      if (val && !allowedChars.test(val)) {
+        // Remove invalid characters
+        const cleanedValue = val.replace(/[^a9*()\-_.,/\s]/g, '')
+        this.field.input_mask = cleanedValue
       }
     }
   }
