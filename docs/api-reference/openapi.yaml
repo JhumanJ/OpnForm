@@ -82,7 +82,7 @@ paths:
             tags:
                 - Workspaces
             summary: Update Workspace
-            description: "Requires `workspaces-write`."
+            description: "Update workspace name or icon. Requires `workspaces-write`."
             security:
                 - bearerAuth: []
             parameters:
