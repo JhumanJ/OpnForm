@@ -1,7 +1,7 @@
 - [x] open.forms.index-all
 - [x] open.forms.store
 - [x] open.forms.show
-- [ ] open.forms.update
+- [x] open.forms.update
 - [ ] open.forms.destroy
 - [ ] open.forms.submissions.index
 - [ ] open.forms.submissions.update

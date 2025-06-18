@@ -367,7 +367,7 @@ paths:
             tags:
                 - Forms
             summary: Update Form
-            description: Update an existing form.
+            description: "Update an existing form. Requires `forms-write`."
             security:
                 - bearerAuth: []
             parameters:
