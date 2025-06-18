@@ -58,7 +58,10 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
   const tokens = computed(() => contentStore.getAll.value)
 
   const getAbility = (name) => {
-    return abilities.find(ability => ability.name == name)
+    return abilities.find((ability) => ability.name === name) ?? {
+      name,
+      title: name,
+    }
   }
 
   return {

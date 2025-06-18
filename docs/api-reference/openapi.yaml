@@ -5,7 +5,7 @@ info:
     version: 1.0.0
 servers:
     - url: https://api.opnform.com
-    - url: http://opnform.test/
+    - url: https://opnform.test
 security:
     - bearerAuth: []
 tags:
@@ -150,6 +150,150 @@ paths:
             responses:
                 "200":
                     description: User added
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/users/{userId}/remove":
+        delete:
+            tags:
+                - Workspace Users
+            summary: Remove Workspace User
+            description: "Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: User removed
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/users/{userId}/update-role":
+        put:
+            tags:
+                - Workspace Users
+            summary: Update Workspace User Role
+            description: "Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role:
+                                    type: string
+                                    description: New role for the user.
+            responses:
+                "200":
+                    description: Role updated
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/leave":
+        post:
+            tags:
+                - Workspace Users
+            summary: Leave Workspace
+            description: "Allows the current user to leave the workspace. Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: Left workspace
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/invites":
+        get:
+            tags:
+                - Workspace Users
+            summary: List Workspace Invites
+            description: "Requires `workspace-users-read`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Successful
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/invites/{inviteId}/resend":
+        post:
+            tags:
+                - Workspace Users
+            summary: Resend Workspace Invite
+            description: "Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: inviteId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Invite resent
+                "403":
+                    description: Forbidden
+    "/open/workspaces/{workspaceId}/invites/{inviteId}/cancel":
+        delete:
+            tags:
+                - Workspace Users
+            summary: Cancel Workspace Invite
+            description: "Requires `workspace-users-write`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: workspaceId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                - name: inviteId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: Invite canceled
                 "403":
                     description: Forbidden
     "/open/forms":

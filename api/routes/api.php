@@ -167,7 +167,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
             Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
-            Route::prefix('/{id}/submissions')->name('submissions')->group(function () {
+            Route::prefix('/{id}/submissions')->name('submissions.')->group(function () {
                 Route::get('/', [FormSubmissionController::class, 'submissions'])->name('index');
                 Route::put('/{submission_id}', [FormSubmissionController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
                 Route::post('/export', [FormSubmissionController::class, 'export'])->name('export');
