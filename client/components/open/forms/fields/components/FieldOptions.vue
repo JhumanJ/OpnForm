@@ -238,11 +238,14 @@
         :form="field"
         label="Input Mask Pattern"
         placeholder="(999) 999-9999"
+        @update:model-value="onInputMaskChange"
       >
         <template #help>
           <InputHelp>
             <span>
-              Format: 9=number, a=letter, *=both. Examples: (999) 999-9999, 999-99-9999, a*-999
+              Format: 9=number, a=letter, *=both. 
+              <br/>
+              Examples: (999) 999-9999, 999-99-9999, a*-999
               <br/>
               <a
                 href="#"
@@ -931,6 +934,20 @@ export default {
       this.field.max_char_limit = val
       if(!this.field.max_char_limit) {
         this.field.show_char_limit = false
+      }
+    },
+    onInputMaskChange(val) {
+      // Ensure val is a string
+      if (typeof val !== 'string') {
+        return
+      }
+      
+      // Only allow characters: a, 9, *, and common punctuation for input masks
+      const allowedChars = /^[a9*()\-_.,/\s]+$/
+      if (val && !allowedChars.test(val)) {
+        // Remove invalid characters
+        const cleanedValue = val.replace(/[^a9*()\-_.,/\s]/g, '')
+        this.field.input_mask = cleanedValue
       }
     }
   }
