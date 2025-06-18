@@ -1,5 +1,5 @@
 - [x] open.forms.index-all
-- [ ] open.forms.store
+- [x] open.forms.store
 - [ ] open.forms.show
 - [ ] open.forms.update
 - [ ] open.forms.destroy

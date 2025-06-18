@@ -664,6 +664,10 @@ components:
                     type: string
                     description: The URL-friendly slug for the form.
                     readOnly: true
+                workspace_id:
+                    type: number
+                    description: ID of the workspace that owns the form.
+                    writeOnly: true
                 title:
                     type: string
                     description: The title of the form.
