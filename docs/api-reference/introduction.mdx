@@ -15,10 +15,6 @@ https://api.opnform.com
 
 All endpoints documented in this reference are relative to that URL.
 
-## Versioning
-
-The current version is **v1** (implicit in the paths). We follow semantic versioning – backwards-compatible improvements don't bump the major version, breaking changes will.
-
 ## Authentication
 
 Every request must include a **Personal Access Token** in the `Authorization` header:
@@ -46,15 +42,7 @@ List endpoints are paginated. The default page size is **100** items. Use the `p
 
 ## Rate limits
 
-Each IP address is limited to **1000 requests per minute**. Responses include the following headers so you can stay within the limit:
-
-| Header | Meaning |
-|--------|---------|
-| `X-RateLimit-Limit` | Total requests allowed in the current window |
-| `X-RateLimit-Remaining` | Requests left in the current window |
-| `Retry-After` | Seconds to wait before retrying (only present when limit exceeded) |
-
-Exceeding the limit returns **429 Too Many Requests**.
+Each IP address is limited to **100 requests per minute**. Exceeding the limit returns **429 Too Many Requests**.
 
 ## Errors
 
