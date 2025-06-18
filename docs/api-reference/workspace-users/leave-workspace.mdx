@@ -1,3 +1,33 @@
 ---
 openapi: post /open/workspaces/{workspaceId}/leave
 ---
+
+# Leave Workspace
+
+Remove **your own** user account from a workspace.
+
+## Authentication & Scope
+
+Requires the `workspace-users-write` ability. Only the authenticated user can leave; admins cannot use this endpoint to kick others (see [Remove Workspace User](./remove-workspace-user)).
+
+## Request
+
+```http
+POST /open/workspaces/{workspaceId}/leave HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                 |
+|-------------|--------|-----------------------------|
+| workspaceId | number | ID of the workspace to quit |
+
+Request body is empty.
+
+## Response
+
+`204 No Content` – You successfully left the workspace.
+
+`403 Forbidden` – Token lacks `workspace-users-write` or you aren't a member.
