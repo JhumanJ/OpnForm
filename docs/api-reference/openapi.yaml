@@ -154,7 +154,7 @@ paths:
             tags:
                 - Workspace Users
             summary: Add Workspace User
-            description: "Requires `workspace-users-write`."
+            description: "Requires `workspace-users-write`. Add an existing user or send an invite if the email is unknown."
             security:
                 - bearerAuth: []
             parameters:
@@ -169,6 +169,16 @@ paths:
                     application/json:
                         schema:
                             type: object
+                            required:
+                                - email
+                                - role
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                role:
+                                    type: string
+                                    enum: [admin, user, readonly]
             responses:
                 "200":
                     description: User added
