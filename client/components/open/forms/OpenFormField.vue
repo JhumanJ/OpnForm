@@ -190,6 +190,9 @@ const getFieldComponents = computed(() => {
   if (field.type === 'text' && field.multi_lines) {
     return 'TextAreaInput'
   }
+  if (field.type === 'text' && field.input_mask) {
+    return 'MaskInput'
+  }
   if (field.type === 'url' && field.file_upload) {
     return 'FileInput'
   }
