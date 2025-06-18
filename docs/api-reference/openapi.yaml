@@ -628,6 +628,9 @@ paths:
         get:
             tags:
                 - Zapier
+            responses:
+                "200":
+                    description: "Successful"
 
 components:
     schemas:
