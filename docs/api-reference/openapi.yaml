@@ -302,7 +302,7 @@ paths:
             tags:
                 - Workspace Users
             summary: Resend Workspace Invite
-            description: "Requires `workspace-users-write`."
+            description: "Requires `workspace-users-write`. Resend the invitation email for a pending invite."
             security:
                 - bearerAuth: []
             parameters:
@@ -319,6 +319,14 @@ paths:
             responses:
                 "200":
                     description: Invite resent
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Invite email resent successfully.
                 "403":
                     description: Forbidden
     "/open/workspaces/{workspaceId}/invites/{inviteId}/cancel":
@@ -326,7 +334,7 @@ paths:
             tags:
                 - Workspace Users
             summary: Cancel Workspace Invite
-            description: "Requires `workspace-users-write`."
+            description: "Requires `workspace-users-write`. Delete a pending invite."
             security:
                 - bearerAuth: []
             parameters:
@@ -341,8 +349,16 @@ paths:
                   schema:
                       type: string
             responses:
-                "204":
+                "200":
                     description: Invite canceled
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Invite deleted successfully.
                 "403":
                     description: Forbidden
     "/open/forms":

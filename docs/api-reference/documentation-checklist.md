@@ -17,13 +17,13 @@
 - [x] open.workspaces.users.update-role
 - [x] open.workspaces.leave
 - [x] open.workspaces.invites.index
-- [ ] open.workspaces.invites.resend
-- [ ] open.workspaces.invites.cancel
+- [x] open.workspaces.invites.resend
+- [x] open.workspaces.invites.cancel
 
 ---
 
 Additional tasks:
 
-- [ ] Create an Introduction page for the API (similar to Tally's) under `/api-reference` and add it to `docs.json` navigation.
-- [ ] Create an API Keys page (similar to Tally's) explaining token management (referencing `access-tokens.vue`) and add it to `docs.json` navigation.
-- [ ] Create a Changelog page with an initial entry for "API creation" and link it in the navigation.
+- [x] Create an Introduction page for the API (similar to Tally's) under `/api-reference` and add it to `docs.json` navigation.
+- [x] Create an API Keys page (similar to Tally's) explaining token management (referencing `access-tokens.vue`) and add it to `docs.json` navigation.
+- [x] Create a Changelog page with an initial entry for "API creation" and link it in the navigation.
