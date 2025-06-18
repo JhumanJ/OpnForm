@@ -1,3 +1,50 @@
 ---
 openapi: get /open/workspaces/{workspaceId}/users
 ---
+
+# List Workspace Users
+
+Fetch all members of a workspace, including their assigned role.
+
+## Authentication & Scope
+
+Requires `workspace-users-read` ability. The requesting user must belong to the workspace.
+
+## Request
+
+```http
+GET /open/workspaces/{workspaceId}/users HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                      |
+|-------------|--------|----------------------------------|
+| workspaceId | number | ID of the workspace to retrieve. |
+
+No query parameters are supported.
+
+## Response
+
+`200 OK` – An array of user objects, each including a `role` field (from the pivot table).
+
+```json
+[
+  {
+    "id": 3,
+    "name": "Alice Porter",
+    "email": "alice@example.com",
+    "role": "admin"
+  },
+  {
+    "id": 8,
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "role": "member"
+  }
+]
+```
+
+`403 Forbidden` – Token lacks `workspace-users-read` or you are not a member.
