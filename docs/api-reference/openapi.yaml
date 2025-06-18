@@ -39,6 +39,7 @@ paths:
                                     $ref: "#/components/schemas/Workspace"
                 "403":
                     description: Forbidden
+    "/open/workspaces/create":
         post:
             tags:
                 - Workspaces
@@ -51,14 +52,29 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/Workspace"
+                            type: object
+                            required:
+                                - name
+                            properties:
+                                name:
+                                    type: string
+                                emoji:
+                                    type: string
+                                    description: Emoji or icon representing the workspace.
             responses:
-                "201":
+                "200":
                     description: Created
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/Workspace"
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                    workspace_id:
+                                        type: number
+                                    workspace:
+                                        $ref: "#/components/schemas/Workspace"
                 "403":
                     description: Forbidden
     "/open/workspaces/{workspaceId}":
