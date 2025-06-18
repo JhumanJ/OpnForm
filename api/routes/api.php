@@ -167,15 +167,16 @@ Route::group(['middleware' => 'auth.multi'], function () {
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
             Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
-            Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
-            Route::put('/{id}/submissions/{submission_id}', [FormSubmissionController::class, 'update'])->name('submissions.update')->middleware([ResolveFormMiddleware::class]);
-            Route::post('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
-            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
-                ->middleware('signed')
-                ->withoutMiddleware(['auth.multi'])
-                ->name('submissions.file');
-
-            Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
+            Route::prefix('/{id}/submissions')->name('submissions')->group(function () {
+                Route::get('/', [FormSubmissionController::class, 'submissions'])->name('index');
+                Route::put('/{submission_id}', [FormSubmissionController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
+                Route::post('/export', [FormSubmissionController::class, 'export'])->name('export');
+                Route::get('/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
+                    ->middleware('signed')
+                    ->withoutMiddleware(['auth.multi'])
+                    ->name('file');
+                Route::delete('/{submission_id}', [FormSubmissionController::class, 'destroy'])->name('destroy');
+            });
 
             // Form Admin tool
             Route::put(

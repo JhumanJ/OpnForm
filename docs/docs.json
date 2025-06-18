@@ -45,11 +45,48 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Reference",
-            "openapi": {
-              "source": "/api-reference/openapi.yaml",
-              "directory": "api-reference"
-            }
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/list-workspaces",
+              "api-reference/workspaces/create-workspace",
+              "api-reference/workspaces/update-workspace",
+              "api-reference/workspaces/delete-workspace"
+            ]
+          },
+          {
+            "group": "Workspace Users",
+            "pages": [
+              "api-reference/workspace-users/list-workspace-users",
+              "api-reference/workspace-users/add-workspace-user"
+            ]
+          },
+          {
+            "group": "Forms",
+            "pages": [
+              "api-reference/forms/list-forms",
+              "api-reference/forms/create-form",
+              "api-reference/forms/get-form",
+              "api-reference/forms/update-form",
+              "api-reference/forms/delete-form"
+            ]
+          },
+          {
+            "group": "Submissions",
+            "pages": [
+              "api-reference/submissions/list-submissions",
+              "api-reference/submissions/export-submissions-csv",
+              "api-reference/submissions/update-submission"
+            ]
+          },
+          {
+            "group": "Zapier",
+            "pages": [
+              "api-reference/zapier/validate-api-key",
+              "api-reference/zapier/list-forms",
+              "api-reference/zapier/new-submission-trigger",
+              "api-reference/zapier/unsubscribe-webhook",
+              "api-reference/zapier/sample-submission-polling"
+            ]
           }
         ]
       },

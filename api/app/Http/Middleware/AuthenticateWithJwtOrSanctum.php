@@ -28,7 +28,7 @@ class AuthenticateWithJwtOrSanctum
 
             // Validate route against whitelist
             $routeName = $request->route()?->getName();
-            $allowedRoutes = config('sanctum_routes.allowed', []);
+            $allowedRoutes = config('sanctum-routes.allowed', []);
 
             if (! $routeName || ! in_array($routeName, $allowedRoutes, true)) {
                 // Return 404 to avoid revealing route existence

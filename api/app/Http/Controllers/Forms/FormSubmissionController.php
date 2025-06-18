@@ -56,7 +56,7 @@ class FormSubmissionController extends Controller
         $this->authorize('view', $form);
 
         $allRows = [];
-        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
+        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
         foreach ($form->submissions->toArray() as $row) {
             $formatter = (new FormSubmissionFormatter($form, $row['data']))
                 ->outputStringsOnly()
@@ -67,7 +67,7 @@ class FormSubmissionController extends Controller
             $formattedData = $formatter->getCleanKeyValue();
             $filteredData = ['id' => Hashids::encode($row['id'])];
             foreach ($displayColumns as $column => $value) {
-                $key = collect($formattedData)->keys()->first(fn ($key) => str_contains($key, $column));
+                $key = collect($formattedData)->keys()->first(fn($key) => str_contains($key, $column));
                 if ($key) {
                     $filteredData[$key] = $formattedData[$key];
                 }
@@ -104,5 +104,18 @@ class FormSubmissionController extends Controller
         return redirect(
             Storage::temporaryUrl($fileName, now()->addMinute())
         );
+    }
+
+    public function destroy($id, $submissionId)
+    {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('delete', $form);
+
+        $submission = $form->submissions()->where('id', $submissionId)->firstOrFail();
+        $submission->delete();
+
+        return $this->success([
+            'message' => 'Record successfully removed.',
+        ]);
     }
 }

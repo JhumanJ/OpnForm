@@ -13,7 +13,7 @@ return [
         'open.forms.submissions',
         'open.forms.submissions.update',
         'open.forms.submissions.export',
-        'open.forms.records.delete',
+        'open.forms.submissions.delete',
 
         // Workspace CRUD
         'open.workspaces.index',
