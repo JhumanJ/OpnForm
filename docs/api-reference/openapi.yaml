@@ -447,15 +447,58 @@ paths:
             description: "Export submissions as CSV. Requires `forms-read`."
             security:
                 - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: number
             requestBody:
-                required: false
+                required: true
                 content:
                     application/json:
                         schema:
                             type: object
+                            properties:
+                                columns:
+                                    type: object
+                                    additionalProperties:
+                                        type: boolean
+                                    description: "Object mapping field IDs to booleans to include columns in CSV."
             responses:
                 "200":
-                    description: Export file
+                    description: CSV File
+                "403":
+                    description: Forbidden
+    "/open/forms/{id}/submissions/export":
+        post:
+            tags:
+                - Submissions
+            summary: Export Submissions (CSV)
+            description: "Export submissions as CSV. Requires `forms-read`."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                columns:
+                                    type: object
+                                    additionalProperties:
+                                        type: boolean
+                                    description: "Object mapping field IDs to booleans to include columns in CSV."
+            responses:
+                "200":
+                    description: CSV File
                 "403":
                     description: Forbidden
     "/open/forms/{id}/submissions/{submission_id}":
