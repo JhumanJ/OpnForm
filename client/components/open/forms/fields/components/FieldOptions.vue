@@ -238,8 +238,23 @@
         :form="field"
         label="Input Mask Pattern"
         placeholder="(999) 999-9999"
-        help="Format: 9=number, a=letter, *=both. Examples: (999) 999-9999, 999-99-9999, a*-999"
-      />
+      >
+        <template #help>
+          <InputHelp>
+            <span>
+              Format: 9=number, a=letter, *=both. Examples: (999) 999-9999, 999-99-9999, a*-999
+              <br/>
+              <a
+                href="#"
+                class="text-blue-500 hover:underline"
+                @click.prevent="crisp.openHelpdeskArticle('how-to-set-mask-pattern-197qqps')"
+            >
+              Learn more?
+            </a>
+            </span>
+          </InputHelp>
+        </template>
+      </text-input>
     </div>
 
     <!--   Date Options   -->
@@ -666,7 +681,10 @@ export default {
     }
   },
   setup() {
-    return { currentWorkspace: computed(() => useWorkspacesStore().getCurrent), }
+    return {
+      currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
+      crisp: useCrisp()
+    }
   },
   data() {
     return {
