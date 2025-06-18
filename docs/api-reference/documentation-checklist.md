@@ -1,4 +1,4 @@
-- [ ] open.forms.index-all
+- [x] open.forms.index-all
 - [ ] open.forms.store
 - [ ] open.forms.show
 - [ ] open.forms.update
