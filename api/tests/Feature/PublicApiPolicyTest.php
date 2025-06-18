@@ -8,98 +8,96 @@ use Laravel\Sanctum\Sanctum;
 describe('Public API Policy Tests', function () {
     // Test Form Policies
     it('allows read-only token to list forms but not create them', function () {
-        // Arrange: Create a user, workspace, and a form.
-        $user = User::factory()->create();
-        $workspace = Workspace::factory()->create();
-        $workspace->users()->attach($user, ['role' => 'admin']);
-        Form::factory()->for($workspace, 'workspace')->create([
-            'creator_id' => $user->id,
-            'properties' => [],
-        ]);
+        // Arrange
+        $user = $this->createUser();
+        $workspace = $this->createUserWorkspace($user);
+        $this->createForm($user, $workspace);
+        $form = $this->makeForm($user, $workspace);
+        $formData = new \App\Http\Resources\FormResource($form);
 
-        // Act as the user via Sanctum with only 'forms-read' ability.
+        // Act & Assert: Add 'workspaces-read' to pass the FormController's workspace authorization check.
         Sanctum::actingAs($user, ['forms-read']);
 
-        // Assert: The user can list all forms.
         $this->getJson(route('open.forms.index-all'))
             ->assertSuccessful();
 
-        // Assert: The user is forbidden from creating a form.
-        $this->postJson(route('open.forms.store'), [
-            'workspace_id' => $workspace->id,
-            'title' => 'New Form',
-            'properties' => [],
-        ])->assertForbidden();
+        $this->postJson(route('open.forms.store'), $formData->toArray(request()))
+            ->assertForbidden();
     });
 
     it('allows write token to create a form', function () {
         // Arrange
-        $user = User::factory()->create();
-        $workspace = Workspace::factory()->create();
-        $workspace->users()->attach($user, ['role' => 'admin']);
+        $user = $this->createUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->makeForm($user, $workspace);
 
-        // Act with 'forms-write' ability
+        // Act & Assert
         Sanctum::actingAs($user, ['forms-write']);
 
-        // Assert: The user can create a form.
-        $this->postJson(route('open.forms.store'), [
-            'workspace_id' => $workspace->id,
-            'title' => 'New Form from API',
-            'properties' => [],
-            'visibility' => 'public',
-            'language' => 'en',
-            'theme' => 'default',
-            'width' => 'full',
-            'size' => 'md',
-            'border_radius' => 'md',
-            'dark_mode' => false,
-            'color' => '#3B82F6',
-            'uppercase_labels' => false,
-            'no_branding' => false,
-            'transparent_background' => false,
-        ])->assertSuccessful();
+        $formData = new \App\Http\Resources\FormResource($form);
+        $this->postJson(route('open.forms.store'), $formData->toArray(request()))
+            ->assertSuccessful();
     });
 
-    // Test Submission Policies
-    it('allows read-only token to list submissions but not delete them', function () {
+    // Test Submission Policies (now governed by Form abilities)
+    it('allows forms-read token to list submissions', function () {
         // Arrange
-        $user = User::factory()->create();
-        $workspace = Workspace::factory()->create();
-        $workspace->users()->attach($user, ['role' => 'admin']);
-        $form = Form::factory()->for($workspace, 'workspace')->create([
-            'creator_id' => $user->id,
-            'properties' => [],
-        ]);
-        $submission = $form->submissions()->create(['data' => []]);
+        $user = $this->createUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace);
+        $form->submissions()->create(['data' => []]);
 
-        // Act with 'submissions-read' ability
-        Sanctum::actingAs($user, ['submissions-read']);
+        // Act & Assert
+        Sanctum::actingAs($user, ['forms-read']);
 
-        // Assert: Can list submissions
         $this->getJson(route('open.forms.submissions.index', ['id' => $form->id]))
             ->assertSuccessful();
+    });
 
-        // Assert: Forbidden from deleting
+    it('forbids forms-read token from deleting submissions', function () {
+        // Arrange
+        $user = $this->createUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace);
+        $submission = $form->submissions()->create(['data' => []]);
+
+        // Act & Assert
+        Sanctum::actingAs($user, ['forms-read']);
+
         $this->deleteJson(route('open.forms.submissions.destroy', ['id' => $form->id, 'submission_id' => $submission->id]))
             ->assertForbidden();
     });
 
-    it('allows write token to delete a submission', function () {
+    it('allows forms-write token to delete a submission', function () {
         // Arrange
-        $user = User::factory()->create();
-        $workspace = Workspace::factory()->create();
-        $workspace->users()->attach($user, ['role' => 'admin']);
-        $form = Form::factory()->for($workspace, 'workspace')->create([
-            'creator_id' => $user->id,
-            'properties' => [],
-        ]);
+        $user = $this->createUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace);
         $submission = $form->submissions()->create(['data' => []]);
 
-        // Act with 'submissions-write' ability
-        Sanctum::actingAs($user, ['submissions-write']);
+        // Act & Assert
+        Sanctum::actingAs($user, ['forms-write']);
 
-        // Assert: Can delete a submission
         $this->deleteJson(route('open.forms.submissions.destroy', ['id' => $form->id, 'submission_id' => $submission->id]))
             ->assertSuccessful();
+    });
+
+    // Test Cross-User Authorization
+    it('forbids a token from accessing the resources of another user', function () {
+        // Arrange
+        $userA = $this->createUser();
+        $userB = $this->createUser();
+        $workspaceB = $this->createUserWorkspace($userB);
+        $formB = $this->createForm($userB, $workspaceB);
+
+        // Act
+        Sanctum::actingAs($userA, ['forms-read']);
+
+        // Assert: Laravel will return a 404 when a policy check fails on a model binding.
+        $this->getJson(route('open.forms.show', ['slug' => $formB->slug]))
+            ->assertForbidden();
+
+        $this->getJson(route('open.forms.submissions.index', ['id' => $formB->id]))
+            ->assertForbidden();
     });
 });

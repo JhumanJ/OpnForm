@@ -45,7 +45,13 @@ class FormPolicy
      */
     public function create(User $user, Workspace $workspace)
     {
-        return !$workspace->isReadonlyUser($user);
+        $userIsNotReadonly = !$workspace->isReadonlyUser($user);
+        // If using Sanctum token, ensure the token has write ability
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('forms-write') && $userIsNotReadonly;
+        }
+
+        return $userIsNotReadonly;
     }
 
     /**

@@ -29,7 +29,7 @@ Route::prefix('external')
                 });
 
             Route::get('workspaces', ListWorkspacesController::class)
-                ->middleware('ability:workspaces-read,list-workspaces')
+                ->middleware('ability:workspaces-read')
                 ->name('workspaces');
 
             Route::get('forms', ListFormsController::class)

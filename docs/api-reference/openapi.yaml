@@ -415,7 +415,7 @@ paths:
             tags:
                 - Submissions
             summary: List Submissions
-            description: "Retrieve submissions for a specific form. Requires `submissions-read` ability."
+            description: "Requires `forms-read`."
             security:
                 - bearerAuth: []
             parameters:
@@ -434,12 +434,12 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/Submission"
                 "403":
-                    description: "Forbidden – token lacks submissions-read ability"
+                    description: "Forbidden – token lacks forms-read ability"
         post:
             tags:
                 - Submissions
             summary: Export Submissions (CSV)
-            description: "Export submissions as CSV. Requires `submissions-read`."
+            description: "Export submissions as CSV. Requires `forms-read`."
             security:
                 - bearerAuth: []
             requestBody:
@@ -458,7 +458,7 @@ paths:
             tags:
                 - Submissions
             summary: Update Submission
-            description: "Update a submission. Requires `submissions-write` ability."
+            description: "Update a submission. Requires `forms-write` ability."
             security:
                 - bearerAuth: []
             parameters:
@@ -486,12 +486,12 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Submission"
                 "403":
-                    description: "Forbidden – token lacks submissions-write ability"
+                    description: "Forbidden – token lacks forms-write ability"
         delete:
             tags:
                 - Submissions
             summary: Delete Submission
-            description: "Delete a submission. Requires `submissions-write` ability."
+            description: "Requires `forms-write`."
             security:
                 - bearerAuth: []
             parameters:
@@ -519,7 +519,7 @@ paths:
                                         type: string
                                         example: Record successfully removed.
                 "403":
-                    description: "Forbidden – token lacks submissions-write ability"
+                    description: "Forbidden – token lacks forms-write ability"
     "/external/zapier/validate":
         get:
             tags:
@@ -624,6 +624,10 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/Submission"
+    "/users/{userId}":
+        get:
+            tags:
+                - Zapier
 
 components:
     schemas:
@@ -720,3 +724,12 @@ components:
         bearerAuth:
             type: http
             scheme: bearer
+            bearerFormat: JWT
+            description: "Personal Access Token"
+            x-bearer-scopemap:
+                "workspaces-read": "Read access to workspaces"
+                "workspaces-write": "Write access to workspaces"
+                "workspace-users-read": "Read access to workspace users"
+                "workspace-users-write": "Write access to workspace users"
+                "forms-read": "Read access to forms"
+                "forms-write": "Write access to forms"

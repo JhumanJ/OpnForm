@@ -31,9 +31,7 @@ class WorkspacePolicy
     public function view(User $user, Workspace $workspace)
     {
         if ($token = $user->currentAccessToken()) {
-            $canAccess = $token->can('workspaces-read') ||
-                $token->can('list-workspaces') ||
-                $token->can('list-forms');
+            $canAccess = $token->can('workspaces-read');
 
             return $canAccess && $user->ownsWorkspace($workspace);
         }
@@ -161,5 +159,10 @@ class WorkspacePolicy
             ->where('workspace_id', $workspace->id)
             ->first();
         return $userWorkspace && $userWorkspace->role === 'admin';
+    }
+
+    public function ownsWorkspace(User $user, Workspace $workspace)
+    {
+        return $user->ownsWorkspace($workspace);
     }
 }

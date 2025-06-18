@@ -10,10 +10,10 @@ return [
         'open.forms.destroy',
 
         // Form Submission CRUD
-        'open.forms.submissions',
+        'open.forms.submissions.index',
         'open.forms.submissions.update',
         'open.forms.submissions.export',
-        'open.forms.submissions.delete',
+        'open.forms.submissions.destroy',
 
         // Workspace CRUD
         'open.workspaces.index',

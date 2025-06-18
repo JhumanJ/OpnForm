@@ -14,7 +14,7 @@ test('list all forms of a given workspace', function () {
 
     Sanctum::actingAs(
         $user,
-        ['list-forms']
+        ['forms-read']
     );
 
     get(route('zapier.forms', ['workspace_id' => $workspace->id]))

@@ -25,7 +25,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Form::class => FormPolicy::class,
-        \App\Models\Forms\FormSubmission::class => \App\Policies\SubmissionPolicy::class,
         Workspace::class => WorkspacePolicy::class,
         FormZapierWebhook::class => FormZapierWebhookPolicy::class,
         Template::class => TemplatePolicy::class,

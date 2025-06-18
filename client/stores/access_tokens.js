@@ -18,14 +18,6 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
       name: 'forms-write',
     },
     {
-      title: 'Submissions – Read',
-      name: 'submissions-read',
-    },
-    {
-      title: 'Submissions – Write',
-      name: 'submissions-write',
-    },
-    {
       title: 'Workspaces – Read',
       name: 'workspaces-read',
     },

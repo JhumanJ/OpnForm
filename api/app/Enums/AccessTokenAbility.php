@@ -12,10 +12,6 @@ enum AccessTokenAbility: string
     case FormsRead = 'forms-read';
     case FormsWrite = 'forms-write';
 
-        // Submissions
-    case SubmissionsRead = 'submissions-read';
-    case SubmissionsWrite = 'submissions-write';
-
         // Workspaces
     case WorkspacesRead = 'workspaces-read';
     case WorkspacesWrite = 'workspaces-write';
