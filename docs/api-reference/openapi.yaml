@@ -395,7 +395,7 @@ paths:
             tags:
                 - Forms
             summary: Delete Form
-            description: Delete a form.
+            description: "Delete a form. Requires `forms-write`."
             security:
                 - bearerAuth: []
             parameters:
