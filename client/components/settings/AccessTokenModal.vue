@@ -49,7 +49,7 @@
                 v-model="form.abilities"
                 :value="ability.name"
                 :label="ability.title"
-                disabled
+                :disabled="ability.disabled ?? false"
               />
             </div>
           </div>

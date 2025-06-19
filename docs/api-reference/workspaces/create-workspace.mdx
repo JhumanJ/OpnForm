@@ -1,0 +1,57 @@
+---
+openapi: post /open/workspaces/create
+---
+
+# Create Workspace
+
+Create a new workspace and automatically add the current user as an **admin** of that workspace.
+
+## Authentication & Scope
+
+Requires the `workspaces-write` ability.
+
+## Request
+
+```http
+POST /open/workspaces/create HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Body Parameters
+
+| Field | Type   | Required | Description                            |
+|-------|--------|----------|----------------------------------------|
+| name  | string | Yes      | Display name of the workspace.        |
+| emoji | string | No       | Optional emoji/icon to represent it.  |
+
+Example:
+
+```json
+{
+  "name": "Design Team",
+  "emoji": "🎨"
+}
+```
+
+## Response
+
+`200 OK` – Returns the newly created workspace information.
+
+```json
+{
+  "message": "Workspace created.",
+  "workspace_id": 7,
+  "workspace": {
+    "id": 7,
+    "name": "Design Team",
+    "icon": "🎨",
+    "settings": {},
+    "max_file_size": 25,
+    "is_readonly": false
+  }
+}
+```
+
+`403 Forbidden` – Token lacks `workspaces-write` or user not allowed.

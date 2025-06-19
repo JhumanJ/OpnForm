@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ImpersonationMiddleware
@@ -71,7 +73,7 @@ class ImpersonationMiddleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            if (!auth()->check() || !auth()->payload()->get('impersonating')) {
+            if (!Auth::guard('api')->check() || !Auth::guard('api')->payload()->get('impersonating')) {
                 return $next($request);
             }
         } catch (JWTException $e) {
@@ -84,17 +86,17 @@ class ImpersonationMiddleware
             return response([
                 'message' => 'Unauthorized when impersonating',
                 'route' => $routeName,
-                'impersonator' => auth()->payload()->get('impersonator_id'),
-                'impersonated_account' => auth()->id(),
+                'impersonator' => Auth::guard('api')->payload()->get('impersonator_id'),
+                'impersonated_account' => Auth::id(),
                 'url' => $request->fullUrl(),
                 'payload' => $request->all(),
             ], 403);
         } elseif (in_array($routeName, self::LOG_ROUTES)) {
-            \Log::warning(self::ADMIN_LOG_PREFIX . 'Impersonator action', [
+            Log::warning(self::ADMIN_LOG_PREFIX . 'Impersonator action', [
                 'route' => $routeName,
                 'url' => $request->fullUrl(),
-                'impersonated_account' => auth()->id(),
-                'impersonator' => auth()->payload()->get('impersonator_id'),
+                'impersonated_account' => Auth::id(),
+                'impersonator' => Auth::guard('api')->payload()->get('impersonator_id'),
                 'payload' => $request->all(),
             ]);
         }

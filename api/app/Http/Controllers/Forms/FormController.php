@@ -31,7 +31,7 @@ class FormController extends Controller
     public function index($workspaceId)
     {
         $workspace = Workspace::findOrFail($workspaceId);
-        $this->authorize('view', $workspace);
+        $this->authorize('ownsWorkspace', $workspace);
         $this->authorize('viewAny', Form::class);
 
         $workspaceIsPro = $workspace->is_pro;
@@ -85,7 +85,7 @@ class FormController extends Controller
     {
         $forms = collect();
         foreach (Auth::user()->workspaces as $workspace) {
-            $this->authorize('view', $workspace);
+            $this->authorize('ownsWorkspace', $workspace);
             $this->authorize('viewAny', Form::class);
 
             $workspaceIsPro = $workspace->is_pro;
@@ -109,7 +109,7 @@ class FormController extends Controller
     public function store(StoreFormRequest $request)
     {
         $workspace = Workspace::findOrFail($request->get('workspace_id'));
-        $this->authorize('view', $workspace);
+        $this->authorize('ownsWorkspace', $workspace);
         $this->authorize('create', [Form::class, $workspace]);
 
         $formData = $this->formCleaner
@@ -276,7 +276,7 @@ class FormController extends Controller
         $workspace =  Workspace::findOrFail($workspace_id);
 
         $this->authorize('update', $form);
-        $this->authorize('view', $workspace);
+        $this->authorize('ownsWorkspace', $workspace);
 
         $form->workspace_id = $workspace_id;
         $form->creator_id = auth()->user()->id;

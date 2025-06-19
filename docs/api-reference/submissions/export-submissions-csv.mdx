@@ -1,0 +1,50 @@
+---
+openapi: post /open/forms/{id}/submissions/export
+---
+
+# Export Submissions (CSV)
+
+Download a CSV file containing submissions for the specified form.
+
+## Authentication & Scope
+
+Requires `forms-read` ability.
+
+## Request
+
+```http
+POST /open/forms/{id}/submissions/export HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter | Type   | Description                 |
+|-----------|--------|-----------------------------|
+| id        | number | Numeric ID of the form.     |
+
+### Body Parameters
+
+| Field   | Type  | Required | Description                                                                                                   |
+|---------|-------|----------|-----------------------------------------------------------------------------------------------------------------|
+| columns | object | Yes      | Keys are field IDs (or `created_at`); values are booleans indicating whether to include the column in the export. |
+
+Example payload exporting two fields and the created_at timestamp:
+
+```json
+{
+  "columns": {
+    "field_name": true,
+    "field_email": true,
+    "created_at": true
+  }
+}
+```
+
+## Response
+
+`200 OK` – Returns a CSV file download. The response's `Content-Type` will be `text/csv` and include the `Content-Disposition` header.
+
+`403 Forbidden` – The token lacks `forms-read` or you don't have access.

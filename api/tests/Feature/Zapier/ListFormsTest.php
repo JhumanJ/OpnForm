@@ -14,21 +14,19 @@ test('list all forms of a given workspace', function () {
 
     Sanctum::actingAs(
         $user,
-        ['list-forms']
+        ['forms-read']
     );
 
     get(route('zapier.forms', ['workspace_id' => $workspace->id]))
         ->assertOk()
         ->assertJsonCount(2)
-        ->assertJson([
-            [
-                'id' => $form1->id,
-                'name' => $form1->title,
-            ],
-            [
-                'id' => $form2->id,
-                'name' => $form2->title,
-            ],
+        ->assertJsonFragment([
+            'id' => $form1->id,
+            'name' => $form1->title,
+        ])
+        ->assertJsonFragment([
+            'id' => $form2->id,
+            'name' => $form2->title,
         ]);
 });
 

@@ -10,12 +10,28 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
       name: 'manage-integrations',
     },
     {
-      title: 'List forms',
-      name: 'list-forms',
+      title: 'Forms – Read',
+      name: 'forms-read',
     },
     {
-      title: 'List workspaces',
-      name: 'list-workspaces',
+      title: 'Forms – Write',
+      name: 'forms-write',
+    },
+    {
+      title: 'Workspaces – Read',
+      name: 'workspaces-read',
+    },
+    {
+      title: 'Workspaces – Write',
+      name: 'workspaces-write',
+    },
+    {
+      title: 'Workspace Users – Read',
+      name: 'workspace-users-read',
+    },
+    {
+      title: 'Workspace Users – Write',
+      name: 'workspace-users-write',
     },
   ]
 
@@ -34,7 +50,10 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
   const tokens = computed(() => contentStore.getAll.value)
 
   const getAbility = (name) => {
-    return abilities.find(ability => ability.name == name)
+    return abilities.find((ability) => ability.name === name) ?? {
+      name,
+      title: name,
+    }
   }
 
   return {

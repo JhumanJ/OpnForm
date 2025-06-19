@@ -1,0 +1,66 @@
+---
+openapi: post /open/forms
+---
+
+# Create Form
+
+Create a new form within a workspace.
+
+## Authentication & Scope
+
+Requires a Personal Access Token with the `forms-write` ability.
+
+## Request
+
+```http
+POST /open/forms HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Body Parameters
+
+| Field          | Type    | Required | Description                                              |
+| -------------- | ------- | -------- | -------------------------------------------------------- |
+| workspace_id   | number  | Yes      | ID of the workspace that will own the form.             |
+| title          | string  | Yes      | Human-readable title shown in the dashboard.            |
+| visibility     | string  | Yes      | One of `public`, `draft`, or `closed`.                  |
+| language       | string  | Yes      | Two-letter ISO language code (e.g. `en`).               |
+| properties     | array   | Yes      | Array of form blocks (see `FormProperty` schema).       |
+| …other fields  | mixed   | No       | See the `Form` schema for the full list of attributes.  |
+
+Example request:
+
+```json
+{
+  "workspace_id": 1,
+  "title": "Event Registration",
+  "visibility": "public",
+  "language": "en",
+  "properties": [
+    {
+      "id": "field-1",
+      "type": "short_text",
+      "name": "First name",
+      "required": true
+    }
+  ]
+}
+```
+
+## Response
+
+`201 Created` – Returns the full `Form` object.
+
+```json
+{
+  "id": 99,
+  "slug": "event-registration",
+  "title": "Event Registration",
+  "visibility": "public",
+  "properties": [...]
+}
+```
+
+`403 Forbidden` – The token does not include the `forms-write` ability.

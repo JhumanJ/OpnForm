@@ -66,6 +66,8 @@ class WorkspaceController extends Controller
 
     public function create(Request $request)
     {
+        $this->authorize('create', Workspace::class);
+
         $user   = $request->user();
 
         $this->validate($request, [

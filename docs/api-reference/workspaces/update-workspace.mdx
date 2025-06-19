@@ -1,0 +1,61 @@
+---
+openapi: put /open/workspaces/{workspaceId}
+---
+
+# Update Workspace
+
+Rename a workspace or change its icon.
+
+## Authentication & Scope
+
+Requires the `workspaces-write` ability. The authenticated user must be an **admin** of the workspace.
+
+## Request
+
+```http
+PUT /open/workspaces/{workspaceId} HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter     | Type   | Description                              |
+|---------------|--------|------------------------------------------|
+| workspaceId   | number | Numeric identifier of the workspace.     |
+
+### Body Parameters
+
+| Field | Type   | Required | Description                            |
+|-------|--------|----------|----------------------------------------|
+| name  | string | Yes      | New name of the workspace.            |
+| emoji | string | No       | New emoji/icon (leave blank to clear). |
+
+Example:
+
+```json
+{
+  "name": "Marketing Team",
+  "emoji": "🚀"
+}
+```
+
+## Response
+
+`200 OK` – Returns a confirmation plus the updated workspace object.
+
+```json
+{
+  "message": "Workspace updated.",
+  "workspace": {
+    "id": 1,
+    "name": "Marketing Team",
+    "icon": "🚀",
+    "max_file_size": 25,
+    "is_readonly": false
+  }
+}
+```
+
+`403 Forbidden` – Token lacks `workspaces-write` or user lacks permission.

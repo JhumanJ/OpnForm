@@ -1,0 +1,53 @@
+---
+openapi: put /open/workspaces/{workspaceId}/users/{userId}/update-role
+---
+
+# Update Workspace User Role
+
+Change a member's role within a workspace.
+
+## Authentication & Scope
+
+Requires the `workspace-users-write` ability and **admin** privileges in the workspace.
+
+## Request
+
+```http
+PUT /open/workspaces/{workspaceId}/users/{userId}/update-role HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                 |
+|-------------|--------|-----------------------------|
+| workspaceId | number | ID of the workspace.        |
+| userId      | number | ID of the user to update.   |
+
+### Body Parameters
+
+| Field | Type   | Required | Description                                 |
+|-------|--------|----------|---------------------------------------------|
+| role  | string | Yes      | New role (`admin`, `user`, or `readonly`).  |
+
+Example:
+
+```json
+{
+  "role": "readonly"
+}
+```
+
+## Response
+
+`200 OK` – Confirmation message.
+
+```json
+{
+  "message": "User role changed successfully."
+}
+```
+
+`403 Forbidden` – Token lacks `workspace-users-write` or you lack permission.

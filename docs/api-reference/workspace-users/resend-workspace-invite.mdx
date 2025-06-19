@@ -1,0 +1,47 @@
+---
+openapi: post /open/workspaces/{workspaceId}/invites/{inviteId}/resend
+---
+
+# Resend Workspace Invite
+
+Send the invitation email again to a pending workspace invite.
+
+## Authentication & Scope
+
+Requires `workspace-users-write` ability and **admin** privileges in the workspace.
+
+## Request
+
+```http
+POST /open/workspaces/{workspaceId}/invites/{inviteId}/resend HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                               |
+|-------------|--------|-------------------------------------------|
+| workspaceId | number | ID of the workspace.                      |
+| inviteId    | number | ID of the invite to resend.               |
+
+Request body is empty.
+
+## Response
+
+`200 OK` – Confirmation message.
+
+```json
+{
+  "message": "Invite email resent successfully."
+}
+```
+
+Possible errors:
+
+* `Invite not found for this workspace.`
+* `Invite already accepted.`
+
+Both are returned with status **400** (wrapped in the `errors` format).
+
+`403 Forbidden` – Token lacks `workspace-users-write` or insufficient privileges.
