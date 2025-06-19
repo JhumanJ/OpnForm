@@ -766,15 +766,6 @@ components:
                 settings:
                     type: object
                     description: General settings for the workspace.
-                max_file_size:
-                    type: number
-                    description: Maximum file size (in MB) allowed for uploads within this workspace.
-                    example: 25
-                    readOnly: true
-                is_readonly:
-                    type: boolean
-                    description: Whether the current user has read-only access in the workspace.
-                    readOnly: true
         Form:
             type: object
             properties:
