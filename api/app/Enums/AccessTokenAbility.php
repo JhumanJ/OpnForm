@@ -7,23 +7,23 @@ use Illuminate\Support\Arr;
 enum AccessTokenAbility: string
 {
     case ManageIntegrations = 'manage-integrations';
-        // Granular scopes
-        // Forms
+    // Granular scopes
+    // Forms
     case FormsRead = 'forms-read';
     case FormsWrite = 'forms-write';
 
-        // Workspaces
+    // Workspaces
     case WorkspacesRead = 'workspaces-read';
     case WorkspacesWrite = 'workspaces-write';
 
-        // Workspace Users
+    // Workspace Users
     case WorkspaceUsersRead = 'workspace-users-read';
     case WorkspaceUsersWrite = 'workspace-users-write';
 
     public static function values(): array
     {
         return array_map(
-            fn(AccessTokenAbility $case) => $case->value,
+            fn (AccessTokenAbility $case) => $case->value,
             static::cases()
         );
     }
@@ -32,7 +32,7 @@ enum AccessTokenAbility: string
     {
         return Arr::where(
             $abilities,
-            fn(string $ability) => in_array($ability, static::values())
+            fn (string $ability) => in_array($ability, static::values())
         );
     }
 }

@@ -33,7 +33,7 @@ Route::prefix('external')
                 ->name('workspaces');
 
             Route::get('forms', ListFormsController::class)
-                ->middleware('ability:forms-read,list-forms')
+                ->middleware('ability:forms-read')
                 ->name('forms');
         });
     });

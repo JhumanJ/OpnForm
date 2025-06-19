@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 
 it('can export form submissions with selected columns', function () {
     $user = $this->actingAsProUser();

@@ -14,7 +14,6 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsController;
 use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
-use App\Http\Controllers\Forms\RecordController;
 use App\Http\Controllers\Settings\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
