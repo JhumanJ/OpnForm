@@ -769,6 +769,7 @@ components:
         Form:
             type: object
             properties:
+                # Core form identification
                 id:
                     type: number
                     description: The unique identifier for the form.
@@ -788,6 +789,135 @@ components:
                     type: string
                     enum: [public, draft, closed]
                     description: The current visibility state of the form.
+                tags:
+                    type: array
+                    items:
+                        type: string
+                    nullable: true
+                language:
+                    type: string
+                    description: Two-letter ISO language code.
+                custom_domain:
+                    type: string
+                    nullable: true
+
+                # Visual appearance and styling
+                theme:
+                    type: string
+                    enum: [default, simple, notion]
+                font_family:
+                    type: string
+                    nullable: true
+                color:
+                    type: string
+                dark_mode:
+                    type: string
+                    enum: [light, dark, auto]
+                width:
+                    type: string
+                    enum: [centered, full]
+                size:
+                    type: string
+                    enum: [sm, md, lg]
+                border_radius:
+                    type: string
+                    enum: [none, small, full]
+                layout_rtl:
+                    type: boolean
+                uppercase_labels:
+                    type: boolean
+
+                # Media and branding
+                cover_picture:
+                    type: string
+                    format: uri
+                    nullable: true
+                logo_picture:
+                    type: string
+                    format: uri
+                    nullable: true
+                no_branding:
+                    type: boolean
+                    description: Whether to hide the OpnForm branding.
+                transparent_background:
+                    type: boolean
+                    description: Transparent background when form is embedded.
+
+                # Form behavior and submission settings
+                submit_button_text:
+                    type: string
+                    maxLength: 50
+                submitted_text:
+                    type: string
+                    maxLength: 2000
+                redirect_url:
+                    type: string
+                    format: uri
+                    nullable: true
+                re_fillable:
+                    type: boolean
+                re_fill_button_text:
+                    type: string
+                    maxLength: 50
+                confetti_on_submission:
+                    type: boolean
+                show_progress_bar:
+                    type: boolean
+
+                # Form closure and limits
+                closes_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                closed_text:
+                    type: string
+                    nullable: true
+                max_submissions_count:
+                    type: integer
+                    minimum: 1
+                    nullable: true
+                max_submissions_reached_text:
+                    type: string
+                    nullable: true
+
+                # User experience features
+                auto_save:
+                    type: boolean
+                auto_focus:
+                    type: boolean
+                enable_partial_submissions:
+                    type: boolean
+                editable_submissions:
+                    type: boolean
+                editable_submissions_button_text:
+                    type: string
+                    maxLength: 50
+
+                # Security and validation
+                password:
+                    type: string
+                    nullable: true
+                use_captcha:
+                    type: boolean
+                captcha_provider:
+                    type: string
+                    enum: [recaptcha, hcaptcha]
+
+                # SEO and indexing
+                can_be_indexed:
+                    type: boolean
+                seo_meta:
+                    type: object
+                    nullable: true
+
+                # Advanced features
+                custom_code:
+                    type: string
+                    nullable: true
+                database_fields_update:
+                    type: array
+                    items: {}
+                    nullable: true
                 properties:
                     type: array
                     description: An array of field and layout blocks that make up the form.
