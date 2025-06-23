@@ -3,13 +3,14 @@
 namespace App\Service\AI\Prompts\Form;
 
 use App\Service\AI\Prompts\Prompt;
-use Illuminate\Support\Str;
 
 class GenerateFormPrompt extends Prompt
 {
     protected float $temperature = 0.81;
 
     protected int $maxTokens = 3000;
+
+    protected string $model = 'o4-mini';
 
     /**
      * The prompt template for generating forms
@@ -77,7 +78,7 @@ class GenerateFormPrompt extends Prompt
         - A clear `title` (internal for form admin)
         - `nf-text` blocks to add a title or text to the form using some basic html (h1, p, b, i, u etc)
         - Logical field grouping
-        - Required fields where necessary
+        - Required fields where necessary (do not add * to the field name if required - it's done automatically)
         - Help text for complex fields
         - Appropriate validation
         - Customized submission text
@@ -191,21 +192,8 @@ class GenerateFormPrompt extends Prompt
      */
     public function processOutput(array $formData): array
     {
-        // Add unique identifiers to properties
         if (isset($formData['properties']) && is_array($formData['properties'])) {
-            foreach ($formData['properties'] as $index => $property) {
-                // Add a unique ID to each property
-                $formData['properties'][$index]['id'] = Str::uuid()->toString();
-
-                // Flatten core properties if they exist
-                if (isset($property['core']) && is_array($property['core'])) {
-                    foreach ($property['core'] as $coreKey => $coreValue) {
-                        $formData['properties'][$index][$coreKey] = $coreValue;
-                    }
-                    // Remove the core property after flattening
-                    unset($formData['properties'][$index]['core']);
-                }
-            }
+            $formData['properties'] = FormFieldSchemas::processFields($formData['properties']);
         }
 
         // Clean title data
@@ -213,8 +201,6 @@ class GenerateFormPrompt extends Prompt
             // Remove quotes if the title is enclosed in them
             $formData['title'] = preg_replace('/^["\'](.*)["\']$/', '$1', $formData['title']);
         }
-
-        ray($formData);
 
         return $formData;
     }

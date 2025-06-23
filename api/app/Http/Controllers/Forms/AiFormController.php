@@ -29,6 +29,7 @@ class AiFormController extends Controller
         }
 
         return $this->success([
+            'message' => 'Your data is ready! Feel free to customize it to your needs before publishing.',
             'ai_form_completion' => $aiFormCompletion,
         ]);
     }

@@ -3,13 +3,14 @@
 namespace App\Service\AI\Prompts\Form;
 
 use App\Service\AI\Prompts\Prompt;
-use Illuminate\Support\Str;
 
 class GenerateFormFieldsPrompt extends Prompt
 {
     protected float $temperature = 0.81;
 
     protected int $maxTokens = 3000;
+
+    protected string $model = 'o4-mini';
 
     /**
      * The prompt template for generating forms
@@ -79,7 +80,7 @@ class GenerateFormFieldsPrompt extends Prompt
         - Consider the existing form context and avoid duplicating fields
         - Use logical field names that clearly describe the data being collected
         - Add helpful placeholder text and help text for complex fields
-        - Set appropriate validation (required fields where necessary)
+        - Set appropriate validation (required fields where necessary - do not add * to the field name if required - it's done automatically)
         - Use appropriate width settings for better layout
         - For select/multi-select fields, provide relevant options based on the context
         - For number fields, consider if rating, scale, or slider would be more appropriate
@@ -89,7 +90,7 @@ class GenerateFormFieldsPrompt extends Prompt
         - Match the field description requirements
         - Complement the existing form structure
         - Use appropriate field types and configurations
-        - Include proper validation and help text
+        - Include proper validation and help text (leave empty if not needed)
         - Follow the form's overall purpose and flow
     EOD;
 
@@ -193,25 +194,8 @@ class GenerateFormFieldsPrompt extends Prompt
      */
     public function processOutput(array $formFields): array
     {
-        $newFormFields = $formFields['properties'] ?? [];
+        $properties = $formFields['properties'] ?? [];
 
-        // Process each field in the array
-        foreach ($formFields['properties'] as $index => $field) {
-            // Add unique identifiers to each field
-            $newFormFields[$index]['id'] = Str::uuid()->toString();
-
-            // Flatten core properties if they exist
-            if (isset($field['core']) && is_array($field['core'])) {
-                foreach ($field['core'] as $coreKey => $coreValue) {
-                    $newFormFields[$index][$coreKey] = $coreValue;
-                }
-                // Remove the core property after flattening
-                unset($newFormFields[$index]['core']);
-            }
-        }
-
-        ray($newFormFields);
-
-        return $newFormFields;
+        return FormFieldSchemas::processFields($properties);
     }
 }

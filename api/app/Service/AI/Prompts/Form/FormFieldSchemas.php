@@ -2,6 +2,8 @@
 
 namespace App\Service\AI\Prompts\Form;
 
+use Illuminate\Support\Str;
+
 class FormFieldSchemas
 {
     /**
@@ -14,11 +16,11 @@ class FormFieldSchemas
         'properties' => [
             'name' => [
                 'type' => 'string',
-                'description' => 'The name/label of the field'
+                'description' => 'The name/label of the field. Always use a name for the block - even for hidden fields & layout blocks (text fields, page breaks, dividers, etc).'
             ],
             'help' => [
                 'type' => 'string',
-                'description' => 'Help text for the field (default: null)'
+                'description' => 'Help text for the field (default: "" leave empty if not needed)'
             ],
             'hidden' => [
                 'type' => 'boolean',
@@ -370,4 +372,26 @@ class FormFieldSchemas
             ]
         ]
     ];
+
+    public static function processFields(array $properties): array
+    {
+        $processedProperties = [];
+        foreach ($properties as $property) {
+            $newProperty = $property;
+            // Add a unique ID to each property
+            $newProperty['id'] = Str::uuid()->toString();
+
+            // Flatten core properties if they exist
+            if (isset($property['core']) && is_array($property['core'])) {
+                foreach ($property['core'] as $coreKey => $coreValue) {
+                    $newProperty[$coreKey] = $coreValue;
+                }
+                // Remove the core property after flattening
+                unset($newProperty['core']);
+            }
+            $processedProperties[] = $newProperty;
+        }
+
+        return $processedProperties;
+    }
 }
