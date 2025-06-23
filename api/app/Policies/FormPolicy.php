@@ -18,6 +18,11 @@ class FormPolicy
      */
     public function viewAny(User $user)
     {
+        // Check if authenticated via Sanctum token
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('forms-read');
+        }
+
         return true;
     }
 
