@@ -12,9 +12,29 @@
         label="Create new token"
         icon="i-heroicons-plus"
         :loading="loading"
+        :disabled="!user.is_pro"
         @click="accessTokenModal = true"
       />
     </div>
+
+    <UAlert
+      v-if="!user.is_pro"
+      icon="i-heroicons-user-group-20-solid"
+      class="my-4 !text-orange-500"
+      color="orange"
+      variant="subtle"
+      title="Pro plan required"
+    >
+      <template #description>
+        Please <a
+          href="#"
+          class="text-orange-500 underline"
+          @click.prevent="openSubscriptionModal"
+        >
+          upgrade your account
+        </a> to create and manage access tokens.
+      </template>
+    </UAlert>
 
     <div
       v-if="loading"
@@ -47,8 +67,17 @@ const accessTokenModal = ref(false)
 const accessTokenStore = useAccessTokenStore()
 const tokens = computed(() => accessTokenStore.getAll)
 const loading = computed(() => accessTokenStore.loading)
+const user = computed(() => useAuthStore().user)
+const subscriptionModalStore = useSubscriptionModalStore()
+
+const openSubscriptionModal = () => {
+  subscriptionModalStore.setModalContent('Upgrade to create and manage access tokens')
+  subscriptionModalStore.openModal()
+}
 
 onMounted(() => {
-  accessTokenStore.fetchTokens()
+  if (user.value.is_pro) {
+    accessTokenStore.fetchTokens()
+  }
 })
 </script>

@@ -6,7 +6,7 @@ use Laravel\Sanctum\Sanctum;
 
 it('allows Sanctum token to access whitelisted GET endpoint', function () {
     // Arrange: user with a workspace and a Sanctum token that has read ability
-    $user = User::factory()->create();
+    $user = $this->createProUser();
     $workspace = Workspace::factory()->create();
     $workspace->users()->attach($user, ['role' => 'admin']);
 
@@ -20,7 +20,9 @@ it('allows Sanctum token to access whitelisted GET endpoint', function () {
 
 it('returns 404 when Sanctum token hits a non-whitelisted GET endpoint', function () {
     // Arrange: authenticated user via Sanctum
-    $user = User::factory()->create();
+    $user = $this->createProUser();
+    $workspace = Workspace::factory()->create();
+    $workspace->users()->attach($user, ['role' => 'admin']);
     Sanctum::actingAs($user, ['workspaces-read']); // abilities don\'t matter for middleware check
 
     // `open.providers` is NOT present in the sanctum whitelist, therefore the middleware
