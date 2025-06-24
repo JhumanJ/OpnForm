@@ -9,6 +9,15 @@
       </div>
 
       <UButton
+        label="API Docs"
+        icon="i-heroicons-book-open"
+        variant="ghost"
+        :to="opnformConfig.links.api_docs"
+        target="_blank"
+        class="mr-2"
+      />
+      
+      <UButton
         label="Create new token"
         icon="i-heroicons-plus"
         :loading="loading"
@@ -59,6 +68,7 @@
 </template>
 
 <script setup>
+import opnformConfig from '~/opnform.config.js'
 useOpnSeoMeta({
   title: "Access Tokens",
 })
@@ -71,7 +81,7 @@ const user = computed(() => useAuthStore().user)
 const subscriptionModalStore = useSubscriptionModalStore()
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to create and manage access tokens')
+  subscriptionModalStore.setModalContent('Upgrade to start using our API')
   subscriptionModalStore.openModal()
 }
 

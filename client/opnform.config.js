@@ -17,5 +17,6 @@ export default {
     changelog_url: "https://feedback.opnform.com/changelog",
     roadmap: "https://feedback.opnform.com/roadmap",
     tech_docs: "https://docs.opnform.com",
+    api_docs: "https://docs.opnform.com/api-reference/introduction",
   },
 }

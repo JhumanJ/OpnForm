@@ -153,7 +153,7 @@
                         class="w-5 h-5 text-nt-blue"
                       />
                       <p class="mt-2">
-                        <strong class="font-semibold text-slate-800">Access to all integrations.</strong>
+                        <strong class="font-semibold text-slate-800">All ntegrations & API access.</strong>
                         <span class="text-slate-500"> Setup email, Slack, Discord notifications or GSheet, Zapier or webhooks integrations.</span>
                       </p>
                     </div>
