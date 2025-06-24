@@ -88,44 +88,44 @@
     </template>
   </input-wrapper>
 </template>
-  <script>
-  import {inputProps, useFormInput} from "./useFormInput.js"
-  import InputWrapper from "./components/InputWrapper.vue"
-  import RadioButtonIcon from "./components/RadioButtonIcon.vue"
-  export default {
-    name: "MatrixInput",
-    components: {InputWrapper, RadioButtonIcon},
-    props: {
-      ...inputProps,
-      rows: {type: Array, required: true},
-      columns: {type: Array, required: true},
-    },
-    setup(props, context) {
-      return {
-        ...useFormInput(props, context),
-      }
-    },
-    data() {
-      return {
-      }
-    },
-    computed: {},
-    mounted() {
-      if (!this.compVal || typeof this.compVal !== 'object') {
-        this.compVal = {}
-      }
-    },
-    methods: {
-        onSelect(row, column) {
-          if (this.disabled) {
-            return
-          }
-          if (this.compVal[row] === column && !this.required) {
-              this.compVal[row] = null
-          } else {
-              this.compVal[row] = column
-          }
-      },
-    },
+<script setup>
+import { watch } from "vue"
+import { inputProps, useFormInput } from "./useFormInput.js"
+import InputWrapper from "./components/InputWrapper.vue"
+import RadioButtonIcon from "./components/RadioButtonIcon.vue"
+
+const props = defineProps({
+  ...inputProps,
+  rows: { type: Array, required: true },
+  columns: { type: Array, required: true },
+})
+
+const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
+
+const { compVal, inputWrapperProps, hasError } = useFormInput(props, { emit })
+
+const onSelect = (row, column) => {
+  if (props.disabled) {
+    return
   }
-  </script>
+
+  // Create a new object to ensure reactivity is triggered correctly.
+  const newValue = { ...(compVal.value || {}) }
+
+  if (newValue[row] === column && !props.required) {
+    // Unset the value if it's already selected and not required
+    newValue[row] = null
+  } else {
+    newValue[row] = column
+  }
+  
+  // Assigning a new object to compVal.value will trigger the setter in useFormInput
+  compVal.value = newValue
+}
+
+watch(compVal, (val) => {
+  if (!val || typeof val !== 'object') {
+    compVal.value = {}
+  }
+}, { immediate: true, deep: true })
+</script>
