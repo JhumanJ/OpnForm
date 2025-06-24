@@ -241,6 +241,8 @@ const submissionId = ref(route.query.submission_id || null)
 const submittedData = ref(null)
 const showFirstSubmissionModal = ref(false)
 
+const queryString = route.fullPath.split('?')[1] || ''
+
 // Check for auto_submit parameter during setup
 const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
 
@@ -263,9 +265,11 @@ if (props.form) {
     darkMode: darkModeRef,
     mode: modeRef
   })
+
+  // Await the initialization for SSR
   formManager.initialize({
     submissionId: submissionId.value,
-    urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
+    urlParams: new URLSearchParams(queryString),
   })
 }
 
@@ -276,7 +280,7 @@ watch(() => props.form, (newForm) => {
     // Update form manager with the new config
     formManager.updateConfig(newForm, {
       submissionId: submissionId.value,
-      urlParams: import.meta.client ? new URLSearchParams(window.location.search) : null,
+      urlParams: new URLSearchParams(queryString),
     })
   }
 })
