@@ -1,0 +1,58 @@
+---
+openapi: put /open/forms/{id}
+---
+
+# Update Form
+
+Update an existing form. You can modify any attribute that can be set when creating a form.
+
+## Authentication & Scope
+
+Requires a token with the `forms-write` ability.
+
+## Request
+
+```http
+PUT /open/forms/{id} HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter | Type   | Description                    |
+|-----------|--------|--------------------------------|
+| id        | number | Numeric ID of the form to edit |
+
+### Body Parameters (partial)
+
+All fields from the [Create Form](./create-form) endpoint may be supplied. Only the fields you include will be updated; omitting a field leaves its current value unchanged.
+
+Important:
+
+* Passing a new `slug` will regenerate the form URL (self-hosted only).
+* The `workspace_id` can **not** be changed via this endpoint—use `/open/forms/{id}/workspace/{workspace_id}` instead.
+
+Example:
+
+```json
+{
+  "title": "Customer Feedback (v2)",
+  "visibility": "draft",
+  "properties": [
+    {
+      "id": "field-1",
+      "type": "short_text",
+      "name": "First name",
+      "required": true
+    }
+  ]
+}
+```
+
+## Response
+
+`200 OK` – Returns the updated `Form` object.
+
+`403 Forbidden` – The token lacks `forms-write` or you don't have permission.

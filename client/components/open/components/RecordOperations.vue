@@ -70,9 +70,8 @@ export default {
       opnFetch(
         "/open/forms/" +
           this.form.id +
-          "/records/" +
-          this.submission.id +
-          "/delete",
+          "/submissions/" +
+          this.submission.id,
         { method: "DELETE" },
       )
         .then(async (data) => {

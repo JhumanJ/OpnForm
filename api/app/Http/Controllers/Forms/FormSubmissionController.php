@@ -105,4 +105,17 @@ class FormSubmissionController extends Controller
             Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
+
+    public function destroy($id, $submissionId)
+    {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('delete', $form);
+
+        $submission = $form->submissions()->where('id', $submissionId)->firstOrFail();
+        $submission->delete();
+
+        return $this->success([
+            'message' => 'Record successfully removed.',
+        ]);
+    }
 }

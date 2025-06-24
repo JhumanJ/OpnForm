@@ -133,6 +133,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->admin || in_array($this->email, config('opnform.template_editor_emails'));
     }
 
+    public function getIsProAttribute()
+    {
+        return $this->workspaces()->get()->some(function ($workspace) {
+            return $workspace->is_pro;
+        });
+    }
+
     /**
      * =================================
      *  Helper Related

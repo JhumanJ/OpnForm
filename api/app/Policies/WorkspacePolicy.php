@@ -20,6 +20,11 @@ class WorkspacePolicy
      */
     public function viewAny(User $user)
     {
+        // Check if authenticated via Sanctum token
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-read');
+        }
+
         return true;
     }
 
@@ -30,6 +35,12 @@ class WorkspacePolicy
      */
     public function view(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            $canAccess = $token->can('workspaces-read');
+
+            return $canAccess && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -40,7 +51,11 @@ class WorkspacePolicy
      */
     public function create(User $user)
     {
-        return false;
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write');
+        }
+
+        return true;
     }
 
     /**
@@ -50,6 +65,10 @@ class WorkspacePolicy
      */
     public function update(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write') && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -60,7 +79,17 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace)
     {
-        return !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+        $basePermission = !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+
+        if (! $basePermission) {
+            return false;
+        }
+
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write');
+        }
+
+        return true;
     }
 
     /**
@@ -107,6 +136,13 @@ class WorkspacePolicy
             }
         }
 
+        // If using Sanctum token, require write ability first
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces-write')) {
+                return Response::deny('Token lacks workspaces:write ability.');
+            }
+        }
+
         return true;
     }
 
@@ -117,9 +153,21 @@ class WorkspacePolicy
      */
     public function adminAction(User $user, Workspace $workspace)
     {
+        // Sanctum token must include write ability
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces-write')) {
+                return false;
+            }
+        }
+
         $userWorkspace = UserWorkspace::where('user_id', $user->id)
             ->where('workspace_id', $workspace->id)
             ->first();
         return $userWorkspace && $userWorkspace->role === 'admin';
+    }
+
+    public function ownsWorkspace(User $user, Workspace $workspace)
+    {
+        return $user->ownsWorkspace($workspace);
     }
 }

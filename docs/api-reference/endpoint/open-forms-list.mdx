@@ -1,0 +1,22 @@
+# List Forms (Public API)
+
+Retrieves all forms accessible to the provided API token. Requires the `forms-read` ability.
+
+```http
+GET /open/forms HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Response
+
+```
+Status: 200 OK
+Content-Type: application/json
+
+[
+  {
+    "id": 123,
+    "name": "Customer Feedback"
+  }
+]

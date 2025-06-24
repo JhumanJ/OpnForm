@@ -14,7 +14,6 @@ use App\Http\Controllers\Forms\Integration\FormIntegrationsController;
 use App\Http\Controllers\Forms\Integration\FormIntegrationsEventController;
 use App\Http\Controllers\Forms\Integration\FormZapierWebhookController;
 use App\Http\Controllers\Forms\PublicFormController;
-use App\Http\Controllers\Forms\RecordController;
 use App\Http\Controllers\Settings\OAuthProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -47,7 +46,7 @@ if (config('app.self_hosted')) {
     Route::get('/healthcheck', [HealthCheckController::class, 'apiCheck']);
 }
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'auth.multi'], function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
 
@@ -58,7 +57,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::patch('/password', [PasswordController::class, 'update']);
 
-        Route::prefix('/tokens')->name('tokens.')->group(function () {
+        Route::prefix('/tokens')->name('tokens.')->middleware('require-pro')->group(function () {
             Route::get('/', [TokenController::class, 'index'])->name('index');
             Route::post('/', [TokenController::class, 'store'])->name('store');
             Route::delete('{token}', [TokenController::class, 'destroy'])->name('destroy');
@@ -167,15 +166,16 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
             Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
-            Route::get('/{id}/submissions', [FormSubmissionController::class, 'submissions'])->name('submissions');
-            Route::put('/{id}/submissions/{submission_id}', [FormSubmissionController::class, 'update'])->name('submissions.update')->middleware([ResolveFormMiddleware::class]);
-            Route::post('/{id}/submissions/export', [FormSubmissionController::class, 'export'])->name('submissions.export');
-            Route::get('/{id}/submissions/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
-                ->middleware('signed')
-                ->withoutMiddleware(['auth:api'])
-                ->name('submissions.file');
-
-            Route::delete('/{id}/records/{recordid}/delete', [RecordController::class, 'delete'])->name('records.delete');
+            Route::prefix('/{id}/submissions')->name('submissions.')->group(function () {
+                Route::get('/', [FormSubmissionController::class, 'submissions'])->name('index');
+                Route::put('/{submission_id}', [FormSubmissionController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
+                Route::post('/export', [FormSubmissionController::class, 'export'])->name('export');
+                Route::get('/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
+                    ->middleware('signed')
+                    ->withoutMiddleware(['auth.multi'])
+                    ->name('file');
+                Route::delete('/{submission_id}', [FormSubmissionController::class, 'destroy'])->name('destroy');
+            });
 
             // Form Admin tool
             Route::put(
@@ -193,7 +193,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post(
                 '/assets/upload',
                 [FormController::class, 'uploadAsset']
-            )->withoutMiddleware(['auth:api'])->name('assets.upload');
+            )->withoutMiddleware(['auth.multi'])->name('assets.upload');
             Route::get(
                 '/{id}/uploaded-file/{filename}',
                 [FormController::class, 'viewFile']
