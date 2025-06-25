@@ -236,7 +236,7 @@ export const useWorkingFormStore = defineStore("working_form", {
           actions: [{
             label: 'Undo',
             icon:"i-material-symbols-undo",
-            click: () => {
+            onclick: () => {
               this.undo()
             }
           }]

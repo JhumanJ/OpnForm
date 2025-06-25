@@ -5,7 +5,7 @@
     </template>
 
     <div class="flex space-x-2 items-center">
-      <UToggle
+      <USwitch
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"

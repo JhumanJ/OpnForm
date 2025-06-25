@@ -47,8 +47,8 @@ export function useAlert () {
       color: 'blue',
       timeout: autoClose,
       actions: [
-        { label: options.successLabel ?? 'Yes', click: onSuccess },
-        { label: options.failureLabel ?? 'No', click: onFailure }
+        { label: options.successLabel ?? 'Yes', onclick: onSuccess },
+        { label: options.failureLabel ?? 'No', onclick: onFailure }
       ],
       ...options
     })

@@ -31,7 +31,7 @@
               {{ blocksTypes[field.type].title }}
             </p>
             
-            <UDropdown
+            <UDropdownMenu
               :items="dropdownItems"
               :popper="{ placement: 'bottom-start' }"
             >
@@ -50,7 +50,7 @@
                   @change-type="onChangeType"
                 />
               </template>
-            </UDropdown>
+            </UDropdownMenu>
           </div>
         </div>
       </template>
@@ -175,7 +175,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Copy field ID',
       icon: 'i-heroicons-clipboard-20-solid',
-      click: () => {
+      onclick: () => {
         navigator.clipboard.writeText(field.value.id)
         useAlert().success('Field ID copied to clipboard')
       }
@@ -183,7 +183,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
-      click: () => {
+      onclick: () => {
         const newField = clonedeep(field.value)
         newField.id = generateUUID()
         newField.name = 'Copy of ' + newField.name
@@ -202,7 +202,7 @@ const dropdownItems = computed(() => {
       icon: 'i-heroicons-trash-20-solid',
       class: 'group/remove hover:text-red-800',
       iconClass: 'group-hover/remove:text-red-900',
-      click: removeBlock
+      onclick: removeBlock
     }]
   ]
 })

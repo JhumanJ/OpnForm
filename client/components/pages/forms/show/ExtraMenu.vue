@@ -6,7 +6,7 @@
     >
       <Loader class="h-6 w-6 mx-auto" />
     </div>
-    <UDropdown
+    <UDropdownMenu
       v-else
       :items="items"
     >
@@ -15,7 +15,7 @@
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
       />
-    </UDropdown>
+    </UDropdownMenu>
 
     <!-- Delete Form Modal -->
     <modal
@@ -113,7 +113,7 @@ const items = computed(() => {
       ...props.isMainPage ? [{
         label: 'View form',
         icon: 'i-heroicons-eye-16-solid',
-        click: () => {
+        onclick: () => {
           if (props.isMainPage && props.form.visibility === 'draft') {
             showDraftFormWarningNotification()
           } else {
@@ -124,7 +124,7 @@ const items = computed(() => {
       ...props.isMainPage ? [{
         label: 'Copy link to share',
         icon: 'i-heroicons-clipboard-document-check-20-solid',
-        click: () => {
+        onclick: () => {
           copyLink()
         }
       }] : []
@@ -139,7 +139,7 @@ const items = computed(() => {
       {
         label: 'Duplicate form',
         icon: 'i-heroicons-document-duplicate-20-solid',
-        click: () => {
+        onclick: () => {
           duplicateForm()
         }
       }], 
@@ -147,14 +147,14 @@ const items = computed(() => {
       ...props.isMainPage ? [] : [{
         label: 'Create Template',
         icon: 'i-heroicons-document-plus-20-solid',
-        click: () => {
+        onclick: () => {
           showFormTemplateModal.value = true
         }
       }],
       {
         label: 'Change workspace',
         icon: 'i-heroicons-building-office-2-20-solid',
-        click: () => {
+        onclick: () => {
           showFormWorkspaceModal.value = true
         }
       },
@@ -162,7 +162,7 @@ const items = computed(() => {
       {
         label: 'Delete form',
         icon: 'i-heroicons-trash-20-solid',
-        click: () => {
+        onclick: () => {
           showDeleteFormModal.value = true
         },
         class: 'text-red-800 hover:bg-red-50 hover:text-red-600 group',
