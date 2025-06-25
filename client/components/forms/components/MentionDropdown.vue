@@ -2,10 +2,11 @@
   <UPopover
     ref="popover"
     v-model:open="mentionState.open"
-    class="h-0"
+    :content="content"
+    arrow
     @close="cancel"
   >
-    <span class="hidden" />
+    <slot></slot>
     <template #content>
       <div class="p-2 max-h-[300px] flex flex-col">
         <div class="flex items-center border-b -mx-2 px-2">
@@ -80,6 +81,10 @@ const props = defineProps({
   mentions: {
     type: Array,
     required: true
+  },
+  content: {
+    type: Object,
+    default: () => ({ position: 'bottom', align: 'end' })
   }
 })
 

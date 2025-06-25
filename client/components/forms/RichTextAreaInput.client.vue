@@ -8,7 +8,7 @@
     </template>
 
     <div
-      class="rich-editor resize-y notranslate"
+      class="rich-editor resize-y notranslate relative"
       :class="[
         {
           'ring-red-500! ring-2! border-transparent!': hasError,
@@ -24,6 +24,14 @@
         ...inputStyle
       }"
     >
+      <MentionDropdown
+        v-if="enableMentions && mentionState"
+        :mention-state="mentionState"
+        :mentions="mentions"
+        :content="{ position: 'bottom', align: 'start' }"
+      >
+        <span class="absolute left-4 bottom-2" />
+      </MentionDropdown>
       <QuillyEditor
         :id="id ? id : name"
         ref="editor"
@@ -58,11 +66,7 @@
       <slot name="error" />
     </template>
 
-    <MentionDropdown
-      v-if="enableMentions && mentionState"
-      :mention-state="mentionState"
-      :mentions="mentions"
-    />
+
   </InputWrapper>
 </template>
 

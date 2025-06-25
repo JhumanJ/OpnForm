@@ -11,19 +11,6 @@
           label="Enabled"
         />
       </slot>
-      <slot
-        v-if="integration?.crisp_help_page_slug"
-        name="help"
-      >
-        <UButton
-          color="neutral"
-          size="sm"
-          icon="i-heroicons-question-mark-circle-solid"
-          @click="openHelp"
-        >
-          Help
-        </UButton>
-      </slot>
     </div>
 
     <slot />
@@ -81,17 +68,8 @@ const props = defineProps({
   form: { type: Object, required: false },
 })
 
-const crisp = useCrisp()
 defineEmits(["close"])
 const showLogic = ref(!!props.modelValue.logic)
-
-const openHelp = () => {
-  if (props.integration && props.integration?.crisp_help_page_slug) {
-    crisp.openHelpdeskArticle(props.integration?.crisp_help_page_slug)
-    return
-  }
-  crisp.openHelpdesk()
-}
 </script>
 
 <style lang="scss">
