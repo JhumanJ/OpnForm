@@ -82,6 +82,21 @@ export default defineNuxtConfig({
       id: process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE,
   },
 
+  ui: {
+    theme: {
+        colors: [
+            'primary',
+            'secondary',
+            'success',
+            'error',
+            'warning',
+            'info',
+            'neutral',
+            'form'
+        ]
+    }
+  },
+
   components: [
       {
           path: '~/components/forms',
