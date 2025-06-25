@@ -11,7 +11,7 @@
       },
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
       input:
-        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
+        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent',
       help: 'text-gray-500',
       spacing: {
         horizontal: {
@@ -37,29 +37,29 @@
       }
     },
     ScaleInput: {
-      button: 'cursor-pointer text-gray-700 inline-block border-gray-300 flex-grow dark:bg-notion-dark-light dark:text-gray-300 text-center',
+      button: 'cursor-pointer text-gray-700 inline-block border-gray-300 grow dark:bg-notion-dark-light dark:text-gray-300 text-center',
       unselectedButton: 'bg-white border'
     },
     SliderInput: {
       stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs'
     },
     Button: {
-      body: 'transition ease-in duration-200 text-center font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 filter hover:brightness-90'
+      body: 'transition ease-in duration-200 text-center font-semibold shadow-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 hover:brightness-90'
     },
     CodeInput: {
       input: 'overflow-hidden'
     },
     RichTextAreaInput: {
       input:
-        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-1 focus:ring-opacity-100 focus:border-transparent focus:ring-2'
+        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-xs text-base focus:outline-hidden focus:ring-1 focus:ring-form/100 focus:border-transparent focus:ring-2'
     },
     SelectInput: {
       input:
-        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent',
+        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 shadow-xs text-base focus:outline-hidden focus:ring-2 focus:border-transparent',
       background: 'bg-white dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded',
+      option: 'rounded-sm',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -73,9 +73,9 @@
           lg: 'w-[120px]'
         },
         flag: {
-          sm: '!-mt-[14px]',
-          md: '!-mt-[9px] rounded',
-          lg: '!-mt-[9px] rounded'
+          sm: '-mt-[14px]!',
+          md: '-mt-[9px]! rounded-sm',
+          lg: '-mt-[9px]! rounded-sm'
         },
         flagSize: {
           sm: 'small',
@@ -99,11 +99,11 @@
     },
     DateInput: {
       input:
-        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-xs text-base focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent'
     },
     PaymentInput: {
       cardContainer: 'transition-all duration-200',
-      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-100'
+      focusRing: 'ring-2 ring-form/100 border-transparent'
     },
     CheckboxInput:{
       size: {
@@ -149,7 +149,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light rounded-lg shadow-sm max-w-[10rem]'
+        'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light rounded-lg shadow-xs max-w-10'
     },
     SignatureInput: {
       minHeight: {
@@ -159,7 +159,7 @@
       },
     },
     MatrixInput: {
-      table: 'bg-white dark:bg-notion-dark-light shadow-sm',
+      table: 'bg-white dark:bg-notion-dark-light shadow-xs',
       cell: 'border-gray-300 dark:border-gray-600',
       cellHover: 'hover:bg-gray-50 dark:hover:bg-gray-900'
     }
@@ -173,7 +173,7 @@
       },
       label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
-        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100',
+        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent',
       help: 'text-gray-500',
       spacing: {
         horizontal: {
@@ -206,22 +206,22 @@
       stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs'
     },
     Button: {
-      body: 'transition ease-in duration-200 text-center font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 filter hover:brightness-90'
+      body: 'transition ease-in duration-200 text-center font-semibold focus:outline-hidden focus:ring-2 focus:ring-offset-2 hover:brightness-90'
     },
     CodeInput: {
       input: 'overflow-hidden'
     },
     RichTextAreaInput: {
       input:
-        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-1 focus:ring-opacity-100 focus:border-transparent focus:ring-2'
+        'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-hidden focus:ring-1 focus:ring-form/100 focus:border-transparent focus:ring-2'
     },
     SelectInput: {
       input:
-        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-none focus:ring-2 focus:border-transparent',
+        'relative w-full flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full text-gray-700 dark:text-gray-300 dark:placeholder-gray-600 text-base focus:outline-hidden focus:ring-2 focus:border-transparent',
       background: 'bg-white dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded',
+      option: 'rounded-sm',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -235,9 +235,9 @@
         lg: 'w-[120px]'
       },
       flag: {
-        sm: '!-mt-[14px]',
-        md: '!-mt-[9px] rounded',
-        lg: '!-mt-[9px] rounded'
+        sm: '-mt-[14px]!',
+        md: '-mt-[9px]! rounded-sm',
+        lg: '-mt-[9px]! rounded-sm'
       },
       flagSize: {
         sm: 'small',
@@ -260,11 +260,11 @@
       }
     },
     DateInput: {
-      input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:border-transparent focus:ring-opacity-100'
+      input: 'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 placeholder-gray-400 text-base focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent'
     },
     PaymentInput: {
       cardContainer: 'transition-all duration-200',
-      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-100'
+      focusRing: 'ring-2 ring-form/100 border-transparent'
     },
     CheckboxInput:{
       size: {
@@ -305,7 +305,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light shadow-sm max-w-[10rem]'
+        'border border-gray-300 dark:border-gray-600 bg-white dark:bg-notion-dark-light shadow-xs max-w-10'
     },
     SignatureInput: {
       minHeight: {
@@ -329,7 +329,7 @@
       },
       label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:
-        'rounded border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent',
+        'rounded-sm border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       help: 'text-gray-500',
       spacing: {
         horizontal: {
@@ -350,34 +350,34 @@
       },
       borderRadius: {
         none: 'rounded-none',
-        small: 'rounded',
+        small: 'rounded-sm',
         full: 'rounded-[20px]'
       }
     },
     ScaleInput: {
-      button: 'border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent',
+      button: 'border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 text-center focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       unselectedButton: 'bg-notion-input-background dark:bg-notion-dark-light'
     },
     SliderInput: {
       stepLabel: 'text-gray-700 dark:text-gray-300 text-center text-xs'
     },
     Button: {
-      body: 'transition ease-in duration-200 text-center font-semibold border border-notion-input-border dark:border-notion-input-borderDark focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent filter hover:brightness-90'
+      body: 'transition ease-in duration-200 text-center font-semibold border border-notion-input-border dark:border-notion-input-borderDark focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent hover:brightness-90'
     },
     CodeInput: {
-      input: 'border border-notion-input-border dark:border-notion-input-borderDark focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent overflow-hidden'
+      input: 'border border-notion-input-border dark:border-notion-input-borderDark focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent overflow-hidden'
     },
     RichTextAreaInput: {
       input:
-        'flex-1 appearance-none border border-notion-input-border dark:border-notion-input-borderDark w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent'
+        'flex-1 appearance-none border border-notion-input-border dark:border-notion-input-borderDark w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 text-base focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
     },
     SelectInput: {
       input:
-        'relative w-full border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-base focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent',
+        'relative w-full border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-base focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       background: 'bg-notion-input-background dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-notion-input-background dark:to-notion-dark-light',
       dropdown: 'border border-notion-input-border dark:border-notion-input-borderDark',
-      option: 'rounded',
+      option: 'rounded-sm',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -391,9 +391,9 @@
         lg: 'w-[120px]'
       },
       flag: {
-        sm: '!-mt-[14px]',
-        md: '!-mt-[9px] rounded',
-        lg: '!-mt-[9px] rounded'
+        sm: '-mt-[14px]!',
+        md: '-mt-[9px]! rounded-sm',
+        lg: '-mt-[9px]! rounded-sm'
       },
       flagSize: {
         sm: 'small',
@@ -416,11 +416,11 @@
       }
     },
     DateInput: {
-      input: 'border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent'
+      input: 'border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 placeholder-gray-400 text-base focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
     },
     PaymentInput: {
       cardContainer: 'transition-all duration-200',
-      focusRing: 'ring-2 ring-primary-500 border-transparent ring-opacity-40'
+      focusRing: 'ring-2 ring-form/40 border-transparent'
     },
     CheckboxInput:{
       size: {
@@ -455,7 +455,7 @@
     },
     fileInput: {
       input:
-        'p-4 rounded border border-dashed border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent',
+        'p-4 rounded-sm border border-dashed border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       minHeight: {
         sm: 'min-h-28',
         md: 'min-h-40',
@@ -466,7 +466,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-notion-input-border dark:border-notion-input-borderDark bg-white dark:bg-notion-dark-light rounded max-w-[10rem] focus:outline-none focus:ring-2 focus:ring-opacity-40 focus:border-transparent'
+        'border border-notion-input-border dark:border-notion-input-borderDark bg-white dark:bg-notion-dark-light rounded-sm max-w-10 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
     },
     SignatureInput: {
       minHeight: {

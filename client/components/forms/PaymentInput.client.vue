@@ -104,7 +104,7 @@
                     theme.default.fontSize,
                     theme.PaymentInput?.cardContainer || '',
                     {
-                      [theme.PaymentInput?.focusRing || 'ring-2 ring-primary-500 border-transparent']: isCardFocused && !hasError,
+                      [theme.PaymentInput?.focusRing || 'ring-2 ring-form border-transparent']: isCardFocused && !hasError,
                       '!ring-red-500 !ring-2 !border-transparent': hasError
                     },
                     'dark:bg-gray-800 dark:border-gray-700'

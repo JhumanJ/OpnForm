@@ -126,7 +126,7 @@ export default {
         return {
           main: "bg-blue-600",
           hover: "hover:bg-blue-700",
-          ring: "focus:ring-blue-500",
+          ring: "focus:ring-form",
           "ring-offset": "focus:ring-offset-blue-200",
           text: "text-white",
         }
@@ -134,7 +134,7 @@ export default {
         return {
           main: "bg-transparent border border-blue-600",
           hover: "hover:bg-blue-600",
-          ring: "focus:ring-blue-500",
+          ring: "focus:ring-form",
           "ring-offset": "focus:ring-offset-blue-200",
           text: "text-blue-600 hover:text-white",
         }
