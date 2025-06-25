@@ -6,7 +6,7 @@ import gtm from "./gtm"
 export default defineNuxtConfig({
   loglevel: process.env.NUXT_LOG_LEVEL || 'info',
   devtools: {enabled: true},
-  css: ['~/scss/app.scss'],
+  css: ['~/css/app.css'],
 
   modules: [
       '@pinia/nuxt', 
@@ -113,10 +113,6 @@ export default defineNuxtConfig({
       },
       '~/components',
   ],
-
-  tailwindcss: {
-      cssPath: '~/scss/app.scss'
-  },
 
   colorMode: {
       preference: 'light',
