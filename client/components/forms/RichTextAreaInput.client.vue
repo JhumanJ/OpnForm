@@ -11,9 +11,9 @@
       class="rich-editor resize-y notranslate"
       :class="[
         {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError && !disabled
+          'ring-red-500! ring-2! border-transparent!': hasError,
+          '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled,
+          'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
         },
         theme.RichTextAreaInput.input,
         theme.RichTextAreaInput.borderRadius,
@@ -181,6 +181,10 @@ const charCount = computed(() => {
     border-top: 0px !important;
     border-right: 0px !important;
     border-left: 0px !important;
+  border-bottom: 1px solid var(--color-neutral-300);
+  :where(.dark) & {
+    border-bottom: 1px solid var(--color-neutral-600);
+  }
   }
 
   .ql-header {
