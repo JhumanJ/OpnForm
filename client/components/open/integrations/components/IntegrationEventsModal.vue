@@ -18,17 +18,17 @@
     <UTable
       :loading="integrationEventsLoading"
       :columns="columns"
-      :rows="integrationEvents"
+      :data="integrationEvents"
     >
-      <template #status-data="{ row }">
-        <Badge :color="row.status === 'Success' ? 'green' : 'red'">
-          {{ row.status }}
+      <template #status-cell="{ row }">
+        <Badge :color="row.original.status === 'Success' ? 'green' : 'red'">
+          {{ row.original.status }}
         </Badge>
       </template>
-      <template #data-data="{ row }">
+      <template #data-cell="{ row }">
         <vue-json-pretty
-          v-if="row.data && Object.keys(row.data).length > 0"
-          :data="row.data"
+          v-if="row.original.data && Object.keys(row.original.data).length > 0"
+          :data="row.original.data"
           :collapsed-node-length="0"
           :show-length="true"
           :show-icon="true"
@@ -64,9 +64,9 @@ const emit = defineEmits(["close"])
 const formIntegrationEventEndpoint =
   "/open/forms/{formid}/integration/{integrationid}/events"
 const columns = [
-  { key: "date", label: "Date", sortable: true },
-  { key: "status", label: "Status", sortable: true },
-  { key: "data", label: "Info" },
+  { accessorKey: "date", header: "Date", sortable: true },
+  { accessorKey: "status", header: "Status", sortable: true },
+  { accessorKey: "data", header: "Info" },
 ]
 const integrationEvents = ref([])
 const integrationEventsLoading = ref(false)
