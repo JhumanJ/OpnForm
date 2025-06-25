@@ -9,7 +9,7 @@ import { useForm } from '~/composables/useForm'
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
     content: null,
-    activeTab: 0,
+    activeTab: 'build',
     
     // Field being edited
     selectedFieldIndex: null,

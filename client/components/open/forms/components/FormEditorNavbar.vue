@@ -16,10 +16,11 @@
     <UTabs
       id="form-editor-navbar-tabs"
       v-model="activeTab"
+      :content="false"
       :items="[
-        { label: 'Build' },
-        { label: 'Design'},
-        { label: 'Settings'}
+        { label: 'Build', value: 'build' },
+        { label: 'Design', value: 'design'},
+        { label: 'Settings', value: 'settings' }
       ]"
     />
 

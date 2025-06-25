@@ -61,10 +61,12 @@
         <UTabs
           v-model="activeTab"
           :items="tabItems"
+          color="neutral"
+          :content="false"
           class="w-full"
         />
       </div>
-      <div v-if="activeTab ===0">
+      <div v-if="activeTab === 'options'">
         <FieldOptions
           v-if="!isBlockField"
           :form="form"
@@ -76,14 +78,14 @@
           :field="field"
         />
       </div>
-      <div v-else-if="activeTab === 1">
+      <div v-else-if="activeTab === 'logic'">
         <FormBlockLogicEditor
           class="py-2 px-4"
           :form="form"
           :field="field"
         />
       </div>
-      <div v-else-if="activeTab === 2">
+      <div v-else-if="activeTab === 'validation'">
         <custom-field-validation
           class="py-2 px-4"
           :form="form"
@@ -208,11 +210,12 @@ const dropdownItems = computed(() => {
 })
 
 
-const activeTab = ref(0)
+const activeTab = ref('options')
+
 const tabItems = computed(() => {
   const commonTabs = [
-    { label: 'Options'},
-    { label: 'Logic' },
+    { label: 'Options', value: 'options' },
+    { label: 'Logic', value: 'logic' },
   ]
 
   if (isBlockField.value) {
@@ -220,7 +223,7 @@ const tabItems = computed(() => {
   } else {
     return [
       ...commonTabs,
-      { label: 'Validation'},
+      { label: 'Validation', value: 'validation' },
     ]
   }
 })

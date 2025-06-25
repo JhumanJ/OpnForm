@@ -47,7 +47,7 @@
 
     <FormEditorErrorHandler>
       <div
-        v-show="activeTab !== 2"
+        v-show="activeTab !== 'settings'"
         class="w-full flex grow overflow-y-scroll relative bg-white"
       >
         <div
@@ -58,12 +58,12 @@
             @submit.prevent=""
           >
             <div
-              v-show="activeTab === 0"
+              v-show="activeTab === 'build'"
             >
               <FormFieldsEditor />
             </div>
             <div
-              v-show="activeTab === 1"
+              v-show="activeTab === 'design'"
             >
               <FormCustomization />
             </div>
@@ -76,7 +76,7 @@
       </div>
     </FormEditorErrorHandler>
 
-    <FormSettings v-show="activeTab === 2" />
+    <FormSettings v-show="activeTab === 'settings'" />
 
     <!-- Form Error Modal -->
     <FormErrorModal
@@ -205,7 +205,7 @@ export default {
 
   mounted() {
     this.$emit("mounted")
-    this.workingFormStore.activeTab = 0
+    this.workingFormStore.activeTab = 'build'
     useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
     if (!this.isEdit) {
