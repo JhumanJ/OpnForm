@@ -206,7 +206,7 @@
             v-if="formsLoading"
             class="text-center"
           >
-            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-blue-500 mx-auto" />
           </div>
         </div>
       </div>

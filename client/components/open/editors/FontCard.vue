@@ -36,7 +36,7 @@
     <Icon
       v-if="isSelected"
       name="heroicons:check-circle-16-solid"
-      class="w-5 h-5 text-nt-blue absolute bottom-4 right-4"
+                class="w-5 h-5 text-blue-500 absolute bottom-4 right-4"
     />
   </div>
 </template>

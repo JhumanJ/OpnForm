@@ -21,7 +21,7 @@
         v-else
         class="text-center mt-4 py-6"
       >
-        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
     </div>
   </div>

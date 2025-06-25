@@ -47,7 +47,7 @@
       </div>
       <Loader
         v-else-if="isLoading"
-        class="h-6 w-6 text-nt-blue mx-auto"
+        class="h-6 w-6 text-blue-500 mx-auto"
       />
       <LineChart
         v-else

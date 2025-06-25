@@ -60,13 +60,7 @@ module.exports = {
       },
       colors: {
         gray: colors.slate,
-        "nt-blue": {
-          lighter: colors.blue["100"],
-          light: colors.blue["300"],
-          default: colors.blue["600"],
-          DEFAULT: colors.blue["600"],
-          dark: colors.blue["800"],
-        },
+
         "notion-dark": {
           DEFAULT: "#191919",
           light: "#2e2e2e",

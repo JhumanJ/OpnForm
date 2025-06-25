@@ -84,7 +84,7 @@
         </transition>
         <div v-if="recordLoading">
           <p class="text-center p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <loader class="h-6 w-6 text-blue-500 mx-auto" />
           </p>
         </div>
         <open-complete-form

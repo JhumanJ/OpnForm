@@ -110,7 +110,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="mdi:star-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Remove OpnForm branding.</strong>
@@ -122,7 +122,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="ion:brush-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Full form customization.</strong>
@@ -134,7 +134,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="icons8:upload-2"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Larger File uploads.</strong>
@@ -150,7 +150,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="heroicons:bell"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">All ntegrations & API access.</strong>
@@ -162,7 +162,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="heroicons:globe-alt"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">1 custom domain.</strong>
@@ -174,7 +174,7 @@
                     <div class="flex flex-col grow text-base leading-6 text-slate-500 max-md:mt-10">
                       <Icon
                         name="mdi:pencil-outline"
-                        class="w-5 h-5 text-nt-blue"
+                        class="w-5 h-5 text-blue-500"
                       />
                       <p class="mt-2">
                         <strong class="font-semibold text-slate-800">Editable submissions.</strong>

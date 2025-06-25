@@ -28,7 +28,7 @@
           >
             <Icon
               :name="action.icon"
-              class="w-8 h-8 mb-2 text-nt-blue"
+              class="w-8 h-8 mb-2 text-blue-500"
             />
             <span class="font-medium">
               {{ action.text }}

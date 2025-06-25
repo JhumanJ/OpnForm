@@ -15,7 +15,7 @@
     </template>
     
     <div v-if="loading">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-blue-500 mx-auto" />
     </div>
     <div v-else>
       <text-input

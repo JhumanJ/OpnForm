@@ -20,7 +20,7 @@
               class="text-3xl font-semibold tracking-tight text-gray-950"
             >
               Check out our
-              <span class="ml-2 text-nt-blue">
+              <span class="ml-2 text-blue-500">
                 <svg
                   class="inline w-10 h-10"
                   viewBox="0 0 32 32"

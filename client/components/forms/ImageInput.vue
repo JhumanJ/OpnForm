@@ -119,7 +119,7 @@
                   <p class="mt-5 text-sm text-gray-600">
                     <button
                       type="button"
-                      class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
+                      class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-none focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
                       Upload your image,

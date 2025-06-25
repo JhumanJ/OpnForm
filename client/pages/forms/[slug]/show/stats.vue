@@ -17,7 +17,7 @@
          
         <Loader
           v-if="isLoading"
-          class="h-6 w-6 text-nt-blue"
+          class="h-6 w-6 text-blue-500"
         />
         <span
           v-else-if="form.is_pro"

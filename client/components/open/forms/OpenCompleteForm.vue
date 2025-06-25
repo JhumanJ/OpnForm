@@ -20,7 +20,7 @@
 
     <v-transition name="fade" mode="out-in">
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
-        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
 
       <div v-else key="form-content">
@@ -168,7 +168,7 @@
               <a
                 target="_parent"
                 :href="form.share_url+'?submission_id='+submissionId"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ form.editable_submissions_button_text }}
               </a>
@@ -180,7 +180,7 @@
               <a
                 target="_parent"
                 href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ t('forms.create_form_free') }}
               </a>

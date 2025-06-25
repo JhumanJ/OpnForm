@@ -205,7 +205,7 @@ const charCount = computed(() => {
   .ql-snow.ql-toolbar button.ql-active,
   .ql-snow.ql-toolbar button:focus,
   .ql-snow.ql-toolbar button:hover {
-    @apply text-nt-blue;
+    @apply text-blue-500;
   }
 }
 
