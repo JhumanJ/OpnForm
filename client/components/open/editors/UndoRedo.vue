@@ -4,28 +4,30 @@
     orientation="horizontal"
     class="shadow-none"
   >
-    <UTooltip 
-      text="Undo" 
-      :shortcuts="[metaSymbol,'Z']"
+    <UTooltip
+      text="Undo"
+      :kbds="['meta','Z']"
       :popper="{ placement: 'left' }"
     >
       <UButton
         :disabled="!canUndo"
-        color="white"
+        color="neutral"
+        variant="outline"
         icon="i-material-symbols-undo"
         class="disabled:text-gray-500 shadow-none"
         @click="undo"
       />
     </UTooltip>
-    <UTooltip 
-      text="Redo" 
-      :shortcuts="[metaSymbol,'Shift','Z']"
+    <UTooltip
+      text="Redo"
+      :kbds="['meta','Shift','Z']"
       :popper="{ placement: 'right' }"
     >
       <UButton
         :disabled="!canRedo"
         icon="i-material-symbols-redo"
-        color="white"
+        color="neutral"
+        variant="outline"
         class="disabled:text-gray-500 shadow-none"
         @click="redo"
       />
@@ -34,10 +36,17 @@
 </template>
 
 <script setup>
-const workingFormStore = useWorkingFormStore()
+const props = defineProps({
+  editor: { type: String, default: 'form' }
+})
 
-const { undo, redo, clearHistory } = workingFormStore
-const { canUndo, canRedo } = storeToRefs(workingFormStore)
+let workingStore = useWorkingFormStore()
+if (props.editor === 'view') {
+  workingStore = useWorkingViewStore()
+}
+
+const { undo, redo, clearHistory } = workingStore
+const { canUndo, canRedo } = storeToRefs(workingStore)
 
 defineShortcuts({
   meta_z: {
@@ -53,10 +62,7 @@ defineShortcuts({
     }
   }
 })
-const { metaSymbol } = useShortcuts()
-
 onMounted(() => {
   setTimeout(() => { clearHistory() }, 500)
 })
-
 </script>

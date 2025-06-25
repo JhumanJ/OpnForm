@@ -1,3 +1,5 @@
+import { h } from 'vue'
+
 export function useAlert () {
 
   function success (message, autoClose = 10000, options = {}) {
@@ -5,8 +7,9 @@ export function useAlert () {
       icon: 'i-heroicons-check-circle',
       title: options.title ?? 'Success',
       description: message,
-      color: 'green',
-      timeout: autoClose,
+      color: 'success',
+      closeIcon: 'i-heroicons-x-mark-20-solid',
+      duration: autoClose,
       ...options
     })
   }
@@ -16,8 +19,9 @@ export function useAlert () {
       icon: 'i-heroicons-exclamation-circle',
       title: options.title ?? 'Error',
       description: message,
-      color: 'red',
-      timeout: autoClose,
+      color: 'error',
+      duration: autoClose,
+      closeIcon: 'i-heroicons-x-mark-20-solid',
       ...options
     })
   }
@@ -27,8 +31,9 @@ export function useAlert () {
       icon: 'i-heroicons-exclamation-triangle',
       title: options.title ?? 'Warning',
       description: message,
-      color: 'yellow',
-      timeout: autoClose,
+      color: 'warning',
+      duration: autoClose,
+      closeIcon: 'i-heroicons-x-mark-20-solid',
       ...options
     })
   }
@@ -44,17 +49,45 @@ export function useAlert () {
       icon: 'i-heroicons-question-mark-circle',
       title: options.title ?? 'Are you sure?',
       description: message,
-      color: 'blue',
-      timeout: autoClose,
+      color: 'info',
+      duration: autoClose,
       actions: [
-        { label: options.successLabel ?? 'Yes', onclick: onSuccess },
-        { label: options.failureLabel ?? 'No', onclick: onFailure }
+        { label: options.successLabel ?? 'Yes', onClick: onSuccess },
+        { label: options.failureLabel ?? 'No', onClick: onFailure }
       ],
       ...options
     })
   }
 
-  function formValidationError(error, autoClose = 10000, options = {}) {
+  function remove (id) {
+    useToast().remove(id)
+  }
+
+  function validationError(error, autoClose = 10000, options = {}) {
+    const message = error.message || 'Validation Error'
+    let description = message
+
+    if (error.errors) {
+      description = Object.entries(error.errors)
+        .map(([field, messages]) => {
+          // Format the field name (remove dots and array indices)
+          const fieldName = field.split('.').pop().replace(/\d+/g, '')
+          return `${fieldName}: ${messages.join(', ')}`
+        })
+        .join('\n')
+    }
+
+    return useToast().add({
+      icon: 'i-heroicons-x-circle',
+      title: options.title ?? 'Validation Error',
+      description,
+      color: 'error',
+      duration: autoClose,
+      ...options
+    })
+  }
+
+  function formValidationError(error, form, autoClose = 10000, options = {}) {
     if (!error || !error.errors) {
       return error(error.message || 'An unknown validation error occurred', autoClose, options)
     }
@@ -62,21 +95,17 @@ export function useAlert () {
     // Count total errors
     const errorCount = Object.keys(error.errors).length
 
-    // Format error messages as HTML
+    // Create VNode for error messages instead of HTML strings
     let description = ''
     if (Object.keys(error.errors).length > 0) {
-      const errorLines = Object.entries(error.errors)
-        .map(([_, messages]) => {
-          // Format each message
-          const formattedMessages = messages.map(message => {
-            return `<li>${message}</li>`
-          })
-          
-          return formattedMessages.join('')
+      // Create list items as VNodes
+      const listItems = Object.entries(error.errors)
+        .flatMap(([_field, messages]) => {
+          return messages.map(message => h('li', message))
         })
-        .join('')
       
-      description = `<ul class="list-disc pl-4">${errorLines}</ul>`
+      // Create the description as a VNode with an unordered list
+      description = h('ul', { class: 'list-disc pl-4' }, listItems)
     }
 
     // Add count of errors to the title
@@ -88,15 +117,10 @@ export function useAlert () {
       icon: 'i-heroicons-x-circle',
       title,
       description,
-      color: 'red',
-      timeout: autoClose,
-      html: true,
+      color: 'error',
+      duration: autoClose,
       ...options
     })
-  }
-
-  function remove (id) {
-    useToast().remove(id)
   }
 
   return {
@@ -105,6 +129,7 @@ export function useAlert () {
     warning,
     confirm,
     remove,
+    validationError,
     formValidationError
   }
 }

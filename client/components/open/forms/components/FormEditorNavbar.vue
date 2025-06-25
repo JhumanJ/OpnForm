@@ -73,7 +73,7 @@
       <UTooltip :popper="{ placement: 'left' }">
         <template #content>
           <UKbd
-            :value="metaSymbol"
+            value="meta"
             size="xs"
           />
           <UKbd
@@ -139,7 +139,6 @@ defineProps({
 
 const emit = defineEmits(['go-back', 'save-form'])
 
-const { metaSymbol } = useShortcuts()
 defineShortcuts({
   meta_s: {
     handler: () => emit('save-form')

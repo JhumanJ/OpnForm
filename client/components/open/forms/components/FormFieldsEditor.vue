@@ -3,6 +3,7 @@
     <div class="flex gap-2 sticky top-0 bg-white border-b z-10 p-4">
       <UButton
         color="neutral"
+        variant="subtle"
         icon="i-heroicons-plus"
         class="flex-grow justify-center"
         @click.prevent="openAddFieldSidebar"

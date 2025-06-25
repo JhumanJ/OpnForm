@@ -1,148 +1,115 @@
 <template>
-  <div
-    id="app"
-    class="bg-white dark:bg-notion-dark"
-  >
-    <transition
-      enter-active-class="linear duration-200 overflow-hidden"
-      enter-from-class="max-h-0"
-      enter-to-class="max-h-screen"
-      leave-active-class="linear duration-200 overflow-hidden"
-      leave-from-class="max-h-screen"
-      leave-to-class="max-h-0"
+  <UApp :toaster="toasterConfig">
+    <div
+      id="app"
+      class="bg-white dark:bg-notion-dark"
     >
-      <div
-        v-if="announcement && !isIframe"
-        class="bg-blue-500 text-white text-center p-3 relative"
-      >
-        <a
-          class="text-white font-semibold"
-          href=""
-          target="_blank"
-        >🚨 OpnForm beta is over 🚨</a>
-        <div
-          role="button"
-          class="text-white absolute right-0 top-0 p-3 cursor-pointer"
-          @click="announcement = false"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
-      </div>
-    </transition>
+      <NuxtLoadingIndicator color="#2563eb" />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+      <ToolsStopImpersonation />
 
-    <NuxtLoadingIndicator color="#2563eb" />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-    <ToolsStopImpersonation />
-
-    <NotificationsWrapper />
-    <ClientOnly>
-      <feature-base />
-      <SubscriptionModal />
-      <QuickRegister />
-    </ClientOnly>
-  </div>
+      <ClientOnly>
+        <feature-base />
+        <SubscriptionModal />
+        <QuickRegister />
+      </ClientOnly>
+    </div>
+  </UApp>
 </template>
 
-<script>
-import { computed } from "vue"
+<script setup>
+import { computed, onMounted, ref } from "vue"
 import { useAppStore } from "~/stores/app"
+import { useRouter, useRoute } from "vue-router"
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
 
-export default {
-  el: "#app",
+const config = useRuntimeConfig()
+const appStore = useAppStore()
 
-  name: "OpnForm",
+// SEO and head configuration
+useOpnSeoMeta({
+  title: "Beautiful forms & Surveys",
+  description:
+    "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
+  ogImage: "/img/social-preview.jpg",
+  robots: () => {
+    return config.public.env === "production" ? null : "noindex, nofollow"
+  },
+})
 
-  components: { FeatureBase },
-
-  setup() {
-    const config = useRuntimeConfig()
-    useOpnSeoMeta({
-      title: "Beautiful forms & Surveys",
-      description:
-        "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
-      ogImage: "/img/social-preview.jpg",
-      robots: () => {
-        return config.public.env === "production" ? null : "noindex, nofollow"
-      },
-    })
-    useHead({
-      titleTemplate: (titleChunk) => {
-        return titleChunk ? `${titleChunk} - OpnForm` : "OpnForm"
-      },
-      meta: [
-        {
-          name: 'apple-mobile-web-app-capable',
-          content: 'yes'
-        },
-        {
-          name: 'apple-mobile-web-app-status-bar-style',
-          content: 'black-translucent'
-        },
-      ],
-      link: [
-        {
-          rel: 'apple-touch-icon',
-          type: 'image/png',
-          href: '/favicon.ico'
-        }
-      ],
-      htmlAttrs: () => ({
-        dir: 'ltr'
-      })
-    })
-
-    const appStore = useAppStore()
-
-    return {
-      layout: computed(() => appStore.layout),
-      isIframe: useIsIframe(),
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} - OpnForm` : "OpnForm"
+  },
+  meta: [
+    {
+      name: 'apple-mobile-web-app-capable',
+      content: 'yes'
+    },
+    {
+      name: 'apple-mobile-web-app-status-bar-style',
+      content: 'black-translucent'
+    },
+  ],
+  link: [
+    {
+      rel: 'apple-touch-icon',
+      type: 'image/png',
+      href: '/favicon.ico'
     }
-  },
+  ],
+  htmlAttrs: () => ({
+    dir: 'ltr'
+  })
+})
 
-  data: () => ({
-    announcement: false,
-    alert: {
-      type: null,
-      autoClose: 0,
-      message: "",
-      confirmationProceed: null,
-      confirmationCancel: null,
-    },
-    navbarHidden: false,
-  }),
+// Get Crisp chat state from the store
+const crispChatOpened = computed(() => appStore.crisp.chatOpened)
+const crispHidden = computed(() => appStore.crisp.hidden)
 
-  computed: {
-    isOnboardingPage() {
-      return this.$route.name === "onboarding"
-    },
-  },
+// Configure toaster positioning based on Crisp chat state
+const toasterConfig = computed(() => {
+  const baseConfig = {
+    position: 'bottom-right',
+    duration: 5000,
+    expand: true,
+  }
 
-  mounted() {
-    useCrisp().onCrispInit()
-    useCrisp().showChat()
-  },
+  // Dynamically adjust the UI class based on Crisp chat state
+  if (crispHidden.value) {
+    // Crisp is hidden: normal bottom-right position
+    return {
+      ...baseConfig,
+      ui: {
+        viewport: 'end-4 bottom-4',
+      },
+    }
+  }
 
-  methods: {
-    workspaceAdded() {
-      this.$router.push({ name: "home" })
+  if (crispChatOpened.value) {
+    // Crisp chat is opened: keep default bottom-right (chat overlay already shifted)
+    return {
+      ...baseConfig,
+      ui: {
+        viewport: 'end-4 bottom-4',
+      },
+    }
+  }
+
+  // Crisp chat is closed but visible: move toasts above the chat button
+  return {
+    ...baseConfig,
+    ui: {
+      viewport: 'end-4 bottom-24',
     },
-    hideNavbar(hidden = true) {
-      this.navbarHidden = hidden
-    },
-  },
-}
+  }
+})
+
+// Lifecycle
+onMounted(() => {
+  useCrisp().onCrispInit()
+  useCrisp().showChat()
+})
 </script>

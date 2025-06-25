@@ -36,7 +36,8 @@
               :popper="{ placement: 'bottom-start' }"
             >
               <UButton
-                color="white"
+                color="neutral"
+                variant="outline"
                 icon="i-heroicons-ellipsis-vertical"
               />
 
@@ -61,7 +62,7 @@
         <UTabs
           v-model="activeTab"
           :items="tabItems"
-          color="neutral"
+          color="primary"
           :content="false"
           class="w-full"
         />
