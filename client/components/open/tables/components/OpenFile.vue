@@ -20,7 +20,7 @@
           class="w-8 h-8"
         >
           <img
-            class="object-cover h-full w-full rounded"
+            class="object-cover h-full w-full rounded-sm"
             :src="file.file_url"
             @error="failedImages.push(file.file_url)"
           >

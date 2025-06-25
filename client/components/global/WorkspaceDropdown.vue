@@ -2,7 +2,7 @@
   <Dropdown
     v-if="user && workspaces && workspaces.length > 1"
     ref="dropdown"
-    dropdown-class="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+          dropdown-class="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-3 ring-black ring-opacity-5 z-50"
     dusk="workspace-dropdown"
   >
     <template
@@ -28,7 +28,7 @@
         v-for="worksp in workspaces"
         :key="worksp.id"
         href="#"
-        class="px-4 py-2 text-md rounded text-gray-700 hover:no-underline hover:bg-neutral-50 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
+        class="px-4 py-2 text-md rounded-sm text-gray-700 hover:no-underline hover:bg-neutral-50 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
         :class="{
           'bg-blue-100 dark:bg-blue-900 hover:bg-blue-200':
             workspace?.id === worksp?.id,

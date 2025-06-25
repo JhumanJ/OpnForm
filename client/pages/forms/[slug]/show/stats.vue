@@ -9,7 +9,7 @@
           { label: 'Average Duration', value: averageDuration, placeholder: '10 seconds' }
         ]"
         :key="index"
-        class="border border-gray-300 rounded-lg shadow-sm p-4 w-full mx-auto"
+        class="border border-gray-300 rounded-lg shadow-xs p-4 w-full mx-auto"
       >
         <div class="mb-2 text-sm text-gray-500">
           {{ stat.label }}

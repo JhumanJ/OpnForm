@@ -42,7 +42,7 @@
           <div class="flex-grow">
             <img
               :src="tmpFile ?? currentUrl"
-              class="h-5 rounded shadow-md border"
+              class="h-5 rounded-sm shadow-sm border"
             >
           </div>
           <a
@@ -119,7 +119,7 @@
                   <p class="mt-5 text-sm text-gray-600">
                     <button
                       type="button"
-                      class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-none focus:underline transition duration-150 ease-in-out"
+                      class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-hidden focus:underline transition duration-150 ease-in-out"
                       @click="openFileUpload"
                     >
                       Upload your image,

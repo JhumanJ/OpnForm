@@ -8,7 +8,7 @@
       <button
         v-if="dismissible"
         type="button"
-        class="absolute right-2 top-0 -mr-1 flex-shrink-0 flex p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 sm:-mr-2"
+        class="absolute right-2 top-0 -mr-1 flex-shrink-0 flex p-2 rounded-sm focus:outline-hidden focus:ring-2 focus:ring-green-500 sm:-mr-2"
         @click.prevent="dismiss()"
       >
         <span class="sr-only"> Dismiss </span>

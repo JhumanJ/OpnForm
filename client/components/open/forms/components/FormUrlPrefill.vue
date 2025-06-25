@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light shadow rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+          class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light shadow-sm rounded-sm p-4 mb-5 w-full mx-auto mt-4 select-all"
   >
     <div class="flex items-center">
       <p
@@ -8,7 +8,7 @@
         v-html="preFillUrl"
       />
       <div
-        class="hover:bg-blue-100 rounded transition-colors cursor-pointer"
+                  class="hover:bg-blue-100 rounded-sm transition-colors cursor-pointer"
         @click="copyToClipboard"
       >
         <svg

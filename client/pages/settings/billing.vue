@@ -8,7 +8,7 @@
       <small class="text-gray-600">Manage your billing. Download invoices, update your plan, or cancel it
         at any time.</small>
 
-      <div class="mt-4 flex flex-wrap gap-2 w-full border shadow rounded-lg p-4 items-center">
+      <div         class="mt-4 flex flex-wrap gap-2 w-full border shadow-sm rounded-lg p-4 items-center">
         <p
           v-if="usersCount"
           class="text-gray-500 flex-grow"

@@ -23,7 +23,7 @@
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-pointer w-full grow relative focus:outline-none min-w-0 truncate"
+        class="cursor-pointer w-full grow relative focus:outline-hidden min-w-0 truncate"
         :class="[
           theme.SelectInput.spacing.horizontal,
           theme.SelectInput.spacing.vertical
@@ -114,7 +114,7 @@
       <ul
         tabindex="-1"
         role="listbox"
-        class="leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
+        class="leading-6 shadow-xs overflow-auto focus:outline-hidden sm:text-sm sm:leading-5 relative"
         :class="[
           { 'max-h-42': !isSearchable, 'max-h-48': isSearchable },
           theme.SelectInput.fontSize
@@ -127,7 +127,7 @@
           <input
             v-model="searchTerm"
             type="text"
-            class="grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-none dark:text-white"
+            class="grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-hidden dark:text-white"
             :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
           >
           <div
@@ -173,7 +173,7 @@
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
             ]"
-            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
             @click="select(item)"
           >
             <slot
@@ -201,10 +201,10 @@
             role="option"
             :style="optionStyle"
             :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
             @click="createOption(searchTerm)"
           >
-            {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{
+                          {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded-sm group-hover-text-black">{{
               searchTerm
             }}</span>
           </li>

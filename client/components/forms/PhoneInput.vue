@@ -31,7 +31,7 @@
           <div class="flex items-center space-x-2 max-w-full">
             <country-flag
               size="normal"
-              class="!-mt-[9px] rounded"
+              class="!-mt-[9px] rounded-sm"
               :country="props.option.code"
             />
             <span class="grow truncate">{{ props.option.name }}</span>
@@ -45,7 +45,7 @@
           >
             <country-flag
               size="normal"
-              class="!-mt-[9px] rounded"
+              class="!-mt-[9px] rounded-sm"
               :country="props.option.code"
             />
             <span class="text-sm">{{ props.option.dial_code }}</span>

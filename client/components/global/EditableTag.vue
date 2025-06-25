@@ -4,7 +4,7 @@
     ref="parentRef"
     tabindex="0"
     :class="{
-      'hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2 cursor-pointer':
+              'hover:bg-gray-100 dark:hover:bg-gray-800 rounded-sm px-2 cursor-pointer':
         !editing,
     }"
     class="relative"
@@ -25,7 +25,7 @@
       <input
         ref="editInputRef"
         v-model="content"
-        class="absolute inset-0 focus:outline-none bg-white rounded-md transition-colors px-2"
+        class="absolute inset-0 focus:outline-hidden bg-white rounded-sm transition-colors px-2"
         :class="[{ 'bg-blue-50': editing }, contentClass]"
         @blur="editing = false"
         @keyup.enter="editing = false"

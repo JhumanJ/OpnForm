@@ -55,7 +55,7 @@
               v-for="tag in allTags"
               :key="tag"
               :class="[
-                'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
+                'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-3 ring-inset cursor-pointer mr-2',
                 {
                   'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':
                     selectedTags.has(tag),

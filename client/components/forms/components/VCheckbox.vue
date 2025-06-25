@@ -6,7 +6,7 @@
       :value="value"
       :name="name"
       type="checkbox"
-      class="rounded border-gray-500 w-10 h-10 cursor-pointer checkbox"
+      class="rounded-sm border-gray-500 w-10 h-10 cursor-pointer checkbox"
       :class="theme.CheckboxInput.size"
       :style="{ '--accent-color': color }"
       :disabled="disabled ? true : null"

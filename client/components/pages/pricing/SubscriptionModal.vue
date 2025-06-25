@@ -3,7 +3,7 @@
     :show="subscriptionModalStore.show"
     compact-header
     max-width="screen-lg"
-    backdrop-blur
+    backdrop-blur-sm
     class="z-50"
     @close="subscriptionModalStore.closeModal()"
   >
@@ -191,7 +191,7 @@
               <NuxtLink
                 :to="{ name: 'pricing' }"
                 target="_blank"
-                class="focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               >
                 And much more. See full plans comparison
                 <Icon

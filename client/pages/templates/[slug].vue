@@ -60,7 +60,7 @@
             class="flex flex-col items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 md:flex-row"
           >
             <div
-              class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group w-full max-w-sm relative"
+                              class="aspect-[4/3] shrink-0 rounded-lg shadow-xs overflow-hidden group w-full max-w-sm relative"
             >
               <img
                 class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110 absolute inset-0"
@@ -90,7 +90,7 @@
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div
-          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
+                        class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-gray-200 isolate"
         >
           <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
             Template Preview
@@ -217,7 +217,7 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-gray-200 text-blue-500 shrink-0"
               >
                 1
               </div>
@@ -239,7 +239,7 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-gray-200 text-blue-500 shrink-0"
               >
                 2
               </div>

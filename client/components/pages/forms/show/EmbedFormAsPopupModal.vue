@@ -75,7 +75,7 @@
               {{ embedPopupCode }}
             </p>
             <div
-              class="hover:bg-blue-100 rounded transition-colors cursor-pointer"
+              class="hover:bg-blue-100 rounded-sm transition-colors cursor-pointer"
               @click="copyToClipboard"
             >
               <svg

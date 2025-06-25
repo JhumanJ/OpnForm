@@ -59,7 +59,7 @@
       background: 'bg-white dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded-sm',
+      option: 'rounded-xs',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -74,8 +74,8 @@
         },
         flag: {
           sm: '-mt-[14px]!',
-          md: '-mt-[9px]! rounded-sm',
-          lg: '-mt-[9px]! rounded-sm'
+          md: '-mt-[9px]! rounded-xs',
+          lg: '-mt-[9px]! rounded-xs'
         },
         flagSize: {
           sm: 'small',
@@ -221,7 +221,7 @@
       background: 'bg-white dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-white dark:to-notion-dark-light',
       dropdown: 'border border-gray-300 dark:border-gray-600',
-      option: 'rounded-sm',
+      option: 'rounded-xs',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -236,8 +236,8 @@
       },
       flag: {
         sm: '-mt-[14px]!',
-        md: '-mt-[9px]! rounded-sm',
-        lg: '-mt-[9px]! rounded-sm'
+        md: '-mt-[9px]! rounded-xs',
+        lg: '-mt-[9px]! rounded-xs'
       },
       flagSize: {
         sm: 'small',
@@ -329,7 +329,7 @@
       },
       label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:
-        'rounded-sm border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
+        'rounded-xs border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       help: 'text-gray-500',
       spacing: {
         horizontal: {
@@ -350,7 +350,7 @@
       },
       borderRadius: {
         none: 'rounded-none',
-        small: 'rounded-sm',
+        small: 'rounded-xs',
         full: 'rounded-[20px]'
       }
     },
@@ -377,7 +377,7 @@
       background: 'bg-notion-input-background dark:bg-notion-dark-light',
       chevronGradient: 'bg-gradient-to-r from-transparent to-notion-input-background dark:to-notion-dark-light',
       dropdown: 'border border-notion-input-border dark:border-notion-input-borderDark',
-      option: 'rounded-sm',
+      option: 'rounded-xs',
       minHeight: {
         sm: 'min-h-[20px]',
         md: 'min-h-[24px]',
@@ -392,8 +392,8 @@
       },
       flag: {
         sm: '-mt-[14px]!',
-        md: '-mt-[9px]! rounded-sm',
-        lg: '-mt-[9px]! rounded-sm'
+        md: '-mt-[9px]! rounded-xs',
+        lg: '-mt-[9px]! rounded-xs'
       },
       flagSize: {
         sm: 'small',
@@ -455,7 +455,7 @@
     },
     fileInput: {
       input:
-        'p-4 rounded-sm border border-dashed border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
+        'p-4 rounded-xs border border-dashed border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
       minHeight: {
         sm: 'min-h-28',
         md: 'min-h-40',
@@ -466,7 +466,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-notion-input-border dark:border-notion-input-borderDark bg-white dark:bg-notion-dark-light rounded-sm max-w-10 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
+        'border border-notion-input-border dark:border-notion-input-borderDark bg-white dark:bg-notion-dark-light rounded-xs max-w-10 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
     },
     SignatureInput: {
       minHeight: {

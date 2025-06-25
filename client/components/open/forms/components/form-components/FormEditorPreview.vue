@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-    class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm"
+            class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
@@ -15,7 +15,7 @@
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-xs transition-all flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">

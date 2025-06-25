@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white border border-gray-200 rounded-lg shadow flex flex-col">
+  <div class="w-full bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col">
     <collapse
       v-model="show"
       class="p-2 w-full"

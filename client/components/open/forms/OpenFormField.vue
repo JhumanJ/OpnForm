@@ -22,7 +22,7 @@
         class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block z-10"
       >
         <div
-          class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-md shadow-sm z-50 p-[1px] relative"
+          class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-sm shadow-xs z-50 p-[1px] relative"
         >
           <div
             class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer !text-gray-500 dark:!text-gray-500 flex items-center justify-center rounded-md"

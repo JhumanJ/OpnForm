@@ -16,7 +16,7 @@
       >
         <div class="flex justify-center mb-5">
           <div
-            class="relative flex items-center shadow-sm bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+                            class="relative flex items-center shadow-xs bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring-3 ring-gray-900/10 hover:ring-gray-900/20"
           >
             <span class="font-semibold text-gray-500">We're Open-Source</span><span
               class="h-4 w-px bg-gray-900/10"
@@ -148,14 +148,14 @@
           class="w-full mt-12 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center"
         >
           <div
-            class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-sm ring-1 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
+                          class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-xs ring-3 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
             <img
               src="/img/pages/welcome/product-cover.jpg"
               sizes="320px sm:650px lg:896px"
               alt="Product screenshot"
               loading="lazy"
-              class="rounded-md w-full shadow-2xl ring-1 ring-gray-900/10"
+                                class="rounded-sm w-full shadow-2xl ring-3 ring-gray-900/10"
             >
           </div>
         </div>

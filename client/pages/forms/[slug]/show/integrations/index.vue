@@ -28,7 +28,7 @@
       </div>
       <div
         v-else
-        class="text-gray-500 border shadow rounded-md p-5 mt-4"
+        class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4"
       >
         No integration yet form this form.
       </div>
