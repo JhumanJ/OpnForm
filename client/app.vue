@@ -13,7 +13,7 @@
     >
       <div
         v-if="announcement && !isIframe"
-        class="bg-nt-blue text-white text-center p-3 relative"
+        class="bg-blue-500 text-white text-center p-3 relative"
       >
         <a
           class="text-white font-semibold"

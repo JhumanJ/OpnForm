@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
-@import "./css/fonts.css";
+@import "./fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant ltr-only (&:where(:not([dir="rtl"] *)));
