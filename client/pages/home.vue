@@ -191,7 +191,8 @@
                     </p>
                     <UButton
                       v-track.upgrade_banner_home_click
-                      color="white"
+                      color="neutral"
+                      variant="outline"
                       class="block"
                       @click.prevent="subscriptionModalStore.openModal()"
                     >

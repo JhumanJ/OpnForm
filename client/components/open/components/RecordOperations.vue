@@ -6,14 +6,16 @@
     <UButton
       v-track.edit_record_click
       size="sm"
-      color="white"
+      color="neutral"
+      variant="outline"
       icon="heroicons:pencil-square"
       @click="showEditSubmissionModal = true"
     />
     <UButton
       v-track.delete_record_click
       size="sm"
-      color="white"
+      color="neutral"
+      variant="outline"
       icon="heroicons:trash"
       @click="onDeleteClick"
     />

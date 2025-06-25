@@ -10,7 +10,8 @@
             <UButton
               v-if="!workspace.is_readonly"
               size="xs"
-              color="white"
+              color="neutral"
+              variant="outline"
               icon="i-heroicons-pencil-square"
               @click="editCurrentWorkspace"
             />

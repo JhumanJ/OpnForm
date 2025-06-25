@@ -32,7 +32,8 @@
       />
       <UButton
         type="button"
-        color="white"
+        color="neutral"
+        variant="outline"
         class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 px-2"
         icon="i-heroicons-at-symbol-16-solid"
         @click="openMentionDropdown"

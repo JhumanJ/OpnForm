@@ -33,7 +33,8 @@
               <div class="flex mt-4 gap-2 lg:mt-0">
                 <UButton
                   v-if="form.visibility === 'draft'"
-                  color="white"
+                  color="neutral"
+                  variant="outline"
                   class="hover:no-underline"
                   icon="i-heroicons-eye"
                   @click="showDraftFormWarningNotification"
@@ -45,7 +46,8 @@
                   v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
                   target="_blank"
                   :to="form.share_url"
-                  color="white"
+                  color="neutral"
+                  variant="outline"
                   class="hover:no-underline"
                   icon="i-heroicons-eye"
                 >

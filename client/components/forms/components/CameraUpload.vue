@@ -100,7 +100,8 @@
         {{ $t('forms.cameraUpload.allowCameraPermissionDescription') }}
       </p>
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         @click.stop="cancelCamera"
       >
         {{ $t('forms.cameraUpload.gotIt') }}
@@ -133,7 +134,8 @@
         {{ $t('forms.cameraUpload.cameraDeviceErrorDescription') }}
       </p>
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         @click.stop="cancelCamera"
       >
         {{ $t('forms.cameraUpload.goBack') }}

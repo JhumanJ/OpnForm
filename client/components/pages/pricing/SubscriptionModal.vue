@@ -314,7 +314,8 @@
                 </UButton>
                 <UButton
                   size="md"
-                  color="white"
+                  color="neutral"
+                  variant="outline"
                   @click="goBackToStep1"
                 >
                   Back
