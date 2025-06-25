@@ -53,7 +53,7 @@
         <UAlert
           v-else
           icon="i-heroicons-user-group-20-solid"
-          color="orange"
+          color="warning"
           variant="subtle"
           title="Pro plan required"
         >
@@ -104,7 +104,7 @@
               >
                 <UButton
                   icon="i-heroicons-pencil"
-                  color="gray"
+                  color="neutral"
                   class="hover:text-blue-500"
                   square
                   @click="editUser(index)"
@@ -116,7 +116,7 @@
                 <UButton
                   v-if="row.type == 'user'"
                   icon="i-heroicons-trash"
-                  color="gray"
+                  color="neutral"
                   class="hover:text-red-500"
                   square
                   @click="removeUser(index)"
@@ -133,7 +133,7 @@
             >
               <UButton
                 icon="i-heroicons-envelope"
-                color="gray"
+                color="neutral"
                 class="hover:text-blue-500"
                 square
                 @click="resendInvite(index)"
@@ -144,7 +144,7 @@
             >
               <UButton
                 icon="i-heroicons-trash"
-                color="gray"
+                color="neutral"
                 class="hover:text-red-500"
                 square
                 @click="cancelInvite(index)"
@@ -176,7 +176,7 @@
       <UButton
         v-if="isWorkspaceAdmin && users.length == 1"
         icon="i-heroicons-trash"
-        color="gray"
+        color="neutral"
         :loading="loading"
         @click="deleteWorkspace(workspace.id)"
       >

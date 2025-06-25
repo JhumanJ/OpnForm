@@ -58,7 +58,7 @@
         <UAlert
           v-if="token"
           icon="i-heroicons-key-20-solid"
-          color="green"
+          color="success"
           variant="subtle"
           title="Copy your access token"
           description="Your token will only be shown once. Make sure to save it safely."

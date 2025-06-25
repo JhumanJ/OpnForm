@@ -1,7 +1,7 @@
 <template>
   <div id="email-settings">
     <UButton
-      color="gray"
+      color="neutral"
       label="Email Settings"
       icon="i-heroicons-envelope"
       @click="showEmailSettingsModal = !showEmailSettingsModal"
@@ -22,7 +22,7 @@
         v-if="!workspace.is_pro"
         icon="i-heroicons-user-group-20-solid"
         class="my-4 !text-orange-500"
-        color="orange"
+        color="warning"
         variant="subtle"
         title="Pro plan required"
       >

@@ -4,7 +4,7 @@
       <UButton
         v-if="!field"
         size="sm"
-        color="gray"
+        color="neutral"
         icon="i-heroicons-x-mark-20-solid"
         variant="ghost"
         @click="closeSidebar"
@@ -13,7 +13,7 @@
         <div class="flex">
           <UButton
             size="sm"
-            color="gray"
+            color="neutral"
             icon="i-heroicons-x-mark-20-solid"
             variant="ghost"
             @click="closeSidebar"

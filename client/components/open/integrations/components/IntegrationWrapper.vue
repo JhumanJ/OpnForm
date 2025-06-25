@@ -16,7 +16,7 @@
         name="help"
       >
         <UButton
-          color="gray"
+          color="neutral"
           size="sm"
           icon="i-heroicons-question-mark-circle-solid"
           @click="openHelp"

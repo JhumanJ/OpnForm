@@ -35,7 +35,7 @@
 
       <UAlert
         icon="i-heroicons-information-circle"
-        color="yellow"
+        color="warning"
         variant="subtle"
         size="sm"
         description="Remember to save your form to apply these validation rules."

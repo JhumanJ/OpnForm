@@ -56,7 +56,7 @@
           </UButton>
           <UButton
             size="sm"
-            color="gray"
+            color="neutral"
             @click="cancel"
           >
             Cancel

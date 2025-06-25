@@ -30,7 +30,7 @@
       v-if="!user.is_pro"
       icon="i-heroicons-user-group-20-solid"
       class="my-4 !text-orange-500"
-      color="orange"
+      color="warning"
       variant="subtle"
       title="Pro plan required"
     >

@@ -54,8 +54,8 @@
         <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" 
           class="m-2 my-4">
           <UAlert
-            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
-            color="amber"
+            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'neutral', variant: 'link', padded: false }"
+            color="warning"
             variant="subtle"
             icon="i-material-symbols-info-outline"
             @close="hidePasswordDisabledMsg = true"
@@ -67,7 +67,7 @@
         <UAlert
           v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >
@@ -82,7 +82,7 @@
         <UAlert
           v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >

@@ -16,7 +16,7 @@
           You currently have <span class="font-medium">{{ usersCount }} users</span> in your different workspaces.
         </p>
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-heroicons-credit-card"
           :loading="billingLoading"
           :to="{ name: 'redirect-billing-portal' }"

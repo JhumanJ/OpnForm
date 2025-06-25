@@ -32,14 +32,14 @@
       />
       <UBadge
         v-if="form.visibility == 'draft'"
-        color="yellow"
+        color="warning"
         variant="soft"
         icon="i-heroicons-pencil-square"
         label="Draft"
       />
       <UBadge
         v-else-if="form.visibility == 'closed'"
-        color="gray"
+        color="neutral"
         variant="soft"
         icon="i-heroicons-lock-closed-20-solid"
         label="Closed"

@@ -9,21 +9,21 @@
     <div class="relative flex">
       <UButtonGroup size="xs">
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-heroicons-arrow-down-on-square"
           @click="showCopyFormModal = true"
         >
           Copy from
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-heroicons-arrow-up-on-square"
           @click="showCopyToModal = true"
         >
           Copy to
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-mdi-clear-outline"
           @click="clearAll"
         >
@@ -95,7 +95,7 @@
           Confirm & Copy
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-heroicons-x-mark"
           class="ml-1"
           @click="showCopyFormModal = false"
@@ -136,7 +136,7 @@
           Confirm & Copy
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
           icon="i-heroicons-x-mark"
           class="ml-1"
           @click="showCopyToModal = false"
