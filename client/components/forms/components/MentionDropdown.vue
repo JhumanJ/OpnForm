@@ -6,7 +6,7 @@
     @close="cancel"
   >
     <span class="hidden" />
-    <template #panel>
+    <template #content>
       <div class="p-2 max-h-[300px] flex flex-col">
         <div class="flex items-center border-b -mx-2 px-2">
           <div class="font-semibold w-1/2 mb-2 flex-grow">

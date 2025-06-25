@@ -46,7 +46,7 @@
               class="w-32"
               v-if="form.enable_partial_submissions"
               v-model="selectedStatus"
-              :options="statusList"
+              :items="statusList"
               value-attribute="value"
               option-attribute="label"
             />

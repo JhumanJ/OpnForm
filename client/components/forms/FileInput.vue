@@ -112,7 +112,8 @@
           v-if="cameraUpload"
           icon="i-heroicons-camera"
           :loading="loading"
-          color="white"
+          color="neutral"
+          variant="outline"
           class="px-2"
           @click.stop="openWebcam"
         />

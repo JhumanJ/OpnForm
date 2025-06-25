@@ -12,7 +12,7 @@
       <span class="truncate">Change Type</span>
     </div>
 
-    <template #panel>
+    <template #content>
       <a
         v-for="(op, index) in changeTypeOptions"
         :key="index"

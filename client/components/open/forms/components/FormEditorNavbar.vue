@@ -70,7 +70,7 @@
       </UTooltip>
       <slot name="before-save" />
       <UTooltip :popper="{ placement: 'left' }">
-        <template #text>
+        <template #content>
           <UKbd
             :value="metaSymbol"
             size="xs"
