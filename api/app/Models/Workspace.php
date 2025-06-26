@@ -32,6 +32,7 @@ class Workspace extends Model implements CachableAttributes
         'is_pro',
         'is_trialing',
         'is_enterprise',
+        'users_count',
     ];
 
     protected function casts(): array
@@ -49,6 +50,7 @@ class Workspace extends Model implements CachableAttributes
         'submissions_count',
         'max_file_size',
         'custom_domain_count',
+        'users_count',
     ];
 
     public function getMaxFileSizeAttribute()
@@ -176,6 +178,13 @@ class Workspace extends Model implements CachableAttributes
         });
     }
 
+    public function getUsersCountAttribute()
+    {
+        return $this->remember('users_count', 15 * 60, function (): int {
+            return $this->users()->count();
+        });
+    }
+
     /**
      * Relationships
      */
@@ -196,7 +205,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()

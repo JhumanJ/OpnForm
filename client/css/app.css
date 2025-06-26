@@ -225,10 +225,6 @@
     a {
         color: var(--color-blue-500);
     }
-
-    a:hover {
-        text-decoration: underline;
-    }
 }
 
 /* Default overrides with low specificity - can be easily overridden */
@@ -351,7 +347,7 @@ body.dark * {
     }
 
     a {
-        @apply text-blue-500 hover:underline;
+        @apply text-blue-500;
     }
 }
 

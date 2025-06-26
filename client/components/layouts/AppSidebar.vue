@@ -2,64 +2,41 @@
   <aside class="fixed left-0 top-0 h-full w-58 bg-neutral-100 border-r border-neutral-200 flex flex-col">
     <!-- Top Section: Workspace (left) and User (right) -->
     <div class="p-2 border-b border-neutral-200">
-      <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center justify-between gap-1">
         <!-- Workspace Dropdown -->
         <div class="flex-1 min-w-0">
-          <WorkspaceDropdown />
+          <WorkspaceDropdown>
+            <template #default="{ workspace }">
+              <button
+                v-if="workspace"
+                class="flex items-center gap-2 p-2 rounded-md hover:bg-neutral-200 transition-colors w-full text-left"
+              >
+                <WorkspaceIcon :workspace="workspace" />
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-neutral-800 truncate">
+                    {{ workspace.name }}
+                  </p>
+                </div>
+              </button>
+            </template>
+          </WorkspaceDropdown>
         </div>
         
         <!-- User Dropdown -->
-        <Dropdown dusk="sidebar-user-dropdown">
-          <template #trigger="{ toggle }">
+        <UserDropdown>
+          <template #default="{ user }">
             <button
               class="flex items-center gap-2 p-2 rounded-md hover:bg-neutral-200 transition-colors"
-              @click.stop="toggle()"
             >
               <img
                 :src="user?.photo_url"
                 class="rounded-full w-6 h-6"
                 :alt="user?.name"
               >
-              <Icon name="heroicons:chevron-down" class="w-4 h-4 text-gray-500" />
+              
             </button>
           </template>
-
-          <!-- User Info Header -->
-          <div class="px-4 py-3 border-b border-gray-200">
-            <p class="text-sm font-medium text-gray-900 truncate">
-              {{ user?.name }}
-            </p>
-            <p class="text-xs text-gray-500 truncate">
-              {{ user?.email }}
-            </p>
-          </div>
-
-          <NuxtLink
-            :to="{ name: 'settings-profile' }"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 flex items-center"
-          >
-            <Icon name="heroicons:cog-6-tooth" class="w-4 h-4 mr-3" />
-            Settings
-          </NuxtLink>
-
-          <NuxtLink
-            v-if="user?.moderator"
-            :to="{ name: 'settings-admin' }"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 flex items-center"
-          >
-            <Icon name="heroicons:shield-check" class="w-4 h-4 mr-3" />
-            Admin
-          </NuxtLink>
-
-          <a
-            href="#"
-            class="block px-4 py-2 text-sm text-gray-700 hover:no-underline transition-colors hover:bg-gray-100 hover:text-gray-900 flex items-center"
-            @click.prevent="logout"
-          >
-            <Icon name="heroicons:arrow-right-start-on-rectangle" class="w-4 h-4 mr-3" />
-            Logout
-          </a>
-        </Dropdown>
+        </UserDropdown>
       </div>
     </div>
 
@@ -99,18 +76,16 @@
 
 <script setup>
 import { computed } from "vue"
-import Dropdown from "~/components/global/Dropdown.vue"
 import WorkspaceDropdown from "~/components/global/WorkspaceDropdown.vue"
+import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
+import UserDropdown from "~/components/global/UserDropdown.vue"
 import opnformConfig from "~/opnform.config.js"
 
-const authStore = useAuthStore()
-const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 const appStore = useAppStore()
 const route = useRoute()
 const crisp = useCrisp()
 
-const user = computed(() => authStore.user)
 const workspace = computed(() => workspacesStore.getCurrent)
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
 
@@ -254,25 +229,12 @@ const navigationSections = computed(() => [
         to: opnformConfig.links.api_docs,
         target: '_blank'
       }),
-      createNavItem({
+      ...(isSelfHosted.value || !crisp ? [] : [createNavItem({
         label: 'Contact Support',
         icon: 'heroicons:chat-bubble-left-right',
         onClick: () => crisp.openChat()
-      })
+      })])
     ]
   }
 ])
-
-const logout = async () => {
-  // Log out the user.
-  authStore.logout()
-
-  // Reset store
-  workspacesStore.resetState()
-  formsStore.resetState()
-
-  // Redirect to login.
-  const router = useRouter()
-  router.push({ name: "login" })
-}
 </script> 

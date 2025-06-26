@@ -145,3 +145,19 @@ it('allows same workspace to update its own custom domain', function () {
     $workspace->refresh();
     expect($workspace->custom_domains)->toBe(['example.com']);
 });
+
+it('includes users_count attribute', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+
+    // Initially should have 1 user (the creator)
+    expect($workspace->users_count)->toBe(1);
+
+    // Add another user to the workspace
+    $user2 = \App\Models\User::factory()->create();
+    $workspace->users()->attach($user2, ['role' => 'admin']);
+
+    // Clear cache and check count
+    $workspace->flush();
+    expect($workspace->fresh()->users_count)->toBe(2);
+});

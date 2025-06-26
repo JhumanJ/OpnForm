@@ -1,7 +1,7 @@
 <template>
   <div
     :class="size"
-    class="rounded-full text-xs truncate bg-neutral-200 text-center flex items-center justify-center overflow-hidden"
+    class="rounded-full text-xs truncate bg-neutral-200 text-center flex items-center justify-center overflow-hidden shrink-0"
   >
   <img
     v-if="isUrl(workspace.icon)"
