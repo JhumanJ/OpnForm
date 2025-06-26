@@ -6,7 +6,7 @@
     <!-- Draft Badge -->
     <UTooltip v-if="form.visibility === 'draft'" text="Not publicly accessible">
       <UBadge
-        color="amber"
+        color="warning"
         variant="subtle"
         icon="i-heroicons-exclamation-triangle"
         :size="size"
@@ -18,7 +18,7 @@
     <!-- Closed Badge -->
     <UTooltip v-else-if="form.visibility === 'closed'" text="Won't accept new submissions">
       <UBadge
-        color="gray"
+        color="neutral"
         variant="subtle"
         icon="i-heroicons-lock-closed"
         :size="size"
@@ -30,7 +30,7 @@
     <!-- Time Limited Badge -->
     <UTooltip v-if="form.closes_at && !form.is_closed" :text="`Will close on ${closesDate}`">
       <UBadge
-        color="amber"
+        color="warning"
         variant="subtle"
         icon="i-heroicons-clock"
         :size="size"
@@ -45,7 +45,7 @@
       :text="`Limited to ${form.max_submissions_count} submissions`"
     >
       <UBadge
-        color="amber"
+        color="warning"
         variant="subtle"
         icon="i-heroicons-chart-bar"
         :size="size"
@@ -58,8 +58,8 @@
     <UBadge
       v-for="tag in form.tags"
       :key="tag"
-      color="white"
-      variant="solid"
+      color="neutral"
+      variant="outline"
       class="capitalize"
       :size="size"
     >

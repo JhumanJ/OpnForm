@@ -55,7 +55,7 @@
               v-for="tag in allTags"
               :key="tag"
               :class="[
-                'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer mr-2',
+                'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-3 ring-inset cursor-pointer mr-2',
                 {
                   'bg-blue-50 text-blue-600 ring-blue-500/10 dark:bg-blue-400':
                     selectedTags.has(tag),
@@ -191,7 +191,8 @@
                     </p>
                     <UButton
                       v-track.upgrade_banner_home_click
-                      color="white"
+                      color="neutral"
+                      variant="outline"
                       class="block"
                       @click.prevent="subscriptionModalStore.openModal()"
                     >
@@ -206,7 +207,7 @@
             v-if="formsLoading"
             class="text-center"
           >
-            <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <Loader class="h-6 w-6 text-blue-500 mx-auto" />
           </div>
         </div>
       </div>

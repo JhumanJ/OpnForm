@@ -25,7 +25,7 @@
     <div class="p-4">
       <div class="flex space-x-4 items-center">
         <p>Current workspace:</p>
-        <div class="flex items-center cursor group p-2 rounded border">
+        <div class="flex items-center cursor group p-2 rounded-sm border">
           <WorkspaceIcon :workspace="workspace" />
           <p
             class="lg:block max-w-10 truncate ml-2 text-gray-800 dark:text-gray-200"

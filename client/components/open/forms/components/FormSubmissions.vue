@@ -24,7 +24,7 @@
 
       <Loader
         v-if="!form"
-        class="h-6 w-6 text-nt-blue mx-auto"
+        class="h-6 w-6 text-blue-500 mx-auto"
       />
       <div v-else>
         <div
@@ -46,20 +46,22 @@
               class="w-32"
               v-if="form.enable_partial_submissions"
               v-model="selectedStatus"
-              :options="statusList"
+              :items="statusList"
               value-attribute="value"
               option-attribute="label"
             />
             <UButton
               size="sm"
-              color="white"
+              color="neutral"
+              variant="outline"
               icon="heroicons:adjustments-horizontal"
               label="Edit columns"
               @click="showColumnsModal=true"
             />
             <UButton
               size="sm"
-              color="white"
+              color="neutral"
+              variant="outline"
               icon="heroicons:arrow-down-tray"
               label="Export"
               :loading="exportLoading"

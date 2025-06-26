@@ -14,7 +14,7 @@
       />
     </div>
     <div
-      class="border border-gray-300 rounded-lg shadow-sm p-4 mb-5 w-full mx-auto mt-4 select-all"
+              class="border border-gray-300 rounded-lg shadow-xs p-4 mb-5 w-full mx-auto mt-4 select-all"
     >
       <div
         v-if="!form.is_pro"
@@ -47,7 +47,7 @@
       </div>
       <Loader
         v-else-if="isLoading"
-        class="h-6 w-6 text-nt-blue mx-auto"
+        class="h-6 w-6 text-blue-500 mx-auto"
       />
       <LineChart
         v-else

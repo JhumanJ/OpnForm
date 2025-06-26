@@ -57,7 +57,7 @@
           Cancel
         </UButton>
         <UButton
-          color="blue"
+          color="primary"
           @click="$emit('confirm')"
         >
           Save Anyway (Remove Invalid Logic)

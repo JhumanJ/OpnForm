@@ -2,11 +2,12 @@
   <UPopover
     ref="popover"
     v-model:open="mentionState.open"
-    class="h-0"
+    :content="content"
+    arrow
     @close="cancel"
   >
-    <span class="hidden" />
-    <template #panel>
+    <slot></slot>
+    <template #content>
       <div class="p-2 max-h-[300px] flex flex-col">
         <div class="flex items-center border-b -mx-2 px-2">
           <div class="font-semibold w-1/2 mb-2 flex-grow">
@@ -56,7 +57,8 @@
           </UButton>
           <UButton
             size="sm"
-            color="gray"
+            color="neutral"
+            variant="outline"
             @click="cancel"
           >
             Cancel
@@ -80,6 +82,10 @@ const props = defineProps({
   mentions: {
     type: Array,
     required: true
+  },
+  content: {
+    type: Object,
+    default: () => ({ position: 'bottom', align: 'end' })
   }
 })
 

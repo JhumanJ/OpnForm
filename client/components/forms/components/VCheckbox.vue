@@ -6,8 +6,8 @@
       :value="value"
       :name="name"
       type="checkbox"
-      class="rounded border-gray-500 w-10 h-10 cursor-pointer checkbox"
-      :class="theme.CheckboxInput.size"
+      class="rounded border-gray-500 size-6 checkbox"
+      :class="[theme.CheckboxInput.size,{'cursor-pointer': !disabled}]"
       :style="{ '--accent-color': color }"
       :disabled="disabled ? true : null"
     >
@@ -22,32 +22,39 @@
 </template>
 
 <script setup>
-import { defineEmits, defineOptions, defineProps, onMounted, ref, watch, } from "vue"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import {
+  defineEmits,
+  defineOptions,
+  defineProps,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
+import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
 
 defineOptions({
-  name: "VCheckbox",
+  name: 'VCheckbox',
 })
 
 const props = defineProps({
   id: { type: String, default: null },
-  name: { type: String, default: "checkbox" },
+  name: { type: String, default: 'checkbox' },
   modelValue: { type: [Boolean, String], default: false },
   value: { type: [Boolean, String, Number, Object], required: false },
   disabled: { type: Boolean, default: false },
   theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
+      type: Object, default: () => {
+        const theme = inject('theme', null)
+        if (theme) {
+          return theme.value
+        }
+        return CachedDefaultTheme.getInstance()
       }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
+    },
   color: { type: String, default: null },
 })
 
-const emit = defineEmits(["update:modelValue", "click"])
+const emit = defineEmits(['update:modelValue', 'click'])
 
 const internalValue = ref(props.modelValue)
 
@@ -68,15 +75,19 @@ watch(
 watch(
   () => internalValue.value,
   (val, oldVal) => {
-    if (val === 0 || val === "0") val = false
-    if (val === 1 || val === "1") val = true
+    if (val === 0 || val === '0')
+      val = false
+    if (val === 1 || val === '1')
+      val = true
 
-    if (val !== oldVal) emit("update:modelValue", val)
+    if (val !== oldVal)
+      emit('update:modelValue', val)
   },
 )
 
 onMounted(() => {
-  if (internalValue.value === null) internalValue.value = false
+  if (internalValue.value === null)
+    internalValue.value = false
 })
 </script>
 <style>

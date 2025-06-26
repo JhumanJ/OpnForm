@@ -6,8 +6,9 @@
 
     <UPopover
       v-model:open="pickerOpen"
+      arrow
       :disabled="props.disabled"
-      :popper="{ placement: 'bottom-start' }"
+      :content="{ side: 'bottom', align: 'center' }"
     >
       <button
         ref="datepicker"
@@ -17,7 +18,7 @@
       >
         <div class="flex items-stretch min-w-0">
           <div
-            class="flex-grow min-w-0 flex items-center gap-x-2"
+            class="grow min-w-0 flex items-center gap-x-2"
             :class="[
               props.theme.DateInput.spacing.horizontal,
               props.theme.DateInput.spacing.vertical,
@@ -26,13 +27,13 @@
           >
             <Icon
               name="heroicons:calendar-20-solid"
-              class="w-4 h-4 flex-shrink-0"
+              class="w-4 h-4 shrink-0"
               dynamic
             />
-            <div class="flex-grow truncate overflow-hidden flex items-center">
+            <div class="grow truncate overflow-hidden flex items-center">
               <p
                 v-if="formattedDatePreview"
-                class="flex-grow truncate"
+                class="grow truncate"
               >
                 {{ formattedDatePreview }}
               </p>
@@ -59,8 +60,9 @@
         </div>
       </button>
 
-      <template #panel>
+      <template #content>
         <DatePicker
+          class="rounded-md"
           v-if="props.dateRange"
           v-model.range="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
@@ -70,11 +72,13 @@
           :min-date="minDate"
           :max-date="maxDate"
           :is-dark="props.isDark"
-          color="form-color"
+          color="form"
           :locale="props.locale"
           @update:model-value="updateModelValue"
+          :style="datePickerStyles"
         />
         <DatePicker
+          class="rounded-md"
           v-else
           v-model="modeledValue"
           :mode="props.withTime ? 'dateTime' : 'date'"
@@ -84,9 +88,10 @@
           :min-date="minDate"
           :max-date="maxDate"
           :is-dark="props.isDark"
-          color="form-color"
+          color="form"
           :locale="props.locale"
           @update:model-value="updateModelValue"
+          :style="datePickerStyles"
         />
       </template>
     </UPopover>
@@ -131,6 +136,17 @@ const twColors = computed(() => {
   return tailwindcssPaletteGenerator(props.color).primary
 })
 
+const datePickerStyles = computed(() => {
+  if (!twColors.value) {
+    return {}
+  }
+  const styles = {}
+  for (const shade in twColors.value) {
+    styles[`--vc-accent-${shade}`] = twColors.value[shade]
+  }
+  return styles
+})
+
 const modeledValue = computed({
   get () {
     return props.dateRange ? { start: fromDate.value, end: toDate.value } : fromDate.value
@@ -146,7 +162,7 @@ const modeledValue = computed({
 })
 
 const updateModelValue = () => {
-  if (!props.withTime && !props.dateRange) {
+  if (!props.withTime && !props.dateRange && modeledValue.value) {
     pickerOpen.value = false
   }
 }
@@ -154,13 +170,13 @@ const updateModelValue = () => {
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
-    classes.push('!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800')
+    classes.push('!cursor-not-allowed bg-gray-200! dark:bg-gray-800!')
   }
   if (input.hasError.value) {
-    classes.push('!ring-red-500 !ring-2 !border-transparent')
+    classes.push('ring-red-500! ring-2! border-transparent!')
   }
   if (!props.disabled && !input.hasError.value && pickerOpen.value) {
-    classes.push('ring-2 ring-opacity-100 border-transparent')
+    classes.push('ring-2 ring-form/100 border-transparent')
   }
   return classes.join(' ')
 })
@@ -261,18 +277,3 @@ onMounted(() => {
   setInputColor()
 })
 </script>
-
-<style>
-.vc-form-color {
-  --vc-accent-50: v-bind('twColors[50]');
-  --vc-accent-100: v-bind('twColors[100]');
-  --vc-accent-200: v-bind('twColors[200]');
-  --vc-accent-300: v-bind('twColors[300]');
-  --vc-accent-400: v-bind('twColors[400]');
-  --vc-accent-500: v-bind('twColors[500]');
-  --vc-accent-600: v-bind('twColors[600]');
-  --vc-accent-700: v-bind('twColors[700]');
-  --vc-accent-800: v-bind('twColors[800]');
-  --vc-accent-900: v-bind('twColors[900]');
-}
-</style>

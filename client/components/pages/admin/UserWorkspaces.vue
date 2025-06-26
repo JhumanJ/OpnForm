@@ -8,15 +8,15 @@
       :progress="{ color: 'primary', animation: 'carousel' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
       :columns="columns"
-      :rows="rows"
+      :data="rows"
       class="-mx-6"
     >
-      <template #plan-data="{ row }">
+      <template #plan-cell="{ row }">
         <span
           class="text-xs select-all rounded-md px-2 py-1 border"
-          :class="userPlanStyles(row.plan)"
+          :class="userPlanStyles(row.original.plan)"
         >
-          {{ row.plan }}
+          {{ row.original.plan }}
         </span>
       </template>
     </UTable>
@@ -49,19 +49,19 @@ const rows = computed(() => {
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+    accessorKey: 'id',
+    header: 'ID'
 }, {
-    key: 'name',
-    label: 'Name',
+    accessorKey: 'name',
+    header: 'Name',
     sortable: true
 }, {
-    key: 'plan',
-    label: 'Plan',
+    accessorKey: 'plan',
+    header: 'Plan',
     sortable: true
 }, {
-    key: 'forms_count',
-    label: '# of forms',
+    accessorKey: 'forms_count',
+    header: '# of forms',
     sortable: true
 }]
 

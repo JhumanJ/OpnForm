@@ -4,7 +4,7 @@
     id="custom-domains"
   >
     <UButton
-      color="gray"
+      color="neutral"
       label="Custom Domains Settings"
       icon="i-heroicons-globe-alt"
       @click="showCustomDomainModal = !showCustomDomainModal"
@@ -22,7 +22,7 @@
         v-if="!workspace.is_pro"
         icon="i-heroicons-user-group-20-solid"
         class="mb-4"
-        color="orange"
+        color="warning"
         variant="subtle"
         title="Pro plan required"
       >

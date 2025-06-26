@@ -42,7 +42,7 @@
         ]"
       >
         <button
-          class="flex flex-col items-center justify-center p-1.5 transition-colors text-gray-500 focus:outline-none w-full h-full"
+          class="flex flex-col items-center justify-center p-1.5 transition-colors text-gray-500 focus:outline-hidden w-full h-full"
           :class="[
             option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {},
             {

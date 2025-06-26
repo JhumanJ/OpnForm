@@ -15,7 +15,7 @@
     </template>
     
     <div v-if="loading">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+      <Loader class="h-6 w-6 text-blue-500 mx-auto" />
     </div>
     <div v-else>
       <text-input
@@ -27,7 +27,7 @@
 
       <div
         ref="scrollContainer"
-        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md"
+        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-gray-50"
       >
         <FontCard
           v-for="(fontName, index) in enrichedFonts"
@@ -40,10 +40,11 @@
         />
       </div>
 
-      <div class="flex">
+      <div class="flex gap-2">
         <UButton
           size="md"
-          color="white"
+          color="neutral"
+          variant="outline"
           class="mr-2"
           @click="$emit('apply', null)"
         >

@@ -8,12 +8,12 @@
     </template>
 
     <div
-      class="rich-editor resize-y notranslate"
+      class="rich-editor resize-y notranslate relative"
       :class="[
         {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError && !disabled
+          'ring-red-500! ring-2! border-transparent!': hasError,
+          '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled,
+          'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
         },
         theme.RichTextAreaInput.input,
         theme.RichTextAreaInput.borderRadius,
@@ -24,6 +24,14 @@
         ...inputStyle
       }"
     >
+      <MentionDropdown
+        v-if="enableMentions && mentionState"
+        :mention-state="mentionState"
+        :mentions="mentions"
+        :content="{ position: 'bottom', align: 'start' }"
+      >
+        <span class="absolute left-4 bottom-2" />
+      </MentionDropdown>
       <QuillyEditor
         :id="id ? id : name"
         ref="editor"
@@ -58,11 +66,7 @@
       <slot name="error" />
     </template>
 
-    <MentionDropdown
-      v-if="enableMentions && mentionState"
-      :mention-state="mentionState"
-      :mentions="mentions"
-    />
+
   </InputWrapper>
 </template>
 
@@ -181,6 +185,10 @@ const charCount = computed(() => {
     border-top: 0px !important;
     border-right: 0px !important;
     border-left: 0px !important;
+  border-bottom: 1px solid var(--color-neutral-300);
+  :where(.dark) & {
+    border-bottom: 1px solid var(--color-neutral-600);
+  }
   }
 
   .ql-header {
@@ -205,7 +213,7 @@ const charCount = computed(() => {
   .ql-snow.ql-toolbar button.ql-active,
   .ql-snow.ql-toolbar button:focus,
   .ql-snow.ql-toolbar button:hover {
-    @apply text-nt-blue;
+    @apply text-blue-500;
   }
 }
 

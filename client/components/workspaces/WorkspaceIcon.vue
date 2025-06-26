@@ -3,13 +3,13 @@
     v-if="isUrl(workspace.icon)"
     :src="workspace.icon"
     :alt="`${workspace.name} icon`"
-    class="flex-shrink-0 rounded"
+          class="flex-shrink-0 rounded-sm"
     :class="size"
   >
   <div
     v-else
     :class="size"
-    class="rounded text-xs truncate bg-neutral-100 text-center flex items-center justify-center"
+          class="rounded-sm text-xs truncate bg-neutral-100 text-center flex items-center justify-center"
   >
     <p
       class="font-semibold text-neutral-500"

@@ -50,7 +50,8 @@
 
     <UButton
       v-if="copyFormOptions.length > 0"
-      color="white"
+      color="neutral"
+      variant="outline"
       class="mt-4"
       icon="i-heroicons-document-duplicate"
       @click.prevent="showCopyFormSettingsModal = true"

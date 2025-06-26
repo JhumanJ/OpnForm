@@ -1,5 +1,7 @@
 <template>
-  <input-wrapper v-bind="inputWrapperProps">
+  <input-wrapper
+    v-bind="inputWrapperProps"
+  >
     <template #label>
       <slot name="label" />
     </template>
@@ -14,9 +16,9 @@
         v-model="selectedCountryCode"
         :class="theme.PhoneInput.countrySelectWidth"
         dropdown-class="max-w-[300px]"
-        input-class="ltr-only:rounded-r-none rtl:!rounded-l-none"
+        input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
-        :disabled="disabled || countries.length === 1 ? true : null"
+        :disabled="(disabled || countries.length===1)?true:null"
         :searchable="true"
         :search-keys="['name']"
         :option-key="'code'"
@@ -28,10 +30,10 @@
         @update:model-value="onChangeCountryCode"
       >
         <template #option="props">
-          <div class="flex items-center space-x-2 max-w-full">
+          <div class="flex items-center gap-2 max-w-full">
             <country-flag
               size="normal"
-              class="!-mt-[9px] rounded"
+              class="-mt-[9px]! rounded"
               :country="props.option.code"
             />
             <span class="grow truncate">{{ props.option.name }}</span>
@@ -40,12 +42,13 @@
         </template>
         <template #selected="props">
           <div
-            class="flex items-center space-x-2 justify-center overflow-hidden"
+            class="flex items-center gap-2 justify-center overflow-hidden"
             :class="theme.PhoneInput.maxHeight"
           >
             <country-flag
-              size="normal"
-              class="!-mt-[9px] rounded"
+              :size="theme.PhoneInput.flagSize"
+              class="rounded-lg!"
+              :class="theme.PhoneInput.flag"
               :country="props.option.code"
             />
             <span class="text-sm">{{ props.option.dial_code }}</span>
@@ -56,18 +59,14 @@
         v-model="inputVal"
         type="text"
         class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
-        :disabled="disabled ? true : null"
+        :disabled="disabled?true:null"
         :class="[
           theme.PhoneInput.input,
           theme.PhoneInput.spacing.horizontal,
           theme.PhoneInput.spacing.vertical,
           theme.PhoneInput.fontSize,
           theme.PhoneInput.borderRadius,
-          {
-            '!ring-red-500 !ring-2': hasError,
-            '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-          },
-        ]"
+          { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled }]"
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"
@@ -85,40 +84,40 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import countryCodes from "~/data/country_codes.json"
-import CountryFlag from "vue-country-flag-next"
-import parsePhoneNumber from "libphonenumber-js"
+import { inputProps, useFormInput } from './useFormInput.js'
+import InputWrapper from './components/InputWrapper.vue'
+import countryCodes from '~/data/country_codes.json'
+import CountryFlag from 'vue-country-flag-next'
+import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
-  phone: "PhoneInput",
+  phone: 'PhoneInput',
   components: { InputWrapper, CountryFlag },
   props: {
     ...inputProps,
     canOnlyCountry: { type: Boolean, default: false },
-    unavailableCountries: { type: Array, default: () => [] },
+    unavailableCountries: { type: Array, default: () => [] }
   },
 
-  setup(props, context) {
+  setup (props, context) {
     return {
-      ...useFormInput(props, context),
+      ...useFormInput(props, context)
     }
   },
 
-  data() {
+  data () {
     return {
       selectedCountryCode: null,
-      inputVal: null,
+      inputVal: null
     }
   },
 
   computed: {
-    countries() {
+    countries () {
       return countryCodes.filter((item) => {
         return !this.unavailableCountries.includes(item.code)
       })
-    },
+    }
   },
 
   watch: {
@@ -126,39 +125,27 @@ export default {
       handler(val) {
         if (!this.selectedCountryCode) return
         
-        if (val && val.startsWith("0")) {
+        if (val && val.startsWith('0')) {
           val = val.substring(1)
         }
         if (this.canOnlyCountry) {
-          this.compVal = val
-            ? this.selectedCountryCode.code +
-              this.selectedCountryCode.dial_code +
-              val
-            : this.selectedCountryCode.code +
-              this.selectedCountryCode.dial_code
+          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : this.selectedCountryCode.code + this.selectedCountryCode.dial_code
         } else {
-          this.compVal = val
-            ? this.selectedCountryCode.code +
-              this.selectedCountryCode.dial_code +
-              val
-            : null
+          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : null
         }
-      },
-    },
-    compVal() {
-      this.initState()
-    },
-    selectedCountryCode(newVal, oldVal) {
-      if (this.compVal && newVal && oldVal) {
-        this.compVal = this.compVal.replace(
-          oldVal.code + oldVal.dial_code,
-          newVal.code + newVal.dial_code,
-        )
       }
     },
+    compVal () {
+      this.initState()
+    },
+    selectedCountryCode (newVal, oldVal) {
+      if (this.compVal && newVal && oldVal) {
+        this.compVal = this.compVal.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
+      }
+    }
   },
 
-  mounted() {
+  mounted () {
     if (this.compVal) {
       this.initState()
     }
@@ -171,51 +158,40 @@ export default {
   },
 
   methods: {
-    getCountryBy(code = "US", type = "code") {
-      if (!code) code = "US" // Default US
-      return (
-        this.countries.find((item) => {
-          return item[type] === code
-        }) ?? null
-      )
+    getCountryBy (code = 'US', type = 'code') {
+      if (!code) code = 'US' // Default US
+      return this.countries.find((item) => {
+        return item[type] === code
+      }) ?? null
     },
-    onInput(event) {
-      this.inputVal = event?.target?.value.replace(/[^0-9]/g, "")
+    onInput (event) {
+      this.inputVal = event?.target?.value.replace(/[^0-9]/g, '')
+
     },
-    onChangeCountryCode() {
+    onChangeCountryCode () {
       if (!this.selectedCountryCode && this.countries.length > 0) {
         this.selectedCountryCode = this.countries[0]
       }
-      if (
-        this.canOnlyCountry &&
-        (this.inputVal === null || this.inputVal === "" || !this.inputVal)
-      ) {
-        this.compVal =
-          this.selectedCountryCode.code + this.selectedCountryCode.dial_code
+      if (this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)) {
+        this.compVal = this.selectedCountryCode.code + this.selectedCountryCode.dial_code
       }
     },
-    initState() {
+    initState () {
       if (this.compVal === null) {
         return
       }
-      if (!this.compVal?.startsWith("+")) {
-        this.selectedCountryCode = this.getCountryBy(
-          this.compVal.substring(2, 0),
-        )
+      if (!this.compVal?.startsWith('+')) {
+        this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
       }
 
       const phoneObj = parsePhoneNumber(this.compVal)
       if (phoneObj !== undefined && phoneObj) {
-        if (
-          !this.selectedCountryCode &&
-          phoneObj.country !== undefined &&
-          phoneObj.country
-        ) {
+        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
           this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
         this.inputVal = phoneObj.nationalNumber
       }
-    },
-  },
+    }
+  }
 }
 </script>

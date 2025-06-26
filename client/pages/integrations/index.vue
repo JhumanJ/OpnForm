@@ -23,7 +23,7 @@
             <div
               v-for="integration in integrationsList"
               :key="integration.title"
-              class="relative rounded-2xl bg-gray-50 p-6 shadow border border-gray-200 hover:shadow-lg transition-all duration-300 hover:bg-white"
+              class="relative rounded-2xl bg-gray-50 p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 hover:bg-white"
             >
               <a
                 :href="`/integrations/${integration.slug}`"
@@ -31,7 +31,7 @@
               />
               <div
                 v-if="integration.popular"
-                class="absolute -top-2 -left-3 -rotate-12 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow"
+                class="absolute -top-2 -left-3 -rotate-12 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-sm shadow-sm"
               >
                 Most Popular
               </div>
@@ -118,7 +118,7 @@
           </p>
           <a
             href="#"
-            class="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition"
+                            class="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-sm hover:bg-blue-600 transition"
             @click.prevent="crisp.openHelpdesk()"
           >
             Help Center
@@ -131,26 +131,26 @@
         </div>
         <div class="hidden lg:grid grid-cols-2 gap-4">
           <div class="space-y-4">
-            <div class="bg-white p-4 rounded-2xl shadow w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded" />
+            <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
+              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
               <div class="bg-gray-200 w-full h-6 rounded-full" />
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded" />
+            <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
+              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
               <div class="bg-gray-200 w-full h-6 rounded-full" />
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded" />
+            <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
+              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
               <div class="bg-gray-200 w-full h-6 rounded-full" />
             </div>
           </div>
           <div class="space-y-4 pt-8">
-            <div class="bg-white p-4 rounded-2xl shadow w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded" />
+            <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
+              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
               <div class="bg-gray-200 w-full h-6 rounded-full" />
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded" />
+            <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
+              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
               <div class="bg-gray-200 w-full h-6 rounded-full" />
             </div>
           </div>

@@ -1,13 +1,15 @@
 <template>
   <div
-    class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-2 overflow-hidden"
+    class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light rounded-md p-2 overflow-hidden"
   >
     <div class="flex items-center w-full gap-2">
-      <p class="select-all text-nt-blue flex-grow truncate overflow-hidden">
+      <p class="select-all text-blue-500 flex-grow truncate overflow-hidden">
         <a
           v-if="link"
           :href="share_url"
           target="_blank"
+          rel="noopener"
+          class="text-blue-500 hover:underline"
         >
           {{ share_url }}
         </a>
@@ -26,45 +28,45 @@
   </div>
 </template>
   
-  <script setup>
-  import { computed, defineProps } from 'vue'
-  
-  const props = defineProps({
-    form: {
-      type: Object,
-      required: true,
-    },
-    link: {
-      type: Boolean,
-      default: false,
-    },
-    extraQueryParam: {
-      type: String,
-      default: '',
-    },
-  })
-  
-  const { copy } = useClipboard()
-  
-  const share_url = computed(() => {
-    if (props.extraQueryParam) {
-        return `${props.form.share_url}?${props.extraQueryParam}`
-    }
-    return props.form.share_url
-  })
-  
-  function copyToClipboard() {
-    if (import.meta.server)
-      return
-    copy(share_url.value)
-    if (props.form.visibility == 'draft') {
-      useAlert().warning(
-        'Copied! But other people won\'t be able to see the form since it\'s currently in draft mode',
-      )
-    }
-    else {
-      useAlert().success('Copied!')
-    }
+<script setup>
+import { computed, defineProps } from 'vue'
+
+const props = defineProps({
+  form: {
+    type: Object,
+    required: true,
+  },
+  link: {
+    type: Boolean,
+    default: false,
+  },
+  extraQueryParam: {
+    type: String,
+    default: '',
+  },
+})
+
+const { copy } = useClipboard()
+
+const share_url = computed(() => {
+  if (props.extraQueryParam) {
+      return `${props.form.share_url}?${props.extraQueryParam}`
   }
-  </script>
+  return props.form.share_url
+})
+
+function copyToClipboard() {
+  if (import.meta.server)
+    return
+  copy(share_url.value)
+  if (props.form.visibility == 'draft') {
+    useAlert().warning(
+      'Copied! But other people won\'t be able to see the form since it\'s currently in draft mode',
+    )
+  }
+  else {
+    useAlert().success('Copied!')
+  }
+}
+</script>
   

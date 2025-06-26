@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\AcceptsJsonMiddleware;
 use App\Http\Middleware\AuthenticateJWT;
+use App\Http\Middleware\AuthenticateWithJwtOrSanctum;
 use App\Http\Middleware\CustomDomainRestriction;
 use App\Http\Middleware\DevCorsMiddleware;
 use App\Http\Middleware\ImpersonationMiddleware;
@@ -11,6 +12,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsModerator;
 use App\Http\Middleware\IsNotSubscribed;
 use App\Http\Middleware\IsSubscribed;
+use App\Http\Middleware\RequireProPlan;
 use App\Http\Middleware\SelfHostedCredentialsMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -39,6 +41,30 @@ class Kernel extends HttpKernel
     ];
 
     /**
+     * The priority-sorted list of middleware.
+     *
+     * Forces non-global middleware to always be in the given order.
+     *
+     * @var string[]
+     */
+    protected $middlewarePriority = [
+        \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        AuthenticateJWT::class,
+        AuthenticateWithJwtOrSanctum::class,
+        \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
+        \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
+    ];
+
+
+    /**
      * The application's route middleware groups.
      *
      * @var array
@@ -60,9 +86,9 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:100,1',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             SelfHostedCredentialsMiddleware::class,
             ImpersonationMiddleware::class,
         ],
@@ -87,6 +113,7 @@ class Kernel extends HttpKernel
         'moderator' => IsModerator::class,
         'subscribed' => IsSubscribed::class,
         'not-subscribed' => IsNotSubscribed::class,
+        'require-pro' => RequireProPlan::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
@@ -100,5 +127,6 @@ class Kernel extends HttpKernel
 
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        'auth.multi' => \App\Http\Middleware\AuthenticateWithJwtOrSanctum::class,
     ];
 }

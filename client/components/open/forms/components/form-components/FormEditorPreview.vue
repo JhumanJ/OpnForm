@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-    class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm"
+            class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
@@ -15,7 +15,7 @@
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-xs transition-all flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
@@ -29,7 +29,8 @@
         <UButton
           v-if="previewFormSubmitted"
           icon="i-heroicons-arrow-path-rounded-square"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="xs"
           @click="restartForm"
         >
@@ -39,7 +40,8 @@
           <UButton
             v-track.form_editor_toggle_expand="{toggle: !isExpanded}"
             :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
-            color="white"
+            color="neutral"
+            variant="outline"
             size="xs"
             @click="toggleExpand"
           />
@@ -84,7 +86,7 @@
         </transition>
         <div v-if="recordLoading">
           <p class="text-center p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <loader class="h-6 w-6 text-blue-500 mx-auto" />
           </p>
         </div>
         <open-complete-form

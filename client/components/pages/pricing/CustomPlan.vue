@@ -164,7 +164,7 @@
               </p>
               <div class="flex justify-center">
                 <button 
-                  class="v-btn py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg flex items-center hover:no-underline"
+                  class="v-btn py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200               text-center text-base font-medium focus:outline-hidden focus:ring-2 focus:ring-offset-2 rounded-lg flex items-center hover:no-underline"
                   @click="customPlanClick"
                 >
                   <span class="no-underline mx-auto">Contact Us</span>

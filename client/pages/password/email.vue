@@ -9,9 +9,12 @@
           @submit.prevent="send"
           @keydown="form.onKeydown($event)"
         >
-          <alert-success
-            :form="form"
-            :message="status"
+          <UAlert
+            v-if="status"
+            color="success"
+            variant="subtle"
+            :description="status"
+            icon="i-heroicons-check-circle"
             class="mb-4"
           />
 

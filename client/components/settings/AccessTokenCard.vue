@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center"
+    class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4 relative flex items-center"
   >
     <div class="flex-grow flex items-center">
       <div>

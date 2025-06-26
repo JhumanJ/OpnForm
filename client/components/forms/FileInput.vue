@@ -35,7 +35,7 @@
         theme.fileInput.fontSize,
         theme.fileInput.minHeight,
         {'border-red-500 border-2':hasError},
-        'focus:outline-none focus:ring-2'
+        'focus:outline-hidden focus:ring-2'
       ]"
       tabindex="0"
       role="button"
@@ -112,7 +112,8 @@
           v-if="cameraUpload"
           icon="i-heroicons-camera"
           :loading="loading"
-          color="white"
+          color="neutral"
+          variant="outline"
           class="px-2"
           @click.stop="openWebcam"
         />

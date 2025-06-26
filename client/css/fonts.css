@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'GeneralSans-Variable';
+  src: url('/fonts/general-sans/GeneralSans-Variable.woff2') format('woff2'),
+  url('/fonts/general-sans/GeneralSans-Variable.woff') format('woff'),
+  url('/fonts/general-sans/GeneralSans-Variable.ttf') format('truetype');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* Add GeneralSans alias */
+@font-face {
+  font-family: 'GeneralSans';
+  src: url('/fonts/general-sans/GeneralSans-Variable.woff2') format('woff2'),
+  url('/fonts/general-sans/GeneralSans-Variable.woff') format('woff'),
+  url('/fonts/general-sans/GeneralSans-Variable.ttf') format('truetype');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+} 

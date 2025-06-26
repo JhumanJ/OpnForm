@@ -17,7 +17,7 @@
             class="relative max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:flex-auto lg:py-16 lg:text-left"
           >
             <span
-              class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-blue-200 ring-1 text-blue-600 px-2.5 py-1.5 rounded-full"
+              class="bg-white text-xs font-semibold inline-flex items-center shadow-xs ring-blue-200 ring-3 text-blue-600 px-2.5 py-1.5 rounded-full"
             >
               <svg
                 aria-hidden="true"

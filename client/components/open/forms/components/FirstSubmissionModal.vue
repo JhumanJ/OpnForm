@@ -2,7 +2,7 @@
   <modal
     :show="show"
     compact-header
-    :backdrop-blur="true"
+          :backdrop-blur="true"
     @close="$emit('close')"
   >
     <template #title>
@@ -29,7 +29,8 @@
           Check your submissions:
         </p>
         <UButton
-          color="white"
+          color="neutral"
+          variant="outline"
           icon="i-heroicons-document"
           target="_blank"
           @click="trackOpenDbClick"
@@ -46,7 +47,7 @@
           v-for="(item, i) in helpLinks"
           :key="i"
           role="button"
-          class="bg-white shadow border border-gray-200 rounded-lg p-4 pb-2 items-center justify-center flex flex-col relative hover:bg-gray-50 dark:hover:bg-gray-800 group transition-colors"
+          class="bg-white shadow-sm border border-gray-200 rounded-lg p-4 pb-2 items-center justify-center flex flex-col relative hover:bg-gray-50 dark:hover:bg-gray-800 group transition-colors"
           @click="item.action"
         >
           <div class="flex justify-center">

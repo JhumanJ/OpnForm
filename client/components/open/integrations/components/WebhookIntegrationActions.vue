@@ -6,7 +6,7 @@
     >
       <UBadge
         :label="integration.data.webhook_url"
-        color="gray"
+        color="neutral"
         size="xs"
         class="max-w-[300px] block truncate"
       />

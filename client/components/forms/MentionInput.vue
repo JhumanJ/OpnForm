@@ -4,11 +4,6 @@
       <slot name="label" />
     </template>
 
-    <MentionDropdown
-      :mention-state="mentionState"
-      :mentions="mentions"
-    />
-
     <div class="relative">
       <div
         ref="editableDiv"
@@ -30,13 +25,19 @@
         :placeholder="placeholder"
         @input="onInput"
       />
-      <UButton
-        type="button"
-        color="white"
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 px-2"
-        icon="i-heroicons-at-symbol-16-solid"
-        @click="openMentionDropdown"
-      />
+      <MentionDropdown
+        :mention-state="mentionState"
+        :mentions="mentions"
+      >
+        <UButton
+          type="button"
+          color="neutral"
+          variant="outline"
+          class="absolute right-1 top-1/2 transform -translate-y-1/2 p-1 px-2"
+          icon="i-heroicons-at-symbol-16-solid"
+          @click="openMentionDropdown"
+        />
+      </MentionDropdown>
     </div>
 
     <template
@@ -200,23 +201,5 @@ defineExpose({
 .mention-input:empty::before {
   content: attr(placeholder);
   color: #9ca3af;
-}
-
-.mention-input span[mention] {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  background-color: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
-  border-radius: 0.25rem;
-  padding: 0 0.25rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  position: relative;
-  vertical-align: baseline;
 }
 </style>

@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <UButton
           size="sm"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-x-mark-20-solid"
           variant="ghost"
           @click="closeSidebar"

@@ -6,7 +6,7 @@
     >
       <UBadge
         :label="mentionAsText(integration.data.message)"
-        color="gray"
+        color="neutral"
         size="xs"
         class="max-w-[300px] block truncate"
       />

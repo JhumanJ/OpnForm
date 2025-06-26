@@ -16,10 +16,11 @@
     <UTabs
       id="form-editor-navbar-tabs"
       v-model="activeTab"
+      :content="false"
       :items="[
-        { label: 'Build' },
-        { label: 'Design'},
-        { label: 'Settings'}
+        { label: 'Build', value: 'build' },
+        { label: 'Design', value: 'design'},
+        { label: 'Settings', value: 'settings' }
       ]"
     />
 
@@ -32,14 +33,14 @@
       />
       <UBadge
         v-if="form.visibility == 'draft'"
-        color="yellow"
+        color="warning"
         variant="soft"
         icon="i-heroicons-pencil-square"
         label="Draft"
       />
       <UBadge
         v-else-if="form.visibility == 'closed'"
-        color="gray"
+        color="neutral"
         variant="soft"
         icon="i-heroicons-lock-closed-20-solid"
         label="Closed"
@@ -70,9 +71,9 @@
       </UTooltip>
       <slot name="before-save" />
       <UTooltip :popper="{ placement: 'left' }">
-        <template #text>
+        <template #content>
           <UKbd
-            :value="metaSymbol"
+            value="meta"
             size="xs"
           />
           <UKbd
@@ -138,7 +139,6 @@ defineProps({
 
 const emit = defineEmits(['go-back', 'save-form'])
 
-const { metaSymbol } = useShortcuts()
 defineShortcuts({
   meta_s: {
     handler: () => emit('save-form')

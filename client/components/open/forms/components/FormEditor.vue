@@ -16,14 +16,15 @@
     >
       <Icon
         name="heroicons:exclamation-circle"
-        class="w-10 h-10 text-nt-blue-dark"
+        class="w-10 h-10 text-blue-800"
       />
-      <div class="p-5 text-nt-blue-dark text-center">
+      <div class="p-5 text-blue-800 text-center">
         OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
       </div>
       <div>
         <UButton
-          color="white"
+          color="neutral"
+          variant="outline"
           size="lg"
           class="w-full"
           :to="{ name: 'home' }"
@@ -47,7 +48,7 @@
 
     <FormEditorErrorHandler>
       <div
-        v-show="activeTab !== 2"
+        v-show="activeTab !== 'settings'"
         class="w-full flex grow overflow-y-scroll relative bg-white"
       >
         <div
@@ -58,12 +59,12 @@
             @submit.prevent=""
           >
             <div
-              v-show="activeTab === 0"
+              v-show="activeTab === 'build'"
             >
               <FormFieldsEditor />
             </div>
             <div
-              v-show="activeTab === 1"
+              v-show="activeTab === 'design'"
             >
               <FormCustomization />
             </div>
@@ -76,7 +77,7 @@
       </div>
     </FormEditorErrorHandler>
 
-    <FormSettings v-show="activeTab === 2" />
+    <FormSettings v-show="activeTab === 'settings'" />
 
     <!-- Form Error Modal -->
     <FormErrorModal
@@ -205,7 +206,7 @@ export default {
 
   mounted() {
     this.$emit("mounted")
-    this.workingFormStore.activeTab = 0
+    this.workingFormStore.activeTab = 'build'
     useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
     if (!this.isEdit) {

@@ -68,19 +68,19 @@
         </p>
 
         <div
-          class="border border-nt-blue-light bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
+          class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
         >
           <div class="flex items-center">
-            <p class="select-all text-nt-blue flex-grow break-all">
+            <p class="select-all text-blue-500 flex-grow break-all">
               {{ embedPopupCode }}
             </p>
             <div
-              class="hover:bg-nt-blue-lighter rounded transition-colors cursor-pointer"
+              class="hover:bg-blue-100 rounded-sm transition-colors cursor-pointer"
               @click="copyToClipboard"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-nt-blue"
+                class="h-6 w-6 text-blue-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
