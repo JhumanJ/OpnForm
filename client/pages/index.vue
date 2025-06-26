@@ -15,8 +15,7 @@
         class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72"
       >
         <div class="flex justify-center mb-5">
-          <div
-                            class="relative flex items-center shadow-xs bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring-3 ring-gray-900/10 hover:ring-gray-900/20"
+          <div class="relative flex items-center shadow-xs bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring ring-gray-900/10 hover:ring-gray-900/20"
           >
             <span class="font-semibold text-gray-500">We're Open-Source</span><span
               class="h-4 w-px bg-gray-900/10"

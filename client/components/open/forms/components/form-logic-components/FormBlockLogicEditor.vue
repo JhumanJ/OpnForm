@@ -10,6 +10,7 @@
       <UButtonGroup size="xs">
         <UButton
           color="neutral"
+          variant="subtle"
           icon="i-heroicons-arrow-down-on-square"
           @click="showCopyFormModal = true"
         >
@@ -17,6 +18,7 @@
         </UButton>
         <UButton
           color="neutral"
+          variant="subtle"
           icon="i-heroicons-arrow-up-on-square"
           @click="showCopyToModal = true"
         >
@@ -24,6 +26,7 @@
         </UButton>
         <UButton
           color="neutral"
+          variant="subtle"
           icon="i-mdi-clear-outline"
           @click="clearAll"
         >

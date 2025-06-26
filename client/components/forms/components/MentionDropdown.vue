@@ -58,6 +58,7 @@
           <UButton
             size="sm"
             color="neutral"
+            variant="outline"
             @click="cancel"
           >
             Cancel
