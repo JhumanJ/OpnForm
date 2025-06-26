@@ -13,6 +13,12 @@ export const useAppStore = defineStore("app", {
     quickLoginModal: false,
     quickRegisterModal: false,
     
+    // User Settings Modal
+    userSettingsModal: {
+      open: false,
+      activeTab: 'account' // Default to first tab instead of null
+    },
+    
     // App Loader
     loader: {
       percent: 0,
@@ -85,6 +91,19 @@ export const useAppStore = defineStore("app", {
           }
         }, 100),
       )
+    },
+    
+    // User Settings Modal methods
+    openUserSettingsModal(activeTab = 'account') {
+      this.userSettingsModal.open = true
+      this.userSettingsModal.activeTab = activeTab
+    },
+    closeUserSettingsModal() {
+      this.userSettingsModal.open = false
+      this.userSettingsModal.activeTab = 'account' // Reset to default
+    },
+    setUserSettingsActiveTab(activeTab) {
+      this.userSettingsModal.activeTab = activeTab
     },
   },
 })

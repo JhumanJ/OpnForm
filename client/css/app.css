@@ -154,7 +154,7 @@
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+        border-color: var(--color-neutral-200, currentColor);
     }
 
     button:not(:disabled),
@@ -174,17 +174,16 @@
     #app {
         font-family: Inter, sans-serif !important;
         min-height: 100vh;
+        color: var(--color-neutral-800);
+    }
+
+    :where(.dark) #app {
+        color: white;
     }
 
     p,
     div {
-        color: var(--color-neutral-800);
         text-align: inherit;
-    }
-
-    :where(.dark) p,
-    :where(.dark) div {
-        color: white;
     }
 
     h1,
@@ -326,7 +325,7 @@ body.dark * {
 @layer base {
     p,
     div {
-        @apply text-neutral-800 dark:text-white text-inherit;
+        @apply text-inherit;
     }
 
     h1,

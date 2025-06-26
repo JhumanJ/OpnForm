@@ -14,16 +14,21 @@
         <feature-base />
         <SubscriptionModal />
         <QuickRegister />
+        <UserSettingsModal 
+          v-model="appStore.userSettingsModal.open"
+          v-model:activeTab="appStore.userSettingsModal.activeTab"
+          @close="appStore.closeUserSettingsModal"
+        />
       </ClientOnly>
     </div>
   </UApp>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue"
+import { computed, onMounted } from "vue"
 import { useAppStore } from "~/stores/app"
-import { useRouter, useRoute } from "vue-router"
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
+import UserSettingsModal from "~/components/users/settings/UserSettingsModal.vue"
 
 const config = useRuntimeConfig()
 const appStore = useAppStore()

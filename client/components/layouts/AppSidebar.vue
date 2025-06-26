@@ -54,7 +54,7 @@
         <!-- Section Title (if exists) -->
         <h3 
           v-if="section.name"
-          class="text-xs font-medium text-gray-400 tracking-wider mb-2 px-3"
+          class="text-xs font-medium text-neutral-400 tracking-wider mb-2 px-3"
         >
           {{ section.name }}
         </h3>
@@ -167,7 +167,7 @@ const navigationSections = computed(() => [
         active: isActiveRoute('forms-create'),
       }),
       createNavItem({
-        label: 'Dashboard', 
+        label: 'Home', 
         icon: 'heroicons:home',
         to: { name: 'home' },
         active: isActiveRoute('home')
