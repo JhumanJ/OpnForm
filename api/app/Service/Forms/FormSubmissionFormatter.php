@@ -239,12 +239,16 @@ class FormSubmissionFormatter
             } elseif (in_array($field['type'], ['files', 'signature'])) {
                 if ($this->outputStringsOnly) {
                     $formId = $this->form->id;
-                    $field['value'] = implode(
-                        ', ',
-                        collect($data[$field['id']])->map(function ($file) use ($formId) {
-                            return $this->getFileUrl($formId, $file);
-                        })->toArray()
-                    );
+                    $files = collect($data[$field['id']])->map(function ($file) use ($formId) {
+                        return $this->getFileUrl($formId, $file);
+                    })->toArray();
+                    if ($this->createLinks) {
+                        $field['value'] = implode(', ', collect($files)->map(function ($file) {
+                            return '<a href="' . $file . '">' . $file . '</a>';
+                        })->toArray());
+                    } else {
+                        $field['value'] = implode(', ', $files);
+                    }
                     $field['email_data'] = collect($data[$field['id']])->map(function ($file) use ($formId) {
                         $splitText = explode('.', $file);
 
