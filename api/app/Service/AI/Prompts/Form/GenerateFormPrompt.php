@@ -6,9 +6,9 @@ use App\Service\AI\Prompts\Prompt;
 
 class GenerateFormPrompt extends Prompt
 {
-    protected float $temperature = 0.81;
+    protected ?float $temperature = null;
 
-    protected int $maxTokens = 3000;
+    protected ?int $maxTokens = null;
 
     protected string $model = 'o4-mini';
 

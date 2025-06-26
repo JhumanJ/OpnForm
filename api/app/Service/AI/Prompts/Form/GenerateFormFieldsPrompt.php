@@ -6,9 +6,9 @@ use App\Service\AI\Prompts\Prompt;
 
 class GenerateFormFieldsPrompt extends Prompt
 {
-    protected float $temperature = 0.81;
+    protected ?float $temperature = null;
 
-    protected int $maxTokens = 3000;
+    protected ?int $maxTokens = null;
 
     protected string $model = 'o4-mini';
 
@@ -107,7 +107,7 @@ class GenerateFormFieldsPrompt extends Prompt
                 'description' => 'Array of form fields and elements',
                 'items' => [
                     'anyOf' => [
-                        ['$ref' => '#/definitions/titleProperty'],
+                        ['$ref' => '#/definitions/textProperty'],
                         ['$ref' => '#/definitions/richTextProperty'],
                         ['$ref' => '#/definitions/dateProperty'],
                         ['$ref' => '#/definitions/urlProperty'],

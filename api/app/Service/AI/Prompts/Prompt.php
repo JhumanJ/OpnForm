@@ -13,9 +13,9 @@ abstract class Prompt
 
     protected ?array $jsonSchema = null;
 
-    protected float $temperature = 0.7;
+    protected ?float $temperature = 0.7;
 
-    protected int $maxTokens = 4096;
+    protected ?int $maxTokens = 4096;
 
     protected string $model = 'gpt-4.1';
 
