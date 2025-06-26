@@ -23,6 +23,12 @@ export default defineAppConfig({
             defaultVariant: 'subtle',
         },
 
+        button: {
+            slots: {
+                base: 'hover:no-underline'
+            }
+        },
+
         icons: {
             arrowLeft: 'i-heroicons-arrow-left',
             arrowRight: 'i-heroicons-arrow-right', 

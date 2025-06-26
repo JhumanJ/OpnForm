@@ -227,6 +227,7 @@ import {refDebounced} from "@vueuse/core"
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
+  layout: "dashboard",
 })
 
 useOpnSeoMeta({

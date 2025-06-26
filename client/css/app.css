@@ -172,7 +172,7 @@
     }
 
     #app {
-        font-family: GeneralSans, sans-serif !important;
+        font-family: Inter, sans-serif !important;
         min-height: 100vh;
     }
 
@@ -323,7 +323,7 @@ body.dark * {
 }
 
 #app {
-    font-family: GeneralSans, sans-serif !important;
+    font-family: Inter, sans-serif !important;
     @apply min-h-screen;
 }
 
