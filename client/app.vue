@@ -20,9 +20,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue"
+import { computed, onMounted } from "vue"
 import { useAppStore } from "~/stores/app"
-import { useRouter, useRoute } from "vue-router"
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
 
 const config = useRuntimeConfig()
