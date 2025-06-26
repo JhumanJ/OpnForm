@@ -9,16 +9,16 @@
       :progress="{ color: 'primary', animation: 'carousel' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
       :columns="columns"
-      :rows="rows"
+      :data="rows"
       class="-mx-6"
     >
-      <template #actions-data="{ row }">
+      <template #actions-cell="{ row }">
         <VButton
           :loading="restoringForm"
           native-type="button"
           size="small"
           color="white"
-          @click.prevent="restoreForm(row.slug)"
+          @click.prevent="restoreForm(row.original.slug)"
         >
           Restore
         </VButton>
@@ -87,27 +87,27 @@ const restoreForm = (slug) => {
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+    accessorKey: 'id',
+    header: 'ID'
 }, {
-    key: 'slug',
-    label: 'Slug',
+    accessorKey: 'slug',
+    header: 'Slug',
     sortable: true
 }, {
-    key: 'title',
-    label: 'Title',
+    accessorKey: 'title',
+    header: 'Title',
     sortable: true
 }, {
-    key: 'created_by',
-    label: 'Created by',
+    accessorKey: 'created_by',
+    header: 'Created by',
     sortable: true
 }, {
-    key: 'deleted_at',
-    label: 'Deleted at',
+    accessorKey: 'deleted_at',
+    header: 'Deleted at',
     sortable: true,
 }, {
-    key: 'actions',
-    label: 'Restore',
+    id: 'actions',
+    header: 'Restore',
     sortable: false,
 }]
 
