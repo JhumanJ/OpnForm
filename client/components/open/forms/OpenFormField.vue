@@ -190,6 +190,9 @@ const getFieldComponents = computed(() => {
   if (field.type === 'text' && field.multi_lines) {
     return 'TextAreaInput'
   }
+  if (field.type === 'text' && field.input_mask) {
+    return 'MaskInput'
+  }
   if (field.type === 'url' && field.file_upload) {
     return 'FileInput'
   }
@@ -318,6 +321,9 @@ function inputProperties(field) {
     locale: (form.value?.language) ? form.value.language : 'en'
   }
 
+  if(field.type === 'text' && field.input_mask) {
+    inputProperties.mask = field.input_mask
+  }
 
   if (field.type === 'matrix') {
     inputProperties.rows = field.rows
