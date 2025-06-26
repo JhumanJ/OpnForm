@@ -1,7 +1,8 @@
 <template>
   <UButton
     size="sm"
-    color="white"
+    color="neutral"
+    variant="outline"
     icon="i-heroicons-key-16-solid"
     :loading="loading"
     @click="resetPassword"

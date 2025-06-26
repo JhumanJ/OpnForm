@@ -91,7 +91,8 @@
         </UButton>
         <UButton
           class="mt-3 ml-2"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="sm"
           :loading="emailSettingsLoading"
           :disabled="!workspace.is_pro"

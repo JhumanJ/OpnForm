@@ -52,14 +52,16 @@
             />
             <UButton
               size="sm"
-              color="white"
+              color="neutral"
+              variant="outline"
               icon="heroicons:adjustments-horizontal"
               label="Edit columns"
               @click="showColumnsModal=true"
             />
             <UButton
               size="sm"
-              color="white"
+              color="neutral"
+              variant="outline"
               icon="heroicons:arrow-down-tray"
               label="Export"
               :loading="exportLoading"

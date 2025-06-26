@@ -23,7 +23,8 @@
       </div>
       <div>
         <UButton
-          color="white"
+          color="neutral"
+          variant="outline"
           size="lg"
           class="w-full"
           :to="{ name: 'home' }"

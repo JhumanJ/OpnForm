@@ -7,7 +7,7 @@ export default defineAppConfig({
             error: 'red',
             warning: 'amber',
             info: 'blue',
-            neutral: 'gray',
+            neutral: 'neutral',
             form: 'form'
         },
         

@@ -29,7 +29,8 @@
           Check your submissions:
         </p>
         <UButton
-          color="white"
+          color="neutral"
+          variant="outline"
           icon="i-heroicons-document"
           target="_blank"
           @click="trackOpenDbClick"

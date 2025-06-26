@@ -58,8 +58,8 @@
     <UBadge
       v-for="tag in form.tags"
       :key="tag"
-      color="white"
-      variant="solid"
+      color="neutral"
+      variant="outline"
       class="capitalize"
       :size="size"
     >

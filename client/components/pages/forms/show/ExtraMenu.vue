@@ -11,7 +11,8 @@
       :items="items"
     >
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
       />

@@ -45,7 +45,8 @@
         </h2>
         <UButton
           to="/register"
-          color="white"
+          color="neutral"
+          variant="outline"
           class="hover:no-underline"
           icon="i-heroicons-arrow-right"
           trailing

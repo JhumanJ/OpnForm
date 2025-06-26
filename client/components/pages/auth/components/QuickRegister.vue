@@ -51,8 +51,8 @@
           <UButton
             icon="i-heroicons-arrow-right-on-rectangle"
             type="button"
-            variant="solid"
-            color="white"
+            color="neutral"
+            variant="outline"
             label="Logout"
             :block="true"
             size="lg"

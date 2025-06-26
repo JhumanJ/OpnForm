@@ -29,7 +29,8 @@
         <UButton
           v-if="previewFormSubmitted"
           icon="i-heroicons-arrow-path-rounded-square"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="xs"
           @click="restartForm"
         >
@@ -39,7 +40,8 @@
           <UButton
             v-track.form_editor_toggle_expand="{toggle: !isExpanded}"
             :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
-            color="white"
+            color="neutral"
+            variant="outline"
             size="xs"
             @click="toggleExpand"
           />
