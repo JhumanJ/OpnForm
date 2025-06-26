@@ -12,6 +12,7 @@
         'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
       }]"
     @click="setFieldAsSelected"
+    @dblclick="fieldDoubleClick"
   >
     <div
       class="-m-[1px] w-full max-w-full mx-auto"
@@ -90,6 +91,7 @@
           class="nf-text w-full my-1.5 break-words whitespace-break-spaces"
           :class="[getFieldAlignClasses(field)]"
           v-html="field.content"
+          @dblclick="editFieldOptions"
         />
         <div
           v-if="field.type === 'nf-code' && field.content"
@@ -258,6 +260,11 @@ function editFieldOptions() {
 
 function setFieldAsSelected() {
   if (!isAdminPreview.value || !workingFormStore.showEditFieldSidebar) return
+  workingFormStore.openSettingsForField(props.field)
+}
+
+function fieldDoubleClick() {
+  if (!isAdminPreview.value) return
   workingFormStore.openSettingsForField(props.field)
 }
 

@@ -165,7 +165,8 @@
     <div class="flex gap-2 mt-4">
       <UButton
         v-if="users.length > 1"
-        color="gray"
+        color="neutral"
+        variant="subtle"
         icon="i-heroicons-arrow-left-start-on-rectangle-20-solid"
         :loading="leaveWorkspaceLoadingState"
         @click="leaveWorkSpace(workspace.id)"
@@ -177,6 +178,7 @@
         v-if="isWorkspaceAdmin && users.length == 1"
         icon="i-heroicons-trash"
         color="neutral"
+        variant="subtle"
         :loading="loading"
         @click="deleteWorkspace(workspace.id)"
       >

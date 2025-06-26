@@ -30,7 +30,7 @@
         @update:model-value="onChangeCountryCode"
       >
         <template #option="props">
-          <div class="flex items-center space-x-2 max-w-full">
+          <div class="flex items-center gap-2 max-w-full">
             <country-flag
               size="normal"
               class="-mt-[9px]! rounded"
@@ -42,7 +42,7 @@
         </template>
         <template #selected="props">
           <div
-            class="flex items-center space-x-2 justify-center overflow-hidden"
+            class="flex items-center gap-2 justify-center overflow-hidden"
             :class="theme.PhoneInput.maxHeight"
           >
             <country-flag
