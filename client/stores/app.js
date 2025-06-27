@@ -100,7 +100,7 @@ export const useAppStore = defineStore("app", {
     },
     closeUserSettingsModal() {
       this.userSettingsModal.open = false
-      this.userSettingsModal.activeTab = 'account' // Reset to default
+      // Don't reset activeTab immediately - let the modal component handle it
     },
     setUserSettingsActiveTab(activeTab) {
       this.userSettingsModal.activeTab = activeTab

@@ -70,6 +70,7 @@
       </div>
 
       <UTable 
+        v-if="tokens.length > 0"
         v-model:column-pinning="columnPinning"
         :data="tokens" 
         :columns="tableColumns"
@@ -216,9 +217,7 @@ const deleteToken = (token) => {
   })
 }
 
-onBeforeMount(() => {
-  if (user.value.is_pro) {
-    accessTokenStore.fetchTokens()
-  }
-})
+if (user.value.is_pro) {
+  await accessTokenStore.fetchTokens()
+}
 </script> 

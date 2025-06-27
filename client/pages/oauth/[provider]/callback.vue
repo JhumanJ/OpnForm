@@ -36,9 +36,6 @@ const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
 
-definePageMeta({
-    alias: '/oauth/:provider/callback'
-})
 
 const handleCallback = async () => {
   const auth = useAuth()

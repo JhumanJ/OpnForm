@@ -28,24 +28,19 @@
     </template>
   </UDropdownMenu>
 
-  <!-- User Settings Modal -->
-  <UserSettingsModal
-    v-model="showUserSettings"
-    @close="showUserSettings = false"
-  />
+
 </template>
 
 <script setup>
 import { computed } from "vue"
-import UserSettingsModal from "~/components/users/settings/UserSettingsModal.vue"
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
+const appStore = useAppStore()
 const router = useRouter()
 
 const user = computed(() => authStore.user)
-const showUserSettings = ref(false)
 
 const logout = async () => {
   // Log out the user.
@@ -79,7 +74,7 @@ const dropdownItems = computed(() => {
   navItems.push({
     label: 'Settings',
     icon: 'i-heroicons-cog-6-tooth',
-    onSelect: () => showUserSettings.value = true
+    onSelect: () => appStore.openUserSettingsModal()
   })
 
   // Admin - only show for moderators

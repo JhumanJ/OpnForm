@@ -14,10 +14,11 @@
         <feature-base />
         <SubscriptionModal />
         <QuickRegister />
-        <UserSettingsModal 
+        <LazyUsersSettingsModal 
           v-model="appStore.userSettingsModal.open"
           v-model:activeTab="appStore.userSettingsModal.activeTab"
           @close="appStore.closeUserSettingsModal"
+          hydrate-on-interaction
         />
       </ClientOnly>
     </div>
@@ -28,7 +29,6 @@
 import { computed, onMounted } from "vue"
 import { useAppStore } from "~/stores/app"
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
-import UserSettingsModal from "~/components/users/settings/UserSettingsModal.vue"
 
 const config = useRuntimeConfig()
 const appStore = useAppStore()

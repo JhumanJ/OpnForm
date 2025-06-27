@@ -37,6 +37,7 @@
       </div>
 
       <UTable 
+        v-if="providers.length > 0"
         v-model:column-pinning="columnPinning"
         :data="providers" 
         :columns="tableColumns"
@@ -144,7 +145,5 @@ const disconnectProvider = (provider) => {
   })
 }
 
-onMounted(() => {
-  providersStore.fetchOAuthProviders()
-})
+await providersStore.fetchOAuthProviders()
 </script> 
