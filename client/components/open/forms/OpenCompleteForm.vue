@@ -3,7 +3,7 @@
     v-if="form"
     class="open-complete-form"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
-    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color, '--form': form.color }"
+    :style="formStyle"
   >
     <ClientOnly>
       <Teleport to="head">
@@ -126,18 +126,7 @@
                 </open-form-button>
               </template>
             </open-form>
-            <p
-              v-if="!form.no_branding"
-              class="text-center w-full mt-2"
-            >
-              <a
-                href="https://opnform.com?utm_source=form&utm_content=powered_by"
-                class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
-                target="_blank"
-              >
-                {{ t('forms.powered_by') }} <span class="font-semibold">{{ t('app.name') }}</span>
-              </a>
-            </p>
+            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
           <div
             v-else
@@ -174,7 +163,7 @@
               </a>
             </p>
             <p
-              v-if="!form.no_branding"
+              v-if="!form.no_branding && formModeStrategy.display.showBranding"
               class="mt-5"
             >
               <a
@@ -199,7 +188,7 @@
 
 <script setup>
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
-import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
@@ -212,6 +201,7 @@ import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
 import { useIsIframe } from '~/composables/useIsIframe'
 import Loader from '~/components/global/Loader.vue'
+import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -246,6 +236,8 @@ const queryString = route.fullPath.split('?')[1] || ''
 // Check for auto_submit parameter during setup
 const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
 
+const formModeStrategy = computed(() => createFormModeStrategy(props.mode))
+
 // Create a reactive reference directly from the prop
 const darkModeRef = toRef(props, 'darkMode')
 // Create a reactive reference for the mode prop
@@ -258,6 +250,7 @@ const theme = computed(() => {
     borderRadius: props.form.border_radius
   }).getAllComponents()
 })
+provide('theme', theme)
 
 let formManager = null
 if (props.form) {
@@ -329,6 +322,25 @@ const showFormCleanings = computed(() => formManager?.strategy.value.display.sho
 const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
 const shouldDisplayForm = computed(() => {
   return (!props.form.is_closed && !props.form.max_number_of_submissions_reached) || formManager?.strategy?.value.admin?.showAdminControls
+})
+
+const formStyle = computed(() => {
+  const baseStyle = {
+    '--font-family': props.form.font_family,
+    'direction': props.form?.layout_rtl ? 'rtl' : 'ltr',
+    '--form-color': props.form.color,
+    '--color-form': props.form.color
+  }
+
+  // Generate color palette variants
+  if (props.form.color) {
+    const colorPalette = tailwindcssPaletteGenerator(props.form.color).primary
+    Object.entries(colorPalette).forEach(([shade, colorValue]) => {
+      baseStyle[`--color-form-${shade}`] = colorValue
+    })
+  }
+
+  return baseStyle
 })
 
 watch(() => props.form.language, (newLanguage) => {

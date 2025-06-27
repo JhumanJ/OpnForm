@@ -205,7 +205,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
     }
 
     public function forms()
