@@ -31,7 +31,8 @@ export function createFormModeStrategy(mode) {
       showHiddenFields: false,
       enableDisabledFields: false,
       showFormCleanings: true,
-      showFontLink: false
+      showFontLink: false,
+      showBranding: true
     },
     
     // Admin behaviors
@@ -60,6 +61,7 @@ export function createFormModeStrategy(mode) {
       strategy.display.showHiddenFields = false
       strategy.display.showFormCleanings = false
       strategy.display.showFontLink = true
+      strategy.display.showBranding = false
       
       strategy.admin.allowDragging = true
       strategy.admin.showAdminControls = true
@@ -73,6 +75,7 @@ export function createFormModeStrategy(mode) {
       
       strategy.display.showHiddenFields = true
       strategy.display.enableDisabledFields = true
+      strategy.display.showBranding = false
       break
 
     case FormMode.EDIT:

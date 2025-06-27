@@ -8,6 +8,7 @@
 
   <!--   Form Preview (desktop only)   -->
   <div
+    class="form-editor-preview"
     ref="parent"
     :class="{
       'fixed inset-8 z-50 !flex': isExpanded,
@@ -113,6 +114,9 @@ import { useRecordsStore } from '~/stores/records'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { useCrisp } from '~/composables/useCrisp.js'
+
+const { hideChat, showChat } = useCrisp()
 
 const recordsStore = useRecordsStore()
 const workingFormStore = useWorkingFormStore()
@@ -121,6 +125,13 @@ const parent = ref(null)
 const formPreview = ref(null)
 const previewFormSubmitted = ref(false)
 const isExpanded = ref(false)
+
+watch(isExpanded, (expanded) => {
+  if (expanded)
+    hideChat()
+  else
+    showChat()
+})
 
 const { content: form } = storeToRefs(workingFormStore)
 const recordLoading = computed(() => recordsStore.loading)
@@ -192,5 +203,13 @@ function toggleExpand() {
 <style scoped>
 .fixed {
   transition: all 0.3s ease-in-out;
+}
+</style>
+
+<style>
+@reference '~/css/app.css';
+
+.form-editor-preview .powered-by-button {
+  @apply bottom-10 right-10 z-50;
 }
 </style>
