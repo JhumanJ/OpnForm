@@ -18,6 +18,12 @@ export const useAppStore = defineStore("app", {
       open: false,
       activeTab: 'account' // Default to first tab instead of null
     },
+
+    // Workspace Settings Modal
+    workspaceSettingsModal: {
+      open: false,
+      activeTab: 'information' // Default to first tab instead of null
+    },
     
     // App Loader
     loader: {
@@ -104,6 +110,19 @@ export const useAppStore = defineStore("app", {
     },
     setUserSettingsActiveTab(activeTab) {
       this.userSettingsModal.activeTab = activeTab
+    },
+
+    // Workspace Settings Modal methods
+    openWorkspaceSettingsModal(activeTab = 'information') {
+      this.workspaceSettingsModal.open = true
+      this.workspaceSettingsModal.activeTab = activeTab
+    },
+    closeWorkspaceSettingsModal() {
+      this.workspaceSettingsModal.open = false
+      // Don't reset activeTab immediately - let the modal component handle it
+    },
+    setWorkspaceSettingsActiveTab(activeTab) {
+      this.workspaceSettingsModal.activeTab = activeTab
     },
   },
 })

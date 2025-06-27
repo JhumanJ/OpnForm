@@ -10,6 +10,7 @@
     <slot :workspace="workspace" />
     
     <template #workspace-info>
+      <div>
         <div class="flex items-center gap-3">
           <WorkspaceIcon size="size-8" :workspace="workspace" />
           <div class="flex-1 min-w-0">
@@ -21,6 +22,22 @@
             </p>
           </div>
         </div>
+        <div v-if="!workspace.is_readonly" class="mt-2 flex items-center gap-2">
+          <UButton
+            icon="i-heroicons-cog-6-tooth"
+            size="sm"
+            variant="outline"
+            @click="appStore.openWorkspaceSettingsModal()"
+            label="Settings"
+          />
+          <UButton
+            icon="i-heroicons-user-plus"
+            size="sm"
+            variant="outline"
+            label="Invite Members"
+          />
+        </div>
+      </div>
     </template>
 
     <template #item-leading="{ item }">
@@ -45,6 +62,7 @@ import { computed, ref } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import CreateWorkspaceModal from "~/components/workspaces/CreateWorkspaceModal.vue"
 
+const appStore = useAppStore()
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
