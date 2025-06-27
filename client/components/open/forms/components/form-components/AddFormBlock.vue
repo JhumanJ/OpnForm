@@ -6,12 +6,15 @@
           size="sm"
           color="neutral"
           icon="i-heroicons-x-mark-20-solid"
-          variant="ghost"
+          variant="outlint"
           @click="closeSidebar"
         />
         <div class="font-medium inline ml-2 flex-grow truncate">
           Add Block
         </div>
+        <AiFieldGenerator
+          class="py-2 px-4"
+        />
       </div>
     </div>
 
@@ -94,6 +97,7 @@
 import draggable from 'vuedraggable'
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
+import AiFieldGenerator from './components/AiFieldGenerator.vue'
 
 const workingFormStore = useWorkingFormStore()
 const authStore = useAuthStore()

@@ -310,9 +310,10 @@ export function useFormStructure(formConfig, managerState, formData) {
    * @param {Number|null} selectedFieldIndex - The index of the currently selected field in form.properties.
    * @param {Number} currentPageIndex - The current page index.
    * @param {Number|null} [explicitIndex=null] - An explicitly provided insert index.
+   * @param {boolean} [insertOnSamePage=false] - If true, ensures insertion happens on the current page, even before a page break.
    * @returns {Number} The calculated index for insertion.
    */
-  const determineInsertIndex = (selectedFieldIndex, currentPageIndex, explicitIndex = null) => {
+  const determineInsertIndex = (selectedFieldIndex, currentPageIndex, explicitIndex = null, insertOnSamePage = false) => {
     if (explicitIndex !== null && typeof explicitIndex === 'number') {
       return explicitIndex
     }
@@ -336,6 +337,15 @@ export function useFormStructure(formConfig, managerState, formData) {
     }
 
     const currentBoundary = boundaries[pageIdx]
+    const endOfPageIdx = currentBoundary.end
+
+    if (insertOnSamePage) {
+        const lastField = properties[endOfPageIdx]
+        if (lastField?.type === 'nf-page-break' && !isFieldHidden(lastField)) {
+            return endOfPageIdx // Insert before the page break
+        }
+    }
+    
     // Insert at the end of the current page (index after the last field of that page)
     return currentBoundary.end + 1
   }

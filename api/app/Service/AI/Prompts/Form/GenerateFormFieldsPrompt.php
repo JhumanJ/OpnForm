@@ -4,7 +4,7 @@ namespace App\Service\AI\Prompts\Form;
 
 use App\Service\AI\Prompts\Prompt;
 
-class GenerateFormPrompt extends Prompt
+class GenerateFormFieldsPrompt extends Prompt
 {
     protected ?float $temperature = null;
 
@@ -16,15 +16,18 @@ class GenerateFormPrompt extends Prompt
      * The prompt template for generating forms
      */
     public const PROMPT_TEMPLATE = <<<'EOD'
-        Help me build the json structure for the form described below, be as accurate as possible.
+        Generate form field(s) based on the description below.
 
-        <form_description>
+        <field_description>
             {formPrompt}
-        </form_description>
+        </field_description>
+
+        <current_form_context>
+        Form Title: {formTitle}
+        Existing Fields: {existingFields}
+        </current_form_context>
         
-        Forms are represented as Json objects. There are several input types and layout block types (type start with nf-).
-        You can use for instance nf-text to add a title or text to the form using some basic html (h1, p, b, i, u etc).
-        Order of blocks matters.
+        Return an array of field objects that fit the context and complement the existing form structure. Consider the form's purpose and existing fields when generating new fields.
 
         Available field types:
         - text: Text input (use multi_lines: true for multi-line text)
@@ -70,18 +73,25 @@ class GenerateFormPrompt extends Prompt
         - Two 1/2 width fields will be placed side by side
         - Three 1/3 width fields will be placed on the same line
         - etc.
-        No need for lines width to be complete. Don't abuse putting multiple fields on the same line if it doens't make sense. For First name and Last name, it works well for instance.
+        No need for lines width to be complete. Don't abuse putting multiple fields on the same line if it doesn't make sense. For First name and Last name, it works well for instance.
         
-        If the form is too long, you can paginate it by adding one or multiple page breaks (nf-page-break).
+        Field generation guidelines:
+        - Choose the most appropriate field type based on the data being collected
+        - Consider the existing form context and avoid duplicating fields
+        - Use logical field names that clearly describe the data being collected
+        - Add helpful placeholder text and help text for complex fields
+        - Set appropriate validation (required fields where necessary - do not add * to the field name if required - it's done automatically)
+        - Use appropriate width settings for better layout
+        - For select/multi-select fields, provide relevant options based on the context
+        - For number fields, consider if rating, scale, or slider would be more appropriate
+        - For rich text fields, consider if multi-line, matrix, or barcode input would be useful
         
-        Create a complete form with appropriate fields based on the description. Include:
-        - A clear `title` (internal for form admin)
-        - `nf-text` blocks to add a title or text to the form using some basic html (h1, p, b, i, u etc)
-        - Logical field grouping
-        - Required fields where necessary (do not add * to the field name if required - it's done automatically)
-        - Help text for complex fields
-        - Appropriate validation
-        - Customized submission text
+        Return an array of field objects that:
+        - Match the field description requirements
+        - Complement the existing form structure
+        - Use appropriate field types and configurations
+        - Include proper validation and help text (leave empty if not needed)
+        - Follow the form's overall purpose and flow
     EOD;
 
     /**
@@ -89,45 +99,9 @@ class GenerateFormPrompt extends Prompt
      */
     protected ?array $jsonSchema = [
         'type' => 'object',
-        'required' => ['title', 'properties', 're_fillable', 'use_captcha', 'redirect_url', 'submitted_text', 'uppercase_labels', 'submit_button_text', 're_fill_button_text', 'color'],
+        'required' => ['properties'],
         'additionalProperties' => false,
         'properties' => [
-            'title' => [
-                'type' => 'string',
-                'description' => 'The title of the form (default: "New Form")'
-            ],
-            're_fillable' => [
-                'type' => 'boolean',
-                'description' => 'Whether the form can be refilled after submission (default: false)'
-            ],
-            'use_captcha' => [
-                'type' => 'boolean',
-                'description' => 'Whether to use CAPTCHA for spam protection (default: false)'
-            ],
-            'redirect_url' => [
-                'type' => ['string', 'null'],
-                'description' => 'URL to redirect to after submission (default: null)'
-            ],
-            'submitted_text' => [
-                'type' => 'string',
-                'description' => 'Text to display after form submission (default: "<p>Thank you for your submission!</p>")'
-            ],
-            'uppercase_labels' => [
-                'type' => 'boolean',
-                'description' => 'Whether to display field labels in uppercase (default: false)'
-            ],
-            'submit_button_text' => [
-                'type' => 'string',
-                'description' => 'Text for the submit button (default: "Submit")'
-            ],
-            're_fill_button_text' => [
-                'type' => 'string',
-                'description' => 'Text for the refill button (default: "Fill Again")'
-            ],
-            'color' => [
-                'type' => 'string',
-                'description' => 'Primary color for the form (default: "#64748b")'
-            ],
             'properties' => [
                 'type' => 'array',
                 'description' => 'Array of form fields and elements',
@@ -142,14 +116,8 @@ class GenerateFormPrompt extends Prompt
                         ['$ref' => '#/definitions/checkboxProperty'],
                         ['$ref' => '#/definitions/selectProperty'],
                         ['$ref' => '#/definitions/multiSelectProperty'],
-                        ['$ref' => '#/definitions/matrixProperty'],
                         ['$ref' => '#/definitions/numberProperty'],
-                        ['$ref' => '#/definitions/ratingProperty'],
-                        ['$ref' => '#/definitions/scaleProperty'],
-                        ['$ref' => '#/definitions/sliderProperty'],
                         ['$ref' => '#/definitions/filesProperty'],
-                        ['$ref' => '#/definitions/signatureProperty'],
-                        ['$ref' => '#/definitions/barcodeProperty'],
                         ['$ref' => '#/definitions/nfTextProperty'],
                         ['$ref' => '#/definitions/nfPageBreakProperty'],
                         ['$ref' => '#/definitions/nfDividerProperty'],
@@ -163,14 +131,16 @@ class GenerateFormPrompt extends Prompt
     ];
 
     public function __construct(
-        public string $formPrompt
+        public string $formPrompt,
+        public string $formTitle = '',
+        public array $existingFields = []
     ) {
         parent::__construct();
     }
 
     protected function getSystemMessage(): ?string
     {
-        return 'You are an AI assistant specialized in creating form structures. Design intuitive, user-friendly forms that capture all necessary information based on the provided description.';
+        return 'You are an AI assistant specialized in generating form fields. Create appropriate field objects that fit the context and complement existing form structures. Focus on choosing the right field types and configurations based on the data being collected.';
     }
 
     protected function getPromptTemplate(): string
@@ -188,20 +158,44 @@ class GenerateFormPrompt extends Prompt
     }
 
     /**
+     * Override getPromptVariables to handle complex formatting
+     */
+    protected function getPromptVariables(): array
+    {
+        $variables = parent::getPromptVariables();
+
+        // Add the formatted existing fields
+        $variables['{existingFields}'] = $this->formatExistingFields();
+
+        return $variables;
+    }
+
+    /**
+     * Format existing fields for display in the prompt
+     */
+    private function formatExistingFields(): string
+    {
+        if (empty($this->existingFields)) {
+            return 'No existing fields';
+        }
+
+        $formatted = [];
+        foreach ($this->existingFields as $field) {
+            $fieldInfo = $field['name'] ?? 'Unnamed field';
+            $fieldType = $field['type'] ?? 'Unknown type';
+            $formatted[] = "- {$fieldInfo} ({$fieldType})";
+        }
+
+        return implode("\n", $formatted);
+    }
+
+    /**
      * Process the AI output to ensure it meets our requirements
      */
-    public function processOutput(array $formData): array
+    public function processOutput(array $formFields): array
     {
-        if (isset($formData['properties']) && is_array($formData['properties'])) {
-            $formData['properties'] = FormFieldSchemas::processFields($formData['properties']);
-        }
+        $properties = $formFields['properties'] ?? [];
 
-        // Clean title data
-        if (isset($formData['title'])) {
-            // Remove quotes if the title is enclosed in them
-            $formData['title'] = preg_replace('/^["\'](.*)["\']$/', '$1', $formData['title']);
-        }
-
-        return $formData;
+        return FormFieldSchemas::processFields($properties);
     }
 }

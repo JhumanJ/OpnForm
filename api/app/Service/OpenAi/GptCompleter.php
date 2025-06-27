@@ -85,7 +85,7 @@ class GptCompleter
         return $this;
     }
 
-    public function completeChat(array $messages, int $maxTokens = 4096, float $temperature = 0.81, ?bool $exceptJson = null): self
+    public function completeChat(array $messages, ?int $maxTokens = 4096, ?float $temperature = 0.81, ?bool $exceptJson = null): self
     {
         if (! is_null($exceptJson)) {
             $this->expectsJson = $exceptJson;
@@ -161,7 +161,7 @@ class GptCompleter
         return $this->outputTokens;
     }
 
-    protected function computeChatCompletion(array $messages, int $maxTokens = 4096, float $temperature = 0.81): self
+    protected function computeChatCompletion(array $messages, ?int $maxTokens = 4096, ?float $temperature = 0.81): self
     {
         if (isset($this->systemMessage) && $messages[0]['role'] !== 'system') {
             $messages = array_merge([[
@@ -173,9 +173,15 @@ class GptCompleter
         $completionInput = [
             'model' => $this->model,
             'messages' => $messages,
-            'max_tokens' => $maxTokens,
-            'temperature' => $temperature,
         ];
+
+        if (!is_null($maxTokens)) {
+            $completionInput['max_tokens'] = $maxTokens;
+        }
+
+        if (!is_null($temperature)) {
+            $completionInput['temperature'] = $temperature;
+        }
 
         if ($this->expectsJson && !isset($this->completionInput['response_format'])) {
             $completionInput['response_format'] = [
@@ -201,7 +207,6 @@ class GptCompleter
 
         while ($attempt <= $this->retries) {
             try {
-                Log::debug('Open AI query: ' . json_encode($this->completionInput));
                 $response = $this->openAi->chat()->create($this->completionInput);
                 $this->inputTokens = $response->usage->promptTokens;
                 $this->outputTokens = $response->usage->completionTokens;
