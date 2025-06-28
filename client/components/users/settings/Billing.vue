@@ -1,20 +1,25 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div>
-      <h3 class="text-lg font-medium text-neutral-900">Billing Details</h3>
-      <p class="text-sm text-neutral-500 mt-1">
-        Manage your billing. Download invoices, update your plan, or cancel it at any time.
-      </p>
+    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="text-lg font-medium text-neutral-900">Billing Details</h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          Manage your billing. Download invoices, update your plan, or cancel it at any time.
+        </p>
+      </div>
     </div>
 
     <!-- Billing Management -->
     <template v-if="user.has_customer_id">
-      <div class="border border-neutral-200 shadow-sm rounded-lg p-4 space-y-4">
-        <p v-if="usersCount" class="text-neutral-600">
+      <div class="space-y-4 rounded-lg border border-neutral-200 p-4 shadow-sm">
+        <p
+          v-if="usersCount"
+          class="text-neutral-600"
+        >
           You currently have <span class="font-medium">{{ usersCount }} users</span> in your different workspaces.
         </p>
-        
+
         <div class="flex flex-wrap gap-3">
           <UButton
             icon="i-heroicons-credit-card"
@@ -25,7 +30,7 @@
             <span v-if="canCancel">Manage Subscription & Invoices</span>
             <span v-else>Billing & Invoices</span>
           </UButton>
-          
+
           <UButton
             v-if="canCancel"
             color="error"

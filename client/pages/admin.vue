@@ -1,36 +1,50 @@
 <template>
-  <div class="mb-8">
+  <div class="p-4">
     <div
       v-if="userInfo"
       class="flex gap-2 items-center flex-wrap"
     >
-      <h1 class="text-xl">
+      <UButton
+        icon="i-heroicons-arrow-left"
+        variant="ghost"
+        color="gray"
+        @click="clearUser"
+      />
+      <h1 class="text-xl font-semibold">
         {{ userInfo.name }}
       </h1>
-      <div class="text-xs select-all bg-gray-50 rounded-md px-2 py-1 border">
-        {{ userInfo.id }}
-      </div>
-      <div class="text-xs select-all bg-gray-50 rounded-md px-2 py-1 border">
-        {{ userInfo.email }}
-      </div>
-      <a
-        v-if="userInfo.stripe_id"
-        :href="'https://dashboard.stripe.com/customers/'+userInfo.stripe_id"
-        target="_blank"
-        class="text-xs select-all bg-purple-50 border-purple-200 text-purple-500 rounded-md px-2 py-1 border"
+      <UBadge
+        color="neutral"
+        variant="subtle"
+        class="select-all"
       >
-        <Icon
-          name="bx:bxl-stripe"
-          class="h-4 w-4 inline-block"
-        />
-        {{ userInfo.stripe_id }}
-      </a>
-      <div
+        {{ userInfo.id }}
+      </UBadge>
+      <UBadge
+        color="neutral"
+        variant="subtle"
+        class="select-all"
+      >
+        {{ userInfo.email }}
+      </UBadge>
+      <UButton
+        v-if="userInfo.stripe_id"
+        :to="'https://dashboard.stripe.com/customers/'+userInfo.stripe_id"
+        target="_blank"
+        color="purple"
+        variant="subtle"
+        size="xs"
+        class="select-all"
+        :label="userInfo.stripe_id"
+        icon="i-bxl-stripe"
+      />
+      <UBadge
         v-if="userPlan"
-        :class="userPlanStyles"
+        v-bind="userPlanBadgeProps"
+        class="capitalize"
       >
         {{ userPlan }}
-      </div>
+      </UBadge>
     </div>
     <h3
       v-else
@@ -41,10 +55,10 @@
 
 
     <template v-if="!userInfo">
-      <form
+      <VForm
+        size="sm"
         class="pb-8 max-w-lg"
         @submit.prevent="fetchUser"
-        @keydown="fetchUserForm.onKeydown($event)"
       >
         <text-input
           name="identifier"
@@ -52,6 +66,7 @@
           label="Identifier"
           :required="true"
           help="User Id, User Email, Form Slug or View Slug"
+          @keydown="fetchUserForm.onKeydown($event)"
         />
         <v-button
           :loading="loading"
@@ -61,12 +76,12 @@
         >
           Fetch User
         </v-button>
-      </form>
+      </VForm>
 
-      <form
+      <VForm
+        size="sm"
         class="pb-8 max-w-lg"
         @submit.prevent="createTemplate"
-        @keydown="createTemplateForm.onKeydown($event)"
       >
         <text-area-input
           name="template_prompt"
@@ -74,6 +89,7 @@
           label="Template Description"
           :required="true"
           help="Describe the template you want to create"
+          @keydown="createTemplateForm.onKeydown($event)"
         />
         <v-button
           :loading="templateLoading"
@@ -83,7 +99,7 @@
         >
           Create Template
         </v-button>
-      </form>
+      </VForm>
     </template>
 
     <div
@@ -132,117 +148,114 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import { computed, ref, onMounted } from 'vue'
 
-export default {
-  setup() {
-    useOpnSeoMeta({
-      title: 'Admin'
-    })
-    definePageMeta({
-      middleware: 'moderator'
-    })
+definePageMeta({
+  middleware: 'moderator',
+  layout: 'dashboard'
+})
 
-    const authStore = useAuthStore()
-    return {
-      authStore,
-      user: computed(() => authStore.user),
-      useAlert: useAlert()
-    }
-  },
+useOpnSeoMeta({
+  title: 'Admin'
+})
 
-  data: () => ({
-    userInfo: null,
-    userPlan: 'free',
-    fetchUserForm: useForm({
-      identifier: ''
-    }),
-    createTemplateForm: useForm({
-      template_prompt: ''
-    }),
-    loading: false,
-    templateLoading: false
-  }),
+const alert = useAlert()
+const router = useRouter()
 
-  computed: {
-    userPlanStyles() {
-      switch (this.userPlan) {
-        case 'pro':
-          return 'capitalize text-xs select-all bg-green-50 rounded-md px-2 py-1 border border-green-200 text-green-500'
-        case 'enterprise':
-          return 'capitalize text-xs select-all bg-blue-50 rounded-md px-2 py-1 border border-blue-200  text-blue-500'
-        default:
-          return 'capitalize text-xs select-all bg-gray-50 rounded-md px-2 py-1 border'
-      }
-    }
-  },
+const userInfo = ref(null)
+const userPlan = ref('free')
+const fetchUserForm = useForm({
+  identifier: ''
+})
+const createTemplateForm = useForm({
+  template_prompt: ''
+})
+const loading = ref(false)
+const templateLoading = ref(false)
 
-  mounted() {
-    // Shortcut link to impersonate users
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const params = Object.fromEntries(urlSearchParams.entries())
-    if (params.impersonate) {
-      this.fetchUserForm.identifier = params.impersonate
-    }
-    if (params.user_id) {
-      this.fetchUserForm.identifier = params.user_id
-    }
-    if (this.fetchUserForm.identifier) {
-      this.fetchUser()
-    }
-  },
-
-  methods: {
-    async fetchUser() {
-      if (!this.fetchUserForm.identifier) {
-        this.useAlert.error('Identifier is required.')
-        return
-      }
-
-      this.loading = true
-      opnFetch(`/moderator/fetch-user/${encodeURI(this.fetchUserForm.identifier)}`).then(async (data) => {
-        this.loading = false
-        this.userInfo = { ...data.user, workspaces: data.workspaces }
-        this.getUserPlan(data.workspaces)
-        this.useAlert.success(`User Fetched: ${this.userInfo.name}`)
-      })
-        .catch((error) => {
-          this.useAlert.error(error.data.message)
-          this.loading = false
-        })
-    },
-
-    getUserPlan(workspaces) {
-      if (workspaces.some(w => w.plan === 'enterprise')) {
-        this.userPlan = 'enterprise'
-      } else if (workspaces.some(w => w.plan === 'pro')) {
-        this.userPlan = 'pro'
-      }
-    },
-    async createTemplate() {
-      if (!this.createTemplateForm.template_prompt) {
-        this.useAlert.error('Template prompt is required.')
-        return  
-      }
-
-      this.templateLoading = true
-      opnFetch(`/moderator/create-template`, {
-        method: 'POST',
-        body: {
-          template_prompt: this.createTemplateForm.template_prompt
-        }
-      }).then((data) => {
-        this.templateLoading = false
-        this.createTemplateForm.reset()
-        this.useAlert.success('Template created.')
-        useRouter().push({ name: 'templates-slug', params: { slug: data.template_slug } })
-      })
-      .catch((error) => {
-        this.templateLoading = false
-        this.useAlert.error(error.data.message)
-      })
-    }
+const userPlanBadgeProps = computed(() => {
+  switch (userPlan.value) {
+    case 'pro':
+      return { color: 'success', variant: 'subtle' }
+    case 'enterprise':
+      return { color: 'primary', variant: 'subtle' }
+    default:
+      return { color: 'neutral', variant: 'subtle' }
   }
+})
+
+onMounted(() => {
+  // Shortcut link to impersonate users
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const params = Object.fromEntries(urlSearchParams.entries())
+  if (params.impersonate) {
+    fetchUserForm.identifier = params.impersonate
+  }
+  if (params.user_id) {
+    fetchUserForm.identifier = params.user_id
+  }
+  if (fetchUserForm.identifier) {
+    fetchUser()
+  }
+})
+
+async function fetchUser() {
+  if (!fetchUserForm.identifier) {
+    alert.error('Identifier is required.')
+    return
+  }
+
+  loading.value = true
+  opnFetch(`/moderator/fetch-user/${encodeURI(fetchUserForm.identifier)}`).then(async (data) => {
+    loading.value = false
+    userInfo.value = { ...data.user, workspaces: data.workspaces }
+    getUserPlan(data.workspaces)
+    alert.success(`User Fetched: ${userInfo.value.name}`)
+  })
+    .catch((error) => {
+      alert.error(error.data.message)
+      loading.value = false
+    })
+}
+
+function getUserPlan(workspaces) {
+  if (workspaces.some(w => w.plan === 'enterprise')) {
+    userPlan.value = 'enterprise'
+  } else if (workspaces.some(w => w.plan === 'pro')) {
+    userPlan.value = 'pro'
+  } else {
+    userPlan.value = 'free'
+  }
+}
+
+function clearUser() {
+  userInfo.value = null
+  userPlan.value = 'free'
+  fetchUserForm.reset()
+}
+
+async function createTemplate() {
+  if (!createTemplateForm.template_prompt) {
+    alert.error('Template prompt is required.')
+    return
+  }
+
+  templateLoading.value = true
+  opnFetch(`/moderator/create-template`, {
+    method: 'POST',
+    body: {
+      template_prompt: createTemplateForm.template_prompt
+    }
+  }).then((data) => {
+    templateLoading.value = false
+    createTemplateForm.reset()
+    alert.success('Template created.')
+    router.push({ name: 'templates-slug', params: { slug: data.template_slug } })
+  })
+    .catch((error) => {
+      templateLoading.value = false
+      alert.error(error.data.message)
+    })
 }
 </script>

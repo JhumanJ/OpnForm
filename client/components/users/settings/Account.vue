@@ -45,17 +45,23 @@
       </VForm>
     </div>
 
-    <div class="space-y-4 pt-8 border-t border-neutral-200">
-      <div class="space-y-2">
-        <h4 class="text-red-800 font-medium">Delete Account</h4>
-        <p class="text-neutral-500 text-sm">This will permanently delete your entire account. This cannot be undone.</p>
-        <UButton
-          color="error"
-          :loading="deleteLoading"
-          @click="confirmDeleteAccount"
-        >
-          Delete Account
-        </UButton>
+    <div class="pt-8 border-t border-neutral-200">
+      <div class="flex flex-col gap-2 items-start">
+        <div>
+          <h4 class="font-medium text-red-800">Delete Account</h4>
+          <p class="mt-1 text-sm text-neutral-500">
+            This will permanently delete your entire account. This cannot be undone.
+          </p>
+        </div>
+        
+          <UButton
+            color="error"
+            :loading="deleteLoading"
+            @click="confirmDeleteAccount"
+          >
+            Delete Account
+          </UButton>
+        
       </div>
     </div>
   </div>

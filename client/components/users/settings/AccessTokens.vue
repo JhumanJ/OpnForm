@@ -1,15 +1,15 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">API Access Tokens</h3>
-        <p class="text-sm text-neutral-500 mt-1">
+        <p class="mt-1 text-sm text-neutral-500">
           Manage your API access tokens for programmatic access.
         </p>
       </div>
-      
-      <div class="flex items-center gap-2">
+
+      <div class="flex shrink-0 items-center gap-2">
         <UButton
           label="API Docs"
           icon="i-heroicons-book-open"
@@ -18,7 +18,7 @@
           :to="opnformConfig.links.api_docs"
           target="_blank"
         />
-        
+
         <UButton
           label="Create New Token"
           icon="i-heroicons-plus"

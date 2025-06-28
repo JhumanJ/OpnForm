@@ -2,49 +2,77 @@
   <UModal
     v-model:open="isOpen"
     :ui="{
-      content: 'w-full max-w-5xl h-[80vh] overflow-hidden',
+      content: 'max-w-5xl h-[80vh] overflow-hidden',
     }"
   >
     <template #content>
-      <div class="flex h-full">
+      <div class="flex h-full flex-col sm:flex-row">
         <!-- Left Sidebar -->
-        <aside class="w-56 bg-neutral-50 border-r border-neutral-200 flex flex-col">
+        <aside class="flex flex-col border-b border-neutral-200 bg-neutral-50 sm:w-56 sm:shrink-0 sm:border-r sm:border-b-0">
           <!-- Navigation Menu -->
-          <nav class="flex-1 p-2 overflow-y-auto pt-4">
+          <nav class="relative p-2 pt-2 sm:flex-1 sm:overflow-y-auto sm:pt-4">
             <slot name="nav-top" />
-            <ul class="space-y-1">
-              <li v-for="item in registeredPages" :key="item.id">
+            <div class="relative">
+              <!-- Left Arrow -->
+              <VTransition name="fade">
                 <UButton
-                  v-bind="createNavItem(item)"
-                  class="w-full justify-start"
-                  @click="setActiveItem(item.id)"
+                  v-if="showLeftArrow"
+                  variant="ghost"
+                  color="neutral"
+                  icon="i-heroicons-chevron-left"
+                  class="absolute -left-px top-0 z-10 h-full bg-gradient-to-r from-neutral-50 via-neutral-50 to-transparent"
+                  :ui="{ rounded: 'rounded-none', padding: { sm: 'px-4' } }"
+                  @click="scrollNav(-1)"
                 />
-              </li>
-            </ul>
+              </VTransition>
+
+              <ul ref="navContainer" class="flex flex-row space-x-1 overflow-x-auto sm:flex-col sm:space-y-1 sm:space-x-0" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <li v-for="item in registeredPages" :key="item.id">
+                  <UButton
+                    v-bind="createNavItem(item)"
+                    class="justify-start whitespace-nowrap !w-auto sm:!w-full"
+                    @click="setActiveItem(item.id)"
+                  />
+                </li>
+              </ul>
+
+              <!-- Right Arrow -->
+              <VTransition name="fade">
+                <UButton
+                  v-if="showRightArrow"
+                  variant="ghost"
+                  color="neutral"
+                  icon="i-heroicons-chevron-right"
+                  class="absolute -right-px top-0 z-10 h-full bg-gradient-to-l from-neutral-50 via-neutral-50 to-transparent"
+                  :ui="{ rounded: 'rounded-none', padding: { sm: 'px-4' } }"
+                  @click="scrollNav(1)"
+                />
+              </VTransition>
+            </div>
           </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col overflow-hidden relative">
+        <main class="relative flex flex-1 flex-col overflow-hidden">
           <!-- Content Body -->
           <div class="flex-1 overflow-y-auto">
             <div class="p-6">
-                              <!-- Modal pages will register themselves and render here -->
-                <slot />
-                
-                <!-- Default content if no pages registered -->
-                <div v-if="registeredPages.length === 0" class="text-center py-12">
-                  <UIcon 
-                    name="i-heroicons-cog-6-tooth" 
-                    class="w-12 h-12 text-neutral-400 mx-auto mb-4" 
-                  />
-                  <h3 class="text-lg font-medium text-neutral-900 mb-2">
-                    Select a setting
-                  </h3>
-                  <p class="text-neutral-500">
-                    Choose an option from the sidebar to configure your settings.
-                  </p>
-                </div>
+              <!-- Modal pages will register themselves and render here -->
+              <slot />
+
+              <!-- Default content if no pages registered -->
+              <div v-if="registeredPages.length === 0" class="py-12 text-center">
+                <UIcon
+                  name="i-heroicons-cog-6-tooth"
+                  class="mx-auto mb-4 h-12 w-12 text-neutral-400"
+                />
+                <h3 class="mb-2 text-lg font-medium text-neutral-900">
+                  Select a setting
+                </h3>
+                <p class="text-neutral-500">
+                  Choose an option from the sidebar to configure your settings.
+                </p>
+              </div>
             </div>
           </div>
         </main>
@@ -54,6 +82,9 @@
 </template>
 
 <script setup>
+import { useScroll, useResizeObserver } from '@vueuse/core'
+import VTransition from '@/components/global/transitions/VTransition.vue'
+
 const emit = defineEmits(['close', 'item-changed', 'update:activeTab'])
 
 // Registered pages for auto-registration
@@ -87,14 +118,40 @@ function getFirstItemId() {
 // Active item state - now a ref initialized from prop
 const activeItem = ref(props.activeTab || getFirstItemId())
 
+// --- Responsive Nav Scrolling ---
+const navContainer = ref(null)
+const { x: scrollX } = useScroll(navContainer)
+const contentWidth = ref(0)
+const containerWidth = ref(0)
+
+const showLeftArrow = computed(() => scrollX.value > 0)
+const showRightArrow = computed(() => {
+  if (containerWidth.value === 0 || contentWidth.value === 0) return false
+  return scrollX.value < contentWidth.value - containerWidth.value - 1 // -1 for subpixel precision
+})
+
+useResizeObserver(navContainer, (entries) => {
+  const entry = entries[0]
+  containerWidth.value = entry.contentRect.width
+  if (navContainer.value) {
+    contentWidth.value = navContainer.value.scrollWidth
+  }
+})
+
+function scrollNav(direction) {
+  if (navContainer.value) {
+    // Scroll by 80% of the container's width for a better user experience
+    const scrollAmount = containerWidth.value * 0.8 * direction
+    navContainer.value.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+  }
+}
+
 // Watch activeTab prop from parent to sync local state
 watch(() => props.activeTab, (newVal) => {
   if (newVal && newVal !== activeItem.value) {
     activeItem.value = newVal
   }
 })
-
-
 
 // Default button configuration
 const defaultButtonProps = {
@@ -188,4 +245,11 @@ function unregisterModalPage(id) {
 provide('activeModalItem', activeItem)
 provide('registerModalPage', registerModalPage)
 provide('unregisterModalPage', unregisterModalPage)
-</script> 
+</script>
+
+<style scoped>
+/* Hide scrollbar for Chrome, Safari and Opera */
+ul::-webkit-scrollbar {
+  display: none;
+}
+</style> 

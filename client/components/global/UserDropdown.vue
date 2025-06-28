@@ -74,7 +74,7 @@ const dropdownItems = computed(() => {
   navItems.push({
     label: 'Settings',
     icon: 'i-heroicons-cog-6-tooth',
-    onSelect: () => appStore.openUserSettingsModal()
+    onSelect: () => appStore.setUserSettingsModalTab('account')
   })
 
   // Admin - only show for moderators
@@ -82,7 +82,7 @@ const dropdownItems = computed(() => {
     navItems.push({
       label: 'Admin',
       icon: 'i-heroicons-shield-check',
-      to: { name: 'settings-admin' }
+      to: { name: 'admin' }
     })
   }
 
