@@ -1,15 +1,15 @@
 <template>
   <UDropdownMenu
+    v-model:open="isDropdownOpen"
     v-if="user && workspaces && workspaces.length >= 1"
     :items="dropdownItems"
-    :ui="{
-      content: 'w-56'
-    }"
+    :content="content"
     arrow
   >
     <slot :workspace="workspace" />
     
     <template #workspace-info>
+      <div>
         <div class="flex items-center gap-3">
           <WorkspaceIcon size="size-8" :workspace="workspace" />
           <div class="flex-1 min-w-0">
@@ -21,6 +21,26 @@
             </p>
           </div>
         </div>
+        <div v-if="!workspace.is_readonly" class="mt-2 flex items-center gap-2">
+          <UButton
+            icon="i-heroicons-cog-6-tooth"
+            size="xs"
+            color="neutral"
+            variant="outline"
+            @click="openSettings"
+            label="Settings"
+          />
+          <UButton
+            v-if="user?.admin"
+            icon="i-heroicons-user-plus"
+            size="xs"
+            color="neutral"
+            variant="outline"
+            @click="openInviteUserModal"
+            label="Invite Members"
+          />
+        </div>
+      </div>
     </template>
 
     <template #item-leading="{ item }">
@@ -38,13 +58,31 @@
     @created="onWorkspaceCreated"
     @close="showCreateModal = false"
   />
+
+  <WorkspacesSettingsInviteUser
+    v-model="showInviteUserModal"
+    @user-added="onUserAdded"
+  />
 </template>
 
 <script setup>
 import { computed, ref } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import CreateWorkspaceModal from "~/components/workspaces/CreateWorkspaceModal.vue"
+import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
+import { fetchAllWorkspaces } from '~/stores/workspaces.js'
 
+defineProps({
+  content: {
+    type: Object,
+    default: () => ({
+      side: 'bottom',
+      align: 'start'
+    })
+  }
+})
+
+const appStore = useAppStore()
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
@@ -57,6 +95,10 @@ const workspace = computed(() => workspacesStore.getCurrent)
 
 // Modal state
 const showCreateModal = ref(false)
+const showInviteUserModal = ref(false)
+
+// Dropdown state
+const isDropdownOpen = ref(false)
 
 // Computed text for workspace plan
 const workspacePlanText = computed(() => {
@@ -87,6 +129,21 @@ const createNewWorkspace = () => {
 
 const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
+}
+
+const onUserAdded = async () => {
+  const workspaces = await fetchAllWorkspaces()
+  workspacesStore.set(workspaces.data.value.data)
+}
+
+const openSettings = () => {
+  isDropdownOpen.value = false
+  appStore.setWorkspaceSettingsModalTab('information')
+}
+
+const openInviteUserModal = () => {
+  isDropdownOpen.value = false
+  showInviteUserModal.value = true
 }
 
 const dropdownItems = computed(() => {

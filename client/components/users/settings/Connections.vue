@@ -56,7 +56,7 @@
         </template>
 
         <template #email-cell="{ row: { original: item } }">
-          <span class="text-neutral-600">{{ item.email }}</span>
+          <span class="text-neutral-600">{{ item.name }}</span>
         </template>
 
         <template #actions-cell="{ row: { original: item } }">
@@ -75,8 +75,8 @@
     </div>
 
     <!-- Provider Modal -->
-    <ProviderModal
-      :show="providerModal"
+    <UsersSettingsConnectionModal
+      v-model="providerModal"
       @close="providerModal = false"
     />
   </div>

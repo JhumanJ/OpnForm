@@ -104,7 +104,7 @@ const props = defineProps({
   content: { 
     type: Object, 
     required: false, 
-    default: () => ({position: 'bottom', align: 'end'}) }
+    default: () => ({side: 'bottom', align: 'end'}) }
 })
 
 const authStore = useAuthStore()

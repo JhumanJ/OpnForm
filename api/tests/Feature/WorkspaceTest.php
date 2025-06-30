@@ -25,7 +25,7 @@ it('can create and delete Workspace', function () {
                 ->assertSuccessful()
                 ->assertJson([
                     'type' => 'success',
-                    'message' => 'Workspace deleted.',
+                    'message' => 'Workspace successfully deleted.',
                 ]);
         } else {
             // Last workspace can not delete

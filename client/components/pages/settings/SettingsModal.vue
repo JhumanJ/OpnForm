@@ -4,6 +4,9 @@
     :ui="{
       content: 'max-w-5xl h-[80vh] overflow-hidden',
     }"
+    :content="{
+      onPointerDownOutside: (event) => { if (event.target?.closest('.crisp-client')) {return event.preventDefault()}}
+    }"
   >
     <template #content>
       <div class="flex h-full flex-col sm:flex-row">
@@ -83,6 +86,7 @@
 
 <script setup>
 import { useScroll, useResizeObserver } from '@vueuse/core'
+import { nextTick, ref, computed, watch, provide } from 'vue'
 import VTransition from '@/components/global/transitions/VTransition.vue'
 
 const emit = defineEmits(['close', 'item-changed', 'update:activeTab'])
@@ -115,8 +119,8 @@ function getFirstItemId() {
   return null
 }
 
-// Active item state - now a ref initialized from prop
-const activeItem = ref(props.activeTab || getFirstItemId())
+// Reactive reference for the currently active tab
+const activeTabRef = ref(props.activeTab)
 
 // --- Responsive Nav Scrolling ---
 const navContainer = ref(null)
@@ -146,11 +150,9 @@ function scrollNav(direction) {
   }
 }
 
-// Watch activeTab prop from parent to sync local state
+// Keep local ref in sync with incoming prop
 watch(() => props.activeTab, (newVal) => {
-  if (newVal && newVal !== activeItem.value) {
-    activeItem.value = newVal
-  }
+  activeTabRef.value = newVal
 })
 
 // Default button configuration
@@ -167,7 +169,7 @@ const createNavItem = (item) => {
     ...defaultButtonProps,
     label: item.label,
     icon: item.icon,
-    active: activeItem.value === item.id
+    active: activeTabRef.value === item.id
   }
   
   // Add custom classes to darken ghost/soft variants for better visibility on neutral-50 background
@@ -194,27 +196,43 @@ const createNavItem = (item) => {
 
 // Set active item
 const setActiveItem = (itemId) => {
-  activeItem.value = itemId
+  activeTabRef.value = itemId
   emit('item-changed', itemId)
   emit('update:activeTab', itemId)
 }
 
 // Reset to default item only when modal opens
-watch(isOpen, (newValue, oldValue) => {
-  if (newValue && !oldValue) {
-    if (!props.activeTab) {
-      activeItem.value = getFirstItemId()
-    }
+watch(isOpen, (newValue) => {
+  if (newValue) {
+    // Use nextTick to allow child pages to register themselves first, fixing the race condition.
+    nextTick(() => {
+      const isValidPropTab = props.activeTab && registeredPages.value.some(p => p.id === props.activeTab)
+
+      if (isValidPropTab) {
+        // If the prop provides a valid tab, use it.
+        activeTabRef.value = props.activeTab
+      } else {
+        // Otherwise, fallback to the first item if the current selection is invalid.
+        const isCurrentTabValid = registeredPages.value.some(p => p.id === activeTabRef.value)
+        if (!isCurrentTabValid) {
+          activeTabRef.value = getFirstItemId()
+        }
+      }
+    })
   }
 })
 
-// Watch for changes in registered pages to ensure activeItem is valid
+// Ensure activeTabRef stays in sync with registered pages
 watch(registeredPages, () => {
-  const currentActiveId = activeItem.value
-  const isValidTab = registeredPages.value.some(item => item.id === currentActiveId)
-  
-  if (!isValidTab && registeredPages.value.length > 0) {
-    activeItem.value = getFirstItemId()
+  // If prop specifies a valid tab and it's not already active, set it
+  if (props.activeTab && props.activeTab !== activeTabRef.value && registeredPages.value.some(p => p.id === props.activeTab)) {
+    activeTabRef.value = props.activeTab
+    return
+  }
+
+  // If current active item has been removed, fall back to first available
+  if (!registeredPages.value.some(p => p.id === activeTabRef.value)) {
+    activeTabRef.value = getFirstItemId()
   }
 }, { deep: true })
 
@@ -226,7 +244,7 @@ function registerModalPage(id, label, icon) {
   } else {
     registeredPages.value.push({ id, label, icon })
     if (registeredPages.value.length === 1) {
-      activeItem.value = id
+      activeTabRef.value = id
     }
   }
 }
@@ -235,14 +253,19 @@ function unregisterModalPage(id) {
   const index = registeredPages.value.findIndex(page => page.id === id)
   if (index !== -1) {
     registeredPages.value.splice(index, 1)
-    if (activeItem.value === id && registeredPages.value.length > 0) {
-      activeItem.value = registeredPages.value[0].id
+    // If the page being removed was the active one, select a new one.
+    if (activeTabRef.value === id) {
+      if (registeredPages.value.length > 0) {
+        setActiveItem(registeredPages.value[0].id)
+      } else {
+        activeTabRef.value = null
+      }
     }
   }
 }
 
 // Provide functions for child components (after they're defined)
-provide('activeModalItem', activeItem)
+provide('activeModalItem', activeTabRef)
 provide('registerModalPage', registerModalPage)
 provide('unregisterModalPage', unregisterModalPage)
 </script>
