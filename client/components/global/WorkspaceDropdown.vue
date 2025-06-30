@@ -1,10 +1,8 @@
 <template>
   <UDropdownMenu
+    v-model:open="isDropdownOpen"
     v-if="user && workspaces && workspaces.length >= 1"
     :items="dropdownItems"
-    :ui="{
-      content: 'w-56'
-    }"
     arrow
   >
     <slot :workspace="workspace" />
@@ -27,13 +25,15 @@
             icon="i-heroicons-cog-6-tooth"
             size="sm"
             variant="outline"
-            @click="appStore.setWorkspaceSettingsModalTab('information')"
+            @click="openSettings"
             label="Settings"
           />
           <UButton
+            v-if="user?.admin"
             icon="i-heroicons-user-plus"
             size="sm"
             variant="outline"
+            @click="openInviteUserModal"
             label="Invite Members"
           />
         </div>
@@ -76,6 +76,9 @@ const workspace = computed(() => workspacesStore.getCurrent)
 // Modal state
 const showCreateModal = ref(false)
 
+// Dropdown state
+const isDropdownOpen = ref(false)
+
 // Computed text for workspace plan
 const workspacePlanText = computed(() => {
   if (!workspace.value) return ''
@@ -105,6 +108,16 @@ const createNewWorkspace = () => {
 
 const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
+}
+
+const openSettings = () => {
+  isDropdownOpen.value = false
+  appStore.setWorkspaceSettingsModalTab('information')
+}
+
+const openInviteUserModal = () => {
+  isDropdownOpen.value = false
+  appStore.setWorkspaceInviteUserModal(true)
 }
 
 const dropdownItems = computed(() => {

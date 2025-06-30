@@ -18,6 +18,9 @@ export const useAppStore = defineStore("app", {
 
     // Workspace Settings Modal
     workspaceSettingsModalTab: null, // Holds active tab ID, e.g., 'information'. null = closed.
+
+    // Workspace Invite User Modal
+    workspaceInviteUserModal: false,
     
     // App Loader
     loader: {
@@ -101,6 +104,11 @@ export const useAppStore = defineStore("app", {
     // Workspace Settings Modal methods
     setWorkspaceSettingsModalTab(tab = null) {
       this.workspaceSettingsModalTab = tab
+    },
+
+    // Workspace Invite User Modal methods
+    setWorkspaceInviteUserModal(value = false) {
+      this.workspaceInviteUserModal = value
     },
 
   },

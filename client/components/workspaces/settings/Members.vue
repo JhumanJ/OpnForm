@@ -1,119 +1,206 @@
 <template>
   <div class="space-y-8">
-    <!-- Profile Information Section -->
-    <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Workspace Members</h3>
-        <p class="text-sm text-neutral-500 mt-1">
+        <p class="mt-1 text-sm text-neutral-500">
           Manage your workspace members and their roles.
         </p>
       </div>
 
-      <UTable
-        class="-mx-4 border-y mt-4"
-        :loading="loadingUsers"
-        :data="users"
-        :columns="columns"
-      >
-        <template
-          v-if="isWorkspaceAdmin"
-          #actions-cell="{ row }"
-        >
-          <div class="space-x-2 flex justify-center">
-            <template v-if="row.original.type == 'user'">
-              <p
-                v-if="row.original.is_current_user"
-                class="text-gray-500 text-center text-sm"
-              >
-                -
-              </p>
-              <UButtonGroup
-                v-else
-                size="2xs"
-              >
-                <UTooltip
-                  text="Edit user"
-                >
-                  <UButton
-                    icon="i-heroicons-pencil"
-                    color="neutral"
-                    class="hover:text-blue-500"
-                    square
-                    @click="editUser(row.original)"
-                  />
-                </UTooltip>
-                <UTooltip
-                  text="Remove user"
-                >
-                  <UButton
-                    v-if="row.original.type == 'user'"
-                    icon="i-heroicons-trash"
-                    color="neutral"
-                    class="hover:text-red-500"
-                    square
-                    @click="removeUser(row.original)"
-                  />
-                </UTooltip>
-              </UButtonGroup>
-            </template>
+      <div class="flex shrink-0 items-center gap-2">
+        <UButton
+          v-if="!workspace.is_readonly"
+          label="Invite User"
+          icon="i-heroicons-user-plus-20-solid"
+          :loading="loadingUsers"
+          @click="appStore.setWorkspaceInviteUserModal(true)"
+        />
+      </div>
+    </div>
+
+    <UTable
+      class="w-full"
+      :loading="loadingUsers"
+      :data="users"
+      :columns="tableColumns"
+      v-model:column-pinning="columnPinning"
+    >
+      <template #actions-cell="{ row: { original: item } }">
+        <div class="space-x-2 flex justify-center">
+          <template v-if="item.type == 'user'">
+            <p
+              v-if="item.is_current_user"
+              class="text-gray-500 text-center text-sm"
+            >
+              -
+            </p>
             <UButtonGroup
-              v-else-if="row.original.type == 'invitee'"
+              v-else
               size="2xs"
             >
-              <UTooltip
-                text="Resend Invite"
-              >
+              <UTooltip text="Edit user">
                 <UButton
-                  icon="i-heroicons-envelope"
-                  color="neutral"
-                  class="hover:text-blue-500"
+                  icon="i-heroicons-pencil-square"
+                  color="primary"
+                  variant="outline"
+                  size="sm"
                   square
-                  @click="resendInvite(row.original)"
+                  @click="editUser(item)"
                 />
               </UTooltip>
-              <UTooltip
-                text="Cancel Invite"
-              >
+              <UTooltip text="Remove user">
                 <UButton
+                  v-if="item.type == 'user'"
+                  color="error" 
+                  variant="soft"
                   icon="i-heroicons-trash"
-                  color="neutral"
-                  class="hover:text-red-500"
+                  size="sm"
                   square
-                  @click="cancelInvite(row.original)"
+                  @click="removeUser(item)"
                 />
               </UTooltip>
             </UButtonGroup>
-          </div>
-        </template>
-      </UTable>
-    </div>
+          </template>
+          <UButtonGroup
+            v-else-if="item.type == 'invitee'"
+            size="sm"
+          >
+            <UTooltip text="Resend Invite">
+              <UButton
+                icon="i-heroicons-envelope"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click="resendInvite(item)"
+              />
+            </UTooltip>
+            <UTooltip text="Cancel Invite">
+              <UButton
+                icon="i-heroicons-x-mark"
+                color="error"
+                variant="outline"
+                size="sm"
+                @click="cancelInvite(item)"
+              />
+            </UTooltip>
+          </UButtonGroup>
+        </div>
+      </template>
+    </UTable>
+
+    <UModal
+      v-model:open="showEditUserModal"
+      @close="showEditUserModal = false"
+    >
+      <template #header>
+        <div class="flex items-center w-full gap-4 px-2">
+          <Icon
+            name="i-heroicons-pencil-square"
+            class="text-blue-500"
+            size="20px"
+          />
+          <h2 class="text-lg font-semibold">
+            Edit User Role
+          </h2>
+        </div>
+      </template>
+      
+      <template #body>
+        <div class="px-4">
+          <form
+            @submit.prevent="updateUserRole"
+            @keydown="editUserForm.onKeydown($event)"
+          >
+            <div>
+              <FlatSelectInput
+                :form="editUserForm"
+                name="role"
+                :label="'New Role for '+selectedUser.name"
+                :options="[
+                  { name: 'User', value: 'user' },
+                  { name: 'Admin', value: 'admin' },
+                  { name: 'Read Only', value: 'readonly' },
+                ]"
+                option-key="value"
+                display-key="name"
+              />
+            </div>
+
+            <div class="flex justify-center mt-4">
+              <UButton
+                type="submit"
+                :loading="editUserForm.busy"
+                icon="i-heroicons-pencil"
+              >
+                Update
+              </UButton>
+            </div>
+          </form>
+        </div>
+      </template>
+    </UModal>
+
   </div>
 </template>
 
 <script setup>
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
+const appStore = useAppStore()
+const alert = useAlert()
 
+const workspace = computed(() => workspacesStore.getCurrent)
+const user = computed(() => authStore.user)
 const users = ref([])
 const loadingUsers = ref(true)
-
-const isWorkspaceAdmin = computed(() => {
-  if (!users.value) return false
-  const user = users.value.find((user) => user.id === authStore.user.id)
-  return user && user.pivot.role === "admin"
+const showEditUserModal = ref(false)
+const selectedUser = ref(null)
+const editUserForm = useForm({
+  role: 'user'
 })
 
-const columns = computed(() => {
+// Column pinning state
+const columnPinning = ref({
+  left: [],
+  right: ['actions']
+})
+
+// Table columns configuration
+const tableColumns = computed(() => {
   return [
-    {accessorKey: 'name', header: 'Name'},
-    {accessorKey: 'email', header: 'Email'},
-    {accessorKey: 'role', header: 'Role'},
-    ...(isWorkspaceAdmin.value ? [{id: 'actions', header: 'Action'}] : [])
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: 'Name'
+    },
+    {
+      id: 'email',
+      accessorKey: 'email',
+      header: 'Email'
+    },
+    {
+      id: 'role',
+      accessorKey: 'role',
+      header: 'Role'
+    },
+    ...(user.value.admin ? [
+      {
+        id: 'actions',
+        header: '',
+      }] : [])
   ]
 })
 
 onMounted(() => {
   getWorkspaceUsers()
+})
+
+// Watch for modal close to refresh users
+watch(() => appStore.workspaceInviteUserModal, (newValue, oldValue) => {
+  if (oldValue === true && newValue === false) {
+    getWorkspaceUsers()
+  }
 })
 
 const getWorkspaceUsers = async () => {
@@ -143,6 +230,58 @@ const getWorkspaceUsers = async () => {
   })
   users.value = [...data, ...invites]
   loadingUsers.value = false
+}
+
+const editUser = (user) => {
+  selectedUser.value = user
+  editUserForm.role = selectedUser.value.pivot.role
+  showEditUserModal.value = true
+}
+
+const updateUserRole = () => {
+  editUserForm.put("/open/workspaces/" + workspacesStore.currentId + "/users/" + selectedUser.value.id + "/update-role").then((data) => {
+    alert.success(data.message)
+    getWorkspaceUsers()
+    showEditUserModal.value = false
+  }).catch(() => {
+    alert.error("There was an error updating user role")
+  })
+}
+
+const removeUser = (user) => {
+  alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
+    loadingUsers.value = true
+    opnFetch("/open/workspaces/" + workspacesStore.currentId + "/users/" + user.id + "/remove", {method: "DELETE"}).then(() => {
+      alert.success("User successfully removed.")
+      getWorkspaceUsers()
+    }).catch(() => {
+      alert.error("There was an error removing user")
+    }).finally(() => {
+      loadingUsers.value = false
+    })
+  })
+}
+
+const resendInvite = (user) => {
+  alert.confirm("Do you really want to resend invite email to this user?", () => {
+    opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + user.id + "/resend", {method: "POST"}).then(() => {
+      alert.success("Invitation resent successfully.")
+      getWorkspaceUsers()
+    }).catch(err => {
+      alert.error(err.response._data?.message)
+    })
+  })
+}
+
+const cancelInvite = (user) => {
+  alert.confirm("Do you really want to cancel this user's invitation to this workspace?", () => {
+    opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + user.id + "/cancel", {method: "DELETE"}).then(() => {
+      alert.success("Invitation cancelled successfully.")
+      getWorkspaceUsers()
+    }).catch(err => {
+      alert.error(err.response._data?.message)
+    })
+  })
 }
 
 </script> 

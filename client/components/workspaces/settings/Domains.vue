@@ -1,68 +1,71 @@
 <template>
   <div class="space-y-8">
-    <!-- Profile Information Section -->
-    <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Custom Domains Settings</h3>
-        <p class="text-sm text-neutral-500 mt-1">
-          Read
-          <a
-            href="#"
-            class="underline"
-            @click.prevent="crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')"
-          >our instructions</a>
-          to learn how to setup your own domain.
+        <p class="mt-1 text-sm text-neutral-500">
+          Manage your custom domains.
         </p>
       </div>
 
-      <UAlert
-        v-if="!workspace.is_pro"
-        icon="i-heroicons-user-group-20-solid"
-        class="mb-4"
-        color="warning"
-        variant="subtle"
-        title="Pro plan required"
-      >
-        <template #description>
-          Please <NuxtLink
-            @click.prevent="openSubscriptionModal"
-            class="underline"
-          >
-            upgrade your account
-          </NuxtLink> to setup a custom domain.
-        </template>
-      </UAlert>
-
-      <VForm size="sm">
-        <form
-          @submit.prevent="saveChanges"
-          @keydown="customDomainsForm.onKeydown($event)"
-        >
-          <div class="max-w-sm">
-            <text-area-input
-              :form="customDomainsForm"
-              name="custom_domains"
-              :required="false"
-              :disabled="!workspace.is_pro"
-              label="Workspace Custom Domains"
-              wrapper-class=""
-              placeholder="yourdomain.com - 1 per line"
-            />
-          </div>
-
-          <div class="mt-4">
-            <UButton
-              type="submit"
-              :loading="customDomainsForm.busy"
-              :disabled="!workspace.is_pro"
-              icon="i-heroicons-check"
-            >
-              Save Domain(s)
-            </UButton>
-          </div>
-        </form>
-      </VForm>
+      <div class="flex shrink-0 items-center gap-2">
+        <UButton
+          label="Help"
+          icon="i-heroicons-question-mark-circle"
+          variant="outline"
+          color="primary"
+          @click="crisp.openHelpdeskArticle('how-to-use-my-own-domain-9m77g7')"
+        />
+      </div>
     </div>
+
+    <UAlert
+      v-if="!workspace.is_pro"
+      icon="i-heroicons-user-group-20-solid"
+      class="mb-4"
+      color="warning"
+      variant="subtle"
+      title="Pro plan required"
+    >
+      <template #description>
+        Please <NuxtLink
+          @click.prevent="openSubscriptionModal"
+          class="underline"
+        >
+          upgrade your account
+        </NuxtLink> to setup a custom domain.
+      </template>
+    </UAlert>
+
+    <VForm size="sm">
+      <form
+        @submit.prevent="saveChanges"
+        @keydown="customDomainsForm.onKeydown($event)"
+      >
+        <div class="max-w-sm">
+          <text-area-input
+            :form="customDomainsForm"
+            name="custom_domains"
+            :required="false"
+            :disabled="!workspace.is_pro"
+            label="Workspace Custom Domains"
+            wrapper-class=""
+            placeholder="yourdomain.com - 1 per line"
+          />
+        </div>
+
+        <div class="mt-4">
+          <UButton
+            type="submit"
+            :loading="customDomainsForm.busy"
+            :disabled="!workspace.is_pro"
+            icon="i-heroicons-check"
+          >
+            Save Domain(s)
+          </UButton>
+        </div>
+      </form>
+    </VForm>
   </div>
 </template>
 

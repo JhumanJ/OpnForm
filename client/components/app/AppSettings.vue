@@ -13,6 +13,11 @@
     @close="appStore.setWorkspaceSettingsModalTab(null)"
     hydrate-on-interaction
   />
+  <WorkspacesSettingsInviteUser 
+    v-if="authStore.check"
+    v-model="appStore.workspaceInviteUserModal"
+    @close="appStore.setWorkspaceInviteUserModal(false)"
+  />
 </template>
 
 <script setup>

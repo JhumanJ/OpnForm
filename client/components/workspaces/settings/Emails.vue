@@ -1,104 +1,115 @@
 <template>
   <div class="space-y-8">
-    <!-- Profile Information Section -->
-    <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Email Settings</h3>
-        <p class="text-sm text-neutral-500 mt-1">Customize email sender - connect your SMTP server.</p>
+        <p class="mt-1 text-sm text-neutral-500">
+          Customize email sender - connect your SMTP server.
+        </p>
       </div>
 
-      <UAlert
-        v-if="!workspace.is_pro"
-        icon="i-heroicons-user-group-20-solid"
-        class="mb-4"
-        color="warning"
-        variant="subtle"
-        title="Pro plan required"
-      >
-        <template #description>
-          Please <NuxtLink
-            @click.prevent="openSubscriptionModal"
-            class="underline"
-          >
-            upgrade your account
-          </NuxtLink> to setup an email settings.
-        </template>
-      </UAlert>
-
-      <VForm size="sm">
-        <form
-          @submit.prevent="saveChanges"
-          @keydown="emailSettingsForm.onKeydown($event)"
-        >
-          <div class="max-w-sm">
-            <TextInput
-              :form="emailSettingsForm"
-              name="host"
-              :required="true"
-              :disabled="!workspace.is_pro"
-              label="Host/Server"
-              class="mt-2"
-              placeholder="smtp.example.com"
-            />
-            <TextInput
-              :form="emailSettingsForm"
-              name="port"
-              :required="true"
-              :disabled="!workspace.is_pro"
-              label="Port"
-              placeholder="587"
-            />
-            <TextInput
-              :form="emailSettingsForm"
-              name="username"
-              :required="true"
-              :disabled="!workspace.is_pro"
-              label="Username"
-              placeholder="Username"
-            />
-            <TextInput
-              :form="emailSettingsForm"
-              name="password"
-              native-type="password"
-              :required="true"
-              :disabled="!workspace.is_pro"
-              label="Password"
-              placeholder="Password"
-            />
-            <TextInput
-              :form="emailSettingsForm"
-              name="sender_address"
-              :disabled="!workspace.is_pro"
-              label="Sender address"
-              placeholder="sender@example.com"
-            />
-          </div>
-
-          <div class="mt-4">
-            <UButton
-              type="submit"
-              :loading="emailSettingsForm.busy"
-              :disabled="!workspace.is_pro"
-              icon="i-heroicons-check"
-            >
-              Save Domain(s)
-            </UButton>
-            <UButton
-              class="mt-3 ml-2"
-              color="neutral"
-              variant="outline"
-              size="sm"
-              :loading="emailSettingsForm.busy"
-              :disabled="!workspace.is_pro"
-              icon="i-heroicons-x-mark"
-              @click="clearEmailSettings"
-            >
-              Clear
-            </UButton>
-          </div>
-        </form>
-      </VForm>
+      <div class="flex shrink-0 items-center gap-2">
+        <UButton
+          label="Help"
+          icon="i-heroicons-question-mark-circle"
+          variant="outline"
+          color="primary"
+          @click="crisp.openHelpdeskArticle('how-to-send-emails-using-your-own-domain-name-and-email-address-13kkcif')"
+        />
+      </div>
     </div>
+
+    <UAlert
+      v-if="!workspace.is_pro"
+      icon="i-heroicons-user-group-20-solid"
+      class="mb-4"
+      color="warning"
+      variant="subtle"
+      title="Pro plan required"
+    >
+      <template #description>
+        Please <NuxtLink
+          @click.prevent="openSubscriptionModal"
+          class="underline"
+        >
+          upgrade your account
+        </NuxtLink> to setup an email settings.
+      </template>
+    </UAlert>
+
+    <VForm size="sm">
+      <form
+        @submit.prevent="saveChanges"
+        @keydown="emailSettingsForm.onKeydown($event)"
+      >
+        <div class="max-w-sm">
+          <TextInput
+            :form="emailSettingsForm"
+            name="host"
+            :required="true"
+            :disabled="!workspace.is_pro"
+            label="Host/Server"
+            class="mt-2"
+            placeholder="smtp.example.com"
+          />
+          <TextInput
+            :form="emailSettingsForm"
+            name="port"
+            :required="true"
+            :disabled="!workspace.is_pro"
+            label="Port"
+            placeholder="587"
+          />
+          <TextInput
+            :form="emailSettingsForm"
+            name="username"
+            :required="true"
+            :disabled="!workspace.is_pro"
+            label="Username"
+            placeholder="Username"
+          />
+          <TextInput
+            :form="emailSettingsForm"
+            name="password"
+            native-type="password"
+            :required="true"
+            :disabled="!workspace.is_pro"
+            label="Password"
+            placeholder="Password"
+          />
+          <TextInput
+            :form="emailSettingsForm"
+            name="sender_address"
+            :disabled="!workspace.is_pro"
+            label="Sender address"
+            placeholder="sender@example.com"
+          />
+        </div>
+
+        <div class="mt-4">
+          <UButton
+            type="submit"
+            :loading="emailSettingsForm.busy"
+            :disabled="!workspace.is_pro"
+            icon="i-heroicons-check"
+          >
+            Save Domain(s)
+          </UButton>
+          <UButton
+            class="mt-3 ml-2"
+            color="neutral"
+            variant="outline"
+            size="sm"
+            :loading="emailSettingsForm.busy"
+            :disabled="!workspace.is_pro"
+            icon="i-heroicons-x-mark"
+            @click="clearEmailSettings"
+          >
+            Clear
+          </UButton>
+        </div>
+      </form>
+    </VForm>
   </div>
 </template>
 
