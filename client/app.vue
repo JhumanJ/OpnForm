@@ -1,5 +1,5 @@
 <template>
-  <UApp :toaster="toasterConfig">
+  <AppProvider>
     <div
       id="app"
       class="bg-white dark:bg-notion-dark"
@@ -8,18 +8,21 @@
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
-      <ToolsStopImpersonation />
+
+      <ClientOnly>
+        <div
+          class="fixed left-0 bottom-0 p-4"
+        >
+          <UButtonGroup size="sm">
+            <ToolsStopImpersonation />
+          </UButtonGroup>
+        </div>
+      </ClientOnly>
 
       <ClientOnly>
         <feature-base />
         <SubscriptionModal />
         <QuickRegister />
-        <LazyUsersSettingsModal 
-          v-model="appStore.userSettingsModal.open"
-          v-model:activeTab="appStore.userSettingsModal.activeTab"
-          @close="appStore.closeUserSettingsModal"
-          hydrate-on-interaction
-        />
         <LazyWorkspacesSettingsModal 
           v-model="appStore.workspaceSettingsModal.open"
           v-model:activeTab="appStore.workspaceSettingsModal.activeTab"
@@ -27,17 +30,16 @@
           hydrate-on-interaction
         />
       </ClientOnly>
+
+      <AppSettings />
     </div>
-  </UApp>
+  </AppProvider>
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue"
-import { useAppStore } from "~/stores/app"
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
 
 const config = useRuntimeConfig()
-const appStore = useAppStore()
 
 // SEO and head configuration
 useOpnSeoMeta({
@@ -74,53 +76,5 @@ useHead({
   htmlAttrs: () => ({
     dir: 'ltr'
   })
-})
-
-// Get Crisp chat state from the store
-const crispChatOpened = computed(() => appStore.crisp.chatOpened)
-const crispHidden = computed(() => appStore.crisp.hidden)
-
-// Configure toaster positioning based on Crisp chat state
-const toasterConfig = computed(() => {
-  const baseConfig = {
-    position: 'bottom-right',
-    duration: 5000,
-    expand: true,
-  }
-
-  // Dynamically adjust the UI class based on Crisp chat state
-  if (crispHidden.value) {
-    // Crisp is hidden: normal bottom-right position
-    return {
-      ...baseConfig,
-      ui: {
-        viewport: 'end-4 bottom-4',
-      },
-    }
-  }
-
-  if (crispChatOpened.value) {
-    // Crisp chat is opened: keep default bottom-right (chat overlay already shifted)
-    return {
-      ...baseConfig,
-      ui: {
-        viewport: 'end-4 bottom-4',
-      },
-    }
-  }
-
-  // Crisp chat is closed but visible: move toasts above the chat button
-  return {
-    ...baseConfig,
-    ui: {
-      viewport: 'end-4 bottom-24',
-    },
-  }
-})
-
-// Lifecycle
-onMounted(() => {
-  useCrisp().onCrispInit()
-  useCrisp().showChat()
 })
 </script>

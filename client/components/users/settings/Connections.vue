@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">External Connections</h3>
-        <p class="text-sm text-neutral-500 mt-1">
+        <p class="mt-1 text-sm text-neutral-500">
           Manage your external connections and integrations.
         </p>
       </div>

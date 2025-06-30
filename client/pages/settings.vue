@@ -97,7 +97,7 @@ const tabsList = computed(() => {
   if (user?.value?.admin) {
     tabs.push({
       name: "Admin",
-      route: "settings-admin",
+      route: "admin",
     })
   }
 

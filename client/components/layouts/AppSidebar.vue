@@ -71,6 +71,12 @@
         </ul>
       </div>
     </nav>
+    <div class="p-2 border-t border-neutral-200">
+      <p class="text-xs text-neutral-400 text-center">
+        <span class="font-bold">OpnForm</span>
+        <span class="text-neutral-500" v-if="version"> v{{ version }}</span>
+      </p>
+    </div>
   </aside>
 </template>
 
@@ -88,6 +94,7 @@ const crisp = useCrisp()
 
 const workspace = computed(() => workspacesStore.getCurrent)
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
+const version = computed(() => useFeatureFlag('version'))
 
 // Check if current route matches a prefix
 function isActiveRoute(prefix) {
@@ -165,6 +172,7 @@ const navigationSections = computed(() => [
         icon: 'heroicons:plus',
         to: { name: 'forms-create' },
         active: isActiveRoute('forms-create'),
+        color: 'primary',
       }),
       createNavItem({
         label: 'Home', 
