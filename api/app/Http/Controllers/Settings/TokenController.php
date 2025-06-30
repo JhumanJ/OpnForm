@@ -29,6 +29,7 @@ class TokenController
 
         return response()->json([
             'token' => $token->plainTextToken,
+            'message' => 'Access token successfully created!',
         ]);
     }
 

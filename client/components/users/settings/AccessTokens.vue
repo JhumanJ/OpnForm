@@ -145,8 +145,8 @@
     </div>
 
     <!-- Access Token Modal -->
-    <AccessTokenModal
-      :show="accessTokenModal"
+    <UsersSettingsAccessTokenModal
+      v-model="accessTokenModal"
       @close="accessTokenModal = false"
     />
   </div>
