@@ -6,6 +6,13 @@
     @close="appStore.setUserSettingsModalTab(null)"
     hydrate-on-interaction
   />
+  <WorkspacesSettingsModal 
+    v-if="authStore.check"
+    v-model="isWorkspaceModalOpen"
+    v-model:activeTab="appStore.workspaceSettingsModalTab"
+    @close="appStore.setWorkspaceSettingsModalTab(null)"
+    hydrate-on-interaction
+  />
 </template>
 
 <script setup>
@@ -21,6 +28,15 @@ const isModalOpen = computed({
   set: (value) => {
     if (!value) {
       appStore.setUserSettingsModalTab(null)
+    }
+  },
+})
+
+const isWorkspaceModalOpen = computed({
+  get: () => appStore.workspaceSettingsModalTab !== null,
+  set: (value) => {
+    if (!value) {
+      appStore.setWorkspaceSettingsModalTab(null)
     }
   },
 })

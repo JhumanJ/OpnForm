@@ -23,12 +23,6 @@
         <feature-base />
         <SubscriptionModal />
         <QuickRegister />
-        <LazyWorkspacesSettingsModal 
-          v-model="appStore.workspaceSettingsModal.open"
-          v-model:activeTab="appStore.workspaceSettingsModal.activeTab"
-          @close="appStore.closeWorkspaceSettingsModal"
-          hydrate-on-interaction
-        />
       </ClientOnly>
 
       <AppSettings />

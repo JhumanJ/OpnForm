@@ -27,7 +27,7 @@
             icon="i-heroicons-cog-6-tooth"
             size="sm"
             variant="outline"
-            @click="appStore.openWorkspaceSettingsModal()"
+            @click="appStore.setWorkspaceSettingsModalTab('information')"
             label="Settings"
           />
           <UButton
