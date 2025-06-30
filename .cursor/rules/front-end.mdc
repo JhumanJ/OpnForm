@@ -27,6 +27,7 @@ We don't use typescript, javascript only (except when really required for config
 - Use Nuxt UI components (https://ui.nuxt.com/components) and Tailwind for components and styling. Ex: <UModal>, <UPopover>, <UToolTip>, <UBadge> etc... Essentially use NuxtUI for everything but for form components.
 - Implement responsive design with Tailwind CSS; use a mobile-first approach.
 - Build UI components using atomic design principles, organizing them from smallest to largest (e.g., atoms, molecules, organisms, pages).
+- Icons: use the <Icon> component, and for icon names always use `i-library-icon` syntax.
 
 Forms
 - For forms inputs, use the components in client/components/forms such as <TextInput> etc.

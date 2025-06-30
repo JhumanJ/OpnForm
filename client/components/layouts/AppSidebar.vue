@@ -1,10 +1,15 @@
 <template>
-  <aside class="fixed left-0 top-0 h-full w-58 bg-neutral-100 border-r border-neutral-200 flex flex-col">
+  <aside :class="{
+    'fixed inset-0 z-50': isMobileMenuOpen,
+    'sticky top-0 z-40 w-full sm:fixed sm:h-full sm:w-58 sm:border-r': !isMobileMenuOpen,
+    }"
+    class="bg-neutral-100 border-neutral-200 flex flex-col transition-all duration-300 ease-in-out"
+  >
     <!-- Top Section: Workspace (left) and User (right) -->
-    <div class="p-2 border-b border-neutral-200">
+    <div class="p-1 border-b border-neutral-200 h-[49px]">
       <div class="flex items-center justify-between gap-1">
         <!-- Workspace Dropdown -->
-        <div class="flex-1 min-w-0">
+        <div class="sm:flex-1 min-w-0">
           <WorkspaceDropdown>
             <template #default="{ workspace }">
               <button
@@ -23,6 +28,7 @@
         </div>
         
         <!-- User Dropdown -->
+         <div class="flex gap-2 items-center">
         <UserDropdown>
           <template #default="{ user }">
             <button
@@ -37,11 +43,29 @@
             </button>
           </template>
         </UserDropdown>
+
+        <!-- Mobile Menu Toggle -->
+        <div
+         :class="{ 'sm:hidden': !isMobileMenuOpen }">
+          <UButton
+            square
+            size="xl"
+            class="hover:bg-neutral-200/80"
+            :icon="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-bars-3'"
+            variant="ghost"
+            color="neutral"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+          />
+        </div>
+        </div>
       </div>
     </div>
 
     <!-- Navigation Sections -->
-    <nav class="flex-1 p-2 overflow-y-auto flex flex-col">
+    <nav 
+      class="flex-1 p-2 overflow-y-auto flex flex-col"
+      :class="{ 'hidden': !isMobileMenuOpen, 'sm:flex': true }"
+    >
       <div 
         v-for="(section, index) in navigationSections" 
         :key="section.name || 'main'"
@@ -63,15 +87,25 @@
         <ul class="space-y-1">
           <li v-for="item in section.items" :key="item.label">
             <UButton
+              v-track.sidebar_nav_click="item.label"
               v-bind="item"
               class="w-full justify-start"
               @click="item.onClick"
-            />
+            >
+              <template #trailing v-if="item.kbd">
+                <span class="flex ml-auto">
+                  <UKbd v-for="kbd in item.kbd" :key="kbd" :value="kbd" />
+                </span>
+              </template>
+            </UButton>
           </li>
         </ul>
       </div>
     </nav>
-    <div class="p-2 border-t border-neutral-200">
+    <div 
+      class="p-2 border-t border-neutral-200"
+      :class="{ 'hidden': !isMobileMenuOpen, 'sm:block': true }"
+    >
       <p class="text-xs text-neutral-400 text-center">
         <span class="font-bold">OpnForm</span>
         <span class="text-neutral-500" v-if="version"> v{{ version }}</span>
@@ -81,16 +115,37 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
 import WorkspaceDropdown from "~/components/global/WorkspaceDropdown.vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import UserDropdown from "~/components/global/UserDropdown.vue"
 import opnformConfig from "~/opnform.config.js"
+import { useRouter } from "vue-router"
 
 const workspacesStore = useWorkspacesStore()
 const appStore = useAppStore()
 const route = useRoute()
+const router = useRouter()
 const crisp = useCrisp()
+
+const isMobileMenuOpen = ref(false)
+
+defineShortcuts({
+  'n': {
+    handler: () => router.push({ name: 'forms-create' }),
+  },
+})
+
+watchEffect(() => {
+  if (import.meta.client) {
+    document.body.classList.toggle('overflow-hidden', isMobileMenuOpen.value)
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    document.body.classList.remove('overflow-hidden')
+  }
+})
 
 const workspace = computed(() => workspacesStore.getCurrent)
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
@@ -136,6 +191,7 @@ const createNavItem = (item) => {
   if (baseItem.variant === 'ghost' && baseItem.color === 'neutral') {
     customClasses.push('hover:bg-neutral-200/80')
     baseItem.ui = {
+      ...baseItem.ui,
       leadingIcon: 'text-neutral-400 group-hover:text-neutral-500'
     }
   }
@@ -169,27 +225,29 @@ const navigationSections = computed(() => [
     items: [
       createNavItem({
         label: 'Create Form',
-        icon: 'heroicons:plus',
+        icon: 'i-heroicons-plus',
         to: { name: 'forms-create' },
         active: isActiveRoute('forms-create'),
         color: 'primary',
+        variant: 'ghost',
+        kbd: ['N'],
       }),
       createNavItem({
         label: 'Home', 
-        icon: 'heroicons:home',
+        icon: 'i-heroicons-home',
         to: { name: 'home' },
         active: isActiveRoute('home')
       }),
       createNavItem({
         label: 'Templates',
-        icon: 'heroicons:document-duplicate',
+        icon: 'i-heroicons-document-duplicate',
         to: { name: 'templates-my-templates' },
         active: isActiveRoute('templates')
       }),
       // Show upgrade for non-pro users
       ...(workspace.value && !workspace.value.is_pro && !isSelfHosted.value ? [createNavItem({
         label: 'Upgrade Plan',
-        icon: 'heroicons:sparkles', 
+        icon: 'i-heroicons-sparkles', 
         to: { name: 'pricing' },
         active: isActiveRoute('pricing'),
         color: 'primary' // Override default color
@@ -203,19 +261,23 @@ const navigationSections = computed(() => [
       // What's new - only show if feature base enabled
       ...(appStore.featureBaseEnabled ? [createNavItem({
         label: "What's new",
-        icon: 'heroicons:megaphone',
-        trailingIcon: hasNewChanges.value ? 'heroicons:sparkles' : undefined,
+        icon: 'i-heroicons-megaphone',
+        color: hasNewChanges.value ? 'primary' : 'neutral',
+        trailingIcon: hasNewChanges.value ? 'i-heroicons-sparkles-solid' : undefined,
+        ui: {
+          trailingIcon: 'text-blue-500'
+        },
         onClick: openChangelog
       })] : []),
       createNavItem({
         label: 'Roadmap',
-        icon: 'heroicons:map',
+        icon: 'i-heroicons-map',
         to: opnformConfig.links.roadmap,
         target: '_blank'
       }),
       createNavItem({
         label: 'Feature Requests',
-        icon: 'heroicons:light-bulb', 
+        icon: 'i-heroicons-light-bulb', 
         to: opnformConfig.links.feature_requests,
         target: '_blank'
       })
@@ -227,19 +289,19 @@ const navigationSections = computed(() => [
     items: [
       createNavItem({
         label: 'Help Center',
-        icon: 'heroicons:question-mark-circle',
+        icon: 'i-heroicons-question-mark-circle',
         to: opnformConfig.links.help_url,
         target: '_blank'
       }),
       createNavItem({
         label: 'API Docs',
-        icon: 'heroicons:code-bracket',
+        icon: 'i-heroicons-code-bracket',
         to: opnformConfig.links.api_docs,
         target: '_blank'
       }),
       ...(isSelfHosted.value || !crisp ? [] : [createNavItem({
         label: 'Contact Support',
-        icon: 'heroicons:chat-bubble-left-right',
+        icon: 'i-heroicons-chat-bubble-left-right',
         onClick: () => crisp.openChat()
       })])
     ]

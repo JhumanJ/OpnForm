@@ -4,7 +4,7 @@
     <AppSidebar />
     
     <!-- Main content area -->
-    <main class="pl-58">
+    <main class="sm:pl-58">
       <!-- Content wrapper with proper spacing -->
       <div class="min-h-screen bg-white">
         <slot />
