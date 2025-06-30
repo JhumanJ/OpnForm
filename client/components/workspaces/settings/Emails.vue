@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-4">
     <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Email Settings</h3>
@@ -8,15 +8,13 @@
         </p>
       </div>
 
-      <div class="flex shrink-0 items-center gap-2">
-        <UButton
-          label="Help"
-          icon="i-heroicons-question-mark-circle"
-          variant="outline"
-          color="primary"
-          @click="crisp.openHelpdeskArticle('how-to-send-emails-using-your-own-domain-name-and-email-address-13kkcif')"
-        />
-      </div>
+      <UButton
+        label="Help"
+        icon="i-heroicons-question-mark-circle"
+        variant="outline"
+        color="neutral"
+        @click="crisp.openHelpdeskArticle('how-to-send-emails-using-your-own-domain-name-and-email-address-13kkcif')"
+      />
     </div>
 
     <UAlert
@@ -86,26 +84,22 @@
           />
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 flex items-center justify-between w-full max-w-sm flex-wrap gap-2">
           <UButton
             type="submit"
             :loading="emailSettingsForm.busy"
             :disabled="!workspace.is_pro"
-            icon="i-heroicons-check"
           >
             Save Domain(s)
           </UButton>
           <UButton
-            class="mt-3 ml-2"
             color="neutral"
             variant="outline"
-            size="sm"
             :loading="emailSettingsForm.busy"
             :disabled="!workspace.is_pro"
-            icon="i-heroicons-x-mark"
             @click="clearEmailSettings"
           >
-            Clear
+            Clear settings
           </UButton>
         </div>
       </form>
@@ -120,6 +114,7 @@ const alert = useAlert()
 const workspace = computed(() => workspacesStore.getCurrent)
 
 const subscriptionModalStore = useSubscriptionModalStore()
+const crisp = useCrisp()
 
 const openSubscriptionModal = () => {
   subscriptionModalStore.setModalContent('Upgrade to send emails using your own domain')

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-4">
     <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Workspace Information</h3>
@@ -26,7 +26,7 @@
             :form="workspaceForm"
             name="emoji"
             label="Emoji (optional)"
-            placeholder="🚀"
+            placeholder="Emoji"
             help="Choose an emoji to represent your workspace"
           />
         </div>
@@ -111,21 +111,12 @@ const deleteWorkspace = () => {
     })
 }
 
-
-// Initialize form with user data
-onBeforeMount(() => {
-  if (workspace.value) {
-    workspaceForm.keys().forEach((key) => {
-      workspaceForm[key] = workspace.value[key]
-    })
-  }
-})
-
 // Watch for user changes
 watch(workspace, (newWorkspace) => {
   if (newWorkspace) {
-    workspaceForm.keys().forEach((key) => {
-      workspaceForm[key] = newWorkspace[key]
+    workspaceForm.fill({
+      name: newWorkspace.name || '',
+      emoji: newWorkspace.icon || ''
     })
   }
 }, { immediate: true })

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-4">
     <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">Workspace Members</h3>
@@ -14,7 +14,7 @@
           label="Invite User"
           icon="i-heroicons-user-plus-20-solid"
           :loading="loadingUsers"
-          @click="appStore.setWorkspaceInviteUserModal(true)"
+          @click="showInviteUserModal = true"
         />
       </div>
     </div>
@@ -35,16 +35,13 @@
             >
               -
             </p>
-            <UButtonGroup
-              v-else
-              size="2xs"
-            >
+            <div v-else class="flex items-center gap-1">
               <UTooltip text="Edit user">
                 <UButton
                   icon="i-heroicons-pencil-square"
                   color="primary"
-                  variant="outline"
-                  size="sm"
+                  variant="soft"
+                  size="xs"
                   square
                   @click="editUser(item)"
                 />
@@ -55,12 +52,12 @@
                   color="error" 
                   variant="soft"
                   icon="i-heroicons-trash"
-                  size="sm"
+                  size="xs"
                   square
                   @click="removeUser(item)"
                 />
               </UTooltip>
-            </UButtonGroup>
+            </div>
           </template>
           <UButtonGroup
             v-else-if="item.type == 'invitee'"
@@ -141,13 +138,18 @@
       </template>
     </UModal>
 
+    <WorkspacesSettingsInviteUser
+      v-model="showInviteUserModal"
+      @user-added="getWorkspaceUsers"
+    />
   </div>
 </template>
 
 <script setup>
+import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
+
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
-const appStore = useAppStore()
 const alert = useAlert()
 
 const workspace = computed(() => workspacesStore.getCurrent)
@@ -155,6 +157,7 @@ const user = computed(() => authStore.user)
 const users = ref([])
 const loadingUsers = ref(true)
 const showEditUserModal = ref(false)
+const showInviteUserModal = ref(false)
 const selectedUser = ref(null)
 const editUserForm = useForm({
   role: 'user'
@@ -192,16 +195,12 @@ const tableColumns = computed(() => {
   ]
 })
 
-onMounted(() => {
-  getWorkspaceUsers()
-})
-
 // Watch for modal close to refresh users
-watch(() => appStore.workspaceInviteUserModal, (newValue, oldValue) => {
+/* watch(() => appStore.workspaceInviteUserModal, (newValue, oldValue) => {
   if (oldValue === true && newValue === false) {
     getWorkspaceUsers()
   }
-})
+}) */
 
 const getWorkspaceUsers = async () => {
   loadingUsers.value = true
@@ -231,6 +230,8 @@ const getWorkspaceUsers = async () => {
   users.value = [...data, ...invites]
   loadingUsers.value = false
 }
+
+await getWorkspaceUsers()
 
 const editUser = (user) => {
   selectedUser.value = user

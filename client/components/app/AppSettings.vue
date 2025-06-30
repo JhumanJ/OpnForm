@@ -13,11 +13,6 @@
     @close="appStore.setWorkspaceSettingsModalTab(null)"
     hydrate-on-interaction
   />
-  <WorkspacesSettingsInviteUser 
-    v-if="authStore.check"
-    v-model="appStore.workspaceInviteUserModal"
-    @close="appStore.setWorkspaceInviteUserModal(false)"
-  />
 </template>
 
 <script setup>
@@ -48,6 +43,7 @@ const isWorkspaceModalOpen = computed({
 
 // Modal state management via URL query parameter
 const userSettingsModalQuery = useRouteQuery('user-settings')
+const workspaceSettingsModalQuery = useRouteQuery('workspace-settings')
 
 // Sync URL -> Store
 // Watch the URL parameter and the authentication status.
@@ -62,6 +58,17 @@ watch([userSettingsModalQuery, () => authStore.check], ([tab, isLoggedIn]) => {
   }
 }, { immediate: true })
 
+// Sync URL -> Store for workspace settings
+watch([workspaceSettingsModalQuery, () => authStore.check], ([tab, isLoggedIn]) => {
+  if (tab && isLoggedIn) {
+    appStore.setWorkspaceSettingsModalTab(tab)
+  }
+  else if (!tab) {
+    // Clear tab when param removed
+    appStore.setWorkspaceSettingsModalTab(null)
+  }
+}, { immediate: true })
+
 // Sync Store -> URL
 // This ensures that when the modal is closed (tab is set to null),
 // the parameter is removed from the URL.
@@ -72,10 +79,22 @@ watch(() => appStore.userSettingsModalTab, (currentTab) => {
   }
 })
 
+// Sync Store -> URL for workspace settings
+watch(() => appStore.workspaceSettingsModalTab, (currentTab) => {
+  const newQueryValue = currentTab || undefined
+  if (workspaceSettingsModalQuery.value !== newQueryValue) {
+    workspaceSettingsModalQuery.value = newQueryValue
+  }
+})
+
 // Ensure modal opens on first mount if query param already present and user is authenticated
 onMounted(() => {
   if (userSettingsModalQuery.value && authStore.check) {
     appStore.setUserSettingsModalTab(userSettingsModalQuery.value)
+  }
+
+  if (workspaceSettingsModalQuery.value && authStore.check) {
+    appStore.setWorkspaceSettingsModalTab(workspaceSettingsModalQuery.value)
   }
 })
 </script> 

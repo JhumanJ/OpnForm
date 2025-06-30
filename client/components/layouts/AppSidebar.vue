@@ -14,7 +14,7 @@
             <template #default="{ workspace }">
               <button
                 v-if="workspace"
-                class="flex items-center gap-2 p-2 rounded-md hover:bg-neutral-200 transition-colors w-full text-left"
+                class="flex items-center gap-2 p-2 rounded-md hover:bg-neutral-200 transition-colors min-w-32 text-left"
               >
                 <WorkspaceIcon :workspace="workspace" />
                 <div class="flex-1 min-w-0">

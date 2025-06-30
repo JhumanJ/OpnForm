@@ -1,7 +1,9 @@
 <template>
   <UModal
     v-model:open="isOpen"
-    @close="closeModal"
+    :content="{
+      onPointerDownOutside: (event) => { if (event.target?.closest('.crisp-client')) {return event.preventDefault()}}
+    }"
   >
     <template #header>
       <div class="flex items-center w-full gap-4 px-2">
@@ -11,7 +13,7 @@
           size="40px"
         />
         <h2 class="text-lg font-semibold">
-          Invite a new user and collaborate on building forms
+          Invite a new user
         </h2>
       </div>
       <UButton
@@ -38,7 +40,7 @@
             You will be charged $6/month for each user you invite to this workspace. More details on the
             <NuxtLink
               target="_blank"
-              class="underline"
+              class="underline cursor-pointer"
               @click="openBilling"
             >
               billing
@@ -125,7 +127,7 @@ const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
 const workspace = computed(() => workspacesStore.getCurrent)
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['update:modelValue', 'user-added'])
 
 const roleOptions = [
   {name: "User", value: "user"},
@@ -136,7 +138,7 @@ const roleOptions = [
 // Modal state
 const isOpen = computed({
   get: () => props.modelValue,
-  set: (value) => emit('close', value)
+  set: (value) => emit('update:modelValue', value)
 })
 
 // Methods
@@ -166,7 +168,7 @@ const addUser = () => {
   inviteUserForm.post("/open/workspaces/" + workspacesStore.currentId + "/users/add").then((data) => {
     inviteUserForm.reset()
     useAlert().success(data.message)
-
+    emit('user-added')
     closeModal()
   }).catch((error) => {
     useAlert().error("There was an error adding user: " + error.data.message)
