@@ -6,12 +6,15 @@ function parseNumber(value, defaultValue = 0) {
 export default {
   // Keys within public, will be also exposed to the client-side
   public: {
+    gtm: {
+      id: process.env.NUXT_PUBLIC_GTM_CODE || null,
+      enabled: false,
+    },
     apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
     appUrl: process.env.NUXT_PUBLIC_APP_URL || '',
     env: process.env.NUXT_PUBLIC_ENV || 'local',
     hCaptchaSiteKey: process.env.NUXT_PUBLIC_H_CAPTCHA_SITE_KEY || null,
     reCaptchaSiteKey: process.env.NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY || null,
-    gtmCode: process.env.NUXT_PUBLIC_GTM_CODE || null,
     amplitudeCode: process.env.NUXT_PUBLIC_AMPLITUDE_CODE || null,
     crispWebsiteId: process.env.NUXT_PUBLIC_CRISP_WEBSITE_ID || null,
     rootRedirectUrl: process.env.NUXT_PUBLIC_ROOT_REDIRECT_URL || null,

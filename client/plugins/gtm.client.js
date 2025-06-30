@@ -1,12 +1,15 @@
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig()
+  const gtmId = config.public.gtmCode
+
   const route = useRoute()
   const isIframe = useIsIframe()
   const isPublicFormPage = route.name === 'forms-slug'
   
+  const gtm = useGtm()
+
   // Only enable GTM if not in a form page (for respondents) and not in an iframe
-  if (!isPublicFormPage && !isIframe) {
-    // Initialize GTM manually only when needed
-    const gtm = useGtm()
+  if (gtmId && gtm && !isPublicFormPage && !isIframe) {
     
     // Override the enabled setting to true for this session
     gtm.enable(true)
