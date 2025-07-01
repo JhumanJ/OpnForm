@@ -19,9 +19,21 @@
       :content="false"
       :items="[
         { label: 'Build', value: 'build' },
-        { label: 'Design', value: 'design'},
-        { label: 'Settings', value: 'settings' }
+        { label: 'Design', value: 'design'}
       ]"
+    />
+    <UButton
+      color="primary"
+      variant="outline"
+      size="sm"
+      icon="i-heroicons-cog-6-tooth"
+      label="Settings"
+      @click="settingsModal = true"
+    />
+    <FormSettingsModal
+      v-model="settingsModal"
+      @close="settingsModal = false"
+      hydrate-on-interaction
     />
 
     <div class="flex-grow flex justify-center gap-2">
@@ -116,11 +128,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import UndoRedo from '../../editors/UndoRedo.vue'
-import { useWorkingFormStore } from '~/stores/working_form'
-import { useCrisp } from '~/composables/useCrisp'
+import UndoRedo from '~/components/open/editors/UndoRedo.vue'
+import FormSettingsModal from '~/components/open/forms/components/form-components/FormSettingsModal.vue'
 
 defineProps({
   backButton: {
@@ -150,4 +160,6 @@ const crisp = useCrisp()
 
 const form = computed(() => workingFormStore.content)
 const { activeTab } = storeToRefs(workingFormStore)
+
+const settingsModal = ref(false)
 </script>

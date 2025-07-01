@@ -1,20 +1,21 @@
 <template>
-  <SettingsSection
-    name="Link Settings"
-    icon="i-heroicons-link"
-  >  
-    <h4 class="font-semibold mt-4 border-t pt-4">
-      SEO & Social Sharing - Meta <ProTag
-        class="ml-2"
-        upgrade-modal-title="Upgrade to Enhance Your Form's SEO"
-        upgrade-modal-description="Explore advanced SEO features in the editor on our Free plan. Upgrade to fully implement custom meta tags, Open Graph data, and improved search visibility. Boost your form's online presence and attract more respondents with our premium SEO toolkit."
-      />
-    </h4>
-    <p class="text-gray-500 text-sm">
-      Customize the image and text that appear when you share your form on other
-      sites (Open Graph).
-    </p>
-    <select-input
+  <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="text-lg font-medium text-neutral-900">
+          SEO & Social Sharing - Meta <ProTag
+          class="ml-2"
+          upgrade-modal-title="Upgrade to Enhance Your Form's SEO"
+          upgrade-modal-description="Explore advanced SEO features in the editor on our Free plan. Upgrade to fully implement custom meta tags, Open Graph data, and improved search visibility. Boost your form's online presence and attract more respondents with our premium SEO toolkit."
+        />
+        </h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          Customize the image and text that appear when you share your form on other sites (Open Graph).
+        </p>
+      </div>
+    </div>
+
+    <SelectInput
       v-if="useFeatureFlag('custom_domains')"
       v-model="form.custom_domain"
       :clearable="true"
@@ -36,7 +37,7 @@
       <text-area-input
         v-model="form.seo_meta.page_description"
         name="page_description"
-        class="max-w-xs"
+        class="mt-4 max-w-xs"
         label="Page Description"
         help="Between 150 and 160 characters"
       />
@@ -87,52 +88,38 @@
         help="Use only lowercase letters, numbers, and hyphens. Example: my-custom-form"
       />
     </div>
-  </SettingsSection>
+  </div>
 </template>
 
-<script>
-import ProTag from '~/components/global/ProTag.vue'
-import { useWorkingFormStore } from '../../../../../stores/working_form'
+<script setup>
+const workingFormStore = useWorkingFormStore()
+const workspacesStore = useWorkspacesStore()
+const { content: form } = storeToRefs(workingFormStore)
 
-export default {
-  components: {
-    ProTag
-  },
-  setup () {
-    const workingFormStore = useWorkingFormStore()
-    return {
-      workingFormStore,
-      workspacesStore: useWorkspacesStore(),
-      form: storeToRefs(workingFormStore).content
-    }
-  },
-  computed: {
-    workspace() {
-      return this.workspacesStore.getCurrent
-    },
-    customDomainOptions() {
-      return this.workspace.custom_domains
-        ? this.workspace.custom_domains.map((domain) => {
-            return {
-              name: domain,
-              value: domain,
-            }
-          })
-        : []
-    },
-  },
-  mounted () {
-    if (!this.form.seo_meta || Array.isArray(this.form.seo_meta))
-      this.form.seo_meta = {};
+const workspace = computed(() => workspacesStore.getCurrent)
 
-    ['page_title', 'page_description', 'page_thumbnail', 'page_favicon'].forEach((keyname) => {
-      if (this.form.seo_meta[keyname] === undefined)
-        this.form.seo_meta[keyname] = null
-    })
+const customDomainOptions = computed(() => {
+  return workspace.value.custom_domains
+    ? workspace.value.custom_domains.map((domain) => {
+        return {
+          name: domain,
+          value: domain,
+        }
+      })
+    : []
+})
 
-    if (this.form.custom_domain && this.workspace?.custom_domains && !this.workspace.custom_domains.find((item) => { return item === this.form.custom_domain })) {
-      this.form.custom_domain = null
-    }
+onMounted(() => {
+  if (!form.value.seo_meta || Array.isArray(form.value.seo_meta))
+    form.value.seo_meta = {};
+
+  ['page_title', 'page_description', 'page_thumbnail', 'page_favicon'].forEach((keyname) => {
+    if (form.value.seo_meta[keyname] === undefined)
+      form.value.seo_meta[keyname] = null
+  })
+
+  if (form.value.custom_domain && workspace.value?.custom_domains && !workspace.value.custom_domains.find((item) => { return item === form.value.custom_domain })) {
+    form.value.custom_domain = null
   }
-}
+})
 </script>

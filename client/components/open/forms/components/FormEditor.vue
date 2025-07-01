@@ -47,13 +47,8 @@
     </FormEditorNavbar>
 
     <FormEditorErrorHandler>
-      <div
-        v-show="activeTab !== 'settings'"
-        class="w-full flex grow overflow-y-scroll relative bg-white"
-      >
-        <div
-          class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5"
-        >
+      <div class="w-full flex grow overflow-y-scroll relative bg-white">
+        <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
           <VForm
             size="sm"
             @submit.prevent=""
@@ -76,8 +71,6 @@
         <FormEditorSidebar />
       </div>
     </FormEditorErrorHandler>
-
-    <FormSettings v-show="activeTab === 'settings'" />
 
     <!-- Form Error Modal -->
     <FormErrorModal
@@ -112,7 +105,6 @@ import FormEditorPreview from "./form-components/FormEditorPreview.vue"
 import { useFormLogic } from "~/composables/forms/useFormLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
-import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
@@ -128,7 +120,6 @@ export default {
     FormCustomization,
     FormFieldsEditor,
     FormErrorModal,
-    FormSettings,
     LogicConfirmationModal
   },
   props: {
