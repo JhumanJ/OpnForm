@@ -1,9 +1,9 @@
 <template>
   <aside :class="{
-    'fixed inset-0 z-50': isMobileMenuOpen,
-    'sticky top-0 z-40 w-full sm:fixed sm:h-full sm:w-58 sm:border-r': !isMobileMenuOpen,
+    'fixed inset-0': isMobileMenuOpen,
+    'sticky top-0 w-full sm:fixed sm:h-full sm:w-58 sm:border-r': !isMobileMenuOpen,
     }"
-    class="bg-neutral-100 border-neutral-200 flex flex-col transition-all duration-300 ease-in-out"
+    class="bg-neutral-100 border-neutral-200 flex flex-col transition-all duration-300 ease-in-out z-[60]"
   >
     <!-- Top Section: Workspace (left) and User (right) -->
     <div class="p-1 border-b border-neutral-200 h-[49px]">
