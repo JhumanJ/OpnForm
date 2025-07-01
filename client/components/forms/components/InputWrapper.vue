@@ -15,11 +15,12 @@
       />
       </VTransition>
     </slot>
-    <VTransition name="fadeHeight">
+    
     <slot
       v-if="helpPosition === 'above_input'"
       name="help"
     >
+    <VTransition name="fadeHeight">
       <InputHelp
         :help="help"
         :help-classes="theme.default.help"
@@ -28,15 +29,15 @@
           <slot name="bottom_after_help" />
         </template>
       </InputHelp>
-    </slot>
     </VTransition>
+    </slot>
     <slot />
 
-    <VTransition name="fadeHeightDown">
     <slot
       v-if="helpPosition === 'below_input'"
       name="help"
     >
+    <VTransition name="fadeHeightDown">
       <InputHelp
         :help="help"
         :help-classes="theme.default.help"
@@ -45,16 +46,18 @@
           <slot name="bottom_after_help" />
         </template>
       </InputHelp>
+    </VTransition>
     </slot>
     <slot name="error">
+      <VTransition name="fadeHeightDown">
       <has-error
         v-if="hasValidation && form"
         :form="form"
         :field-id="name"
         :field-name="label"
       />
-    </slot>
     </VTransition>
+    </slot>
   </div>
 </template>
 

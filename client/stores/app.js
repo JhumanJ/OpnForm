@@ -13,6 +13,12 @@ export const useAppStore = defineStore("app", {
     quickLoginModal: false,
     quickRegisterModal: false,
     
+    // User Settings Modal
+    userSettingsModalTab: null, // Holds active tab ID, e.g., 'account'. null = closed.
+
+    // Workspace Settings Modal
+    workspaceSettingsModalTab: null, // Holds active tab ID, e.g., 'information'. null = closed.
+
     // App Loader
     loader: {
       percent: 0,
@@ -86,5 +92,16 @@ export const useAppStore = defineStore("app", {
         }, 100),
       )
     },
+    
+    // User Settings Modal methods
+    setUserSettingsModalTab(tab = null) {
+      this.userSettingsModalTab = tab
+    },
+
+    // Workspace Settings Modal methods
+    setWorkspaceSettingsModalTab(tab = null) {
+      this.workspaceSettingsModalTab = tab
+    },
+
   },
 })

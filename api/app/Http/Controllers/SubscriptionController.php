@@ -73,7 +73,11 @@ class SubscriptionController extends Controller
     {
         $user = Auth::user();
         if (!$user->hasStripeId()) {
-            $user->createAsStripeCustomer();
+            $user->createAsStripeCustomer([
+                'metadata' => [
+                    'user_id' => $user->id,
+                ],
+            ]);
         }
         $user->updateStripeCustomer([
             'email' => $request->email,

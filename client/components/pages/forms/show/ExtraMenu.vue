@@ -8,14 +8,21 @@
     </div>
     <UDropdownMenu
       v-else
+      class="z-20"
+      arrow
       :items="items"
+      :content="content"
+      :modal="false"
+      :portal="false"
     >
+      <slot>
       <UButton
         color="neutral"
-        variant="outline"
+        variant="ghost"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
       />
+      </slot>
     </UDropdownMenu>
 
     <!-- Delete Form Modal -->
@@ -94,6 +101,10 @@ const router = useRouter()
 const props = defineProps({
   form: { type: Object, required: true },
   isMainPage: { type: Boolean, required: false, default: false },
+  content: { 
+    type: Object, 
+    required: false, 
+    default: () => ({side: 'bottom', align: 'end'}) }
 })
 
 const authStore = useAuthStore()

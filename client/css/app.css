@@ -154,7 +154,7 @@
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+        border-color: var(--color-neutral-200, currentColor);
     }
 
     button:not(:disabled),
@@ -172,19 +172,18 @@
     }
 
     #app {
-        font-family: GeneralSans, sans-serif !important;
+        font-family: Inter, sans-serif !important;
         min-height: 100vh;
+        color: var(--color-neutral-800);
+    }
+
+    :where(.dark) #app {
+        color: white;
     }
 
     p,
     div {
-        color: var(--color-neutral-800);
         text-align: inherit;
-    }
-
-    :where(.dark) p,
-    :where(.dark) div {
-        color: white;
     }
 
     h1,
@@ -224,10 +223,6 @@
 
     a {
         color: var(--color-blue-500);
-    }
-
-    a:hover {
-        text-decoration: underline;
     }
 }
 
@@ -323,14 +318,14 @@ body.dark * {
 }
 
 #app {
-    font-family: GeneralSans, sans-serif !important;
+    font-family: Inter, sans-serif !important;
     @apply min-h-screen;
 }
 
 @layer base {
     p,
     div {
-        @apply text-neutral-800 dark:text-white text-inherit;
+        @apply text-inherit;
     }
 
     h1,
@@ -351,7 +346,7 @@ body.dark * {
     }
 
     a {
-        @apply text-blue-500 hover:underline;
+        @apply text-blue-500;
     }
 }
 
@@ -376,4 +371,8 @@ body.dark * {
 .mention-input span[mention],
 .mention-input span[mention="true"] {
     @apply inline-flex items-center align-baseline leading-tight text-sm relative bg-blue-100 text-blue-800 border border-blue-200 rounded-md px-1 py-0.5 mx-0.5 max-w-[200px] whitespace-nowrap overflow-hidden truncate;
+}
+
+.crisp-client {
+    pointer-events: auto;
 }
