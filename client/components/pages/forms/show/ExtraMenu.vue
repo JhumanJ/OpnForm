@@ -18,7 +18,7 @@
       <slot>
       <UButton
         color="neutral"
-        variant="ghost"
+        variant="outline"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
       />
@@ -127,7 +127,7 @@ const items = computed(() => {
       ...props.isMainPage ? [{
         label: 'View form',
         icon: 'i-heroicons-eye-16-solid',
-        onclick: () => {
+        onClick: () => {
           if (props.isMainPage && props.form.visibility === 'draft') {
             showDraftFormWarningNotification()
           } else {
@@ -138,9 +138,7 @@ const items = computed(() => {
       ...props.isMainPage ? [{
         label: 'Copy link to share',
         icon: 'i-heroicons-clipboard-document-check-20-solid',
-        onclick: () => {
-          copyLink()
-        }
+        onClick: copyLink
       }] : []
     ],
     ...workspace.value.is_readonly ? [] : [
@@ -153,22 +151,21 @@ const items = computed(() => {
       {
         label: 'Duplicate form',
         icon: 'i-heroicons-document-duplicate-20-solid',
-        onclick: () => {
-          duplicateForm()
-        }
+        onClick: duplicateForm
+        
       }], 
     [
       ...props.isMainPage ? [] : [{
         label: 'Create Template',
         icon: 'i-heroicons-document-plus-20-solid',
-        onclick: () => {
+        onClick: () => {
           showFormTemplateModal.value = true
         }
       }],
       {
         label: 'Change workspace',
         icon: 'i-heroicons-building-office-2-20-solid',
-        onclick: () => {
+        onClick: () => {
           showFormWorkspaceModal.value = true
         }
       },

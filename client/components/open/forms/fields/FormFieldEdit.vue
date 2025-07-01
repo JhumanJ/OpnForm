@@ -217,7 +217,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Copy field ID',
       icon: 'i-heroicons-clipboard-20-solid',
-      onclick: () => {
+      onClick: () => {
         navigator.clipboard.writeText(field.value.id)
         useAlert().success('Field ID copied to clipboard')
       }
@@ -225,7 +225,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
-      onclick: () => {
+      onClick: () => {
         const newField = clonedeep(field.value)
         newField.id = generateUUID()
         newField.name = 'Copy of ' + newField.name
@@ -253,7 +253,7 @@ const dropdownItems = computed(() => {
     label: 'Remove',
     icon: 'i-heroicons-trash-20-solid',
     color: 'error',
-    onclick: removeBlock
+    onClick: removeBlock
   }])
 
   return baseItems
