@@ -8,12 +8,12 @@
     </div>
     <UDropdownMenu
       v-else
-      class="z-20"
+      class="z-50"
       arrow
       :items="items"
       :content="content"
       :modal="false"
-      :portal="false"
+      :portal="portal"
     >
       <slot>
       <UButton
@@ -104,7 +104,9 @@ const props = defineProps({
   content: { 
     type: Object, 
     required: false, 
-    default: () => ({side: 'bottom', align: 'end'}) }
+    default: () => ({side: 'bottom', align: 'end'}) 
+  },
+  portal: { type: [Boolean, String], required: false, default: false }
 })
 
 const authStore = useAuthStore()
