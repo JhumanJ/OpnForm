@@ -120,13 +120,14 @@ export const useWorkingFormStore = defineStore("working_form", {
      * @param {number|null} explicitIndex - Optional explicit index to insert at
      * @returns {number} The index where the block should be inserted relative to all properties
      */
-    determineInsertIndex(explicitIndex) {
+    determineInsertIndex(explicitIndex, insertOnSamePage = false) {
       // If we have a structure service, use its method
       if (this.structureService) {
         return this.structureService.determineInsertIndex(
           this.selectedFieldIndex,
           this.formPageIndex,
-          explicitIndex
+          explicitIndex,
+          insertOnSamePage
         )
       }
       
@@ -223,6 +224,15 @@ export const useWorkingFormStore = defineStore("working_form", {
       if (openSettings) {
         this.openSettingsForField(insertIndex)
       }
+    },
+    addGeneratedFields(fields) {
+      if (!this.content) return
+      
+      const insertIndex = this.determineInsertIndex(null, true)
+      
+      const newFields = clonedeep(this.content.properties || [])
+      newFields.splice(insertIndex, 0, ...fields)
+      this.setProperties(newFields)
     },
     removeField(field) {
       this.internalRemoveField(field)
