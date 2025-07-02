@@ -8,11 +8,15 @@
   >
     <div ref="topBar" class="flex items-center gap-2 p-2 overflow-x-auto">
       <UInput 
+        size="sm"
+        variant="ghost"
         class="max-w-sm min-w-[12ch]" 
         placeholder="Search..." 
         @update:model-value="table?.tableApi?.setGlobalFilter($event)"
       />
       <USelectMenu
+        size="sm"
+        variant="ghost"
         class="w-32"
         v-if="hasStatus"
         :model-value="selectedStatus"
@@ -26,9 +30,10 @@
         :content="{ align: 'end' }"
       >
         <UButton
+          size="sm"
+          variant="ghost"
           label="Columns"
           color="neutral"
-          variant="outline"
           trailing-icon="i-lucide-chevron-down"
           class="ml-auto"
         />
@@ -42,16 +47,17 @@
       </UDropdownMenu>
 
       <UButton
+        size="sm"
         color="neutral"
-        variant="outline"
-        icon="heroicons:arrow-down-tray"
+        variant="ghost"
         label="Export"
         :loading="exportLoading"
         @click="downloadAsCsv"
       />
-      <UButton
+      <UButton  
+        size="sm"
         color="neutral"
-        variant="outline"
+        variant="ghost"
         :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
         @click="toggleExpanded"
       />
@@ -68,6 +74,18 @@
       class="flex-1"
       :style="{ maxHeight }"
     >
+      <template v-for="col in tableColumns.filter(c => !['actions'].includes(c.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
+        <div class="flex items-center justify-between group relative">
+          <span class="truncate">{{ column.columnDef.header }}</span>
+          <div
+            v-if="column.getCanResize()"
+            @mousedown="getHeaderForColumn(column.id)?.getResizeHandler()($event)"
+            @touchstart="getHeaderForColumn(column.id)?.getResizeHandler()($event)"
+            class="w-1 h-full absolute top-0 right-0 bg-primary-500/50 rounded cursor-col-resize select-none touch-none opacity-0 group-hover:opacity-100"
+            :class="{ 'opacity-100': column.getIsResizing() }"
+          />
+        </div>
+      </template>
       <template 
         v-for="col in tableColumns.filter(col => !['actions', 'status'].includes(col.id))" 
         :key="col.id"
@@ -279,7 +297,7 @@ const tableColumns = computed(() => {
     cols.push({
       id: 'actions',
       accessorKey: 'actions',
-      header: 'Actions'
+      header: ''
     })
   }
   
@@ -316,7 +334,20 @@ const toggleExpanded = () => {
   })
 }
 
+const getHeaderForColumn = (columnId) => {
+  if (!table.value?.tableApi) return null
+  const header = table.value.tableApi.getFlatHeaders().find(h => h.column.id === columnId)
+  return header
+}
+
 onMounted(() => {
+  if (table.value?.tableApi) {
+    table.value.tableApi.setOptions(prev => ({
+      ...prev,
+      enableColumnResizing: true,
+      columnResizeMode: 'onChange',
+    }))
+  }
   computeMaxHeight()
 })
 
