@@ -4,7 +4,7 @@
       'bg-neutral-100 border-neutral-200 flex flex-col transition-all duration-300 ease-in-out z-[60]',
       isMobileMenuOpen
         ? 'fixed inset-0'
-        : 'sticky top-0 w-full sm:flex sm:fixed sm:h-full sm:w-58 sm:border-r',
+        : 'sticky top-0 w-full h-[49px] overflow-hidden sm:flex sm:fixed sm:h-full sm:w-58 sm:border-r',
     ]"
   >
     <!-- Top Section - Only show if there's header content or on mobile -->
@@ -34,7 +34,7 @@
     <!-- Mobile Menu Toggle (when header is hidden on desktop) -->
     <div 
       v-else
-      class="sm:hidden p-1 border-b border-neutral-200 h-[49px] flex items-center justify-start"
+      class="sm:hidden p-1 border-b border-neutral-200 h-[49px] flex items-center justify-start gap-2"
     >
       <UButton
         square

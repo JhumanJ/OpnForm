@@ -1,5 +1,5 @@
 <template>
-  <div v-if="form" class="flex h-screen bg-white">
+  <div v-if="form" class="flex flex-col sm:flex-row h-screen bg-white">
     <!-- Form Sidebar -->
     <FormSidebar :form="form" />
     
@@ -15,16 +15,23 @@
                 <h1 class="text-xl font-semibold text-gray-900 truncate">
                   {{ form.title }}
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">
-                  <span class="pr-1">{{ form.views_count }} view{{
-                    form.views_count > 0 ? "s" : ""
-                  }}</span>
-                  <span class="pr-1">- {{ form.submissions_count }} submission{{
-                    form.submissions_count > 0 ? "s" : ""
-                  }}
-                  </span>
-                  <span>- Edited {{ form.last_edited_human }}</span>
-                </p>
+                <div class="flex flex-wrap items-center gap-2 text-gray-500 text-sm mt-1">
+                  <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
+                    <div class="flex items-center gap-1">
+                      <UIcon name="i-heroicons-eye" />
+                      <span>{{ formatNumber(form.views_count) }}</span>
+                    </div>
+                  </UTooltip>
+
+                  <UTooltip :text="`${formatNumberWithCommas(form.submissions_count)} submissions`">
+                    <div class="flex items-center gap-1">
+                      <UIcon name="i-heroicons-document-text" />
+                      <span>{{ formatNumber(form.submissions_count) }}</span>
+                    </div>
+                  </UTooltip>
+
+                  <span class="whitespace-nowrap">Edited {{ form.last_edited_human }}</span>
+                </div>
               </div>
               
               <!-- Action Buttons -->
@@ -64,15 +71,16 @@
                 <extra-menu
                   v-if="!workspace.is_readonly"
                   :form="form"
+                  portal="#form-show-portals"
                 />
               </div>
             </div>
             
             <!-- Status Badges and Form Cleanings -->
-            <div class="mt-3 flex flex-wrap gap-3">
+             <div class="flex flex-wrap gap-4">
               <FormStatusBadges :form="form" />
               <form-cleanings :form="form" />
-            </div>
+             </div>
           </div>
         </div>
 
@@ -80,6 +88,8 @@
         <div class="flex-1 overflow-y-auto bg-white">
           <NuxtPage :form="form" />
         </div>
+
+        <div id="form-show-portals" class="z-20" />
       </div>
     </main>
   </div>
@@ -106,6 +116,7 @@
 
 <script setup>
 import { computed } from "vue"
+import { formatNumber, formatNumberWithCommas } from "~/lib/utils.js"
 import FormSidebar from "../../../components/layouts/FormSidebar.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"

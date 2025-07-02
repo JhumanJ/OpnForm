@@ -1,5 +1,12 @@
 <template>
   <BaseSidebar>
+
+    <!-- <template #header>
+      <h1 class="sm:hidden text-base font-medium text-neutral-500 tracking-wider px-2 truncate">
+        {{ form.title }}
+      </h1>
+    </template> -->
+
     <!-- Navigation Slot -->
     <template #navigation>
       <div 
