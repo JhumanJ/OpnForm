@@ -173,6 +173,7 @@
 
 <script>
 import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoadingMessages.vue"
+import { formsApi } from "~/api"
 
 export default {
   components: {
@@ -216,7 +217,7 @@ export default {
     fetchGeneratedForm(generationId) {
       // check every 4 seconds if form is generated
       setTimeout(() => {
-        opnFetch("/forms/ai/" + generationId)
+        formsApi.ai.get(generationId)
           .then((data) => {
             if (data.ai_form_completion.status === "completed") {
               this.useAlert.success(data.message)

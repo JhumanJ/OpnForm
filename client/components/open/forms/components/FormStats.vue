@@ -70,6 +70,7 @@ import {
   CategoryScale,
   PointElement,
 } from "chart.js"
+import { formsApi } from '~/api'
 
 ChartJS.register(
   Title,
@@ -161,18 +162,12 @@ export default {
     getChartData() {
       if (!this.form || !this.form.is_pro) { return null }
       this.isLoading = true
-      opnFetch(
-        "/open/workspaces/" +
-          this.form.workspace_id +
-          "/form-stats/" +
-          this.form.id,
-        {
-          params: {
-            date_from: this.filterForm.filter_date[0] ? this.filterForm.filter_date[0].split('T')[0] : null,
-            date_to: this.filterForm.filter_date[1] ? this.filterForm.filter_date[1].split('T')[0] : null,
-          }
+      formsApi.stats(this.form.workspace_id, this.form.id, {
+        params: {
+          date_from: this.filterForm.filter_date[0] ? this.filterForm.filter_date[0].split('T')[0] : null,
+          date_to: this.filterForm.filter_date[1] ? this.filterForm.filter_date[1].split('T')[0] : null,
         }
-      ).then((statsData) => {
+      }).then((statsData) => {
         if (statsData && statsData.views !== undefined) {
           this.chartData.labels = Object.keys(statsData.views)
           this.chartData.datasets[0].data = statsData.views

@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+import { adminApi } from '~/api'
 
 const props = defineProps({
     user: { type: Object, required: true }
@@ -58,7 +59,7 @@ onMounted(() => {
 
 const getDeletedForms = () => {
     loading.value = true
-    opnFetch("/moderator/forms/" + props.user.id + "/deleted-forms",).then(data => {
+    adminApi.forms.getDeleted(props.user.id).then(data => {
         loading.value = false
         forms.value = data.forms
     }).catch(error => {
@@ -72,9 +73,7 @@ const restoreForm = (slug) => {
         "Are you sure you want to restore this form?",
         () => {
             restoringForm.value = true
-            opnFetch("/moderator/forms/" + slug + "/restore", {
-                method: 'PATCH',
-            }).then(data => {
+            adminApi.forms.restore(slug).then(data => {
                 restoringForm.value = false
                 useAlert().success(data.message)
                 getDeletedForms()

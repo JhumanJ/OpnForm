@@ -106,6 +106,7 @@
 import { computed } from "vue"
 import { useAuthStore } from "../../../stores/auth"
 import VTransition from "~/components/global/transitions/VTransition.vue"
+import { contentApi } from "~/api"
 
 export default {
   components: { VTransition },
@@ -138,7 +139,7 @@ export default {
 
   methods: {
     loadChangelogEntries() {
-      opnFetch("/content/changelog/entries").then((data) => {
+      contentApi.changelog.getEntries().then((data) => {
         this.changelogEntries = data.splice(0, 3)
       })
     },

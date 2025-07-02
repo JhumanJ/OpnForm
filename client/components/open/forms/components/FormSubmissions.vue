@@ -100,6 +100,7 @@ import Fuse from 'fuse.js'
 import clonedeep from 'clone-deep'
 import OpenTable from '../../tables/OpenTable.vue'
 import FormColumnsSettingsModal from './FormColumnsSettingsModal.vue'
+import { formsApi } from '~/api'
 
 export default {
   name: 'FormSubmissions',
@@ -212,7 +213,7 @@ export default {
       }
       this.recordStore.startLoading()
       
-      opnFetch('/open/forms/' + this.form.id + '/submissions?page=1').then((firstResponse) => {
+      formsApi.submissions.list(this.form.id, { query: { page: 1 } }).then((firstResponse) => {
         this.recordStore.save(firstResponse.data.map((record) => record.data))
         
         const lastPage = firstResponse.meta.last_page
@@ -221,7 +222,7 @@ export default {
           // Create an array of promises for remaining pages
           const remainingPages = Array.from({ length: lastPage - 1 }, (_, i) => {
             const page = i + 2 // Start from page 2
-            return opnFetch('/open/forms/' + this.form.id + '/submissions?page=' + page)
+            return formsApi.submissions.list(this.form.id, { query: { page } })
           })
           
           // Fetch all remaining pages in parallel
@@ -264,12 +265,8 @@ export default {
         return
       }
       this.exportLoading = true
-      opnFetch(this.exportUrl, {
-        responseType: "blob",
-        method: "POST",
-        body: {
-          columns: this.displayColumns
-        }
+      formsApi.submissions.export(this.form.id, {
+        columns: this.displayColumns
       }).then(blob => {
         const filename = `${this.form.slug}-${Date.now()}-submissions.csv`
         const a = document.createElement("a")

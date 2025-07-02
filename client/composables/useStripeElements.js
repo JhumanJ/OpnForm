@@ -1,6 +1,6 @@
 import { computed, reactive, readonly } from 'vue'
 import { useI18n } from '#imports'
-import { opnFetch } from '~/composables/useOpnApi.js'
+import { formsApi } from '~/api'
 
 /**
  * Creates a Stripe elements instance with state management
@@ -105,7 +105,7 @@ export const createStripeElements = (initialAccountId = null) => {
         fetchOptions.query = { oauth_provider_id: providerIdStr }
       }
       
-      const response = await opnFetch(`/forms/${formSlug}/stripe-connect/get-account`, fetchOptions)
+      const response = await formsApi.stripe.getAccount(formSlug, fetchOptions)
       console.debug('[useStripeElements] Got account response:', response)
 
       if (response?.type === 'success' && response?.stripeAccount) {
@@ -278,7 +278,7 @@ export const createStripeElements = (initialAccountId = null) => {
     }
 
     try {
-      const responseIntent = await opnFetch('/forms/' + formSlug + '/stripe-connect/payment-intent')
+      const responseIntent = await formsApi.stripe.createPaymentIntent(formSlug)
       
       if (responseIntent?.type === 'success') {
         const intentSecret = responseIntent?.intent?.secret

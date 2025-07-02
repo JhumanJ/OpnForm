@@ -52,6 +52,7 @@
 </template>
 
 <script setup>
+import { adminApi } from '~/api'
 
 const props = defineProps({
   user: {type: Object, required: true}
@@ -72,7 +73,7 @@ onMounted(() => {
 const getPayments = () => {
   if (!props.user.stripe_id) return
   loading.value = true
-  opnFetch("/moderator/billing/" + props.user.id + "/payments",).then(data => {
+  adminApi.billing.getPayments(props.user.id).then(data => {
     loading.value = false
     payments.value = data.payments
   }).catch(error => {

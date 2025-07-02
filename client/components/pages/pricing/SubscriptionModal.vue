@@ -332,6 +332,7 @@
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
 import { fetchAllWorkspaces } from '~/stores/workspaces.js'
 import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
+import { authApi } from '~/api'
 
 const router = useRouter()
 const subscriptionModalStore = useSubscriptionModalStore()
@@ -392,7 +393,7 @@ watch(broadcastData, () => {
 
   if (broadcastData.value.type === 'success') {
     // Now we need to reload workspace and user
-    opnFetch('user').then((userData) => {
+    authApi.user.get().then((userData) => {
       authStore.setUser(userData)
 
       try {

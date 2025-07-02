@@ -134,6 +134,7 @@
 
 <script>
 import { computed } from 'vue'
+import { adminApi } from '~/api'
 
 export default {
   setup() {
@@ -201,7 +202,7 @@ export default {
       }
 
       this.loading = true
-      opnFetch(`/moderator/fetch-user/${encodeURI(this.fetchUserForm.identifier)}`).then(async (data) => {
+      adminApi.fetchUser(this.fetchUserForm.identifier).then(async (data) => {
         this.loading = false
         this.userInfo = { ...data.user, workspaces: data.workspaces }
         this.getUserPlan(data.workspaces)
@@ -227,11 +228,8 @@ export default {
       }
 
       this.templateLoading = true
-      opnFetch(`/moderator/create-template`, {
-        method: 'POST',
-        body: {
-          template_prompt: this.createTemplateForm.template_prompt
-        }
+      adminApi.createTemplate({
+        template_prompt: this.createTemplateForm.template_prompt
       }).then((data) => {
         this.templateLoading = false
         this.createTemplateForm.reset()

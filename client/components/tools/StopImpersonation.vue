@@ -35,6 +35,7 @@
 import { computed } from "vue"
 import { useAuthStore } from "../../stores/auth.js"
 import { useWorkspacesStore } from "../../stores/workspaces.js"
+import { authApi } from "~/api"
 
 export default {
   setup() {
@@ -61,7 +62,7 @@ export default {
       this.authStore.stopImpersonating()
 
       // Fetch the user.
-      const userData = await opnFetch("user")
+      const userData = await authApi.user.get()
       this.authStore.setUser(userData)
       const workspaces = await fetchAllWorkspaces()
       this.workspacesStore.set(workspaces.data.value)
