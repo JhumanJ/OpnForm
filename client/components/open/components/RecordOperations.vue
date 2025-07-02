@@ -29,6 +29,7 @@
 
 <script>
 import EditSubmissionModal from "./EditSubmissionModal.vue"
+import { formsApi } from "~/api"
 
 export default {
   components: { EditSubmissionModal },
@@ -67,13 +68,7 @@ export default {
       )
     },
     async deleteRecord() {
-      opnFetch(
-        "/open/forms/" +
-          this.form.id +
-          "/submissions/" +
-          this.submission.id,
-        { method: "DELETE" },
-      )
+      formsApi.submissions.delete(this.form.id, this.submission.id)
         .then(async (data) => {
           if (data.type === "success") {
             this.$emit("deleted", this.submission)

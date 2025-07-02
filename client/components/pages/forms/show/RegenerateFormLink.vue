@@ -105,6 +105,7 @@
 
 <script>
 import { useFormsStore } from "../../../../stores/forms"
+import { formsApi } from "~/api"
 
 export default {
   name: "RegenerateFormLink",
@@ -133,12 +134,7 @@ export default {
     regenerateLink(option) {
       if (this.loadingNewLink) return
       this.loadingNewLink = true
-      opnFetch(
-        this.formEndpoint.replace("{id}", this.form.id) +
-          "/regenerate-link/" +
-          option,
-        { method: "PUT" },
-      )
+      formsApi.regenerateLink(this.form.id, option)
         .then((data) => {
           this.formsStore.save(data.form)
           this.$router.push({

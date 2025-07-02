@@ -53,6 +53,7 @@
 <script setup>
 import VueJsonPretty from "vue-json-pretty"
 import "vue-json-pretty/lib/styles.css"
+import { formsApi } from "~/api"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -61,8 +62,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["close"])
-const formIntegrationEventEndpoint =
-  "/open/forms/{formid}/integration/{integrationid}/events"
+
 const columns = [
   { key: "date", label: "Date", sortable: true },
   { key: "status", label: "Status", sortable: true },
@@ -83,11 +83,7 @@ const fetchEvents = () => {
     nextTick(() => {
       integrationEventsLoading.value = true
       integrationEvents.value = []
-      opnFetch(
-        formIntegrationEventEndpoint
-          .replace("{formid}", props.form.id)
-          .replace("{integrationid}", props.formIntegrationId),
-      ).then((data) => {
+      formsApi.integrations.events(props.form.id, props.formIntegrationId).then((data) => {
         integrationEvents.value = data
         integrationEventsLoading.value = false
       })

@@ -116,6 +116,7 @@ import FormEditorErrorHandler from '~/components/open/forms/components/FormEdito
 import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import LogicConfirmationModal from '~/components/forms/LogicConfirmationModal.vue'
+import { formsApi } from "~/api"
 
 export default {
   name: "FormEditor",
@@ -161,7 +162,7 @@ export default {
     const isVisible = ref(breakpoints.smaller("md"))
     watch(isVisible, (newValue) => {
       if (newValue && form?.value && form?.value?.id) {
-        opnFetch('/open/forms/' + form.value.id + '/mobile-editor-email')
+        formsApi.mobileEditorEmail(form.value.id)
       }
     })
     
