@@ -42,7 +42,7 @@ definePageMeta({
 
 const deleteAccount = () => {
   loading = true
-  opnFetch("/user", { method: "DELETE" })
+        authApi.user.delete()
     .then(async (data) => {
       loading = false
       useAlert().success(data.message)

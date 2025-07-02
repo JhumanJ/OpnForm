@@ -27,7 +27,7 @@ onMounted(async () => {
     // Update customer details if provided
     if (name && email) {
       try {
-        await opnFetch('subscription/update-customer-details', {
+        await billingApi.updateCustomerDetails({
           method: 'PUT',
           body: { name, email }
         })
@@ -38,7 +38,7 @@ onMounted(async () => {
 
     // Get checkout URL
     const params = { trial_duration, currency }
-    const { checkout_url } = await opnFetch(
+    const { checkout_url } = await billingApi.getCheckoutUrl(
       `/subscription/new/${plan}/${yearly === 'true' ? 'yearly' : 'monthly'}/checkout/with-trial?${new URLSearchParams(params)}`
     )
     

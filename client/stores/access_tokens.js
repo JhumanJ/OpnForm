@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
+import { tokensApi } from "~/api"
 
 export const useAccessTokenStore = defineStore("access_tokens", () => {
   const contentStore = useContentStore()
@@ -39,7 +40,7 @@ export const useAccessTokenStore = defineStore("access_tokens", () => {
     contentStore.resetState()
     contentStore.startLoading()
 
-    return opnFetch('/settings/tokens').then(
+    return tokensApi.list().then(
       (data) => {
         contentStore.save(data)
         contentStore.stopLoading()
