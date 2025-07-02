@@ -6,17 +6,13 @@
     }"
   >
     <template #header>
-        <div class="flex items-center gap-3">
-            <Icon 
-              name="i-heroicons-plus-circle" 
-              class="w-8 h-8 text-primary-500" 
-            />
-            <h3 class="text-lg font-semibold text-gray-900">
-              Create Workspace
-            </h3>
-        </div>
-
+      <div class="flex items-center w-full gap-4 px-2">
+        <h2 class="font-semibold">
+          Create Workspace
+        </h2>
+      </div>
     </template>
+    
     <template #body>
         <VForm size="sm">
           <form

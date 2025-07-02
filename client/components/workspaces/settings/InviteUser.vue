@@ -7,12 +7,7 @@
   >
     <template #header>
       <div class="flex items-center w-full gap-4 px-2">
-        <Icon
-          name="i-heroicons-user-group"
-          class="text-blue-500"
-          size="40px"
-        />
-        <h2 class="text-lg font-semibold">
+        <h2 class="font-semibold">
           Invite a new user
         </h2>
       </div>

@@ -1,56 +1,25 @@
 <template>
   <div>
-    <v-button
+    <UButton
       v-track.regenerate_form_link_click="{
         form_id: form.id,
         form_slug: form.slug,
       }"
-      class="w-full"
-      color="light-gray"
+      block
+      size="lg"
+      icon="heroicons:link"
+      variant="outline"
       @click="showGenerateFormLinkModal = true"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-        />
-      </svg>
-      Regenerate link
-    </v-button>
+      label="Regenerate link"
+    />
 
     <!--  Regenerate form link modal  -->
-    <modal
-      :show="showGenerateFormLinkModal"
-      @close="showGenerateFormLinkModal = false"
+    <UModal
+      v-model:open="isModalOpen"
+      :ui="{ content: 'sm:max-w-2xl' }"
+      title="Generate new form link"
     >
-      <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-10 h-10 text-blue-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-          />
-        </svg>
-      </template>
-      <template #title>
-        Generate new form link
-      </template>
-      <div class="p-4">
+      <template #body>
         <p>
           You can choose between two different URL formats for your form.
           <span class="font-semibold">Be careful, changing your form URL is not a reversible
@@ -68,13 +37,12 @@
             https://opnform.com/forms/contact
           </p>
           <div class="text-center mt-4">
-            <v-button
+            <UButton
               :loading="loadingNewLink"
-              color="outline-blue"
+              color="primary"
               @click="regenerateLink('slug')"
-            >
-              Generate a Human Readable URL
-            </v-button>
+              label="Generate a Human Readable URL"
+            />
           </div>
         </div>
         <div class="border-t pt-4 mt-4">
@@ -89,69 +57,62 @@
             https://opnform.com/forms/b4417f9c-34ae-4421-8006-832ee47786e7
           </p>
           <div class="text-center mt-4">
-            <v-button
+            <UButton
               :loading="loadingNewLink"
-              color="outline-blue"
+              color="primary"
               @click="regenerateLink('uuid')"
-            >
-              Generate a Random ID URL
-            </v-button>
+              label="Generate a Random ID URL"
+            />
           </div>
         </div>
-      </div>
-    </modal>
+      </template>
+    </UModal>
   </div>
 </template>
 
-<script>
-import { useFormsStore } from "../../../../stores/forms"
+<script setup>
+const props = defineProps({
+  form: { type: Object, required: true },
+})
 
-export default {
-  name: "RegenerateFormLink",
-  components: {},
-  props: {
-    form: { type: Object, required: true },
+const formsStore = useFormsStore()
+const router = useRouter()
+
+const loadingNewLink = ref(false)
+const showGenerateFormLinkModal = ref(false)
+
+// Modal state
+const isModalOpen = computed({
+  get() {
+    return showGenerateFormLinkModal.value
   },
+  set(value) {
+    showGenerateFormLinkModal.value = value
+  }
+})
 
-  setup() {
-    const formsStore = useFormsStore()
-    return {
-      formsStore,
-    }
-  },
+const formEndpoint = computed(() => "/open/forms/{id}")
 
-  data: () => ({
-    loadingNewLink: false,
-    showGenerateFormLinkModal: false,
-  }),
-
-  computed: {
-    formEndpoint: () => "/open/forms/{id}",
-  },
-
-  methods: {
-    regenerateLink(option) {
-      if (this.loadingNewLink) return
-      this.loadingNewLink = true
-      opnFetch(
-        this.formEndpoint.replace("{id}", this.form.id) +
-          "/regenerate-link/" +
-          option,
-        { method: "PUT" },
-      )
-        .then((data) => {
-          this.formsStore.save(data.form)
-          this.$router.push({
-            name: "forms-slug-show-share",
-            params: { slug: data.form.slug },
-          })
-          useAlert().success(data.message)
-          this.loadingNewLink = false
-        })
-        .finally(() => {
-          this.showGenerateFormLinkModal = false
-        })
-    },
-  },
+const regenerateLink = (option) => {
+  if (loadingNewLink.value) return
+  loadingNewLink.value = true
+  opnFetch(
+    formEndpoint.value.replace("{id}", props.form.id) +
+      "/regenerate-link/" +
+      option,
+    { method: "PUT" },
+  )
+    .then((data) => {
+      formsStore.save(data.form)
+      router.push({
+        name: "forms-slug-show-share",
+        params: { slug: data.form.slug },
+      })
+      useAlert().success(data.message)
+      loadingNewLink.value = false
+    })
+    .finally(() => {
+      showGenerateFormLinkModal.value = false
+    })
 }
 </script>

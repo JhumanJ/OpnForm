@@ -1,56 +1,25 @@
 <template>
   <div>
-    <v-button
+    <UButton
       v-track.share_embed_form_popup_click="{
         form_id: form.id,
         form_slug: form.slug,
       }"
-      class="w-full"
-      color="light-gray"
+      block
+      size="lg"
+      icon="mdi:code-braces"
+      variant="outline"
+      label="Embed as popup"
       @click="showEmbedFormAsPopupModal = true"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-        />
-      </svg>
-      Embed as popup
-    </v-button>
+    />
 
-    <modal
-      :show="showEmbedFormAsPopupModal"
-      @close="onClose"
+    <UModal
+      v-model:open="isModalOpen"
+      :ui="{ content: 'sm:max-w-2xl' }"
+      title="Add the popup to your website"
     >
-      <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-10 h-10 text-blue"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-          />
-        </svg>
-      </template>
-      <template #title>
-        <span>Add the popup to your website</span>
-      </template>
-
-      <div class="p-4">
-        <h3 class="border-t text-xl font-semibold mb-2 pt-6">
+      <template #body>
+        <h3 class="text-xl font-semibold mb-2">
           Demo
         </h3>
         <p class="pb-6">
@@ -67,9 +36,7 @@
           your website.
         </p>
 
-        <div
-          class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all"
-        >
+        <div class="border border-blue-300 bg-blue-50 dark:bg-notion-dark-light rounded-md p-4 mb-5 w-full mx-auto mt-4 select-all">
           <div class="flex items-center">
             <p class="select-all text-blue-500 flex-grow break-all">
               {{ embedPopupCode }}
@@ -78,20 +45,10 @@
               class="hover:bg-blue-100 rounded-sm transition-colors cursor-pointer"
               @click="copyToClipboard"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-blue-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                <Icon 
+                  name="heroicons:clipboard-document" 
+                  class="h-6 w-6 text-blue-500" 
                 />
-              </svg>
             </div>
           </div>
         </div>
@@ -108,20 +65,20 @@
             </div>
           </template>
           <div class="border-t mt-4 -mx-4" />
-          <color-input
+          <ColorInput
             v-model="advancedOptions.bgcolor"
             name="bgcolor"
             class="mt-4"
             label="Circle Background Color"
           />
-          <text-input
+          <TextInput
             v-model="advancedOptions.emoji"
             name="emoji"
             class="mt-4"
             label="Emoji"
             :max-char-limit="2"
           />
-          <flat-select-input
+          <FlatSelectInput
             v-model="advancedOptions.position"
             name="position"
             class="mt-4"
@@ -131,7 +88,7 @@
               { name: 'Bottom Left', value: 'left' },
             ]"
           />
-          <text-input
+          <TextInput
             v-model="advancedOptions.width"
             name="width"
             class="mt-4"
@@ -139,18 +96,8 @@
             native-type="number"
           />
         </collapse>
-
-        <div class="flex justify-end mt-4">
-          <v-button
-            color="gray"
-            shade="light"
-            @click="onClose"
-          >
-            Close
-          </v-button>
-        </div>
-      </div>
-    </modal>
+      </template>
+    </UModal>
   </div>
 </template>
 
@@ -166,6 +113,19 @@ const props = defineProps({
 
 const embedScriptUrl = "/widgets/embed-min.js"
 const showEmbedFormAsPopupModal = ref(false)
+
+// Modal state
+const isModalOpen = computed({
+  get() {
+    return showEmbedFormAsPopupModal.value
+  },
+  set(value) {
+    if (!value) {
+      onClose()
+    }
+  }
+})
+
 const advancedOptions = ref({
   emoji: "💬",
   position: "right",
