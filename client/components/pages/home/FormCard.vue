@@ -28,23 +28,24 @@
       </UTooltip>
       
       <!-- Extra Menu -->
-      <ExtraMenu :form="form" :is-main-page="true">
-        <UButton
-          class="hover:bg-neutral-200"
-          color="neutral"
-          variant="ghost"
-          icon="i-heroicons-ellipsis-horizontal"
-          size="md"
-        />
-      </ExtraMenu>
-
-      <!-- Link overlay -->
-      <NuxtLink
-        :to="{name:'forms-slug-show-submissions', params: {slug:form.slug}}"
-        class="absolute inset-0"
-      />
-
+      <div class="relative z-20">
+        <ExtraMenu :form="form" :is-main-page="true" portal="#home-portals">
+          <UButton
+            class="hover:bg-neutral-200"
+            color="neutral"
+            variant="ghost"
+            icon="i-heroicons-ellipsis-horizontal"
+            size="md"
+          />
+        </ExtraMenu>
+      </div>
     </div>
+
+    <!-- Link overlay covering entire card -->
+    <NuxtLink
+      :to="{name:'forms-slug-show-submissions', params: {slug:form.slug}}"
+      class="absolute inset-0 z-10"
+    />
   </div>
 </template>
 

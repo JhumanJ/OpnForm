@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AiGenerateFieldsRequest;
 use App\Http\Requests\AiGenerateFormRequest;
 use App\Models\Forms\AI\AiFormCompletion;
 
@@ -28,7 +29,23 @@ class AiFormController extends Controller
         }
 
         return $this->success([
+            'message' => 'Your data is ready! Feel free to customize it to your needs before publishing.',
             'ai_form_completion' => $aiFormCompletion,
+        ]);
+    }
+
+    public function generateFields(AiGenerateFieldsRequest $request)
+    {
+        $this->middleware('throttle:4,1');
+
+        return $this->success([
+            'message' => 'Generating your fields, please wait...',
+            'ai_form_completion_id' => AiFormCompletion::create([
+                'type' => AiFormCompletion::TYPE_FIELDS,
+                'form_prompt' => $request->input('fields_prompt'),
+                'context' => $request->input('current_form_structure'),
+                'ip' => $request->ip(),
+            ])->id,
         ]);
     }
 }

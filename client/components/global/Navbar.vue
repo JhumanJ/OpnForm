@@ -5,7 +5,7 @@
   >
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <NuxtLink
             :to="{ name: user ? 'home' : 'index' }"
             class="flex-shrink-0 font-semibold hover:no-underline flex items-center"
@@ -21,7 +21,7 @@
           </NuxtLink>
           <WorkspaceDropdown class="ml-6">
             <template #default="{ workspace }">
-              <div
+              <button
                 v-if="workspace"
                 class="flex items-center cursor border border-transparent hover:border-gray-200 py-2 px-3 hover:bg-gray-50 rounded-md transition-colors"
               >
@@ -31,7 +31,7 @@
                 >
                   {{ workspace.name }}
                 </p>
-              </div>
+              </button>
             </template>
           </WorkspaceDropdown>
         </div>
