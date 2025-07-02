@@ -85,9 +85,9 @@
                     color="neutral"
                     variant="outline"
                     class="hover:no-underline"
-                    icon="i-heroicons-eye"
+                    icon="i-heroicons-arrow-top-right-on-square"
                   >
-                    <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
+                    <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
                   </UButton>
                   <UButton
                     v-if="!workspace.is_readonly"
@@ -107,7 +107,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-center gap-2 text-gray-500 text-sm mt-1">
+              <div class="flex flex-wrap items-center gap-2 text-gray-500 text-sm mt-2">
                 <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
                   <div class="flex items-center gap-1">
                     <UIcon name="i-heroicons-eye" />
@@ -126,7 +126,7 @@
               </div>
               
               <!-- Status Badges and Form Cleanings -->
-              <div class="flex flex-wrap gap-4">
+              <div class="flex flex-wrap gap-4 mt-2">
                 <FormStatusBadges :form="form" />
                 <form-cleanings :form="form" />
               </div>

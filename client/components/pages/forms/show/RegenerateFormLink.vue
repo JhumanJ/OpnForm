@@ -1,30 +1,16 @@
 <template>
   <div>
-    <v-button
+    <UButton
       v-track.regenerate_form_link_click="{
         form_id: form.id,
         form_slug: form.slug,
       }"
-      class="w-full"
-      color="light-gray"
+      variant="outline"
+      color="neutral"
+      icon="i-heroicons-arrow-path"
       @click="showGenerateFormLinkModal = true"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-        />
-      </svg>
-      Regenerate link
-    </v-button>
+      label="Regenerate link"
+    />
 
     <!--  Regenerate form link modal  -->
     <modal
@@ -65,16 +51,17 @@
             and readable. Example:
           </p>
           <p class="text-gray-600 border p-4 bg-gray-50 rounded-md mt-4">
-            https://opnform.com/forms/contact
+            https://opnform.com/forms/contact-form-e68des
           </p>
           <div class="text-center mt-4">
-            <v-button
+            <UButton
               :loading="loadingNewLink"
-              color="outline-blue"
+              variant="outline"
+              color="primary"
               @click="regenerateLink('slug')"
             >
               Generate a Human Readable URL
-            </v-button>
+            </UButton>
           </div>
         </div>
         <div class="border-t pt-4 mt-4">
@@ -89,13 +76,14 @@
             https://opnform.com/forms/b4417f9c-34ae-4421-8006-832ee47786e7
           </p>
           <div class="text-center mt-4">
-            <v-button
+            <UButton
               :loading="loadingNewLink"
-              color="outline-blue"
+              variant="outline"
+              color="primary"
               @click="regenerateLink('uuid')"
             >
               Generate a Random ID URL
-            </v-button>
+            </UButton>
           </div>
         </div>
       </div>

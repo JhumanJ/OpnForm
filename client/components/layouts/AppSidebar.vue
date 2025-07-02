@@ -3,7 +3,7 @@
     <!-- Header Slot -->
     <template #header>
       <!-- Workspace Dropdown -->
-      <div class="sm:flex-1 min-w-0">
+      <div class="grow">
         <WorkspaceDropdown>
           <template #default="{ workspace }">
             <button

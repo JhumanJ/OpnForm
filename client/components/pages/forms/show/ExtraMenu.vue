@@ -125,8 +125,8 @@ const items = computed(() => {
   return [
     [
       ...props.isMainPage ? [{
-        label: 'View form',
-        icon: 'i-heroicons-eye-16-solid',
+        label: 'Open form',
+        icon: 'i-heroicons-arrow-top-right-on-square',
         onClick: () => {
           if (props.isMainPage && props.form.visibility === 'draft') {
             showDraftFormWarningNotification()
@@ -135,11 +135,11 @@ const items = computed(() => {
           }
         }
       }] : [],
-      ...props.isMainPage ? [{
+      {
         label: 'Copy link to share',
         icon: 'i-heroicons-clipboard-document-check-20-solid',
         onClick: copyLink
-      }] : []
+      }
     ],
     ...workspace.value.is_readonly ? [] : [
       [

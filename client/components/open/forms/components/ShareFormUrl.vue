@@ -61,7 +61,7 @@ function copyToClipboard() {
   copy(share_url.value)
   if (props.form.visibility == 'draft') {
     useAlert().warning(
-      'Copied! But other people won\'t be able to see the form since it\'s currently in draft mode',
+      'Link copied! Note: This form is in draft mode and can only be accessed while you are logged in',
     )
   }
   else {
