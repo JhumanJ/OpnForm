@@ -1,16 +1,15 @@
 <template>
-  <SettingsSection
-    name="Security & Access"
-    icon="i-heroicons-shield-check"
-  >
-    <h4 class="font-semibold mt-4 border-t pt-4">
-      Access
-    </h4>
-    <p class="text-gray-500 text-sm">
-      Manage who can access your form and when.
-    </p>
+  <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="text-lg font-medium text-neutral-900">Security & Access</h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          Manage who can access your form and when.
+        </p>
+      </div>
+    </div>
 
-    <text-input
+    <TextInput
       name="password"
       :form="form"
       class="mt-4 max-w-xs"
@@ -18,7 +17,7 @@
       placeholder="********"
       help="Leave empty to disable password protection"
     />
-    <date-input
+    <DateInput
       :with-time="true"
       name="closes_at"
       class="mt-4 max-w-xs"
@@ -65,7 +64,6 @@
       />
     </div>
 
-
     <h4 class="font-semibold mt-4 border-t pt-4">
       Security
     </h4>
@@ -92,7 +90,7 @@
         label="Select a captcha provider"
       />
     </div>
-  </SettingsSection>
+  </div>
 </template>
 
 <script setup>

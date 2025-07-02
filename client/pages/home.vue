@@ -2,7 +2,7 @@
   <div v-if="workspace" class="flex flex-col h-full bg-white">
     <!-- Top Bar -->
     <div class="sticky top-0 z-50 bg-white h-[49px] border-b border-neutral-200 p-2 sm:px-4">
-      <div class="max-w-4xl mx-auto flex items-center justify-between flex-shrink-0 gap-2 px-2 sm:px-0 xl:px-4">
+      <div class="max-w-4xl mx-auto flex items-center justify-between flex-shrink-0 gap-2 px-2 sm:px-0">
       <div class="flex items-center gap-2">
         <!-- Search -->
         <UInput
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
         <!-- Empty State: No forms -->
         <div v-if="!formsLoading && forms.length === 0" class="text-center py-16 px-4">
@@ -85,7 +85,7 @@
 
         <!-- Forms List -->
         <div v-if="enrichedForms.length > 0" class="mb-10">
-          <div class="flex flex-col gap-2 lg:mt-6 p-4">
+          <div class="flex flex-col gap-2 lg:mt-6">
             <FormCard
               v-for="form in enrichedForms"
               :key="form.id"
@@ -121,7 +121,7 @@
         </div>
 
         <!-- Loading Skeletons -->
-        <div v-if="formsLoading" class="flex flex-col gap-2 lg:mt-6 p-4">
+        <div v-if="formsLoading" class="flex flex-col gap-2">
           <FormCardSkeleton />
           <FormCardSkeleton />
           <FormCardSkeleton />
