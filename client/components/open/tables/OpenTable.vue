@@ -49,7 +49,7 @@
       class="flex-1 max-h-[312px]"
     >
       <template 
-        v-for="col in columns" 
+        v-for="col in tableColumns.filter(col => !['actions', 'status'].includes(col.id))" 
         :key="col.id"
         #[`${col.id}-cell`]="{ row }"
       >
@@ -76,14 +76,9 @@
       <template #status-cell="{ row }">
         <UBadge
           :label="row.original.status === 'partial' ? 'In Progress' : 'Submitted'"
-          :color="row.original.status === 'partial' ? 'yellow' : 'green'"
-          variant="soft"
-          size="xs"
+          :color="row.original.status === 'partial' ? 'warning' : 'success'"
+          variant="subtle"
         />
-      </template>
-
-      <template #actions-row>
-        <slot name="actions" />
       </template>
     </UTable>
   </div>
@@ -121,24 +116,24 @@ const workspace = computed(() => workspacesStore.getCurrent)
 const runtimeConfig = useRuntimeConfig()
 
 const fieldComponents = {
-  text: shallowRef(OpenText),
-  rich_text: shallowRef(OpenText),
-  number: shallowRef(OpenText),
-  rating: shallowRef(OpenText),
-  scale: shallowRef(OpenText),
-  slider: shallowRef(OpenText),
-  select: shallowRef(OpenSelect),
-  matrix: shallowRef(OpenMatrix),
-  multi_select: shallowRef(OpenSelect),
-  date: shallowRef(OpenDate),
-  files: shallowRef(OpenFile),
-  checkbox: shallowRef(OpenCheckbox),
-  url: shallowRef(OpenUrl),
-  email: shallowRef(OpenText),
-  phone_number: shallowRef(OpenText),
-  signature: shallowRef(OpenFile),
-  payment: shallowRef(OpenPayment),
-  barcode: shallowRef(OpenText),
+  text: OpenText,
+  rich_text: OpenText,
+  number: OpenText,
+  rating: OpenText,
+  scale: OpenText,
+  slider: OpenText,
+  select: OpenSelect,
+  matrix: OpenMatrix,
+  multi_select: OpenSelect,
+  date: OpenDate,
+  files: OpenFile,
+  checkbox: OpenCheckbox,
+  url: OpenUrl,
+  email: OpenText,
+  phone_number: OpenText,
+  signature: OpenFile,
+  payment: OpenPayment,
+  barcode: OpenText,
 }
 
 const exportLoading = ref(false)
@@ -221,19 +216,17 @@ const tableColumns = computed(() => {
   })
 
   const cols = properties.map(col => ({
-    id: col.id,
+    ...col,
     accessorKey: col.id,
     header: col.name,
-    type: col.type
   }))
 
   if (form.value?.removed_properties) {
     form.value.removed_properties.forEach(property => {
       cols.push({
-        id: property.id,
+        ...property,
         accessorKey: property.id,
         header: property.name,
-        type: property.type,
         isRemoved: true
       })
     })
@@ -254,7 +247,6 @@ const tableColumns = computed(() => {
       id: 'status',
       accessorKey: 'status',
       header: 'Status',
-      type: 'select',
       enableColumnFilter: true,
       filterFn: 'equals'
     })
