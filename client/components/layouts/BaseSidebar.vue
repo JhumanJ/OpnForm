@@ -16,6 +16,10 @@
         <!-- Header Content Slot -->
         <slot name="header" :isMobileMenuOpen="isMobileMenuOpen" />
         
+        <div class="grow">
+          <slot name="mobile-header" :isMobileMenuOpen="isMobileMenuOpen" />
+        </div>
+
         <!-- Mobile Menu Toggle -->
         <div :class="{ 'sm:hidden': !isMobileMenuOpen }">
           <UButton
@@ -36,6 +40,9 @@
       v-else
       class="sm:hidden p-1 border-b border-neutral-200 h-[49px] flex items-center justify-start gap-2"
     >
+      <div class="grow">
+        <slot name="mobile-header" :isMobileMenuOpen="isMobileMenuOpen" />
+      </div>
       <UButton
         square
         size="xl"

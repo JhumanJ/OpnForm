@@ -4,8 +4,8 @@
     class="w-full flex flex-col"
   >
     <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4 pt-4">
-      <h3 class="font-semibold mb-4 text-xl">
-        Form Submissions
+      <h3 class="font-semibold text-xl">
+        Submissions
       </h3>
 
       <!-- Settings Modal -->
