@@ -323,7 +323,7 @@ const computeMaxHeight = () => {
   } else {
     const rootRect = root.value.getBoundingClientRect()
     // 16px bottom margin for breathing room
-    maxHeight.value = `${window.innerHeight - rootRect.top - topBarHeight - 16}px`
+    maxHeight.value = `${window.innerHeight - rootRect.top - topBarHeight}px`
   }
 }
 

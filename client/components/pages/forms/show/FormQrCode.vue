@@ -10,31 +10,30 @@
 
     <template #content>
       <div class="p-4 w-80">
+
+        <h3 class="font-semibold text-medium">
+          QR Code
+        </h3>
+        <p class="text-sm text-gray-600">Scan the QR code to open the form.</p>
+        <div class="flex justify-center">
+          <img
+            v-if="QrUrl"
+            ref="qrImage"
+            :src="QrUrl"
+            class="max-w-full h-auto"
+            alt="QR Code for form"
+          >
+        </div>
         <div class="space-y-2">
-          <h3 class="font-semibold text-lg">
-            QR Code
-          </h3>
-          <p class="text-sm text-gray-600">Scan the QR code to open the form</p>
-          <div class="flex justify-center">
-            <img
-              v-if="QrUrl"
-              ref="qrImage"
-              :src="QrUrl"
-              class="max-w-full h-auto"
-              alt="QR Code for form"
-            >
-          </div>
-          <div class="space-y-2">
-            <UButton
-              @click="copyImage"
-              :color="imageCopied ? 'success' : 'neutral'"
-              :icon="imageCopied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
-              variant="outline"
-              block
-            >
-              {{ imageCopied ? 'Image Copied!' : 'Copy Image' }}
-            </UButton>
-          </div>
+          <UButton
+            @click="copyImage"
+            :color="imageCopied ? 'success' : 'neutral'"
+            :icon="imageCopied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
+            variant="outline"
+            block
+          >
+            {{ imageCopied ? 'Image Copied!' : 'Copy Image' }}
+          </UButton>
         </div>
       </div>
     </template>
@@ -114,12 +113,8 @@ export default {
         setTimeout(() => {
           this.imageCopied = false
         }, 2000)
-        
-        // Show success notification
-        useNuxtApp().$toast.success('QR Code image copied to clipboard!')
       } catch (error) {
         console.error('Failed to copy image:', error)
-        useNuxtApp().$toast.error('Failed to copy QR Code image')
       }
     },
   },
