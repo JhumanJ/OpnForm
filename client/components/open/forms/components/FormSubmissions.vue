@@ -1,9 +1,9 @@
 <template>
   <div
     id="table-page"
-    class="w-full flex flex-col"
+    class="w-full flex flex-col p-4"
   >
-    <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4 pt-4">
+    <div class="w-full max-w-4xl mx-auto">
       <h3 class="font-semibold text-xl">
         Submissions
       </h3>
@@ -71,7 +71,7 @@
         </div>
       </div>
     </div>
-    <div class="px-4 pb-4 flex justify-center">
+    <div class="pb-4 flex justify-center">
       <scroll-shadow
         ref="shadows"
         class="border h-full notion-database-renderer"
