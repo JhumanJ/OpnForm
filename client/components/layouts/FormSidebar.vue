@@ -1,11 +1,11 @@
 <template>
   <BaseSidebar>
 
-    <!-- <template #header>
+    <template #mobile-header>
       <h1 class="sm:hidden text-base font-medium text-neutral-500 tracking-wider px-2 truncate">
-        {{ form.title }}
+        {{ loading ? 'Loading...' : form?.title }}
       </h1>
-    </template> -->
+    </template>
 
     <!-- Navigation Slot -->
     <template #navigation>
@@ -29,7 +29,14 @@
         <!-- Section Items -->
         <ul class="space-y-1">
           <li v-for="item in section.items" :key="item.label">
+            <!-- Loading skeleton for form navigation items -->
+            <USkeleton 
+              v-if="loading && section.name === null && item.label !== 'Dashboard'"
+              class="h-9 w-full rounded-md"
+            />
+            <!-- Regular navigation item -->
             <UButton
+              v-else
               v-track.sidebar_nav_click="item.label"
               v-bind="item"
               class="w-full justify-start"
@@ -48,7 +55,11 @@ import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
 const props = defineProps({
   form: {
     type: Object,
-    required: true
+    required: false
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -66,38 +77,67 @@ function isActiveRoute(routeName) {
 
 // Form navigation items
 const formNavigationItems = computed(() => [
-  // Dashboard back button
+  // Dashboard back button - always show
   createNavItem({
     label: 'Dashboard',
     icon: 'i-heroicons-arrow-left',
     to: { name: 'home' },
     active: false
   }),
-  createNavItem({
-    label: 'Submissions',
-    icon: 'i-heroicons-document-text',
-    to: { name: 'forms-slug-show-submissions', params: { slug: props.form.slug } },
-    active: isActiveRoute('forms-slug-show-submissions')
-  }),
-  // Hide integrations for read-only workspaces
-  ...(workspace.value?.is_readonly ? [] : [createNavItem({
-    label: 'Integrations',
-    icon: 'i-heroicons-puzzle-piece',
-    to: { name: 'forms-slug-show-integrations', params: { slug: props.form.slug } },
-    active: isActiveRoute('forms-slug-show-integrations')
-  })]),
-  createNavItem({
-    label: 'Analytics',
-    icon: 'i-heroicons-chart-bar',
-    to: { name: 'forms-slug-show-stats', params: { slug: props.form.slug } },
-    active: isActiveRoute('forms-slug-show-stats')
-  }),
-  createNavItem({
-    label: 'Share',
-    icon: 'i-heroicons-share',
-    to: { name: 'forms-slug-show-share', params: { slug: props.form.slug } },
-    active: isActiveRoute('forms-slug-show-share')
-  })
+  // Show skeleton placeholders when loading, otherwise show real items
+  ...(props.loading ? [
+    // These will be rendered as skeletons via the template
+    createNavItem({
+      label: 'Submissions',
+      icon: 'i-heroicons-document-text',
+      to: '#',
+      active: false
+    }),
+    createNavItem({
+      label: 'Integrations',
+      icon: 'i-heroicons-puzzle-piece',
+      to: '#',
+      active: false
+    }),
+    createNavItem({
+      label: 'Analytics',
+      icon: 'i-heroicons-chart-bar',
+      to: '#',
+      active: false
+    }),
+    createNavItem({
+      label: 'Share',
+      icon: 'i-heroicons-share',
+      to: '#',
+      active: false
+    })
+  ] : [
+    createNavItem({
+      label: 'Submissions',
+      icon: 'i-heroicons-document-text',
+      to: { name: 'forms-slug-show-submissions', params: { slug: props.form.slug } },
+      active: isActiveRoute('forms-slug-show-submissions')
+    }),
+    // Hide integrations for read-only workspaces
+    ...(workspace.value?.is_readonly ? [] : [createNavItem({
+      label: 'Integrations',
+      icon: 'i-heroicons-puzzle-piece',
+      to: { name: 'forms-slug-show-integrations', params: { slug: props.form.slug } },
+      active: isActiveRoute('forms-slug-show-integrations')
+    })]),
+    createNavItem({
+      label: 'Analytics',
+      icon: 'i-heroicons-chart-bar',
+      to: { name: 'forms-slug-show-stats', params: { slug: props.form.slug } },
+      active: isActiveRoute('forms-slug-show-stats')
+    }),
+    createNavItem({
+      label: 'Share',
+      icon: 'i-heroicons-share',
+      to: { name: 'forms-slug-show-share', params: { slug: props.form.slug } },
+      active: isActiveRoute('forms-slug-show-share')
+    })
+  ])
 ])
 
 // Navigation sections structure
