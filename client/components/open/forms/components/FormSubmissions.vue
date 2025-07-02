@@ -11,7 +11,7 @@
       <OpenTable
         v-if="form"
         ref="table"
-        class="border"
+        class="border rounded-md"
         :data="tableData"
         :loading="isLoading"
         @deleted="onDeleteRecord"
@@ -41,32 +41,6 @@
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-=======
-    <div class="pb-4 flex justify-center">
-      <scroll-shadow
-        ref="shadows"
-        class="border h-full notion-database-renderer"
-        :shadow-top-offset="0"
-        :hide-scrollbar="true"
-      >
-        <open-table
-          v-if="form"
-          ref="table"
-          class="max-h-full"
-          :columns="properties"
-          :wrap-columns="wrapColumns"
-          :data="filteredData"
-          :loading="isLoading"
-          :scroll-parent="parentPage"
-          @resize="dataChanged()"
-          @deleted="onDeleteRecord"
-          @updated="(submission)=>onUpdateRecord(submission)"
-          @update-columns="onColumnUpdated"
-        />
-      </scroll-shadow>
-    </div>
->>>>>>> 209a6-tailwind-+-nuxt-ui-migraiton
   </div>
 </template>
 

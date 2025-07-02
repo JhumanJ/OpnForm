@@ -1,6 +1,12 @@
 <template>
-  <div class="flex-1 divide-y divide-accented w-full">
-    <div class="flex items-center gap-2 px-4 py-3.5 overflow-x-auto">
+  <div 
+    ref="root" 
+    :class="[
+      'flex-1 divide-y divide-accented w-full flex flex-col', 
+      { 'fixed inset-0 z-50 bg-white dark:bg-neutral-900 z-[70]': isExpanded }
+    ]"
+  >
+    <div ref="topBar" class="flex items-center gap-2 p-2 overflow-x-auto">
       <UInput 
         class="max-w-sm min-w-[12ch]" 
         placeholder="Search..." 
@@ -26,6 +32,13 @@
           trailing-icon="i-lucide-chevron-down"
           class="ml-auto"
         />
+        <template #removed-fields>
+          <div class="flex items-center gap-2 w-full">
+            <hr class="border-neutral-200 grow" />
+            <p class="text-sm text-neutral-500">Removed Fields</p>
+            <hr class="border-neutral-200 grow" />
+          </div>
+        </template>
       </UDropdownMenu>
 
       <UButton
@@ -35,6 +48,12 @@
         label="Export"
         :loading="exportLoading"
         @click="downloadAsCsv"
+      />
+      <UButton
+        color="neutral"
+        variant="outline"
+        :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
+        @click="toggleExpanded"
       />
     </div>
 
@@ -46,7 +65,8 @@
       :data="tableData"
       :loading="loading"
       sticky
-      class="flex-1 max-h-[312px]"
+      class="flex-1"
+      :style="{ maxHeight }"
     >
       <template 
         v-for="col in tableColumns.filter(col => !['actions', 'status'].includes(col.id))" 
@@ -86,6 +106,7 @@
 
 <script setup>
 import clonedeep from 'clone-deep'
+import { useEventListener } from '@vueuse/core'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
@@ -138,6 +159,10 @@ const fieldComponents = {
 
 const exportLoading = ref(false)
 const table = ref(null)
+const root = ref(null)
+const topBar = ref(null)
+const isExpanded = ref(false)
+const maxHeight = ref('800px') // fallback default
 const selectedStatus = ref('All')
 
 const statusList = [
@@ -171,9 +196,7 @@ const dropdownItems = computed(() => {
     items.push({
       label: 'Removed Fields',
       type: 'label',
-      onSelect(e) {
-        e?.preventDefault()
-      }
+      slot: 'removed-fields',
     })
 
     items.push(...removeditems)
@@ -271,6 +294,33 @@ const columnPinning = ref({
 
 // Column visibility state
 const columnVisibility = ref({})
+
+const computeMaxHeight = () => {
+  if (!root.value || !topBar.value) return
+  
+  const topBarHeight = topBar.value.offsetHeight
+  
+  if (isExpanded.value) {
+    maxHeight.value = `${window.innerHeight - topBarHeight}px`
+  } else {
+    const rootRect = root.value.getBoundingClientRect()
+    // 16px bottom margin for breathing room
+    maxHeight.value = `${window.innerHeight - rootRect.top - topBarHeight - 16}px`
+  }
+}
+
+const toggleExpanded = () => {
+  isExpanded.value = !isExpanded.value
+  nextTick(() => {
+    computeMaxHeight()
+  })
+}
+
+onMounted(() => {
+  computeMaxHeight()
+})
+
+useEventListener(window, 'resize', computeMaxHeight)
 
 // Download as CSV
 const downloadAsCsv = () => {
