@@ -31,9 +31,9 @@
               </div>
               
               <!-- Status Badges Skeleton -->
-              <div class="flex flex-wrap gap-4 mt-3">
-                <USkeleton class="h-6 w-16" />
-                <USkeleton class="h-6 w-20" />
+              <div class="flex flex-wrap gap-2 mt-2">
+                <USkeleton class="h-4 w-16" />
+                <USkeleton class="h-4 w-20" />
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-center gap-2 text-gray-500 text-sm mt-2">
+              <div class="flex flex-wrap items-center gap-2 text-gray-500 text-xs mt-2 sm:mt-0">
                 <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
                   <div class="flex items-center gap-1">
                     <UIcon name="i-heroicons-eye" />
@@ -126,7 +126,7 @@
               </div>
               
               <!-- Status Badges and Form Cleanings -->
-              <div class="flex flex-wrap gap-4 mt-2">
+              <div class="flex flex-wrap gap-2">
                 <FormStatusBadges :form="form" />
                 <FormCleanings :form="form" />
               </div>
