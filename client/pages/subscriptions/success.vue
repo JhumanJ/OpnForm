@@ -20,6 +20,7 @@
 
 <script setup>
 import { useBroadcastChannel } from '@vueuse/core'
+import { authApi } from "~/api"
 
 definePageMeta({
   middleware: 'auth'

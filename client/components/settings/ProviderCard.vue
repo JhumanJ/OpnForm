@@ -82,6 +82,8 @@
 </template>
 
 <script setup>
+import { oauthApi } from "~/api"
+
 const props = defineProps({
   provider: Object
 })
@@ -92,9 +94,7 @@ const alert = useAlert()
 
 function disconnect() {
   alert.confirm("Do you really want to disconnect this account?", () => {
-  opnFetch(`/settings/providers/${props.provider.id}`, {
-    method: 'DELETE'
-  })
+  oauthApi.delete(props.provider.id)
     .then(() => {
       providersStore.remove(props.provider.id)
     })

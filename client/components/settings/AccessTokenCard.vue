@@ -56,6 +56,8 @@
 </template>
 
 <script setup>
+import { tokensApi } from "~/api"
+
 const props = defineProps({
   token: Object
 })
@@ -65,9 +67,7 @@ const alert = useAlert()
 
 function destroy() {
   alert.confirm("Do you really want to delete this token?", () => {
-  opnFetch(`/settings/tokens/${props.token.id}`, {
-    method: 'DELETE'
-  })
+  tokensApi.delete(props.token.id)
     .then(() => {
       accessTokenStore.remove(props.token.id)
     })

@@ -86,6 +86,7 @@
 import { ref, defineProps, computed } from "vue"
 import FormTemplateModal from "../../../open/forms/components/templates/FormTemplateModal.vue"
 import FormWorkspaceModal from "../../../open/forms/components/FormWorkspaceModal.vue"
+import { formsApi } from "~/api"
 
 const { copy } = useClipboard()
 const router = useRouter()
@@ -180,9 +181,7 @@ const copyLink = () => {
 const duplicateForm = () => {
   if (loadingDuplicate.value) return
   loadingDuplicate.value = true
-  opnFetch(formEndpoint.replace("{id}", props.form.id) + "/duplicate", {
-    method: "POST",
-  })
+  formsApi.duplicate(props.form.id)
     .then((data) => {
       formsStore.save(data.new_form)
       router.push({
@@ -200,7 +199,7 @@ const duplicateForm = () => {
 const deleteForm = () => {
   if (loadingDelete.value) return
   loadingDelete.value = true
-  opnFetch(formEndpoint.replace("{id}", props.form.id), { method: "DELETE" })
+  formsApi.delete(props.form.id)
     .then((data) => {
       formsStore.remove(props.form)
       router.push({ name: "home" })

@@ -68,6 +68,7 @@ import { defineEmits } from "vue"
 import Fuse from "fuse.js"
 import { refDebounced, useElementVisibility } from "@vueuse/core"
 import FontCard from './FontCard.vue'
+import { contentApi } from "~/api"
 
 const props = defineProps({
   show: {
@@ -117,7 +118,7 @@ const fetchFonts = async () => {
   if (props.show) {
     selectedFont.value = props.font || null
     loading.value = true
-    opnFetch('/fonts/').then((data) => {
+    contentApi.fonts.list().then((data) => {
       fonts.value = data || []
       loading.value = false
       initializeVisibilityTracking()

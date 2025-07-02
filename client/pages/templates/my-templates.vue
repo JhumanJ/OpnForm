@@ -25,6 +25,8 @@
 </template>
 
 <script setup>
+import { templatesApi } from "~/api"
+
 definePageMeta({
   middleware: "auth",
 })

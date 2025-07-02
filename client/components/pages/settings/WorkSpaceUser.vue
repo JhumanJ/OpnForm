@@ -187,6 +187,8 @@
 </template>
 
 <script setup>
+import { workspaceApi } from "~/api"
+
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
 
@@ -272,13 +274,7 @@ const removeUser = (index) => {
     "Do you really want to remove " + user.name + " from this workspace?",
     () => {
       loadingUsers.value = true
-      opnFetch(
-        "/open/workspaces/" + workspacesStore.currentId + "/users/" + user.id + "/remove",
-        {
-          method: "DELETE",
-        },
-        {showSuccess: false},
-      ).then(() => {
+      workspaceApi.users.remove(workspacesStore.currentId, user.id).then(() => {
         useAlert().success("User successfully removed.")
         getWorkspaceUsers()
       }).catch(() => {
@@ -298,7 +294,7 @@ const deleteWorkspace = (workspaceId) => {
   useAlert().confirm(
     "Do you really want to delete this workspace? All forms created in this workspace will be removed.",
     () => {
-      opnFetch("/open/workspaces/" + workspaceId, {method: "DELETE"}).then(
+      workspaceApi.delete(workspaceId).then(
         () => {
           useAlert().success("Workspace successfully removed.")
           workspacesStore.remove(workspaceId)
@@ -313,9 +309,7 @@ const leaveWorkSpace = (workspaceId) => {
     "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
     () => {
       leaveWorkspaceLoadingState.value = true
-      opnFetch("/open/workspaces/" + workspaceId + "/leave", {
-        method: "POST",
-      }).then(() => {
+      workspaceApi.leave(workspaceId).then(() => {
         useAlert().success("You have left the workspace.")
         workspacesStore.remove(workspaceId)
         getWorkspaceUsers()
@@ -333,7 +327,7 @@ const resendInvite = (id) => {
   useAlert().confirm(
     "Do you really want to resend invite email to this user?",
     () => {
-      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/resend", {method: "POST"}).then(
+      workspaceApi.invites.resend(workspace.value.id, inviteId).then(
         () => {
           useAlert().success("Invitation resent successfully.")
           getWorkspaceUsers()
@@ -349,7 +343,7 @@ const cancelInvite = (id) => {
   useAlert().confirm(
     "Do you really want to cancel this user's invitation to this workspace?",
     () => {
-      opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + inviteId + "/cancel", {method: "DELETE"}).then(
+      workspaceApi.invites.cancel(workspace.value.id, inviteId).then(
         () => {
           useAlert().success("Invitation cancelled successfully.")
           getWorkspaceUsers()

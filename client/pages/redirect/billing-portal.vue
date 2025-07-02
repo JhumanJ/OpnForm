@@ -8,6 +8,8 @@
 </template>
 
 <script setup>
+import { billingApi } from "~/api"
+
 definePageMeta({
   middleware: 'auth'
 })

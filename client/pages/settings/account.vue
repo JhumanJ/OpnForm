@@ -28,6 +28,7 @@
 
 <script setup>
 import { useRouter } from "vue-router"
+import { authApi } from "~/api"
 
 const router = useRouter()
 const authStore = useAuthStore()
