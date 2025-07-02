@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
-    <div class="w-full flex flex-col sm:flex-row gap-2">
+  <div class="p-4">
+    <div class="w-full max-w-4xl mx-auto flex flex-col sm:flex-row gap-2">
       <div
         v-for="(stat, index) in [
           { label: 'Views', value: totalViews, placeholder: '123' },
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <form-stats :form="form" />
+    <form-stats class="w-full max-w-4xl mx-auto" :form="form" />
   </div>
 </template>
 

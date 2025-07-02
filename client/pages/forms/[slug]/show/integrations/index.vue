@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
-    <div class="mb-20">
-      <h1 class="font-semibold mt-4 text-xl">
-        Your integrations
+  <div class="p-4">
+    <div class="w-full max-w-4xl mx-auto ">
+      <h1 class="font-semibold text-xl">
+        Integrations
       </h1>
 
       <div class="text-sm text-gray-500">

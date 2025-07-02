@@ -75,7 +75,7 @@
                     icon="i-heroicons-eye"
                     @click="showDraftFormWarningNotification"
                   >
-                    <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
+                    <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
                   </UButton>
                   <UButton
                     v-else
