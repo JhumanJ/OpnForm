@@ -5,10 +5,16 @@
         form_id: form.id,
         form_slug: form.slug,
       }"
+<<<<<<< HEAD
       block
       size="lg"
       icon="heroicons:link"
       variant="outline"
+=======
+      variant="outline"
+      color="neutral"
+      icon="i-heroicons-arrow-path"
+>>>>>>> 4219ac3e (Refactor Form Components for Enhanced Layout and User Experience)
       @click="showGenerateFormLinkModal = true"
       label="Regenerate link"
     />
@@ -34,15 +40,17 @@
             and readable. Example:
           </p>
           <p class="text-gray-600 border p-4 bg-gray-50 rounded-md mt-4">
-            https://opnform.com/forms/contact
+            https://opnform.com/forms/contact-form-e68des
           </p>
           <div class="text-center mt-4">
             <UButton
               :loading="loadingNewLink"
+              variant="outline"
               color="primary"
               @click="regenerateLink('slug')"
-              label="Generate a Human Readable URL"
-            />
+            >
+              Generate a Human Readable URL
+            </UButton>
           </div>
         </div>
         <div class="border-t pt-4 mt-4">
@@ -59,10 +67,12 @@
           <div class="text-center mt-4">
             <UButton
               :loading="loadingNewLink"
+              variant="outline"
               color="primary"
               @click="regenerateLink('uuid')"
-              label="Generate a Random ID URL"
-            />
+            >
+              Generate a Random ID URL
+            </UButton>
           </div>
         </div>
       </template>

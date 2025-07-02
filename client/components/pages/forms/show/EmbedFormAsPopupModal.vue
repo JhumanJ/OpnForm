@@ -5,13 +5,13 @@
         form_id: form.id,
         form_slug: form.slug,
       }"
-      block
-      size="lg"
-      icon="mdi:code-braces"
       variant="outline"
-      label="Embed as popup"
+      color="neutral"
+      icon="i-heroicons-chat-bubble-bottom-center-text"
       @click="showEmbedFormAsPopupModal = true"
-    />
+    >
+      Embed as popup
+    </UButton>
 
     <UModal
       v-model:open="isModalOpen"

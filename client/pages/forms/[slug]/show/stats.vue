@@ -1,27 +1,27 @@
 <template>
   <div class="p-4">
-    <div class="w-full max-w-4xl mx-auto flex flex-col sm:flex-row gap-2">
+    <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2">
       <div
         v-for="(stat, index) in [
           { label: 'Views', value: totalViews, placeholder: '123' },
           { label: 'Submissions', value: totalSubmissions, placeholder: '123' },
-          { label: 'Completion Rate', value: completionRate + '%', placeholder: '100%' },
-          { label: 'Average Duration', value: averageDuration, placeholder: '10 seconds' }
+          { label: 'Completion', value: completionRate + '%', placeholder: '100%' },
+          { label: 'Avg. Duration', value: averageDuration, placeholder: '10 seconds' }
         ]"
         :key="index"
-        class="border border-gray-300 rounded-lg shadow-xs p-4 w-full mx-auto"
+        class="border border-gray-300 rounded-lg shadow-xs p-4"
       >
-        <div class="mb-2 text-sm text-gray-500">
+        <div class="mb-2 text-xs text-gray-500">
           {{ stat.label }}
         </div>
          
-        <Loader
+        <USkeleton
           v-if="isLoading"
-          class="h-6 w-6 text-blue-500"
+          class="h-6 w-16"
         />
         <span
           v-else-if="form.is_pro"
-          class="font-medium text-2xl"
+          class="font-medium text-xl"
         >
           {{ stat.value }}
         </span>

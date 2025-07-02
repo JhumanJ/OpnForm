@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-end mt-5">
-      <h3 class="flex-grow font-medium text-lg mb-3">
+    <div class="flex flex-wrap items-end mt-5 gap-2">
+      <h3 class="flex-grow font-medium text-lg">
         Views & Submission History
       </h3>
+      <VForm size="sm">
       <DateInput
         :form="filterForm"
         name="filter_date"
@@ -12,9 +13,10 @@
         :disable-future-dates="true"
         :disabled="!form.is_pro"
       />
+      </VForm>
     </div>
     <div
-              class="border border-gray-300 rounded-lg shadow-xs p-4 mb-5 w-full mx-auto mt-4 select-all"
+      class="border border-gray-300 rounded-lg shadow-xs p-4 mb-5 w-full mx-auto mt-2 select-all"
     >
       <div
         v-if="!form.is_pro"
@@ -45,10 +47,15 @@
           class="mx-auto filter blur-md z-0"
         >
       </div>
-      <Loader
+      <div
         v-else-if="isLoading"
-        class="h-6 w-6 text-blue-500 mx-auto"
-      />
+        class="space-y-3"
+      >
+        <USkeleton class="h-4 w-full" />
+        <USkeleton class="h-4 w-3/4" />
+        <USkeleton class="h-4 w-1/2" />
+        <USkeleton class="h-32 w-full" />
+      </div>
       <LineChart
         v-else
         :options="chartOptions"

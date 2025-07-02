@@ -4,8 +4,8 @@
       Share Link
     </h3>
     <p>
-      Your form is now published and ready to be shared with the world! Copy
-      this link to share your form on social media, messaging apps or via email.
+      Share your form with anyone by copying this link. You can use it on social media,
+      in messages, or send it via email to reach your audience.
     </p>
     <copy-content
       :content="share_url"

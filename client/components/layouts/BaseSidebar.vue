@@ -12,11 +12,11 @@
       v-if="hasHeaderContent || isMobileMenuOpen"
       class="p-1 border-b border-neutral-200 h-[49px]"
     >
-      <div class="flex items-center justify-between gap-1">
+      <div class="flex items-center justify-between gap-1 w-full">
         <!-- Header Content Slot -->
         <slot name="header" :isMobileMenuOpen="isMobileMenuOpen" />
         
-        <div class="grow">
+        <div class="grow" v-if="hasMobileHeaderContent">
           <slot name="mobile-header" :isMobileMenuOpen="isMobileMenuOpen" />
         </div>
 
@@ -86,6 +86,10 @@ const version = computed(() => useFeatureFlag('version'))
 // Check if header slot has content
 const hasHeaderContent = computed(() => {
   return !!(slots.header && slots.header().length > 0)
+})
+
+const hasMobileHeaderContent = computed(() => {
+  return !!(slots['mobile-header'] && slots['mobile-header']().length > 0)
 })
 
 // Handle body overflow when mobile menu is open

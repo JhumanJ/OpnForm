@@ -1,16 +1,15 @@
 <template>
   <div class="flex">
     <UButton
-      v-track.url_form_prefill_click="{
-        form_id: form.id,
-        form_slug: form.slug,
-      }"
-      block
-      size="lg"
-      icon="heroicons:arrow-up-on-square-stack"
-      variant="outline"
-      label="Url pre-fill"
-      @click="showUrlFormPrefillModal = true"
+        v-track.url_form_prefill_click="{
+          form_id: form.id,
+          form_slug: form.slug,
+        }"
+        variant="outline"
+        color="neutral"
+        icon="i-heroicons-link"
+        @click="showUrlFormPrefillModal = true"
+        label="URL Pre-fill"
     />
 
     <UModal
