@@ -121,7 +121,7 @@
         </div>
 
         <!-- Loading Skeletons -->
-        <div v-if="formsLoading" class="flex flex-col gap-2 lg:mt-6 p-4">
+        <div v-if="formsLoading" class="flex flex-col gap-2">
           <FormCardSkeleton />
           <FormCardSkeleton />
           <FormCardSkeleton />

@@ -15,6 +15,7 @@
 
     <UTabs
       id="form-editor-navbar-tabs"
+      class="px-4"
       v-model="activeTab"
       :content="false"
       :items="[
@@ -23,9 +24,8 @@
       ]"
     />
     <UButton
-      color="primary"
-      variant="outline"
-      size="sm"
+      color="neutral"
+      variant="subtle"
       icon="i-heroicons-cog-6-tooth"
       label="Settings"
       @click="settingsModal = true"

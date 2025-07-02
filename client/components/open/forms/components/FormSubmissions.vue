@@ -6,7 +6,8 @@
       <h3 class="font-semibold text-xl mb-2">
         Submissions
       </h3>
-
+    </div>
+    <div class="w-full">
       <OpenTable
         v-if="form"
         ref="table"
@@ -17,13 +18,6 @@
         @updated="(submission)=>onUpdateRecord(submission)"
       />
 
-<<<<<<< HEAD
-      <Loader
-        v-else
-        class="h-6 w-6 text-blue-500 mx-auto"
-      />
-      
-=======
       <!-- Submissions Table Skeleton -->
       <div v-else class="border rounded-lg overflow-hidden">
         <!-- Table Header Skeleton -->
@@ -46,7 +40,6 @@
           </div>
         </div>
       </div>
->>>>>>> f9ea20dd (refactor: Enhance FormStatsController and Sidebar Components for Improved Functionality and UI)
     </div>
   </div>
 </template>

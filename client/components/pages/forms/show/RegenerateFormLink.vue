@@ -1,20 +1,9 @@
 <template>
   <div>
     <UButton
-      v-track.regenerate_form_link_click="{
-        form_id: form.id,
-        form_slug: form.slug,
-      }"
-<<<<<<< HEAD
-      block
-      size="lg"
-      icon="heroicons:link"
-      variant="outline"
-=======
       variant="outline"
       color="neutral"
       icon="i-heroicons-arrow-path"
->>>>>>> 4219ac3e (Refactor Form Components for Enhanced Layout and User Experience)
       @click="showGenerateFormLinkModal = true"
       label="Regenerate link"
     />
