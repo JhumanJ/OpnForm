@@ -1,17 +1,8 @@
 <template>
-  <div
-    class="p-4"
-  >
-    <div class="w-full max-w-4xl mx-auto">
-      <h3 class="font-semibold text-xl mb-2">
-        Submissions
-      </h3>
-    </div>
     <div class="w-full">
       <OpenTable
         v-if="form"
         ref="table"
-        class="border rounded-md"
         :data="tableData"
         :loading="isLoading"
         @deleted="onDeleteRecord"
@@ -41,7 +32,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>

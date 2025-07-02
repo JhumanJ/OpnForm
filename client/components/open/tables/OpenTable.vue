@@ -334,6 +334,14 @@ const toggleExpanded = () => {
   })
 }
 
+defineShortcuts({
+  escape: () => {
+    if (isExpanded.value) {
+      toggleExpanded()
+    }
+  }
+})
+
 const getHeaderForColumn = (columnId) => {
   if (!table.value?.tableApi) return null
   const header = table.value.tableApi.getFlatHeaders().find(h => h.column.id === columnId)

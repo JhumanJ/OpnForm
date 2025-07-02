@@ -42,6 +42,12 @@ export default defineAppConfig({
             minus: 'i-heroicons-minus',
             plus: 'i-heroicons-plus',
             search: 'i-heroicons-magnifying-glass'
+        },
+
+        table: {
+            slots: {
+                td: 'p-4 text-sm text-muted whitespace-normal [&:has([role=checkbox])]:pe-0'
+            }
         }
     }
 })
