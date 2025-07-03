@@ -62,12 +62,13 @@ const props = defineProps({
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
 const disableProviders = computed(() => providersStore.getAll.filter(provider => !provider.scopes.includes(providersStore.googleDrivePermission)).map((provider) => provider.id))
+const { openUserSettings } = useAppModals()
 
 function connect () {
   providersStore.connect('google', true)
 }
 
 function openConnectionsModal () {
-  useAppStore().setUserSettingsModalTab('connections')
+  openUserSettings('connections')
 }
 </script>

@@ -89,9 +89,10 @@ const props = defineProps({
 })
 
 const selfHosted = computed(() => useFeatureFlag('self_hosted'))
+const { openWorkspaceSettings } = useAppModals()
 
 function openEmailsModal () {
-  useAppStore().setWorkspaceSettingsModalTab('emails')
+  openWorkspaceSettings('emails')
 }
 
 onBeforeMount(() => {

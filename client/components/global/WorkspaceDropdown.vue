@@ -82,12 +82,12 @@ defineProps({
   }
 })
 
-const appStore = useAppStore()
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 const route = useRoute()
+const { openWorkspaceSettings } = useAppModals()
 
 const user = computed(() => authStore.user)
 const workspaces = computed(() => workspacesStore.getAll)
@@ -138,7 +138,7 @@ const onUserAdded = async () => {
 
 const openSettings = () => {
   isDropdownOpen.value = false
-  appStore.setWorkspaceSettingsModalTab('information')
+  openWorkspaceSettings('information')
 }
 
 const openInviteUserModal = () => {

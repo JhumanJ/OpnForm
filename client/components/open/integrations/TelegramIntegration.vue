@@ -59,7 +59,6 @@
 import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 import NotificationsMessageActions from './components/NotificationsMessageActions.vue'
-import WorkspacesSettingsModal from '~/components/workspaces/settings/Modal.vue'
 
 const props = defineProps({
   integration: { type: Object, required: true },
@@ -71,9 +70,9 @@ const props = defineProps({
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
 
-const workspaceSettings = useOverlay().create(WorkspacesSettingsModal)
+const { openUserSettings } = useAppModals()
 
 function openConnectionsModal () {
-  workspaceSettings.open()
+  openUserSettings('connections')
 }
 </script> 

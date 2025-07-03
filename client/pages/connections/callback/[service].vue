@@ -26,6 +26,7 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const alert = useAlert()
+const { openUserSettings } = useAppModals()
 
 // State
 const loading = ref(true)
@@ -41,7 +42,7 @@ async function handleCallback() {
   if(!code || !service) {
     errorMessage.value = "Missing code or service parameter."
     alert.error(errorMessage.value)
-    useAppStore().setUserSettingsModalTab('connections')
+    openUserSettings('connections')
     router.push(connectionUrl)
     return
   }
@@ -79,7 +80,7 @@ async function handleCallback() {
       }, 500) // Check after 500ms
     } else {
       router.push({name: 'home'})
-      useAppStore().setUserSettingsModalTab('connections')
+      openUserSettings('connections')
     }
 
   } catch (error) {
@@ -90,7 +91,7 @@ async function handleCallback() {
       errorMessage.value = "An unknown error occurred while connecting the account."
       alert.error(errorMessage.value)
     }
-    useAppStore().setUserSettingsModalTab('connections')
+    openUserSettings('connections')
     router.push({name: 'home'})
   }
 }
