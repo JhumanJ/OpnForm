@@ -31,7 +31,7 @@
             label="Settings"
           />
           <UButton
-            v-if="!workspace.is_readonly"
+            v-if="workspace.is_admin"
             icon="i-heroicons-user-plus"
             size="xs"
             color="neutral"

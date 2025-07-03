@@ -24,7 +24,7 @@ onMounted(async () => {
   } catch {
     useAlert().error('Unable to access billing portal. Please try again or contact support.')
     setTimeout(() => {
-      navigateTo('/home?user-settings=connections')
+      navigateTo({name: 'home'})
     }, 2000)
   }
 })

@@ -22,12 +22,12 @@
           <template #help>
             <InputHelp>
               <span>
-                <NuxtLink
-                  class="text-blue-500"
-                  href="/home?user-settings=connections"
-                >
-                  Click here
-                </NuxtLink>
+                              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
+              >
+                Click here
+              </a>
                 to connect another account.
               </span>
             </InputHelp>
@@ -47,7 +47,7 @@
         v-else
         color="white"
         :loading="providersStore.loading"
-        @click.prevent="connect"
+        @click.prevent="openConnectionsModal"
       >
         Connect Telegram account
       </v-button>
@@ -59,6 +59,7 @@
 import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 import NotificationsMessageActions from './components/NotificationsMessageActions.vue'
+import WorkspacesSettingsModal from '~/components/workspaces/settings/Modal.vue'
 
 const props = defineProps({
   integration: { type: Object, required: true },
@@ -70,7 +71,9 @@ const props = defineProps({
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
 
-function connect () {
-  navigateTo('/home?user-settings=connections')
+const workspaceSettings = useOverlay().create(WorkspacesSettingsModal)
+
+function openConnectionsModal () {
+  workspaceSettings.open()
 }
 </script> 

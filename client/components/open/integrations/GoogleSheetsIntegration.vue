@@ -24,12 +24,12 @@
         <template #help>
           <InputHelp>
             <span>
-              <NuxtLink
-                class="text-blue-500"
-                href="/home?user-settings=connections"
+              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
               >
                 Click here
-              </NuxtLink>
+              </a>
               to connect another account.
             </span>
           </InputHelp>
@@ -65,5 +65,9 @@ const disableProviders = computed(() => providersStore.getAll.filter(provider =>
 
 function connect () {
   providersStore.connect('google', true)
+}
+
+function openConnectionsModal () {
+  useAppStore().setUserSettingsModalTab('connections')
 }
 </script>

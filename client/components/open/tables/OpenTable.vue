@@ -40,7 +40,7 @@
         <template #removed-fields>
           <div class="flex items-center gap-2 w-full">
             <hr class="border-neutral-200 grow" />
-            <p class="text-sm text-neutral-500">Removed Fields</p>
+            <p class="text-xs text-neutral-500">Removed Fields</p>
             <hr class="border-neutral-200 grow" />
           </div>
         </template>
@@ -208,8 +208,8 @@ const dropdownItems = computed(() => {
   if (!table.value?.tableApi) return []
 
   const allColumns = table.value.tableApi.getAllColumns()
-  const items = allColumns.filter((column) => !column.columnDef.isRemoved)
-  const removeditems = allColumns.filter((column) => column.columnDef.isRemoved)
+  const items = allColumns.filter((column) => !column.columnDef.isRemoved && column.id !== 'actions')
+  const removeditems = allColumns.filter((column) => column.columnDef.isRemoved && column.id !== 'actions')
 
   if (removeditems.length > 0) {
     items.push({

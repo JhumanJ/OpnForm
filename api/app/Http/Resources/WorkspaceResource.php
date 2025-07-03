@@ -19,6 +19,7 @@ class WorkspaceResource extends JsonResource
         return array_merge(parent::toArray($request), [
             'max_file_size' => $this->max_file_size / 1000000,
             'is_readonly' => $this->isReadonlyUser($request->user()),
+            'is_admin' => $this->isAdminUser($request->user()),
             'users_count' => $this->users_count,
         ]);
     }

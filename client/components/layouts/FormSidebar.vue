@@ -38,7 +38,7 @@
             <TrackClick
               v-else
               name="sidebar_nav_click"
-              :properties="{ label: item.label, form_id: form.id }"
+              :properties="{ label: item.label, form_id: form?.id }"
             >
               <UButton
                 v-bind="item"

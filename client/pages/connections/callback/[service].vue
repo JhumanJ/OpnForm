@@ -30,7 +30,7 @@ const alert = useAlert()
 // State
 const loading = ref(true)
 const errorMessage = ref(null)
-const connectionUrl = '/home?user-settings=connections'
+const connectionUrl = '/home'
 
 async function handleCallback() {
   loading.value = true
@@ -41,6 +41,7 @@ async function handleCallback() {
   if(!code || !service) {
     errorMessage.value = "Missing code or service parameter."
     alert.error(errorMessage.value)
+    useAppStore().setUserSettingsModalTab('connections')
     router.push(connectionUrl)
     return
   }
@@ -77,7 +78,8 @@ async function handleCallback() {
         }
       }, 500) // Check after 500ms
     } else {
-      router.push(connectionUrl)
+      router.push({name: 'home'})
+      useAppStore().setUserSettingsModalTab('connections')
     }
 
   } catch (error) {
@@ -88,7 +90,8 @@ async function handleCallback() {
       errorMessage.value = "An unknown error occurred while connecting the account."
       alert.error(errorMessage.value)
     }
-    router.push(connectionUrl)
+    useAppStore().setUserSettingsModalTab('connections')
+    router.push({name: 'home'})
   }
 }
 

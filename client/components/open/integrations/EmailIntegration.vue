@@ -5,13 +5,12 @@
     :form="form"
   >
     <p class="text-gray-500 text-sm mb-3">
-      You can <NuxtLink
-        class="underline"
-        href="/home?workspace-settings=emails"
-        target="_blank"
+      You can <a
+        class="underline cursor-pointer"
+        @click="openEmailsModal"
       >
         use our custom SMTP feature
-      </NuxtLink> to send emails from your own domain.
+      </a> to send emails from your own domain.
     </p>
 
     <MentionInput
@@ -90,6 +89,10 @@ const props = defineProps({
 })
 
 const selfHosted = computed(() => useFeatureFlag('self_hosted'))
+
+function openEmailsModal () {
+  useAppStore().setWorkspaceSettingsModalTab('emails')
+}
 
 onBeforeMount(() => {
   for (const [keyname, defaultValue] of Object.entries({
