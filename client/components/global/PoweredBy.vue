@@ -7,15 +7,7 @@
     class="fixed bottom-4 right-4 hover:no-underline powered-by-button"
     :class="textColorClass"
     target="_blank"
-  >
-    <template #leading>
-      <img
-        src="/img/logo.svg"
-        alt="NoteForms"
-        class="w-4 h-4"
-      >
-    </template>
-  </UButton>
+  /> 
 </template>
 
 <script setup>
