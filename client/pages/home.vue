@@ -34,13 +34,14 @@
       </div>
 
       <!-- Create form button -->
-      <UButton
-        v-track.home_top_bar_create_form_click
-        v-if="!workspace?.is_readonly"
-        icon="i-heroicons-plus"
-        label="Create Form"
-        :to="{ name: 'forms-create' }"
-      />
+      <TrackClick name="home_top_bar_create_form_click">
+        <UButton
+          v-if="!workspace?.is_readonly"
+          icon="i-heroicons-plus"
+          label="Create Form"
+          :to="{ name: 'forms-create' }"
+        />
+      </TrackClick>
       </div>
     </div>
 
@@ -136,9 +137,8 @@
 import {useFormsStore} from "../stores/forms"
 import {useWorkspacesStore} from "../stores/workspaces"
 import Fuse from "fuse.js"
-import FormCard from "~/components/pages/home/FormCard.vue"
-import FormCardSkeleton from "~/components/pages/home/FormCardSkeleton.vue"
-import {refDebounced} from "@vueuse/core"
+import FormCard from '~/components/pages/home/FormCard.vue'
+import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
