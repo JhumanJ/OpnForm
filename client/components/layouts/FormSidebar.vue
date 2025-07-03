@@ -35,13 +35,17 @@
               class="h-9 w-full rounded-md"
             />
             <!-- Regular navigation item -->
-            <UButton
+            <TrackClick
               v-else
-              v-track.sidebar_nav_click="item.label"
-              v-bind="item"
-              class="w-full justify-start"
-              @click="item.onClick"
-            />
+              name="sidebar_nav_click"
+              :properties="{ label: item.label, form_id: form?.id }"
+            >
+              <UButton
+                v-bind="item"
+                class="w-full justify-start"
+                @click="item.onClick"
+              />
+            </TrackClick>
           </li>
         </ul>
       </div>
@@ -51,6 +55,7 @@
 
 <script setup>
 import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
+import TrackClick from '~/components/global/TrackClick.vue'
 
 const props = defineProps({
   form: {

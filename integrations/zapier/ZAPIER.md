@@ -39,7 +39,7 @@ zapier env:set [VERSION] BASE_URL=[BASE_URL]
 
 ## Testing
 
--   Create an access token: http://localhost:3000/settings/access-tokens
+-   Create an access token: http://localhost:3000/home?user-settings=access-tokens
 -   Create a Zap
 -   Authenticate using your token
 -   Submit a form

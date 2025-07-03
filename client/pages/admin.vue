@@ -60,7 +60,7 @@
         class="pb-8 max-w-lg"
         @submit.prevent="fetchUser"
       >
-        <text-input
+        <TextInput
           name="identifier"
           :form="fetchUserForm"
           label="Identifier"
@@ -68,14 +68,13 @@
           help="User Id, User Email, Form Slug or View Slug"
           @keydown="fetchUserForm.onKeydown($event)"
         />
-        <v-button
+        <UButton
+          type="submit"
           :loading="loading"
-          type="success"
-          color="blue"
-          class="mt-4 w-full"
-        >
-          Fetch User
-        </v-button>
+          block
+          class="mt-4"
+          label="Fetch User"
+        />
       </VForm>
 
       <VForm
@@ -83,7 +82,7 @@
         class="pb-8 max-w-lg"
         @submit.prevent="createTemplate"
       >
-        <text-area-input
+        <TextAreaInput
           name="template_prompt"
           :form="createTemplateForm"
           label="Template Description"
@@ -91,14 +90,13 @@
           help="Describe the template you want to create"
           @keydown="createTemplateForm.onKeydown($event)"
         />
-        <v-button
+        <UButton
+          type="submit"
           :loading="templateLoading"
-          type="success"
-          color="blue"
-          class="mt-4 w-full"
-        >
-          Create Template
-        </v-button>
+          block
+          class="mt-4"
+          label="Create Template"
+        />
       </VForm>
     </template>
 
@@ -110,36 +108,36 @@
         id="admin-buttons"
         class="flex gap-1 my-4"
       >
-        <impersonate-user :user="userInfo" />
-        <send-password-reset-email :user="userInfo" />
+        <ImpersonateUser :user="userInfo" />
+        <SendPasswordResetEmail :user="userInfo" />
       </div>
       <div
         class="w-full grid gap-2 grid-cols-1 lg:grid-cols-2"
       >
-        <discount-on-subscription
+        <DiscountOnSubscription
           :user="userInfo"
         />
-        <extend-trial
+        <ExtendTrial
           :user="userInfo"
         />
-        <cancel-subscription
+        <CancelSubscription
           :user="userInfo"
         />
-        <billing-email
+        <BillingEmail
           :user="userInfo"
         />
-        <user-workspaces
+        <UserWorkspaces
           :user="userInfo"
         />
-        <user-subscriptions
-          :user="userInfo"
-          class="lg:col-span-2"
-        />
-        <user-payments
+        <UserSubscriptions
           :user="userInfo"
           class="lg:col-span-2"
         />
-        <deleted-forms
+        <UserPayments
+          :user="userInfo"
+          class="lg:col-span-2"
+        />
+        <DeletedForms
           :user="userInfo"
           class="lg:col-span-2"
         />

@@ -1,42 +1,44 @@
 <template>
-  <modal
-    :show="showEditUserModal"
-    max-width="lg"
+  <UModal
+    v-model:open="showEditUserModal"
+    :ui="{ width: 'lg:max-w-lg' }"
     @close="$emit('close')"
+    title="Edit User Role"
   >
-    <template #title>
-      Edit User Role
-    </template>
-    <div class="px-4">
-      <form
-        @submit.prevent="updateUserRole"
-      >
-        <div>
-          <FlatSelectInput
-            v-model="userNewRole"
-            name="newUserRole"
-            :label="'New Role for '+props.user.name"
-            :options="[
-              { name: 'User', value: 'user' },
-              { name: 'Admin', value: 'admin' },
-              { name: 'Read Only', value: 'readonly' },
-            ]"
-            option-key="value"
-            display-key="name"
-          />
-        </div>
-
-        <div class="w-full mt-6">
-          <v-button
-            :loading="updatingUserRoleState"
-            class="w-full my-3"
+    <template #body>
+      <UCard>
+        <div class="px-4">
+          <form
+            @submit.prevent="updateUserRole"
           >
-            Update
-          </v-button>
+            <div>
+              <FlatSelectInput
+                v-model="userNewRole"
+                name="newUserRole"
+                :label="'New Role for '+props.user.name"
+                :options="[
+                  { name: 'User', value: 'user' },
+                  { name: 'Admin', value: 'admin' },
+                  { name: 'Read Only', value: 'readonly' },
+                ]"
+                option-key="value"
+                display-key="name"
+              />
+            </div>
+
+            <div class="w-full mt-6">
+              <UButton
+                :loading="updatingUserRoleState"
+                class="my-3"
+                block
+                label="Update"
+              />
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
-  </modal>
+      </UCard>
+    </template>
+  </UModal>
 </template>
 
 <script setup>

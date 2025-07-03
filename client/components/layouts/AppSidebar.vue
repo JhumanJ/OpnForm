@@ -61,18 +61,22 @@
         <!-- Section Items -->
         <ul class="space-y-1">
           <li v-for="item in section.items" :key="item.label">
-            <UButton
-              v-track.sidebar_nav_click="item.label"
-              v-bind="item"
-              class="w-full justify-start"
-              @click="item.onClick"
+            <TrackClick
+              name="sidebar_nav_click"
+              :properties="{ label: item.label }"
             >
-              <template #trailing v-if="item.kbd">
-                <span class="flex ml-auto">
-                  <UKbd v-for="kbd in item.kbd" :key="kbd" :value="kbd" />
-                </span>
-              </template>
-            </UButton>
+              <UButton
+                v-bind="item"
+                class="w-full justify-start"
+                @click="item.onClick"
+              >
+                <template #trailing v-if="item.kbd">
+                  <span class="hidden sm:flex ml-auto">
+                    <UKbd v-for="kbd in item.kbd" :key="kbd" :value="kbd" />
+                  </span>
+                </template>
+              </UButton>
+            </TrackClick>
           </li>
         </ul>
       </div>
@@ -86,6 +90,7 @@ import WorkspaceDropdown from "~/components/global/WorkspaceDropdown.vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import UserDropdown from "~/components/global/UserDropdown.vue"
 import { useRouter } from "vue-router"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const workspacesStore = useWorkspacesStore()
 const route = useRoute()

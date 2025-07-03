@@ -21,7 +21,7 @@
             </p>
           </div>
         </div>
-        <div v-if="!workspace.is_readonly" class="mt-2 flex items-center gap-2">
+        <div class="mt-2 flex items-center gap-2">
           <UButton
             icon="i-heroicons-cog-6-tooth"
             size="xs"
@@ -31,7 +31,7 @@
             label="Settings"
           />
           <UButton
-            v-if="user?.admin"
+            v-if="workspace.is_admin"
             icon="i-heroicons-user-plus"
             size="xs"
             color="neutral"
@@ -82,12 +82,12 @@ defineProps({
   }
 })
 
-const appStore = useAppStore()
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 const route = useRoute()
+const { openWorkspaceSettings } = useAppModals()
 
 const user = computed(() => authStore.user)
 const workspaces = computed(() => workspacesStore.getAll)
@@ -138,7 +138,7 @@ const onUserAdded = async () => {
 
 const openSettings = () => {
   isDropdownOpen.value = false
-  appStore.setWorkspaceSettingsModalTab('information')
+  openWorkspaceSettings('information')
 }
 
 const openInviteUserModal = () => {

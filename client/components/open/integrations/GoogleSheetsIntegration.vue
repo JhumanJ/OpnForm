@@ -24,12 +24,12 @@
         <template #help>
           <InputHelp>
             <span>
-              <NuxtLink
-                class="text-blue-500"
-                :to="{ name: 'settings-connections' }"
+              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
               >
                 Click here
-              </NuxtLink>
+              </a>
               to connect another account.
             </span>
           </InputHelp>
@@ -62,8 +62,13 @@ const props = defineProps({
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
 const disableProviders = computed(() => providersStore.getAll.filter(provider => !provider.scopes.includes(providersStore.googleDrivePermission)).map((provider) => provider.id))
+const { openUserSettings } = useAppModals()
 
 function connect () {
   providersStore.connect('google', true)
+}
+
+function openConnectionsModal () {
+  openUserSettings('connections')
 }
 </script>

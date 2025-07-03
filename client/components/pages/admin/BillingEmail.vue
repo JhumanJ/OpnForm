@@ -19,7 +19,7 @@
       @submit.prevent="updateUserBillingEmail"
     >
       <div>
-        <text-input
+        <TextInput
           name="billing_email"
           :form="form"
           label="Billing email"
@@ -29,15 +29,13 @@
           placeholder="Billing email"
           :disabled="!userCreated"
         />
-        <v-button
+        <UButton
           :loading="loading"
-          type="success"
-          class="w-full"
-          color="white"
+          type="submit"
+          block
           :disabled="!userCreated"
-        >
-          Update billing email
-        </v-button>
+          label="Update billing email"
+        />
       </div>
     </form>
   </AdminCard>

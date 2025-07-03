@@ -15,14 +15,16 @@
         @keydown="workspaceForm.onKeydown($event)"
       >
         <div class="max-w-sm">
-          <text-input
+          <TextInput
+            :disabled="workspace.is_readonly"
             :form="workspaceForm"
             name="name"
             label="Workspace Name"
             placeholder="My Workspace"
             :required="true"
           />
-          <text-input
+          <TextInput
+            :disabled="workspace.is_readonly"
             :form="workspaceForm"
             name="emoji"
             label="Emoji (optional)"
@@ -33,6 +35,7 @@
 
         <div class="mt-4">
           <UButton
+            :disabled="workspace.is_readonly"
             type="submit"
             :loading="workspaceForm.busy"
             color="primary"
@@ -44,7 +47,10 @@
     </VForm>
 
     <div class="pt-8 border-t border-neutral-200">
-      <div class="space-y-2">
+      <div 
+        v-if="user.admin" 
+        class="space-y-2"
+      >
         <h4 class="text-red-800 font-medium">Delete Workspace</h4>
         <p class="text-neutral-500 text-sm">
           This will permanently delete your entire workspace. All forms created in this workspace will be removed. This cannot be undone.
@@ -57,6 +63,23 @@
           Delete workspace
         </UButton>
       </div>
+
+      <div 
+        v-else
+        class="space-y-2"
+      >
+        <h4 class="text-neutral-900 font-medium">Leave Workspace</h4>
+        <p class="text-neutral-500 text-sm">
+          This will remove you from the workspace. You will lose access to all forms in this workspace.
+        </p>
+        <UButton
+          color="neutral"
+          :loading="leaveWorkspaceLoading"
+          @click="leaveWorkSpace"
+        >
+          Leave workspace
+        </UButton>
+      </div>
     </div>
   </div>
 </template>
@@ -65,11 +88,13 @@
 import { workspaceApi } from '~/api'
 
 const workspacesStore = useWorkspacesStore()
+const authStore = useAuthStore()
 const alert = useAlert()
 const appStore = useAppStore()
 const router = useRouter()
 
 const workspace = computed(() => workspacesStore.getCurrent)
+const user = computed(() => authStore.user)
 
 // Workspace form
 const workspaceForm = useForm({
@@ -77,8 +102,8 @@ const workspaceForm = useForm({
   emoji: ''
 })
 
-// Delete workspace loading state
 const deleteLoading = ref(false)
+const leaveWorkspaceLoading = ref(false)
 
 // Update profile
 const updateProfile = () => {
@@ -110,8 +135,34 @@ const deleteWorkspace = () => {
     .catch((error) => {
       alert.error(error.data.message)
       deleteLoading.value = false
+    }).finally(() => {
+      deleteLoading.value = false
     })
 }
+
+// Leave workspace
+const leaveWorkSpace = () => {
+  alert.confirm(
+    "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
+    () => {
+      leaveWorkspaceLoading.value = true
+      opnFetch("/open/workspaces/" + workspace.value.id + "/leave", {
+        method: "POST",
+      }).then(() => {
+        alert.success("You have left the workspace.")
+        workspacesStore.remove(workspace.value.id)
+        appStore.closeWorkspaceSettingsModal()
+        router.push({ name: "home" })
+      }).catch(() => {
+        alert.error("There was an error leaving the workspace.")
+        leaveWorkspaceLoading.value = false
+      }).finally(() => {
+        leaveWorkspaceLoading.value = false
+      })
+    },
+  )
+}
+
 
 // Watch for user changes
 watch(workspace, (newWorkspace) => {

@@ -37,8 +37,8 @@ import { computed } from "vue"
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
-const appStore = useAppStore()
 const router = useRouter()
+const { openUserSettings } = useAppModals()
 
 const user = computed(() => authStore.user)
 
@@ -74,7 +74,7 @@ const dropdownItems = computed(() => {
   navItems.push({
     label: 'Settings',
     icon: 'i-heroicons-cog-6-tooth',
-    onSelect: () => appStore.setUserSettingsModalTab('account')
+    onSelect: () => openUserSettings('account')
   })
 
   // Admin - only show for moderators

@@ -13,15 +13,15 @@
       class="-mx-6"
     >
       <template #actions-cell="{ row }">
-        <VButton
+        <UButton
           :loading="restoringForm"
-          native-type="button"
-          size="small"
-          color="white"
+          size="sm"
+          color="neutral"
+          variant="outline"
           @click.prevent="restoreForm(row.original.slug)"
         >
           Restore
-        </VButton>
+        </UButton>
       </template>
     </UTable>
     <div 

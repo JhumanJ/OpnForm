@@ -24,8 +24,6 @@
         <SubscriptionModal />
         <QuickRegister />
       </ClientOnly>
-
-      <AppSettings />
     </div>
   </AppProvider>
 </template>

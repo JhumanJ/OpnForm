@@ -22,12 +22,12 @@
           <template #help>
             <InputHelp>
               <span>
-                <NuxtLink
-                  class="text-blue-500"
-                  :to="{ name: 'settings-connections' }"
-                >
-                  Click here
-                </NuxtLink>
+                              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
+              >
+                Click here
+              </a>
                 to connect another account.
               </span>
             </InputHelp>
@@ -47,7 +47,7 @@
         v-else
         color="white"
         :loading="providersStore.loading"
-        @click.prevent="connect"
+        @click.prevent="openConnectionsModal"
       >
         Connect Telegram account
       </v-button>
@@ -70,7 +70,9 @@ const props = defineProps({
 const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
 
-function connect () {
-  useRouter().push({ name: 'settings-connections' })
+const { openUserSettings } = useAppModals()
+
+function openConnectionsModal () {
+  openUserSettings('connections')
 }
 </script> 

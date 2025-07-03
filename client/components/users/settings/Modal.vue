@@ -22,6 +22,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
+      v-if="!workspace.is_readonly"
       id="connections"
       label="Connections"
       icon="i-heroicons-link"
@@ -30,6 +31,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
+      v-if="!workspace.is_readonly"
       id="access-tokens"
       label="Access Tokens"
       icon="i-heroicons-key"
@@ -38,6 +40,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
+      v-if="user.has_customer_id"
       id="billing"
       label="Billing"
       icon="i-heroicons-credit-card"
@@ -63,6 +66,9 @@ const props = defineProps({
     default: null
   }
 })
+
+const workspace = useWorkspacesStore().getCurrent
+const user = useAuthStore().user
 
 // Modal state
 const isOpen = computed({

@@ -205,7 +205,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()
@@ -227,6 +227,13 @@ class Workspace extends Model implements CachableAttributes
         })->exists();
     }
 
+    public function isAdminUser(?User $user)
+    {
+        return $user ? $this->users()
+            ->wherePivot('user_id', $user->id)
+            ->wherePivot('role', User::ROLE_ADMIN)
+            ->exists() : false;
+    }
     public function isReadonlyUser(?User $user)
     {
         return $user ? $this->users()

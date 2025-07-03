@@ -14,6 +14,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
+      v-if="!workspace.is_readonly"
       id="domains"
       label="Domains"
       icon="i-heroicons-globe-alt"
@@ -22,6 +23,7 @@
     </SettingsModalPage>
     
     <SettingsModalPage
+      v-if="!workspace.is_readonly"
       id="emails"
       label="Emails"
       icon="i-heroicons-envelope"
@@ -56,6 +58,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const workspace = useWorkspacesStore().getCurrent
 
 // Modal state
 const isOpen = computed({

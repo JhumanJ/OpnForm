@@ -13,7 +13,7 @@
         you cancel the subscription for them, please provide a reason.
       </p>
       <div>
-        <text-input
+        <TextInput
           name="cancellation_reason"
           :form="form"
           label="Cancellation reason"
@@ -22,18 +22,13 @@
           help="Cancellation reason"
         />
 
-        <v-button
+        <UButton
           :loading="loading"
-          type="success"
-          class="w-full"
-          color="outline-red"
-        >
-          <Icon
-            class="inline w-4 h-4 text-red-600"
-            name="heroicons:exclamation-triangle-16-solid"
-          />
-          Cancel subscription now
-        </v-button>
+          type="submit"
+          block
+          icon="heroicons:exclamation-triangle-16-solid"
+          label="Cancel subscription now"
+        />
       </div>
     </form>
   </AdminCard>

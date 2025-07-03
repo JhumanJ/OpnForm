@@ -19,16 +19,19 @@ import { oauthApi } from '~/api'
 // Define meta for auth middleware
 definePageMeta({
   middleware: "auth",
+  layout: 'dashboard'
 })
 
 // Use composables
 const route = useRoute()
 const router = useRouter()
 const alert = useAlert()
+const { openUserSettings } = useAppModals()
 
 // State
 const loading = ref(true)
 const errorMessage = ref(null)
+const connectionUrl = '/home'
 
 async function handleCallback() {
   loading.value = true
@@ -39,7 +42,8 @@ async function handleCallback() {
   if(!code || !service) {
     errorMessage.value = "Missing code or service parameter."
     alert.error(errorMessage.value)
-    router.push('/settings/connections')
+    openUserSettings('connections')
+    router.push(connectionUrl)
     return
   }
 
@@ -71,11 +75,12 @@ async function handleCallback() {
         if (!window.closed) {
             console.warn('[CallbackPage] window.close() did not execute or was blocked.')
             // Optionally, redirect here as a fallback if close fails?
-            // router.push('/settings/connections');
+            // router.push(connectionUrl)
         }
       }, 500) // Check after 500ms
     } else {
-      router.push('/settings/connections')
+      router.push({name: 'home'})
+      openUserSettings('connections')
     }
 
   } catch (error) {
@@ -86,7 +91,8 @@ async function handleCallback() {
       errorMessage.value = "An unknown error occurred while connecting the account."
       alert.error(errorMessage.value)
     }
-    router.push('/settings/connections')
+    openUserSettings('connections')
+    router.push({name: 'home'})
   }
 }
 

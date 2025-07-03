@@ -116,10 +116,10 @@ const props = defineProps({
 })
 
 const workspacesStore = useWorkspacesStore()
-const appStore = useAppStore()
 const authStore = useAuthStore()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
+const { openUserSettings } = useAppModals()
 const workspace = computed(() => workspacesStore.getCurrent)
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
@@ -156,7 +156,7 @@ const inviteUserForm = useForm({
 
 const openBilling = () => {
   closeModal()
-  appStore.setUserSettingsModalTab('billing')
+  openUserSettings('billing')
 }
 
 const addUser = () => {
