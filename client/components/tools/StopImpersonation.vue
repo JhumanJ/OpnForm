@@ -17,7 +17,6 @@
 import { authApi } from "~/api/auth"
 
 const authStore = useAuthStore()
-const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 
 const isImpersonating = computed(() => authStore.isImpersonating)
@@ -30,8 +29,7 @@ async function reverseImpersonation() {
   // Fetch the user.
   const userData = await authApi.user.get()
   authStore.setUser(userData)
-  const workspaces = await fetchAllWorkspaces()
-  workspacesStore.set(workspaces.data.value)
+  useWorkspaces().invalidateAll()
   router.push({ name: 'admin' })
   loading.value = false
 }

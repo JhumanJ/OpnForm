@@ -1,4 +1,4 @@
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import { useQueryClient } from '@tanstack/vue-query'
 
 export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
@@ -11,15 +11,34 @@ export default defineNuxtRouteMiddleware(async () => {
   authStore.initStore(tokenValue, adminTokenValue)
 
   if (authStore.token && !authStore.user) {
-    const workspaceStore = useWorkspacesStore()
-
-    // Load user data and workspaces
-    const [userDataResponse, workspacesResponse] = await Promise.all([
-      useOpnApi("user"),
-      fetchAllWorkspaces(),
+    const queryClient = useQueryClient()
+    
+    // Prefetch user data and workspaces using TanStack Query
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['user'],
+        queryFn: () => opnFetch("/user"),
+        staleTime: 5 * 60 * 1000
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['workspaces', 'list'],
+        queryFn: () => opnFetch("/open/workspaces/"),
+        staleTime: 5 * 60 * 1000
+      })
     ])
-    authStore.setUser(userDataResponse.data.value)
-    workspaceStore.save(workspacesResponse.data.value)
+
+    // Set user data in auth store from query cache
+    const userData = queryClient.getQueryData(['user'])
+    if (userData) {
+      authStore.setUser(userData)
+    }
+
+    // Keep workspace selection in Pinia for UI state management
+    const workspacesData = queryClient.getQueryData(['workspaces', 'list'])
+    if (workspacesData) {
+      const workspaceStore = useWorkspacesStore()
+      workspaceStore.save(workspacesData)
+    }
   }
   authStore.initServiceClients()
 })

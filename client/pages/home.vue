@@ -49,7 +49,7 @@
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
         <!-- Empty State: No forms -->
-        <div v-if="!formsLoading && forms.length === 0" class="text-center py-16 px-4">
+        <div v-if="!isFormsLoading && forms.length === 0" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-gray-900">
             Create your first form
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Empty State: No results -->
-        <div v-if="!formsLoading && forms.length > 0 && enrichedForms.length === 0" class="text-center py-16 px-4">
+        <div v-if="!isFormsLoading && forms.length > 0 && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-gray-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-gray-900">
               No forms found
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Loading Skeletons -->
-        <div v-if="formsLoading" class="flex flex-col gap-2">
+        <div v-if="isFormsLoading" class="flex flex-col gap-2">
           <FormCardSkeleton />
           <FormCardSkeleton />
           <FormCardSkeleton />
@@ -134,8 +134,6 @@
 </template>
 
 <script setup>
-import {useFormsStore} from "../stores/forms"
-import {useWorkspacesStore} from "../stores/workspaces"
 import Fuse from "fuse.js"
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
@@ -151,27 +149,24 @@ useOpnSeoMeta({
     "All of your OpnForm are here. Create new forms, or update your existing forms.",
 })
 
+// Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
-formsStore.startLoading()
+const { current: currentWorkspace } = useWorkspaces()
+const { list: formsList } = useForms()
 
-const workspace = computed(() => workspacesStore.getCurrent)
+// Get current workspace
+const { data: workspace } = currentWorkspace()
 
-onMounted(() => {
-  if (!formsStore.allLoaded) {
-    formsStore.loadAll(workspacesStore.currentId)
-  } else {
-    formsStore.stopLoading()
+// Get forms for current workspace
+const { data: forms, isLoading: isFormsLoading } = formsList(
+  computed(() => workspacesStore.currentId),
+  {
+    enabled: computed(() => !!workspacesStore.currentId)
   }
-})
+)
 
 // State
-const {
-  getAll: forms,
-  loading: formsLoading,
-  allTags,
-} = storeToRefs(formsStore)
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
 const selectedTags = ref([])
@@ -190,11 +185,28 @@ const isFilteringForms = computed(() => {
   )
 })
 
+// Extract all unique tags from forms
+const allTags = computed(() => {
+  if (!forms.value) return []
+  
+  const tagsSet = new Set()
+  forms.value.forEach(form => {
+    if (form.tags && form.tags.length) {
+      form.tags.forEach(tag => tagsSet.add(tag))
+    }
+  })
+  
+  return Array.from(tagsSet).sort()
+})
+
 const tagOptions = computed(() => allTags.value.map(tag => ({ label: tag, value: tag })))
 
 const enrichedForms = computed(() => {
+  if (!forms.value) return []
+  
   const enriched = forms.value.map((form) => {
-    form.workspace = workspacesStore.getByKey(form.workspace_id)
+    // Enrich form with workspace data from cache
+    form.workspace = workspace.value || null
     return form
   }).filter((form) => {
     if (selectedTags.value.length === 0) {
