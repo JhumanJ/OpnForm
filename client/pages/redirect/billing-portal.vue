@@ -8,13 +8,15 @@
 </template>
 
 <script setup>
+import { billingApi } from "~/api"
+
 definePageMeta({
   middleware: 'auth'
 })
 
 onMounted(async () => {
   try {
-    const { portal_url } = await opnFetch('/subscription/billing-portal')
+    const { portal_url } = await billingApi.getBillingPortal()
     if (!portal_url) {
       throw new Error('No portal URL returned')
     }

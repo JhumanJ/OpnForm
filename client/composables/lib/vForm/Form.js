@@ -1,7 +1,7 @@
 import { serialize } from "object-to-formdata"
 import Errors from "./Errors"
 import cloneDeep from "clone-deep"
-import { opnFetch } from "~/composables/useOpnApi.js"
+import { apiService } from "~/api"
 function hasFiles(data) {
   return (
     data instanceof File ||
@@ -145,7 +145,7 @@ class Form {
       }
     }
     return new Promise((resolve, reject) => {
-      opnFetch(config.url, config)
+      apiService.mutate(config.url, config)
         .then((data) => {
           this.finishProcessing()
           resolve(data)
@@ -182,7 +182,7 @@ class Form {
       }
     }
     return new Promise((resolve, reject) => {
-      opnFetch(config.url, config)
+      apiService.mutate(config.url, config)
         .then((data) => {
           this.finishProcessing()
           resolve(data)

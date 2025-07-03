@@ -70,6 +70,8 @@
 </template>
 
 <script setup>
+import { formsApi } from "~/api/forms"
+
 const props = defineProps({
   form: { type: Object, required: true },
 })
@@ -90,17 +92,10 @@ const isModalOpen = computed({
   }
 })
 
-const formEndpoint = computed(() => "/open/forms/{id}")
-
 const regenerateLink = (option) => {
   if (loadingNewLink.value) return
   loadingNewLink.value = true
-  opnFetch(
-    formEndpoint.value.replace("{id}", props.form.id) +
-      "/regenerate-link/" +
-      option,
-    { method: "PUT" },
-  )
+  formsApi.regenerateLink(props.form.id, option)
     .then((data) => {
       formsStore.save(data.form)
       router.push({

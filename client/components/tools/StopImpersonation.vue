@@ -14,6 +14,8 @@
 </template>
 
 <script setup>
+import { authApi } from "~/api/auth"
+
 const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
 const router = useRouter()
@@ -26,7 +28,7 @@ async function reverseImpersonation() {
   authStore.stopImpersonating()
 
   // Fetch the user.
-  const userData = await opnFetch('user')
+  const userData = await authApi.user.get()
   authStore.setUser(userData)
   const workspaces = await fetchAllWorkspaces()
   workspacesStore.set(workspaces.data.value)

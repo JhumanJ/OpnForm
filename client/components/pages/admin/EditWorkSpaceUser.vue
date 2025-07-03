@@ -43,6 +43,7 @@
 
 <script setup>
 import {watch, ref} from "vue"
+import { workspaceApi } from "~/api"
 
  
 const props = defineProps(['user', 'showEditUserModal'])
@@ -59,19 +60,10 @@ watch(() => props.user, () => {
 
 const updateUserRole = () => {
   updatingUserRoleState.value = true
-  opnFetch(
-    "/open/workspaces/" +
-    workspacesStore.currentId +
-    "/users/" +
-    props.user.id +
-    "/update-role",
-    {
-      method: "PUT",
-      body: {
-        role: userNewRole.value,
-      },
-    },
-    {showSuccess: false},
+  workspaceApi.users.updateRole(
+    workspacesStore.currentId,
+    props.user.id,
+    { role: userNewRole.value }
   ).then(() => {
     useAlert().success("User role updated.")
     emit('fetchUsers')

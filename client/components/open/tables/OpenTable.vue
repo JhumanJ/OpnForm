@@ -124,6 +124,7 @@
 
 <script setup>
 import clonedeep from 'clone-deep'
+import { formsApi } from '~/api'
 import { useEventListener } from '@vueuse/core'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
@@ -152,7 +153,7 @@ const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
 const form = storeToRefs(workingFormStore).content
 const workspace = computed(() => workspacesStore.getCurrent)
-const runtimeConfig = useRuntimeConfig()
+
 
 const fieldComponents = {
   text: OpenText,
@@ -368,13 +369,8 @@ const downloadAsCsv = () => {
   }
 
   exportLoading.value = true
-  const exportUrl = runtimeConfig.public.apiBase + '/open/forms/' + form.value.id + '/submissions/export'
-  opnFetch(exportUrl, {
-    responseType: "blob",
-    method: "POST",
-    body: {
-      columns: [] // TODO: Add columns to export
-    }
+  formsApi.submissions.export(form.value.id, {
+    columns: [] // TODO: Add columns to export
   }).then(blob => {
     const filename = `${form.value.slug}-${Date.now()}-submissions.csv`
     const a = document.createElement("a")

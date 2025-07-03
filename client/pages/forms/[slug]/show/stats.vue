@@ -40,6 +40,7 @@
 
 <script setup>
 import FormStats from "~/components/open/forms/components/FormStats.vue"
+import { formsApi } from "~/api"
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -65,12 +66,7 @@ onMounted(() => {
 const getCardData = async() => {
   if (!props.form || !props.form.is_pro) { return null }
   isLoading.value = true
-  opnFetch(
-      "/open/workspaces/" +
-      props.form.workspace_id +
-      "/form-stats-details/" +
-      props.form.id,
-  ).then((responseData) => {
+  formsApi.statsDetails(props.form.workspace_id, props.form.id).then((responseData) => {
     if (responseData) {
       totalViews.value = responseData.views ?? 0
       totalSubmissions.value = responseData.submissions ?? 0

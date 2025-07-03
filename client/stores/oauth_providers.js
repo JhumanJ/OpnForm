@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
 import { useFeatureFlagsStore } from '~/stores/featureFlags'
+import { oauthApi } from "~/api"
 
 export const providersEndpoint = "/open/providers"
 
@@ -46,7 +47,7 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     contentStore.resetState()
     contentStore.startLoading()
 
-    return opnFetch(providersEndpoint).then(
+    return oauthApi.list().then(
       (data) => {
         contentStore.save(data)
         contentStore.stopLoading()
@@ -65,12 +66,9 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
     contentStore.startLoading()
     const intention = redirect ? new URL(window.location.href).pathname : undefined
     
-    opnFetch(`/settings/providers/connect/${service}`, {
-      method: 'POST',
-      body: {
-        ...(intention && { intention }),
-        autoClose: autoClose 
-      }
+    oauthApi.connect(service, {
+      ...(intention && { intention }),
+      autoClose: autoClose 
     })
       .then((data) => {
         if (newtab) {
@@ -97,11 +95,8 @@ export const useOAuthProvidersStore = defineStore("oauth_providers", () => {
 
     const intention = new URL(window.location.href).pathname
 
-    opnFetch(`/oauth/connect/${service}`, {
-      method: 'POST',
-      body: {
-        ...redirect ? { intention } : {},
-      }
+    oauthApi.redirect(service, {
+      ...redirect ? { intention } : {},
     })
       .then((data) => {
         window.open(data.url, '_blank')

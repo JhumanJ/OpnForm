@@ -35,6 +35,8 @@
 </template>
 
 <script setup>
+import { workspaceApi } from "~/api"
+
 defineProps({
   isWorkspaceAdmin: { type: Boolean, default: false },
   disabled: {
@@ -60,14 +62,11 @@ const addingUsersState = ref(false)
 const addUser = () => {
   if (!newUser.value) return
   addingUsersState.value = true
-  opnFetch(
-    "/open/workspaces/" + workspacesStore.currentId + "/users/add",
+  workspaceApi.users.add(
+    workspacesStore.currentId,
     {
-      method: "POST",
-      body: {
-        email: newUser.value,
-        role: newUserRole.value,
-      },
+      email: newUser.value,
+      role: newUserRole.value,
     }
   ).then((data) => {
     newUser.value = ""

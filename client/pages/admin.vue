@@ -148,6 +148,7 @@
 
 <script setup>
 import { computed, ref, onMounted } from 'vue'
+import { adminApi } from '~/api'
 
 definePageMeta({
   middleware: 'moderator',
@@ -205,7 +206,7 @@ async function fetchUser() {
   }
 
   loading.value = true
-  opnFetch(`/moderator/fetch-user/${encodeURI(fetchUserForm.identifier)}`).then(async (data) => {
+      adminApi.fetchUser(fetchUserForm.identifier).then(async (data) => {
     loading.value = false
     userInfo.value = { ...data.user, workspaces: data.workspaces }
     getUserPlan(data.workspaces)
@@ -240,11 +241,8 @@ async function createTemplate() {
   }
 
   templateLoading.value = true
-  opnFetch(`/moderator/create-template`, {
-    method: 'POST',
-    body: {
-      template_prompt: createTemplateForm.template_prompt
-    }
+  adminApi.createTemplate({
+    template_prompt: createTemplateForm.template_prompt
   }).then((data) => {
     templateLoading.value = false
     createTemplateForm.reset()

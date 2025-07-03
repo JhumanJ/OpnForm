@@ -53,6 +53,7 @@
 import { computed } from "vue"
 import { useAuthStore } from "../../../stores/auth"
 import AppSumoBilling from "../../vendor/appsumo/AppSumoBilling.vue"
+import { billingApi, authApi } from '~/api'
 
 const authStore = useAuthStore()
 const alert = useAlert()
@@ -67,7 +68,7 @@ onMounted(() => {
 })
 
 const loadUsersCount = () => {
-  opnFetch("/subscription/users-count")
+      billingApi.getUsersCount()
     .then((data) => {
       usersCount.value = data.count
     })
@@ -82,7 +83,7 @@ const canCancel = computed(() => {
 
 const cancelSubscription = () => {
   cancelLoading.value = true
-  opnFetch('/subscription').then((data) => {
+      billingApi.getSubscription().then((data) => {
     if (data && data.length) {
       window.profitwell('init_cancellation_flow', { subscription_id: data[0].stripe_id }).then(result => {
         // This means the customer either aborted the flow (i.e.
@@ -92,7 +93,7 @@ const cancelSubscription = () => {
         if (result.status === 'retained' || result.status === 'aborted') {
           console.log('Retained 🥳')
         } else {
-          opnFetch('/subscription/' + data[0].id + '/cancel', { method: 'POST' })
+          billingApi.cancelSubscription(data[0].id)
             .then(() => {
               alert.success('Subscription cancelled. Sorry to see you leave 😢')
             })
@@ -105,7 +106,7 @@ const cancelSubscription = () => {
             useCrisp().pushEvent('subscription_cancelled')
 
             // Now we need to reload workspace and user
-            opnFetch('user').then((userData) => {
+            authApi.user.get().then((userData) => {
               authStore.setUser(userData)
             })
             fetchAllWorkspaces().then((workspaces) => {

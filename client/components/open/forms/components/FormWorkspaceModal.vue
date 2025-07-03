@@ -51,7 +51,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-
+import { formsApi } from "~/api/forms"
 const emit = defineEmits(["close"])
 const workspacesStore = useWorkspacesStore()
 const formsStore = useFormsStore()
@@ -92,13 +92,11 @@ const close = () => {
 }
 
 const onSubmit = () => {
-  const endpoint =
-    "/open/forms/" + props.form.id + "/workspace/" + selectedWorkspace.value
   if (!selectedWorkspace.value) {
     useAlert().error("Please select a workspace!")
     return
   }
-  opnFetch(endpoint, { method: "POST" })
+  formsApi.updateWorkspace(props.form.id, selectedWorkspace.value, {})
     .then(() => {
       loading.value = false
       emit("close")

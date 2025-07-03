@@ -9,6 +9,8 @@
 </template>
 
 <script setup>
+import { adminApi, authApi } from '~/api'
+
 const props = defineProps({
   user: { type: Object, required: true }
 })
@@ -22,14 +24,14 @@ const loading = ref(false)
 const impersonate = () => {
   loading.value = true
   authStore.startImpersonating()
-  opnFetch(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
+  adminApi.impersonate(props.user.id).then(async (data) => {
     loading.value = false
 
     // Save the token with its expiration time.
     authStore.setToken(data.token, data.expires_in)
 
     // Fetch the user.
-    const userData = await opnFetch('user')
+    const userData = await authApi.user.get()
     authStore.setUser(userData)
 
     // Redirect to the dashboard.

@@ -92,7 +92,7 @@
 </template>
 
 <script setup>
-import { opnFetch } from '~/composables/useOpnApi'
+import { workspaceApi } from '~/api'
 
 const workspacesStore = useWorkspacesStore()
 const alert = useAlert()
@@ -155,11 +155,8 @@ const removeDomain = (index) => {
 
 const saveChanges = () => {
   isLoading.value = true
-  opnFetch(`/open/workspaces/${workspace.value.id}/custom-domains`, {
-    method: 'PUT',
-    body: {
-      custom_domains: domains.value,
-    },
+  workspaceApi.customDomains.update(workspace.value.id, {
+    custom_domains: domains.value,
   })
     .then((data) => {
       workspacesStore.save(data)

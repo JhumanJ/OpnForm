@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { useContentStore } from "~/composables/stores/useContentStore.js"
+import { formsApi } from "~/api"
 
 export const formsEndpoint = "/open/workspaces/{workspaceId}/forms"
 export const singleFormEndpoint = "/open/forms/{slug}"
@@ -19,7 +20,7 @@ export const useFormsStore = defineStore("forms", () => {
     contentStore.startLoading()
     
     loadAllRequest.value = new Promise((resolve, reject) => {
-      opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId), { query: { page: 1 } })
+      formsApi.list(workspaceId, { query: { page: 1 } })
         .then(firstResponse => {
           contentStore.resetState()
           contentStore.save(firstResponse.data)
@@ -30,7 +31,7 @@ export const useFormsStore = defineStore("forms", () => {
             // Create an array of promises for remaining pages
             const remainingPages = Array.from({ length: lastPage - 1 }, (_, i) => {
               const page = i + 2 // Start from page 2
-              return opnFetch(formsEndpoint.replace('{workspaceId}', workspaceId), { query: { page } })
+              return formsApi.list(workspaceId, { query: { page } })
             })
             
             // Fetch all remaining pages in parallel
@@ -61,7 +62,7 @@ export const useFormsStore = defineStore("forms", () => {
 
   const loadForm = (slug) => {
     contentStore.startLoading()
-    return opnFetch(singleFormEndpoint.replace("{slug}", slug))
+    return formsApi.get(slug)
       .then((response) => {
         contentStore.save(response)
       })
@@ -72,9 +73,8 @@ export const useFormsStore = defineStore("forms", () => {
 
   const load = (workspaceId, slug) => {
     contentStore.startLoading()
-    return opnFetch(
-      formsEndpoint.replace("{workspaceId}", workspaceId) + "/" + slug,
-    ).finally(() => {
+    return formsApi.getById(slug)
+    .finally(() => {
       contentStore.stopLoading()
     })
   }
@@ -89,7 +89,7 @@ export const useFormsStore = defineStore("forms", () => {
 
   const publicFetch = (slug) => {
     contentStore.startLoading()
-    return opnFetch("/forms/" + slug)
+    return formsApi.get(slug, { server: false })
   }
 
   const allTags = computed(() => {

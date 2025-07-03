@@ -144,6 +144,7 @@ import { inputProps, useFormInput } from "./useFormInput.js"
 import InputWrapper from "./components/InputWrapper.vue"
 import Modal from "../global/Modal.vue"
 import { storeFile } from "~/lib/file-uploads.js"
+import { formsApi } from '~/api'
 
 export default {
   name: "ImageInput",
@@ -224,16 +225,13 @@ export default {
       storeFile(this.file)
         .then((response) => {
           // Move file to permanent storage for form assets
-          opnFetch("/open/forms/assets/upload", {
-            method: "POST",
-            body: {
-              url:
-                this.file.name.split(".").slice(0, -1).join(".") +
-                "_" +
-                response.uuid +
-                "." +
-                response.extension,
-            },
+          formsApi.assets.upload({
+            url:
+              this.file.name.split(".").slice(0, -1).join(".") +
+              "_" +
+              response.uuid +
+              "." +
+              response.extension,
           })
             .then((moveFileResponseData) => {
               if (!this.multiple) {

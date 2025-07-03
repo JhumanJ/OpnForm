@@ -31,7 +31,8 @@
 </template>
 
 <script setup>
-import EditSubmissionModal from './EditSubmissionModal.vue'
+import EditSubmissionModal from "./EditSubmissionModal.vue"
+import { formsApi } from "~/api/forms"
 
 const props = defineProps({
   form: {
@@ -58,7 +59,7 @@ const onDeleteClick = () => {
 }
 
 const deleteRecord = async () => {
-  opnFetch("/open/forms/" + props.form.id + "/submissions/" + props.submission.id, { method: "DELETE" })
+  formsApi.submissions.delete(props.form.id, props.submission.id)
     .then(async (data) => {
       if (data.type === "success") {
         emit("deleted", props.submission)

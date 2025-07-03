@@ -1,4 +1,5 @@
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
+import { authApi } from "~/api"
 
 export const useAuth = () => {
   const authStore = useAuthStore()
@@ -15,7 +16,7 @@ export const useAuth = () => {
 
     // Fetch initial data
     const [userData, workspaces] = await Promise.all([
-      opnFetch("user"),
+      authApi.user.get(),
       fetchAllWorkspaces()
     ])
 
@@ -65,7 +66,7 @@ export const useAuth = () => {
         
         const attemptFetch = async () => {
           try {
-            const userData = await opnFetch("user")
+            const userData = await authApi.user.get()
             
             if (userData) {
               authStore.setUser(userData)
@@ -114,10 +115,7 @@ export const useAuth = () => {
    * Handle social login callback
    */
   const handleSocialCallback = async (provider, code, utmData) => {
-    const tokenData = await opnFetch(`/oauth/${provider}/callback`, {
-      method: 'POST',
-      body: { code, utm_data: utmData }
-    })
+    const tokenData = await authApi.oauth.callback(provider, { code, utm_data: utmData })
     
     // Send message to parent window if applicable
     if (window.opener && !window.opener.closed) {

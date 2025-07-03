@@ -1,6 +1,6 @@
 import { toValue, ref } from 'vue'
 import { createStripeElements } from '~/composables/useStripeElements'
-import { opnFetch } from '~/composables/useOpnApi.js'
+import { formsApi } from '~/api'
 // Assume Stripe is loaded globally or via another mechanism if needed client-side
 // For server-side/Nuxt API routes, import Stripe library properly.
 
@@ -68,11 +68,8 @@ export function useFormPayment(formConfig, form) {
       // Construct the URL (no query params needed for POST)
       const url = `/forms/${formSlug}/stripe-connect/payment-intent`
       
-      // Use opnFetch with POST method and an empty body
-      const response = await opnFetch(url, {
-        method: 'POST',
-        body: {}
-      })
+      // Use formsApi for the payment intent creation
+      const response = await formsApi.stripe.createPaymentIntent(formSlug)
       
       // Handle response structure with type and intent fields
       if (response?.type === 'success' && response?.intent?.secret) {

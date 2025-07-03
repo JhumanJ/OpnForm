@@ -25,6 +25,8 @@
 </template>
 
 <script setup>
+import { templatesApi } from "~/api"
+
 definePageMeta({
   middleware: "auth",
 })
@@ -40,7 +42,7 @@ const templates = ref([])
 
 onMounted(() => {
   loading.value = true
-  opnFetch("templates", { query: { onlymy: true } }).then((data) => {
+        templatesApi.list({ query: { onlymy: true } }).then((data) => {
     loading.value = false
     templates.value = data
   })

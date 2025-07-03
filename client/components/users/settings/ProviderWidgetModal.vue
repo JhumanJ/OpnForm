@@ -38,6 +38,8 @@
 </template>
 
 <script setup>
+import { oauthApi } from "~/api"
+
 const props = defineProps({
   show: Boolean,
   service: Object
@@ -75,10 +77,7 @@ const handleAuthData = async (data) => {
       return
     }
 
-    const response = await opnFetch(`/settings/providers/widget-callback/${props.service.name}`, {
-      method: 'POST',
-      body: data
-    })
+    const response = await oauthApi.widgetCallback(props.service.name, data)
 
     if (response.intention) {
       router.push(response.intention)

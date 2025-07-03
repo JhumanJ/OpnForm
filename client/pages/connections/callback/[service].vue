@@ -14,6 +14,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAlert } from '~/composables/useAlert'
 import { useWindowMessage, WindowMessageTypes } from "~/composables/useWindowMessage"
+import { oauthApi } from '~/api'
 
 // Define meta for auth middleware
 definePageMeta({
@@ -45,10 +46,7 @@ async function handleCallback() {
   }
 
   try {
-    const data = await opnFetch(`/settings/providers/callback/${service}`, {
-      method: 'POST',
-      params: { code }
-    })
+    const data = await oauthApi.callback(service, { code })
 
     if (window.opener && !window.opener.closed) {
       try {

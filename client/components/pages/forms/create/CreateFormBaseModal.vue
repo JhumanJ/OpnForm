@@ -127,6 +127,7 @@
 
 <script setup>
 import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoadingMessages.vue"
+import { formsApi } from "~/api/forms"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -172,7 +173,7 @@ const generateForm = () => {
 const fetchGeneratedForm = (generationId) => {
   // check every 4 seconds if form is generated
   setTimeout(() => {
-    opnFetch("/forms/ai/" + generationId)
+    formsApi.ai.get(generationId)
       .then((data) => {
         if (data.ai_form_completion.status === "completed") {
           useAlert().success(data.message)

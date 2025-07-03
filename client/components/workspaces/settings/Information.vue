@@ -85,6 +85,8 @@
 </template>
 
 <script setup>
+import { workspaceApi } from '~/api'
+
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
 const alert = useAlert()
@@ -122,7 +124,7 @@ const confirmDeleteWorkspace = () => {
 // Delete workspace
 const deleteWorkspace = () => {
   deleteLoading.value = true
-  opnFetch("/open/workspaces/" + workspace.value.id, {method: "DELETE"})
+      workspaceApi.delete(workspace.value.id)
     .then((data) => {
       deleteLoading.value = false
       alert.success(data.message)

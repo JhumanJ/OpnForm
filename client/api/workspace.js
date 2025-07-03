@@ -1,6 +1,6 @@
 import { apiService } from './base'
 
-const BASE_PATH = '/workspaces'
+const BASE_PATH = '/open/workspaces'
 
 export const workspaceApi = {
   // Workspace operations
@@ -20,7 +20,12 @@ export const workspaceApi = {
   // Invite management
   invites: {
     list: (workspaceId, options) => apiService.get(`${BASE_PATH}/${workspaceId}/invites`, options),
-    getLink: (workspaceId, inviteId, options) => apiService.get(`${BASE_PATH}/${workspaceId}/invites/${inviteId}/link`, options),
+    resend: (workspaceId, inviteId) => apiService.post(`${BASE_PATH}/${workspaceId}/invites/${inviteId}/resend`),
     cancel: (workspaceId, inviteId) => apiService.delete(`${BASE_PATH}/${workspaceId}/invites/${inviteId}/cancel`)
+  },
+
+  // Custom domains
+  customDomains: {
+    update: (workspaceId, data) => apiService.put(`${BASE_PATH}/${workspaceId}/custom-domains`, data)
   }
-} 
+}

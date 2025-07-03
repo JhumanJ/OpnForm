@@ -135,6 +135,7 @@ import InputWrapper from './components/InputWrapper.vue'
 import UploadedFile from './components/UploadedFile.vue'
 import CameraUpload from './components/CameraUpload.vue'
 import {storeFile} from "~/lib/file-uploads.js"
+import { formsApi } from '~/api'
 
 export default {
   name: 'FileInput',
@@ -275,12 +276,9 @@ export default {
           }
           if (this.moveToFormAssets) {
             // Move file to permanent storage for form assets
-            opnFetch('/open/forms/assets/upload', {
-              method: 'POST',
-              body: {
-                type: 'files',
-                url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
-              }
+            formsApi.assets.upload({
+              type: 'files',
+              url: file.name.split('.').slice(0, -1).join('.') + '_' + response.uuid + '.' + response.extension
             }).then(moveFileResponseData => {
               this.files.push({
                 file: file,

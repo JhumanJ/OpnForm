@@ -55,7 +55,7 @@
           </template>
           <UTooltip
             :text="disableOptionsTooltip"
-            :prevent="!disableOptions.includes(option[optionKey])"
+            :disabled="!disableOptions.includes(option[optionKey])"
             class="w-full"
           >
             <slot

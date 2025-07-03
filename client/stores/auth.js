@@ -1,4 +1,5 @@
 import { defineStore } from "pinia"
+import { authApi } from "~/api"
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -81,7 +82,7 @@ export const useAuthStore = defineStore("auth", {
     },
 
     logout() {
-      opnFetch("logout", { method: "POST" }).catch(() => {})
+      authApi.logout().catch(() => {})
 
       this.user = null
       

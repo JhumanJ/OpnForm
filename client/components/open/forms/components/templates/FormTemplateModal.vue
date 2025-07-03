@@ -118,6 +118,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import QuestionsEditor from "./QuestionsEditor.vue"
+import { templatesApi } from "~/api"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -234,7 +235,7 @@ const updateFormTemplate = async () => {
 }
 const deleteFormTemplate = async () => {
   if (!props.template) return
-  opnFetch("/templates/" + props.template.id, { method: "DELETE" }).then(
+  templatesApi.delete(props.template.id).then(
     (data) => {
       if (data.message) {
         useAlert().success(data.message)

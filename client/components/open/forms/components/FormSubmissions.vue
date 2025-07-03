@@ -36,6 +36,7 @@
 
 <script setup>
 import OpenTable from '~/components/open/tables/OpenTable.vue'
+import { formsApi } from '~/api/forms'
 
 const workingFormStore = useWorkingFormStore()
 const recordStore = useRecordsStore()
@@ -73,7 +74,7 @@ const getSubmissionsData = () => {
   }
 
   recordStore.startLoading()
-  opnFetch('/open/forms/' + form.value.id + '/submissions?page=1').then((firstResponse) => {
+  formsApi.submissions.list(form.value.id, { query: { page: 1 } }).then((firstResponse) => {
     recordStore.save(firstResponse.data.map((record) => record.data))
     
     const lastPage = firstResponse.meta.last_page
@@ -82,7 +83,7 @@ const getSubmissionsData = () => {
       // Create an array of promises for remaining pages
       const remainingPages = Array.from({ length: lastPage - 1 }, (_, i) => {
         const page = i + 2 // Start from page 2
-        return opnFetch('/open/forms/' + form.value.id + '/submissions?page=' + page)
+        return formsApi.submissions.list(form.value.id, { query: { page } })
       })
       
       // Fetch all remaining pages in parallel

@@ -20,6 +20,7 @@
 
 <script setup>
 import { useBroadcastChannel } from '@vueuse/core'
+import { authApi } from "~/api"
 
 definePageMeta({
   middleware: 'auth'
@@ -44,7 +45,7 @@ const redirectIfSubscribed = () => {
 }
 const checkSubscription = () => {
   // Fetch the user.
-  return opnFetch('user').then((data) => {
+      return authApi.user.get().then((data) => {
     authStore.setUser(data)
     redirectIfSubscribed()
   }).catch((error) => {

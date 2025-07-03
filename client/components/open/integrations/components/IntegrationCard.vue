@@ -85,6 +85,7 @@
 
 <script setup>
 import { computed } from "vue"
+import { formsApi } from "~/api"
 
 const props = defineProps({
   integration: {
@@ -162,12 +163,7 @@ const dropdownItems = computed(() => {
 
 const deleteFormIntegration = (integrationid) => {
   alert.confirm("Do you really want to delete this form integration?", () => {
-    opnFetch(
-      "/open/forms/{formid}/integration/{integrationid}"
-        .replace("{formid}", props.form.id)
-        .replace("{integrationid}", integrationid),
-      { method: "DELETE" },
-    )
+    formsApi.integrations.delete(props.form.id, integrationid)
       .then((data) => {
         if (data.type === "success") {
           alert.success(data.message)

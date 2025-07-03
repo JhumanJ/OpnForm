@@ -132,6 +132,7 @@
 
 <script setup>
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
+import { workspaceApi } from '~/api'
 
 const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
@@ -237,7 +238,7 @@ const updateUserRole = () => {
 const removeUser = (user) => {
   alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
     loadingUsers.value = true
-    opnFetch("/open/workspaces/" + workspacesStore.currentId + "/users/" + user.id + "/remove", {method: "DELETE"}).then(() => {
+    workspaceApi.users.remove(workspacesStore.currentId, user.id).then(() => {
       alert.success("User successfully removed.")
       getWorkspaceUsers()
     }).catch(() => {
@@ -250,7 +251,7 @@ const removeUser = (user) => {
 
 const resendInvite = (user) => {
   alert.confirm("Do you really want to resend invite email to this user?", () => {
-    opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + user.id + "/resend", {method: "POST"}).then(() => {
+    workspaceApi.invites.resend(workspace.value.id, user.id).then(() => {
       alert.success("Invitation resent successfully.")
       getWorkspaceUsers()
     }).catch(err => {
@@ -261,7 +262,7 @@ const resendInvite = (user) => {
 
 const cancelInvite = (user) => {
   alert.confirm("Do you really want to cancel this user's invitation to this workspace?", () => {
-    opnFetch("/open/workspaces/" + workspace.value.id + "/invites/" + user.id + "/cancel", {method: "DELETE"}).then(() => {
+    workspaceApi.invites.cancel(workspace.value.id, user.id).then(() => {
       alert.success("Invitation cancelled successfully.")
       getWorkspaceUsers()
     }).catch(err => {

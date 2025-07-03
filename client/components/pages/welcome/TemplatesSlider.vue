@@ -55,6 +55,7 @@
 <script>
 import { computed } from "vue"
 import SingleTemplate from "../templates/SingleTemplate.vue"
+import { templatesApi } from "~/api"
 
 export default {
   components: { SingleTemplate },
@@ -64,7 +65,7 @@ export default {
 
     onMounted(() => {
       if (templatesStore.getAll.length < 10) {
-        opnFetch("templates", { query: { limit: 10 } }).then((data) => {
+        templatesApi.list({ query: { limit: 10 } }).then((data) => {
           templatesStore.set(data)
         })
       }

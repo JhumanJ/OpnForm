@@ -42,6 +42,8 @@
 </template>
 
 <script setup>
+import { adminApi } from '~/api'
+
 const props = defineProps({
     user: { type: Object, required: true }
 })
@@ -57,7 +59,7 @@ const form = useForm({
 onMounted(() => {
   if (!props.user.stripe_id) return
     loadingBillingEmail.value = true
-    opnFetch("/moderator/billing/" + props.user.id + "/email",).then(data => {
+    adminApi.billing.getEmail(props.user.id).then(data => {
         loadingBillingEmail.value = false
         userCreated.value = true
         form.billing_email = data.billing_email
@@ -69,7 +71,10 @@ onMounted(() => {
 
 const updateUserBillingEmail = () => {
     loading.value = true
-    form.patch("/moderator/billing/email")
+    adminApi.billing.updateEmail({
+        billing_email: form.billing_email,
+        user_id: form.user_id
+    })
         .then(async (data) => {
             loading.value = false
             useAlert().success(data.message)
