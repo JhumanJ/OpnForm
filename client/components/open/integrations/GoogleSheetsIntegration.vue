@@ -26,7 +26,7 @@
             <span>
               <NuxtLink
                 class="text-blue-500"
-                :to="{ name: 'settings-connections' }"
+                href="/home?user-settings=connections"
               >
                 Click here
               </NuxtLink>

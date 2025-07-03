@@ -60,7 +60,7 @@
   </UModal>
 
   <!-- Add widget modal -->
-  <ProviderWidgetModal
+  <UsersSettingsProviderWidgetModal
     v-if="showWidgetModal"
     :show="showWidgetModal"
     :service="selectedService"

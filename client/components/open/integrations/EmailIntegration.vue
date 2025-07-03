@@ -7,7 +7,7 @@
     <p class="text-gray-500 text-sm mb-3">
       You can <NuxtLink
         class="underline"
-        :to="{ name: 'settings-workspace' }"
+        href="/home?workspace-settings=emails"
         target="_blank"
       >
         use our custom SMTP feature

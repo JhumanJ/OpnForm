@@ -24,7 +24,7 @@
               <span>
                 <NuxtLink
                   class="text-blue-500"
-                  :to="{ name: 'settings-connections' }"
+                  href="/home?user-settings=connections"
                 >
                   Click here
                 </NuxtLink>
@@ -71,6 +71,6 @@ const providersStore = useOAuthProvidersStore()
 const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
 
 function connect () {
-  useRouter().push({ name: 'settings-connections' })
+  navigateTo('/home?user-settings=connections')
 }
 </script> 

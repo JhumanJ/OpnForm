@@ -122,7 +122,7 @@ export default defineNuxtConfig({
           global: true,
       },
       {
-          path: '~/components/settings',
+          path: '~/components/provider',
           pathPrefix: false,
           global: true,
       },
