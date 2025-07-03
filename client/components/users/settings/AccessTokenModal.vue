@@ -21,72 +21,64 @@
     </template>
  
     <template #body>
-      <form
-        @submit.prevent="createToken"
-        @keydown="form.onKeydown($event)"
-      >
-        <div v-if="!token">
-          <TextInput
-            :form="tokenForm"
-            name="name"
-            :required="true"
-            label="Name"
-          />
-
-          <FlatSelectInput
-            :form="tokenForm"
-            name="abilities"
-            label="Abilities"
-            :options="abilities"
-            multiple
-          />
-        </div>
-
+      <template v-if="token">
         <UAlert
-          v-if="token"
           icon="i-heroicons-key-20-solid"
           color="success"
           variant="subtle"
           title="Copy your access token"
           description="Your token will only be shown once. Make sure to save it safely."
         />
+        <CopyContent
+          class="mt-4"
+          :content="token"
+          label="Copy Token"
+        />
+      </template>
 
-        <div class="flex">
-          <copy-content
-            v-if="token"
-            :content="token"
-          >
-            <template #icon>
-              <Icon
-                name="heroicons:link"
-                class="w-4 h-4 -mt-1 text-blue-600 mr-3"
-              />
-            </template>
-            Copy Token
-          </copy-content>
-        </div>
+      <VForm v-else size="sm">
+        <form
+          @submit.prevent="createToken"
+          @keydown="form.onKeydown($event)"
+        >
+          <div v-if="!token">
+            <TextInput
+              :form="tokenForm"
+              name="name"
+              :required="true"
+              label="Name"
+            />
 
-        <div class="w-full mt-6">
-          <UButton
-            v-if="!token"
-            type="submit"
-            block
-            size="lg"
-            :loading="tokenForm.busy"
-          >
-            Create Token
-          </UButton>
+            <FlatSelectInput
+              :form="tokenForm"
+              name="abilities"
+              label="Abilities"
+              :options="abilities"
+              multiple
+            />
+          </div>
+        </form>
+      </VForm>
+    </template>
 
-          <UButton
-            v-else
-            block
-            size="lg"
-            @click.prevent="closeModal"
-          >
-            Close
-          </UButton>
-        </div>
-      </form>
+    <template #footer>
+      <UButton
+        color="neutral"
+        variant="outline"
+        @click="closeModal"
+      >
+        Close
+      </UButton>
+      <UButton
+        v-if="!token"
+        type="submit"
+        block
+        size="lg"
+        :loading="tokenForm.busy"
+        @click="createToken"
+      >
+        Create Token
+      </UButton>
     </template>
   </UModal>
 </template>
