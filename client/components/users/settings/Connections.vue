@@ -84,6 +84,7 @@
 
 <script setup>
 import { useOAuthProvidersStore } from '~/stores/oauth_providers'
+import { oauthApi } from '~/api'
 
 const providerModal = ref(false)
 const providersStore = useOAuthProvidersStore()
@@ -128,9 +129,7 @@ const getService = (providerName) => {
 // Disconnect provider
 const disconnectProvider = (provider) => {
   alert.confirm("Do you really want to disconnect this account?", () => {
-    opnFetch(`/settings/providers/${provider.id}`, {
-      method: 'DELETE'
-    })
+    oauthApi.delete(provider.id)
       .then(() => {
         providersStore.remove(provider.id)
         alert.success('Account disconnected successfully')

@@ -17,7 +17,7 @@ export default defineNuxtConfig({
       '@nuxtjs/i18n',
       '@nuxt/icon', 
       '@sentry/nuxt/module',
-      ...(process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : []),
+      '@zadigetvoltaire/nuxt-gtm',
   ],
 
   build: {

@@ -45,6 +45,8 @@
 </template>
 
 <script setup>
+import { formsApi } from '~/api'
+
 defineProps({
   popoverContent: {
     type: Object,
@@ -88,7 +90,7 @@ const handleGenerate = async () => {
     
   loading.value = true
   aiRequestId.value = null
-  aiFields.post('/forms/ai/generate-fields').then(data => {
+  formsApi.ai.generateFields(aiFields).then(data => {
     aiRequestId.value = data.ai_form_completion_id
     fetchGeneratedForm(data.ai_form_completion_id)
   }).catch(error => {
@@ -112,7 +114,7 @@ const fetchGeneratedForm = (generationId) => {
       return
     }
 
-    opnFetch('/forms/ai/' + generationId).then(data => {
+    formsApi.ai.get(generationId).then(data => {
       if (data.ai_form_completion.status === 'completed') {
         // Only proceed if we haven't cancelled
         if (aiRequestId.value) {

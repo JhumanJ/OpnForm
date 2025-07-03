@@ -30,7 +30,7 @@
   />
 </template>
 
-<script>
+<script setup>
 import EditSubmissionModal from "./EditSubmissionModal.vue"
 import { formsApi } from "~/api/forms"
 

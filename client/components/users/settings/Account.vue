@@ -68,6 +68,8 @@
 </template>
 
 <script setup>
+import { authApi } from '~/api'
+
 const authStore = useAuthStore()
 const router = useRouter()
 const alert = useAlert()
@@ -102,7 +104,7 @@ const confirmDeleteAccount = () => {
 // Delete account
 const deleteAccount = () => {
   deleteLoading.value = true
-  opnFetch('/user', { method: 'DELETE' })
+      authApi.user.delete()
     .then(async (data) => {
       deleteLoading.value = false
       alert.success(data.message)

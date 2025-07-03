@@ -155,6 +155,7 @@
 <script setup>
 import opnformConfig from '~/opnform.config.js'
 import AbilitiesBadges from '~/components/users/settings/access-tokens/AbilitiesBadges.vue'
+import { tokensApi } from '~/api'
 
 const accessTokenModal = ref(false)
 const accessTokenStore = useAccessTokenStore()
@@ -200,9 +201,7 @@ const openSubscriptionModal = () => {
 
 const deleteToken = (token) => {
   alert.confirm("Do you really want to delete this token?", () => {
-    opnFetch(`/settings/tokens/${token.id}`, {
-      method: 'DELETE'
-    })
+      tokensApi.delete(token.id)
       .then(() => {
         accessTokenStore.remove(token.id)
         alert.success('Token deleted successfully')

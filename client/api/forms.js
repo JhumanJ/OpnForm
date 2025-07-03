@@ -40,6 +40,7 @@ export const formsApi = {
   // AI form generation
   ai: {
     generate: (data) => apiService.post('/forms/ai/generate', data),
+    generateFields: (data) => apiService.post('/forms/ai/generate-fields', data),
     get: (generationId, options) => apiService.get(`/forms/ai/${generationId}`, options)
   },
 

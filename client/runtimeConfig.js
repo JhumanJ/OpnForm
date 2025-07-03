@@ -7,7 +7,7 @@ export default {
   // Keys within public, will be also exposed to the client-side
   public: {
     gtm: {
-      id: process.env.NUXT_PUBLIC_GTM_CODE || null,
+      id: process.env.NUXT_PUBLIC_GTM_CODE || 'GTM-XXXXXX',
       enabled: false,
     },
     apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
