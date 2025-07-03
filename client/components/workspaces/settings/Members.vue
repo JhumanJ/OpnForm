@@ -89,52 +89,37 @@
     <UModal
       v-model:open="showEditUserModal"
       @close="showEditUserModal = false"
-    >
-      <template #header>
-        <div class="flex items-center w-full gap-4 px-2">
-          <Icon
-            name="i-heroicons-pencil-square"
-            class="text-blue-500"
-            size="20px"
-          />
-          <h2 class="text-lg font-semibold">
-            Edit User Role
-          </h2>
-        </div>
-      </template>
-      
+      title="Edit User Role"
+    > 
       <template #body>
-        <div class="px-4">
-          <form
-            @submit.prevent="updateUserRole"
-            @keydown="editUserForm.onKeydown($event)"
-          >
-            <div>
-              <FlatSelectInput
-                :form="editUserForm"
-                name="role"
-                :label="'New Role for '+selectedUser.name"
-                :options="[
-                  { name: 'User', value: 'user' },
-                  { name: 'Admin', value: 'admin' },
-                  { name: 'Read Only', value: 'readonly' },
-                ]"
-                option-key="value"
-                display-key="name"
-              />
-            </div>
+        <form
+          @submit.prevent="updateUserRole"
+          @keydown="editUserForm.onKeydown($event)"
+        >
+          <div>
+            <FlatSelectInput
+              :form="editUserForm"
+              name="role"
+              :label="'New Role for '+selectedUser.name"
+              :options="[
+                { name: 'User', value: 'user' },
+                { name: 'Admin', value: 'admin' },
+                { name: 'Read Only', value: 'readonly' },
+              ]"
+              option-key="value"
+              display-key="name"
+            />
+          </div>
 
-            <div class="flex justify-center mt-4">
-              <UButton
-                type="submit"
-                :loading="editUserForm.busy"
-                icon="i-heroicons-pencil"
-              >
-                Update
-              </UButton>
-            </div>
-          </form>
-        </div>
+          <div class="flex justify-center mt-4">
+            <UButton
+              type="submit"
+              :loading="editUserForm.busy"
+            >
+              Update
+            </UButton>
+          </div>
+        </form>
       </template>
     </UModal>
 

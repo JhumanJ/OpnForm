@@ -21,7 +21,7 @@
             </p>
           </div>
         </div>
-        <div v-if="!workspace.is_readonly" class="mt-2 flex items-center gap-2">
+        <div class="mt-2 flex items-center gap-2">
           <UButton
             icon="i-heroicons-cog-6-tooth"
             size="xs"
@@ -31,7 +31,7 @@
             label="Settings"
           />
           <UButton
-            v-if="user?.admin"
+            v-if="!workspace.is_readonly"
             icon="i-heroicons-user-plus"
             size="xs"
             color="neutral"
