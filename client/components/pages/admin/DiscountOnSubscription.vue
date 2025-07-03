@@ -14,14 +14,12 @@
         website, proof of non-profit, etc). They need to create their
         subscriptions before you can apply the 40% discount.
       </p>
-      <v-button
+      <UButton
         :loading="loading"
-        type="success"
-        class="w-full"
-        color="white"
-      >
-        Apply Discount
-      </v-button>
+        type="submit"
+        block
+        label="Apply Discount"
+      />
     </form>
   </AdminCard>
 </template>

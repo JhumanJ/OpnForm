@@ -1,14 +1,11 @@
 <template>
   <UButton
-    size="sm"
-    color="neutral"
     variant="outline"
     icon="i-heroicons-eye-16-solid"
     :loading="loading"
     @click="impersonate"
-  >
-    Impersonate User
-  </UButton>
+    label="Impersonate User"
+  />
 </template>
 
 <script setup>

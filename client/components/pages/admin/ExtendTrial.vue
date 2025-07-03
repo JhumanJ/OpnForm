@@ -14,7 +14,7 @@
         you can add up to 14 days if needed.
       </p>
       <div>
-        <text-input
+        <TextInput
           name="number_of_day"
           :form="form"
           label="Number of days"
@@ -23,14 +23,12 @@
           help="Number Of Days"
           placeholder="7"
         />
-        <v-button
+        <UButton
           :loading="loading"
-          type="success"
-          class="w-full"
-          color="white"
-        >
-          Apply Extend Trial
-        </v-button>
+          type="submit"
+          block
+          label="Apply Extend Trial"
+        />
       </div>
     </form>
   </AdminCard>
