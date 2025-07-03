@@ -6,18 +6,21 @@
     <UButton
       v-track.edit_record_click
       size="sm"
-      color="white"
+      color="neutral"
+      variant="outline"
       icon="heroicons:pencil-square"
       @click="showEditSubmissionModal = true"
     />
     <UButton
       v-track.delete_record_click
       size="sm"
-      color="white"
+      color="error"
+      variant="outline"
       icon="heroicons:trash"
       @click="onDeleteClick"
     />
   </UButtonGroup>
+  
   <EditSubmissionModal
     :show="showEditSubmissionModal"
     :form="form"
@@ -29,58 +32,44 @@
 
 <script>
 import EditSubmissionModal from "./EditSubmissionModal.vue"
-import { formsApi } from "~/api"
+import { formsApi } from "~/api/forms"
 
-export default {
-  components: { EditSubmissionModal },
-  props: {
-    form: {
-      type: Object,
-      required: true,
-    },
-    structure: {
-      type: Array,
-      default: () => [],
-    },
-    submission: {
-      type: Object,
-      default: () => {},
-    },
+const props = defineProps({
+  form: {
+    type: Object,
+    required: true,
   },
-  emits: ["updated", "deleted"],
-  setup() {
-    return {
-      useAlert: useAlert(),
-    }
+  structure: {
+    type: Array,
+    default: () => [],
   },
-  data() {
-    return {
-      showEditSubmissionModal: false,
-    }
+  submission: {
+    type: Object,
+    default: () => {},
   },
-  computed: {},
-  mounted() {},
-  methods: {
-    onDeleteClick() {
-      this.useAlert.confirm(
-        "Do you really want to delete this record?",
-        this.deleteRecord,
-      )
-    },
-    async deleteRecord() {
-      formsApi.submissions.delete(this.form.id, this.submission.id)
-        .then(async (data) => {
-          if (data.type === "success") {
-            this.$emit("deleted", this.submission)
-            this.useAlert.success(data.message)
-          } else {
-            this.useAlert.error("Something went wrong!")
-          }
-        })
-        .catch((error) => {
-          this.useAlert.error(error.data.message)
-        })
-    },
-  },
+})
+
+const emit = defineEmits(["updated", "deleted"])
+
+const alert = useAlert()
+const showEditSubmissionModal = ref(false)
+
+const onDeleteClick = () => {
+  alert.confirm("Do you really want to delete this record?", deleteRecord)
+}
+
+const deleteRecord = async () => {
+  formsApi.submissions.delete(props.form.id, props.submission.id)
+    .then(async (data) => {
+      if (data.type === "success") {
+        emit("deleted", props.submission)
+        alert.success(data.message)
+      } else {
+        alert.error("Something went wrong!")
+      }
+    })
+    .catch((error) => {
+      alert.error(error.data.message)
+    })
 }
 </script>

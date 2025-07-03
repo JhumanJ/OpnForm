@@ -4,7 +4,7 @@
       <div
         v-if="show"
         ref="backdrop"
-        :class="[{ 'backdrop-blur-sm': backdropBlur }, twMerge('fixed z-40 top-0 inset-0 px-2 sm:px-4 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll', $attrs.class)]"
+        :class="[{ 'backdrop-blur-xs': backdropBlur }, twMerge('fixed z-40 top-0 inset-0 px-2 sm:px-4 flex items-top justify-center bg-gray-700/75 w-full h-screen overflow-y-scroll', $attrs.class)]"
         @click.self="close"
       >
         <div

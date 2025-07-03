@@ -4,7 +4,7 @@
       <UButton
         v-if="!field"
         size="sm"
-        color="gray"
+        color="neutral"
         icon="i-heroicons-x-mark-20-solid"
         variant="ghost"
         @click="closeSidebar"
@@ -13,7 +13,7 @@
         <div class="flex">
           <UButton
             size="sm"
-            color="gray"
+            color="neutral"
             icon="i-heroicons-x-mark-20-solid"
             variant="ghost"
             @click="closeSidebar"
@@ -31,26 +31,16 @@
               {{ blocksTypes[field.type].title }}
             </p>
             
-            <UDropdown
+            <UDropdownMenu
               :items="dropdownItems"
               :popper="{ placement: 'bottom-start' }"
             >
               <UButton
-                color="white"
+                color="neutral"
+                variant="outline"
                 icon="i-heroicons-ellipsis-vertical"
               />
-
-              <template
-                v-if="typeCanBeChanged"
-                #changetype
-              >
-                <ChangeFieldType
-                  v-if="!isBlockField"
-                  :field="field"
-                  @change-type="onChangeType"
-                />
-              </template>
-            </UDropdown>
+            </UDropdownMenu>
           </div>
         </div>
       </template>
@@ -61,10 +51,12 @@
         <UTabs
           v-model="activeTab"
           :items="tabItems"
+          color="primary"
+          :content="false"
           class="w-full"
         />
       </div>
-      <div v-if="activeTab ===0">
+      <div v-if="activeTab === 'options'">
         <FieldOptions
           v-if="!isBlockField"
           :form="form"
@@ -76,14 +68,14 @@
           :field="field"
         />
       </div>
-      <div v-else-if="activeTab === 1">
+      <div v-else-if="activeTab === 'logic'">
         <FormBlockLogicEditor
           class="py-2 px-4"
           :form="form"
           :field="field"
         />
       </div>
-      <div v-else-if="activeTab === 2">
+      <div v-else-if="activeTab === 'validation'">
         <custom-field-validation
           class="py-2 px-4"
           :form="form"
@@ -107,7 +99,6 @@ import clonedeep from 'clone-deep'
 import FieldOptions from './components/FieldOptions.vue'
 import BlockOptions from './components/BlockOptions.vue'
 import BlockTypeIcon from '../components/BlockTypeIcon.vue'
-import ChangeFieldType from "./components/ChangeFieldType.vue"
 import blocksTypes from '~/data/blocks_types.json'
 import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../components/CustomFieldValidation.vue'
@@ -152,6 +143,65 @@ const typeCanBeChanged = computed(() => {
   ].includes(field.value.type)
 })
 
+// Composable for field type changing logic
+const useFieldTypeChange = () => {
+
+  const onChangeType = (newType) => {
+    console.log('onChangeType', newType)
+    if (["select", "multi_select"].includes(field.value.type)) {
+      field.value[newType] = field.value[field.value.type] // Set new options with new type
+      delete field.value[field.value.type] // remove old type options
+    }
+    field.value.type = newType
+  }
+
+  const getChangeTypeOptions = (currentType) => {
+    let newTypes = []
+    
+    if ([
+      "text",
+      "email", 
+      "phone_number",
+      "number",
+      "slider",
+      "rating",
+      "scale",
+    ].includes(currentType)) {
+      newTypes = [
+        { name: "Text Input", value: "text", icon: "i-heroicons-pencil-20-solid" },
+        { name: "Email Input", value: "email", icon: "i-heroicons-at-symbol-20-solid" },
+        { name: "Phone Input", value: "phone_number", icon: "i-heroicons-phone-20-solid" },
+        { name: "Number Input", value: "number", icon: "i-heroicons-hashtag-20-solid" },
+        { name: "Slider Input", value: "slider", icon: "i-heroicons-adjustments-horizontal-20-solid" },
+        { name: "Rating Input", value: "rating", icon: "i-heroicons-star-20-solid" },
+        { name: "Scale Input", value: "scale", icon: "i-heroicons-chart-bar-20-solid" },
+      ]
+    }
+    
+    if (["select", "multi_select"].includes(currentType)) {
+      newTypes = [
+        { name: "Select Input", value: "select", icon: "i-heroicons-chevron-down-20-solid" },
+        { name: "Multi-Select Input", value: "multi_select", icon: "i-heroicons-check-20-solid" },
+      ]
+    }
+    
+    return newTypes
+      .filter((item) => item.value !== currentType)
+      .map((item) => ({
+        label: item.name,
+        value: item.value,
+        icon: item.icon,
+        onClick: () => onChangeType(item.value)
+      }))
+  }
+
+  return {
+    getChangeTypeOptions
+  }
+}
+
+const { getChangeTypeOptions } = useFieldTypeChange()
+
 function removeBlock() {
   workingFormStore.removeField(field.value)
 }
@@ -162,20 +212,12 @@ function closeSidebar() {
   workingFormStore.closeEditFieldSidebar()
 }
 
-function onChangeType(newType) {
-  if (["select", "multi_select"].includes(field.value.type)) {
-    field.value[newType] = field.value[field.value.type] // Set new options with new type
-    delete field.value[field.value.type] // remove old type options
-  }
-  field.value.type = newType
-}
-
 const dropdownItems = computed(() => {
-  return [
+  const baseItems = [
     [{
       label: 'Copy field ID',
       icon: 'i-heroicons-clipboard-20-solid',
-      click: () => {
+      onClick: () => {
         navigator.clipboard.writeText(field.value.id)
         useAlert().success('Field ID copied to clipboard')
       }
@@ -183,7 +225,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
-      click: () => {
+      onClick: () => {
         const newField = clonedeep(field.value)
         newField.id = generateUUID()
         newField.name = 'Copy of ' + newField.name
@@ -191,28 +233,38 @@ const dropdownItems = computed(() => {
         newFields.splice(selectedFieldIndex.value + 1, 0, newField)
         form.value.properties = newFields
       }
-    }],
-    ... (typeCanBeChanged.value ? [[{
-      label: 'Change type',
-      icon: 'i-heroicons-document-duplicate-20-solid',
-      slot: 'changetype',
-    }]] : []),
-    [{
-      label: 'Remove',
-      icon: 'i-heroicons-trash-20-solid',
-      class: 'group/remove hover:text-red-800',
-      iconClass: 'group-hover/remove:text-red-900',
-      click: removeBlock
     }]
   ]
+
+  // Add change type option with nested menu if type can be changed
+  if (typeCanBeChanged.value && !isBlockField.value) {
+    const changeTypeOptions = getChangeTypeOptions(field.value.type)
+    if (changeTypeOptions.length > 0) {
+      baseItems.push([{
+        label: 'Change type',
+        icon: 'i-heroicons-arrows-right-left-20-solid',
+        children: [changeTypeOptions]
+      }])
+    }
+  }
+
+  // Add remove option
+  baseItems.push([{
+    label: 'Remove',
+    icon: 'i-heroicons-trash-20-solid',
+    color: 'error',
+    onClick: removeBlock
+  }])
+
+  return baseItems
 })
 
+const activeTab = ref('options')
 
-const activeTab = ref(0)
 const tabItems = computed(() => {
   const commonTabs = [
-    { label: 'Options'},
-    { label: 'Logic' },
+    { label: 'Options', value: 'options' },
+    { label: 'Logic', value: 'logic' },
   ]
 
   if (isBlockField.value) {
@@ -220,7 +272,7 @@ const tabItems = computed(() => {
   } else {
     return [
       ...commonTabs,
-      { label: 'Validation'},
+      { label: 'Validation', value: 'validation' },
     ]
   }
 })

@@ -55,7 +55,7 @@
       >
         <span
           v-if="!isBarcodeMode"
-          class="cursor-pointer rounded-full w-12 h-12 border-2 grid place-content-center bg-white/20 backdrop-blur-sm shadow-md"
+                          class="cursor-pointer rounded-full w-12 h-12 border-2 grid place-content-center bg-white/20 backdrop-blur-xs shadow-sm"
           @click="processCapturedImage"
         >
           <span
@@ -63,7 +63,7 @@
           />
         </span>
         <span
-          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-sm shadow-md w-12 h-12 grid place-content-center"
+          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-xs shadow-sm w-12 h-12 grid place-content-center"
           @click="cancelCamera"
         >
           <Icon
@@ -73,7 +73,7 @@
         </span>
         <span
           v-if="isMobileDevice"
-          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-sm shadow-md w-12 h-12 grid place-content-center"
+          class="text-white cursor-pointer bg-black/40 rounded-full backdrop-blur-xs shadow-sm w-12 h-12 grid place-content-center"
           @click="switchCamera"
         >
           <Icon
@@ -100,7 +100,8 @@
         {{ $t('forms.cameraUpload.allowCameraPermissionDescription') }}
       </p>
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         @click.stop="cancelCamera"
       >
         {{ $t('forms.cameraUpload.gotIt') }}
@@ -133,7 +134,8 @@
         {{ $t('forms.cameraUpload.cameraDeviceErrorDescription') }}
       </p>
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         @click.stop="cancelCamera"
       >
         {{ $t('forms.cameraUpload.goBack') }}

@@ -27,7 +27,7 @@
       </span>
     </div>
 
-    <div class="aspect-[4/3] rounded-lg shadow-sm overflow-hidden">
+          <div class="aspect-[4/3] rounded-lg shadow-xs overflow-hidden">
       <img
         v-if="template.image_url"
         class="group-hover:scale-110 transition-all duration-200 h-full object-cover w-full"

@@ -16,14 +16,15 @@
     >
       <Icon
         name="heroicons:exclamation-circle"
-        class="w-10 h-10 text-nt-blue-dark"
+        class="w-10 h-10 text-blue-800"
       />
-      <div class="p-5 text-nt-blue-dark text-center">
+      <div class="p-5 text-blue-800 text-center">
         OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
       </div>
       <div>
         <UButton
-          color="white"
+          color="neutral"
+          variant="outline"
           size="lg"
           class="w-full"
           :to="{ name: 'home' }"
@@ -46,24 +47,19 @@
     </FormEditorNavbar>
 
     <FormEditorErrorHandler>
-      <div
-        v-show="activeTab !== 2"
-        class="w-full flex grow overflow-y-scroll relative bg-white"
-      >
-        <div
-          class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5"
-        >
+      <div class="w-full flex grow overflow-y-scroll relative bg-white">
+        <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
           <VForm
             size="sm"
             @submit.prevent=""
           >
             <div
-              v-show="activeTab === 0"
+              v-show="activeTab === 'build'"
             >
               <FormFieldsEditor />
             </div>
             <div
-              v-show="activeTab === 1"
+              v-show="activeTab === 'design'"
             >
               <FormCustomization />
             </div>
@@ -75,8 +71,6 @@
         <FormEditorSidebar />
       </div>
     </FormEditorErrorHandler>
-
-    <FormSettings v-show="activeTab === 2" />
 
     <!-- Form Error Modal -->
     <FormErrorModal
@@ -111,7 +105,6 @@ import FormEditorPreview from "./form-components/FormEditorPreview.vue"
 import { useFormLogic } from "~/composables/forms/useFormLogic.js"
 import opnformConfig from "~/opnform.config.js"
 import { captureException } from "@sentry/core"
-import FormSettings from './form-components/FormSettings.vue'
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
@@ -128,7 +121,6 @@ export default {
     FormCustomization,
     FormFieldsEditor,
     FormErrorModal,
-    FormSettings,
     LogicConfirmationModal
   },
   props: {
@@ -206,7 +198,7 @@ export default {
 
   mounted() {
     this.$emit("mounted")
-    this.workingFormStore.activeTab = 0
+    this.workingFormStore.activeTab = 'build'
     useAmplitude().logEvent('form_editor_viewed')
     this.appStore.hideNavbar()
     if (!this.isEdit) {

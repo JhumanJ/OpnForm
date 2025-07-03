@@ -6,21 +6,23 @@
     >
       <UBadge
         :label="mentionAsText(integration.data.subject)"
-        color="gray"
+        color="neutral"
         size="xs"
         class="max-w-[300px] block truncate"
       />
       <div class="flex items-center gap-1">
         <UBadge
           :label="firstEmail"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="xs"
           class="max-w-[300px] block truncate"
         />
         <UBadge
           v-if="additionalEmailsCount > 0"
           :label="`+${additionalEmailsCount}`"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="xs"
         />
       </div>

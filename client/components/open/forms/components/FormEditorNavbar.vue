@@ -15,12 +15,25 @@
 
     <UTabs
       id="form-editor-navbar-tabs"
+      class="px-4"
       v-model="activeTab"
+      :content="false"
       :items="[
-        { label: 'Build' },
-        { label: 'Design'},
-        { label: 'Settings'}
+        { label: 'Build', value: 'build' },
+        { label: 'Design', value: 'design'}
       ]"
+    />
+    <UButton
+      color="neutral"
+      variant="subtle"
+      icon="i-heroicons-cog-6-tooth"
+      label="Settings"
+      @click="settingsModal = true"
+    />
+    <FormSettingsModal
+      v-model="settingsModal"
+      @close="settingsModal = false"
+      hydrate-on-interaction
     />
 
     <div class="flex-grow flex justify-center gap-2">
@@ -32,14 +45,14 @@
       />
       <UBadge
         v-if="form.visibility == 'draft'"
-        color="yellow"
+        color="warning"
         variant="soft"
         icon="i-heroicons-pencil-square"
         label="Draft"
       />
       <UBadge
         v-else-if="form.visibility == 'closed'"
-        color="gray"
+        color="neutral"
         variant="soft"
         icon="i-heroicons-lock-closed-20-solid"
         label="Closed"
@@ -70,9 +83,9 @@
       </UTooltip>
       <slot name="before-save" />
       <UTooltip :popper="{ placement: 'left' }">
-        <template #text>
+        <template #content>
           <UKbd
-            :value="metaSymbol"
+            value="meta"
             size="xs"
           />
           <UKbd
@@ -115,11 +128,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import UndoRedo from '../../editors/UndoRedo.vue'
-import { useWorkingFormStore } from '~/stores/working_form'
-import { useCrisp } from '~/composables/useCrisp'
+import UndoRedo from '~/components/open/editors/UndoRedo.vue'
+import FormSettingsModal from '~/components/open/forms/components/form-components/FormSettingsModal.vue'
 
 defineProps({
   backButton: {
@@ -138,7 +149,6 @@ defineProps({
 
 const emit = defineEmits(['go-back', 'save-form'])
 
-const { metaSymbol } = useShortcuts()
 defineShortcuts({
   meta_s: {
     handler: () => emit('save-form')
@@ -150,4 +160,6 @@ const crisp = useCrisp()
 
 const form = computed(() => workingFormStore.content)
 const { activeTab } = storeToRefs(workingFormStore)
+
+const settingsModal = ref(false)
 </script>

@@ -1,31 +1,13 @@
 <template>
-  <modal
-    :show="show"
-    @close="emit('close')"
+  <UModal
+    v-model:open="isOpen"
+    :ui="{ content: 'sm:max-w-lg' }"
+    title="Change form's workspace"
   >
-    <template #icon>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-8 h-8"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
-        />
-      </svg>
-    </template>
-    <template #title>
-      Change form's workspace
-    </template>
-    <div class="p-4">
+    <template #body>
       <div class="flex space-x-4 items-center">
         <p>Current workspace:</p>
-        <div class="flex items-center cursor group p-2 rounded border">
+        <div class="flex items-center cursor group p-2 rounded-sm border">
           <WorkspaceIcon :workspace="workspace" />
           <p
             class="lg:block max-w-10 truncate ml-2 text-gray-800 dark:text-gray-200"
@@ -45,29 +27,31 @@
             label="Select destination workspace"
           />
         </div>
-        <div class="flex justify-end mt-4 pb-5">
-          <v-button
-            class="mr-2"
-            :loading="loading"
-          >
-            Change workspace
-          </v-button>
-          <v-button
-            color="white"
-            @click.prevent="emit('close')"
-          >
-            Close
-          </v-button>
-        </div>
       </form>
-    </div>
-  </modal>
+    </template>
+
+    <template #footer>
+      <div class="flex justify-end gap-x-2">
+        <UButton
+          color="neutral"
+          variant="outline"
+          @click="close"
+          label="Close"
+        />
+        <UButton
+          :loading="loading"
+          @click="onSubmit"
+          label="Change workspace"
+        />
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-import { formsApi } from "~/api"
+import { formsApi } from "~/api/forms"
 const emit = defineEmits(["close"])
 const workspacesStore = useWorkspacesStore()
 const formsStore = useFormsStore()
@@ -77,6 +61,19 @@ const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true },
 })
+
+// Modal state
+const isOpen = computed({
+  get() {
+    return props.show
+  },
+  set(value) {
+    if (!value) {
+      close()
+    }
+  }
+})
+
 const workspaces = computed(() => workspacesStore.getAll)
 const workspace = computed(() =>
   workspacesStore.getByKey(props.form?.workspace_id),
@@ -89,6 +86,10 @@ const workspacesSelectOptions = computed(() =>
     })
     .map((workspace) => ({ name: workspace.name, value: workspace.id })),
 )
+
+const close = () => {
+  emit("close")
+}
 
 const onSubmit = () => {
   if (!selectedWorkspace.value) {

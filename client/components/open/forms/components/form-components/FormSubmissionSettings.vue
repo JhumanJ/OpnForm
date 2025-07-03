@@ -1,24 +1,21 @@
 <template>
-  <SettingsSection
-    name="Submission Settings"
-    icon="i-heroicons-paper-airplane"
-    class="w-full"
-  >
-    <!-- Basic Submission Settings -->
-    <h4 class="font-semibold mt-4 border-t pt-4">
-      Basic
-    </h4>
-    <p class="text-gray-500 text-sm mb-4">
-      Configure how form submissions are handled.
-    </p>
-    <text-input
+  <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="text-lg font-medium text-neutral-900">Submission Settings</h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          Configure how form submissions are handled.
+        </p>
+      </div>
+    </div>
+
+    <TextInput
       name="submit_button_text"
       :form="form"
       class="max-w-xs"
       label="Submit button text"
       :required="true"
     />
-
     <ToggleSwitchInput
       name="auto_save"
       :form="form"
@@ -35,7 +32,7 @@
       class="max-w-md"
     />
     
-    <flat-select-input
+    <FlatSelectInput
       :form="submissionOptions"
       name="databaseAction"
       class="mt-4 max-w-xs"
@@ -218,17 +215,10 @@
         </div>
       </template>
     </div>
-  </SettingsSection>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useWorkingFormStore } from '../../../../../stores/working_form'
-import ProTag from '~/components/global/ProTag.vue'
-import ToggleSwitchInput from '../../../../forms/ToggleSwitchInput.vue'
-import { useCrisp } from '~/composables/useCrisp'
-
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
 const crisp = useCrisp()

@@ -1,96 +1,189 @@
 <template>
-  <Dropdown
-    v-if="user && workspaces && workspaces.length > 1"
-    ref="dropdown"
-    dropdown-class="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
-    dusk="workspace-dropdown"
+  <UDropdownMenu
+    v-model:open="isDropdownOpen"
+    v-if="user && workspaces && workspaces.length >= 1"
+    :items="dropdownItems"
+    :content="content"
+    arrow
   >
-    <template
-      v-if="workspace"
-      #trigger="{ toggle }"
-    >
-      <div
-        class="flex items-center cursor border border-transparent hover:border-gray-200 py-2 px-3 hover:bg-gray-50 rounded-md transition-colors"
-        role="button"
-        @click.stop="toggle()"
-      >
-        <WorkspaceIcon :workspace="workspace" />
-        <p
-          class="hidden md:block max-w-10 truncate text-sm ml-2 text-gray-800 dark:text-gray-200"
-        >
-          {{ workspace.name }}
-        </p>
+    <slot :workspace="workspace" />
+    
+    <template #workspace-info>
+      <div>
+        <div class="flex items-center gap-3">
+          <WorkspaceIcon size="size-8" :workspace="workspace" />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-neutral-800 truncate">
+              {{ workspace.name }}
+            </p>
+            <p class="text-xs text-neutral-500">
+              {{ workspacePlanText }} • {{ memberCountText }}
+            </p>
+          </div>
+        </div>
+        <div v-if="!workspace.is_readonly" class="mt-2 flex items-center gap-2">
+          <UButton
+            icon="i-heroicons-cog-6-tooth"
+            size="xs"
+            color="neutral"
+            variant="outline"
+            @click="openSettings"
+            label="Settings"
+          />
+          <UButton
+            v-if="user?.admin"
+            icon="i-heroicons-user-plus"
+            size="xs"
+            color="neutral"
+            variant="outline"
+            @click="openInviteUserModal"
+            label="Invite Members"
+          />
+        </div>
       </div>
     </template>
 
-    <div class="px-1">
-      <a
-        v-for="worksp in workspaces"
-        :key="worksp.id"
-        href="#"
-        class="px-4 py-2 text-md rounded text-gray-700 hover:no-underline hover:bg-neutral-50 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-        :class="{
-          'bg-blue-100 dark:bg-blue-900 hover:bg-blue-200':
-            workspace?.id === worksp?.id,
-        }"
-        @click.prevent="switchWorkspace(worksp)"
-      >
-        <WorkspaceIcon :workspace="worksp" />
-        <p class="ml-4 truncate text-sm">{{ worksp.name }}</p>
-      </a>
-    </div>
-  </Dropdown>
+    <template #item-leading="{ item }">
+      <WorkspaceIcon 
+        v-if="item.workspace" 
+        :workspace="item.workspace" 
+        size="size-5"
+      />
+    </template>
+  </UDropdownMenu>
+
+  <!-- Create Workspace Modal -->
+  <CreateWorkspaceModal
+    v-model="showCreateModal"
+    @created="onWorkspaceCreated"
+    @close="showCreateModal = false"
+  />
+
+  <WorkspacesSettingsInviteUser
+    v-model="showInviteUserModal"
+    @user-added="onUserAdded"
+  />
 </template>
 
-<script>
-import { computed } from "vue"
-import Dropdown from "~/components/global/Dropdown.vue"
+<script setup>
+import { computed, ref } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
+import CreateWorkspaceModal from "~/components/workspaces/CreateWorkspaceModal.vue"
+import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
+import { fetchAllWorkspaces } from '~/stores/workspaces.js'
 
-export default {
-  name: "WorkspaceDropdown",
-  components: {
-    WorkspaceIcon,
-    Dropdown,
-  },
+defineProps({
+  content: {
+    type: Object,
+    default: () => ({
+      side: 'bottom',
+      align: 'start'
+    })
+  }
+})
 
-  setup() {
-    const authStore = useAuthStore()
-    const formsStore = useFormsStore()
-    const workspacesStore = useWorkspacesStore()
-    return {
-      formsStore,
-      workspacesStore,
-      user: computed(() => authStore.user),
-      workspaces: computed(() => workspacesStore.getAll),
-      loading: computed(() => workspacesStore.loading),
-    }
-  },
+const appStore = useAppStore()
+const authStore = useAuthStore()
+const formsStore = useFormsStore()
+const workspacesStore = useWorkspacesStore()
+const router = useRouter()
+const route = useRoute()
 
-  computed: {
-    workspace() {
-      return this.workspacesStore.getCurrent
-    },
-  },
+const user = computed(() => authStore.user)
+const workspaces = computed(() => workspacesStore.getAll)
+const workspace = computed(() => workspacesStore.getCurrent)
 
-  watch: {},
+// Modal state
+const showCreateModal = ref(false)
+const showInviteUserModal = ref(false)
 
-  mounted() {},
+// Dropdown state
+const isDropdownOpen = ref(false)
 
-  methods: {
-    switchWorkspace(workspace) {
-      this.workspacesStore.setCurrentId(workspace.id)
-      this.formsStore.resetState()
-      this.formsStore.loadAll(workspace.id)
-      const router = useRouter()
-      const route = useRoute()
-      if (route.name !== "home") {
-        router.push({ name: "home" })
-      }
-      this.formsStore.loadAll(workspace.id)
-    },
-  },
+// Computed text for workspace plan
+const workspacePlanText = computed(() => {
+  if (!workspace.value) return ''
+  return workspace.value.is_pro ? 'Pro Plan' : 'Free Plan'
+})
+
+// Computed text for member count
+const memberCountText = computed(() => {
+  if (!workspace.value || !workspace.value.users_count) return '1 member'
+  const count = workspace.value.users_count
+  return count === 1 ? '1 member' : `${count} members`
+})
+
+const switchWorkspace = (workspaceToSwitch) => {
+  workspacesStore.setCurrentId(workspaceToSwitch.id)
+  formsStore.resetState()
+  formsStore.loadAll(workspaceToSwitch.id)
+  
+  if (route.name !== "home") {
+    router.push({ name: "home" })
+  }
 }
+
+const createNewWorkspace = () => {
+  showCreateModal.value = true
+}
+
+const onWorkspaceCreated = (_newWorkspace) => {
+  // Member count is now included in workspace data automatically
+}
+
+const onUserAdded = async () => {
+  const workspaces = await fetchAllWorkspaces()
+  workspacesStore.set(workspaces.data.value.data)
+}
+
+const openSettings = () => {
+  isDropdownOpen.value = false
+  appStore.setWorkspaceSettingsModalTab('information')
+}
+
+const openInviteUserModal = () => {
+  isDropdownOpen.value = false
+  showInviteUserModal.value = true
+}
+
+const dropdownItems = computed(() => {
+  if (!user.value || !workspaces.value) return []
+
+  const items = []
+
+  // Workspace info header (only show if we have a current workspace)
+  if (workspace.value) {
+    items.push([
+      {
+        slot: 'workspace-info',
+        type: 'label'
+      }
+    ])
+  }
+
+  // Workspace selector section (only show if multiple workspaces)
+  if (workspaces.value.length > 1) {
+    const workspaceItems = workspaces.value.map(worksp => ({
+      label: worksp.name,
+      labelClass: workspace.value?.id === worksp?.id ? 'font-medium text-primary-700' : '',
+      onSelect: () => switchWorkspace(worksp),
+      workspace: worksp // Add workspace data for the slot
+    }))
+
+    items.push(workspaceItems)
+  }
+
+  // Create workspace action
+  items.push([
+    {
+      label: 'Create Workspace',
+      icon: 'i-heroicons-plus',
+      onSelect: createNewWorkspace
+    }
+  ])
+
+  return items
+})
 </script>
 
 <style></style>

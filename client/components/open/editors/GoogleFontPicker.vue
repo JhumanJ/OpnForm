@@ -1,66 +1,55 @@
 <template>
-  <modal
-    :show="show"
-    :compact-header="true"
-    @close="$emit('close')"
+  <UModal
+    v-model:open="isOpen"
+    :ui="{ content: 'sm:max-w-2xl' }"
+    title="Google fonts"
   >
-    <template #icon>
-      <Icon
-        name="ci:font"
-        class="w-10 h-10 text-blue"
-      />
-    </template>
-    <template #title>
-      Google fonts
-    </template>
-    
-    <div v-if="loading">
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-    </div>
-    <div v-else>
-      <text-input
-        v-model="search"
-      
-        name="search"
-        placeholder="Search fonts"
-      />
-
-      <div
-        ref="scrollContainer"
-        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md"
-      >
-        <FontCard
-          v-for="(fontName, index) in enrichedFonts"
-          :key="fontName"
-          :ref="el => setFontRef(el, index)"
-          :font-name="fontName"
-          :is-visible="visible[index]"
-          :is-selected="selectedFont === fontName"
-          @select-font="selectedFont = fontName"
+    <template #body>
+      <div v-if="loading">
+        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
+      </div>
+      <div v-else>
+        <text-input
+          v-model="search"
+          name="search"
+          placeholder="Search fonts"
         />
-      </div>
 
-      <div class="flex">
-        <UButton
-          size="md"
-          color="white"
-          class="mr-2"
-          @click="$emit('apply', null)"
+        <div
+          ref="scrollContainer"
+          class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-gray-50"
         >
-          Reset
-        </UButton>
-        <UButton
-          size="md"
-          :disabled="!selectedFont"
-          block
-          class="flex-1"
-          @click="$emit('apply', selectedFont)"
-        >
-          Apply
-        </UButton>
+          <FontCard
+            v-for="(fontName, index) in enrichedFonts"
+            :key="fontName"
+            :ref="el => setFontRef(el, index)"
+            :font-name="fontName"
+            :is-visible="visible[index]"
+            :is-selected="selectedFont === fontName"
+            @select-font="selectedFont = fontName"
+          />
+        </div>
       </div>
-    </div>
-  </modal>
+    </template>
+
+    <template #footer>
+      <UButton
+        size="md"
+        color="neutral"
+        variant="outline"
+        @click="$emit('apply', null)"
+      >
+        Reset
+      </UButton>
+      <UButton
+        size="md"
+        :disabled="!selectedFont"
+        @click="$emit('apply', selectedFont)"
+      >
+        Apply
+      </UButton>
+    </template>
+  </UModal>
 </template>
 
 <script setup>
@@ -81,7 +70,18 @@ const props = defineProps({
   },
 })
 
-defineEmits(['close','apply'])
+// Modal state
+const isOpen = computed({
+  get: () => props.show,
+  set: (value) => {
+    if (!value) {
+      emit('close')
+    }
+  }
+})
+
+const emit = defineEmits(['close', 'apply'])
+
 const loading = ref(false)
 const fonts = ref([])
 const selectedFont = ref(props.font || null)

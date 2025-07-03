@@ -30,7 +30,7 @@
         </div>
         <UButton
           size="xs"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-plus"
           @click="addMatrixRow"
         >
@@ -57,7 +57,7 @@
         </div>
         <UButton
           size="xs"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-plus"
           @click="addMatrixColumn"
         >

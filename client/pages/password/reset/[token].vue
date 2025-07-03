@@ -9,10 +9,13 @@
           @submit.prevent="reset"
           @keydown="form.onKeydown($event)"
         >
-          <alert-success
+          <UAlert
+            v-if="status"
+            color="success"
+            variant="subtle"
+            :description="status"
+            icon="i-heroicons-check-circle"
             class="mb-4"
-            :form="form"
-            :message="status"
           />
 
           <!-- Email -->

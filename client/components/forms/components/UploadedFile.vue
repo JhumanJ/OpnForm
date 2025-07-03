@@ -39,7 +39,7 @@
       <a
         v-if="showRemove"
         href="javascript:void(0);"
-        class="flex text-gray-400 rounded hover:bg-neutral-50 hover:text-red-500 dark:text-gray-600 p-1"
+                  class="flex text-gray-400 rounded-sm hover:bg-neutral-50 hover:text-red-500 dark:text-gray-600 p-1"
         role="button"
         title="Remove"
         @click.stop="$emit('remove')"

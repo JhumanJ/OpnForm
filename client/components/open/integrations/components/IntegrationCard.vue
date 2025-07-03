@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-gray-500 border shadow rounded-md p-5 mt-4 relative flex items-center"
+    class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4 relative flex items-center"
   >
     <div
       class="flex items-center w-full md:max-w-[240px]"
@@ -22,16 +22,13 @@
         <div class="flex space-x-3 font-semibold mr-2">
           {{ integrationTypeInfo.name }}
         </div>
-        <Badge
-          :color="integration.status === 'active' ? 'green' : 'gray'"
-          :before-icon="
-            integration.status === 'active'
-              ? 'solar:play-bold'
-              : 'solar:pause-bold'
-          "
+        <UBadge
+          variant="subtle"  
+          :color="integration.status === 'active' ? 'success' : 'neutral'"
+          :icon="integration.status === 'active' ? 'heroicons:play' : 'heroicons:pause'"
         >
           {{ integration.status === "active" ? "Active" : "Paused" }}
-        </Badge>
+        </UBadge>
       </div>
     </div>
 

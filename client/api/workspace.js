@@ -1,6 +1,10 @@
 import { apiService } from './base'
 
+<<<<<<< HEAD
 const BASE_PATH = '/open/workspaces'
+=======
+const BASE_PATH = '/workspaces'
+>>>>>>> 209a6-tailwind-+-nuxt-ui-migraiton
 
 export const workspaceApi = {
   // Workspace operations

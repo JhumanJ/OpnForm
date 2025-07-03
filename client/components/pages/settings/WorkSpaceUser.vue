@@ -53,7 +53,7 @@
         <UAlert
           v-else
           icon="i-heroicons-user-group-20-solid"
-          color="orange"
+          color="warning"
           variant="subtle"
           title="Pro plan required"
         >
@@ -80,17 +80,17 @@
     <UTable
       class="-mx-4 border-y mt-4"
       :loading="loadingUsers"
-      :rows="users"
+      :data="users"
       :columns="columns"
     >
       <template
         v-if="isWorkspaceAdmin"
-        #actions-data="{ row, index }"
+        #actions-cell="{ row }"
       >
         <div class="space-x-2 flex justify-center">
-          <template v-if="row.type == 'user'">
+          <template v-if="row.original.type == 'user'">
             <p
-              v-if="row.is_current_user"
+              v-if="row.original.is_current_user"
               class="text-gray-500 text-center text-sm"
             >
               -
@@ -104,28 +104,28 @@
               >
                 <UButton
                   icon="i-heroicons-pencil"
-                  color="gray"
+                  color="neutral"
                   class="hover:text-blue-500"
                   square
-                  @click="editUser(index)"
+                  @click="editUser(row.original)"
                 />
               </UTooltip>
               <UTooltip
                 text="Remove user"
               >
                 <UButton
-                  v-if="row.type == 'user'"
+                  v-if="row.original.type == 'user'"
                   icon="i-heroicons-trash"
-                  color="gray"
+                  color="neutral"
                   class="hover:text-red-500"
                   square
-                  @click="removeUser(index)"
+                  @click="removeUser(row.original)"
                 />
               </UTooltip>
             </UButtonGroup>
           </template>
           <UButtonGroup
-            v-else-if="row.type == 'invitee'"
+            v-else-if="row.original.type == 'invitee'"
             size="2xs"
           >
             <UTooltip
@@ -133,10 +133,10 @@
             >
               <UButton
                 icon="i-heroicons-envelope"
-                color="gray"
+                color="neutral"
                 class="hover:text-blue-500"
                 square
-                @click="resendInvite(index)"
+                @click="resendInvite(row.original)"
               />
             </UTooltip>
             <UTooltip
@@ -144,10 +144,10 @@
             >
               <UButton
                 icon="i-heroicons-trash"
-                color="gray"
+                color="neutral"
                 class="hover:text-red-500"
                 square
-                @click="cancelInvite(index)"
+                @click="cancelInvite(row.original)"
               />
             </UTooltip>
           </UButtonGroup>
@@ -165,7 +165,8 @@
     <div class="flex gap-2 mt-4">
       <UButton
         v-if="users.length > 1"
-        color="gray"
+        color="neutral"
+        variant="subtle"
         icon="i-heroicons-arrow-left-start-on-rectangle-20-solid"
         :loading="leaveWorkspaceLoadingState"
         @click="leaveWorkSpace(workspace.id)"
@@ -176,7 +177,8 @@
       <UButton
         v-if="isWorkspaceAdmin && users.length == 1"
         icon="i-heroicons-trash"
-        color="gray"
+        color="neutral"
+        variant="subtle"
         :loading="loading"
         @click="deleteWorkspace(workspace.id)"
       >
@@ -253,23 +255,22 @@ const isWorkspaceAdmin = computed(() => {
 
 const columns = computed(() => {
   return [
-    {key: 'name', label: 'Name'},
-    {key: 'email', label: 'Email'},
-    {key: 'role', label: 'Role'},
-    ...(isWorkspaceAdmin.value ? [{key: 'actions', label: 'Action', class: 'text-center'}] : [])
+    {accessorKey: 'name', header: 'Name'},
+    {accessorKey: 'email', header: 'Email'},
+    {accessorKey: 'role', header: 'Role'},
+    ...(isWorkspaceAdmin.value ? [{id: 'actions', header: 'Action'}] : [])
   ]
 })
 
 
-const editUser = (row) => {
-  selectedUser.value = users.value[row]
+const editUser = (user) => {
+  selectedUser.value = user
   userNewRole.value = selectedUser.value.pivot.role
   showEditUserModal.value = true
 }
 
 
-const removeUser = (index) => {
-  const user = users.value[index]
+const removeUser = (user) => {
   useAlert().confirm(
     "Do you really want to remove " + user.name + " from this workspace?",
     () => {
@@ -322,8 +323,8 @@ const leaveWorkSpace = (workspaceId) => {
   )
 }
 
-const resendInvite = (id) => {
-  const inviteId = users.value[id].id
+const resendInvite = (user) => {
+  const inviteId = user.id
   useAlert().confirm(
     "Do you really want to resend invite email to this user?",
     () => {
@@ -338,8 +339,8 @@ const resendInvite = (id) => {
     })
 }
 
-const cancelInvite = (id) => {
-  const inviteId = users.value[id].id
+const cancelInvite = (user) => {
+  const inviteId = user.id
   useAlert().confirm(
     "Do you really want to cancel this user's invitation to this workspace?",
     () => {

@@ -10,12 +10,12 @@
       :progress="{ color: 'primary', animation: 'carousel' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
       :columns="columns"
-      :rows="rows"
+      :data="rows"
       class="-mx-6"
     >
-      <template #stripe_id-data="{ row }">
+      <template #stripe_id-cell="{ row }">
         <a
-          :href="'https://dashboard.stripe.com/subscriptions/' + row.stripe_id"
+          :href="'https://dashboard.stripe.com/subscriptions/' + row.original.stripe_id"
           target="_blank"
           class="text-xs select-all bg-purple-50 border-purple-200 text-purple-500 rounded-md px-2 py-1 border"
         >
@@ -23,15 +23,15 @@
             name="bx:bxl-stripe"
             class="h-4 w-4 inline-block"
           />
-          {{ row.stripe_id }}
+          {{ row.original.stripe_id }}
         </a>
       </template>
-      <template #status-data="{ row }">
+      <template #status-cell="{ row }">
         <span
           class="text-xs select-all rounded-md px-2 py-1 border"
-          :class="row.status == 'active' ? 'bg-green-50 border-green-200 text-green-500' : 'bg-yellow-50 border-yellow-200 text-yellow-500'"
+          :class="row.original.status == 'active' ? 'bg-green-50 border-green-200 text-green-500' : 'bg-yellow-50 border-yellow-200 text-yellow-500'"
         >
-          {{ row.status }}
+          {{ row.original.status }}
         </span>
       </template>
     </UTable>
@@ -82,27 +82,27 @@ const getSubscriptions = () => {
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+    accessorKey: 'id',
+    header: 'ID'
 }, {
-    key: 'stripe_id',
-    label: 'Stripe ID'
+    accessorKey: 'stripe_id',
+    header: 'Stripe ID'
 }, {
-    key: 'name',
-    label: 'Name',
+    accessorKey: 'name',
+    header: 'Name',
     sortable: true
 }, {
-    key: 'creation_date',
-    label: 'Creation date',
+    accessorKey: 'creation_date',
+    header: 'Creation date',
     sortable: true
 }, {
-    key: 'plan',
-    label: 'Plan',
+    accessorKey: 'plan',
+    header: 'Plan',
     sortable: true,
     direction: 'desc'
 }, {
-    key: 'status',
-    label: 'Status'
+    accessorKey: 'status',
+    header: 'Status'
 }]
 
 </script>

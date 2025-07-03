@@ -5,7 +5,7 @@
   >
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <NuxtLink
             :to="{ name: user ? 'home' : 'index' }"
             class="flex-shrink-0 font-semibold hover:no-underline flex items-center"
@@ -19,7 +19,21 @@
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
             >OpnForm</span>
           </NuxtLink>
-          <workspace-dropdown class="ml-6" />
+          <WorkspaceDropdown class="ml-6">
+            <template #default="{ workspace }">
+              <button
+                v-if="workspace"
+                class="flex items-center cursor border border-transparent hover:border-gray-200 py-2 px-3 hover:bg-gray-50 rounded-md transition-colors"
+              >
+                <WorkspaceIcon :workspace="workspace" />
+                <p
+                  class="hidden md:block max-w-10 truncate text-sm ml-2 text-gray-800 dark:text-gray-200"
+                >
+                  {{ workspace.name }}
+                </p>
+              </button>
+            </template>
+          </WorkspaceDropdown>
         </div>
         <div 
           class="hidden md:flex gap-x-2 ml-auto"
@@ -93,18 +107,14 @@
           <div class="flex items-center">
             <div class="ml-4 relative">
               <div class="relative inline-block text-left">
-                <dropdown
-                  v-if="user"
-                  dusk="nav-dropdown"
-                >
-                  <template #trigger="{ toggle }">
+                <UserDropdown v-if="user">
+                  <template #default="{ user }">
                     <button
                       id="dropdown-menu-button"
                       type="button"
                       :class="navLinkClasses"
                       class="flex items-center"
                       dusk="nav-dropdown-button"
-                      @click.stop="toggle()"
                     >
                       <img
                         :src="user.photo_url"
@@ -115,122 +125,7 @@
                       </p>
                     </button>
                   </template>
-
-                  <NuxtLink
-                    v-if="userOnboarded"
-                    :to="{ name: 'home' }"
-                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-4 h-4 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                      />
-                    </svg>
-                    My Forms
-                  </NuxtLink>
-
-                  <NuxtLink
-                    v-if="userOnboarded"
-                    :to="{ name: 'templates-my-templates' }"
-                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-4 h-4 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                      />
-                    </svg>
-                    My Templates
-                  </NuxtLink>
-
-                  <NuxtLink
-                    :to="{ name: 'settings-profile' }"
-                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                  >
-                    <svg
-                      class="w-4 h-4 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Settings
-                  </NuxtLink>
-
-                  <NuxtLink
-                    v-if="user.moderator"
-                    :to="{ name: 'settings-admin' }"
-                    class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:no-underline transition-colors hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4 mr-2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
-                      />
-                    </svg>
-                    Admin
-                  </NuxtLink>
-
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-md text-gray-700 hover:no-underline transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 flex items-center"
-                    @click.prevent="logout"
-                  >
-                    <svg
-                      class="w-4 h-4 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Logout
-                  </a>
-                </dropdown>
+                </UserDropdown>
                 <div
                   v-else
                   class="flex gap-2"
@@ -267,8 +162,9 @@
 
 <script>
 import { computed } from "vue"
-import Dropdown from "~/components/global/Dropdown.vue"
 import WorkspaceDropdown from "./WorkspaceDropdown.vue"
+import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
+import UserDropdown from "./UserDropdown.vue"
 import opnformConfig from "~/opnform.config.js"
 import { useRuntimeConfig } from "#app"
 import { useFeatureFlag } from "~/composables/useFeatureFlag"
@@ -276,7 +172,8 @@ import { useFeatureFlag } from "~/composables/useFeatureFlag"
 export default {
   components: {
     WorkspaceDropdown,
-    Dropdown,
+    WorkspaceIcon,
+    UserDropdown,
   },
 
   async setup() {
@@ -326,9 +223,6 @@ export default {
       }
       return !this.appStore.navbarHidden
     },
-    userOnboarded() {
-      return this.user && this.user.has_forms === true
-    },
     hasNewChanges() {
       if (import.meta.server || !window.Featurebase || !this.appStore.featureBaseEnabled) return false
       return window.Featurebase("unviewed_changelog_count") > 0
@@ -339,18 +233,6 @@ export default {
     openChangelog() {
       if (import.meta.server || !window.Featurebase) return
       window.Featurebase("manually_open_changelog_popup")
-    },
-    async logout() {
-      // Log out the user.
-      this.authStore.logout()
-
-      // Reset store
-      this.workspacesStore.resetState()
-      this.formsStore.resetState()
-
-      // Redirect to login.
-      const router = useRouter()
-      router.push({ name: "login" })
     },
   },
 }

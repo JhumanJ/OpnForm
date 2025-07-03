@@ -8,7 +8,7 @@
       <div class="flex justify-center items-center self-start py-px">
         <Icon
           name="i-heroicons-sparkles-16-solid"
-          class="w-6 h-6 text-nt-blue"
+          class="w-6 h-6 text-blue-500"
         />
       </div>
       <div class="flex flex-col flex-1 max-md:max-w-full">

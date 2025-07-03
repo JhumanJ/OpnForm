@@ -1,11 +1,13 @@
 <template>
-  <SettingsSection
-    name="General"
-    icon="i-heroicons-information-circle"
-  >
-    <p class="text-gray-500 text-sm">
-      Basic information about your form.
-    </p>
+  <div class="space-y-4">
+    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="text-lg font-medium text-neutral-900">General</h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          Basic information about your form.
+        </p>
+      </div>
+    </div>
 
     <text-input
       :form="form"
@@ -50,40 +52,28 @@
 
     <UButton
       v-if="copyFormOptions.length > 0"
-      color="white"
+      color="neutral"
+      variant="outline"
       class="mt-4"
       icon="i-heroicons-document-duplicate"
       @click.prevent="showCopyFormSettingsModal = true"
     >
       Copy another form's settings
     </UButton>
-  </SettingsSection>
+  </div>
     
-  <modal
-    :show="showCopyFormSettingsModal"
-    max-width="md"
+  <UModal
+    v-model:open="showCopyFormSettingsModal"
     @close="showCopyFormSettingsModal = false"
   >
-    <template #icon>
-      <svg
-        class="w-10 h-10 text-blue"
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M17 27C16.0681 27 15.6022 27 15.2346 26.8478C14.7446 26.6448 14.3552 26.2554 14.1522 25.7654C14 25.3978 14 24.9319 14 24V17.2C14 16.0799 14 15.5198 14.218 15.092C14.4097 14.7157 14.7157 14.4097 15.092 14.218C15.5198 14 16.0799 14 17.2 14H24C24.9319 14 25.3978 14 25.7654 14.1522C26.2554 14.3552 26.6448 14.7446 26.8478 15.2346C27 15.6022 27 16.0681 27 17M24.2 34H30.8C31.9201 34 32.4802 34 32.908 33.782C33.2843 33.5903 33.5903 33.2843 33.782 32.908C34 32.4802 34 31.9201 34 30.8V24.2C34 23.0799 34 22.5198 33.782 22.092C33.5903 21.7157 33.2843 21.4097 32.908 21.218C32.4802 21 31.9201 21 30.8 21H24.2C23.0799 21 22.5198 21 22.092 21.218C21.7157 21.4097 21.4097 21.7157 21.218 22.092C21 22.5198 21 23.0799 21 24.2V30.8C21 31.9201 21 32.4802 21.218 32.908C21.4097 33.2843 21.7157 33.5903 22.092 33.782C22.5198 34 23.0799 34 24.2 34Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+    <template #header>
+      <div class="flex items-center w-full gap-4 px-2">
+        <h2 class="text-lg font-semibold">
+          Import Settings from another form
+        </h2>
+      </div>
     </template>
-    <template #title>
-      Import Settings from another form
-    </template>
-    <div>
+    <template #body>
       <select-input
         v-model="copyFormId"
         name="copy_form_id"
@@ -92,31 +82,29 @@
         :searchable="copyFormOptions.length > 5"
         :options="copyFormOptions"
       />
-      <div class="flex">
-        <v-button
-          color="white"
-          class="w-full mr-2"
-          @click="showCopyFormSettingsModal = false"
-        >
-          Cancel
-        </v-button>
-        <v-button
-          color="blue"
-          class="w-full"
+      <div class="mt-4 flex items-center justify-between">
+        <UButton
           @click="copySettings"
         >
           Confirm & Copy
-        </v-button>
+        </UButton>
+        <UButton
+          color="neutral"
+          variant="outline"
+          @click="showCopyFormSettingsModal = false"
+        >
+          Cancel
+        </UButton>
       </div>
-    </div>
-  </modal>
+    </template>
+  </UModal>
 </template>
 
 <script setup>
 import clonedeep from 'clone-deep'
 import { default as _has } from 'lodash/has'
 
-// Store setup
+const alert = useAlert()
 const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
@@ -171,8 +159,11 @@ const isFormClosingOrClosed = computed(() => {
 
 // Methods
 const copySettings = () => {
-  if (copyFormId.value == null)
+  if (copyFormId.value == null) {
+    alert.error('Please select a form to copy settings from')
     return
+  }
+
   const copyForm = clonedeep(
     forms.value.find(form => form.id === copyFormId.value),
   )
@@ -209,6 +200,6 @@ const copySettings = () => {
     form.value[property] = copyForm[property]
   })
   showCopyFormSettingsModal.value = false
-  useAlert().success('Form settings copied.')
+  alert.success('Form settings copied.')
 }
 </script>

@@ -2,7 +2,8 @@
   <div class="relative">
     <div class="flex gap-2 sticky top-0 bg-white border-b z-10 p-4">
       <UButton
-        color="gray"
+        color="neutral"
+        variant="subtle"
         icon="i-heroicons-plus"
         class="flex-grow justify-center"
         @click.prevent="openAddFieldSidebar"
@@ -16,7 +17,7 @@
         v-model="form.properties"
         item-key="id"
         class="mx-auto w-full overflow-hidden rounded-md border border-gray-300 bg-white transition-colors dark:bg-notion-dark-light"
-        ghost-class="bg-nt-blue-lighter"
+        ghost-class="bg-blue-100"
         :animation="200"
       >
         <template #item="{ element, index }">
@@ -52,7 +53,7 @@
 
               <UTooltip :text="element.hidden ? 'Show Block' : 'Hide Block'">
                 <button
-                  class="hidden !cursor-pointer rounded p-1 transition-colors hover:bg-nt-blue-lighter items-center justify-center"
+                  class="hidden !cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 items-center justify-center"
                   :class="{
                     'text-gray-300 hover:text-blue-500 md:group-hover:flex': !element.hidden,
                     'text-gray-300 hover:text-gray-500 md:flex': element.hidden,
@@ -78,7 +79,7 @@
                 :text="element.required ? 'Make it optional' : 'Make it required'"
               >
                 <button
-                  class="hidden cursor-pointer rounded p-0.5 transition-colors hover:bg-nt-blue-lighter items-center px-1 justify-center"
+                  class="hidden cursor-pointer rounded-sm p-0.5 transition-colors hover:bg-blue-100 items-center px-1 justify-center"
                   :class="{
                     'md:group-hover:flex text-gray-300 hover:text-red-500': !element.required,
                     'md:flex text-red-500': element.required,
@@ -93,7 +94,7 @@
                 </button>
               </UTooltip>
               <button
-                class="cursor-pointer rounded p-1 transition-colors hover:bg-nt-blue-lighter text-gray-300 hover:text-blue-500 flex items-center justify-center"
+                class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-gray-300 hover:text-blue-500 flex items-center justify-center"
                 @click="editOptions(index)"
               >
                 <Icon

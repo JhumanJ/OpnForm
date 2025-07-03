@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col w-full bg-white rounded-lg shadow"
+    class="flex flex-col w-full bg-white rounded-lg shadow-sm"
     :class="{ 'px-4 py-8 sm:px-6 md:px-8 lg:px-10': padding }"
   >
     <div

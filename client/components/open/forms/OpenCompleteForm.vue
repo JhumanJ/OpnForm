@@ -20,7 +20,7 @@
 
     <v-transition name="fade" mode="out-in">
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
-        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
 
       <div v-else key="form-content">
@@ -54,8 +54,8 @@
         <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" 
           class="m-2 my-4">
           <UAlert
-            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
-            color="amber"
+            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'neutral', variant: 'link', padded: false }"
+            color="warning"
             variant="subtle"
             icon="i-material-symbols-info-outline"
             @close="hidePasswordDisabledMsg = true"
@@ -67,7 +67,7 @@
         <UAlert
           v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >
@@ -82,7 +82,7 @@
         <UAlert
           v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >
@@ -168,7 +168,7 @@
               <a
                 target="_parent"
                 :href="form.share_url+'?submission_id='+submissionId"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ form.editable_submissions_button_text }}
               </a>
@@ -180,7 +180,7 @@
               <a
                 target="_parent"
                 href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ t('forms.create_form_free') }}
               </a>

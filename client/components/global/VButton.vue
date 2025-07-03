@@ -118,7 +118,7 @@ export default {
       const colorShades = this.colorShades
       return `v-btn ${sizes["p-y"]} ${sizes["p-x"]}
         ${colorShades?.main} ${colorShades?.hover} ${colorShades?.ring} ${colorShades["ring-offset"]}
-        ${colorShades?.text} transition ease-in duration-200 text-center text-${sizes?.font} font-medium focus:outline-none focus:ring-2
+        ${colorShades?.text} transition ease-in duration-200 text-center text-${sizes?.font} font-medium focus:outline-hidden focus:ring-2
         focus:ring-offset-2 rounded-lg flex items-center hover:no-underline`
     },
     colorShades() {
@@ -126,7 +126,7 @@ export default {
         return {
           main: "bg-blue-600",
           hover: "hover:bg-blue-700",
-          ring: "focus:ring-blue-500",
+          ring: "focus:ring-form",
           "ring-offset": "focus:ring-offset-blue-200",
           text: "text-white",
         }
@@ -134,7 +134,7 @@ export default {
         return {
           main: "bg-transparent border border-blue-600",
           hover: "hover:bg-blue-600",
-          ring: "focus:ring-blue-500",
+          ring: "focus:ring-form",
           "ring-offset": "focus:ring-offset-blue-200",
           text: "text-blue-600 hover:text-white",
         }

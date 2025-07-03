@@ -6,67 +6,57 @@
     >
       <Loader class="h-6 w-6 mx-auto" />
     </div>
-    <UDropdown
+    <UDropdownMenu
       v-else
+      class="z-50"
+      arrow
       :items="items"
+      :content="content"
+      :modal="false"
+      :portal="portal"
     >
+      <slot>
       <UButton
-        color="white"
+        color="neutral"
+        variant="outline"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
       />
-    </UDropdown>
+      </slot>
+    </UDropdownMenu>
 
     <!-- Delete Form Modal -->
-    <modal
-      :show="showDeleteFormModal"
-      icon-color="red"
-      max-width="sm"
-      @close="showDeleteFormModal = false"
+    <UModal
+      v-model:open="showDeleteFormModal"
+      :ui="{ content: 'sm:max-w-sm' }"
+      title="Delete form"
     >
-      <template #icon>
-        <svg
-          class="w-10 h-10"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-          />
-        </svg>
-      </template>
-      <template #title>
-        Delete form
-      </template>
-      <div class="p-3">
+      <template #body>
         <p>
           If you want to permanently delete this form and all of its data, you
           can do so below.
         </p>
-        <div class="flex mt-4">
-          <v-button
-            class="sm:w-1/2 mr-4"
-            color="white"
-            @click.prevent="showDeleteFormModal = false"
-          >
-            Cancel
-          </v-button>
-          <v-button
-            class="sm:w-1/2"
-            color="red"
+      </template>
+
+      <template #footer>
+        <div class="flex gap-3">
+          <UButton
+            class="flex-1"
+            color="neutral"
+            variant="outline"
+            @click="showDeleteFormModal = false"
+            label="Cancel"
+          />
+          <UButton
+            class="flex-1"
+            color="error"
             :loading="loadingDelete"
-            @click.prevent="deleteForm"
-          >
-            Yes, delete it
-          </v-button>
+            @click="deleteForm"
+            label="Yes, delete it"
+          />
         </div>
-      </div>
-    </modal>
+      </template>
+    </UModal>
     <form-template-modal
       v-if="!isMainPage && user"
       :form="form"
@@ -94,6 +84,12 @@ const router = useRouter()
 const props = defineProps({
   form: { type: Object, required: true },
   isMainPage: { type: Boolean, required: false, default: false },
+  content: { 
+    type: Object, 
+    required: false, 
+    default: () => ({side: 'bottom', align: 'end'}) 
+  },
+  portal: { type: [Boolean, String], required: false, default: false }
 })
 
 const authStore = useAuthStore()
@@ -112,9 +108,9 @@ const items = computed(() => {
   return [
     [
       ...props.isMainPage ? [{
-        label: 'View form',
-        icon: 'i-heroicons-eye-16-solid',
-        click: () => {
+        label: 'Open form',
+        icon: 'i-heroicons-arrow-top-right-on-square',
+        onClick: () => {
           if (props.isMainPage && props.form.visibility === 'draft') {
             showDraftFormWarningNotification()
           } else {
@@ -122,13 +118,11 @@ const items = computed(() => {
           }
         }
       }] : [],
-      ...props.isMainPage ? [{
+      {
         label: 'Copy link to share',
         icon: 'i-heroicons-clipboard-document-check-20-solid',
-        click: () => {
-          copyLink()
-        }
-      }] : []
+        onClick: copyLink
+      }
     ],
     ...workspace.value.is_readonly ? [] : [
       [
@@ -140,22 +134,21 @@ const items = computed(() => {
       {
         label: 'Duplicate form',
         icon: 'i-heroicons-document-duplicate-20-solid',
-        click: () => {
-          duplicateForm()
-        }
+        onClick: duplicateForm
+        
       }], 
     [
       ...props.isMainPage ? [] : [{
         label: 'Create Template',
         icon: 'i-heroicons-document-plus-20-solid',
-        click: () => {
+        onClick: () => {
           showFormTemplateModal.value = true
         }
       }],
       {
         label: 'Change workspace',
         icon: 'i-heroicons-building-office-2-20-solid',
-        click: () => {
+        onClick: () => {
           showFormWorkspaceModal.value = true
         }
       },
@@ -163,7 +156,7 @@ const items = computed(() => {
       {
         label: 'Delete form',
         icon: 'i-heroicons-trash-20-solid',
-        click: () => {
+        onClick: () => {
           showDeleteFormModal.value = true
         },
         class: 'text-red-800 hover:bg-red-50 hover:text-red-600 group',

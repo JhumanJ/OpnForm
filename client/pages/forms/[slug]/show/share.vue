@@ -1,61 +1,103 @@
 <template>
-  <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl p-4">
-    <div class="mb-20">
-      <div class="mb-6 pb-6 border-b w-full flex flex-col sm:flex-row gap-2">
-        <regenerate-form-link
-          v-if="!workspace.is_readonly"
-          class="sm:w-1/2 flex"
-          :form="props.form"
-        />
+  <div class="p-4 space-y-8">
+    <div class="w-full max-w-4xl mx-auto flex flex-col gap-4">
+      <!-- Status Warning Alert -->
+      <UAlert
+        v-if="form.visibility === 'draft'"
+        icon="i-heroicons-information-circle"
+        color="warning"
+        variant="subtle"
+        title="Draft Form"
+        description="Only you can visit the form link while logged in. Visitors won't be able to access this form."
+      />
+      
+      <UAlert
+        v-else-if="form.visibility === 'closed'"
+        icon="i-heroicons-lock-closed"
+        color="warning"
+        variant="subtle"
+        title="Closed Form"
+        description="People can access the form but it won't accept new submissions."
+      />
 
-        <url-form-prefill
-          class="sm:w-1/2"
+      <!-- Primary Section: Share Link -->
+      <UCard class="shadow">
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="text-xl grow font-semibold">Share Your Form</h2>
+            <div class="flex gap-2">
+              <AdvancedFormUrlSettingsPopover
+                v-model="shareFormConfig"
+                :form="props.form"
+              />
+            </div>
+          </div>
+          <p class="text-neutral-600 text-sm">
+            Share your form with anyone by copying this link. You can use it on social media,
+            in messages, or send it via email to reach your audience.
+          </p>
+          
+          <CopyContent
+            :content="share_url"
+            :is-draft="form.visibility == 'draft'"
+            class="w-full"
+          />
+          
+          <div class="flex gap-2 pt-2"> 
+            <SocialShareButton
+              :form="props.form"
+              :share-url="share_url"
+            />
+
+            <FormQrCode
+              :form="props.form"
+              :extra-query-param="shareUrlForQueryParams"
+            />
+          </div>
+        </div>
+      </UCard>
+
+      <div class="flex gap-2"> 
+        <UrlFormPrefill
           :form="props.form"
           :extra-query-param="shareUrlForQueryParams"
         />
-
-        <embed-form-as-popup-modal
-          class="sm:w-1/2 flex"
+        <RegenerateFormLink
           :form="props.form"
         />
       </div>
 
-      <share-link
-        class="mt-4"
-        :form="props.form"
-        :extra-query-param="shareUrlForQueryParams"
-      />
-
-      <embed-code
-        class="mt-6"
-        :form="props.form"
-        :extra-query-param="shareUrlForQueryParams"
-      />
-
-      <form-qr-code
-        class="mt-6"
-        :form="props.form"
-        :extra-query-param="shareUrlForQueryParams"
-      />
-
-      <advanced-form-url-settings
-        v-model="shareFormConfig"
-        :form="props.form"
-      />
+      <!-- Secondary Section: Embed -->
+      <UCard class="shadow-sm">        
+        <div class="space-y-4">
+          <h2 class="text-xl font-semibold">Embed Form</h2>
+          <p class="text-neutral-600 text-sm">Embed your form on your website by copying the HTML code below.</p>
+          
+          <EmbedCode
+            :form="props.form"
+            :extra-query-param="shareUrlForQueryParams"
+          />
+          
+          <EmbedFormAsPopupModal
+            :form="props.form"
+            class="max-w-fit"
+          />
+        </div>
+      </UCard>
     </div>
   </div>
 </template>
 
 <script setup>
-import ShareLink from "~/components/pages/forms/show/ShareLink.vue"
 import EmbedCode from "~/components/pages/forms/show/EmbedCode.vue"
 import FormQrCode from "~/components/pages/forms/show/FormQrCode.vue"
 import UrlFormPrefill from "~/components/pages/forms/show/UrlFormPrefill.vue"
-import RegenerateFormLink from "~/components/pages/forms/show/RegenerateFormLink.vue"
-import AdvancedFormUrlSettings from "~/components/open/forms/components/AdvancedFormUrlSettings.vue"
+import AdvancedFormUrlSettingsPopover from "~/components/pages/forms/show/AdvancedFormUrlSettingsPopover.vue"
+import SocialShareButton from "~/components/pages/forms/show/SocialShareButton.vue"
 import EmbedFormAsPopupModal from "~/components/pages/forms/show/EmbedFormAsPopupModal.vue"
+import CopyContent from "~/components/open/forms/components/CopyContent.vue"
 
-const workspace = computed(() => useWorkspacesStore().getCurrent)
+
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -64,6 +106,7 @@ const props = defineProps({
 definePageMeta({
   middleware: "auth",
 })
+
 useOpnSeoMeta({
   title: props.form ? "Share Form - " + props.form.title : "Share Form",
 })
@@ -82,4 +125,16 @@ const shareUrlForQueryParams = computed(() => {
   }
   return queryStr.slice(1)
 })
+
+const share_url = computed(() => {
+  return shareUrlForQueryParams.value
+    ? props.form.share_url + "?" + shareUrlForQueryParams.value
+    : props.form.share_url + shareUrlForQueryParams.value
+})
+
+
+
+
+
+
 </script>

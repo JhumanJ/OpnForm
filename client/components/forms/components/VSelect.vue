@@ -5,15 +5,15 @@
     :class="[{ 'w-0': multiple, 'min-w-full': multiple }]"
   >
     <div
-      class="inline-block w-full flex overflow-hidden"
+      class="w-full flex overflow-hidden"
       :style="inputStyle"
       :class="[
         theme.SelectInput.input,
         theme.SelectInput.borderRadius,
         { 
-          '!ring-red-500 !ring-2 !border-transparent': hasError, 
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
-          'focus-within:ring-2 focus-within:ring-opacity-100 focus-within:border-transparent': !hasError && !disabled
+          'ring-red-500! ring-2! border-transparent!': hasError, 
+          '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled,
+          'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
         },
         inputClass
       ]"
@@ -23,7 +23,7 @@
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-pointer w-full flex-grow relative focus:outline-none"
+        class="cursor-pointer w-full grow relative focus:outline-hidden min-w-0 truncate"
         :class="[
           theme.SelectInput.spacing.horizontal,
           theme.SelectInput.spacing.vertical
@@ -46,7 +46,7 @@
             <Loader
               v-if="loading"
               key="loader"
-              class="h-6 w-6 text-nt-blue mx-auto"
+              class="h-6 w-6 text-form mx-auto"
             />
             <div
               v-else-if="modelValue"
@@ -65,7 +65,7 @@
             >
               <slot name="placeholder">
                 <div
-                  class="text-gray-400 dark:text-gray-500 w-full ltr:text-left rtl:!text-right truncate ltr:pr-3 rtl:pl-3 rtl:!pr-0"
+                  class="text-gray-400 dark:text-gray-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!"
                   :class="[
                     { 'py-1': multiple && !loading },
                     theme.SelectInput.fontSize
@@ -78,11 +78,11 @@
           </transition>
         </div>
         <div
-          class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-[1]"
-          :class="[disabled ? 'bg-gradient-to-r from-transparent to-gray-200 dark:to-gray-800' : theme.SelectInput.chevronGradient]"
+          class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-1"
+          :class="[disabled ? 'bg-linear-to-r from-transparent to-gray-200 dark:to-gray-800' : theme.SelectInput.chevronGradient]"
         />
         <span
-          class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:!right-auto flex items-center ltr:pr-2 rtl:pl-2 rtl:!pr-0 pointer-events-none"
+          class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:right-auto! flex items-center ltr:pr-2 rtl:pl-2 rtl:pr-0! pointer-events-none"
           :class="[disabled ? 'bg-gray-200 dark:bg-gray-800' : theme.SelectInput.background]"
         >
           <Icon
@@ -93,7 +93,7 @@
       </button>
       <button
         v-if="clearable && showClearButton && !disabled && !isEmpty"
-        class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:!border-l-0 rtl:border-r px-2 flex items-center"
+        class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:border-l-0! rtl:border-r px-2 flex items-center shrink-0"
         :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
       >
@@ -114,7 +114,7 @@
       <ul
         tabindex="-1"
         role="listbox"
-        class="leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
+        class="leading-6 shadow-xs overflow-auto focus:outline-hidden sm:text-sm sm:leading-5 relative"
         :class="[
           { 'max-h-42': !isSearchable, 'max-h-48': isSearchable },
           theme.SelectInput.fontSize
@@ -122,17 +122,17 @@
       >
         <div
           v-if="isSearchable"
-          class="sticky top-0 z-10 flex border-b border-gray-300"
+          class="sticky top-0 z-10 flex border-b bg-white dark:bg-notion-dark-light"
         >
           <input
             v-model="searchTerm"
             type="text"
-            class="flex-grow ltr:pl-3 ltr:pr-7 rtl:!pr-3 rtl:pl-7 py-2 w-full focus:outline-none dark:text-white"
+            class="grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-hidden dark:text-white"
             :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
           >
           <div
             v-if="!searchTerm"
-            class="flex absolute ltr:right-0 rtl:left-0 rtl:!right-auto inset-y-0 items-center px-2 justify-center pointer-events-none"
+            class="flex absolute ltr:right-0 rtl:left-0 rtl:right-auto! inset-y-0 items-center px-2 justify-center pointer-events-none"
           >
             <Icon
               name="heroicons:magnifying-glass-solid"
@@ -142,7 +142,7 @@
           <div
             v-else
             role="button"
-            class="flex absolute ltr:right-0 rtl:!right-auto rtl:left-0 inset-y-0 items-center px-2 justify-center"
+            class="flex absolute ltr:right-0 rtl:right-auto! rtl:left-0 inset-y-0 items-center px-2 justify-center"
             @click="searchTerm = ''"
           >
             <Icon
@@ -155,7 +155,7 @@
           v-if="loading"
           class="w-full py-2 flex justify-center"
         >
-          <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+          <Loader class="h-6 w-6 text-blue-500 mx-auto" />
         </div>
         <div
           v-if="filteredOptions.length > 0"
@@ -173,7 +173,7 @@
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
             ]"
-            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
             @click="select(item)"
           >
             <slot
@@ -183,12 +183,16 @@
             />
           </li>
         </div>
-        <p
+        <slot
           v-else-if="!loading && !(allowCreation && searchTerm)"
-          class="w-full text-gray-500 text-center py-2"
+          name="empty-placeholder"
         >
-          {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
-        </p>
+          <p
+            class="w-full text-gray-500 text-center py-2"
+          >
+            {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
+          </p>
+        </slot>
         <div
           v-if="allowCreation && searchTerm"
           class="border-t border-gray-300 p-1"
@@ -197,14 +201,15 @@
             role="option"
             :style="optionStyle"
             :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded focus:outline-none"
+            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
             @click="createOption(searchTerm)"
           >
-            {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded group-hover-text-black">{{
+                          {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded-sm group-hover-text-black">{{
               searchTerm
             }}</span>
           </li>
         </div>
+        <slot name="after-options" />
       </ul>
     </collapsible>
   </div>

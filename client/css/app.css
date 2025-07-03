@@ -1,0 +1,378 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "./fonts.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant ltr-only (&:where(:not([dir="rtl"] *)));
+
+/* Explicitly scan form-themes.js file */
+@source "./lib/forms/themes/form-themes.js";
+
+/* Safelist utilities using v4 @source inline() syntax with brace expansion */
+@source inline("bg-{blue,gray,red,yellow,green,purple}-{50,{100..900..100},950}");
+@source inline("border-{green,red,blue,yellow,purple}-500");
+@source inline("{hover:,}bg-neutral-50");
+@source inline("dark:hover:bg-notion-dark-light");
+@source inline("grid-cols-{1,2,3,4,5,6}");
+
+@theme {
+    --color-notion-dark: #191919;
+    --color-notion-dark-light: #2e2e2e;
+
+    --color-notion-input-background: #f7f6f3;
+    --color-notion-input-background-dark: #272b2c;
+    --color-notion-input-help: #37352f99;
+    --color-notion-input-help-dark: #fff9;
+    --color-notion-input-border: rgba(15, 15, 15, 0.1);
+    --color-notion-input-border-dark: rgba(255, 255, 255, 0.1);
+
+    --color-light-gray: #f8fafc;
+
+    /* Form color variable */
+    --bg-form-color: var(--color-blue-500);
+    --form-color: var(--color-blue-500);
+
+    /* Create color utility for form color (enables ring-form, bg-form, etc.) */
+    --color-form: var(--form-color, --bg-form-color);
+
+    /* Custom animations */
+    --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
+    --animate-infinite-scroll: infinite-scroll 80s linear infinite;
+    --animate-text: text 5s ease infinite;
+
+    /* Custom keyframes */
+    @keyframes bounce-slow {
+        0%,
+        20% {
+            transform: translateY(0);
+        }
+        8% {
+            transform: translateY(-25%);
+        }
+        16% {
+            transform: translateY(+10%);
+        }
+    }
+
+    @keyframes infinite-scroll {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-100%);
+        }
+    }
+
+    @keyframes text {
+        0%,
+        100% {
+            background-size: 200% 200%;
+            background-position: left center;
+        }
+        50% {
+            background-size: 200% 200%;
+            background-position: right center;
+        }
+    }
+
+    /* Custom sizes */
+    --font-size-xxs: 0.5rem;
+    --max-height-42: 10.5rem;
+    --min-height-6: 1.5rem;
+    --min-height-8: 2rem;
+    --max-width-15: 15rem;
+    --max-width-10: 10rem;
+    --max-width-8: 2rem;
+    --translate-5-5: 1.4rem;
+
+    /* Transition properties */
+    --transition-duration-40: 40ms;
+    --transition-property-height: height;
+    --transition-property-width: width;
+    --transition-property-max-width: max-width;
+    --transition-property-spacing: margin, padding;
+    --border-radius-custom-lg: 10px;
+}
+
+@layer utilities {
+    /* Custom form color utility */
+    .form-color {
+        color: rgb(from var(--form-color, var(--bg-form-color)));
+    }
+
+    /* Animation utilities */
+    .animate-bounce-slow {
+        animation: var(--animate-bounce-slow);
+    }
+    .animate-infinite-scroll {
+        animation: var(--animate-infinite-scroll);
+    }
+    .animate-text {
+        animation: var(--animate-text);
+    }
+
+    /* Custom shadow */
+    .shadow-custom {
+        box-shadow: 0px 25px 75px 0px #5353531a;
+    }
+    .drop-shadow-white {
+        filter: drop-shadow(0 0px 10px rgba(255, 255, 255, 0.5));
+    }
+    .drop-shadow-blue {
+        filter: drop-shadow(0 0px 15px rgba(59, 130, 246, 0.8));
+    }
+
+    /* Custom gradient backgrounds */
+    .bg-gradient-core {
+        background-image: linear-gradient(
+            251deg,
+            #3b9cf6 0%,
+            #3b82f6 48%,
+            #3b82f6 100%
+        );
+    }
+    .bg-gradient-blue {
+        background-image: linear-gradient(
+            270deg,
+            #3b9cf6 0%,
+            #3b82f6 48%,
+            #3b82f6 100%
+        );
+    }
+    .bg-custom-gradient {
+        background-image: linear-gradient(
+            90deg,
+            #3b82f6 0.24%,
+            #60a5fa 100.24%
+        );
+    }
+}
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-neutral-200, currentColor);
+    }
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+
+    /* Global dark mode border override - low specificity, can be overridden */
+    :where(.dark) *,
+    :where(.dark) ::after,
+    :where(.dark) ::before,
+    :where(.dark) ::backdrop,
+    :where(.dark) ::file-selector-button {
+        border-color: var(--color-neutral-600);
+    }
+
+    #app {
+        font-family: Inter, sans-serif !important;
+        min-height: 100vh;
+        color: var(--color-neutral-800);
+    }
+
+    :where(.dark) #app {
+        color: white;
+    }
+
+    p,
+    div {
+        text-align: inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: var(--color-neutral-900);
+        text-align: inherit;
+    }
+
+    :where(.dark) h1,
+    :where(.dark) h2,
+    :where(.dark) h3,
+    :where(.dark) h4,
+    :where(.dark) h5,
+    :where(.dark) h6 {
+        color: white;
+    }
+
+    h1 {
+        font-size: var(--text-2xl);
+        font-weight: 800;
+    }
+
+    @media (min-width: 640px) {
+        h1 {
+            font-size: var(--text-3xl);
+        }
+    }
+
+    h2 {
+        font-size: var(--text-2xl);
+        font-weight: 800;
+    }
+
+    a {
+        color: var(--color-blue-500);
+    }
+}
+
+/* Default overrides with low specificity - can be easily overridden */
+@layer components {
+    :where(.bg-white) {
+        background-color: white;
+    }
+
+    :where(.dark .bg-white) {
+        background-color: var(--color-notion-dark);
+    }
+
+    :where(.bg-neutral-50) {
+        background-color: var(--color-neutral-50);
+    }
+
+    :where(.dark .bg-neutral-50) {
+        background-color: var(--color-notion-dark-light);
+    }
+
+    /* Field help styles */
+    .field-help p,
+    .field-help ol,
+    .field-help ul,
+    .field-help li {
+        color: var(--color-neutral-400);
+    }
+
+    :where(.dark) .field-help p,
+    :where(.dark) .field-help ol,
+    :where(.dark) .field-help ul,
+    :where(.dark) .field-help li {
+        color: var(--color-neutral-500);
+    }
+
+    .field-help ol {
+        list-style-type: decimal;
+        list-style-position: inside;
+    }
+
+    .field-help ul {
+        list-style-type: disc;
+        list-style-position: inside;
+    }
+
+    /* Logic query builder */
+    .query-builder-rule {
+        background-color: var(--color-neutral-100);
+        max-width: 100%;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .query-builder-group__group-children {
+        margin-left: 0;
+    }
+
+    .query-builder-child__delete-child {
+        right: 0.75rem;
+    }
+
+    /* Gradient text utility */
+    .gradient-text {
+        background: linear-gradient(90deg, #3b82f6 0.24%, #60a5fa 100.24%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+}
+
+/* Hide feedback buttons in some cases */
+.fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    .fb-feedback-widget-feedback-button-container {
+        display: block !important;
+    }
+}
+
+.public-page .fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+/* Actual CSS */
+body.dark * {
+    @apply border-neutral-600;
+}
+
+#app {
+    font-family: Inter, sans-serif !important;
+    @apply min-h-screen;
+}
+
+@layer base {
+    p,
+    div {
+        @apply text-inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply text-neutral-900 dark:text-white text-inherit;
+    }
+
+    h1 {
+        @apply text-2xl sm:text-3xl font-extrabold;
+    }
+
+    h2 {
+        @apply text-2xl font-extrabold;
+    }
+
+    a {
+        @apply text-blue-500;
+    }
+}
+
+:root {
+    --ui-border: var(--ui-color-neutral-300);
+    --ui-border-muted: var(--ui-color-neutral-300);
+    --ui-border-accented: var(--ui-color-neutral-300);
+}
+
+/* Why NoteForms */
+.gradient-text {
+    background: linear-gradient(90deg, #3b82f6 0.24%, #60a5fa 100.24%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+/* Global mention styles for consistency across components */
+.rich-editor span[mention],
+.rich-editor span[mention="true"],
+.mention-input span[mention],
+.mention-input span[mention="true"] {
+    @apply inline-flex items-center align-baseline leading-tight text-sm relative bg-blue-100 text-blue-800 border border-blue-200 rounded-md px-1 py-0.5 mx-0.5 max-w-[200px] whitespace-nowrap overflow-hidden truncate;
+}
+
+.crisp-client {
+    pointer-events: auto;
+}
