@@ -12,8 +12,24 @@
     <UModal
       v-model:open="isModalOpen"
       :ui="{ content: 'sm:max-w-2xl' }"
-      title="Generate new form link"
     >
+      <template #header>
+        <div class="flex items-center w-full gap-4 px-2">
+          <h2 class="font-semibold">
+            Generate new form link
+          </h2>
+        </div>
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-heroicons-question-mark-circle"
+          size="sm"
+          @click="crisp.openHelpdeskArticle('how-to-change-my-form-url-171rjw7')"
+        >
+          Help
+        </UButton>
+    </template>
+
       <template #body>
         <p>
           You can choose between two different URL formats for your form.
@@ -76,6 +92,7 @@ const props = defineProps({
   form: { type: Object, required: true },
 })
 
+const crisp = useCrisp()
 const formsStore = useFormsStore()
 const router = useRouter()
 

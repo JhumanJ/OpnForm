@@ -2,8 +2,24 @@
   <UModal
     v-model:open="isOpen"
     :ui="{ content: 'sm:max-w-4xl' }"
-    :title="template ? 'Edit Template' : 'Create Template'"
   >
+    <template #header>
+      <div class="flex items-center w-full gap-4 px-2">
+        <h2 class="font-semibold">
+          {{ template ? 'Edit Template' : 'Create Template' }}
+        </h2>
+      </div>
+      <UButton
+        color="neutral"
+        variant="outline"
+        icon="i-heroicons-question-mark-circle"
+        size="sm"
+        @click="crisp.openHelpdeskArticle('how-to-create-an-opnform-template-1fn84i4')"
+      >
+        Help
+      </UButton>
+    </template>
+
     <template #body>
       <p v-if="!template" class="mb-4">
         New template will be create from your form:
@@ -127,6 +143,7 @@ const props = defineProps({
 })
 
 const authStore = useAuthStore()
+const crisp = useCrisp()
 const templatesStore = useTemplatesStore()
 const router = useRouter()
 const user = computed(() => authStore.user)

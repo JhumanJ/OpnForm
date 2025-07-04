@@ -15,8 +15,24 @@
     <UModal
       v-model:open="isModalOpen"
       :ui="{ content: 'sm:max-w-2xl' }"
-      title="Url Form Prefill"
     >
+      <template #header>
+        <div class="flex items-center w-full gap-4 px-2">
+          <h2 class="font-semibold">
+            Url Form Prefill
+          </h2>
+        </div>
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-heroicons-question-mark-circle"
+          size="sm"
+          @click="crisp.openHelpdeskArticle('how-to-use-url-form-pre-fill-1juyi21')"
+        >
+          Help
+        </UButton>
+      </template>
+
       <template #body>
         <div ref="content">
           <p>
@@ -80,6 +96,8 @@ const props = defineProps({
   form: { type: Object, required: true },
   extraQueryParam: { type: String, default: "" },
 })
+
+const crisp = useCrisp()
 
 // State variables
 const prefillFormData = ref(null)
