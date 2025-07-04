@@ -1,7 +1,33 @@
 <?php
 
-it('can create and delete Workspace', function () {
+it('can not create more than 1 workspace for free user', function () {
     $user = $this->actingAsUser();
+
+    $this->postJson(route('open.workspaces.create'), [
+        'name' => 'Workspace Test',
+        'icon' => '🧪',
+    ])
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Workspace created.',
+        ]);
+
+    expect($user->workspaces()->count())->toBe(1);
+
+    // Try to create another workspace
+    $this->postJson(route('open.workspaces.create'), [
+        'name' => 'Workspace Test 2',
+        'icon' => '🧪',
+    ])
+        ->assertStatus(403)
+        ->assertJson([
+            'message' => 'You have reached the limit for free workspaces. Upgrade to Pro to create additional workspaces.',
+        ]);
+});
+
+it('can create and delete Workspace', function () {
+    $user = $this->actingAsProUser();
 
     for ($i = 1; $i <= 3; $i++) {
         $this->postJson(route('open.workspaces.create'), [
