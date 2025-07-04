@@ -51,6 +51,11 @@ class WorkspacePolicy
      */
     public function create(User $user)
     {
+        // Check if user already has a workspace
+        if (!$user->is_pro && $user->workspaces()->count() > 0) {
+            return Response::deny('You have reached the limit for free workspaces. Upgrade to Pro to create additional workspaces.');
+        }
+
         if ($token = $user->currentAccessToken()) {
             return $token->can('workspaces-write');
         }

@@ -63,6 +63,12 @@ class WorkspaceUserController extends Controller
 
     private function inviteUser(Workspace $workspace, string $email, string $role)
     {
+        if (!$workspace->is_pro) {
+            return $this->error([
+                'message' => 'A Pro plan is required to invite users.'
+            ], 403);
+        }
+
         if (
             UserInvite::where('email', $email)
             ->where('workspace_id', $workspace->id)
