@@ -1,0 +1,63 @@
+import { useInfiniteQuery } from '@tanstack/vue-query'
+import { formsApi } from '~/api/forms'
+import { watchEffect, computed } from 'vue'
+
+export function useFormsList(workspaceId, options = {}) {
+  // Separate API filters and custom options from TanStack Query options
+  const { filters, fetchAll, ...queryOptions } = options
+
+  const query = useInfiniteQuery({
+    queryKey: ['forms', 'list', workspaceId, filters],
+    queryFn: ({ pageParam = 1 }) => {
+      // Ensure only 'filters' are passed, not all queryOptions
+      const apiFilters = { page: pageParam, ...(filters || {}) }
+      return formsApi.list(workspaceId, { params: apiFilters })
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage?.meta) {
+        console.warn('`meta` property not found in lastPage response. Cannot determine next page.')
+        return undefined
+      }
+      const { current_page, last_page } = lastPage.meta
+      const nextPage = current_page < last_page ? current_page + 1 : undefined
+      return nextPage
+    },
+    staleTime: 5 * 60 * 1000,
+    ...queryOptions,
+  })
+
+  // If fetchAll is true, automatically fetch all pages
+  if (fetchAll) {
+    watchEffect(() => {
+      if (
+        query.isSuccess.value &&
+        query.hasNextPage.value &&
+        !query.isFetchingNextPage.value
+      ) {
+        query.fetchNextPage()
+      }
+    })
+  }
+    
+  // Computed values for easier access
+  const forms = computed(() => 
+    query.data.value?.pages?.flatMap(page => page.data) || []
+  )
+  const currentPage = computed(() => {
+    const pages = query.data.value?.pages
+    if (!pages || pages.length === 0) return 0
+    const lastPage = pages[pages.length - 1]
+    return lastPage?.meta?.current_page || pages.length
+  })
+  const totalPages = computed(() => query.data.value?.pages?.[0]?.meta?.last_page || 1)
+  const isComplete = computed(() => !query.hasNextPage.value)
+
+  return {
+    ...query,
+    forms,
+    currentPage,
+    totalPages,
+    isComplete,
+  }
+} 

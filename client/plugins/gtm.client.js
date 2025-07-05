@@ -6,7 +6,6 @@ export default defineNuxtPlugin(() => {
   const isIframe = useIsIframe()
   const isPublicFormPage = route.name === 'forms-slug'
   
-  console.log('gtmId gtmId', gtmId)
   const gtm = useGtm()
 
   // Only enable GTM if not in a form page (for respondents) and not in an iframe

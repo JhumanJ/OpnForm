@@ -94,9 +94,8 @@ const props = defineProps({
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
-const formEndpoint = "/open/forms/{id}"
 const user = computed(() => authStore.user)
-const workspace = computed(() => useWorkspacesStore().getCurrent)
+const { data: workspace } = useWorkspaces().current()
 
 const loadingDuplicate = ref(false)
 const loadingDelete = ref(false)

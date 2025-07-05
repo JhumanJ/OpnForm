@@ -93,6 +93,21 @@
               :form="form"
             />
           </div>
+
+          <!-- Loading Skeletons -->
+          <div v-if="isLoadingMore" class="flex flex-col gap-2 mt-2">
+            <FormCardSkeleton />
+            <FormCardSkeleton class="opacity-60" />
+            <FormCardSkeleton class="opacity-30" />
+          </div>
+          
+          <!-- Completion Indicator -->
+          <div v-else-if="!isComplete && totalPages > 1" class="flex justify-center items-center py-4">
+            <div class="text-sm text-gray-500">
+              Loaded {{ currentPage }} of {{ totalPages }} pages
+            </div>
+          </div>
+          
           <div v-if="!workspace?.is_pro" class="px-4">
             <UAlert
               class="mt-8 p-4"
@@ -151,14 +166,24 @@ useOpnSeoMeta({
 
 // Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const { list: formsList } = useForms()
 const { data: workspace } = useWorkspaces().current()
-const { data: forms, isLoading: isFormsLoading } = formsList(
-  () => workspace.value?.id,
+const formsQuery = useFormsList(
+  workspace.value?.id,
   {
-    enabled: () => !!workspace.value?.id
+    fetchAll: true,
+    enabled: import.meta.client,
   }
 )
+
+// Computed values for easier access
+const { 
+  forms, 
+  isLoading: isFormsLoading,
+  isFetchingNextPage: isLoadingMore, 
+  currentPage, 
+  totalPages, 
+  isComplete 
+} = formsQuery
 
 // State
 const search = ref("")
@@ -198,11 +223,7 @@ const tagOptions = computed(() => allTags.value.map(tag => ({ label: tag, value:
 const enrichedForms = computed(() => {
   if (!forms.value) return []
   
-  const enriched = forms.value.map((form) => {
-    // Enrich form with workspace data from cache
-    form.workspace = workspace.value || null
-    return form
-  }).filter((form) => {
+  const enriched = forms.value.filter((form) => {
     if (selectedTags.value.length === 0) {
       return true
     }

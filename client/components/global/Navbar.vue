@@ -168,6 +168,7 @@ import UserDropdown from "./UserDropdown.vue"
 import opnformConfig from "~/opnform.config.js"
 import { useRuntimeConfig } from "#app"
 import { useFeatureFlag } from "~/composables/useFeatureFlag"
+import { useWorkspaces } from '~/composables/query/useWorkspaces'
 
 export default {
   components: {
@@ -179,6 +180,8 @@ export default {
   async setup() {
     const { openHelpdesk } = useCrisp()
     const authStore = useAuthStore()
+    const { current } = useWorkspaces()
+    const { data: workspace } = current()
     return {
       authStore,
       openHelpdesk,
@@ -190,6 +193,7 @@ export default {
       user: computed(() => authStore.user),
       isIframe: useIsIframe(),
       isSelfHosted: computed(() => useFeatureFlag('self_hosted')),
+      workspace,
     }
   },
 
@@ -206,10 +210,6 @@ export default {
         return this.formsStore.getByKey(this.$route.params.slug)
       }
       return null
-    },
-    workspace() {
-      const { current } = useWorkspaces()
-      return current().data
     },
     hasNavbar() {
       if (this.isIframe) return false
