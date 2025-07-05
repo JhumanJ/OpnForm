@@ -84,15 +84,14 @@ defineProps({
 
 const authStore = useAuthStore()
 const formsStore = useFormsStore()
-const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 const route = useRoute()
+const workspacesStore = useWorkspacesStore()
 const { openWorkspaceSettings } = useAppModals()
 
 const user = computed(() => authStore.user)
-const workspaces = computed(() => workspacesStore.getAll)
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const { data: workspaces } = useWorkspaces().list()
+const { data: workspace } = useWorkspaces().current()
 
 // Modal state
 const showCreateModal = ref(false)

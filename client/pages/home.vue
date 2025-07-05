@@ -167,23 +167,20 @@ useOpnSeoMeta({
 // Composables
 const subscriptionModalStore = useSubscriptionModalStore()
 const { data: workspace } = useWorkspaces().current()
-const formsQuery = useFormsList(
+const {
+  forms,
+  isLoading: isFormsLoading,
+  isFetchingNextPage: isLoadingMore,
+  currentPage,
+  totalPages,
+  isComplete
+} = useFormsList(
   workspace.value?.id,
   {
     fetchAll: true,
     enabled: import.meta.client,
   }
 )
-
-// Computed values for easier access
-const { 
-  forms, 
-  isLoading: isFormsLoading,
-  isFetchingNextPage: isLoadingMore, 
-  currentPage, 
-  totalPages, 
-  isComplete 
-} = formsQuery
 
 // State
 const search = ref("")

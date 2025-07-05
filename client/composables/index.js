@@ -1,5 +1,6 @@
 // Re-export query composables for auto-import
 export { useWorkspaces } from './query/useWorkspaces.js'
+export { useWorkspaceUsers } from './query/useWorkspaceUsers.js'
 export { useAuth as useQueryAuth } from './query/useAuth.js'
 export { useOAuth } from './query/useOAuth.js'
 export { useTemplates } from './query/useTemplates.js'

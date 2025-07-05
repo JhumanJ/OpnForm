@@ -9,7 +9,7 @@ export function useTemplates() {
     return useQuery({
       queryKey: ['templates', 'list', options.filters],
       queryFn: () => templatesApi.list(options),
-      staleTime: 10 * 60 * 1000, // Templates don't change very often
+
       onSuccess: (data) => {
         data?.forEach(template => {
           queryClient.setQueryData(['templates', template.id], template)
@@ -25,7 +25,6 @@ export function useTemplates() {
       queryKey: ['templates', 'slug', slug],
       queryFn: () => templatesApi.get(slug, options),
       enabled: !!slug,
-      staleTime: 10 * 60 * 1000,
       onSuccess: (template) => {
         if (template) {
           queryClient.setQueryData(['templates', template.id], template)
@@ -44,7 +43,6 @@ export function useTemplates() {
         return cachedTemplates?.find(t => t.id === id) || null
       },
       enabled: !!id,
-      staleTime: 10 * 60 * 1000,
       onSuccess: (template) => {
         if (template) {
           queryClient.setQueryData(['templates', 'slug', template.slug], template)
@@ -60,7 +58,6 @@ export function useTemplates() {
       queryKey: ['templates', 'list', { page: page.value, ...filters.value }],
       queryFn: () => templatesApi.list({ page: page.value, ...filters.value }),
       keepPreviousData: true,
-      staleTime: 10 * 60 * 1000,
       onSuccess: (data) => {
         data?.data?.forEach(template => {
           queryClient.setQueryData(['templates', template.id], template)
@@ -164,8 +161,7 @@ export function useTemplates() {
   const prefetchDetail = (slug) => {
     return queryClient.prefetchQuery({
       queryKey: ['templates', 'slug', slug],
-      queryFn: () => templatesApi.get(slug),
-      staleTime: 10 * 60 * 1000
+      queryFn: () => templatesApi.get(slug)
     })
   }
 
@@ -175,8 +171,7 @@ export function useTemplates() {
       queryFn: () => {
         const cachedTemplates = queryClient.getQueryData(['templates', 'list'])
         return cachedTemplates?.find(t => t.id === id) || null
-      },
-      staleTime: 10 * 60 * 1000
+      }
     })
   }
 

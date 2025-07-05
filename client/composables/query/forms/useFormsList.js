@@ -1,17 +1,29 @@
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 import { watchEffect, computed } from 'vue'
+import { useQueryClient } from '@tanstack/vue-query'
 
 export function useFormsList(workspaceId, options = {}) {
   // Separate API filters and custom options from TanStack Query options
   const { filters, fetchAll, ...queryOptions } = options
+
+  const queryClient = useQueryClient()
 
   const query = useInfiniteQuery({
     queryKey: ['forms', 'list', workspaceId, filters],
     queryFn: ({ pageParam = 1 }) => {
       // Ensure only 'filters' are passed, not all queryOptions
       const apiFilters = { page: pageParam, ...(filters || {}) }
-      return formsApi.list(workspaceId, { params: apiFilters })
+      return formsApi.list(workspaceId, { params: apiFilters }).then(res => {
+        // Prime cache for each form
+        res?.data?.forEach(form => {
+          queryClient.setQueryData(['forms', form.id], form)
+          if (form.slug) {
+            queryClient.setQueryData(['forms', 'slug', form.slug], form)
+          }
+        })
+        return res
+      })
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
@@ -23,7 +35,6 @@ export function useFormsList(workspaceId, options = {}) {
       const nextPage = current_page < last_page ? current_page + 1 : undefined
       return nextPage
     },
-    staleTime: 5 * 60 * 1000,
     ...queryOptions,
   })
 

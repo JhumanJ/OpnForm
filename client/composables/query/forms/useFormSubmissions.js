@@ -9,7 +9,6 @@ export function useFormSubmissions() {
       queryKey: ['forms', formId, 'submissions', options.filters],
       queryFn: () => formsApi.submissions.list(formId, options),
       enabled: !!formId,
-      staleTime: 2 * 60 * 1000,
       onSuccess: (data) => {
         data?.forEach(submission => {
           queryClient.setQueryData(['submissions', submission.id], submission)
@@ -25,7 +24,6 @@ export function useFormSubmissions() {
       queryFn: () => formsApi.submissions.list(formId, { page: page.value, ...filters.value }),
       enabled: !!formId,
       keepPreviousData: true,
-      staleTime: 2 * 60 * 1000,
       onSuccess: (data) => {
         data?.data?.forEach(submission => {
           queryClient.setQueryData(['submissions', submission.id], submission)
@@ -40,7 +38,6 @@ export function useFormSubmissions() {
       queryKey: ['submissions', submissionId],
       queryFn: () => formsApi.submissions.get(slug, submissionId, options),
       enabled: !!(slug && submissionId),
-      staleTime: 2 * 60 * 1000,
       ...options
     })
   }

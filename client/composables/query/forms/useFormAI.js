@@ -7,7 +7,6 @@ export function useFormAI() {
       queryKey: ['ai', 'generation', generationId],
       queryFn: () => formsApi.ai.get(generationId, options),
       enabled: !!generationId,
-      staleTime: 1 * 60 * 1000,
       refetchInterval: (data) => {
         // Poll if generation is in progress
         return data?.status === 'processing' ? 2000 : false

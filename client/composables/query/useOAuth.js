@@ -9,7 +9,7 @@ export function useOAuth() {
     return useQuery({
       queryKey: ['oauth', 'providers'],
       queryFn: () => oauthApi.list(options),
-      staleTime: 10 * 60 * 1000, // OAuth providers don't change often
+
       onSuccess: (data) => {
         data?.forEach(provider => {
           queryClient.setQueryData(['oauth', 'providers', provider.id], provider)
@@ -28,7 +28,6 @@ export function useOAuth() {
         return cachedProviders?.find(p => p.id === providerId) || null
       },
       enabled: !!providerId,
-      staleTime: 10 * 60 * 1000,
       ...options
     })
   }
@@ -124,8 +123,7 @@ export function useOAuth() {
   const prefetchProviders = () => {
     return queryClient.prefetchQuery({
       queryKey: ['oauth', 'providers'],
-      queryFn: () => oauthApi.list(),
-      staleTime: 10 * 60 * 1000
+      queryFn: () => oauthApi.list()
     })
   }
 

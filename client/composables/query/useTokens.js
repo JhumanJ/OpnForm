@@ -9,7 +9,6 @@ export function useTokens() {
     return useQuery({
       queryKey: ['tokens', 'list', options.filters],
       queryFn: () => tokensApi.list(options),
-      staleTime: 5 * 60 * 1000,
       onSuccess: (data) => {
         data?.forEach(token => {
           queryClient.setQueryData(['tokens', token.id], token)
@@ -28,7 +27,6 @@ export function useTokens() {
         return cachedTokens?.find(t => t.id === tokenId) || null
       },
       enabled: !!tokenId,
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -39,7 +37,6 @@ export function useTokens() {
       queryKey: ['tokens', 'list', { page: page.value, ...filters.value }],
       queryFn: () => tokensApi.list({ page: page.value, ...filters.value }),
       keepPreviousData: true,
-      staleTime: 5 * 60 * 1000,
       onSuccess: (data) => {
         data?.data?.forEach(token => {
           queryClient.setQueryData(['tokens', token.id], token)
@@ -103,8 +100,7 @@ export function useTokens() {
   const prefetchList = () => {
     return queryClient.prefetchQuery({
       queryKey: ['tokens', 'list'],
-      queryFn: () => tokensApi.list(),
-      staleTime: 5 * 60 * 1000
+      queryFn: () => tokensApi.list()
     })
   }
 

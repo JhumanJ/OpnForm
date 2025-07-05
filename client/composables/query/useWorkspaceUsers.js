@@ -1,0 +1,156 @@
+import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
+import { workspaceApi } from '~/api/workspace'
+
+export function useWorkspaceUsers() {
+  const queryClient = useQueryClient()
+
+  // Queries
+  const users = (workspaceId, options = {}) => {
+    return useQuery({
+      queryKey: ['workspaces', workspaceId, 'users'],
+      queryFn: () => workspaceApi.users.list(workspaceId),
+      enabled: !!workspaceId,
+      ...options
+    })
+  }
+
+  const invites = (workspaceId, options = {}) => {
+    return useQuery({
+      queryKey: ['workspaces', workspaceId, 'invites'],
+      queryFn: () => workspaceApi.invites.list(workspaceId),
+      enabled: !!workspaceId,
+      ...options
+    })
+  }
+
+  // Current workspace users and invites helpers
+  const currentUsers = (options = {}) => {
+    const workspacesStore = useWorkspacesStore()
+    return users(computed(() => workspacesStore.currentId), options)
+  }
+
+  const currentInvites = (options = {}) => {
+    const workspacesStore = useWorkspacesStore()
+    return invites(computed(() => workspacesStore.currentId), options)
+  }
+
+  // User management mutations
+  const addUser = (workspaceId, options = {}) => {
+    return useMutation({
+      mutationFn: (userData) => workspaceApi.users.add(workspaceId, userData),
+      onSuccess: (newUser) => {
+        // Update users cache for this workspace
+        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
+          if (!old) return [newUser]
+          return [...old, newUser]
+        })
+      },
+      ...options
+    })
+  }
+
+  const removeUser = (workspaceId, options = {}) => {
+    return useMutation({
+      mutationFn: (userId) => workspaceApi.users.remove(workspaceId, userId),
+      onSuccess: (_, removedUserId) => {
+        // Update users cache for this workspace
+        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
+          if (!old) return old
+          return old.filter(user => user.id !== removedUserId)
+        })
+      },
+      ...options
+    })
+  }
+
+  const updateUserRole = (workspaceId, options = {}) => {
+    return useMutation({
+      mutationFn: ({ userId, data }) => workspaceApi.users.updateRole(workspaceId, userId, data),
+      onSuccess: (updatedUser, { userId }) => {
+        // Update users cache for this workspace
+        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
+          if (!old) return old
+          return old.map(user => 
+            user.id === userId ? { ...user, ...updatedUser } : user
+          )
+        })
+      },
+      ...options
+    })
+  }
+
+  // Invite management mutations
+  const resendInvite = (workspaceId, options = {}) => {
+    return useMutation({
+      mutationFn: (inviteId) => workspaceApi.invites.resend(workspaceId, inviteId),
+      onSuccess: (updatedInvite, inviteId) => {
+        // Update invites cache for this workspace
+        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
+          if (!old) return old
+          return old.map(invite => 
+            invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
+          )
+        })
+      },
+      ...options
+    })
+  }
+
+  const cancelInvite = (workspaceId, options = {}) => {
+    return useMutation({
+      mutationFn: (inviteId) => workspaceApi.invites.cancel(workspaceId, inviteId),
+      onSuccess: (_, cancelledInviteId) => {
+        // Update invites cache for this workspace
+        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
+          if (!old) return old
+          return old.filter(invite => invite.id !== cancelledInviteId)
+        })
+      },
+      ...options
+    })
+  }
+
+  // Utility functions
+  const invalidateUsers = (workspaceId) => {
+    queryClient.invalidateQueries(['workspaces', workspaceId, 'users'])
+  }
+
+  const invalidateInvites = (workspaceId) => {
+    queryClient.invalidateQueries(['workspaces', workspaceId, 'invites'])
+  }
+
+  const invalidateCurrentUsers = () => {
+    const workspacesStore = useWorkspacesStore()
+    if (workspacesStore.currentId) {
+      invalidateUsers(workspacesStore.currentId)
+    }
+  }
+
+  const invalidateCurrentInvites = () => {
+    const workspacesStore = useWorkspacesStore()
+    if (workspacesStore.currentId) {
+      invalidateInvites(workspacesStore.currentId)
+    }
+  }
+
+  return {
+    // Queries
+    users,
+    invites,
+    currentUsers,
+    currentInvites,
+    
+    // Mutations
+    addUser,
+    removeUser,
+    updateUserRole,
+    resendInvite,
+    cancelInvite,
+    
+    // Utilities
+    invalidateUsers,
+    invalidateInvites,
+    invalidateCurrentUsers,
+    invalidateCurrentInvites
+  }
+} 

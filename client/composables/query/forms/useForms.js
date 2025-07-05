@@ -1,4 +1,4 @@
-import { useQueryClient, useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 
 export function useForms() {
@@ -9,7 +9,6 @@ export function useForms() {
       queryKey: ['forms', 'slug', slug],
       queryFn: () => formsApi.get(slug, options),
       enabled: !!slug,
-      staleTime: 5 * 60 * 1000,
       onSuccess: (form) => {
         if (form) {
           queryClient.setQueryData(['forms', form.id], form)
@@ -24,7 +23,6 @@ export function useForms() {
       queryKey: ['forms', id],
       queryFn: () => formsApi.getById(id, options),
       enabled: !!id,
-      staleTime: 5 * 60 * 1000,
       onSuccess: (form) => {
         if (form) {
           queryClient.setQueryData(['forms', 'slug', form.slug], form)
@@ -40,7 +38,6 @@ export function useForms() {
       queryKey: ['forms', formId, 'stats'],
       queryFn: () => formsApi.stats(workspaceId, formId, options),
       enabled: !!(workspaceId && formId),
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -50,7 +47,6 @@ export function useForms() {
       queryKey: ['forms', formId, 'stats-details'],
       queryFn: () => formsApi.statsDetails(workspaceId, formId, options),
       enabled: !!(workspaceId && formId),
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -211,16 +207,14 @@ export function useForms() {
   const prefetchDetail = (slug) => {
     return queryClient.prefetchQuery({
       queryKey: ['forms', 'slug', slug],
-      queryFn: () => formsApi.get(slug),
-      staleTime: 5 * 60 * 1000
+      queryFn: () => formsApi.get(slug)
     })
   }
 
   const prefetchDetailById = (id) => {
     return queryClient.prefetchQuery({
       queryKey: ['forms', id],
-      queryFn: () => formsApi.getById(id),
-      staleTime: 5 * 60 * 1000
+      queryFn: () => formsApi.getById(id)
     })
   }
 

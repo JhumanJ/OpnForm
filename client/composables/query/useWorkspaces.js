@@ -8,12 +8,12 @@ export function useWorkspaces() {
   const list = (options = {}) => {
     return useQuery({
       queryKey: ['workspaces', 'list', options.filters],
-      queryFn: () => workspaceApi.list(options),
-      staleTime: 5 * 60 * 1000,
-      // Cache individual items from list response
-      onSuccess: (data) => {
-        data?.forEach(workspace => {
-          queryClient.setQueryData(['workspaces', workspace.id], workspace)
+      queryFn: () => {
+        return workspaceApi.list(options).then((data) => {
+          data?.forEach((workspace) => {
+            queryClient.setQueryData(['workspaces', workspace.id], workspace)
+          })
+          return data
         })
       },
       ...options
@@ -25,7 +25,6 @@ export function useWorkspaces() {
       queryKey: ['workspaces', id],
       queryFn: () => opnFetch(`/open/workspaces/${id}`),
       enabled: !!id,
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -54,7 +53,6 @@ export function useWorkspaces() {
         return opnFetch(`/open/workspaces/${currentId.value}`)
       },
       enabled: !!currentId.value,
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -63,49 +61,21 @@ export function useWorkspaces() {
   const paginatedList = (page = ref(1), filters = ref({}), options = {}) => {
     return useQuery({
       queryKey: ['workspaces', 'list', { page: page.value, ...filters.value }],
-      queryFn: () => workspaceApi.list({ page: page.value, ...filters.value }),
-      keepPreviousData: true,
-      staleTime: 5 * 60 * 1000,
-      onSuccess: (data) => {
-        // Cache individual items from paginated response
-        data?.data?.forEach(workspace => {
-          queryClient.setQueryData(['workspaces', workspace.id], workspace)
+      queryFn: () => {
+        return workspaceApi.list({ page: page.value, ...filters.value }).then((data) => {
+          // Cache individual items from paginated response
+          data?.data?.forEach((workspace) => {
+            queryClient.setQueryData(['workspaces', workspace.id], workspace)
+          })
+          return data
         })
       },
+      keepPreviousData: true,
       ...options
     })
   }
 
-  const users = (workspaceId, options = {}) => {
-    return useQuery({
-      queryKey: ['workspaces', workspaceId, 'users'],
-      queryFn: () => workspaceApi.users.list(workspaceId),
-      enabled: !!workspaceId,
-      staleTime: 2 * 60 * 1000,
-      ...options
-    })
-  }
 
-  const invites = (workspaceId, options = {}) => {
-    return useQuery({
-      queryKey: ['workspaces', workspaceId, 'invites'],
-      queryFn: () => workspaceApi.invites.list(workspaceId),
-      enabled: !!workspaceId,
-      staleTime: 2 * 60 * 1000,
-      ...options
-    })
-  }
-
-  // Current workspace users and invites helpers
-  const currentUsers = (options = {}) => {
-    const workspacesStore = useWorkspacesStore()
-    return users(computed(() => workspacesStore.currentId), options)
-  }
-
-  const currentInvites = (options = {}) => {
-    const workspacesStore = useWorkspacesStore()
-    return invites(computed(() => workspacesStore.currentId), options)
-  }
 
   // Mutations with manual cache updates
   const create = (options = {}) => {
@@ -244,81 +214,7 @@ export function useWorkspaces() {
     })
   }
 
-  // User management mutations
-  const addUser = (workspaceId, options = {}) => {
-    return useMutation({
-      mutationFn: (userData) => workspaceApi.users.add(workspaceId, userData),
-      onSuccess: (newUser) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
-          if (!old) return [newUser]
-          return [...old, newUser]
-        })
-      },
-      ...options
-    })
-  }
 
-  const removeUser = (workspaceId, options = {}) => {
-    return useMutation({
-      mutationFn: (userId) => workspaceApi.users.remove(workspaceId, userId),
-      onSuccess: (_, removedUserId) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
-          if (!old) return old
-          return old.filter(user => user.id !== removedUserId)
-        })
-      },
-      ...options
-    })
-  }
-
-  const updateUserRole = (workspaceId, options = {}) => {
-    return useMutation({
-      mutationFn: ({ userId, data }) => workspaceApi.users.updateRole(workspaceId, userId, data),
-      onSuccess: (updatedUser, { userId }) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
-          if (!old) return old
-          return old.map(user => 
-            user.id === userId ? { ...user, ...updatedUser } : user
-          )
-        })
-      },
-      ...options
-    })
-  }
-
-  // Invite management mutations
-  const resendInvite = (workspaceId, options = {}) => {
-    return useMutation({
-      mutationFn: (inviteId) => workspaceApi.invites.resend(workspaceId, inviteId),
-      onSuccess: (updatedInvite, inviteId) => {
-        // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
-          if (!old) return old
-          return old.map(invite => 
-            invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
-          )
-        })
-      },
-      ...options
-    })
-  }
-
-  const cancelInvite = (workspaceId, options = {}) => {
-    return useMutation({
-      mutationFn: (inviteId) => workspaceApi.invites.cancel(workspaceId, inviteId),
-      onSuccess: (_, cancelledInviteId) => {
-        // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
-          if (!old) return old
-          return old.filter(invite => invite.id !== cancelledInviteId)
-        })
-      },
-      ...options
-    })
-  }
 
   // Custom domains mutation
   const updateCustomDomains = (workspaceId, options = {}) => {
@@ -348,8 +244,7 @@ export function useWorkspaces() {
   const prefetchDetail = (id) => {
     return queryClient.prefetchQuery({
       queryKey: ['workspaces', id],
-      queryFn: () => opnFetch(`/open/workspaces/${id}`),
-      staleTime: 5 * 60 * 1000
+      queryFn: () => opnFetch(`/open/workspaces/${id}`)
     })
   }
 
@@ -371,8 +266,7 @@ export function useWorkspaces() {
         }
         
         return opnFetch(`/open/workspaces/${workspacesStore.currentId}`)
-      },
-      staleTime: 5 * 60 * 1000
+      }
     })
   }
 
@@ -388,13 +282,7 @@ export function useWorkspaces() {
     queryClient.invalidateQueries(['workspaces', 'current'])
   }
 
-  const invalidateUsers = (workspaceId) => {
-    queryClient.invalidateQueries(['workspaces', workspaceId, 'users'])
-  }
 
-  const invalidateInvites = (workspaceId) => {
-    queryClient.invalidateQueries(['workspaces', workspaceId, 'invites'])
-  }
 
   // Helper to get workspace from cache by ID
   const getWorkspaceById = (id) => {
@@ -407,21 +295,12 @@ export function useWorkspaces() {
     detail,
     current,
     paginatedList,
-    users,
-    invites,
-    currentUsers,
-    currentInvites,
     
     // Mutations
     create,
     update, 
     remove,
     leave,
-    addUser,
-    removeUser,
-    updateUserRole,
-    resendInvite,
-    cancelInvite,
     updateCustomDomains,
     
     // Utilities
@@ -430,8 +309,6 @@ export function useWorkspaces() {
     invalidateAll,
     invalidateDetail,
     invalidateCurrent,
-    invalidateUsers,
-    invalidateInvites,
     getWorkspaceById
   }
 } 

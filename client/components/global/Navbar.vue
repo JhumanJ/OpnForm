@@ -160,81 +160,66 @@
   </nav>
 </template>
 
-<script>
-import { computed } from "vue"
-import WorkspaceDropdown from "./WorkspaceDropdown.vue"
-import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-import UserDropdown from "./UserDropdown.vue"
-import opnformConfig from "~/opnform.config.js"
-import { useRuntimeConfig } from "#app"
-import { useFeatureFlag } from "~/composables/useFeatureFlag"
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from '#imports'
+
+import WorkspaceDropdown from './WorkspaceDropdown.vue'
+import WorkspaceIcon from '~/components/workspaces/WorkspaceIcon.vue'
+import UserDropdown from './UserDropdown.vue'
+
+import opnformConfig from '~/opnform.config.js'
+import { useFeatureFlag } from '~/composables/useFeatureFlag'
 import { useWorkspaces } from '~/composables/query/useWorkspaces'
 
-export default {
-  components: {
-    WorkspaceDropdown,
-    WorkspaceIcon,
-    UserDropdown,
-  },
+// Stores & composables
+const authStore = useAuthStore()
+const { current } = useWorkspaces()
+const { data: workspace } = current()
 
-  async setup() {
-    const { openHelpdesk } = useCrisp()
-    const authStore = useAuthStore()
-    const { current } = useWorkspaces()
-    const { data: workspace } = current()
-    return {
-      authStore,
-      openHelpdesk,
-      opnformConfig,
-      appStore: useAppStore(),
-      formsStore: useFormsStore(),
-      workspacesStore: useWorkspacesStore(),
-      config: useRuntimeConfig(),
-      user: computed(() => authStore.user),
-      isIframe: useIsIframe(),
-      isSelfHosted: computed(() => useFeatureFlag('self_hosted')),
-      workspace,
+const appStore = useAppStore()
+const formsStore = useFormsStore()
+
+const user = computed(() => authStore.user)
+const isIframe = useIsIframe()
+const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
+const route = useRoute()
+
+// Constants / classes
+const navLinkClasses =
+  'border border-transparent hover:border-gray-200 text-gray-500 hover:text-gray-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
+
+// Computed values
+const helpUrl = computed(() => opnformConfig.links.help_url)
+
+const form = computed(() => {
+  if (route.name && route.name.startsWith('forms-slug')) {
+    return formsStore.getByKey(route.params.slug)
+  }
+  return null
+})
+
+const hasNavbar = computed(() => {
+  if (isIframe.value) return false
+
+  if (route.name && route.name === 'forms-slug') {
+    if (form.value || import.meta.server) {
+      return false
     }
-  },
+    // Form not found/404 case - show the navbar
+    return true
+  }
+  return !appStore.navbarHidden
+})
 
-  data: () => ({
-    navLinkClasses: 'border border-transparent hover:border-gray-200 text-gray-500 hover:text-gray-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
-  }),
+const hasNewChanges = computed(() => {
+  if (import.meta.server || !window.Featurebase || !appStore.featureBaseEnabled) return false
+  return window.Featurebase('unviewed_changelog_count') > 0
+})
 
-  computed: {
-    helpUrl() {
-      return this.opnformConfig.links.help_url
-    },
-    form() {
-      if (this.$route.name && this.$route.name.startsWith("forms-slug")) {
-        return this.formsStore.getByKey(this.$route.params.slug)
-      }
-      return null
-    },
-    hasNavbar() {
-      if (this.isIframe) return false
-
-      if (this.$route.name && this.$route.name === "forms-slug") {
-        if (this.form || import.meta.server) {
-          return false
-        } else {
-          // Form not found/404 case - show the navbar
-          return true
-        }
-      }
-      return !this.appStore.navbarHidden
-    },
-    hasNewChanges() {
-      if (import.meta.server || !window.Featurebase || !this.appStore.featureBaseEnabled) return false
-      return window.Featurebase("unviewed_changelog_count") > 0
-    },
-  },
-
-  methods: {
-    openChangelog() {
-      if (import.meta.server || !window.Featurebase) return
-      window.Featurebase("manually_open_changelog_popup")
-    },
-  },
+// Methods
+function openChangelog() {
+  if (import.meta.server || !window.Featurebase) return
+  window.Featurebase('manually_open_changelog_popup')
 }
 </script>

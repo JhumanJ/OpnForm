@@ -9,7 +9,6 @@ export function useAuth() {
     return useQuery({
       queryKey: ['user'],
       queryFn: () => authApi.user.get(options),
-      staleTime: 5 * 60 * 1000,
       ...options
     })
   }
@@ -67,8 +66,7 @@ export function useAuth() {
   const prefetchUser = () => {
     return queryClient.prefetchQuery({
       queryKey: ['user'],
-      queryFn: () => authApi.user.get(),
-      staleTime: 5 * 60 * 1000
+      queryFn: () => authApi.user.get()
     })
   }
 

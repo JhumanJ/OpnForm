@@ -9,7 +9,6 @@ export function useFormIntegrations() {
       queryKey: ['forms', formId, 'integrations'],
       queryFn: () => formsApi.integrations.list(formId, options),
       enabled: !!formId,
-      staleTime: 5 * 60 * 1000,
       onSuccess: (data) => {
         data?.forEach(integration => {
           queryClient.setQueryData(['integrations', integration.id], integration)
@@ -24,7 +23,6 @@ export function useFormIntegrations() {
       queryKey: ['forms', formId, 'integrations', integrationId, 'events'],
       queryFn: () => formsApi.integrations.events(formId, integrationId, options),
       enabled: !!(formId && integrationId),
-      staleTime: 2 * 60 * 1000,
       ...options
     })
   }
