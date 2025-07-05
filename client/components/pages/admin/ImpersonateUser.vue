@@ -21,6 +21,8 @@ const workspacesStore = useWorkspacesStore()
 
 const loading = ref(false)
 
+const { list: fetchWorkspaces } = useWorkspaces()
+
 const impersonate = () => {
   loading.value = true
   authStore.startImpersonating()
@@ -38,8 +40,8 @@ const impersonate = () => {
     formsStore.set([])
     workspacesStore.set([])
 
-    const workspaces = await fetchAllWorkspaces()
-    workspacesStore.set(workspaces.data.value)
+    const { data: workspacesData } = await fetchWorkspaces()
+    workspacesStore.set(workspacesData.value)
     formsStore.startLoading()
     formsStore.loadAll(workspacesStore.currentId)
 

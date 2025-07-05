@@ -93,14 +93,16 @@ onMounted(() => {
   form.email = user?.value?.email
 })
 
+const { list: fetchWorkspaces } = useWorkspaces()
+
 const updateCredentials = () => {
   loading.value = true
   form
     .post("update-credentials")
     .then(async (data) => {
       authStore.setUser(data.user)
-      const workspaces = await fetchAllWorkspaces()
-      workspacesStore.set(workspaces.data.value)
+      const { data: workspacesData } = await fetchWorkspaces()
+      workspacesStore.set(workspacesData.value)
       formsStore.loadAll(workspacesStore.currentId)
       router.push({ name: "home" })
     })

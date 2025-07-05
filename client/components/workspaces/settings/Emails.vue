@@ -108,10 +108,10 @@
 </template>
 
 <script setup>
-const workspacesStore = useWorkspacesStore()
+const { current } = useWorkspaces()
 const alert = useAlert()
 
-const workspace = computed(() => workspacesStore.getCurrent)
+const workspace = computed(() => current().data)
 
 const subscriptionModalStore = useSubscriptionModalStore()
 const crisp = useCrisp()
@@ -157,8 +157,8 @@ const saveChanges = () => {
         sender_address: emailSettingsForm?.sender_address,
       },
     })
-    .then((data) => {
-      workspacesStore.save(data)
+    .then((_data) => {
+      // Cache is updated automatically by TanStack Query mutations
       alert.success("Email settings saved.")
     })
     .catch((error) => {

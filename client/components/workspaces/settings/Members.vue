@@ -54,7 +54,7 @@
                   icon="i-heroicons-trash"
                   size="xs"
                   square
-                  @click="removeUser(item)"
+                  @click="removeUserHandler(item)"
                 />
               </UTooltip>
             </div>
@@ -134,11 +134,10 @@
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
 import { workspaceApi } from '~/api'
 
-const workspacesStore = useWorkspacesStore()
+const { current, currentUsers, currentInvites, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
 const authStore = useAuthStore()
 const alert = useAlert()
-
-const workspace = computed(() => workspacesStore.getCurrent)
+const workspace = computed(() => current().data)
 const user = computed(() => authStore.user)
 const users = ref([])
 const loadingUsers = ref(true)
@@ -188,10 +187,15 @@ const tableColumns = computed(() => {
   }
 }) */
 
+const { data: usersData } = currentUsers()
+const { data: invitesData } = currentInvites()
+
 const getWorkspaceUsers = async () => {
   loadingUsers.value = true
-  let data = await workspacesStore.getWorkspaceUsers()
-  data = data.map(d => {
+  
+  // Get users from TanStack Query
+  const userData = usersData.value || []
+  const data = userData.map(d => {
     return {
       ...d,
       id: d.id,
@@ -203,8 +207,10 @@ const getWorkspaceUsers = async () => {
       type: 'user'
     }
   })
-  let invites = await workspacesStore.getWorkspaceInvites()
-  invites = invites.filter(i => i.status !== 'accepted').map(i => {
+  
+  // Get invites from TanStack Query
+  const invitesList = invitesData.value || []
+  const invites = invitesList.filter(i => i.status !== 'accepted').map(i => {
     return {
       ...i,
       name: 'Invitee',
@@ -213,6 +219,7 @@ const getWorkspaceUsers = async () => {
       type: 'invitee'
     }
   })
+  
   users.value = [...data, ...invites]
   loadingUsers.value = false
 }
@@ -226,25 +233,36 @@ const editUser = (user) => {
 }
 
 const updateUserRole = () => {
-  editUserForm.put("/open/workspaces/" + workspacesStore.currentId + "/users/" + selectedUser.value.id + "/update-role").then((data) => {
+  const mutation = updateUserRoleMutation(workspace.value?.id)
+  mutation.mutate({
+    userId: selectedUser.value.id,
+    data: { role: editUserForm.role }
+  }, {
+    onSuccess: (data) => {
     alert.success(data.message)
     getWorkspaceUsers()
     showEditUserModal.value = false
-  }).catch(() => {
+    },
+    onError: () => {
     alert.error("There was an error updating user role")
+    }
   })
 }
 
-const removeUser = (user) => {
+const removeUserHandler = (user) => {
+  const mutation = removeUserMutation(workspace.value?.id)
   alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
     loadingUsers.value = true
-    workspaceApi.users.remove(workspacesStore.currentId, user.id).then(() => {
+    mutation.mutate(user.id, {
+      onSuccess: () => {
       alert.success("User successfully removed.")
       getWorkspaceUsers()
-    }).catch(() => {
+        loadingUsers.value = false
+      },
+      onError: () => {
       alert.error("There was an error removing user")
-    }).finally(() => {
       loadingUsers.value = false
+      }
     })
   })
 }

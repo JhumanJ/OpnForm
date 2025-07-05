@@ -92,7 +92,6 @@ import UserDropdown from "~/components/global/UserDropdown.vue"
 import { useRouter } from "vue-router"
 import TrackClick from "~/components/global/TrackClick.vue"
 
-const workspacesStore = useWorkspacesStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -104,7 +103,8 @@ defineShortcuts({
   },
 })
 
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current } = useWorkspaces()
+const workspace = computed(() => current().data)
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
 
 // Check if current route matches a prefix

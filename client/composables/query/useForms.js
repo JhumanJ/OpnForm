@@ -1,3 +1,4 @@
+import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 
 export function useForms() {
@@ -5,6 +6,7 @@ export function useForms() {
 
   // Form Queries
   const list = (workspaceId, options = {}) => {
+    console.log('list', workspaceId, options)
     return useQuery({
       queryKey: ['forms', 'list', workspaceId, options.filters],
       queryFn: () => formsApi.list(workspaceId, options),

@@ -150,9 +150,9 @@ const props = defineProps({
 defineEmits(["updated", "deleted"])
 
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
 const form = storeToRefs(workingFormStore).content
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current } = useWorkspaces()
+const workspace = computed(() => current().data)
 
 
 const fieldComponents = {

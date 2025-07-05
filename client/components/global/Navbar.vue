@@ -208,7 +208,8 @@ export default {
       return null
     },
     workspace() {
-      return this.workspacesStore.getCurrent
+      const { current } = useWorkspaces()
+      return current().data
     },
     hasNavbar() {
       if (this.isIframe) return false

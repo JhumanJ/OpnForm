@@ -6,6 +6,7 @@ export const useAuth = () => {
   const workspaceStore = useWorkspacesStore()
   const formsStore = useFormsStore()
   const logEvent = useAmplitude().logEvent
+  const { list: fetchWorkspaces } = useWorkspaces()
 
   /**
    * Core authentication logic used by both social and direct login
@@ -15,10 +16,11 @@ export const useAuth = () => {
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
     // Fetch initial data
-    const [userData, workspaces] = await Promise.all([
+    const [userData, workspacesResult] = await Promise.all([
       authApi.user.get(),
-      fetchAllWorkspaces()
+      fetchWorkspaces()
     ])
+    const workspaces = workspacesResult
 
     // Setup stores
     authStore.setUser(userData)

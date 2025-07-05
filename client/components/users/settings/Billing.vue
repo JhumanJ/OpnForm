@@ -109,9 +109,8 @@ const cancelSubscription = () => {
             authApi.user.get().then((userData) => {
               authStore.setUser(userData)
             })
-            fetchAllWorkspaces().then((workspaces) => {
-              workspacesStore.set(workspaces.data.value)
-            })
+            const { invalidateAll } = useWorkspaces()
+            invalidateAll() // Refresh all workspace data
           })
         }
       })

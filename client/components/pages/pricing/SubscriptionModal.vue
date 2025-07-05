@@ -331,7 +331,7 @@
 
 <script setup>
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
-import { fetchAllWorkspaces } from '~/stores/workspaces.js'
+
 import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 import { authApi } from '~/api'
 
@@ -412,9 +412,8 @@ watch(broadcastData, () => {
         console.error('Failed to register subscription event 😔',error)
       }
     })
-    fetchAllWorkspaces().then((workspaces) => {
-      workspacesStore.set(workspaces.data.value)
-    })
+    const { invalidateAll } = useWorkspaces()
+    invalidateAll() // Refresh all workspace data
 
     if (user.value.has_enterprise_subscription) {
       useAlert().success(

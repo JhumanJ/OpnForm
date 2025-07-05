@@ -85,15 +85,13 @@
 </template>
 
 <script setup>
-import { workspaceApi } from '~/api'
-
-const workspacesStore = useWorkspacesStore()
+const { current, update, remove, leave } = useWorkspaces()
 const authStore = useAuthStore()
 const alert = useAlert()
 const appStore = useAppStore()
 const router = useRouter()
 
-const workspace = computed(() => workspacesStore.getCurrent)
+const workspace = computed(() => current().data)
 const user = computed(() => authStore.user)
 
 // Workspace form
@@ -106,10 +104,18 @@ const deleteLoading = ref(false)
 const leaveWorkspaceLoading = ref(false)
 
 // Update profile
+const updateMutation = update()
 const updateProfile = () => {
-  workspaceForm.put(`/open/workspaces/${workspace.value.id}/`).then((data) => {
-    workspacesStore.save(data.workspace)
+  updateMutation.mutate({
+    id: workspace.value.id,
+    data: workspaceForm.data()
+  }, {
+    onSuccess: () => {
     useAlert().success('Workspace information successfully updated!')
+    },
+    onError: (error) => {
+      console.error('Error updating workspace:', error)
+    }
   })
 }
 
@@ -122,42 +128,40 @@ const confirmDeleteWorkspace = () => {
 }
 
 // Delete workspace
+const removeMutation = remove()
 const deleteWorkspace = () => {
   deleteLoading.value = true
-      workspaceApi.delete(workspace.value.id)
-    .then((data) => {
+  removeMutation.mutate(workspace.value.id, {
+    onSuccess: (data) => {
       deleteLoading.value = false
       alert.success(data.message)
-      workspacesStore.remove(workspace.value.id)
       appStore.closeWorkspaceSettingsModal()
       router.push({ name: "home" })
-    })
-    .catch((error) => {
-      alert.error(error.data.message)
+    },
+    onError: (error) => {
+      alert.error(error.data?.message || 'Error deleting workspace')
       deleteLoading.value = false
-    }).finally(() => {
-      deleteLoading.value = false
+    }
     })
 }
 
 // Leave workspace
+const leaveMutation = leave()
 const leaveWorkSpace = () => {
   alert.confirm(
     "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
     () => {
       leaveWorkspaceLoading.value = true
-      opnFetch("/open/workspaces/" + workspace.value.id + "/leave", {
-        method: "POST",
-      }).then(() => {
+      leaveMutation.mutate(workspace.value.id, {
+        onSuccess: () => {
         alert.success("You have left the workspace.")
-        workspacesStore.remove(workspace.value.id)
         appStore.closeWorkspaceSettingsModal()
         router.push({ name: "home" })
-      }).catch(() => {
+        },
+        onError: () => {
         alert.error("There was an error leaving the workspace.")
         leaveWorkspaceLoading.value = false
-      }).finally(() => {
-        leaveWorkspaceLoading.value = false
+        }
       })
     },
   )

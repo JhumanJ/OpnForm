@@ -48,7 +48,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useWorkspacesStore } from '@/stores/workspaces'
 const emit = defineEmits(["select"])
 const subscriptionModalStore = useSubscriptionModalStore()
 
@@ -59,8 +58,8 @@ const props = defineProps({
   },
 })
 
-const workspacesStore = useWorkspacesStore()
-const currentWorkspace = computed(() => workspacesStore.getCurrent)
+const { current } = useWorkspaces()
+const currentWorkspace = computed(() => current().data)
 
 const unavailable = computed(() => {
   return (

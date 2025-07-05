@@ -92,13 +92,10 @@
 </template>
 
 <script setup>
-import { workspaceApi } from '~/api'
-
-const workspacesStore = useWorkspacesStore()
+const { current, updateCustomDomains } = useWorkspaces()
 const alert = useAlert()
 const crisp = useCrisp()
-
-const workspace = computed(() => workspacesStore.getCurrent)
+const workspace = computed(() => current().data)
 
 const subscriptionModalStore = useSubscriptionModalStore()
 
@@ -153,21 +150,24 @@ const removeDomain = (index) => {
   isChanged.value = true
 }
 
+const updateMutation = updateCustomDomains(workspace.value?.id)
+
 const saveChanges = () => {
+  if (!workspace.value?.id) return
+  
   isLoading.value = true
-  workspaceApi.customDomains.update(workspace.value.id, {
+  updateMutation.mutate({
     custom_domains: domains.value,
-  })
-    .then((data) => {
-      workspacesStore.save(data)
+  }, {
+    onSuccess: () => {
       alert.success('Custom domains saved.')
       isChanged.value = false
-    })
-    .catch((error) => {
-      alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
-    })
-    .finally(() => {
       isLoading.value = false
+    },
+    onError: (error) => {
+      alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
+      isLoading.value = false
+    }
     })
 }
 

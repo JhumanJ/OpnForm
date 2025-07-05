@@ -115,12 +115,12 @@ const props = defineProps({
   }
 })
 
-const workspacesStore = useWorkspacesStore()
 const authStore = useAuthStore()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
 const { openUserSettings } = useAppModals()
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current } = useWorkspaces()
+const workspace = computed(() => current().data)
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
 
@@ -160,7 +160,7 @@ const openBilling = () => {
 }
 
 const addUser = () => {
-  inviteUserForm.post("/open/workspaces/" + workspacesStore.currentId + "/users/add").then((data) => {
+  inviteUserForm.post("/open/workspaces/" + workspace.value.id + "/users/add").then((data) => {
     inviteUserForm.reset()
     useAlert().success(data.message)
     emit('user-added')

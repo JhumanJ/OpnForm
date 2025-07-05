@@ -6,7 +6,7 @@
       <div class="flex items-center gap-2">
         <!-- Search -->
         <UInput
-          v-if="forms.length > 0 || isFilteringForms"
+          v-if="(forms?.length > 0) || isFilteringForms"
           v-model="search"
           placeholder="Search forms..."
           icon="i-heroicons-magnifying-glass-solid"
@@ -49,7 +49,7 @@
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
         <!-- Empty State: No forms -->
-        <div v-if="!isFormsLoading && forms.length === 0" class="text-center py-16 px-4">
+        <div v-if="!isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-gray-900">
             Create your first form
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Empty State: No results -->
-        <div v-if="!isFormsLoading && forms.length > 0 && enrichedForms.length === 0" class="text-center py-16 px-4">
+        <div v-if="!isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-gray-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-gray-900">
               No forms found
@@ -151,18 +151,12 @@ useOpnSeoMeta({
 
 // Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const workspacesStore = useWorkspacesStore()
-const { current: currentWorkspace } = useWorkspaces()
 const { list: formsList } = useForms()
-
-// Get current workspace
-const { data: workspace } = currentWorkspace()
-
-// Get forms for current workspace
+const { data: workspace } = useWorkspaces().current()
 const { data: forms, isLoading: isFormsLoading } = formsList(
-  computed(() => workspacesStore.currentId),
+  () => workspace.value?.id,
   {
-    enabled: computed(() => !!workspacesStore.currentId)
+    enabled: () => !!workspace.value?.id
   }
 )
 

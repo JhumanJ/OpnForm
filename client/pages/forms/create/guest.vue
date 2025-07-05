@@ -27,7 +27,7 @@ import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
 import { fetchTemplate } from "~/stores/templates.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
@@ -92,9 +92,11 @@ onMounted(() => {
   }, { useMessageChannel: false })
 })
 
+const { invalidateAll } = useWorkspaces()
+
 const afterLogin = () => {
   isGuest.value = false
-  fetchAllWorkspaces()
+  invalidateAll() // Refetch all workspace queries
   setTimeout(() => {
     if (editor) {
       editor.value.saveFormCreate()

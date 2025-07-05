@@ -70,7 +70,7 @@ import { computed, ref } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import CreateWorkspaceModal from "~/components/workspaces/CreateWorkspaceModal.vue"
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
-import { fetchAllWorkspaces } from '~/stores/workspaces.js'
+
 
 defineProps({
   content: {
@@ -91,7 +91,8 @@ const { openWorkspaceSettings } = useAppModals()
 
 const user = computed(() => authStore.user)
 const workspaces = computed(() => workspacesStore.getAll)
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current } = useWorkspaces()
+const workspace = computed(() => current().data)
 
 // Modal state
 const showCreateModal = ref(false)
@@ -131,9 +132,11 @@ const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
 }
 
+const { invalidateAll } = useWorkspaces()
+
 const onUserAdded = async () => {
-  const workspaces = await fetchAllWorkspaces()
-  workspacesStore.set(workspaces.data.value.data)
+  // Invalidate all workspace queries to refresh data
+  await invalidateAll()
 }
 
 const openSettings = () => {
