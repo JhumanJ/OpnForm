@@ -237,7 +237,7 @@ export default {
 
   methods: {
     async register() {
-      const auth = useAuth()
+      const auth = useAuthFlow()
       
       // Reset captcha after submission
       if (import.meta.client && this.reCaptchaSiteKey) {

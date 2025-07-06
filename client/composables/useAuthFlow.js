@@ -1,7 +1,7 @@
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 
-export const useAuth = () => {
+export const useAuthFlow = () => {
   const authStore = useAuthStore()
   const workspaceStore = useWorkspacesStore()
   const formsStore = useFormsStore()

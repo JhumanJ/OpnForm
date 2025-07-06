@@ -38,7 +38,7 @@ const loading = ref(true)
 
 
 const handleCallback = async () => {
-  const auth = useAuth()
+  const auth = useAuthFlow()
   const provider = route.params.provider
   
   try {

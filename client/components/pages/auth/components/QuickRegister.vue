@@ -145,7 +145,7 @@ const afterQuickLogin = async () => {
   appStore.isUnauthorizedError = false
   
   // Verify authentication is complete using the useAuth composable
-  const auth = useAuth()
+  const auth = useAuthFlow()
   await auth.verifyAuthentication()
   
   // Close both login and register modals

@@ -21,7 +21,7 @@ We don't use typescript, javascript only (except when really required for config
 
 ## Syntax and Formatting
 - Use the "function" keyword for pure functions to benefit from hoisting and clarity.
-- Always use the Vue Composition API script setup style. If a legacy file still used
+- Always use the Vue Composition API script setup style. If a legacy file still using options API, it it's short then directly update the script section. If it's longer and a bit more complex, make the requried change using the existing options API and at the end ask if you should migrate to composition API.
 
 ## UI and Styling
 - Use Nuxt UI components (https://ui.nuxt.com/components) and Tailwind for components and styling. Ex: <UModal>, <UPopover>, <UToolTip>, <UBadge> etc... Essentially use NuxtUI for everything but for form components.
@@ -32,8 +32,6 @@ We don't use typescript, javascript only (except when really required for config
 Forms
 - For forms inputs, use the components in client/components/forms such as <TextInput> etc.
 - Wrap then in @VForm.vue
-
-Auto-imports
 
 Performance Optimization
 - Leverage VueUse functions where applicable to enhance reactivity and performance.

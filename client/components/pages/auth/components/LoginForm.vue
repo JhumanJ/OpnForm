@@ -149,7 +149,7 @@ export default {
   methods: {
     async login() {
       this.loading = true
-      const auth = useAuth()
+      const auth = useAuthFlow()
       
       try {
         await auth.loginWithCredentials(this.form, this.remember)

@@ -1,0 +1,245 @@
+---
+description: Nuxt client side, API and TanStack Query patterns for data fetching, caching, and state management. Use when needed to change how data is fetched from back-end, or when working with @/api modules, @/composables/query files, cache invalidation, SSR data fetching, or TanStack Query implementation.
+globs:
+alwaysApply: false
+---
+
+# API and TanStack Query Guidelines
+
+You are an expert in API design and TanStack Query (Vue Query) implementation in Nuxt applications.
+
+## Architecture Overview
+
+Two-layer API architecture:
+
+-   **@/api**: Raw API client functions that make HTTP requests
+-   **@/composables/query**: TanStack Query composables that wrap API calls with caching, invalidation, and state management
+
+## API Layer (@/api)
+
+### Structure
+
+-   Each API module corresponds to a domain (forms.js, workspace.js, auth.js, etc.)
+-   API functions are pure functions that return promises
+-   Export named functions, avoid default exports
+
+```javascript
+export const exampleApi = {
+    list: (params = {}) => api.get("/endpoint", { params }),
+    getById: (id) => api.get(`/endpoint/${id}`),
+    create: (data) => api.post("/endpoint", data),
+    update: (id, data) => api.put(`/endpoint/${id}`, data),
+    delete: (id) => api.delete(`/endpoint/${id}`),
+};
+```
+
+## Query Layer (@/composables/query)
+
+### Composable Structure Template
+
+```javascript
+import { useQueryClient, useQuery, useMutation } from "@tanstack/vue-query";
+import { exampleApi } from "~/api";
+
+export function useExample() {
+    const queryClient = useQueryClient();
+
+    // Queries (read operations)
+    const list = (params = {}, options = {}) => {
+        return useQuery({
+            queryKey: ["example", "list", params],
+            queryFn: () => exampleApi.list(params),
+            enabled: computed(() => !!params.workspaceId),
+            ...options,
+        });
+    };
+
+    const detail = (id, options = {}) => {
+        return useQuery({
+            queryKey: ["example", id],
+            queryFn: () => exampleApi.getById(id),
+            enabled: !!id,
+            ...options,
+        });
+    };
+
+    // Mutations (write operations)
+    const create = (options = {}) => {
+        return useMutation({
+            mutationFn: (data) => exampleApi.create(data),
+            onSuccess: (newItem) => {
+                queryClient.setQueryData(["example", newItem.id], newItem);
+                queryClient.invalidateQueries(["example", "list"]);
+            },
+            ...options,
+        });
+    };
+
+    // Utility functions
+    const invalidateAll = () => {
+        queryClient.invalidateQueries(["example"]);
+    };
+
+    return {
+        list,
+        detail,
+        create,
+        invalidateAll,
+    };
+}
+```
+
+### Query Key Conventions
+
+Use consistent, hierarchical patterns:
+
+```javascript
+// Good: Hierarchical and predictable
+["forms", formId][("forms", "list", workspaceId)][ // Single form // Forms list for workspace
+    ("forms", formId, "submissions")
+][("forms", formId, "stats", params)][ // Form submissions // Form stats with parameters
+    // Bad: Inconsistent patterns
+    ("form-detail", formId)
+][("getFormSubmissions", formId)][(formId, "submissions")]; // Mixed naming // Verb in key // Missing domain
+```
+
+## Cache Invalidation
+
+### Targeted Invalidation (Preferred)
+
+```javascript
+// Good: Targeted invalidation
+const invalidateFormStats = (formId, params = undefined) => {
+    const queryKey = params
+        ? ["forms", formId, "stats", params]
+        : ["forms", formId, "stats"];
+    queryClient.invalidateQueries({ queryKey });
+};
+
+// Good: Multiple targeted invalidations
+const invalidateStats = (formId) => {
+    queryClient.invalidateQueries({ queryKey: ["forms", formId, "stats"] });
+    queryClient.invalidateQueries({
+        queryKey: ["forms", formId, "stats-details"],
+    });
+};
+
+// Bad: Too broad - invalidates everything!
+queryClient.invalidateQueries();
+```
+
+### Mutation-Based Invalidation
+
+```javascript
+const update = (options = {}) => {
+    return useMutation({
+        mutationFn: ({ id, data }) => formsApi.update(id, data),
+        onSuccess: (updatedForm, { id }) => {
+            // Update specific caches
+            queryClient.setQueryData(["forms", id], updatedForm);
+            queryClient.setQueryData(
+                ["forms", "slug", updatedForm.slug],
+                updatedForm
+            );
+
+            // Invalidate related queries only
+            queryClient.invalidateQueries(["forms", "list"]);
+        },
+        ...options,
+    });
+};
+```
+
+## SSR Patterns
+
+### SSR Loading States
+
+```javascript
+// Handle loading state for SSR compatibility
+const isLoading = computed(() => {
+    // During SSR, show loading if the query would run on the client
+    if (import.meta.server) {
+        return !!props.form && props.form.is_pro;
+    }
+    // On client, use the actual query loading state
+    return isQueryLoading.value;
+});
+```
+
+### SSR Data Fetching
+
+```javascript
+// In pages/example/[id].vue
+<script setup>
+const route = useRoute()
+const id = route.params.id
+
+// Runs during SSR automatically
+const { data: item, isLoading } = useExample().detail(id)
+
+// Conditional SSR fetching
+const { data: conditionalData } = useExample().detail(id, {
+  enabled: computed(() => import.meta.client && someCondition.value)
+})
+</script>
+```
+
+## Component Usage
+
+### Basic Pattern
+
+```javascript
+<script setup>
+// Use query composables at the top level of setup
+const { list, create } = useExample()
+const { data: items, isLoading, error } = list({ workspaceId: props.workspaceId })
+
+// For mutations
+const createMutation = create({
+  onSuccess: () => useAlert().success('Created successfully!'),
+  onError: (error) => useAlert().error(error.message)
+})
+
+const handleCreate = (data) => createMutation.mutate(data)
+</script>
+
+<template>
+  <USkeleton v-if="isLoading" class="h-32 w-full" />
+  <div v-else-if="error">Error: {{ error.message }}</div>
+  <div v-else>
+    <div v-for="item in items" :key="item.id">{{ item.name }}</div>
+    <UButton @click="handleCreate(data)" :loading="createMutation.isPending">
+      Create
+    </UButton>
+  </div>
+</template>
+```
+
+## Common Anti-patterns to Avoid
+
+```javascript
+// Bad: Creating queries inside computed/watchers
+const badExample = computed(() => useQuery(...)) // Don't do this!
+
+// Bad: Calling composables conditionally
+if (someCondition) {
+  const { data } = useExample().list() // Don't do this!
+}
+
+// Good: Always call at top level, use enabled option
+const { data } = useExample().list(params, {
+  enabled: computed(() => someCondition.value)
+})
+
+// Bad: Non-reactive dependencies
+const { data } = useExample().list({
+  workspaceId: workspace.value.id // Won't react to changes
+})
+
+// Good: Reactive dependencies
+const params = computed(() => ({
+  workspaceId: workspace.value?.id,
+  status: filterStatus.value
+}))
+const { data } = useExample().list(params)
+```
