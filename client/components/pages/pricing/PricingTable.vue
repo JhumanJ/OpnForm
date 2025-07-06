@@ -206,6 +206,7 @@ export default {
   data: () => ({
     isYearly: true,
     pricingInfo: [
+      "Unlimited workspaces",
       "Form confirmation emails",
       "Slack notifications",
       "Discord notifications",

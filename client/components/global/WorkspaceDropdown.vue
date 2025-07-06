@@ -82,6 +82,7 @@ defineProps({
   }
 })
 
+const subscriptionModalStore = useSubscriptionModalStore()
 const router = useRouter()
 const route = useRoute()
 const workspacesStore = useWorkspacesStore()
@@ -128,6 +129,11 @@ const switchWorkspace = (workspaceToSwitch) => {
 }
 
 const createNewWorkspace = () => {
+  if (!user.value.is_pro && workspaces.value.length >= 1) {
+    subscriptionModalStore.setModalContent('Upgrade to create additional workspaces')
+    subscriptionModalStore.openModal()
+    return
+  }
   showCreateModal.value = true
 }
 
@@ -146,6 +152,13 @@ const openSettings = () => {
 
 const openInviteUserModal = () => {
   isDropdownOpen.value = false
+
+  if (workspace.value && !workspace.value.is_pro) {
+    subscriptionModalStore.setModalContent('Upgrade to invite users to your workspace')
+    subscriptionModalStore.openModal()
+    return
+  }
+  
   showInviteUserModal.value = true
 }
 
