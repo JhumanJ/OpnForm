@@ -97,12 +97,15 @@ const openHelp = () => {
   crisp.openHelpdesk()
 }
 
-const formIntegrationsStore = useFormIntegrationsStore()
-const formIntegration = computed(() =>
-  props.formIntegrationId
-    ? formIntegrationsStore.getByKey(props.formIntegrationId)
-    : null,
-)
+// Use query composables to get form integrations
+const { integrations: formIntegrations } = useFormIntegrations()
+const { data: formIntegrationsData } = formIntegrations(props.form.id)
+
+// Get the specific form integration by ID
+const formIntegration = computed(() => {
+  if (!props.formIntegrationId || !formIntegrationsData.value) return null
+  return formIntegrationsData.value.find(integration => integration.id === props.formIntegrationId)
+})
 
 const component = computed(() => {
   if (!props.integration) return null
@@ -120,14 +123,16 @@ watch(
 
 const initIntegrationData = () => {
   integrationData.value = useForm({
-    integration_id: props.formIntegrationId
+    integration_id: props.formIntegrationId && formIntegration.value
       ? formIntegration.value.integration_id
       : props.integrationKey,
-    status: props.formIntegrationId
+    status: props.formIntegrationId && formIntegration.value
       ? formIntegration.value.status === "active"
       : true,
-    settings: props.formIntegrationId ? formIntegration.value.data ?? {} : {},
-    logic: props.formIntegrationId
+    settings: props.formIntegrationId && formIntegration.value 
+      ? formIntegration.value.data ?? {} 
+      : {},
+    logic: props.formIntegrationId && formIntegration.value
       ? !Array.isArray(formIntegration.value.logic) &&
         formIntegration.value.logic
         ? formIntegration.value.logic
@@ -149,7 +154,9 @@ const save = () => {
     )
     .then((data) => {
       alert.success(data.message)
-      formIntegrationsStore.save(data.form_integration)
+      // Invalidate the form integrations query to refetch updated data
+      const { invalidateIntegrations } = useFormIntegrations()
+      invalidateIntegrations(props.form.id)
       emit("close")
     })
     .catch((error) => {

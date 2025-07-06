@@ -97,8 +97,6 @@ import SocialShareButton from "~/components/pages/forms/show/SocialShareButton.v
 import EmbedFormAsPopupModal from "~/components/pages/forms/show/EmbedFormAsPopupModal.vue"
 import CopyContent from "~/components/open/forms/components/CopyContent.vue"
 
-
-
 const props = defineProps({
   form: { type: Object, required: true },
 })
@@ -131,10 +129,4 @@ const share_url = computed(() => {
     ? props.form.share_url + "?" + shareUrlForQueryParams.value
     : props.form.share_url + shareUrlForQueryParams.value
 })
-
-
-
-
-
-
 </script>

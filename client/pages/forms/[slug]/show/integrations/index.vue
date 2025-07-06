@@ -10,7 +10,7 @@
       </div>
 
       <div
-        v-if="integrationsLoading"
+        v-if="isIntegrationsLoading"
         class="my-6"
       >
         <Loader class="h-6 w-6 mx-auto" />
@@ -84,28 +84,20 @@ useOpnSeoMeta({
 
 const alert = useAlert()
 
-const oAuthProvidersStore = useOAuthProvidersStore()
+const { integrations: formIntegrations } = useFormIntegrations()
+const { data: formIntegrationsData, isLoading: isIntegrationsLoading } = formIntegrations(props.form.id)
 
+// Get available integrations from the form integrations store (for now, as this contains the static data)
 const formIntegrationsStore = useFormIntegrationsStore()
-const integrationsLoading = computed(() => formIntegrationsStore.loading)
-const integrations = computed(
-  () => formIntegrationsStore.availableIntegrations,
-)
-const sectionsList = computed(
-  () => formIntegrationsStore.integrationsBySection,
-)
-const formIntegrationsList = computed(() =>
-  formIntegrationsStore.getAllByFormId(props.form.id),
-)
+const integrations = computed(() => formIntegrationsStore.availableIntegrations)
+const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
+
+// Get form integrations list from the query data
+const formIntegrationsList = computed(() => formIntegrationsData.value || [])
 
 const showIntegrationModal = ref(false)
 const selectedIntegrationKey = ref(null)
 const selectedIntegration = ref(null)
-
-onMounted(() => {
-  formIntegrationsStore.fetchFormIntegrations(props.form.id)
-  oAuthProvidersStore.fetchOAuthProviders(props.form.workspace_id)
-})
 
 const openIntegration = (itemKey) => {
   if (!itemKey || !integrations.value.has(itemKey)) {

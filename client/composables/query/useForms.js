@@ -32,25 +32,6 @@ export function useForms() {
     })
   }
 
-  // Stats Queries
-  const stats = (workspaceId, formId, options = {}) => {
-    return useQuery({
-      queryKey: ['forms', formId, 'stats'],
-      queryFn: () => formsApi.stats(workspaceId, formId, options),
-      enabled: !!(workspaceId && formId),
-      ...options
-    })
-  }
-
-  const statsDetails = (workspaceId, formId, options = {}) => {
-    return useQuery({
-      queryKey: ['forms', formId, 'stats-details'],
-      queryFn: () => formsApi.statsDetails(workspaceId, formId, options),
-      enabled: !!(workspaceId && formId),
-      ...options
-    })
-  }
-
   // Form Mutations
   const create = (options = {}) => {
     return useMutation({
@@ -226,17 +207,10 @@ export function useForms() {
     queryClient.invalidateQueries(['forms', id])
   }
 
-  const invalidateStats = (formId) => {
-    queryClient.invalidateQueries(['forms', formId, 'stats'])
-    queryClient.invalidateQueries(['forms', formId, 'stats-details'])
-  }
-
   return {
     // Queries
     detail,
     detailById,
-    stats,
-    statsDetails,
     
     // Form Mutations
     create,
@@ -256,6 +230,5 @@ export function useForms() {
     prefetchDetailById,
     invalidateAll,
     invalidateDetail,
-    invalidateStats,
   }
 } 
