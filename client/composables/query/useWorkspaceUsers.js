@@ -24,15 +24,15 @@ export function useWorkspaceUsers() {
   }
 
   // Current workspace users and invites helpers
-  const currentUsers = (options = {}) => {
+  const currentUsers = computed(() => {
     const workspacesStore = useWorkspacesStore()
-    return users(computed(() => workspacesStore.currentId), options)
-  }
+    return users(workspacesStore.currentId)
+  })
 
-  const currentInvites = (options = {}) => {
+  const currentInvites = computed(() => {
     const workspacesStore = useWorkspacesStore()
-    return invites(computed(() => workspacesStore.currentId), options)
-  }
+    return invites(workspacesStore.currentId)
+  })
 
   // User management mutations
   const addUser = (workspaceId, options = {}) => {

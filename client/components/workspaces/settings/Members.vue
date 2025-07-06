@@ -134,7 +134,7 @@
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
 import { workspaceApi } from '~/api'
 
-const { currentUsers, currentInvites, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
+const { currentUsers: usersData, currentInvites: invitesData, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
 const alert = useAlert()
 const workspace = useWorkspaces().current
 const { data: user } = useAuth().user()
@@ -178,16 +178,6 @@ const tableColumns = computed(() => {
       }] : [])
   ]
 })
-
-// Watch for modal close to refresh users
-/* watch(() => appStore.workspaceInviteUserModal, (newValue, oldValue) => {
-  if (oldValue === true && newValue === false) {
-    getWorkspaceUsers()
-  }
-}) */
-
-const { data: usersData } = currentUsers()
-const { data: invitesData } = currentInvites()
 
 const getWorkspaceUsers = async () => {
   loadingUsers.value = true
