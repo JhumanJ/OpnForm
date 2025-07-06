@@ -164,7 +164,7 @@ const alert = useAlert()
 
 const tokens = computed(() => accessTokenStore.getAll)
 const loading = computed(() => accessTokenStore.loading)
-const user = computed(() => useAuthStore().user)
+const { data: user } = useAuth().user()
 
 // Column pinning state
 const columnPinning = ref({

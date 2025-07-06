@@ -122,7 +122,7 @@ const items = computed(() => {
         onClick: copyLink
       }
     ],
-    ...workspace.value.is_readonly ? [] : [
+    ...workspace.value?.is_readonly ? [] : [
       [
         ...props.isMainPage ? [{
         label: 'Edit',

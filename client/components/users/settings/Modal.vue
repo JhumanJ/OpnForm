@@ -22,7 +22,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
-      v-if="!workspace.is_readonly"
+      v-if="workspace && !workspace.is_readonly"
       id="connections"
       label="Connections"
       icon="i-heroicons-link"
@@ -31,7 +31,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
-      v-if="!workspace.is_readonly"
+      v-if="workspace && !workspace.is_readonly"
       id="access-tokens"
       label="Access Tokens"
       icon="i-heroicons-key"
@@ -67,7 +67,7 @@ const props = defineProps({
   }
 })
 
-const workspace = useWorkspacesStore().current
+const workspace = useWorkspaces().current
 const { data: user } = useAuth().user()
 
 // Modal state

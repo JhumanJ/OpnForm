@@ -185,13 +185,12 @@ useOpnSeoMeta({
 // Composables
 const route = useRoute()
 const workingFormStore = useWorkingFormStore()
-const { current: currentWorkspace } = useWorkspaces()
 const { detail: formDetail } = useForms()
 
 const slug = route.params.slug
 
 // Get current workspace
-const { data: workspace } = currentWorkspace()
+const workspace = useWorkspaces().current.value
 
 // Get form by slug
 const { data: form, isLoading: isFormLoading } = formDetail(slug)
