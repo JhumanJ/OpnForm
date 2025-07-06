@@ -95,8 +95,7 @@
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
 
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 const customDomainOptions = computed(() => {
   return workspace.value.custom_domains

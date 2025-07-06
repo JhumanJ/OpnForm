@@ -92,10 +92,9 @@ const props = defineProps({
   portal: { type: [Boolean, String], required: false, default: false }
 })
 
-const authStore = useAuthStore()
 const formsStore = useFormsStore()
-const user = computed(() => authStore.user)
-const { data: workspace } = useWorkspaces().current()
+const { data: user } = useAuth().user()
+const workspace = useWorkspaces().current
 
 const loadingDuplicate = ref(false)
 const loadingDelete = ref(false)

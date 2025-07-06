@@ -3,10 +3,11 @@
     <!-- Top Bar -->
     <div class="sticky top-0 z-50 bg-white h-[49px] border-b border-neutral-200 p-2 sm:px-4">
       <div class="max-w-4xl mx-auto flex items-center justify-between flex-shrink-0 gap-2 px-2 sm:px-0">
-      <div class="flex items-center gap-2">
+
+      <VTransition name="fade">
+      <div v-if="(forms?.length > 0) || isFilteringForms" class="flex items-center gap-2">
         <!-- Search -->
         <UInput
-          v-if="(forms?.length > 0) || isFilteringForms"
           v-model="search"
           placeholder="Search forms..."
           icon="i-heroicons-magnifying-glass-solid"
@@ -32,6 +33,8 @@
           @click="clearFilters"
         />
       </div>
+      <div class="grow" v-else />
+      </VTransition>
 
       <!-- Create form button -->
       <TrackClick name="home_top_bar_create_form_click">
@@ -48,6 +51,7 @@
     <!-- Main Content -->
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
+        <VTransition name="fade">
         <!-- Empty State: No forms -->
         <div v-if="!isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
@@ -136,12 +140,13 @@
           </div>
         </div>
 
-        <!-- Loading Skeletons -->
-        <div v-if="isFormsLoading" class="flex flex-col gap-2">
-          <FormCardSkeleton />
-          <FormCardSkeleton />
-          <FormCardSkeleton />
-        </div>
+          <!-- Loading Skeletons -->
+          <div v-if="isFormsLoading" class="flex flex-col gap-2">
+            <FormCardSkeleton />
+            <FormCardSkeleton />
+            <FormCardSkeleton />
+          </div>
+        </VTransition>
       </div>
     </div>
     <div id="home-portals" class="z-20" />
@@ -166,16 +171,17 @@ useOpnSeoMeta({
 
 // Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const { data: workspace } = useWorkspaces().current()
+const workspace = useWorkspaces().current
+const workspaceId = computed(() => workspace.value?.id)
 const {
   forms,
   isLoading: isFormsLoading,
   isFetchingNextPage: isLoadingMore,
   currentPage,
   totalPages,
-  isComplete
+  isComplete,
 } = useFormsList(
-  workspace.value?.id,
+  workspaceId,
   {
     fetchAll: true,
     enabled: import.meta.client,

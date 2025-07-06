@@ -30,9 +30,8 @@ useOpnSeoMeta({
   title: 'Subscription Success'
 })
 
-const authStore = useAuthStore()
 const confetti = useConfetti()
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 
 const interval = ref(null)
@@ -45,8 +44,8 @@ const redirectIfSubscribed = () => {
 }
 const checkSubscription = () => {
   // Fetch the user.
-      return authApi.user.get().then((data) => {
-    authStore.setUser(data)
+              return authApi.user.get().then((_data) => {
+     useAuth().invalidateUser()
     redirectIfSubscribed()
   }).catch((error) => {
     console.error(error)

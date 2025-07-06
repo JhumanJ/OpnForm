@@ -115,12 +115,15 @@ export default {
 
   emits: ['openRegister'],
   setup() {
+    const authFlow = useAuthFlow()
+    
     return {
       appStore: useAppStore(),
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
       workspaceStore: useWorkspacesStore(),
-      providersStore: useOAuthProvidersStore()
+      providersStore: useOAuthProvidersStore(),
+      authFlow
     }
   },
 
@@ -149,10 +152,9 @@ export default {
   methods: {
     async login() {
       this.loading = true
-      const auth = useAuthFlow()
       
       try {
-        await auth.loginWithCredentials(this.form, this.remember)
+        await this.authFlow.loginWithCredentials(this.form, this.remember)
         this.redirect()
       } catch (error) {
         if (error.response?._data?.message == "You must change your credentials when in self host mode") {

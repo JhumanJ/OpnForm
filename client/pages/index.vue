@@ -327,7 +327,7 @@ export default {
     })
 
     return {
-      authenticated: computed(() => authStore.check),
+      authenticated: computed(() => useAuthFlow().isAuthenticated.value),
       config: opnformConfig,
       runtimeConfig: useRuntimeConfig(),
     }

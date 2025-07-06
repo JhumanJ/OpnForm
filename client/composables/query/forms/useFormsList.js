@@ -10,11 +10,11 @@ export function useFormsList(workspaceId, options = {}) {
   const queryClient = useQueryClient()
 
   const query = useInfiniteQuery({
-    queryKey: ['forms', 'list', workspaceId, filters],
+    queryKey: ['forms', 'list', workspaceId.value, filters],
     queryFn: ({ pageParam = 1 }) => {
       // Ensure only 'filters' are passed, not all queryOptions
       const apiFilters = { page: pageParam, ...(filters || {}) }
-      return formsApi.list(workspaceId, { params: apiFilters }).then(res => {
+      return formsApi.list(workspaceId.value, { params: apiFilters }).then(res => {
         // Prime cache for each form
         res?.data?.forEach(form => {
           queryClient.setQueryData(['forms', form.id], form)

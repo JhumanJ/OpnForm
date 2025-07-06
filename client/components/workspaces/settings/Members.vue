@@ -134,11 +134,10 @@
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
 import { workspaceApi } from '~/api'
 
-const { current, currentUsers, currentInvites, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
-const authStore = useAuthStore()
+const { currentUsers, currentInvites, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
 const alert = useAlert()
-const workspace = computed(() => current().data)
-const user = computed(() => authStore.user)
+const workspace = useWorkspaces().current
+const { data: user } = useAuth().user()
 const users = ref([])
 const loadingUsers = ref(true)
 const showEditUserModal = ref(false)
@@ -199,7 +198,7 @@ const getWorkspaceUsers = async () => {
     return {
       ...d,
       id: d.id,
-      is_current_user: d.id === authStore.user.id,
+      is_current_user: d.id === user.value.id,
       name: d.name,
       email: d.email,
       status: 'accepted',

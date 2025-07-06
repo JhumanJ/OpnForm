@@ -5,7 +5,7 @@ import { default as _has } from "lodash/has"
 
 const scriptLoaded = ref(false)
 const authStore = useAuthStore()
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const isImpersonating = computed(() => authStore.isImpersonating)
 const featureBaseOrganization =
   useRuntimeConfig().public.featureBaseOrganization

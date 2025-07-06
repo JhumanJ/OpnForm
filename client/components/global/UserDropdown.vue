@@ -34,17 +34,17 @@
 <script setup>
 import { computed } from "vue"
 
-const authStore = useAuthStore()
 const formsStore = useFormsStore()
 const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 const { openUserSettings } = useAppModals()
+const authFlow = useAuthFlow()
 
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 
 const logout = async () => {
   // Log out the user.
-  authStore.logout()
+  authFlow.handleLogout()
 
   // Reset store
   workspacesStore.resetState()

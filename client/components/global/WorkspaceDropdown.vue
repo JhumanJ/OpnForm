@@ -82,16 +82,18 @@ defineProps({
   }
 })
 
-const authStore = useAuthStore()
-const formsStore = useFormsStore()
 const router = useRouter()
 const route = useRoute()
 const workspacesStore = useWorkspacesStore()
 const { openWorkspaceSettings } = useAppModals()
 
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const { data: workspaces } = useWorkspaces().list()
-const { data: workspace } = useWorkspaces().current()
+const workspace = useWorkspaces().current
+
+// Extract composable methods in setup context
+const { invalidateAll: invalidateForms } = useForms()
+const { invalidateAll: invalidateWorkspaces } = useWorkspaces()
 
 // Modal state
 const showCreateModal = ref(false)
@@ -114,9 +116,11 @@ const memberCountText = computed(() => {
 })
 
 const switchWorkspace = (workspaceToSwitch) => {
+  if (workspaceToSwitch.id === workspace.value.id) {
+    return
+  }
   workspacesStore.setCurrentId(workspaceToSwitch.id)
-  formsStore.resetState()
-  formsStore.loadAll(workspaceToSwitch.id)
+  invalidateForms()
   
   if (route.name !== "home") {
     router.push({ name: "home" })
@@ -131,11 +135,8 @@ const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
 }
 
-const { invalidateAll } = useWorkspaces()
-
 const onUserAdded = async () => {
-  // Invalidate all workspace queries to refresh data
-  await invalidateAll()
+  await invalidateWorkspaces()
 }
 
 const openSettings = () => {

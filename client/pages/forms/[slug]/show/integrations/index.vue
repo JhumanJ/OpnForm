@@ -84,13 +84,12 @@ useOpnSeoMeta({
 
 const alert = useAlert()
 
-const { integrations: formIntegrations } = useFormIntegrations()
-const { data: formIntegrationsData, isLoading: isIntegrationsLoading } = formIntegrations(props.form.id)
+const { list, availableIntegrations, integrationsBySection } = useFormIntegrations()
+const { data: formIntegrationsData, isLoading: isIntegrationsLoading } = list(props.form.id)
 
-// Get available integrations from the form integrations store (for now, as this contains the static data)
-const formIntegrationsStore = useFormIntegrationsStore()
-const integrations = computed(() => formIntegrationsStore.availableIntegrations)
-const sectionsList = computed(() => formIntegrationsStore.integrationsBySection)
+// Get available integrations and sections from the composable
+const integrations = availableIntegrations
+const sectionsList = integrationsBySection
 
 // Get form integrations list from the query data
 const formIntegrationsList = computed(() => formIntegrationsData.value || [])

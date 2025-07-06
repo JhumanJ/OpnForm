@@ -103,7 +103,7 @@ defineShortcuts({
   },
 })
 
-const { data: workspace } = useWorkspaces().current()
+const workspace = useWorkspaces().current
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
 
 // Check if current route matches a prefix

@@ -27,10 +27,8 @@ const props = defineProps({
 })
 
 const subscriptionModalStore = useSubscriptionModalStore()
-const authStore = useAuthStore()
-const { current } = useWorkspaces()
-const user = computed(() => authStore.user)
-const workspace = computed(() => current().data)
+const { data: user } = useAuth().user()
+const workspace = useWorkspaces().current
 
 const shouldDisplayProTag = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return false

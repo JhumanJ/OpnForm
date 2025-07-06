@@ -354,8 +354,8 @@ const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
 const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
-const authenticated = computed(() => authStore.check)
-const user = computed(() => authStore.user)
+const { isAuthenticated: authenticated } = useAuthFlow()
+const { data: user } = useAuth().user()
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
@@ -394,8 +394,8 @@ watch(broadcastData, () => {
 
   if (broadcastData.value.type === 'success') {
     // Now we need to reload workspace and user
-    authApi.user.get().then((userData) => {
-      authStore.setUser(userData)
+          authApi.user.get().then((_userData) => {
+       useAuth().invalidateUser()
 
       try {
         const eventData = {

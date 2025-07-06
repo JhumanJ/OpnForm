@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const authStore = useAuthStore()
+  const { isAuthenticated } = useAuthFlow()
 
-  if (!authStore.check) {
+  if (!isAuthenticated.value) {
     useCookie("intended_url").value = to.path
     return navigateTo({ name: "login" })
   }

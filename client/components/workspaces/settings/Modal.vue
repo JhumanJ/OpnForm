@@ -59,8 +59,7 @@ const props = defineProps({
   }
 })
 
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 // Modal state
 const isOpen = computed({

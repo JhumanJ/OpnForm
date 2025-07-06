@@ -42,17 +42,17 @@ export default defineNuxtPlugin((nuxt) => {
       }
     },
   })
-  const options: VueQueryPluginOptions = { queryClient }
+  const options: VueQueryPluginOptions = { queryClient, enableDevtoolsV6Plugin: true }
 
   nuxt.vueApp.use(VueQueryPlugin, options)
 
-  if (process.server) {
+  if (import.meta.server) {
     nuxt.hooks.hook('app:rendered', () => {
       vueQueryState.value = dehydrate(queryClient)
     })
   }
 
-  if (process.client) {
+  if (import.meta.client) {
     nuxt.hooks.hook('app:created', () => {
       hydrate(queryClient, vueQueryState.value)
     })

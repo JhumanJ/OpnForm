@@ -151,8 +151,7 @@ defineEmits(["updated", "deleted"])
 
 const workingFormStore = useWorkingFormStore()
 const form = storeToRefs(workingFormStore).content
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 
 const fieldComponents = {

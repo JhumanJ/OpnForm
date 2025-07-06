@@ -74,12 +74,12 @@
 <script setup>
 import { onMounted } from "vue"
 
-const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
 const formsStore = useFormsStore()
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const router = useRouter()
 const loading = ref(false)
+const authFlow = useAuthFlow()
 const form = useForm({
   name: "",
   email: "",
@@ -99,8 +99,8 @@ const updateCredentials = () => {
   loading.value = true
   form
     .post("update-credentials")
-    .then(async (data) => {
-      authStore.setUser(data.user)
+          .then(async (_data) => {
+       useAuth().invalidateUser()
       const { data: workspacesData } = await fetchWorkspaces()
       workspacesStore.set(workspacesData.value)
       formsStore.loadAll(workspacesStore.currentId)
@@ -116,7 +116,7 @@ const updateCredentials = () => {
 }
 
 const logout = () => {
-  authStore.logout()
+  authFlow.handleLogout()
   router.push({ name: "login" })
 }
 </script>

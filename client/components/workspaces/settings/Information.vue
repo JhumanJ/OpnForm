@@ -85,14 +85,14 @@
 </template>
 
 <script setup>
-const { current, update, remove, leave } = useWorkspaces()
-const authStore = useAuthStore()
+const { update, remove, leave } = useWorkspaces()
+
 const alert = useAlert()
 const appStore = useAppStore()
 const router = useRouter()
 
-const workspace = computed(() => current().data)
-const user = computed(() => authStore.user)
+const workspace = useWorkspaces().current
+const { data: user } = useAuth().user()
 
 // Workspace form
 const workspaceForm = useForm({

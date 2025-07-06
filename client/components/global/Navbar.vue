@@ -173,14 +173,12 @@ import { useFeatureFlag } from '~/composables/useFeatureFlag'
 import { useWorkspaces } from '~/composables/query/useWorkspaces'
 
 // Stores & composables
-const authStore = useAuthStore()
-const { current } = useWorkspaces()
-const { data: workspace } = current()
+const workspace = useWorkspaces().current
 
 const appStore = useAppStore()
 const formsStore = useFormsStore()
 
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const isIframe = useIsIframe()
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
 const route = useRoute()

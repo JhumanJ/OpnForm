@@ -92,10 +92,10 @@
 </template>
 
 <script setup>
-const { current, updateCustomDomains } = useWorkspaces()
+const { updateCustomDomains } = useWorkspaces()
 const alert = useAlert()
 const crisp = useCrisp()
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 const subscriptionModalStore = useSubscriptionModalStore()
 

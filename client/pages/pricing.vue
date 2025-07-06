@@ -400,7 +400,7 @@
 
 <script>
 import {computed} from "vue"
-import {useAuthStore} from "../stores/auth"
+
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
 
 export default {
@@ -420,11 +420,9 @@ export default {
       ],
     })
 
-    const authStore = useAuthStore()
-
     return {
-      user: computed(() => authStore.user),
-      authenticated: computed(() => authStore.check),
+      user: computed(() => useAuth().user().data.value),
+      authenticated: computed(() => useAuthFlow().isAuthenticated.value),
     }
   },
 

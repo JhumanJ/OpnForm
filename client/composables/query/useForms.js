@@ -200,11 +200,11 @@ export function useForms() {
   }
 
   const invalidateAll = () => {
-    queryClient.invalidateQueries(['forms'])
+    queryClient.invalidateQueries({ queryKey: ['forms'] })
   }
 
   const invalidateDetail = (id) => {
-    queryClient.invalidateQueries(['forms', id])
+    queryClient.invalidateQueries({ queryKey: ['forms', id] })
   }
 
   return {

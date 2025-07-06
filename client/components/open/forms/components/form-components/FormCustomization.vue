@@ -230,16 +230,14 @@ import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
 const workingFormStore = useWorkingFormStore()
 const subscriptionModalStore = useSubscriptionModalStore()
-const authStore = useAuthStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
 const { $i18n } = useNuxtApp()
 
-const user = computed(() => authStore.user)
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const { data: user } = useAuth().user()
+const workspace = useWorkspaces().current
 
 const isPro = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return true

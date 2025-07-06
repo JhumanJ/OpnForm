@@ -51,14 +51,13 @@
 
 <script setup>
 import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
+
 import AppSumoBilling from "../../vendor/appsumo/AppSumoBilling.vue"
 import { billingApi, authApi } from '~/api'
 
-const authStore = useAuthStore()
 const alert = useAlert()
 
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const billingLoading = ref(false)
 const cancelLoading = ref(false)
 const usersCount = ref(0)
@@ -106,8 +105,8 @@ const cancelSubscription = () => {
             useCrisp().pushEvent('subscription_cancelled')
 
             // Now we need to reload workspace and user
-            authApi.user.get().then((userData) => {
-              authStore.setUser(userData)
+                          authApi.user.get().then((_userData) => {
+               useAuth().invalidateUser()
             })
             const { invalidateAll } = useWorkspaces()
             invalidateAll() // Refresh all workspace data

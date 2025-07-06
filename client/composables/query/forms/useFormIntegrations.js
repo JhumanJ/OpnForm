@@ -1,10 +1,55 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
+import integrationsList from '~/data/forms/integrations.json'
 
 export function useFormIntegrations() {
   const queryClient = useQueryClient()
 
-  const integrations = (formId, options = {}) => {
+  // Static integrations data
+  const integrations = ref(new Map())
+
+  // Initialize integrations from JSON
+  const initIntegrations = () => {
+    if (integrations.value.size === 0) {
+      integrations.value = new Map(Object.entries(integrationsList))
+    }
+  }
+
+  // Computed property for available integrations based on user subscription and feature flags
+  const availableIntegrations = computed(() => {
+    const user = useAuthStore().user
+    const featureFlagsStore = useFeatureFlagsStore()
+    if (!user) return integrations.value
+
+    const enrichedIntegrations = new Map()
+    for (const [key, integration] of integrations.value.entries()) {
+      if (featureFlagsStore.getFlag(`integrations.${key}`, true)) {
+        enrichedIntegrations.set(key, {
+          ...integration,
+          id: key,
+          requires_subscription: !user.is_subscribed && integration.is_pro,
+        })
+      }
+    }
+
+    return enrichedIntegrations
+  })
+
+  // Computed property for integrations grouped by section
+  const integrationsBySection = computed(() => {
+    const groupedObject = {}
+    for (const [key, integration] of availableIntegrations.value.entries()) {
+      const sectionName = integration.section_name
+      if (!groupedObject[sectionName]) {
+        groupedObject[sectionName] = {}
+      }
+      groupedObject[sectionName][key] = integration
+    }
+    return groupedObject
+  })
+
+  // TanStack Query functions
+  const list = (formId, options = {}) => {
     return useQuery({
       queryKey: ['forms', formId, 'integrations'],
       queryFn: () => formsApi.integrations.list(formId, options),
@@ -84,12 +129,31 @@ export function useFormIntegrations() {
     queryClient.invalidateQueries(['forms', formId, 'integrations'])
   }
 
+  // Utility function to get all integrations by form ID from cache
+  const getAllByFormId = (formId) => {
+    const queryData = queryClient.getQueryData(['forms', formId, 'integrations'])
+    return queryData || []
+  }
+
+  // Initialize integrations on first use
+  initIntegrations()
+
   return {
-    integrations,
+    // Static data
+    integrations: readonly(integrations),
+    availableIntegrations,
+    integrationsBySection,
+    
+    // TanStack Query functions
+    list,
     integrationEvents,
     createIntegration,
     updateIntegration,
     deleteIntegration,
     invalidateIntegrations,
+    
+    // Utility functions
+    getAllByFormId,
+    initIntegrations,
   }
 } 

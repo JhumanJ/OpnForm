@@ -119,8 +119,7 @@ const authStore = useAuthStore()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
 const { openUserSettings } = useAppModals()
-const { current } = useWorkspaces()
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
 

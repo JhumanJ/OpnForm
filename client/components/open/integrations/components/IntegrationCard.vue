@@ -85,7 +85,6 @@
 
 <script setup>
 import { computed } from "vue"
-import { formsApi } from "~/api"
 
 const props = defineProps({
   integration: {
@@ -99,10 +98,8 @@ const props = defineProps({
 })
 
 const alert = useAlert()
-const formIntegrationsStore = useFormIntegrationsStore()
-const integrations = computed(
-  () => formIntegrationsStore.availableIntegrations,
-)
+const { availableIntegrations, deleteIntegration } = useFormIntegrations()
+const integrations = availableIntegrations
 const integrationTypeInfo = computed(() =>
   integrations.value.get(props.integration.integration_id),
 )
@@ -161,20 +158,24 @@ const dropdownItems = computed(() => {
   return items
 })
 
+const deleteIntegrationMutation = deleteIntegration({
+  onSuccess: () => {
+    alert.success("Integration deleted successfully!")
+    loadingDelete.value = false
+  },
+  onError: (error) => {
+    alert.error(error.data?.message || "Something went wrong!")
+    loadingDelete.value = false
+  }
+})
+
 const deleteFormIntegration = (integrationid) => {
   alert.confirm("Do you really want to delete this form integration?", () => {
-    formsApi.integrations.delete(props.form.id, integrationid)
-      .then((data) => {
-        if (data.type === "success") {
-          alert.success(data.message)
-          formIntegrationsStore.remove(integrationid)
-        } else {
-          alert.error("Something went wrong!")
-        }
-      })
-      .catch((error) => {
-        alert.error(error.data.message)
-      })
+    loadingDelete.value = true
+    deleteIntegrationMutation.mutate({
+      formId: props.form.id,
+      integrationId: integrationid
+    })
   })
 }
 </script>

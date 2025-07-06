@@ -197,11 +197,10 @@ export default {
   },
   setup() {
     const subscriptionModalStore = useSubscriptionModalStore()
-    const authStore = useAuthStore()
     return {
       subscriptionModalStore,
-      authenticated: computed(() => authStore.check),
-      user: computed(() => authStore.user),
+      authenticated: computed(() => useAuthFlow().isAuthenticated.value),
+      user: computed(() => useAuth().user().data.value),
     }
   },
   data: () => ({

@@ -88,9 +88,7 @@
 <script setup>
 import opnformConfig from "~/opnform.config.js"
 
-const authStore = useAuthStore()
-
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const currYear = ref(new Date().getFullYear())
 
 // Use the reactive version for proper template reactivity

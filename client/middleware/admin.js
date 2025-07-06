@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(() => {
-  const authStore = useAuthStore()
-  if (authStore.check && !authStore.user?.admin) {
+  const { isAuthenticated, userData } = useAuthFlow()
+  if (isAuthenticated.value && !userData.value?.admin) {
     return navigateTo({ name: "home" })
   }
 })

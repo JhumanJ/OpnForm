@@ -35,14 +35,14 @@ const { $utm } = useNuxtApp()
 const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
+const authFlow = useAuthFlow()
 
 
 const handleCallback = async () => {
-  const auth = useAuthFlow()
   const provider = route.params.provider
   
   try {
-    const { isNewUser } = await auth.handleSocialCallback(
+    const { isNewUser } = await authFlow.handleSocialCallback(
       provider,
       route.query.code,
       $utm.value

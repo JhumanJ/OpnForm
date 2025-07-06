@@ -58,8 +58,7 @@ const props = defineProps({
   },
 })
 
-const { current } = useWorkspaces()
-const currentWorkspace = computed(() => current().data)
+const currentWorkspace = useWorkspaces().current
 
 const unavailable = computed(() => {
   return (

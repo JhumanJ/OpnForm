@@ -640,7 +640,7 @@ defineRouteRules({
   swr: 3600,
 })
 
-const authenticated = computed(() => authStore.check)
+const { isAuthenticated: authenticated } = useAuthFlow()
 </script>
 
 <style lang="scss" scoped>

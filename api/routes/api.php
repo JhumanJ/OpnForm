@@ -132,17 +132,6 @@ Route::group(['middleware' => 'auth.multi'], function () {
                     [WorkspaceUserController::class, 'leaveWorkspace']
                 )->name('leave');
 
-                Route::prefix('/databases')->name('databases.')->group(function () {
-                    Route::get(
-                        '/search/{search?}',
-                        [WorkspaceController::class, 'searchDatabases']
-                    )->name('search');
-                    Route::get(
-                        '/{database_id}',
-                        [WorkspaceController::class, 'getDatabase']
-                    )->name('show');
-                });
-
                 Route::get(
                     '/forms',
                     [FormController::class, 'index']

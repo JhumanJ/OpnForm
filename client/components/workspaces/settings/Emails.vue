@@ -108,10 +108,9 @@
 </template>
 
 <script setup>
-const { current } = useWorkspaces()
 const alert = useAlert()
 
-const workspace = computed(() => current().data)
+const workspace = useWorkspaces().current
 
 const subscriptionModalStore = useSubscriptionModalStore()
 const crisp = useCrisp()

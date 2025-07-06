@@ -157,6 +157,8 @@ export default {
 
   setup() {
     const { $utm } = useNuxtApp()
+    const authFlow = useAuthFlow()
+    
     return {
       authStore: useAuthStore(),
       formsStore: useFormsStore(),
@@ -164,6 +166,7 @@ export default {
       providersStore: useOAuthProvidersStore(),
       runtimeConfig: useRuntimeConfig(),
       logEvent: useAmplitude().logEvent,
+      authFlow,
       $utm
     }
   },
@@ -237,8 +240,6 @@ export default {
 
   methods: {
     async register() {
-      const auth = useAuthFlow()
-      
       // Reset captcha after submission
       if (import.meta.client && this.reCaptchaSiteKey) {
         this.$refs.captcha.reset()
@@ -246,7 +247,7 @@ export default {
 
       try {
         this.form.utm_data = this.$utm.value
-        await auth.registerUser(this.form)
+        await this.authFlow.registerUser(this.form)
 
         this.redirect()
       } catch (err) {

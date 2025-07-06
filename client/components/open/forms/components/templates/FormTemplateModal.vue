@@ -126,10 +126,9 @@ const props = defineProps({
   template: { type: Object, required: false, default: () => {} },
 })
 
-const authStore = useAuthStore()
 const templatesStore = useTemplatesStore()
 const router = useRouter()
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const templates = computed(() => [...templatesStore.content.values()])
 const industries = computed(() => [...templatesStore.industries.values()])
 const types = computed(() => [...templatesStore.types.values()])

@@ -27,8 +27,8 @@ async function reverseImpersonation() {
   authStore.stopImpersonating()
 
   // Fetch the user.
-  const userData = await authApi.user.get()
-  authStore.setUser(userData)
+      await authApi.user.get()
+   useAuth().invalidateUser()
   useWorkspaces().invalidateAll()
   router.push({ name: 'admin' })
   loading.value = false

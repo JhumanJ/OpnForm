@@ -33,8 +33,8 @@ const impersonate = () => {
     authStore.setToken(data.token, data.expires_in)
 
     // Fetch the user.
-    const userData = await authApi.user.get()
-    authStore.setUser(userData)
+          await authApi.user.get()
+     useAuth().invalidateUser()
 
     // Redirect to the dashboard.
     formsStore.set([])

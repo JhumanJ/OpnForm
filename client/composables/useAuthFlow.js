@@ -3,33 +3,63 @@ import { authApi } from "~/api"
 
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
-  const workspaceStore = useWorkspacesStore()
   const formsStore = useFormsStore()
   const logEvent = useAmplitude().logEvent
   const { list: fetchWorkspaces } = useWorkspaces()
+  const { user, invalidateUser } = useAuth()
+
+  // Computed properties moved from auth store
+  const userData = computed(() => {
+    const userQuery = user()
+    return userQuery.data.value || null
+  })
+
+  const isAuthenticated = computed(() => {
+    return userData.value !== null && userData.value !== undefined
+  })
+
+  const hasActiveLicense = computed(() => {
+    const userVal = userData.value
+    return userVal !== null && userVal !== undefined && userVal.active_license !== null
+  })
+
+  // Service client initialization moved from auth store
+  const initServiceClients = (userDataOverride = null) => {
+    if (import.meta.server) return
+    
+    const userVal = userDataOverride || userData.value
+    if (!userVal) return
+    
+    useAmplitude().setUser(userVal)
+    useCrisp().setUser(userVal)
+    // todo: set sentry user
+  }
 
   /**
    * Core authentication logic used by both social and direct login
+   * Now coordinates between Pinia store and TanStack Query
    */
   const authenticateUser = async ({ tokenData, source, isNewUser = false }) => {
-    // Set token first
+    // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // Fetch initial data
-    const [userData, workspacesResult] = await Promise.all([
-      authApi.user.get(),
-      fetchWorkspaces()
+    // 2. Fetch workspaces and trigger user query
+    const [workspacesResult] = await Promise.all([
+      fetchWorkspaces(),
+      // Invalidate user query to trigger fresh fetch with new token
+      invalidateUser()
     ])
     const workspaces = workspacesResult
 
-    // Setup stores
-    authStore.setUser(userData)
-    workspaceStore.set(workspaces.data.value)
+    // 3. Wait for user data to be fetched by TanStack Query
+    // The user query will automatically cache and trigger onSuccess
+    const userQuery = user()
+    await userQuery.suspense()
     
-    // Load forms for current workspace
-    await formsStore.loadAll(workspaceStore.currentId)
+    // Initialize service clients with user data
+    initServiceClients(userQuery.data.value)
 
-    // Track analytics
+    // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
     logEvent(eventName, { source })
     
@@ -46,56 +76,29 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData, workspaces, isNewUser }
+    return { userData: userQuery.data.value, workspaces, isNewUser }
   }
 
   /**
    * Verify that authentication is complete and user data is loaded
-   * Useful for social auth flows where token might be set but user data not loaded yet
+   * Now uses TanStack Query for user data verification
    */
   const verifyAuthentication = async () => {
-    // If we already have user data, no need to verify
-    if (authStore.check) {
+    // If we have user data in cache, we're good
+    if (isAuthenticated.value) {
       return true
     }
     
     // If we have a token but no user data, fetch the user data
-    if (authStore.token && !authStore.check) {
-      // Create a promise with retry logic
-      return new Promise((resolve, reject) => {
-        const maxRetries = 3
-        let retryCount = 0
-        
-        const attemptFetch = async () => {
-          try {
-            const userData = await authApi.user.get()
-            
-            if (userData) {
-              authStore.setUser(userData)
-              resolve(true)
-            } else {
-              handleRetry("No user data returned")
-            }
-          } catch (error) {
-            handleRetry(`Auth verification failed: ${error.message}`)
-          }
-        }
-        
-        const handleRetry = (reason) => {
-          retryCount++
-          if (retryCount < maxRetries) {
-            console.log(`Retrying auth verification (${retryCount}/${maxRetries}): ${reason}`)
-            // Exponential backoff
-            setTimeout(attemptFetch, 100 * Math.pow(2, retryCount))
-          } else {
-            console.error(`Auth verification failed after ${maxRetries} attempts`)
-            reject(new Error(`Auth verification failed after ${maxRetries} attempts`))
-          }
-        }
-        
-        // Start the first attempt
-        attemptFetch()
-      })
+    if (authStore.token && !isAuthenticated.value) {
+      try {
+        const userQuery = user()
+        await userQuery.suspense()
+        return true
+      } catch (error) {
+        console.error('Auth verification failed:', error)
+        return false
+      }
     }
     
     return false
@@ -167,10 +170,42 @@ export const useAuthFlow = () => {
     return { ...result, data }
   }
 
+  /**
+   * Handle logout flow
+   * Coordinates between TanStack Query mutation and store cleanup
+   */
+  const handleLogout = async () => {
+    const { logout } = useAuth()
+    const logoutMutation = logout()
+    
+    try {
+      await logoutMutation.mutateAsync()
+    } catch (error) {
+      // Even if API call fails, we still want to clear local state
+      console.warn('Logout API call failed, but clearing local state anyway:', error)
+    }
+    
+    // Additional cleanup for forms (workspace data is handled by TanStack Query cache clearing)
+    formsStore.set([])
+    
+    // Navigate to login page
+    useRouter().push({ name: 'login' })
+  }
+
   return {
+    // Auth flow functions
     loginWithCredentials,
     handleSocialCallback,
     registerUser,
-    verifyAuthentication
+    verifyAuthentication,
+    handleLogout,
+    
+    // Computed properties (moved from auth store)
+    userData,
+    isAuthenticated,
+    hasActiveLicense,
+    
+    // Helper functions
+    initServiceClients
   }
 } 

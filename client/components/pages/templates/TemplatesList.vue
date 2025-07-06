@@ -184,14 +184,13 @@ export default {
   },
 
   setup() {
-    const authStore = useAuthStore()
     const templatesStore = useTemplatesStore()
     const search = ref("")
     const debouncedSearch = refDebounced(search, 500)
     return {
       search,
       debouncedSearch,
-      user: computed(() => authStore.user),
+      user: computed(() => useAuth().user().data.value),
       industries: computed(() => [...templatesStore.industries.values()]),
       types: computed(() => [...templatesStore.types.values()]),
     }
