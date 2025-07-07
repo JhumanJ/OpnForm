@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="value"
-    class="-mb-2 flex flex-wrap gap-1"
+    class="flex flex-wrap gap-1"
   >
     <template v-if="matrixData">
       <UBadge
@@ -11,8 +11,8 @@
         color="neutral"
         variant="soft"
       >
-        <span class="py-0.5 pr-1 border-r border-gray-300">{{ data.label }}</span>
-        <span class="py-0.5 pl-1">{{ data.value }}</span>
+        <span class="border-r pr-1 border-neutral-300">{{ data.label }}</span>
+        <span>{{ data.value }}</span>
       </UBadge>
 
     </template>
