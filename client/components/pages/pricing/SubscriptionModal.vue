@@ -3,7 +3,6 @@
     :show="subscriptionModalStore.show"
     compact-header
     max-width="screen-lg"
-    backdrop-blur-sm
     class="z-50"
     @close="subscriptionModalStore.closeModal()"
   >
@@ -352,7 +351,6 @@ const form = useForm({
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
-const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
 const { isAuthenticated: authenticated } = useAuthFlow()
 const { data: user } = useAuth().user()

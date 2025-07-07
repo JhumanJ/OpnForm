@@ -298,8 +298,6 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useAuthStore } from "../stores/auth"
 import Features from "~/components/pages/welcome/Features.vue"
 import MoreFeatures from "~/components/pages/welcome/MoreFeatures.vue"
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
@@ -318,7 +316,6 @@ export default {
   layout: "default",
 
   setup() {
-    const authStore = useAuthStore()
     defineRouteRules({
       swr: 3600,
     })

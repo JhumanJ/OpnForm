@@ -627,7 +627,6 @@
 </template>
 
 <script setup>
-const authStore = useAuthStore()
 definePageMeta({
   middleware: ['root-redirect','self-hosted']
 })

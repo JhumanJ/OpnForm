@@ -12,8 +12,8 @@ export const useAppModals = createSharedComposable(() => {
   const userSettingsTab = ref(null)
   const workspaceSettingsTab = ref(null)
   
-  // Get auth store and router helpers (auto-imported by Nuxt)
-  const authStore = useAuthStore()
+  // Get auth flow and router helpers (auto-imported by Nuxt)
+  const { isAuthenticated } = useAuthFlow()
   const route = useRoute()
   const router = useRouter()
   
@@ -39,7 +39,7 @@ export const useAppModals = createSharedComposable(() => {
   const workspaceSettingsOpen = ref(false)
   
   // URL → State sync for user settings
-  watch([userSettingsQuery, () => authStore.check], ([tab, isLoggedIn]) => {
+  watch([userSettingsQuery, isAuthenticated], ([tab, isLoggedIn]) => {
     if (tab && isLoggedIn) {
       userSettingsTab.value = tab
       userSettingsOpen.value = true
@@ -66,7 +66,7 @@ export const useAppModals = createSharedComposable(() => {
   }, { immediate: true })
   
   // URL → State sync for workspace settings
-  watch([workspaceSettingsQuery, () => authStore.check], ([tab, isLoggedIn]) => {
+  watch([workspaceSettingsQuery, isAuthenticated], ([tab, isLoggedIn]) => {
     if (tab && isLoggedIn) {
       workspaceSettingsTab.value = tab
       workspaceSettingsOpen.value = true

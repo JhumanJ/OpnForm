@@ -91,7 +91,7 @@ const alert = useAlert()
 const appStore = useAppStore()
 const router = useRouter()
 
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 const { data: user } = useAuth().user()
 
 // Workspace form

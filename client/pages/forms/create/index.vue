@@ -59,7 +59,6 @@ onBeforeRouteLeave((to, from, next) => {
 const route = useRoute()
 const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
 const formStore = useFormsStore()
 
 // Fetch the template
@@ -68,10 +67,7 @@ if (route.query.template !== undefined && route.query.template) {
   templatesStore.save(data.value)
 }
 
-const {
-  getCurrent: workspace,
-  workspacesLoading: workspacesLoading,
-} = storeToRefs(workspacesStore)
+const { current: workspace, isLoading: workspacesLoading } = useCurrentWorkspace()
 const { content: form } = storeToRefs(workingFormStore)
 
 // State

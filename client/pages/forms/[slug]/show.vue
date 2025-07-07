@@ -190,7 +190,8 @@ const { detail: formDetail } = useForms()
 const slug = route.params.slug
 
 // Get current workspace
-const workspace = useWorkspaces().current.value
+const { current: workspaceRef } = useCurrentWorkspace()
+const workspace = workspaceRef.value
 
 // Get form by slug
 const { data: form, isLoading: isFormLoading } = formDetail(slug)

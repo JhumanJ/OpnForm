@@ -4,6 +4,8 @@ import integrationsList from '~/data/forms/integrations.json'
 
 export function useFormIntegrations() {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const { data: userData } = user()
 
   // Static integrations data
   const integrations = ref(new Map())
@@ -17,9 +19,8 @@ export function useFormIntegrations() {
 
   // Computed property for available integrations based on user subscription and feature flags
   const availableIntegrations = computed(() => {
-    const user = useAuthStore().user
     const featureFlagsStore = useFeatureFlagsStore()
-    if (!user) return integrations.value
+    if (!userData.value) return integrations.value
 
     const enrichedIntegrations = new Map()
     for (const [key, integration] of integrations.value.entries()) {
@@ -27,11 +28,10 @@ export function useFormIntegrations() {
         enrichedIntegrations.set(key, {
           ...integration,
           id: key,
-          requires_subscription: !user.is_subscribed && integration.is_pro,
+          requires_subscription: !userData.value.is_subscribed && integration.is_pro,
         })
       }
     }
-
     return enrichedIntegrations
   })
 

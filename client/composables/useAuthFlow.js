@@ -8,19 +8,16 @@ export const useAuthFlow = () => {
   const { list: fetchWorkspaces } = useWorkspaces()
   const { user, invalidateUser } = useAuth()
 
-  // Computed properties moved from auth store
-  const userData = computed(() => {
-    const userQuery = user()
-    return userQuery.data.value || null
-  })
+  // Call the user query at the top level and get data directly
+  const { data: userData } = user()
 
+  // Computed properties moved from auth store
   const isAuthenticated = computed(() => {
     return userData.value !== null && userData.value !== undefined
   })
 
   const hasActiveLicense = computed(() => {
-    const userVal = userData.value
-    return userVal !== null && userVal !== undefined && userVal.active_license !== null
+    return userData.value !== null && userData.value !== undefined && userData.value.active_license !== null
   })
 
   // Service client initialization moved from auth store
@@ -53,11 +50,11 @@ export const useAuthFlow = () => {
 
     // 3. Wait for user data to be fetched by TanStack Query
     // The user query will automatically cache and trigger onSuccess
-    const userQuery = user()
-    await userQuery.suspense()
+    const freshUserQuery = user()
+    await freshUserQuery.suspense()
     
     // Initialize service clients with user data
-    initServiceClients(userQuery.data.value)
+    initServiceClients(freshUserQuery.data.value)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -76,7 +73,7 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData: userQuery.data.value, workspaces, isNewUser }
+    return { userData: freshUserQuery.data.value, workspaces, isNewUser }
   }
 
   /**
@@ -201,7 +198,6 @@ export const useAuthFlow = () => {
     handleLogout,
     
     // Computed properties (moved from auth store)
-    userData,
     isAuthenticated,
     hasActiveLicense,
     

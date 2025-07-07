@@ -221,7 +221,6 @@ const emit = defineEmits(['submitted', 'password-entered', 'restarted'])
 
 const { t, setLocale } = useI18n()
 const route = useRoute()
-const authStore = useAuthStore()
 const alert = useAlert()
 const workingFormStore = useWorkingFormStore()
 
@@ -313,7 +312,10 @@ const getFontUrl = computed(() => {
 })
 
 const isFormOwner = computed(() => {
-  return authStore.check && props.form && props.form.creator_id === authStore.user.id
+  const { isAuthenticated } = useAuthFlow()
+  const { user } = useAuth()
+  const { data: userData } = user()
+  return isAuthenticated.value && props.form && props.form.creator_id === userData.value.id
 })
 
 const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)

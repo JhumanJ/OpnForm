@@ -656,7 +656,8 @@ export default {
     }
   },
   setup() {
-    return { currentWorkspace: computed(() => useWorkspacesStore().getCurrent), }
+    const { current: currentWorkspace } = useCurrentWorkspace()
+    return { currentWorkspace }
   },
   data() {
     return {

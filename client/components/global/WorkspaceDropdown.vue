@@ -86,11 +86,10 @@ const subscriptionModalStore = useSubscriptionModalStore()
 const router = useRouter()
 const route = useRoute()
 const workspacesStore = useWorkspacesStore()
-const { openWorkspaceSettings } = useAppModals()
 
 const { data: user } = useAuth().user()
 const { data: workspaces } = useWorkspaces().list()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 // Extract composable methods in setup context
 const { invalidateAll: invalidateForms } = useForms()
@@ -147,7 +146,7 @@ const onUserAdded = async () => {
 
 const openSettings = () => {
   isDropdownOpen.value = false
-  openWorkspaceSettings('information')
+  useAppModals().openWorkspaceSettings('information')
 }
 
 const openInviteUserModal = () => {

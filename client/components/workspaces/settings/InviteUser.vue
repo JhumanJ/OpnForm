@@ -115,11 +115,10 @@ const props = defineProps({
   }
 })
 
-const authStore = useAuthStore()
+const { hasActiveLicense } = useAuthFlow()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
-const { openUserSettings } = useAppModals()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
 
@@ -146,7 +145,7 @@ const openSubscriptionModal = () => {
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))
-const hasActiveLicense = computed(() => authStore.has_active_license)
+// hasActiveLicense is now imported from useAuthFlow
 
 const inviteUserForm = useForm({
   email: '',
@@ -155,7 +154,7 @@ const inviteUserForm = useForm({
 
 const openBilling = () => {
   closeModal()
-  openUserSettings('billing')
+  useAppModals().openUserSettings('billing')
 }
 
 const addUser = () => {

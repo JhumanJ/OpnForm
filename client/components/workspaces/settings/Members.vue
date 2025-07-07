@@ -136,7 +136,7 @@ import { workspaceApi } from '~/api'
 
 const { currentUsers: usersData, currentInvites: invitesData, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
 const alert = useAlert()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 const { data: user } = useAuth().user()
 const users = ref([])
 const loadingUsers = ref(true)

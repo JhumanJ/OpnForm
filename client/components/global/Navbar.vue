@@ -170,10 +170,10 @@ import UserDropdown from './UserDropdown.vue'
 
 import opnformConfig from '~/opnform.config.js'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
-import { useWorkspaces } from '~/composables/query/useWorkspaces'
+
 
 // Stores & composables
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const appStore = useAppStore()
 const formsStore = useFormsStore()

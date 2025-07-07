@@ -279,7 +279,9 @@ defineRouteRules({
 })
 
 const { copy } = useClipboard()
-const authStore = useAuthStore()
+const { isAuthenticated } = useAuthFlow()
+const { user } = useAuth()
+const { data: userData } = user()
 const templatesStore = useTemplatesStore()
 
 const route = useRoute()
@@ -329,16 +331,16 @@ const relatedTemplates = computed(() =>
 )
 const canEditTemplate = computed(
   () =>
-    authStore.check &&
+    isAuthenticated.value &&
     template.value &&
     template.value?.from_prod !== true &&
-    (authStore.user.admin ||
-      authStore.user.template_editor ||
-      template.value.creator_id === authStore.user.id),
+    (userData.value.admin ||
+      userData.value.template_editor ||
+      template.value.creator_id === userData.value.id),
 )
 const createFormWithTemplateUrl = computed(() => {
   return {
-    name: authStore.check ? "forms-create" : "forms-create-guest",
+    name: isAuthenticated.value ? "forms-create" : "forms-create-guest",
     query: { template: template?.value?.slug },
   }
 })

@@ -1,5 +1,5 @@
-import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
-import { workspaceApi } from '~/api/workspace'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query'
+import { workspaceApi } from '~/api'
 
 export function useWorkspaces() {
   const queryClient = useQueryClient()
@@ -21,6 +21,7 @@ export function useWorkspaces() {
           return data
         })
       },
+      staleTime: 5 * 60 * 1000, // 5 minutes
       ...options
     })
   }
@@ -33,15 +34,6 @@ export function useWorkspaces() {
       ...options
     })
   }
-
-  // Get current workspace helper
-  const current = computed(() => {
-    const workspacesStore = useWorkspacesStore()
-    const cachedWorkspaces = queryClient.getQueryData(['workspaces', 'list'])
-    
-    if (!workspacesStore.currentId || !cachedWorkspaces) return null
-    return queryClient.getQueryData(['workspaces', workspacesStore.currentId]) ?? null
-  })
 
   // Mutations with manual cache updates
   const create = (options = {}) => {
@@ -156,8 +148,6 @@ export function useWorkspaces() {
     })
   }
 
-
-
   // Custom domains mutation
   const updateCustomDomains = (workspaceId, options = {}) => {
     return useMutation({
@@ -177,8 +167,13 @@ export function useWorkspaces() {
     queryClient.invalidateQueries({ queryKey: ['workspaces'] })
   }
 
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+  }
+
   // Helper to get workspace from cache by ID
   const getWorkspaceById = (id) => {
+    // Note: this is a non-reactive lookup
     return queryClient.getQueryData(['workspaces', id])
   }
 
@@ -208,7 +203,6 @@ export function useWorkspaces() {
     // Queries
     list,
     detail,
-    current,
     
     // Mutations
     create,
@@ -219,6 +213,7 @@ export function useWorkspaces() {
     
     // Utilities
     invalidate,
+    invalidateAll,
     getWorkspaceById,
     prefetchList,
   }

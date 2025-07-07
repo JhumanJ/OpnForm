@@ -22,6 +22,8 @@ const workspacesStore = useWorkspacesStore()
 const loading = ref(false)
 
 const { list: fetchWorkspaces } = useWorkspaces()
+const { user } = useAuth()
+const { data: userData } = user()
 
 const impersonate = () => {
   loading.value = true
@@ -33,8 +35,8 @@ const impersonate = () => {
     authStore.setToken(data.token, data.expires_in)
 
     // Fetch the user.
-          await authApi.user.get()
-     useAuth().invalidateUser()
+    await authApi.user.get()
+    useAuth().invalidateUser()
 
     // Redirect to the dashboard.
     formsStore.set([])
@@ -45,7 +47,7 @@ const impersonate = () => {
     formsStore.startLoading()
     formsStore.loadAll(workspacesStore.currentId)
 
-    useAlert().success(`Impersonating ${authStore.user.name}`)
+    useAlert().success(`Impersonating ${userData.value.name}`)
     useRouter().push({ name: 'home' })
   })
     .catch((error) => {

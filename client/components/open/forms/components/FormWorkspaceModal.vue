@@ -74,9 +74,9 @@ const isOpen = computed({
   }
 })
 
-const workspaces = computed(() => workspacesStore.getAll)
+const { data: workspaces } = useWorkspaces().list()
 const workspace = computed(() =>
-  workspacesStore.getByKey(props.form?.workspace_id),
+  workspaces.value?.find(w => w.id === props.form?.workspace_id)
 )
 const loading = ref(false)
 const workspacesSelectOptions = computed(() =>

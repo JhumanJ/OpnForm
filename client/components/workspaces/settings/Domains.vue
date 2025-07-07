@@ -95,7 +95,7 @@
 const { updateCustomDomains } = useWorkspaces()
 const alert = useAlert()
 const crisp = useCrisp()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const subscriptionModalStore = useSubscriptionModalStore()
 

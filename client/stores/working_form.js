@@ -3,7 +3,7 @@ import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
-import { useAuthStore } from '~/stores/auth'
+
 import { useForm } from '~/composables/useForm'
 
 export const useWorkingFormStore = defineStore("working_form", {
@@ -184,7 +184,7 @@ export const useWorkingFormStore = defineStore("working_form", {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
         return
       }
-      if (originalBlockDefinition?.auth_required && !useAuthStore().check) {
+      if (originalBlockDefinition?.auth_required && !useAuthFlow().isAuthenticated.value) {
         useAlert().error('Please login first to add this block')
         return
       }

@@ -71,7 +71,7 @@ const props = defineProps({
 const route = useRoute()
 const { sharedNavigationSections, createNavItem } = useSharedNavigation()
 
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 // Check if current route matches a prefix
 function isActiveRoute(routeName) {

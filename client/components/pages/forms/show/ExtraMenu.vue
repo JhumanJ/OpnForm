@@ -94,7 +94,7 @@ const props = defineProps({
 
 const formsStore = useFormsStore()
 const { data: user } = useAuth().user()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const loadingDuplicate = ref(false)
 const loadingDelete = ref(false)

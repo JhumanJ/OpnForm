@@ -171,8 +171,8 @@ useOpnSeoMeta({
 
 // Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const workspace = useWorkspaces().current
-const workspaceId = computed(() => workspace.value?.id)
+const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
+
 const {
   forms,
   isLoading: isFormsLoading,
@@ -184,7 +184,7 @@ const {
   workspaceId,
   {
     fetchAll: true,
-    enabled: import.meta.client,
+    enabled: computed(() => import.meta.client && !!workspaceId.value),
   }
 )
 

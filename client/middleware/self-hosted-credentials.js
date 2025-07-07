@@ -1,9 +1,11 @@
 export default defineNuxtRouteMiddleware(async () => {
-  const { isAuthenticated, userData } = useAuthFlow()
+  const { isAuthenticated } = useAuthFlow()
+  const { user } = useAuth()
+  const { data: userData } = user()
 
   if (useFeatureFlag('self_hosted')) {
     if (isAuthenticated.value && userData.value?.email === 'admin@opnform.com') {
-      return navigateTo({ name: "update-credentials" })
+      throw createError({ statusCode: 403, statusMessage: 'Please update your credentials' })
     }
   }
 })

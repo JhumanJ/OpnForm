@@ -85,8 +85,7 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useAuthStore } from "../../stores/auth"
+
 
 export default {
   name: "Breadcrumb",
@@ -99,9 +98,9 @@ export default {
   },
 
   setup() {
-    const authStore = useAuthStore()
+    const { isAuthenticated } = useAuthFlow()
     return {
-      authenticated: computed(() => authStore.check),
+      authenticated: isAuthenticated,
     }
   },
 

@@ -67,7 +67,7 @@ const props = defineProps({
   }
 })
 
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 const { data: user } = useAuth().user()
 
 // Modal state

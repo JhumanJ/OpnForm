@@ -159,7 +159,7 @@ export default {
     })
     
 
-    const { user } = storeToRefs(useAuthStore())
+    const { user } = useAuth()
     const formsStore = useFormsStore()
     const { content: form } = storeToRefs(useWorkingFormStore())
     const { getCurrent: workspace } = storeToRefs(useWorkspacesStore())

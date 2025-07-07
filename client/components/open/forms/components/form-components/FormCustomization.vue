@@ -237,7 +237,7 @@ const showGoogleFontPicker = ref(false)
 const { $i18n } = useNuxtApp()
 
 const { data: user } = useAuth().user()
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const isPro = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return true

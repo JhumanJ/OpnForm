@@ -110,7 +110,7 @@
 <script setup>
 const alert = useAlert()
 
-const workspace = useWorkspaces().current
+const { current: workspace } = useCurrentWorkspace()
 
 const subscriptionModalStore = useSubscriptionModalStore()
 const crisp = useCrisp()

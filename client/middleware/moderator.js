@@ -1,6 +1,9 @@
 export default defineNuxtRouteMiddleware(() => {
-  const { isAuthenticated, userData } = useAuthFlow()
+  const { isAuthenticated } = useAuthFlow()
+  const { user } = useAuth()
+  const { data: userData } = user()
+  
   if (isAuthenticated.value && !userData.value?.moderator) {
-    return navigateTo({ name: "home" })
+    throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
 })
