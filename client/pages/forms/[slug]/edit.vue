@@ -34,7 +34,9 @@ const { detail: formDetail } = useForms()
 const slug = route.params.slug
 
 // Get form by slug using TanStack Query
-const { data: form, isLoading: formsLoading, error } = formDetail(slug)
+const { data: form, isLoading: formsLoading, error } = formDetail(slug,{
+  enabled: import.meta.client,
+})
 
 const updatedForm = storeToRefs(workingFormStore).content
 const formInitialHash = ref(null)

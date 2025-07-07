@@ -39,7 +39,9 @@ export function useForms() {
       onSuccess: (newForm) => {
         // Update workspace forms list
         queryClient.setQueriesData(['forms', 'listAll', newForm.workspace_id], (old) => {
-          if (!old) return [newForm, ...old]
+          if (!Array.isArray(old) || old.length === 0) {
+            return [newForm]
+          }
           return [newForm, ...old]
         })
         // Cache the new form
@@ -53,8 +55,9 @@ export function useForms() {
   const update = (options = {}) => {
     return useMutation({
       mutationFn: ({ id, data }) => formsApi.update(id, data),
-      onSuccess: (updatedForm, { id }) => {
+      onSuccess: (response, { id }) => {
         // Update individual form cache
+        const updatedForm = response.form
         queryClient.setQueryData(['forms', id], updatedForm)
         if (updatedForm.slug) {
           queryClient.setQueryData(['forms', 'slug', updatedForm.slug], updatedForm)
@@ -62,8 +65,8 @@ export function useForms() {
         
         // Update in workspace lists
         queryClient.setQueriesData(['forms', 'listAll'], (old) => {
-          if (!old) return old
-          return old.map(form => 
+          if (!Array.isArray(old)) return old
+          return old.map(form =>
             form.id === id ? { ...form, ...updatedForm } : form
           )
         })
@@ -88,7 +91,7 @@ export function useForms() {
         
         // Remove from workspace lists
         queryClient.setQueriesData(['forms', 'listAll'], (old) => {
-          if (!old) return old
+          if (!Array.isArray(old)) return old
           return old.filter(form => form.id !== deletedId)
         })
       },
@@ -102,7 +105,9 @@ export function useForms() {
       onSuccess: (duplicatedForm) => {
         // Add to workspace forms list
         queryClient.setQueriesData(['forms', 'listAll', duplicatedForm.workspace_id], (old) => {
-          if (!old) return [duplicatedForm, ...old]
+          if (!Array.isArray(old) || old.length === 0) {
+            return [duplicatedForm]
+          }
           return [duplicatedForm, ...old]
         })
         // Cache the duplicated form
@@ -146,14 +151,16 @@ export function useForms() {
         // Remove from old workspace list
         if (oldWorkspaceId) {
           queryClient.setQueriesData(['forms', 'listAll', oldWorkspaceId], (old) => {
-            if (!old) return old
+            if (!Array.isArray(old)) return old
             return old.filter(form => form.id !== id)
           })
         }
         
         // Add to new workspace list
         queryClient.setQueriesData(['forms', 'listAll', newWorkspaceId], (old) => {
-          if (!old) return [updatedForm, ...old]
+          if (!Array.isArray(old) || old.length === 0) {
+            return [updatedForm]
+          }
           return [updatedForm, ...old]
         })
       },

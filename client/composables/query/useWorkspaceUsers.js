@@ -43,6 +43,7 @@ export function useWorkspaceUsers() {
         // Update invites cache since /users/add actually creates an invitation
         queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
           if (!old) return [newInvite]
+          if (!Array.isArray(old)) return old
           return [...old, newInvite]
         })
       },
@@ -56,7 +57,7 @@ export function useWorkspaceUsers() {
       onSuccess: (_, removedUserId) => {
         // Update users cache for this workspace
         queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
-          if (!old) return old
+          if (!Array.isArray(old)) return old
           return old.filter(user => user.id !== removedUserId)
         })
       },
@@ -70,8 +71,8 @@ export function useWorkspaceUsers() {
       onSuccess: (updatedUser, { userId }) => {
         // Update users cache for this workspace
         queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
-          if (!old) return old
-          return old.map(user => 
+          if (!Array.isArray(old)) return old
+          return old.map(user =>
             user.id === userId ? { ...user, ...updatedUser } : user
           )
         })
@@ -87,8 +88,8 @@ export function useWorkspaceUsers() {
       onSuccess: (updatedInvite, inviteId) => {
         // Update invites cache for this workspace
         queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
-          if (!old) return old
-          return old.map(invite => 
+          if (!Array.isArray(old)) return old
+          return old.map(invite =>
             invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
           )
         })
@@ -103,7 +104,7 @@ export function useWorkspaceUsers() {
       onSuccess: (_, cancelledInviteId) => {
         // Update invites cache for this workspace
         queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
-          if (!old) return old
+          if (!Array.isArray(old)) return old
           return old.filter(invite => invite.id !== cancelledInviteId)
         })
       },

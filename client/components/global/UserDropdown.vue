@@ -34,21 +34,23 @@
 <script setup>
 import { computed } from "vue"
 
-const formsStore = useFormsStore()
-const workspacesStore = useWorkspacesStore()
 const router = useRouter()
 const { openUserSettings } = useAppModals()
 const authFlow = useAuthFlow()
 
 const { data: user } = useAuth().user()
 
+// Initialize composables that rely on Vue's provide/inject at top-level to avoid context issues
+const formsQueryUtils = useForms()
+const workspacesQueryUtils = useWorkspaces()
+
 const logout = async () => {
   // Log out the user.
   authFlow.handleLogout()
 
-  // Reset store
-  workspacesStore.resetState()
-  formsStore.resetState()
+  // Invalidate caches
+  formsQueryUtils.invalidateAll()
+  workspacesQueryUtils.invalidateAll()
 
   // Redirect to login.
   router.push({ name: "login" })

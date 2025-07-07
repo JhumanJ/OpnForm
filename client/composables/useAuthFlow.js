@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 
@@ -5,11 +6,23 @@ export const useAuthFlow = () => {
   const authStore = useAuthStore()
   const formsStore = useFormsStore()
   const logEvent = useAmplitude().logEvent
-  const { list: fetchWorkspaces } = useWorkspaces()
-  const { user, invalidateUser } = useAuth()
+  const router = useRouter()
+
+  // Initialize all Vue Query hooks at the top level
+  const { list: workspacesQuery } = useWorkspaces()
+  const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
+  
+  // Get the workspace list query instance
+  const workspacesQueryInstance = workspacesQuery()
+  
+  // Get the user query instance
+  const userQueryInstance = user()
+  
+  // Prepare logout mutation ahead of time within a valid Vue context
+  const logoutMutation = logoutMutationFactory()
 
   // Call the user query at the top level and get data directly
-  const { data: userData } = user()
+  const { data: userData } = userQueryInstance
 
   // Computed properties moved from auth store
   const isAuthenticated = computed(() => {
@@ -40,21 +53,20 @@ export const useAuthFlow = () => {
     // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Fetch workspaces and trigger user query
+    // 2. Fetch workspaces and trigger user query using query methods
     const [workspacesResult] = await Promise.all([
-      fetchWorkspaces(),
+      workspacesQueryInstance.refetch(),
       // Invalidate user query to trigger fresh fetch with new token
       invalidateUser()
     ])
-    const workspaces = workspacesResult
+    const workspaces = workspacesResult.data
 
     // 3. Wait for user data to be fetched by TanStack Query
     // The user query will automatically cache and trigger onSuccess
-    const freshUserQuery = user()
-    await freshUserQuery.suspense()
+    await userQueryInstance.refetch()
     
     // Initialize service clients with user data
-    initServiceClients(freshUserQuery.data.value)
+    initServiceClients(userQueryInstance.data.value)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -73,7 +85,7 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData: freshUserQuery.data.value, workspaces, isNewUser }
+    return { userData: userQueryInstance.data.value, workspaces, isNewUser }
   }
 
   /**
@@ -89,8 +101,7 @@ export const useAuthFlow = () => {
     // If we have a token but no user data, fetch the user data
     if (authStore.token && !isAuthenticated.value) {
       try {
-        const userQuery = user()
-        await userQuery.suspense()
+        await userQueryInstance.refetch()
         return true
       } catch (error) {
         console.error('Auth verification failed:', error)
@@ -172,9 +183,6 @@ export const useAuthFlow = () => {
    * Coordinates between TanStack Query mutation and store cleanup
    */
   const handleLogout = async () => {
-    const { logout } = useAuth()
-    const logoutMutation = logout()
-    
     try {
       await logoutMutation.mutateAsync()
     } catch (error) {
@@ -186,7 +194,7 @@ export const useAuthFlow = () => {
     formsStore.set([])
     
     // Navigate to login page
-    useRouter().push({ name: 'login' })
+    router.push({ name: 'login' })
   }
 
   return {

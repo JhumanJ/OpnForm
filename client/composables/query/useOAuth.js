@@ -40,6 +40,7 @@ export function useOAuth() {
         // Add to providers list
         queryClient.setQueryData(['oauth', 'providers'], (old) => {
           if (!old) return [newProvider]
+          if (!Array.isArray(old)) return [newProvider]
           // Update if exists, add if new
           const existingIndex = old.findIndex(p => p.service === newProvider.service)
           if (existingIndex >= 0) {
@@ -66,7 +67,8 @@ export function useOAuth() {
         // Update providers list
         queryClient.setQueryData(['oauth', 'providers'], (old) => {
           if (!old) return [updatedProvider]
-          return old.map(provider => 
+          if (!Array.isArray(old)) return old
+          return old.map(provider =>
             provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
           )
         })
@@ -85,7 +87,8 @@ export function useOAuth() {
         // Update providers list
         queryClient.setQueryData(['oauth', 'providers'], (old) => {
           if (!old) return [updatedProvider]
-          return old.map(provider => 
+          if (!Array.isArray(old)) return old
+          return old.map(provider =>
             provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
           )
         })
@@ -103,7 +106,7 @@ export function useOAuth() {
         
         // Remove from providers list
         queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return old
+          if (!Array.isArray(old)) return old
           return old.filter(provider => provider.id !== deletedProviderId)
         })
       },

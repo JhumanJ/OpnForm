@@ -80,6 +80,7 @@ export function useFormIntegrations() {
         // Add to integrations list
         queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
           if (!old) return [newIntegration]
+          if (!Array.isArray(old)) return old
           return [...old, newIntegration]
         })
         // Cache the integration
@@ -98,8 +99,8 @@ export function useFormIntegrations() {
         
         // Update in integrations list
         queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!old) return old
-          return old.map(integration => 
+          if (!Array.isArray(old)) return old
+          return old.map(integration =>
             integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
           )
         })
@@ -118,7 +119,7 @@ export function useFormIntegrations() {
         
         // Remove from integrations list
         queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!old) return old
+          if (!Array.isArray(old)) return old
           return old.filter(integration => integration.id !== integrationId)
         })
       },

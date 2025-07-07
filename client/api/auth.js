@@ -1,7 +1,5 @@
 import { apiService } from './base'
 
-const BASE_PATH = ''
-
 export const authApi = {
   // User operations
   user: {

@@ -7,9 +7,11 @@
     
     <!-- Stats and Menu -->
     <div class="flex items-center gap-4 relative text-sm text-neutral-500">
+      <!-- Status Badges -->
+      <FormStatusBadges class="hidden md:block" :form="form" :with-tags="false" size="sm" />
+      
       <!-- Last Updated -->
-      <span class="hidden md:inline text-xs whitespace-nowrap" title="Last updated">Updated {{ form.last_edited_human }}</span>
-      <span class="hidden md:inline">•</span>
+      <span class="hidden lg:inline text-xs whitespace-nowrap" title="Last updated">Updated {{ form.last_edited_human }}</span>
 
       <!-- Views -->
       <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
@@ -51,6 +53,7 @@
 
 <script setup>
 import ExtraMenu from "~/components/pages/forms/show/ExtraMenu.vue"
+import FormStatusBadges from "~/components/open/forms/components/FormStatusBadges.vue"
 import { formatNumber, formatNumberWithCommas } from "~/lib/utils.js"
 
 defineProps({
