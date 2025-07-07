@@ -1,12 +1,10 @@
-import { apiService } from './base'
-
-const BASE_PATH = '/templates'
+import { apiService as api } from './base'
 
 export const templatesApi = {
   // Template operations
-  list: (options) => apiService.get(BASE_PATH, options),
-  get: (slug, options) => apiService.get(`${BASE_PATH}/${slug}`, options),
-  create: (data) => apiService.post(BASE_PATH, data),
-  update: (id, data) => apiService.put(`${BASE_PATH}/${id}`, data),
-  delete: (id) => apiService.delete(`${BASE_PATH}/${id}`)
+  list: (params = {}) => api.get("/templates", { params }),
+  get: (slug) => api.get(`/templates/${slug}`),
+  create: (data) => api.post("/templates", data),
+  update: (id, data) => api.put(`/templates/${id}`, data),
+  delete: (id) => api.delete(`/templates/${id}`)
 }

@@ -29,6 +29,7 @@
 
       <templates-list
         :templates="templates"
+        :loading="loading"
         :filter-types="false"
         :show-industries="false"
       >
@@ -52,25 +53,30 @@
 import { computed } from "vue"
 import OpenFormFooter from "../../../components/pages/OpenFormFooter.vue"
 import Breadcrumb from "~/components/global/Breadcrumb.vue"
-import { loadAllTemplates } from "~/stores/templates.js"
+import { useTemplates } from "~/composables/query/useTemplates"
+import { useTemplateMeta } from "~/composables/useTemplateMeta"
 
 defineRouteRules({
   swr: 3600,
 })
 
 const route = useRoute()
-const templatesStore = useTemplatesStore()
+const { list } = useTemplates()
+const { types: typesMap } = useTemplateMeta()
 
-loadAllTemplates(templatesStore)
+const { data: allTemplates, isLoading: loading } = list()
+
+const type = computed(() => typesMap.get(route.params.slug))
 
 // Computed
-const templates = computed(() =>
-  templatesStore.getAll.filter((item) => {
+const templates = computed(() => {
+  if (!allTemplates.value) return []
+  return allTemplates.value.filter((item) => {
     return item.types && item.types.length > 0
       ? item.types.includes(route.params.slug)
       : false
-  }),
-)
+  })
+})
 const breadcrumbs = computed(() => {
   if (!type.value) {
     return [{ route: { name: "templates" }, label: "Templates" }]
@@ -80,8 +86,6 @@ const breadcrumbs = computed(() => {
     { label: type.value.name },
   ]
 })
-
-const type = computed(() => templatesStore.types.get(route.params.slug))
 
 useOpnSeoMeta({
   title: () => {

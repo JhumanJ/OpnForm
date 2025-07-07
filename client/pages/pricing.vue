@@ -304,7 +304,7 @@
                 Nonprofit & Student Discount — 50%
               </p>
               <p class="mt-1 text-base font-medium leading-7 text-yellow-600">
-                Whether your nonprofit is large or small, OpnForm’s online Form
+                Whether your nonprofit is large or small, OpnForm's online Form
                 Builder helps your organization help others. It takes just a few
                 minutes to create and publish your forms online. As an exclusive
                 benefit, we offer nonprofits & students a 50-percent discount!
@@ -399,12 +399,12 @@
 </template>
 
 <script>
-import {computed} from "vue"
-
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
+import Faq from '~/components/pages/pricing/Faq.vue'
+import { useAuthFlow } from '~/composables/useAuthFlow'
 
 export default {
-  components: {PricingTable},
+  components: {PricingTable, Faq},
   layout: "default",
 
   setup() {
@@ -420,9 +420,9 @@ export default {
       ],
     })
 
+    const { isAuthenticated: authenticated } = useAuthFlow()
     return {
-      user: computed(() => useAuth().user().data.value),
-      authenticated: computed(() => useAuthFlow().isAuthenticated.value),
+      authenticated,
     }
   },
 

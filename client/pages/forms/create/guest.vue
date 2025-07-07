@@ -26,20 +26,20 @@
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
-import { fetchTemplate } from "~/stores/templates.js"
+import { useTemplates } from "~/composables/query/useTemplates"
 
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
-const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
 const workspacesStore = useWorkspacesStore()
 const route = useRoute()
 
-// Fetch the template
-if (route.query.template !== undefined && route.query.template) {
-  const { data } = await fetchTemplate(route.query.template)
-  templatesStore.save(data.value)
+let template = null
+if (route.query.template) {
+  const { data, suspense } = useTemplates().detail(route.query.template)
+  await suspense()
+  template = data.value
 }
 
 // Store values
@@ -74,11 +74,8 @@ onMounted(() => {
   ])
 
   form.value = initForm({}, true)
-  if (route.query.template !== undefined && route.query.template) {
-    const template = templatesStore.getByKey(route.query.template)
-    if (template && template.structure) {
-      form.value = useForm({ ...form.value.data(), ...template.structure })
-    }
+  if (template && template.structure) {
+    form.value = useForm({ ...form.value.data(), ...template.structure })
   } else {
     // No template loaded, ask how to start
     showInitialFormModal.value = true

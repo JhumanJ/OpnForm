@@ -95,7 +95,7 @@
           <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
             Template Preview
           </p>
-          <open-complete-form
+          <OpenCompleteForm
             ref="open-complete-form"
             :form="form"
             :mode="FormMode.TEST"
@@ -266,121 +266,92 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import OpenCompleteForm from "../../components/open/forms/OpenCompleteForm.vue"
-import Breadcrumb from "~/components/global/Breadcrumb.vue"
-import SingleTemplate from "../../components/pages/templates/SingleTemplate.vue"
-import { fetchTemplate } from "~/stores/templates.js"
+import { computed, ref } from "vue"
+import { useRoute } from "vue-router"
+import { useTemplates } from "~/composables/query/useTemplates"
 import FormTemplateModal from "~/components/open/forms/components/templates/FormTemplateModal.vue"
+import TemplateTags from "~/components/pages/templates/TemplateTags.vue"
+import SingleTemplate from "~/components/pages/templates/SingleTemplate.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
-
-defineRouteRules({
-  swr: 3600,
-})
-
-const { copy } = useClipboard()
-const { isAuthenticated } = useAuthFlow()
-const { user } = useAuth()
-const { data: userData } = user()
-const templatesStore = useTemplatesStore()
+import { cleanQuotes } from "~/lib/utils"
+import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 
 const route = useRoute()
-const slug = computed(() => route.params.slug)
+const { detail, list } = useTemplates()
 
-const template = computed(() => templatesStore.getByKey(slug.value))
-const form = computed(() => template.value.structure)
+const { data: template } = detail(route.params.slug)
+const { data: allTemplates } = list()
 
-// Fetch the template
-if (!template.value) {
-  const { data } = await fetchTemplate(slug.value)
-  templatesStore.save(data.value)
-}
+const form = computed(() => {
+  if (!template.value) {
+    return null
+  }
+  return template.value.structure
+})
 
-// Fetch related templates
-const { data: relatedTemplatesData } = await useAsyncData(
-  "related-templates",
-  () => {
-    return Promise.all(
-      template.value.related_templates.map((slug) => {
-        if (templatesStore.getByKey(slug)) {
-          return Promise.resolve(templatesStore.getByKey(slug))
-        }
-        return fetchTemplate(slug).then((res) => res.data.value)
-      }),
-    )
-  },
-)
-templatesStore.save(relatedTemplatesData.value)
-templatesStore.initTypesAndIndustries()
+const relatedTemplates = computed(() => {
+  if (!template.value?.related_templates || !allTemplates.value) {
+    return []
+  }
+  const relatedSlugs = new Set(template.value.related_templates)
+  return allTemplates.value.filter(
+    (t) => relatedSlugs.has(t.slug) && t.slug !== template.value.slug,
+  )
+})
 
-// State
 const showFormTemplateModal = ref(false)
+const { data: user } = useAuth().user()
+const canEditTemplate = computed(
+  () => user.value && (user.value.admin || user.value.template_editor),
+)
 
-// Computed
+const createFormWithTemplateUrl = computed(() => {
+  if (!user.value) {
+    return {
+      name: "register",
+      query: {
+        redirect: route.fullPath,
+        template: route.params.slug,
+      },
+    }
+  }
+  return {
+    name: "forms-create",
+    query: {
+      template: route.params.slug,
+    },
+  }
+})
+
 const breadcrumbs = computed(() => {
   if (!template.value) {
-    return [{ route: { name: "templates" }, label: "Templates" }]
+    return []
   }
   return [
-    { route: { name: "templates" }, label: "Templates" },
-    { label: template.value.name },
+    { name: "Templates", to: { name: "templates" } },
+    {
+      name: template.value.name,
+      to: { name: "templates-slug", params: { slug: template.value.slug } },
+    },
   ]
 })
-const relatedTemplates = computed(() =>
-  templatesStore.getByKey(template?.value?.related_templates),
-)
-const canEditTemplate = computed(
-  () =>
-    isAuthenticated.value &&
-    template.value &&
-    template.value?.from_prod !== true &&
-    (userData.value.admin ||
-      userData.value.template_editor ||
-      template.value.creator_id === userData.value.id),
-)
-const createFormWithTemplateUrl = computed(() => {
-  return {
-    name: isAuthenticated.value ? "forms-create" : "forms-create-guest",
-    query: { template: template?.value?.slug },
-  }
-})
-
-// methods
-const cleanQuotes = (str) => {
-  // Remove starting and ending quotes if any
-  return str ? str.replace(/^"/, "").replace(/"$/, "") : ""
-}
 
 const copyTemplateUrl = () => {
-  copy(template.value.share_url)
-  useAlert().success("Copied!")
+  navigator.clipboard.writeText(window.location.href)
+  useAlert().success("URL copied to clipboard!")
 }
 
-useOpnSeoMeta({
-  title: () => {
-    if (!template.value || !template.value) return "Form Template"
-    return template.value.name
-  },
-  description() {
-    if (!template.value || !template.value) return null
-    // take the first 140 characters of the description
-    return (
-      template.value.short_description?.substring(0, 140) +
-      "... | Customize any template and create your own form in minutes."
-    )
-  },
-  ogImage() {
-    if (!template.value || !template.value) return null
-    return template.value.image_url
-  },
-  robots: () => {
-    if (!template.value || !template.value) return null
-    return template.value.publicly_listed ? null : "noindex"
-  },
-})
+useOpnSeoMeta(
+  computed(() => ({
+    title: template.value?.name,
+    description: template.value?.short_description,
+  })),
+)
 </script>
 
-<style lang="scss">
+<style>
+@reference '~/css/app.css';
+
 .nf-text {
   @apply space-y-4;
   h2 {

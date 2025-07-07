@@ -138,3 +138,8 @@ export function formatNumberWithCommas(num) {
   }
   return num.toLocaleString()
 }
+
+export function cleanQuotes(str) {
+  if (!str) return ''
+  return str.replace(/^"|"$/g, '')
+}

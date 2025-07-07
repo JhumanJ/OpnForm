@@ -7,8 +7,8 @@ export function useTemplates() {
   // Queries
   const list = (options = {}) => {
     return useQuery({
-      queryKey: ['templates', 'list', options.filters],
-      queryFn: () => templatesApi.list(options),
+      queryKey: ['templates', 'list', { query: options.query }],
+      queryFn: () => templatesApi.list(options.query),
 
       onSuccess: (data) => {
         data?.forEach(template => {
@@ -23,7 +23,7 @@ export function useTemplates() {
   const detail = (slug, options = {}) => {
     return useQuery({
       queryKey: ['templates', 'slug', slug],
-      queryFn: () => templatesApi.get(slug, options),
+      queryFn: () => templatesApi.get(slug),
       enabled: !!slug,
       onSuccess: (template) => {
         if (template) {

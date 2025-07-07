@@ -86,7 +86,7 @@
     </template>
 
     <template #footer>
-      <div class="flex justify-end gap-x-2">
+      <div class="flex justify-end gap-x-2 w-full">
         <UButton
           color="neutral"
           variant="outline"
@@ -105,8 +105,10 @@
           "
           label="Delete template"
         />
+        <div class="grow"/>
         <UButton
-          :loading="templateForm?.busy"
+          class="px-8"
+          :loading="createMutation.isPending.value || updateMutation.isPending.value"
           @click="onSubmit"
           :label="template ? 'Update' : 'Create'"
         />
@@ -118,7 +120,8 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import QuestionsEditor from "./QuestionsEditor.vue"
-import { templatesApi } from "~/api"
+import { useTemplates } from "~/composables/query/useTemplates"
+import { useTemplateMeta } from "~/composables/useTemplateMeta"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -126,12 +129,16 @@ const props = defineProps({
   template: { type: Object, required: false, default: () => {} },
 })
 
-const templatesStore = useTemplatesStore()
 const router = useRouter()
 const { data: user } = useAuth().user()
-const templates = computed(() => [...templatesStore.content.values()])
-const industries = computed(() => [...templatesStore.industries.values()])
-const types = computed(() => [...templatesStore.types.values()])
+
+const { list, create, update, remove } = useTemplates()
+const { data: templates } = list()
+
+const { industries: industriesMap, types: typesMap } = useTemplateMeta()
+
+const industries = computed(() => [...(industriesMap.value?.values() ?? [])])
+const types = computed(() => [...(typesMap.value?.values() ?? [])])
 
 const templateForm = ref(null)
 const emit = defineEmits(["close"])
@@ -157,22 +164,13 @@ onMounted(() => {
       short_description: "",
       description: "",
       image_url: "",
-      types: null,
-      industries: null,
-      related_templates: null,
+      types: [],
+      industries: [],
+      related_templates: [],
       questions: [],
     },
   )
 })
-
-watch(
-  () => props.show,
-  () => {
-    if (props.show) {
-      loadAllTemplates(templatesStore)
-    }
-  },
-)
 
 const typesOptions = computed(() => {
   return Object.values(types.value).map((type) => {
@@ -191,6 +189,7 @@ const industriesOptions = computed(() => {
   })
 })
 const templatesOptions = computed(() => {
+  if (!templates.value) return []
   return Object.values(templates.value).map((template) => {
     return {
       name: template.name,
@@ -203,6 +202,31 @@ const close = () => {
   emit("close")
 }
 
+const createMutation = create({
+  onSuccess: () => {
+    useAlert().success("Template created successfully")
+    emit("close")
+  },
+  onError: (error) => useAlert().error(error.message),
+})
+
+const updateMutation = update({
+  onSuccess: () => {
+    useAlert().success("Template updated successfully")
+    emit("close")
+  },
+  onError: (error) => useAlert().error(error.message),
+})
+
+const deleteMutation = remove({
+  onSuccess: () => {
+    useAlert().success("Template deleted successfully")
+    router.push({ name: "templates" })
+    emit("close")
+  },
+  onError: (error) => useAlert().error(error.message),
+})
+
 const onSubmit = () => {
   if (props.template) {
     updateFormTemplate()
@@ -210,39 +234,16 @@ const onSubmit = () => {
     createFormTemplate()
   }
 }
-const createFormTemplate = async () => {
+const createFormTemplate = () => {
   templateForm.value.form = props.form
-  await templateForm.value.post("/templates").then((data) => {
-    if (data.message) {
-      useAlert().success(data.message)
-    }
-    templatesStore.save(data.data)
-    emit("close")
-  })
+  createMutation.mutate(templateForm.value)
 }
-const updateFormTemplate = async () => {
+const updateFormTemplate = () => {
   templateForm.value.form = props.form
-  await templateForm.value
-    .put("/templates/" + props.template.id)
-    .then((data) => {
-      if (data.message) {
-        useAlert().success(data.message)
-      }
-      templatesStore.save(data.data)
-      emit("close")
-    })
+  updateMutation.mutate({ id: props.template.id, data: templateForm.value })
 }
-const deleteFormTemplate = async () => {
+const deleteFormTemplate = () => {
   if (!props.template) return
-  templatesApi.delete(props.template.id).then(
-    (data) => {
-      if (data.message) {
-        useAlert().success(data.message)
-      }
-      router.push({ name: "templates" })
-      templatesStore.remove(props.template)
-      emit("close")
-    },
-  )
+  deleteMutation.mutate(props.template.id)
 }
 </script>

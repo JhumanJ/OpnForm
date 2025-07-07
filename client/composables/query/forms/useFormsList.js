@@ -53,7 +53,7 @@ export function useFormsList(workspaceId, options = {}) {
     
   // Computed values for easier access
   const forms = computed(() => 
-    query.data.value?.pages?.flatMap(page => page.data) || []
+    query.data.value?.pages?.filter(page => page !== null)?.flatMap(page => page.data) || []
   )
   const currentPage = computed(() => {
     const pages = query.data.value?.pages

@@ -178,9 +178,9 @@
 
 <script>
 import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
 import MonthlyYearlySelector from "./MonthlyYearlySelector.vue"
 import CustomPlan from "./CustomPlan.vue"
+import { useAuthFlow } from "~/composables/useAuthFlow"
 
 MonthlyYearlySelector.compatConfig = { MODE: 3 }
 
@@ -197,9 +197,10 @@ export default {
   },
   setup() {
     const subscriptionModalStore = useSubscriptionModalStore()
+    const { isAuthenticated: authenticated } = useAuthFlow()
     return {
       subscriptionModalStore,
-      authenticated: computed(() => useAuthFlow().isAuthenticated.value),
+      authenticated,
       user: computed(() => useAuth().user().data.value),
     }
   },
