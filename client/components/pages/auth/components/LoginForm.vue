@@ -113,7 +113,7 @@ const props = defineProps({
 defineEmits(['openRegister'])
 
 // Composables
-const providersStore = useOAuthProvidersStore()
+const oAuth = useOAuth()
 const authFlow = useAuthFlow()
 const router = useRouter()
 
@@ -174,6 +174,6 @@ const redirect = () => {
 }
 
 const signInwithGoogle = () => {
-  providersStore.guestConnect('google', true)
+  oAuth.guestConnect('google', true)
 }
 </script>

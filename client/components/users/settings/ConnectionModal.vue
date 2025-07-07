@@ -9,15 +9,6 @@
           Connect account
         </h2>
       </div>
-      <UButton
-        color="neutral"
-        variant="outline"
-        icon="i-heroicons-question-mark-circle"
-        size="sm"
-        @click="crisp.openHelpdesk()"
-      >
-        Help
-      </UButton>
     </template>
 
     <template #body>
@@ -78,8 +69,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const providersStore = useOAuthProvidersStore()
-const services = computed(() => providersStore.services)
+const oAuth = useOAuth()
+const services = oAuth.services
 const loading = ref(false)
 const showWidgetModal = ref(false)
 const selectedService = ref(null)
@@ -95,7 +86,6 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-
 function connect(service) {
   if (!service.enabled) {
     useAlert().error('This service is not enabled. Please contact support.')
@@ -109,7 +99,7 @@ function connect(service) {
   } else {
     // Use existing redirect flow
     loading.value = true
-    providersStore.connect(service.name)
+    oAuth.connect(service.name)
   }
 }
 </script>

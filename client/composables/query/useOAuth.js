@@ -3,13 +3,49 @@ import { oauthApi } from '~/api/oauth'
 
 export function useOAuth() {
   const queryClient = useQueryClient()
+  const alert = useAlert()
+
+  // Constants
+  const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
+
+  // Service definitions
+  const services = computed(() => {
+    return [
+      {
+        name: 'google',
+        title: 'Google',
+        icon: 'mdi:google',
+        enabled: useFeatureFlag('services.google.auth', false),
+        auth_type: 'redirect'
+      },
+      {
+        name: 'stripe',
+        title: 'Stripe',
+        icon: 'cib:stripe',
+        enabled: useFeatureFlag('billing.stripe_publishable_key', false),
+        auth_type: 'redirect'
+      },
+      {
+        name: 'telegram',
+        title: 'Telegram',
+        icon: 'mdi:telegram',
+        enabled: useFeatureFlag('services.telegram.bot_id', false),
+        auth_type: 'widget',
+        widget_file: 'TelegramWidget'
+      }
+    ]
+  })
+
+  // Utility to get service configuration
+  const getService = (service) => {
+    return services.value.find((item) => item.name === service)
+  }
 
   // Queries
   const providers = (options = {}) => {
     return useQuery({
       queryKey: ['oauth', 'providers'],
       queryFn: () => oauthApi.list(options),
-
       onSuccess: (data) => {
         data?.forEach(provider => {
           queryClient.setQueryData(['oauth', 'providers', provider.id], provider)
@@ -32,8 +68,56 @@ export function useOAuth() {
     })
   }
 
-  // Mutations
-  const connect = (options = {}) => {
+  // Enhanced connect method with redirect/newtab/autoClose support
+  const connect = (service, redirect = false, newtab = false, autoClose = false) => {
+    const serviceConfig = getService(service)
+    if (serviceConfig && serviceConfig.auth_type && serviceConfig.auth_type !== 'redirect') {
+      return Promise.resolve()
+    }
+
+    const intention = redirect ? new URL(window.location.href).pathname : undefined
+    
+    return oauthApi.connect(service, {
+      ...(intention && { intention }),
+      autoClose: autoClose 
+    })
+      .then((data) => {
+        if (newtab) {
+          window.open(data.url, '_blank')
+        } else {
+          window.location.href = data.url
+        }
+      })
+      .catch((error) => {
+        try {
+          alert.error(error.data.message)
+        } catch {
+          alert.error("An error occurred while connecting an account")
+        }
+      })
+  }
+
+  // Guest connect method
+  const guestConnect = (service, redirect = false) => {
+    const intention = new URL(window.location.href).pathname
+
+    return oauthApi.redirect(service, {
+      ...redirect ? { intention } : {},
+    })
+      .then((data) => {
+        window.open(data.url, '_blank')
+      })
+      .catch((error) => {
+        try {
+          alert.error(error.data.message)
+        } catch {
+          alert.error("An error occurred while connecting an account")
+        }
+      })
+  }
+
+  // Mutation for connect (programmatic)
+  const connectMutation = (options = {}) => {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.connect(service, data),
       onSuccess: (newProvider) => {
@@ -143,13 +227,33 @@ export function useOAuth() {
     return providers?.find(p => p.service === service) || null
   }
 
+  // Fetch providers method (wrapper for the query)
+  const fetchOAuthProviders = () => {
+    return queryClient.fetchQuery({
+      queryKey: ['oauth', 'providers'],
+      queryFn: () => oauthApi.list()
+    })
+  }
+
   return {
+    // Constants
+    googleDrivePermission,
+    
+    // Service definitions
+    services,
+    getService,
+    
     // Queries
     providers,
     provider,
     
-    // Mutations
+    // Enhanced connect methods
     connect,
+    guestConnect,
+    fetchOAuthProviders,
+    
+    // Mutations
+    connectMutation,
     callback,
     widgetCallback,
     remove,

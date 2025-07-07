@@ -157,7 +157,7 @@ defineEmits(['openLogin'])
 
 // Composables
 const { $utm } = useNuxtApp()
-const providersStore = useOAuthProvidersStore()
+const oAuth = useOAuth()
 const runtimeConfig = useRuntimeConfig()
 const authFlow = useAuthFlow()
 const router = useRouter()
@@ -266,6 +266,6 @@ const redirect = () => {
 }
 
 const signInwithGoogle = () => {
-  providersStore.guestConnect('google', true)
+  oAuth.guestConnect('google', true)
 }
 </script>

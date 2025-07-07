@@ -38,14 +38,12 @@
 </template>
 
 <script setup>
-import { oauthApi } from "~/api"
-
 const props = defineProps({
   show: Boolean,
   service: Object
 })
 
-const providersStore = useOAuthProvidersStore()
+const oAuth = useOAuth()
 const router = useRouter()
 const alert = useAlert()
 const emit = defineEmits(['close'])
@@ -70,6 +68,23 @@ const widgetComponent = computed(() => {
   return resolveComponent(props.service.widget_file)
 })
 
+// Widget callback mutation
+const widgetCallbackMutation = oAuth.widgetCallback({
+  onSuccess: (response) => {
+    if (response.intention) {
+      router.push(response.intention)
+    } else {
+      alert.success('Successfully connected')
+      emit('close')
+      oAuth.fetchOAuthProviders()
+    }
+  },
+  onError: (error) => {
+    alert.error(error?.data?.message || 'Failed to authenticate')
+    oAuth.fetchOAuthProviders()
+  }
+})
+
 const handleAuthData = async (data) => {
   try {
     if (!data) {
@@ -77,18 +92,10 @@ const handleAuthData = async (data) => {
       return
     }
 
-    const response = await oauthApi.widgetCallback(props.service.name, data)
-
-    if (response.intention) {
-      router.push(response.intention)
-    } else {
-      alert.success('Successfully connected')
-      emit('close')
-      providersStore.fetchOAuthProviders()
-    }
+    widgetCallbackMutation.mutate({ service: props.service.name, data })
   } catch (error) {
     alert.error(error?.data?.message || 'Failed to authenticate')
-    providersStore.fetchOAuthProviders()
+    oAuth.fetchOAuthProviders()
   }
 }
 </script>
