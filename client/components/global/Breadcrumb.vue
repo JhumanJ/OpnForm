@@ -15,32 +15,16 @@
             class="text-gray-400 hover:text-gray-500"
             :to="{ name: authenticated ? 'home' : 'index' }"
           >
-            <svg
+            <Icon
+              name="i-heroicons-home"
               class="flex-shrink-0 w-5 h-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            />
             <span class="sr-only">Home</span>
           </NuxtLink>
-          <svg
+          <Icon
+            name="i-heroicons-chevron-right"
             class="flex-shrink-0 w-5 h-5 text-gray-400 ml-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          />
         </div>
 
         <div
@@ -49,31 +33,23 @@
           class="flex items-center"
         >
           <NuxtLink
-            v-if="item.route"
+            v-if="item.to"
             class="text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
-            :to="item.route"
+            :to="item.to"
           >
-            {{ item.label }}
+            {{ item.name }}
           </NuxtLink>
           <div
             v-else
             class="text-sm font-semibold sm:w-full w-36 text-blue-500 truncate"
           >
-            {{ item.label }}
+            {{ item.name }}
           </div>
           <div v-if="index !== path.length - 1">
-            <svg
+            <Icon
+              name="i-heroicons-chevron-right"
               class="flex-shrink-0 w-5 h-5 text-gray-400 ml-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            />
           </div>
         </div>
       </div>
@@ -84,36 +60,27 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
 
-
-export default {
-  name: "Breadcrumb",
-  props: {
-    /**
-     * route: Route object
-     * label: Label
-     */
-    path: { type: Array },
+// Props
+defineProps({
+  /**
+   * Array of path items with structure:
+   * [{ name: string, to?: RouteLocationRaw }]
+   */
+  path: { 
+    type: Array, 
+    default: () => [] 
   },
+})
 
-  setup() {
-    const { isAuthenticated } = useAuthFlow()
-    return {
-      authenticated: isAuthenticated,
-    }
-  },
+// Composables
+const { isAuthenticated } = useAuthFlow()
 
-  data() {
-    return {
-      displayHome: true,
-    }
-  },
+// Reactive data
+const displayHome = ref(true)
 
-  computed: {},
-
-  mounted() {},
-
-  methods: {},
-}
+// Computed properties
+const authenticated = computed(() => isAuthenticated.value)
 </script>
