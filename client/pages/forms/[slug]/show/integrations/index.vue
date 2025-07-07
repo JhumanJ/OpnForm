@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <div class="w-full max-w-4xl mx-auto ">
+    <div class="w-full max-w-4xl mx-auto">
       <h1 class="font-semibold text-xl">
         Integrations
       </h1>
@@ -11,9 +11,11 @@
 
       <div
         v-if="isIntegrationsLoading"
-        class="my-6"
+        class="my-6 space-y-4"
       >
-        <Loader class="h-6 w-6 mx-auto" />
+        <USkeleton class="h-20 w-full" />
+        <USkeleton class="h-20 w-full" />
+        <USkeleton class="h-20 w-full" />
       </div>
       <div
         v-else-if="formIntegrationsList.length"
@@ -30,7 +32,7 @@
         v-else
         class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4"
       >
-        No integration yet form this form.
+        No integration yet for this form.
       </div>
 
       <h1 class="font-semibold mt-8 text-xl">
@@ -76,16 +78,25 @@ const props = defineProps({
 definePageMeta({
   middleware: "auth",
 })
+
 useOpnSeoMeta({
-  title: props.form
-    ? "Form Integrations - " + props.form.title
-    : "Form Integrations",
+  title: computed(() => props.form 
+    ? `Form Integrations - ${props.form.title}`
+    : "Form Integrations"
+  ),
 })
 
 const alert = useAlert()
 
 const { list, availableIntegrations, integrationsBySection } = useFormIntegrations()
-const { data: formIntegrationsData, isLoading: isIntegrationsLoading } = list(props.form.id)
+
+// Reactive form ID for proper dependency tracking
+const formId = computed(() => props.form?.id)
+
+const { 
+  data: formIntegrationsData, 
+  isLoading: isIntegrationsLoading,
+} = list(formId)
 
 // Get available integrations and sections from the composable
 const integrations = availableIntegrations
@@ -109,17 +120,16 @@ const openIntegration = (itemKey) => {
     return alert.warning("This integration is not available yet")
   }
 
-  if(integration.is_external && integration.url) {
+  if (integration.is_external && integration.url) {
     window.open(integration.url, '_blank')
     return
   }
 
   selectedIntegrationKey.value = itemKey
-  selectedIntegration.value = integrations.value.get(
-    selectedIntegrationKey.value,
-  )
+  selectedIntegration.value = integrations.value.get(selectedIntegrationKey.value)
   showIntegrationModal.value = true
 }
+
 const closeIntegrationModal = () => {
   showIntegrationModal.value = false
   nextTick(() => {

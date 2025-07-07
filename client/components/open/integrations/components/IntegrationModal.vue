@@ -98,8 +98,8 @@ const openHelp = () => {
 }
 
 // Use query composables to get form integrations
-const { integrations: formIntegrations } = useFormIntegrations()
-const { data: formIntegrationsData } = formIntegrations(props.form.id)
+const { list } = useFormIntegrations()
+const { data: formIntegrationsData } = list(computed(() => props.form.id))
 
 // Get the specific form integration by ID
 const formIntegration = computed(() => {
@@ -156,7 +156,7 @@ const save = () => {
       alert.success(data.message)
       // Invalidate the form integrations query to refetch updated data
       const { invalidateIntegrations } = useFormIntegrations()
-      invalidateIntegrations(props.form.id)
+      invalidateIntegrations(computed(() => props.form.id))
       emit("close")
     })
     .catch((error) => {

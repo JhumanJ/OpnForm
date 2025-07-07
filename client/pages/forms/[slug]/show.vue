@@ -77,28 +77,36 @@
                   >
                     <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
                   </UButton>
-                  <UButton
+                  <TrackClick
                     v-else
-                    v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
-                    target="_blank"
-                    :to="form.share_url"
-                    color="neutral"
-                    variant="outline"
-                    class="hover:no-underline"
-                    icon="i-heroicons-arrow-top-right-on-square"
+                    name="view_form_click"
+                    :properties="{form_id:form.id, form_slug:form.slug}"
                   >
-                    <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
-                  </UButton>
-                  <UButton
+                    <UButton
+                      target="_blank"
+                      :to="form.share_url"
+                      color="neutral"
+                      variant="outline"
+                      class="hover:no-underline"
+                      icon="i-heroicons-arrow-top-right-on-square"
+                    >
+                      <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
+                    </UButton>
+                  </TrackClick>
+                  <TrackClick
                     v-if="!workspace?.is_readonly"
-                    v-track.edit_form_click="{form_id: form.id, form_slug: form.slug}"
-                    color="primary"
-                    icon="i-heroicons-pencil"
-                    class="hover:no-underline"
-                    :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
+                    name="edit_form_click"
+                    :properties="{form_id: form.id, form_slug: form.slug}"
                   >
-                    Edit <span class="hidden md:inline">form</span>
-                  </UButton>
+                    <UButton
+                      color="primary"
+                      icon="i-heroicons-pencil"
+                      class="hover:no-underline"
+                      :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
+                    >
+                      Edit <span class="hidden md:inline">form</span>
+                    </UButton>
+                  </TrackClick>
                   <extra-menu
                     v-if="!workspace?.is_readonly"
                     :form="form"
@@ -173,6 +181,7 @@ import FormSidebar from "../../../components/layouts/FormSidebar.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
 import FormStatusBadges from "../../../components/open/forms/components/FormStatusBadges.vue"
+import TrackClick from "../../../components/global/TrackClick.vue"
 
 definePageMeta({
   layout: "empty",

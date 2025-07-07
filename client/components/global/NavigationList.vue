@@ -153,6 +153,15 @@ function handleClick(item) {
   if (typeof item.onClick === 'function') {
     item.onClick()
   }
+  // Handle navigation for items with 'to' property
+  else if (item.to) {
+    // Use navigateTo for internal navigation
+    navigateTo(item.to)
+  }
+  // Handle external links
+  else if (item.href) {
+    window.open(item.href, item.target || '_self')
+  }
   
   // Emit the click event for parent components
   emit('item-click', item)

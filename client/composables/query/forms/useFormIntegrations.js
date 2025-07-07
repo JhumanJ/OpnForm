@@ -1,6 +1,7 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 import integrationsList from '~/data/forms/integrations.json'
+import { unref } from 'vue'
 
 export function useFormIntegrations() {
   const queryClient = useQueryClient()
@@ -51,9 +52,9 @@ export function useFormIntegrations() {
   // TanStack Query functions
   const list = (formId, options = {}) => {
     return useQuery({
-      queryKey: ['forms', formId, 'integrations'],
-      queryFn: () => formsApi.integrations.list(formId, options),
-      enabled: !!formId,
+      queryKey: ['forms', unref(formId), 'integrations'],
+      queryFn: () => formsApi.integrations.list(unref(formId), options),
+      enabled: !!unref(formId),
       onSuccess: (data) => {
         data?.forEach(integration => {
           queryClient.setQueryData(['integrations', integration.id], integration)
@@ -65,9 +66,9 @@ export function useFormIntegrations() {
 
   const integrationEvents = (formId, integrationId, options = {}) => {
     return useQuery({
-      queryKey: ['forms', formId, 'integrations', integrationId, 'events'],
-      queryFn: () => formsApi.integrations.events(formId, integrationId, options),
-      enabled: !!(formId && integrationId),
+      queryKey: ['forms', unref(formId), 'integrations', unref(integrationId), 'events'],
+      queryFn: () => formsApi.integrations.events(unref(formId), unref(integrationId), options),
+      enabled: !!(unref(formId) && unref(integrationId)),
       ...options
     })
   }
@@ -126,12 +127,14 @@ export function useFormIntegrations() {
   }
 
   const invalidateIntegrations = (formId) => {
-    queryClient.invalidateQueries(['forms', formId, 'integrations'])
+    const formIdValue = unref(formId)
+    queryClient.invalidateQueries(['forms', formIdValue, 'integrations'])
   }
 
   // Utility function to get all integrations by form ID from cache
   const getAllByFormId = (formId) => {
-    const queryData = queryClient.getQueryData(['forms', formId, 'integrations'])
+    const formIdValue = unref(formId)
+    const queryData = queryClient.getQueryData(['forms', formIdValue, 'integrations'])
     return queryData || []
   }
 
