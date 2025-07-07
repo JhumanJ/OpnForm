@@ -1,6 +1,7 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { unref, computed } from 'vue'
 import { workspaceApi } from '~/api/workspace'
+import { chainCallbacks } from './index'
 
 export function useWorkspaceUsers() {
   const queryClient = useQueryClient()
@@ -37,78 +38,85 @@ export function useWorkspaceUsers() {
 
   // User management mutations
   const addUser = (workspaceId, options = {}) => {
+    const builtInOnSuccess = (response) => {
+      // Built-in cache management
+      // Extract invite from response if it exists, otherwise use the full response
+      const newInvite = response.invite || response
+      queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
+        if (!old) return [newInvite]
+        if (!Array.isArray(old)) return old
+        return [...old, newInvite]
+      })
+    }
+    
     return useMutation({
       mutationFn: (userData) => workspaceApi.users.add(unref(workspaceId), userData),
-      onSuccess: (newInvite) => {
-        // Update invites cache since /users/add actually creates an invitation
-        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
-          if (!old) return [newInvite]
-          if (!Array.isArray(old)) return old
-          return [...old, newInvite]
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const removeUser = (workspaceId, options = {}) => {
+    const builtInOnSuccess = (data, removedUserId) => {
+      // Built-in cache management
+      queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(user => user.id !== removedUserId)
+      })
+    }
+    
     return useMutation({
       mutationFn: (userId) => workspaceApi.users.remove(unref(workspaceId), userId),
-      onSuccess: (_, removedUserId) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(user => user.id !== removedUserId)
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const updateUserRole = (workspaceId, options = {}) => {
+    const builtInOnSuccess = (updatedUser, { userId }) => {
+      // Built-in cache management
+      queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map(user =>
+          user.id === userId ? { ...user, ...updatedUser } : user
+        )
+      })
+    }
+    
     return useMutation({
       mutationFn: ({ userId, data }) => workspaceApi.users.updateRole(unref(workspaceId), userId, data),
-      onSuccess: (updatedUser, { userId }) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.map(user =>
-            user.id === userId ? { ...user, ...updatedUser } : user
-          )
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   // Invite management mutations
   const resendInvite = (workspaceId, options = {}) => {
+    const builtInOnSuccess = (updatedInvite, inviteId) => {
+      // Built-in cache management
+      queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map(invite =>
+          invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
+        )
+      })
+    }
+    
     return useMutation({
       mutationFn: (inviteId) => workspaceApi.invites.resend(unref(workspaceId), inviteId),
-      onSuccess: (updatedInvite, inviteId) => {
-        // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.map(invite =>
-            invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
-          )
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const cancelInvite = (workspaceId, options = {}) => {
+    const builtInOnSuccess = (data, cancelledInviteId) => {
+      // Built-in cache management
+      queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(invite => invite.id !== cancelledInviteId)
+      })
+    }
+    
     return useMutation({
       mutationFn: (inviteId) => workspaceApi.invites.cancel(unref(workspaceId), inviteId),
-      onSuccess: (_, cancelledInviteId) => {
-        // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(invite => invite.id !== cancelledInviteId)
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 

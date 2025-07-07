@@ -1,7 +1,7 @@
 <template>
   <div v-if="form">
     <div
-      v-if="loadingDuplicate || loadingDelete"
+      v-if="duplicateFormMutationQuery.isPending.value || deleteFormMutation.isPending.value"
       class="pr-4 pt-2"
     >
       <Loader class="h-6 w-6 mx-auto" />
@@ -50,7 +50,7 @@
           <UButton
             class="flex-1"
             color="error"
-            :loading="loadingDelete"
+            :loading="deleteFormMutation.isPending.value"
             @click="deleteForm"
             label="Yes, delete it"
           />
@@ -76,7 +76,7 @@
 import { ref, defineProps, computed } from "vue"
 import FormTemplateModal from "../../../open/forms/components/templates/FormTemplateModal.vue"
 import FormWorkspaceModal from "../../../open/forms/components/FormWorkspaceModal.vue"
-import { formsApi } from "~/api"
+import { useForms } from "~/composables/query/forms/useForms"
 
 const { copy } = useClipboard()
 const router = useRouter()
@@ -92,12 +92,11 @@ const props = defineProps({
   portal: { type: [Boolean, String], required: false, default: false }
 })
 
-const formsStore = useFormsStore()
 const { data: user } = useAuth().user()
 const { current: workspace } = useCurrentWorkspace()
 
-const loadingDuplicate = ref(false)
-const loadingDelete = ref(false)
+const { remove: removeFormMutation, duplicate: duplicateFormMutation } = useForms()
+
 const showDeleteFormModal = ref(false)
 const showFormTemplateModal = ref(false)
 const showFormWorkspaceModal = ref(false)
@@ -169,38 +168,37 @@ const copyLink = () => {
   copy(props.form.share_url)
   useAlert().success("Copied!")
 }
+
+const deleteFormMutation = removeFormMutation({
+  onSuccess: (data) => {
+    useAlert().success(data.message)
+    showDeleteFormModal.value = false
+    router.push({ name: "home" })
+  },
+  onError: (error) => {
+    useAlert().error(error.data?.message || "Failed to delete form")
+  }
+})
+
+const duplicateFormMutationQuery = duplicateFormMutation({
+  onSuccess: (data) => {
+    router.push({
+      name: "forms-slug-show",
+      params: { slug: data.new_form.slug },
+    })
+    useAlert().success(data.message)
+  },
+  onError: (error) => {
+    useAlert().error(error.data?.message || "Failed to duplicate form")
+  }
+})
+
 const duplicateForm = () => {
-  if (loadingDuplicate.value) return
-  loadingDuplicate.value = true
-  formsApi.duplicate(props.form.id)
-    .then((data) => {
-      formsStore.save(data.new_form)
-      router.push({
-        name: "forms-slug-show",
-        params: { slug: data.new_form.slug },
-      })
-      useAlert().success(data.message)
-      loadingDuplicate.value = false
-    })
-    .catch((error) => {
-      useAlert().error(error.data.message)
-      loadingDuplicate.value = false
-    })
+  duplicateFormMutationQuery.mutate(props.form.id)
 }
+
 const deleteForm = () => {
-  if (loadingDelete.value) return
-  loadingDelete.value = true
-  formsApi.delete(props.form.id)
-    .then((data) => {
-      formsStore.remove(props.form)
-      router.push({ name: "home" })
-      useAlert().success(data.message)
-      loadingDelete.value = false
-    })
-    .catch((error) => {
-      useAlert().error(error.data.message)
-      loadingDelete.value = false
-    })
+  deleteFormMutation.mutate(props.form.id)
 }
 
 const showDraftFormWarningNotification = () => {

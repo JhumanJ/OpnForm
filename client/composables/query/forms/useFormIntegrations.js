@@ -2,6 +2,7 @@ import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 import integrationsList from '~/data/forms/integrations.json'
 import { unref } from 'vue'
+import { chainCallbacks } from '../index'
 
 export function useFormIntegrations() {
   const queryClient = useQueryClient()
@@ -74,56 +75,59 @@ export function useFormIntegrations() {
   }
 
   const createIntegration = (options = {}) => {
+    const builtInOnSuccess = (newIntegration, { formId }) => {
+      // Add to integrations list
+      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+        if (!old) return [newIntegration]
+        if (!Array.isArray(old)) return old
+        return [...old, newIntegration]
+      })
+      // Cache the integration
+      queryClient.setQueryData(['integrations', newIntegration.id], newIntegration)
+    }
+    
     return useMutation({
       mutationFn: ({ formId, data }) => formsApi.integrations.create(formId, data),
-      onSuccess: (newIntegration, { formId }) => {
-        // Add to integrations list
-        queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!old) return [newIntegration]
-          if (!Array.isArray(old)) return old
-          return [...old, newIntegration]
-        })
-        // Cache the integration
-        queryClient.setQueryData(['integrations', newIntegration.id], newIntegration)
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const updateIntegration = (options = {}) => {
+    const builtInOnSuccess = (updatedIntegration, { formId, integrationId }) => {
+      // Update integration cache
+      queryClient.setQueryData(['integrations', integrationId], updatedIntegration)
+      
+      // Update in integrations list
+      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map(integration =>
+          integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
+        )
+      })
+    }
+    
     return useMutation({
       mutationFn: ({ formId, integrationId, data }) => formsApi.integrations.update(formId, integrationId, data),
-      onSuccess: (updatedIntegration, { formId, integrationId }) => {
-        // Update integration cache
-        queryClient.setQueryData(['integrations', integrationId], updatedIntegration)
-        
-        // Update in integrations list
-        queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.map(integration =>
-            integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
-          )
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const deleteIntegration = (options = {}) => {
+    const builtInOnSuccess = (_, { formId, integrationId }) => {
+      // Remove from integration cache
+      queryClient.removeQueries(['integrations', integrationId])
+      queryClient.removeQueries(['forms', formId, 'integrations', integrationId, 'events'])
+      
+      // Remove from integrations list
+      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(integration => integration.id !== integrationId)
+      })
+    }
+    
     return useMutation({
       mutationFn: ({ formId, integrationId }) => formsApi.integrations.delete(formId, integrationId),
-      onSuccess: (_, { formId, integrationId }) => {
-        // Remove from integration cache
-        queryClient.removeQueries(['integrations', integrationId])
-        queryClient.removeQueries(['forms', formId, 'integrations', integrationId, 'events'])
-        
-        // Remove from integrations list
-        queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(integration => integration.id !== integrationId)
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 

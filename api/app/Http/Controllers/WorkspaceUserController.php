@@ -82,10 +82,11 @@ class WorkspaceUserController extends Controller
         }
 
         // Send new invite
-        UserInvite::inviteUser($email, $role, $workspace, now()->addDays(7));
+        $invite = UserInvite::inviteUser($email, $role, $workspace, now()->addDays(7));
 
         return $this->success([
-            'message' => 'Registration invitation email sent to user.'
+            'message' => 'Registration invitation email sent to user.',
+            'invite' => $invite
         ]);
     }
 

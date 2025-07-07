@@ -1,12 +1,19 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { oauthApi } from '~/api/oauth'
+import { chainCallbacks } from './index'
 
 export function useOAuth() {
   const queryClient = useQueryClient()
   const alert = useAlert()
 
   // Constants
-  const googleDrivePermission = 'https://www.googleapis.com/auth/drive.file'
+  const googleDrivePermission = {
+    scope: 'https://www.googleapis.com/auth/drive.file',
+    access_type: 'offline',
+    prompt: 'consent',
+    response_type: 'code',
+    approval_prompt: 'force'
+  }
 
   // Service definitions
   const services = computed(() => {
@@ -118,83 +125,87 @@ export function useOAuth() {
 
   // Mutation for connect (programmatic)
   const connectMutation = (options = {}) => {
+    const builtInOnSuccess = (newProvider) => {
+      // Add to providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [newProvider]
+        if (!Array.isArray(old)) return [newProvider]
+        // Update if exists, add if new
+        const existingIndex = old.findIndex(p => p.service === newProvider.service)
+        if (existingIndex >= 0) {
+          const updated = [...old]
+          updated[existingIndex] = newProvider
+          return updated
+        }
+        return [...old, newProvider]
+      })
+      // Cache individual provider
+      queryClient.setQueryData(['oauth', 'providers', newProvider.id], newProvider)
+    }
+    
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.connect(service, data),
-      onSuccess: (newProvider) => {
-        // Add to providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [newProvider]
-          if (!Array.isArray(old)) return [newProvider]
-          // Update if exists, add if new
-          const existingIndex = old.findIndex(p => p.service === newProvider.service)
-          if (existingIndex >= 0) {
-            const updated = [...old]
-            updated[existingIndex] = newProvider
-            return updated
-          }
-          return [...old, newProvider]
-        })
-        // Cache individual provider
-        queryClient.setQueryData(['oauth', 'providers', newProvider.id], newProvider)
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const callback = (options = {}) => {
+    const builtInOnSuccess = (updatedProvider) => {
+      // Update provider in cache
+      queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
+      
+      // Update providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [updatedProvider]
+        if (!Array.isArray(old)) return old
+        return old.map(provider =>
+          provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
+        )
+      })
+    }
+    
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.callback(service, data),
-      onSuccess: (updatedProvider) => {
-        // Update provider in cache
-        queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
-        
-        // Update providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [updatedProvider]
-          if (!Array.isArray(old)) return old
-          return old.map(provider =>
-            provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
-          )
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const widgetCallback = (options = {}) => {
+    const builtInOnSuccess = (updatedProvider) => {
+      // Update provider in cache
+      queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
+      
+      // Update providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [updatedProvider]
+        if (!Array.isArray(old)) return old
+        return old.map(provider =>
+          provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
+        )
+      })
+    }
+    
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.widgetCallback(service, data),
-      onSuccess: (updatedProvider) => {
-        // Update provider in cache
-        queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
-        
-        // Update providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [updatedProvider]
-          if (!Array.isArray(old)) return old
-          return old.map(provider =>
-            provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
-          )
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 
   const remove = (options = {}) => {
+    const builtInOnSuccess = (_, deletedProviderId) => {
+      // Remove from individual cache
+      queryClient.removeQueries(['oauth', 'providers', deletedProviderId])
+      
+      // Remove from providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(provider => provider.id !== deletedProviderId)
+      })
+    }
+    
     return useMutation({
       mutationFn: (providerId) => oauthApi.delete(providerId),
-      onSuccess: (_, deletedProviderId) => {
-        // Remove from individual cache
-        queryClient.removeQueries(['oauth', 'providers', deletedProviderId])
-        
-        // Remove from providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(provider => provider.id !== deletedProviderId)
-        })
-      },
-      ...options
+      ...chainCallbacks(builtInOnSuccess, null, options)
     })
   }
 

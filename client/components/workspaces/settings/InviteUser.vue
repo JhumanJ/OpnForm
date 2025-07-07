@@ -70,7 +70,8 @@
         </UAlert>
       </template>
 
-      <form
+      <VForm
+        size="sm"
         class="my-2"
         @submit.prevent="addUser"
         @keydown="inviteUserForm.onKeydown($event)"
@@ -102,7 +103,7 @@
             Invite User
           </UButton>
         </div>
-      </form>
+      </VForm>
     </template>
   </UModal>
 </template>

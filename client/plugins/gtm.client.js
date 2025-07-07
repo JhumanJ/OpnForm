@@ -22,9 +22,14 @@ export default defineNuxtPlugin(() => {
     
     gtag('consent', 'default', {
       'ad_storage': 'denied',
-      'analytics_storage': 'granted',
+      'analytics_storage': 'denied',
       'functionality_storage': 'granted',
       'security_storage': 'granted'
+    })
+
+    gtag('consent', 'update', {
+      'ad_storage': 'granted',
+      'analytics_storage': 'granted',
     })
     
     // Enable IP anonymization

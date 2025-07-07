@@ -3,6 +3,7 @@
     v-model="isOpen"
     v-model:activeTab="activeTab"
     @close="closeModal"
+    v-if="workspace"
   >
     <!-- Settings Pages - Auto-register themselves -->
     <SettingsModalPage
@@ -14,7 +15,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
-      v-if="!workspace.is_readonly"
+      v-if="workspace && !workspace.is_readonly"
       id="domains"
       label="Domains"
       icon="i-heroicons-globe-alt"
@@ -23,7 +24,7 @@
     </SettingsModalPage>
     
     <SettingsModalPage
-      v-if="!workspace.is_readonly"
+      v-if="workspace && !workspace.is_readonly"
       id="emails"
       label="Emails"
       icon="i-heroicons-envelope"
