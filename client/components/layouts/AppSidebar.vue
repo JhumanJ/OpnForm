@@ -59,26 +59,11 @@
         </h3>
         
         <!-- Section Items -->
-        <ul class="space-y-1">
-          <li v-for="item in section.items" :key="item.label">
-            <TrackClick
-              name="sidebar_nav_click"
-              :properties="{ label: item.label }"
-            >
-              <UButton
-                v-bind="item"
-                class="w-full justify-start"
-                @click="item.onClick"
-              >
-                <template #trailing v-if="item.kbd">
-                  <span class="hidden sm:flex ml-auto">
-                    <UKbd v-for="kbd in item.kbd" :key="kbd" :value="kbd" />
-                  </span>
-                </template>
-              </UButton>
-            </TrackClick>
-          </li>
-        </ul>
+        <NavigationList
+          :items="section.items"
+          tracking-name="sidebar_nav_click"
+          :tracking-properties="(item) => ({ label: item.label })"
+        />
       </div>
     </template>
   </BaseSidebar>
@@ -89,19 +74,11 @@ import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
 import WorkspaceDropdown from "~/components/global/WorkspaceDropdown.vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import UserDropdown from "~/components/global/UserDropdown.vue"
-import { useRouter } from "vue-router"
-import TrackClick from "~/components/global/TrackClick.vue"
+import NavigationList from "~/components/global/NavigationList.vue"
 
 const route = useRoute()
-const router = useRouter()
 
 const { sharedNavigationSections, createNavItem } = useSharedNavigation()
-
-defineShortcuts({
-  'n': {
-    handler: () => router.push({ name: 'forms-create' }),
-  },
-})
 
 const { current: workspace } = useCurrentWorkspace()
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))

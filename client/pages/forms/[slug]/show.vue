@@ -9,7 +9,7 @@
         <!-- Loading State -->
         <div v-if="isLoading" class="flex-1 bg-white">
           <!-- Top Bar Skeleton -->
-          <div class="bg-white border-b border-neutral-200 p-4">
+          <div class="bg-whitep-4">
             <div class="max-w-4xl mx-auto">
               <!-- Form Title and Actions Skeleton -->
               <div class="flex flex-wrap items-start justify-between gap-4">
@@ -55,7 +55,7 @@
         <!-- Loaded Content -->
         <template v-else-if="form">
           <!-- Top Bar (Non-Sticky) -->
-          <div class="bg-white border-b border-neutral-200 p-4">
+          <div class="bg-white p-4 pb-0">
             <div class="max-w-4xl mx-auto">
               <!-- Form Title and Actions -->
               <div class="flex flex-wrap items-start justify-between gap-4">

@@ -3,7 +3,9 @@
     ref="root" 
     :class="[
       'flex-1 divide-y divide-accented w-full flex flex-col', 
-      { 'fixed inset-0 z-50 bg-white dark:bg-neutral-900 z-[70]': isExpanded }
+      { 'fixed inset-0 z-50 bg-white dark:bg-neutral-900 z-[70]': isExpanded,
+        'border-t mt-4': !isExpanded
+       }
     ]"
   >
     <div ref="topBar" class="flex items-center gap-2 p-2 overflow-x-auto">
@@ -12,6 +14,7 @@
         variant="ghost"
         class="max-w-sm min-w-[12ch]" 
         placeholder="Search..." 
+        icon="i-heroicons-magnifying-glass-solid"
         @update:model-value="table?.tableApi?.setGlobalFilter($event)"
       />
       <USelectMenu
@@ -297,7 +300,13 @@ const tableColumns = computed(() => {
     cols.push({
       id: 'actions',
       accessorKey: 'actions',
-      header: ''
+      header: '',
+      meta: {
+        class: {
+          th: 'bg-transparent',
+          td: 'backdrop-blur-xs bg-white/70'
+        }
+      }
     })
   }
   

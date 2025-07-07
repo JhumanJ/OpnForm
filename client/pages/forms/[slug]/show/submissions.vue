@@ -1,5 +1,5 @@
 <template>
-  <form-submissions />
+  <FormSubmissions />
 </template>
 
 <script setup>

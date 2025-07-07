@@ -10,9 +10,9 @@
       />
 
       <!-- Submissions Table Skeleton -->
-      <div v-else class="border rounded-lg overflow-hidden">
+      <div v-else class="overflow-hidden mt-4">
         <!-- Table Header Skeleton -->
-        <div class="bg-gray-50 border-b border-gray-200 px-4 py-3">
+        <div class="bg-gray-50 border-y border-gray-200 px-4 py-3">
           <div class="flex gap-4">
             <USkeleton class="h-4 w-32" />
             <USkeleton class="h-4 w-24" />

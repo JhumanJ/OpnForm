@@ -47,7 +47,7 @@ export default defineAppConfig({
         table: {
             slots: {
                 td: 'p-4 text-sm text-muted whitespace-normal [&:has([role=checkbox])]:pe-0'
-            }
+            },
         }
     }
 })

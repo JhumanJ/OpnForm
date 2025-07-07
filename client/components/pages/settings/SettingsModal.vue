@@ -29,15 +29,14 @@
                 />
               </VTransition>
 
-              <ul ref="navContainer" class="flex flex-row space-x-1 overflow-x-auto sm:flex-col sm:space-y-1 sm:space-x-0" style="scrollbar-width: none; -ms-overflow-style: none;">
-                <li v-for="item in registeredPages" :key="item.id">
-                  <UButton
-                    v-bind="createNavItem(item)"
-                    class="justify-start whitespace-nowrap !w-auto sm:!w-full"
-                    @click="setActiveItem(item.id)"
-                  />
-                </li>
-              </ul>
+              <NavigationList
+                ref="navContainer"
+                :items="registeredPages.map(page => ({ ...createNavItem(page), id: page.id }))"
+                :tracking-enabled="false"
+                button-class="justify-start whitespace-nowrap !w-auto sm:!w-full"
+                list-class="flex flex-row space-x-1 overflow-x-auto sm:flex-col sm:space-y-1 sm:space-x-0"
+                @item-click="(item) => setActiveItem(item.id)"
+              />
 
               <!-- Right Arrow -->
               <VTransition name="fade">
@@ -88,6 +87,7 @@
 import { useScroll, useResizeObserver } from '@vueuse/core'
 import { nextTick, ref, computed, watch, provide } from 'vue'
 import VTransition from '@/components/global/transitions/VTransition.vue'
+import NavigationList from '~/components/global/NavigationList.vue'
 
 const emit = defineEmits(['close', 'item-changed', 'update:activeTab'])
 
