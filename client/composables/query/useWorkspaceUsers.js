@@ -1,4 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
+import { unref, computed } from 'vue'
 import { workspaceApi } from '~/api/workspace'
 
 export function useWorkspaceUsers() {
@@ -8,8 +9,8 @@ export function useWorkspaceUsers() {
   const users = (workspaceId, options = {}) => {
     return useQuery({
       queryKey: ['workspaces', workspaceId, 'users'],
-      queryFn: () => workspaceApi.users.list(workspaceId),
-      enabled: !!workspaceId,
+      queryFn: () => workspaceApi.users.list(unref(workspaceId)),
+      enabled: computed(() => !!unref(workspaceId)),
       ...options
     })
   }
@@ -17,8 +18,8 @@ export function useWorkspaceUsers() {
   const invites = (workspaceId, options = {}) => {
     return useQuery({
       queryKey: ['workspaces', workspaceId, 'invites'],
-      queryFn: () => workspaceApi.invites.list(workspaceId),
-      enabled: !!workspaceId,
+      queryFn: () => workspaceApi.invites.list(unref(workspaceId)),
+      enabled: computed(() => !!unref(workspaceId)),
       ...options
     })
   }
@@ -37,12 +38,12 @@ export function useWorkspaceUsers() {
   // User management mutations
   const addUser = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: (userData) => workspaceApi.users.add(workspaceId, userData),
-      onSuccess: (newUser) => {
-        // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
-          if (!old) return [newUser]
-          return [...old, newUser]
+      mutationFn: (userData) => workspaceApi.users.add(unref(workspaceId), userData),
+      onSuccess: (newInvite) => {
+        // Update invites cache since /users/add actually creates an invitation
+        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
+          if (!old) return [newInvite]
+          return [...old, newInvite]
         })
       },
       ...options
@@ -51,10 +52,10 @@ export function useWorkspaceUsers() {
 
   const removeUser = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: (userId) => workspaceApi.users.remove(workspaceId, userId),
+      mutationFn: (userId) => workspaceApi.users.remove(unref(workspaceId), userId),
       onSuccess: (_, removedUserId) => {
         // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
+        queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
           if (!old) return old
           return old.filter(user => user.id !== removedUserId)
         })
@@ -65,10 +66,10 @@ export function useWorkspaceUsers() {
 
   const updateUserRole = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: ({ userId, data }) => workspaceApi.users.updateRole(workspaceId, userId, data),
+      mutationFn: ({ userId, data }) => workspaceApi.users.updateRole(unref(workspaceId), userId, data),
       onSuccess: (updatedUser, { userId }) => {
         // Update users cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'users'], (old) => {
+        queryClient.setQueryData(['workspaces', unref(workspaceId), 'users'], (old) => {
           if (!old) return old
           return old.map(user => 
             user.id === userId ? { ...user, ...updatedUser } : user
@@ -82,10 +83,10 @@ export function useWorkspaceUsers() {
   // Invite management mutations
   const resendInvite = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: (inviteId) => workspaceApi.invites.resend(workspaceId, inviteId),
+      mutationFn: (inviteId) => workspaceApi.invites.resend(unref(workspaceId), inviteId),
       onSuccess: (updatedInvite, inviteId) => {
         // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
+        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
           if (!old) return old
           return old.map(invite => 
             invite.id === inviteId ? { ...invite, ...updatedInvite } : invite
@@ -98,10 +99,10 @@ export function useWorkspaceUsers() {
 
   const cancelInvite = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: (inviteId) => workspaceApi.invites.cancel(workspaceId, inviteId),
+      mutationFn: (inviteId) => workspaceApi.invites.cancel(unref(workspaceId), inviteId),
       onSuccess: (_, cancelledInviteId) => {
         // Update invites cache for this workspace
-        queryClient.setQueryData(['workspaces', workspaceId, 'invites'], (old) => {
+        queryClient.setQueryData(['workspaces', unref(workspaceId), 'invites'], (old) => {
           if (!old) return old
           return old.filter(invite => invite.id !== cancelledInviteId)
         })

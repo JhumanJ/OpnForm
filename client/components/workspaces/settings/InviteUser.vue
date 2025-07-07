@@ -96,7 +96,7 @@
           <UButton
             type="submit"
             :disabled="!workspace.is_pro"
-            :loading="inviteUserForm.busy"
+            :loading="inviteUserMutation.isPending.value"
             icon="i-heroicons-envelope"
           >
             Invite User
@@ -116,9 +116,11 @@ const props = defineProps({
 })
 
 const { hasActiveLicense } = useAuthFlow()
+const { addUser: addUserMutation } = useWorkspaceUsers()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
-const { current: workspace } = useCurrentWorkspace()
+const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
+const alert = useAlert()
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
 
@@ -134,6 +136,19 @@ const isOpen = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
+// Create mutation during setup
+const inviteUserMutation = addUserMutation(workspaceId, {
+  onSuccess: (data) => {
+    inviteUserForm.reset()
+    alert.success(data.message || 'User invited successfully')
+    emit('user-added')
+    closeModal()
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "There was an error adding user")
+  }
+})
+
 // Methods
 const closeModal = () => {
   isOpen.value = false
@@ -145,7 +160,6 @@ const openSubscriptionModal = () => {
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))
-// hasActiveLicense is now imported from useAuthFlow
 
 const inviteUserForm = useForm({
   email: '',
@@ -158,14 +172,11 @@ const openBilling = () => {
 }
 
 const addUser = () => {
-  inviteUserForm.post("/open/workspaces/" + workspace.value.id + "/users/add").then((data) => {
-    inviteUserForm.reset()
-    useAlert().success(data.message)
-    emit('user-added')
-    closeModal()
-  }).catch((error) => {
-    useAlert().error("There was an error adding user: " + error.data.message)
+  if (!workspaceId.value) return
+
+  inviteUserMutation.mutate({
+    email: inviteUserForm.email,
+    role: inviteUserForm.role
   })
 }
-
 </script>

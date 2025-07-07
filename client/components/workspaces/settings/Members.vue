@@ -13,7 +13,7 @@
           v-if="!workspace.is_readonly"
           label="Invite User"
           icon="i-heroicons-user-plus-20-solid"
-          :loading="loadingUsers"
+          :loading="isLoadingData"
           @click="showInviteUserModal = true"
         />
       </div>
@@ -21,8 +21,8 @@
 
     <UTable
       class="w-full"
-      :loading="loadingUsers"
-      :data="users"
+      :loading="isLoadingData"
+      :data="combinedUsers"
       :columns="tableColumns"
       v-model:column-pinning="columnPinning"
     >
@@ -54,34 +54,37 @@
                   icon="i-heroicons-trash"
                   size="xs"
                   square
+                  :loading="removeMutation.isPending.value"
                   @click="removeUserHandler(item)"
                 />
               </UTooltip>
             </div>
           </template>
-          <UButtonGroup
+          <div
             v-else-if="item.type == 'invitee'"
-            size="sm"
+            class="flex items-center gap-1"
           >
             <UTooltip text="Resend Invite">
               <UButton
                 icon="i-heroicons-envelope"
                 color="neutral"
-                variant="outline"
-                size="sm"
-                @click="resendInvite(item)"
+                variant="soft"
+                size="xs"
+                :loading="resendMutation.isPending.value"
+                @click="resendInviteHandler(item)"
               />
             </UTooltip>
             <UTooltip text="Cancel Invite">
               <UButton
                 icon="i-heroicons-x-mark"
                 color="error"
-                variant="outline"
-                size="sm"
-                @click="cancelInvite(item)"
+                variant="soft"
+                size="xs"
+                :loading="cancelMutation.isPending.value"
+                @click="cancelInviteHandler(item)"
               />
             </UTooltip>
-          </UButtonGroup>
+          </div>
         </div>
       </template>
     </UTable>
@@ -114,7 +117,7 @@
           <div class="flex justify-center mt-4">
             <UButton
               type="submit"
-              :loading="editUserForm.busy"
+              :loading="updateMutation.isPending.value"
             >
               Update
             </UButton>
@@ -125,26 +128,75 @@
 
     <WorkspacesSettingsInviteUser
       v-model="showInviteUserModal"
-      @user-added="getWorkspaceUsers"
+      @user-added="handleUserAdded"
     />
   </div>
 </template>
 
 <script setup>
 import WorkspacesSettingsInviteUser from '~/components/workspaces/settings/InviteUser.vue'
-import { workspaceApi } from '~/api'
 
-const { currentUsers: usersData, currentInvites: invitesData, updateUserRole: updateUserRoleMutation, removeUser: removeUserMutation } = useWorkspaces()
+// Composables
+const { 
+  users, 
+  invites, 
+  updateUserRole: updateUserRoleMutation, 
+  removeUser: removeUserMutation,
+  resendInvite: resendInviteMutation,
+  cancelInvite: cancelInviteMutation
+} = useWorkspaceUsers()
+
 const alert = useAlert()
-const { current: workspace } = useCurrentWorkspace()
-const { data: user } = useAuth().user()
-const users = ref([])
-const loadingUsers = ref(true)
+const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
+const auth = useAuth()
+
+// Get current user
+const { data: user } = auth.user()
+
+// Reactive state
 const showEditUserModal = ref(false)
 const showInviteUserModal = ref(false)
 const selectedUser = ref(null)
 const editUserForm = useForm({
   role: 'user'
+})
+
+// Create all mutations during setup
+const updateMutation = updateUserRoleMutation(workspaceId, {
+  onSuccess: (data) => {
+    alert.success(data.message || 'User role updated successfully')
+    showEditUserModal.value = false
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "There was an error updating user role")
+  }
+})
+
+const removeMutation = removeUserMutation(workspaceId, {
+  onSuccess: () => {
+    alert.success("User successfully removed.")
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "There was an error removing user")
+  }
+})
+
+const resendMutation = resendInviteMutation(workspaceId, {
+  onSuccess: () => {
+    alert.success("Invitation resent successfully.")
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "Failed to resend invitation")
+  }
+})
+
+const cancelMutation = cancelInviteMutation(workspaceId, {
+  onSuccess: () => {
+    alert.success("Invitation cancelled successfully.")
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "Failed to cancel invitation")
+  }
 })
 
 // Column pinning state
@@ -153,8 +205,47 @@ const columnPinning = ref({
   right: ['actions']
 })
 
+// Get workspace users and invites reactively
+const { data: workspaceUsers, isLoading: isLoadingUsers } = users(workspaceId)
+const { data: workspaceInvites, isLoading: isLoadingInvites } = invites(workspaceId)
+
+// Combined loading state
+const isLoadingData = computed(() => (isLoadingUsers?.value || isLoadingInvites?.value) ?? false)
+
+// Transform and combine data reactively
+const combinedUsers = computed(() => {
+  const users = workspaceUsers?.value || []
+  const invites = workspaceInvites?.value || []
+
+  // Transform users
+  const transformedUsers = users.map(d => ({
+    ...d,
+    id: d.id,
+    is_current_user: d.id === user?.value?.id,
+    name: d.name,
+    email: d.email,
+    status: 'accepted',
+    role: d.pivot?.role,
+    type: 'user'
+  }))
+
+  // Transform invites (exclude accepted ones)
+  const transformedInvites = invites
+    .filter(i => i.status !== 'accepted')
+    .map(i => ({
+      ...i,
+      name: 'Invitee',
+      email: i.email,
+      status: i.status,
+      type: 'invitee'
+    }))
+
+  return [...transformedUsers, ...transformedInvites]
+})
+
 // Table columns configuration
 const tableColumns = computed(() => {
+  const isAdmin = user?.value?.admin ?? false
   return [
     {
       id: 'name',
@@ -171,7 +262,7 @@ const tableColumns = computed(() => {
       accessorKey: 'role',
       header: 'Role'
     },
-    ...(user.value.admin ? [
+    ...(isAdmin ? [
       {
         id: 'actions',
         header: '',
@@ -179,103 +270,50 @@ const tableColumns = computed(() => {
   ]
 })
 
-const getWorkspaceUsers = async () => {
-  loadingUsers.value = true
-  
-  // Get users from TanStack Query
-  const userData = usersData.value || []
-  const data = userData.map(d => {
-    return {
-      ...d,
-      id: d.id,
-      is_current_user: d.id === user.value.id,
-      name: d.name,
-      email: d.email,
-      status: 'accepted',
-      role: d.pivot.role,
-      type: 'user'
-    }
-  })
-  
-  // Get invites from TanStack Query
-  const invitesList = invitesData.value || []
-  const invites = invitesList.filter(i => i.status !== 'accepted').map(i => {
-    return {
-      ...i,
-      name: 'Invitee',
-      email: i.email,
-      status: i.status,
-      type: 'invitee'
-    }
-  })
-  
-  users.value = [...data, ...invites]
-  loadingUsers.value = false
-}
-
-await getWorkspaceUsers()
-
+// User management handlers
 const editUser = (user) => {
   selectedUser.value = user
-  editUserForm.role = selectedUser.value.pivot.role
+  editUserForm.role = selectedUser.value.pivot?.role || selectedUser.value.role
   showEditUserModal.value = true
 }
 
 const updateUserRole = () => {
-  const mutation = updateUserRoleMutation(workspace.value?.id)
-  mutation.mutate({
+  if (!workspaceId.value || !selectedUser.value?.id) return
+
+  updateMutation.mutate({
     userId: selectedUser.value.id,
     data: { role: editUserForm.role }
-  }, {
-    onSuccess: (data) => {
-    alert.success(data.message)
-    getWorkspaceUsers()
-    showEditUserModal.value = false
-    },
-    onError: () => {
-    alert.error("There was an error updating user role")
-    }
   })
 }
 
 const removeUserHandler = (user) => {
-  const mutation = removeUserMutation(workspace.value?.id)
+  if (!workspaceId.value) return
+
   alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
-    loadingUsers.value = true
-    mutation.mutate(user.id, {
-      onSuccess: () => {
-      alert.success("User successfully removed.")
-      getWorkspaceUsers()
-        loadingUsers.value = false
-      },
-      onError: () => {
-      alert.error("There was an error removing user")
-      loadingUsers.value = false
-      }
-    })
+    removeMutation.mutate(user.id)
   })
 }
 
-const resendInvite = (user) => {
+// Invite management handlers  
+const resendInviteHandler = (invite) => {
+  if (!workspaceId.value) return
+
   alert.confirm("Do you really want to resend invite email to this user?", () => {
-    workspaceApi.invites.resend(workspace.value.id, user.id).then(() => {
-      alert.success("Invitation resent successfully.")
-      getWorkspaceUsers()
-    }).catch(err => {
-      alert.error(err.response._data?.message)
-    })
+    resendMutation.mutate(invite.id)
   })
 }
 
-const cancelInvite = (user) => {
+const cancelInviteHandler = (invite) => {
+  if (!workspaceId.value) return
+
   alert.confirm("Do you really want to cancel this user's invitation to this workspace?", () => {
-    workspaceApi.invites.cancel(workspace.value.id, user.id).then(() => {
-      alert.success("Invitation cancelled successfully.")
-      getWorkspaceUsers()
-    }).catch(err => {
-      alert.error(err.response._data?.message)
-    })
+    cancelMutation.mutate(invite.id)
   })
 }
 
+// Handle user added event from invite modal
+const handleUserAdded = () => {
+  // TanStack Query will automatically update the cache, no manual refresh needed
+  showInviteUserModal.value = false
+}
 </script> 
