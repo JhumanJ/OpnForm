@@ -6,13 +6,13 @@
       <slot name="left" />
     </div>
     <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-      <div class="flex items-center justify-center space-x-4">
+      <div class="flex items-center justify-center gap-4">
         <div
           v-if="displayHome"
-          class="flex items-center"
+          class="flex items-center gap-4"
         >
           <NuxtLink
-            class="text-gray-400 hover:text-gray-500"
+            class="flex items-center text-gray-400 hover:text-gray-500"
             :to="{ name: authenticated ? 'home' : 'index' }"
           >
             <Icon
@@ -23,34 +23,33 @@
           </NuxtLink>
           <Icon
             name="i-heroicons-chevron-right"
-            class="flex-shrink-0 w-5 h-5 text-gray-400 ml-4"
+            class="flex-shrink-0 w-5 h-5 text-gray-400"
           />
         </div>
 
         <div
           v-for="(item, index) in path"
           :key="index"
-          class="flex items-center"
+          class="flex items-center gap-4"
         >
           <NuxtLink
             v-if="item.to"
-            class="text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
+            class="flex items-center text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
             :to="item.to"
           >
             {{ item.name }}
           </NuxtLink>
           <div
             v-else
-            class="text-sm font-semibold sm:w-full w-36 text-blue-500 truncate"
+            class="flex items-center text-sm font-semibold sm:w-full w-36 text-blue-500 truncate"
           >
             {{ item.name }}
           </div>
-          <div v-if="index !== path.length - 1">
-            <Icon
-              name="i-heroicons-chevron-right"
-              class="flex-shrink-0 w-5 h-5 text-gray-400 ml-4"
-            />
-          </div>
+          <Icon
+            v-if="index !== path.length - 1"
+            name="i-heroicons-chevron-right"
+            class="flex-shrink-0 w-5 h-5 text-gray-400"
+          />
         </div>
       </div>
     </div>

@@ -183,7 +183,7 @@ import { computed } from "vue"
 import Fuse from "fuse.js"
 import SingleTemplate from "./SingleTemplate.vue"
 import { refDebounced } from "@vueuse/core"
-import { useTemplateMeta } from "~/composables/useTemplateMeta"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
 export default {
   name: "TemplatesList",

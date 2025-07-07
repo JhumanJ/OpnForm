@@ -121,7 +121,7 @@
 import { ref, defineProps, defineEmits, computed } from "vue"
 import QuestionsEditor from "./QuestionsEditor.vue"
 import { useTemplates } from "~/composables/query/useTemplates"
-import { useTemplateMeta } from "~/composables/useTemplateMeta"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
 const props = defineProps({
   show: { type: Boolean, required: true },

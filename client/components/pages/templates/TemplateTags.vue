@@ -56,7 +56,7 @@
 
 <script setup>
 import { computed } from "vue"
-import { useTemplateMeta } from "~/composables/useTemplateMeta"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
 const props = defineProps({
   template: {

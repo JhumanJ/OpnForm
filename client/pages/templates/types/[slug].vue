@@ -54,7 +54,7 @@ import { computed } from "vue"
 import OpenFormFooter from "../../../components/pages/OpenFormFooter.vue"
 import Breadcrumb from "~/components/global/Breadcrumb.vue"
 import { useTemplates } from "~/composables/query/useTemplates"
-import { useTemplateMeta } from "~/composables/useTemplateMeta"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
 defineRouteRules({
   swr: 3600,
