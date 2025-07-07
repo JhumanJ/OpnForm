@@ -5,12 +5,12 @@
   >
     <UButton
       :to="paymentUrl"
-      icon="i-heroicons-arrow-top-right-on-square"
       size="xs"
       variant="link"
-      label="View Payment"
+      icon="i-heroicons-credit-card-20-solid"
+      trailing-icon="i-heroicons-arrow-top-right-on-square-20-solid"
+      label="Payment"
       target="_blank"
-      trailing
     />
   </span>
 </template>
