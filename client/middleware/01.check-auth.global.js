@@ -4,42 +4,39 @@ export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
   const queryClient = useQueryClient()
   const { initServiceClients } = useAuthFlow()
-  const { user } = useAuth()
-  
-  // Get tokens from cookies
-  const tokenValue = useCookie("token").value
-  const adminTokenValue = useCookie("admin_token").value
-  
-  // Initialize the store with the tokens
-  authStore.initStore(tokenValue, adminTokenValue)
 
-  // Call user query at top level and get data directly
-  const { data: userData } = user()
+  // Initialize tokens from cookies
+  authStore.initStore(
+    useCookie('token').value,
+    useCookie('admin_token').value
+  )
 
-  // If we have a token but no user data in cache, prefetch it
-  if (authStore.token && !userData.value) {
+  // If no token, nothing to do
+  if (!authStore.token) return
+
+  // Check for already cached user data (from SSR or previous fetch)
+  let userData = queryClient.getQueryData(['user'])
+
+  // Fetch user & workspaces only if not cached yet
+  if (!userData) {
     try {
-      // Prefetch user and workspaces data in parallel
       const userQuery = useAuth().user()
       const workspacesQuery = useWorkspaces().list()
-      
       await Promise.all([userQuery.suspense(), workspacesQuery.suspense()])
 
-      // Initialize service clients after user data is loaded
-      const userDataFromCache = queryClient.getQueryData(['user'])
-      if (userDataFromCache) {
-        initServiceClients(userDataFromCache)
-      }
+      userData = queryClient.getQueryData(['user'])
     } catch (error) {
-      // If prefetch fails (e.g., invalid token), clear auth state
-      console.warn('Auth prefetch failed:', error)
-      if (error.status === 401) {
+      // On 401, clear auth state
+      if (error?.status === 401) {
         authStore.clearTokens()
         queryClient.clear()
       }
+      return
     }
-  } else if (authStore.token && userData.value) {
-    // If we have both token and user data, make sure service clients are initialized
-    initServiceClients()
+  }
+
+  // Initialize service clients on client side (no-op on server)
+  if (userData) {
+    initServiceClients(userData)
   }
 })
