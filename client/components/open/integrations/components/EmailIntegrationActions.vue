@@ -7,7 +7,8 @@
       <UBadge
         :label="mentionAsText(integration.data.subject)"
         color="neutral"
-        size="xs"
+        variant="subtle"
+        size="sm"
         class="max-w-[300px] block truncate"
       />
       <div class="flex items-center gap-1">
@@ -15,7 +16,7 @@
           :label="firstEmail"
           color="neutral"
           variant="outline"
-          size="xs"
+          size="sm"
           class="max-w-[300px] block truncate"
         />
         <UBadge
@@ -23,7 +24,7 @@
           :label="`+${additionalEmailsCount}`"
           color="neutral"
           variant="outline"
-          size="xs"
+          size="sm"
         />
       </div>
     </div>
@@ -60,13 +61,19 @@ onBeforeUnmount(() => {
   }
 })
 
+const sendToEmails = computed(() => {
+  console.log(props.integration.data.send_to)
+  if (!props.integration.data.send_to) {
+    return []
+  }
+  return mentionAsText(props.integration.data.send_to).split(/[,;\s\n]+/).filter(Boolean)
+})
+
 const firstEmail = computed(() => {
-  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
-  return emails[0].replace(/<[^>]*>/g, '') || ''
+  return sendToEmails.value[0] || ''
 })
 
 const additionalEmailsCount = computed(() => {
-  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
-  return Math.max(0, emails.length - 1)
+  return Math.max(0, sendToEmails.value.length - 1)
 })
 </script>

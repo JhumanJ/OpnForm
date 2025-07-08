@@ -76,7 +76,44 @@ const props = defineProps({
 
 const alert = useAlert()
 const emit = defineEmits(["close"])
-const loading = ref(false)
+
+const { createIntegration, updateIntegration } = useFormIntegrations()
+
+const createIntegrationMutation = createIntegration({
+  onSuccess: (data) => {
+    alert.success(data.message)
+    emit("close")
+  },
+  onError: (error) => {
+    try {
+      alert.error(error.data.message)
+    }
+    catch {
+      alert.error("An error occurred while creating the integration")
+    }
+  },
+})
+
+const updateIntegrationMutation = updateIntegration({
+  onSuccess: (data) => {
+    alert.success(data.message)
+    emit("close")
+  },
+  onError: (error) => {
+    try {
+      alert.error(error.data.message)
+    }
+    catch {
+      alert.error("An error occurred while updating the integration")
+    }
+  },
+})
+
+const loading = computed(
+  () =>
+    createIntegrationMutation.isPending.value ||
+    updateIntegrationMutation.isPending.value,
+)
 
 // Computed property to handle show/hide logic for UModal
 const isOpen = computed({
@@ -144,30 +181,22 @@ const initIntegrationData = () => {
 initIntegrationData()
 
 const save = () => {
-  if (!integrationData.value || loading.value) return
-  loading.value = true
-  integrationData.value
-    .submit(
-      props.formIntegrationId ? "PUT" : "POST",
-      "/open/forms/{formid}/integration".replace("{formid}", props.form.id) +
-        (props.formIntegrationId ? "/" + props.formIntegrationId : ""),
-    )
-    .then((data) => {
-      alert.success(data.message)
-      // Invalidate the form integrations query to refetch updated data
-      const { invalidateIntegrations } = useFormIntegrations()
-      invalidateIntegrations(computed(() => props.form.id))
-      emit("close")
+  if (loading.value) return
+
+  const data = integrationData.value.data()
+
+  if (props.formIntegrationId) {
+    updateIntegrationMutation.mutate({
+      formId: props.form.id,
+      integrationId: props.formIntegrationId,
+      data,
     })
-    .catch((error) => {
-      try {
-        alert.error(error.data.message)
-      } catch {
-        alert.error("An error occurred while saving the integration")
-      }
+  }
+  else {
+    createIntegrationMutation.mutate({
+      formId: props.form.id,
+      data,
     })
-    .finally(() => {
-      loading.value = false
-    })
+  }
 }
 </script>

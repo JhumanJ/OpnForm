@@ -1,25 +1,18 @@
 <template>
   <div class="p-4">
     <div class="w-full max-w-4xl mx-auto">
-      <h1 class="font-semibold text-xl">
-        Integrations
-      </h1>
-
-      <div class="text-sm text-gray-500">
-        Read, update and create data with dozens of 3rd-party integrations
-      </div>
-
+      <VTransition name="fade">
       <div
-        v-if="isIntegrationsLoading"
-        class="my-6 space-y-4"
+        v-if="isIntegrationsLoading || !isSuccess"
+        class="my-6 space-y-2"
       >
-        <USkeleton class="h-20 w-full" />
-        <USkeleton class="h-20 w-full" />
-        <USkeleton class="h-20 w-full" />
+        <IntegrationCardSkeleton />
+        <IntegrationCardSkeleton />
+        <IntegrationCardSkeleton />
       </div>
       <div
         v-else-if="formIntegrationsList.length"
-        class="my-6"
+        class="my-6 space-y-2"
       >
         <IntegrationCard
           v-for="row in formIntegrationsList"
@@ -34,6 +27,7 @@
       >
         No integration yet for this form.
       </div>
+      </VTransition>
 
       <h1 class="font-semibold mt-8 text-xl">
         Add a new integration
@@ -70,6 +64,8 @@
 <script setup>
 import { computed } from "vue"
 import IntegrationModal from "~/components/open/integrations/components/IntegrationModal.vue"
+import IntegrationCard from "~/components/open/integrations/components/IntegrationCard"
+import IntegrationCardSkeleton from '~/components/open/integrations/components/IntegrationCardSkeleton.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -96,7 +92,10 @@ const formId = computed(() => props.form?.id)
 const { 
   data: formIntegrationsData, 
   isLoading: isIntegrationsLoading,
-} = list(formId)
+  isSuccess
+} = list(formId, {
+  enabled: import.meta.client,
+})
 
 // Get available integrations and sections from the composable
 const integrations = availableIntegrations

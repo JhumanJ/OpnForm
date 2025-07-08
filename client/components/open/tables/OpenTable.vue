@@ -281,7 +281,7 @@ const dropdownItems = computed(() => {
 })
 
 const hasActions = computed(() => {
-  return !workspace.value.is_readonly
+  return !workspace.value?.is_readonly
 })
 
 const hasStatus = computed(() => {
