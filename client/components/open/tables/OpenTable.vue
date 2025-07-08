@@ -28,26 +28,15 @@
         @update:model-value="handleStatusFilter"
       />
 
-      <UDropdownMenu
-        :items="dropdownItems"
-        :content="{ align: 'end' }"
-      >
-        <UButton
-          size="sm"
-          variant="ghost"
-          label="Columns"
-          color="neutral"
-          trailing-icon="i-lucide-chevron-down"
-          class="ml-auto"
-        />
-        <template #removed-fields>
-          <div class="flex items-center gap-2 w-full">
-            <hr class="border-neutral-200 grow" />
-            <p class="text-xs text-neutral-500">Removed Fields</p>
-            <hr class="border-neutral-200 grow" />
-          </div>
-        </template>
-      </UDropdownMenu>
+      <TableColumnManager 
+        class="ml-auto"
+        :column="safeTableColumns"
+        :column-visibility="tableState.columnVisibility"
+        :column-preferences="columnPreferences"
+        @resize-start="handleResizeStart"
+        @column-visibility-change="handleColumnVisibilityChange"
+        @column-order-change="handleColumnOrderChange"
+      />
 
       <UButton
         size="sm"
@@ -68,10 +57,10 @@
 
     <UTable
       ref="table"
-      :columns="tableColumns"
-      v-model:column-visibility="columnVisibility"
-      v-model:column-pinning="columnPinning"
-      v-model:column-sizing="columnSizing"
+      :columns="safeTableColumns"
+      v-model:column-visibility="tableState.columnVisibility"
+      v-model:column-pinning="tableState.columnPinning"
+      v-model:column-sizing="tableState.columnSizing"
       :data="tableData"
       :loading="loading"
       sticky
@@ -90,11 +79,12 @@
         minSize: 60,
         maxSize: 800,
       }"
-
     >
-      <template v-for="col in tableColumns.filter(column => !['actions', 'status'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
+      <template v-for="col in safeTableColumns.filter(column => !['actions', 'status'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
         <TableHeader 
           :column="column"
+          :column-preferences="columnPreferences"
+          :is-wrapped="tableState.columnWrapping[col.id]"
           @resize-start="handleResizeStart"
         />
       </template>
@@ -115,11 +105,14 @@
         />
       </template>
       <template 
-        v-for="col in tableColumns.filter(column => !['actions', 'status'].includes(column.id))" 
+        v-for="col in safeTableColumns.filter(column => !['actions', 'status'].includes(column.id))" 
         :key="col.id"
         #[`${col.id}-cell`]="{ row }"
       >
-        <div :style="{ width: `var(--col-${col.id}-size, auto)` }">
+        <div 
+          :class="getCellClasses(col.id)"
+          :style="getCellStyles(col.id)"
+        >
           <component
             :is="fieldComponents[col.type]"
             class="border-gray-100 dark:border-gray-900"
@@ -133,7 +126,7 @@
         <div class="flex justify-center" :style="{ width: `var(--col-actions-size, auto)` }">
           <RecordOperations
             :form="form"
-            :structure="tableColumns"
+            :structure="safeTableColumns"
             :submission="row.original"
             @deleted="(submission) => $emit('deleted', submission)"
             @updated="(submission) => $emit('updated', submission)"
@@ -163,9 +156,10 @@
 </style>
 
 <script setup>
-import clonedeep from 'clone-deep'
 import { formsApi } from '~/api'
 import { useEventListener } from '@vueuse/core'
+import { useTableColumnPreferences } from '~/composables/useTableColumnPreferences'
+import { useTableState } from '~/composables/useTableState'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
@@ -176,6 +170,7 @@ import OpenCheckbox from "./components/OpenCheckbox.vue"
 import OpenPayment from "./components/OpenPayment.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
+import TableColumnManager from "./components/TableColumnManager.vue"
 
 const props = defineProps({
   data: {
@@ -193,7 +188,20 @@ const props = defineProps({
 })
 
 defineEmits(["updated", "deleted"])
+
+// Initialize column preferences system
+const columnPreferences = useTableColumnPreferences(
+  computed(() => props.form?.id || props.form?.slug)
+)
+
+// Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
+
+const tableState = useTableState(
+  computed(() => props.form),
+  columnPreferences,
+  workspace
+)
 
 
 const fieldComponents = {
@@ -245,44 +253,9 @@ const handleStatusFilter = (selected) => {
   }
 }
 
-const dropdownItems = computed(() => {
-  if (!table.value?.tableApi) return []
 
-  const allColumns = table.value.tableApi.getAllColumns()
-  const items = allColumns.filter((column) => !column.columnDef.isRemoved && column.id !== 'actions')
-  const removeditems = allColumns.filter((column) => column.columnDef.isRemoved && column.id !== 'actions')
 
-  if (removeditems.length > 0) {
-    items.push({
-      label: 'Removed Fields',
-      type: 'label',
-      slot: 'removed-fields',
-    })
 
-    items.push(...removeditems)
-  }
-    
-  return items.map((column) => {
-    if(column.type === 'label') {
-      return column
-    }
-    return {
-      label: column.columnDef.header,
-      type: 'checkbox',
-      checked: column.getIsVisible(),
-      onUpdateChecked(checked) {
-        table.value?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked)
-      },
-      onSelect(e) {
-        e?.preventDefault()
-      }
-    }
-  })
-})
-
-const hasActions = computed(() => {
-  return !workspace.value?.is_readonly
-})
 
 const hasStatus = computed(() => {
   return props.form?.is_pro && (props.form.enable_partial_submissions ?? false)
@@ -292,107 +265,38 @@ const tableData = computed(() => {
   return [...props.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 })
 
-// Table columns
-const tableColumns = computed(() => {
-  if (!props.form || !props.form.properties) {
-    return []
-  }
-  
-  const properties = clonedeep(props.form.properties).filter((field) => {
-    return !['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'].includes(field.type)
-  })
-
-  const cols = properties.map(col => {
-    const { columns: matrixColumns, ...rest } = col
-    return {
-      ...rest,
-      ...(col.type === 'matrix' && { matrix_columns: matrixColumns }),
-      id: col.id,
-      accessorKey: col.id,
-      header: col.name,
-      enableResizing: true,
-      minSize: 100,
-      maxSize: 500,
-    }
-  })
-
-  if (props.form?.removed_properties) {
-    props.form.removed_properties.forEach(property => {
-      cols.push({
-        ...(property.type === 'matrix'
-          ? (() => {
-              const { columns: matrixColumns, ...rest } = property
-              return { ...rest, matrix_columns: matrixColumns }
-            })()
-          : { ...property }),
-        id: property.id,
-        accessorKey: property.id,
-        header: property.name,
-        isRemoved: true,
-        enableResizing: true,
-        minSize: 100,
-        maxSize: 500,
-      })
-    })
-  }
-
-  // Add created_at column if not present
-  if (!properties.find(property => property.id === 'created_at')) {
-    cols.push({
-      id: 'created_at',
-      accessorKey: 'created_at',
-      header: 'Created at',
-      type: 'date',
-      enableResizing: true
-    })
-  }
-  
-  if (hasStatus.value) {
-    cols.push({
-      id: 'status',
-      accessorKey: 'status',
-      header: 'Status',
-      enableColumnFilter: true,
-      filterFn: 'equals',
-      enableResizing: true,
-    })
-  }
-  
-  if (hasActions.value) {
-    cols.push({
-      id: 'actions',
-      accessorKey: 'actions',
-      header: '',
-      enableResizing: false,
-      size: 80,
-      meta: {
-        class: {
-          th: 'bg-transparent',
-          td: 'backdrop-blur-xs bg-white/70'
-        }
-      }
-    })
-  }
-  
-  return cols
+// Ensure tableColumns is always an array
+const safeTableColumns = computed(() => {
+  const columns = tableState.tableColumns?.value
+  if (!columns) return []
+  if (!Array.isArray(columns)) return []
+  return columns
 })
 
-// Column pinning state
-const columnPinning = ref({
-  left: [],
-  right: ['actions']
-})
 
-// Column visibility state
-const columnVisibility = ref({})
 
-// Column sizing state
-const columnSizing = ref({})
+// Cell styling based on wrapping preferences
+const getCellClasses = (columnId) => {
+  const isWrapped = tableState.columnWrapping.value?.[columnId] || false
+  return {
+    'text-truncate': !isWrapped,
+    'whitespace-normal': isWrapped,
+    'whitespace-nowrap': !isWrapped
+  }
+}
+
+const getCellStyles = (columnId) => {
+  const isWrapped = tableState.columnWrapping.value?.[columnId] || false
+  return {
+    width: `var(--col-${columnId}-size, auto)`,
+    maxWidth: isWrapped ? 'none' : '300px'
+  }
+}
 
 // Column size CSS variables - similar to TanStack Table React example
 const columnSizeVars = computed(() => {
   // Add dependency on columnSizing to trigger reactivity
-  columnSizing.value
+  tableState.columnSizing.value
   
   if (!table.value?.tableApi) return {}
   
@@ -448,6 +352,18 @@ const handleResizeStart = (column, event) => {
       resizeHandler(event)
     }
   }
+}
+
+const handleColumnVisibilityChange = (changes) => {
+  // Update all visibility states - the v-model:column-visibility will handle the table updates
+  changes.forEach(({ columnId, visible }) => {
+    columnPreferences.setColumnPreference(columnId, { visible })
+  })
+}
+
+const handleColumnOrderChange = (newOrder) => {
+  // Update column order in preferences
+  columnPreferences.setColumnOrder(newOrder)
 }
 
 
