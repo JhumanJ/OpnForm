@@ -167,6 +167,7 @@ import { useRoute } from '#imports'
 import WorkspaceDropdown from './WorkspaceDropdown.vue'
 import WorkspaceIcon from '~/components/workspaces/WorkspaceIcon.vue'
 import UserDropdown from './UserDropdown.vue'
+import { useForms } from '~/composables/query/useForms'
 
 import opnformConfig from '~/opnform.config.js'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
@@ -174,14 +175,19 @@ import { useFeatureFlag } from '~/composables/useFeatureFlag'
 
 // Stores & composables
 const { current: workspace } = useCurrentWorkspace()
-
 const appStore = useAppStore()
-const formsStore = useFormsStore()
 
 const { data: user } = useAuth().user()
 const isIframe = useIsIframe()
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
 const route = useRoute()
+
+// Get current form for forms-slug routes
+const isFormSlugRoute = computed(() => route.name && route.name.startsWith('forms-slug'))
+const formSlug = computed(() => isFormSlugRoute.value ? route.params.slug : null)
+const { data: form } = useForms().detail(formSlug, {
+  enabled: computed(() => !!formSlug.value)
+})
 
 // Constants / classes
 const navLinkClasses =
@@ -189,13 +195,6 @@ const navLinkClasses =
 
 // Computed values
 const helpUrl = computed(() => opnformConfig.links.help_url)
-
-const form = computed(() => {
-  if (route.name && route.name.startsWith('forms-slug')) {
-    return formsStore.getByKey(route.params.slug)
-  }
-  return null
-})
 
 const hasNavbar = computed(() => {
   if (isIframe.value) return false

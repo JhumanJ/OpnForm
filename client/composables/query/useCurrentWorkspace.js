@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 /**
  * Dedicated composable for reactive current workspace state
@@ -11,9 +11,20 @@ export function useCurrentWorkspace() {
   // Get the workspace list query (but don't create a top-level query here)
   const workspacesQuery = list()
   
+  // Watch for workspaces data and auto-select first workspace if none is current
+  watch(
+    () => workspacesQuery.data.value,
+    (workspaces) => {
+      if (workspaces && workspaces.length > 0 && !workspacesStore.currentId) {
+        workspacesStore.setCurrentId(workspaces[0].id)
+      }
+    },
+    { immediate: true }
+  )
+  
   // Reactive current workspace - combines store state with query data
   const current = computed(() => {
-    const { currentId } = workspacesStore
+    const currentId = workspacesStore.currentId
     const workspaces = workspacesQuery.data.value
     
     if (!currentId || !workspaces) {

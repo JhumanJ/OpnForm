@@ -1,10 +1,11 @@
 import { computed } from 'vue'
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
+import { useQueryClient } from '@tanstack/vue-query'
 
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
-  const formsStore = useFormsStore()
+  const queryClient = useQueryClient()
   const logEvent = useAmplitude().logEvent
   const router = useRouter()
 
@@ -180,7 +181,7 @@ export const useAuthFlow = () => {
 
   /**
    * Handle logout flow
-   * Coordinates between TanStack Query mutation and store cleanup
+   * Uses TanStack Query cache clearing instead of manual store management
    */
   const handleLogout = async () => {
     try {
@@ -190,8 +191,8 @@ export const useAuthFlow = () => {
       console.warn('Logout API call failed, but clearing local state anyway:', error)
     }
     
-    // Additional cleanup for forms (workspace data is handled by TanStack Query cache clearing)
-    formsStore.set([])
+    // Clear all TanStack Query cache (replaces manual store clearing)
+    queryClient.clear()
     
     // Navigate to login page
     router.push({ name: 'login' })

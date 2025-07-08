@@ -132,7 +132,7 @@ const fetchGeneratedForm = (generationId) => {
         setTimeout(checkFormStatus, 4000)
       }
     }).catch(error => {
-      console.log(error)
+      console.error(error)
       useAlert().error(error.response?.data?.message)
       loading.value = false
     })

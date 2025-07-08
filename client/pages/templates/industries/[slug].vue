@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-full">
-    <breadcrumb :path="breadcrumbs" />
+    <Breadcrumb :path="breadcrumbs" />
 
     <p
       v-if="industry === null || !industry"
@@ -51,7 +51,7 @@
 
 <script setup>
 import { computed } from "vue"
-import Breadcrumb from "~/components/global/Breadcrumb.vue"
+import Breadcrumb from "~/components/app/Breadcrumb.vue"
 import { useTemplates } from "~/composables/query/useTemplates"
 import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 

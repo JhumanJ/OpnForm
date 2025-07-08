@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+import Collapse from "~/components/app/Collapse.vue"
 const props = defineProps({
   title: { type: String, required: true },
   icon: { type: String, required: true }

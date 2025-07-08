@@ -42,7 +42,7 @@
               :properties="{form_id: form.id, form_slug: form.slug, type: 'slug'}"
             >
               <UButton
-                :loading="loadingNewLink"
+                :loading="regenerateLinkMutationInstance.isPending.value"
                 variant="outline"
                 color="primary"
                 @click="regenerateLink('slug')"
@@ -69,7 +69,7 @@
               :properties="{form_id: form.id, form_slug: form.slug, type: 'uuid'}"
             >
               <UButton
-                :loading="loadingNewLink"
+                :loading="regenerateLinkMutationInstance.isPending.value"
                 variant="outline"
                 color="primary"
                 @click="regenerateLink('uuid')"
@@ -85,17 +85,14 @@
 </template>
 
 <script setup>
-import { formsApi } from "~/api/forms"
 import TrackClick from "~/components/global/TrackClick.vue"
+import { useForms } from "~/composables/query/useForms"
 
 const props = defineProps({
   form: { type: Object, required: true },
 })
 
-const formsStore = useFormsStore()
 const router = useRouter()
-
-const loadingNewLink = ref(false)
 const showGenerateFormLinkModal = ref(false)
 
 // Modal state
@@ -108,21 +105,25 @@ const isModalOpen = computed({
   }
 })
 
+const { regenerateLink: regenerateLinkMutation } = useForms()
+const regenerateLinkMutationInstance = regenerateLinkMutation({
+  onSuccess: (data) => {
+    router.push({
+      name: "forms-slug-show-share",
+      params: { slug: data.form.slug },
+    })
+    useAlert().success(data.message)
+    showGenerateFormLinkModal.value = false
+  },
+  onError: (error) => {
+    useAlert().error(error?.data?.message || "Something went wrong")
+  }
+})
+
 const regenerateLink = (option) => {
-  if (loadingNewLink.value) return
-  loadingNewLink.value = true
-  formsApi.regenerateLink(props.form.id, option)
-    .then((data) => {
-      formsStore.save(data.form)
-      router.push({
-        name: "forms-slug-show-share",
-        params: { slug: data.form.slug },
-      })
-      useAlert().success(data.message)
-      loadingNewLink.value = false
-    })
-    .finally(() => {
-      showGenerateFormLinkModal.value = false
-    })
+  regenerateLinkMutationInstance.mutate({
+    id: props.form.id,
+    option
+  })
 }
 </script>

@@ -68,15 +68,23 @@ import {
   useDarkMode
 } from '~/lib/forms/public-page'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { useForms } from "~/composables/query/useForms"
 
 const crisp = useCrisp()
-const formsStore = useFormsStore()
 const darkMode = useDarkMode()
 const isIframe = useIsIframe()
-const formLoading = computed(() => formsStore.loading)
 const slug = useRoute().params.slug
-const form = computed(() => formsStore.getByKey(slug))
 const { t } = useI18n()
+
+// Use TanStack Query to load the form
+const { data: form, isLoading: formLoading, error: formError, refetch: refetchForm, suspense } = useForms().detail(slug, {
+  retry: false, // Don't auto-retry for 404s
+  refetchOnWindowFocus: false,
+})
+
+if (import.meta.server) {
+  const res = await suspense()
+}
 
 const openCompleteForm = ref(null)
 
@@ -88,7 +96,7 @@ const passwordEntered = function (password) {
   })
   cookie.value = sha256(password)
   nextTick(() => {
-    loadForm().then(() => {
+    refetchForm().then(() => {
       if (form.value?.is_password_protected) {
         openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
       }
@@ -96,44 +104,27 @@ const passwordEntered = function (password) {
   })
 }
 
-const loadForm = async (setup=false) => {
-  if (formsStore.loading || (form.value && !form.value.is_password_protected)) return Promise.resolve()
+// Handle 404 errors during SSR
+if (import.meta.server && formError.value) {
   const event = useRequestEvent()
-
-  if (setup) {
-    const {data, error} = await formsStore.publicLoad(slug)
-    if (error.value) {
-      console.error(`Error loading form [${slug}]:`,error.value)
-      formsStore.stopLoading()
-      setResponseStatus(event, 404, 'Page Not Found')
-      return
-    }
-    formsStore.save(data.value)
-  } else {
-    try {
-      const data = await formsStore.publicFetch(slug)
-      formsStore.save(data)
-    } catch {
-      formsStore.stopLoading()
-      setResponseStatus(event, 404, 'Page Not Found')
-      return
-    }
-  }
-  formsStore.stopLoading()
-
-  // Adapt page to form: colors, custom code etc
-  handleDarkMode(form.value?.dark_mode)
-  handleTransparentMode(form.value?.transparent_background)
-
-  // Remove 'hidden' class from html tag if present
-  nextTick(() => {
-    if (import.meta.client) {
-      window.document.documentElement.classList.remove('hidden')
-    }
-  })
+  console.error(`Error loading form [${slug}]:`, formError.value)
+  setResponseStatus(event, 404, 'Page Not Found')
 }
 
-await loadForm(true)
+// Adapt page to form: colors, custom code etc when form is loaded
+watch(form, (newForm) => {
+  if (newForm) {
+    handleDarkMode(newForm?.dark_mode)
+    handleTransparentMode(newForm?.transparent_background)
+
+    // Remove 'hidden' class from html tag if present
+    nextTick(() => {
+      if (import.meta.client) {
+        window.document.documentElement.classList.remove('hidden')
+      }
+    })
+  }
+}, { immediate: true })
 
 onMounted(() => {
   crisp.hideChat()

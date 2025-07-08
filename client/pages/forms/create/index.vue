@@ -33,6 +33,7 @@ import { initForm } from "~/composables/forms/initForm.js"
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { useTemplates } from "~/composables/query/useTemplates"
+import { useForms } from "~/composables/query/useForms"
 import { hash } from "~/lib/utils.js"
 import { onBeforeRouteLeave } from "vue-router"
 
@@ -58,7 +59,6 @@ onBeforeRouteLeave((to, from, next) => {
 
 const route = useRoute()
 const workingFormStore = useWorkingFormStore()
-const formStore = useFormsStore()
 
 let template = null
 if (route.query.template) {
@@ -69,6 +69,12 @@ if (route.query.template) {
 
 const { current: workspace, isLoading: workspacesLoading } = useCurrentWorkspace()
 const { content: form } = storeToRefs(workingFormStore)
+
+// Pre-load forms list for the current workspace (replaces formStore.loadAll)
+const workspaceId = computed(() => workspace.value?.id)
+useForms().list(workspaceId, {
+  enabled: computed(() => !!workspaceId.value)
+})
 
 // State
 const loading = ref(false)
@@ -94,10 +100,6 @@ onMounted(() => {
     }
   }
 
-  if (!formStore.allLoaded) {
-    formStore.loadAll(workspace.value.id)
-  }
-
   form.value = initForm({ workspace_id: workspace.value?.id, no_branding: workspace.value?.is_pro }, true)
   formInitialHash.value = hash(JSON.stringify(form.value.data()))
   if (template && template.structure) {
@@ -106,7 +108,6 @@ onMounted(() => {
     // No template loaded, ask how to start
     showInitialFormModal.value = true
   }
-  // workspacesStore.loadIfEmpty()
 })
 
 // Methods

@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query'
 import { workspaceApi } from '~/api'
-import { useWorkspacesStore } from '~/stores/workspaces'
 import { chainCallbacks } from './index'
 
 export function useWorkspaces() {
@@ -16,10 +15,6 @@ export function useWorkspaces() {
         data?.forEach((workspace) => {
           queryClient.setQueryData(['workspaces', workspace.id], workspace)
         })
-        
-        // Handle current workspace ID setting via store
-        const workspacesStore = useWorkspacesStore()
-        workspacesStore.onWorkspacesLoaded(data)
       },
       ...options
     })

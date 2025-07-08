@@ -112,7 +112,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import EditableTag from '~/components/global/EditableTag.vue'
+import EditableTag from '~/components/app/EditableTag.vue'
 import BlockTypeIcon from './BlockTypeIcon.vue'
 
 export default {

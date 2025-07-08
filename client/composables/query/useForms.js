@@ -7,31 +7,29 @@ export function useForms() {
 
   // Queries
   const detail = (slug, options = {}) => {
+    const slugValue = toRef(slug).value
     return useQuery({
-      queryKey: ['forms', 'slug', slug],
-      queryFn: () => formsApi.get(slug),
+      queryKey: ['forms', 'slug', slugValue],
+      queryFn: () => formsApi.get(slugValue),
       enabled: !!slug,
       staleTime: 10 * 60 * 1000, // 10 minutes
       cacheTime: 30 * 60 * 1000, // 30 minutes
       onSuccess: (form) => {
-        // Cache by both slug and id
         queryClient.setQueryData(['forms', form.id], form)
-        queryClient.setQueryData(['forms', 'slug', form.slug], form)
       },
       ...options
     })
   }
 
   const detailById = (id, options = {}) => {
+    const idValue = toRef(id).value
     return useQuery({
-      queryKey: ['forms', id],
-      queryFn: () => formsApi.getById(id),
+      queryKey: ['forms', idValue],
+      queryFn: () => formsApi.getById(idValue),
       enabled: !!id,
       staleTime: 10 * 60 * 1000, // 10 minutes
       cacheTime: 30 * 60 * 1000, // 30 minutes
       onSuccess: (form) => {
-        // Cache by both slug and id
-        queryClient.setQueryData(['forms', form.id], form)
         queryClient.setQueryData(['forms', 'slug', form.slug], form)
       },
       ...options

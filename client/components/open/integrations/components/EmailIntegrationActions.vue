@@ -62,7 +62,6 @@ onBeforeUnmount(() => {
 })
 
 const sendToEmails = computed(() => {
-  console.log(props.integration.data.send_to)
   if (!props.integration.data.send_to) {
     return []
   }

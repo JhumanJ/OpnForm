@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-full">
-    <breadcrumb
+    <Breadcrumb
       v-if="template"
       :path="breadcrumbs"
     >
@@ -45,7 +45,7 @@
           Use this template
         </v-button>
       </template>
-    </breadcrumb>
+    </Breadcrumb>
 
     <p
       v-if="template === null || !template"
@@ -275,6 +275,7 @@ import SingleTemplate from "~/components/pages/templates/SingleTemplate.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { cleanQuotes } from "~/lib/utils"
 import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
+import Breadcrumb from "~/components/app/Breadcrumb.vue"
 
 const route = useRoute()
 const { detail, list } = useTemplates()

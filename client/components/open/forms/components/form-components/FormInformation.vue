@@ -107,12 +107,18 @@
 <script setup>
 import clonedeep from 'clone-deep'
 import { default as _has } from 'lodash/has'
+import { useForms } from "~/composables/query/useForms"
+import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
 
 const alert = useAlert()
-const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
-const forms = computed(() => formsStore.getAll)
+
+// Get forms list for current workspace
+const { currentId: workspaceId } = useCurrentWorkspace()
+const { data: forms } = useForms().list(workspaceId, {
+  enabled: computed(() => !!workspaceId.value)
+})
 
 // Reactive state
 const showCopyFormSettingsModal = ref(false)
@@ -135,6 +141,7 @@ const visibilityOptions = [
 ]
 
 const copyFormOptions = computed(() => {
+  if (!forms.value) return []
   return forms.value
     .filter((formItem) => {
       return form.value.id !== formItem.id
@@ -148,7 +155,21 @@ const copyFormOptions = computed(() => {
 })
 
 const allTagsOptions = computed(() => {
-  return formsStore.allTags.map((tagname) => {
+  if (!forms.value) return []
+  
+  // Extract all unique tags from forms
+  let tags = []
+  forms.value.forEach((formItem) => {
+    if (formItem.tags && formItem.tags.length) {
+      if (typeof formItem.tags === "string" || formItem.tags instanceof String) {
+        tags = tags.concat(formItem.tags.split(","))
+      } else if (Array.isArray(formItem.tags)) {
+        tags = tags.concat(formItem.tags)
+      }
+    }
+  })
+  
+  return [...new Set(tags)].map((tagname) => {
     return {
       name: tagname,
       value: tagname,
@@ -169,7 +190,7 @@ const copySettings = () => {
   }
 
   const copyForm = clonedeep(
-    forms.value.find(form => form.id === copyFormId.value),
+    forms.value?.find(form => form.id === copyFormId.value),
   )
   if (!copyForm)
     return;

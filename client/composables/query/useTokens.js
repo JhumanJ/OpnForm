@@ -78,7 +78,6 @@ export function useTokens() {
       queryClient.setQueryData(['tokens', newToken.id], newToken)
       
       // Add to list query data
-      console.log('newToken', newToken)
       const currentList = queryClient.getQueryData(['tokens', 'list'])
       if (currentList) {
         queryClient.setQueryData(['tokens', 'list'], [newToken, ...currentList])
