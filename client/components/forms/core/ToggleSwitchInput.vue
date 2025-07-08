@@ -69,14 +69,13 @@
 </template>
 
 <script>
-import {inputProps, useFormInput} from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import InputHelp from "~/components/forms/components/InputHelp.vue"
+import {inputProps, useFormInput} from "../useFormInput.js"
+import InputHelp from "~/components/forms/core/components/InputHelp.vue"
 
 export default {
   name: "ToggleSwitchInput",
 
-  components: {InputHelp, InputWrapper},
+  components: {InputHelp},
   props: {
     ...inputProps,
   },

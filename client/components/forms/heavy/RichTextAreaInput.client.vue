@@ -32,6 +32,8 @@
       >
         <span class="absolute left-4 bottom-2" />
       </MentionDropdown>
+      
+      <ClientOnly>
       <QuillyEditor
         :id="id ? id : name"
         ref="editor"
@@ -41,6 +43,10 @@
         :style="inputStyle"
         @ready="onEditorReady"
       />
+        <template #fallback>
+          <USkeleton class="w-full h-10" />
+        </template>
+      </ClientOnly>
     </div>
 
     <template
@@ -72,8 +78,7 @@
 
 <script setup>
 import Quill from 'quill'
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import QuillyEditor from './components/QuillyEditor.vue'
 import MentionDropdown from './components/MentionDropdown.vue'
 import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
@@ -94,7 +99,6 @@ const props = defineProps({
     default: () => []
   }
 })
-
 const emit = defineEmits(['update:modelValue'])
 
 const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props, { emit })
@@ -109,7 +113,7 @@ watch(compVal, (val) => {
 }, { immediate: true })
 
 // Initialize mention extension
-if (props.enableMentions) {
+if (import.meta.client && props.enableMentions) {
   // Register the mention extension with Quill
   mentionState.value = registerMentionExtension(Quill)
 }

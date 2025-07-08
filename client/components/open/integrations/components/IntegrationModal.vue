@@ -30,13 +30,20 @@
     <template #body>
       <div class="overflow-y-scroll px-2">
         <VForm size="sm">
-          <component
-            :is="component"
-            v-if="integration && component"
-            :form="form"
-            :integration="integration"
-            :integration-data="integrationData"
-          />
+          <Suspense v-if="integration">
+            <component
+              :is="component"
+              v-if="component"
+              :form="form"
+              :integration="integration"
+              :integration-data="integrationData"
+            />
+            <template #fallback>
+              <div class="flex items-center justify-center p-8">
+                <USkeleton class="h-32 w-full" />
+              </div>
+            </template>
+          </Suspense>
         </VForm>
       </div>
     </template>
@@ -65,6 +72,8 @@
 
 <script setup>
 import { computed } from "vue"
+import { useComponentRegistry } from "~/composables/components/useComponentRegistry"
+import ProTag from "~/components/app/ProTag.vue"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -144,9 +153,11 @@ const formIntegration = computed(() => {
   return formIntegrationsData.value.find(integration => integration.id === props.formIntegrationId)
 })
 
+const { getIntegrationComponent } = useComponentRegistry()
+
 const component = computed(() => {
   if (!props.integration) return null
-  return resolveComponent(props.integration.file_name)
+  return getIntegrationComponent(props.integration.id)
 })
 
 const integrationData = ref(null)

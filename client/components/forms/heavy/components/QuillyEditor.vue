@@ -8,7 +8,7 @@
 <script setup>
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
-import '../../../lib/quill/quillPatches'
+import '~/lib/quill/quillPatches'
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 
 const props = defineProps({

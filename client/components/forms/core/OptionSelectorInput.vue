@@ -94,8 +94,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 
 /**
  * OptionSelectorInput.vue

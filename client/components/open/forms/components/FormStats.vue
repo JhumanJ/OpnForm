@@ -76,6 +76,7 @@
 </template>
 
 <script setup>
+import ProTag from "~/components/app/ProTag.vue"
 import { Line as LineChart } from "vue-chartjs"
 import {
   Chart as ChartJS,

@@ -36,22 +36,12 @@
   </input-wrapper>
 </template>
 
-<script>
-import InputWrapper from "./components/InputWrapper.vue"
-import { inputProps, useFormInput } from "./useFormInput.js"
+<script setup>
+import { inputProps, useFormInput } from "../useFormInput.js"
 
-export default {
-  name: "ColorInput",
-  components: { InputWrapper },
+const props = defineProps({
+  ...inputProps,
+})
 
-  props: {
-    ...inputProps,
-  },
-
-  setup(props, context) {
-    return {
-      ...useFormInput(props, context),
-    }
-  },
-}
+const { compVal, inputWrapperProps} = useFormInput(props)
 </script>

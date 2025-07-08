@@ -84,15 +84,14 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export default {
   phone: 'PhoneInput',
-  components: { InputWrapper, CountryFlag },
+  components: { CountryFlag },
   props: {
     ...inputProps,
     canOnlyCountry: { type: Boolean, default: false },

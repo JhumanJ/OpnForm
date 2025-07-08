@@ -140,15 +140,13 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import Modal from "../global/Modal.vue"
+import { inputProps, useFormInput } from "../useFormInput.js"
+import Modal from "../../global/Modal.vue"
 import { storeFile } from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
 
 export default {
-  name: "ImageInput",
-  components: { InputWrapper, Modal },
+  components: {  Modal },
   mixins: [],
   props: {
     ...inputProps,

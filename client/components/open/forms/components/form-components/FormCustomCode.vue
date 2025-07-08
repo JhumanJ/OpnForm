@@ -36,6 +36,8 @@
 </template>
 
 <script setup>
+import ProTag from "~/components/app/ProTag.vue"
+
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
 const crisp = useCrisp()

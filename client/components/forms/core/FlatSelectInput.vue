@@ -94,8 +94,7 @@
 </template>
 
 <script>
-import {inputProps, useFormInput} from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
+import {inputProps, useFormInput} from "../useFormInput.js"
 import RadioButtonIcon from "./components/RadioButtonIcon.vue"
 import CheckboxIcon from "./components/CheckboxIcon.vue"
 
@@ -104,7 +103,7 @@ import CheckboxIcon from "./components/CheckboxIcon.vue"
  */
 export default {
   name: "FlatSelectInput",
-  components: {InputWrapper, RadioButtonIcon, CheckboxIcon},
+  components: {RadioButtonIcon, CheckboxIcon},
 
   props: {
     ...inputProps,

@@ -78,6 +78,7 @@ import { computed } from "vue"
 import IntegrationModal from "~/components/open/integrations/components/IntegrationModal.vue"
 import IntegrationCard from "~/components/open/integrations/components/IntegrationCard"
 import IntegrationCardSkeleton from '~/components/open/integrations/components/IntegrationCardSkeleton.vue'
+import IntegrationListOption from '~/components/open/integrations/components/IntegrationListOption.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },

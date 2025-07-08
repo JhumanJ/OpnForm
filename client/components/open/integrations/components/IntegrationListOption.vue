@@ -1,7 +1,7 @@
 <template>
   <UTooltip
     :text="tooltipText"
-    :prevent="!unavailable || !tooltipText"
+    :disabled="!unavailable || !tooltipText"
   >
     <div
       v-track.new_integration_click="{ name: integration.id }"
@@ -10,7 +10,7 @@
         'hover:bg-gray-100 dark:hover:bg-gray-800 group cursor-pointer': !unavailable,
         'cursor-not-allowed opacity-50': unavailable,
       }"
-      class="border rounded-lg p-4 flex flex-col items-center justify-center text-center transition-colors w-full h-full"
+      class="border rounded-lg p-4 flex flex-col items-center justify-center text-center transition-colors w-full h-full relative"
       @click="onClick"
     >
       <div class="flex-shrink-0">
@@ -43,6 +43,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import ProTag from "~/components/app/ProTag.vue"
 const emit = defineEmits(["select"])
 const subscriptionModalStore = useSubscriptionModalStore()
 

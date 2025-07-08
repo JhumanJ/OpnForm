@@ -71,9 +71,9 @@
 
 <script setup>
 import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
-import WorkspaceDropdown from "~/components/global/WorkspaceDropdown.vue"
+import WorkspaceDropdown from "~/components/dashboard/WorkspaceDropdown.vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-import UserDropdown from "~/components/global/UserDropdown.vue"
+import UserDropdown from "~/components/dashboard/UserDropdown.vue"
 import NavigationList from "~/components/global/NavigationList.vue"
 
 const route = useRoute()

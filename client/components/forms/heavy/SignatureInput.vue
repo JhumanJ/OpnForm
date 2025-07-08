@@ -98,13 +98,12 @@
 
 <script>
 import { VueSignaturePad } from 'vue-signature-pad'
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import { storeFile } from '~/lib/file-uploads.js'
 
 export default {
   name: 'SignatureInput',
-  components: { InputWrapper, VueSignaturePad },
+  components: { VueSignaturePad },
 
   props: {
     ...inputProps,

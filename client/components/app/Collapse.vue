@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import VTransition from "./transitions/VTransition.vue"
+import VTransition from "../global/transitions/VTransition.vue"
 import { ref, defineProps, defineEmits } from "vue"
 
 const props = defineProps({

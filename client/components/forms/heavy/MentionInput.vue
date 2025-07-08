@@ -58,8 +58,7 @@
 
 <script setup>
 import { ref, onMounted, watch, reactive } from 'vue'
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import MentionDropdown from './components/MentionDropdown.vue'
 
 const props = defineProps({

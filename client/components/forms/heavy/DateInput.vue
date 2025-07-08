@@ -106,8 +106,7 @@
 </template>
 
 <script setup>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import { getCurrentInstance } from 'vue'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'

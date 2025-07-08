@@ -70,7 +70,6 @@
 </template>
     
 <script setup>
-import { ref, computed, watch } from 'vue'
 import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
 import blocksTypes from '~/data/blocks_types.json'
 

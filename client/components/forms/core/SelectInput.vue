@@ -101,15 +101,14 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 
 /**
  * Options: {name,value} objects
  */
 export default {
   name: 'SelectInput',
-  components: { InputWrapper },
+  components: {},
 
   props: {
     ...inputProps,

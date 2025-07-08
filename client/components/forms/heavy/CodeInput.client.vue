@@ -18,16 +18,21 @@
         },
       ]"
     >
-      <codemirror
-        :id="id ? id : name"
-        v-model="compVal"
-        :disabled="disabled ? true : null"
-        :extensions="extensions"
-        :style="inputStyle"
-        :name="name"
-        :tab-size="4"
-        :placeholder="placeholder"
-      />
+      <ClientOnly>
+        <codemirror
+          :id="id ? id : name"
+          v-model="compVal"
+          :disabled="disabled ? true : null"
+          :extensions="extensions"
+          :style="inputStyle"
+          :name="name"
+          :tab-size="4"
+          :placeholder="placeholder"
+        />
+        <template #fallback>
+          <USkeleton class="w-full h-10" />
+        </template>
+      </ClientOnly>
     </div>
 
     <template #error>
@@ -41,11 +46,10 @@ import { Codemirror } from "vue-codemirror"
 
 import { html } from "@codemirror/lang-html"
 
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
+import { inputProps, useFormInput } from "../useFormInput.js"
 
 export default {
-  components: { InputWrapper, Codemirror },
+  components: { Codemirror },
   props: {
     ...inputProps,
   },

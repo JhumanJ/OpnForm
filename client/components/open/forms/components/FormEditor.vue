@@ -109,7 +109,7 @@ import { captureException } from "@sentry/core"
 import FormEditorErrorHandler from '~/components/open/forms/components/FormEditorErrorHandler.vue'
 import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import LogicConfirmationModal from '~/components/forms/LogicConfirmationModal.vue'
+import LogicConfirmationModal from '~/components/forms/heavy/LogicConfirmationModal.vue'
 import { formsApi } from "~/api"
 import { useForms } from "~/composables/query/useForms.js"
 

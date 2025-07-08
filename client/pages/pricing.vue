@@ -400,11 +400,10 @@
 
 <script>
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
-import Faq from '~/components/pages/pricing/Faq.vue'
 import { useAuthFlow } from '~/composables/useAuthFlow'
 
 export default {
-  components: {PricingTable, Faq},
+  components: {PricingTable},
   layout: "default",
 
   setup() {

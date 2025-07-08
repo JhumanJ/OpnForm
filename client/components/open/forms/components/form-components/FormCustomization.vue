@@ -224,7 +224,7 @@
 import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
-import ProTag from "~/components/global/ProTag.vue"
+import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
 

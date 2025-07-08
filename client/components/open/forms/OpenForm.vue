@@ -96,7 +96,7 @@
 <script setup>
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
-import CaptchaWrapper from '~/components/forms/components/CaptchaWrapper.vue'
+import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'

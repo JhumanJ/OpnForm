@@ -68,14 +68,13 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import VCheckbox from './components/VCheckbox.vue'
-import InputWrapper from './components/InputWrapper.vue'
 
 export default {
   name: 'CheckboxInput',
 
-  components: { InputWrapper, VCheckbox },
+  components: {VCheckbox },
   props: {
     ...inputProps,
     value: { type: [Boolean, String, Number, Object], required: false },

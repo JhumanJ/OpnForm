@@ -172,8 +172,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import { loadStripe } from '@stripe/stripe-js'
 import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"

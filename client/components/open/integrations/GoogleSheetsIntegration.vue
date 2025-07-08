@@ -49,7 +49,6 @@
 </template>
 
 <script setup>
-import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 
 const props = defineProps({

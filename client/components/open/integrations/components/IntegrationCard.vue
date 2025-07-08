@@ -35,12 +35,17 @@
 
     <!-- Actions -->
     <div class="flex items-center gap-4">
-      <component
-        :is="actionsComponent"
-        v-if="actionsComponent"
-        :integration="integration"
-        :form="form"
-      />
+      <Suspense v-if="integrationTypeInfo?.actions_file_name">
+        <component
+          :is="actionsComponent"
+          v-if="actionsComponent"
+          :integration="integration"
+          :form="form"
+        />
+        <template #fallback>
+          <USkeleton class="h-6 w-24" />
+        </template>
+      </Suspense>
 
       <div
         v-if="loadingDelete"
@@ -85,6 +90,9 @@
 
 <script setup>
 import { computed } from "vue"
+import { useComponentRegistry } from "~/composables/components/useComponentRegistry"
+import IntegrationModal from "~/components/open/integrations/components/IntegrationModal.vue"
+import IntegrationEventsModal from "./IntegrationEventsModal.vue"
 
 const props = defineProps({
   integration: {
@@ -99,6 +107,7 @@ const props = defineProps({
 
 const alert = useAlert()
 const { availableIntegrations, deleteIntegration } = useFormIntegrations()
+const { getActionComponent } = useComponentRegistry()
 const integrations = availableIntegrations
 const integrationTypeInfo = computed(() =>
   integrations.value.get(props.integration.integration_id),
@@ -110,7 +119,7 @@ const loadingDelete = ref(false)
 
 const actionsComponent = computed(() => {
   if(integrationTypeInfo.value?.actions_file_name || false) {
-    return resolveComponent(integrationTypeInfo.value.actions_file_name)
+    return getActionComponent(integrationTypeInfo.value.actions_file_name)
   }
 
   return null

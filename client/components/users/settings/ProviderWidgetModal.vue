@@ -16,12 +16,19 @@
     <template #body>
       <div class="flex items-center justify-center">
         <!-- Dynamic component loading based on service -->
-        <component
-          :is="widgetComponent"
-          v-if="widgetComponent"
-          :service="service"
-          @auth-data="handleAuthData"
-        />
+        <Suspense v-if="service?.widget_file">
+          <component
+            :is="widgetComponent"
+            v-if="widgetComponent"
+            :service="service"
+            @auth-data="handleAuthData"
+          />
+          <template #fallback>
+            <div class="flex items-center justify-center p-8">
+              <USkeleton class="h-24 w-full" />
+            </div>
+          </template>
+        </Suspense>
       </div>
     </template>
 
@@ -38,6 +45,8 @@
 </template>
 
 <script setup>
+import { useComponentRegistry } from "~/composables/components/useComponentRegistry"
+
 const props = defineProps({
   show: Boolean,
   service: Object
@@ -46,6 +55,7 @@ const props = defineProps({
 const oAuth = useOAuth()
 const router = useRouter()
 const alert = useAlert()
+const { getProviderWidget } = useComponentRegistry()
 const emit = defineEmits(['close'])
 
 // Modal state
@@ -65,7 +75,7 @@ const closeModal = () => {
 // Dynamically compute which widget component to load
 const widgetComponent = computed(() => {
   if (!props.service?.widget_file) return null
-  return resolveComponent(props.service.widget_file)
+  return getProviderWidget(props.service.widget_file)
 })
 
 // Widget callback mutation

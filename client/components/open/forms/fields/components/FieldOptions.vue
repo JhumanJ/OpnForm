@@ -638,13 +638,14 @@ import MatrixFieldOptions from './MatrixFieldOptions.vue'
 import PaymentFieldOptions from './PaymentFieldOptions.vue'
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
+import ProTag from '~/components/app/ProTag.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 import blocksTypes from '~/data/blocks_types.json'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions },
+  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions, ProTag },
   props: {
     field: {
       type: Object,

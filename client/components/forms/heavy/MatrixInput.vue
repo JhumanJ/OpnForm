@@ -90,9 +90,8 @@
 </template>
 <script setup>
 import { watch } from "vue"
-import { inputProps, useFormInput } from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
-import RadioButtonIcon from "./components/RadioButtonIcon.vue"
+import { inputProps, useFormInput } from "../useFormInput.js"
+import RadioButtonIcon from "../core/components/RadioButtonIcon.vue"
 
 const props = defineProps({
   ...inputProps,

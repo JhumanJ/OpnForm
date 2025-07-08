@@ -61,12 +61,11 @@
 </template>
 
 <script>
-import {inputProps, useFormInput} from "./useFormInput.js"
-import InputWrapper from "./components/InputWrapper.vue"
+import {inputProps, useFormInput} from "../useFormInput.js"
 
 export default {
   name: "TextInput",
-  components: {InputWrapper},
+  components: {},
 
   props: {
     ...inputProps,

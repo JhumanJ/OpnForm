@@ -84,13 +84,12 @@
 </template>
 
 <script>
-import { inputProps, useFormInput } from './useFormInput.js'
-import InputWrapper from './components/InputWrapper.vue'
+import { inputProps, useFormInput } from '../useFormInput.js'
 import CameraUpload from './components/CameraUpload.vue'
 
 export default {
   name: 'BarcodeInput',
-  components: { InputWrapper, CameraUpload },
+  components: { CameraUpload },
 
   props: {
     ...inputProps,

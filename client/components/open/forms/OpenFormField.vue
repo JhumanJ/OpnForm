@@ -75,14 +75,22 @@
           </div>
         </div>
       </div>
-      <component
-        :is="getFieldComponents"
-        v-if="getFieldComponents"
-        v-bind="inputProperties(field)"
-        :required="isFieldRequired"
-        :disabled="isFieldDisabled"
-        :is-admin-preview="isAdminPreview"
-      />
+      <div v-if="getFieldComponents">
+        <Suspense>
+          <component
+            :is="getFieldComponents"
+            v-bind="inputProperties(field)"
+            :required="isFieldRequired"
+            :disabled="isFieldDisabled"
+            :is-admin-preview="isAdminPreview"
+          />
+          <template #fallback>
+            <div class="p-4">
+              <USkeleton class="w-full h-10" />
+            </div>
+          </template>
+        </Suspense>
+      </div>
       <template v-else>
         <div
           v-if="field.type === 'nf-text' && field.content"
@@ -155,6 +163,7 @@ import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { default as _has } from 'lodash/has'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { useWorkingFormStore } from '~/stores/working_form'
+import { useComponentRegistry } from '~/composables/components/useComponentRegistry'
 
 // Define props
 const props = defineProps({
@@ -181,6 +190,7 @@ const enableDisabledFields = computed(() => props.formManager?.strategy?.value?.
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
+const { getFormComponent } = useComponentRegistry()
 const selectedFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
 const showEditFieldSidebar = computed(() => workingFormStore.showEditFieldSidebar)
 const strategy = computed(() => props.formManager?.strategy?.value || createFormModeStrategy(FormMode.LIVE))
@@ -189,44 +199,45 @@ const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls |
 // Computed properties
 const getFieldComponents = computed(() => {
   const field = props.field
+  let componentName
+
   if (field.type === 'text' && field.multi_lines) {
-    return 'TextAreaInput'
-  }
-  if (field.type === 'url' && field.file_upload) {
-    return 'FileInput'
-  }
-  if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
-    return 'FlatSelectInput'
-  }
-  if (field.type === 'checkbox' && field.use_toggle_switch) {
-    return 'ToggleSwitchInput'
-  }
-  if (field.type === 'signature') {
-    return 'SignatureInput'
-  }
-  if (field.type === 'phone_number' && !field.use_simple_text_input) {
-    return 'PhoneInput'
+    componentName = 'TextAreaInput'
+  } else if (field.type === 'url' && field.file_upload) {
+    componentName = 'FileInput'
+  } else if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
+    componentName = 'FlatSelectInput'
+  } else if (field.type === 'checkbox' && field.use_toggle_switch) {
+    componentName = 'ToggleSwitchInput'
+  } else if (field.type === 'signature') {
+    componentName = 'SignatureInput'
+  } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
+    componentName = 'PhoneInput'
+  } else {
+    componentName = {
+      text: 'TextInput',
+      rich_text: 'RichTextAreaInput',
+      number: 'TextInput',
+      rating: 'RatingInput',
+      scale: 'ScaleInput',
+      slider: 'SliderInput',
+      select: 'SelectInput',
+      multi_select: 'SelectInput',
+      date: 'DateInput',
+      files: 'FileInput',
+      checkbox: 'CheckboxInput',
+      url: 'TextInput',
+      email: 'TextInput',
+      phone_number: 'TextInput',
+      matrix: 'MatrixInput',
+      barcode: 'BarcodeInput',
+      payment: 'PaymentInput',
+      code: 'CodeInput'
+    }[field.type]
   }
 
-  return {
-    text: 'TextInput',
-    rich_text: 'RichTextAreaInput',
-    number: 'TextInput',
-    rating: 'RatingInput',
-    scale: 'ScaleInput',
-    slider: 'SliderInput',
-    select: 'SelectInput',
-    multi_select: 'SelectInput',
-    date: 'DateInput',
-    files: 'FileInput',
-    checkbox: 'CheckboxInput',
-    url: 'TextInput',
-    email: 'TextInput',
-    phone_number: 'TextInput',
-    matrix: 'MatrixInput',
-    barcode: 'BarcodeInput',
-    payment: 'PaymentInput'
-  }[field.type]
+  // Let the component registry handle whether to return a string or an async component
+  return getFormComponent(componentName)
 })
 
 const isPublicFormPage = computed(() => useRoute().name === 'forms-slug')
