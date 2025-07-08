@@ -9,10 +9,10 @@
         <!-- Loading State -->
         <div v-if="isLoading" class="flex-1 bg-white">
           <!-- Top Bar Skeleton -->
-          <div class="bg-whitep-4">
+          <div class="bg-white p-4">
             <div class="max-w-4xl mx-auto">
               <!-- Form Title and Actions Skeleton -->
-              <div class="flex flex-wrap items-start justify-between gap-4 py-4">
+              <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="flex-1 min-w-0">
                   <USkeleton class="h-7 w-64 mb-2" />
                   <div class="flex flex-wrap items-center gap-2">
@@ -31,7 +31,7 @@
               </div>
               
               <!-- Status Badges Skeleton -->
-              <div class="flex flex-wrap gap-2 mt-2 px-4">
+              <div class="flex flex-wrap gap-2 mt-2">
                 <USkeleton class="h-4 w-16" />
                 <USkeleton class="h-4 w-20" />
               </div>

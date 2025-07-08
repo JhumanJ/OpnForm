@@ -107,8 +107,6 @@
 <script setup>
 import clonedeep from 'clone-deep'
 import { default as _has } from 'lodash/has'
-import { useFormsList } from "~/composables/query/forms/useFormsList"
-import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
 
 const alert = useAlert()
 const workingFormStore = useWorkingFormStore()

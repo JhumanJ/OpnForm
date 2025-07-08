@@ -53,9 +53,7 @@
 </template>
 
 <script>
-import { computed } from "vue"
 import SingleTemplate from "../templates/SingleTemplate.vue"
-import { useTemplates } from "~/composables/query/useTemplates"
 
 export default {
   components: { SingleTemplate },

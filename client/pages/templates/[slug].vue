@@ -268,7 +268,6 @@
 <script setup>
 import { computed, ref } from "vue"
 import { useRoute } from "vue-router"
-import { useTemplates } from "~/composables/query/useTemplates"
 import FormTemplateModal from "~/components/open/forms/components/templates/FormTemplateModal.vue"
 import TemplateTags from "~/components/pages/templates/TemplateTags.vue"
 import SingleTemplate from "~/components/pages/templates/SingleTemplate.vue"

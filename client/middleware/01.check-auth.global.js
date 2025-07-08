@@ -19,10 +19,11 @@ export default defineNuxtRouteMiddleware(async () => {
   // If we have a token but no user data in cache, prefetch it
   if (authStore.token && !userData.value) {
     try {
-      // Only prefetch user data - workspaces will be loaded client-side
-      const { prefetchUser } = useAuth()
+      // Prefetch user and workspaces data in parallel
+      const userQuery = useAuth().user()
+      const workspacesQuery = useWorkspaces().list()
       
-      await prefetchUser()
+      await Promise.all([userQuery.suspense(), workspacesQuery.suspense()])
 
       // Initialize service clients after user data is loaded
       const userDataFromCache = queryClient.getQueryData(['user'])

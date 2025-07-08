@@ -73,7 +73,6 @@
 
 <script setup>
 import { onMounted } from "vue"
-import { useWorkspaces } from "~/composables/query/useWorkspaces"
 
 const { data: user } = useAuth().user()
 const router = useRouter()

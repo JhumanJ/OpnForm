@@ -20,6 +20,21 @@ export function useWorkspaces() {
     })
   }
 
+  const listWithSuspense = (options = {}) => {
+    return useQuery({
+      queryKey: ['workspaces', 'list'],
+      queryFn: () => workspaceApi.list(),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      suspense: true,
+      onSuccess: (data) => {
+        data?.forEach((workspace) => {
+          queryClient.setQueryData(['workspaces', workspace.id], workspace)
+        })
+      },
+      ...options
+    })
+  }
+
   const detail = (id, options = {}) => {
     return useQuery({
       queryKey: ['workspaces', id],
@@ -189,6 +204,7 @@ export function useWorkspaces() {
   return {
     // Queries
     list,
+    listWithSuspense,
     detail,
     
     // Mutations

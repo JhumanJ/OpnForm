@@ -41,12 +41,7 @@
   </UModal>
 </template>
 
-<script setup>
-import {watch, ref} from "vue"
-import { useWorkspaceUsers } from "~/composables/query/useWorkspaceUsers"
-import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
-
- 
+<script setup> 
 const props = defineProps(['user', 'showEditUserModal'])
 const emit = defineEmits(['close', 'fetchUsers'])
 

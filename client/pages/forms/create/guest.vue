@@ -26,8 +26,6 @@
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
-import { useTemplates } from "~/composables/query/useTemplates"
-import { useWorkspaces } from "~/composables/query/useWorkspaces"
 import { useQueryClient } from "@tanstack/vue-query"
 
 import { WindowMessageTypes } from "~/composables/useWindowMessage"

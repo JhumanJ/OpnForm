@@ -26,8 +26,6 @@
 </template>
 
 <script setup>
-import { useTemplates } from '~/composables/query/useTemplates'
-
 defineRouteRules({
   swr: 3600,
 })

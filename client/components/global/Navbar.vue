@@ -167,7 +167,6 @@ import { useRoute } from '#imports'
 import WorkspaceDropdown from '../dashboard/WorkspaceDropdown.vue'
 import WorkspaceIcon from '~/components/workspaces/WorkspaceIcon.vue'
 import UserDropdown from '../dashboard/UserDropdown.vue'
-import { useForms } from '~/composables/query/useForms'
 
 import opnformConfig from '~/opnform.config.js'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'

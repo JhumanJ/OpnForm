@@ -35,9 +35,6 @@
 </template>
 
 <script setup>
-import { useWorkspaceUsers } from "~/composables/query/useWorkspaceUsers"
-import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
-
 defineProps({
   isWorkspaceAdmin: { type: Boolean, default: false },
   disabled: {

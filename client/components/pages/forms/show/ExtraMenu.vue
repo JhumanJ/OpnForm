@@ -76,7 +76,6 @@
 import { ref, defineProps, computed } from "vue"
 import FormTemplateModal from "../../../open/forms/components/templates/FormTemplateModal.vue"
 import FormWorkspaceModal from "../../../open/forms/components/FormWorkspaceModal.vue"
-import { useForms } from "~/composables/query/forms/useForms"
 
 const { copy } = useClipboard()
 const router = useRouter()

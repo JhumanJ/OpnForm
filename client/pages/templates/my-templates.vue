@@ -62,7 +62,6 @@
 </template>
 
 <script setup>
-import { useTemplates } from '~/composables/query/useTemplates'
 import { useCrisp } from '~/composables/useCrisp'
 import { computed } from 'vue'
 
