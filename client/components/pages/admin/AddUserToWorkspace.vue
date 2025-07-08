@@ -25,7 +25,7 @@
       <UButton
         type="submit"
         :disabled="disabled"
-        :loading="addingUsersState"
+        :loading="addMutation.isPending.value"
         icon="i-heroicons-envelope"
       >
         Invite User
@@ -35,7 +35,8 @@
 </template>
 
 <script setup>
-import { workspaceApi } from "~/api"
+import { useWorkspaceUsers } from "~/composables/query/useWorkspaceUsers"
+import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
 
 defineProps({
   isWorkspaceAdmin: { type: Boolean, default: false },
@@ -44,9 +45,9 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['fetchUsers'])
 
-const workspacesStore = useWorkspacesStore()
+const { currentId } = useCurrentWorkspace()
+const { addUser: addUserMutation } = useWorkspaceUsers()
 
 const roleOptions = [
   {name: "User", value: "user"},
@@ -56,30 +57,25 @@ const roleOptions = [
 
 const newUser = ref("")
 const newUserRole = ref("user")
-const addingUsersState = ref(false)
 
+const addMutation = addUserMutation(currentId, {
+  onSuccess: (data) => {
+    newUser.value = ""
+    newUserRole.value = "user"
+    useAlert().success(data.message)
+    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
+  },
+  onError: (error) => {
+    useAlert().error("There was an error adding user: " + error.data.message)
+  }
+})
 
 const addUser = () => {
   if (!newUser.value) return
-  addingUsersState.value = true
-  workspaceApi.users.add(
-    workspacesStore.currentId,
-    {
-      email: newUser.value,
-      role: newUserRole.value,
-    }
-  ).then((data) => {
-    newUser.value = ""
-    newUserRole.value = "user"
-
-    useAlert().success(data.message)
-
-    emit("fetchUsers")
-  }).catch((error) => {
-    useAlert().error("There was an error adding user: " + error.data.message)
-  }).finally(() => {
-    addingUsersState.value = false
+  
+  addMutation.mutate({
+    email: newUser.value,
+    role: newUserRole.value,
   })
 }
-
 </script>

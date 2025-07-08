@@ -73,9 +73,9 @@
 
 <script setup>
 import { onMounted } from "vue"
+import { useWorkspaces } from "~/composables/query/useWorkspaces"
+import { useForms } from "~/composables/query/useForms"
 
-const workspacesStore = useWorkspacesStore()
-const formsStore = useFormsStore()
 const { data: user } = useAuth().user()
 const router = useRouter()
 const loading = ref(false)
@@ -93,17 +93,18 @@ onMounted(() => {
   form.email = user?.value?.email
 })
 
-const { list: fetchWorkspaces } = useWorkspaces()
+const { invalidateAll: invalidateWorkspaces } = useWorkspaces()
+const { invalidateAll: invalidateForms } = useForms()
 
 const updateCredentials = () => {
   loading.value = true
   form
     .post("update-credentials")
-          .then(async (_data) => {
-       useAuth().invalidateUser()
-      const { data: workspacesData } = await fetchWorkspaces()
-      workspacesStore.set(workspacesData.value)
-      formsStore.loadAll(workspacesStore.currentId)
+    .then(async (_data) => {
+      useAuth().invalidateUser()
+      // Invalidate all workspace and form queries to refetch fresh data
+      await invalidateWorkspaces()
+      await invalidateForms()
       router.push({ name: "home" })
     })
     .catch((error) => {

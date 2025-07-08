@@ -1,11 +1,16 @@
 <template>
   <UPopover arrow :content="{ align: 'end' }">
-    <UButton
-      variant="ghost"
-      color="neutral"
-      icon="i-heroicons-cog-6-tooth"
+    <TrackClick
+      name="advanced_form_url_settings_click"
+      :properties="{form_id: form.id}"
     >
-    </UButton>
+      <UButton
+        variant="ghost"
+        color="neutral"
+        icon="i-heroicons-cog-6-tooth"
+      >
+      </UButton>
+    </TrackClick>
 
     <template #content>
       <div class="p-4 w-80">
@@ -29,8 +34,11 @@
 </template>
 
 <script>
+import TrackClick from '~/components/global/TrackClick.vue'
+
 export default {
   name: "AdvancedFormUrlSettingsPopover",
+  components: { TrackClick },
   props: {
     form: {
       type: Object,

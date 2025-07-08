@@ -28,7 +28,7 @@
 
             <div class="w-full mt-6">
               <UButton
-                :loading="updatingUserRoleState"
+                :loading="updateMutation.isPending.value"
                 class="my-3"
                 block
                 label="Update"
@@ -43,36 +43,37 @@
 
 <script setup>
 import {watch, ref} from "vue"
-import { workspaceApi } from "~/api"
+import { useWorkspaceUsers } from "~/composables/query/useWorkspaceUsers"
+import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
 
  
 const props = defineProps(['user', 'showEditUserModal'])
 const emit = defineEmits(['close', 'fetchUsers'])
 
-const workspacesStore = useWorkspacesStore()
+const { currentId } = useCurrentWorkspace()
+const { updateUserRole: updateUserRoleMutation } = useWorkspaceUsers()
+
 const userNewRole = ref("")
 
-const updatingUserRoleState = ref(false)
+const updateMutation = updateUserRoleMutation(currentId, {
+  onSuccess: () => {
+    useAlert().success("User role updated.")
+    emit('close')
+    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
+  },
+  onError: () => {
+    useAlert().error("There was an error updating user role")
+  }
+})
 
 watch(() => props.user, () => {
   userNewRole.value = props.user.pivot.role
 })
 
 const updateUserRole = () => {
-  updatingUserRoleState.value = true
-  workspaceApi.users.updateRole(
-    workspacesStore.currentId,
-    props.user.id,
-    { role: userNewRole.value }
-  ).then(() => {
-    useAlert().success("User role updated.")
-    emit('fetchUsers')
-    emit('close')
-  }).catch(() => {
-    useAlert().error("There was an error updating user role")
-  }).finally(() => {
-    updatingUserRoleState.value = false
+  updateMutation.mutate({
+    userId: props.user.id,
+    data: { role: userNewRole.value }
   })
 }
-
 </script>

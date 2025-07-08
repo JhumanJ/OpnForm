@@ -294,23 +294,27 @@
               <div
                 class="flex gap-2 mt-6 w-full"
               >
-                <UButton
-                  v-track.upgrade_modal_confirm_submit="{plan: currentPlan.value, period: isYearly?'yearly':'monthly'}"
-                  block
-                  size="md"
-                  class="w-auto flex-grow"
-                  :loading="form.busy || loading"
-                  :disabled="form.busy || loading"
-                  :to="checkoutUrl"
-                  target="_blank"
+                <TrackClick
+                  name="upgrade_modal_confirm_submit"
+                  :properties="{plan: currentPlan.value, period: isYearly?'yearly':'monthly'}"
                 >
-                  <template v-if="isSubscribed">
-                    Upgrade
-                  </template>
-                  <template v-else>
-                    Subscribe
-                  </template>
-                </UButton>
+                  <UButton
+                    block
+                    size="md"
+                    class="w-auto flex-grow"
+                    :loading="form.busy || loading"
+                    :disabled="form.busy || loading"
+                    :to="checkoutUrl"
+                    target="_blank"
+                  >
+                    <template v-if="isSubscribed">
+                      Upgrade
+                    </template>
+                    <template v-else>
+                      Subscribe
+                    </template>
+                  </UButton>
+                </TrackClick>
                 <UButton
                   size="md"
                   color="neutral"
@@ -330,6 +334,7 @@
 
 <script setup>
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 import { authApi } from '~/api'

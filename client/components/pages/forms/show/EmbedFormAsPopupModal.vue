@@ -1,17 +1,21 @@
 <template>
   <div>
-    <UButton
-      v-track.share_embed_form_popup_click="{
+    <TrackClick
+      name="share_embed_form_popup_click"
+      :properties="{
         form_id: form.id,
         form_slug: form.slug,
       }"
-      variant="outline"
-      color="neutral"
-      icon="i-heroicons-chat-bubble-bottom-center-text"
-      @click="showEmbedFormAsPopupModal = true"
     >
-      Embed as popup
-    </UButton>
+      <UButton
+        variant="outline"
+        color="neutral"
+        icon="i-heroicons-chat-bubble-bottom-center-text"
+        @click="showEmbedFormAsPopupModal = true"
+      >
+        Embed as popup
+      </UButton>
+    </TrackClick>
 
     <UModal
       v-model:open="isModalOpen"
@@ -104,6 +108,7 @@
 <script setup>
 import { ref, defineProps, computed } from "vue"
 import { appUrl } from "~/lib/utils.js"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const { copy } = useClipboard()
 const crisp = useCrisp()

@@ -1,12 +1,17 @@
 <template>
   <div>
-    <UButton
-      variant="outline"
-      color="neutral"
-      icon="i-heroicons-arrow-path"
-      @click="showGenerateFormLinkModal = true"
-      label="Regenerate link"
-    />
+    <TrackClick
+      name="regenerate_form_link_click"
+      :properties="{form_id: form.id, form_slug: form.slug}"
+    >
+      <UButton
+        variant="outline"
+        color="neutral"
+        icon="i-heroicons-arrow-path"
+        @click="showGenerateFormLinkModal = true"
+        label="Regenerate link"
+      />
+    </TrackClick>
 
     <!--  Regenerate form link modal  -->
     <UModal
@@ -32,14 +37,19 @@
             https://opnform.com/forms/contact-form-e68des
           </p>
           <div class="text-center mt-4">
-            <UButton
-              :loading="loadingNewLink"
-              variant="outline"
-              color="primary"
-              @click="regenerateLink('slug')"
+            <TrackClick
+              name="regenerate_form_link_readable_click"
+              :properties="{form_id: form.id, form_slug: form.slug, type: 'slug'}"
             >
-              Generate a Human Readable URL
-            </UButton>
+              <UButton
+                :loading="loadingNewLink"
+                variant="outline"
+                color="primary"
+                @click="regenerateLink('slug')"
+              >
+                Generate a Human Readable URL
+              </UButton>
+            </TrackClick>
           </div>
         </div>
         <div class="border-t pt-4 mt-4">
@@ -54,14 +64,19 @@
             https://opnform.com/forms/b4417f9c-34ae-4421-8006-832ee47786e7
           </p>
           <div class="text-center mt-4">
-            <UButton
-              :loading="loadingNewLink"
-              variant="outline"
-              color="primary"
-              @click="regenerateLink('uuid')"
+            <TrackClick
+              name="regenerate_form_link_random_click"
+              :properties="{form_id: form.id, form_slug: form.slug, type: 'uuid'}"
             >
-              Generate a Random ID URL
-            </UButton>
+              <UButton
+                :loading="loadingNewLink"
+                variant="outline"
+                color="primary"
+                @click="regenerateLink('uuid')"
+              >
+                Generate a Random ID URL
+              </UButton>
+            </TrackClick>
           </div>
         </div>
       </template>
@@ -71,6 +86,7 @@
 
 <script setup>
 import { formsApi } from "~/api/forms"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const props = defineProps({
   form: { type: Object, required: true },

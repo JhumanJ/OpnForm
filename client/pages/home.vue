@@ -125,15 +125,19 @@
                   <p class="flex-grow">
                     Remove OpnForm branding, customize forms further, use your custom domain, integrate with your favorite tools, invite users, and more!
                   </p>
-                  <UButton
-                    v-track.upgrade_banner_home_click
-                    color="neutral"
-                    variant="outline"
-                    class="block"
-                    @click.prevent="subscriptionModalStore.openModal()"
+                  <TrackClick
+                    name="upgrade_banner_home_click"
+                    :properties="{}"
                   >
-                    Upgrade Now
-                  </UButton>
+                    <UButton
+                      color="neutral"
+                      variant="outline"
+                      class="block"
+                      @click.prevent="subscriptionModalStore.openModal()"
+                    >
+                      Upgrade Now
+                    </UButton>
+                  </TrackClick>
                 </div>
               </template>
             </UAlert>
@@ -157,6 +161,7 @@
 import Fuse from "fuse.js"
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],

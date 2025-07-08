@@ -37,16 +37,21 @@
         >
           Re-start
         </UButton>
+        <TrackClick
+            name="form_editor_toggle_expand"
+            :properties="{toggle: !isExpanded}"
+          >
         <UTooltip :text="isExpanded ? 'Collapse' : 'Expand'">
-          <UButton
-            v-track.form_editor_toggle_expand="{toggle: !isExpanded}"
-            :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
-            color="neutral"
-            variant="outline"
-            size="xs"
-            @click="toggleExpand"
-          />
+         
+            <UButton
+              :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
+              color="neutral"
+              variant="outline"
+              size="xs"
+              @click="toggleExpand"
+            />
         </UTooltip>
+      </TrackClick>
       </div>
       <div class="flex-grow overflow-y-auto">
         <transition
@@ -115,6 +120,7 @@ import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useCrisp } from '~/composables/useCrisp.js'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 const { hideChat, showChat } = useCrisp()
 

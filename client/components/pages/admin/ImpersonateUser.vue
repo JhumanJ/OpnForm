@@ -10,18 +10,21 @@
 
 <script setup>
 import { adminApi, authApi } from '~/api'
+import { useQueryClient } from '@tanstack/vue-query'
+import { useWorkspaces } from "~/composables/query/useWorkspaces"
+import { useForms } from "~/composables/query/useForms"
 
 const props = defineProps({
   user: { type: Object, required: true }
 })
 
 const authStore = useAuthStore()
-const formsStore = useFormsStore()
-const workspacesStore = useWorkspacesStore()
+const queryClient = useQueryClient()
 
 const loading = ref(false)
 
-const { list: fetchWorkspaces } = useWorkspaces()
+const { invalidateAll: invalidateWorkspaces } = useWorkspaces()
+const { invalidateAll: invalidateForms } = useForms()
 const { user } = useAuth()
 const { data: userData } = user()
 
@@ -38,14 +41,10 @@ const impersonate = () => {
     await authApi.user.get()
     useAuth().invalidateUser()
 
-    // Redirect to the dashboard.
-    formsStore.set([])
-    workspacesStore.set([])
-
-    const { data: workspacesData } = await fetchWorkspaces()
-    workspacesStore.set(workspacesData.value)
-    formsStore.startLoading()
-    formsStore.loadAll(workspacesStore.currentId)
+    // Clear all query cache and invalidate to refetch fresh data for the impersonated user
+    queryClient.clear()
+    await invalidateWorkspaces()
+    await invalidateForms()
 
     useAlert().success(`Impersonating ${userData.value.name}`)
     useRouter().push({ name: 'home' })

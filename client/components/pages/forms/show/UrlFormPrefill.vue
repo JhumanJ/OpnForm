@@ -1,16 +1,20 @@
 <template>
   <div class="flex">
-    <UButton
-        v-track.url_form_prefill_click="{
-          form_id: form.id,
-          form_slug: form.slug,
-        }"
+    <TrackClick
+      name="url_form_prefill_click"
+      :properties="{
+        form_id: form.id,
+        form_slug: form.slug,
+      }"
+    >
+      <UButton
         variant="outline"
         color="neutral"
         icon="i-heroicons-link"
         @click="showUrlFormPrefillModal = true"
         label="URL Pre-fill"
-    />
+      />
+    </TrackClick>
 
     <UModal
       v-model:open="isModalOpen"
@@ -75,6 +79,7 @@ import FormUrlPrefill from "~/components/open/forms/components/FormUrlPrefill.vu
 import OpenForm from "~/components/open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const props = defineProps({
   form: { type: Object, required: true },

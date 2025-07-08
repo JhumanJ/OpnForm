@@ -27,13 +27,15 @@ import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
 import { useTemplates } from "~/composables/query/useTemplates"
+import { useWorkspaces } from "~/composables/query/useWorkspaces"
+import { useQueryClient } from "@tanstack/vue-query"
 
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
 const route = useRoute()
+const queryClient = useQueryClient()
 
 let template = null
 if (route.query.template) {
@@ -42,8 +44,14 @@ if (route.query.template) {
   template = data.value
 }
 
+// Use workspaces query composable for invalidation functionality
+const { invalidateAll } = useWorkspaces()
+
 // Store values
-const workspacesLoading = computed(() => workspacesStore.loading)
+const workspacesLoading = computed(() => {
+  // For guest mode, we'll manage loading state manually
+  return !stateReady.value
+})
 const form = storeToRefs(workingFormStore).content
 
 useOpnSeoMeta({
@@ -63,15 +71,16 @@ const showInitialFormModal = ref(false)
 const editor = ref(null)
 
 onMounted(() => {
-  // Set as guest user
-  workspacesStore.set([
-    {
-      id: null,
-      name: "Guest Workspace",
-      is_enterprise: false,
-      is_pro: false,
-    },
-  ])
+  // Set guest workspace data in query cache instead of store
+  const guestWorkspace = {
+    id: null,
+    name: "Guest Workspace",
+    is_enterprise: false,
+    is_pro: false,
+  }
+  
+  // Manually set the workspace data in query cache
+  queryClient.setQueryData(["workspaces", "list"], [guestWorkspace])
 
   form.value = initForm({}, true)
   if (template && template.structure) {
@@ -88,8 +97,6 @@ onMounted(() => {
     afterLogin()
   }, { useMessageChannel: false })
 })
-
-const { invalidateAll } = useWorkspaces()
 
 const afterLogin = () => {
   isGuest.value = false
