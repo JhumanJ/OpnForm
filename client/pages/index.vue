@@ -305,13 +305,13 @@ import AiFeature from "../components/pages/welcome/AiFeature.vue"
 import TemplatesSlider from "../components/pages/welcome/TemplatesSlider.vue"
 import opnformConfig from "~/opnform.config.js"
 import VButton from '../components/global/VButton.vue'
-import { useAuthFlow } from '~/composables/useAuthFlow'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 definePageMeta({
   layout: "default",
 })
 
-const { isAuthenticated: authenticated } = useAuthFlow()
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 
 useHead({
   title: 'OpnForm: Open-Source Form Builder',

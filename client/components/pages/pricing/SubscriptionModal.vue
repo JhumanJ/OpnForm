@@ -357,7 +357,7 @@ const subscribeBroadcast = useBroadcastChannel('subscribe')
 const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
 const workspacesStore = useWorkspacesStore()
-const { isAuthenticated: authenticated } = useAuthFlow()
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 const { data: user } = useAuth().user()
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'

@@ -68,7 +68,6 @@ import {
   useDarkMode
 } from '~/lib/forms/public-page'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
-import { useForms } from "~/composables/query/useForms"
 
 const crisp = useCrisp()
 const darkMode = useDarkMode()
@@ -83,7 +82,7 @@ const { data: form, isLoading: formLoading, error: formError, refetch: refetchFo
 })
 
 if (import.meta.server) {
-  const res = await suspense()
+  await suspense()
 }
 
 const openCompleteForm = ref(null)
@@ -255,5 +254,9 @@ useHead({
     },
   ] : {},
   script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }]
+})
+
+definePageMeta({
+  layout: 'empty'
 })
 </script>

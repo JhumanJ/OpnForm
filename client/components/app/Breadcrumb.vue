@@ -75,7 +75,7 @@ defineProps({
 })
 
 // Composables
-const { isAuthenticated } = useAuthFlow()
+const { isAuthenticated } = useIsAuthenticated()
 
 // Reactive data
 const displayHome = ref(true)

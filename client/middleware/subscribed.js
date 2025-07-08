@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(() => {
-  const { isAuthenticated } = useAuthFlow()
+  const { isAuthenticated } = useIsAuthenticated()
   const { user } = useAuth()
   const { data: userData } = user()
 

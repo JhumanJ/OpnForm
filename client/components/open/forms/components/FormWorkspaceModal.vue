@@ -51,9 +51,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-import { useWorkspaces } from "~/composables/query/useWorkspaces"
-import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
-import { useForms } from "~/composables/query/useForms"
 
 const emit = defineEmits(["close"])
 const { switchTo } = useCurrentWorkspace()

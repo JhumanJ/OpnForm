@@ -180,7 +180,7 @@
 import { computed } from "vue"
 import MonthlyYearlySelector from "./MonthlyYearlySelector.vue"
 import CustomPlan from "./CustomPlan.vue"
-import { useAuthFlow } from "~/composables/useAuthFlow"
+import { useIsAuthenticated } from "~/composables/useAuthFlow"
 
 MonthlyYearlySelector.compatConfig = { MODE: 3 }
 
@@ -197,7 +197,7 @@ export default {
   },
   setup() {
     const subscriptionModalStore = useSubscriptionModalStore()
-    const { isAuthenticated: authenticated } = useAuthFlow()
+    const { isAuthenticated: authenticated } = useIsAuthenticated()
     return {
       subscriptionModalStore,
       authenticated,

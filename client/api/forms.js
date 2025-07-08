@@ -5,6 +5,9 @@ export const formsApi = {
   list: (workspaceId, options) => apiService.get(`/open/workspaces/${workspaceId}/forms`, options),
   get: (slug, options) => apiService.get(`/open/forms/${slug}`, options),
   getById: (id, options) => apiService.get(`/open/forms/${id}`, options),
+  publicGet: (slug, options) => apiService.get(`/forms/${slug}`, options),
+  publicGetById: (id, options) => apiService.get(`/forms/${id}`, options),
+  
   create: (data) => apiService.post('/open/forms', data),
   update: (id, data) => apiService.put(`/open/forms/${id}`, data),
   delete: (id) => apiService.delete(`/open/forms/${id}`),

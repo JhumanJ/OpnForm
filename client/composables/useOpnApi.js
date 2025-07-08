@@ -63,8 +63,8 @@ export function getOpnRequestsOptions(request, opts) {
 
       const { status } = response
       if (status === 401) {
-        const { isAuthenticated } = useAuthFlow()
-        if (isAuthenticated.value) {
+        // Check authentication using only the auth store (no Vue Query context needed)
+        if (authStore.token) {
           console.log("Logging out due to 401")
           // Clear tokens directly to avoid context issues
           authStore.clearTokens()

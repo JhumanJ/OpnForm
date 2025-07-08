@@ -107,7 +107,7 @@
 <script setup>
 import clonedeep from 'clone-deep'
 import { default as _has } from 'lodash/has'
-import { useForms } from "~/composables/query/useForms"
+import { useFormsList } from "~/composables/query/forms/useFormsList"
 import { useCurrentWorkspace } from "~/composables/query/useCurrentWorkspace"
 
 const alert = useAlert()
@@ -116,7 +116,7 @@ const { content: form } = storeToRefs(workingFormStore)
 
 // Get forms list for current workspace
 const { currentId: workspaceId } = useCurrentWorkspace()
-const { data: forms } = useForms().list(workspaceId, {
+const { forms } = useFormsList(workspaceId, {
   enabled: computed(() => !!workspaceId.value)
 })
 

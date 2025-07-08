@@ -312,7 +312,7 @@ const getFontUrl = computed(() => {
 })
 
 const isFormOwner = computed(() => {
-  const { isAuthenticated } = useAuthFlow()
+  const { isAuthenticated } = useIsAuthenticated()
   const { user } = useAuth()
   const { data: userData } = user()
   return isAuthenticated.value && props.form && props.form.creator_id === userData.value.id

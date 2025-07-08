@@ -1,35 +1,47 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 import { chainCallbacks } from '../index'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 export function useForms() {
   const queryClient = useQueryClient()
+  const { isAuthenticated } = useIsAuthenticated()
 
   const detail = (slug, options = {}) => {
     return useQuery({
       queryKey: ['forms', 'slug', slug],
-      queryFn: () => formsApi.get(slug, options),
+      queryFn: () => {
+        if (isAuthenticated.value) {
+          return formsApi.get(slug, options)
+        }
+        return formsApi.publicGet(slug, options)
+      },
       enabled: !!slug,
       onSuccess: (form) => {
         if (form) {
           queryClient.setQueryData(['forms', form.id], form)
         }
       },
-      ...options
+      ...options,
     })
   }
 
   const detailById = (id, options = {}) => {
     return useQuery({
       queryKey: ['forms', id],
-      queryFn: () => formsApi.getById(id, options),
+      queryFn: () => {
+        if (isAuthenticated.value) {
+          return formsApi.getById(id, options)
+        }
+        return formsApi.publicGetById(id, options)
+      },
       enabled: !!id,
       onSuccess: (form) => {
         if (form) {
           queryClient.setQueryData(['forms', 'slug', form.slug], form)
         }
       },
-      ...options
+      ...options,
     })
   }
 

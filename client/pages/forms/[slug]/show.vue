@@ -31,7 +31,7 @@
               </div>
               
               <!-- Status Badges Skeleton -->
-              <div class="flex flex-wrap gap-2 mt-2">
+              <div class="flex flex-wrap gap-2 mt-2 px-4">
                 <USkeleton class="h-4 w-16" />
                 <USkeleton class="h-4 w-20" />
               </div>

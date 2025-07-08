@@ -3,42 +3,49 @@ import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMes
 import { authApi } from "~/api"
 import { useQueryClient } from '@tanstack/vue-query'
 
+/**
+ * Lightweight authentication check that doesn't require Vue Query context
+ * Use this when you only need to check if user is authenticated
+ */
+export const useIsAuthenticated = () => {
+  const authStore = useAuthStore()
+  
+  const isAuthenticated = computed(() => {
+    return !!authStore.token
+  })
+  
+  return { isAuthenticated }
+}
+
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
   const queryClient = useQueryClient()
   const logEvent = useAmplitude().logEvent
   const router = useRouter()
 
-  // Initialize all Vue Query hooks at the top level
+  // Initialize Vue Query hooks but don't create instances
   const { list: workspacesQuery } = useWorkspaces()
   const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
-  
-  // Get the workspace list query instance
-  const workspacesQueryInstance = workspacesQuery()
-  
-  // Get the user query instance
-  const userQueryInstance = user()
   
   // Prepare logout mutation ahead of time within a valid Vue context
   const logoutMutation = logoutMutationFactory()
 
-  // Call the user query at the top level and get data directly
-  const { data: userData } = userQueryInstance
 
-  // Computed properties moved from auth store
-  const isAuthenticated = computed(() => {
-    return userData.value !== null && userData.value !== undefined
-  })
+  // Helper to get user data from cache (no API calls)
+  const getCachedUserData = () => {
+    return queryClient.getQueryData(['user'])
+  }
 
   const hasActiveLicense = computed(() => {
-    return userData.value !== null && userData.value !== undefined && userData.value.active_license !== null
+    const userData = getCachedUserData()
+    return userData !== null && userData !== undefined && userData.active_license !== null
   })
 
   // Service client initialization moved from auth store
   const initServiceClients = (userDataOverride = null) => {
     if (import.meta.server) return
     
-    const userVal = userDataOverride || userData.value
+    const userVal = userDataOverride || getCachedUserData()
     if (!userVal) return
     
     useAmplitude().setUser(userVal)
@@ -54,9 +61,12 @@ export const useAuthFlow = () => {
     // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Fetch workspaces and trigger user query using query methods
+    // 2. Now that we have a token, get fresh instances and fetch data
+    const currentWorkspacesInstance = workspacesQuery()
+    const currentUserInstance = user()
+    
     const [workspacesResult] = await Promise.all([
-      workspacesQueryInstance.refetch(),
+      currentWorkspacesInstance.refetch(),
       // Invalidate user query to trigger fresh fetch with new token
       invalidateUser()
     ])
@@ -64,10 +74,10 @@ export const useAuthFlow = () => {
 
     // 3. Wait for user data to be fetched by TanStack Query
     // The user query will automatically cache and trigger onSuccess
-    await userQueryInstance.refetch()
+    await currentUserInstance.refetch()
     
     // Initialize service clients with user data
-    initServiceClients(userQueryInstance.data.value)
+    initServiceClients(currentUserInstance.data.value)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -86,7 +96,7 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData: userQueryInstance.data.value, workspaces, isNewUser }
+    return { userData: currentUserInstance.data.value, workspaces, isNewUser }
   }
 
   /**
@@ -94,23 +104,26 @@ export const useAuthFlow = () => {
    * Now uses TanStack Query for user data verification
    */
   const verifyAuthentication = async () => {
-    // If we have user data in cache, we're good
-    if (isAuthenticated.value) {
+    // If we don't have a token, we're not authenticated
+    if (!authStore.token) {
+      return false
+    }
+    
+    // If we have cached user data, we're good
+    const cachedUserData = getCachedUserData()
+    if (cachedUserData) {
       return true
     }
     
-    // If we have a token but no user data, fetch the user data
-    if (authStore.token && !isAuthenticated.value) {
-      try {
-        await userQueryInstance.refetch()
-        return true
-      } catch (error) {
-        console.error('Auth verification failed:', error)
-        return false
-      }
+    // If we have a token but no cached user data, fetch it
+    try {
+      const currentUserInstance = user()
+      await currentUserInstance.refetch()
+      return true
+    } catch (error) {
+      console.error('Auth verification failed:', error)
+      return false
     }
-    
-    return false
   }
 
   /**
@@ -205,9 +218,7 @@ export const useAuthFlow = () => {
     registerUser,
     verifyAuthentication,
     handleLogout,
-    
-    // Computed properties (moved from auth store)
-    isAuthenticated,
+  
     hasActiveLicense,
     
     // Helper functions

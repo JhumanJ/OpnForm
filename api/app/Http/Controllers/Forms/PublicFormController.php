@@ -26,7 +26,6 @@ class PublicFormController extends Controller
 
     public function show(Request $request, string $slug)
     {
-        ray($slug);
         $form = Form::whereSlug($slug)->whereIn('visibility', ['public', 'closed'])->firstOrFail();
         if ($form->workspace == null) {
             // Workspace deleted

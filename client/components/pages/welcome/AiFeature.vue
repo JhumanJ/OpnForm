@@ -154,7 +154,7 @@
 export default {
   props: {},
   setup() {
-    const { isAuthenticated } = useAuthFlow()
+    const { isAuthenticated } = useIsAuthenticated()
     return {
       authenticated: isAuthenticated,
     }

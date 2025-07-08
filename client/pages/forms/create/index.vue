@@ -33,7 +33,7 @@ import { initForm } from "~/composables/forms/initForm.js"
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { useTemplates } from "~/composables/query/useTemplates"
-import { useForms } from "~/composables/query/useForms"
+import { useFormsList } from "~/composables/query/forms/useFormsList"
 import { hash } from "~/lib/utils.js"
 import { onBeforeRouteLeave } from "vue-router"
 
@@ -72,7 +72,7 @@ const { content: form } = storeToRefs(workingFormStore)
 
 // Pre-load forms list for the current workspace (replaces formStore.loadAll)
 const workspaceId = computed(() => workspace.value?.id)
-useForms().list(workspaceId, {
+useFormsList(workspaceId, {
   enabled: computed(() => !!workspaceId.value)
 })
 

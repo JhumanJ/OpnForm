@@ -400,7 +400,7 @@
 
 <script>
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
-import { useAuthFlow } from '~/composables/useAuthFlow'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 export default {
   components: {PricingTable},
@@ -419,7 +419,7 @@ export default {
       ],
     })
 
-    const { isAuthenticated: authenticated } = useAuthFlow()
+    const { isAuthenticated: authenticated } = useIsAuthenticated()
     return {
       authenticated,
     }

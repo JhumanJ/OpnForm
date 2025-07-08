@@ -11,8 +11,6 @@
 <script setup>
 import { adminApi, authApi } from '~/api'
 import { useQueryClient } from '@tanstack/vue-query'
-import { useWorkspaces } from "~/composables/query/useWorkspaces"
-import { useForms } from "~/composables/query/useForms"
 
 const props = defineProps({
   user: { type: Object, required: true }

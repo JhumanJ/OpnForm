@@ -639,7 +639,7 @@ defineRouteRules({
   swr: 3600,
 })
 
-const { isAuthenticated: authenticated } = useAuthFlow()
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 </script>
 
 <style lang="scss" scoped>

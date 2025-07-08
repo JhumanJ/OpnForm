@@ -12,8 +12,8 @@ export const useAppModals = createSharedComposable(() => {
   const userSettingsTab = ref(null)
   const workspaceSettingsTab = ref(null)
   
-  // Get auth flow and router helpers (auto-imported by Nuxt)
-  const { isAuthenticated } = useAuthFlow()
+  // Get lightweight auth check and router helpers (auto-imported by Nuxt)
+  const { isAuthenticated } = useIsAuthenticated()
   const route = useRoute()
   const router = useRouter()
   
