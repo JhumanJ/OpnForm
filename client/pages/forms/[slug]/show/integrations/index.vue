@@ -2,34 +2,46 @@
   <div class="p-4">
     <div class="w-full max-w-4xl mx-auto">
       <VTransition name="fade">
-      <div
-        v-if="isIntegrationsLoading || !isSuccess"
-        class="my-6 space-y-2"
-      >
-        <IntegrationCardSkeleton />
-        <IntegrationCardSkeleton />
-        <IntegrationCardSkeleton />
-      </div>
-      <div
-        v-else-if="formIntegrationsList.length"
-        class="my-6 space-y-2"
-      >
-        <IntegrationCard
-          v-for="row in formIntegrationsList"
-          :key="row.id"
-          :integration="row"
-          :form="form"
-        />
-      </div>
-      <div
-        v-else
-        class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4"
-      >
-        No integration yet for this form.
-      </div>
+        <div
+          v-if="isIntegrationsLoading || !isSuccess"
+          class="my-6 space-y-2"
+        >
+          <IntegrationCardSkeleton />
+          <IntegrationCardSkeleton />
+          <IntegrationCardSkeleton />
+        </div>
+        <div
+          v-else-if="formIntegrationsList.length"
+          class="my-6 space-y-2"
+        >
+          <IntegrationCard
+            v-for="row in formIntegrationsList"
+            :key="row.id"
+            :integration="row"
+            :form="form"
+          />
+        </div>
+        <div
+          v-else
+          class="text-center py-12 px-6 bg-neutral-50 dark:bg-neutral-900/50 rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-700 mt-6"
+        >
+          <UIcon
+            name="i-heroicons-puzzle-piece-20-solid"
+            class="mx-auto h-12 w-12 text-neutral-400"
+          />
+          <h3 class="mt-2 text-lg font-semibold text-neutral-900 dark:text-white">
+            No integrations yet
+          </h3>
+          <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+            Get started by connecting your form to a third-party app below.
+          </p>
+        </div>
       </VTransition>
 
-      <h1 class="font-semibold mt-8 text-xl">
+      <h1
+        id="add-integration-title"
+        class="font-semibold mt-8 text-xl"
+      >
         Add a new integration
       </h1>
       <div
@@ -40,7 +52,7 @@
         <h3 class="text-gray-500">
           {{ sectionName }}
         </h3>
-        <div class="flex flex-wrap mt-2 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-2">
           <IntegrationListOption
             v-for="(sectionItem, sectionItemKey) in section"
             :key="sectionItemKey"
