@@ -110,37 +110,7 @@ export function useTableColumnPreferences(formId) {
       columns: newColumns
     }
   }
-
-  // Batch operations for easier component interaction
-  const toggleColumnVisibility = (columnId) => {
-    const current = getColumnPreference(columnId)
-    
-    // Treat `null` (meaning "currently visible by default") as `true`
-    const currentlyVisible = current.visible === null || current.visible === undefined ? true : current.visible
-    const newVisible = !currentlyVisible
-
-    if (newVisible) {
-      // When showing a column, give it the next available order among visible columns (set to 0; ordering logic will fix)
-      setColumnPreference(columnId, { visible: true, order: 0 })
-    } else {
-      // When hiding a column, set order to a high value so it appears at the end
-      setColumnPreference(columnId, { visible: false, order: 9999 })
-    }
-  }
-
-  const toggleColumnPin = (columnId) => {
-    const current = getColumnPreference(columnId)
-    // Simplified: only toggle between false and 'left'
-    const newPinState = current.pinned === 'left' ? false : 'left'
-    
-    setColumnPreference(columnId, { pinned: newPinState })
-  }
-
-  const toggleColumnWrap = (columnId) => {
-    const current = getColumnPreference(columnId)
-    setColumnPreference(columnId, { wrapped: !current.wrapped })
-  }
-
+  
   return {
     preferences: computed(() => preferences.value),
     getColumnPreference,
@@ -149,8 +119,5 @@ export function useTableColumnPreferences(formId) {
     setColumnSizing,
     resetPreferences,
     resetColumn,
-    toggleColumnVisibility,
-    toggleColumnPin,
-    toggleColumnWrap,
   }
 } 

@@ -145,14 +145,23 @@ export function useTableState(form, withActions = false) {
   const columnSizing = computed({
     get() {
       const savedSizing = columnPreferences.preferences.value.globalSizing
-      if (savedSizing && Object.keys(savedSizing).length > 0) {
-        return Math.min(Math.max(savedSizing, 80), 700)
+      if (savedSizing && typeof savedSizing === 'object' && Object.keys(savedSizing).length > 0) {
+        // Ensure all columns have a size, fallback to 200 if missing
+        const sizing = {}
+        for (const col of tableColumns.value) {
+          sizing[col.id] = savedSizing[col.id] ?? 200
+        }
+        return sizing
       }
 
+      // No saved sizing, use default 200 for all columns
       const defaultSizing = {}
       for (const col of tableColumns.value) {
-        const pref = getColumnPreference(col.id)
-        defaultSizing[col.id] = col.size || pref.size
+        if (col.id === 'actions') {
+          defaultSizing[col.id] = 80
+        } else {
+          defaultSizing[col.id] = 200
+        }
       }
       return defaultSizing
     },
@@ -361,8 +370,8 @@ export function useTableState(form, withActions = false) {
         }
       })
       
-      // Pin the target column
-      setColumnPreference(columnId, { pinned: 'left' })
+      // Pin the target column and make it visible
+      setColumnPreference(columnId, { pinned: 'left', visible: true })
     }
   }
 
@@ -387,9 +396,9 @@ export function useTableState(form, withActions = false) {
     setColumnPreference,
     resetPreferences: columnPreferences.resetPreferences,
     resetColumn: columnPreferences.resetColumn,
-    toggleColumnVisibility: columnPreferences.toggleColumnVisibility,
+    toggleColumnVisibility: toggleColumnVisibility,
     toggleColumnWrapping,
-    toggleColumnPin: columnPreferences.toggleColumnPin,
+    toggleColumnPin: toggleColumnPin,
     toggleColumnWrap: columnPreferences.toggleColumnWrap,
     setColumnsOrder: columnPreferences.setColumnsOrder,
     handleColumnResize,
