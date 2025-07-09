@@ -8,53 +8,41 @@
   </span>
 </template>
 
-<script>
+<script setup>
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 
-export default {
-  components: {},
-  props: {
-     
-    property: {
-      required: true
-    },
-     
-    value: {
-      required: true
+const props = defineProps({
+  property: {
+    required: true
+  },
+  value: {
+    required: true
+  }
+})
+
+const valueIsObject = computed(() => {
+  if (typeof props.value === 'object' && props.value !== null) {
+    return true
+  }
+  return false
+})
+
+const formattedDate = (val) => {
+  if (!val) return ''
+  const dateFormat = _has(props.property, 'date_format') ? props.property.date_format : 'dd/MM/yyyy'
+  const timeFormat = _has(props.property, 'time_format') ? props.property.time_format : '24'
+  if (props.property?.with_time) {
+    try {
+      return format(new Date(val), dateFormat + (timeFormat == 12 ? ' p':' HH:mm'))
+    } catch {
+      return ''
     }
-  },
-  data () {
-    return {}
-  },
-  computed: {
-    valueIsObject () {
-      if (typeof this.value === 'object' && this.value !== null) {
-        return true
-      }
-      return false
-    }
-  },
-  mounted () {
-  },
-  methods: {
-    formattedDate(val) {
-      if (!val) return ''
-      const dateFormat = _has(this.property, 'date_format') ? this.property.date_format : 'dd/MM/yyyy'
-      const timeFormat = _has(this.property, 'time_format') ? this.property.time_format : '24'
-      if (this.property?.with_time) {
-        try {
-          return format(new Date(val), dateFormat + (timeFormat == 12 ? ' p':' HH:mm'))
-        } catch {
-          return ''
-        }
-      }
-      try {
-        return format(new Date(val), dateFormat)
-      } catch {
-        return ''
-      }
-    }
+  }
+  try {
+    return format(new Date(val), dateFormat)
+  } catch {
+    return ''
   }
 }
 </script>

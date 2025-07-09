@@ -45,10 +45,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  structure: {
-    type: Array,
-    default: () => [],
-  },
   submission: {
     type: Object,
     default: () => {},

@@ -10,25 +10,13 @@
   </UBadge>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: {
-    opt: {
-      type: String,
-      required: true,
-    },
+<script setup>
+defineProps({
+  opt: {
+    type: String,
+    required: true,
   },
-
-  data() {
-    return {}
-  },
-
-  computed: {},
-  mounted() {},
-
-  methods: {},
-}
+})
 </script>
 
 

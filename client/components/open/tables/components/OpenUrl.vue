@@ -1,5 +1,6 @@
 <template>
   <a
+    v-if="value"
     class="text-sm text-neutral-900 underline decoration-neutral-300"
     :href="value"
     target="_blank"
@@ -7,23 +8,12 @@
   >{{ value }}</a>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: {
-    value: {
-      type: String,
-      required: true,
-    },
+<script setup>
+defineProps({
+  value: {
+    type: String,
+    required: false,
+    default: null,
   },
-
-  data() {
-    return {}
-  },
-
-  computed: {},
-  mounted() {},
-
-  methods: {},
-}
+})
 </script>
