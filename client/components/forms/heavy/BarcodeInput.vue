@@ -20,7 +20,7 @@
 
     <div
       v-else-if="scannedValue"
-      class="flex items-center justify-between border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 rounded-lg px-4 py-2"
+      class="flex items-center justify-between border border-neutral-300 dark:border-neutral-600 w-full bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300 rounded-lg px-4 py-2"
     >
       <div class="flex-1 break-all">
         {{ scannedValue }}
@@ -28,7 +28,7 @@
       <button
         v-if="!disabled"
         type="button"
-        class="pt-1 text-gray-400 hover:text-gray-600"
+        class="pt-1 text-neutral-400 hover:text-neutral-600"
         @click="clearValue"
       >
         <Icon
@@ -62,14 +62,14 @@
       <div class="flex w-full items-center justify-center">
         <div class="text-center">
           <template v-if="!scannedValue && !isScanning">
-            <div class="text-gray-500 w-full flex justify-center">
+            <div class="text-neutral-500 w-full flex justify-center">
               <Icon
                 name="i-material-symbols-barcode-scanner-rounded"
                 class="w-6 h-6"
               />
             </div>
 
-            <p class="mt-2 text-sm text-gray-500 font-medium select-none">
+            <p class="mt-2 text-sm text-neutral-500 font-medium select-none">
               {{ $t('forms.barcodeInput.clickToOpenCamera') }}
             </p>
           </template>

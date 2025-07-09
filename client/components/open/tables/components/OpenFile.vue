@@ -5,12 +5,12 @@
       :key="file.file_url"
       class="whitespace-nowrap rounded-md transition-colors hover:decoration-none"
       :class="{
-        'open-file text-gray-700 dark:text-gray-300 truncate': !file.is_image,
+        'open-file text-neutral-700 dark:text-neutral-300 truncate': !file.is_image,
         'open-file-img': file.is_image,
       }"
     >
       <a
-        class="text-gray-700 dark:text-gray-300"
+        class="text-neutral-700 dark:text-neutral-300"
         :href="file.file_url"
         target="_blank"
         rel="nofollow"

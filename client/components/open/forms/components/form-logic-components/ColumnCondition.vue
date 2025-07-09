@@ -3,7 +3,7 @@
     v-if="content"
     class="flex flex-wrap"
   >
-    <div class="w-full font-semibold text-gray-700 dark:text-gray-300 mb-2">
+    <div class="w-full font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
       {{ property.name }}
     </div>
     <SelectInput

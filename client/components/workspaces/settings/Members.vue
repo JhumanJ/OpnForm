@@ -31,7 +31,7 @@
           <template v-if="item.type == 'user'">
             <p
               v-if="item.is_current_user"
-              class="text-gray-500 text-center text-sm"
+              class="text-neutral-500 text-center text-sm"
             >
               -
             </p>

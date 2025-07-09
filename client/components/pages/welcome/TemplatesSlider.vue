@@ -5,11 +5,11 @@
         Single or multi-page forms
       </h2>
       <p
-        class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl"
+        class="mt-2 text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl"
       >
         Discover our beautiful templates
       </p>
-      <p class="mt-3 px-8 text-center text-lg text-gray-400">
+      <p class="mt-3 px-8 text-center text-lg text-neutral-400">
         If you need inspiration, checkout our templates.
       </p>
     </div>

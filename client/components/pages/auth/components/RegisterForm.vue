@@ -107,7 +107,7 @@
       />
 
       <template v-if="useFeatureFlag('services.google.auth')">
-        <p class="text-gray-500 text-sm text-center my-4">
+        <p class="text-neutral-500 text-sm text-center my-4">
           OR
         </p>
         <UButton
@@ -123,7 +123,7 @@
         />
       </template>
 
-      <p class="text-gray-500 mt-4 text-sm text-center">
+      <p class="text-neutral-500 mt-4 text-sm text-center">
         Already have an account?
         <a
           v-if="isQuick"

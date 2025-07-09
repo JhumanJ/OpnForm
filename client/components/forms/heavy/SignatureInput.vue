@@ -15,17 +15,17 @@
         theme.SignatureInput.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
         },
       ]"
       class="flex flex-wrap items-center justify-center gap-4"
     >
       <div
         v-if="loading"
-        class="text-gray-600 dark:text-gray-400"
+        class="text-neutral-600 dark:text-neutral-400"
       >
         <Loader class="mx-auto h-6 w-6" />
-        <p class="mt-2 text-center text-sm text-gray-500">
+        <p class="mt-2 text-center text-sm text-neutral-500">
           {{ $t('forms.fileInput.uploadingFile') }}
         </p>
       </div>
@@ -52,7 +52,7 @@
         theme.SignatureInput.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
         },
       ]"
       height="150px"

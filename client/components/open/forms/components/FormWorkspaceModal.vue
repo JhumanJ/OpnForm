@@ -26,7 +26,7 @@
         <div class="flex items-center cursor group p-2 rounded-sm border">
           <WorkspaceIcon :workspace="workspace" />
           <p
-            class="lg:block max-w-10 truncate ml-2 text-gray-800 dark:text-gray-200"
+            class="lg:block max-w-10 truncate ml-2 text-neutral-800 dark:text-neutral-200"
           >
             {{ workspace.name }}
           </p>

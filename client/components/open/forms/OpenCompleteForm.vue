@@ -25,7 +25,7 @@
 
       <div v-else key="form-content">
         <div v-if="isPublicFormPage && form.is_password_protected">
-          <p class="form-description text-gray-700 dark:text-gray-300 px-2">
+          <p class="form-description text-neutral-700 dark:text-neutral-300 px-2">
             {{ t('forms.password_protected') }}
           </p>
           <div class="form-group flex flex-wrap w-full">
@@ -135,7 +135,7 @@
           >
             <TextBlock
               v-if="form.submitted_text"
-              class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+              class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
               :content="form.submitted_text"
               :mentions-allowed="true"
               :form="form"

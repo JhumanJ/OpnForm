@@ -27,7 +27,7 @@
 <script setup>
 const slots = useSlots()
 const props = defineProps({
-  helpClasses: { type: String, default: "text-gray-400 dark:text-gray-500" },
+  helpClasses: { type: String, default: "text-neutral-400 dark:text-neutral-500" },
   help: { type: String, required: false },
 })
 

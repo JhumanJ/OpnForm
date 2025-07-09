@@ -18,7 +18,7 @@
               <p class="text-sm font-medium">Add new field(s) with AI</p>
             </div>
 
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-neutral-500">
               This will generate new fields based on your description.
             </p>
 

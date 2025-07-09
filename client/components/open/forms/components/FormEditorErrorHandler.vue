@@ -5,7 +5,7 @@
         <h1 class="text-blue-800 text-2xl font-medium">
           Oops! Something went wrong.
         </h1>
-        <p class="text-gray-500 max-w-lg text-center">
+        <p class="text-neutral-500 max-w-lg text-center">
           It looks like your last action caused an issue on our side. We
           apologize for
           the

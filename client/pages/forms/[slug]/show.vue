@@ -60,7 +60,7 @@
               <!-- Form Title and Actions -->
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="flex-1 min-w-0 hidden sm:block">
-                  <h1 class="text-xl font-semibold text-gray-900 truncate ">
+                  <h1 class="text-xl font-semibold text-neutral-900 truncate ">
                     {{ form.title }}
                   </h1>
                 </div>
@@ -115,7 +115,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-center gap-2 text-gray-500 text-xs mt-2 sm:mt-0">
+              <div class="flex flex-wrap items-center gap-2 text-neutral-500 text-xs mt-2 sm:mt-0">
                 <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
                   <div class="flex items-center gap-1">
                     <UIcon name="i-heroicons-eye" />
@@ -153,8 +153,8 @@
           class="flex items-center justify-center h-screen bg-white"
         >
           <div class="flex flex-col gap-4 items-center justify-center">
-            <h2 class="text-lg font-semibold text-gray-900">Form not found</h2>
-            <p class="text-gray-500">The form you're looking for doesn't exist or has been deleted.</p>
+            <h2 class="text-lg font-semibold text-neutral-900">Form not found</h2>
+            <p class="text-neutral-500">The form you're looking for doesn't exist or has been deleted.</p>
             <div class="">
             <UButton
               variant="soft"

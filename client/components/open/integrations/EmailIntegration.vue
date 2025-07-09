@@ -4,7 +4,7 @@
     :integration="props.integration"
     :form="form"
   >
-    <p class="text-gray-500 text-sm mb-3">
+    <p class="text-neutral-500 text-sm mb-3">
       You can <a
         class="underline cursor-pointer"
         @click="openEmailsModal"

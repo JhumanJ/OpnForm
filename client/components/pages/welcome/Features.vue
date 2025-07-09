@@ -5,12 +5,12 @@
   >
     <div class="mb-16 max-w-xl md:mx-auto sm:text-center lg:max-w-2xl">
       <h2
-        class="mb-6 font-sans text-4xl font-semibold leading-none tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:mx-auto"
+        class="mb-6 font-sans text-4xl font-semibold leading-none tracking-tight text-neutral-900 dark:text-neutral-100 sm:text-4xl md:mx-auto"
       >
         The easiest way to create forms. <br>
         Generous unlimited <span class="text-blue-500">free plan.</span>
       </h2>
-      <p class="text-base text-gray-700 dark:text-gray-300 md:text-lg">
+      <p class="text-base text-neutral-700 dark:text-neutral-300 md:text-lg">
         Need a contact form? Doing a survey? Create a form in 2 minutes and
         start receiving submissions.
       </p>

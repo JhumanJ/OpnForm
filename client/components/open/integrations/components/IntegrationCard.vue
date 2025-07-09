@@ -5,7 +5,7 @@
       class="flex-shrink-0"
       :class="{
         'text-blue-500': integration.status === 'active',
-        'text-gray-400': integration.status !== 'active',
+        'text-neutral-400': integration.status !== 'active',
       }"
     >
       <Icon

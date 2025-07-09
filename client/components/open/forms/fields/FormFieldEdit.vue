@@ -26,7 +26,7 @@
 
             <p
               v-if="blocksTypes[field.type]"
-              class="text-sm text-gray-500"
+              class="text-sm text-neutral-500"
             >
               {{ blocksTypes[field.type].title }}
             </p>
@@ -47,7 +47,7 @@
     </div>
 
     <template v-if="field">
-      <div class="bg-gray-100 border-b">
+      <div class="bg-neutral-100 border-b">
         <UTabs
           v-model="activeTab"
           :items="tabItems"
@@ -85,7 +85,7 @@
     </template>
     <div
       v-else
-      class="text-center p-10 text-sm text-gray-500"
+      class="text-center p-10 text-sm text-neutral-500"
     >
       Click on field to edit it.
     </div>

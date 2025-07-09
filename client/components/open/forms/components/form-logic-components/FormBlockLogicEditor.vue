@@ -3,7 +3,7 @@
     v-if="logic"
     :key="resetKey"
   >
-    <p class="text-gray-400 text-xs mb-3">
+    <p class="text-neutral-400 text-xs mb-3">
       Select a field, add some conditions, and finally add some actions.
     </p>
     <div class="relative flex">
@@ -35,7 +35,7 @@
       </UButtonGroup>
     </div>
 
-    <h5 class="font-medium text-gray-700 mt-3">
+    <h5 class="font-medium text-neutral-700 mt-3">
       1. Conditions
     </h5>
     <condition-editor
@@ -45,10 +45,10 @@
       :form="form"
     />
 
-    <h5 class="font-medium text-gray-700 mt-3">
+    <h5 class="font-medium text-neutral-700 mt-3">
       2. Actions
     </h5>
-    <p class="text-gray-500 text-xs mb-3">
+    <p class="text-neutral-500 text-xs mb-3">
       Action(s) triggered when above conditions are true.
     </p>
     <flat-select-input
@@ -62,7 +62,7 @@
       @update:model-value="onActionInput"
     />
 
-    <p class="text-gray-500 text-xs mb-3">
+    <p class="text-neutral-500 text-xs mb-3">
       Note that hidden fields can never be required.
     </p>
 

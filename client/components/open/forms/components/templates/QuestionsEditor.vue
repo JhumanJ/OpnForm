@@ -27,7 +27,7 @@
       <div
         v-for="(questionForm, quesKey) in allQuestions"
         :key="quesKey"
-        class="bg-gray-100 p-2 mb-4"
+        class="bg-neutral-100 p-2 mb-4"
       >
         <UButton
           color="error"

@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-            class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-xs"
+            class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
@@ -12,18 +12,18 @@
     ref="parent"
     :class="{
       'fixed inset-8 z-50 !flex': isExpanded,
-      'bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center overflow-y-scroll shadow-inner': !isExpanded
+      'bg-neutral-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center overflow-y-scroll shadow-inner': !isExpanded
     }"
   >
     <div 
       class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-xs transition-all flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
-      <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
+      <div class="w-full bg-white dark:bg-neutral-950 border-b border-neutral-300 dark:border-blue-900 dark:border-neutral-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
         <div class="bg-red-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-yellow-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-green-500 rounded-full w-2.5 h-2.5" />
-        <p class="text-sm text-gray-500/70 text-sm ml-4 select-none">
+        <p class="text-sm text-neutral-500/70 text-sm ml-4 select-none">
           Form Preview
         </p>
         <div class="flex-grow" />

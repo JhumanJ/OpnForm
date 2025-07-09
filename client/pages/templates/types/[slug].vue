@@ -9,18 +9,18 @@
       We could not find this type.
     </p>
     <template v-else>
-      <section class="py-12 sm:py-16 bg-gray-50 border-b border-gray-200">
+      <section class="py-12 sm:py-16 bg-neutral-50 border-b border-neutral-200">
         <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div class="text-center mx-auto">
             <div class="font-semibold sm:w-full text-blue-500 mb-3">
               {{ type.name }}
             </div>
             <h1
-              class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900"
+              class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900"
             >
               {{ type.meta_title }}
             </h1>
-            <p class="max-w-xl mx-auto text-gray-600 mt-4 text-lg font-normal">
+            <p class="max-w-xl mx-auto text-neutral-600 mt-4 text-lg font-normal">
               {{ type.meta_description }}
             </p>
           </div>
@@ -34,9 +34,9 @@
         :show-industries="false"
       >
         <template #before-lists>
-          <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+          <section class="py-12 bg-white border-t border-neutral-200 sm:py-16">
             <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-              <p class="text-gray-600 font-normal">
+              <p class="text-neutral-600 font-normal">
                 {{ type.description }}
               </p>
             </div>
@@ -120,11 +120,11 @@ useHead({
 .nf-text {
   @apply space-y-4;
   h2 {
-    @apply text-sm font-normal tracking-widest text-gray-500 uppercase;
+    @apply text-sm font-normal tracking-widest text-neutral-500 uppercase;
   }
 
   p {
-    @apply font-normal leading-7 text-gray-900 dark:text-gray-100;
+    @apply font-normal leading-7 text-neutral-900 dark:text-neutral-100;
   }
 
   ol {

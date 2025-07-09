@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 dark:bg-notion-dark py-8">
+  <div class="bg-neutral-50 dark:bg-notion-dark py-8">
     <div class="md:max-w-5xl md:mx-auto w-full">
       <div class="my-5 text-center">
         <h3 class="font-semibold text-3xl">

@@ -12,7 +12,7 @@
         { hidden: !isCapturing }, 
         theme.fileInput.minHeight, 
         theme.fileInput.borderRadius,
-        'w-full h-full object-cover bg-gray-500'
+        'w-full h-full object-cover bg-neutral-500'
       ]"
       webkit-playsinline
     />
@@ -85,7 +85,7 @@
     </div>
     <div
       v-else-if="cameraPermissionStatus === 'blocked'"
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-neutral-400/30 h-full"
       :class="[theme.fileInput.borderRadius]"
       @click="openCameraUpload"
     >
@@ -110,7 +110,7 @@
 
     <div
       v-else-if="cameraPermissionStatus === 'loading'"
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-neutral-400/30 h-full"
       :class="[theme.fileInput.borderRadius]"
     >
       <div class="w-6 h-6">
@@ -119,7 +119,7 @@
     </div>
     <div
       v-else
-      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-gray-400/30 h-full"
+      class="absolute p-5 top-0 inset-x-0 flex flex-col items-center justify-center space-y-4 text-center border border-neutral-400/30 h-full"
       :class="[theme.fileInput.borderRadius]"
       @click="openCameraUpload"
     >

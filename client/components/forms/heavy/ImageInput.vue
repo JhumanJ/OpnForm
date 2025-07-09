@@ -24,7 +24,7 @@
       >
         <div
           v-if="currentUrl == null"
-          class="text-gray-600 dark:text-gray-400 flex justify-center"
+          class="text-neutral-600 dark:text-neutral-400 flex justify-center"
         >
           <Icon
             name="heroicons:cloud-arrow-up"
@@ -37,7 +37,7 @@
         </div>
         <div
           v-else
-          class=" text-gray-600 dark:text-gray-400 flex"
+          class=" text-neutral-600 dark:text-neutral-400 flex"
         >
           <div class="flex-grow">
             <img
@@ -47,7 +47,7 @@
           </div>
           <a
             href="#"
-            class="text-gray-500 hover:text-red-500 flex items-center"
+            class="text-neutral-500 hover:text-red-500 flex items-center"
             @click.prevent="clearUrl"
           >
             <Icon
@@ -78,13 +78,13 @@
             <div class="sm:col-span-2 mb-5">
               <div
                 v-cloak
-                class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md h-128"
+                class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-neutral-300 border-dashed rounded-md h-128"
                 @dragover.prevent="onUploadDragoverEvent($event)"
                 @drop.prevent="onUploadDropEvent($event)"
               >
                 <div
                   v-if="loading"
-                  class="text-gray-600 dark:text-gray-400"
+                  class="text-neutral-600 dark:text-neutral-400"
                 >
                   <loader class="h-5 w-5 mx-auto m-10" />
                   <p class="text-center mt-6">
@@ -93,7 +93,7 @@
                 </div>
                 <template v-else>
                   <div
-                    class="absolute rounded-full bg-gray-100 h-20 w-20 z-10 transition-opacity duration-500 ease-in-out"
+                    class="absolute rounded-full bg-neutral-100 h-20 w-20 z-10 transition-opacity duration-500 ease-in-out"
                     :class="{
                       'opacity-100': uploadDragoverTracking,
                       'opacity-0': !uploadDragoverTracking,
@@ -110,9 +110,9 @@
                     >
                     <Icon
                       name="heroicons:cloud-arrow-up"
-                      class="x-auto h-24 w-24 text-gray-200"
+                      class="x-auto h-24 w-24 text-neutral-200"
                     />
-                    <p class="mt-5 text-sm text-gray-600">
+                    <p class="mt-5 text-sm text-neutral-600">
                       <button
                         type="button"
                         class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-hidden focus:underline transition duration-150 ease-in-out"
@@ -122,7 +122,7 @@
                       </button>
                       use drag and drop or paste it
                     </p>
-                    <p class="mt-1 text-xs text-gray-500">
+                    <p class="mt-1 text-xs text-neutral-500">
                       .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
                     </p>
                   </div>

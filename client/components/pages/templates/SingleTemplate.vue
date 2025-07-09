@@ -27,7 +27,7 @@
       </span>
     </div>
 
-    <div class="aspect-[4/3] rounded-lg shadow-xs overflow-hidden bg-gray-50">
+    <div class="aspect-[4/3] rounded-lg shadow-xs overflow-hidden bg-neutral-50">
       <img
         v-if="template.image_url && !imageError"
         class="group-hover:scale-110 transition-all duration-200 h-full object-cover w-full"
@@ -39,20 +39,20 @@
       <!-- Fallback when no image or image error -->
       <div
         v-else
-        class="h-full w-full flex items-center justify-center bg-gray-100"
+        class="h-full w-full flex items-center justify-center bg-neutral-100"
       >
         <UIcon
           name="i-heroicons-document-duplicate"
-          class="h-16 w-16 text-gray-400"
+          class="h-16 w-16 text-neutral-400"
         />
       </div>
     </div>
     <p
-      class="text-lg font-semibold leading-tight tracking-tight text-gray-900 mt-4 group-hover:text-blue-500 transition-all duration-150"
+      class="text-lg font-semibold leading-tight tracking-tight text-neutral-900 mt-4 group-hover:text-blue-500 transition-all duration-150"
     >
       {{ template.name }}
     </p>
-    <p class="line-clamp-2 mt-2 text-sm font-normal text-gray-600">
+    <p class="line-clamp-2 mt-2 text-sm font-normal text-neutral-600">
       {{ cleanQuotes(template.short_description) }}
     </p>
     <template-tags

@@ -66,7 +66,7 @@
           theme.PhoneInput.spacing.vertical,
           theme.PhoneInput.fontSize,
           theme.PhoneInput.borderRadius,
-          { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled }]"
+          { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled }]"
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"

@@ -8,7 +8,7 @@
       class="space-y-6 flex flex-col justify-between"
       @submit.prevent="applyDiscount"
     >
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-neutral-500">
         This is only for students, academics and NGOs. Make sure to verify
         their status before applying discount (student/university email, NGO
         website, proof of non-profit, etc). They need to create their

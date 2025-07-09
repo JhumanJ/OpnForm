@@ -4,7 +4,7 @@
     ref="parentRef"
     tabindex="0"
     :class="{
-              'hover:bg-gray-100 dark:hover:bg-gray-800 rounded-sm px-2 cursor-pointer':
+              'hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-sm px-2 cursor-pointer':
         !editing,
     }"
     class="relative"

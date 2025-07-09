@@ -53,7 +53,7 @@
     />
     <div class="grid grid-cols-2 gap-4">
       <div class="flex-grow my-1" v-if="useFeatureFlag('services.google.fonts')">
-        <label class="text-gray-700 font-semibold text-sm mb-1 block">Font Family</label>
+        <label class="text-neutral-700 font-semibold text-sm mb-1 block">Font Family</label>
         <UButton
           color="neutral"
           variant="outline"

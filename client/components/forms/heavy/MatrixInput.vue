@@ -34,7 +34,7 @@
           <tr
             v-for="row, rowIndex in rows"
             :key="rowIndex"
-            class="border-t border-gray-300"
+            class="border-t border-neutral-300"
           >
             <td class="ltr:text-left rtl:text-right w-auto max-w-24 overflow-hidden">
               <div class="w-full p-2 text-sm">
@@ -49,7 +49,7 @@
                 theme.MatrixInput.cell,
                 theme.MatrixInput.cellHover,
                 {
-                  '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800 hover:!bg-gray-200 dark:hover:!bg-gray-800': disabled,
+                  '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800 hover:!bg-neutral-200 dark:hover:!bg-neutral-800': disabled,
                 },
               ]"
             >

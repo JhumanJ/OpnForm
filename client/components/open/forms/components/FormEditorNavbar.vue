@@ -41,7 +41,7 @@
         id="form-editor-title"
         v-model="form.title"
         element="h3"
-        class="font-medium py-1 text-md w-48 text-gray-500 truncate form-editor-title"
+        class="font-medium py-1 text-md w-48 text-neutral-500 truncate form-editor-title"
       />
       <UBadge
         v-if="form.visibility == 'draft'"
@@ -73,7 +73,7 @@
           <UButton
             color="ghost"
             icon="i-heroicons-question-mark-circle"
-            class="p-2 text-gray-500 hover:text-gray-800"
+            class="p-2 text-neutral-500 hover:text-neutral-800"
             @click.prevent="crisp.openHelpdesk()"
           />
         </UTooltip>

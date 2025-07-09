@@ -26,10 +26,10 @@
           {
             // Background colors
             'bg-form/10': isSelected(option),
-            'hover:bg-gray-100': !isSelected(option),
+            'hover:bg-neutral-100': !isSelected(option),
             // Border colors
             'border-form': isSelected(option),
-            'border-gray-300': !isSelected(option),
+            'border-neutral-300': !isSelected(option),
             // Border radius for seamless mode
             'rounded-lg': !seamless,
             'first:rounded-l-lg': seamless,
@@ -42,7 +42,7 @@
         ]"
       >
         <button
-          class="flex flex-col items-center justify-center p-1.5 transition-colors text-gray-500 focus:outline-hidden w-full h-full"
+          class="flex flex-col items-center justify-center p-1.5 transition-colors text-neutral-500 focus:outline-hidden w-full h-full"
           :class="[
             option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {},
             {

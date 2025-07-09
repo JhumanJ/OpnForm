@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center justify-center p-10">
     <template v-if="loading">
       <Loader class="h-6 w-6 mb-4" />
-      <p class="text-gray-600">
+      <p class="text-neutral-600">
         Processing your connection...
       </p>
     </template>

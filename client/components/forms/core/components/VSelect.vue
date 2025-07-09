@@ -12,7 +12,7 @@
         theme.SelectInput.borderRadius,
         { 
           'ring-red-500! ring-2! border-transparent!': hasError, 
-          '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled,
+          '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled,
           'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
         },
         inputClass
@@ -65,7 +65,7 @@
             >
               <slot name="placeholder">
                 <div
-                  class="text-gray-400 dark:text-gray-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!"
+                  class="text-neutral-400 dark:text-neutral-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!"
                   :class="[
                     { 'py-1': multiple && !loading },
                     theme.SelectInput.fontSize
@@ -79,27 +79,27 @@
         </div>
         <div
           class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-1"
-          :class="[disabled ? 'bg-linear-to-r from-transparent to-gray-200 dark:to-gray-800' : theme.SelectInput.chevronGradient]"
+          :class="[disabled ? 'bg-linear-to-r from-transparent to-neutral-200 dark:to-neutral-800' : theme.SelectInput.chevronGradient]"
         />
         <span
           class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:right-auto! flex items-center ltr:pr-2 rtl:pl-2 rtl:pr-0! pointer-events-none"
-          :class="[disabled ? 'bg-gray-200 dark:bg-gray-800' : theme.SelectInput.background]"
+          :class="[disabled ? 'bg-neutral-200 dark:bg-neutral-800' : theme.SelectInput.background]"
         >
           <Icon
             name="heroicons:chevron-up-down-16-solid" 
-            class="h-5 w-5 text-gray-500"
+            class="h-5 w-5 text-neutral-500"
           />
         </span>
       </button>
       <button
         v-if="clearable && showClearButton && !disabled && !isEmpty"
-        class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:border-l-0! rtl:border-r px-2 flex items-center shrink-0"
+        class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-l-0! rtl:border-r px-2 flex items-center shrink-0"
         :class="[theme.SelectInput.spacing.vertical]"
         @click.prevent="clear()"
       >
         <Icon
           name="heroicons:x-mark-20-solid"
-          class="w-5 h-5 text-gray-500"
+          class="w-5 h-5 text-neutral-500"
           width="2em"
           dynamic
         />
@@ -136,7 +136,7 @@
           >
             <Icon
               name="heroicons:magnifying-glass-solid"
-              class="h-5 w-5 text-gray-500 dark:text-gray-400"
+              class="h-5 w-5 text-neutral-500 dark:text-neutral-400"
             />
           </div>
           <div
@@ -147,7 +147,7 @@
           >
             <Icon
               name="heroicons:backspace"
-              class="h-5 w-5 rtl:rotate-180 text-gray-500 dark:text-gray-400"
+              class="h-5 w-5 rtl:rotate-180 text-neutral-500 dark:text-neutral-400"
             />
           </div>
         </div>
@@ -173,7 +173,7 @@
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
             ]"
-            class="text-gray-900 select-none relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
+            class="text-neutral-900 select-none relative cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
             @click="select(item)"
           >
             <slot
@@ -188,23 +188,23 @@
           name="empty-placeholder"
         >
           <p
-            class="w-full text-gray-500 text-center py-2"
+            class="w-full text-neutral-500 text-center py-2"
           >
             {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
           </p>
         </slot>
         <div
           v-if="allowCreation && searchTerm"
-          class="border-t border-gray-300 p-1"
+          class="border-t border-neutral-300 p-1"
         >
           <li
             role="option"
             :style="optionStyle"
             :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-            class="text-gray-900 select-none relative py-2 cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-900 rounded-sm focus:outline-hidden"
+            class="text-neutral-900 select-none relative py-2 cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
             @click="createOption(searchTerm)"
           >
-                          {{ $t('forms.select.create') }} <span class="px-2 bg-gray-100 border border-gray-300 rounded-sm group-hover-text-black">{{
+                          {{ $t('forms.select.create') }} <span class="px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover-text-black">{{
               searchTerm
             }}</span>
           </li>

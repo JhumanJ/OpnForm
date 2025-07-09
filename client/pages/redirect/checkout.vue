@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen gap-4">
     <Loader class="w-8 h-8 text-blue-500" />
-    <p class="text-gray-500">
+    <p class="text-neutral-500">
       Preparing your checkout...
     </p>
   </div>

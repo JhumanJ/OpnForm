@@ -13,19 +13,19 @@
         theme.default.fontSize,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
         },
-        'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200'
+        'dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200'
       ]"
     >
       <div v-if="!oauthProviderId">
         <div class="space-y-4 mt-3">
           <div class="animate-pulse flex flex-col gap-3">
-            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
-            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
-            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-md" />
+            <div class="h-6 bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+            <div class="h-6 bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+            <div class="h-6 bg-neutral-200 dark:bg-neutral-800 rounded-md" />
           </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+          <p class="text-sm text-neutral-500 dark:text-neutral-400 text-center">
             Connect Stripe account to continue
           </p>
         </div>
@@ -79,10 +79,10 @@
               theme.default.spacing.vertical,
               theme.default.fontSize,
             ]"
-            class="mb-4 flex border border-gray-300 dark:border-gray-600 items-center justify-between bg-gray-50 dark:bg-gray-800"
+            class="mb-4 flex border border-neutral-300 dark:border-neutral-600 items-center justify-between bg-neutral-50 dark:bg-neutral-800"
           >
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('forms.payment.amount_to_pay') }}</span>
-            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ currencySymbol }}{{ amount }}</span>
+            <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">{{ $t('forms.payment.amount_to_pay') }}</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">{{ currencySymbol }}{{ amount }}</span>
           </div>
           <StripeElements
             ref="stripeElementsRef"
@@ -107,7 +107,7 @@
                       [theme.PaymentInput?.focusRing || 'ring-2 ring-form border-transparent']: isCardFocused && !hasError,
                       '!ring-red-500 !ring-2 !border-transparent': hasError
                     },
-                    'dark:bg-gray-800 dark:border-gray-700'
+                    'dark:bg-neutral-800 dark:border-neutral-700'
                   ]"
                 >
                   <StripeElement
@@ -150,7 +150,7 @@
           </div>
           <div v-else class="flex flex-col items-center justify-center py-4">
             <Loader class="mx-auto h-6 w-6" />
-            <p class="text-sm text-gray-500 mt-2">Initializing payment system...</p>
+            <p class="text-sm text-neutral-500 mt-2">Initializing payment system...</p>
           </div>
         </div>
       </template>
@@ -414,8 +414,8 @@ const currencySymbol = computed(() => {
 })
 
 const cardOptions = computed(() => {
-  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-gray-500') ? '#6B7280' : '#9CA3AF'
-  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-gray-400') ? '#9CA3AF' : '#A0AEC0'
+  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-neutral-500') ? '#6B7280' : '#9CA3AF'
+  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-neutral-400') ? '#9CA3AF' : '#A0AEC0'
   
   return {
     hidePostalCode: true,

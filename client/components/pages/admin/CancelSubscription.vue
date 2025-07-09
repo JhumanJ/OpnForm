@@ -8,7 +8,7 @@
       class="space-y-6 flex flex-col h-full justify-between"
       @submit.prevent="askCancel"
     >
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-neutral-500">
         Ideally customers should cancel subscription themselves via the UI. If
         you cancel the subscription for them, please provide a reason.
       </p>

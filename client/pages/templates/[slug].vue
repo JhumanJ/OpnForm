@@ -57,7 +57,7 @@
       We could not find this template.
     </p>
     <template v-else>
-      <section class="pt-12 bg-gray-50 sm:pt-16 border-b pb-[250px] relative">
+      <section class="pt-12 bg-neutral-50 sm:pt-16 border-b pb-[250px] relative">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div
             class="flex flex-col items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 md:flex-row"
@@ -74,11 +74,11 @@
 
             <div class="flex-1 text-center md:text-left relative">
               <h1
-                class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                class="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl"
               >
                 {{ template.name }}
               </h1>
-              <p class="mt-2 text-lg font-normal text-gray-600">
+              <p class="mt-2 text-lg font-normal text-neutral-600">
                 {{ cleanQuotes(template.short_description) }}
               </p>
               <template-tags
@@ -93,16 +93,16 @@
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div
-          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-gray-200 isolate"
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-neutral-200 isolate"
         >
-          <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
+          <p class="text-sm font-medium text-center text-neutral-500 -mt-2 mb-2">
             Template Preview
           </p>
           <OpenCompleteForm
             ref="open-complete-form"
             :form="form"
             :mode="FormMode.TEST"
-            class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
+            class="mb-4 p-4 bg-neutral-50 border border-neutral-200 border-dashed rounded-lg"
           />
         </div>
 
@@ -121,7 +121,7 @@
               </TrackClick>
             </div>
             <div class="flex items-center justify-center">
-              <div class="text-left mx-auto text-gray-500 text-xs mt-4">
+              <div class="text-left mx-auto text-neutral-500 text-xs mt-4">
                 ✓ Core features 100% free<br>
                 ✓ No credit card required<br>
                 ✓ No submissions limit on Free plan
@@ -142,15 +142,15 @@
             />
 
             <template v-if="template.questions.length > 0">
-              <hr class="mt-12 border-gray-200">
+              <hr class="mt-12 border-neutral-200">
               <div>
                 <div class="text-center">
                   <h3
-                    class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+                    class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
                   >
                     Frequently asked questions
                   </h3>
-                  <p class="mt-2 text-base font-normal text-gray-600">
+                  <p class="mt-2 text-base font-normal text-neutral-600">
                     Everything you need to know about this template.
                   </p>
                 </div>
@@ -160,11 +160,11 @@
                     :key="ques_key"
                     class="space-y-4"
                   >
-                    <dt class="font-semibold text-gray-900 dark:text-gray-100">
+                    <dt class="font-semibold text-neutral-900 dark:text-neutral-100">
                       {{ ques.question }}
                     </dt>
                     <dd
-                      class="mt-2 leading-6 text-gray-600 dark:text-gray-400"
+                      class="mt-2 leading-6 text-neutral-600 dark:text-neutral-400"
                       v-html="ques.answer"
                     />
                   </div>
@@ -177,12 +177,12 @@
 
       <section
         v-if="relatedTemplates && relatedTemplates.length > 0"
-        class="py-12 bg-white border-t border-gray-200 sm:py-16"
+        class="py-12 bg-white border-t border-neutral-200 sm:py-16"
       >
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex items-center justify-between">
             <h4
-              class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+              class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
             >
               Related templates
             </h4>
@@ -207,11 +207,11 @@
         </div>
       </section>
 
-      <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+      <section class="py-12 bg-white border-t border-neutral-200 sm:py-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="text-center">
             <h4
-              class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+              class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
             >
               How OpnForm works
             </h4>
@@ -222,15 +222,15 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 1
               </div>
               <div>
-                <h5 class="text-base font-bold leading-tight text-gray-900">
+                <h5 class="text-base font-bold leading-tight text-neutral-900">
                   Copy the template and change it the way you like
                 </h5>
-                <p class="mt-2 text-sm font-normal text-gray-600">
+                <p class="mt-2 text-sm font-normal text-neutral-600">
                   <NuxtLink :to="createFormWithTemplateUrl">
                     Click here to copy this template
                   </NuxtLink>
@@ -244,15 +244,15 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 2
               </div>
               <div>
-                <h5 class="text-base font-bold leading-tight text-gray-900">
+                <h5 class="text-base font-bold leading-tight text-neutral-900">
                   Embed the form or share it via a link
                 </h5>
-                <p class="mt-2 text-sm font-normal text-gray-600">
+                <p class="mt-2 text-sm font-normal text-neutral-600">
                   You can directly share your form link, or embed the form on
                   your website. It's magic! 🪄
                 </p>
@@ -361,11 +361,11 @@ useOpnSeoMeta(
 .nf-text {
   @apply space-y-4;
   h2 {
-    @apply text-sm font-normal tracking-widest text-gray-500 uppercase;
+    @apply text-sm font-normal tracking-widest text-neutral-500 uppercase;
   }
 
   p {
-    @apply font-normal leading-7 text-gray-900 dark:text-gray-100;
+    @apply font-normal leading-7 text-neutral-900 dark:text-neutral-100;
   }
 
   ol {

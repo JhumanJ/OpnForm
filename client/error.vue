@@ -9,14 +9,14 @@
             class="w-56 mb-5"
           >
 
-          <h1 class="mb-6 font-semibold text-3xl text-gray-900">
+          <h1 class="mb-6 font-semibold text-3xl text-neutral-900">
             Whoops, something went wrong ({{ error.statusCode || '404' }})
           </h1>
 
           <div class="links">
             <NuxtLink
               :to="{ name: 'index' }"
-              class="hover:underline text-gray-700"
+              class="hover:underline text-neutral-700"
             >
               Go Home
             </NuxtLink>

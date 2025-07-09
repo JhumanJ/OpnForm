@@ -14,7 +14,7 @@
         color="neutral"
         variant="outline"
         icon="i-material-symbols-undo"
-        class="disabled:text-gray-500 shadow-none"
+        class="disabled:text-neutral-500 shadow-none"
         @click="undo"
       />
     </UTooltip>
@@ -28,7 +28,7 @@
         icon="i-material-symbols-redo"
         color="neutral"
         variant="outline"
-        class="disabled:text-gray-500 shadow-none"
+        class="disabled:text-neutral-500 shadow-none"
         @click="redo"
       />
     </UTooltip>

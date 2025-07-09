@@ -5,7 +5,7 @@
     title="Incomplete Form Logic"
   >
     <template #body>
-      <p class="text-gray-700">
+      <p class="text-neutral-700">
         Some logic rules are incomplete or invalid and will be cleaned up to ensure that the form works correctly.
       </p>
 

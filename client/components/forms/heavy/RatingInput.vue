@@ -8,7 +8,7 @@
       <div
         v-for="i in starsCount"
         :key="i"
-        class="cursor-pointer inline-block text-gray-200 dark:text-gray-800"
+        class="cursor-pointer inline-block text-neutral-200 dark:text-neutral-800"
         :class="{
           '!text-yellow-400 active-star': i <= compVal,
           '!text-yellow-200 !dark:text-yellow-800 hover-star':

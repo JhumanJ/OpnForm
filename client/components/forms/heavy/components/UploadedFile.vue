@@ -18,7 +18,7 @@
       class="h-20 flex items-center justify-center"
     >
       <svg
-        class="w-10 h-10 text-gray-500"
+        class="w-10 h-10 text-neutral-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -33,13 +33,13 @@
       </svg>
     </div>
     <div class="flex gap-2 items-center border-t py-1 px-2">
-      <p class="flex-grow text-left truncate text-gray-500 text-xs">
+      <p class="flex-grow text-left truncate text-neutral-500 text-xs">
         {{ file.file.name }}
       </p>
       <a
         v-if="showRemove"
         href="javascript:void(0);"
-                  class="flex text-gray-400 rounded-sm hover:bg-neutral-50 hover:text-red-500 dark:text-gray-600 p-1"
+                  class="flex text-neutral-400 rounded-sm hover:bg-neutral-50 hover:text-red-500 dark:text-neutral-600 p-1"
         role="button"
         title="Remove"
         @click.stop="$emit('remove')"

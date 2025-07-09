@@ -25,7 +25,7 @@
       class="flex flex-col w-full items-center justify-center transition-colors duration-40"
       :class="[
         {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
-         '!bg-gray-200 dark:!bg-gray-800': disabled,
+         '!bg-neutral-200 dark:!bg-neutral-800': disabled,
          [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
          ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
         theme.fileInput.input,
@@ -49,10 +49,10 @@
       <div class="flex w-full items-center justify-center">
         <div
           v-if="loading"
-          class="text-gray-600 dark:text-gray-400"
+          class="text-neutral-600 dark:text-neutral-400"
         >
           <Loader class="mx-auto h-6 w-6" />
-          <p class="mt-2 text-center text-sm text-gray-500">
+          <p class="mt-2 text-center text-sm text-neutral-500">
             {{ $t('forms.fileInput.uploadingFile') }}
           </p>
         </div>
@@ -80,7 +80,7 @@
               />
             </div>
             <template v-else>
-              <div class="text-gray-500 w-full flex justify-center">
+              <div class="text-neutral-500 w-full flex justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -97,10 +97,10 @@
                 </svg>
               </div>
 
-              <p class="mt-2 text-sm text-gray-500 font-medium select-none">
+              <p class="mt-2 text-sm text-neutral-500 font-medium select-none">
                 {{ $t('forms.fileInput.chooseFiles', { n: multiple ? 1 : 0 }) }}
               </p>
-              <p class="mt-1 text-xs text-gray-400 dark:text-gray-400 select-none">
+              <p class="mt-1 text-xs text-neutral-400 dark:text-neutral-400 select-none">
                 {{ $t('forms.fileInput.sizeLimit', mbLimit) }}
               </p>
             </template>

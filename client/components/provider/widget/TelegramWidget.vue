@@ -3,7 +3,7 @@
     id="widget_login"
     class="flex flex-col gap-4"
   >
-    <p class="text-sm text-gray-500">
+    <p class="text-sm text-neutral-500">
       <a
         href="https://telegram.org"
         target="_blank"

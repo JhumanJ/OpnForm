@@ -499,7 +499,7 @@
       />
       <div
         v-if="['select', 'multi_select'].includes(field.type)"
-        class="-mt-3 mb-3 text-gray-400 dark:text-gray-500"
+        class="-mt-3 mb-3 text-neutral-400 dark:text-neutral-500"
       >
         <small>
           A problem? <a

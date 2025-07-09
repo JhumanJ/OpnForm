@@ -8,7 +8,7 @@
       class="space-y-6 flex flex-col justify-between"
       @submit.prevent="extendTrial"
     >
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-neutral-500">
         You can extend the trial of subscribers that are still in the trial
         period. Usually, you should not offer more than 7 days of trial, but
         you can add up to 14 days if needed.

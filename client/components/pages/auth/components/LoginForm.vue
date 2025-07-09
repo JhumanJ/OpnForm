@@ -43,7 +43,7 @@
         <div class="w-full md:w-1/2 text-right">
           <a
             href="#"
-            class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700"
+            class="text-xs hover:underline text-neutral-500 sm:text-sm hover:text-neutral-700"
             @click.prevent="showForgotModal = true"
           >
             Forgot your password?
@@ -76,7 +76,7 @@
       />
       <p
         v-if="!useFeatureFlag('self_hosted')"
-        class="text-gray-500 text-sm text-center mt-4"
+        class="text-neutral-500 text-sm text-center mt-4"
       >
         Don't have an account?
         <a

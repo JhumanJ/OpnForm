@@ -49,7 +49,7 @@
         :key="sectionName"
         class="mb-8"
       >
-        <h3 class="text-gray-500">
+        <h3 class="text-neutral-500">
           {{ sectionName }}
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-2">

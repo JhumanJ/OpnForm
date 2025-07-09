@@ -27,7 +27,7 @@
                 class="transition-colors"
                 :class="{
                   'text-blue-600': showLogic,
-                  'text-gray-300': !showLogic,
+                  'text-neutral-300': !showLogic,
                 }"
               >
                 <Icon
@@ -39,7 +39,7 @@
                 <h3 class="font-semibold">
                   Logic
                 </h3>
-                <p class="text-gray-400 text-xs">
+                <p class="text-neutral-400 text-xs">
                   Only run integration when a condition is met
                 </p>
               </div>

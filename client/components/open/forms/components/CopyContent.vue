@@ -1,10 +1,10 @@
 <template>
   <div class="flex gap-2">
     <div
-      class="flex-1 truncate sm:w-auto border border-gray-300 rounded-md px-2 py-1 flex-grow select-all bg-gray-100 relative"
+      class="flex-1 truncate sm:w-auto border border-neutral-300 rounded-md px-2 py-1 flex-grow select-all bg-neutral-100 relative"
     >
-      <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-gray-100"></div>
-      <p class="select-all text-gray-900 text-sm">
+      <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-neutral-100"></div>
+      <p class="select-all text-neutral-900 text-sm">
         {{ content }}
       </p>
     </div>

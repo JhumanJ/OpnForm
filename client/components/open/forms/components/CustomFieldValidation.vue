@@ -3,10 +3,10 @@
     <div class="space-y-4">
       <!-- Step 1: Validation Rules -->
       <div>
-        <h3 class="font-medium text-gray-900 text-sm mb-1">
+        <h3 class="font-medium text-neutral-900 text-sm mb-1">
           Step 1: Set Validation Rules
         </h3>
-        <p class="text-gray-500 text-xs mb-3">
+        <p class="text-neutral-500 text-xs mb-3">
           Define <span class="font-semibold">conditions that must be met</span> for this field to be valid. If these conditions are not met, the field will be marked as invalid.
         </p>
         <condition-editor
@@ -20,10 +20,10 @@
 
       <!-- Step 2: Error Message -->
       <div>
-        <h3 class="font-medium text-gray-900 text-sm mb-1">
+        <h3 class="font-medium text-neutral-900 text-sm mb-1">
           Step 2: Set Error Message
         </h3>
-        <p class="text-gray-500 text-xs mb-2">
+        <p class="text-neutral-500 text-xs mb-2">
           Enter the message that will be <span class="font-semibold">shown to users when the validation rules above are not met</span>.
         </p>
         <text-input

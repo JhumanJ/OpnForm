@@ -47,10 +47,10 @@
     >
       Connect Stripe Account
     </UButton>
-    <p class="text-sm text-gray-500 mt-3">
+    <p class="text-sm text-neutral-500 mt-3">
       <a
         target="#"
-        class="text-gray-500 cursor-pointer text-sm"
+        class="text-neutral-500 cursor-pointer text-sm"
         @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
       >
         <Icon

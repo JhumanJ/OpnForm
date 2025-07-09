@@ -12,7 +12,7 @@
       :class="[
         {
           'ring-red-500! ring-2! border-transparent!': hasError,
-          '!cursor-not-allowed bg-gray-200! dark:bg-gray-800!': disabled,
+          '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled,
           'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
         },
         theme.RichTextAreaInput.input,
@@ -200,7 +200,7 @@ const charCount = computed(() => {
   }
 
   .ql-editor.ql-blank:before {
-    @apply text-gray-400 dark:text-gray-500 not-italic;
+    @apply text-neutral-400 dark:text-neutral-500 not-italic;
   }
 
   .ql-snow .ql-toolbar .ql-picker-item.ql-selected,

@@ -10,7 +10,7 @@
             <h2 class="font-semibold text-2xl">
               Create an account
             </h2>
-            <p class="text-gray-500 text-sm">
+            <p class="text-neutral-500 text-sm">
               Sign up in less than 2 minutes.
             </p>
             <template v-if="!useFeatureFlag('self_hosted') || isInvited">
@@ -29,11 +29,11 @@
           <h1 class="font-bold">
             Create beautiful forms and share them anywhere
           </h1>
-          <p class="text-gray-900 my-4 text-lg">
+          <p class="text-neutral-900 my-4 text-lg">
             It takes seconds, you don't need to know how to code and it's free.
           </p>
           <div class="flex flex-wrap justify-center">
-            <p class="px-3 pb-3 text-sm text-gray-500">
+            <p class="px-3 pb-3 text-sm text-neutral-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4 inline"
@@ -50,7 +50,7 @@
               </svg>
               Unlimited forms
             </p>
-            <p class="px-3 pb-3 text-sm text-gray-500">
+            <p class="px-3 pb-3 text-sm text-neutral-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4 inline"
@@ -67,7 +67,7 @@
               </svg>
               Unlimited fields
             </p>
-            <p class="px-3 pb-3 text-sm text-gray-500">
+            <p class="px-3 pb-3 text-sm text-neutral-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4 inline"

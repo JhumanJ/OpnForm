@@ -54,11 +54,11 @@
         <VTransition name="fade">
         <!-- Empty State: No forms -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
-          <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
-          <h3 class="mt-4 text-lg font-semibold text-gray-900">
+          <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-neutral-400 mx-auto" />
+          <h3 class="mt-4 text-lg font-semibold text-neutral-900">
             Create your first form
           </h3>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-neutral-500">
             Get started by creating a new form to collect responses.
           </p>
           <UButton
@@ -72,11 +72,11 @@
 
         <!-- Empty State: No results -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
-            <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-gray-400 mx-auto" />
-            <h3 class="mt-4 text-lg font-semibold text-gray-900">
+            <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-neutral-400 mx-auto" />
+            <h3 class="mt-4 text-lg font-semibold text-neutral-900">
               No forms found
             </h3>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-neutral-500">
               Your search and filter criteria did not match any forms.
             </p>
             <UButton
@@ -107,7 +107,7 @@
           
           <!-- Completion Indicator -->
           <div v-else-if="!isComplete && totalPages > 1" class="flex justify-center items-center py-4">
-            <div class="text-sm text-gray-500">
+            <div class="text-sm text-neutral-500">
               Loaded {{ currentPage }} of {{ totalPages }} pages
             </div>
           </div>

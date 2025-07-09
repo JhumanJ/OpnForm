@@ -17,7 +17,7 @@
         theme.default.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
         },
       ]"
     >
@@ -34,7 +34,7 @@
             theme.FlatSelectInput.fontSize,
             theme.FlatSelectInput.option,
             {
-              '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disableOptions.includes(option[optionKey]),
+              '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]),
             },
           ]"
           @click="onSelect(option[optionKey])"
@@ -77,7 +77,7 @@
           theme.FlatSelectInput.spacing.vertical,
           theme.FlatSelectInput.fontSize,
           theme.FlatSelectInput.option,
-          '!text-gray-500 !cursor-not-allowed'
+          '!text-neutral-500 !cursor-not-allowed'
         ]"
       >
         {{ $t('forms.select.noOptionAvailable') }}

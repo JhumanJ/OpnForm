@@ -99,12 +99,12 @@
 
     <section
       v-if="showTypes"
-      class="py-12 bg-white border-t border-gray-200 sm:py-16"
+      class="py-12 bg-white border-t border-neutral-200 sm:py-16"
     >
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="flex items-center justify-between">
           <h4
-            class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+            class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
           >
             All Types
           </h4>
@@ -126,7 +126,7 @@
             :key="row.slug"
             :to="{ params: { slug: row.slug }, name: 'templates-types-slug' }"
             :title="row.name"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-blue-500"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             {{ row.name }}
           </NuxtLink>
@@ -136,12 +136,12 @@
 
     <section
       v-if="showIndustries"
-      class="py-12 bg-white border-t border-gray-200 sm:py-16"
+      class="py-12 bg-white border-t border-neutral-200 sm:py-16"
     >
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="flex items-center justify-between">
           <h4
-            class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+            class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
           >
             All Industries
           </h4>
@@ -166,7 +166,7 @@
               name: 'templates-industries-slug',
             }"
             :title="row.name"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-blue-500"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             {{ row.name }}
           </NuxtLink>

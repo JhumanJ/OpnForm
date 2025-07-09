@@ -13,7 +13,7 @@
         <div
           v-track.select_form_base="{ base: 'contact-form' }"
           role="button"
-          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-gray-50"
+          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
           @click="$emit('close')"
         >
           <div class="p-4">
@@ -29,7 +29,7 @@
         <div
           v-if="useFeatureFlag('ai_features')"
           v-track.select_form_base="{ base: 'ai' }"
-          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-gray-50"
+          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
           role="button"
           @click="state = 'ai'"
         >
@@ -44,7 +44,7 @@
           </p>
         </div>
         <div
-          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-gray-50 relative"
+          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50 relative"
         >
           <div class="p-4">
             <UIcon
@@ -78,7 +78,7 @@
           @click="generateForm"
           label="Generate a form"
         />
-        <p class="text-gray-500 text-xs text-center mt-1">
+        <p class="text-neutral-500 text-xs text-center mt-1">
           ~30 sec
         </p>
         <div

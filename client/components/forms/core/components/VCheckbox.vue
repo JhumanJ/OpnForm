@@ -6,14 +6,14 @@
       :value="value"
       :name="name"
       type="checkbox"
-      class="rounded border-gray-500 size-6 checkbox"
+      class="rounded border-neutral-500 size-6 checkbox"
       :class="[theme.CheckboxInput.size,{'cursor-pointer': !disabled}]"
       :style="{ '--accent-color': color }"
       :disabled="disabled ? true : null"
     >
     <label
       :for="id || name"
-      class="text-gray-700 dark:text-gray-300 ml-2"
+      class="text-neutral-700 dark:text-neutral-300 ml-2"
       :class="{ '!cursor-not-allowed': disabled }"
     >
       <slot />

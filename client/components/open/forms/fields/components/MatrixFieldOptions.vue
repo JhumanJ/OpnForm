@@ -24,7 +24,7 @@
           <button @click="removeMatrixRow(i)">
             <Icon
               name="heroicons:trash"
-              class="text-gray-300 w-4 h-4 mb-2"
+              class="text-neutral-300 w-4 h-4 mb-2"
             />
           </button>
         </div>
@@ -51,7 +51,7 @@
           <button @click="removeMatrixColumn(i)">
             <Icon
               name="heroicons:trash"
-              class="text-gray-300 w-4 h-4 mb-2"
+              class="text-neutral-300 w-4 h-4 mb-2"
             />
           </button>
         </div>

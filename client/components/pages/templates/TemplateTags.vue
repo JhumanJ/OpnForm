@@ -23,14 +23,14 @@
       <span
         v-for="item in types"
         :key="item.slug"
-        class="inline-flex items-center rounded-full bg-gray-50 dark:bg-gray-800 dark:text-gray-400 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+        class="inline-flex items-center rounded-full bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-400 px-2 py-1 text-xs font-medium text-neutral-600 ring-1 ring-inset ring-neutral-500/10"
       >
         {{ item.name }}
       </span>
       <span
         v-for="item in industries"
         :key="item.slug"
-        class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900 dark:text-gray-400 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+        class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900 dark:text-neutral-400 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
       >
         {{ item.name }}
       </span>
@@ -38,7 +38,7 @@
     <template v-else>
       <span
         v-if="types.length > 0"
-        class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+        class="inline-flex items-center rounded-full bg-neutral-50 px-2 py-1 text-xs font-medium text-neutral-600 ring-1 ring-inset ring-neutral-500/10"
       >
         {{ types[0].name }}
         <template v-if="types.length > 1">+{{ types.length - 1 }}</template>

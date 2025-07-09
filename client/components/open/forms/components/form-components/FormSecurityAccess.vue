@@ -29,7 +29,7 @@
       />
       <div
         v-if="form.closes_at || form.visibility == 'closed'"
-        class="bg-gray-50 border rounded-lg px-4 py-2"
+        class="bg-neutral-50 border rounded-lg px-4 py-2"
       >
         <rich-text-area-input
           name="closed_text"
@@ -53,7 +53,7 @@
       />
       <div
         v-if="form.max_submissions_count && form.max_submissions_count > 0"
-        class="bg-gray-50 border rounded-lg px-4 py-2"
+        class="bg-neutral-50 border rounded-lg px-4 py-2"
       >
         <rich-text-area-input
           wrapper-class="mb-0"
@@ -68,7 +68,7 @@
       <h4 class="font-semibold mt-4 border-t pt-4">
         Security
       </h4>
-      <p class="text-gray-500 text-sm">
+      <p class="text-neutral-500 text-sm">
         Protect your form, and your sensitive files.
       </p>
       <div

@@ -46,13 +46,13 @@
       />
       <div
         v-if="submissionOptions.databaseAction == 'update' && filterableFields.length"
-        class="bg-gray-50 border rounded-lg px-4 py-2"
+        class="bg-neutral-50 border rounded-lg px-4 py-2"
       >
         <div
           v-if="submissionOptions.databaseAction == 'update' && filterableFields.length"
           class="w-auto max-w-lg"
         >
-          <p class="mb-2 mt-2 text-gray-500 text-sm">
+          <p class="mb-2 mt-2 text-neutral-500 text-sm">
             When matching values are found in the selected column(s), the (first) existing record will be updated instead of creating a new record. If there's no match, a new record will be created.
             <a
               href="#"
@@ -78,7 +78,7 @@
       <h4 class="font-semibold mt-4 border-t pt-4">
         Advanced Submission Options <pro-tag />
       </h4>
-      <p class="text-gray-500 text-sm mb-4">
+      <p class="text-neutral-500 text-sm mb-4">
         Configure advanced options for form submissions and data collection.
       </p>
       
@@ -106,7 +106,7 @@
           upgrade-modal-description="Customize post-submission behavior: redirect users, show custom messages, or trigger actions. Upgrade to unlock advanced options for a seamless user experience. We have plenty of other pro features to enhance your form functionality and user engagement."
         />
       </h4>
-      <p class="text-gray-500 text-sm mb-4">
+      <p class="text-neutral-500 text-sm mb-4">
         Customize the user experience after form submission.
       </p>
       <div

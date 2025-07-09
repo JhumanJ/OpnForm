@@ -21,7 +21,7 @@
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
           :class="[
-            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-gray-800' : '',
+            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-neutral-800' : '',
           ]"
           ghost-class="ghost-item"
           filter=".not-draggable"
@@ -85,7 +85,7 @@
         v-if="hasPaymentBlock"
         class="mt-6 flex justify-center w-full"
       >
-        <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 flex text-center max-w-md">
           {{ $t('forms.payment.payment_disclaimer') }}
         </p>
       </div>

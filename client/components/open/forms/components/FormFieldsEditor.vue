@@ -16,15 +16,15 @@
       <Draggable
         v-model="form.properties"
         item-key="id"
-        class="mx-auto w-full overflow-hidden rounded-md border border-gray-300 bg-white transition-colors dark:bg-notion-dark-light"
+        class="mx-auto w-full overflow-hidden rounded-md border border-neutral-300 bg-white transition-colors dark:bg-notion-dark-light"
         ghost-class="bg-blue-100"
         :animation="200"
       >
         <template #item="{ element, index }">
           <div
-            class="mx-auto w-full border-gray-300 transition-colors cursor-grab"
+            class="mx-auto w-full border-neutral-300 transition-colors cursor-grab"
             :class="{
-              'bg-gray-100 ': element.hidden,
+              'bg-neutral-100 ': element.hidden,
               'bg-white ': !element.hidden,
               'border-b': index !== form.properties.length - 1,
               ' !border-blue-400 border-b-2': element.type === 'nf-page-break',
@@ -41,7 +41,7 @@
               <!-- Field name and type -->
               <div class="flex grow flex-col truncate">
                 <EditableTag
-                  class="truncate text-gray-700 min-w-16 min-h-6"
+                  class="truncate text-neutral-700 min-w-16 min-h-6"
                   :model-value="element.name"
                   @update:model-value="onChangeName(element, $event)"
                 >
@@ -55,8 +55,8 @@
                 <button
                   class="hidden !cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 items-center justify-center"
                   :class="{
-                    'text-gray-300 hover:text-blue-500 md:group-hover:flex': !element.hidden,
-                    'text-gray-300 hover:text-gray-500 md:flex': element.hidden,
+                    'text-neutral-300 hover:text-blue-500 md:group-hover:flex': !element.hidden,
+                    'text-neutral-300 hover:text-neutral-500 md:flex': element.hidden,
                   }"
                   @click="toggleHidden(element)"
                 >
@@ -81,7 +81,7 @@
                 <button
                   class="hidden cursor-pointer rounded-sm p-0.5 transition-colors hover:bg-blue-100 items-center px-1 justify-center"
                   :class="{
-                    'md:group-hover:flex text-gray-300 hover:text-red-500': !element.required,
+                    'md:group-hover:flex text-neutral-300 hover:text-red-500': !element.required,
                     'md:flex text-red-500': element.required,
                   }"
                   @click="toggleRequired(element)"
@@ -94,7 +94,7 @@
                 </button>
               </UTooltip>
               <button
-                class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-gray-300 hover:text-blue-500 flex items-center justify-center"
+                class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-neutral-300 hover:text-blue-500 flex items-center justify-center"
                 @click="editOptions(index)"
               >
                 <Icon

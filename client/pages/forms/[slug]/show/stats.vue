@@ -9,9 +9,9 @@
           { label: 'Avg. Duration', value: averageDuration, placeholder: '10 seconds' }
         ]"
         :key="index"
-        class="border border-gray-300 rounded-lg shadow-xs p-4"
+        class="border border-neutral-300 rounded-lg shadow-xs p-4"
       >
-        <div class="mb-2 text-xs text-gray-500">
+        <div class="mb-2 text-xs text-neutral-500">
           {{ stat.label }}
         </div>
          

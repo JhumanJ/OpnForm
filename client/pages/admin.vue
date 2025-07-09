@@ -48,7 +48,7 @@
     </div>
     <h3
       v-else
-      class="font-semibold text-2xl text-gray-900 mb-4"
+      class="font-semibold text-2xl text-neutral-900 mb-4"
     >
       Admin settings
     </h3>

@@ -7,9 +7,9 @@
       <div class="flex items-center justify-center">
         <Icon
           :name="service.icon"
-          class="h-8 w-8 text-gray-500"
+          class="h-8 w-8 text-neutral-500"
         />
-        <span class="ml-2 text-gray-700 font-medium">{{ service.title }}</span>
+        <span class="ml-2 text-neutral-700 font-medium">{{ service.title }}</span>
       </div>
     </template>
 

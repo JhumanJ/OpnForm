@@ -12,10 +12,10 @@
         class="bg-white py-12 px-4 sm:px-6 lg:px-8"
       >
         <div class="max-w-6xl mx-auto">
-          <h1 class="text-3xl font-bold text-center text-gray-900">
+          <h1 class="text-3xl font-bold text-center text-neutral-900">
             Available Integrations
           </h1>
-          <p class="text-center text-gray-600 mt-2 mb-10">
+          <p class="text-center text-neutral-600 mt-2 mb-10">
             Explore our powerful Integrations
           </p>
 
@@ -23,7 +23,7 @@
             <div
               v-for="integration in integrationsList"
               :key="integration.title"
-              class="relative rounded-2xl bg-gray-50 p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 hover:bg-white"
+              class="relative rounded-2xl bg-neutral-50 p-6 shadow-sm border border-neutral-200 hover:shadow-lg transition-all duration-300 hover:bg-white"
             >
               <a
                 :href="`/integrations/${integration.slug}`"
@@ -36,7 +36,7 @@
                 Most Popular
               </div>
               <div class="flex justify-between items-start">
-                <div class="w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center">
+                <div class="w-10 h-10 bg-white border border-neutral-200 rounded-xl flex items-center justify-center">
                   <Icon
                     :name="integration.icon"
                     class="w-8 h-8"
@@ -56,14 +56,14 @@
                 </a>
               </div>
 
-              <h3 class="mt-4 text-lg font-semibold text-gray-900">
+              <h3 class="mt-4 text-lg font-semibold text-neutral-900">
                 {{ integration.title }}
               </h3>
-              <p class="text-sm text-gray-500 mt-1">
+              <p class="text-sm text-neutral-500 mt-1">
                 {{ integration.description }}
               </p>
 
-              <ul class="mt-4 space-y-2 text-sm text-gray-700">
+              <ul class="mt-4 space-y-2 text-sm text-neutral-700">
                 <li
                   v-for="step in integration.steps"
                   :key="step" 
@@ -79,14 +79,14 @@
 
 
       <div class="bg-white p-10 max-w-6xl mx-auto">
-        <h2 class="text-4xl font-bold text-center text-gray-900 mb-2">
+        <h2 class="text-4xl font-bold text-center text-neutral-900 mb-2">
           Integration General Setup Guides
         </h2>
-        <p class="text-center text-gray-600 mb-12">
+        <p class="text-center text-neutral-600 mb-12">
           This can be another text
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-gray-800 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-neutral-800 max-w-6xl mx-auto">
           <div
             v-for="guide in setupGuides"
             :key="guide.title"
@@ -110,10 +110,10 @@
 
       <div class="bg-[#f4f9ff] max-w-6xl mx-auto rounded-3xl m-10 p-10 flex justify-between items-center">
         <div class="max-w-md">
-          <h2 class="text-3xl font-bold text-gray-900">
+          <h2 class="text-3xl font-bold text-neutral-900">
             Need help?
           </h2>
-          <p class="mt-2 text-gray-500 text-lg">
+          <p class="mt-2 text-neutral-500 text-lg">
             Visit our Help Center for detailed documentation!
           </p>
           <a
@@ -132,26 +132,26 @@
         <div class="hidden lg:grid grid-cols-2 gap-4">
           <div class="space-y-4">
             <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
-              <div class="bg-gray-200 w-full h-6 rounded-full" />
+              <div class="bg-neutral-200 w-24 h-3 mb-2 rounded-sm" />
+              <div class="bg-neutral-200 w-full h-6 rounded-full" />
             </div>
             <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
-              <div class="bg-gray-200 w-full h-6 rounded-full" />
+              <div class="bg-neutral-200 w-24 h-3 mb-2 rounded-sm" />
+              <div class="bg-neutral-200 w-full h-6 rounded-full" />
             </div>
             <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
-              <div class="bg-gray-200 w-full h-6 rounded-full" />
+              <div class="bg-neutral-200 w-24 h-3 mb-2 rounded-sm" />
+              <div class="bg-neutral-200 w-full h-6 rounded-full" />
             </div>
           </div>
           <div class="space-y-4 pt-8">
             <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
-              <div class="bg-gray-200 w-full h-6 rounded-full" />
+              <div class="bg-neutral-200 w-24 h-3 mb-2 rounded-sm" />
+              <div class="bg-neutral-200 w-full h-6 rounded-full" />
             </div>
             <div class="bg-white p-4 rounded-2xl shadow-sm w-64 h-20">
-              <div class="bg-gray-200 w-24 h-3 mb-2 rounded-sm" />
-              <div class="bg-gray-200 w-full h-6 rounded-full" />
+              <div class="bg-neutral-200 w-24 h-3 mb-2 rounded-sm" />
+              <div class="bg-neutral-200 w-full h-6 rounded-full" />
             </div>
           </div>
         </div>

@@ -55,7 +55,7 @@
             You can even leave the required fields empty.
           </p>
 
-          <div class="rounded-lg p-5 bg-gray-100 dark:bg-gray-900 mt-4">
+          <div class="rounded-lg p-5 bg-neutral-100 dark:bg-neutral-900 mt-4">
             <OpenForm
               v-if="formManager"
               :theme="theme"

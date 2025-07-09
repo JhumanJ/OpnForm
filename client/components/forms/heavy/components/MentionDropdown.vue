@@ -15,20 +15,20 @@
           </div>
           <input
             v-model="fallbackValue"
-            class="p-1 mb-2 text-sm w-1/2 border rounded-md hover:bg-gray-50"
+            class="p-1 mb-2 text-sm w-1/2 border rounded-md hover:bg-neutral-50"
             placeholder="Fallback value"
           >
         </div>
         <div class="overflow-scroll pt-2">
           <div class="w-full max-w-xs mb-2">
-            <div class="text-sm text-gray-500 mb-1">
+            <div class="text-sm text-neutral-500 mb-1">
               Select a field
             </div>
             <div class="space-y-1">
               <div
                 v-for="field in filteredMentions"
                 :key="field.id"
-                class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100"
+                class="flex items-center p-2 rounded-md cursor-pointer hover:bg-neutral-100"
                 :class="{ 'bg-blue-50 border border-blue-100 inset-0': selectedField?.id === field.id, 'border border-transparent': selectedField?.id !== field.id }"
                 @click="selectField(field)"
                 @dblclick="selectField(field, true)"
@@ -37,7 +37,7 @@
                   :type="field.type"
                   class="mr-2"
                 />
-                <p class="text-sm text-gray-700 truncate">
+                <p class="text-sm text-neutral-700 truncate">
                   {{ field.name }}
                 </p>
               </div>

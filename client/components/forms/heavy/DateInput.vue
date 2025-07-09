@@ -47,12 +47,12 @@
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-gray-50 dark:hover:bg-gray-900 ltr:border-l rtl:border-r px-2 flex items-center"
+            class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-r px-2 flex items-center"
             @click.prevent="clear()"
           >
             <Icon
               name="heroicons:x-mark-20-solid"
-              class="w-5 h-5 text-gray-500"
+              class="w-5 h-5 text-neutral-500"
               width="2em"
               dynamic
             />
@@ -169,7 +169,7 @@ const updateModelValue = () => {
 const inputClasses = computed(() => {
   const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
   if (props.disabled) {
-    classes.push('!cursor-not-allowed bg-gray-200! dark:bg-gray-800!')
+    classes.push('!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!')
   }
   if (input.hasError.value) {
     classes.push('ring-red-500! ring-2! border-transparent!')

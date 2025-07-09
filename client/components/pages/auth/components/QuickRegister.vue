@@ -22,11 +22,11 @@
 
         <template v-if="appStore.isUnauthorizedError">
           <div class="flex items-center my-6">
-            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1" />
-            <div class="px-4 text-gray-500 text-sm">
+            <div class="h-[1px] bg-neutral-300 dark:bg-neutral-600 flex-1" />
+            <div class="px-4 text-neutral-500 text-sm">
               or
             </div>
-            <div class="h-[1px] bg-gray-300 dark:bg-gray-600 flex-1" />
+            <div class="h-[1px] bg-neutral-300 dark:bg-neutral-600 flex-1" />
           </div>
           <UButton
             icon="i-heroicons-arrow-right-on-rectangle"
@@ -38,7 +38,7 @@
             size="lg"
             @click="logout"
           />
-          <p class="text-gray-500 text-sm text-center mt-2">
+          <p class="text-neutral-500 text-sm text-center mt-2">
             Progress will be lost.
           </p>
         </template>

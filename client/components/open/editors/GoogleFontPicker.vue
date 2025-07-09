@@ -17,7 +17,7 @@
 
         <div
           ref="scrollContainer"
-          class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-gray-50"
+          class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-neutral-50"
         >
           <FontCard
             v-for="(fontName, index) in enrichedFonts"

@@ -1,7 +1,7 @@
 <template>
   <div>
     <section
-      class="bg-gradient-to-b relative from-white to-gray-100 py-8 sm:py-16"
+      class="bg-gradient-to-b relative from-white to-neutral-100 py-8 sm:py-16"
     >
       <div class="absolute inset-0">
         <img
@@ -15,10 +15,10 @@
         class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative -mb-32 md:-mb-52 lg:-mb-72"
       >
         <div class="flex justify-center mb-5">
-          <div class="relative flex items-center shadow-xs bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-gray-600 ring ring-gray-900/10 hover:ring-gray-900/20"
+          <div class="relative flex items-center shadow-xs bg-white gap-x-4 rounded-full px-4 py-1 text-sm leading-6 text-neutral-600 ring ring-neutral-900/10 hover:ring-neutral-900/20"
           >
-            <span class="font-semibold text-gray-500">We're Open-Source</span><span
-              class="h-4 w-px bg-gray-900/10"
+            <span class="font-semibold text-neutral-500">We're Open-Source</span><span
+              class="h-4 w-px bg-neutral-900/10"
               aria-hidden="true"
             />
             <a
@@ -39,7 +39,7 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 aria-hidden="true"
-                class="-mr-2 h-5 w-5 text-gray-400"
+                class="-mr-2 h-5 w-5 text-neutral-400"
               >
                 <path
                   stroke-linecap="round"
@@ -52,7 +52,7 @@
         </div>
         <div class="max-w-4xl mx-auto text-center">
           <h1
-            class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 tracking-tight"
+            class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-neutral-900 tracking-tight"
           >
             Build
             <span
@@ -62,7 +62,7 @@
             in seconds
           </h1>
           <p
-            class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-gray-500"
+            class="mt-4 sm:mt-5 text-base leading-7 sm:text-xl sm:leading-9 font-medium text-neutral-500"
           >
             Create beautiful forms and share them anywhere. It's super fast, you
             don't need to know how to code. Get started
@@ -87,7 +87,7 @@
           </div>
 
           <div class="justify-center flex gap-2 mt-10">
-            <div class="flex items-center text-gray-400 text-sm">
+            <div class="flex items-center text-neutral-400 text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -104,7 +104,7 @@
               </svg>
               <span>Unlimited forms</span>
             </div>
-            <div class="flex items-center text-gray-400 text-sm">
+            <div class="flex items-center text-neutral-400 text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -121,7 +121,7 @@
               </svg>
               <span> Unlimited fields </span>
             </div>
-            <div class="flex text-gray-400 text-sm">
+            <div class="flex text-neutral-400 text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -152,14 +152,14 @@
               sizes="320px sm:650px lg:896px"
               alt="Product screenshot"
               loading="lazy"
-                                class="rounded-sm w-full shadow-2xl ring-3 ring-gray-900/10"
+                                class="rounded-sm w-full shadow-2xl ring-3 ring-neutral-900/10"
             >
           </div>
         </div>
       </div>
     </section>
 
-    <div class="flex flex-col bg-gray-50 dark:bg-notion-dark">
+    <div class="flex flex-col bg-neutral-50 dark:bg-notion-dark">
       <div
         class="bg-white dark:bg-notion-dark-light pt-32 md:pt-52 lg:pt-72 pb-8"
       >
@@ -204,7 +204,7 @@
         <h4 class="font-semibold text-3xl text-white">
           Take your forms to the next level
         </h4>
-        <p class="text-gray-300 my-8">
+        <p class="text-neutral-300 my-8">
           Generous, unlimited free plan.
         </p>
         <div class="mt-6 flex justify-center">

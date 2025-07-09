@@ -14,7 +14,7 @@
         theme.CodeInput.borderRadius,
         {
           '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-gray-200 dark:!bg-gray-800': disabled,
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
         },
       ]"
     >

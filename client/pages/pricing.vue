@@ -1,17 +1,17 @@
 <template>
   <div>
     <section
-      class="relative py-12 bg-gradient-to-b from-white to-gray-100 sm:py-16 lg:py-20 xl:py-24"
+      class="relative py-12 bg-gradient-to-b from-white to-neutral-100 sm:py-16 lg:py-20 xl:py-24"
     >
       <div class="relative px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="max-w-4xl mx-auto text-center">
           <h1
-            class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
+            class="text-4xl font-semibold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl"
           >
             Simple, transparent pricing. No surprises.
           </h1>
           <p
-            class="max-w-2xl mx-auto mt-4 text-base font-medium leading-7 text-gray-500 sm:mt-5 sm:text-xl sm:leading-9"
+            class="max-w-2xl mx-auto mt-4 text-base font-medium leading-7 text-neutral-500 sm:mt-5 sm:text-xl sm:leading-9"
           >
             Just like our codebase, our pricing is 100% transparent. One flat
             price for all features. No hidden fees.
@@ -38,7 +38,7 @@
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="max-w-2xl mx-auto text-center">
           <h2
-            class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl lg:leading-tight"
+            class="text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl lg:leading-tight"
           >
             <span class="text-blue-600">99%</span> of features are available to
             all users for free and without limits.
@@ -64,7 +64,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Unlimited forms
             </p>
@@ -86,7 +86,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Unlimited submissions
             </p>
@@ -114,7 +114,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Unlimited fields
             </p>
@@ -136,7 +136,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Multiple input types
             </p>
@@ -158,7 +158,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Form password
             </p>
@@ -180,7 +180,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Webhooks
             </p>
@@ -202,7 +202,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               Closing date
             </p>
@@ -274,7 +274,7 @@
               />
             </svg>
             <p
-              class="text-base font-semibold sm:text-lg lg:text-xl text-gray-950"
+              class="text-base font-semibold sm:text-lg lg:text-xl text-neutral-950"
             >
               And much more...
             </p>
@@ -316,17 +316,17 @@
     </section>
 
     <section
-      class="py-12 bg-gray-50 border-t border-gray-200 sm:py-16 lg:py-20 xl:py-24"
+      class="py-12 bg-neutral-50 border-t border-neutral-200 sm:py-16 lg:py-20 xl:py-24"
     >
       <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div class="max-w-3xl mx-auto text-center">
           <h2
-            class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl lg:leading-tight"
+            class="text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl lg:leading-tight"
           >
             Got any question?
           </h2>
           <p
-            class="max-w-2xl mx-auto mt-4 text-base font-medium leading-7 text-gray-600 sm:text-lg sm:leading-8"
+            class="max-w-2xl mx-auto mt-4 text-base font-medium leading-7 text-neutral-600 sm:text-lg sm:leading-8"
           >
             We've compiled a list of the most common questions we get asked.
           </p>
@@ -371,18 +371,18 @@
             :key="q.question"
           >
             <dt
-              class="text-base font-semibold leading-7 text-gray-950 sm:text-lg sm:leading-8"
+              class="text-base font-semibold leading-7 text-neutral-950 sm:text-lg sm:leading-8"
             >
               {{ q.question }}
             </dt>
-            <dd class="mt-2 text-base font-medium leading-7 text-gray-600">
+            <dd class="mt-2 text-base font-medium leading-7 text-neutral-600">
               {{ q.answer }}
             </dd>
           </div>
         </dl>
 
         <div class="mt-12 text-center sm:mt-16">
-          <p class="text-base font-medium text-gray-950">
+          <p class="text-base font-medium text-neutral-950">
             Didn't find the answer?
             <a
               href="#"

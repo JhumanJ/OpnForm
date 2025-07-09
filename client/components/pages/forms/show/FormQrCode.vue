@@ -19,7 +19,7 @@
         <h3 class="font-semibold text-medium">
           QR Code
         </h3>
-        <p class="text-sm text-gray-600">Scan the QR code to open the form.</p>
+        <p class="text-sm text-neutral-600">Scan the QR code to open the form.</p>
         <div class="flex justify-center">
           <img
             v-if="QrUrl"

@@ -39,7 +39,7 @@
       />
       <div
         v-if="isFormClosingOrClosed"
-        class="bg-gray-50 border rounded-lg px-4 py-2"
+        class="bg-neutral-50 border rounded-lg px-4 py-2"
       >
         <rich-text-area-input
           name="closed_text"

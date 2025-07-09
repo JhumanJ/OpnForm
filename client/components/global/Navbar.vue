@@ -23,11 +23,11 @@
             <template #default="{ workspace }">
               <button
                 v-if="workspace"
-                class="flex items-center cursor border border-transparent hover:border-gray-200 py-2 px-3 hover:bg-gray-50 rounded-md transition-colors"
+                class="flex items-center cursor border border-transparent hover:border-neutral-200 py-2 px-3 hover:bg-neutral-50 rounded-md transition-colors"
               >
                 <WorkspaceIcon :workspace="workspace" />
                 <p
-                  class="hidden md:block max-w-10 truncate text-sm ml-2 text-gray-800 dark:text-gray-200"
+                  class="hidden md:block max-w-10 truncate text-sm ml-2 text-neutral-800 dark:text-neutral-200"
                 >
                   {{ workspace.name }}
                 </p>
@@ -99,7 +99,7 @@
           </NuxtLink>
         </div>
         <div
-          class="hidden md:block pl-5 border-gray-300 border-r h-5"
+          class="hidden md:block pl-5 border-neutral-300 border-r h-5"
         />
         <div
           class="block"
@@ -134,7 +134,7 @@
                     v-if="$route.name !== 'login'"
                     :to="{ name: 'login' }"
                     :class="navLinkClasses"
-                    active-class="text-gray-800 dark:text-white"
+                    active-class="text-neutral-800 dark:text-white"
                   >
                     Login
                   </NuxtLink>
@@ -192,7 +192,7 @@ const { data: form } = useForms().detail(formSlug, {
 
 // Constants / classes
 const navLinkClasses =
-  'border border-transparent hover:border-gray-200 text-gray-500 hover:text-gray-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
+  'border border-transparent hover:border-neutral-200 text-neutral-500 hover:text-neutral-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-neutral-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
 
 // Computed values
 const helpUrl = computed(() => opnformConfig.links.help_url)

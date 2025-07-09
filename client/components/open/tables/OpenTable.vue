@@ -89,7 +89,7 @@
         >
           <component
             :is="fieldComponents[col.type]"
-            class="border-gray-100 dark:border-gray-900"
+            class="border-neutral-100 dark:border-neutral-900"
             :property="col"
             :value="row.original[col.id]"
           />
@@ -310,8 +310,20 @@ const downloadAsCsv = () => {
 
   exportLoading.value = true
   formsApi.submissions.export(props.form.id, {
-    columns: [] // TODO: Add columns to export
-  }).then(blob => {
+    columns: columnVisibility.value
+  }).then(data => {
+    console.log(data)
+    
+    // Convert string to Blob if needed
+    let blob
+    if (typeof data === 'string') {
+      blob = new Blob([data], { type: 'text/csv;charset=utf-8;' })
+    } else if (data instanceof Blob) {
+      blob = data
+    } else {
+      throw new Error('Invalid export data format')
+    }
+    
     const filename = `${props.form.slug}-${Date.now()}-submissions.csv`
     const a = document.createElement("a")
     document.body.appendChild(a)

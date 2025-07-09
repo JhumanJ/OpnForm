@@ -1,6 +1,6 @@
 <template>
   <section
-    class="sticky flex items-center inset-x-0 top-0 z-10 py-3 bg-white border-b border-gray-200"
+    class="sticky flex items-center inset-x-0 top-0 z-10 py-3 bg-white border-b border-neutral-200"
   >
     <div class="hidden md:flex flex-grow">
       <slot name="left" />
@@ -12,7 +12,7 @@
           class="flex items-center gap-4"
         >
           <NuxtLink
-            class="flex items-center text-gray-400 hover:text-gray-500"
+            class="flex items-center text-neutral-400 hover:text-neutral-500"
             :to="{ name: authenticated ? 'home' : 'index' }"
           >
             <Icon
@@ -23,7 +23,7 @@
           </NuxtLink>
           <Icon
             name="i-heroicons-chevron-right"
-            class="flex-shrink-0 w-5 h-5 text-gray-400"
+            class="flex-shrink-0 w-5 h-5 text-neutral-400"
           />
         </div>
 
@@ -34,7 +34,7 @@
         >
           <NuxtLink
             v-if="item.to"
-            class="flex items-center text-sm font-semibold text-gray-500 hover:text-gray-700 truncate"
+            class="flex items-center text-sm font-semibold text-neutral-500 hover:text-neutral-700 truncate"
             :to="item.to"
           >
             {{ item.name }}
@@ -48,7 +48,7 @@
           <Icon
             v-if="index !== path.length - 1"
             name="i-heroicons-chevron-right"
-            class="flex-shrink-0 w-5 h-5 text-gray-400"
+            class="flex-shrink-0 w-5 h-5 text-neutral-400"
           />
         </div>
       </div>

@@ -5,7 +5,7 @@
     :form="form"
   >
     <div class="mb-4">
-      <p class="text-gray-500 mb-4">
+      <p class="text-neutral-500 mb-4">
         Receive Telegram messages on each form submission.
       </p>
       <template v-if="providers.length">

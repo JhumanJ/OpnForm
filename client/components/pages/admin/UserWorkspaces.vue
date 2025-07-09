@@ -22,7 +22,7 @@
     </UTable>
     <div 
       v-if="workspaces?.length > pageCount"
-      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+      class="flex justify-end px-3 py-3.5 border-t border-neutral-200 dark:border-neutral-700"
     >
       <UPagination
         v-model="page"
@@ -72,7 +72,7 @@ function userPlanStyles(plan) {
         case 'enterprise':
             return 'capitalize text-xs select-all bg-blue-50 rounded-md px-2 py-1 border border-blue-200  text-blue-500'
         default:
-            return 'capitalize text-xs select-all bg-gray-50 rounded-md px-2 py-1 border'
+            return 'capitalize text-xs select-all bg-neutral-50 rounded-md px-2 py-1 border'
     }
 }
 

@@ -24,7 +24,7 @@
       />
     </div>
     <div
-      class="border border-gray-300 rounded-lg shadow-xs p-4 mb-5 w-full mx-auto mt-2 select-all"
+      class="border border-neutral-300 rounded-lg shadow-xs p-4 mb-5 w-full mx-auto mt-2 select-all"
     >
       <div
         v-if="!form.is_pro"

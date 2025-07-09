@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col p-3 rounded-md shadow border-gray-200 border-[0.5px] transition-colors justify-between w-full cursor-pointer ring-blue-300  relative"
+    class="flex flex-col p-3 rounded-md shadow border-neutral-200 border-[0.5px] transition-colors justify-between w-full cursor-pointer ring-blue-300  relative"
     :class="{'ring bg-blue-100': isSelected, 'bg-white hover:ring-2 hover:bg-blue-50': !isSelected}"
     @click="$emit('select-font')"
   >
@@ -28,7 +28,7 @@
       />
     </div>
 
-    <div class="text-gray-400 flex justify-between">
+    <div class="text-neutral-400 flex justify-between">
       <p class="text-xs">
         {{ fontName }}
       </p>

@@ -71,7 +71,7 @@
         <h4 class="font-semibold">
           Link Privacy
         </h4>
-        <p class="text-gray-500 text-sm mb-4">
+        <p class="text-neutral-500 text-sm mb-4">
           Disable to prevent Google from listing your form in search results.
         </p>
         <ToggleSwitchInput
@@ -85,7 +85,7 @@
         <h4 class="font-semibold">
           Custom Form URL
         </h4>
-        <p class="text-gray-500 text-sm mb-4">
+        <p class="text-neutral-500 text-sm mb-4">
           Create a custom URL for your form. This will be the unique identifier in your form's URL.
         </p>
         <text-input

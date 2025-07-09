@@ -4,12 +4,12 @@
     title="Billing email"
     icon="heroicons:envelope-16-solid"
   >
-    <p class="text-xs text-gray-500">
+    <p class="text-xs text-neutral-500">
       You can update the billing email of the subscriber.
     </p>
     <div
       v-if="loading"
-      class="text-gray-600 dark:text-gray-400"
+      class="text-neutral-600 dark:text-neutral-400"
     >
       <Loader class="h-6 w-6 mx-auto m-10" />
     </div>
