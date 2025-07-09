@@ -9,13 +9,12 @@
           v-if="canEditTemplate"
           class="ml-5"
         >
-          <v-button
-            color="gray"
-            size="small"
+          <UButton
+            color="neutral"
+            size="sm"
             @click.prevent="showFormTemplateModal = true"
-          >
-            Edit Template
-          </v-button>
+            label="Edit Template"
+          />
           <form-template-modal
             v-if="form"
             :form="form"
@@ -26,24 +25,28 @@
         </div>
       </template>
       <template #right>
-        <v-button
+        <TrackClick
           v-if="canEditTemplate"
-          v-track.copy_template_button_clicked
-          size="small"
-          color="white"
+          name="copy_template_button_clicked"
           class="mr-5"
-          @click.prevent="copyTemplateUrl"
         >
-          Copy Template URL
-        </v-button>
-        <v-button
-          v-track.use_template_button_clicked
-          size="small"
+          <UButton
+            size="sm"
+            variant="outline"
+            @click.prevent="copyTemplateUrl"
+            label="Copy Template URL"
+          />
+        </TrackClick>
+        <TrackClick
+          name="use_template_button_clicked"
           class="mr-5"
-          :to="createFormWithTemplateUrl"
         >
-          Use this template
-        </v-button>
+          <UButton
+            size="sm"
+            :to="createFormWithTemplateUrl"
+            label="Use this template"
+          />
+        </TrackClick>
       </template>
     </Breadcrumb>
 
@@ -60,7 +63,7 @@
             class="flex flex-col items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 md:flex-row"
           >
             <div
-                              class="aspect-[4/3] shrink-0 rounded-lg shadow-xs overflow-hidden group w-full max-w-sm relative"
+              class="aspect-[4/3] shrink-0 rounded-lg shadow-xs overflow-hidden group w-full max-w-sm relative"
             >
               <img
                 class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110 absolute inset-0"
@@ -90,7 +93,7 @@
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div
-                        class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-gray-200 isolate"
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-gray-200 isolate"
         >
           <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
             Template Preview
@@ -106,13 +109,16 @@
         <div class="absolute bottom-0 translate-y-full inset-x-0">
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
-              <v-button
-                v-track.use_template_button_clicked
+              <TrackClick
+                name="use_template_button_clicked"
                 class="mx-auto w-full max-w-[300px]"
-                :to="createFormWithTemplateUrl"
               >
-                Use this template
-              </v-button>
+                <UButton
+                  block
+                  :to="createFormWithTemplateUrl"
+                  label="Use this template"
+                />
+              </TrackClick>
             </div>
             <div class="flex items-center justify-center">
               <div class="text-left mx-auto text-gray-500 text-xs mt-4">
@@ -180,14 +186,13 @@
             >
               Related templates
             </h4>
-            <v-button
+            <UButton
               :to="{ name: 'templates' }"
               color="white"
-              size="small"
-              :arrow="true"
-            >
-              View All
-            </v-button>
+              size="sm"
+              trailing-icon="i-heroicons-arrow-right-20-solid"
+              label="View All"
+            />
           </div>
 
           <div
@@ -275,6 +280,7 @@ import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { cleanQuotes } from "~/lib/utils"
 import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
 import Breadcrumb from "~/components/app/Breadcrumb.vue"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const route = useRoute()
 const { detail, list } = useTemplates()

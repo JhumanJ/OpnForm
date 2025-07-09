@@ -13,23 +13,22 @@
       option-key="identifier"
       name="group-control-slot-rule"
     />
-    <v-button
+    <UButton
       class="ml-1 mt-1"
       color="blue"
-      size="small"
+      size="sm"
       :disabled="selectedRule === '' ? true : null"
       @click="addRule"
-    >
-      Add Condition
-    </v-button>
-    <v-button
+      label="Add Condition"
+    />
+    <UButton
       class="ml-1 mt-1"
-      color="outline-blue"
-      size="small"
+      variant="outline"
+      color="blue"
+      size="sm"
       @click="groupCtrl.newGroup"
-    >
-      Add Group
-    </v-button>
+      label="Add Group"
+    />
   </div>
 </template>
 

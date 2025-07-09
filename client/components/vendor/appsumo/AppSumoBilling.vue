@@ -40,26 +40,23 @@
       </li>
     </ul>
     <div class="w-max">
-      <v-button
-        color="outline-gray"
-        shade="lighter"
+      <UButton
+        variant="outline"
+        color="neutral"
         class="mt-4 block"
         href="https://appsumo.com/account/products/"
         target="_blank"
-      >
-        Manage in AppSumo
-      </v-button>
+        label="Manage in AppSumo"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { computed } from "vue"
-import VButton from "~/components/global/VButton.vue"
 
 export default {
   name: "AppSumoBilling",
-  components: { VButton },
 
   setup() {
           return {

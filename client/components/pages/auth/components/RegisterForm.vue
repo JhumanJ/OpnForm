@@ -97,27 +97,30 @@
       </checkbox-input>
 
       <!-- Submit Button -->
-      <v-button
-        class="w-full mt-4"
+      <UButton
+        class="mt-4"
+        block
+        size="lg"
         :loading="form.busy"
-      >
-        Create account
-      </v-button>
+        type="submit"
+        label="Create account"
+      />
 
       <template v-if="useFeatureFlag('services.google.auth')">
         <p class="text-gray-500 text-sm text-center my-4">
           OR
         </p>
-        <v-button
-          native-type="buttom"
-          color="white"
-          class="space-x-4 flex items-center w-full"
+        <UButton
+          color="neutral"
+          variant="outline"
+          size="lg"
+          class="space-x-4 flex items-center"
+          block
           :loading="false"
           @click.prevent="signInwithGoogle"
-        >
-          <Icon name="devicon:google" />
-          <span class="mx-2">Sign in with Google</span>
-        </v-button>
+          icon="devicon:google"
+          label="Sign in with Google"
+        />
       </template>
 
       <p class="text-gray-500 mt-4 text-sm text-center">

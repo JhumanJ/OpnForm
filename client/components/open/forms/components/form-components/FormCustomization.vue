@@ -54,16 +54,16 @@
     <div class="grid grid-cols-2 gap-4">
       <div class="flex-grow my-1" v-if="useFeatureFlag('services.google.fonts')">
         <label class="text-gray-700 font-semibold text-sm mb-1 block">Font Family</label>
-        <v-button
-          color="white"
-          class="w-full py-1.5"
-          size="small"
+        <UButton
+          color="neutral"
+          variant="outline"
+          block
           @click="showGoogleFontPicker = true"
         >
           <span :style="{ 'font-family': (form.font_family ? form.font_family + ' !important' : null) }">
             {{ form.font_family || 'Default' }}
           </span>
-        </v-button>
+        </UButton>
         <GoogleFontPicker
           :show="showGoogleFontPicker"
           :font="form.font_family || null"

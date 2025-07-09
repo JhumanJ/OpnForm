@@ -139,17 +139,18 @@
                     Login
                   </NuxtLink>
 
-                  <v-button
+                  <TrackClick
                     v-if="!isSelfHosted"
-                    v-track.nav_create_form_click
-                    size="small"
-                    class="shrink-0"
-                    :to="{ name: 'forms-create-guest' }"
-                    color="outline-blue"
-                    :arrow="true"
+                    name="nav_create_form_click"
                   >
-                    Create a form
-                  </v-button>
+                    <UButton
+                      :to="{ name: 'forms-create-guest' }"
+                      variant="outline"
+                      color="primary"
+                      trailing-icon="i-heroicons-arrow-right"
+                      label="Create a form"
+                    />
+                  </TrackClick>
                 </div>
               </div>
             </div>
@@ -170,6 +171,7 @@ import UserDropdown from '../dashboard/UserDropdown.vue'
 
 import opnformConfig from '~/opnform.config.js'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 
 // Stores & composables

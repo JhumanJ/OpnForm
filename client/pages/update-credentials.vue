@@ -47,12 +47,12 @@
 
           <!-- Submit Button -->
           <div class="mt-6">
-            <v-button
+            <UButton
               class="w-full justify-center"
               :loading="form.busy || loading"
-            >
-              Update Credentials
-            </v-button>
+              type="submit"
+              label="Update Credentials"
+            />
           </div>
 
           <!-- Cancel Link -->

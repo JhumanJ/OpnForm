@@ -79,23 +79,26 @@
                             </p>
                           </div>
                         </div>
-                        <v-button
+                        <TrackClick
                           v-if="!user?.is_subscribed"
-                          v-track.upgrade_modal_start_trial="{plan: 'default', period: isYearly?'yearly':'monthly'}"
-                          class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
-                          @click.prevent="onSelectPlan('default')"
+                          name="upgrade_modal_start_trial"
+                          :properties="{plan: 'default', period: isYearly?'yearly':'monthly'}"
+                          class="w-full"
                         >
-                          Start 3-day trial
-                        </v-button>
-                        <v-button
+                          <UButton
+                            class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
+                            @click.prevent="onSelectPlan('default')"
+                            label="Start 3-day trial"
+                          />
+                        </TrackClick>
+                        <UButton
                           v-else
                           :loading="billingLoading"
                           :to="{ name: 'redirect-billing-portal' }"
                           target="_blank"
                           class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
-                        >
-                          Manage Plan
-                        </v-button>
+                          label="Manage Plan"
+                        />
                       </div>
                     </article>
                   </div>
