@@ -14,6 +14,13 @@
             Customize the image and text that appear when you share your form on other sites (Open Graph).
           </p>
         </div>
+      <UButton
+        label="Help"
+        icon="i-heroicons-question-mark-circle"
+        variant="outline"
+        color="neutral"
+        @click="crisp.openHelpdeskArticle('how-do-i-add-custom-seo-settings-to-my-forms-url-preview-1v9y9a')"
+      />
       </div>
 
       <SelectInput
@@ -94,6 +101,7 @@
 </template>
 
 <script setup>
+const crisp = useCrisp()
 import ProTag from "~/components/app/ProTag.vue"
 
 const workingFormStore = useWorkingFormStore()

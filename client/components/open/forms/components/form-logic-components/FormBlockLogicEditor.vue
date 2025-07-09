@@ -66,100 +66,81 @@
       Note that hidden fields can never be required.
     </p>
 
-    <modal
-      max-width="sm"
-      
-      :show="showCopyFormModal"
-      @close="showCopyFormModal = false"
+    <UModal
+      v-model:open="showCopyFormModal"
+      title="Copy logic from another field"
+      :description="`Select another field/block to copy its logic and apply it to '${field.name}'.`"
     >
-      <h3 class="font-semibold block text-lg">
-        Copy logic from another field
-      </h3>
-      <p class="text-gray-400 text-xs mb-5">
-        Select another field/block to copy its logic and apply it to "{{
-          field.name
-        }}".
-      </p>
-      <select-input
-        v-model="copyFrom"
-        name="copy_from"
-        emit-key="value"
-        label="Copy logic from"
-        placeholder="Choose a field/block..."
-        :options="copyFromOptions"
-        :searchable="copyFromOptions && copyFromOptions.options > 5"
-      />
-      <div class="flex justify-between mt-2">
-        <UButton
-          color="primary"
-          icon="i-heroicons-check"
-          @click="copyLogic"
-        >
-          Confirm & Copy
-        </UButton>
+      <template #body>
+        <SelectInput
+          v-model="copyFrom"
+          name="copy_from"
+          emit-key="value"
+          label="Copy logic from"
+          placeholder="Choose a field/block..."
+          :options="copyFromOptions"
+          :searchable="copyFromOptions && copyFromOptions.options > 5"
+        />
+      </template>
+
+      <template #footer>
         <UButton
           color="neutral"
-          icon="i-heroicons-x-mark"
-          class="ml-1"
+          variant="outline"
+          label="Close"
           @click="showCopyFormModal = false"
-        >
-          Close
-        </UButton>
-      </div>
-    </modal>
-
-
-    <modal
-      max-width="sm"
-      :show="showCopyToModal"
-      @close="showCopyToModal = false"
-    >
-      <h3 class="font-semibold block text-lg">
-        Copy logic to other fields
-      </h3>
-      <p class="text-gray-400 text-xs mb-5">
-        Select fields to copy the logic from "{{ field.name }}" to them.
-      </p>
-      <select-input
-        v-model="copyTo"
-        name="copy_to"
-        emit-key="value"
-        label="Copy logic to"
-        placeholder="Choose fields..."
-        :options="copyToOptions"
-        :multiple="true"
-        :searchable="copyToOptions && copyToOptions.length > 5"
-      />
-      <div class="flex justify-between mt-2">
+        />
         <UButton
           color="primary"
-          icon="i-heroicons-check"
-          @click="copyLogicToFields"
-        >
-          Confirm & Copy
-        </UButton>
+          @click="copyLogic"
+          label="Confirm & Copy"
+        />
+      </template>
+    </UModal>
+
+    <UModal
+      v-model:open="showCopyToModal"
+      title="Copy logic to other fields"
+      :description="`Select other fields to copy the logic from '${field.name}' to.`"
+    >
+      <template #body>
+        <SelectInput
+          v-model="copyTo"
+          name="copy_to"
+          emit-key="value"
+          label="Copy logic to"
+          placeholder="Choose fields..."
+          :options="copyToOptions"
+          :multiple="true"
+          :searchable="copyToOptions && copyToOptions.length > 5"
+        />
+      </template>
+
+      <template #footer>
         <UButton
           color="neutral"
-          icon="i-heroicons-x-mark"
-          class="ml-1"
+          variant="outline"
+          label="Close"
           @click="showCopyToModal = false"
-        >
-          Close
-        </UButton>
-      </div>
-    </modal>
+        />
+        <UButton
+          color="primary"
+          @click="copyLogicToFields"
+          label="Confirm & Copy"
+        />
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script>
 import ConditionEditor from "./ConditionEditor.client.vue"
-import Modal from "../../../../global/Modal.vue"
 import clonedeep from "clone-deep"
 import { default as _has } from "lodash/has"
 
 export default {
   name: "FormBlockLogicEditor",
-  components: { Modal, ConditionEditor },
+  components: { ConditionEditor },
   props: {
     field: {
       type: Object,
