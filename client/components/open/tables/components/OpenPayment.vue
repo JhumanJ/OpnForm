@@ -15,25 +15,16 @@
   </span>
 </template>
 
-<script>
-export default {
-  components: { },
-  props: {
-    value: {
-      type: Object,
-    },
+<script setup>
+const props = defineProps({
+  value: {
+    type: Object,
   },
+})
 
-  data() {
-    return {}
-  },
-
-  computed: {
-    paymentUrl() {
-      if (!this.value) return null
-      const isLocal = useRuntimeConfig().public.env === 'local'
-      return `https://dashboard.stripe.com${isLocal ? '/test' : ''}/payments/${this.value}`
-    },
-  },
-}
+const paymentUrl = computed(() => {
+  if (!props.value) return null
+  const isLocal = useRuntimeConfig().public.env === 'local'
+  return `https://dashboard.stripe.com${isLocal ? '/test' : ''}/payments/${props.value}`
+})
 </script>

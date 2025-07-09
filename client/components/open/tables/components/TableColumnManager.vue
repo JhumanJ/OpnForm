@@ -1,0 +1,329 @@
+<template>
+  <div>
+    <UPopover v-model:open="isPopoverOpen" arrow :content="popoverContent">
+      <UButton
+        size="sm"
+        variant="ghost"
+        label="Columns"
+        color="neutral"
+        trailing-icon="i-lucide-chevron-down"
+        class="ml-auto"
+      />
+
+      <template #content>
+        <div class="w-80 p-2 flex flex-col">
+          <!-- Header -->
+          <div class="flex items-center justify-between">
+            <UInput
+              variant="outline"
+              placeholder="Search columns..."
+              icon="i-heroicons-magnifying-glass"
+              size="sm"
+              v-model="searchQuery"
+            />
+            <div class="flex items-center gap-1">
+            <UButton
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              label="Reset"
+              @click="tableState.resetPreferences()"
+            />
+          </div>
+          </div>
+
+          <!-- Column Sections -->
+          <div class="relative mt-1">
+            <!-- Top Fade -->
+            <VTransition name="fade">
+              <div
+                v-if="showTopFade"
+                class="absolute top-0 left-0 right-0 z-10 h-8 bg-gradient-to-b from-white to-transparent pointer-events-none"
+              />
+            </VTransition>
+
+            <div 
+              ref="sectionsContainer"
+              class="max-h-80 overflow-y-auto"
+            >
+            <template v-for="section in columnSections" :key="section.type">
+            <div 
+              v-if="section.columns.length > 0"
+              class="flex flex-col"
+            >
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs text-neutral-500">{{ section.title }}</h4>
+                <UButton
+                  size="xs"
+                  variant="link"
+                  :label="section.actionLabel"
+                  @click="toggleAllColumns(section.targetVisibility)"
+                />
+              </div>
+              
+                <draggable
+                  :list="section.columns"
+                  item-key="id"
+                  :ghost-class="['opacity-50', 'bg-blue-50', 'rounded-md']"
+                  :chosen-class="['bg-blue-100', 'rounded-md']"
+                  :animation="200"
+                  group="columns"
+                  :data-section-type="section.type"
+                  @change="handleDragChange"
+                >
+                  <template #item="{ element: column }">
+                    <div class="group">
+                      <div class="flex items-center gap-1 p-2 rounded-md hover:bg-neutral-50 transition-colors">
+                        <!-- Drag Handle -->
+                        <div class="w-4 h-4 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                          <UIcon name="clarity:drag-handle-line" class="h-6 w-6 -ml-1 shrink-0 text-neutral-400" />
+                        </div>
+
+                        <!-- Column Icon -->
+                        <div class="w-4 h-4 flex items-center justify-center">
+                          <BlockTypeIcon 
+                            v-if="column.type"
+                            :type="column.type"
+                            bg-class="bg-transparent"
+                            text-class="text-neutral-600"
+                            class="flex-shrink-0"
+                          />
+                        </div>
+
+                        <!-- Column Name with Tooltip -->
+                        <UTooltip :text="column.header || column.id" :content="{ align: 'start' }">
+                          <span class="flex-1 text-sm truncate">
+                            {{ column.header || column.id }}
+                          </span>
+                        </UTooltip>
+
+                        <!-- Removed Indicator -->
+                        <UTooltip v-if="column.isRemoved" text="Column was removed from form" :content="{ align: 'end' }">
+                          <UIcon name="i-heroicons-trash" class="w-3 h-3 text-neutral-400" />
+                        </UTooltip>
+
+                        <!-- Column Actions -->
+                        <div class="flex items-center gap-1">
+                          <!-- Pin Toggle -->
+                          <UTooltip :text="getPinTooltip(column.id)">
+                            <UButton
+                              size="xs"
+                              :variant="columnPreferencesMap[column.id]?.pinned ? 'soft' : 'ghost'"
+                              :icon="getPinIcon(column.id)"
+                              :color="columnPreferencesMap[column.id]?.pinned ? 'primary' : 'neutral'"
+                              @click.prevent="tableState.toggleColumnPin(column.id)"
+                            />
+                          </UTooltip>
+
+                          <!-- Wrap Toggle -->
+                          <UTooltip :text="columnPreferencesMap[column.id]?.wrapped ? 'Disable text wrapping' : 'Enable text wrapping'">
+                            <UButton
+                              size="xs"
+                              :variant="columnPreferencesMap[column.id]?.wrapped ? 'soft' : 'ghost'"
+                              icon="i-ic-baseline-wrap-text"
+                              :color="columnPreferencesMap[column.id]?.wrapped ? 'primary' : 'neutral'"
+                              @click.prevent="tableState.toggleColumnWrap(column.id)"
+                            />
+                          </UTooltip>
+
+                          <!-- Visibility Toggle Button -->
+                          <UTooltip :text="columnVisibilityMap[column.id] ? 'Hide' : 'Show'">
+                            <UButton
+                              size="xs"
+                              variant="ghost"
+                              color="neutral"
+                              :icon="columnVisibilityMap[column.id] ? 'i-heroicons-eye-solid' : 'i-heroicons-eye-slash-solid'"
+                              @click.prevent="props.tableState.toggleColumnVisibility(column.id)"
+                            />
+                          </UTooltip>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </draggable>
+            </div>
+          </template>
+            </div>
+
+            <!-- Bottom Fade -->
+            <VTransition name="fade">
+              <div
+                v-if="showBottomFade"
+                class="absolute bottom-0 left-0 right-0 z-10 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"
+              />
+            </VTransition>
+          </div>
+          <div class="w-full h-1"></div>
+        </div>
+      </template>
+    </UPopover>
+  </div>
+</template>
+
+<script setup>
+import draggable from 'vuedraggable'
+import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
+import VTransition from '@/components/global/transitions/VTransition.vue'
+import { useScroll, useResizeObserver } from '@vueuse/core'
+
+const props = defineProps({
+  tableState: {
+    type: Object,
+    required: true,
+  },
+  popoverContent: {
+    type: Object,
+    default: () => ({
+      align: 'end',
+      side: 'bottom',
+    }),
+  },
+})
+
+
+
+const isPopoverOpen = ref(false)
+const searchQuery = ref('')
+
+// Scroll fade detection for sections container
+const sectionsContainer = ref(null)
+const { y: scrollY } = useScroll(sectionsContainer)
+const contentHeight = ref(0)
+const containerHeight = ref(0)
+
+const showTopFade = computed(() => scrollY.value > 0)
+const showBottomFade = computed(() => {
+  if (containerHeight.value === 0 || contentHeight.value === 0) return false
+  return scrollY.value < contentHeight.value - containerHeight.value - 1 // -1 for subpixel precision
+})
+
+useResizeObserver(sectionsContainer, (entries) => {
+  const entry = entries[0]
+  containerHeight.value = entry.contentRect.height
+  if (sectionsContainer.value) {
+    contentHeight.value = sectionsContainer.value.scrollHeight
+  }
+})
+
+// Computed maps for better performance - avoid repeated function calls in templates
+const columnVisibilityMap = computed(() => {
+  const map = {}
+  const visibility = props.tableState.columnVisibility.value || {}
+  const columns = props.tableState.orderedColumns.value || []
+  
+  columns.forEach(column => {
+    map[column.id] = visibility[column.id] !== false
+  })
+  return map
+})
+
+const columnPreferencesMap = computed(() => {
+  const map = {}
+  const columns = props.tableState.orderedColumns.value || []
+  
+  columns.forEach(column => {
+    map[column.id] = props.tableState.getColumnPreference(column.id)
+  })
+  return map
+})
+
+
+
+// Filter columns based on search query and maintain order
+const filteredColumns = computed(() => {
+  const columns = props.tableState.orderedColumns.value || []
+  if (!Array.isArray(columns)) return []
+  
+  const query = searchQuery.value.toLowerCase()
+  return columns.filter(column => 
+    column.id !== 'actions' && 
+    (column.header || column.id).toLowerCase().includes(query)
+  )
+})
+
+// Computed visible columns (reactive to table state) - now using the map
+const visibleColumns = computed(() => {
+  const visibilityMap = columnVisibilityMap.value
+  return filteredColumns.value.filter(column => visibilityMap[column.id] !== false)
+})
+
+// Computed hidden columns (reactive to table state) - now using the map
+const hiddenColumns = computed(() => {
+  const visibilityMap = columnVisibilityMap.value
+  return filteredColumns.value.filter(column => visibilityMap[column.id] === false)
+})
+
+// Column sections configuration (now fully reactive)
+const columnSections = computed(() => {
+  return [
+    {
+      type: 'visible',
+      title: 'Shown in table',
+      actionLabel: 'Hide All',
+      targetVisibility: false,
+      columns: visibleColumns.value
+    },
+    {
+      type: 'hidden',
+      title: 'Hidden in table',
+      actionLabel: 'Show All',
+      targetVisibility: true,
+      columns: hiddenColumns.value
+    }
+  ]
+})
+
+// Handle drag end event
+const handleDragChange = async (event) => {  
+  if (event.added) {
+    const columnId = event.added.element.id
+    props.tableState.toggleColumnVisibility(columnId)
+    await nextTick() // Wait for Vue to process the visibility change
+  }
+
+  const isNowVisibleAfterAdd = event.added ? props.tableState.columnVisibility.value[event.added.element.id] : undefined
+
+  if (event.moved || (event.added && isNowVisibleAfterAdd)) {
+    const eventData = event.moved || event.added
+    const { element, newIndex } = eventData
+    props.tableState.setColumnOrder(element.id, newIndex)
+  }
+}
+
+// Get pin icon - now using computed map
+const getPinIcon = (columnId) => {
+  const pref = columnPreferencesMap.value[columnId]
+  return pref?.pinned === 'left' ? 'i-ic-baseline-push-pin' : 'i-ic-baseline-push-pin'
+}
+
+// Get pin tooltip - now using computed map
+const getPinTooltip = (columnId) => {
+  const pref = columnPreferencesMap.value[columnId]
+  return pref?.pinned === 'left' ? 'Unpin column' : 'Pin column to left'
+}
+
+// Toggle all columns visibility - now using computed map
+const toggleAllColumns = (targetVisibility) => {
+  const columns = props.tableState.columnConfigurations.value || []
+  const visibilityMap = columnVisibilityMap.value
+  
+  columns
+    .filter(column => column.id !== 'actions')
+    .forEach(column => {
+      if ((visibilityMap[column.id] !== false) !== targetVisibility) {
+        props.tableState.toggleColumnVisibility(column.id)
+      }
+    })
+}
+</script>
+
+<style scoped>
+/* Ensure drag cursor is applied to the entire row */
+.group {
+  cursor: grab;
+}
+
+.group:active {
+  cursor: grabbing;
+}
+</style>

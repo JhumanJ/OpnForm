@@ -23,30 +23,21 @@
   </span>
 </template>
 
-<script>
+<script setup>
 import OpenTag from "./OpenTag.vue"
 
-export default {
-  components: { OpenTag },
-  props: {
-    value: {
-      type: Object,
-    },
+const props = defineProps({
+  value: {
+    type: Object,
   },
+})
 
-  data() {
-    return {}
-  },
-
-  computed: {
-    matrixData() {
-      if (typeof this.value === "object" && this.value !== null) {
-        return Object.entries(this.value).map(([label, value]) => {
-            return { label, value }
-        })
-      }
-      return null
-    },
-  },
-}
+const matrixData = computed(() => {
+  if (typeof props.value === "object" && props.value !== null) {
+    return Object.entries(props.value).map(([label, value]) => {
+        return { label, value }
+    })
+  }
+  return null
+})
 </script>
