@@ -51,15 +51,16 @@
             </p>
 
             <div class="flex justify-center lg:justify-start mt-4">
-              <v-button
-                v-track.welcome_ai_builder_click
-                class="block"
-                :to="{ name: 'forms-create-guest' }"
-                :arrow="true"
-                color="blue"
-              >
-                Try our AI form builder
-              </v-button>
+              <TrackClick name="welcome_ai_builder_click">
+                <UButton
+                  class="block"
+                  :to="{ name: 'forms-create-guest' }"
+                  :trailing="true"
+                  color="primary"
+                  size="lg"
+                  label="Try our AI form builder"
+                />
+              </TrackClick>
             </div>
 
             <ul
@@ -116,20 +117,6 @@
                 No-coding required
               </li>
             </ul>
-
-            <div
-              class="mt-6 sm:mt-8 flex text-center justify-center lg:justify-start"
-            >
-              <!--                <v-button v-if="!authenticated" class="mr-2 block" :to="{ name: 'forms-create-guest' }" :arrow="true">-->
-              <!--                  Get started for free-->
-              <!--                </v-button>-->
-              <!--                <v-button v-else class="mr-2 block" :to="{ name: 'forms-create' }" :arrow="true">-->
-              <!--                  Get started for free-->
-              <!--                </v-button>-->
-              <!--                <v-button color="light-gray" class="mr-1 block" :to="{ name: 'aiformbuilder' }">-->
-              <!--                  Learn more-->
-              <!--                </v-button>-->
-            </div>
           </div>
 
           <div
@@ -147,20 +134,6 @@
   </div>
 </template>
 
-<script>
-
-
-
-export default {
-  props: {},
-  setup() {
-    const { isAuthenticated } = useIsAuthenticated()
-    return {
-      authenticated: isAuthenticated,
-    }
-  },
-  data: () => ({}),
-  computed: {},
-  methods: {},
-}
+<script setup>
+import TrackClick from '~/components/global/TrackClick.vue'
 </script>

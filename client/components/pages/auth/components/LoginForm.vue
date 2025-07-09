@@ -52,27 +52,28 @@
       </div>
 
       <!-- Submit Button -->
-      <v-button
-        class="w-full flex mt-2"
+      <UButton
+        class="mt-2"
+        block
+        size="lg"
         :loading="form.busy || loading"
-      >
-        Log in to continue
-      </v-button>
+        type="submit"
+        label="Log in to continue"
+      />
 
-      <v-button
+      <UButton
         v-if="useFeatureFlag('services.google.auth')"
         native-type="button"
-        color="white"
-        class="space-x-4 mt-4 flex items-center w-full"
+        color="neutral"
+        variant="outline"
+        size="lg"
+        class="space-x-4 mt-4 flex items-center"
+        block
         :loading="false"
         @click.prevent="signInwithGoogle"
-      >
-        <Icon
-          name="devicon:google"
-          class="w-4 h-4"
-        />
-        <span class="mx-2">Sign in with Google</span>
-      </v-button>
+        icon="devicon:google"
+        label="Sign in with Google"
+      />
       <p
         v-if="!useFeatureFlag('self_hosted')"
         class="text-gray-500 text-sm text-center mt-4"

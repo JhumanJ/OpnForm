@@ -30,22 +30,20 @@
           </p>
 
           <div class="mt-8 flex justify-center">
-            <v-button
+            <UButton
               v-if="!authenticated"
               class="mr-1"
               :to="{ name: 'forms-create-guest' }"
-              :arrow="true"
-            >
-              Get started for free
-            </v-button>
-            <v-button
+              trailing-icon="i-heroicons-arrow-right"
+              label="Get started for free"
+            />
+            <UButton
               v-else
               class="mr-1"
               :to="{ name: 'forms-create' }"
-              :arrow="true"
-            >
-              Get started for free
-            </v-button>
+              trailing-icon="i-heroicons-arrow-right"
+              label="Get started for free"
+            />
           </div>
         </div>
 
@@ -354,12 +352,12 @@
     <!--&lt;!&ndash;            </p>&ndash;&gt;-->
 
     <!--&lt;!&ndash;            <div class="mt-8 flex justify-center">&ndash;&gt;-->
-    <!--&lt;!&ndash;              <v-button v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;              <UButton v-if="!authenticated" class="mr-1" :to="{ name: 'forms-create-guest' }" :arrow="true">&ndash;&gt;-->
     <!--&lt;!&ndash;                Get started for free&ndash;&gt;-->
-    <!--&lt;!&ndash;              </v-button>&ndash;&gt;-->
-    <!--&lt;!&ndash;              <v-button v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;              </UButton>&ndash;&gt;-->
+    <!--&lt;!&ndash;              <UButton v-else class="mr-1" :to="{ name: 'forms-create' }" :arrow="true">&ndash;&gt;-->
     <!--&lt;!&ndash;                Get started for free&ndash;&gt;-->
-    <!--&lt;!&ndash;              </v-button>&ndash;&gt;-->
+    <!--&lt;!&ndash;              </UButton>&ndash;&gt;-->
     <!--&lt;!&ndash;            </div>&ndash;&gt;-->
 
     <!--&lt;!&ndash;            <ul&ndash;&gt;-->
@@ -545,22 +543,20 @@
           </p>
 
           <div class="mt-8 flex justify-center">
-            <v-button
+            <UButton
               v-if="!authenticated"
               class="mr-1"
               :to="{ name: 'forms-create-guest' }"
-              :arrow="true"
-            >
-              Get started for free
-            </v-button>
-            <v-button
+              trailing-icon="i-heroicons-arrow-right"
+              label="Get started for free"
+            />
+            <UButton
               v-else
               class="mr-1"
               :to="{ name: 'forms-create' }"
-              :arrow="true"
-            >
-              Get started for free
-            </v-button>
+              trailing-icon="i-heroicons-arrow-right"
+              label="Get started for free"
+            />
           </div>
 
           <ul

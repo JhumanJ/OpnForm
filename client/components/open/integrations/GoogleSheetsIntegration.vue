@@ -36,14 +36,14 @@
         </template>
       </FlatSelectInput>
 
-      <v-button
+      <UButton
         v-else
-        color="white"
+        color="neutral"
+        variant="outline"
         :loading="isLoading"
         @click.prevent="connect"
-      >
-        Connect Google account
-      </v-button>
+        label="Connect Google account"
+      />
     </div>
   </IntegrationWrapper>
 </template>

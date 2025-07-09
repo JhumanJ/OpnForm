@@ -46,12 +46,12 @@
           />
 
           <!-- Submit Button -->
-          <v-button
+          <UButton
             class="w-full"
             :loading="form.busy"
-          >
-            Reset Password
-          </v-button>
+            type="submit"
+            label="Reset Password"
+          />
         </form>
       </div>
     </div>

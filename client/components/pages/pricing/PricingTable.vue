@@ -129,31 +129,28 @@
                 </p>
 
                 <div class="flex justify-center">
-                  <v-button
+                  <UButton
                     v-if="!authenticated"
                     class="mr-1"
                     :to="{ name: 'register' }"
-                    :arrow="true"
-                  >
-                    Start free trial
-                  </v-button>
-                  <v-button
+                    trailing-icon="i-heroicons-arrow-right"
+                    label="Start free trial"
+                  />
+                  <UButton
                     v-else-if="authenticated && user.is_subscribed"
                     class="mr-1"
-                    :arrow="true"
+                    trailing-icon="i-heroicons-arrow-right"
                     :to="{ name: 'redirect-billing-portal' }"
                     target="_blank"
-                  >
-                    View Billing
-                  </v-button>
-                  <v-button
+                    label="View Billing"
+                  />
+                  <UButton
                     v-else
                     class="mr-1"
-                    :arrow="true"
+                    trailing-icon="i-heroicons-arrow-right"
                     @click.prevent="subscriptionModalStore.openModal('default', isYearly)"
-                  >
-                    Start free trial
-                  </v-button>
+                    label="Start free trial"
+                  />
                 </div>
                 <p
                   v-if="!homePage"

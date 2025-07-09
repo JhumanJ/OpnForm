@@ -17,11 +17,10 @@
         <p class="text-center">
           Unable to sign in at the moment.
         </p>
-        <v-button
+        <UButton
           :to="{ name: 'login' }"
-        >
-          Back to login
-        </v-button>
+          label="Back to login"
+        />
       </div>
     </div>
   </div>

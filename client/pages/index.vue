@@ -70,22 +70,20 @@
           </p>
 
           <div class="mt-8 flex justify-center">
-            <v-button
+            <UButton
               v-if="!authenticated"
               class="mr-1"
               :to="{ name: 'forms-create-guest' }"
-              :arrow="true"
-            >
-              Create a form for FREE
-            </v-button>
-            <v-button
+              trailing-icon="i-heroicons-arrow-right-20-solid"
+              label="Create a form for FREE"
+            />
+            <UButton
               v-else
               class="mr-1"
               :to="{ name: 'forms-create' }"
-              :arrow="true"
-            >
-              Create a form for FREE
-            </v-button>
+              trailing-icon="i-heroicons-arrow-right-20-solid"
+              label="Create a form for FREE"
+            />
           </div>
 
           <div class="justify-center flex gap-2 mt-10">
@@ -210,14 +208,15 @@
           Generous, unlimited free plan.
         </p>
         <div class="mt-6 flex justify-center">
-          <v-button
-            v-track.welcome_create_form_click
-            :to="{ name: 'forms-create-guest' }"
-            :arrow="true"
-            color="blue"
+          <TrackClick
+            name="welcome_create_form_click"
           >
-            Create a form for FREE
-          </v-button>
+            <UButton
+              :to="{ name: 'forms-create-guest' }"
+              trailing-icon="i-heroicons-arrow-right-20-solid"
+              label="Create a form for FREE"
+            />
+          </TrackClick>
         </div>
         <div class="flex justify-center mt-6">
           <a
@@ -304,7 +303,7 @@ import PricingTable from "../components/pages/pricing/PricingTable.vue"
 import AiFeature from "../components/pages/welcome/AiFeature.vue"
 import TemplatesSlider from "../components/pages/welcome/TemplatesSlider.vue"
 import opnformConfig from "~/opnform.config.js"
-import VButton from '../components/global/VButton.vue'
+import TrackClick from "~/components/global/TrackClick.vue"
 import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 definePageMeta({

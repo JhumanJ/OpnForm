@@ -43,14 +43,14 @@
         />
       </template>
 
-      <v-button
+      <UButton
         v-else
-        color="white"
+        color="neutral"
+        variant="outline"
         :loading="isLoading"
         @click.prevent="openConnectionsModal"
-      >
-        Connect Telegram account
-      </v-button>
+        label="Connect Telegram account"
+      />
     </div>
   </IntegrationWrapper>
 </template>

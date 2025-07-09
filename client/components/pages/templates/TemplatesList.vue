@@ -108,15 +108,14 @@
           >
             All Types
           </h4>
-          <v-button
+          <UButton
             v-if="$route.name !== 'templates'"
             :to="{ name: 'templates' }"
-            color="white"
-            size="small"
-            :arrow="true"
-          >
-            View All Templates
-          </v-button>
+            color="neutral"
+            size="sm"
+            trailing-icon="i-heroicons-arrow-right"
+            label="View All Templates"
+          />
         </div>
 
         <div
@@ -146,15 +145,14 @@
           >
             All Industries
           </h4>
-          <v-button
+          <UButton
             v-if="$route.name !== 'templates'"
             :to="{ name: 'templates' }"
-            color="white"
-            size="small"
-            :arrow="true"
-          >
-            View All Templates
-          </v-button>
+            color="neutral"
+            size="sm"
+            trailing-icon="i-heroicons-arrow-right"
+            label="View All Templates"
+          />
         </div>
 
         <div
