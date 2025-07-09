@@ -42,7 +42,7 @@ export function useTableColumnPreferences(formId) {
         pinned: false,
         wrapped: false,
         order: null,
-        size: null
+        size: 200
       }
     }
     
@@ -51,7 +51,7 @@ export function useTableColumnPreferences(formId) {
       pinned: false,
       wrapped: false,
       order: null,
-      size: null
+      size: 200
     }
   }
 
@@ -130,13 +130,8 @@ export function useTableColumnPreferences(formId) {
 
   const toggleColumnPin = (columnId) => {
     const current = getColumnPreference(columnId)
-    let newPinState = false
-    
-    if (!current.pinned) {
-      newPinState = 'left'
-    } else if (current.pinned === 'left') {
-      newPinState = 'right'
-    }
+    // Simplified: only toggle between false and 'left'
+    const newPinState = current.pinned === 'left' ? false : 'left'
     
     setColumnPreference(columnId, { pinned: newPinState })
   }

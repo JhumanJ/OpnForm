@@ -108,7 +108,7 @@
                           <UTooltip :text="getPinTooltip(column.id)">
                             <UButton
                               size="xs"
-                              variant="ghost"
+                              :variant="columnPreferencesMap[column.id]?.pinned ? 'soft' : 'ghost'"
                               :icon="getPinIcon(column.id)"
                               :color="columnPreferencesMap[column.id]?.pinned ? 'primary' : 'neutral'"
                               @click.prevent="tableState.toggleColumnPin(column.id)"
@@ -119,8 +119,8 @@
                           <UTooltip :text="columnPreferencesMap[column.id]?.wrapped ? 'Disable text wrapping' : 'Enable text wrapping'">
                             <UButton
                               size="xs"
-                              variant="ghost"
-                              :icon="columnPreferencesMap[column.id]?.wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
+                              :variant="columnPreferencesMap[column.id]?.wrapped ? 'soft' : 'ghost'"
+                              icon="i-ic-baseline-wrap-text"
                               :color="columnPreferencesMap[column.id]?.wrapped ? 'primary' : 'neutral'"
                               @click.prevent="tableState.toggleColumnWrap(column.id)"
                             />
@@ -293,17 +293,13 @@ const handleDragChange = async (event) => {
 // Get pin icon - now using computed map
 const getPinIcon = (columnId) => {
   const pref = columnPreferencesMap.value[columnId]
-  if (pref?.pinned === 'left') return 'i-heroicons-arrow-left-on-rectangle'
-  if (pref?.pinned === 'right') return 'i-heroicons-arrow-right-on-rectangle'
-  return 'i-heroicons-rectangle-stack'
+  return pref?.pinned === 'left' ? 'i-ic-baseline-push-pin' : 'i-ic-baseline-push-pin'
 }
 
 // Get pin tooltip - now using computed map
 const getPinTooltip = (columnId) => {
   const pref = columnPreferencesMap.value[columnId]
-  if (pref?.pinned === 'left') return 'Pinned to left - click to pin right'
-  if (pref?.pinned === 'right') return 'Pinned to right - click to unpin'
-  return 'Not pinned - click to pin left'
+  return pref?.pinned === 'left' ? 'Unpin column' : 'Pin column to left'
 }
 
 // Toggle all columns visibility - now using computed map

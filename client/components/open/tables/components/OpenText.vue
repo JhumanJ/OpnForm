@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="break-words whitespace-break-spaces text-sm text-neutral-900" 
+    class="text-sm text-neutral-900" 
     v-html="value" 
   />
 </template>

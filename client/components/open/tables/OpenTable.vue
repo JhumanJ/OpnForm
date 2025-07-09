@@ -64,8 +64,8 @@
       :style="{ maxHeight, ...columnSizeVars }"
       :ui="{
         thead: 'bg-neutral-50',
-        th: 'p-1 relative overflow-hidden',
-        td: 'px-3 py-2 border-r overflow-hidden',
+        th: 'p-1 relative overflow-hidden bg-neutral-50',
+        td: 'px-3 py-2 overflow-hidden data-[pinned=left]:bg-white data-[pinned=left]:border-t data-[pinned=left]:border-r data-[pinned=left]:border-neutral-200 border-r',
       }"
     >
       <template v-for="col in tableColumns" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
@@ -160,13 +160,13 @@ const { current: workspace } = useCurrentWorkspace()
 // Initialize table state (includes preferences internally)
 const tableState = useTableState(
   computed(() => props.form),
-  workspace && !workspace.is_readonly  // Pass boolean for withActions
+  workspace && !workspace.is_readonly
 )
 
-const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping } = tableState
+const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, handleColumnResize: handleColumnResizeState } = tableState
 
 const tableColumns = computed(() => {
-  return allColumns.value.filter(column => column.id != 'actions')
+  return allColumns.value.filter(column => column.id !== 'actions')
 })
 
 const fieldComponents = {
@@ -230,18 +230,17 @@ const tableData = computed(() => {
 
 // Cell styling based on wrapping preferences
 const getCellClasses = (columnId) => {
-  const isWrapped = tableState.columnWrapping.value?.[columnId] || false
+  const isWrapped = columnWrapping.value?.[columnId] || false
   return {
-    'text-truncate': !isWrapped,
+    'text-truncate whitespace-nowrap': !isWrapped,
     'whitespace-normal': isWrapped,
-    'whitespace-nowrap': !isWrapped
   }
 }
 
 // Column size CSS variables - similar to TanStack Table React example
 const columnSizeVars = computed(() => {
   // Ensure reactivity to columnSizing changes
-  const sizing = tableState.columnSizing.value
+  const sizing = columnSizing.value
 
   if (!sizing) return {}
 
@@ -254,8 +253,6 @@ const columnSizeVars = computed(() => {
 
   return colSizes
 })
-
-
 
 const computeMaxHeight = () => {
   if (!root.value || !topBar.value) return
@@ -287,7 +284,7 @@ defineShortcuts({
 })
 
 const handleColumnResize = (columnId, newSize) => {
-  tableState.handleColumnResize(columnId, newSize)
+  handleColumnResizeState(columnId, newSize)
 }
 
 onMounted(() => {

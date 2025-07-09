@@ -118,34 +118,43 @@ export function useTableState(form, withActions = false) {
       const configCols = columnConfigurations.value || []
       configCols.forEach(col => {
         const pref = prefs.columns[col.id] || {}
+        // Only allow left pinning for regular columns
         if (pref.pinned === 'left') pinning.left.push(col.id)
-        if (pref.pinned === 'right') {
-          if (col.id !== 'actions') pinning.right.unshift(col.id)
-        }
+        // Actions column is always pinned right, other columns cannot be pinned right
       })
       return pinning
     },
     set(newPinning) {
-      const { left = [], right = [] } = newPinning || {}
+      const { left = [] } = newPinning || {}
       const configCols = columnConfigurations.value || []
 
-      // First, clear pinning for all applicable columns
+      // First, clear pinning for all applicable columns (except actions)
       configCols.forEach(col => {
         if (col.id !== 'actions') setColumnPreference(col.id, { pinned: false })
       })
 
-      // Apply new pinning
-      left.forEach(id => setColumnPreference(id, { pinned: 'left' }))
-      right.forEach(id => {
-        if (id !== 'actions') setColumnPreference(id, { pinned: 'right' })
+      // Apply new left pinning only
+      left.forEach(id => {
+        if (id !== 'actions') setColumnPreference(id, { pinned: 'left' })
       })
+      // Note: actions column pinning is handled automatically in the getter
     }
   })
 
   // Column sizing (table column resize)
   const columnSizing = computed({
     get() {
-      return columnPreferences.preferences.value.globalSizing || {}
+      const savedSizing = columnPreferences.preferences.value.globalSizing
+      if (savedSizing && Object.keys(savedSizing).length > 0) {
+        return Math.min(Math.max(savedSizing, 80), 700)
+      }
+
+      const defaultSizing = {}
+      for (const col of tableColumns.value) {
+        const pref = getColumnPreference(col.id)
+        defaultSizing[col.id] = col.size || pref.size
+      }
+      return defaultSizing
     },
     set(newSizing) {
       columnPreferences.setColumnSizing(newSizing)
@@ -254,16 +263,25 @@ export function useTableState(form, withActions = false) {
       }
     },
     set(newOrderColumns) {
-      // Accepts an array of column objects OR ids; we extract ids
-      const ids = newOrderColumns.map(c => (typeof c === 'string' ? c : c.id))
-      columnPreferences.setColumnsOrder(ids)
-    }
+      // Logic to update column order preferences
+      const allColumnIds = (columnConfigurations.value || []).map(c => c.id)
+      const newOrderIds = newOrderColumns.map(c => c.id)
+
+      allColumnIds.forEach(id => {
+        const order = newOrderIds.indexOf(id)
+        if (order !== -1) {
+          // If the column is in the new order, set its order
+          columnPreferences.setColumnPreference(id, { order })
+        } else {
+          // If it's not (e.g., it's a hidden column not in the ordered list),
+          // assign a high order number to keep it at the end if it becomes visible
+          columnPreferences.setColumnPreference(id, { order: 9999 })
+        }
+      })
+    },
   })
 
-  /* -------------------------------------------------------------------------- */
-  /*                           Final columns (data table)                       */
-  /* -------------------------------------------------------------------------- */
-
+  // Final array of columns to be passed to the table component
   const tableColumns = computed(() => {
     try {
       // Ensure we have a valid array to work with  
@@ -295,7 +313,7 @@ export function useTableState(form, withActions = false) {
             class: {
               th: 'bg-transparent',
               td: 'backdrop-blur-xs bg-white/70'
-            }
+      }
           }
         })
       }
@@ -308,18 +326,61 @@ export function useTableState(form, withActions = false) {
   })
 
   /* -------------------------------------------------------------------------- */
+  /*                              Helper functions                              */
+  /* -------------------------------------------------------------------------- */
+
+  // Toggle column visibility
+  const toggleColumnVisibility = (columnId) => {
+    const currentVisibility = columnVisibility.value[columnId]
+    columnVisibility.value = {
+      ...columnVisibility.value,
+      [columnId]: !currentVisibility
+    }
+  }
+
+  // Toggle column wrapping
+  const toggleColumnWrapping = (columnId) => {
+    setColumnPreference(columnId, { wrapped: !(columnWrapping.value[columnId] || false) })
+  }
+
+  // Toggle column pinning
+  const toggleColumnPin = (columnId) => {
+    const pref = getColumnPreference(columnId) || {}
+    
+    if (pref.pinned === 'left') {
+      // If currently pinned, just unpin it
+      setColumnPreference(columnId, { pinned: false })
+    } else {
+      // If not currently pinned, first unpin all other columns, then pin this one
+      const configCols = columnConfigurations.value || []
+      
+      // Clear all existing pins
+      configCols.forEach(col => {
+        if (col.id !== 'actions' && col.id !== columnId) {
+          setColumnPreference(col.id, { pinned: false })
+        }
+      })
+      
+      // Pin the target column
+      setColumnPreference(columnId, { pinned: 'left' })
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
   /*                              Public API                                   */
   /* -------------------------------------------------------------------------- */
 
   return {
-    // Table state (for v-model binding)
-    columnConfigurations,
+    // Columns
+    tableColumns,
+    orderedColumns,
+    setColumnOrder,
+
+    // Preferences (writable computeds)
     columnVisibility,
     columnPinning,
     columnWrapping,
     columnSizing,
-    orderedColumns,
-    tableColumns,
     
     // Preference helpers (for components)
     getColumnPreference,
@@ -327,10 +388,10 @@ export function useTableState(form, withActions = false) {
     resetPreferences: columnPreferences.resetPreferences,
     resetColumn: columnPreferences.resetColumn,
     toggleColumnVisibility: columnPreferences.toggleColumnVisibility,
+    toggleColumnWrapping,
     toggleColumnPin: columnPreferences.toggleColumnPin,
     toggleColumnWrap: columnPreferences.toggleColumnWrap,
     setColumnsOrder: columnPreferences.setColumnsOrder,
-    setColumnOrder, // Use our local setColumnOrder function
     handleColumnResize,
   }
 } 
