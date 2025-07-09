@@ -134,7 +134,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, computed } from "vue"
+import { ref, defineProps, defineEmits, computed, watch, onMounted } from "vue"
 import QuestionsEditor from "./QuestionsEditor.vue"
 import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
@@ -149,7 +149,7 @@ const router = useRouter()
 const { data: user } = useAuth().user()
 
 const { list, create, update, remove } = useTemplates()
-const { data: templates } = list()
+const templates = ref(null)
 
 const { industries: industriesMap, types: typesMap } = useTemplateMeta()
 
@@ -168,6 +168,17 @@ const isOpen = computed({
     if (!value) {
       close()
     }
+  }
+})
+
+// Fetch templates only when modal is opened
+watch(isOpen, (open) => {
+  if (open) {
+    const { data } = list()
+    templates.value = data.value
+    // If list() returns a promise or needs await, adjust accordingly
+  } else {
+    templates.value = null // Optional: clear when closed
   }
 })
 

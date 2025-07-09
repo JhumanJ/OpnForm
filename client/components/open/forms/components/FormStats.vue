@@ -107,8 +107,12 @@ const props = defineProps({
 })
 
 const subscriptionModalStore = useSubscriptionModalStore()
+
+const toDate = new Date()
+const fromDate = new Date(toDate)
+fromDate.setDate(toDate.getDate() - 29)
 const filterForm = useForm({
-  filter_date: null,
+  filter_date: [fromDate.toISOString().split('T')[0], toDate.toISOString().split('T')[0]],
 })
 
 // Use query composables instead of manual API calls
@@ -116,34 +120,26 @@ const { stats, invalidateStats } = useFormStats()
 
 // Set up default date range (last 30 days)
 onMounted(() => {
-  if (props.form.is_pro) {
-    const toDate = new Date()
-    const fromDate = new Date(toDate)
-    fromDate.setDate(toDate.getDate() - 29)
-    filterForm.filter_date = [fromDate.toISOString().split('T')[0], toDate.toISOString().split('T')[0]]
-  }
+  const toDate = new Date()
+  const fromDate = new Date(toDate)
+  fromDate.setDate(toDate.getDate() - 29)
+  filterForm.filter_date = [fromDate.toISOString().split('T')[0], toDate.toISOString().split('T')[0]]
 })
 
-// Create reactive parameters for the query
-const queryParams = computed(() => ({
-  date_from: filterForm.filter_date?.[0] ? filterForm.filter_date[0].split('T')[0] : null,
-  date_to: filterForm.filter_date?.[1] ? filterForm.filter_date[1].split('T')[0] : null,
-}))
+const fromDateComputed = computed(() => {
+  return filterForm.filter_date?.[0] ? filterForm.filter_date[0].split('T')[0] : null
+})
+const toDateComputed = computed(() => {
+  return filterForm.filter_date?.[1] ? filterForm.filter_date[1].split('T')[0] : null
+})
 
 // Get stats data using query composable
 const { data: statsData, isFetching: isQueryLoading } = stats(
   props.form.workspace_id,
   props.form.id,
-  {
-    params: queryParams,
-    enabled: computed(() => 
-      import.meta.client && 
-      !!props.form && 
-      props.form.is_pro && 
-      !!filterForm.filter_date?.[0] && 
-      !!filterForm.filter_date?.[1]
-    )
-  }
+  fromDateComputed,
+  toDateComputed,
+  {enabled: computed(() => import.meta.client && props.form && props.form.is_pro)}
 )
 
 // Handle loading state for SSR - show skeleton during SSR if query would run on client

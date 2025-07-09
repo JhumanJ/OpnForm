@@ -4,11 +4,10 @@ import { formsApi } from '~/api/forms'
 export function useFormStats() {
   const queryClient = useQueryClient()
 
-  const stats = (workspaceId, formId, options = {}) => {
+  const stats = (workspaceId, formId, fromDate, toDate, options = {}) => {
     return useQuery({
-      queryKey: ['forms', formId, 'stats', options.params],
-      queryFn: () => formsApi.stats(workspaceId, formId, options),
-      enabled: !!(workspaceId && formId),
+      queryKey: ['forms', formId, 'stats', fromDate, toDate],
+      queryFn: () => formsApi.stats(workspaceId, formId, {...options, params: {date_from: fromDate.value, date_to: toDate.value}}),
       ...options
     })
   }
@@ -17,7 +16,6 @@ export function useFormStats() {
     return useQuery({
       queryKey: ['forms', formId, 'stats-details'],
       queryFn: () => formsApi.statsDetails(workspaceId, formId, options),
-      enabled: !!(workspaceId && formId),
       ...options
     })
   }
