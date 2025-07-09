@@ -19,23 +19,11 @@
   </UBadge>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: {
-    value: {
-      type: Boolean,
-      required: true,
-    },
+<script setup>
+defineProps({
+  value: {
+    type: Boolean,
+    required: true,
   },
-
-  data() {
-    return {}
-  },
-
-  computed: {},
-  mounted() {},
-
-  methods: {},
-}
+})
 </script>
