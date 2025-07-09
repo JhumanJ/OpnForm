@@ -7,7 +7,7 @@
     <main class="flex-1 sm:pl-58 overflow-hidden">
       <div class="flex flex-col h-full">
         <!-- Loading State -->
-        <div v-if="isLoading" class="flex-1 bg-white">
+        <div v-if="isLoading || !isFormFinished" class="flex-1 bg-white">
           <!-- Top Bar Skeleton -->
           <div class="bg-white p-4">
             <div class="max-w-4xl mx-auto">
@@ -203,7 +203,7 @@ const { current: workspaceRef } = useCurrentWorkspace()
 const workspace = workspaceRef.value
 
 // Get form by slug
-const { data: form, isLoading: isFormLoading } = formDetail(slug)
+const { data: form, isLoading: isFormLoading, isFetched: isFormFinished } = formDetail(slug)
 
 // Combined loading state
 const isLoading = computed(() => isFormLoading.value)

@@ -51,11 +51,12 @@
     </div>
 
     <UTable
+      v-if="form"
       ref="table"
-      :columns="safeTableColumns"
-      :column-visibility="tableState.columnVisibility"
-      :column-pinning="tableState.columnPinning"
-      :column-sizing="tableState.columnSizing"
+      :columns="allColumns"
+      :column-visibility="columnVisibility"
+      :column-pinning="columnPinning"
+      :column-sizing="columnSizing"
       :data="tableData"
       :loading="loading"
       sticky
@@ -63,21 +64,21 @@
       :style="{ maxHeight, ...columnSizeVars }"
       :ui="{
         thead: 'bg-neutral-50',
-        th: 'p-1 relative',
-        td: 'px-3 py-2 border-r ',
+        th: 'p-1 relative overflow-hidden',
+        td: 'px-3 py-2 border-r overflow-hidden',
       }"
     >
-      <template v-for="col in safeTableColumns.filter(column => !['actions'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
+      <template v-for="col in tableColumns" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
         <TableHeader 
           :column="column"
           :table-state="tableState"
-          :is-wrapped="tableState.columnWrapping[col.id]"
+          :is-wrapped="columnWrapping[col.id]"
           @resize="handleColumnResize"
         />
       </template>
     
       <template 
-        v-for="col in safeTableColumns.filter(column => !['actions', 'status'].includes(column.id))" 
+        v-for="col in tableColumns" 
         :key="col.id"
         #[`${col.id}-cell`]="{ row }"
       >
@@ -100,7 +101,6 @@
         <div class="flex justify-center" :style="{ width: `var(--col-actions-size, auto)` }">
           <RecordOperations
             :form="form"
-            :structure="safeTableColumns"
             :submission="row.original"
             @deleted="(submission) => $emit('deleted', submission)"
             @updated="(submission) => $emit('updated', submission)"
@@ -120,16 +120,6 @@
     </UTable>
   </div>
 </template>
-
-<style scoped>
-/* Column resizing styles */
-:deep(th), :deep(td) {
-  box-sizing: border-box;
-  overflow: hidden;
-}
-</style>
-
-
 
 <script setup>
 import { formsApi } from '~/api'
@@ -170,9 +160,14 @@ const { current: workspace } = useCurrentWorkspace()
 // Initialize table state (includes preferences internally)
 const tableState = useTableState(
   computed(() => props.form),
-  workspace && !workspace.is_readonly
+  workspace && !workspace.is_readonly  // Pass boolean for withActions
 )
 
+const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping } = tableState
+
+const tableColumns = computed(() => {
+  return allColumns.value.filter(column => column.id != 'actions')
+})
 
 const fieldComponents = {
   text: OpenText,
@@ -231,13 +226,7 @@ const tableData = computed(() => {
   return [...props.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 })
 
-// Ensure tableColumns is always an array
-const safeTableColumns = computed(() => {
-  const columns = tableState.tableColumns?.value
-  if (!columns) return []
-  if (!Array.isArray(columns)) return []
-  return columns
-})
+// Since UTable only renders when form exists, no need for safe wrappers
 
 // Cell styling based on wrapping preferences
 const getCellClasses = (columnId) => {

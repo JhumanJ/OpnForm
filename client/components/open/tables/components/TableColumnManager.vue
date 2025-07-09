@@ -110,29 +110,29 @@
                               size="xs"
                               variant="ghost"
                               :icon="getPinIcon(column.id)"
-                              :color="getColumnPreference(column.id).pinned ? 'primary' : 'neutral'"
+                              :color="columnPreferencesMap[column.id]?.pinned ? 'primary' : 'neutral'"
                               @click.prevent="tableState.toggleColumnPin(column.id)"
                             />
                           </UTooltip>
 
                           <!-- Wrap Toggle -->
-                          <UTooltip :text="getColumnPreference(column.id).wrapped ? 'Disable text wrapping' : 'Enable text wrapping'">
+                          <UTooltip :text="columnPreferencesMap[column.id]?.wrapped ? 'Disable text wrapping' : 'Enable text wrapping'">
                             <UButton
                               size="xs"
                               variant="ghost"
-                              :icon="getColumnPreference(column.id).wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
-                              :color="getColumnPreference(column.id).wrapped ? 'primary' : 'neutral'"
+                              :icon="columnPreferencesMap[column.id]?.wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
+                              :color="columnPreferencesMap[column.id]?.wrapped ? 'primary' : 'neutral'"
                               @click.prevent="tableState.toggleColumnWrap(column.id)"
                             />
                           </UTooltip>
 
                           <!-- Visibility Toggle Button -->
-                          <UTooltip :text="isColumnVisible(column) ? 'Hide' : 'Show'">
+                          <UTooltip :text="columnVisibilityMap[column.id] ? 'Hide' : 'Show'">
                             <UButton
                               size="xs"
                               variant="ghost"
                               color="neutral"
-                              :icon="isColumnVisible(column) ? 'i-heroicons-eye-solid' : 'i-heroicons-eye-slash-solid'"
+                              :icon="columnVisibilityMap[column.id] ? 'i-heroicons-eye-solid' : 'i-heroicons-eye-slash-solid'"
                               @click.prevent="props.tableState.toggleColumnVisibility(column.id)"
                             />
                           </UTooltip>
@@ -205,10 +205,29 @@ useResizeObserver(sectionsContainer, (entries) => {
   }
 })
 
-// Get column preferences helper
-const getColumnPreference = (columnId) => {
-  return props.tableState.getColumnPreference(columnId)
-}
+// Computed maps for better performance - avoid repeated function calls in templates
+const columnVisibilityMap = computed(() => {
+  const map = {}
+  const visibility = props.tableState.columnVisibility.value || {}
+  const columns = props.tableState.orderedColumns.value || []
+  
+  columns.forEach(column => {
+    map[column.id] = visibility[column.id] !== false
+  })
+  return map
+})
+
+const columnPreferencesMap = computed(() => {
+  const map = {}
+  const columns = props.tableState.orderedColumns.value || []
+  
+  columns.forEach(column => {
+    map[column.id] = props.tableState.getColumnPreference(column.id)
+  })
+  return map
+})
+
+
 
 // Filter columns based on search query and maintain order
 const filteredColumns = computed(() => {
@@ -222,19 +241,16 @@ const filteredColumns = computed(() => {
   )
 })
 
-// Check if a column is currently visible
-const isColumnVisible = (column) => {
-  return props.tableState.columnVisibility.value[column.id] !== false
-}
-
-// Computed visible columns (reactive to table state)
+// Computed visible columns (reactive to table state) - now using the map
 const visibleColumns = computed(() => {
-  return filteredColumns.value.filter(column => isColumnVisible(column))
+  const visibilityMap = columnVisibilityMap.value
+  return filteredColumns.value.filter(column => visibilityMap[column.id] !== false)
 })
 
-// Computed hidden columns (reactive to table state)
+// Computed hidden columns (reactive to table state) - now using the map
 const hiddenColumns = computed(() => {
-  return filteredColumns.value.filter(column => !isColumnVisible(column))
+  const visibilityMap = columnVisibilityMap.value
+  return filteredColumns.value.filter(column => visibilityMap[column.id] === false)
 })
 
 // Column sections configuration (now fully reactive)
@@ -274,29 +290,31 @@ const handleDragChange = async (event) => {
   }
 }
 
-// Get pin icon
+// Get pin icon - now using computed map
 const getPinIcon = (columnId) => {
-  const pref = getColumnPreference(columnId)
-  if (pref.pinned === 'left') return 'i-heroicons-arrow-left-on-rectangle'
-  if (pref.pinned === 'right') return 'i-heroicons-arrow-right-on-rectangle'
+  const pref = columnPreferencesMap.value[columnId]
+  if (pref?.pinned === 'left') return 'i-heroicons-arrow-left-on-rectangle'
+  if (pref?.pinned === 'right') return 'i-heroicons-arrow-right-on-rectangle'
   return 'i-heroicons-rectangle-stack'
 }
 
-// Get pin tooltip
+// Get pin tooltip - now using computed map
 const getPinTooltip = (columnId) => {
-  const pref = getColumnPreference(columnId)
-  if (pref.pinned === 'left') return 'Pinned to left - click to pin right'
-  if (pref.pinned === 'right') return 'Pinned to right - click to unpin'
+  const pref = columnPreferencesMap.value[columnId]
+  if (pref?.pinned === 'left') return 'Pinned to left - click to pin right'
+  if (pref?.pinned === 'right') return 'Pinned to right - click to unpin'
   return 'Not pinned - click to pin left'
 }
 
-// Toggle all columns visibility
+// Toggle all columns visibility - now using computed map
 const toggleAllColumns = (targetVisibility) => {
   const columns = props.tableState.columnConfigurations.value || []
+  const visibilityMap = columnVisibilityMap.value
+  
   columns
     .filter(column => column.id !== 'actions')
     .forEach(column => {
-      if (isColumnVisible(column) !== targetVisibility) {
+      if ((visibilityMap[column.id] !== false) !== targetVisibility) {
         props.tableState.toggleColumnVisibility(column.id)
       }
     })

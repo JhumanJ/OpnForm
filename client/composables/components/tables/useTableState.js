@@ -266,8 +266,8 @@ export function useTableState(form, withActions = false) {
 
   const tableColumns = computed(() => {
     try {
-      // Ensure we have a valid array to work with
-      const cols = [...orderedColumns.value || []]
+      // Ensure we have a valid array to work with  
+      const cols = orderedColumns.value && Array.isArray(orderedColumns.value) ? [...orderedColumns.value] : []
 
       // Add status column if needed
       if (form.value?.is_pro && (form.value.enable_partial_submissions ?? false)) {
@@ -288,7 +288,7 @@ export function useTableState(form, withActions = false) {
         cols.push({
           id: 'actions',
           accessorKey: 'actions',
-          header: 'Actions',
+          header: '',
           enableResizing: false,
           size: 80,
           meta: {
