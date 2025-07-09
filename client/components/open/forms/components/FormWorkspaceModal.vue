@@ -2,8 +2,24 @@
   <UModal
     v-model:open="isOpen"
     :ui="{ content: 'sm:max-w-lg' }"
-    title="Change form's workspace"
   >
+    <template #header>
+      <div class="flex items-center w-full gap-4 px-2">
+        <h2 class="font-semibold">
+          Change form's workspace
+        </h2>
+      </div>
+      <UButton
+        color="neutral"
+        variant="outline"
+        icon="i-heroicons-question-mark-circle"
+        size="sm"
+        @click="crisp.openHelpdeskArticle('how-to-move-a-form-to-another-workspace-1twq0kg')"
+      >
+        Help
+      </UButton>
+    </template>
+
     <template #body>
       <div class="flex space-x-4 items-center">
         <p>Current workspace:</p>
@@ -54,6 +70,7 @@ import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 
 const emit = defineEmits(["close"])
 const { switchTo } = useCurrentWorkspace()
+const crisp = useCrisp()
 
 const selectedWorkspace = ref(null)
 const props = defineProps({

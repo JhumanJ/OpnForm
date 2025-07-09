@@ -67,86 +67,82 @@
     </template>
 
     <!--  Modal  -->
-    <modal
-      :show="showUploadModal"
-      @close="showUploadModal = false"
+    <UModal
+      v-model:open="showUploadModal"
+      title="Upload an image"
+      :ui="{ content: 'sm:max-w-xl' }"
     >
-      <h2 class="text-lg font-semibold">
-        Upload an image
-      </h2>
-
-      <div class="max-w-3xl mx-auto lg:max-w-none">
-        <div
-          class="sm:mt-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:items-start sm:pt-5"
-        >
-          <div class="mt-2 sm:mt-0 sm:col-span-2 mb-5">
-            <div
-              v-cloak
-              class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md h-128"
-              @dragover.prevent="onUploadDragoverEvent($event)"
-              @drop.prevent="onUploadDropEvent($event)"
-            >
+      <template #body>
+        <div class="max-w-3xl mx-auto lg:max-w-none">
+          <div class="sm:grid sm:grid-cols-1 sm:gap-4 sm:items-start">
+            <div class="sm:col-span-2 mb-5">
               <div
-                v-if="loading"
-                class="text-gray-600 dark:text-gray-400"
+                v-cloak
+                class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md h-128"
+                @dragover.prevent="onUploadDragoverEvent($event)"
+                @drop.prevent="onUploadDropEvent($event)"
               >
-                <loader class="h-5 w-5 mx-auto m-10" />
-                <p class="text-center mt-6">
-                  Uploading your file...
-                </p>
-              </div>
-              <template v-else>
                 <div
-                  class="absolute rounded-full bg-gray-100 h-20 w-20 z-10 transition-opacity duration-500 ease-in-out"
-                  :class="{
-                    'opacity-100': uploadDragoverTracking,
-                    'opacity-0': !uploadDragoverTracking,
-                  }"
-                />
-                <div class="relative z-20 text-center">
-                  <input
-                    ref="actual-input"
-                    class="hidden"
-                    type="file"
-                    :name="name"
-                    accept="image/png, image/gif, image/jpeg, image/bmp, image/svg+xml"
-                    @change="manualFileUpload"
-                  >
-                  <Icon
-                    name="heroicons:cloud-arrow-up"
-                    class="x-auto h-24 w-24 text-gray-200"
-                  />
-                  <p class="mt-5 text-sm text-gray-600">
-                    <button
-                      type="button"
-                      class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-hidden focus:underline transition duration-150 ease-in-out"
-                      @click="openFileUpload"
-                    >
-                      Upload your image,
-                    </button>
-                    use drag and drop or paste it
-                  </p>
-                  <p class="mt-1 text-xs text-gray-500">
-                    .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
+                  v-if="loading"
+                  class="text-gray-600 dark:text-gray-400"
+                >
+                  <loader class="h-5 w-5 mx-auto m-10" />
+                  <p class="text-center mt-6">
+                    Uploading your file...
                   </p>
                 </div>
-              </template>
+                <template v-else>
+                  <div
+                    class="absolute rounded-full bg-gray-100 h-20 w-20 z-10 transition-opacity duration-500 ease-in-out"
+                    :class="{
+                      'opacity-100': uploadDragoverTracking,
+                      'opacity-0': !uploadDragoverTracking,
+                    }"
+                  />
+                  <div class="relative z-20 text-center">
+                    <input
+                      ref="actual-input"
+                      class="hidden"
+                      type="file"
+                      :name="name"
+                      accept="image/png, image/gif, image/jpeg, image/bmp, image/svg+xml"
+                      @change="manualFileUpload"
+                    >
+                    <Icon
+                      name="heroicons:cloud-arrow-up"
+                      class="x-auto h-24 w-24 text-gray-200"
+                    />
+                    <p class="mt-5 text-sm text-gray-600">
+                      <button
+                        type="button"
+                        class="font-semibold text-blue-500 hover:text-blue-800 focus:outline-hidden focus:underline transition duration-150 ease-in-out"
+                        @click="openFileUpload"
+                      >
+                        Upload your image,
+                      </button>
+                      use drag and drop or paste it
+                    </p>
+                    <p class="mt-1 text-xs text-gray-500">
+                      .jpg, .jpeg, .png, .bmp, .gif, .svg up to 5mb
+                    </p>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </modal>
+      </template>
+    </UModal>
   </InputWrapper>
 </template>
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
-import Modal from "../../global/Modal.vue"
 import { storeFile } from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
 
 export default {
-  components: {  Modal },
+  components: {  },
   mixins: [],
   props: {
     ...inputProps,
