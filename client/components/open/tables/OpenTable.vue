@@ -80,7 +80,7 @@
         maxSize: 800,
       }"
     >
-      <template v-for="col in safeTableColumns.filter(column => !['actions', 'status'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
+      <template v-for="col in safeTableColumns.filter(column => !['actions'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
         <TableHeader 
           :column="column"
           :column-preferences="columnPreferences"
@@ -97,13 +97,7 @@
           <span class="truncate">{{ column.columnDef.header }}</span>
         </div>
       </template>
-      
-      <template #status-header="{ column }">
-        <TableHeader 
-          :column="column"
-          @resize-start="handleResizeStart"
-        />
-      </template>
+    
       <template 
         v-for="col in safeTableColumns.filter(column => !['actions', 'status'].includes(column.id))" 
         :key="col.id"
