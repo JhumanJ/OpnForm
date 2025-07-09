@@ -53,7 +53,7 @@
       <div class="max-w-4xl mx-auto">
         <VTransition name="fade">
         <!-- Empty State: No forms -->
-        <div v-if="!isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
+        <div v-if="isFetched && !isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-gray-900">
             Create your first form
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Empty State: No results -->
-        <div v-if="!isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
+        <div v-if="isFetched && !isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-gray-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-gray-900">
               No forms found
@@ -182,6 +182,7 @@ const {
   forms,
   isLoading: isFormsLoading,
   isFetchingNextPage: isLoadingMore,
+  isFetched,
   currentPage,
   totalPages,
   isComplete,

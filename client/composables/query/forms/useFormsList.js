@@ -70,5 +70,6 @@ export function useFormsList(workspaceId, options = {}) {
     currentPage,
     totalPages,
     isComplete,
+    isFetched: query.isFetched,
   }
 } 

@@ -53,6 +53,10 @@ export default defineNuxtPlugin((nuxt) => {
   }
 
   if (import.meta.client) {
+    // Hydrate immediately so that route middleware can access cached data
+    hydrate(queryClient, vueQueryState.value)
+
+    // Still keep the hook for safety in case Nuxt re-creates app (e.g., HMR)
     nuxt.hooks.hook('app:created', () => {
       hydrate(queryClient, vueQueryState.value)
     })
