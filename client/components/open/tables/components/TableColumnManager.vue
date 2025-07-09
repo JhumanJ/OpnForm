@@ -11,55 +11,72 @@
       />
 
       <template #content>
-        <div class="w-80 p-4 space-y-4">
+        <div class="w-80 p-2 flex flex-col">
           <!-- Header -->
           <div class="flex items-center justify-between">
             <UInput
               variant="outline"
               placeholder="Search columns..."
               icon="i-heroicons-magnifying-glass"
+              size="sm"
               v-model="searchQuery"
             />
+            <div class="flex items-center gap-1">
             <UButton
+              size="sm"
               variant="ghost"
               color="neutral"
-              icon="i-heroicons-x-mark"
-              @click="isPopoverOpen = false"
+              label="Reset"
+              @click="tableState.resetPreferences()"
             />
+          </div>
           </div>
 
           <!-- Column Sections -->
-          <template v-for="section in columnSections" :key="section.type">
+          <div class="relative mt-1">
+            <!-- Top Fade -->
+            <VTransition name="fade">
+              <div
+                v-if="showTopFade"
+                class="absolute top-0 left-0 right-0 z-10 h-8 bg-gradient-to-b from-white to-transparent pointer-events-none"
+              />
+            </VTransition>
+
+            <div 
+              ref="sectionsContainer"
+              class="max-h-80 overflow-y-auto"
+            >
+            <template v-for="section in columnSections" :key="section.type">
             <div 
               v-if="section.columns.length > 0"
-              class="space-y-2"
+              class="flex flex-col"
             >
               <div class="flex items-center justify-between">
-                <h4 class="text-xs text-gray-500">{{ section.title }}</h4>
+                <h4 class="text-xs text-neutral-500">{{ section.title }}</h4>
                 <UButton
                   size="xs"
                   variant="link"
                   :label="section.actionLabel"
-                  @click="toggleAllColumns(!section.visible)"
+                  @click="toggleAllColumns(section.targetVisibility)"
                 />
               </div>
-              <div class="space-y-1 max-h-32 overflow-y-auto">
+              
                 <draggable
                   :list="section.columns"
                   item-key="id"
-                  class="space-y-1"
                   :ghost-class="['opacity-50', 'bg-blue-50', 'rounded-md']"
                   :chosen-class="['bg-blue-100', 'rounded-md']"
                   :animation="200"
                   group="columns"
-                  @end="handleDragEnd"
+                  :data-section-type="section.type"
+                  @change="handleDragChange"
                 >
                   <template #item="{ element: column }">
                     <div class="group">
-                      <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 transition-colors">
+                      <div class="flex items-center gap-1 p-2 rounded-md hover:bg-neutral-50 transition-colors">
                         <!-- Drag Handle -->
                         <div class="w-4 h-4 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                          <UIcon name="clarity:drag-handle-line" class="h-6 w-6 -ml-1 shrink-0 text-gray-500" />
+                          <UIcon name="clarity:drag-handle-line" class="h-6 w-6 -ml-1 shrink-0 text-neutral-400" />
                         </div>
 
                         <!-- Column Icon -->
@@ -68,7 +85,7 @@
                             v-if="column.type"
                             :type="column.type"
                             bg-class="bg-transparent"
-                            text-class="text-gray-500"
+                            text-class="text-neutral-600"
                             class="flex-shrink-0"
                           />
                         </div>
@@ -82,7 +99,7 @@
 
                         <!-- Removed Indicator -->
                         <UTooltip v-if="column.isRemoved" text="Column was removed from form" :content="{ align: 'end' }">
-                          <UIcon name="i-heroicons-trash" class="w-3 h-3 text-red-500" />
+                          <UIcon name="i-heroicons-trash" class="w-3 h-3 text-neutral-400" />
                         </UTooltip>
 
                         <!-- Column Actions -->
@@ -93,8 +110,8 @@
                               size="xs"
                               variant="ghost"
                               :icon="getPinIcon(column.id)"
-                              :color="getColumnPreference(column.id).pinned ? 'primary' : 'gray'"
-                              @click.prevent="togglePin(column.id)"
+                              :color="getColumnPreference(column.id).pinned ? 'primary' : 'neutral'"
+                              @click.prevent="tableState.toggleColumnPin(column.id)"
                             />
                           </UTooltip>
 
@@ -104,19 +121,19 @@
                               size="xs"
                               variant="ghost"
                               :icon="getColumnPreference(column.id).wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
-                              :color="getColumnPreference(column.id).wrapped ? 'primary' : 'gray'"
-                              @click.prevent="toggleWrap(column.id)"
+                              :color="getColumnPreference(column.id).wrapped ? 'primary' : 'neutral'"
+                              @click.prevent="tableState.toggleColumnWrap(column.id)"
                             />
                           </UTooltip>
 
                           <!-- Visibility Toggle Button -->
-                          <UTooltip :text="section.visible ? 'Hide' : 'Show'">
+                          <UTooltip :text="isColumnVisible(column) ? 'Hide' : 'Show'">
                             <UButton
                               size="xs"
                               variant="ghost"
-                              color="gray"
-                              :icon="section.visible ? 'i-heroicons-eye' : 'i-heroicons-eye-slash'"
-                              @click.prevent="handleVisibilityChange(column, !section.visible)"
+                              color="neutral"
+                              :icon="isColumnVisible(column) ? 'i-heroicons-eye-solid' : 'i-heroicons-eye-slash-solid'"
+                              @click.prevent="props.tableState.toggleColumnVisibility(column.id)"
                             />
                           </UTooltip>
                         </div>
@@ -124,27 +141,19 @@
                     </div>
                   </template>
                 </draggable>
-              </div>
             </div>
           </template>
+            </div>
 
-          <!-- Footer Actions -->
-          <div class="flex items-center justify-between pt-2 border-t border-gray-200">
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="neutral"
-              label="Reset Order"
-              @click="resetColumnOrder"
-            />
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="neutral"
-              label="Reset All"
-              @click="columnPreferences.resetPreferences()"
-            />
+            <!-- Bottom Fade -->
+            <VTransition name="fade">
+              <div
+                v-if="showBottomFade"
+                class="absolute bottom-0 left-0 right-0 z-10 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"
+              />
+            </VTransition>
           </div>
+          <div class="w-full h-1"></div>
         </div>
       </template>
     </UPopover>
@@ -154,17 +163,11 @@
 <script setup>
 import draggable from 'vuedraggable'
 import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
+import VTransition from '@/components/global/transitions/VTransition.vue'
+import { useScroll, useResizeObserver } from '@vueuse/core'
 
 const props = defineProps({
-  column: {
-    type: Array,
-    required: true,
-  },
-  columnVisibility: {
-    type: Object,
-    default: () => ({}),
-  },
-  columnPreferences: {
+  tableState: {
     type: Object,
     required: true,
   },
@@ -177,23 +180,39 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['resize-start', 'column-visibility-change', 'column-order-change'])
+
 
 const isPopoverOpen = ref(false)
 const searchQuery = ref('')
 
-// Create reactive copies of the column sections for dragging
-const visibleColumns = ref([])
-const hiddenColumns = ref([])
+// Scroll fade detection for sections container
+const sectionsContainer = ref(null)
+const { y: scrollY } = useScroll(sectionsContainer)
+const contentHeight = ref(0)
+const containerHeight = ref(0)
+
+const showTopFade = computed(() => scrollY.value > 0)
+const showBottomFade = computed(() => {
+  if (containerHeight.value === 0 || contentHeight.value === 0) return false
+  return scrollY.value < contentHeight.value - containerHeight.value - 1 // -1 for subpixel precision
+})
+
+useResizeObserver(sectionsContainer, (entries) => {
+  const entry = entries[0]
+  containerHeight.value = entry.contentRect.height
+  if (sectionsContainer.value) {
+    contentHeight.value = sectionsContainer.value.scrollHeight
+  }
+})
 
 // Get column preferences helper
 const getColumnPreference = (columnId) => {
-  return props.columnPreferences.getColumnPreference(columnId)
+  return props.tableState.getColumnPreference(columnId)
 }
 
 // Filter columns based on search query and maintain order
 const filteredColumns = computed(() => {
-  const columns = props.column || []
+  const columns = props.tableState.orderedColumns.value || []
   if (!Array.isArray(columns)) return []
   
   const query = searchQuery.value.toLowerCase()
@@ -203,100 +222,56 @@ const filteredColumns = computed(() => {
   )
 })
 
-// Get current visibility state
-const getColumnVisibility = (column) => { 
-  // Check if column is explicitly hidden in visibility state
-  if (props.columnVisibility[column.id] === false) {
-    return false
-  }
-  // Default to visible for regular columns, hidden for removed columns
-  return props.columnVisibility[column.id] || !column.isRemoved
+// Check if a column is currently visible
+const isColumnVisible = (column) => {
+  return props.tableState.columnVisibility.value[column.id] !== false
 }
 
-// Update the reactive column arrays when props change
-const updateColumnArrays = () => {
-  const visible = []
-  const hidden = []
-  
-  filteredColumns.value.forEach(column => {
-    if (getColumnVisibility(column)) {
-      visible.push(column)
-    } else {
-      hidden.push(column)
+// Computed visible columns (reactive to table state)
+const visibleColumns = computed(() => {
+  return filteredColumns.value.filter(column => isColumnVisible(column))
+})
+
+// Computed hidden columns (reactive to table state)
+const hiddenColumns = computed(() => {
+  return filteredColumns.value.filter(column => !isColumnVisible(column))
+})
+
+// Column sections configuration (now fully reactive)
+const columnSections = computed(() => {
+  return [
+    {
+      type: 'visible',
+      title: 'Shown in table',
+      actionLabel: 'Hide All',
+      targetVisibility: false,
+      columns: visibleColumns.value
+    },
+    {
+      type: 'hidden',
+      title: 'Hidden in table',
+      actionLabel: 'Show All',
+      targetVisibility: true,
+      columns: hiddenColumns.value
     }
-  })
-  
-  visibleColumns.value = visible
-  hiddenColumns.value = hidden
-}
-
-// Column sections configuration
-const columnSections = computed(() => [
-  {
-    type: 'visible',
-    title: 'Shown in table',
-    actionLabel: 'Hide All',
-    visible: true,
-    columns: visibleColumns.value
-  },
-  {
-    type: 'hidden',
-    title: 'Hidden in table',
-    actionLabel: 'Show All',
-    visible: false,
-    columns: hiddenColumns.value
-  }
-])
-
-// Watch for changes in filtered columns and update arrays
-watch(filteredColumns, updateColumnArrays, { immediate: true })
-
-// Watch for changes in column visibility and update arrays
-watch(() => props.columnVisibility, updateColumnArrays, { deep: true })
+  ]
+})
 
 // Handle drag end event
-const handleDragEnd = () => {
-  // Rebuild the complete column order
-  const newOrder = []
-  
-  // Add all visible columns first
-  visibleColumns.value.forEach(col => {
-    newOrder.push(col.id)
-  })
-  
-  // Add all hidden columns
-  hiddenColumns.value.forEach(col => {
-    newOrder.push(col.id)
-  })
-  
-  // Add any remaining columns that weren't in either list
-  props.column.forEach(col => {
-    if (!newOrder.includes(col.id)) {
-      newOrder.push(col.id)
-    }
-  })
-  
-  emit('column-order-change', newOrder)
-}
-
-// Toggle pin state
-const togglePin = (columnId) => {
-  const pref = getColumnPreference(columnId)
-  let newPinState = false
-
-  if (!pref.pinned) {
-    newPinState = 'left'
-  } else if (pref.pinned === 'left') {
-    newPinState = 'right'
+const handleDragChange = async (event) => {  
+  if (event.added) {
+    const columnId = event.added.element.id
+    props.tableState.toggleColumnVisibility(columnId)
+    await nextTick() // Wait for Vue to process the visibility change
   }
 
-  props.columnPreferences.setColumnPreference(columnId, { pinned: newPinState })
-}
+  const isNowVisibleAfterAdd = event.added ? props.tableState.columnVisibility.value[event.added.element.id] : undefined
 
-// Toggle wrap state
-const toggleWrap = (columnId) => {
-  const pref = getColumnPreference(columnId)
-  props.columnPreferences.setColumnPreference(columnId, { wrapped: !pref.wrapped })
+  if (event.moved || (event.added && isNowVisibleAfterAdd)) {
+    const eventData = event.moved || event.added
+    const { element, newIndex } = eventData
+    props.tableState.setColumnOrder(element.id, newIndex)
+  }
 }
 
 // Get pin icon
@@ -315,26 +290,16 @@ const getPinTooltip = (columnId) => {
   return 'Not pinned - click to pin left'
 }
 
-// Reset column order to original
-const resetColumnOrder = () => {
-  const columns = props.column || []
-  const originalOrder = columns
-    .filter(col => col.id !== 'actions')
-    .map(col => col.id)
-  emit('column-order-change', originalOrder)
-}
-
-// Handle visibility change
-const handleVisibilityChange = (column, visible) => {
-  emit('column-visibility-change', [{ columnId: column.id, visible }])
-}
-
-// Toggle all columns
-const toggleAllColumns = (visible = true) => {
-  const columns = props.column || []
-  emit('column-visibility-change', columns
+// Toggle all columns visibility
+const toggleAllColumns = (targetVisibility) => {
+  const columns = props.tableState.columnConfigurations.value || []
+  columns
     .filter(column => column.id !== 'actions')
-    .map(column => ({ columnId: column.id, visible: visible })))
+    .forEach(column => {
+      if (isColumnVisible(column) !== targetVisibility) {
+        props.tableState.toggleColumnVisibility(column.id)
+      }
+    })
 }
 </script>
 

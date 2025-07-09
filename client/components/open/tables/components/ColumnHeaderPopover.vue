@@ -1,12 +1,12 @@
 <template>
-  <div class="p-3 space-y-3 min-w-48">
+  <div class="flex flex-col gap-1 w-48">
     <!-- Column Info -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1 border-b p-2">
       <BlockTypeIcon 
         v-if="column.columnDef.type"
         :type="column.columnDef.type"
         bg-class="bg-transparent"
-        text-class="text-gray-500"
+        text-class="text-neutral-500"
         class="flex-shrink-0"
       />
       <span class="text-sm font-medium truncate">
@@ -15,30 +15,30 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="space-y-2">
+    <div class="flex flex-col gap-1 p-2">
       <!-- Pin Actions -->
       <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-500">Pin Column</span>
+        <span class="text-xs text-neutral-500">Pin Column</span>
         <div class="flex items-center gap-1">
           <UButton
             size="xs"
             variant="ghost"
             :icon="getPinIcon('left')"
-            :color="getColumnPreference().pinned === 'left' ? 'primary' : 'gray'"
+            :color="getColumnPreference().pinned === 'left' ? 'primary' : 'neutral'"
             @click="setPin('left')"
           />
           <UButton
             size="xs"
             variant="ghost"
             :icon="getPinIcon('right')"
-            :color="getColumnPreference().pinned === 'right' ? 'primary' : 'gray'"
+            :color="getColumnPreference().pinned === 'right' ? 'primary' : 'neutral'"
             @click="setPin('right')"
           />
           <UButton
             size="xs"
             variant="ghost"
             icon="i-heroicons-x-mark"
-            :color="!getColumnPreference().pinned ? 'primary' : 'gray'"
+            :color="!getColumnPreference().pinned ? 'primary' : 'neutral'"
             @click="setPin(false)"
           />
         </div>
@@ -46,38 +46,27 @@
 
       <!-- Wrap Toggle -->
       <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-500">Text Wrapping</span>
+        <span class="text-xs text-neutral-500">Text Wrapping</span>
         <UButton
           size="xs"
           variant="ghost"
           :icon="getColumnPreference().wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
-          :color="getColumnPreference().wrapped ? 'primary' : 'gray'"
-          @click="toggleWrap"
+          :color="getColumnPreference().wrapped ? 'primary' : 'neutral'"
+          @click="tableState.toggleColumnWrap(column.id)"
         />
       </div>
 
       <!-- Visibility Toggle -->
       <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-500">Visibility</span>
+        <span class="text-xs text-neutral-500">Visibility</span>
         <UButton
           size="xs"
           variant="ghost"
-          :icon="getColumnPreference().visible ? 'i-heroicons-eye' : 'i-heroicons-eye-slash'"
-          :color="getColumnPreference().visible ? 'primary' : 'gray'"
-          @click="toggleVisibility"
+          :icon="getColumnPreference().visible ? 'i-heroicons-eye-solid' : 'i-heroicons-eye-slash-solid'"
+          :color="getColumnPreference().visible ? 'primary' : 'neutral'"
+          @click="tableState.toggleColumnVisibility(column.id)"
         />
       </div>
-    </div>
-
-    <!-- Reset Button -->
-    <div class="pt-2 border-t border-gray-200">
-      <UButton
-        size="xs"
-        variant="ghost"
-        color="neutral"
-        label="Reset Column"
-        @click="resetColumn"
-      />
     </div>
   </div>
 </template>
@@ -90,7 +79,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  columnPreferences: {
+  tableState: {
     type: Object,
     required: true,
   },
@@ -98,34 +87,17 @@ const props = defineProps({
 
 // Get column preferences helper
 const getColumnPreference = () => {
-  return props.columnPreferences.getColumnPreference(props.column.id) || {}
+  return props.tableState.getColumnPreference(props.column.id) || {}
 }
 
 // Pin actions
 const setPin = (position) => {
-  props.columnPreferences.setColumnPreference(props.column.id, { pinned: position })
+  props.tableState.setColumnPreference(props.column.id, { pinned: position })
 }
 
 const getPinIcon = (position) => {
   if (position === 'left') return 'i-heroicons-arrow-left-on-rectangle'
   if (position === 'right') return 'i-heroicons-arrow-right-on-rectangle'
   return 'i-heroicons-rectangle-stack'
-}
-
-// Wrap toggle
-const toggleWrap = () => {
-  const pref = getColumnPreference()
-  props.columnPreferences.setColumnPreference(props.column.id, { wrapped: !pref.wrapped })
-}
-
-// Visibility toggle
-const toggleVisibility = () => {
-  const pref = getColumnPreference()
-  props.columnPreferences.setColumnPreference(props.column.id, { visible: !pref.visible })
-}
-
-// Reset column preferences
-const resetColumn = () => {
-  props.columnPreferences.setColumnPreference(props.column.id, {})
 }
 </script> 

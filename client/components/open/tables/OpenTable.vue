@@ -30,12 +30,7 @@
 
       <TableColumnManager 
         class="ml-auto"
-        :column="safeTableColumns"
-        :column-visibility="tableState.columnVisibility"
-        :column-preferences="columnPreferences"
-        @resize-start="handleResizeStart"
-        @column-visibility-change="handleColumnVisibilityChange"
-        @column-order-change="handleColumnOrderChange"
+        :table-state="tableState"
       />
 
       <UButton
@@ -58,9 +53,9 @@
     <UTable
       ref="table"
       :columns="safeTableColumns"
-      v-model:column-visibility="tableState.columnVisibility"
-      v-model:column-pinning="tableState.columnPinning"
-      v-model:column-sizing="tableState.columnSizing"
+      :column-visibility="tableState.columnVisibility"
+      :column-pinning="tableState.columnPinning"
+      :column-sizing="tableState.columnSizing"
       :data="tableData"
       :loading="loading"
       sticky
@@ -68,34 +63,17 @@
       :style="{ maxHeight, ...columnSizeVars }"
       :ui="{
         thead: 'bg-neutral-50',
-        th: 'p-1',
-        td: 'px-3 py-2'
-      }"
-      :columnSizingOptions="{
-        enableColumnResizing: true,
-        columnResizeMode: 'onChange',
-      }"
-      :default-column="{
-        minSize: 60,
-        maxSize: 800,
+        th: 'p-1 relative',
+        td: 'px-3 py-2 border-r ',
       }"
     >
       <template v-for="col in safeTableColumns.filter(column => !['actions'].includes(column.id))" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
         <TableHeader 
           :column="column"
-          :column-preferences="columnPreferences"
+          :table-state="tableState"
           :is-wrapped="tableState.columnWrapping[col.id]"
-          @resize-start="handleResizeStart"
+          @resize="handleColumnResize"
         />
-      </template>
-      
-      <template #actions-header="{ column }">
-        <div 
-          class="flex items-center justify-between group relative"
-          :style="{ width: `var(--header-${column.id}-size, auto)` }"
-        >
-          <span class="truncate">{{ column.columnDef.header }}</span>
-        </div>
       </template>
     
       <template 
@@ -105,7 +83,9 @@
       >
         <div 
           :class="getCellClasses(col.id)"
-          :style="getCellStyles(col.id)"
+          :style="{ 
+            width: `var(--col-${col.id}-size, auto)`, 
+          }"
         >
           <component
             :is="fieldComponents[col.type]"
@@ -149,11 +129,12 @@
 }
 </style>
 
+
+
 <script setup>
 import { formsApi } from '~/api'
 import { useEventListener } from '@vueuse/core'
-import { useTableColumnPreferences } from '~/composables/useTableColumnPreferences'
-import { useTableState } from '~/composables/useTableState'
+import { useTableState } from '~/composables/components/tables/useTableState'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
@@ -183,18 +164,13 @@ const props = defineProps({
 
 defineEmits(["updated", "deleted"])
 
-// Initialize column preferences system
-const columnPreferences = useTableColumnPreferences(
-  computed(() => props.form?.id || props.form?.slug)
-)
-
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
 
+// Initialize table state (includes preferences internally)
 const tableState = useTableState(
   computed(() => props.form),
-  columnPreferences,
-  workspace
+  workspace && !workspace.is_readonly
 )
 
 
@@ -247,10 +223,6 @@ const handleStatusFilter = (selected) => {
   }
 }
 
-
-
-
-
 const hasStatus = computed(() => {
   return props.form?.is_pro && (props.form.enable_partial_submissions ?? false)
 })
@@ -267,8 +239,6 @@ const safeTableColumns = computed(() => {
   return columns
 })
 
-
-
 // Cell styling based on wrapping preferences
 const getCellClasses = (columnId) => {
   const isWrapped = tableState.columnWrapping.value?.[columnId] || false
@@ -279,34 +249,24 @@ const getCellClasses = (columnId) => {
   }
 }
 
-const getCellStyles = (columnId) => {
-  const isWrapped = tableState.columnWrapping.value?.[columnId] || false
-  return {
-    width: `var(--col-${columnId}-size, auto)`,
-    maxWidth: isWrapped ? 'none' : '300px'
-  }
-}
-
 // Column size CSS variables - similar to TanStack Table React example
 const columnSizeVars = computed(() => {
-  // Add dependency on columnSizing to trigger reactivity
-  tableState.columnSizing.value
-  
-  if (!table.value?.tableApi) return {}
-  
-  const headers = table.value.tableApi.getFlatHeaders()
+  // Ensure reactivity to columnSizing changes
+  const sizing = tableState.columnSizing.value
+
+  if (!sizing) return {}
+
   const colSizes = {}
-  
-  for (let i = 0; i < headers.length; i++) {
-    const header = headers[i]
-    if (header && header.column) {
-      colSizes[`--header-${header.id}-size`] = `${header.getSize()}px`
-      colSizes[`--col-${header.column.id}-size`] = `${header.column.getSize()}px`
-    }
+
+  for (const [colId, size] of Object.entries(sizing)) {
+    colSizes[`--header-${colId}-size`] = `${size}px`
+    colSizes[`--col-${colId}-size`] = `${size}px`
   }
-  
+
   return colSizes
 })
+
+
 
 const computeMaxHeight = () => {
   if (!root.value || !topBar.value) return
@@ -337,30 +297,9 @@ defineShortcuts({
   }
 })
 
-const handleResizeStart = (column, event) => {
-  // Find the header with resize handler
-  if (table.value?.tableApi) {
-    const header = table.value.tableApi.getFlatHeaders().find(h => h.column.id === column.id)
-    if (header && typeof header.getResizeHandler === 'function') {
-      const resizeHandler = header.getResizeHandler()
-      resizeHandler(event)
-    }
-  }
+const handleColumnResize = (columnId, newSize) => {
+  tableState.handleColumnResize(columnId, newSize)
 }
-
-const handleColumnVisibilityChange = (changes) => {
-  // Update all visibility states - the v-model:column-visibility will handle the table updates
-  changes.forEach(({ columnId, visible }) => {
-    columnPreferences.setColumnPreference(columnId, { visible })
-  })
-}
-
-const handleColumnOrderChange = (newOrder) => {
-  // Update column order in preferences
-  columnPreferences.setColumnOrder(newOrder)
-}
-
-
 
 onMounted(() => {
   computeMaxHeight()
