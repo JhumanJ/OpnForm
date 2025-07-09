@@ -1,4 +1,4 @@
-import { computed, ref, watch, watchEffect } from 'vue'
+import { computed, ref, watch, watchEffect, nextTick } from 'vue'
 
 export function useTableState(form, columnPreferences, workspace = null) {
   // Ensure we're on the client side for preferences
@@ -67,9 +67,11 @@ export function useTableState(form, columnPreferences, workspace = null) {
 
   // Reactive column visibility - use ref to avoid circular updates
   const columnVisibility = ref({})
+  const isUpdatingFromPreferences = ref(false)
   
   // Initialize and sync visibility from preferences
   const updateVisibilityFromPreferences = () => {
+    isUpdatingFromPreferences.value = true
     const visibility = {}
     const configCols = columnConfigurations.value || []
     configCols.forEach(col => {
@@ -78,6 +80,7 @@ export function useTableState(form, columnPreferences, workspace = null) {
       visibility[col.id] = col.isRemoved ? false : pref.visible
     })
     columnVisibility.value = visibility
+    isUpdatingFromPreferences.value = false
   }
   
   // Watch for preference changes and update ref
@@ -86,17 +89,30 @@ export function useTableState(form, columnPreferences, workspace = null) {
   })
   
   // Watch for table changes and update preferences
-  watch(columnVisibility, (newVisibility) => {
-    Object.entries(newVisibility).forEach(([columnId, visible]) => {
-      setColumnPreference(columnId, { visible })
+  watch(columnVisibility, (newVisibility, oldVisibility) => {
+    if (isUpdatingFromPreferences.value) return
+    
+    // Only update if the values actually changed
+    const changedEntries = Object.entries(newVisibility).filter(([columnId, visible]) => {
+      return oldVisibility?.[columnId] !== visible
     })
+    
+    if (changedEntries.length > 0) {
+      nextTick(() => {
+        changedEntries.forEach(([columnId, visible]) => {
+          setColumnPreference(columnId, { visible })
+        })
+      })
+    }
   }, { deep: true })
 
   // Reactive column pinning - use ref to avoid circular updates
   const columnPinning = ref({ left: [], right: ['actions'] })
+  const isUpdatingPinningFromPreferences = ref(false)
   
   // Initialize and sync pinning from preferences
   const updatePinningFromPreferences = () => {
+    isUpdatingPinningFromPreferences.value = true
     const pinning = { left: [], right: ['actions'] }
     const configCols = columnConfigurations.value || []
     configCols.forEach(col => {
@@ -108,6 +124,7 @@ export function useTableState(form, columnPreferences, workspace = null) {
       }
     })
     columnPinning.value = pinning
+    isUpdatingPinningFromPreferences.value = false
   }
   
   // Watch for preference changes and update ref
@@ -116,24 +133,34 @@ export function useTableState(form, columnPreferences, workspace = null) {
   })
   
   // Watch for table changes and update preferences
-  watch(columnPinning, (newPinning) => {
-    // Update all columns first
-    const configCols = columnConfigurations.value || []
-    configCols.forEach(col => {
-      if (col.id !== 'actions') {
-        setColumnPreference(col.id, { pinned: false })
-      }
-    })
+  watch(columnPinning, (newPinning, oldPinning) => {
+    if (isUpdatingPinningFromPreferences.value) return
+    
+    // Only update if the pinning actually changed
+    const leftChanged = JSON.stringify(newPinning.left) !== JSON.stringify(oldPinning?.left)
+    const rightChanged = JSON.stringify(newPinning.right) !== JSON.stringify(oldPinning?.right)
+    
+    if (leftChanged || rightChanged) {
+      nextTick(() => {
+        // Update all columns first
+        const configCols = columnConfigurations.value || []
+        configCols.forEach(col => {
+          if (col.id !== 'actions') {
+            setColumnPreference(col.id, { pinned: false })
+          }
+        })
 
-    // Set new pinning
-    newPinning.left?.forEach(columnId => {
-      setColumnPreference(columnId, { pinned: 'left' })
-    })
-    newPinning.right?.forEach(columnId => {
-      if (columnId !== 'actions') {
-        setColumnPreference(columnId, { pinned: 'right' })
-      }
-    })
+        // Set new pinning
+        newPinning.left?.forEach(columnId => {
+          setColumnPreference(columnId, { pinned: 'left' })
+        })
+        newPinning.right?.forEach(columnId => {
+          if (columnId !== 'actions') {
+            setColumnPreference(columnId, { pinned: 'right' })
+          }
+        })
+      })
+    }
   }, { deep: true })
 
   // Column wrapping state
@@ -149,10 +176,13 @@ export function useTableState(form, columnPreferences, workspace = null) {
 
   // Column sizing state - use ref to avoid circular updates
   const columnSizing = ref({})
+  const isUpdatingSizingFromPreferences = ref(false)
   
   // Initialize and sync sizing from preferences
   const updateSizingFromPreferences = () => {
+    isUpdatingSizingFromPreferences.value = true
     columnSizing.value = columnPreferences.preferences.value.columnSizing || {}
+    isUpdatingSizingFromPreferences.value = false
   }
   
   // Watch for preference changes and update ref
@@ -161,8 +191,17 @@ export function useTableState(form, columnPreferences, workspace = null) {
   })
   
   // Watch for table changes and update preferences
-  watch(columnSizing, (newSizing) => {
-    columnPreferences.setColumnSizing(newSizing)
+  watch(columnSizing, (newSizing, oldSizing) => {
+    if (isUpdatingSizingFromPreferences.value) return
+    
+    // Only update if the sizing actually changed
+    const sizingChanged = JSON.stringify(newSizing) !== JSON.stringify(oldSizing)
+    
+    if (sizingChanged) {
+      nextTick(() => {
+        columnPreferences.setColumnSizing(newSizing)
+      })
+    }
   }, { deep: true })
 
   // Ordered columns for display

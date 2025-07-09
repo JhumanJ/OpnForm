@@ -94,7 +94,7 @@
                               variant="ghost"
                               :icon="getPinIcon(column.id)"
                               :color="getColumnPreference(column.id).pinned ? 'primary' : 'gray'"
-                              @click="togglePin(column.id)"
+                              @click.prevent="togglePin(column.id)"
                             />
                           </UTooltip>
 
@@ -105,7 +105,7 @@
                               variant="ghost"
                               :icon="getColumnPreference(column.id).wrapped ? 'i-heroicons-arrows-pointing-out' : 'i-heroicons-arrows-pointing-in'"
                               :color="getColumnPreference(column.id).wrapped ? 'primary' : 'gray'"
-                              @click="toggleWrap(column.id)"
+                              @click.prevent="toggleWrap(column.id)"
                             />
                           </UTooltip>
 
@@ -116,7 +116,7 @@
                               variant="ghost"
                               color="gray"
                               :icon="section.visible ? 'i-heroicons-eye' : 'i-heroicons-eye-slash'"
-                              @click="handleVisibilityChange(column, !section.visible)"
+                              @click.prevent="handleVisibilityChange(column, !section.visible)"
                             />
                           </UTooltip>
                         </div>
