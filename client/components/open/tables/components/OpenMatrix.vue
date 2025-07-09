@@ -1,17 +1,19 @@
 <template>
   <span
     v-if="value"
-    class="-mb-2"
+    class="flex flex-wrap gap-1"
   >
     <template v-if="matrixData">
-      <div
+      <UBadge
         v-for="(data) in matrixData"
         :key="data.label+data.value"
-        class="mr-2 mb-1 text-gray-700 bg-gray-100 dark:text-gray-300 rounded-md flex px-2 text-sm w-max"
+        size="sm"
+        color="neutral"
+        variant="soft"
       >
-        <span class="py-0.5 pr-1 border-r border-gray-300">{{ data.label }}</span>
-        <span class="py-0.5 pl-1">{{ data.value }}</span>
-      </div>
+        <span class="border-r pr-1 border-neutral-300">{{ data.label }}</span>
+        <span>{{ data.value }}</span>
+      </UBadge>
 
     </template>
     <open-tag

@@ -39,7 +39,7 @@
       <VForm v-else size="sm">
         <form
           @submit.prevent="createToken"
-          @keydown="form.onKeydown($event)"
+          @keydown="tokenForm.onKeydown($event)"
         >
           <div v-if="!token">
             <TextInput
@@ -53,7 +53,7 @@
               :form="tokenForm"
               name="abilities"
               label="Abilities"
-              :options="abilities"
+              :options="abilitiesOptions"
               multiple
             />
           </div>
@@ -74,7 +74,7 @@
         type="submit"
         block
         size="lg"
-        :loading="tokenForm.busy"
+        :loading="createTokenMutation.isPending.value"
         @click="createToken"
       >
         Create Token
@@ -95,15 +95,25 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const accessTokenStore = useAccessTokenStore()
-const abilities = computed(() => accessTokenStore.abilities.map(ability => ({
+const { abilities, create } = useTokens()
+const alert = useAlert()
+
+const abilitiesOptions = computed(() => abilities.map(ability => ({
   name: ability.title,
   value: ability.name
 })))
+
 const token = ref('')
 const tokenForm = useForm({
   name: "",
-  abilities: abilities.value.map(ability => ability.value),
+  abilities: abilitiesOptions.value.map(ability => ability.value),
+})
+
+// Create token mutation
+const createTokenMutation = create({
+  onError: () => {
+    alert.error("An error occurred while creating the token")
+  }
 })
 
 // Modal state
@@ -120,11 +130,6 @@ const closeModal = () => {
 }
 
 function createToken() {
-  tokenForm.post("/settings/tokens").then((data) => {
-    token.value = data.token
-    accessTokenStore.fetchTokens()
-
-    useAlert().success(data.message)
-  })
+  createTokenMutation.mutate(tokenForm.data())
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col flex-grow">
     <form-editor
-      v-if="(!formsLoading || form ) && !error "
+      v-if="form && !error"
       ref="editor"
       :is-edit="true"
       @on-save="formInitialHash = null"
@@ -22,22 +22,23 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import { hash } from "~/lib/utils.js"
 
-const formsStore = useFormsStore()
+// Composables
+const route = useRoute()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
+const { detail: formDetail } = useForms()
 
-if (!formsStore.allLoaded) {
-  formsStore.startLoading()
-}
+const slug = route.params.slug
+
+// Get form by slug using TanStack Query
+const { data: form, isLoading: formsLoading, error } = formDetail(slug,{
+  enabled: import.meta.client,
+})
+
 const updatedForm = storeToRefs(workingFormStore).content
-const form = computed(() => formsStore.getByKey(useRoute().params.slug))
-const formsLoading = computed(() => formsStore.loading)
-
-const error = ref(null)
 const formInitialHash = ref(null)
 
 function isDirty() {
@@ -54,7 +55,7 @@ function isDirty() {
 }
 
 function initUpdatedForm() {
-  if (!form.value || !form.value) {
+  if (!form.value) {
     return
   }
 
@@ -65,13 +66,18 @@ function initUpdatedForm() {
   formInitialHash.value = hash(JSON.stringify(updatedForm.value.data()))
 }
 
-// Create a form.id watcher that updates working form
-watch(form, (form) => {
-  if (form?.value) {
-    initUpdatedForm()
-    
-  }
-})
+// Update working form store when form changes
+watch(
+  () => form.value,
+  (newForm) => {
+    workingFormStore.reset()
+    if (newForm) {
+      workingFormStore.set(newForm)
+      initUpdatedForm()
+    }
+  },
+  { immediate: true }
+)
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty()) {
@@ -93,18 +99,10 @@ onBeforeMount(() => {
       }
     }
   }
-
-  if (!form.value && !formsStore.allLoaded) {
-    formsStore.loadAll(workspacesStore.currentId).then(() => {
-      initUpdatedForm()
-    })
-  } else {
-    initUpdatedForm()
-  }
 })
 
 useOpnSeoMeta({
-  title: "Edit " + (form.value && form.value ? form.value.title : "Your Form"),
+  title: "Edit " + (form.value ? form.value.title : "Your Form"),
 })
 definePageMeta({
   middleware: "auth",

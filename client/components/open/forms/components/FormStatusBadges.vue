@@ -8,7 +8,7 @@
       <UBadge
         color="warning"
         variant="subtle"
-        icon="i-heroicons-exclamation-triangle"
+        icon="i-heroicons-pencil-square"
         :size="size"
       >
         Draft
@@ -28,34 +28,62 @@
     </UTooltip>
     
     <!-- Time Limited Badge -->
-    <UTooltip v-if="form.closes_at && !form.is_closed" :text="`Will close on ${closesDate}`">
-      <UBadge
-        color="warning"
-        variant="subtle"
-        icon="i-heroicons-clock"
-        :size="size"
-      >
-        Time limited
-      </UBadge>
-    </UTooltip>
+     <template v-else-if="form.closes_at">
+      <UTooltip v-if="!form.is_closed" :text="`Will close on ${closesDate}`">
+        <UBadge
+          color="warning"
+          variant="subtle"
+          icon="i-heroicons-clock"
+          :size="size"
+        >
+          Time limited
+        </UBadge>
+      </UTooltip>
+      <UTooltip v-else :text="`Closed on ${closesDate}`">
+        <UBadge
+          color="neutral"
+          variant="subtle"
+          icon="i-heroicons-clock"
+          :size="size"
+        >
+          Closed
+        </UBadge>
+      </UTooltip>
+  </template>
     
     <!-- Submission Limited Badge -->
-    <UTooltip 
-      v-if="form.max_submissions_count > 0 && !form.max_number_of_submissions_reached" 
-      :text="`Limited to ${form.max_submissions_count} submissions`"
-    >
-      <UBadge
-        color="warning"
-        variant="subtle"
-        icon="i-heroicons-chart-bar"
-        :size="size"
+    <template v-else-if="form.max_submissions_count > 0">
+      <UTooltip 
+        v-if="!form.max_number_of_submissions_reached"
+        :text="`Limited to ${form.max_submissions_count} submissions`"
       >
-        Submission limited
-      </UBadge>
-    </UTooltip>
+        <UBadge
+          color="warning"
+          variant="subtle"
+          icon="i-heroicons-chart-bar"
+          :size="size"
+        >
+          Submission limited
+        </UBadge>
+      </UTooltip>
+      <UTooltip 
+        v-else
+        :text="`Maximum ${form.max_submissions_count} submissions reached`"
+      >
+        <UBadge
+          color="neutral"
+          variant="subtle"
+          icon="i-heroicons-chart-bar"
+          :size="size"
+        >
+          Submissions full
+        </UBadge>
+      </UTooltip>
+    </template>
     
     <!-- Tags Badges -->
     <UBadge
+      v-if="withTags"
       v-for="tag in form.tags"
       :key="tag"
       color="neutral"
@@ -80,6 +108,10 @@ const props = defineProps({
     type: String,
     default: 'md',
     validator: (value) => ['xs', 'sm', 'md', 'lg'].includes(value)
+  },
+  withTags: {
+    type: Boolean,
+    default: true
   }
 })
 

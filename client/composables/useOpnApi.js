@@ -52,7 +52,10 @@ export function getOpnRequestsOptions(request, opts) {
   addPasswordToFormRequest(request, opts)
   addCustomDomainHeader(request, opts)
 
-  if (!opts.baseURL) opts.baseURL = config.privateApiBase || config.public.apiBase
+  if (!opts.baseURL) {
+    // Use privateApiBase only on server side, fallback to public.apiBase on client
+    opts.baseURL = (import.meta.server && config.privateApiBase) || config.public.apiBase
+  }
 
   return {
     async onResponseError({ response }) {
@@ -60,11 +63,18 @@ export function getOpnRequestsOptions(request, opts) {
 
       const { status } = response
       if (status === 401) {
-        if (authStore.check) {
+        // Check authentication using only the auth store (no Vue Query context needed)
+        if (authStore.token) {
           console.log("Logging out due to 401")
-          authStore.logout()
+          // Clear tokens directly to avoid context issues
+          authStore.clearTokens()
           useAppStore().isUnauthorizedError = true
           useAppStore().quickLoginModal = true
+          
+          // Navigate to login
+          if (import.meta.client) {
+            await navigateTo({ name: 'login' })
+          }
         }
       } else if (status === 420) {
         // If invalid domain, redirect to main domain

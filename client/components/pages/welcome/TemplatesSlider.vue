@@ -53,28 +53,16 @@
 </template>
 
 <script>
-import { computed } from "vue"
 import SingleTemplate from "../templates/SingleTemplate.vue"
-import { templatesApi } from "~/api"
 
 export default {
   components: { SingleTemplate },
   setup() {
-    const templatesStore = useTemplatesStore()
-    templatesStore.initTypesAndIndustries()
-
-    onMounted(() => {
-      if (templatesStore.getAll.length < 10) {
-        templatesApi.list({ query: { limit: 10 } }).then((data) => {
-          templatesStore.set(data)
-        })
-      }
-    })
+    const { list } = useTemplates()
+    const { data: templates } = list({ limit: 10 })
 
     return {
-      templatesStore,
-      allLoaded: computed(() => templatesStore.allLoaded),
-      sliderTemplates: computed(() => templatesStore.getAll.slice(0, 10)),
+      sliderTemplates: computed(() => templates.value ?? []),
     }
   },
 

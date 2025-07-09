@@ -1,39 +1,47 @@
 <template>
   <div class="p-4">
-    <div class="w-full max-w-4xl mx-auto ">
-      <h1 class="font-semibold text-xl">
-        Integrations
-      </h1>
+    <div class="w-full max-w-4xl mx-auto">
+      <VTransition name="fade">
+        <div
+          v-if="isIntegrationsLoading || !isSuccess"
+          class="my-6 space-y-2"
+        >
+          <IntegrationCardSkeleton />
+          <IntegrationCardSkeleton />
+          <IntegrationCardSkeleton />
+        </div>
+        <div
+          v-else-if="formIntegrationsList.length"
+          class="my-6 space-y-2"
+        >
+          <IntegrationCard
+            v-for="row in formIntegrationsList"
+            :key="row.id"
+            :integration="row"
+            :form="form"
+          />
+        </div>
+        <div
+          v-else
+          class="text-center py-12 px-6 bg-neutral-50 dark:bg-neutral-900/50 rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-700 mt-6"
+        >
+          <UIcon
+            name="i-heroicons-puzzle-piece-20-solid"
+            class="mx-auto h-12 w-12 text-neutral-400"
+          />
+          <h3 class="mt-2 text-lg font-semibold text-neutral-900 dark:text-white">
+            No integrations yet
+          </h3>
+          <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+            Get started by connecting your form to a third-party app below.
+          </p>
+        </div>
+      </VTransition>
 
-      <div class="text-sm text-gray-500">
-        Read, update and create data with dozens of 3rd-party integrations
-      </div>
-
-      <div
-        v-if="integrationsLoading"
-        class="my-6"
+      <h1
+        id="add-integration-title"
+        class="font-semibold mt-8 text-xl"
       >
-        <Loader class="h-6 w-6 mx-auto" />
-      </div>
-      <div
-        v-else-if="formIntegrationsList.length"
-        class="my-6"
-      >
-        <IntegrationCard
-          v-for="row in formIntegrationsList"
-          :key="row.id"
-          :integration="row"
-          :form="form"
-        />
-      </div>
-      <div
-        v-else
-        class="text-gray-500 border shadow-sm rounded-sm p-5 mt-4"
-      >
-        No integration yet form this form.
-      </div>
-
-      <h1 class="font-semibold mt-8 text-xl">
         Add a new integration
       </h1>
       <div
@@ -44,7 +52,7 @@
         <h3 class="text-gray-500">
           {{ sectionName }}
         </h3>
-        <div class="flex flex-wrap mt-2 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-2">
           <IntegrationListOption
             v-for="(sectionItem, sectionItemKey) in section"
             :key="sectionItemKey"
@@ -68,6 +76,9 @@
 <script setup>
 import { computed } from "vue"
 import IntegrationModal from "~/components/open/integrations/components/IntegrationModal.vue"
+import IntegrationCard from "~/components/open/integrations/components/IntegrationCard"
+import IntegrationCardSkeleton from '~/components/open/integrations/components/IntegrationCardSkeleton.vue'
+import IntegrationListOption from '~/components/open/integrations/components/IntegrationListOption.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -76,36 +87,39 @@ const props = defineProps({
 definePageMeta({
   middleware: "auth",
 })
+
 useOpnSeoMeta({
-  title: props.form
-    ? "Form Integrations - " + props.form.title
-    : "Form Integrations",
+  title: computed(() => props.form 
+    ? `Form Integrations - ${props.form.title}`
+    : "Form Integrations"
+  ),
 })
 
 const alert = useAlert()
 
-const oAuthProvidersStore = useOAuthProvidersStore()
+const { list, availableIntegrations, integrationsBySection } = useFormIntegrations()
 
-const formIntegrationsStore = useFormIntegrationsStore()
-const integrationsLoading = computed(() => formIntegrationsStore.loading)
-const integrations = computed(
-  () => formIntegrationsStore.availableIntegrations,
-)
-const sectionsList = computed(
-  () => formIntegrationsStore.integrationsBySection,
-)
-const formIntegrationsList = computed(() =>
-  formIntegrationsStore.getAllByFormId(props.form.id),
-)
+// Reactive form ID for proper dependency tracking
+const formId = computed(() => props.form?.id)
+
+const { 
+  data: formIntegrationsData, 
+  isLoading: isIntegrationsLoading,
+  isSuccess
+} = list(formId, {
+  enabled: import.meta.client,
+})
+
+// Get available integrations and sections from the composable
+const integrations = availableIntegrations
+const sectionsList = integrationsBySection
+
+// Get form integrations list from the query data
+const formIntegrationsList = computed(() => formIntegrationsData.value || [])
 
 const showIntegrationModal = ref(false)
 const selectedIntegrationKey = ref(null)
 const selectedIntegration = ref(null)
-
-onMounted(() => {
-  formIntegrationsStore.fetchFormIntegrations(props.form.id)
-  oAuthProvidersStore.fetchOAuthProviders(props.form.workspace_id)
-})
 
 const openIntegration = (itemKey) => {
   if (!itemKey || !integrations.value.has(itemKey)) {
@@ -118,17 +132,16 @@ const openIntegration = (itemKey) => {
     return alert.warning("This integration is not available yet")
   }
 
-  if(integration.is_external && integration.url) {
+  if (integration.is_external && integration.url) {
     window.open(integration.url, '_blank')
     return
   }
 
   selectedIntegrationKey.value = itemKey
-  selectedIntegration.value = integrations.value.get(
-    selectedIntegrationKey.value,
-  )
+  selectedIntegration.value = integrations.value.get(selectedIntegrationKey.value)
   showIntegrationModal.value = true
 }
+
 const closeIntegrationModal = () => {
   showIntegrationModal.value = false
   nextTick(() => {

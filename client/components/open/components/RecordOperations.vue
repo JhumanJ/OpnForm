@@ -1,25 +1,30 @@
 <template>
-  <UButtonGroup
-    size="xs"
-    orientation="horizontal"
-  >
-    <UButton
-      v-track.edit_record_click
-      size="sm"
-      color="neutral"
-      variant="outline"
-      icon="heroicons:pencil-square"
-      @click="showEditSubmissionModal = true"
-    />
-    <UButton
-      v-track.delete_record_click
-      size="sm"
-      color="error"
-      variant="outline"
-      icon="heroicons:trash"
-      @click="onDeleteClick"
-    />
-  </UButtonGroup>
+  <div class="flex gap-1">
+    <TrackClick
+      name="edit_record_click"
+      :properties="{}"
+    >
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="outline"
+        icon="heroicons:pencil-square"
+        @click="showEditSubmissionModal = true"
+      />
+    </TrackClick>
+    <TrackClick
+      name="delete_record_click"
+      :properties="{}"
+    >
+      <UButton
+        size="xs"
+        color="error"
+        variant="outline"
+        icon="heroicons:trash"
+        @click="onDeleteClick"
+      />
+    </TrackClick>
+  </div>
   
   <EditSubmissionModal
     :show="showEditSubmissionModal"
@@ -32,6 +37,7 @@
 
 <script setup>
 import EditSubmissionModal from "./EditSubmissionModal.vue"
+import TrackClick from "~/components/global/TrackClick.vue"
 import { formsApi } from "~/api/forms"
 
 const props = defineProps({

@@ -100,8 +100,7 @@ import BlockTypeIcon from '../BlockTypeIcon.vue'
 import AiFieldGenerator from './components/AiFieldGenerator.vue'
 
 const workingFormStore = useWorkingFormStore()
-const authStore = useAuthStore()
-const authenticated = computed(() => authStore.check)
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 
 const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
 const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))

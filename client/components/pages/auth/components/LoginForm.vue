@@ -96,94 +96,84 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
-export default {
-  name: "LoginForm",
-  components: {
-    ForgotPasswordModal,
+// Props
+const props = defineProps({
+  isQuick: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
-  props: {
-    isQuick: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
+})
 
-  emits: ['openRegister'],
-  setup() {
-    return {
-      appStore: useAppStore(),
-      authStore: useAuthStore(),
-      formsStore: useFormsStore(),
-      workspaceStore: useWorkspacesStore(),
-      providersStore: useOAuthProvidersStore()
+// Emits
+defineEmits(['openRegister'])
+
+// Composables
+const oAuth = useOAuth()
+const authFlow = useAuthFlow()
+const router = useRouter()
+
+// Reactive data
+const form = useForm({
+  email: "",
+  password: "",
+})
+
+const loading = ref(false)
+const remember = ref(false)
+const showForgotModal = ref(false)
+
+// Lifecycle
+onMounted(() => {
+  // Use the window message composable
+  const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+  
+  // Listen for login complete messages
+  windowMessage.listen(() => {
+    redirect()
+  })
+})
+
+// Methods
+const login = async () => {
+  loading.value = true
+  
+  try {
+    await authFlow.loginWithCredentials(form, remember.value)
+    redirect()
+  } catch (error) {
+    console.log(error)
+    if (error.response?._data?.message == "You must change your credentials when in self host mode") {
+      redirect()
     }
-  },
+  } finally {
+    loading.value = false
+  }
+}
 
-  data: () => ({
-    form: useForm({
-      email: "",
-      password: "",
-    }),
-    loading: false,
-    remember: false,
-    showForgotModal: false,
-  }),
+const redirect = () => {
+  if (props.isQuick) {
+    // Use window message instead of event
+    const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+    afterLoginMessage.send(window)
+    return
+  }
 
-  computed: {},
+  const intendedUrlCookie = useCookie("intended_url")
 
-  mounted() {
-    // Use the window message composable
-    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
-    
-    // Listen for login complete messages
-    windowMessage.listen(() => {
-      this.redirect()
-    })
-  },
+  if (intendedUrlCookie.value) {
+    router.push({ path: intendedUrlCookie.value })
+    useCookie("intended_url").value = null
+  } else {
+    router.push({ name: "home" })
+  }
+}
 
-  methods: {
-    async login() {
-      this.loading = true
-      const auth = useAuth()
-      
-      try {
-        await auth.loginWithCredentials(this.form, this.remember)
-        this.redirect()
-      } catch (error) {
-        if (error.response?._data?.message == "You must change your credentials when in self host mode") {
-          this.redirect()
-        }
-      } finally {
-        this.loading = false
-      }
-    },
-
-    redirect() {
-      if (this.isQuick) {
-        // Use window message instead of event
-        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
-        afterLoginMessage.send(window)
-        return
-      }
-
-      const intendedUrlCookie = useCookie("intended_url")
-      const router = useRouter()
-
-      if (intendedUrlCookie.value) {
-        router.push({ path: intendedUrlCookie.value })
-        useCookie("intended_url").value = null
-      } else {
-        router.push({ name: "home" })
-      }
-    },
-    signInwithGoogle() {
-      this.providersStore.guestConnect('google', true)
-    }
-  },
+const signInwithGoogle = () => {
+  oAuth.guestConnect('google', true)
 }
 </script>

@@ -7,6 +7,7 @@
       <UBadge
         :label="mentionAsText(integration.provider.email)"
         color="neutral"
+        variant="subtle"
         size="xs"
         class="max-w-[300px] truncate"
       />
@@ -16,22 +17,18 @@
       v-if="integration.data"
       class="ml-auto"
     >
-      <v-button
-        :href="integration.data.url"
+      <UButton
+        :to="integration.data.url"
         target="_blank"
         color="white"
+        size="sm"
+        variant="outline"
         class="block"
+        icon="mdi:google-spreadsheet"
+        trailing-icon="heroicons:arrow-top-right-on-square-20-solid"
       >
-        <Icon
-          name="mdi:google-spreadsheet"
-          size="20px"
-        />
         Open
-        <Icon
-          class="ml-1"
-          name="heroicons:arrow-top-right-on-square-20-solid"
-        />
-      </v-button>
+      </UButton>
     </div>
   </div>
 </template>
@@ -50,12 +47,12 @@ const props = defineProps({
   }
 })
 
-const formIntegrationsStore = useFormIntegrationsStore()
+const { invalidateIntegrations } = useFormIntegrations()
 let interval = null
 
 onMounted(() => {
   if (!props.integration.data || props.integration.data.length === 0) {
-    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id, false), 3000)
+    interval = setInterval(() => invalidateIntegrations(props.form.id), 3000)
     setTimeout(() => { clearInterval(interval) }, 30000)
   }
 })

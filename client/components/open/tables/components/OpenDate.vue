@@ -1,9 +1,9 @@
 <template>
-  <span v-if="valueIsObject">
+  <span class="text-sm text-neutral-900" v-if="valueIsObject">
     <template v-if="value[0]">{{ formattedDate(value[0]) }}</template>
     <template v-if="value[1]"><b class="mx-2">to</b>{{ formattedDate(value[1]) }}</template>
   </span>
-  <span v-else>
+  <span class="text-sm text-neutral-900" v-else>
     {{ formattedDate(value) }}
   </span>
 </template>

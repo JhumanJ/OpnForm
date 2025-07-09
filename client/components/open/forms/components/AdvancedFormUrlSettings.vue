@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Collapse from "~/components/global/Collapse.vue"
+import Collapse from "~/components/app/Collapse.vue"
 export default {
   name: "AdvancedFormUrlSettings",
   components: { Collapse },

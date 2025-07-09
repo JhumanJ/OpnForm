@@ -147,7 +147,6 @@ const typeCanBeChanged = computed(() => {
 const useFieldTypeChange = () => {
 
   const onChangeType = (newType) => {
-    console.log('onChangeType', newType)
     if (["select", "multi_select"].includes(field.value.type)) {
       field.value[newType] = field.value[field.value.type] // Set new options with new type
       delete field.value[field.value.type] // remove old type options

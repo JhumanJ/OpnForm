@@ -1,15 +1,15 @@
 <template>
   <div class="flex flex-col sm:flex-row h-screen bg-white">
     <!-- Form Sidebar - Always shown -->
-    <FormSidebar :form="form" :loading="loading" />
+    <FormSidebar :form="form" :loading="isLoading" />
     
     <!-- Main content area -->
     <main class="flex-1 sm:pl-58 overflow-hidden">
       <div class="flex flex-col h-full">
         <!-- Loading State -->
-        <div v-if="loading" class="flex-1 bg-white">
+        <div v-if="isLoading" class="flex-1 bg-white">
           <!-- Top Bar Skeleton -->
-          <div class="bg-white border-b border-neutral-200 p-4">
+          <div class="bg-white p-4">
             <div class="max-w-4xl mx-auto">
               <!-- Form Title and Actions Skeleton -->
               <div class="flex flex-wrap items-start justify-between gap-4">
@@ -55,7 +55,7 @@
         <!-- Loaded Content -->
         <template v-else-if="form">
           <!-- Top Bar (Non-Sticky) -->
-          <div class="bg-white border-b border-neutral-200 p-4">
+          <div class="bg-white p-4 pb-0">
             <div class="max-w-4xl mx-auto">
               <!-- Form Title and Actions -->
               <div class="flex flex-wrap items-start justify-between gap-4">
@@ -77,30 +77,38 @@
                   >
                     <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
                   </UButton>
-                  <UButton
+                  <TrackClick
                     v-else
-                    v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
-                    target="_blank"
-                    :to="form.share_url"
-                    color="neutral"
-                    variant="outline"
-                    class="hover:no-underline"
-                    icon="i-heroicons-arrow-top-right-on-square"
+                    name="view_form_click"
+                    :properties="{form_id:form.id, form_slug:form.slug}"
                   >
-                    <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
-                  </UButton>
-                  <UButton
-                    v-if="!workspace.is_readonly"
-                    v-track.edit_form_click="{form_id: form.id, form_slug: form.slug}"
-                    color="primary"
-                    icon="i-heroicons-pencil"
-                    class="hover:no-underline"
-                    :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
+                    <UButton
+                      target="_blank"
+                      :to="form.share_url"
+                      color="neutral"
+                      variant="outline"
+                      class="hover:no-underline"
+                      icon="i-heroicons-arrow-top-right-on-square"
+                    >
+                      <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
+                    </UButton>
+                  </TrackClick>
+                  <TrackClick
+                    v-if="!workspace?.is_readonly"
+                    name="edit_form_click"
+                    :properties="{form_id: form.id, form_slug: form.slug}"
                   >
-                    Edit <span class="hidden md:inline">form</span>
-                  </UButton>
+                    <UButton
+                      color="primary"
+                      icon="i-heroicons-pencil"
+                      class="hover:no-underline"
+                      :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
+                    >
+                      Edit <span class="hidden md:inline">form</span>
+                    </UButton>
+                  </TrackClick>
                   <extra-menu
-                    v-if="!workspace.is_readonly"
+                    v-if="!workspace?.is_readonly"
                     :form="form"
                     portal="#form-show-portals"
                   />
@@ -173,6 +181,7 @@ import FormSidebar from "../../../components/layouts/FormSidebar.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
 import FormStatusBadges from "../../../components/open/forms/components/FormStatusBadges.vue"
+import TrackClick from "../../../components/global/TrackClick.vue"
 
 definePageMeta({
   layout: "empty",
@@ -180,41 +189,38 @@ definePageMeta({
 
 useOpnSeoMeta({
   title: "Home",
-  
 })
 
+// Composables
 const route = useRoute()
-const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
+const { detail: formDetail } = useForms()
 
-const slug = useRoute().params.slug
+const slug = route.params.slug
 
-formsStore.startLoading()
-const form = computed(() => formsStore.getByKey(slug))
-const workspace = computed(() => workspacesStore.getCurrent)
+// Get current workspace
+const { current: workspaceRef } = useCurrentWorkspace()
+const workspace = workspaceRef.value
 
-const loading = computed(() => formsStore.loading || workspacesStore.loading)
+// Get form by slug
+const { data: form, isLoading: isFormLoading } = formDetail(slug)
+
+// Combined loading state
+const isLoading = computed(() => isFormLoading.value)
 
 // Disable sticky top-bar behaviour on the submissions page only
 const isSubmissionsPage = computed(() => route.name?.includes('submissions'))
 
-onMounted(() => {
-  workingFormStore.reset()
-  if (form.value) {
-    workingFormStore.set(form.value)
-  } else {
-    formsStore.loadForm(route.params.slug)
-  }
-})
-
+// Update working form store when form changes
 watch(
-  () => form?.value?.id,
-  (id) => {
-    if (id) {
-      workingFormStore.set(form.value)
+  () => form.value,
+  (newForm) => {
+    workingFormStore.reset()
+    if (newForm) {
+      workingFormStore.set(newForm)
     }
   },
+  { immediate: true }
 )
 
 const showDraftFormWarningNotification = () => {

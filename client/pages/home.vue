@@ -3,10 +3,11 @@
     <!-- Top Bar -->
     <div class="sticky top-0 z-50 bg-white h-[49px] border-b border-neutral-200 p-2 sm:px-4">
       <div class="max-w-4xl mx-auto flex items-center justify-between flex-shrink-0 gap-2 px-2 sm:px-0">
-      <div class="flex items-center gap-2">
+
+      <VTransition name="fade">
+      <div v-if="(forms?.length > 0) || isFilteringForms" class="flex items-center gap-2">
         <!-- Search -->
         <UInput
-          v-if="forms.length > 0 || isFilteringForms"
           v-model="search"
           placeholder="Search forms..."
           icon="i-heroicons-magnifying-glass-solid"
@@ -32,6 +33,8 @@
           @click="clearFilters"
         />
       </div>
+      <div class="grow" v-else />
+      </VTransition>
 
       <!-- Create form button -->
       <TrackClick name="home_top_bar_create_form_click">
@@ -48,8 +51,9 @@
     <!-- Main Content -->
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
+        <VTransition name="fade">
         <!-- Empty State: No forms -->
-        <div v-if="!formsLoading && forms.length === 0" class="text-center py-16 px-4">
+        <div v-if="isFetched && !isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-gray-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-gray-900">
             Create your first form
@@ -67,7 +71,7 @@
         </div>
 
         <!-- Empty State: No results -->
-        <div v-if="!formsLoading && forms.length > 0 && enrichedForms.length === 0" class="text-center py-16 px-4">
+        <div v-if="isFetched && !isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-gray-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-gray-900">
               No forms found
@@ -93,6 +97,21 @@
               :form="form"
             />
           </div>
+
+          <!-- Loading Skeletons -->
+          <div v-if="isLoadingMore" class="flex flex-col gap-2 mt-2">
+            <FormCardSkeleton />
+            <FormCardSkeleton class="opacity-60" />
+            <FormCardSkeleton class="opacity-30" />
+          </div>
+          
+          <!-- Completion Indicator -->
+          <div v-else-if="!isComplete && totalPages > 1" class="flex justify-center items-center py-4">
+            <div class="text-sm text-gray-500">
+              Loaded {{ currentPage }} of {{ totalPages }} pages
+            </div>
+          </div>
+          
           <div v-if="!workspace?.is_pro" class="px-4">
             <UAlert
               class="mt-8 p-4"
@@ -106,27 +125,32 @@
                   <p class="flex-grow">
                     Remove OpnForm branding, customize forms further, use your custom domain, integrate with your favorite tools, invite users, and more!
                   </p>
-                  <UButton
-                    v-track.upgrade_banner_home_click
-                    color="neutral"
-                    variant="outline"
-                    class="block"
-                    @click.prevent="subscriptionModalStore.openModal()"
+                  <TrackClick
+                    name="upgrade_banner_home_click"
+                    :properties="{}"
                   >
-                    Upgrade Now
-                  </UButton>
+                    <UButton
+                      color="neutral"
+                      variant="outline"
+                      class="block"
+                      @click.prevent="subscriptionModalStore.openModal()"
+                    >
+                      Upgrade Now
+                    </UButton>
+                  </TrackClick>
                 </div>
               </template>
             </UAlert>
           </div>
         </div>
 
-        <!-- Loading Skeletons -->
-        <div v-if="formsLoading" class="flex flex-col gap-2">
-          <FormCardSkeleton />
-          <FormCardSkeleton />
-          <FormCardSkeleton />
-        </div>
+          <!-- Loading Skeletons -->
+          <div v-if="isFormsLoading" class="flex flex-col gap-2">
+            <FormCardSkeleton />
+            <FormCardSkeleton />
+            <FormCardSkeleton />
+          </div>
+        </VTransition>
       </div>
     </div>
     <div id="home-portals" class="z-20" />
@@ -134,11 +158,10 @@
 </template>
 
 <script setup>
-import {useFormsStore} from "../stores/forms"
-import {useWorkspacesStore} from "../stores/workspaces"
 import Fuse from "fuse.js"
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
@@ -151,27 +174,27 @@ useOpnSeoMeta({
     "All of your OpnForm are here. Create new forms, or update your existing forms.",
 })
 
+// Composables
 const subscriptionModalStore = useSubscriptionModalStore()
-const formsStore = useFormsStore()
-const workspacesStore = useWorkspacesStore()
-formsStore.startLoading()
+const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 
-const workspace = computed(() => workspacesStore.getCurrent)
-
-onMounted(() => {
-  if (!formsStore.allLoaded) {
-    formsStore.loadAll(workspacesStore.currentId)
-  } else {
-    formsStore.stopLoading()
+const {
+  forms,
+  isLoading: isFormsLoading,
+  isFetchingNextPage: isLoadingMore,
+  isFetched,
+  currentPage,
+  totalPages,
+  isComplete,
+} = useFormsList(
+  workspaceId,
+  {
+    fetchAll: true,
+    enabled: computed(() => import.meta.client && !!workspaceId.value),
   }
-})
+)
 
 // State
-const {
-  getAll: forms,
-  loading: formsLoading,
-  allTags,
-} = storeToRefs(formsStore)
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
 const selectedTags = ref([])
@@ -190,13 +213,26 @@ const isFilteringForms = computed(() => {
   )
 })
 
+// Extract all unique tags from forms
+const allTags = computed(() => {
+  if (!forms.value) return []
+  
+  const tagsSet = new Set()
+  forms.value.forEach(form => {
+    if (form.tags && form.tags.length) {
+      form.tags.forEach(tag => tagsSet.add(tag))
+    }
+  })
+  
+  return Array.from(tagsSet).sort()
+})
+
 const tagOptions = computed(() => allTags.value.map(tag => ({ label: tag, value: tag })))
 
 const enrichedForms = computed(() => {
-  const enriched = forms.value.map((form) => {
-    form.workspace = workspacesStore.getByKey(form.workspace_id)
-    return form
-  }).filter((form) => {
+  if (!forms.value) return []
+  
+  const enriched = forms.value.filter((form) => {
     if (selectedTags.value.length === 0) {
       return true
     }

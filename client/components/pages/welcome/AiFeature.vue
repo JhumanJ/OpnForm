@@ -148,15 +148,15 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
+
+
 
 export default {
   props: {},
   setup() {
-    const authStore = useAuthStore()
+    const { isAuthenticated } = useIsAuthenticated()
     return {
-      authenticated: computed(() => authStore.check),
+      authenticated: isAuthenticated,
     }
   },
   data: () => ({}),

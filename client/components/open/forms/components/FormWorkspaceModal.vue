@@ -67,10 +67,9 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
-import { formsApi } from "~/api/forms"
+
 const emit = defineEmits(["close"])
-const workspacesStore = useWorkspacesStore()
-const formsStore = useFormsStore()
+const { switchTo } = useCurrentWorkspace()
 const crisp = useCrisp()
 
 const selectedWorkspace = ref(null)
@@ -91,9 +90,9 @@ const isOpen = computed({
   }
 })
 
-const workspaces = computed(() => workspacesStore.getAll)
+const { data: workspaces } = useWorkspaces().list()
 const workspace = computed(() =>
-  workspacesStore.getByKey(props.form?.workspace_id),
+  workspaces.value?.find(w => w.id === props.form?.workspace_id)
 )
 const loading = ref(false)
 const workspacesSelectOptions = computed(() =>
@@ -104,6 +103,31 @@ const workspacesSelectOptions = computed(() =>
     .map((workspace) => ({ name: workspace.name, value: workspace.id })),
 )
 
+const { updateWorkspace } = useForms()
+const updateWorkspaceMutation = updateWorkspace({
+  onSuccess: () => {
+    loading.value = false
+    emit("close")
+    useAlert().success("Form workspace updated successfully.")
+    
+    // Switch to the new workspace
+    switchTo(selectedWorkspace.value)
+    
+    // Navigate to home if not already there
+    const router = useRouter()
+    const route = useRoute()
+    if (route.name !== "home") {
+      router.push({ name: "home" })
+    }
+  },
+  onError: (error) => {
+    useAlert().error(
+      error?.data?.message ?? "Something went wrong, please try again!",
+    )
+    loading.value = false
+  }
+})
+
 const close = () => {
   emit("close")
 }
@@ -113,26 +137,12 @@ const onSubmit = () => {
     useAlert().error("Please select a workspace!")
     return
   }
-  formsApi.updateWorkspace(props.form.id, selectedWorkspace.value, {})
-    .then(() => {
-      loading.value = false
-      emit("close")
-      useAlert().success("Form workspace updated successfully.")
-      workspacesStore.setCurrentId(selectedWorkspace.value)
-      formsStore.resetState()
-      formsStore.loadAll(selectedWorkspace.value)
-      const router = useRouter()
-      const route = useRoute()
-      if (route.name !== "home") {
-        router.push({ name: "home" })
-      }
-      formsStore.loadAll(selectedWorkspace.value)
-    })
-    .catch((error) => {
-      useAlert().error(
-        error?.data?.message ?? "Something went wrong, please try again!",
-      )
-      loading.value = false
-    })
+  
+  loading.value = true
+  updateWorkspaceMutation.mutate({
+    id: props.form.id,
+    workspaceId: selectedWorkspace.value,
+    data: {}
+  })
 }
 </script>

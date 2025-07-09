@@ -98,32 +98,22 @@ export default defineNuxtConfig({
 
   components: [
       {
-          path: '~/components/forms',
+          path: '~/components/forms/core',
           pathPrefix: false,
           global: true,
+      },
+      {
+          path: '~/components/forms/heavy',
+          pathPrefix: false,
+          global: false,
       },
       {
           path: '~/components/global',
           pathPrefix: false,
       },
       {
-          path: '~/components/forms',
-          pathPrefix: false,
-          global: true
-      },
-      {
           path: '~/components/pages',
           pathPrefix: false,
-      },
-      {
-          path: '~/components/open/integrations',
-          pathPrefix: false,
-          global: true,
-      },
-      {
-          path: '~/components/provider',
-          pathPrefix: false,
-          global: true,
       },
       '~/components',
   ],

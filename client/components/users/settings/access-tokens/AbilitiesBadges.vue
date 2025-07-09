@@ -8,13 +8,13 @@
       color="neutral"
       size="sm"
     >
-      {{ accessTokenStore.getAbility(ability).title }}
+      {{ getAbility(ability).title }}
     </UBadge>
     
     <!-- "+x more" badge with tooltip if there are more than 2 abilities -->
     <UTooltip 
       v-if="abilities.length > limit"
-      :text="abilities.slice(limit).map(ability => accessTokenStore.getAbility(ability).title).join(', ')"
+      :text="abilities.slice(limit).map(ability => getAbility(ability).title).join(', ')"
       class="max-w-xs"
     >
       <UBadge
@@ -40,5 +40,5 @@ defineProps({
   }
 })
 
-const accessTokenStore = useAccessTokenStore()
+const { getAbility } = useTokens()
 </script> 

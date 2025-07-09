@@ -140,137 +140,132 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
-export default {
-  name: "RegisterForm",
-  components: {},
-  props: {
-    isQuick: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+// Props
+const props = defineProps({
+  isQuick: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
-  emits: ['openLogin'],
+})
 
-  setup() {
-    const { $utm } = useNuxtApp()
-    return {
-      authStore: useAuthStore(),
-      formsStore: useFormsStore(),
-      workspaceStore: useWorkspacesStore(),
-      providersStore: useOAuthProvidersStore(),
-      runtimeConfig: useRuntimeConfig(),
-      logEvent: useAmplitude().logEvent,
-      $utm
+// Emits
+defineEmits(['openLogin'])
+
+// Composables
+const { $utm } = useNuxtApp()
+const oAuth = useOAuth()
+const runtimeConfig = useRuntimeConfig()
+const authFlow = useAuthFlow()
+const router = useRouter()
+const route = useRoute()
+
+// Reactive data
+const form = useForm({
+  name: "",
+  email: "",
+  hear_about_us: "",
+  password: "",
+  password_confirmation: "",
+  agree_terms: false,
+  appsumo_license: null,
+  utm_data: null,
+  'g-recaptcha-response': null
+})
+
+const disableEmail = ref(false)
+const captcha = ref(null)
+
+// Computed
+const reCaptchaSiteKey = computed(() => {
+  return runtimeConfig.public.reCaptchaSiteKey
+})
+
+const hearAboutUsOptions = computed(() => {
+  const options = [
+    {name: "Facebook", value: "facebook"},
+    {name: "Twitter", value: "twitter"},
+    {name: "Reddit", value: "reddit"},
+    {name: "Github", value: "github"},
+    {
+      name: "Search Engine (Google, DuckDuckGo...)",
+      value: "search_engine",
+    },
+    {name: "Friend or Colleague", value: "friend_colleague"},
+    {name: "Blog/Article", value: "blog_article"},
+  ]
+    .map((value) => ({value, sort: Math.random()}))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({value}) => value)
+  options.push({name: "Other", value: "other"})
+  return options
+})
+
+// Lifecycle
+onMounted(() => {
+  // Use the window message composable
+  const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+  
+  // Listen for login complete messages
+  windowMessage.listen(() => {
+    redirect()
+  })
+
+  // Set appsumo license
+  if (
+    route.query.appsumo_license !== undefined &&
+    route.query.appsumo_license
+  ) {
+    form.appsumo_license = route.query.appsumo_license
+  }
+
+  if (route.query?.invite_token) {
+    if (route.query?.email) {
+      form.email = route.query?.email
+      form.hear_about_us = 'invite'
+      disableEmail.value = true
     }
-  },
+    form.invite_token = route.query?.invite_token
+  }
+})
 
-  data: () => ({
-    form: useForm({
-      name: "",
-      email: "",
-      hear_about_us: "",
-      password: "",
-      password_confirmation: "",
-      agree_terms: false,
-      appsumo_license: null,
-      utm_data: null,
-      'g-recaptcha-response': null
-    }),
-    disableEmail: false,
-  }),
+// Methods
+const register = async () => {
+  // Reset captcha after submission
+  if (import.meta.client && reCaptchaSiteKey.value) {
+    captcha.value.reset()
+  }
 
-  computed: {
-    reCaptchaSiteKey() {
-      return this.runtimeConfig.public.reCaptchaSiteKey
-    },
-    hearAboutUsOptions() {
-      const options = [
-        {name: "Facebook", value: "facebook"},
-        {name: "Twitter", value: "twitter"},
-        {name: "Reddit", value: "reddit"},
-        {name: "Github", value: "github"},
-        {
-          name: "Search Engine (Google, DuckDuckGo...)",
-          value: "search_engine",
-        },
-        {name: "Friend or Colleague", value: "friend_colleague"},
-        {name: "Blog/Article", value: "blog_article"},
-      ]
-        .map((value) => ({value, sort: Math.random()}))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({value}) => value)
-      options.push({name: "Other", value: "other"})
-      return options
-    },
-  },
+  try {
+    form.utm_data = $utm.value
+    await authFlow.registerUser(form)
 
-  mounted() {
-    // Use the window message composable
-    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
-    
-    // Listen for login complete messages
-    windowMessage.listen(() => {
-      this.redirect()
-    })
+    redirect()
+  } catch (err) {
+    useAlert().error(err.response?._data?.message)
+  }
+}
 
-    // Set appsumo license
-    if (
-      this.$route.query.appsumo_license !== undefined &&
-      this.$route.query.appsumo_license
-    ) {
-      this.form.appsumo_license = this.$route.query.appsumo_license
+const redirect = () => {
+  if (props.isQuick) {
+    // Use window message instead of event
+    const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+    afterLoginMessage.send(window)
+  } else {
+    // If is invite just redirect to home
+    if (form.invite_token) {
+      useAlert().success("You have successfully accepted the invite and joined this workspace.")
+      router.push({name: "home"})
+    } else {
+      router.push({name: "forms-create"})
     }
+  }
+}
 
-    if (this.$route.query?.invite_token) {
-      if (this.$route.query?.email) {
-        this.form.email = this.$route.query?.email
-        this.form.hear_about_us = 'invite'
-        this.disableEmail = true
-      }
-      this.form.invite_token = this.$route.query?.invite_token
-    }
-  },
-
-  methods: {
-    async register() {
-      const auth = useAuth()
-      
-      // Reset captcha after submission
-      if (import.meta.client && this.reCaptchaSiteKey) {
-        this.$refs.captcha.reset()
-      }
-
-      try {
-        this.form.utm_data = this.$utm.value
-        await auth.registerUser(this.form)
-
-        this.redirect()
-      } catch (err) {
-        useAlert().error(err.response?._data?.message)
-      }
-    },
-    redirect() {
-      if (this.isQuick) {
-        // Use window message instead of event
-        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
-        afterLoginMessage.send(window)
-      } else {
-        // If is invite just redirect to home
-        if (this.form.invite_token) {
-          useAlert().success("You have successfully accepted the invite and joined this workspace.")
-          this.$router.push({name: "home"})
-        } else {
-          this.$router.push({name: "forms-create"})
-        }
-      }
-    },
-    signInwithGoogle() {
-      this.providersStore.guestConnect('google', true)
-    }
-  },
+const signInwithGoogle = () => {
+  oAuth.guestConnect('google', true)
 }
 </script>

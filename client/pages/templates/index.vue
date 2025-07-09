@@ -16,6 +16,7 @@
     </section>
 
     <templates-list
+      class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-12"
       :templates="templates"
       :loading="loading"
     />
@@ -25,8 +26,6 @@
 </template>
 
 <script setup>
-import { loadAllTemplates } from "~/stores/templates.js"
-
 defineRouteRules({
   swr: 3600,
 })
@@ -37,9 +36,5 @@ useOpnSeoMeta({
     "Our collection of beautiful templates to create your own forms!",
 })
 
-const templatesStore = useTemplatesStore()
-loadAllTemplates(templatesStore)
-
-const loading = computed(() => templatesStore.loading)
-const templates = computed(() => templatesStore.getAll)
+const { data: templates, isLoading: loading } = useTemplates().list()
 </script>

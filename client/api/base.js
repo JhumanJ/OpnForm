@@ -3,7 +3,7 @@ import Form from '~/composables/lib/vForm/Form'
 export const apiService = {
   // GET requests - supports both useFetch and $fetch
   async get(endpoint, options = {}) {
-    const { server = true, ...fetchOptions } = options
+    const { server = false, ...fetchOptions } = options
     
     if (server) {
       // Use useFetch for SSR benefits (default)

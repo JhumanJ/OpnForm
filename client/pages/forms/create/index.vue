@@ -32,7 +32,6 @@ import { watch } from "vue"
 import { initForm } from "~/composables/forms/initForm.js"
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
-import { fetchTemplate } from "~/stores/templates.js"
 import { hash } from "~/lib/utils.js"
 import { onBeforeRouteLeave } from "vue-router"
 
@@ -57,22 +56,23 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 const route = useRoute()
-const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
-const formStore = useFormsStore()
 
-// Fetch the template
-if (route.query.template !== undefined && route.query.template) {
-  const { data } = await fetchTemplate(route.query.template)
-  templatesStore.save(data.value)
+let template = null
+if (route.query.template) {
+  const { data, suspense } = useTemplates().detail(route.query.template)
+  await suspense()
+  template = data.value
 }
 
-const {
-  getCurrent: workspace,
-  workspacesLoading: workspacesLoading,
-} = storeToRefs(workspacesStore)
+const { current: workspace, isLoading: workspacesLoading } = useCurrentWorkspace()
 const { content: form } = storeToRefs(workingFormStore)
+
+// Pre-load forms list for the current workspace (replaces formStore.loadAll)
+const workspaceId = computed(() => workspace.value?.id)
+useFormsList(workspaceId, {
+  enabled: computed(() => !!workspaceId.value)
+})
 
 // State
 const loading = ref(false)
@@ -98,22 +98,14 @@ onMounted(() => {
     }
   }
 
-  if (!formStore.allLoaded) {
-    formStore.loadAll(workspace.value.id)
-  }
-
   form.value = initForm({ workspace_id: workspace.value?.id, no_branding: workspace.value?.is_pro }, true)
   formInitialHash.value = hash(JSON.stringify(form.value.data()))
-  if (route.query.template !== undefined && route.query.template) {
-    const template = templatesStore.getByKey(route.query.template)
-    if (template && template.structure) {
-      form.value = useForm({ ...form.value.data(), ...template.structure })
-    }
+  if (template && template.structure) {
+    form.value = useForm({ ...form.value.data(), ...template.structure })
   } else {
     // No template loaded, ask how to start
     showInitialFormModal.value = true
   }
-  // workspacesStore.loadIfEmpty()
 })
 
 // Methods

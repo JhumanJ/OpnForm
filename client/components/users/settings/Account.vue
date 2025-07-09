@@ -70,11 +70,12 @@
 <script setup>
 import { authApi } from '~/api'
 
-const authStore = useAuthStore()
+
 const router = useRouter()
 const alert = useAlert()
+const authFlow = useAuthFlow()
 
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 
 // Profile form
 const profileForm = useForm({
@@ -87,8 +88,8 @@ const deleteLoading = ref(false)
 
 // Update profile
 const updateProfile = () => {
-  profileForm.patch('/settings/profile').then((response) => {
-    authStore.updateUser(response)
+      profileForm.patch('/settings/profile').then((_response) => {
+     useAuth().invalidateUser()
     alert.success('Your info has been updated!')
   })
 }
@@ -108,7 +109,7 @@ const deleteAccount = () => {
     .then(async (data) => {
       deleteLoading.value = false
       alert.success(data.message)
-      authStore.logout()
+      authFlow.handleLogout()
       router.push({ name: 'login' })
     })
     .catch((error) => {

@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="value"
-    class="-mb-2"
+    class="-mb-2 flex flex-wrap gap-1"
   >
     <template v-if="valueIsObject">
       <open-tag

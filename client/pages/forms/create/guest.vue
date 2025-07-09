@@ -26,24 +26,30 @@
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import CreateFormBaseModal from "../../../components/pages/forms/create/CreateFormBaseModal.vue"
 import { initForm } from "~/composables/forms/initForm.js"
-import { fetchTemplate } from "~/stores/templates.js"
-import { fetchAllWorkspaces } from "~/stores/workspaces.js"
+import { useQueryClient } from "@tanstack/vue-query"
+
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
-const templatesStore = useTemplatesStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
 const route = useRoute()
+const queryClient = useQueryClient()
 
-// Fetch the template
-if (route.query.template !== undefined && route.query.template) {
-  const { data } = await fetchTemplate(route.query.template)
-  templatesStore.save(data.value)
+let template = null
+if (route.query.template) {
+  const { data, suspense } = useTemplates().detail(route.query.template)
+  await suspense()
+  template = data.value
 }
 
+// Use workspaces query composable for invalidation functionality
+const { invalidateAll } = useWorkspaces()
+
 // Store values
-const workspacesLoading = computed(() => workspacesStore.loading)
+const workspacesLoading = computed(() => {
+  // For guest mode, we'll manage loading state manually
+  return !stateReady.value
+})
 const form = storeToRefs(workingFormStore).content
 
 useOpnSeoMeta({
@@ -63,22 +69,20 @@ const showInitialFormModal = ref(false)
 const editor = ref(null)
 
 onMounted(() => {
-  // Set as guest user
-  workspacesStore.set([
-    {
-      id: null,
-      name: "Guest Workspace",
-      is_enterprise: false,
-      is_pro: false,
-    },
-  ])
+  // Set guest workspace data in query cache instead of store
+  const guestWorkspace = {
+    id: null,
+    name: "Guest Workspace",
+    is_enterprise: false,
+    is_pro: false,
+  }
+  
+  // Manually set the workspace data in query cache
+  queryClient.setQueryData(["workspaces", "list"], [guestWorkspace])
 
   form.value = initForm({}, true)
-  if (route.query.template !== undefined && route.query.template) {
-    const template = templatesStore.getByKey(route.query.template)
-    if (template && template.structure) {
-      form.value = useForm({ ...form.value.data(), ...template.structure })
-    }
+  if (template && template.structure) {
+    form.value = useForm({ ...form.value.data(), ...template.structure })
   } else {
     // No template loaded, ask how to start
     showInitialFormModal.value = true
@@ -94,7 +98,7 @@ onMounted(() => {
 
 const afterLogin = () => {
   isGuest.value = false
-  fetchAllWorkspaces()
+  invalidateAll() // Refetch all workspace queries
   setTimeout(() => {
     if (editor) {
       editor.value.saveFormCreate()

@@ -9,7 +9,22 @@
       </p>
     </div>
     <div class="shrink-0">
+      <TrackClick
+        v-if="trackingEvent"
+        :name="trackingEvent"
+        :properties="trackingProperties"
+      >
+        <UButton
+          :color="copySuccess ? 'success' : 'primary'"
+          :icon="copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
+          class="w-full"
+          @click.prevent="copyToClipboard"
+        >
+          <span class="hidden md:inline">{{ copySuccess ? 'Copied!' : label }}</span>
+        </UButton>
+      </TrackClick>
       <UButton
+        v-else
         :color="copySuccess ? 'success' : 'primary'"
         :icon="copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
         class="w-full"
@@ -23,6 +38,8 @@
 
 <script setup>
 import { defineProps, ref } from "vue"
+import TrackClick from '~/components/global/TrackClick.vue'
+
 const { copy } = useClipboard()
 
 const props = defineProps({
@@ -37,6 +54,14 @@ const props = defineProps({
   label: {
     type: String,
     default: "Copy Link",
+  },
+  trackingEvent: {
+    type: String,
+    default: null,
+  },
+  trackingProperties: {
+    type: Object,
+    default: () => ({}),
   },
 })
 

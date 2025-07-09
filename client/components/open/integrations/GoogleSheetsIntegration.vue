@@ -39,7 +39,7 @@
       <v-button
         v-else
         color="white"
-        :loading="providersStore.loading"
+        :loading="isLoading"
         @click.prevent="connect"
       >
         Connect Google account
@@ -49,7 +49,6 @@
 </template>
 
 <script setup>
-import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 
 const props = defineProps({
@@ -59,13 +58,14 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 })
 
-const providersStore = useOAuthProvidersStore()
-const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
-const disableProviders = computed(() => providersStore.getAll.filter(provider => !provider.scopes.includes(providersStore.googleDrivePermission)).map((provider) => provider.id))
+const oAuth = useOAuth()
+const { data: providersData, isLoading } = oAuth.providers()
+const providers = computed(() => (providersData.value || []).filter(provider => provider.provider == 'google'))
+const disableProviders = computed(() => (providersData.value || []).filter(provider => !provider.scopes.includes(oAuth.googleDrivePermission)).map((provider) => provider.id))
 const { openUserSettings } = useAppModals()
 
 function connect () {
-  providersStore.connect('google', true)
+  oAuth.connect('google', true)
 }
 
 function openConnectionsModal () {

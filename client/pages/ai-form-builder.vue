@@ -627,7 +627,6 @@
 </template>
 
 <script setup>
-const authStore = useAuthStore()
 definePageMeta({
   middleware: ['root-redirect','self-hosted']
 })
@@ -640,7 +639,7 @@ defineRouteRules({
   swr: 3600,
 })
 
-const authenticated = computed(() => authStore.check)
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 </script>
 
 <style lang="scss" scoped>

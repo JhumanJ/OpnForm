@@ -15,9 +15,10 @@
           {{ stat.label }}
         </div>
          
+        <VTransition name="fade">
         <USkeleton
           v-if="isLoading"
-          class="h-6 w-16"
+          class="h-7 w-16"
         />
         <span
           v-else-if="form.is_pro"
@@ -31,16 +32,16 @@
         >
           {{ stat.placeholder }}
         </span>
+      </VTransition>
       </div>
     </div>
 
-    <form-stats class="w-full max-w-4xl mx-auto" :form="form" />
+    <FormStats class="w-full max-w-4xl mx-auto" :form="form" />
   </div>
 </template>
 
 <script setup>
 import FormStats from "~/components/open/forms/components/FormStats.vue"
-import { formsApi } from "~/api"
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -53,27 +54,28 @@ useOpnSeoMeta({
   title: props.form ? "Form Analytics - " + props.form.title : "Form Analytics",
 })
 
-const isLoading = ref(false)
-const totalViews = ref(0)
-const totalSubmissions = ref(0)
-const completionRate = ref(0)
-const averageDuration = ref('-')
+// Use query composables instead of manual API calls
+const { statsDetails } = useFormStats()
 
-onMounted(() => {
-  getCardData()
+// Get stats data using query composable
+const { data: statsData, isFetching: isQueryLoading } = statsDetails(
+  props.form.workspace_id, 
+  props.form.id,
+  {
+    enabled: computed(() => import.meta.client && !!props.form && props.form.is_pro)
+  }
+)
+
+const isLoading = computed(() => {
+  if (import.meta.server) {
+    return !!props.form && props.form.is_pro
+  }
+  return isQueryLoading.value
 })
 
-const getCardData = async() => {
-  if (!props.form || !props.form.is_pro) { return null }
-  isLoading.value = true
-  formsApi.statsDetails(props.form.workspace_id, props.form.id).then((responseData) => {
-    if (responseData) {
-      totalViews.value = responseData.views ?? 0
-      totalSubmissions.value = responseData.submissions ?? 0
-      completionRate.value = Math.min(100,responseData.completion_rate ?? 0)
-      averageDuration.value = responseData.average_duration ?? '-'
-      isLoading.value = false
-    }
-  })
-}
+// Computed values derived from query data
+const totalViews = computed(() => statsData.value?.views ?? 0)
+const totalSubmissions = computed(() => statsData.value?.submissions ?? 0)
+const completionRate = computed(() => Math.min(100, statsData.value?.completion_rate ?? 0))
+const averageDuration = computed(() => statsData.value?.average_duration ?? '-')
 </script>

@@ -290,24 +290,28 @@
                 <div
                   class="flex gap-2 mt-6 w-full"
                 >
-                  <UButton
-                    v-track.upgrade_modal_confirm_submit="{plan: currentPlan.value, period: isYearly?'yearly':'monthly'}"
-                    block
-                    size="md"
-                    class="w-auto flex-grow"
-                    :loading="form.busy || loading"
-                    :disabled="form.busy || loading"
-                    :to="checkoutUrl"
-                    target="_blank"
-                  >
-                    <template v-if="isSubscribed">
-                      Upgrade
-                    </template>
-                    <template v-else>
-                      Subscribe
-                    </template>
-                  </UButton>
-                  <UButton
+                <TrackClick
+                  name="upgrade_modal_confirm_submit"
+                  :properties="{plan: currentPlan.value, period: isYearly?'yearly':'monthly'}"
+                >
+                    <UButton
+                        block
+                      size="md"
+                      class="w-auto flex-grow"
+                      :loading="form.busy || loading"
+                      :disabled="form.busy || loading"
+                      :to="checkoutUrl"
+                      target="_blank"
+                    >
+                      <template v-if="isSubscribed">
+                        Upgrade
+                      </template>
+                      <template v-else>
+                        Subscribe
+                      </template>
+                    </UButton>
+                  </TrackClick>
+                <UButton
                     size="md"
                     color="neutral"
                     variant="outline"
@@ -336,7 +340,8 @@
 
 <script setup>
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
-import { fetchAllWorkspaces } from '~/stores/workspaces.js'
+import TrackClick from '~/components/global/TrackClick.vue'
+
 import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 import { authApi } from '~/api'
 
@@ -357,10 +362,9 @@ const form = useForm({
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
-const authStore = useAuthStore()
 const workspacesStore = useWorkspacesStore()
-const authenticated = computed(() => authStore.check)
-const user = computed(() => authStore.user)
+const { isAuthenticated: authenticated } = useIsAuthenticated()
+const { data: user } = useAuth().user()
 const isSubscribed = computed(() => workspacesStore.isSubscribed)
 const currency = 'usd'
 
@@ -399,8 +403,8 @@ watch(broadcastData, () => {
 
   if (broadcastData.value.type === 'success') {
     // Now we need to reload workspace and user
-    authApi.user.get().then((userData) => {
-      authStore.setUser(userData)
+          authApi.user.get().then((_userData) => {
+       useAuth().invalidateUser()
 
       try {
         const eventData = {
@@ -417,9 +421,8 @@ watch(broadcastData, () => {
         console.error('Failed to register subscription event 😔',error)
       }
     })
-    fetchAllWorkspaces().then((workspaces) => {
-      workspacesStore.set(workspaces.data.value)
-    })
+    const { invalidateAll } = useWorkspaces()
+    invalidateAll() // Refresh all workspace data
 
     if (user.value.has_enterprise_subscription) {
       useAlert().success(

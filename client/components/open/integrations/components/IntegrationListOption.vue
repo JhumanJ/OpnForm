@@ -1,46 +1,41 @@
 <template>
   <UTooltip
     :text="tooltipText"
-    :prevent="!unavailable || !tooltipText"
+    :disabled="!unavailable || !tooltipText"
   >
     <div
       v-track.new_integration_click="{ name: integration.id }"
       role="button"
       :class="{
-        'hover:bg-blue-50 group cursor-pointer': !unavailable,
-        'cursor-not-allowed': integration.coming_soon,
+        'hover:bg-gray-100 dark:hover:bg-gray-800 group cursor-pointer': !unavailable,
+        'cursor-not-allowed opacity-50': unavailable,
       }"
-      class="bg-gray-50 border border-gray-200 rounded-md transition-colors p-4 pb-2 items-center justify-center w-[170px] h-[110px] flex flex-col relative"
+      class="border rounded-lg p-4 flex flex-col items-center justify-center text-center transition-colors w-full h-full relative"
       @click="onClick"
     >
-      <div class="flex justify-center">
-        <div
-          class="h-10 w-10 text-gray-500 group-hover:text-blue-500 transition-colors flex items-center"
-        >
-          <Icon
-            :name="integration.icon"
-            size="40px"
-          />
-        </div>
-      </div>
-      <div class="flex-grow flex items-center">
-        <div class="text-gray-400 font-medium text-sm text-center">
-          {{ integration.name
-          }}<span
-            v-if="integration.coming_soon"
-            class="text-xs"
-          >
-            (coming soon)</span>
-        </div>
+      <div class="flex-shrink-0">
         <Icon
-          v-if="integration.is_external"
-          class="inline h-4 w-4 ml-1 inline text-gray-500"
-          name="heroicons:arrow-top-right-on-square-20-solid"
+          :name="integration.icon"
+          class="w-8 h-8 text-gray-500 transition-colors group-hover:text-gray-700"
         />
+      </div>
+      <div class="flex-grow flex flex-col justify-center">
+        <div class="font-semibold text-sm text-gray-800 dark:text-gray-200">
+          {{ integration.name }}
+          <span
+            v-if="integration.coming_soon"
+            class="text-xs text-gray-500"
+          >(soon)</span>
+        </div>
       </div>
       <pro-tag
         v-if="integration?.is_pro === true"
-        class="absolute top-0 right-1"
+        class="absolute top-2 right-2"
+      />
+      <Icon
+        v-if="integration.is_external"
+        class="absolute bottom-2 right-2 h-4 w-4 text-gray-400"
+        name="heroicons:arrow-top-right-on-square-20-solid"
       />
     </div>
   </UTooltip>
@@ -48,7 +43,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useWorkspacesStore } from '@/stores/workspaces'
+import ProTag from "~/components/app/ProTag.vue"
 const emit = defineEmits(["select"])
 const subscriptionModalStore = useSubscriptionModalStore()
 
@@ -59,8 +54,7 @@ const props = defineProps({
   },
 })
 
-const workspacesStore = useWorkspacesStore()
-const currentWorkspace = computed(() => workspacesStore.getCurrent)
+const { current: currentWorkspace } = useCurrentWorkspace()
 
 const unavailable = computed(() => {
   return (

@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import Collapse from "~/components/global/Collapse.vue"
-import ProTag from "~/components/global/ProTag.vue"
+import Collapse from "~/components/app/Collapse.vue"
+import ProTag from "~/components/app/ProTag.vue"
 
 export default {
   name: "EditorOptionsPanel",

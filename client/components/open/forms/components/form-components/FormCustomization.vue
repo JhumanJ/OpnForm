@@ -224,22 +224,20 @@
 import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
-import ProTag from "~/components/global/ProTag.vue"
+import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
 
 const workingFormStore = useWorkingFormStore()
 const subscriptionModalStore = useSubscriptionModalStore()
-const authStore = useAuthStore()
-const workspacesStore = useWorkspacesStore()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
 const { $i18n } = useNuxtApp()
 
-const user = computed(() => authStore.user)
-const workspace = computed(() => workspacesStore.getCurrent)
+const { data: user } = useAuth().user()
+const { current: workspace } = useCurrentWorkspace()
 
 const isPro = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return true

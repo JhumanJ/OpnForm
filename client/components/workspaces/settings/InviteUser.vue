@@ -70,7 +70,8 @@
         </UAlert>
       </template>
 
-      <form
+      <VForm
+        size="sm"
         class="my-2"
         @submit.prevent="addUser"
         @keydown="inviteUserForm.onKeydown($event)"
@@ -96,13 +97,13 @@
           <UButton
             type="submit"
             :disabled="!workspace.is_pro"
-            :loading="inviteUserForm.busy"
+            :loading="inviteUserMutation.isPending.value"
             icon="i-heroicons-envelope"
           >
             Invite User
           </UButton>
         </div>
-      </form>
+      </VForm>
     </template>
   </UModal>
 </template>
@@ -115,12 +116,12 @@ const props = defineProps({
   }
 })
 
-const workspacesStore = useWorkspacesStore()
-const authStore = useAuthStore()
+const { hasActiveLicense } = useAuthFlow()
+const { addUser: addUserMutation } = useWorkspaceUsers()
 const crisp = useCrisp()
 const subscriptionModalStore = useSubscriptionModalStore()
-const { openUserSettings } = useAppModals()
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
+const alert = useAlert()
 
 const emit = defineEmits(['update:modelValue', 'user-added'])
 
@@ -136,6 +137,19 @@ const isOpen = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
+// Create mutation during setup
+const inviteUserMutation = addUserMutation(workspaceId, {
+  onSuccess: (data) => {
+    inviteUserForm.reset()
+    alert.success(data.message || 'User invited successfully')
+    emit('user-added')
+    closeModal()
+  },
+  onError: (error) => {
+    alert.error(error.response?.data?.message || "There was an error adding user")
+  }
+})
+
 // Methods
 const closeModal = () => {
   isOpen.value = false
@@ -147,7 +161,6 @@ const openSubscriptionModal = () => {
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))
-const hasActiveLicense = computed(() => authStore.has_active_license)
 
 const inviteUserForm = useForm({
   email: '',
@@ -156,18 +169,15 @@ const inviteUserForm = useForm({
 
 const openBilling = () => {
   closeModal()
-  openUserSettings('billing')
+  useAppModals().openUserSettings('billing')
 }
 
 const addUser = () => {
-  inviteUserForm.post("/open/workspaces/" + workspacesStore.currentId + "/users/add").then((data) => {
-    inviteUserForm.reset()
-    useAlert().success(data.message)
-    emit('user-added')
-    closeModal()
-  }).catch((error) => {
-    useAlert().error("There was an error adding user: " + error.data.message)
+  if (!workspaceId.value) return
+
+  inviteUserMutation.mutate({
+    email: inviteUserForm.email,
+    role: inviteUserForm.role
   })
 }
-
 </script>

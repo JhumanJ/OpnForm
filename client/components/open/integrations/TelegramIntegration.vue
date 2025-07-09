@@ -46,7 +46,7 @@
       <v-button
         v-else
         color="white"
-        :loading="providersStore.loading"
+        :loading="isLoading"
         @click.prevent="openConnectionsModal"
       >
         Connect Telegram account
@@ -56,7 +56,6 @@
 </template>
 
 <script setup>
-import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 import NotificationsMessageActions from './components/NotificationsMessageActions.vue'
 
@@ -67,8 +66,9 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 })
 
-const providersStore = useOAuthProvidersStore()
-const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
+const oAuth = useOAuth()
+const { data: providersData, isLoading } = oAuth.providers()
+const providers = computed(() => (providersData.value || []).filter(provider => provider.provider == 'telegram'))
 
 const { openUserSettings } = useAppModals()
 

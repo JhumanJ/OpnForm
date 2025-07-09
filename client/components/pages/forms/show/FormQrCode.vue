@@ -1,12 +1,17 @@
 <template>
   <UPopover arrow>
-    <UTooltip text="QR Code">
-      <UButton
-        variant="outline"
-        color="neutral"
-        icon="i-heroicons-qr-code"
-      />
-    </UTooltip>
+    <TrackClick
+      name="form_qr_code_click"
+      :properties="{form_id: form.id, form_slug: form.slug}"
+    >
+      <UTooltip text="QR Code">
+        <UButton
+          variant="outline"
+          color="neutral"
+          icon="i-heroicons-qr-code"
+        />
+      </UTooltip>
+    </TrackClick>
 
     <template #content>
       <div class="p-4 w-80">
@@ -25,15 +30,20 @@
           >
         </div>
         <div class="space-y-2">
-          <UButton
-            @click="copyImage"
-            :color="imageCopied ? 'success' : 'neutral'"
-            :icon="imageCopied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
-            variant="outline"
-            block
+          <TrackClick
+            name="qr_code_copy_image_click"
+            :properties="{form_id: form.id, form_slug: form.slug}"
           >
-            {{ imageCopied ? 'Image Copied!' : 'Copy Image' }}
-          </UButton>
+            <UButton
+              @click="copyImage"
+              :color="imageCopied ? 'success' : 'neutral'"
+              :icon="imageCopied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
+              variant="outline"
+              block
+            >
+              {{ imageCopied ? 'Image Copied!' : 'Copy Image' }}
+            </UButton>
+          </TrackClick>
         </div>
       </div>
     </template>
@@ -43,9 +53,11 @@
 <script>
 import QRCode from "qrcode"
 import { useClipboard } from '@vueuse/core'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 export default {
   name: "FormQrCode",
+  components: { TrackClick },
   props: {
     form: { type: Object, required: true },
     extraQueryParam: { type: String, default: "" },

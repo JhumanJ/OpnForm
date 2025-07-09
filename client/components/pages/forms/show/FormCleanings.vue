@@ -29,18 +29,22 @@
           />
         </div>
         <div class="flex gap-0 self-start mt-2 text-xs font-medium leading-3 text-center">
-          <UButton
-            v-track.form_cleanings_unlock_all_features
-            icon="i-heroicons-check-badge-16-solid"
-            @click.prevent="onUpgradeClick"
+          <TrackClick
+            name="form_cleanings_unlock_all_features"
+            :properties="{}"
           >
-            <template v-if="form.is_pro">
-              Upgrade plan - Unlock all features
-            </template>
-            <template v-else>
-              Start free trial - Unlock all features
-            </template>
-          </UButton>
+            <UButton
+              icon="i-heroicons-check-badge-16-solid"
+              @click.prevent="onUpgradeClick"
+            >
+              <template v-if="form.is_pro">
+                Upgrade plan - Unlock all features
+              </template>
+              <template v-else>
+                Start free trial - Unlock all features
+              </template>
+            </UButton>
+          </TrackClick>
           <UButton
             v-if="specifyFormOwner"
             variant="link"
@@ -56,10 +60,11 @@
 
 <script>
 import VTransition from '~/components/global/transitions/VTransition.vue'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 export default {
   name: 'FormCleanings',
-  components: { VTransition },
+  components: { VTransition, TrackClick },
   props: {
     form: { type: Object, required: true },
     specifyFormOwner: { type: Boolean, default: false },

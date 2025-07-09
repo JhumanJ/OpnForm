@@ -1,12 +1,17 @@
 <template>
   <div>
-    <UButton
-      variant="outline"
-      color="neutral"
-      icon="i-heroicons-arrow-path"
-      @click="showGenerateFormLinkModal = true"
-      label="Regenerate link"
-    />
+    <TrackClick
+      name="regenerate_form_link_click"
+      :properties="{form_id: form.id, form_slug: form.slug}"
+    >
+      <UButton
+        variant="outline"
+        color="neutral"
+        icon="i-heroicons-arrow-path"
+        @click="showGenerateFormLinkModal = true"
+        label="Regenerate link"
+      />
+    </TrackClick>
 
     <!--  Regenerate form link modal  -->
     <UModal
@@ -48,14 +53,19 @@
             https://opnform.com/forms/contact-form-e68des
           </p>
           <div class="text-center mt-4">
-            <UButton
-              :loading="loadingNewLink"
-              variant="outline"
-              color="primary"
-              @click="regenerateLink('slug')"
+            <TrackClick
+              name="regenerate_form_link_readable_click"
+              :properties="{form_id: form.id, form_slug: form.slug, type: 'slug'}"
             >
-              Generate a Human Readable URL
-            </UButton>
+              <UButton
+                :loading="regenerateLinkMutationInstance.isPending.value"
+                variant="outline"
+                color="primary"
+                @click="regenerateLink('slug')"
+              >
+                Generate a Human Readable URL
+              </UButton>
+            </TrackClick>
           </div>
         </div>
         <div class="border-t pt-4 mt-4">
@@ -70,14 +80,19 @@
             https://opnform.com/forms/b4417f9c-34ae-4421-8006-832ee47786e7
           </p>
           <div class="text-center mt-4">
-            <UButton
-              :loading="loadingNewLink"
-              variant="outline"
-              color="primary"
-              @click="regenerateLink('uuid')"
+            <TrackClick
+              name="regenerate_form_link_random_click"
+              :properties="{form_id: form.id, form_slug: form.slug, type: 'uuid'}"
             >
-              Generate a Random ID URL
-            </UButton>
+              <UButton
+                :loading="regenerateLinkMutationInstance.isPending.value"
+                variant="outline"
+                color="primary"
+                @click="regenerateLink('uuid')"
+              >
+                Generate a Random ID URL
+              </UButton>
+            </TrackClick>
           </div>
         </div>
       </template>
@@ -86,17 +101,14 @@
 </template>
 
 <script setup>
-import { formsApi } from "~/api/forms"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const props = defineProps({
   form: { type: Object, required: true },
 })
 
 const crisp = useCrisp()
-const formsStore = useFormsStore()
 const router = useRouter()
-
-const loadingNewLink = ref(false)
 const showGenerateFormLinkModal = ref(false)
 
 // Modal state
@@ -109,21 +121,25 @@ const isModalOpen = computed({
   }
 })
 
+const { regenerateLink: regenerateLinkMutation } = useForms()
+const regenerateLinkMutationInstance = regenerateLinkMutation({
+  onSuccess: (data) => {
+    router.push({
+      name: "forms-slug-show-share",
+      params: { slug: data.form.slug },
+    })
+    useAlert().success(data.message)
+    showGenerateFormLinkModal.value = false
+  },
+  onError: (error) => {
+    useAlert().error(error?.data?.message || "Something went wrong")
+  }
+})
+
 const regenerateLink = (option) => {
-  if (loadingNewLink.value) return
-  loadingNewLink.value = true
-  formsApi.regenerateLink(props.form.id, option)
-    .then((data) => {
-      formsStore.save(data.form)
-      router.push({
-        name: "forms-slug-show-share",
-        params: { slug: data.form.slug },
-      })
-      useAlert().success(data.message)
-      loadingNewLink.value = false
-    })
-    .finally(() => {
-      showGenerateFormLinkModal.value = false
-    })
+  regenerateLinkMutationInstance.mutate({
+    id: props.form.id,
+    option
+  })
 }
 </script>

@@ -1,66 +1,68 @@
 <template>
-  <div class="space-y-4">
-    <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
-      <div>
-        <h3 class="text-lg font-medium text-neutral-900">General</h3>
-        <p class="mt-1 text-sm text-neutral-500">
-          Basic information about your form.
-        </p>
+  <VForm size="sm">
+    <div class="space-y-4">
+      <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <h3 class="text-lg font-medium text-neutral-900">General</h3>
+          <p class="mt-1 text-sm text-neutral-500">
+            Basic information about your form.
+          </p>
+        </div>
       </div>
-    </div>
 
-    <text-input
-      :form="form"
-      name="title"
-      class="mt-4 max-w-xs"
-      label="Form Name"
-      placeholder="My form"
-    />
-    <select-input
-      name="tags"
-      label="Tags"
-      clearable
-      :form="form"
-      help="To organize your forms"
-      placeholder="Select Tag(s)"
-      class="max-w-xs"
-      :multiple="true"
-      :allow-creation="true"
-      :options="allTagsOptions"
-    />
-    <flat-select-input
-      name="visibility"
-      label="Form Visibility"
-      class="max-w-xs"
-      :form="form"
-      placeholder="Select Visibility"
-      :options="visibilityOptions"
-    />
-    <div
-      v-if="isFormClosingOrClosed"
-      class="bg-gray-50 border rounded-lg px-4 py-2"
-    >
-      <rich-text-area-input
-        name="closed_text"
+      <text-input
         :form="form"
-        label="Closed form text"
-        help="This message will be shown when the form will be closed"
-        :required="false"
-        wrapper-class="mb-0"
+        name="title"
+        class="mt-4 max-w-xs"
+        label="Form Name"
+        placeholder="My form"
       />
-    </div>
+      <select-input
+        name="tags"
+        label="Tags"
+        clearable
+        :form="form"
+        help="To organize your forms"
+        placeholder="Select Tag(s)"
+        class="max-w-xs"
+        :multiple="true"
+        :allow-creation="true"
+        :options="allTagsOptions"
+      />
+      <flat-select-input
+        name="visibility"
+        label="Form Visibility"
+        class="max-w-xs"
+        :form="form"
+        placeholder="Select Visibility"
+        :options="visibilityOptions"
+      />
+      <div
+        v-if="isFormClosingOrClosed"
+        class="bg-gray-50 border rounded-lg px-4 py-2"
+      >
+        <rich-text-area-input
+          name="closed_text"
+          :form="form"
+          label="Closed form text"
+          help="This message will be shown when the form will be closed"
+          :required="false"
+          wrapper-class="mb-0"
+        />
+      </div>
 
-    <UButton
-      v-if="copyFormOptions.length > 0"
-      color="neutral"
-      variant="outline"
-      class="mt-4"
-      icon="i-heroicons-document-duplicate"
-      @click.prevent="showCopyFormSettingsModal = true"
-    >
-      Copy another form's settings
-    </UButton>
-  </div>
+      <UButton
+        v-if="copyFormOptions.length > 0"
+        color="neutral"
+        variant="outline"
+        class="mt-4"
+        icon="i-heroicons-document-duplicate"
+        @click.prevent="showCopyFormSettingsModal = true"
+      >
+        Copy another form's settings
+      </UButton>
+    </div>
+  </VForm>
     
   <UModal
     v-model:open="showCopyFormSettingsModal"
@@ -74,28 +76,30 @@
       </div>
     </template>
     <template #body>
-      <select-input
-        v-model="copyFormId"
-        name="copy_form_id"
-        label="Copy Settings From"
-        placeholder="Choose a form"
-        :searchable="copyFormOptions.length > 5"
-        :options="copyFormOptions"
-      />
-      <div class="mt-4 flex items-center justify-between">
-        <UButton
-          @click="copySettings"
-        >
-          Confirm & Copy
-        </UButton>
-        <UButton
-          color="neutral"
-          variant="outline"
-          @click="showCopyFormSettingsModal = false"
-        >
-          Cancel
-        </UButton>
-      </div>
+      <VForm size="sm">
+        <select-input
+          v-model="copyFormId"
+          name="copy_form_id"
+          label="Copy Settings From"
+          placeholder="Choose a form"
+          :searchable="copyFormOptions.length > 5"
+          :options="copyFormOptions"
+        />
+        <div class="mt-4 flex items-center justify-between">
+          <UButton
+            @click="copySettings"
+          >
+            Confirm & Copy
+          </UButton>
+          <UButton
+            color="neutral"
+            variant="outline"
+            @click="showCopyFormSettingsModal = false"
+          >
+            Cancel
+          </UButton>
+        </div>
+      </VForm>
     </template>
   </UModal>
 </template>
@@ -105,10 +109,14 @@ import clonedeep from 'clone-deep'
 import { default as _has } from 'lodash/has'
 
 const alert = useAlert()
-const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
-const forms = computed(() => formsStore.getAll)
+
+// Get forms list for current workspace
+const { currentId: workspaceId } = useCurrentWorkspace()
+const { forms } = useFormsList(workspaceId, {
+  enabled: computed(() => !!workspaceId.value)
+})
 
 // Reactive state
 const showCopyFormSettingsModal = ref(false)
@@ -131,6 +139,7 @@ const visibilityOptions = [
 ]
 
 const copyFormOptions = computed(() => {
+  if (!forms.value) return []
   return forms.value
     .filter((formItem) => {
       return form.value.id !== formItem.id
@@ -144,7 +153,21 @@ const copyFormOptions = computed(() => {
 })
 
 const allTagsOptions = computed(() => {
-  return formsStore.allTags.map((tagname) => {
+  if (!forms.value) return []
+  
+  // Extract all unique tags from forms
+  let tags = []
+  forms.value.forEach((formItem) => {
+    if (formItem.tags && formItem.tags.length) {
+      if (typeof formItem.tags === "string" || formItem.tags instanceof String) {
+        tags = tags.concat(formItem.tags.split(","))
+      } else if (Array.isArray(formItem.tags)) {
+        tags = tags.concat(formItem.tags)
+      }
+    }
+  })
+  
+  return [...new Set(tags)].map((tagname) => {
     return {
       name: tagname,
       value: tagname,
@@ -165,7 +188,7 @@ const copySettings = () => {
   }
 
   const copyForm = clonedeep(
-    forms.value.find(form => form.id === copyFormId.value),
+    forms.value?.find(form => form.id === copyFormId.value),
   )
   if (!copyForm)
     return;

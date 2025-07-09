@@ -30,13 +30,20 @@
     <template #body>
       <div class="overflow-y-scroll px-2">
         <VForm size="sm">
-          <component
-            :is="component"
-            v-if="integration && component"
-            :form="form"
-            :integration="integration"
-            :integration-data="integrationData"
-          />
+          <Suspense v-if="integration">
+            <component
+              :is="component"
+              v-if="component"
+              :form="form"
+              :integration="integration"
+              :integration-data="integrationData"
+            />
+            <template #fallback>
+              <div class="flex items-center justify-center p-8">
+                <USkeleton class="h-32 w-full" />
+              </div>
+            </template>
+          </Suspense>
         </VForm>
       </div>
     </template>
@@ -65,6 +72,8 @@
 
 <script setup>
 import { computed } from "vue"
+import { useComponentRegistry } from "~/composables/components/useComponentRegistry"
+import ProTag from "~/components/app/ProTag.vue"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -76,7 +85,44 @@ const props = defineProps({
 
 const alert = useAlert()
 const emit = defineEmits(["close"])
-const loading = ref(false)
+
+const { createIntegration, updateIntegration } = useFormIntegrations()
+
+const createIntegrationMutation = createIntegration({
+  onSuccess: (data) => {
+    alert.success(data.message)
+    emit("close")
+  },
+  onError: (error) => {
+    try {
+      alert.error(error.data.message)
+    }
+    catch {
+      alert.error("An error occurred while creating the integration")
+    }
+  },
+})
+
+const updateIntegrationMutation = updateIntegration({
+  onSuccess: (data) => {
+    alert.success(data.message)
+    emit("close")
+  },
+  onError: (error) => {
+    try {
+      alert.error(error.data.message)
+    }
+    catch {
+      alert.error("An error occurred while updating the integration")
+    }
+  },
+})
+
+const loading = computed(
+  () =>
+    createIntegrationMutation.isPending.value ||
+    updateIntegrationMutation.isPending.value,
+)
 
 // Computed property to handle show/hide logic for UModal
 const isOpen = computed({
@@ -97,16 +143,21 @@ const openHelp = () => {
   crisp.openHelpdesk()
 }
 
-const formIntegrationsStore = useFormIntegrationsStore()
-const formIntegration = computed(() =>
-  props.formIntegrationId
-    ? formIntegrationsStore.getByKey(props.formIntegrationId)
-    : null,
-)
+// Use query composables to get form integrations
+const { list } = useFormIntegrations()
+const { data: formIntegrationsData } = list(computed(() => props.form.id))
+
+// Get the specific form integration by ID
+const formIntegration = computed(() => {
+  if (!props.formIntegrationId || !formIntegrationsData.value) return null
+  return formIntegrationsData.value.find(integration => integration.id === props.formIntegrationId)
+})
+
+const { getIntegrationComponent } = useComponentRegistry()
 
 const component = computed(() => {
   if (!props.integration) return null
-  return resolveComponent(props.integration.file_name)
+  return getIntegrationComponent(props.integration.id)
 })
 
 const integrationData = ref(null)
@@ -120,14 +171,16 @@ watch(
 
 const initIntegrationData = () => {
   integrationData.value = useForm({
-    integration_id: props.formIntegrationId
+    integration_id: props.formIntegrationId && formIntegration.value
       ? formIntegration.value.integration_id
       : props.integrationKey,
-    status: props.formIntegrationId
+    status: props.formIntegrationId && formIntegration.value
       ? formIntegration.value.status === "active"
       : true,
-    settings: props.formIntegrationId ? formIntegration.value.data ?? {} : {},
-    logic: props.formIntegrationId
+    settings: props.formIntegrationId && formIntegration.value 
+      ? formIntegration.value.data ?? {} 
+      : {},
+    logic: props.formIntegrationId && formIntegration.value
       ? !Array.isArray(formIntegration.value.logic) &&
         formIntegration.value.logic
         ? formIntegration.value.logic
@@ -139,28 +192,22 @@ const initIntegrationData = () => {
 initIntegrationData()
 
 const save = () => {
-  if (!integrationData.value || loading.value) return
-  loading.value = true
-  integrationData.value
-    .submit(
-      props.formIntegrationId ? "PUT" : "POST",
-      "/open/forms/{formid}/integration".replace("{formid}", props.form.id) +
-        (props.formIntegrationId ? "/" + props.formIntegrationId : ""),
-    )
-    .then((data) => {
-      alert.success(data.message)
-      formIntegrationsStore.save(data.form_integration)
-      emit("close")
+  if (loading.value) return
+
+  const data = integrationData.value.data()
+
+  if (props.formIntegrationId) {
+    updateIntegrationMutation.mutate({
+      formId: props.form.id,
+      integrationId: props.formIntegrationId,
+      data,
     })
-    .catch((error) => {
-      try {
-        alert.error(error.data.message)
-      } catch {
-        alert.error("An error occurred while saving the integration")
-      }
+  }
+  else {
+    createIntegrationMutation.mutate({
+      formId: props.form.id,
+      data,
     })
-    .finally(() => {
-      loading.value = false
-    })
+  }
 }
 </script>

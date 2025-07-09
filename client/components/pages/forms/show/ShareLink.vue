@@ -10,6 +10,8 @@
     <copy-content
       :content="share_url"
       :is-draft="form.visibility == 'draft'"
+      tracking-event="share_link_copy_click"
+      :tracking-properties="{form_id: form.id, form_slug: form.slug}"
     >
       <template #icon>
         <svg

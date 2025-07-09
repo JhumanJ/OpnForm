@@ -51,7 +51,7 @@
 
     <!-- Tokens List -->
     <div v-if="user.is_pro" class="space-y-4">
-      <div v-if="tokens.length === 0 && !loading" class="text-center py-12">
+      <div v-if="tokens?.length === 0 && !loading" class="text-center py-12">
         <UIcon 
           name="i-heroicons-key" 
           class="w-12 h-12 text-neutral-400 mx-auto mb-4" 
@@ -70,7 +70,7 @@
       </div>
 
       <UTable 
-        v-if="tokens.length > 0"
+        v-if="tokens?.length > 0"
         v-model:column-pinning="columnPinning"
         :data="tokens" 
         :columns="tableColumns"
@@ -155,16 +155,27 @@
 <script setup>
 import opnformConfig from '~/opnform.config.js'
 import AbilitiesBadges from '~/components/users/settings/access-tokens/AbilitiesBadges.vue'
-import { tokensApi } from '~/api'
 
 const accessTokenModal = ref(false)
-const accessTokenStore = useAccessTokenStore()
 const subscriptionModalStore = useSubscriptionModalStore()
 const alert = useAlert()
 
-const tokens = computed(() => accessTokenStore.getAll)
-const loading = computed(() => accessTokenStore.loading)
-const user = computed(() => useAuthStore().user)
+const { data: user } = useAuth().user()
+
+// Use TanStack Query instead of Pinia store
+const { list, remove: removeToken } = useTokens()
+
+// Fetch tokens only if user is pro
+const { data: tokens, isLoading: loading } = list({}, {
+  enabled: computed(() => user.value?.is_pro || false)
+})
+
+// Delete token mutation
+const deleteTokenMutation = removeToken({
+  onError: () => {
+    alert.error("An error occurred while deleting the token")
+  }
+})
 
 // Column pinning state
 const columnPinning = ref({
@@ -201,22 +212,7 @@ const openSubscriptionModal = () => {
 
 const deleteToken = (token) => {
   alert.confirm("Do you really want to delete this token?", () => {
-      tokensApi.delete(token.id)
-      .then(() => {
-        accessTokenStore.remove(token.id)
-        alert.success('Token deleted successfully')
-      })
-      .catch((error) => {
-        try {
-          alert.error(error.data.message)
-        } catch {
-          alert.error("An error occurred while deleting the token")
-        }
-      })
+    deleteTokenMutation.mutate(token.id)
   })
-}
-
-if (user.value.is_pro) {
-  await accessTokenStore.fetchTokens()
 }
 </script> 

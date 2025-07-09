@@ -27,27 +27,13 @@
         </h3>
         
         <!-- Section Items -->
-        <ul class="space-y-1">
-          <li v-for="item in section.items" :key="item.label">
-            <!-- Loading skeleton for form navigation items -->
-            <USkeleton 
-              v-if="loading && section.name === null && item.label !== 'Dashboard'"
-              class="h-9 w-full rounded-md"
-            />
-            <!-- Regular navigation item -->
-            <TrackClick
-              v-else
-              name="sidebar_nav_click"
-              :properties="{ label: item.label, form_id: form?.id }"
-            >
-              <UButton
-                v-bind="item"
-                class="w-full justify-start"
-                @click="item.onClick"
-              />
-            </TrackClick>
-          </li>
-        </ul>
+        <NavigationList
+          :items="section.items"
+          :loading="loading"
+          :skeleton-filter="(item) => section.name === null && item.label !== 'Dashboard'"
+          tracking-name="sidebar_nav_click"
+          :tracking-properties="(item) => ({ label: item.label, form_id: form?.id })"
+        />
       </div>
     </template>
   </BaseSidebar>
@@ -55,7 +41,7 @@
 
 <script setup>
 import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
-import TrackClick from '~/components/global/TrackClick.vue'
+import NavigationList from "~/components/global/NavigationList.vue"
 
 const props = defineProps({
   form: {
@@ -69,10 +55,9 @@ const props = defineProps({
 })
 
 const route = useRoute()
-const workspacesStore = useWorkspacesStore()
 const { sharedNavigationSections, createNavItem } = useSharedNavigation()
 
-const workspace = computed(() => workspacesStore.getCurrent)
+const { current: workspace } = useCurrentWorkspace()
 
 // Check if current route matches a prefix
 function isActiveRoute(routeName) {

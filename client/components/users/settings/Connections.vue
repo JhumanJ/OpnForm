@@ -11,14 +11,14 @@
       <UButton
         label="Connect Account"
         icon="i-heroicons-plus"
-        :loading="loading"
+        :loading="isLoading"
         @click="providerModal = true"
       />
     </div>
 
     <!-- Providers List -->
     <div class="space-y-4">
-      <div v-if="providers.length === 0 && !loading" class="text-center py-12">
+      <div v-if="providers.length === 0 && !isLoading" class="text-center py-12">
         <UIcon 
           name="i-heroicons-link" 
           class="w-12 h-12 text-neutral-400 mx-auto mb-4" 
@@ -41,7 +41,7 @@
         v-model:column-pinning="columnPinning"
         :data="providers" 
         :columns="tableColumns"
-        :loading="loading"
+        :loading="isLoading"
         class="w-full"
       >
         <template #provider-cell="{ row: { original: item } }">
@@ -83,15 +83,12 @@
 </template>
 
 <script setup>
-import { useOAuthProvidersStore } from '~/stores/oauth_providers'
-import { oauthApi } from '~/api'
-
 const providerModal = ref(false)
-const providersStore = useOAuthProvidersStore()
+const oAuth = useOAuth()
 const alert = useAlert()
 
-const providers = computed(() => providersStore.getAll)
-const loading = computed(() => providersStore.loading)
+const { data: providersData, isLoading, refetch } = oAuth.providers()
+const providers = computed(() => providersData.value || [])
 
 // Column pinning state
 const columnPinning = ref({
@@ -123,26 +120,31 @@ const tableColumns = [
 
 // Get service information
 const getService = (providerName) => {
-  return providersStore.getService(providerName)
+  return oAuth.getService(providerName)
 }
+
+// Disconnect provider mutation
+const removeMutation = oAuth.remove({
+  onSuccess: () => {
+    alert.success('Account disconnected successfully')
+    refetch()
+  },
+  onError: (error) => {
+    try {
+      alert.error(error.data.message)
+    } catch {
+      alert.error("An error occurred while disconnecting the account")
+    }
+  }
+})
 
 // Disconnect provider
 const disconnectProvider = (provider) => {
   alert.confirm("Do you really want to disconnect this account?", () => {
-    oauthApi.delete(provider.id)
-      .then(() => {
-        providersStore.remove(provider.id)
-        alert.success('Account disconnected successfully')
-      })
-      .catch((error) => {
-        try {
-          alert.error(error.data.message)
-        } catch {
-          alert.error("An error occurred while disconnecting the account")
-        }
-      })
+    removeMutation.mutate(provider.id)
   })
 }
 
-await providersStore.fetchOAuthProviders()
+// Fetch providers on mount
+await oAuth.fetchOAuthProviders()
 </script> 

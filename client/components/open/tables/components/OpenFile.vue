@@ -17,17 +17,19 @@
       >
         <div
           v-if="file.is_image"
-          class="w-8 h-8"
+          class="w-8 h-8 rounded border border-neutral-200"
         >
           <img
-            class="object-cover h-full w-full rounded-sm"
+            class="object-cover h-full w-full"
             :src="file.file_url"
             @error="failedImages.push(file.file_url)"
           >
         </div>
-        <span
+        <UBadge
           v-else
-          class="py-1 px-2"
+          size="sm"
+          color="neutral"
+          variant="ghost"
         >
           <a
             :href="file.file_url"
@@ -36,7 +38,7 @@
           >{{
             file.displayed_file_name
           }}</a>
-        </span>
+        </UBadge>
       </a>
     </span>
   </p>

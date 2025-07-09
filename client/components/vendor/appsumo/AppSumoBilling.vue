@@ -62,10 +62,9 @@ export default {
   components: { VButton },
 
   setup() {
-    const authStore = useAuthStore()
-    return {
-      user: computed(() => authStore.user),
-    }
+          return {
+        user: computed(() => useAuth().user().data.value),
+      }
   },
 
   data() {

@@ -59,6 +59,7 @@
 
 <script setup>
 import ConditionEditor from "~/components/open/forms/components/form-logic-components/ConditionEditor.client.vue"
+import Collapse from "~/components/app/Collapse.vue"
 
 const props = defineProps({
   integration: { type: Object, required: true },

@@ -34,6 +34,8 @@
 </template>
   
 <script setup>
+import ErrorBoundary from '~/components/app/ErrorBoundary.vue'
+
 const crisp = useCrisp()
 const workingFormStore = useWorkingFormStore()
 const form = storeToRefs(workingFormStore).content

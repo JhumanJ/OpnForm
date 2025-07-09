@@ -297,50 +297,36 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue"
-import { useAuthStore } from "../stores/auth"
+<script setup>
 import Features from "~/components/pages/welcome/Features.vue"
-import MoreFeatures from "~/components/pages/welcome/MoreFeatures.vue"
+import MoreFeatures from "../components/pages/welcome/MoreFeatures.vue"
 import PricingTable from "../components/pages/pricing/PricingTable.vue"
-import AiFeature from "~/components/pages/welcome/AiFeature.vue"
+import AiFeature from "../components/pages/welcome/AiFeature.vue"
 import TemplatesSlider from "../components/pages/welcome/TemplatesSlider.vue"
 import opnformConfig from "~/opnform.config.js"
+import VButton from '../components/global/VButton.vue'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
-export default {
-  components: {
-    Features,
-    MoreFeatures,
-    PricingTable,
-    AiFeature,
-    TemplatesSlider,
-  },
+definePageMeta({
   layout: "default",
+})
 
-  setup() {
-    const authStore = useAuthStore()
-    defineRouteRules({
-      swr: 3600,
-    })
-    definePageMeta({
-      middleware: ['root-redirect']
-    })
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 
-    return {
-      authenticated: computed(() => authStore.check),
-      config: opnformConfig,
-      runtimeConfig: useRuntimeConfig(),
-    }
-  },
-
-  data: () => ({}),
-
-  computed: {
-    configLinks() {
-      return this.config.links
+useHead({
+  title: 'OpnForm: Open-Source Form Builder',
+  titleTemplate: '%s',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: 'The Open-Source Typeform Alternative',
     },
-  },
-}
+  ],
+})
+
+const config = opnformConfig
+const configLinks = computed(() => config.links)
 </script>
 
 <style lang="scss" scoped>

@@ -195,7 +195,7 @@ import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import TextBlock from '~/components/forms/TextBlock.vue'
+import PoweredBy from '../../pages/forms/show/PoweredBy.vue'
 import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
@@ -221,7 +221,6 @@ const emit = defineEmits(['submitted', 'password-entered', 'restarted'])
 
 const { t, setLocale } = useI18n()
 const route = useRoute()
-const authStore = useAuthStore()
 const alert = useAlert()
 const workingFormStore = useWorkingFormStore()
 
@@ -313,7 +312,10 @@ const getFontUrl = computed(() => {
 })
 
 const isFormOwner = computed(() => {
-  return authStore.check && props.form && props.form.creator_id === authStore.user.id
+  const { isAuthenticated } = useIsAuthenticated()
+  const { user } = useAuth()
+  const { data: userData } = user()
+  return isAuthenticated.value && props.form && props.form.creator_id === userData.value.id
 })
 
 const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)

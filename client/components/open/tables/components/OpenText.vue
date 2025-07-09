@@ -1,5 +1,5 @@
 <template>
-  <div class="break-words whitespace-break-spaces" v-html="value" />
+  <div class="break-words whitespace-break-spaces text-sm text-neutral-900" v-html="value" />
 </template>
 
 <script>

@@ -37,8 +37,6 @@ useOpnSeoMeta({
 const props = defineProps({
   error: { type: Object, default: null }
 })
-const authStore = useAuthStore()
-
 
 if (props.error?.statusCode === 500) {
   // Track in Sentry 500 errors
@@ -48,7 +46,7 @@ if (props.error?.statusCode === 500) {
   captureException(exception, {
     message: props.error?.message ?? props.error?.statusMessage,
     type: '500_error',
-    user_id: authStore.user?.id
+    user_id: useAuth().user().data.value?.id
   })
 }
 </script>

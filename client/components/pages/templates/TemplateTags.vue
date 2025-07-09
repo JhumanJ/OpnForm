@@ -55,6 +55,9 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
+
 const props = defineProps({
   template: {
     type: Object,
@@ -66,11 +69,9 @@ const props = defineProps({
   },
 })
 
-const templatesStore = useTemplatesStore()
-const types = computed(() =>
-  templatesStore.getTemplateTypes(props.template.types),
-)
+const { getTemplateTypes, getTemplateIndustries } = useTemplateMeta()
+const types = computed(() => getTemplateTypes(props.template.types))
 const industries = computed(() =>
-  templatesStore.getTemplateIndustries(props.template.industries),
+  getTemplateIndustries(props.template.industries),
 )
 </script>
