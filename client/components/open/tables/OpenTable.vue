@@ -15,17 +15,16 @@
         class="max-w-sm min-w-[12ch]" 
         placeholder="Search..." 
         icon="i-heroicons-magnifying-glass-solid"
-        @update:model-value="table?.tableApi?.setGlobalFilter($event)"
+        v-model="search"
       />
       <USelectMenu
         size="sm"
         variant="ghost"
         class="w-32"
         v-if="hasStatus"
-        :model-value="selectedStatus"
+        v-model="selectedStatus"
         :items="statusList"
         :search-input="false"
-        @update:model-value="handleStatusFilter"
       />
 
       <TableColumnManager 
@@ -57,7 +56,7 @@
       :column-visibility="columnVisibility"
       :column-pinning="columnPinning"
       :column-sizing="columnSizing"
-      :data="tableData"
+      :data="filteredTableData"
       :loading="loading"
       sticky
       class="flex-1"
@@ -123,7 +122,7 @@
 
 <script setup>
 import { formsApi } from '~/api'
-import { useEventListener } from '@vueuse/core'
+import { useEventListener, refDebounced } from '@vueuse/core'
 import { useTableState } from '~/composables/components/tables/useTableState'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
@@ -136,6 +135,7 @@ import OpenPayment from "./components/OpenPayment.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
+import Fuse from "fuse.js"
 
 const props = defineProps({
   data: {
@@ -196,7 +196,9 @@ const root = ref(null)
 const topBar = ref(null)
 const isExpanded = ref(false)
 const maxHeight = ref('800px') // fallback default
-const selectedStatus = ref('All')
+const search = ref("")
+const debouncedSearch = refDebounced(search, 300)
+const selectedStatus = ref('all')
 
 const statusList = [
   { label: 'All', value: 'all' },
@@ -204,26 +206,33 @@ const statusList = [
   { label: 'In Progress', value: 'partial' }
 ]
 
-const handleStatusFilter = (selected) => {
-  selectedStatus.value = selected.label
-  if (table.value?.tableApi) {
-    const statusColumn = table.value.tableApi.getColumn('status')
-    if (statusColumn) {
-      if (selected.value === 'all') {
-        statusColumn.setFilterValue(undefined)
-      } else {
-        statusColumn.setFilterValue(selected.value)
-      }
-    }
+const filteredTableData = computed(() => {
+  let data = [...props.data]
+
+  // Status filter (client-side)
+  if (hasStatus.value && selectedStatus.value !== 'all') {
+    data = data.filter(row => {
+      if (selectedStatus.value === 'completed') return row.status !== 'partial'
+      if (selectedStatus.value === 'partial') return row.status === 'partial'
+      return true
+    })
   }
-}
+
+  // Search (client-side, fuzzy)
+  if (debouncedSearch.value && debouncedSearch.value.trim() !== "") {
+    const fuse = new Fuse(data, {
+      keys: allColumns.value.map(col => col.id).filter(id => id !== 'actions'),
+      threshold: 0.4,
+    })
+    return fuse.search(debouncedSearch.value).map(res => res.item)
+  } else {
+    // Default sort by created_at desc
+    return data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  }
+})
 
 const hasStatus = computed(() => {
   return props.form?.is_pro && (props.form.enable_partial_submissions ?? false)
-})
-
-const tableData = computed(() => {
-  return [...props.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 })
 
 // Since UTable only renders when form exists, no need for safe wrappers
