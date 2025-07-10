@@ -194,7 +194,7 @@ export function useOAuth() {
   const remove = (options = {}) => {
     const builtInOnSuccess = (_, deletedProviderId) => {
       // Remove from individual cache
-      queryClient.removeQueries(['oauth', 'providers', deletedProviderId])
+      queryClient.removeQueries({ queryKey: ['oauth', 'providers', deletedProviderId] } )
       
       // Remove from providers list
       queryClient.setQueryData(['oauth', 'providers'], (old) => {

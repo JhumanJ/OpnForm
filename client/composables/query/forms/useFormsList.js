@@ -10,7 +10,7 @@ export function useFormsList(workspaceId, options = {}) {
   const queryClient = useQueryClient()
 
   const query = useInfiniteQuery({
-    queryKey: ['forms', 'list', workspaceId.value],
+    queryKey: computed(() => ['forms', 'list', workspaceId.value]),
     queryFn: ({ pageParam = 1 }) => {
       const apiFilters = { page: pageParam }
       return formsApi.list(workspaceId.value, { params: apiFilters }).then(res => {
@@ -34,7 +34,6 @@ export function useFormsList(workspaceId, options = {}) {
       const nextPage = current_page < last_page ? current_page + 1 : undefined
       return nextPage
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
     ...queryOptions,
   })
 
@@ -79,6 +78,10 @@ export function useFormsListCache() {
 
   const add = (workspaceId, newForm) => {
     const queryKey = ['forms', 'list', workspaceId]
+
+    // Cancel any in-flight queries to avoid overwriting the optimistic update
+    queryClient.cancelQueries({ queryKey, exact: true })
+
     queryClient.setQueryData(queryKey, (oldData) => {
       if (!oldData || !oldData.pages || oldData.pages.length === 0) {
         return oldData
@@ -90,15 +93,21 @@ export function useFormsListCache() {
         data: [newForm, ...newPages[0].data],
       }
 
-      return {
+      const newData = {
         ...oldData,
         pages: newPages,
+        pageParams: oldData.pageParams, // Keep pageParams intact
       }
+      return newData
     })
   }
 
   const update = (workspaceId, updatedForm) => {
     const queryKey = ['forms', 'list', workspaceId]
+
+    // Cancel any in-flight queries to avoid overwriting the optimistic update
+    queryClient.cancelQueries({ queryKey, exact: true })
+
     queryClient.setQueryData(queryKey, (oldData) => {
       if (!oldData) return oldData
 
@@ -109,12 +118,22 @@ export function useFormsListCache() {
         ),
       }))
 
-      return { ...oldData, pages: newPages }
+      const newData = { 
+        ...oldData, 
+        pages: newPages,
+        pageParams: oldData.pageParams, // Keep pageParams intact
+      }
+      return newData
     })
   }
 
   const remove = (workspaceId, formId) => {
     const queryKey = ['forms', 'list', workspaceId]
+
+    // Cancel any in-flight fetches for this infinite query to prevent
+    // them from overwriting our manual cache update when they resolve.
+    queryClient.cancelQueries({ queryKey, exact: true })
+
     queryClient.setQueryData(queryKey, (oldData) => {
       if (!oldData) return oldData
 
@@ -123,7 +142,13 @@ export function useFormsListCache() {
         data: page.data.filter((form) => form.id !== formId),
       }))
 
-      return { ...oldData, pages: newPages }
+      const newData = { 
+        ...oldData, 
+        pages: newPages,
+        pageParams: oldData.pageParams, // Keep pageParams intact
+      }
+      
+      return newData
     })
   }
 

@@ -8,13 +8,13 @@
       :modal="false"
       :portal="portal"
     >
-      <slot>
+      <slot :loading="deleteFormMutation.isPending.value || duplicateFormMutation.isPending.value">
       <UButton
         color="neutral"
         variant="outline"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
-        :loading="loading"
+        :loading="deleteFormMutation.isPending.value || duplicateFormMutation.isPending.value"
       />
       </slot>
     </UDropdownMenu>
@@ -33,16 +33,14 @@
       </template>
 
       <template #footer>
-        <div class="flex gap-3">
+        <div class="flex justify-between gap-3 w-full">
           <UButton
-            class="flex-1"
             color="neutral"
             variant="outline"
             @click="showDeleteFormModal = false"
             label="Cancel"
           />
           <UButton
-            class="flex-1"
             color="error"
             :loading="deleteFormMutation.isPending.value"
             @click="deleteForm"
@@ -88,11 +86,35 @@ const props = defineProps({
 const { data: user } = useAuth().user()
 const { current: workspace } = useCurrentWorkspace()
 
-const { remove: removeFormMutation, duplicate: duplicateFormMutation } = useForms()
+const { remove, duplicate } = useForms()
 
 const showDeleteFormModal = ref(false)
 const showFormTemplateModal = ref(false)
 const showFormWorkspaceModal = ref(false)
+
+const deleteFormMutation = remove({
+  onSuccess: (data) => {
+    useAlert().success(data.message)
+    showDeleteFormModal.value = false
+    router.push({ name: "home" })
+  },
+  onError: (error) => {
+    useAlert().error(error.data?.message || "Failed to delete form")
+  }
+})
+
+const duplicateFormMutation = duplicate({
+  onSuccess: (data) => {
+    router.push({
+      name: "forms-slug-show",
+      params: { slug: data.new_form.slug },
+    })
+    useAlert().success(data.message)
+  },
+  onError: (error) => {
+    useAlert().error(error.data?.message || "Failed to duplicate form")
+  }
+})
 
 const items = computed(() => {
   return [
@@ -162,48 +184,12 @@ const copyLink = () => {
   useAlert().success("Copied!")
 }
 
-const deleteFormMutation = removeFormMutation({
-  onSuccess: (data) => {
-    useAlert().success(data.message)
-    showDeleteFormModal.value = false
-    router.push({ name: "home" })
-  },
-  onError: (error) => {
-    useAlert().error(error.data?.message || "Failed to delete form")
-  }
-})
-
-const duplicateFormMutationQuery = duplicateFormMutation({
-  onSuccess: (data) => {
-    router.push({
-      name: "forms-slug-show",
-      params: { slug: data.new_form.slug },
-    })
-    useAlert().success(data.message)
-  },
-  onError: (error) => {
-    useAlert().error(error.data?.message || "Failed to duplicate form")
-  }
-})
-
-const loading = ref(false)
-
 const duplicateForm = () => {
-  loading.value = true
-  duplicateFormMutationQuery.mutate(props.form.id, {
-    onSuccess: () => {
-      loading.value = false
-    }
-  })
+  duplicateFormMutation.mutate(props.form.id)
 }
 
 const deleteForm = () => {
-  loading.value = true
-  deleteFormMutation.mutate(props.form.id, {
-    onSuccess: () => {
-      loading.value = false
-    }
-  })
+  deleteFormMutation.mutate(props.form.id)
 }
 
 const showDraftFormWarningNotification = () => {

@@ -199,19 +199,15 @@ export function useForms() {
   }
 
   const invalidateAll = () => {
-    // Clear all forms list data first to make forms disappear immediately
-    queryClient.invalidateQueries({ queryKey: ['forms', 'list'] })
-    
-    // Then invalidate all forms queries to trigger refetch
-    queryClient.invalidateQueries({ queryKey: ['forms'] })
+    queryClient.removeQueries({ queryKey: ['forms', 'list'], exact: false })
   }
 
   const invalidateDetail = (form) => {
     if (form.id) {
-      queryClient.invalidateQueries({ queryKey: ['forms', form.id] })
+      queryClient.removeQueries({ queryKey: ['forms', form.id] })
     }
     if (form.slug) {
-      queryClient.invalidateQueries({ queryKey: ['forms', 'slug', form.slug] })
+      queryClient.removeQueries({ queryKey: ['forms', 'slug', form.slug] })
     }
   }
 

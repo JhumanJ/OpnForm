@@ -57,8 +57,9 @@ export function useFormIntegrations() {
       queryFn: () => formsApi.integrations.list(unref(formId), options),
       enabled: !!unref(formId),
       onSuccess: (data) => {
+        const formIdValue = unref(formId)
         data?.forEach(integration => {
-          queryClient.setQueryData(['integrations', integration.id], integration)
+          queryClient.setQueryData(['forms', formIdValue, 'integrations', integration.id], integration)
         })
       },
       ...options
@@ -75,15 +76,16 @@ export function useFormIntegrations() {
   }
 
   const createIntegration = (options = {}) => {
-    const builtInOnSuccess = (newIntegration, { formId }) => {
+    const builtInOnSuccess = (response, { formId }) => {
+      const newIntegration = response.form_integration
       // Add to integrations list
       queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
         if (!old) return [newIntegration]
         if (!Array.isArray(old)) return old
         return [...old, newIntegration]
       })
-      // Cache the integration
-      queryClient.setQueryData(['integrations', newIntegration.id], newIntegration)
+      // Cache the individual integration
+      queryClient.setQueryData(['forms', formId, 'integrations', newIntegration.id], newIntegration)
     }
     
     return useMutation({
@@ -93,9 +95,10 @@ export function useFormIntegrations() {
   }
 
   const updateIntegration = (options = {}) => {
-    const builtInOnSuccess = (updatedIntegration, { formId, integrationId }) => {
-      // Update integration cache
-      queryClient.setQueryData(['integrations', integrationId], updatedIntegration)
+    const builtInOnSuccess = (response, { formId, integrationId }) => {
+      const updatedIntegration = response.form_integration
+      // Update individual integration cache
+      queryClient.setQueryData(['forms', formId, 'integrations', integrationId], updatedIntegration)
       
       // Update in integrations list
       queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
@@ -114,12 +117,11 @@ export function useFormIntegrations() {
 
   const deleteIntegration = (options = {}) => {
     const builtInOnSuccess = (_, { formId, integrationId }) => {
-      // Remove from integration cache
-      queryClient.removeQueries(['integrations', integrationId])
-      queryClient.removeQueries(['forms', formId, 'integrations', integrationId, 'events'])
+      // Remove individual integration cache
+      queryClient.removeQueries({ queryKey: ['forms', formId, 'integrations', integrationId] })
       
       // Remove from integrations list
-      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
         if (!Array.isArray(old)) return old
         return old.filter(integration => integration.id !== integrationId)
       })
@@ -133,7 +135,22 @@ export function useFormIntegrations() {
 
   const invalidateIntegrations = (formId) => {
     const formIdValue = unref(formId)
-    queryClient.invalidateQueries(['forms', formIdValue, 'integrations'])
+    queryClient.invalidateQueries({ queryKey: ['forms', formIdValue, 'integrations'] })
+  }
+
+  // Invalidate all integration-related queries for a form
+  const invalidateAllIntegrations = (formId) => {
+    const formIdValue = unref(formId)
+    queryClient.invalidateQueries({ 
+      queryKey: ['forms', formIdValue, 'integrations']
+    })
+  }
+
+  // Get a specific integration from cache
+  const getIntegrationById = (formId, integrationId) => {
+    const formIdValue = unref(formId)
+    const integrationIdValue = unref(integrationId)
+    return queryClient.getQueryData(['forms', formIdValue, 'integrations', integrationIdValue])
   }
 
   // Utility function to get all integrations by form ID from cache
@@ -159,9 +176,11 @@ export function useFormIntegrations() {
     updateIntegration,
     deleteIntegration,
     invalidateIntegrations,
+    invalidateAllIntegrations,
     
     // Utility functions
     getAllByFormId,
+    getIntegrationById,
     initIntegrations,
   }
 } 

@@ -133,9 +133,9 @@ export function useTemplates() {
       const deletedTemplate = queryClient.getQueryData(['templates', deletedId])
       
       // Remove from all caches
-      queryClient.removeQueries(['templates', deletedId])
+      queryClient.removeQueries({ queryKey: ['templates', deletedId] })
       if (deletedTemplate?.slug) {
-        queryClient.removeQueries(['templates', 'slug', deletedTemplate.slug])
+        queryClient.removeQueries({ queryKey: ['templates', 'slug', deletedTemplate.slug] })
       }
       
       // Remove from templates lists

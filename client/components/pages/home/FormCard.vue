@@ -32,13 +32,16 @@
       <!-- Extra Menu -->
       <div class="relative z-20">
         <ExtraMenu :form="form" :is-main-page="true" portal="#home-portals">
-          <UButton
-            class="hover:bg-neutral-200"
-            color="neutral"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal"
-            size="md"
-          />
+          <template #default="{ loading }">
+            <UButton
+              class="hover:bg-neutral-200"
+              color="neutral"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal"
+              size="md"
+              :loading="loading"
+            />
+          </template>
         </ExtraMenu>
       </div>
     </div>

@@ -108,7 +108,7 @@ export function useWorkspaces() {
   const remove = (options = {}) => {
     const builtInOnSuccess = (_, deletedId) => {
       // Remove from individual cache
-      queryClient.removeQueries(['workspaces', deletedId])
+      queryClient.removeQueries({ queryKey: ['workspaces', deletedId] })
       
       // Remove from all list caches
       queryClient.setQueriesData(['workspaces', 'list'], (old) => {
@@ -136,7 +136,7 @@ export function useWorkspaces() {
   const leave = (options = {}) => {
     const builtInOnSuccess = (_, leftWorkspaceId) => {
       // Remove from individual cache
-      queryClient.removeQueries(['workspaces', leftWorkspaceId])
+      queryClient.removeQueries({ queryKey: ['workspaces', leftWorkspaceId] })
       
       // Remove from all list caches
       queryClient.setQueriesData(['workspaces', 'list'], (old) => {
