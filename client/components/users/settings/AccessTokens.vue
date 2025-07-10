@@ -171,11 +171,7 @@ const { data: tokens, isLoading: loading } = list({}, {
 })
 
 // Delete token mutation
-const deleteTokenMutation = removeToken({
-  onError: () => {
-    alert.error("An error occurred while deleting the token")
-  }
-})
+const deleteTokenMutation = removeToken()
 
 // Column pinning state
 const columnPinning = ref({
@@ -211,7 +207,11 @@ const openSubscriptionModal = () => {
 
 const deleteToken = (token) => {
   alert.confirm("Do you really want to delete this token?", () => {
-    deleteTokenMutation.mutate(token.id)
+    deleteTokenMutation.mutateAsync(token.id).then(() => {
+      // Success handled by TanStack Query cache invalidation
+    }).catch(() => {
+      alert.error("An error occurred while deleting the token")
+    })
   })
 }
 </script> 

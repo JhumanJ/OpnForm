@@ -32,7 +32,7 @@
         class="relative"
       >
         <div class="absolute inset-0 z-10">
-          <div class="p-5 max-w-md mx-auto mt-5">
+          <div class="p-5 max-w-md mx-auto flex flex-col items-center justify-center h-full">
             <p class="text-center">
               You need a <pro-tag
                 upgrade-modal-title="Upgrade today to access form analytics"
@@ -41,9 +41,8 @@
               analytics.
             </p>
             <UButton
-              class="mt-5"
-              block
-              @click.prevent="openSubscriptionModal()"
+              class="mt-5 flex justify-center"
+              @click.prevent="openSubscriptionModal({modal_title: 'Upgrade to unlock form Analytics'})"
               label="Subscribe"
             />
           </div>
@@ -51,10 +50,10 @@
         <img
           src="/img/pages/forms/blurred_graph.png"
           alt="Sample Graph"
-          class="mx-auto filter blur-md z-0"
+          class="mx-auto w-full filter blur-md z-0 pointer-events-none"
         >
       </div>
-      <VTransition name="fade">
+      <VTransition v-else name="fade">
         <div
           v-if="isLoading"
           class="space-y-3"

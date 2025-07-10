@@ -140,20 +140,19 @@ onMounted(() => {
 })
 
 // Methods
-const login = async () => {
+const login = () => {
   loading.value = true
   
-  try {
-    await authFlow.loginWithCredentials(form, remember.value)
+  authFlow.loginWithCredentials(form, remember.value).then(() => {
     redirect()
-  } catch (error) {
+  }).catch((error) => {
     console.log(error)
     if (error.response?._data?.message == "You must change your credentials when in self host mode") {
       redirect()
     }
-  } finally {
+  }).finally(() => {
     loading.value = false
-  }
+  })
 }
 
 const redirect = () => {

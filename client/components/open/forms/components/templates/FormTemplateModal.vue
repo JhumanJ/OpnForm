@@ -229,30 +229,9 @@ const close = () => {
   emit("close")
 }
 
-const createMutation = create({
-  onSuccess: () => {
-    useAlert().success("Template created successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const updateMutation = update({
-  onSuccess: () => {
-    useAlert().success("Template updated successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const deleteMutation = remove({
-  onSuccess: () => {
-    useAlert().success("Template deleted successfully")
-    router.push({ name: "templates" })
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
+const createMutation = create()
+const updateMutation = update()
+const deleteMutation = remove()
 
 const onSubmit = () => {
   if (props.template) {
@@ -263,14 +242,30 @@ const onSubmit = () => {
 }
 const createFormTemplate = () => {
   templateForm.value.form = props.form
-  createMutation.mutate(templateForm.value)
+  createMutation.mutateAsync(templateForm.value).then(() => {
+    useAlert().success("Template created successfully")
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 const updateFormTemplate = () => {
   templateForm.value.form = props.form
-  updateMutation.mutate({ id: props.template.id, data: templateForm.value })
+  updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value }).then(() => {
+    useAlert().success("Template updated successfully")
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 const deleteFormTemplate = () => {
   if (!props.template) return
-  deleteMutation.mutate(props.template.id)
+  deleteMutation.mutateAsync(props.template.id).then(() => {
+    useAlert().success("Template deleted successfully")
+    router.push({ name: "templates" })
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 </script>

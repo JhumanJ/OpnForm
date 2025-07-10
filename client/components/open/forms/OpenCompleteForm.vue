@@ -223,7 +223,7 @@ const { t, setLocale } = useI18n()
 const route = useRoute()
 const alert = useAlert()
 const workingFormStore = useWorkingFormStore()
-
+const { data: user } = useAuth().user()
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
 const submissionId = ref(route.query.submission_id || null)
@@ -313,9 +313,7 @@ const getFontUrl = computed(() => {
 
 const isFormOwner = computed(() => {
   const { isAuthenticated } = useIsAuthenticated()
-  const { user } = useAuth()
-  const { data: userData } = user()
-  return isAuthenticated.value && props.form && props.form.creator_id === userData.value.id
+  return isAuthenticated.value && props.form && props.form.creator_id === user.value.id
 })
 
 const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
@@ -375,7 +373,7 @@ const handleScrollToError = () => {
   })
 }
 
-const triggerSubmit = async () => {
+const triggerSubmit = () => {
   if (!formManager || isProcessing.value) return
 
   formManager.submit({
@@ -393,12 +391,13 @@ const triggerSubmit = async () => {
         }
         
         emit('submitted', true)
-              } else {
+      } else {
         console.warn('Form submission failed via composable, but no error thrown?')
         alert.error(t('forms.submission_error'))
       }
     })
     .catch(error => {
+      console.error(error)
       if (error.response && error.response.status === 422 && error.data) {
         useAlert().formValidationError(error.data)
       } else if (error.message) {
@@ -410,12 +409,13 @@ const triggerSubmit = async () => {
     })
 }
 
-const restart = async () => {
+const restart = () => {
   if (!formManager) return
-  await formManager.restart()
-  submittedData.value = null
-  submissionId.value = null
-  emit('restarted', true)
+  formManager.restart().then(() => {
+    submittedData.value = null
+    submissionId.value = null
+    emit('restarted', true)
+  })
 }
 
 const passwordEntered = () => {

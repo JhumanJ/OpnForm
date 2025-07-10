@@ -44,7 +44,7 @@ const { data: user } = useAuth().user()
 const formsQueryUtils = useForms()
 const workspacesQueryUtils = useWorkspaces()
 
-const logout = async () => {
+const logout = () => {
   // Log out the user.
   authFlow.handleLogout()
 

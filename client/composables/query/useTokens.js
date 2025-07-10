@@ -1,6 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { tokensApi } from '~/api/tokens'
-import { chainCallbacks } from './index'
 
 export function useTokens() {
   const queryClient = useQueryClient()
@@ -73,7 +72,9 @@ export function useTokens() {
 
   // Mutations
   const create = (options = {}) => {
-    const builtInOnSuccess = (newToken) => {
+    return useMutation({
+      mutationFn: (data) => tokensApi.create(data),
+      onSuccess: (newToken) => {
       // Built-in cache management
       queryClient.setQueryData(['tokens', newToken.id], newToken)
       
@@ -83,16 +84,15 @@ export function useTokens() {
         queryClient.setQueryData(['tokens', 'list'], [newToken, ...currentList])
       }
       useAlert().success('Token created successfully')
-    }
-    
-    return useMutation({
-      mutationFn: (data) => tokensApi.create(data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
   const remove = (options = {}) => {
-    const builtInOnSuccess = (data, deletedTokenId) => {
+    return useMutation({
+      mutationFn: (tokenId) => tokensApi.delete(tokenId),
+      onSuccess: (data, deletedTokenId) => {
       // Built-in cache management
       queryClient.removeQueries({ queryKey: ['tokens', deletedTokenId] })
       
@@ -105,11 +105,8 @@ export function useTokens() {
         )
       }
       useAlert().success('Token deleted successfully')
-    }
-    
-    return useMutation({
-      mutationFn: (tokenId) => tokensApi.delete(tokenId),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 

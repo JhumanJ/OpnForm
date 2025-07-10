@@ -21,6 +21,9 @@
       v-model:open="isModalOpen"
       :ui="{ content: 'sm:max-w-2xl' }"
       title="Add the popup to your website"
+      :content="{
+        onPointerDownOutside: (event) => { if (event.target?.closest('.nf-main')) {return event.preventDefault()}}
+      }"
     >
       <template #body>
         <h3 class="text-xl font-semibold mb-2">
@@ -57,35 +60,28 @@
           </div>
         </div>
 
-        <collapse
-          class="py-5 w-full border rounded-md px-4"
-          :model-value="true"
-        >
-          <template #title>
-            <div class="flex">
-              <h3 class="font-semibold block text-lg">
-                Advanced options
-              </h3>
-            </div>
-          </template>
-          <div class="border-t mt-4 -mx-4" />
+        <div class="border-t my-4" />
+        <VForm size="sm">
+          <h3 class="text-xl font-semibold mb-2">
+            Customization
+          </h3>
+          
           <ColorInput
             v-model="advancedOptions.bgcolor"
             name="bgcolor"
-            class="mt-4"
             label="Circle Background Color"
           />
           <TextInput
             v-model="advancedOptions.emoji"
             name="emoji"
-            class="mt-4"
+            class="mt-4 max-w-xs"
             label="Emoji"
             :max-char-limit="2"
           />
           <FlatSelectInput
             v-model="advancedOptions.position"
             name="position"
-            class="mt-4"
+            class="mt-4 max-w-xs"
             label="Position"
             :options="[
               { name: 'Bottom Right', value: 'right' },
@@ -95,11 +91,11 @@
           <TextInput
             v-model="advancedOptions.width"
             name="width"
-            class="mt-4"
+            class="mt-4 max-w-xs"
             label="Form pop max width (px)"
             native-type="number"
           />
-        </collapse>
+        </VForm>
       </template>
     </UModal>
   </div>

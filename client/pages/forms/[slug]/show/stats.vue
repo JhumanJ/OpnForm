@@ -28,7 +28,7 @@
         </span>
         <span
           v-else
-          class="blur-[3px]"
+          class="blur-[3px] pointer-events-none"
         >
           {{ stat.placeholder }}
         </span>

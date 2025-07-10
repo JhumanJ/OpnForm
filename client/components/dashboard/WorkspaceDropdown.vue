@@ -85,7 +85,7 @@ defineProps({
 const { openSubscriptionModal } = useAppModals()
 const router = useRouter()
 const route = useRoute()
-const workspacesStore = useWorkspacesStore()
+const appStore = useAppStore()
 
 const { data: user } = useAuth().user()
 const { data: workspaces } = useWorkspaces().list()
@@ -119,7 +119,7 @@ const switchWorkspace = (workspaceToSwitch) => {
   if (workspaceToSwitch.id === workspace.value.id) {
     return
   }
-  workspacesStore.setCurrentId(workspaceToSwitch.id)
+  appStore.setCurrentId(workspaceToSwitch.id)
   invalidateForms()
   
   if (route.name !== "home") {
@@ -139,8 +139,8 @@ const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
 }
 
-const onUserAdded = async () => {
-  await invalidateWorkspaces()
+const onUserAdded = () => {
+  invalidateWorkspaces()
 }
 
 const openSettings = () => {

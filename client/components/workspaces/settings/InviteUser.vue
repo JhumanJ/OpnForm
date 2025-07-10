@@ -138,17 +138,7 @@ const isOpen = computed({
 })
 
 // Create mutation during setup
-const inviteUserMutation = addUserMutation(workspaceId, {
-  onSuccess: (data) => {
-    inviteUserForm.reset()
-    alert.success(data.message || 'User invited successfully')
-    emit('user-added')
-    closeModal()
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "There was an error adding user")
-  }
-})
+const inviteUserMutation = addUserMutation(workspaceId)
 
 // Methods
 const closeModal = () => {
@@ -174,9 +164,16 @@ const openBilling = () => {
 const addUser = () => {
   if (!workspaceId.value) return
 
-  inviteUserMutation.mutate({
+  inviteUserMutation.mutateAsync({
     email: inviteUserForm.email,
     role: inviteUserForm.role
+  }).then((data) => {
+    inviteUserForm.reset()
+    alert.success(data.message || 'User invited successfully')
+    emit('user-added')
+    closeModal()
+  }).catch((error) => {
+    alert.error(error.response?.data?.message || "There was an error adding user")
   })
 }
 </script>

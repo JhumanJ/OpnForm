@@ -112,36 +112,7 @@
             </div>
           </div>
           
-          <div v-if="!workspace?.is_pro" class="px-4">
-            <UAlert
-              class="mt-8 p-4"
-              icon="i-heroicons-sparkles"
-              color="primary"
-              variant="subtle"
-              title="Discover our Pro plan"
-            >
-              <template #description>
-                <div class="flex flex-wrap sm:flex-nowrap gap-4 items-start">
-                  <p class="flex-grow">
-                    Remove OpnForm branding, customize forms further, use your custom domain, integrate with your favorite tools, invite users, and more!
-                  </p>
-                  <TrackClick
-                    name="upgrade_banner_home_click"
-                    :properties="{}"
-                  >
-                    <UButton
-                      color="neutral"
-                      variant="outline"
-                      class="block"
-                      @click.prevent="openSubscriptionModal()"
-                    >
-                      Upgrade Now
-                    </UButton>
-                  </TrackClick>
-                </div>
-              </template>
-            </UAlert>
-          </div>
+          <UpgradeBanner class="mt-2" />
         </div>
 
           <!-- Loading Skeletons -->
@@ -162,6 +133,7 @@ import Fuse from "fuse.js"
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
 import TrackClick from '~/components/global/TrackClick.vue'
+import UpgradeBanner from "~/components/dashboard/UpgradeBanner.vue"
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
@@ -175,7 +147,6 @@ useOpnSeoMeta({
 })
 
 // Composables
-const { openSubscriptionModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 
 const {

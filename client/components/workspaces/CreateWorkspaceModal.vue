@@ -69,7 +69,7 @@ const props = defineProps({
 })
 
 const { create } = useWorkspaces()
-const workspacesStore = useWorkspacesStore()
+const appStore = useAppStore()
 const crisp = useCrisp()
 const alert = useAlert()
 
@@ -89,13 +89,11 @@ const form = useForm({
 // Handle form submission
 const createMutation = create()
 
-const handleSubmit = async () => {
-  try {
-    loading.value = true
-    
-    createMutation.mutate(form.data(), {
-      onSuccess: (newWorkspace) => {
-        workspacesStore.setCurrentId(newWorkspace.id)
+const handleSubmit = () => {
+  loading.value = true
+  
+  createMutation.mutateAsync(form.data()).then((newWorkspace) => {
+    appStore.setCurrentId(newWorkspace.id)
 
     // Show success message
     alert.success('You are now working in your new workspace.', 10000, {
@@ -103,25 +101,16 @@ const handleSubmit = async () => {
     })
 
     // Emit created event and close modal
-        emit('created', newWorkspace)
+    emit('created', newWorkspace)
     closeModal()
-        loading.value = false
-      },
-      onError: (error) => {
-        console.error('Error creating workspace:', error)
-        alert.error(error.data?.message || 'Something went wrong. Please try again.', 10000, {
-          title: 'Error creating workspace'
-        })
-        loading.value = false
-      }
-    })
-  } catch (error) {
+    loading.value = false
+  }).catch((error) => {
     console.error('Error creating workspace:', error)
     alert.error(error.data?.message || 'Something went wrong. Please try again.', 10000, {
       title: 'Error creating workspace'
     })
     loading.value = false
-  }
+  })
 }
 
 // Close modal and reset form

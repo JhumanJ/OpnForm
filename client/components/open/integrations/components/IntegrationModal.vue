@@ -88,35 +88,8 @@ const emit = defineEmits(["close"])
 
 const { createIntegration, updateIntegration } = useFormIntegrations()
 
-const createIntegrationMutation = createIntegration({
-  onSuccess: (data) => {
-    alert.success(data.message)
-    emit("close")
-  },
-  onError: (error) => {
-    try {
-      alert.error(error.data.message)
-    }
-    catch {
-      alert.error("An error occurred while creating the integration")
-    }
-  },
-})
-
-const updateIntegrationMutation = updateIntegration({
-  onSuccess: (data) => {
-    alert.success(data.message)
-    emit("close")
-  },
-  onError: (error) => {
-    try {
-      alert.error(error.data.message)
-    }
-    catch {
-      alert.error("An error occurred while updating the integration")
-    }
-  },
-})
+const createIntegrationMutation = createIntegration()
+const updateIntegrationMutation = updateIntegration()
 
 const loading = computed(
   () =>
@@ -197,16 +170,36 @@ const save = () => {
   const data = integrationData.value.data()
 
   if (props.formIntegrationId) {
-    updateIntegrationMutation.mutate({
+    updateIntegrationMutation.mutateAsync({
       formId: props.form.id,
       integrationId: props.formIntegrationId,
       data,
+    }).then((result) => {
+      alert.success(result.message)
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
     })
   }
   else {
-    createIntegrationMutation.mutate({
+    createIntegrationMutation.mutateAsync({
       formId: props.form.id,
       data,
+    }).then((result) => {
+      alert.success(result.message)
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
     })
   }
 }

@@ -60,9 +60,9 @@ const onDeleteClick = () => {
   alert.confirm("Do you really want to delete this record?", deleteRecord)
 }
 
-const deleteRecord = async () => {
+const deleteRecord = () => {
   formsApi.submissions.delete(props.form.id, props.submission.id)
-    .then(async (data) => {
+    .then((data) => {
       if (data.type === "success") {
         emit("deleted", props.submission)
         alert.success(data.message)

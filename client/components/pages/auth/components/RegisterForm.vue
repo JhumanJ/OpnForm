@@ -236,20 +236,18 @@ onMounted(() => {
 })
 
 // Methods
-const register = async () => {
+const register = () => {
   // Reset captcha after submission
   if (import.meta.client && reCaptchaSiteKey.value) {
     captcha.value.reset()
   }
 
-  try {
-    form.utm_data = $utm.value
-    await authFlow.registerUser(form)
-
+  form.utm_data = $utm.value
+  authFlow.registerUser(form).then(() => {
     redirect()
-  } catch (err) {
+  }).catch((err) => {
     useAlert().error(err.response?._data?.message)
-  }
+  })
 }
 
 const redirect = () => {

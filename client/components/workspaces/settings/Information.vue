@@ -106,16 +106,13 @@ const leaveWorkspaceLoading = ref(false)
 // Update profile
 const updateMutation = update()
 const updateProfile = () => {
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     id: workspace.value.id,
     data: workspaceForm.data()
-  }, {
-    onSuccess: () => {
+  }).then(() => {
     useAlert().success('Workspace information successfully updated!')
-    },
-    onError: (error) => {
+  }).catch((error) => {
       console.error('Error updating workspace:', error)
-    }
   })
 }
 
@@ -131,17 +128,14 @@ const confirmDeleteWorkspace = () => {
 const removeMutation = remove()
 const deleteWorkspace = () => {
   deleteLoading.value = true
-  removeMutation.mutate(workspace.value.id, {
-    onSuccess: (data) => {
+  removeMutation.mutateAsync(workspace.value.id).then((data) => {
       deleteLoading.value = false
       alert.success(data.message)
       appStore.closeWorkspaceSettingsModal()
       router.push({ name: "home" })
-    },
-    onError: (error) => {
+  }).catch((error) => {
       alert.error(error.data?.message || 'Error deleting workspace')
       deleteLoading.value = false
-    }
     })
 }
 
@@ -152,16 +146,13 @@ const leaveWorkSpace = () => {
     "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
     () => {
       leaveWorkspaceLoading.value = true
-      leaveMutation.mutate(workspace.value.id, {
-        onSuccess: () => {
+      leaveMutation.mutateAsync(workspace.value.id).then(() => {
         alert.success("You have left the workspace.")
         appStore.closeWorkspaceSettingsModal()
         router.push({ name: "home" })
-        },
-        onError: () => {
+      }).catch(() => {
         alert.error("There was an error leaving the workspace.")
         leaveWorkspaceLoading.value = false
-        }
       })
     },
   )

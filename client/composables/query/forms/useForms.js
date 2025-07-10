@@ -1,6 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
-import { chainCallbacks } from '../index'
 import { useIsAuthenticated } from '~/composables/useAuthFlow'
 import { useFormsListCache } from './useFormsList'
 
@@ -48,23 +47,24 @@ export function useForms() {
   }
 
   // Form Mutations
-  const create = (options = {}) => {
-    const builtInOnSuccess = (response) => {
-      const newForm = response.form
-      formsListCache.add(newForm.workspace_id, newForm)
-      // Cache the new form
-      queryClient.setQueryData(['forms', newForm.id], newForm)
-      queryClient.setQueryData(['forms', 'slug', newForm.slug], newForm)
-    }
-    
+  const create = (options = {}) => {    
     return useMutation({
       mutationFn: (data) => formsApi.create(data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      onSuccess: (response) => {
+        const newForm = response.form
+        formsListCache.add(newForm.workspace_id, newForm)
+        // Cache the new form
+        queryClient.setQueryData(['forms', newForm.id], newForm)
+        queryClient.setQueryData(['forms', 'slug', newForm.slug], newForm)
+      },
+      ...options
     })
   }
 
   const update = (options = {}) => {
-    const builtInOnSuccess = (updatedForm, { id }) => {
+    return useMutation({
+      mutationFn: ({ id, data }) => formsApi.update(id, data),
+      onSuccess: (updatedForm, { id }) => {
       const form = updatedForm.form
 
       // Update individual form cache
@@ -75,16 +75,15 @@ export function useForms() {
       
       // Update in workspace lists
       formsListCache.update(form.workspace_id, form)
-    }
-    
-    return useMutation({
-      mutationFn: ({ id, data }) => formsApi.update(id, data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
   const remove = (options = {}) => {
-    const builtInOnSuccess = (_, deletedId) => {      
+    return useMutation({
+      mutationFn: (id) => formsApi.delete(id),
+      onSuccess: (_, deletedId) => {      
       const deletedForm = queryClient.getQueryData(['forms', deletedId])
       if (!deletedForm) return
 
@@ -92,32 +91,30 @@ export function useForms() {
 
       // Remove from workspace lists
       formsListCache.remove(deletedForm.workspace_id, deletedId)
-    }
-    
-    return useMutation({
-      mutationFn: (id) => formsApi.delete(id),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
   const duplicate = (options = {}) => {
-    const builtInOnSuccess = (response) => {
+    return useMutation({
+      mutationFn: (id) => formsApi.duplicate(id),
+      onSuccess: (response) => {
       const duplicatedForm = response.new_form
       // Add to workspace forms list
       formsListCache.add(duplicatedForm.workspace_id, duplicatedForm)
       // Cache the duplicated form
       queryClient.setQueryData(['forms', duplicatedForm.id], duplicatedForm)
       queryClient.setQueryData(['forms', 'slug', duplicatedForm.slug], duplicatedForm)
-    }
-    
-    return useMutation({
-      mutationFn: (id) => formsApi.duplicate(id),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
   const regenerateLink = (options = {}) => {
-    const builtInOnSuccess = (updatedForm, { id }) => {
+    return useMutation({
+      mutationFn: ({ id, option }) => formsApi.regenerateLink(id, option),
+      onSuccess: (updatedForm, { id }) => {
       queryClient.setQueryData(['forms', id], (old) => {
         return old ? { ...old, ...updatedForm } : updatedForm
       })
@@ -126,16 +123,15 @@ export function useForms() {
           return old ? { ...old, ...updatedForm } : updatedForm
         })
       }
-    }
-    
-    return useMutation({
-      mutationFn: ({ id, option }) => formsApi.regenerateLink(id, option),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
   const updateWorkspace = (options = {}) => {
-    const builtInOnSuccess = (updatedForm, { id, workspaceId: newWorkspaceId }) => {
+    return useMutation({
+      mutationFn: ({ id, workspaceId, data }) => formsApi.updateWorkspace(id, workspaceId, data),
+      onSuccess: (updatedForm, { id, workspaceId: newWorkspaceId }) => {
       const oldForm = queryClient.getQueryData(['forms', id])
       const oldWorkspaceId = oldForm?.workspace_id
       
@@ -152,11 +148,8 @@ export function useForms() {
 
       // Add to new workspace list
       formsListCache.add(newWorkspaceId, updatedForm)
-    }
-    
-    return useMutation({
-      mutationFn: ({ id, workspaceId, data }) => formsApi.updateWorkspace(id, workspaceId, data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      },
+      ...options
     })
   }
 
@@ -199,19 +192,15 @@ export function useForms() {
   }
 
   const invalidateAll = () => {
-    // Clear all forms list data first to make forms disappear immediately
-    queryClient.invalidateQueries({ queryKey: ['forms', 'list'] })
-    
-    // Then invalidate all forms queries to trigger refetch
-    queryClient.invalidateQueries({ queryKey: ['forms'] })
+    queryClient.removeQueries({ queryKey: ['forms', 'list'], exact: false })
   }
 
   const invalidateDetail = (form) => {
     if (form.id) {
-      queryClient.invalidateQueries({ queryKey: ['forms', form.id] })
+      queryClient.removeQueries({ queryKey: ['forms', form.id] })
     }
     if (form.slug) {
-      queryClient.invalidateQueries({ queryKey: ['forms', 'slug', form.slug] })
+      queryClient.removeQueries({ queryKey: ['forms', 'slug', form.slug] })
     }
   }
 
