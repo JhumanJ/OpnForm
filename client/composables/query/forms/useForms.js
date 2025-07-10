@@ -65,16 +65,16 @@ export function useForms() {
     return useMutation({
       mutationFn: ({ id, data }) => formsApi.update(id, data),
       onSuccess: (updatedForm, { id }) => {
-        const form = updatedForm.form
+      const form = updatedForm.form
 
-        // Update individual form cache
-        queryClient.setQueryData(['forms', id], form)
-        if (form.slug) {
-          queryClient.setQueryData(['forms', 'slug', form.slug], form)
-        }
-        
-        // Update in workspace lists
-        formsListCache.update(form.workspace_id, form)
+      // Update individual form cache
+      queryClient.setQueryData(['forms', id], form)
+      if (form.slug) {
+        queryClient.setQueryData(['forms', 'slug', form.slug], form)
+      }
+      
+      // Update in workspace lists
+      formsListCache.update(form.workspace_id, form)
       },
       ...options
     })
@@ -84,13 +84,13 @@ export function useForms() {
     return useMutation({
       mutationFn: (id) => formsApi.delete(id),
       onSuccess: (_, deletedId) => {      
-        const deletedForm = queryClient.getQueryData(['forms', deletedId])
-        if (!deletedForm) return
+      const deletedForm = queryClient.getQueryData(['forms', deletedId])
+      if (!deletedForm) return
 
-        invalidateDetail(deletedForm)
+      invalidateDetail(deletedForm)
 
-        // Remove from workspace lists
-        formsListCache.remove(deletedForm.workspace_id, deletedId)
+      // Remove from workspace lists
+      formsListCache.remove(deletedForm.workspace_id, deletedId)
       },
       ...options
     })
@@ -100,12 +100,12 @@ export function useForms() {
     return useMutation({
       mutationFn: (id) => formsApi.duplicate(id),
       onSuccess: (response) => {
-        const duplicatedForm = response.new_form
-        // Add to workspace forms list
-        formsListCache.add(duplicatedForm.workspace_id, duplicatedForm)
-        // Cache the duplicated form
-        queryClient.setQueryData(['forms', duplicatedForm.id], duplicatedForm)
-        queryClient.setQueryData(['forms', 'slug', duplicatedForm.slug], duplicatedForm)
+      const duplicatedForm = response.new_form
+      // Add to workspace forms list
+      formsListCache.add(duplicatedForm.workspace_id, duplicatedForm)
+      // Cache the duplicated form
+      queryClient.setQueryData(['forms', duplicatedForm.id], duplicatedForm)
+      queryClient.setQueryData(['forms', 'slug', duplicatedForm.slug], duplicatedForm)
       },
       ...options
     })
@@ -115,14 +115,14 @@ export function useForms() {
     return useMutation({
       mutationFn: ({ id, option }) => formsApi.regenerateLink(id, option),
       onSuccess: (updatedForm, { id }) => {
-        queryClient.setQueryData(['forms', id], (old) => {
+      queryClient.setQueryData(['forms', id], (old) => {
+        return old ? { ...old, ...updatedForm } : updatedForm
+      })
+      if (updatedForm.slug) {
+        queryClient.setQueryData(['forms', 'slug', updatedForm.slug], (old) => {
           return old ? { ...old, ...updatedForm } : updatedForm
         })
-        if (updatedForm.slug) {
-          queryClient.setQueryData(['forms', 'slug', updatedForm.slug], (old) => {
-            return old ? { ...old, ...updatedForm } : updatedForm
-          })
-        }
+      }
       },
       ...options
     })
@@ -132,22 +132,22 @@ export function useForms() {
     return useMutation({
       mutationFn: ({ id, workspaceId, data }) => formsApi.updateWorkspace(id, workspaceId, data),
       onSuccess: (updatedForm, { id, workspaceId: newWorkspaceId }) => {
-        const oldForm = queryClient.getQueryData(['forms', id])
-        const oldWorkspaceId = oldForm?.workspace_id
-        
-        // Update form cache
-        queryClient.setQueryData(['forms', id], updatedForm)
-        if (updatedForm.slug) {
-          queryClient.setQueryData(['forms', 'slug', updatedForm.slug], updatedForm)
-        }
-        
-        // Remove from old workspace list
-        if (oldWorkspaceId) {
-          formsListCache.remove(oldWorkspaceId, id)
-        }
+      const oldForm = queryClient.getQueryData(['forms', id])
+      const oldWorkspaceId = oldForm?.workspace_id
+      
+      // Update form cache
+      queryClient.setQueryData(['forms', id], updatedForm)
+      if (updatedForm.slug) {
+        queryClient.setQueryData(['forms', 'slug', updatedForm.slug], updatedForm)
+      }
+      
+      // Remove from old workspace list
+      if (oldWorkspaceId) {
+        formsListCache.remove(oldWorkspaceId, id)
+      }
 
-        // Add to new workspace list
-        formsListCache.add(newWorkspaceId, updatedForm)
+      // Add to new workspace list
+      formsListCache.add(newWorkspaceId, updatedForm)
       },
       ...options
     })

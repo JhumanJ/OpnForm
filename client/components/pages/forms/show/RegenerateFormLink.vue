@@ -124,20 +124,19 @@ const isModalOpen = computed({
 const { regenerateLink: regenerateLinkMutation } = useForms()
 const regenerateLinkMutationInstance = regenerateLinkMutation()
 
-const regenerateLink = async (option) => {
-  try {
-    const data = await regenerateLinkMutationInstance.mutateAsync({
-      id: props.form.id,
-      option
-    })
+const regenerateLink = (option) => {
+  regenerateLinkMutationInstance.mutateAsync({
+    id: props.form.id,
+    option
+  }).then((data) => {
     router.push({
       name: "forms-slug-show-share",
       params: { slug: data.form.slug },
     })
     useAlert().success(data.message)
     showGenerateFormLinkModal.value = false
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error?.data?.message || "Something went wrong")
-  }
+  })
 }
 </script>

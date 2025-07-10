@@ -75,15 +75,15 @@ export function useTokens() {
     return useMutation({
       mutationFn: (data) => tokensApi.create(data),
       onSuccess: (newToken) => {
-        // Built-in cache management
-        queryClient.setQueryData(['tokens', newToken.id], newToken)
-        
-        // Add to list query data
-        const currentList = queryClient.getQueryData(['tokens', 'list'])
-        if (currentList) {
-          queryClient.setQueryData(['tokens', 'list'], [newToken, ...currentList])
-        }
-        useAlert().success('Token created successfully')
+      // Built-in cache management
+      queryClient.setQueryData(['tokens', newToken.id], newToken)
+      
+      // Add to list query data
+      const currentList = queryClient.getQueryData(['tokens', 'list'])
+      if (currentList) {
+        queryClient.setQueryData(['tokens', 'list'], [newToken, ...currentList])
+      }
+      useAlert().success('Token created successfully')
       },
       ...options
     })
@@ -93,18 +93,18 @@ export function useTokens() {
     return useMutation({
       mutationFn: (tokenId) => tokensApi.delete(tokenId),
       onSuccess: (data, deletedTokenId) => {
-        // Built-in cache management
-        queryClient.removeQueries({ queryKey: ['tokens', deletedTokenId] })
-        
-        // Remove from list query data if loaded
-        const currentList = queryClient.getQueryData(['tokens', 'list'])
-        if (currentList) {
-          queryClient.setQueryData(
-            ['tokens', 'list'],
-            currentList.filter(token => token.id != deletedTokenId) // Use != for loose equality
-          )
-        }
-        useAlert().success('Token deleted successfully')
+      // Built-in cache management
+      queryClient.removeQueries({ queryKey: ['tokens', deletedTokenId] })
+      
+      // Remove from list query data if loaded
+      const currentList = queryClient.getQueryData(['tokens', 'list'])
+      if (currentList) {
+        queryClient.setQueryData(
+          ['tokens', 'list'],
+          currentList.filter(token => token.id != deletedTokenId) // Use != for loose equality
+        )
+      }
+      useAlert().success('Token deleted successfully')
       },
       ...options
     })

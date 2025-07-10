@@ -112,7 +112,7 @@ const updateProfile = () => {
   }).then(() => {
     useAlert().success('Workspace information successfully updated!')
   }).catch((error) => {
-    console.error('Error updating workspace:', error)
+      console.error('Error updating workspace:', error)
   })
 }
 
@@ -129,14 +129,14 @@ const removeMutation = remove()
 const deleteWorkspace = () => {
   deleteLoading.value = true
   removeMutation.mutateAsync(workspace.value.id).then((data) => {
-    deleteLoading.value = false
-    alert.success(data.message)
-    appStore.closeWorkspaceSettingsModal()
-    router.push({ name: "home" })
+      deleteLoading.value = false
+      alert.success(data.message)
+      appStore.closeWorkspaceSettingsModal()
+      router.push({ name: "home" })
   }).catch((error) => {
-    alert.error(error.data?.message || 'Error deleting workspace')
-    deleteLoading.value = false
-  })
+      alert.error(error.data?.message || 'Error deleting workspace')
+      deleteLoading.value = false
+    })
 }
 
 // Leave workspace

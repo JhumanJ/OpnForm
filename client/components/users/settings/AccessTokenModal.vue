@@ -125,13 +125,12 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-async function createToken() {
-  try {
-    const response = await createTokenMutation.mutateAsync(tokenForm.data())
+function createToken() {
+  createTokenMutation.mutateAsync(tokenForm.data()).then((response) => {
     // Assuming the response contains the token
     token.value = response.token || response.data?.token || response
-  } catch {
+  }).catch(() => {
     alert.error("An error occurred while creating the token")
-  }
+  })
 }
 </script>

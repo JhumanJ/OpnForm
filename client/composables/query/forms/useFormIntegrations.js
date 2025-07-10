@@ -78,15 +78,15 @@ export function useFormIntegrations() {
     return useMutation({
       mutationFn: ({ formId, data }) => formsApi.integrations.create(formId, data),
       onSuccess: (response, { formId }) => {
-        const newIntegration = response.form_integration
-        // Add to integrations list
-        queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!old) return [newIntegration]
-          if (!Array.isArray(old)) return old
-          return [...old, newIntegration]
-        })
-        // Cache the individual integration
-        queryClient.setQueryData(['forms', formId, 'integrations', newIntegration.id], newIntegration)
+      const newIntegration = response.form_integration
+      // Add to integrations list
+      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+        if (!old) return [newIntegration]
+        if (!Array.isArray(old)) return old
+        return [...old, newIntegration]
+      })
+      // Cache the individual integration
+      queryClient.setQueryData(['forms', formId, 'integrations', newIntegration.id], newIntegration)
       },
       ...options
     })
@@ -96,17 +96,17 @@ export function useFormIntegrations() {
     return useMutation({
       mutationFn: ({ formId, integrationId, data }) => formsApi.integrations.update(formId, integrationId, data),
       onSuccess: (response, { formId, integrationId }) => {
-        const updatedIntegration = response.form_integration
-        // Update individual integration cache
-        queryClient.setQueryData(['forms', formId, 'integrations', integrationId], updatedIntegration)
-        
-        // Update in integrations list
-        queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.map(integration =>
-            integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
-          )
-        })
+      const updatedIntegration = response.form_integration
+      // Update individual integration cache
+      queryClient.setQueryData(['forms', formId, 'integrations', integrationId], updatedIntegration)
+      
+      // Update in integrations list
+      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map(integration =>
+          integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
+        )
+      })
       },
       ...options
     })
@@ -116,14 +116,14 @@ export function useFormIntegrations() {
     return useMutation({
       mutationFn: ({ formId, integrationId }) => formsApi.integrations.delete(formId, integrationId),
       onSuccess: (_, { formId, integrationId }) => {
-        // Remove individual integration cache
-        queryClient.removeQueries({ queryKey: ['forms', formId, 'integrations', integrationId] })
-        
-        // Remove from integrations list
-        queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(integration => integration.id !== integrationId)
-        })
+      // Remove individual integration cache
+      queryClient.removeQueries({ queryKey: ['forms', formId, 'integrations', integrationId] })
+      
+      // Remove from integrations list
+      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(integration => integration.id !== integrationId)
+      })
       },
       ...options
     })

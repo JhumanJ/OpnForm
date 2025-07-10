@@ -89,12 +89,10 @@ const form = useForm({
 // Handle form submission
 const createMutation = create()
 
-const handleSubmit = async () => {
-  try {
-    loading.value = true
-    
-    const newWorkspace = await createMutation.mutateAsync(form.data())
-    
+const handleSubmit = () => {
+  loading.value = true
+  
+  createMutation.mutateAsync(form.data()).then((newWorkspace) => {
     appStore.setCurrentId(newWorkspace.id)
 
     // Show success message
@@ -106,13 +104,13 @@ const handleSubmit = async () => {
     emit('created', newWorkspace)
     closeModal()
     loading.value = false
-  } catch (error) {
+  }).catch((error) => {
     console.error('Error creating workspace:', error)
     alert.error(error.data?.message || 'Something went wrong. Please try again.', 10000, {
       title: 'Error creating workspace'
     })
     loading.value = false
-  }
+  })
 }
 
 // Close modal and reset form

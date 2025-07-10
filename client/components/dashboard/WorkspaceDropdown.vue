@@ -140,8 +140,8 @@ const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
 }
 
-const onUserAdded = async () => {
-  await invalidateWorkspaces()
+const onUserAdded = () => {
+  invalidateWorkspaces()
 }
 
 const openSettings = () => {

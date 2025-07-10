@@ -128,18 +128,17 @@ const removeMutation = oAuth.remove()
 
 // Disconnect provider
 const disconnectProvider = (provider) => {
-  alert.confirm("Do you really want to disconnect this account?", async () => {
-    try {
-      await removeMutation.mutateAsync(provider.id)
+  alert.confirm("Do you really want to disconnect this account?", () => {
+    removeMutation.mutateAsync(provider.id).then(() => {
       alert.success('Account disconnected successfully')
       refetch()
-    } catch (error) {
+    }).catch((error) => {
       try {
         alert.error(error.data.message)
       } catch {
         alert.error("An error occurred while disconnecting the account")
       }
-    }
+    })
   })
 }
 

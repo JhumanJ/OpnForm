@@ -85,8 +85,8 @@ const isOpen = computed({
   }
 })
 
-const send = async () => {
-  await form.post("/password/email").then(() => {
+const send = () => {
+  form.post("/password/email").then(() => {
     isMailSent.value = true
   }).catch(error => {
     if(error?.data?.email){

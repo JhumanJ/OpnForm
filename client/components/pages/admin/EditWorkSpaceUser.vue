@@ -56,17 +56,16 @@ watch(() => props.user, () => {
   userNewRole.value = props.user.pivot.role
 })
 
-const updateUserRole = async () => {
-  try {
-    await updateMutation.mutateAsync({
-      userId: props.user.id,
-      data: { role: userNewRole.value }
-    })
+const updateUserRole = () => {
+  updateMutation.mutateAsync({
+    userId: props.user.id,
+    data: { role: userNewRole.value }
+  }).then(() => {
     useAlert().success("User role updated.")
     emit('close')
     // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
-  } catch {
+  }).catch(() => {
     useAlert().error("There was an error updating user role")
-  }
+  })
 }
 </script>

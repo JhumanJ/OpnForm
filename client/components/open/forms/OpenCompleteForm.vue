@@ -375,7 +375,7 @@ const handleScrollToError = () => {
   })
 }
 
-const triggerSubmit = async () => {
+const triggerSubmit = () => {
   if (!formManager || isProcessing.value) return
 
   formManager.submit({
@@ -410,12 +410,13 @@ const triggerSubmit = async () => {
     })
 }
 
-const restart = async () => {
+const restart = () => {
   if (!formManager) return
-  await formManager.restart()
-  submittedData.value = null
-  submissionId.value = null
-  emit('restarted', true)
+  formManager.restart().then(() => {
+    submittedData.value = null
+    submissionId.value = null
+    emit('restarted', true)
+  })
 }
 
 const passwordEntered = () => {

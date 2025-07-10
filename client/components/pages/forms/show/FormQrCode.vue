@@ -107,27 +107,26 @@ export default {
       })
     },
     
-    async copyImage() {
-      try {
-        // Convert data URL to blob
-        const response = await fetch(this.QrUrl)
-        const blob = await response.blob()
-        
+    copyImage() {
+      // Convert data URL to blob
+      fetch(this.QrUrl).then((response) => {
+        return response.blob()
+      }).then((blob) => {
         // Copy to clipboard
-        await navigator.clipboard.write([
+        return navigator.clipboard.write([
           new ClipboardItem({
             [blob.type]: blob
           })
         ])
-        
+      }).then(() => {
         // Show success state
         this.imageCopied = true
         setTimeout(() => {
           this.imageCopied = false
         }, 2000)
-      } catch (error) {
+      }).catch((error) => {
         console.error('Failed to copy image:', error)
-      }
+      })
     },
   },
 }

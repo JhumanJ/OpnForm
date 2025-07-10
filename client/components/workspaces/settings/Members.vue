@@ -245,31 +245,29 @@ const editUser = (user) => {
   showEditUserModal.value = true
 }
 
-const updateUserRole = async () => {
+const updateUserRole = () => {
   if (!workspaceId.value || !selectedUser.value?.id) return
 
-  try {
-    const data = await updateMutation.mutateAsync({
-      userId: selectedUser.value.id,
-      data: { role: editUserForm.role }
-    })
+  updateMutation.mutateAsync({
+    userId: selectedUser.value.id,
+    data: { role: editUserForm.role }
+  }).then((data) => {
     alert.success(data.message || 'User role updated successfully')
     showEditUserModal.value = false
-  } catch (error) {
+  }).catch((error) => {
     alert.error(error.response?.data?.message || "There was an error updating user role")
-  }
+  })
 }
 
 const removeUserHandler = (user) => {
   if (!workspaceId.value) return
 
-  alert.confirm("Do you really want to remove " + user.name + " from this workspace?", async () => {
-    try {
-      await removeMutation.mutateAsync(user.id)
+  alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
+    removeMutation.mutateAsync(user.id).then(() => {
       alert.success("User successfully removed.")
-    } catch (error) {
+    }).catch((error) => {
       alert.error(error.response?.data?.message || "There was an error removing user")
-    }
+    })
   })
 }
 
@@ -277,26 +275,24 @@ const removeUserHandler = (user) => {
 const resendInviteHandler = (invite) => {
   if (!workspaceId.value) return
 
-  alert.confirm("Do you really want to resend invite email to this user?", async () => {
-    try {
-      await resendMutation.mutateAsync(invite.id)
+  alert.confirm("Do you really want to resend invite email to this user?", () => {
+    resendMutation.mutateAsync(invite.id).then(() => {
       alert.success("Invitation resent successfully.")
-    } catch (error) {
+    }).catch((error) => {
       alert.error(error.response?.data?.message || "Failed to resend invitation")
-    }
+    })
   })
 }
 
 const cancelInviteHandler = (invite) => {
   if (!workspaceId.value) return
 
-  alert.confirm("Do you really want to cancel this user's invitation to this workspace?", async () => {
-    try {
-      await cancelMutation.mutateAsync(invite.id)
+  alert.confirm("Do you really want to cancel this user's invitation to this workspace?", () => {
+    cancelMutation.mutateAsync(invite.id).then(() => {
       alert.success("Invitation cancelled successfully.")
-    } catch (error) {
+    }).catch((error) => {
       alert.error(error.response?.data?.message || "Failed to cancel invitation")
-    }
+    })
   })
 }
 

@@ -127,21 +127,21 @@ export function useOAuth() {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.connect(service, data),
       onSuccess: (newProvider) => {
-        // Add to providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [newProvider]
-          if (!Array.isArray(old)) return [newProvider]
-          // Update if exists, add if new
-          const existingIndex = old.findIndex(p => p.service === newProvider.service)
-          if (existingIndex >= 0) {
-            const updated = [...old]
-            updated[existingIndex] = newProvider
-            return updated
-          }
-          return [...old, newProvider]
-        })
-        // Cache individual provider
-        queryClient.setQueryData(['oauth', 'providers', newProvider.id], newProvider)
+      // Add to providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [newProvider]
+        if (!Array.isArray(old)) return [newProvider]
+        // Update if exists, add if new
+        const existingIndex = old.findIndex(p => p.service === newProvider.service)
+        if (existingIndex >= 0) {
+          const updated = [...old]
+          updated[existingIndex] = newProvider
+          return updated
+        }
+        return [...old, newProvider]
+      })
+      // Cache individual provider
+      queryClient.setQueryData(['oauth', 'providers', newProvider.id], newProvider)
       },
       ...options
     })
@@ -151,17 +151,17 @@ export function useOAuth() {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.callback(service, data),
       onSuccess: (updatedProvider) => {
-        // Update provider in cache
-        queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
-        
-        // Update providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [updatedProvider]
-          if (!Array.isArray(old)) return old
-          return old.map(provider =>
-            provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
-          )
-        })
+      // Update provider in cache
+      queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
+      
+      // Update providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [updatedProvider]
+        if (!Array.isArray(old)) return old
+        return old.map(provider =>
+          provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
+        )
+      })
       },
       ...options
     })
@@ -171,17 +171,17 @@ export function useOAuth() {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.widgetCallback(service, data),
       onSuccess: (updatedProvider) => {
-        // Update provider in cache
-        queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
-        
-        // Update providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!old) return [updatedProvider]
-          if (!Array.isArray(old)) return old
-          return old.map(provider =>
-            provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
-          )
-        })
+      // Update provider in cache
+      queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
+      
+      // Update providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!old) return [updatedProvider]
+        if (!Array.isArray(old)) return old
+        return old.map(provider =>
+          provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
+        )
+      })
       },
       ...options
     })
@@ -191,14 +191,14 @@ export function useOAuth() {
     return useMutation({
       mutationFn: (providerId) => oauthApi.delete(providerId),
       onSuccess: (_, deletedProviderId) => {
-        // Remove from individual cache
-        queryClient.removeQueries({ queryKey: ['oauth', 'providers', deletedProviderId] } )
-        
-        // Remove from providers list
-        queryClient.setQueryData(['oauth', 'providers'], (old) => {
-          if (!Array.isArray(old)) return old
-          return old.filter(provider => provider.id !== deletedProviderId)
-        })
+      // Remove from individual cache
+      queryClient.removeQueries({ queryKey: ['oauth', 'providers', deletedProviderId] } )
+      
+      // Remove from providers list
+      queryClient.setQueryData(['oauth', 'providers'], (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter(provider => provider.id !== deletedProviderId)
+      })
       },
       ...options
     })

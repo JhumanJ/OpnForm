@@ -170,19 +170,18 @@ const dropdownItems = computed(() => {
 const deleteIntegrationMutation = deleteIntegration()
 
 const deleteFormIntegration = (integrationid) => {
-  alert.confirm("Do you really want to delete this form integration?", async () => {
+  alert.confirm("Do you really want to delete this form integration?", () => {
     loadingDelete.value = true
-    try {
-      await deleteIntegrationMutation.mutateAsync({
-        formId: props.form.id,
-        integrationId: integrationid
-      })
+    deleteIntegrationMutation.mutateAsync({
+      formId: props.form.id,
+      integrationId: integrationid
+    }).then(() => {
       alert.success("Integration deleted successfully!")
       loadingDelete.value = false
-    } catch (error) {
+    }).catch((error) => {
       alert.error(error.data?.message || "Something went wrong!")
       loadingDelete.value = false
-    }
+    })
   })
 }
 </script>

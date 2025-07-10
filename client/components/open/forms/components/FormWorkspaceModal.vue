@@ -110,7 +110,7 @@ const close = () => {
   emit("close")
 }
 
-const onSubmit = async () => {
+const onSubmit = () => {
   if (!selectedWorkspace.value) {
     useAlert().error("Please select a workspace!")
     return
@@ -118,13 +118,11 @@ const onSubmit = async () => {
   
   loading.value = true
   
-  try {
-    await updateWorkspaceMutation.mutateAsync({
-      id: props.form.id,
-      workspaceId: selectedWorkspace.value,
-      data: {}
-    })
-    
+  updateWorkspaceMutation.mutateAsync({
+    id: props.form.id,
+    workspaceId: selectedWorkspace.value,
+    data: {}
+  }).then(() => {
     loading.value = false
     emit("close")
     useAlert().success("Form workspace updated successfully.")
@@ -138,11 +136,11 @@ const onSubmit = async () => {
     if (route.name !== "home") {
       router.push({ name: "home" })
     }
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(
       error?.data?.message ?? "Something went wrong, please try again!",
     )
     loading.value = false
-  }
+  })
 }
 </script>

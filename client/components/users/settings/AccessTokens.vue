@@ -207,12 +207,12 @@ const openSubscriptionModal = () => {
 }
 
 const deleteToken = (token) => {
-  alert.confirm("Do you really want to delete this token?", async () => {
-    try {
-      await deleteTokenMutation.mutateAsync(token.id)
-    } catch {
+  alert.confirm("Do you really want to delete this token?", () => {
+    deleteTokenMutation.mutateAsync(token.id).then(() => {
+      // Success handled by TanStack Query cache invalidation
+    }).catch(() => {
       alert.error("An error occurred while deleting the token")
-    }
+    })
   })
 }
 </script> 

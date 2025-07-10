@@ -163,28 +163,26 @@ const copyLink = () => {
   useAlert().success("Copied!")
 }
 
-const duplicateForm = async () => {
-  try {
-    const data = await duplicateFormMutation.mutateAsync(props.form.id)
+const duplicateForm = () => {
+  duplicateFormMutation.mutateAsync(props.form.id).then((data) => {
     router.push({
       name: "forms-slug-show",
       params: { slug: data.new_form.slug },
     })
     useAlert().success(data.message)
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error.data?.message || "Failed to duplicate form")
-  }
+  })
 }
 
-const deleteForm = async () => {
-  try {
-    const data = await deleteFormMutation.mutateAsync(props.form.id)
+const deleteForm = () => {
+  deleteFormMutation.mutateAsync(props.form.id).then((data) => {
     useAlert().success(data.message)
     showDeleteFormModal.value = false
     router.push({ name: "home" })
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error.data?.message || "Failed to delete form")
-  }
+  })
 }
 
 const showDraftFormWarningNotification = () => {

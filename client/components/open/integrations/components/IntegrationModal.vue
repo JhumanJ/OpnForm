@@ -164,35 +164,43 @@ const initIntegrationData = () => {
 }
 initIntegrationData()
 
-const save = async () => {
+const save = () => {
   if (loading.value) return
 
   const data = integrationData.value.data()
 
-  try {
-    if (props.formIntegrationId) {
-      const result = await updateIntegrationMutation.mutateAsync({
-        formId: props.form.id,
-        integrationId: props.formIntegrationId,
-        data,
-      })
+  if (props.formIntegrationId) {
+    updateIntegrationMutation.mutateAsync({
+      formId: props.form.id,
+      integrationId: props.formIntegrationId,
+      data,
+    }).then((result) => {
       alert.success(result.message)
-    }
-    else {
-      const result = await createIntegrationMutation.mutateAsync({
-        formId: props.form.id,
-        data,
-      })
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
+    })
+  }
+  else {
+    createIntegrationMutation.mutateAsync({
+      formId: props.form.id,
+      data,
+    }).then((result) => {
       alert.success(result.message)
-    }
-    emit("close")
-  } catch (error) {
-    try {
-      alert.error(error.data.message)
-    }
-    catch {
-      alert.error("An error occurred while saving the integration")
-    }
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
+    })
   }
 }
 </script>

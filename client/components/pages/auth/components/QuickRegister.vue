@@ -141,25 +141,25 @@ const openRegister = () => {
   emit('reopen')
 }
 
-const afterQuickLogin = async () => {
+const afterQuickLogin = () => {
   // Reset unauthorized error flag immediately
   appStore.isUnauthorizedError = false
   
   // Verify authentication is complete using the authFlow composable
-  await authFlow.verifyAuthentication()
-  
-  // Close both login and register modals
-  appStore.quickLoginModal = false
-  appStore.quickRegisterModal = false
-  
-  // Show success alert
-  useAlert().success("Successfully logged in. Welcome back!")
-  
-  // Use the window message for after-login instead of emitting the event
-  afterLoginMessage.send(window, { useMessageChannel: false })
+  authFlow.verifyAuthentication().then(() => {
+    // Close both login and register modals
+    appStore.quickLoginModal = false
+    appStore.quickRegisterModal = false
+    
+    // Show success alert
+    useAlert().success("Successfully logged in. Welcome back!")
+    
+    // Use the window message for after-login instead of emitting the event
+    afterLoginMessage.send(window, { useMessageChannel: false })
+  })
 }
 
-const logout = async () => {
+const logout = () => {
   appStore.isUnauthorizedError = false
   appStore.quickLoginModal = false
   appStore.quickRegisterModal = false

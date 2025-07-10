@@ -240,35 +240,32 @@ const onSubmit = () => {
     createFormTemplate()
   }
 }
-const createFormTemplate = async () => {
-  try {
-    templateForm.value.form = props.form
-    await createMutation.mutateAsync(templateForm.value)
+const createFormTemplate = () => {
+  templateForm.value.form = props.form
+  createMutation.mutateAsync(templateForm.value).then(() => {
     useAlert().success("Template created successfully")
     emit("close")
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error.message)
-  }
+  })
 }
-const updateFormTemplate = async () => {
-  try {
-    templateForm.value.form = props.form
-    await updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value })
+const updateFormTemplate = () => {
+  templateForm.value.form = props.form
+  updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value }).then(() => {
     useAlert().success("Template updated successfully")
     emit("close")
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error.message)
-  }
+  })
 }
-const deleteFormTemplate = async () => {
+const deleteFormTemplate = () => {
   if (!props.template) return
-  try {
-    await deleteMutation.mutateAsync(props.template.id)
+  deleteMutation.mutateAsync(props.template.id).then(() => {
     useAlert().success("Template deleted successfully")
     router.push({ name: "templates" })
     emit("close")
-  } catch (error) {
+  }).catch((error) => {
     useAlert().error(error.message)
-  }
+  })
 }
 </script>

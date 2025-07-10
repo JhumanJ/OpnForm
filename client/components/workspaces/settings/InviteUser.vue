@@ -162,20 +162,19 @@ const openBilling = () => {
   useAppModals().openUserSettings('billing')
 }
 
-const addUser = async () => {
+const addUser = () => {
   if (!workspaceId.value) return
 
-  try {
-    const data = await inviteUserMutation.mutateAsync({
-      email: inviteUserForm.email,
-      role: inviteUserForm.role
-    })
+  inviteUserMutation.mutateAsync({
+    email: inviteUserForm.email,
+    role: inviteUserForm.role
+  }).then((data) => {
     inviteUserForm.reset()
     alert.success(data.message || 'User invited successfully')
     emit('user-added')
     closeModal()
-  } catch (error) {
+  }).catch((error) => {
     alert.error(error.response?.data?.message || "There was an error adding user")
-  }
+  })
 }
 </script>

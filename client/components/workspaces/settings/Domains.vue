@@ -159,13 +159,13 @@ const saveChanges = () => {
   updateMutation.mutateAsync({
     custom_domains: domains.value,
   }).then(() => {
-    alert.success('Custom domains saved.')
-    isChanged.value = false
-    isLoading.value = false
+      alert.success('Custom domains saved.')
+      isChanged.value = false
+      isLoading.value = false
   }).catch((error) => {
-    alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
-    isLoading.value = false
-  })
+      alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
+      isLoading.value = false
+    })
 }
 
 const initCustomDomains = () => {
