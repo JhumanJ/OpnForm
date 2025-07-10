@@ -43,13 +43,15 @@ const setupForUser = () => {
     !user.value ||
     !featureBaseOrganization ||
     isImpersonating.value
-  )
+  ) {
     return
+  }
+
   window.Featurebase("identify", {
     organization: featureBaseOrganization,
     email: user.value.email,
     name: user.value.name,
-    id: user.value.id.toString(),
+    id: user.value.id != null ? String(user.value.id) : undefined,
     profilePicture: user.value.photo_url,
   })
 

@@ -5,15 +5,14 @@ import { useQueryClient } from '@tanstack/vue-query'
 
 export function useFormsList(workspaceId, options = {}) {
   // Separate API filters and custom options from TanStack Query options
-  const { filters, fetchAll, ...queryOptions } = options
+  const { fetchAll, ...queryOptions } = options
 
   const queryClient = useQueryClient()
 
   const query = useInfiniteQuery({
-    queryKey: ['forms', 'list', workspaceId.value, filters],
+    queryKey: ['forms', 'list', workspaceId.value],
     queryFn: ({ pageParam = 1 }) => {
-      // Ensure only 'filters' are passed, not all queryOptions
-      const apiFilters = { page: pageParam, ...(filters || {}) }
+      const apiFilters = { page: pageParam }
       return formsApi.list(workspaceId.value, { params: apiFilters }).then(res => {
         // Prime cache for each form
         res?.data?.forEach(form => {
@@ -35,6 +34,7 @@ export function useFormsList(workspaceId, options = {}) {
       const nextPage = current_page < last_page ? current_page + 1 : undefined
       return nextPage
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
     ...queryOptions,
   })
 
@@ -72,4 +72,60 @@ export function useFormsList(workspaceId, options = {}) {
     isComplete,
     isFetched: query.isFetched,
   }
+} 
+
+export function useFormsListCache() {
+  const queryClient = useQueryClient()
+
+  const add = (workspaceId, newForm) => {
+    const queryKey = ['forms', 'list', workspaceId]
+    queryClient.setQueryData(queryKey, (oldData) => {
+      if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+        return oldData
+      }
+
+      const newPages = [...oldData.pages]
+      newPages[0] = {
+        ...newPages[0],
+        data: [newForm, ...newPages[0].data],
+      }
+
+      return {
+        ...oldData,
+        pages: newPages,
+      }
+    })
+  }
+
+  const update = (workspaceId, updatedForm) => {
+    const queryKey = ['forms', 'list', workspaceId]
+    queryClient.setQueryData(queryKey, (oldData) => {
+      if (!oldData) return oldData
+
+      const newPages = oldData.pages.map((page) => ({
+        ...page,
+        data: page.data.map((form) =>
+          form.id === updatedForm.id ? { ...form, ...updatedForm } : form
+        ),
+      }))
+
+      return { ...oldData, pages: newPages }
+    })
+  }
+
+  const remove = (workspaceId, formId) => {
+    const queryKey = ['forms', 'list', workspaceId]
+    queryClient.setQueryData(queryKey, (oldData) => {
+      if (!oldData) return oldData
+
+      const newPages = oldData.pages.map((page) => ({
+        ...page,
+        data: page.data.filter((form) => form.id !== formId),
+      }))
+
+      return { ...oldData, pages: newPages }
+    })
+  }
+
+  return { add, update, remove }
 } 

@@ -273,6 +273,7 @@ const saveFormEdit = () => {
       updateFormLoading.value = false
     },
     onError: (error) => {
+      console.error("Error saving form", error)
       if (error?.response?.status === 422) {
         validationErrorResponse.value = error.data
         showValidationErrors()
@@ -295,6 +296,7 @@ const saveFormCreate = () => {
   validationErrorResponse.value = null
 
   updateFormLoading.value = true
+  console.log("saveFormCreate", form.value.data())
   createMutation.mutate(form.value.data(), {
     onSuccess: (newForm) => {
       emit("on-save")
@@ -325,6 +327,7 @@ const saveFormCreate = () => {
       })
     },
     onError: (error) => {
+      console.error("Error saving form", error)
       if (error?.response?.status === 422) {
         validationErrorResponse.value = error.data
         showValidationErrors()

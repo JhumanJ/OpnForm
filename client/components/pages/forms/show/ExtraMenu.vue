@@ -1,13 +1,6 @@
 <template>
   <div v-if="form">
-    <div
-      v-if="duplicateFormMutationQuery.isPending.value || deleteFormMutation.isPending.value"
-      class="pr-4 pt-2"
-    >
-      <Loader class="h-6 w-6 mx-auto" />
-    </div>
     <UDropdownMenu
-      v-else
       class="z-50"
       arrow
       :items="items"
@@ -21,6 +14,7 @@
         variant="outline"
         icon="i-heroicons-ellipsis-horizontal"
         size="md"
+        :loading="loading"
       />
       </slot>
     </UDropdownMenu>
@@ -192,12 +186,24 @@ const duplicateFormMutationQuery = duplicateFormMutation({
   }
 })
 
+const loading = ref(false)
+
 const duplicateForm = () => {
-  duplicateFormMutationQuery.mutate(props.form.id)
+  loading.value = true
+  duplicateFormMutationQuery.mutate(props.form.id, {
+    onSuccess: () => {
+      loading.value = false
+    }
+  })
 }
 
 const deleteForm = () => {
-  deleteFormMutation.mutate(props.form.id)
+  loading.value = true
+  deleteFormMutation.mutate(props.form.id, {
+    onSuccess: () => {
+      loading.value = false
+    }
+  })
 }
 
 const showDraftFormWarningNotification = () => {
