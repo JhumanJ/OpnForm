@@ -121,6 +121,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'throttle.email.changes' => \App\Http\Middleware\ThrottleEmailChanges::class,
 
         'pro-form' => \App\Http\Middleware\Form\ProForm::class,
         'protected-form' => \App\Http\Middleware\Form\ProtectedForm::class,

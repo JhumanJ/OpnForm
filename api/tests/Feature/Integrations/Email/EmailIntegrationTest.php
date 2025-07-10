@@ -2,17 +2,17 @@
 
 use App\Models\Integration\FormIntegration;
 
-test('free user can create one email integration', function () {
+test('free user can create one email integration to their own email', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
-    // First email integration should succeed
+    // First email integration should succeed with user's own email
     $response = $this->postJson(route('open.forms.integration.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
-            'send_to' => 'test@example.com',
+            'send_to' => $user->email,
             'sender_name' => 'Test Sender',
             'subject' => 'Test Subject',
             'email_content' => 'Test Content',
@@ -28,7 +28,7 @@ test('free user can create one email integration', function () {
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
-            'send_to' => 'another@example.com',
+            'send_to' => $user->email,
             'sender_name' => 'Test Sender',
             'subject' => 'Test Subject',
             'email_content' => 'Test Content',
@@ -40,6 +40,32 @@ test('free user can create one email integration', function () {
         ->assertJson([
             'errors' => [
                 'settings.send_to' => ['Free users are limited to 1 email integration per form.']
+            ]
+        ]);
+});
+
+test('free user cannot send to other email addresses', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $response = $this->postJson(route('open.forms.integration.create', $form), [
+        'integration_id' => 'email',
+        'status' => true,
+        'settings' => [
+            'send_to' => 'other@example.com',
+            'sender_name' => 'Test Sender',
+            'subject' => 'Test Subject',
+            'email_content' => 'Test Content',
+            'include_submission_data' => true
+        ]
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['settings.send_to'])
+        ->assertJson([
+            'errors' => [
+                'settings.send_to' => ['You can only send email notification to your own email address. Please upgrade to the Pro plan to send to other email addresses.']
             ]
         ]);
 });
@@ -133,17 +159,17 @@ test('pro user can add multiple emails', function () {
     expect($integration->data->send_to)->toContain('third@example.com');
 });
 
-test('free user can update their single email integration', function () {
+test('free user can update their single email integration to their own email', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
-    // Create initial integration
+    // Create initial integration with user's email
     $response = $this->postJson(route('open.forms.integration.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
-            'send_to' => 'test@example.com',
+            'send_to' => $user->email,
             'sender_name' => 'Test Sender',
             'subject' => 'Test Subject',
             'email_content' => 'Test Content',
@@ -154,12 +180,12 @@ test('free user can update their single email integration', function () {
     $response->assertSuccessful();
     $integrationId = $response->json('form_integration.id');
 
-    // Update the integration
+    // Update the integration - still with user's email
     $response = $this->putJson(route('open.forms.integration.update', [$form, $integrationId]), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
-            'send_to' => 'updated@example.com',
+            'send_to' => $user->email,
             'sender_name' => 'Updated Sender',
             'subject' => 'Updated Subject',
             'email_content' => 'Updated Content',
@@ -170,6 +196,49 @@ test('free user can update their single email integration', function () {
     $response->assertSuccessful();
 
     $integration = FormIntegration::find($integrationId);
-    expect($integration->data->send_to)->toBe('updated@example.com');
+    expect($integration->data->send_to)->toBe($user->email);
     expect($integration->data->sender_name)->toBe('Updated Sender');
+});
+
+test('free user cannot update integration to other email addresses', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    // Create initial integration with user's email
+    $response = $this->postJson(route('open.forms.integration.create', $form), [
+        'integration_id' => 'email',
+        'status' => true,
+        'settings' => [
+            'send_to' => $user->email,
+            'sender_name' => 'Test Sender',
+            'subject' => 'Test Subject',
+            'email_content' => 'Test Content',
+            'include_submission_data' => true
+        ]
+    ]);
+
+    $response->assertSuccessful();
+    $integrationId = $response->json('form_integration.id');
+
+    // Try to update to another email address - should fail
+    $response = $this->putJson(route('open.forms.integration.update', [$form, $integrationId]), [
+        'integration_id' => 'email',
+        'status' => true,
+        'settings' => [
+            'send_to' => 'other@example.com',
+            'sender_name' => 'Updated Sender',
+            'subject' => 'Updated Subject',
+            'email_content' => 'Updated Content',
+            'include_submission_data' => true
+        ]
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['settings.send_to'])
+        ->assertJson([
+            'errors' => [
+                'settings.send_to' => ['You can only send email notification to your own email address. Please upgrade to the Pro plan to send to other email addresses.']
+            ]
+        ]);
 });

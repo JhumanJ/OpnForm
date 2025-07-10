@@ -88,9 +88,11 @@ const deleteLoading = ref(false)
 
 // Update profile
 const updateProfile = () => {
-      profileForm.patch('/settings/profile').then((_response) => {
-     useAuth().invalidateUser()
+  profileForm.patch('/settings/profile').then((_response) => {
+    useAuth().invalidateUser()
     alert.success('Your info has been updated!')
+  }).catch((error) => {
+    alert.error(error.data.message)
   })
 }
 
