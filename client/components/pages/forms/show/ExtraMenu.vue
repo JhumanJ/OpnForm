@@ -92,29 +92,8 @@ const showDeleteFormModal = ref(false)
 const showFormTemplateModal = ref(false)
 const showFormWorkspaceModal = ref(false)
 
-const deleteFormMutation = remove({
-  onSuccess: (data) => {
-    useAlert().success(data.message)
-    showDeleteFormModal.value = false
-    router.push({ name: "home" })
-  },
-  onError: (error) => {
-    useAlert().error(error.data?.message || "Failed to delete form")
-  }
-})
-
-const duplicateFormMutation = duplicate({
-  onSuccess: (data) => {
-    router.push({
-      name: "forms-slug-show",
-      params: { slug: data.new_form.slug },
-    })
-    useAlert().success(data.message)
-  },
-  onError: (error) => {
-    useAlert().error(error.data?.message || "Failed to duplicate form")
-  }
-})
+const deleteFormMutation = remove()
+const duplicateFormMutation = duplicate()
 
 const items = computed(() => {
   return [
@@ -184,12 +163,28 @@ const copyLink = () => {
   useAlert().success("Copied!")
 }
 
-const duplicateForm = () => {
-  duplicateFormMutation.mutate(props.form.id)
+const duplicateForm = async () => {
+  try {
+    const data = await duplicateFormMutation.mutateAsync(props.form.id)
+    router.push({
+      name: "forms-slug-show",
+      params: { slug: data.new_form.slug },
+    })
+    useAlert().success(data.message)
+  } catch (error) {
+    useAlert().error(error.data?.message || "Failed to duplicate form")
+  }
 }
 
-const deleteForm = () => {
-  deleteFormMutation.mutate(props.form.id)
+const deleteForm = async () => {
+  try {
+    const data = await deleteFormMutation.mutateAsync(props.form.id)
+    useAlert().success(data.message)
+    showDeleteFormModal.value = false
+    router.push({ name: "home" })
+  } catch (error) {
+    useAlert().error(error.data?.message || "Failed to delete form")
+  }
 }
 
 const showDraftFormWarningNotification = () => {

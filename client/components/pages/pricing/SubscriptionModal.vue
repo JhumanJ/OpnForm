@@ -329,15 +329,6 @@
         </SlidingTransition>
       </div>
     </template>
-    <template #footer>
-      <UButton
-        color="neutral"
-        variant="outline"
-        @click="subscriptionModalStore.closeModal()"
-      >
-        Close
-      </UButton>
-    </template>
   </UModal>
 </template>
 
@@ -365,10 +356,9 @@ const form = useForm({
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
-const workspacesStore = useWorkspacesStore()
 const { isAuthenticated: authenticated } = useIsAuthenticated()
 const { data: user } = useAuth().user()
-const isSubscribed = computed(() => workspacesStore.isSubscribed)
+const isSubscribed = computed(() => user.value.is_pro)
 const currency = 'usd'
 
 const checkoutUrl = useCheckoutUrl(

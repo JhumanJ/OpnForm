@@ -1,7 +1,6 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { authApi } from '~/api/auth'
 import { useAuthStore } from '~/stores/auth'
-import { chainCallbacks } from './index'
 
 export function useAuth() {
   const queryClient = useQueryClient()
@@ -31,80 +30,64 @@ export function useAuth() {
 
   // Mutations
   const updateCredentials = (options = {}) => {
-    const builtInOnSuccess = (updatedUser) => {
-      // Update user cache with optimistic updates
-      queryClient.setQueryData(['user'], (old) => {
-        const newData = old ? { ...old, ...updatedUser } : updatedUser
-        // Re-initialize service clients with updated data
-        authStore.initServiceClients(newData)
-        return newData
-      })
-    }
-    
     return useMutation({
       mutationFn: (data) => authApi.user.updateCredentials(data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      onSuccess: (updatedUser) => {
+        // Update user cache with optimistic updates
+        queryClient.setQueryData(['user'], (old) => {
+          const newData = old ? { ...old, ...updatedUser } : updatedUser
+          // Re-initialize service clients with updated data
+          authStore.initServiceClients(newData)
+          return newData
+        })
+      },
+      ...options
     })
   }
 
   const deleteAccount = (options = {}) => {
-    const builtInOnSuccess = () => {
-      // Clear auth state and all cached data
-      authStore.clearTokens()
-      queryClient.clear()
-    }
-    
     return useMutation({
       mutationFn: () => authApi.user.delete(),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      onSuccess: () => {
+        // Clear auth state and all cached data
+        authStore.clearTokens()
+        queryClient.clear()
+      },
+      ...options
     })
   }
 
   const logout = (options = {}) => {
-    const builtInOnSuccess = () => {
-      // Clear auth state and all cached data
-      authStore.clearTokens()
-      queryClient.clear()
-    }
-    
-    const builtInOnError = (error) => {
-      console.error(error)
-      // Even if logout API fails, clear local state
-      authStore.clearTokens()
-      queryClient.clear()
-    }
-    
     return useMutation({
       mutationFn: () => authApi.logout(),
-      ...chainCallbacks(builtInOnSuccess, builtInOnError, options)
+      onSuccess: () => {
+        // Clear auth state and all cached data
+        authStore.clearTokens()
+        queryClient.clear()
+      },
+      onError: (error) => {
+        console.error(error)
+        // Even if logout API fails, clear local state
+        authStore.clearTokens()
+        queryClient.clear()
+      },
+      ...options
     })
   }
 
   const oauthCallback = (options = {}) => {
-    const builtInOnSuccess = (response) => {
-      // Handle token from OAuth callback
-      if (response.token) {
-        authStore.setToken(response.token, response.expires_in)
-      }
-      
-      // Invalidate user cache to trigger fresh fetch with new token
-      invalidateUser()
-    }
-    
     return useMutation({
       mutationFn: ({ provider, data }) => authApi.oauth.callback(provider, data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
-    })
-  }
-
-  // Utility functions
-  const prefetchUser = () => {
-    if (!authStore.token) return Promise.resolve()
-    
-    return queryClient.prefetchQuery({
-      queryKey: ['user'],
-      queryFn: () => authApi.user.get(),
-      staleTime: 15 * 60 * 1000
+      onSuccess: (response) => {
+        // Handle token from OAuth callback
+        if (response.token) {
+          authStore.setToken(response.token, response.expires_in)
+        }
+        
+        // Invalidate user cache to trigger fresh fetch with new token
+        invalidateUser()
+      },
+      ...options
     })
   }
 
@@ -123,7 +106,6 @@ export function useAuth() {
     oauthCallback,
     
     // Utilities
-    prefetchUser,
     invalidateUser
   }
 } 

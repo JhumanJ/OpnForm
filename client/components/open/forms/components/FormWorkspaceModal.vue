@@ -104,8 +104,27 @@ const workspacesSelectOptions = computed(() =>
 )
 
 const { updateWorkspace } = useForms()
-const updateWorkspaceMutation = updateWorkspace({
-  onSuccess: () => {
+const updateWorkspaceMutation = updateWorkspace()
+
+const close = () => {
+  emit("close")
+}
+
+const onSubmit = async () => {
+  if (!selectedWorkspace.value) {
+    useAlert().error("Please select a workspace!")
+    return
+  }
+  
+  loading.value = true
+  
+  try {
+    await updateWorkspaceMutation.mutateAsync({
+      id: props.form.id,
+      workspaceId: selectedWorkspace.value,
+      data: {}
+    })
+    
     loading.value = false
     emit("close")
     useAlert().success("Form workspace updated successfully.")
@@ -119,30 +138,11 @@ const updateWorkspaceMutation = updateWorkspace({
     if (route.name !== "home") {
       router.push({ name: "home" })
     }
-  },
-  onError: (error) => {
+  } catch (error) {
     useAlert().error(
       error?.data?.message ?? "Something went wrong, please try again!",
     )
     loading.value = false
   }
-})
-
-const close = () => {
-  emit("close")
-}
-
-const onSubmit = () => {
-  if (!selectedWorkspace.value) {
-    useAlert().error("Please select a workspace!")
-    return
-  }
-  
-  loading.value = true
-  updateWorkspaceMutation.mutate({
-    id: props.form.id,
-    workspaceId: selectedWorkspace.value,
-    data: {}
-  })
 }
 </script>

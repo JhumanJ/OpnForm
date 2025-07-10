@@ -31,7 +31,7 @@
         class="relative"
       >
         <div class="absolute inset-0 z-10">
-          <div class="p-5 max-w-md mx-auto mt-5">
+          <div class="p-5 max-w-md mx-auto flex flex-col items-center justify-center h-full">
             <p class="text-center">
               You need a <pro-tag
                 upgrade-modal-title="Upgrade today to access form analytics"
@@ -39,23 +39,22 @@
               /> subscription to access your form
               analytics.
             </p>
-            <p class="mt-5 text-center">
+            <div class="mt-5 flex justify-center">
               <UButton
-                class="w-full"
-                @click.prevent="subscriptionModalStore.openModal()"
+                @click.prevent="subscriptionModalStore.setModalContent('Upgrade to unlock form Analytics');subscriptionModalStore.openModal()"
               >
-                Subscribe
+                Try our Pro plan
               </UButton>
-            </p>
+            </div>
           </div>
         </div>
         <img
           src="/img/pages/forms/blurred_graph.png"
           alt="Sample Graph"
-          class="mx-auto filter blur-md z-0"
+          class="mx-auto w-full filter blur-md z-0 pointer-events-none"
         >
       </div>
-      <VTransition name="fade">
+      <VTransition v-else name="fade">
         <div
           v-if="isLoading"
           class="space-y-3"

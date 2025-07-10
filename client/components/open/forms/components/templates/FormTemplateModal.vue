@@ -229,30 +229,9 @@ const close = () => {
   emit("close")
 }
 
-const createMutation = create({
-  onSuccess: () => {
-    useAlert().success("Template created successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const updateMutation = update({
-  onSuccess: () => {
-    useAlert().success("Template updated successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const deleteMutation = remove({
-  onSuccess: () => {
-    useAlert().success("Template deleted successfully")
-    router.push({ name: "templates" })
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
+const createMutation = create()
+const updateMutation = update()
+const deleteMutation = remove()
 
 const onSubmit = () => {
   if (props.template) {
@@ -261,16 +240,35 @@ const onSubmit = () => {
     createFormTemplate()
   }
 }
-const createFormTemplate = () => {
-  templateForm.value.form = props.form
-  createMutation.mutate(templateForm.value)
+const createFormTemplate = async () => {
+  try {
+    templateForm.value.form = props.form
+    await createMutation.mutateAsync(templateForm.value)
+    useAlert().success("Template created successfully")
+    emit("close")
+  } catch (error) {
+    useAlert().error(error.message)
+  }
 }
-const updateFormTemplate = () => {
-  templateForm.value.form = props.form
-  updateMutation.mutate({ id: props.template.id, data: templateForm.value })
+const updateFormTemplate = async () => {
+  try {
+    templateForm.value.form = props.form
+    await updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value })
+    useAlert().success("Template updated successfully")
+    emit("close")
+  } catch (error) {
+    useAlert().error(error.message)
+  }
 }
-const deleteFormTemplate = () => {
+const deleteFormTemplate = async () => {
   if (!props.template) return
-  deleteMutation.mutate(props.template.id)
+  try {
+    await deleteMutation.mutateAsync(props.template.id)
+    useAlert().success("Template deleted successfully")
+    router.push({ name: "templates" })
+    emit("close")
+  } catch (error) {
+    useAlert().error(error.message)
+  }
 }
 </script>

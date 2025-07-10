@@ -156,19 +156,16 @@ const saveChanges = () => {
   if (!workspace.value?.id) return
   
   isLoading.value = true
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     custom_domains: domains.value,
-  }, {
-    onSuccess: () => {
-      alert.success('Custom domains saved.')
-      isChanged.value = false
-      isLoading.value = false
-    },
-    onError: (error) => {
-      alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
-      isLoading.value = false
-    }
-    })
+  }).then(() => {
+    alert.success('Custom domains saved.')
+    isChanged.value = false
+    isLoading.value = false
+  }).catch((error) => {
+    alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
+    isLoading.value = false
+  })
 }
 
 const initCustomDomains = () => {

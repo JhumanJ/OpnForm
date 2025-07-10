@@ -247,45 +247,47 @@ const saveFormEdit = () => {
   updateFormLoading.value = true
   validationErrorResponse.value = null
 
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     id: form.value.id,
     data: form.value.data()
-  }, {
-    onSuccess: (updatedForm) => {
-      emit("on-save")
+  }).then((response) => {
+    const updatedForm = response.form
+    emit("on-save")
 
-      // Navigate to share page
-      useRouter().push({
-        name: "forms-slug-show-share",
-        params: { slug: updatedForm.slug },
-      })
+    // Navigate to share page
+    useRouter().push({
+      name: "forms-slug-show-share",
+      params: { slug: updatedForm.slug },
+    })
 
-      // Analytics / alerts
-      amplitude.logEvent("form_saved", {
-        form_id: updatedForm.id,
-        form_slug: updatedForm.slug,
-      })
-      displayFormModificationAlert({
-        form: updatedForm,
-        message: "Form successfully saved.",
-      })
-
-      updateFormLoading.value = false
-    },
-    onError: (error) => {
-      console.error("Error saving form", error)
-      if (error?.response?.status === 422) {
-        validationErrorResponse.value = error.data
-        showValidationErrors()
-      } else {
-        console.error(error)
-        useAlert().error(
-          "An error occurred while saving the form, please try again.",
-        )
-        captureException(error)
-      }
-      updateFormLoading.value = false
+    try{
+    // Analytics / alerts
+    amplitude.logEvent("form_saved", {
+      form_id: updatedForm.id,
+      form_slug: updatedForm.slug,
+    })
+    displayFormModificationAlert({
+      form: updatedForm,
+      message: "Form successfully saved.",
+    })
+    } catch (error) {
+      console.error("Analytics error", error)
     }
+
+    updateFormLoading.value = false
+  }).catch((error) => {
+    console.error("Error saving form", error)
+    if (error?.response?.status === 422) {
+      validationErrorResponse.value = error.data
+      showValidationErrors()
+    } else {
+      console.error(error)
+      useAlert().error(
+        "An error occurred while saving the form, please try again.",
+      )
+      captureException(error)
+    }
+    updateFormLoading.value = false
   })
 }
 
@@ -296,12 +298,12 @@ const saveFormCreate = () => {
   validationErrorResponse.value = null
 
   updateFormLoading.value = true
-  console.log("saveFormCreate", form.value.data())
-  createMutation.mutate(form.value.data(), {
-    onSuccess: (newForm) => {
-      emit("on-save")
-      createdFormSlug.value = newForm.slug
+  createMutation.mutateAsync(form.value.data()).then((response) => {
+    const newForm = response.form
+    emit("on-save")
+    createdFormSlug.value = newForm.slug
 
+    try{
       // Analytics / alerts
       amplitude.logEvent("form_created", {
         form_id: newForm.id,
@@ -311,40 +313,45 @@ const saveFormCreate = () => {
         form_id: newForm.id,
         form_slug: newForm.slug,
       })
-      displayFormModificationAlert({
-        form: newForm,
-        message: "Form successfully created.",
-      })
-
-      useRouter().push({
-        name: "forms-slug-show-share",
-        params: {
-          slug: createdFormSlug.value,
-          new_form: newForm.users_first_form ?? false,
-        },
-      }).then(() => {
-        updateFormLoading.value = false
-      })
-    },
-    onError: (error) => {
-      console.error("Error saving form", error)
-      if (error?.response?.status === 422) {
-        validationErrorResponse.value = error.data
-        showValidationErrors()
-      } else {
-        useAlert().error(
-          "An error occurred while saving the form, please try again.",
-        )
-        captureException(error)
-      }
-      updateFormLoading.value = false
+    } catch (error) {
+      console.error("Analytics error", error)
     }
+    displayFormModificationAlert({
+      form: newForm,
+      message: "Form successfully created.",
+    })
+
+    useRouter().push({
+      name: "forms-slug-show-share",
+      params: {
+        slug: createdFormSlug.value,
+        new_form: newForm.users_first_form ?? false,
+      },
+    }).then(() => {
+      updateFormLoading.value = false
+    })
+  }).catch((error) => {
+    console.error("Error saving form", error)
+    if (error?.response?.status === 422) {
+      validationErrorResponse.value = error.data
+      showValidationErrors()
+    } else {
+      useAlert().error(
+        "An error occurred while saving the form, please try again.",
+      )
+      captureException(error)
+    }
+    updateFormLoading.value = false
   })
 }
 
 const saveFormGuest = () => {
   emit("openRegister")
 }
+
+defineExpose({
+  saveFormCreate
+})
 
 // Lifecycle hooks
 onMounted(() => {

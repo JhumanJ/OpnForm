@@ -2,8 +2,6 @@ import { computed } from 'vue'
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 import { useQueryClient } from '@tanstack/vue-query'
-import { useAuth } from '~/composables/query/useAuth'
-import { useWorkspaces } from '~/composables/query/useWorkspaces'
 
 /**
  * Lightweight authentication check that doesn't require Vue Query context
@@ -19,19 +17,32 @@ export const useIsAuthenticated = () => {
   return { isAuthenticated }
 }
 
+/**
+ * Initialize service clients without requiring Vue Query context
+ * Safe to call from middleware or anywhere outside setup context
+ */
+export const initServiceClients = (userData) => {
+  if (import.meta.server) return
+  if (!userData) return
+  
+  useAmplitude().setUser(userData)
+  useCrisp().setUser(userData)
+  // todo: set sentry user
+}
+
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
   const queryClient = useQueryClient()
   const { logEvent } = useAmplitude()
   const router = useRouter()
-  
-  // Initialize composables at the top level
-  const { user, invalidateUser, logout } = useAuth()
-  const { list: listWorkspaces } = useWorkspaces()
 
-  const userQuery = user()
-  const workspacesQuery = listWorkspaces()
-  const logoutMutation = logout()
+  // Initialize Vue Query hooks but don't create instances
+  const { list: workspacesQuery } = useWorkspaces()
+  const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
+  
+  // Prepare logout mutation ahead of time within a valid Vue context
+  const logoutMutation = logoutMutationFactory()
+
 
   // Helper to get user data from cache (no API calls)
   const getCachedUserData = () => {
@@ -43,17 +54,7 @@ export const useAuthFlow = () => {
     return userData !== null && userData !== undefined && userData.active_license !== null
   })
 
-  // Service client initialization moved from auth store
-  const initServiceClients = (userDataOverride = null) => {
-    if (import.meta.server) return
-    
-    const userVal = userDataOverride || getCachedUserData()
-    if (!userVal) return
-    
-    useAmplitude().setUser(userVal)
-    useCrisp().setUser(userVal)
-    // todo: set sentry user
-  }
+  // Service client initialization moved to external function
 
   /**
    * Core authentication logic used by both social and direct login
@@ -63,9 +64,12 @@ export const useAuthFlow = () => {
     // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Now that we have a token, refetch data with initialized queries
+    // 2. Now that we have a token, get fresh instances and fetch data
+    const currentWorkspacesInstance = workspacesQuery()
+    const currentUserInstance = user()
+    
     const [workspacesResult] = await Promise.all([
-      workspacesQuery.refetch(),
+      currentWorkspacesInstance.refetch(),
       // Invalidate user query to trigger fresh fetch with new token
       invalidateUser()
     ])
@@ -73,10 +77,10 @@ export const useAuthFlow = () => {
 
     // 3. Wait for user data to be fetched by TanStack Query
     // The user query will automatically cache and trigger onSuccess
-    await userQuery.refetch()
+    await currentUserInstance.refetch()
     
     // Initialize service clients with user data
-    initServiceClients(userQuery.data.value)
+    initServiceClients(currentUserInstance.data.value)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -95,7 +99,7 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData: userQuery.data.value, workspaces, isNewUser }
+    return { userData: currentUserInstance.data.value, workspaces, isNewUser }
   }
 
   /**
@@ -116,7 +120,8 @@ export const useAuthFlow = () => {
     
     // If we have a token but no cached user data, fetch it
     try {
-      await userQuery.refetch()
+      const currentUserInstance = user()
+      await currentUserInstance.refetch()
       return true
     } catch (error) {
       console.error('Auth verification failed:', error)
@@ -217,9 +222,6 @@ export const useAuthFlow = () => {
     verifyAuthentication,
     handleLogout,
   
-    hasActiveLicense,
-    
-    // Helper functions
-    initServiceClients
+    hasActiveLicense
   }
 } 

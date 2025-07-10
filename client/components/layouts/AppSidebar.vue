@@ -118,7 +118,7 @@ const navigationSections = computed(() => [
       }),
       // Show upgrade for non-pro users
       ...(workspace.value && !workspace.value.is_pro && !isSelfHosted.value ? [createNavItem({
-        label: 'Upgrade Plan',
+        label: 'Try our Pro plan',
         icon: 'i-heroicons-sparkles', 
         to: { name: 'pricing' },
         active: isActiveRoute('pricing'),

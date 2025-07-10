@@ -1,6 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
-import { chainCallbacks } from '../index'
 
 export function useFormSubmissions() {
   const queryClient = useQueryClient()
@@ -44,63 +43,61 @@ export function useFormSubmissions() {
   }
 
   const updateSubmission = (options = {}) => {
-    const builtInOnSuccess = (updatedSubmission, { formId, submissionId }) => {
-      // Update submission cache
-      queryClient.setQueryData(['submissions', submissionId], updatedSubmission)
-      
-      // Update in submissions list
-      queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
-        if (!old) return old
-        if (Array.isArray(old)) {
-          return old.map(submission => 
-            submission.id === submissionId ? { ...submission, ...updatedSubmission } : submission
-          )
-        }
-        if (old.data) {
-          return {
-            ...old,
-            data: old.data.map(submission => 
+    return useMutation({
+      mutationFn: ({ formId, submissionId, data }) => formsApi.submissions.update(formId, submissionId, data),
+      onSuccess: (updatedSubmission, { formId, submissionId }) => {
+        // Update submission cache
+        queryClient.setQueryData(['submissions', submissionId], updatedSubmission)
+        
+        // Update in submissions list
+        queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
+          if (!old) return old
+          if (Array.isArray(old)) {
+            return old.map(submission => 
               submission.id === submissionId ? { ...submission, ...updatedSubmission } : submission
             )
           }
-        }
-        return old
-      })
-    }
-    
-    return useMutation({
-      mutationFn: ({ formId, submissionId, data }) => formsApi.submissions.update(formId, submissionId, data),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+          if (old.data) {
+            return {
+              ...old,
+              data: old.data.map(submission => 
+                submission.id === submissionId ? { ...submission, ...updatedSubmission } : submission
+              )
+            }
+          }
+          return old
+        })
+      },
+      ...options
     })
   }
 
   const deleteSubmission = (options = {}) => {
-    const builtInOnSuccess = (_, { formId, submissionId }) => {
-      // Remove from submission cache
-      queryClient.removeQueries({ queryKey: ['submissions', submissionId] })
-      
-      // Remove from submissions list
-      queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
-        if (!old) return old
-        if (Array.isArray(old)) {
-          return old.filter(submission => submission.id !== submissionId)
-        }
-        if (old.data) {
-          return {
-            ...old,
-            data: old.data.filter(submission => submission.id !== submissionId)
-          }
-        }
-        return old
-      })
-      
-      // Invalidate stats
-      queryClient.invalidateQueries(['forms', formId, 'stats'])
-    }
-    
     return useMutation({
       mutationFn: ({ formId, submissionId }) => formsApi.submissions.delete(formId, submissionId),
-      ...chainCallbacks(builtInOnSuccess, null, options)
+      onSuccess: (_, { formId, submissionId }) => {
+        // Remove from submission cache
+        queryClient.removeQueries({ queryKey: ['submissions', submissionId] })
+        
+        // Remove from submissions list
+        queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
+          if (!old) return old
+          if (Array.isArray(old)) {
+            return old.filter(submission => submission.id !== submissionId)
+          }
+          if (old.data) {
+            return {
+              ...old,
+              data: old.data.filter(submission => submission.id !== submissionId)
+            }
+          }
+          return old
+        })
+        
+        // Invalidate stats
+        queryClient.invalidateQueries(['forms', formId, 'stats'])
+      },
+      ...options
     })
   }
 

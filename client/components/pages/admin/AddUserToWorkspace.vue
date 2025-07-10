@@ -55,24 +55,22 @@ const roleOptions = [
 const newUser = ref("")
 const newUserRole = ref("user")
 
-const addMutation = addUserMutation(currentId, {
-  onSuccess: (data) => {
+const addMutation = addUserMutation(currentId)
+
+const addUser = async () => {
+  if (!newUser.value) return
+  
+  try {
+    const data = await addMutation.mutateAsync({
+      email: newUser.value,
+      role: newUserRole.value,
+    })
     newUser.value = ""
     newUserRole.value = "user"
     useAlert().success(data.message)
     // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
-  },
-  onError: (error) => {
+  } catch (error) {
     useAlert().error("There was an error adding user: " + error.data.message)
   }
-})
-
-const addUser = () => {
-  if (!newUser.value) return
-  
-  addMutation.mutate({
-    email: newUser.value,
-    role: newUserRole.value,
-  })
 }
 </script>

@@ -171,11 +171,7 @@ const { data: tokens, isLoading: loading } = list({}, {
 })
 
 // Delete token mutation
-const deleteTokenMutation = removeToken({
-  onError: () => {
-    alert.error("An error occurred while deleting the token")
-  }
-})
+const deleteTokenMutation = removeToken()
 
 // Column pinning state
 const columnPinning = ref({
@@ -211,8 +207,12 @@ const openSubscriptionModal = () => {
 }
 
 const deleteToken = (token) => {
-  alert.confirm("Do you really want to delete this token?", () => {
-    deleteTokenMutation.mutate(token.id)
+  alert.confirm("Do you really want to delete this token?", async () => {
+    try {
+      await deleteTokenMutation.mutateAsync(token.id)
+    } catch {
+      alert.error("An error occurred while deleting the token")
+    }
   })
 }
 </script> 

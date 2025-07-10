@@ -75,7 +75,7 @@ const onClick = () => {
   if (props.integration.requires_subscription && !currentWorkspace.value.is_pro ) {
     subscriptionModalStore.setModalContent(
       'Upgrade today to use this integration',
-      `Upgrade your account to use "${props.integration.name}" and unlock all of our Pro features.`
+      `Upgrade your account to use our ${props.integration.name} and unlock all of our Pro features.`
     )
     subscriptionModalStore.openModal()
     return

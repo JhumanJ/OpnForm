@@ -5,7 +5,7 @@ import { computed, watch } from 'vue'
  * Separates current workspace logic from CRUD operations
  */
 export function useCurrentWorkspace() {
-  const workspacesStore = useWorkspacesStore()
+  const appStore = useAppStore()
   const { list } = useWorkspaces()
   
   // Get the workspace list query (but don't create a top-level query here)
@@ -15,8 +15,8 @@ export function useCurrentWorkspace() {
   watch(
     () => workspacesQuery.data.value,
     (workspaces) => {
-      if (workspaces && workspaces.length > 0 && !workspacesStore.currentId) {
-        workspacesStore.setCurrentId(workspaces[0].id)
+      if (workspaces && workspaces.length > 0 && !appStore.currentId) {
+        appStore.setCurrentId(workspaces[0].id)
       }
     },
     { immediate: true }
@@ -24,7 +24,7 @@ export function useCurrentWorkspace() {
   
   // Reactive current workspace - combines store state with query data
   const current = computed(() => {
-    const currentId = workspacesStore.currentId
+    const currentId = appStore.currentId
     const workspaces = workspacesQuery.data.value
     
     if (!currentId || !workspaces) {
@@ -54,12 +54,12 @@ export function useCurrentWorkspace() {
   
   // Helper to get current workspace ID
   const currentId = computed(() => {
-    return workspacesStore.currentId
+    return appStore.currentId
   })
   
   // Helper to switch workspace (delegates to store)
   const switchTo = (workspaceId) => {
-    workspacesStore.setCurrentId(workspaceId)
+    appStore.setCurrentId(workspaceId)
   }
   
   return {

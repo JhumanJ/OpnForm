@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/vue-query'
+import { initServiceClients } from '~/composables/useAuthFlow'
 
 export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
@@ -9,8 +10,6 @@ export default defineNuxtRouteMiddleware(async () => {
     useCookie('token').value,
     useCookie('admin_token').value,
   )
-
-  const { initServiceClients } = useAuthFlow()
 
   // If no token, nothing to do
   if (!authStore.token) {

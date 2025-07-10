@@ -110,11 +110,7 @@ const tokenForm = useForm({
 })
 
 // Create token mutation
-const createTokenMutation = create({
-  onError: () => {
-    alert.error("An error occurred while creating the token")
-  }
-})
+const createTokenMutation = create()
 
 // Modal state
 const isOpen = computed({
@@ -129,7 +125,13 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-function createToken() {
-  createTokenMutation.mutate(tokenForm.data())
+async function createToken() {
+  try {
+    const response = await createTokenMutation.mutateAsync(tokenForm.data())
+    // Assuming the response contains the token
+    token.value = response.token || response.data?.token || response
+  } catch {
+    alert.error("An error occurred while creating the token")
+  }
 }
 </script>
