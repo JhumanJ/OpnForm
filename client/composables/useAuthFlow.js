@@ -2,6 +2,8 @@ import { computed } from 'vue'
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 import { useQueryClient } from '@tanstack/vue-query'
+import { useAuth } from '~/composables/query/useAuth'
+import { useWorkspaces } from '~/composables/query/useWorkspaces'
 
 /**
  * Lightweight authentication check that doesn't require Vue Query context
@@ -20,16 +22,16 @@ export const useIsAuthenticated = () => {
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
   const queryClient = useQueryClient()
-  const logEvent = useAmplitude().logEvent
+  const { logEvent } = useAmplitude()
   const router = useRouter()
-
-  // Initialize Vue Query hooks but don't create instances
-  const { list: workspacesQuery } = useWorkspaces()
-  const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
   
-  // Prepare logout mutation ahead of time within a valid Vue context
-  const logoutMutation = logoutMutationFactory()
+  // Initialize composables at the top level
+  const { user, invalidateUser, logout } = useAuth()
+  const { list: listWorkspaces } = useWorkspaces()
 
+  const userQuery = user()
+  const workspacesQuery = listWorkspaces()
+  const logoutMutation = logout()
 
   // Helper to get user data from cache (no API calls)
   const getCachedUserData = () => {
@@ -61,12 +63,9 @@ export const useAuthFlow = () => {
     // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Now that we have a token, get fresh instances and fetch data
-    const currentWorkspacesInstance = workspacesQuery()
-    const currentUserInstance = user()
-    
+    // 2. Now that we have a token, refetch data with initialized queries
     const [workspacesResult] = await Promise.all([
-      currentWorkspacesInstance.refetch(),
+      workspacesQuery.refetch(),
       // Invalidate user query to trigger fresh fetch with new token
       invalidateUser()
     ])
@@ -74,10 +73,10 @@ export const useAuthFlow = () => {
 
     // 3. Wait for user data to be fetched by TanStack Query
     // The user query will automatically cache and trigger onSuccess
-    await currentUserInstance.refetch()
+    await userQuery.refetch()
     
     // Initialize service clients with user data
-    initServiceClients(currentUserInstance.data.value)
+    initServiceClients(userQuery.data.value)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -96,7 +95,7 @@ export const useAuthFlow = () => {
       console.error(error)
     }
 
-    return { userData: currentUserInstance.data.value, workspaces, isNewUser }
+    return { userData: userQuery.data.value, workspaces, isNewUser }
   }
 
   /**
@@ -117,8 +116,7 @@ export const useAuthFlow = () => {
     
     // If we have a token but no cached user data, fetch it
     try {
-      const currentUserInstance = user()
-      await currentUserInstance.refetch()
+      await userQuery.refetch()
       return true
     } catch (error) {
       console.error('Auth verification failed:', error)

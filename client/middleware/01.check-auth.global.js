@@ -3,16 +3,19 @@ import { useQueryClient } from '@tanstack/vue-query'
 export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
   const queryClient = useQueryClient()
-  const { initServiceClients } = useAuthFlow()
 
-  // Initialize tokens from cookies
+  // Initialize tokens from cookies first
   authStore.initStore(
     useCookie('token').value,
-    useCookie('admin_token').value
+    useCookie('admin_token').value,
   )
 
+  const { initServiceClients } = useAuthFlow()
+
   // If no token, nothing to do
-  if (!authStore.token) return
+  if (!authStore.token) {
+    return
+  }
 
   // Check for already cached user data (from SSR or previous fetch)
   let userData = queryClient.getQueryData(['user'])

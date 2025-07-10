@@ -4,19 +4,37 @@ import { onMounted } from "vue"
 import { default as _has } from "lodash/has"
 
 const scriptLoaded = ref(false)
+let setupQueue = []
+
 const authStore = useAuthStore()
 const { data: user } = useAuth().user()
 const isImpersonating = computed(() => authStore.isImpersonating)
 const featureBaseOrganization =
   useRuntimeConfig().public.featureBaseOrganization
 
+const runSetupQueue = () => {
+  while (setupQueue.length > 0) {
+    const setupFn = setupQueue.shift()
+    try {
+      setupFn()
+    } catch (error) {
+      console.error("Error running FeatureBase setup", error)
+    }
+  }
+}
+
 const loadScript = () => {
   if (scriptLoaded.value || !user.value || !featureBaseOrganization) return
+  if (document.getElementById("featurebase-sdk")) return
+
   const script = document.createElement("script")
   script.src = "https://do.featurebase.app/js/sdk.js"
   script.id = "featurebase-sdk"
   document.head.appendChild(script)
-  scriptLoaded.value = true
+  script.onload = () => {
+    scriptLoaded.value = true
+    runSetupQueue()
+  }
 }
 
 const setupForUser = () => {
@@ -53,6 +71,18 @@ const setupForUser = () => {
   })
 }
 
+const scheduleSetup = () => {
+  if (import.meta.server) return
+
+  setupQueue.push(setupForUser)
+
+  if (scriptLoaded.value) {
+    runSetupQueue()
+  } else {
+    loadScript()
+  }
+}
+
 onMounted(() => {
   if (import.meta.server || !user.value) return
 
@@ -62,28 +92,24 @@ onMounted(() => {
     typeof window.Featurebase !== "function"
   ) {
     window.Featurebase = function () {
-      (window.Featurebase.q = window.Featurebase.q || []).push(arguments)
+      ;(window.Featurebase.q = window.Featurebase.q || []).push(arguments)
     }
   }
 
-  loadScript()
-  try {
-    setupForUser()
-  } catch (error) {
-    console.error(error)
+  if (user.value) {
+    scheduleSetup()
   }
 })
 
-watch(user, (val) => {
-  if (import.meta.server || !val) return
-
-  loadScript()
-  try {
-    setupForUser()
-  } catch (error) {
-    console.error(error)
-  }
-})
+watch(
+  user,
+  (val) => {
+    if (val) {
+      scheduleSetup()
+    }
+  },
+  { immediate: false }
+)
 </script>
 
 <style>

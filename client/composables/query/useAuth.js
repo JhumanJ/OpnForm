@@ -67,7 +67,8 @@ export function useAuth() {
       queryClient.clear()
     }
     
-    const builtInOnError = () => {
+    const builtInOnError = (error) => {
+      console.error(error)
       // Even if logout API fails, clear local state
       authStore.clearTokens()
       queryClient.clear()
@@ -87,7 +88,7 @@ export function useAuth() {
       }
       
       // Invalidate user cache to trigger fresh fetch with new token
-      queryClient.invalidateQueries(['user'])
+      invalidateUser()
     }
     
     return useMutation({
