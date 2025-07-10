@@ -112,12 +112,11 @@ const alert = useAlert()
 
 const { current: workspace } = useCurrentWorkspace()
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 const crisp = useCrisp()
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to send emails using your own domain')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to send emails using your own domain' })
 }
 
 const emailSettingsForm = useForm({

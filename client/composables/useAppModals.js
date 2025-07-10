@@ -6,6 +6,7 @@ import { createSharedComposable } from '@vueuse/core'
 // Pre-import modal components so overlay receives component definitions, not promises
 import UsersSettingsModal from '~/components/users/settings/Modal.vue'
 import WorkspacesSettingsModal from '~/components/workspaces/settings/Modal.vue'
+import SubscriptionModal from '~/components/pages/pricing/SubscriptionModal.vue'
 
 export const useAppModals = createSharedComposable(() => {
   // Internal state management (replaces store)
@@ -25,6 +26,9 @@ export const useAppModals = createSharedComposable(() => {
   const workspaceSettingsModal = overlay.create(WorkspacesSettingsModal, {
     destroyOnClose: false
   })
+  const subscriptionModal = overlay.create(SubscriptionModal, {
+    destroyOnClose: false
+  })
   
   // URL parameter refs
   const userSettingsQuery = useRouteQuery('user-settings')
@@ -37,6 +41,7 @@ export const useAppModals = createSharedComposable(() => {
   // Add flags
   const userSettingsOpen = ref(false)
   const workspaceSettingsOpen = ref(false)
+  const isSubscriptionModalOpen = ref(false)
   
   // URL → State sync for user settings
   watch([userSettingsQuery, isAuthenticated], ([tab, isLoggedIn]) => {
@@ -167,6 +172,16 @@ export const useAppModals = createSharedComposable(() => {
       }
     })
   }
+
+  const openSubscriptionModal = (props = {}) => {
+    isSubscriptionModalOpen.value = true
+    return subscriptionModal.open({
+      ...props,
+      onClose: () => {
+        isSubscriptionModalOpen.value = false
+      }
+    })
+  }
   
   const closeUserSettings = () => {
     userSettingsTab.value = null
@@ -176,6 +191,11 @@ export const useAppModals = createSharedComposable(() => {
   const closeWorkspaceSettings = () => {
     workspaceSettingsTab.value = null
     workspaceSettingsModal.close()
+  }
+
+  const closeSubscriptionModal = () => {
+    isSubscriptionModalOpen.value = false
+    subscriptionModal.close()
   }
   
   // Handle modal close events from components
@@ -193,12 +213,15 @@ export const useAppModals = createSharedComposable(() => {
     workspaceSettingsTab: readonly(workspaceSettingsTab),
     isUserSettingsOpen,
     isWorkspaceSettingsOpen,
+    isSubscriptionModalOpen: readonly(isSubscriptionModalOpen),
     
     // Actions
     openUserSettings,
     openWorkspaceSettings,
+    openSubscriptionModal,
     closeUserSettings,
     closeWorkspaceSettings,
+    closeSubscriptionModal,
     
     // Event handlers for modal components
     handleUserSettingsClose,

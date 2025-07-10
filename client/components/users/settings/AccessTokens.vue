@@ -157,7 +157,7 @@ import opnformConfig from '~/opnform.config.js'
 import AbilitiesBadges from '~/components/users/settings/access-tokens/AbilitiesBadges.vue'
 
 const accessTokenModal = ref(false)
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 const alert = useAlert()
 
 const { data: user } = useAuth().user()
@@ -206,8 +206,7 @@ const tableColumns = [
 ]
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to start using our API')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to start using our API' })
 }
 
 const deleteToken = (token) => {

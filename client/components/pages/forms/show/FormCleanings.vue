@@ -71,9 +71,9 @@ export default {
     hideable: { type: Boolean, default: false }
   },
   setup () {
-    const subscriptionModalStore = useSubscriptionModalStore()
+    const { openSubscriptionModal } = useAppModals()
     return {
-      subscriptionModalStore
+      openSubscriptionModal
     }
   },
   data () {
@@ -110,8 +110,10 @@ export default {
   },
   methods: {
     onUpgradeClick () {
-      this.subscriptionModalStore.setModalContent('Upgrade to unlock all features for your form', 'Some features are disabled on the published form. Upgrade your plan to unlock these features and much more. Gain full access to all advanced features.')
-      this.subscriptionModalStore.openModal()
+      this.openSubscriptionModal({
+        modal_title: 'Upgrade to unlock all features for your form',
+        modal_description: 'Some features are disabled on the published form. Upgrade your plan to unlock these features and much more. Gain full access to all advanced features.'
+      })
     }
   }
 }

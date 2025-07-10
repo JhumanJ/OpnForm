@@ -133,7 +133,7 @@
                       color="neutral"
                       variant="outline"
                       class="block"
-                      @click.prevent="subscriptionModalStore.openModal()"
+                      @click.prevent="openSubscriptionModal()"
                     >
                       Upgrade Now
                     </UButton>
@@ -175,7 +175,7 @@ useOpnSeoMeta({
 })
 
 // Composables
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 
 const {

@@ -26,7 +26,7 @@ const props = defineProps({
   }
 })
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 const { data: user } = useAuth().user()
 const { current: workspace } = useCurrentWorkspace()
 
@@ -37,7 +37,9 @@ const shouldDisplayProTag = computed(() => {
 })
 
 function onClick () {
-  subscriptionModalStore.setModalContent(props.upgradeModalTitle, props.upgradeModalDescription)
-  subscriptionModalStore.openModal()
+  openSubscriptionModal({
+    modal_title: props.upgradeModalTitle,
+    modal_description: props.upgradeModalDescription
+  })
 }
 </script>

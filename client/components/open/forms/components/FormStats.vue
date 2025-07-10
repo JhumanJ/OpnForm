@@ -18,6 +18,7 @@
         class="self-stretch mt-1"
         color="neutral"
         variant="outline"
+        :disabled="!form.is_pro"
         @click.prevent="refresh" 
         icon="i-heroicons-arrow-path" 
         :loading="isLoading"
@@ -39,14 +40,12 @@
               /> subscription to access your form
               analytics.
             </p>
-            <p class="mt-5 text-center">
-              <UButton
-                class="w-full"
-                @click.prevent="subscriptionModalStore.openModal()"
-              >
-                Subscribe
-              </UButton>
-            </p>
+            <UButton
+              class="mt-5"
+              block
+              @click.prevent="openSubscriptionModal()"
+              label="Subscribe"
+            />
           </div>
         </div>
         <img
@@ -106,7 +105,7 @@ const props = defineProps({
   },
 })
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 const toDate = new Date()
 const fromDate = new Date(toDate)

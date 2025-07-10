@@ -119,7 +119,7 @@ const props = defineProps({
 const { hasActiveLicense } = useAuthFlow()
 const { addUser: addUserMutation } = useWorkspaceUsers()
 const crisp = useCrisp()
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 const alert = useAlert()
 
@@ -156,8 +156,7 @@ const closeModal = () => {
 }
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to invite users to your workspace')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to invite users to your workspace' })
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))

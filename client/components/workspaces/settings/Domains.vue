@@ -97,7 +97,7 @@ const alert = useAlert()
 const crisp = useCrisp()
 const { current: workspace } = useCurrentWorkspace()
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 
 const newDomain = ref('')
 const domains = ref([])
@@ -105,8 +105,7 @@ const isLoading = ref(false)
 const isChanged = ref(false)
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to setup custom domains')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to setup custom domains' })
 }
 
 onMounted(() => {
