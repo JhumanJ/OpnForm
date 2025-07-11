@@ -14,7 +14,6 @@
       <div class="bg-white py-8 px-4 shadow-sm sm:rounded-sm sm:px-10">
         <form
           @submit.prevent="updateCredentials"
-          @keydown="form.onKeydown($event)"
         >
           <!-- Email -->
           <text-input
@@ -74,10 +73,10 @@
 <script setup>
 import { onMounted } from "vue"
 
-const { data: user } = useAuth().user()
+const { data: user, logout: logoutMutationFactory } = useAuth()
 const router = useRouter()
 const loading = ref(false)
-const authFlow = useAuthFlow()
+const logoutMutation = logoutMutationFactory()
 const form = useForm({
   name: "",
   email: "",
@@ -115,7 +114,7 @@ const updateCredentials = () => {
 }
 
 const logout = () => {
-  authFlow.handleLogout()
-  router.push({ name: "login" })
+  // Logout mutation handles cache clearing and navigation automatically
+  logoutMutation.mutateAsync()
 }
 </script>

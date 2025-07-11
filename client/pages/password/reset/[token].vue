@@ -7,7 +7,6 @@
         </h1>
         <form
           @submit.prevent="reset"
-          @keydown="form.onKeydown($event)"
         >
           <UAlert
             v-if="status"

@@ -37,7 +37,6 @@
               :show-industries="false"
             />
 
-          <!-- Empty State -->
           <div v-else class="text-center py-16 px-4">
             <UIcon name="i-heroicons-document-duplicate" class="h-12 w-12 text-neutral-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-neutral-900">
@@ -80,7 +79,7 @@ const { list } = useTemplates()
 const { openHelpdeskArticle } = useCrisp()
 
 const { data: templates, isLoading: loading } = list({
-  query: { onlymy: true },
+  params: { onlymy: true },
   enabled: computed(() => import.meta.client)
 })
 

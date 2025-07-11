@@ -1,6 +1,6 @@
 <template>
   <UModal
-    v-model:open="subscriptionModalStore.show"
+    v-model:open="isOpen"
     :ui="{ content: 'sm:max-w-5xl' }"
     :close="false"
   >
@@ -27,10 +27,10 @@
                 >
                 <section class="flex flex-col mt-2 max-md:max-w-full">
                   <h1 class="text-2xl font-bold tracking-tight leading-9 text-slate-800 max-md:max-w-full">
-                    {{ subscriptionModalStore.modal_title }}
+                    {{ modal_title }}
                   </h1>
                   <p class="mt-4 text-base leading-6 text-slate-500 max-md:max-w-full">
-                    {{ subscriptionModalStore.modal_description }}
+                    {{ modal_description }}
                   </p>
                 </section>
               </main>
@@ -154,7 +154,7 @@
                           class="w-5 h-5 text-blue-500"
                         />
                         <p class="mt-2">
-                          <strong class="font-semibold text-slate-800">All ntegrations & API access.</strong>
+                          <strong class="font-semibold text-slate-800">All integrations & API access.</strong>
                           <span class="text-slate-500"> Setup email, Slack, Discord notifications or GSheet, Zapier or webhooks integrations.</span>
                         </p>
                       </div>
@@ -329,15 +329,6 @@
         </SlidingTransition>
       </div>
     </template>
-    <template #footer>
-      <UButton
-        color="neutral"
-        variant="outline"
-        @click="subscriptionModalStore.closeModal()"
-      >
-        Close
-      </UButton>
-    </template>
   </UModal>
 </template>
 
@@ -348,12 +339,36 @@ import TrackClick from '~/components/global/TrackClick.vue'
 import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
 import { authApi } from '~/api'
 
-const router = useRouter()
-const subscriptionModalStore = useSubscriptionModalStore()
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
+  modal_title: {
+    type: String,
+    default: 'Upgrade to Pro'
+  },
+  modal_description: {
+    type: String,
+    default: 'Unlock all features and get the most out of OpnForm.'
+  },
+  plan: {
+    type: String,
+    default: 'default'
+  },
+  yearly: {
+    type: Boolean,
+    default: false
+  }
+})
 
-const currentPlan = ref(subscriptionModalStore.plan || 'default')
+const emit = defineEmits(['close'])
+
+const router = useRouter()
+
+const currentPlan = ref(props.plan)
 const currentStep = ref(1)
-const isYearly = ref(subscriptionModalStore.yearly)
+const isYearly = ref(props.yearly)
 const loading = ref(false)
 const billingLoading = ref(false)
 const shouldShowUpsell = ref(false)
@@ -362,13 +377,21 @@ const form = useForm({
   email: ''
 })
 
+const isOpen = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('close', value)
+})
+
+const closeModal = () => {
+  isOpen.value = false
+}
+
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 const broadcastData = subscribeBroadcast.data
 const confetti = useConfetti()
-const workspacesStore = useWorkspacesStore()
 const { isAuthenticated: authenticated } = useIsAuthenticated()
 const { data: user } = useAuth().user()
-const isSubscribed = computed(() => workspacesStore.isSubscribed)
+const isSubscribed = computed(() => user.value.is_pro)
 const currency = 'usd'
 
 const checkoutUrl = useCheckoutUrl(
@@ -380,27 +403,27 @@ const checkoutUrl = useCheckoutUrl(
 )
 
 // When opening modal with a plan already (and user not subscribed yet) - skip first step
-watch(() => subscriptionModalStore.show, () => {
+watch(() => props.modelValue, () => {
   currentStep.value = 1
   
   // Update user data when modal opens
-  if (subscriptionModalStore.show) {
+  if (props.modelValue) {
     updateUser()
     
-    if (subscriptionModalStore.plan) {
+    if (props.plan) {
       if (user.value.is_subscribed) {
         return
       }
-      isYearly.value = subscriptionModalStore.yearly
+      isYearly.value = props.yearly
       shouldShowUpsell.value = !isYearly.value
       currentStep.value = 2
-      currentPlan.value = subscriptionModalStore.plan
+      currentPlan.value = props.plan
     }
   }
 })
 
 watch(broadcastData, () => {
-  if (import.meta.server || !subscriptionModalStore.show || !broadcastData.value || !broadcastData.value.type) {
+  if (import.meta.server || !props.modelValue || !broadcastData.value || !broadcastData.value.type) {
     return
   }
 
@@ -439,7 +462,7 @@ watch(broadcastData, () => {
       )
     }
     confetti.play()
-    subscriptionModalStore.closeModal()
+    closeModal()
   } else {
     useAlert().error(
       'Unfortunately we could not confirm your subscription. Please try again and contact us if the issue persists.'
@@ -476,7 +499,7 @@ watch(user, () => {
 
 const onSelectPlan = (planName) => {
   if (!authenticated.value) {
-    subscriptionModalStore.closeModal()
+    closeModal()
     router.push({ name: "register" })
     return
   }

@@ -143,9 +143,10 @@ const handlePreviousClick = () => {
   if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const handleNextClick = async () => {
-  await props.formManager.nextPage()
-  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+const handleNextClick = () => {
+  props.formManager.nextPage().then(() => {
+    if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
 }
 
 const handleDragDropped = (data) => {

@@ -26,22 +26,24 @@
       color="warning"
       variant="subtle"
       title="Pro plan required"
-    >
-      <template #description>
-        Please <NuxtLink
-          @click.prevent="openSubscriptionModal"
-          class="underline"
-        >
-          upgrade your account
-        </NuxtLink> to setup a custom domain.
-      </template>
-    </UAlert>
+      description="Please upgrade your account to setup a custom domain."
+      :actions="[{
+        label: 'Try Pro plan',
+        color: 'warning',
+        variant: 'solid',
+        onClick: () => openSubscriptionModal({
+          modal_title: 'Upgrade to use your own domain',
+          modal_description: 'Try our Pro plan for free today, and unlock custom domains and other features such as advanced customization, forms analytics, integrations, and more!'
+        })
+      }]"
+    />
 
     <div class="space-y-4">
       <div class="flex max-w-sm items-center gap-2">
         <UInput
           v-model="newDomain"
           :disabled="!workspace.is_pro"
+          :variant="workspace.is_pro ? 'outline' : 'subtle'"
           placeholder="yourdomain.com"
           class="flex-1"
           @keydown.enter.prevent="addDomain"
@@ -97,17 +99,12 @@ const alert = useAlert()
 const crisp = useCrisp()
 const { current: workspace } = useCurrentWorkspace()
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 const newDomain = ref('')
 const domains = ref([])
 const isLoading = ref(false)
 const isChanged = ref(false)
-
-const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to setup custom domains')
-  subscriptionModalStore.openModal()
-}
 
 onMounted(() => {
   initCustomDomains()
@@ -156,18 +153,15 @@ const saveChanges = () => {
   if (!workspace.value?.id) return
   
   isLoading.value = true
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     custom_domains: domains.value,
-  }, {
-    onSuccess: () => {
+  }).then(() => {
       alert.success('Custom domains saved.')
       isChanged.value = false
       isLoading.value = false
-    },
-    onError: (error) => {
+  }).catch((error) => {
       alert.error(error.response?._data?.message ?? 'Failed to update custom domains')
       isLoading.value = false
-    }
     })
 }
 

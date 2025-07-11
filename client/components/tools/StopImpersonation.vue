@@ -22,16 +22,17 @@ const router = useRouter()
 const isImpersonating = computed(() => authStore.isImpersonating)
 const loading = ref(false)
 
-async function reverseImpersonation() {
+function reverseImpersonation() {
   loading.value = true
   authStore.stopImpersonating()
 
   // Fetch the user.
-      await authApi.user.get()
-   useAuth().invalidateUser()
-  useWorkspaces().invalidateAll()
-  router.push({ name: 'admin' })
-  loading.value = false
+  authApi.user.get().then(() => {
+    useAuth().invalidateUser()
+    useWorkspaces().invalidateAll()
+    router.push({ name: 'admin' })
+    loading.value = false
+  })
 }
 </script>
 

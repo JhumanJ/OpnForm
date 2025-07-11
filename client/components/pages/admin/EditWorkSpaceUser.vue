@@ -50,25 +50,22 @@ const { updateUserRole: updateUserRoleMutation } = useWorkspaceUsers()
 
 const userNewRole = ref("")
 
-const updateMutation = updateUserRoleMutation(currentId, {
-  onSuccess: () => {
-    useAlert().success("User role updated.")
-    emit('close')
-    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
-  },
-  onError: () => {
-    useAlert().error("There was an error updating user role")
-  }
-})
+const updateMutation = updateUserRoleMutation(currentId)
 
 watch(() => props.user, () => {
   userNewRole.value = props.user.pivot.role
 })
 
 const updateUserRole = () => {
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     userId: props.user.id,
     data: { role: userNewRole.value }
+  }).then(() => {
+    useAlert().success("User role updated.")
+    emit('close')
+    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
+  }).catch(() => {
+    useAlert().error("There was an error updating user role")
   })
 }
 </script>

@@ -24,7 +24,6 @@
       <template v-else>
         <form
           @submit.prevent="send"
-          @keydown="form.onKeydown($event)"
         >
           <text-input
             name="email"
@@ -85,8 +84,8 @@ const isOpen = computed({
   }
 })
 
-const send = async () => {
-  await form.post("/password/email").then(() => {
+const send = () => {
+  form.post("/password/email").then(() => {
     isMailSent.value = true
   }).catch(error => {
     if(error?.data?.email){

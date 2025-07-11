@@ -1,146 +1,144 @@
 <template>
-  <div>
-    <form
-      method="POST"
-      @submit.prevent="register"
-      @keydown="form.onKeydown($event)"
+  <VForm size="sm"
+    method="POST"
+    @submit.prevent="register"
+    class="flex flex-col gap-1"
+  >
+    <!-- Name -->
+    <text-input
+      name="name"
+      :form="form"
+      label="Name"
+      placeholder="Your name"
+      :required="true"
+    />
+
+    <!-- Email -->
+    <text-input
+      name="email"
+      :form="form"
+      label="Email"
+      :required="true"
+      :disabled="disableEmail"
+      placeholder="Your email address"
+    />
+
+    <select-input
+      v-if="!disableEmail"
+      name="hear_about_us"
+      :options="hearAboutUsOptions"
+      :form="form"
+      placeholder="Select option"
+      label="How did you hear about us?"
+      :required="true"
+    />
+
+    <!-- Password -->
+    <text-input
+      native-type="password"
+      placeholder="Enter password"
+      name="password"
+      :form="form"
+      label="Password"
+      :required="true"
+    />
+
+    <!-- Password Confirmation-->
+    <text-input
+      native-type="password"
+      :form="form"
+      :required="true"
+      placeholder="Enter confirm password"
+      name="password_confirmation"
+      label="Confirm Password"
+    />
+
+    <!-- Captcha -->
+    <div
+      v-if="reCaptchaSiteKey"
+      class="my-4 px-2 mx-auto w-max"
     >
-      <!-- Name -->
-      <text-input
-        name="name"
+      <CaptchaInput
+        ref="captcha"
+        provider="recaptcha"
         :form="form"
-        label="Name"
-        placeholder="Your name"
-        :required="true"
+        language="en"
       />
+    </div>
 
-      <!-- Email -->
-      <text-input
-        name="email"
-        :form="form"
-        label="Email"
-        :required="true"
-        :disabled="disableEmail"
-        placeholder="Your email address"
-      />
-
-      <select-input
-        v-if="!disableEmail"
-        name="hear_about_us"
-        :options="hearAboutUsOptions"
-        :form="form"
-        placeholder="Select option"
-        label="How did you hear about us?"
-        :required="true"
-      />
-
-      <!-- Password -->
-      <text-input
-        native-type="password"
-        placeholder="Enter password"
-        name="password"
-        :form="form"
-        label="Password"
-        :required="true"
-      />
-
-      <!-- Password Confirmation-->
-      <text-input
-        native-type="password"
-        :form="form"
-        :required="true"
-        placeholder="Enter confirm password"
-        name="password_confirmation"
-        label="Confirm Password"
-      />
-
-      <!-- Captcha -->
-      <div
-        v-if="reCaptchaSiteKey"
-        class="my-4 px-2 mx-auto w-max"
-      >
-        <CaptchaInput
-          ref="captcha"
-          provider="recaptcha"
-          :form="form"
-          language="en"
-        />
-      </div>
-
-      <checkbox-input
-        :form="form"
-        name="agree_terms"
-        class="my-3"
-        :required="true"
-      >
-        <template #label>
-          <label for="agree_terms">
-            I agree with the
-            <NuxtLink
-              :to="{ name: 'terms-conditions' }"
-              target="_blank"
-              class="underline"
-            >
-              Terms and conditions
-            </NuxtLink>
-            and
-            <NuxtLink
-              :to="{ name: 'privacy-policy' }"
-              target="_blank"
-              class="underline"
-            >
-              Privacy policy
-            </NuxtLink>
-            of the website and I accept them.
-          </label>
-        </template>
-      </checkbox-input>
-
-      <!-- Submit Button -->
-      <UButton
-        class="mt-4"
-        block
-        size="lg"
-        :loading="form.busy"
-        type="submit"
-        label="Create account"
-      />
-
-      <template v-if="useFeatureFlag('services.google.auth')">
-        <p class="text-neutral-500 text-sm text-center my-4">
-          OR
-        </p>
-        <UButton
-          color="neutral"
-          variant="outline"
-          size="lg"
-          class="space-x-4 flex items-center"
-          block
-          :loading="false"
-          @click.prevent="signInwithGoogle"
-          icon="devicon:google"
-          label="Sign in with Google"
-        />
+    <checkbox-input
+      :form="form"
+      name="agree_terms"
+      class="my-3"
+      :required="true"
+    >
+      <template #label>
+        <label for="agree_terms">
+          I agree with the
+          <NuxtLink
+            :to="{ name: 'terms-conditions' }"
+            target="_blank"
+            class="underline"
+          >
+            Terms and conditions
+          </NuxtLink>
+          and
+          <NuxtLink
+            :to="{ name: 'privacy-policy' }"
+            target="_blank"
+            class="underline"
+          >
+            Privacy policy
+          </NuxtLink>
+          of the website and I accept them.
+        </label>
       </template>
+    </checkbox-input>
 
-      <p class="text-neutral-500 mt-4 text-sm text-center">
-        Already have an account?
-        <a
-          v-if="isQuick"
-          href="#"
-          class="font-medium ml-1"
-          @click.prevent="$emit('openLogin')"
-        >Log In</a>
-        <NuxtLink
-          v-else
-          :to="{ name: 'login' }"
-          class="font-semibold ml-1"
-        >
-          Log In
-        </NuxtLink>
+    <!-- Submit Button -->
+    <UButton
+      class="mt-4"
+      block
+      size="lg"
+      :loading="form.busy"
+      type="submit"
+      label="Create account"
+    />
+
+    <template v-if="useFeatureFlag('services.google.auth')">
+      <p class="text-neutral-500 text-sm text-center my-4">
+        OR
       </p>
-    </form>
-  </div>
+      <UButton
+        color="neutral"
+        variant="outline"
+        size="lg"
+        class="space-x-4 flex items-center"
+        block
+        :loading="false"
+        @click.prevent="signInwithGoogle"
+        icon="devicon:google"
+        label="Sign in with Google"
+      />
+    </template>
+
+    <p class="text-neutral-500 mt-4 text-sm text-center">
+      Already have an account?
+      <a
+        v-if="isQuick"
+        href="#"
+        class="font-medium ml-1"
+        @click.prevent="$emit('openLogin')"
+      >Log In</a>
+      <NuxtLink
+        v-else
+        :to="{ name: 'login' }"
+        class="font-semibold ml-1"
+      >
+        Log In
+      </NuxtLink>
+    </p>
+  </VForm>
 </template>
 
 <script setup>
@@ -162,9 +160,11 @@ defineEmits(['openLogin'])
 const { $utm } = useNuxtApp()
 const oAuth = useOAuth()
 const runtimeConfig = useRuntimeConfig()
-const authFlow = useAuthFlow()
+const { register: registerMutationFactory } = useAuth()
 const router = useRouter()
 const route = useRoute()
+
+const registerMutation = registerMutationFactory()
 
 // Reactive data
 const form = useForm({
@@ -236,20 +236,29 @@ onMounted(() => {
 })
 
 // Methods
-const register = async () => {
-  // Reset captcha after submission
-  if (import.meta.client && reCaptchaSiteKey.value) {
-    captcha.value.reset()
-  }
-
-  try {
-    form.utm_data = $utm.value
-    await authFlow.registerUser(form)
-
+const register = () => {
+  form.utm_data = {...$utm.value}
+  $utm.value = null
+  
+  form.mutate(registerMutation, {
+    data: {
+      formData: form.data(),
+      source: form.hear_about_us
+    }
+  }).then(() => {
+    useAlert().success({
+      title: "Welcome to OpnForm 👋",
+      ...!props.isQuick ? {description: "Time to create your first form!"} : {}
+    })
     redirect()
-  } catch (err) {
+  }).catch((err) => {
     useAlert().error(err.response?._data?.message)
-  }
+  }).finally(() => {
+    // Reset captcha after submission
+    if (import.meta.client && reCaptchaSiteKey.value) {
+      captcha.value.reset()
+    }
+  })
 }
 
 const redirect = () => {

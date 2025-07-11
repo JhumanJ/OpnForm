@@ -67,7 +67,7 @@ export function getOpnRequestsOptions(request, opts) {
         if (authStore.token) {
           console.log("Logging out due to 401")
           // Clear tokens directly to avoid context issues
-          authStore.clearTokens()
+          authStore.clearToken()
           useAppStore().isUnauthorizedError = true
           useAppStore().quickLoginModal = true
           

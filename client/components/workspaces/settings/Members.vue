@@ -97,7 +97,6 @@
       <template #body>
         <form
           @submit.prevent="updateUserRole"
-          @keydown="editUserForm.onKeydown($event)"
         >
           <div>
             <FlatSelectInput
@@ -162,42 +161,10 @@ const editUserForm = useForm({
 })
 
 // Create all mutations during setup
-const updateMutation = updateUserRoleMutation(workspaceId, {
-  onSuccess: (data) => {
-    alert.success(data.message || 'User role updated successfully')
-    showEditUserModal.value = false
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "There was an error updating user role")
-  }
-})
-
-const removeMutation = removeUserMutation(workspaceId, {
-  onSuccess: () => {
-    alert.success("User successfully removed.")
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "There was an error removing user")
-  }
-})
-
-const resendMutation = resendInviteMutation(workspaceId, {
-  onSuccess: () => {
-    alert.success("Invitation resent successfully.")
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "Failed to resend invitation")
-  }
-})
-
-const cancelMutation = cancelInviteMutation(workspaceId, {
-  onSuccess: () => {
-    alert.success("Invitation cancelled successfully.")
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "Failed to cancel invitation")
-  }
-})
+const updateMutation = updateUserRoleMutation(workspaceId)
+const removeMutation = removeUserMutation(workspaceId)
+const resendMutation = resendInviteMutation(workspaceId)
+const cancelMutation = cancelInviteMutation(workspaceId)
 
 // Column pinning state
 const columnPinning = ref({
@@ -245,7 +212,7 @@ const combinedUsers = computed(() => {
 
 // Table columns configuration
 const tableColumns = computed(() => {
-  const isAdmin = user?.value?.admin ?? false
+  const isAdmin = workspace?.value?.is_admin ?? false
   return [
     {
       id: 'name',
@@ -280,9 +247,14 @@ const editUser = (user) => {
 const updateUserRole = () => {
   if (!workspaceId.value || !selectedUser.value?.id) return
 
-  updateMutation.mutate({
+  updateMutation.mutateAsync({
     userId: selectedUser.value.id,
     data: { role: editUserForm.role }
+  }).then((data) => {
+    alert.success(data.message || 'User role updated successfully')
+    showEditUserModal.value = false
+  }).catch((error) => {
+    alert.error(error.response?.data?.message || "There was an error updating user role")
   })
 }
 
@@ -290,7 +262,11 @@ const removeUserHandler = (user) => {
   if (!workspaceId.value) return
 
   alert.confirm("Do you really want to remove " + user.name + " from this workspace?", () => {
-    removeMutation.mutate(user.id)
+    removeMutation.mutateAsync(user.id).then(() => {
+      alert.success("User successfully removed.")
+    }).catch((error) => {
+      alert.error(error.response?.data?.message || "There was an error removing user")
+    })
   })
 }
 
@@ -299,7 +275,11 @@ const resendInviteHandler = (invite) => {
   if (!workspaceId.value) return
 
   alert.confirm("Do you really want to resend invite email to this user?", () => {
-    resendMutation.mutate(invite.id)
+    resendMutation.mutateAsync(invite.id).then(() => {
+      alert.success("Invitation resent successfully.")
+    }).catch((error) => {
+      alert.error(error.response?.data?.message || "Failed to resend invitation")
+    })
   })
 }
 
@@ -307,7 +287,11 @@ const cancelInviteHandler = (invite) => {
   if (!workspaceId.value) return
 
   alert.confirm("Do you really want to cancel this user's invitation to this workspace?", () => {
-    cancelMutation.mutate(invite.id)
+    cancelMutation.mutateAsync(invite.id).then(() => {
+      alert.success("Invitation cancelled successfully.")
+    }).catch((error) => {
+      alert.error(error.response?.data?.message || "Failed to cancel invitation")
+    })
   })
 }
 

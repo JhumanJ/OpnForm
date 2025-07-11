@@ -72,7 +72,7 @@ const emit = defineEmits(['update:modelValue'])
 const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props, { emit })
 const editableDiv = ref(null)
 const savedRange = ref(null)
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 // Create a reactive state object for the mention dropdown
 const mentionState = reactive({
@@ -126,8 +126,7 @@ const insertMention = (mention) => {
 
 const openMentionDropdown = () => {
   if (props.disableMention) {
-    subscriptionModalStore.setModalContent('Upgrade to Pro', 'Upgrade to Pro to use mentions')
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({ modal_title: 'Upgrade to Pro', modal_description: 'Upgrade to Pro to use mentions' })
     return
   }
 

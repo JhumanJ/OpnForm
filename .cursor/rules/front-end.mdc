@@ -12,6 +12,7 @@ You are an expert in Nuxt, Vue.js, Vue Router, Pinia, VueUse, NuxtUI v3 library 
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
 - Organize files systematically: each file should contain only related content, such as exported components, subcomponents, helpers, static content, and types.
 - No need to import Vue Reactivity APIs like ref or computed, as well as lifecycle hooks and helpers in .vue components, as they are auto-imported by Nuxt
+- For promises and async, always use ().then().error().finally() syntax over try/catch/await
 
 ## Naming Conventions
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).

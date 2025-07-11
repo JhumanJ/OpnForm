@@ -148,7 +148,7 @@
                     v-else
                     class="mr-1"
                     trailing-icon="i-heroicons-arrow-right"
-                    @click.prevent="subscriptionModalStore.openModal('default', isYearly)"
+                    @click.prevent="openSubscriptionModal({ plan: 'default', yearly: isYearly })"
                     label="Start free trial"
                   />
                 </div>
@@ -193,10 +193,10 @@ export default {
     },
   },
   setup() {
-    const subscriptionModalStore = useSubscriptionModalStore()
+    const { openSubscriptionModal } = useAppModals()
     const { isAuthenticated: authenticated } = useIsAuthenticated()
     return {
-      subscriptionModalStore,
+      openSubscriptionModal,
       authenticated,
       user: computed(() => useAuth().user().data.value),
     }

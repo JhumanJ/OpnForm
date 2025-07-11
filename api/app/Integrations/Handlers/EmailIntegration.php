@@ -44,14 +44,10 @@ class EmailIntegration extends AbstractIntegrationHandler
         $rules['send_to'][] = function ($attribute, $value, $fail) {
             $currentUser = Auth::user();
             $userEmail = $currentUser->email;
-            $sendToEmails = array_map('trim', explode("\n", $value));
-            $sendToEmails = array_filter($sendToEmails); // Remove empty lines
+            $sendToEmail = trim($value);
 
-            foreach ($sendToEmails as $email) {
-                if ($email !== $userEmail) {
-                    $fail('You can only send email notification to your own email address. Please upgrade to the Pro plan to send to other email addresses.');
-                    return;
-                }
+            if ($sendToEmail !== $userEmail) {
+                $fail("You can only send email notification to your own email address ({$userEmail}). Please upgrade to the Pro plan to send to other email addresses.");
             }
         };
 

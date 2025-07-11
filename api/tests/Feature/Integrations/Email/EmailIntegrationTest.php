@@ -62,12 +62,14 @@ test('free user cannot send to other email addresses', function () {
     ]);
 
     $response->assertStatus(422)
-        ->assertJsonValidationErrors(['settings.send_to'])
-        ->assertJson([
-            'errors' => [
-                'settings.send_to' => ['You can only send email notification to your own email address. Please upgrade to the Pro plan to send to other email addresses.']
-            ]
-        ]);
+        ->assertJsonValidationErrors(['settings.send_to']);
+
+    // Check that the error message contains the expected text with user's email
+    $responseData = $response->json();
+    $errorMessage = $responseData['errors']['settings.send_to'][0];
+    expect($errorMessage)->toContain('You can only send email notification to your own email address');
+    expect($errorMessage)->toContain($user->email);
+    expect($errorMessage)->toContain('Please upgrade to the Pro plan to send to other email addresses.');
 });
 
 test('pro user can create multiple email integrations', function () {
@@ -235,10 +237,12 @@ test('free user cannot update integration to other email addresses', function ()
     ]);
 
     $response->assertStatus(422)
-        ->assertJsonValidationErrors(['settings.send_to'])
-        ->assertJson([
-            'errors' => [
-                'settings.send_to' => ['You can only send email notification to your own email address. Please upgrade to the Pro plan to send to other email addresses.']
-            ]
-        ]);
+        ->assertJsonValidationErrors(['settings.send_to']);
+
+    // Check that the error message contains the expected text with user's email
+    $responseData = $response->json();
+    $errorMessage = $responseData['errors']['settings.send_to'][0];
+    expect($errorMessage)->toContain('You can only send email notification to your own email address');
+    expect($errorMessage)->toContain($user->email);
+    expect($errorMessage)->toContain('Please upgrade to the Pro plan to send to other email addresses.');
 });

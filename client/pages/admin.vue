@@ -66,7 +66,6 @@
           label="Identifier"
           :required="true"
           help="User Id, User Email, Form Slug or View Slug"
-          @keydown="fetchUserForm.onKeydown($event)"
         />
         <UButton
           type="submit"
@@ -88,7 +87,6 @@
           label="Template Description"
           :required="true"
           help="Describe the template you want to create"
-          @keydown="createTemplateForm.onKeydown($event)"
         />
         <UButton
           type="submit"

@@ -18,6 +18,7 @@
         class="self-stretch mt-1"
         color="neutral"
         variant="outline"
+        :disabled="!form.is_pro"
         @click.prevent="refresh" 
         icon="i-heroicons-arrow-path" 
         :loading="isLoading"
@@ -31,7 +32,7 @@
         class="relative"
       >
         <div class="absolute inset-0 z-10">
-          <div class="p-5 max-w-md mx-auto mt-5">
+          <div class="p-5 max-w-md mx-auto flex flex-col items-center justify-center h-full">
             <p class="text-center">
               You need a <pro-tag
                 upgrade-modal-title="Upgrade today to access form analytics"
@@ -39,23 +40,20 @@
               /> subscription to access your form
               analytics.
             </p>
-            <p class="mt-5 text-center">
-              <UButton
-                class="w-full"
-                @click.prevent="subscriptionModalStore.openModal()"
-              >
-                Subscribe
-              </UButton>
-            </p>
+            <UButton
+              class="mt-5 flex justify-center"
+              @click.prevent="openSubscriptionModal({modal_title: 'Upgrade to unlock form Analytics'})"
+              label="Subscribe"
+            />
           </div>
         </div>
         <img
           src="/img/pages/forms/blurred_graph.png"
           alt="Sample Graph"
-          class="mx-auto filter blur-md z-0"
+          class="mx-auto w-full filter blur-md z-0 pointer-events-none"
         >
       </div>
-      <VTransition name="fade">
+      <VTransition v-else name="fade">
         <div
           v-if="isLoading"
           class="space-y-3"
@@ -106,7 +104,7 @@ const props = defineProps({
   },
 })
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 const toDate = new Date()
 const fromDate = new Date(toDate)

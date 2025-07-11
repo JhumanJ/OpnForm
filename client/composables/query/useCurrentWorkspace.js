@@ -1,22 +1,33 @@
 import { computed, watch } from 'vue'
 
+
 /**
  * Dedicated composable for reactive current workspace state
  * Separates current workspace logic from CRUD operations
  */
 export function useCurrentWorkspace() {
-  const workspacesStore = useWorkspacesStore()
+  const appStore = useAppStore()
   const { list } = useWorkspaces()
+  const { isAuthenticated } = useIsAuthenticated()
   
-  // Get the workspace list query (but don't create a top-level query here)
-  const workspacesQuery = list()
+  const workspacesQuery = list({
+    enabled: () => isAuthenticated.value
+  })
   
   // Watch for workspaces data and auto-select first workspace if none is current
   watch(
     () => workspacesQuery.data.value,
     (workspaces) => {
-      if (workspaces && workspaces.length > 0 && !workspacesStore.currentId) {
-        workspacesStore.setCurrentId(workspaces[0].id)
+      if (!workspaces) {
+        return
+      }
+
+      const currentWorkspaceExists = appStore.currentId && workspaces.some(ws => ws.id === appStore.currentId)
+
+      if (workspaces.length === 0) {
+        appStore.setCurrentId(null)
+      } else if (!currentWorkspaceExists) {
+        appStore.setCurrentId(workspaces[0].id)
       }
     },
     { immediate: true }
@@ -24,7 +35,7 @@ export function useCurrentWorkspace() {
   
   // Reactive current workspace - combines store state with query data
   const current = computed(() => {
-    const currentId = workspacesStore.currentId
+    const currentId = appStore.currentId
     const workspaces = workspacesQuery.data.value
     
     if (!currentId || !workspaces) {
@@ -54,12 +65,12 @@ export function useCurrentWorkspace() {
   
   // Helper to get current workspace ID
   const currentId = computed(() => {
-    return workspacesStore.currentId
+    return appStore.currentId
   })
   
   // Helper to switch workspace (delegates to store)
   const switchTo = (workspaceId) => {
-    workspacesStore.setCurrentId(workspaceId)
+    appStore.setCurrentId(workspaceId)
   }
   
   return {

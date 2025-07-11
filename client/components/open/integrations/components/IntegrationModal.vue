@@ -88,40 +88,12 @@ const emit = defineEmits(["close"])
 
 const { createIntegration, updateIntegration } = useFormIntegrations()
 
-const createIntegrationMutation = createIntegration({
-  onSuccess: (data) => {
-    alert.success(data.message)
-    emit("close")
-  },
-  onError: (error) => {
-    try {
-      alert.error(error.data.message)
-    }
-    catch {
-      alert.error("An error occurred while creating the integration")
-    }
-  },
-})
-
-const updateIntegrationMutation = updateIntegration({
-  onSuccess: (data) => {
-    alert.success(data.message)
-    emit("close")
-  },
-  onError: (error) => {
-    try {
-      alert.error(error.data.message)
-    }
-    catch {
-      alert.error("An error occurred while updating the integration")
-    }
-  },
-})
+const createIntegrationMutation = createIntegration()
+const updateIntegrationMutation = updateIntegration()
 
 const loading = computed(
   () =>
-    createIntegrationMutation.isPending.value ||
-    updateIntegrationMutation.isPending.value,
+    integrationData.value?.busy || false
 )
 
 // Computed property to handle show/hide logic for UModal
@@ -194,19 +166,39 @@ initIntegrationData()
 const save = () => {
   if (loading.value) return
 
-  const data = integrationData.value.data()
-
   if (props.formIntegrationId) {
-    updateIntegrationMutation.mutate({
-      formId: props.form.id,
-      integrationId: props.formIntegrationId,
-      data,
+    integrationData.value.mutate(updateIntegrationMutation, {
+      data: {
+        formId: props.form.id,
+        integrationId: props.formIntegrationId,
+      }
+    }).then((result) => {
+      alert.success(result.message)
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
     })
   }
   else {
-    createIntegrationMutation.mutate({
-      formId: props.form.id,
-      data,
+    integrationData.value.mutate(createIntegrationMutation, {
+      data: {
+        formId: props.form.id,
+      }
+    }).then((result) => {
+      alert.success(result.message)
+      emit("close")
+    }).catch((error) => {
+      try {
+        alert.error(error.data.message)
+      }
+      catch {
+        alert.error("An error occurred while saving the integration")
+      }
     })
   }
 }

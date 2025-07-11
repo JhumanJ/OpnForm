@@ -82,10 +82,10 @@ defineProps({
   }
 })
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 const router = useRouter()
 const route = useRoute()
-const workspacesStore = useWorkspacesStore()
+const appStore = useAppStore()
 
 const { data: user } = useAuth().user()
 const { data: workspaces } = useWorkspaces().list()
@@ -119,7 +119,7 @@ const switchWorkspace = (workspaceToSwitch) => {
   if (workspaceToSwitch.id === workspace.value.id) {
     return
   }
-  workspacesStore.setCurrentId(workspaceToSwitch.id)
+  appStore.setCurrentId(workspaceToSwitch.id)
   invalidateForms()
   
   if (route.name !== "home") {
@@ -129,8 +129,7 @@ const switchWorkspace = (workspaceToSwitch) => {
 
 const createNewWorkspace = () => {
   if (!user.value.is_pro && workspaces.value.length >= 1) {
-    subscriptionModalStore.setModalContent('Upgrade to create additional workspaces')
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({ modal_title: 'Upgrade to create additional workspaces', modal_description: 'Try our Pro plan for free today, and unlock all of our features such as collaboration, multiple workspaces, custom domains, forms analytics, integrations, and more!' })
     return
   }
   showCreateModal.value = true
@@ -140,8 +139,8 @@ const onWorkspaceCreated = (_newWorkspace) => {
   // Member count is now included in workspace data automatically
 }
 
-const onUserAdded = async () => {
-  await invalidateWorkspaces()
+const onUserAdded = () => {
+  invalidateWorkspaces()
 }
 
 const openSettings = () => {
@@ -153,8 +152,7 @@ const openInviteUserModal = () => {
   isDropdownOpen.value = false
 
   if (workspace.value && !workspace.value.is_pro) {
-    subscriptionModalStore.setModalContent('Upgrade to invite users to your workspace')
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({ modal_title: 'Upgrade to invite users to your workspace' })
     return
   }
   

@@ -26,13 +26,12 @@
         <VForm size="sm">
           <form
             @submit.prevent="handleSubmit"
-            @keydown="form.onKeydown($event)"
           >
             <text-input
               name="name"
               :form="form"
               :required="true"
-              :disabled="loading"
+              :disabled="form.busy"
               label="Workspace Name"
               placeholder="My Workspace"
             />
@@ -41,7 +40,7 @@
               class="mt-4"
               :form="form"
               :required="false"
-              :disabled="loading"
+              :disabled="form.busy"
               label="Emoji (optional)"
               placeholder="🚀"
               help="Choose an emoji to represent your workspace"
@@ -52,7 +51,7 @@
     <template #footer>
       <div class="flex gap-2 w-full">
         <UButton color="neutral" variant="outline" @click="closeModal">Cancel</UButton>
-        <UButton block type="submit" :loading="loading" @click="handleSubmit">Create Workspace</UButton>
+        <UButton block type="submit" :loading="form.busy" @click="handleSubmit">Create Workspace</UButton>
       </div>
     </template>
   </UModal>
@@ -69,7 +68,7 @@ const props = defineProps({
 })
 
 const { create } = useWorkspaces()
-const workspacesStore = useWorkspacesStore()
+const appStore = useAppStore()
 const crisp = useCrisp()
 const alert = useAlert()
 
@@ -80,7 +79,6 @@ const isOpen = computed({
 })
 
 // Form state
-const loading = ref(false)
 const form = useForm({
   name: '',
   emoji: ''
@@ -89,13 +87,10 @@ const form = useForm({
 // Handle form submission
 const createMutation = create()
 
-const handleSubmit = async () => {
-  try {
-    loading.value = true
-    
-    createMutation.mutate(form.data(), {
-      onSuccess: (newWorkspace) => {
-        workspacesStore.setCurrentId(newWorkspace.id)
+const handleSubmit = () => {
+  form.mutate(createMutation).then((response) => {
+    const newWorkspace = response.workspace
+    appStore.setCurrentId(newWorkspace.id)
 
     // Show success message
     alert.success('You are now working in your new workspace.', 10000, {
@@ -103,25 +98,14 @@ const handleSubmit = async () => {
     })
 
     // Emit created event and close modal
-        emit('created', newWorkspace)
+    emit('created', newWorkspace)
     closeModal()
-        loading.value = false
-      },
-      onError: (error) => {
-        console.error('Error creating workspace:', error)
-        alert.error(error.data?.message || 'Something went wrong. Please try again.', 10000, {
-          title: 'Error creating workspace'
-        })
-        loading.value = false
-      }
-    })
-  } catch (error) {
+  }).catch((error) => {
     console.error('Error creating workspace:', error)
     alert.error(error.data?.message || 'Something went wrong. Please try again.', 10000, {
       title: 'Error creating workspace'
     })
-    loading.value = false
-  }
+  })
 }
 
 // Close modal and reset form

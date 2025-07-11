@@ -58,23 +58,23 @@
           color="warning"
           variant="subtle"
           title="Pro plan required"
-        >
-          <template #description>
-            Please <NuxtLink
-              @click.prevent="openSubscriptionModal"
-              class="underline"
-            >
-              upgrade your account
-            </NuxtLink> to invite users to your workspace.
-          </template>
-        </UAlert>
+          description="Please upgrade your account to invite users to your workspace."
+          :actions="[{
+            label: 'Try Pro plan',
+            color: 'warning',
+            variant: 'solid',
+            onClick: () => openSubscriptionModal({
+              modal_title: 'Upgrade to invite users to your workspace',
+              modal_description: 'Try our Pro plan for free today, and unlock team collaboration features along with customized branding, form analytics, custom domains, and more!'
+            })
+          }]"
+        />
       </template>
 
       <VForm
         size="sm"
         class="my-2"
         @submit.prevent="addUser"
-        @keydown="inviteUserForm.onKeydown($event)"
       >
         <TextInput
           :form="inviteUserForm"
@@ -116,10 +116,15 @@ const props = defineProps({
   }
 })
 
-const { hasActiveLicense } = useAuthFlow()
+const { data: user } = useAuth().user()
 const { addUser: addUserMutation } = useWorkspaceUsers()
+
+// Local computed for active license check
+const hasActiveLicense = computed(() => {
+  return user.value !== null && user.value !== undefined && user.value.active_license !== null
+})
 const crisp = useCrisp()
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 const alert = useAlert()
 
@@ -138,17 +143,7 @@ const isOpen = computed({
 })
 
 // Create mutation during setup
-const inviteUserMutation = addUserMutation(workspaceId, {
-  onSuccess: (data) => {
-    inviteUserForm.reset()
-    alert.success(data.message || 'User invited successfully')
-    emit('user-added')
-    closeModal()
-  },
-  onError: (error) => {
-    alert.error(error.response?.data?.message || "There was an error adding user")
-  }
-})
+const inviteUserMutation = addUserMutation(workspaceId)
 
 // Methods
 const closeModal = () => {
@@ -156,8 +151,7 @@ const closeModal = () => {
 }
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to invite users to your workspace')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to invite users to your workspace' })
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))
@@ -175,9 +169,16 @@ const openBilling = () => {
 const addUser = () => {
   if (!workspaceId.value) return
 
-  inviteUserMutation.mutate({
+  inviteUserMutation.mutateAsync({
     email: inviteUserForm.email,
     role: inviteUserForm.role
+  }).then((data) => {
+    inviteUserForm.reset()
+    alert.success(data.message || 'User invited successfully')
+    emit('user-added')
+    closeModal()
+  }).catch((error) => {
+    alert.error(error.response?.data?.message || "There was an error adding user")
   })
 }
 </script>

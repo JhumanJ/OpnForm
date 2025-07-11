@@ -34,26 +34,17 @@
 <script setup>
 import { computed } from "vue"
 
-const router = useRouter()
 const { openUserSettings } = useAppModals()
-const authFlow = useAuthFlow()
 
-const { data: user } = useAuth().user()
+const { user: userQuery, logout: logoutMutationFactory } = useAuth()
+const { data: user } = userQuery()
 
-// Initialize composables that rely on Vue's provide/inject at top-level to avoid context issues
-const formsQueryUtils = useForms()
-const workspacesQueryUtils = useWorkspaces()
+// Create logout mutation
+const logoutMutation = logoutMutationFactory()
 
-const logout = async () => {
-  // Log out the user.
-  authFlow.handleLogout()
-
-  // Invalidate caches
-  formsQueryUtils.invalidateAll()
-  workspacesQueryUtils.invalidateAll()
-
-  // Redirect to login.
-  router.push({ name: "login" })
+const logout = () => {
+  // Logout mutation handles cache clearing and navigation automatically
+  logoutMutation.mutateAsync()
 }
 
 const dropdownItems = computed(() => {

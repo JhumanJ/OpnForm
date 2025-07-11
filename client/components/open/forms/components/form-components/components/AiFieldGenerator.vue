@@ -80,7 +80,7 @@ onMounted(() => {
   }
 })
 
-const handleGenerate = async () => {
+const handleGenerate = () => {
   if (loading.value) return
 
   if (!aiFields.fields_prompt) {

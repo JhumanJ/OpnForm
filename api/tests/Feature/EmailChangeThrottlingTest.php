@@ -107,8 +107,7 @@ it('resets throttle counter after one hour', function () {
     ]);
     $response->assertStatus(429);
 
-    // Clear the RateLimiter to simulate time passing
-    RateLimiter::clear(md5('email-change' . $user->id));
+    $this->travel(1)->hours();
 
     // Should work again after cache is cleared
     $response = $this->patchJson('/settings/profile', [

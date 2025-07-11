@@ -7,7 +7,7 @@
   >
     <!-- Loading overlay -->
     <div
-      v-if="updateFormLoading"
+      v-if="form.busy"
       class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
     >
       <loader class="h-6 w-6 text-blue-500" />
@@ -37,7 +37,7 @@
 
     <FormEditorNavbar
       :back-button="backButton"
-      :update-form-loading="updateFormLoading"
+      :update-form-loading="form.busy"
       :save-button-class="saveButtonClass"
       @go-back="goBack"
       @save-form="saveForm"
@@ -143,7 +143,6 @@ const emit = defineEmits(['mounted', 'on-save', 'openRegister', 'go-back', 'save
 const showFormErrorModal = ref(false)
 const showLogicConfirmationModal = ref(false)
 const validationErrorResponse = ref(null)
-const updateFormLoading = ref(false)
 const createdFormSlug = ref(null)
 const logicErrors = ref([])
 
@@ -163,7 +162,10 @@ const { current: workspace } = useCurrentWorkspace()
 // Initialize TanStack Query mutations for forms
 const { create: createFormMutationFactory, update: updateFormMutationFactory } = useForms()
 const createMutation = createFormMutationFactory()
-const updateMutation = updateFormMutationFactory()
+
+// Create update mutation with reactive form ID
+const formId = computed(() => form.value?.id)
+const updateMutation = updateFormMutationFactory(formId)
 
 const workingFormStore = useWorkingFormStore()
 const appStore = useAppStore()
@@ -242,64 +244,60 @@ const handleLogicConfirmationConfirm = () => {
 }
 
 const saveFormEdit = () => {
-  if (updateFormLoading.value) return
+  if (form.value.busy || !form.value.id) return
 
-  updateFormLoading.value = true
   validationErrorResponse.value = null
 
-  updateMutation.mutate({
-    id: form.value.id,
-    data: form.value.data()
-  }, {
-    onSuccess: (updatedForm) => {
-      emit("on-save")
+  form.value.mutate(updateMutation).then((response) => {
+    const updatedForm = response.form
+    emit("on-save")
 
-      // Navigate to share page
-      useRouter().push({
-        name: "forms-slug-show-share",
-        params: { slug: updatedForm.slug },
-      })
+    // Navigate to share page
+    useRouter().push({
+      name: "forms-slug-show-share",
+      params: { slug: updatedForm.slug },
+    })
 
-      // Analytics / alerts
-      amplitude.logEvent("form_saved", {
-        form_id: updatedForm.id,
-        form_slug: updatedForm.slug,
-      })
-      displayFormModificationAlert({
-        form: updatedForm,
-        message: "Form successfully saved.",
-      })
-
-      updateFormLoading.value = false
-    },
-    onError: (error) => {
-      if (error?.response?.status === 422) {
-        validationErrorResponse.value = error.data
-        showValidationErrors()
-      } else {
-        console.error(error)
-        useAlert().error(
-          "An error occurred while saving the form, please try again.",
-        )
-        captureException(error)
-      }
-      updateFormLoading.value = false
+    try{
+    // Analytics / alerts
+    amplitude.logEvent("form_saved", {
+      form_id: updatedForm.id,
+      form_slug: updatedForm.slug,
+    })
+    displayFormModificationAlert({
+      form: updatedForm,
+      message: "Form successfully saved.",
+    })
+    } catch (error) {
+      console.error("Analytics error", error)
+    }
+  }).catch((error) => {
+    console.error("Error saving form", error)
+    if (error?.response?.status === 422) {
+      validationErrorResponse.value = error.data
+      showValidationErrors()
+    } else {
+      console.error(error)
+      useAlert().error(
+        "An error occurred while saving the form, please try again.",
+      )
+      captureException(error)
     }
   })
 }
 
 const saveFormCreate = () => {
-  if (updateFormLoading.value) return
+  if (form.value.busy) return
   // Attach workspace ID before sending
   form.value.workspace_id = workspace.value.id
   validationErrorResponse.value = null
 
-  updateFormLoading.value = true
-  createMutation.mutate(form.value.data(), {
-    onSuccess: (newForm) => {
-      emit("on-save")
-      createdFormSlug.value = newForm.slug
+  form.value.mutate(createMutation).then((response) => {
+    const newForm = response.form
+    emit("on-save")
+    createdFormSlug.value = newForm.slug
 
+    try{
       // Analytics / alerts
       amplitude.logEvent("form_created", {
         form_id: newForm.id,
@@ -309,32 +307,31 @@ const saveFormCreate = () => {
         form_id: newForm.id,
         form_slug: newForm.slug,
       })
-      displayFormModificationAlert({
-        form: newForm,
-        message: "Form successfully created.",
-      })
+    } catch (error) {
+      console.error("Analytics error", error)
+    }
+    displayFormModificationAlert({
+      form: newForm,
+      message: "Form successfully created.",
+    })
 
-      useRouter().push({
-        name: "forms-slug-show-share",
-        params: {
-          slug: createdFormSlug.value,
-          new_form: newForm.users_first_form ?? false,
-        },
-      }).then(() => {
-        updateFormLoading.value = false
-      })
-    },
-    onError: (error) => {
-      if (error?.response?.status === 422) {
-        validationErrorResponse.value = error.data
-        showValidationErrors()
-      } else {
-        useAlert().error(
-          "An error occurred while saving the form, please try again.",
-        )
-        captureException(error)
-      }
-      updateFormLoading.value = false
+    useRouter().push({
+      name: "forms-slug-show-share",
+      params: {
+        slug: createdFormSlug.value,
+        new_form: newForm.users_first_form ?? false,
+      },
+    })
+  }).catch((error) => {
+    console.error("Error saving form", error)
+    if (error?.response?.status === 422) {
+      validationErrorResponse.value = error.data
+      showValidationErrors()
+    } else {
+      useAlert().error(
+        "An error occurred while saving the form, please try again.",
+      )
+      captureException(error)
     }
   })
 }
@@ -342,6 +339,10 @@ const saveFormCreate = () => {
 const saveFormGuest = () => {
   emit("openRegister")
 }
+
+defineExpose({
+  saveFormCreate
+})
 
 // Lifecycle hooks
 onMounted(() => {

@@ -4,7 +4,7 @@
       <div
         class="w-full md:max-w-6xl mx-auto px-4 flex items-center md:flex-row-reverse flex-wrap"
       >
-        <div class="w-full lg:w-1/2 md:p-6">
+        <div class="w-full max-w-lg lg:max-w-auto mx-auto lg:w-1/2 md:p-6">
           <app-sumo-register class="mb-10 p-6 lg:hidden" />
           <div class="border rounded-md p-6 shadow-md sticky top-4">
             <h2 class="font-semibold text-2xl">

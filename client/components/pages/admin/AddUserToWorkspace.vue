@@ -55,24 +55,21 @@ const roleOptions = [
 const newUser = ref("")
 const newUserRole = ref("user")
 
-const addMutation = addUserMutation(currentId, {
-  onSuccess: (data) => {
-    newUser.value = ""
-    newUserRole.value = "user"
-    useAlert().success(data.message)
-    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
-  },
-  onError: (error) => {
-    useAlert().error("There was an error adding user: " + error.data.message)
-  }
-})
+const addMutation = addUserMutation(currentId)
 
 const addUser = () => {
   if (!newUser.value) return
   
-  addMutation.mutate({
+  addMutation.mutateAsync({
     email: newUser.value,
     role: newUserRole.value,
+  }).then((data) => {
+    newUser.value = ""
+    newUserRole.value = "user"
+    useAlert().success(data.message)
+    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
+  }).catch((error) => {
+    useAlert().error("There was an error adding user: " + error.data.message)
   })
 }
 </script>

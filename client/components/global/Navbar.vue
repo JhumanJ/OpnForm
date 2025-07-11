@@ -186,7 +186,7 @@ const route = useRoute()
 // Get current form for forms-slug routes
 const isFormSlugRoute = computed(() => route.name && route.name.startsWith('forms-slug'))
 const formSlug = computed(() => isFormSlugRoute.value ? route.params.slug : null)
-const { data: form } = useForms().detail(formSlug, {
+const { data: form } = useForms().detail(formSlug.value, {
   enabled: computed(() => !!formSlug.value)
 })
 

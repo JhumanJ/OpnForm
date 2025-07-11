@@ -9,11 +9,8 @@
       </div>
     </div>
 
-    <VForm size="sm">
-      <form
-        @submit.prevent="updateProfile"
-        @keydown="workspaceForm.onKeydown($event)"
-      >
+    <VForm @submit.prevent="updateProfile" size="sm">
+   
         <div class="max-w-sm">
           <TextInput
             :disabled="workspace.is_readonly"
@@ -43,12 +40,11 @@
             Save Changes
           </UButton>
         </div>
-      </form>
     </VForm>
 
     <div class="pt-8 border-t border-neutral-200">
       <div 
-        v-if="user.admin" 
+        v-if="workspace.is_admin" 
         class="space-y-2"
       >
         <h4 class="text-red-800 font-medium">Delete Workspace</h4>
@@ -57,7 +53,7 @@
         </p>
         <UButton
           color="error"
-          :loading="deleteLoading"
+          :loading="removeMutation.isPending.value"
           @click="confirmDeleteWorkspace"
         >
           Delete workspace
@@ -73,8 +69,8 @@
           This will remove you from the workspace. You will lose access to all forms in this workspace.
         </p>
         <UButton
-          color="neutral"
-          :loading="leaveWorkspaceLoading"
+          color="error"
+          :loading="leaveMutation.isPending.value"
           @click="leaveWorkSpace"
         >
           Leave workspace
@@ -88,11 +84,14 @@
 const { update, remove, leave } = useWorkspaces()
 
 const alert = useAlert()
-const appStore = useAppStore()
+const { closeWorkspaceSettings } = useAppModals()
 const router = useRouter()
 
 const { current: workspace } = useCurrentWorkspace()
-const { data: user } = useAuth().user()
+
+const updateMutation = update()
+const removeMutation = remove()
+const leaveMutation = leave()
 
 // Workspace form
 const workspaceForm = useForm({
@@ -100,22 +99,14 @@ const workspaceForm = useForm({
   emoji: ''
 })
 
-const deleteLoading = ref(false)
-const leaveWorkspaceLoading = ref(false)
-
 // Update profile
-const updateMutation = update()
 const updateProfile = () => {
-  updateMutation.mutate({
-    id: workspace.value.id,
-    data: workspaceForm.data()
-  }, {
-    onSuccess: () => {
+  workspaceForm.mutate(updateMutation, {
+    data: { id: workspace.value.id }
+  }).then(() => {
     useAlert().success('Workspace information successfully updated!')
-    },
-    onError: (error) => {
+  }).catch((error) => {
       console.error('Error updating workspace:', error)
-    }
   })
 }
 
@@ -128,40 +119,32 @@ const confirmDeleteWorkspace = () => {
 }
 
 // Delete workspace
-const removeMutation = remove()
 const deleteWorkspace = () => {
-  deleteLoading.value = true
-  removeMutation.mutate(workspace.value.id, {
-    onSuccess: (data) => {
-      deleteLoading.value = false
+  removeMutation.mutateAsync(workspace.value.id).then((data) => {
       alert.success(data.message)
-      appStore.closeWorkspaceSettingsModal()
-      router.push({ name: "home" })
-    },
-    onError: (error) => {
+      closeWorkspaceSettings()
+      nextTick(() => {
+        router.push({ name: "home", query: {} })
+      })
+  }).catch((error) => {
       alert.error(error.data?.message || 'Error deleting workspace')
-      deleteLoading.value = false
-    }
     })
 }
 
 // Leave workspace
-const leaveMutation = leave()
 const leaveWorkSpace = () => {
   alert.confirm(
     "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
     () => {
-      leaveWorkspaceLoading.value = true
-      leaveMutation.mutate(workspace.value.id, {
-        onSuccess: () => {
+      leaveMutation.mutateAsync(workspace.value.id).then(() => {
         alert.success("You have left the workspace.")
-        appStore.closeWorkspaceSettingsModal()
-        router.push({ name: "home" })
-        },
-        onError: () => {
+        closeWorkspaceSettings()
+        nextTick(() => {
+          router.push({ name: "home", query: {} })
+        })
+      }).catch((error) => {
+        console.error('Error leaving workspace:', error)
         alert.error("There was an error leaving the workspace.")
-        leaveWorkspaceLoading.value = false
-        }
       })
     },
   )

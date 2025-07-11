@@ -3,6 +3,10 @@ import { h } from 'vue'
 export function useAlert () {
 
   function success (message, autoClose = 10000, options = {}) {
+    if (typeof message === 'object' && message !== null) {
+      options = { ...message, ...options }
+      message = options.description || options.message || ''
+    }
     return useToast().add({
       icon: 'i-heroicons-check-circle',
       title: options.title ?? 'Success',

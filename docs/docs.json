@@ -115,6 +115,13 @@
               "contributing/new-form-block",
               "contributing/new-integration"
             ]
+          },
+          {
+            "group": "Front-end",
+            "pages": [
+              "front-end/data-fetching",
+              "front-end/forms"
+            ]
           }
         ]
       }

@@ -29,7 +29,6 @@
       <form
         v-if="templateForm"
         @submit.prevent="onSubmit"
-        @keydown="templateForm.onKeydown($event)"
       >
         <div class="space-y-4">
           <toggle-switch-input
@@ -149,7 +148,6 @@ const router = useRouter()
 const { data: user } = useAuth().user()
 
 const { list, create, update, remove } = useTemplates()
-const templates = ref(null)
 
 const { industries: industriesMap, types: typesMap } = useTemplateMeta()
 
@@ -171,14 +169,13 @@ const isOpen = computed({
   }
 })
 
-// Fetch templates only when modal is opened
+// Initialize templates query - this needs to be called at setup level
+const templatesQuery = list({ enabled: false })
+
+// Enable the query when modal is opened
 watch(isOpen, (open) => {
   if (open) {
-    const { data } = list()
-    templates.value = data.value
-    // If list() returns a promise or needs await, adjust accordingly
-  } else {
-    templates.value = null // Optional: clear when closed
+    templatesQuery.refetch()
   }
 })
 
@@ -216,8 +213,8 @@ const industriesOptions = computed(() => {
   })
 })
 const templatesOptions = computed(() => {
-  if (!templates.value) return []
-  return Object.values(templates.value).map((template) => {
+  if (!templatesQuery.data.value) return []
+  return Object.values(templatesQuery.data.value).map((template) => {
     return {
       name: template.name,
       value: template.slug,
@@ -229,30 +226,9 @@ const close = () => {
   emit("close")
 }
 
-const createMutation = create({
-  onSuccess: () => {
-    useAlert().success("Template created successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const updateMutation = update({
-  onSuccess: () => {
-    useAlert().success("Template updated successfully")
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
-
-const deleteMutation = remove({
-  onSuccess: () => {
-    useAlert().success("Template deleted successfully")
-    router.push({ name: "templates" })
-    emit("close")
-  },
-  onError: (error) => useAlert().error(error.message),
-})
+const createMutation = create()
+const updateMutation = update()
+const deleteMutation = remove()
 
 const onSubmit = () => {
   if (props.template) {
@@ -263,14 +239,30 @@ const onSubmit = () => {
 }
 const createFormTemplate = () => {
   templateForm.value.form = props.form
-  createMutation.mutate(templateForm.value)
+  createMutation.mutateAsync(templateForm.value).then(() => {
+    useAlert().success("Template created successfully")
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 const updateFormTemplate = () => {
   templateForm.value.form = props.form
-  updateMutation.mutate({ id: props.template.id, data: templateForm.value })
+  updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value }).then(() => {
+    useAlert().success("Template updated successfully")
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 const deleteFormTemplate = () => {
   if (!props.template) return
-  deleteMutation.mutate(props.template.id)
+  deleteMutation.mutateAsync(props.template.id).then(() => {
+    useAlert().success("Template deleted successfully")
+    router.push({ name: "templates" })
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 </script>

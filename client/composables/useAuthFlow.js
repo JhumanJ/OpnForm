@@ -1,7 +1,5 @@
-import { computed } from 'vue'
 import { WindowMessageTypes, useWindowMessage } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
-import { useQueryClient } from '@tanstack/vue-query'
 
 /**
  * Lightweight authentication check that doesn't require Vue Query context
@@ -17,67 +15,50 @@ export const useIsAuthenticated = () => {
   return { isAuthenticated }
 }
 
+/**
+ * Initialize service clients without requiring Vue Query context
+ * Safe to call from middleware or anywhere outside setup context
+ */
+export const initServiceClients = (userData) => {
+  if (import.meta.server) return
+  if (!userData) return
+  
+  useAmplitude().setUser(userData)
+  useCrisp().setUser(userData)
+}
+
 export const useAuthFlow = () => {
   const authStore = useAuthStore()
-  const queryClient = useQueryClient()
-  const logEvent = useAmplitude().logEvent
+  const { logEvent } = useAmplitude()
   const router = useRouter()
 
-  // Initialize Vue Query hooks but don't create instances
-  const { list: workspacesQuery } = useWorkspaces()
-  const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
-  
-  // Prepare logout mutation ahead of time within a valid Vue context
-  const logoutMutation = logoutMutationFactory()
-
-
-  // Helper to get user data from cache (no API calls)
-  const getCachedUserData = () => {
-    return queryClient.getQueryData(['user'])
-  }
-
-  const hasActiveLicense = computed(() => {
-    const userData = getCachedUserData()
-    return userData !== null && userData !== undefined && userData.active_license !== null
-  })
-
-  // Service client initialization moved from auth store
-  const initServiceClients = (userDataOverride = null) => {
-    if (import.meta.server) return
-    
-    const userVal = userDataOverride || getCachedUserData()
-    if (!userVal) return
-    
-    useAmplitude().setUser(userVal)
-    useCrisp().setUser(userVal)
-    // todo: set sentry user
-  }
-
   /**
-   * Core authentication logic used by both social and direct login
-   * Now coordinates between Pinia store and TanStack Query
+   * Core authentication success handler  
+   * Coordinates token storage, analytics, and UI feedback (cache management handled by useAuth)
    */
-  const authenticateUser = async ({ tokenData, source, isNewUser = false }) => {
-    // 1. Set token in store first
+  const handleAuthSuccess = async (tokenData, source, isNewUser = false) => {
+    // 1. Set token in store
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Now that we have a token, get fresh instances and fetch data
-    const currentWorkspacesInstance = workspacesQuery()
-    const currentUserInstance = user()
-    
-    const [workspacesResult] = await Promise.all([
-      currentWorkspacesInstance.refetch(),
-      // Invalidate user query to trigger fresh fetch with new token
-      invalidateUser()
-    ])
-    const workspaces = workspacesResult.data
+    // 2. Initialize service clients if user data is provided
+    if (tokenData.user) {
+      initServiceClients(tokenData.user)
+    }
 
-    // 3. Wait for user data to be fetched by TanStack Query
-    // The user query will automatically cache and trigger onSuccess
-    await currentUserInstance.refetch()
-    
-    // Initialize service clients with user data
-    initServiceClients(currentUserInstance.data.value)
+    // 3. Handle AppSumo license feedback (registration-specific)
+    if (isNewUser && tokenData.appsumo_license !== undefined) {
+      if (tokenData.appsumo_license === false) {
+        useAlert().error(
+          "Invalid AppSumo license. This probably happened because this license was already" +
+          " attached to another OpnForm account. Please contact support."
+        )
+      } else if (tokenData.appsumo_license === true) {
+        useAlert().success(
+          "Your AppSumo license was successfully activated! You now have access to all the" +
+          " features of the AppSumo deal."
+        )
+      }
+    }
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -95,48 +76,8 @@ export const useAuthFlow = () => {
     } catch (error) {
       console.error(error)
     }
-
-    return { userData: currentUserInstance.data.value, workspaces, isNewUser }
   }
 
-  /**
-   * Verify that authentication is complete and user data is loaded
-   * Now uses TanStack Query for user data verification
-   */
-  const verifyAuthentication = async () => {
-    // If we don't have a token, we're not authenticated
-    if (!authStore.token) {
-      return false
-    }
-    
-    // If we have cached user data, we're good
-    const cachedUserData = getCachedUserData()
-    if (cachedUserData) {
-      return true
-    }
-    
-    // If we have a token but no cached user data, fetch it
-    try {
-      const currentUserInstance = user()
-      await currentUserInstance.refetch()
-      return true
-    } catch (error) {
-      console.error('Auth verification failed:', error)
-      return false
-    }
-  }
-
-  /**
-   * Handle direct login with form validation
-   */
-  const loginWithCredentials = async (form, remember) => {
-    const tokenData = await form.submit('post', '/login', { data: { remember: remember } })
-    
-    return authenticateUser({ 
-      tokenData, 
-      source: 'credentials'
-    })
-  }
 
   /**
    * Handle social login callback
@@ -153,59 +94,20 @@ export const useAuthFlow = () => {
       })
     } 
 
-    return authenticateUser({ 
+    return handleAuthSuccess( 
       tokenData, 
-      source: provider,
-      isNewUser: tokenData.new_user
-    })
+      provider,
+      tokenData.new_user
+    )
   }
 
   /**
-   * Handle user registration
-   */
-  const registerUser = async (form) => {
-    // Register the user first
-    const data = await form.submit('post', '/register')
-    
-    // Login the user
-    const tokenData = await form.submit('post', '/login')
-    
-    const result = await authenticateUser({ 
-      tokenData, 
-      source: form.hear_about_us,
-      isNewUser: true 
-    })
-
-    // Handle AppSumo license if present
-    if (data.appsumo_license === false) {
-      useAlert().error(
-        "Invalid AppSumo license. This probably happened because this license was already" +
-        " attached to another OpnForm account. Please contact support."
-      )
-    } else if (data.appsumo_license === true) {
-      useAlert().success(
-        "Your AppSumo license was successfully activated! You now have access to all the" +
-        " features of the AppSumo deal."
-      )
-    }
-
-    return { ...result, data }
-  }
-
-  /**
-   * Handle logout flow
-   * Uses TanStack Query cache clearing instead of manual store management
+   * Handle logout coordination
+   * Token clearing and cache management handled by useAuth logout mutation
    */
   const handleLogout = async () => {
-    try {
-      await logoutMutation.mutateAsync()
-    } catch (error) {
-      // Even if API call fails, we still want to clear local state
-      console.warn('Logout API call failed, but clearing local state anyway:', error)
-    }
-    
-    // Clear all TanStack Query cache (replaces manual store clearing)
-    queryClient.clear()
+    // Clear auth store
+    authStore.clearToken()
     
     // Navigate to login page
     router.push({ name: 'login' })
@@ -213,15 +115,8 @@ export const useAuthFlow = () => {
 
   return {
     // Auth flow functions
-    loginWithCredentials,
+    handleAuthSuccess,
     handleSocialCallback,
-    registerUser,
-    verifyAuthentication,
-    handleLogout,
-  
-    hasActiveLicense,
-    
-    // Helper functions
-    initServiceClients
+    handleLogout
   }
 } 

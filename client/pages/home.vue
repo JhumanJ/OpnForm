@@ -52,7 +52,6 @@
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
         <VTransition name="fade">
-        <!-- Empty State: No forms -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-neutral-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-neutral-900">
@@ -70,7 +69,6 @@
           />
         </div>
 
-        <!-- Empty State: No results -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-neutral-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-neutral-900">
@@ -112,36 +110,7 @@
             </div>
           </div>
           
-          <div v-if="!workspace?.is_pro" class="px-4">
-            <UAlert
-              class="mt-8 p-4"
-              icon="i-heroicons-sparkles"
-              color="primary"
-              variant="subtle"
-              title="Discover our Pro plan"
-            >
-              <template #description>
-                <div class="flex flex-wrap sm:flex-nowrap gap-4 items-start">
-                  <p class="flex-grow">
-                    Remove OpnForm branding, customize forms further, use your custom domain, integrate with your favorite tools, invite users, and more!
-                  </p>
-                  <TrackClick
-                    name="upgrade_banner_home_click"
-                    :properties="{}"
-                  >
-                    <UButton
-                      color="neutral"
-                      variant="outline"
-                      class="block"
-                      @click.prevent="subscriptionModalStore.openModal()"
-                    >
-                      Upgrade Now
-                    </UButton>
-                  </TrackClick>
-                </div>
-              </template>
-            </UAlert>
-          </div>
+          <UpgradeBanner class="mt-2" />
         </div>
 
           <!-- Loading Skeletons -->
@@ -162,6 +131,7 @@ import Fuse from "fuse.js"
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
 import TrackClick from '~/components/global/TrackClick.vue'
+import UpgradeBanner from "~/components/dashboard/UpgradeBanner.vue"
 
 definePageMeta({
   middleware: ["auth", "self-hosted-credentials"],
@@ -175,7 +145,6 @@ useOpnSeoMeta({
 })
 
 // Composables
-const subscriptionModalStore = useSubscriptionModalStore()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 
 const {

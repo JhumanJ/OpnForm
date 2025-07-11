@@ -79,8 +79,15 @@ const widgetComponent = computed(() => {
 })
 
 // Widget callback mutation
-const widgetCallbackMutation = oAuth.widgetCallback({
-  onSuccess: (response) => {
+const widgetCallbackMutation = oAuth.widgetCallback()
+
+const handleAuthData = (data) => {
+  if (!data) {
+    alert.error('Authentication failed')
+    return
+  }
+
+  widgetCallbackMutation.mutateAsync({ service: props.service.name, data }).then((response) => {
     if (response.intention) {
       router.push(response.intention)
     } else {
@@ -88,24 +95,9 @@ const widgetCallbackMutation = oAuth.widgetCallback({
       emit('close')
       oAuth.fetchOAuthProviders()
     }
-  },
-  onError: (error) => {
+  }).catch((error) => {
     alert.error(error?.data?.message || 'Failed to authenticate')
     oAuth.fetchOAuthProviders()
-  }
-})
-
-const handleAuthData = async (data) => {
-  try {
-    if (!data) {
-      alert.error('Authentication failed')
-      return
-    }
-
-    widgetCallbackMutation.mutate({ service: props.service.name, data })
-  } catch (error) {
-    alert.error(error?.data?.message || 'Failed to authenticate')
-    oAuth.fetchOAuthProviders()
-  }
+  })
 }
 </script>

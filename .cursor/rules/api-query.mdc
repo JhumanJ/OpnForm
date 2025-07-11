@@ -4,242 +4,110 @@ globs:
 alwaysApply: false
 ---
 
-# API and TanStack Query Guidelines
+# API & TanStack Query Guidelines
 
-You are an expert in API design and TanStack Query (Vue Query) implementation in Nuxt applications.
+> **Scope** – These rules cover _front-end server-state management_ in the Nuxt client. They do **not** address UI-only state (handled by Pinia) nor back-end Laravel endpoints.
 
-## Architecture Overview
+---
 
-Two-layer API architecture:
+## 1. Two-Layer Approach
 
--   **@/api**: Raw API client functions that make HTTP requests
--   **@/composables/query**: TanStack Query composables that wrap API calls with caching, invalidation, and state management
+| Layer                 | Folder                       | Responsibility                                                                                   |
+| --------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| **API functions**     | `client/api/*`               | Thin wrappers around `$fetch` that talk to the REST API. No caching, no Vue code.                |
+| **Query composables** | `client/composables/query/*` | Wrap API calls with TanStack Query for caching, mutations, optimistic updates, and invalidation. |
 
-## API Layer (@/api)
+> Example mapping – `client/api/workspace.js` ↔︎ `client/composables/query/useWorkspaces.js`
 
-### Structure
+---
 
--   Each API module corresponds to a domain (forms.js, workspace.js, auth.js, etc.)
--   API functions are pure functions that return promises
--   Export named functions, avoid default exports
+## 2. Query Composable Conventions
 
-```javascript
-export const exampleApi = {
-    list: (params = {}) => api.get("/endpoint", { params }),
-    getById: (id) => api.get(`/endpoint/${id}`),
-    create: (data) => api.post("/endpoint", data),
-    update: (id, data) => api.put(`/endpoint/${id}`, data),
-    delete: (id) => api.delete(`/endpoint/${id}`),
-};
-```
+1. **Expose factories, not results** – Each composable returns methods (`list()`, `detail(id)`, `create()`, …). The caller decides _when_ to register the query/mutation.
+2. **Query keys** – Use predictable, hierarchical keys:
+    - List: `["workspaces", "list"]`
+    - Item: `["workspaces", id]`
+3. **Cache writes after mutations** – Inside `onSuccess` use `queryClient.setQueryData` to update affected caches, then call `invalidate()` only when a true refetch is needed.
+4. **Utilities** – Provide at minimum `invalidate()` (call `queryClient.invalidateQueries({ queryKey: [domain] })`).
 
-## Query Layer (@/composables/query)
+---
 
-### Composable Structure Template
+## 3. Usage in Components
 
-```javascript
-import { useQueryClient, useQuery, useMutation } from "@tanstack/vue-query";
-import { exampleApi } from "~/api";
-
-export function useExample() {
-    const queryClient = useQueryClient();
-
-    // Queries (read operations)
-    const list = (params = {}, options = {}) => {
-        return useQuery({
-            queryKey: ["example", "list", params],
-            queryFn: () => exampleApi.list(params),
-            enabled: computed(() => !!params.workspaceId),
-            ...options,
-        });
-    };
-
-    const detail = (id, options = {}) => {
-        return useQuery({
-            queryKey: ["example", id],
-            queryFn: () => exampleApi.getById(id),
-            enabled: !!id,
-            ...options,
-        });
-    };
-
-    // Mutations (write operations)
-    const create = (options = {}) => {
-        return useMutation({
-            mutationFn: (data) => exampleApi.create(data),
-            onSuccess: (newItem) => {
-                queryClient.setQueryData(["example", newItem.id], newItem);
-                queryClient.invalidateQueries(["example", "list"]);
-            },
-            ...options,
-        });
-    };
-
-    // Utility functions
-    const invalidateAll = () => {
-        queryClient.invalidateQueries(["example"]);
-    };
-
-    return {
-        list,
-        detail,
-        create,
-        invalidateAll,
-    };
-}
-```
-
-### Query Key Conventions
-
-Use consistent, hierarchical patterns:
-
-```javascript
-// Good: Hierarchical and predictable
-["forms", formId][("forms", "list", workspaceId)][ // Single form // Forms list for workspace
-    ("forms", formId, "submissions")
-][("forms", formId, "stats", params)][ // Form submissions // Form stats with parameters
-    // Bad: Inconsistent patterns
-    ("form-detail", formId)
-][("getFormSubmissions", formId)][(formId, "submissions")]; // Mixed naming // Verb in key // Missing domain
-```
-
-## Cache Invalidation
-
-### Targeted Invalidation (Preferred)
-
-```javascript
-// Good: Targeted invalidation
-const invalidateFormStats = (formId, params = undefined) => {
-    const queryKey = params
-        ? ["forms", formId, "stats", params]
-        : ["forms", formId, "stats"];
-    queryClient.invalidateQueries({ queryKey });
-};
-
-// Good: Multiple targeted invalidations
-const invalidateStats = (formId) => {
-    queryClient.invalidateQueries({ queryKey: ["forms", formId, "stats"] });
-    queryClient.invalidateQueries({
-        queryKey: ["forms", formId, "stats-details"],
-    });
-};
-
-// Bad: Too broad - invalidates everything!
-queryClient.invalidateQueries();
-```
-
-### Mutation-Based Invalidation
-
-```javascript
-const update = (options = {}) => {
-    return useMutation({
-        mutationFn: ({ id, data }) => formsApi.update(id, data),
-        onSuccess: (updatedForm, { id }) => {
-            // Update specific caches
-            queryClient.setQueryData(["forms", id], updatedForm);
-            queryClient.setQueryData(
-                ["forms", "slug", updatedForm.slug],
-                updatedForm
-            );
-
-            // Invalidate related queries only
-            queryClient.invalidateQueries(["forms", "list"]);
-        },
-        ...options,
-    });
-};
-```
-
-## SSR Patterns
-
-### SSR Loading States
-
-```javascript
-// Handle loading state for SSR compatibility
-const isLoading = computed(() => {
-    // During SSR, show loading if the query would run on the client
-    if (import.meta.server) {
-        return !!props.form && props.form.is_pro;
-    }
-    // On client, use the actual query loading state
-    return isQueryLoading.value;
-});
-```
-
-### SSR Data Fetching
-
-```javascript
-// In pages/example/[id].vue
+```vue
 <script setup>
-const route = useRoute()
-const id = route.params.id
+// Queries
+const { list } = useWorkspaces();
+const { data: workspaces, isLoading, isError } = list();
 
-// Runs during SSR automatically
-const { data: item, isLoading } = useExample().detail(id)
+// Mutations (Promise-based)
+const { create } = useWorkspaces();
+const createWorkspace = create();
 
-// Conditional SSR fetching
-const { data: conditionalData } = useExample().detail(id, {
-  enabled: computed(() => import.meta.client && someCondition.value)
-})
-</script>
-```
-
-## Component Usage
-
-### Basic Pattern
-
-```javascript
-<script setup>
-// Use query composables at the top level of setup
-const { list, create } = useExample()
-const { data: items, isLoading, error } = list({ workspaceId: props.workspaceId })
-
-// For mutations
-const createMutation = create({
-  onSuccess: () => useAlert().success('Created successfully!'),
-  onError: (error) => useAlert().error(error.message)
-})
-
-const handleCreate = (data) => createMutation.mutate(data)
+const onSubmit = (form) => {
+    createWorkspace
+        .mutateAsync(form)
+        .then(() => useAlert().success("Created"))
+        .catch((err) => useAlert().error(err.message));
+};
 </script>
 
 <template>
-  <USkeleton v-if="isLoading" class="h-32 w-full" />
-  <div v-else-if="error">Error: {{ error.message }}</div>
-  <div v-else>
-    <div v-for="item in items" :key="item.id">{{ item.name }}</div>
-    <UButton @click="handleCreate(data)" :loading="createMutation.isPending">
-      Create
-    </UButton>
-  </div>
+    <div v-if="isLoading">Loading…</div>
+    <div v-else-if="isError">Failed to load</div>
+    <ul v-else>
+        <li v-for="ws in workspaces" :key="ws.id">{{ ws.name }}</li>
+    </ul>
+    <UButton :loading="createWorkspace.isPending" @click="onSubmit(form)"
+        >Create</UButton
+    >
 </template>
 ```
 
-## Common Anti-patterns to Avoid
+### Why `.mutateAsync().then().catch()`?
 
-```javascript
-// Bad: Creating queries inside computed/watchers
-const badExample = computed(() => useQuery(...)) // Don't do this!
+It keeps control flow explicit, works with native Promises, and avoids `try/catch` inside template methods.
 
-// Bad: Calling composables conditionally
-if (someCondition) {
-  const { data } = useExample().list() // Don't do this!
-}
+---
 
-// Good: Always call at top level, use enabled option
-const { data } = useExample().list(params, {
-  enabled: computed(() => someCondition.value)
-})
+## 4. SSR & Suspense
 
-// Bad: Non-reactive dependencies
-const { data } = useExample().list({
-  workspaceId: workspace.value.id // Won't react to changes
-})
+During SSR we sometimes need the data _before_ HTML is streamed. TanStack Query offers `.suspense()` on every query:
 
-// Good: Reactive dependencies
-const params = computed(() => ({
-  workspaceId: workspace.value?.id,
-  status: filterStatus.value
-}))
-const { data } = useExample().list(params)
+```js
+// middleware/client/middleware/01.check-auth.global.js (excerpt)
+await Promise.all([
+    useAuth().user().suspense(),
+    useWorkspaces().list().suspense(),
+]);
 ```
+
+`<Suspense>` blocks in Vue templates are discouraged – prefer awaiting in middleware or `serverPrefetch`.
+
+---
+
+## 5. Authentication Plumbing
+
+`client/composables/useOpnApi.js` injects `Authorization: Bearer <token>` automatically (token is stored in cookies). The `01.check-auth.global.js` middleware initializes the store and pre-loads user + workspace data on navigation.
+
+You normally **don’t** need to add headers manually.
+
+---
+
+## 6. Common Pitfalls
+
+| ❌ Anti-pattern                              | ✅ Fix                                                   |
+| -------------------------------------------- | -------------------------------------------------------- |
+| Creating queries inside `watch` / `computed` | Call composables at top level; use `enabled` when needed |
+| Mixing UI state in TanStack cache            | Keep UI state in Pinia                                   |
+| Broad `queryClient.invalidateQueries()`      | Use domain-level `invalidate()`                          |
+
+---
+
+## 7. Checklist for New Composables
+
+-   [ ] Map 1-to-1 with an API module
+-   [ ] Provide `list`, `detail`, and the necessary mutations
+-   [ ] Use consistent query keys
+-   [ ] Handle optimistic cache updates in `onSuccess`
+-   [ ] Expose `invalidate()`
