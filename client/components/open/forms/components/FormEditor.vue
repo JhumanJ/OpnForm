@@ -162,7 +162,10 @@ const { current: workspace } = useCurrentWorkspace()
 // Initialize TanStack Query mutations for forms
 const { create: createFormMutationFactory, update: updateFormMutationFactory } = useForms()
 const createMutation = createFormMutationFactory()
-const updateMutation = updateFormMutationFactory()
+
+// Create update mutation with reactive form ID
+const formId = computed(() => form.value?.id)
+const updateMutation = updateFormMutationFactory(formId)
 
 const workingFormStore = useWorkingFormStore()
 const appStore = useAppStore()
@@ -241,13 +244,11 @@ const handleLogicConfirmationConfirm = () => {
 }
 
 const saveFormEdit = () => {
-  if (form.value.busy) return
+  if (form.value.busy || !form.value.id) return
 
   validationErrorResponse.value = null
 
-  form.value.mutate(updateMutation, {
-    data: { id: form.value.id }
-  }).then((response) => {
+  form.value.mutate(updateMutation).then((response) => {
     const updatedForm = response.form
     emit("on-save")
 

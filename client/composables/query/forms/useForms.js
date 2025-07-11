@@ -1,4 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 import { formsApi } from '~/api/forms'
 import { useIsAuthenticated } from '~/composables/useAuthFlow'
 import { useFormsListCache } from './useFormsList'
@@ -61,14 +62,16 @@ export function useForms() {
     })
   }
 
-  const update = (options = {}) => {
+  const update = (formId, options = {}) => {
     return useMutation({
-      mutationFn: ({ id, data }) => formsApi.update(id, data),
-      onSuccess: (updatedForm, { id }) => {
+      mutationFn: (data) => formsApi.update(toValue(formId), data),
+      onSuccess: (updatedForm) => {
       const form = updatedForm.form
+      const currentFormId = toValue(formId)
+      console.log(updatedForm)
 
       // Update individual form cache
-      queryClient.setQueryData(['forms', id], form)
+      queryClient.setQueryData(['forms', currentFormId], form)
       if (form.slug) {
         queryClient.setQueryData(['forms', 'slug', form.slug], form)
       }
