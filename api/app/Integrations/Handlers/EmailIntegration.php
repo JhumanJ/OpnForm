@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Open\MentionParser;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class EmailIntegration extends AbstractIntegrationHandler
 {
@@ -36,6 +37,17 @@ class EmailIntegration extends AbstractIntegrationHandler
         $rules['send_to'][] = function ($attribute, $value, $fail) use ($form) {
             if (count(explode("\n", trim($value))) > 1 || count(explode(',', $value)) > 1) {
                 $fail('You can only send to a single email address on the free plan. Please upgrade to the Pro plan to create a new integration.');
+            }
+        };
+
+        // Free plan users can only send to their own email address
+        $rules['send_to'][] = function ($attribute, $value, $fail) {
+            $currentUser = Auth::user();
+            $userEmail = $currentUser->email;
+            $sendToEmail = trim($value);
+
+            if ($sendToEmail !== $userEmail) {
+                $fail("You can only send email notification to your own email address ({$userEmail}). Please upgrade to the Pro plan to send to other email addresses.");
             }
         };
 

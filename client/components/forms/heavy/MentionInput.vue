@@ -26,8 +26,10 @@
         @input="onInput"
       />
       <MentionDropdown
+        v-if="!disabled"
         :mention-state="mentionState"
         :mentions="mentions"
+        :disabled="disabled"
       >
         <UButton
           type="button"
@@ -38,6 +40,16 @@
           @click="openMentionDropdown"
         />
       </MentionDropdown>
+      <UButton
+        v-else
+        :disabled="disabled"
+        type="button"
+        color="neutral"
+        variant="soft"
+        class="absolute right-1 top-1/2 transform -translate-y-1/2 p-1 px-2"
+        icon="i-heroicons-at-symbol-16-solid"
+        @click="openMentionDropdown"
+      />
     </div>
 
     <template
@@ -125,7 +137,7 @@ const insertMention = (mention) => {
 }
 
 const openMentionDropdown = () => {
-  if (props.disableMention) {
+  if (props.disableMention || props.disabled) {
     openSubscriptionModal({ modal_title: 'Upgrade to Pro', modal_description: 'Upgrade to Pro to use mentions' })
     return
   }

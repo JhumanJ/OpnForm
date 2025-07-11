@@ -85,7 +85,7 @@ const props = defineProps({
   content: {
     type: Object,
     default: () => ({ side: 'bottom', align: 'end' })
-  }
+  },
 })
 
 defineShortcuts({
