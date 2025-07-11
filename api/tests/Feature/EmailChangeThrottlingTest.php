@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 
 it('allows first two email changes within an hour', function () {
     $user = User::factory()->create([
@@ -53,7 +53,7 @@ it('blocks third email change within an hour', function () {
     ]);
     $response->assertStatus(429)
         ->assertJson([
-            'message' => 'You have reached the limit of 2 email changes per hour. Please try again later.'
+            'message' => 'Too Many Attempts.'
         ]);
 });
 
@@ -107,8 +107,8 @@ it('resets throttle counter after one hour', function () {
     ]);
     $response->assertStatus(429);
 
-    // Clear the cache to simulate time passing
-    Cache::forget("email_changes_{$user->id}");
+    // Clear the RateLimiter to simulate time passing
+    RateLimiter::clear(md5('email-change' . $user->id));
 
     // Should work again after cache is cleared
     $response = $this->patchJson('/settings/profile', [

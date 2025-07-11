@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
     Route::delete('user', [UserController::class, 'deleteAccount']);
 
     Route::prefix('/settings')->name('settings.')->group(function () {
-        Route::patch('/profile', [ProfileController::class, 'update'])->middleware('throttle.email.changes');
+        Route::patch('/profile', [ProfileController::class, 'update'])->middleware('throttle:email-change');
         Route::patch('/password', [PasswordController::class, 'update']);
 
         Route::prefix('/tokens')->name('tokens.')->middleware('require-pro')->group(function () {
