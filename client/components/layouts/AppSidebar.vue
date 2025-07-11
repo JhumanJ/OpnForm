@@ -121,7 +121,7 @@ const navigationSections = computed(() => [
       ...(workspace.value && !workspace.value.is_pro && !isSelfHosted.value ? [createNavItem({
         label: 'Try our Pro plan',
         icon: 'i-heroicons-sparkles-solid', 
-        click: () => {
+        onClick: () => {
           useAmplitude().logEvent('app_sidebar_upgrade_click')
           openSubscriptionModal()
         },

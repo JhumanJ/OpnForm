@@ -81,7 +81,7 @@ const isLoginModalOpen = computed({
   set(value) {
     appStore.quickLoginModal = value
   }
-})r
+})
 
 const isRegisterModalOpen = computed({
   get() {

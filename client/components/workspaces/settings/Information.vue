@@ -73,7 +73,7 @@
           This will remove you from the workspace. You will lose access to all forms in this workspace.
         </p>
         <UButton
-          color="neutral"
+          color="error"
           :loading="leaveWorkspaceLoading"
           @click="leaveWorkSpace"
         >

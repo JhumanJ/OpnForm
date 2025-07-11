@@ -29,25 +29,23 @@
       </div>
     </div>
 
-    <!-- Pro Plan Required Alert -->
     <UAlert
       v-if="!user.is_pro"
       icon="i-heroicons-user-group-20-solid"
-      class="!text-orange-500"
       color="warning"
       variant="subtle"
       title="Pro plan required"
-    >
-      <template #description>
-        Please <a
-          href="#"
-          class="text-orange-500 underline"
-          @click.prevent="openSubscriptionModal"
-        >
-          upgrade your account
-        </a> to create and manage access tokens.
-      </template>
-    </UAlert>
+      description="Please upgrade your account to create and manage access tokens."
+      :actions="[{
+        label: 'Try Pro plan',
+        color: 'warning',
+        variant: 'solid',
+        onClick: () => openSubscriptionModal({
+          modal_title: 'Upgrade to start using our API',
+          modal_description: 'Try our Pro plan for free today, and unlock access to our API but also to our other features such as curstomized branding, forms analytics, custom domains, and more!'
+        })
+      }]"
+    />
 
     <!-- Tokens List -->
     <div v-if="user.is_pro" class="space-y-4">
@@ -157,7 +155,7 @@ import opnformConfig from '~/opnform.config.js'
 import AbilitiesBadges from '~/components/users/settings/access-tokens/AbilitiesBadges.vue'
 
 const accessTokenModal = ref(false)
-const { openSubscriptionModal: openModal } = useAppModals()
+const { openSubscriptionModal } = useAppModals()
 const alert = useAlert()
 
 const { data: user } = useAuth().user()
@@ -200,10 +198,6 @@ const tableColumns = [
     enableHiding: false
   }
 ]
-
-const openSubscriptionModal = () => {
-  openModal({ modal_title: 'Upgrade to start using our API' })
-}
 
 const deleteToken = (token) => {
   alert.confirm("Do you really want to delete this token?", () => {
