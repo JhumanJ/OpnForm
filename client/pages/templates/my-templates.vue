@@ -79,7 +79,7 @@ const { list } = useTemplates()
 const { openHelpdeskArticle } = useCrisp()
 
 const { data: templates, isLoading: loading } = list({
-  query: { onlymy: true },
+  params: { onlymy: true },
   enabled: computed(() => import.meta.client)
 })
 

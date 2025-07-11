@@ -149,7 +149,6 @@ const router = useRouter()
 const { data: user } = useAuth().user()
 
 const { list, create, update, remove } = useTemplates()
-const templates = ref(null)
 
 const { industries: industriesMap, types: typesMap } = useTemplateMeta()
 
@@ -171,14 +170,13 @@ const isOpen = computed({
   }
 })
 
-// Fetch templates only when modal is opened
+// Initialize templates query - this needs to be called at setup level
+const templatesQuery = list({ enabled: false })
+
+// Enable the query when modal is opened
 watch(isOpen, (open) => {
   if (open) {
-    const { data } = list()
-    templates.value = data.value
-    // If list() returns a promise or needs await, adjust accordingly
-  } else {
-    templates.value = null // Optional: clear when closed
+    templatesQuery.refetch()
   }
 })
 
@@ -216,8 +214,8 @@ const industriesOptions = computed(() => {
   })
 })
 const templatesOptions = computed(() => {
-  if (!templates.value) return []
-  return Object.values(templates.value).map((template) => {
+  if (!templatesQuery.data.value) return []
+  return Object.values(templatesQuery.data.value).map((template) => {
     return {
       name: template.name,
       value: template.slug,

@@ -7,8 +7,8 @@ export function useTemplates() {
   // Queries
   const list = (options = {}) => {
     return useQuery({
-      queryKey: ['templates', 'list'],
-      queryFn: () => templatesApi.list(),
+      queryKey: ['templates', 'list', options.params || {}],
+      queryFn: () => templatesApi.list(options.params || {}),
       onSuccess: (data) => {
         data?.forEach(template => {
           queryClient.setQueryData(['templates', template.id], template)
