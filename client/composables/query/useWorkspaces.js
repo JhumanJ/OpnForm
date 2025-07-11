@@ -3,6 +3,7 @@ import { workspaceApi } from '~/api'
 
 export function useWorkspaces() {
   const queryClient = useQueryClient()
+  const { isAuthenticated } = useIsAuthenticated()
 
   // Queries
   const list = (options = {}) => {
@@ -11,6 +12,7 @@ export function useWorkspaces() {
       queryFn: () => { 
         return workspaceApi.list()
       },
+      enabled: isAuthenticated,
       ...options
     })
   }

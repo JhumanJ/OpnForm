@@ -68,7 +68,6 @@ import RegisterForm from "./RegisterForm.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 const appStore = useAppStore()
-const authFlow = useAuthFlow()
 
 // Define emits for component interactions
 const emit = defineEmits(['close', 'reopen'])
@@ -142,21 +141,15 @@ const openRegister = () => {
 }
 
 const afterQuickLogin = () => {
-  // Reset unauthorized error flag immediately
   appStore.isUnauthorizedError = false
+  appStore.quickLoginModal = false
+  appStore.quickRegisterModal = false
   
-  // Verify authentication is complete using the authFlow composable
-  authFlow.verifyAuthentication().then(() => {
-    // Close both login and register modals
-    appStore.quickLoginModal = false
-    appStore.quickRegisterModal = false
-    
-    // Show success alert
-    useAlert().success("Successfully logged in. Welcome back!")
-    
-    // Use the window message for after-login instead of emitting the event
-    afterLoginMessage.send(window, { useMessageChannel: false })
-  })
+  // Show success alert
+  useAlert().success("Successfully logged in!")
+  
+  // Use the window message for after-login instead of emitting the event
+  afterLoginMessage.send(window, { useMessageChannel: false })
 }
 
 const logout = () => {

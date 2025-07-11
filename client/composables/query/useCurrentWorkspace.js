@@ -1,5 +1,6 @@
 import { computed, watch } from 'vue'
 
+
 /**
  * Dedicated composable for reactive current workspace state
  * Separates current workspace logic from CRUD operations
@@ -7,8 +8,11 @@ import { computed, watch } from 'vue'
 export function useCurrentWorkspace() {
   const appStore = useAppStore()
   const { list } = useWorkspaces()
+  const { isAuthenticated } = useIsAuthenticated()
   
-  const workspacesQuery = list()
+  const workspacesQuery = list({
+    enabled: isAuthenticated
+  })
   
   // Watch for workspaces data and auto-select first workspace if none is current
   watch(

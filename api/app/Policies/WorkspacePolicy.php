@@ -84,10 +84,12 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace)
     {
-        $basePermission = !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+        if (!$user->ownsWorkspace($workspace)) {
+            return Response::deny('You cannot delete this workspace.');
+        }
 
-        if (! $basePermission) {
-            return false;
+        if ($user->workspaces()->count() <= 1) {
+            return Response::deny('You cannot delete your last workspace. Delete your account instead.');
         }
 
         if ($token = $user->currentAccessToken()) {

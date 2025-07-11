@@ -202,7 +202,7 @@ const tableColumns = [
 const deleteToken = (token) => {
   alert.confirm("Do you really want to delete this token?", () => {
     deleteTokenMutation.mutateAsync(token.id).then(() => {
-      // Success handled by TanStack Query cache invalidation
+      alert.success("Token deleted successfully")
     }).catch(() => {
       alert.error("An error occurred while deleting the token")
     })

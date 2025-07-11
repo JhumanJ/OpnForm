@@ -35,7 +35,7 @@
           <div class="mt-4">
             <UButton
               type="submit"
-              :loading="profileForm.busy"
+              :loading="updateMutation.isPending.value"
               color="primary"
             >
               Save Changes
@@ -56,7 +56,7 @@
         
           <UButton
             color="error"
-            :loading="deleteLoading"
+            :loading="deleteMutation.isPending.value"
             @click="confirmDeleteAccount"
           >
             Delete Account
@@ -68,30 +68,41 @@
 </template>
 
 <script setup>
-import { authApi } from '~/api'
-
-
+// Use useAuth composable for all user-related mutations
 const router = useRouter()
 const alert = useAlert()
 const authFlow = useAuthFlow()
+
+// Auth composable (TanStack Query powered)
+const {
+  updateProfile: updateProfileMutationFactory,
+  deleteAccount: deleteAccountFactory,
+  invalidateUser
+} = useAuth()
+
+// Query mutations
+const updateMutation = updateProfileMutationFactory()
+const deleteMutation = deleteAccountFactory()
 
 const { data: user } = useAuth().user()
 
 // Profile form
 const profileForm = useForm({
   name: '',
-  email: ''
+  email: '',
 })
-
-// Delete account loading state
-const deleteLoading = ref(false)
 
 // Update profile
 const updateProfile = () => {
-      profileForm.patch('/settings/profile').then((_response) => {
-     useAuth().invalidateUser()
-    alert.success('Your info has been updated!')
-  })
+  updateMutation.mutateAsync(profileForm.data())
+    .then(() => {
+      invalidateUser()
+      alert.success('Your info has been updated!')
+    })
+    .catch((error) => {
+      console.error(error)
+      alert.error(error?.data?.message || 'Error updating profile')
+    })
 }
 
 // Delete account confirmation
@@ -104,17 +115,14 @@ const confirmDeleteAccount = () => {
 
 // Delete account
 const deleteAccount = () => {
-  deleteLoading.value = true
-      authApi.user.delete()
-    .then(async (data) => {
-      deleteLoading.value = false
-      alert.success(data.message)
+  deleteMutation.mutateAsync()
+    .then((data) => {
+      alert.success(data?.message || 'Your account has been deleted')
       authFlow.handleLogout()
       router.push({ name: 'login' })
     })
     .catch((error) => {
-      alert.error(error.data.message)
-      deleteLoading.value = false
+      alert.error(error?.data?.message || 'Error deleting account')
     })
 }
 
@@ -135,4 +143,5 @@ watch(user, (newUser) => {
     })
   }
 }, { immediate: true })
+
 </script> 

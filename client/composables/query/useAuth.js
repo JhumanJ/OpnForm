@@ -1,6 +1,8 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { authApi } from '~/api/auth'
 import { useAuthStore } from '~/stores/auth'
+import { initServiceClients } from '~/composables/useAuthFlow'
+
 
 export function useAuth() {
   const queryClient = useQueryClient()
@@ -15,7 +17,23 @@ export function useAuth() {
       staleTime: 5 * 60 * 1000, // 5 minutes
       onSuccess: (userData) => {
         // Coordinate with auth store for service client initialization
-        authStore.initServiceClients(userData)
+        initServiceClients(userData)
+      },
+      ...options
+    })
+  }
+
+  const updateProfile = (options = {}) => {
+    return useMutation({
+      mutationFn: (data) => authApi.user.updateProfile(data),
+      onSuccess: (updatedUser) => {
+        // Optimistically update user cache
+        queryClient.setQueryData(['user'], (old) => {
+          const newData = old ? { ...old, ...updatedUser } : updatedUser
+          // Re-initialize service clients with potentially updated data
+          initServiceClients(newData)
+          return newData
+        })
       },
       ...options
     })
@@ -30,7 +48,7 @@ export function useAuth() {
         queryClient.setQueryData(['user'], (old) => {
           const newData = old ? { ...old, ...updatedUser } : updatedUser
           // Re-initialize service clients with updated data
-          authStore.initServiceClients(newData)
+          initServiceClients(newData)
           return newData
         })
       },
@@ -43,9 +61,23 @@ export function useAuth() {
       mutationFn: () => authApi.user.delete(),
       onSuccess: () => {
         // Clear auth state and all cached data
-        authStore.clearTokens()
+        authStore.clearToken()
         queryClient.clear()
       },
+      ...options
+    })
+  }
+
+  const login = (options = {}) => {
+    return useMutation({
+      mutationFn: (data) => authApi.login(data),
+      ...options
+    })
+  }
+
+  const register = (options = {}) => {
+    return useMutation({
+      mutationFn: (data) => authApi.register(data),
       ...options
     })
   }
@@ -55,13 +87,13 @@ export function useAuth() {
       mutationFn: () => authApi.logout(),
       onSuccess: () => {
         // Clear auth state and all cached data
-        authStore.clearTokens()
+        authStore.clearToken()
         queryClient.clear()
       },
       onError: (error) => {
         console.error(error)
         // Even if logout API fails, clear local state
-        authStore.clearTokens()
+        authStore.clearToken()
         queryClient.clear()
       },
       ...options
@@ -93,6 +125,9 @@ export function useAuth() {
     user,
     
     // Mutations
+    login,
+    register,
+    updateProfile,
     updateCredentials,
     deleteAccount,
     logout,

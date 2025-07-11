@@ -37,11 +37,13 @@ export const useAuthFlow = () => {
   const router = useRouter()
 
   // Initialize Vue Query hooks but don't create instances
-  const { list: workspacesQuery } = useWorkspaces()
-  const { user, invalidateUser, logout: logoutMutationFactory } = useAuth()
+  const { invalidate: invalidateWorkspaces } = useWorkspaces()
+  const { invalidateUser, logout: logoutMutationFactory, login, register } = useAuth()
   
   // Prepare logout mutation ahead of time within a valid Vue context
   const logoutMutation = logoutMutationFactory()
+  const loginMutation = login()
+  const registerMutation = register()
 
 
   // Helper to get user data from cache (no API calls)
@@ -60,27 +62,22 @@ export const useAuthFlow = () => {
    * Core authentication logic used by both social and direct login
    * Now coordinates between Pinia store and TanStack Query
    */
-  const authenticateUser = async ({ tokenData, source, isNewUser = false }) => {
+  const authenticateUser = async (tokenData, source, isNewUser = false) => {
     // 1. Set token in store first
     authStore.setToken(tokenData.token, tokenData.expires_in)
 
-    // 2. Now that we have a token, get fresh instances and fetch data
-    const currentWorkspacesInstance = workspacesQuery()
-    const currentUserInstance = user()
-    
-    const [workspacesResult] = await Promise.all([
-      currentWorkspacesInstance.refetch(),
-      // Invalidate user query to trigger fresh fetch with new token
-      invalidateUser()
-    ])
-    const workspaces = workspacesResult.data
+    // 2. If user data is provided in the token response, cache it immediately
+    // This ensures that the user query has data immediately after registration
+    const promises = [invalidateWorkspaces()]
+    if (tokenData.user) {
+      queryClient.setQueryData(['user'], tokenData.user)
+      initServiceClients(tokenData.user)
+    } else {
+      promises.push(invalidateUser())
+    }
 
-    // 3. Wait for user data to be fetched by TanStack Query
-    // The user query will automatically cache and trigger onSuccess
-    await currentUserInstance.refetch()
-    
-    // Initialize service clients with user data
-    initServiceClients(currentUserInstance.data.value)
+    // 3. Invalidate queries to trigger a refetch in any active components
+    await Promise.all(promises)
 
     // 4. Track analytics
     const eventName = isNewUser ? 'register' : 'login'
@@ -98,47 +95,19 @@ export const useAuthFlow = () => {
     } catch (error) {
       console.error(error)
     }
-
-    return { userData: currentUserInstance.data.value, workspaces, isNewUser }
   }
 
-  /**
-   * Verify that authentication is complete and user data is loaded
-   * Now uses TanStack Query for user data verification
-   */
-  const verifyAuthentication = async () => {
-    // If we don't have a token, we're not authenticated
-    if (!authStore.token) {
-      return false
-    }
-    
-    // If we have cached user data, we're good
-    const cachedUserData = getCachedUserData()
-    if (cachedUserData) {
-      return true
-    }
-    
-    // If we have a token but no cached user data, fetch it
-    try {
-      const currentUserInstance = user()
-      await currentUserInstance.refetch()
-      return true
-    } catch (error) {
-      console.error('Auth verification failed:', error)
-      return false
-    }
-  }
 
   /**
    * Handle direct login with form validation
    */
-  const loginWithCredentials = async (form, remember) => {
-    const tokenData = await form.submit('post', '/login', { data: { remember: remember } })
+  const loginWithCredentials = async (data) => {
+    const tokenData = await loginMutation.mutateAsync(data)
     
-    return authenticateUser({ 
+    return authenticateUser(
       tokenData, 
-      source: 'credentials'
-    })
+      'credentials'
+    )
   }
 
   /**
@@ -156,43 +125,39 @@ export const useAuthFlow = () => {
       })
     } 
 
-    return authenticateUser({ 
+    return authenticateUser( 
       tokenData, 
-      source: provider,
-      isNewUser: tokenData.new_user
-    })
+      provider,
+      tokenData.new_user
+    )
   }
 
   /**
    * Handle user registration
    */
-  const registerUser = async (form) => {
-    // Register the user first
-    const data = await form.submit('post', '/register')
+  const registerUser = async (data) => {
+    const tokenData = await registerMutation.mutateAsync(data)
     
-    // Login the user
-    const tokenData = await form.submit('post', '/login')
-    
-    const result = await authenticateUser({ 
+    await authenticateUser(
       tokenData, 
-      source: form.hear_about_us,
-      isNewUser: true 
-    })
+      data.hear_about_us,
+      true 
+    )
 
     // Handle AppSumo license if present
-    if (data.appsumo_license === false) {
+    if (tokenData.appsumo_license === false) {
       useAlert().error(
         "Invalid AppSumo license. This probably happened because this license was already" +
         " attached to another OpnForm account. Please contact support."
       )
-    } else if (data.appsumo_license === true) {
+    } else if (tokenData.appsumo_license === true) {
       useAlert().success(
         "Your AppSumo license was successfully activated! You now have access to all the" +
         " features of the AppSumo deal."
       )
     }
 
-    return { ...result, data }
+    return { data: tokenData }
   }
 
   /**
@@ -219,7 +184,6 @@ export const useAuthFlow = () => {
     loginWithCredentials,
     handleSocialCallback,
     registerUser,
-    verifyAuthentication,
     handleLogout,
   
     hasActiveLicense

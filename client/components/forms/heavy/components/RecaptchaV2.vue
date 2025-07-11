@@ -176,3 +176,16 @@ defineExpose({
   }
 })
 </script>
+
+<style>
+/* Global CSS to ensure reCAPTCHA iframes always have pointer events enabled */
+/* This targets iframes injected anywhere in the DOM by Google's reCAPTCHA script */
+iframe[src*="google.com/recaptcha/api2/bframe"] {
+  pointer-events: auto !important;
+}
+
+/* Backup selector for any reCAPTCHA iframe */
+iframe[title*="recaptcha"] {
+  pointer-events: auto !important;
+}
+</style>

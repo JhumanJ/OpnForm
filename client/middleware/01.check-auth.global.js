@@ -30,7 +30,7 @@ export default defineNuxtRouteMiddleware(async () => {
     } catch (error) {
       // On 401, clear auth state
       if (error?.status === 401) {
-        authStore.clearTokens()
+        authStore.clearToken()
         queryClient.clear()
       }
       return

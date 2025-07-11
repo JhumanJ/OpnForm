@@ -28,7 +28,7 @@ class UserController extends Controller
         Auth::user()->delete();
 
         return $this->success([
-            'message' => 'User deleted.',
+            'message' => 'Sorry to see you go 👋',
         ]);
     }
 }
