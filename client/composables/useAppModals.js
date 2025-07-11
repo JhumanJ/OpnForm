@@ -31,6 +31,15 @@ const createUrlSyncedModal = ({ component, queryParam, defaultTab }) => {
     destroyOnClose: false
   })
 
+  const cleanUpUrl = () => {
+    const newQuery = { ...route.query }
+    if (queryParam in newQuery) {
+      delete newQuery[queryParam]
+      return router.replace({ query: newQuery })
+    }
+    return Promise.resolve()
+  }
+
   // URL → State sync
   watch([queryRef, isAuthenticated], ([queryTab, isLoggedIn]) => {
     if (queryTab && isLoggedIn) {
@@ -44,15 +53,13 @@ const createUrlSyncedModal = ({ component, queryParam, defaultTab }) => {
           }
         },
         onClose: () => {
-          isOpen.value = false
           tab.value = null
-          const newQuery = { ...route.query }
-          delete newQuery[queryParam]
-          router.replace({ query: newQuery })
+          cleanUpUrl()
         }
       })
-    } else if (!queryTab && tab.value) {
+    } else if (!queryTab && (isOpen.value || tab.value)) {
       tab.value = null
+      isOpen.value = false
       modal.close()
     }
   }, { immediate: true })
@@ -62,11 +69,8 @@ const createUrlSyncedModal = ({ component, queryParam, defaultTab }) => {
     const newQuery = { ...route.query }
     if (currentTab) {
       newQuery[queryParam] = currentTab
-    } else {
-      delete newQuery[queryParam]
+      router.replace({ query: newQuery })
     }
-    // Avoid pushing a new history entry for modal state changes
-    router.replace({ query: newQuery })
   })
 
   const open = (openTab = defaultTab, options = {}) => {
@@ -97,8 +101,9 @@ const createUrlSyncedModal = ({ component, queryParam, defaultTab }) => {
   }
 
   const close = () => {
-    tab.value = null // Triggers URL watch to sync
     modal.close()
+    tab.value = null
+    return cleanUpUrl()
   }
 
   const handleClose = () => {

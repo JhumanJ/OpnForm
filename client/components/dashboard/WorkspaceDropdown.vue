@@ -129,7 +129,7 @@ const switchWorkspace = (workspaceToSwitch) => {
 
 const createNewWorkspace = () => {
   if (!user.value.is_pro && workspaces.value.length >= 1) {
-    openSubscriptionModal({ modal_title: 'Upgrade to create additional workspaces' })
+    openSubscriptionModal({ modal_title: 'Upgrade to create additional workspaces', modal_description: 'Try our Pro plan for free today, and unlock all of our features such as collaboration, multiple workspaces, custom domains, forms analytics, integrations, and more!' })
     return
   }
   showCreateModal.value = true

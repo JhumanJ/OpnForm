@@ -58,16 +58,17 @@
           color="warning"
           variant="subtle"
           title="Pro plan required"
-        >
-          <template #description>
-            Please <NuxtLink
-              @click.prevent="openSubscriptionModal"
-              class="underline"
-            >
-              upgrade your account
-            </NuxtLink> to invite users to your workspace.
-          </template>
-        </UAlert>
+          description="Please upgrade your account to invite users to your workspace."
+          :actions="[{
+            label: 'Try Pro plan',
+            color: 'warning',
+            variant: 'solid',
+            onClick: () => openSubscriptionModal({
+              modal_title: 'Upgrade to invite users to your workspace',
+              modal_description: 'Try our Pro plan for free today, and unlock team collaboration features along with customized branding, form analytics, custom domains, and more!'
+            })
+          }]"
+        />
       </template>
 
       <VForm

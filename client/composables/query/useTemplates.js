@@ -73,7 +73,7 @@ export function useTemplates() {
       mutationFn: (data) => templatesApi.create(data),
       onSuccess: (newTemplate) => {
       // Update templates list
-      queryClient.setQueriesData(['templates', 'list'], (old) => {
+      queryClient.setQueryData(['templates', 'list'], (old) => {
         if (!old) return [newTemplate]
         if (Array.isArray(old)) return [newTemplate, ...old]
         if (old.data) {
@@ -103,7 +103,7 @@ export function useTemplates() {
       }
       
       // Update in templates lists
-      queryClient.setQueriesData(['templates', 'list'], (old) => {
+      queryClient.setQueryData(['templates', 'list'], (old) => {
         if (!old) return old
         if (Array.isArray(old)) {
           return old.map(template => 
@@ -138,7 +138,7 @@ export function useTemplates() {
       }
       
       // Remove from templates lists
-      queryClient.setQueriesData(['templates', 'list'], (old) => {
+      queryClient.setQueryData(['templates', 'list'], (old) => {
         if (!old) return old
         if (Array.isArray(old)) {
           return old.filter(template => template.id !== deletedId)

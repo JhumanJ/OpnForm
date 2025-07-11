@@ -123,7 +123,9 @@ const navigationSections = computed(() => [
         icon: 'i-heroicons-sparkles-solid', 
         onClick: () => {
           useAmplitude().logEvent('app_sidebar_upgrade_click')
-          openSubscriptionModal()
+          openSubscriptionModal({
+            modal_title: 'Try our Pro plan for free today!',
+          })
         },
         color: 'primary' // Override default color
       })] : [])

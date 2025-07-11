@@ -213,7 +213,7 @@ const combinedUsers = computed(() => {
 
 // Table columns configuration
 const tableColumns = computed(() => {
-  const isAdmin = user?.value?.admin ?? false
+  const isAdmin = workspace?.value?.is_admin ?? false
   return [
     {
       id: 'name',

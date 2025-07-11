@@ -37,7 +37,7 @@
           <UButton
             :disabled="workspace.is_readonly"
             type="submit"
-            :loading="workspaceForm.busy"
+            :loading="updateMutation.isPending.value"
             color="primary"
           >
             Save Changes
@@ -48,7 +48,7 @@
 
     <div class="pt-8 border-t border-neutral-200">
       <div 
-        v-if="user.admin" 
+        v-if="workspace.is_admin" 
         class="space-y-2"
       >
         <h4 class="text-red-800 font-medium">Delete Workspace</h4>
@@ -57,7 +57,7 @@
         </p>
         <UButton
           color="error"
-          :loading="deleteLoading"
+          :loading="removeMutation.isPending.value"
           @click="confirmDeleteWorkspace"
         >
           Delete workspace
@@ -74,7 +74,7 @@
         </p>
         <UButton
           color="error"
-          :loading="leaveWorkspaceLoading"
+          :loading="leaveMutation.isPending.value"
           @click="leaveWorkSpace"
         >
           Leave workspace
@@ -88,11 +88,15 @@
 const { update, remove, leave } = useWorkspaces()
 
 const alert = useAlert()
-const appStore = useAppStore()
+const { closeWorkspaceSettings } = useAppModals()
 const router = useRouter()
 
 const { current: workspace } = useCurrentWorkspace()
 const { data: user } = useAuth().user()
+
+const updateMutation = update()
+const removeMutation = remove()
+const leaveMutation = leave()
 
 // Workspace form
 const workspaceForm = useForm({
@@ -100,11 +104,7 @@ const workspaceForm = useForm({
   emoji: ''
 })
 
-const deleteLoading = ref(false)
-const leaveWorkspaceLoading = ref(false)
-
 // Update profile
-const updateMutation = update()
 const updateProfile = () => {
   updateMutation.mutateAsync({
     id: workspace.value.id,
@@ -125,34 +125,32 @@ const confirmDeleteWorkspace = () => {
 }
 
 // Delete workspace
-const removeMutation = remove()
 const deleteWorkspace = () => {
-  deleteLoading.value = true
   removeMutation.mutateAsync(workspace.value.id).then((data) => {
-      deleteLoading.value = false
       alert.success(data.message)
-      appStore.closeWorkspaceSettingsModal()
-      router.push({ name: "home" })
+      closeWorkspaceSettings()
+      nextTick(() => {
+        router.push({ name: "home", query: {} })
+      })
   }).catch((error) => {
       alert.error(error.data?.message || 'Error deleting workspace')
-      deleteLoading.value = false
     })
 }
 
 // Leave workspace
-const leaveMutation = leave()
 const leaveWorkSpace = () => {
   alert.confirm(
     "Do you really want to leave this workspace? You will lose access to all forms in this workspace.",
     () => {
-      leaveWorkspaceLoading.value = true
       leaveMutation.mutateAsync(workspace.value.id).then(() => {
         alert.success("You have left the workspace.")
-        appStore.closeWorkspaceSettingsModal()
-        router.push({ name: "home" })
-      }).catch(() => {
+        closeWorkspaceSettings()
+        nextTick(() => {
+          router.push({ name: "home", query: {} })
+        })
+      }).catch((error) => {
+        console.error('Error leaving workspace:', error)
         alert.error("There was an error leaving the workspace.")
-        leaveWorkspaceLoading.value = false
       })
     },
   )
