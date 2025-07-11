@@ -12,7 +12,6 @@
       <VForm size="sm">
         <form
           @submit.prevent="updateProfile"
-          @keydown="profileForm.onKeydown($event)"
         >
           <div class="max-w-sm">
             <text-input
@@ -35,7 +34,7 @@
           <div class="mt-4">
             <UButton
               type="submit"
-              :loading="updateMutation.isPending.value"
+              :loading="profileForm.busy"
               color="primary"
             >
               Save Changes
@@ -69,9 +68,7 @@
 
 <script setup>
 // Use useAuth composable for all user-related mutations
-const router = useRouter()
 const alert = useAlert()
-const authFlow = useAuthFlow()
 
 // Auth composable (TanStack Query powered)
 const {
@@ -94,7 +91,7 @@ const profileForm = useForm({
 
 // Update profile
 const updateProfile = () => {
-  updateMutation.mutateAsync(profileForm.data())
+  profileForm.mutate(updateMutation)
     .then(() => {
       invalidateUser()
       alert.success('Your info has been updated!')
@@ -118,8 +115,7 @@ const deleteAccount = () => {
   deleteMutation.mutateAsync()
     .then((data) => {
       alert.success(data?.message || 'Your account has been deleted')
-      authFlow.handleLogout()
-      router.push({ name: 'login' })
+      // Navigation handled by deleteAccount mutation
     })
     .catch((error) => {
       alert.error(error?.data?.message || 'Error deleting account')

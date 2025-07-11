@@ -7,7 +7,7 @@
   >
     <!-- Loading overlay -->
     <div
-      v-if="updateFormLoading"
+      v-if="form.busy"
       class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
     >
       <loader class="h-6 w-6 text-blue-500" />
@@ -37,7 +37,7 @@
 
     <FormEditorNavbar
       :back-button="backButton"
-      :update-form-loading="updateFormLoading"
+      :update-form-loading="form.busy"
       :save-button-class="saveButtonClass"
       @go-back="goBack"
       @save-form="saveForm"
@@ -143,7 +143,6 @@ const emit = defineEmits(['mounted', 'on-save', 'openRegister', 'go-back', 'save
 const showFormErrorModal = ref(false)
 const showLogicConfirmationModal = ref(false)
 const validationErrorResponse = ref(null)
-const updateFormLoading = ref(false)
 const createdFormSlug = ref(null)
 const logicErrors = ref([])
 
@@ -242,14 +241,12 @@ const handleLogicConfirmationConfirm = () => {
 }
 
 const saveFormEdit = () => {
-  if (updateFormLoading.value) return
+  if (form.value.busy) return
 
-  updateFormLoading.value = true
   validationErrorResponse.value = null
 
-  updateMutation.mutateAsync({
-    id: form.value.id,
-    data: form.value.data()
+  form.value.mutate(updateMutation, {
+    data: { id: form.value.id }
   }).then((response) => {
     const updatedForm = response.form
     emit("on-save")
@@ -273,8 +270,6 @@ const saveFormEdit = () => {
     } catch (error) {
       console.error("Analytics error", error)
     }
-
-    updateFormLoading.value = false
   }).catch((error) => {
     console.error("Error saving form", error)
     if (error?.response?.status === 422) {
@@ -287,18 +282,16 @@ const saveFormEdit = () => {
       )
       captureException(error)
     }
-    updateFormLoading.value = false
   })
 }
 
 const saveFormCreate = () => {
-  if (updateFormLoading.value) return
+  if (form.value.busy) return
   // Attach workspace ID before sending
   form.value.workspace_id = workspace.value.id
   validationErrorResponse.value = null
 
-  updateFormLoading.value = true
-  createMutation.mutateAsync(form.value.data()).then((response) => {
+  form.value.mutate(createMutation).then((response) => {
     const newForm = response.form
     emit("on-save")
     createdFormSlug.value = newForm.slug
@@ -327,8 +320,6 @@ const saveFormCreate = () => {
         slug: createdFormSlug.value,
         new_form: newForm.users_first_form ?? false,
       },
-    }).then(() => {
-      updateFormLoading.value = false
     })
   }).catch((error) => {
     console.error("Error saving form", error)
@@ -341,7 +332,6 @@ const saveFormCreate = () => {
       )
       captureException(error)
     }
-    updateFormLoading.value = false
   })
 }
 

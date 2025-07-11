@@ -12,7 +12,6 @@
       <VForm size="sm">
         <form
           @submit.prevent="updatePassword"
-          @keydown="passwordForm.onKeydown($event)"
         >
           <div class="max-w-sm">
             <text-input

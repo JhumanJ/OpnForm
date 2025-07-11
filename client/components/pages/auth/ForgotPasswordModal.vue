@@ -24,7 +24,6 @@
       <template v-else>
         <form
           @submit.prevent="send"
-          @keydown="form.onKeydown($event)"
         >
           <text-input
             name="email"

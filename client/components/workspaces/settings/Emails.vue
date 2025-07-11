@@ -38,7 +38,6 @@
     <VForm size="sm">
       <form
         @submit.prevent="saveChanges"
-        @keydown="emailSettingsForm.onKeydown($event)"
       >
         <div class="max-w-sm">
           <TextInput

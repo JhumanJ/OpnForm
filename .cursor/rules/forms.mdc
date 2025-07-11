@@ -1,0 +1,328 @@
+---
+description: Nuxt client: Form creation, validation, and state management patterns. Use when working with form components, input validation, error handling, form submission with TanStack Query mutations, or when creating/modifying forms with @/components/forms, useForm composable, or form-related functionality.
+globs: 
+alwaysApply: false
+---
+# Forms Rules
+
+Guidelines for working with forms, validation, and user input in the OpnForm frontend.
+
+## Form Setup
+
+### Form Initialization
+- Always use `useForm()` composable for form state management
+- Initialize with default values for all form fields
+- Use descriptive field names that match API expectations
+
+```vue
+// ✅ Good - Initialize with defaults
+const form = useForm({
+  email: '',
+  password: '',
+  remember: false
+})
+
+// ❌ Bad - Empty initialization
+const form = useForm({})
+```
+
+### Form Template Structure
+- Always include `@submit.prevent="handleSubmit"` on form elements
+- Use semantic HTML form elements
+
+```vue
+// ✅ Good - Proper form structure
+<form @submit.prevent="handleSubmit">
+  <!-- form inputs -->
+</form>
+
+// ❌ Bad - Missing submit handler
+<form>
+  <!-- form inputs -->
+</form>
+```
+
+## Form Components
+
+### Input Component Usage
+- Pass `:form="form"` to all form input components
+- Use `name` attribute that matches form field names
+- Always provide meaningful labels for accessibility
+
+```vue
+// ✅ Good - Complete input props
+<TextInput
+  name="email"
+  :form="form"
+  label="Email Address"
+  type="email"
+  :required="true"
+  placeholder="Enter your email"
+/>
+
+// ❌ Bad - Missing required props
+<TextInput name="email" />
+```
+
+### Available Input Components
+- `<TextInput>` - Text, email, password, tel, url inputs
+- `<TextareaInput>` - Multi-line text areas
+- `<CheckboxInput>` - Boolean checkboxes
+- `<SelectInput>` - Dropdown selects
+- `<RadioInput>` - Radio button groups
+- `<FileInput>` - File uploads
+- Custom inputs should extend `useFormInput` composable
+
+### Custom Input Components
+- Use `useFormInput` composable for consistent behavior
+- Export `inputProps` for prop definitions
+- Emit `update:modelValue` for v-model compatibility
+
+```vue
+// ✅ Good - Custom input structure
+<script setup>
+import { useFormInput, inputProps } from '@/components/forms/useFormInput.js'
+
+const props = defineProps({
+  ...inputProps,
+  // Custom props here
+})
+
+const emit = defineEmits(['update:modelValue'])
+const { compVal, hasError, hasValidation } = useFormInput(props, { emit })
+</script>
+```
+
+## Validation & Error Handling
+
+### Client-Side Validation
+- Use HTML5 validation attributes (`required`, `type`, `pattern`)
+- Combine with server-side validation for comprehensive coverage
+- Validation errors are automatically cleared when input values change
+
+```vue
+// ✅ Good - Client-side validation
+<TextInput
+  name="email"
+  :form="form"
+  type="email"
+  :required="true"
+  label="Email Address"
+/>
+```
+
+### Server-Side Validation
+- Form automatically handles Laravel validation responses
+- No manual error handling needed for standard validation
+- API should return errors in Laravel format: `{ errors: { field: ["message"] } }`
+
+```js
+// ✅ Good - Let form handle validation errors
+form.mutate(mutation)
+  .then(() => {
+    // Handle success
+  })
+  .catch((error) => {
+    // Form automatically handles validation errors
+    // Only handle non-validation errors here
+  })
+```
+
+### Live Validation (Precognition)
+- Use `form.validate()` for real-time server validation
+- Typically trigger on `@blur` events for better UX
+- Pass specific fields to validate with `Set([fieldName])`
+
+```vue
+// ✅ Good - Live validation on blur
+<TextInput
+  name="email"
+  :form="form"
+  @blur="() => form.validate('post', '/api/endpoint', {}, new Set(['email']))"
+/>
+```
+
+## TanStack Query Integration
+
+### Form Submission with Mutations
+- Use `form.mutate(mutation)` for TanStack Query integration
+- Always return promises for proper error handling
+- Chain `.then()` and `.catch()` for control flow
+
+```vue
+// ✅ Good - TanStack Query integration
+<script setup>
+const { create } = useWorkspaces()
+const createMutation = create()
+
+const handleSubmit = () => {
+  form.mutate(createMutation)
+    .then((response) => {
+      useAlert().success('Success!')
+      // Handle success (redirect, etc.)
+    })
+    .catch((error) => {
+      // Form handles validation errors automatically
+      if (error.response?.status !== 422) {
+        useAlert().error('Something went wrong')
+      }
+    })
+}
+</script>
+```
+
+### Alternative: Direct API Calls
+- Use `form.post()`, `form.put()`, etc. for direct API calls
+- Only when TanStack Query mutations aren't available
+- Prefer TanStack Query for better caching and state management
+
+```js
+// ✅ Acceptable - Direct API calls when needed
+form.post('/api/endpoint')
+  .then((response) => {
+    // Handle success
+  })
+  .catch((error) => {
+    // Form handles errors automatically
+  })
+```
+
+## Form State Management
+
+### Form Methods
+- `form.data()` - Get current form data
+- `form.reset()` - Reset to original state
+- `form.resetAndFill(data)` - Clear and set new data
+- `form.clear()` - Clear errors and state
+- `form.fill(data)` - Update with partial data
+
+```js
+// ✅ Good - Using form methods
+const handleReset = () => {
+  form.reset() // Returns to original state
+}
+
+const handleNewData = (newData) => {
+  form.resetAndFill(newData) // Clear and set new data
+}
+```
+
+### Form State Properties
+- `form.busy` - Form is submitting
+- `form.successful` - Last submission successful
+- `form.recentlySuccessful` - Recently successful (with timeout)
+- `form.errors` - Error collection
+
+```vue
+// ✅ Good - Using form state
+<UButton
+  type="submit"
+  :loading="form.busy"
+  :disabled="form.busy"
+  label="Submit"
+/>
+
+<div v-if="form.recentlySuccessful" class="success-message">
+  Form submitted successfully!
+</div>
+```
+
+## Best Practices
+
+### Performance
+- Initialize forms with default values to prevent reactivity issues
+- Use `@blur` instead of `@input` for live validation to reduce API calls
+- Debounce live validation if needed for better UX
+
+### Accessibility
+- Always provide meaningful labels
+- Use proper input types (`email`, `tel`, `url`, etc.)
+- Include `aria-describedby` for error messages when needed
+- Ensure proper tab order and keyboard navigation
+
+### Error Handling
+- Let the form handle validation errors automatically
+- Only add custom error handling for business logic errors
+- Use `useAlert()` for user-friendly error messages
+- Don't duplicate error messages that the form already displays
+
+### Security
+- Never bypass server-side validation
+- Use proper input types to prevent XSS
+- Handle file uploads securely with proper validation
+- Validate sensitive operations server-side
+
+### User Experience
+- Validation errors are automatically cleared when input values change
+- Show loading states during form submission
+- Provide success feedback after successful submissions
+- Use placeholders and help text for guidance
+
+```vue
+// ✅ Good - Complete form example
+<template>
+  <form @submit.prevent="handleSubmit">
+    <TextInput
+      name="email"
+      :form="form"
+      label="Email Address"
+      type="email"
+      :required="true"
+      placeholder="Enter your email"
+      help="We'll never share your email with anyone"
+    />
+    
+    <UButton
+      type="submit"
+      :loading="form.busy"
+      :disabled="form.busy"
+      label="Submit"
+    />
+  </form>
+</template>
+
+<script setup>
+const { create } = useWorkspaces()
+const createMutation = create()
+
+const form = useForm({
+  email: ''
+})
+
+const handleSubmit = () => {
+  form.mutate(createMutation)
+    .then(() => {
+      useAlert().success('Success!')
+      // Handle redirect or next steps
+    })
+    .catch((error) => {
+      if (error.response?.status !== 422) {
+        useAlert().error('Something went wrong')
+      }
+    })
+}
+</script>
+```
+
+## Common Patterns
+
+### Modal Forms
+- Use `form.resetAndFill()` when opening modals with existing data
+- Clear form state when closing modals
+- Handle success by closing modal and showing feedback
+
+### Multi-Step Forms
+- Use separate form instances for each step
+- Validate each step before proceeding
+- Combine data from all steps for final submission
+
+### File Uploads
+- Form automatically handles `FormData` serialization
+- Use `FileInput` component for file selection
+- Handle file validation server-side
+
+### Dynamic Forms
+- Use `form.fill()` to update form data dynamically
+- React to external data changes appropriately
+- Maintain form state consistency with external state
+

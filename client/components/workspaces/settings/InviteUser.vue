@@ -75,7 +75,6 @@
         size="sm"
         class="my-2"
         @submit.prevent="addUser"
-        @keydown="inviteUserForm.onKeydown($event)"
       >
         <TextInput
           :form="inviteUserForm"
@@ -117,8 +116,13 @@ const props = defineProps({
   }
 })
 
-const { hasActiveLicense } = useAuthFlow()
+const { data: user } = useAuth().user()
 const { addUser: addUserMutation } = useWorkspaceUsers()
+
+// Local computed for active license check
+const hasActiveLicense = computed(() => {
+  return user.value !== null && user.value !== undefined && user.value.active_license !== null
+})
 const crisp = useCrisp()
 const { openSubscriptionModal: openModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()

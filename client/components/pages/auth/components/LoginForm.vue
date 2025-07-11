@@ -9,7 +9,6 @@
       method="POST"
       class="mt-4"
       @submit.prevent="login"
-      @keydown="form.onKeydown($event)"
     >
       <!-- Email -->
       <text-input
@@ -33,7 +32,7 @@
       <!-- Remember Me -->
       <div class="relative flex items-center mt-3">
         <CheckboxInput
-          v-model="remember"
+          :form="form"
           class="w-full md:w-1/2"
           name="remember"
           size="small"
@@ -56,7 +55,7 @@
         class="mt-2"
         block
         size="lg"
-        :loading="form.busy || loading"
+        :loading="form.busy"
         type="submit"
         label="Log in to continue"
       />
@@ -69,6 +68,7 @@
         size="lg"
         class="space-x-4 mt-4 flex items-center"
         block
+        :disabled="form.busy"
         :loading="false"
         @click.prevent="signInwithGoogle"
         icon="devicon:google"
@@ -115,17 +115,17 @@ defineEmits(['openRegister'])
 
 // Composables
 const oAuth = useOAuth()
-const authFlow = useAuthFlow()
 const router = useRouter()
+const { login: loginMutationFactory } = useAuth()
 
 // Reactive data
 const form = useForm({
   email: "",
   password: "",
+  remember: false,
 })
 
-const loading = ref(false)
-const remember = ref(false)
+const loginMutation = loginMutationFactory()
 const showForgotModal = ref(false)
 
 // Lifecycle
@@ -141,17 +141,13 @@ onMounted(() => {
 
 // Methods
 const login = () => {
-  loading.value = true
-  
-  authFlow.loginWithCredentials(form, remember.value).then(() => {
+  form.mutate(loginMutation).then(() => {
     redirect()
   }).catch((error) => {
     console.log(error)
     if (error.response?._data?.message == "You must change your credentials when in self host mode") {
       redirect()
     }
-  }).finally(() => {
-    loading.value = false
   })
 }
 

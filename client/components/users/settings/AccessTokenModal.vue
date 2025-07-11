@@ -39,7 +39,6 @@
       <VForm v-else size="sm">
         <form
           @submit.prevent="createToken"
-          @keydown="tokenForm.onKeydown($event)"
         >
           <div v-if="!token">
             <TextInput
@@ -74,7 +73,7 @@
         type="submit"
         block
         size="lg"
-        :loading="createTokenMutation.isPending.value"
+        :loading="tokenForm.busy"
         @click="createToken"
       >
         Create Token
@@ -126,7 +125,7 @@ const closeModal = () => {
 }
 
 function createToken() {
-  createTokenMutation.mutateAsync(tokenForm.data()).then((response) => {
+  tokenForm.mutate(createTokenMutation).then((response) => {
     // Assuming the response contains the token
     token.value = response.token || response.data?.token || response
   }).catch(() => {

@@ -9,11 +9,8 @@
       </div>
     </div>
 
-    <VForm size="sm">
-      <form
-        @submit.prevent="updateProfile"
-        @keydown="workspaceForm.onKeydown($event)"
-      >
+    <VForm @submit.prevent="updateProfile" size="sm">
+   
         <div class="max-w-sm">
           <TextInput
             :disabled="workspace.is_readonly"
@@ -37,13 +34,12 @@
           <UButton
             :disabled="workspace.is_readonly"
             type="submit"
-            :loading="updateMutation.isPending.value"
+            :loading="workspaceForm.busy"
             color="primary"
           >
             Save Changes
           </UButton>
         </div>
-      </form>
     </VForm>
 
     <div class="pt-8 border-t border-neutral-200">
@@ -92,7 +88,6 @@ const { closeWorkspaceSettings } = useAppModals()
 const router = useRouter()
 
 const { current: workspace } = useCurrentWorkspace()
-const { data: user } = useAuth().user()
 
 const updateMutation = update()
 const removeMutation = remove()
@@ -106,9 +101,8 @@ const workspaceForm = useForm({
 
 // Update profile
 const updateProfile = () => {
-  updateMutation.mutateAsync({
-    id: workspace.value.id,
-    data: workspaceForm.data()
+  workspaceForm.mutate(updateMutation, {
+    data: { id: workspace.value.id }
   }).then(() => {
     useAlert().success('Workspace information successfully updated!')
   }).catch((error) => {

@@ -11,7 +11,7 @@ export function useCurrentWorkspace() {
   const { isAuthenticated } = useIsAuthenticated()
   
   const workspacesQuery = list({
-    enabled: isAuthenticated
+    enabled: () => isAuthenticated.value
   })
   
   // Watch for workspaces data and auto-select first workspace if none is current

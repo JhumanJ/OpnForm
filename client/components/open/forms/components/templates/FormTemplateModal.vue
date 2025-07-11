@@ -29,7 +29,6 @@
       <form
         v-if="templateForm"
         @submit.prevent="onSubmit"
-        @keydown="templateForm.onKeydown($event)"
       >
         <div class="space-y-4">
           <toggle-switch-input

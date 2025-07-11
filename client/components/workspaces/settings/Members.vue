@@ -97,7 +97,6 @@
       <template #body>
         <form
           @submit.prevent="updateUserRole"
-          @keydown="editUserForm.onKeydown($event)"
         >
           <div>
             <FlatSelectInput

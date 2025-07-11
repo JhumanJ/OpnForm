@@ -1,0 +1,385 @@
+---
+title: "Forms & Validation"
+description: "How to build forms with validation, error handling, and API integration using our form system."
+---
+
+<Info>
+Forms in OpnForm handle both client-side validation and server-side API integration. They work seamlessly with [TanStack Query mutations](./data-fetching#mutating-data) for optimal user experience.
+</Info>
+
+## Form System Overview
+
+Our form system consists of three main parts:
+
+1. **Form Class** (`client/composables/lib/vForm/Form.js`) - Core form state management
+2. **useFormInput Composable** (`client/components/forms/useFormInput.js`) - Input component logic
+3. **Form Components** (`client/components/forms/`) - Reusable input components
+
+## Creating a Basic Form
+
+### 1. Initialize the Form
+
+```vue
+<script setup>
+const form = useForm({
+  email: '',
+  password: '',
+  remember: false
+})
+</script>
+```
+
+The `useForm` composable creates a reactive form instance with:
+- **Data binding** - automatic two-way data binding
+- **Validation state** - tracks errors and validation status
+- **Loading state** - busy/successful flags for UI feedback
+- **Error handling** - automatic error extraction from API responses
+
+### 2. Create the Form Template
+
+```vue
+<template>
+  <form @submit.prevent="handleSubmit">
+    <TextInput
+      name="email"
+      :form="form"
+      label="Email"
+      :required="true"
+      placeholder="Your email address"
+    />
+    
+    <TextInput
+      native-type="password"
+      name="password"
+      :form="form"
+      label="Password"
+      :required="true"
+      placeholder="Your password"
+    />
+    
+    <CheckboxInput
+      :form="form"
+      name="remember"
+      label="Remember me"
+    />
+    
+    <UButton
+      type="submit"
+      :loading="form.busy"
+      :disabled="form.busy"
+      label="Submit"
+    />
+  </form>
+</template>
+```
+
+### 3. Handle Form Submission
+
+```vue
+<script setup>
+const { login } = useAuth()
+const loginMutation = login()
+
+const handleSubmit = () => {
+  // Using TanStack Query mutation
+  form.mutate(loginMutation)
+    .then(() => {
+      useAlert().success('Login successful!')
+      // Handle success
+    })
+    .catch((error) => {
+      // Errors are automatically handled by the form
+      console.log('Login failed:', error)
+    })
+}
+</script>
+```
+
+## Form Input Components
+
+### Using Form Inputs
+
+All form inputs accept a common set of props through the `useFormInput` composable:
+
+```vue
+<TextInput
+  name="email"           <!-- Required: field name -->
+  :form="form"           <!-- Required: form instance -->
+  label="Email Address"  <!-- Optional: field label -->
+  :required="true"       <!-- Optional: required validation -->
+  placeholder="Enter your email"
+  help="We'll never share your email"
+  :disabled="form.busy"
+/>
+```
+
+### Available Input Components
+
+- `<TextInput>` - Text, email, password, etc.
+- `<TextareaInput>` - Multi-line text
+- `<CheckboxInput>` - Checkboxes
+- `<SelectInput>` - Dropdown selects
+- ... and more!
+
+### Custom Input Components
+
+Create custom inputs using the `useFormInput` composable:
+
+```vue
+<script setup>
+import { useFormInput, inputProps } from '@/components/forms/useFormInput.js'
+
+const props = defineProps({
+  ...inputProps,
+  // Add custom props here
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const { compVal, hasError, hasValidation } = useFormInput(props, { emit })
+</script>
+
+<template>
+  <div>
+    <label>{{ props.label }}</label>
+    <input
+      v-model="compVal"
+      :class="{ 'error': hasError }"
+      :disabled="props.disabled"
+    />
+    <span v-if="hasError" class="error-message">
+      {{ props.form.errors.get(props.name) }}
+    </span>
+  </div>
+</template>
+```
+
+## Validation & Error Handling
+
+### Client-Side Validation
+
+Form validation happens automatically:
+
+```vue
+<TextInput
+  name="email"
+  :form="form"
+  :required="true"
+  type="email"
+/>
+```
+
+### Server-Side Validation
+
+The form automatically handles API validation errors:
+
+```javascript
+// API returns validation errors like:
+{
+  "errors": {
+    "email": ["The email field is required."],
+    "password": ["The password must be at least 8 characters."]
+  }
+}
+
+// Form automatically displays these errors on the respective inputs
+```
+
+### Precognition (Live Validation)
+
+Use real-time server validation as users type with [Laravel Precognition](https://laravel.com/docs/12.x/precognition).
+
+```vue
+<script setup>
+const form = useForm({ email: '', password: '' })
+
+const validateField = (fieldName) => {
+  form.validate('post', '/api/auth/login', {}, new Set([fieldName]))
+}
+</script>
+
+<template>
+  <TextInput
+    name="email"
+    :form="form"
+    @blur="validateField('email')"
+  />
+</template>
+```
+
+### Error States
+
+Access validation state programmatically:
+
+```vue
+<script setup>
+const form = useForm({ email: '' })
+
+// Check if form has any errors
+const hasErrors = computed(() => form.errors.any())
+
+// Check specific field errors
+const emailError = computed(() => form.errors.get('email'))
+
+// Form state
+const isSubmitting = computed(() => form.busy)
+const wasSuccessful = computed(() => form.successful)
+</script>
+```
+
+## Integration with TanStack Query
+
+Forms integrate seamlessly with TanStack Query mutations for optimal caching and state management:
+
+```vue
+<script setup>
+const { create } = useWorkspaces()
+const createMutation = create()
+
+const form = useForm({
+  name: '',
+  description: ''
+})
+
+const handleSubmit = () => {
+  form.mutate(createMutation)
+    .then((newWorkspace) => {
+      // Cache is automatically updated by the mutation
+      useAlert().success('Workspace created!')
+      router.push(`/workspaces/${newWorkspace.id}`)
+    })
+    .catch((error) => {
+      // Form errors are automatically handled
+      useAlert().error('Failed to create workspace')
+    })
+}
+</script>
+```
+
+<Note>
+See [Data Fetching](./data-fetching#mutating-data) for more details on how mutations work with caching and optimistic updates.
+</Note>
+
+## Form State Management
+
+### Form Methods
+
+```javascript
+const form = useForm({ name: 'John', email: 'john@example.com' })
+
+// Get form data
+const data = form.data() // { name: 'John', email: 'john@example.com' }
+
+// Reset form to original state
+form.reset()
+
+// Clear form and set new data
+form.resetAndFill({ name: 'Jane', email: 'jane@example.com' })
+
+// Clear errors and state
+form.clear()
+
+// Fill form with partial data
+form.fill({ name: 'Updated Name' })
+```
+
+### Form State Properties
+
+```javascript
+// Loading state
+form.busy           // Currently submitting
+form.successful     // Last submission was successful
+form.recentlySuccessful // Recently successful (with timeout)
+
+// Error state
+form.errors.any()   // Has any errors
+form.errors.get('field') // Get specific field error
+form.errors.has('field') // Check if field has error
+```
+
+## Complete Example
+
+Here's a complete working example based on the LoginForm component:
+
+<CodeGroup>
+```vue LoginForm.vue
+<template>
+  <form @submit.prevent="handleLogin">
+    <TextInput
+      name="email"
+      :form="form"
+      label="Email"
+      :required="true"
+      placeholder="Your email address"
+    />
+    
+    <TextInput
+      native-type="password"
+      name="password"
+      :form="form"
+      label="Password"
+      :required="true"
+      placeholder="Your password"
+    />
+    
+    <CheckboxInput
+      :form="form"
+      name="remember"
+      label="Remember me"
+    />
+    
+    <UButton
+      type="submit"
+      :loading="form.busy"
+      :disabled="form.busy"
+      label="Log in to continue"
+    />
+  </form>
+</template>
+
+<script setup>
+const { login } = useAuth()
+const loginMutation = login()
+
+const form = useForm({
+  email: '',
+  password: '',
+  remember: false
+})
+
+const handleLogin = () => {
+  form.mutate(loginMutation)
+    .then(() => {
+      useAlert().success('Login successful!')
+      // Handle redirect
+    })
+    .catch((error) => {
+      if (error.response?.status === 422) {
+        // Validation errors are automatically handled
+        useAlert().error('Please check your credentials')
+      } else {
+        useAlert().error('Login failed. Please try again.')
+      }
+    })
+}
+</script>
+```
+</CodeGroup>
+
+## Best Practices
+
+<Tip>
+**Form State Management**: Always use the `useForm` composable rather than managing form state manually. It handles validation, errors, and loading states automatically.
+</Tip>
+
+<Tip>
+**Error Handling**: Let the form handle API validation errors automatically. Only add custom error handling for specific business logic.
+</Tip>
+
+<Warning>
+**File Uploads**: When handling file uploads, the form will automatically serialize data as `FormData`. Make sure your API endpoint accepts `multipart/form-data`.
+</Warning>
+
+<Check>
+**Validation**: Combine client-side validation (required, email, etc.) with server-side validation for the best user experience.
+</Check> 

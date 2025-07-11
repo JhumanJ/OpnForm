@@ -2,7 +2,6 @@
   <VForm size="sm"
     method="POST"
     @submit.prevent="register"
-    @keydown="form.onKeydown($event)"
     class="flex flex-col gap-1"
   >
     <!-- Name -->
@@ -161,9 +160,11 @@ defineEmits(['openLogin'])
 const { $utm } = useNuxtApp()
 const oAuth = useOAuth()
 const runtimeConfig = useRuntimeConfig()
-const authFlow = useAuthFlow()
+const { register: registerMutationFactory } = useAuth()
 const router = useRouter()
 const route = useRoute()
+
+const registerMutation = registerMutationFactory()
 
 // Reactive data
 const form = useForm({
@@ -236,10 +237,15 @@ onMounted(() => {
 
 // Methods
 const register = () => {
-
   form.utm_data = {...$utm.value}
   $utm.value = null
-  authFlow.registerUser(form.data()).then(() => {
+  
+  form.mutate(registerMutation, {
+    data: {
+      formData: form.data(),
+      source: form.hear_about_us
+    }
+  }).then(() => {
     useAlert().success({
       title: "Welcome to OpnForm 👋",
       ...!props.isQuick ? {description: "Time to create your first form!"} : {}
