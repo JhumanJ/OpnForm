@@ -18,6 +18,7 @@
         class="self-stretch mt-1"
         color="neutral"
         variant="outline"
+        :disabled="!form.is_pro"
         @click.prevent="refresh" 
         icon="i-heroicons-arrow-path" 
         :loading="isLoading"
@@ -39,13 +40,11 @@
               /> subscription to access your form
               analytics.
             </p>
-            <div class="mt-5 flex justify-center">
-              <UButton
-                @click.prevent="subscriptionModalStore.setModalContent('Upgrade to unlock form Analytics');subscriptionModalStore.openModal()"
-              >
-                Try our Pro plan
-              </UButton>
-            </div>
+            <UButton
+              class="mt-5 flex justify-center"
+              @click.prevent="openSubscriptionModal({modal_title: 'Upgrade to unlock form Analytics'})"
+              label="Subscribe"
+            />
           </div>
         </div>
         <img
@@ -105,7 +104,7 @@ const props = defineProps({
   },
 })
 
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 const toDate = new Date()
 const fromDate = new Date(toDate)

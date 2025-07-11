@@ -8,14 +8,21 @@ export function useCurrentWorkspace() {
   const appStore = useAppStore()
   const { list } = useWorkspaces()
   
-  // Get the workspace list query (but don't create a top-level query here)
   const workspacesQuery = list()
   
   // Watch for workspaces data and auto-select first workspace if none is current
   watch(
     () => workspacesQuery.data.value,
     (workspaces) => {
-      if (workspaces && workspaces.length > 0 && !appStore.currentId) {
+      if (!workspaces) {
+        return
+      }
+
+      const currentWorkspaceExists = appStore.currentId && workspaces.some(ws => ws.id === appStore.currentId)
+
+      if (workspaces.length === 0) {
+        appStore.setCurrentId(null)
+      } else if (!currentWorkspaceExists) {
         appStore.setCurrentId(workspaces[0].id)
       }
     },

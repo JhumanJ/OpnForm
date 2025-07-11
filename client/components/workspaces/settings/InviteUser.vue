@@ -58,16 +58,17 @@
           color="warning"
           variant="subtle"
           title="Pro plan required"
-        >
-          <template #description>
-            Please <NuxtLink
-              @click.prevent="openSubscriptionModal"
-              class="underline"
-            >
-              upgrade your account
-            </NuxtLink> to invite users to your workspace.
-          </template>
-        </UAlert>
+          description="Please upgrade your account to invite users to your workspace."
+          :actions="[{
+            label: 'Try Pro plan',
+            color: 'warning',
+            variant: 'solid',
+            onClick: () => openSubscriptionModal({
+              modal_title: 'Upgrade to invite users to your workspace',
+              modal_description: 'Try our Pro plan for free today, and unlock team collaboration features along with customized branding, form analytics, custom domains, and more!'
+            })
+          }]"
+        />
       </template>
 
       <VForm
@@ -119,7 +120,7 @@ const props = defineProps({
 const { hasActiveLicense } = useAuthFlow()
 const { addUser: addUserMutation } = useWorkspaceUsers()
 const crisp = useCrisp()
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal: openModal } = useAppModals()
 const { current: workspace, currentId: workspaceId } = useCurrentWorkspace()
 const alert = useAlert()
 
@@ -146,8 +147,7 @@ const closeModal = () => {
 }
 
 const openSubscriptionModal = () => {
-  subscriptionModalStore.setModalContent('Upgrade to invite users to your workspace')
-  subscriptionModalStore.openModal()
+  openModal({ modal_title: 'Upgrade to invite users to your workspace' })
 }
 
 const paidPlansEnabled = ref(useFeatureFlag('billing.enabled'))

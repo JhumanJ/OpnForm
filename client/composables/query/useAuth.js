@@ -17,13 +17,6 @@ export function useAuth() {
         // Coordinate with auth store for service client initialization
         authStore.initServiceClients(userData)
       },
-      onError: (error) => {
-        // If user fetch fails due to invalid token, clear auth state
-        if (error.status === 401) {
-          authStore.clearTokens()
-          queryClient.clear()
-        }
-      },
       ...options
     })
   }

@@ -229,7 +229,7 @@ import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
 
 const workingFormStore = useWorkingFormStore()
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
@@ -261,8 +261,7 @@ const onChangeConfettiOnSubmission = (val) => {
 
 const onChangeNoBranding = (val) => {
   if (!isPro.value && val) {
-    subscriptionModalStore.setModalContent("Upgrade today to remove OpnForm branding")
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({ modal_title: "Upgrade today to remove OpnForm branding" })
     setTimeout(() => {
       form.value.no_branding = false
     }, 300)

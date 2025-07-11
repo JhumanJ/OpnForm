@@ -10,26 +10,24 @@
     :actions="[
       {
         label: 'Try for free',
-        click: openSubscriptionModal
+        onClick: () => openSubscriptionModal({modal_title: 'Try our Pro plan for free today!'})
       },
       {
         label: 'Close',
         color: 'neutral',
         variant: 'outline',
-        click: dismissBanner
+        onClick: dismissBanner
       }
     ]"
   />
 </template>
 
 <script setup>
-import { useCookie } from '#app'
-
 const COOKIE_NAME = 'upgrade_banner_dismissed'
 const COOKIE_EXPIRY_DAYS = 7
 
 // Composables
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 // Cookie state
 const dismissedCookie = useCookie(COOKIE_NAME, {
@@ -42,11 +40,6 @@ const dismissedCookie = useCookie(COOKIE_NAME, {
 
 // Computed
 const showBanner = computed(() => !dismissedCookie.value)
-
-// Methods
-const openSubscriptionModal = () => {
-  subscriptionModalStore.openModal()
-}
 
 const dismissBanner = () => {
   dismissedCookie.value = true

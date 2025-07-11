@@ -1,7 +1,7 @@
 <template>
   <SettingsModal
     v-model="isOpen"
-    v-model:activeTab="activeTab"
+    v-model:active-tab="localActiveTab"
     @close="closeModal"
   >
     <!-- Settings Pages - Auto-register themselves -->
@@ -51,16 +51,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import SettingsModal from '~/components/pages/settings/SettingsModal.vue'
 import SettingsModalPage from '~/components/pages/settings/SettingsModalPage.vue'
 
-const emit = defineEmits(['close', 'update:activeTab'])
+const emit = defineEmits(['update:activeTab'])
 
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
   activeTab: {
     type: String,
     default: null
@@ -70,20 +67,25 @@ const props = defineProps({
 const { current: workspace } = useCurrentWorkspace()
 const { data: user } = useAuth().user()
 
-// Modal state
+// Modal state is now derived from the presence of an active tab
 const isOpen = computed({
-  get: () => props.modelValue,
-  set: (value) => emit('close', value)
+  get: () => !!props.activeTab,
+  set: (value) => {
+    // When the modal is closed (e.g., via v-model), we signal this by nullifying the active tab.
+    if (!value) {
+      emit('update:activeTab', null)
+    }
+  }
 })
 
-// Active tab state
-const activeTab = computed({
+// Two-way binding for the active tab with the parent
+const localActiveTab = computed({
   get: () => props.activeTab,
   set: (value) => emit('update:activeTab', value)
 })
 
-// Methods
+// The @close event from SettingsModal triggers this
 const closeModal = () => {
-  isOpen.value = false
+  emit('update:activeTab', null)
 }
 </script> 

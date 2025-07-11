@@ -82,7 +82,7 @@ const { sharedNavigationSections, createNavItem } = useSharedNavigation()
 
 const { current: workspace } = useCurrentWorkspace()
 const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 // Check if current route matches a prefix
 function isActiveRoute(prefix) {
@@ -121,9 +121,11 @@ const navigationSections = computed(() => [
       ...(workspace.value && !workspace.value.is_pro && !isSelfHosted.value ? [createNavItem({
         label: 'Try our Pro plan',
         icon: 'i-heroicons-sparkles-solid', 
-        click: () => {
+        onClick: () => {
           useAmplitude().logEvent('app_sidebar_upgrade_click')
-          subscriptionModalStore.openModal()
+          openSubscriptionModal({
+            modal_title: 'Try our Pro plan for free today!',
+          })
         },
         color: 'primary' // Override default color
       })] : [])

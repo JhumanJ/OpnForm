@@ -6,202 +6,193 @@ import { createSharedComposable } from '@vueuse/core'
 // Pre-import modal components so overlay receives component definitions, not promises
 import UsersSettingsModal from '~/components/users/settings/Modal.vue'
 import WorkspacesSettingsModal from '~/components/workspaces/settings/Modal.vue'
+import SubscriptionModal from '~/components/pages/pricing/SubscriptionModal.vue'
 
-export const useAppModals = createSharedComposable(() => {
-  // Internal state management (replaces store)
-  const userSettingsTab = ref(null)
-  const workspaceSettingsTab = ref(null)
-  
-  // Get lightweight auth check and router helpers (auto-imported by Nuxt)
+/**
+ * Factory for creating URL-synced modals.
+ * It encapsulates the logic for opening, closing, and syncing state with a URL query parameter.
+ * @param {object} config - Configuration object.
+ * @param {object} config.component - The Vue component for the modal.
+ * @param {string} config.queryParam - The URL query parameter key.
+ * @param {string} config.defaultTab - The default tab to open.
+ * @returns {object} - Reactive state and methods to control the modal.
+ */
+const createUrlSyncedModal = ({ component, queryParam, defaultTab }) => {
   const { isAuthenticated } = useIsAuthenticated()
   const route = useRoute()
   const router = useRouter()
-  
-  // Modal instances using useOverlay
   const overlay = useOverlay()
-  const userSettingsModal = overlay.create(UsersSettingsModal, {
+
+  const tab = ref(null)
+  const isOpen = ref(false)
+  const queryRef = useRouteQuery(queryParam)
+
+  const modal = overlay.create(component, {
     destroyOnClose: false
   })
-  const workspaceSettingsModal = overlay.create(WorkspacesSettingsModal, {
-    destroyOnClose: false
-  })
-  
-  // URL parameter refs
-  const userSettingsQuery = useRouteQuery('user-settings')
-  const workspaceSettingsQuery = useRouteQuery('workspace-settings')
-  
-  // Computed for modal open states
-  const isUserSettingsOpen = computed(() => userSettingsTab.value !== null)
-  const isWorkspaceSettingsOpen = computed(() => workspaceSettingsTab.value !== null)
-  
-  // Add flags
-  const userSettingsOpen = ref(false)
-  const workspaceSettingsOpen = ref(false)
-  
-  // URL → State sync for user settings
-  watch([userSettingsQuery, isAuthenticated], ([tab, isLoggedIn]) => {
-    if (tab && isLoggedIn) {
-      userSettingsTab.value = tab
-      userSettingsOpen.value = true
-      userSettingsModal.open({
-        activeTab: tab,
+
+  const cleanUpUrl = () => {
+    const newQuery = { ...route.query }
+    if (queryParam in newQuery) {
+      delete newQuery[queryParam]
+      return router.replace({ query: newQuery })
+    }
+    return Promise.resolve()
+  }
+
+  // URL → State sync
+  watch([queryRef, isAuthenticated], ([queryTab, isLoggedIn]) => {
+    if (queryTab && isLoggedIn) {
+      tab.value = queryTab
+      isOpen.value = true
+      modal.open({
+        activeTab: queryTab,
         'onUpdate:activeTab': (val) => {
-          if (userSettingsOpen.value) {
-            userSettingsTab.value = val
+          if (isOpen.value) {
+            tab.value = val
           }
         },
         onClose: () => {
-          userSettingsOpen.value = false
-          userSettingsTab.value = null
-          // Immediately remove query param to prevent reopen loop
-          const query = { ...route.query }
-          delete query['user-settings']
-          router.replace({ query })
+          tab.value = null
+          cleanUpUrl()
         }
       })
-    } else if (!tab && userSettingsTab.value) {
-      userSettingsTab.value = null
-      userSettingsModal.close()
+    } else if (!queryTab && (isOpen.value || tab.value)) {
+      tab.value = null
+      isOpen.value = false
+      modal.close()
     }
   }, { immediate: true })
-  
-  // URL → State sync for workspace settings
-  watch([workspaceSettingsQuery, isAuthenticated], ([tab, isLoggedIn]) => {
-    if (tab && isLoggedIn) {
-      workspaceSettingsTab.value = tab
-      workspaceSettingsOpen.value = true
-      workspaceSettingsModal.open({
-        activeTab: tab,
-        'onUpdate:activeTab': (val) => {
-          if (workspaceSettingsOpen.value) {
-            workspaceSettingsTab.value = val
-          }
-        },
-        onClose: () => {
-          workspaceSettingsOpen.value = false
-          workspaceSettingsTab.value = null
-          // Immediately remove query param to prevent reopen loop
-          const query = { ...route.query }
-          delete query['workspace-settings']
-          router.replace({ query })
-        }
-      })
-    } else if (!tab && workspaceSettingsTab.value) {
-      workspaceSettingsTab.value = null
-      workspaceSettingsModal.close()
-    }
-  }, { immediate: true })
-  
-  // State → URL sync for user settings
-  watch(userSettingsTab, (currentTab) => {
-    const query = { ...route.query }
+
+  // State → URL sync
+  watch(tab, (currentTab) => {
+    const newQuery = { ...route.query }
     if (currentTab) {
-      query['user-settings'] = currentTab
-    } else {
-      delete query['user-settings']
+      newQuery[queryParam] = currentTab
+      router.replace({ query: newQuery })
     }
-    router.replace({ query })
   })
-  
-  // State → URL sync for workspace settings  
-  watch(workspaceSettingsTab, (currentTab) => {
-    const query = { ...route.query }
-    if (currentTab) {
-      query['workspace-settings'] = currentTab
-    } else {
-      delete query['workspace-settings']
-    }
-    router.replace({ query })
-  })
-  
-  // Public API
-  const openUserSettings = (tab = 'profile', options = {}) => {
-    userSettingsTab.value = tab
-    userSettingsOpen.value = true
-    
-    // Update URL unless explicitly disabled
+
+  const open = (openTab = defaultTab, options = {}) => {
+    tab.value = openTab
+    isOpen.value = true
+
+    // Update URL unless explicitly disabled, which triggers the watcher to open the modal
     if (options.updateUrl !== false) {
-      userSettingsQuery.value = tab
+      queryRef.value = openTab
     }
-    
-    return userSettingsModal.open({
-      activeTab: tab,
+
+    // Also call open directly to return the promise and handle complex cases
+    return modal.open({
+      activeTab: openTab,
       'onUpdate:activeTab': (val) => {
-        if (userSettingsOpen.value) {
-          userSettingsTab.value = val
+        if (isOpen.value) {
+          tab.value = val
         }
       },
       onClose: () => {
-        userSettingsOpen.value = false
-        userSettingsTab.value = null
-        // Immediately remove query param to prevent reopen loop
-        const query = { ...route.query }
-        delete query['user-settings']
-        router.replace({ query })
+        isOpen.value = false
+        tab.value = null
+        const newQuery = { ...route.query }
+        delete newQuery[queryParam]
+        router.replace({ query: newQuery })
       }
     })
   }
-  
-  const openWorkspaceSettings = (tab = 'general', options = {}) => {
-    workspaceSettingsTab.value = tab
-    workspaceSettingsOpen.value = true
-    
-    // Update URL unless explicitly disabled
-    if (options.updateUrl !== false) {
-      workspaceSettingsQuery.value = tab
-    }
-    
-    return workspaceSettingsModal.open({
-      activeTab: tab,
-      'onUpdate:activeTab': (val) => {
-        if (workspaceSettingsOpen.value) {
-          workspaceSettingsTab.value = val
-        }
-      },
+
+  const close = () => {
+    modal.close()
+    tab.value = null
+    return cleanUpUrl()
+  }
+
+  const handleClose = () => {
+    tab.value = null
+  }
+
+  return {
+    tab: readonly(tab),
+    isOpen: computed(() => tab.value !== null),
+    open,
+    close,
+    handleClose
+  }
+}
+
+/**
+ * Factory for creating simple, non-URL-synced modals.
+ * @param {object} config - Configuration object.
+ * @param {object} config.component - The Vue component for the modal.
+ * @returns {object} - Reactive state and methods to control the modal.
+ */
+const createSimpleModal = ({ component }) => {
+  const overlay = useOverlay()
+  const isOpen = ref(false)
+  const modal = overlay.create(component, {
+    destroyOnClose: false
+  })
+
+  const open = (props = {}) => {
+    isOpen.value = true
+    return modal.open({
+      ...props,
       onClose: () => {
-        workspaceSettingsOpen.value = false
-        workspaceSettingsTab.value = null
-        const query = { ...route.query }
-        delete query['workspace-settings']
-        router.replace({ query })
+        isOpen.value = false
+        // Allow consumer to hook into onClose
+        if (props.onClose) {
+          props.onClose()
+        }
       }
     })
   }
-  
-  const closeUserSettings = () => {
-    userSettingsTab.value = null
-    userSettingsModal.close()
+
+  const close = () => {
+    isOpen.value = false
+    modal.close()
   }
-  
-  const closeWorkspaceSettings = () => {
-    workspaceSettingsTab.value = null
-    workspaceSettingsModal.close()
+
+  return {
+    isOpen: readonly(isOpen),
+    open,
+    close
   }
-  
-  // Handle modal close events from components
-  const handleUserSettingsClose = () => {
-    userSettingsTab.value = null
-  }
-  
-  const handleWorkspaceSettingsClose = () => {
-    workspaceSettingsTab.value = null
-  }
-  
+}
+
+export const useAppModals = createSharedComposable(() => {
+  const userSettings = createUrlSyncedModal({
+    component: UsersSettingsModal,
+    queryParam: 'user-settings',
+    defaultTab: 'profile'
+  })
+
+  const workspaceSettings = createUrlSyncedModal({
+    component: WorkspacesSettingsModal,
+    queryParam: 'workspace-settings',
+    defaultTab: 'general'
+  })
+
+  const subscription = createSimpleModal({
+    component: SubscriptionModal
+  })
+
   return {
     // State (read-only)
-    userSettingsTab: readonly(userSettingsTab),
-    workspaceSettingsTab: readonly(workspaceSettingsTab),
-    isUserSettingsOpen,
-    isWorkspaceSettingsOpen,
-    
+    userSettingsTab: userSettings.tab,
+    workspaceSettingsTab: workspaceSettings.tab,
+    isUserSettingsOpen: userSettings.isOpen,
+    isWorkspaceSettingsOpen: workspaceSettings.isOpen,
+    isSubscriptionModalOpen: subscription.isOpen,
+
     // Actions
-    openUserSettings,
-    openWorkspaceSettings,
-    closeUserSettings,
-    closeWorkspaceSettings,
-    
+    openUserSettings: userSettings.open,
+    openWorkspaceSettings: workspaceSettings.open,
+    openSubscriptionModal: subscription.open,
+    closeUserSettings: userSettings.close,
+    closeWorkspaceSettings: workspaceSettings.close,
+    closeSubscriptionModal: subscription.close,
+
     // Event handlers for modal components
-    handleUserSettingsClose,
-    handleWorkspaceSettingsClose
+    handleUserSettingsClose: userSettings.handleClose,
+    handleWorkspaceSettingsClose: workspaceSettings.handleClose
   }
-}) 
+})

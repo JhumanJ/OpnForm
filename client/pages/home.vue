@@ -52,7 +52,6 @@
     <div class="flex-1 overflow-y-auto p-4">
       <div class="max-w-4xl mx-auto">
         <VTransition name="fade">
-        <!-- Empty State: No forms -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length === 0)" class="text-center py-16 px-4">
           <UIcon name="i-heroicons-document-plus" class="h-12 w-12 text-neutral-400 mx-auto" />
           <h3 class="mt-4 text-lg font-semibold text-neutral-900">
@@ -70,7 +69,6 @@
           />
         </div>
 
-        <!-- Empty State: No results -->
         <div v-if="isFetched && !isFormsLoading && (forms?.length > 0) && enrichedForms.length === 0" class="text-center py-16 px-4">
             <UIcon name="i-heroicons-magnifying-glass" class="h-12 w-12 text-neutral-400 mx-auto" />
             <h3 class="mt-4 text-lg font-semibold text-neutral-900">

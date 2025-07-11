@@ -50,7 +50,7 @@ export function useFormSubmissions() {
       queryClient.setQueryData(['submissions', submissionId], updatedSubmission)
       
       // Update in submissions list
-      queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
+      queryClient.setQueryData(['forms', formId, 'submissions'], (old) => {
         if (!old) return old
         if (Array.isArray(old)) {
           return old.map(submission => 
@@ -80,7 +80,7 @@ export function useFormSubmissions() {
       queryClient.removeQueries({ queryKey: ['submissions', submissionId] })
       
       // Remove from submissions list
-      queryClient.setQueriesData(['forms', formId, 'submissions'], (old) => {
+      queryClient.setQueryData(['forms', formId, 'submissions'], (old) => {
         if (!old) return old
         if (Array.isArray(old)) {
           return old.filter(submission => submission.id !== submissionId)

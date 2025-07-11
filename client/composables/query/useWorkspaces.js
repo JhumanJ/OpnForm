@@ -43,22 +43,17 @@ export function useWorkspaces() {
   const create = (options = {}) => {
     return useMutation({
       mutationFn: (data) => workspaceApi.create(data),
-      onSuccess: (newWorkspace) => {
-        // Update list cache with new item
-        queryClient.setQueriesData(['workspaces', 'list'], (old) => {
-          if (!old) return [newWorkspace]
-          if (Array.isArray(old)) return [...old, newWorkspace]
-          // Handle paginated response
-          if (old.data) {
-            return {
-              ...old,
-              data: [...old.data, newWorkspace]
-            }
-          }
-          return old
-        })
+      onSuccess: (response) => {
+        const newWorkspace = response.workspace
         // Cache the new item individually
         queryClient.setQueryData(['workspaces', newWorkspace.id], newWorkspace)
+        
+        // Add to list cache
+        queryClient.setQueryData(['workspaces', 'list'], (old) => {
+          if (!old) return [newWorkspace]
+          if (!Array.isArray(old)) return old
+          return [...old, newWorkspace]
+        })
       },
       ...options
     })
@@ -70,28 +65,17 @@ export function useWorkspaces() {
         method: 'PUT', 
         body: data 
       }),
-      onSuccess: (updatedWorkspace, { id }) => {
+      onSuccess: (response, { id }) => {
+        const updatedWorkspace = response.workspace
         // Update individual item cache
-        queryClient.setQueryData(['workspaces', id], updatedWorkspace)
+        queryClient.setQueryData(['workspaces', id], response)
         
-        // Manually update all list caches instead of invalidating
-        queryClient.setQueriesData(['workspaces', 'list'], (old) => {
-          if (!old) return old
-          if (Array.isArray(old)) {
-            return old.map(workspace => 
-              workspace.id === id ? { ...workspace, ...updatedWorkspace } : workspace
-            )
-          }
-          // Handle paginated response
-          if (old.data) {
-            return {
-              ...old,
-              data: old.data.map(workspace => 
-                workspace.id === id ? { ...workspace, ...updatedWorkspace } : workspace
-              )
-            }
-          }
-          return old
+        // Update in list cache
+        queryClient.setQueryData(['workspaces', 'list'], (old) => {
+          if (!Array.isArray(old)) return old
+          return old.map(workspace => 
+            workspace.id === id ? { ...workspace, ...updatedWorkspace } : workspace
+          )
         })
       },
       ...options
@@ -105,20 +89,10 @@ export function useWorkspaces() {
         // Remove from individual cache
         queryClient.removeQueries({ queryKey: ['workspaces', deletedId] })
         
-        // Remove from all list caches
-        queryClient.setQueriesData(['workspaces', 'list'], (old) => {
-          if (!old) return old
-          if (Array.isArray(old)) {
-            return old.filter(workspace => workspace.id !== deletedId)
-          }
-          // Handle paginated response
-          if (old.data) {
-            return {
-              ...old,
-              data: old.data.filter(workspace => workspace.id !== deletedId)
-            }
-          }
-          return old
+        // Remove from list cache
+        queryClient.setQueryData(['workspaces', 'list'], (old) => {
+          if (!Array.isArray(old)) return old
+          return old.filter(workspace => workspace.id !== deletedId)
         })
       },
       ...options
@@ -128,25 +102,8 @@ export function useWorkspaces() {
   const leave = (options = {}) => {
     return useMutation({
       mutationFn: (workspaceId) => workspaceApi.leave(workspaceId),
-      onSuccess: (_, leftWorkspaceId) => {
-        // Remove from individual cache
-        queryClient.removeQueries({ queryKey: ['workspaces', leftWorkspaceId] })
-        
-        // Remove from all list caches
-        queryClient.setQueriesData(['workspaces', 'list'], (old) => {
-          if (!old) return old
-          if (Array.isArray(old)) {
-            return old.filter(workspace => workspace.id !== leftWorkspaceId)
-          }
-          // Handle paginated response
-          if (old.data) {
-            return {
-              ...old,
-              data: old.data.filter(workspace => workspace.id !== leftWorkspaceId)
-            }
-          }
-          return old
-        })
+      onSuccess: () => {
+        invalidate()
       },
       ...options
     })
@@ -181,16 +138,6 @@ export function useWorkspaces() {
     return queryClient.getQueryData(['workspaces', id])
   }
 
-  // Utility functions
-  const prefetchList = (options = {}) => {
-    return queryClient.prefetchQuery({
-      queryKey: ['workspaces', 'list'],
-      queryFn: () => workspaceApi.list(),
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      ...options
-    })
-  }
-
   return {
     // Queries
     list,
@@ -208,6 +155,5 @@ export function useWorkspaces() {
     invalidate,
     invalidateAll,
     getWorkspaceById,
-    prefetchList,
   }
 } 

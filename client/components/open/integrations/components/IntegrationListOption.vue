@@ -45,7 +45,7 @@
 import { computed } from 'vue'
 import ProTag from "~/components/app/ProTag.vue"
 const emit = defineEmits(["select"])
-const subscriptionModalStore = useSubscriptionModalStore()
+const { openSubscriptionModal } = useAppModals()
 
 const props = defineProps({
   integration: {
@@ -73,11 +73,10 @@ const tooltipText = computed(() => {
 const onClick = () => {
   if (props.integration.coming_soon) return
   if (props.integration.requires_subscription && !currentWorkspace.value.is_pro ) {
-    subscriptionModalStore.setModalContent(
-      'Upgrade today to use this integration',
-      `Upgrade your account to use our ${props.integration.name} and unlock all of our Pro features.`
-    )
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({
+      modal_title: 'Upgrade today to use this integration',
+      modal_description: `Upgrade your account to use our ${props.integration.name} and unlock all of our Pro features.`
+    })
     return
   }
   emit("select", props.integration.id)

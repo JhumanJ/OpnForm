@@ -80,7 +80,7 @@ export function useFormIntegrations() {
       onSuccess: (response, { formId }) => {
       const newIntegration = response.form_integration
       // Add to integrations list
-      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
         if (!old) return [newIntegration]
         if (!Array.isArray(old)) return old
         return [...old, newIntegration]
@@ -101,7 +101,7 @@ export function useFormIntegrations() {
       queryClient.setQueryData(['forms', formId, 'integrations', integrationId], updatedIntegration)
       
       // Update in integrations list
-      queryClient.setQueriesData(['forms', formId, 'integrations'], (old) => {
+      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
         if (!Array.isArray(old)) return old
         return old.map(integration =>
           integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
