@@ -138,16 +138,6 @@ export function useWorkspaces() {
     return queryClient.getQueryData(['workspaces', id])
   }
 
-  // Utility functions
-  const prefetchList = (options = {}) => {
-    return queryClient.prefetchQuery({
-      queryKey: ['workspaces', 'list'],
-      queryFn: () => workspaceApi.list(),
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      ...options
-    })
-  }
-
   return {
     // Queries
     list,
@@ -165,6 +155,5 @@ export function useWorkspaces() {
     invalidate,
     invalidateAll,
     getWorkspaceById,
-    prefetchList,
   }
 } 
