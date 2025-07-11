@@ -56,6 +56,7 @@ export default {
     GroupControlSlot,
     QueryBuilder,
     ColumnCondition,
+    ErrorBoundary,
   },
 
   props: {

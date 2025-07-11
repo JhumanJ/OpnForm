@@ -16,7 +16,7 @@
     <slot />
 
     <slot name="logic">
-      <div class="-mx-6 px-6 border-t pt-6">
+      <div class="-mx-6 px-6 border-t mt-6 pt-6">
         <collapse
           v-model="showLogic"
           class="w-full"
@@ -39,7 +39,7 @@
                 <h3 class="font-semibold">
                   Logic
                 </h3>
-                <p class="text-neutral-400 text-xs">
+                <p class="text-neutral-500 text-xs">
                   Only run integration when a condition is met
                 </p>
               </div>
