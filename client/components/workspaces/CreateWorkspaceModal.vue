@@ -92,7 +92,8 @@ const createMutation = create()
 const handleSubmit = () => {
   loading.value = true
   
-  createMutation.mutateAsync(form.data()).then((newWorkspace) => {
+  createMutation.mutateAsync(form.data()).then((response) => {
+    const newWorkspace = response.workspace
     appStore.setCurrentId(newWorkspace.id)
 
     // Show success message
