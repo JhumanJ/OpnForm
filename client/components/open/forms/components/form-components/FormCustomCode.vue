@@ -24,6 +24,7 @@
       </div>
 
       <CodeInput
+        :allow-fullscreen="true"
         name="custom_code"
         class="mt-4"
         :form="form"

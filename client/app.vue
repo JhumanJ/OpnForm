@@ -20,7 +20,7 @@
       </ClientOnly>
 
       <ClientOnly>
-        <feature-base />
+        <FeatureBase />
         <SubscriptionModal />
         <QuickRegister />
       </ClientOnly>

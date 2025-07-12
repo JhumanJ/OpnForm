@@ -43,6 +43,7 @@
       >
         <rich-text-area-input
           name="closed_text"
+          :allow-fullscreen="true"
           :form="form"
           label="Closed form text"
           help="This message will be shown when the form will be closed"

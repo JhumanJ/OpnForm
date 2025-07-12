@@ -34,6 +34,7 @@
         <rich-text-area-input
           name="closed_text"
           :form="form"
+          :allow-fullscreen="true"
           label="Closed form text"
           help="This message will be shown when the form will be closed"
           :required="false"
@@ -57,6 +58,7 @@
       >
         <rich-text-area-input
           wrapper-class="mb-0"
+          :allow-fullscreen="true"
           name="max_submissions_reached_text"
           :form="form"
           label="Max Submissions reached text"

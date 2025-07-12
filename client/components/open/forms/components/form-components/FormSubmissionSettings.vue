@@ -164,6 +164,7 @@
           <rich-text-area-input
             enable-mentions
             :mentions="form.properties"
+            :allow-fullscreen="true"
             name="submitted_text"
             class="w-full mt-4"
             :form="form"

@@ -57,6 +57,7 @@
           />
           <rich-text-area-input
             name="description"
+            :allow-fullscreen="true"
             :form="templateForm"
             label="Description"
             :required="true"

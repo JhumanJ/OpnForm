@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="field"
-    class="pb-2"
+    class="pb-20"
   >
     <!-- General -->
     <div class="px-4">
@@ -485,6 +485,7 @@
       />
       <rich-text-area-input
         v-else-if="field.type === 'rich_text'"
+        :allow-fullscreen="true"
         name="prefill"
         class="mt-3"
         :form="field"
@@ -545,11 +546,11 @@
       />
 
       <!--   Help  -->
-      <rich-text-area-input
+      <RichTextAreaInput
         name="help"
         class="mt-3"
+        :allow-fullscreen="true"
         :form="field"
-        :editor-toolbar="editorToolbarCustom"
         label="Help Text"
         :editor-options="{
           formats: [
@@ -663,9 +664,6 @@ export default {
   data() {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files', 'payment', 'matrix', 'signature', 'barcode', 'scale', 'slider', 'rating'],
-      editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link']
-      ],
       allCountries: countryCodes,
       barcodeDecodersOptions: [
         { name: 'QR Code', value: 'qr_reader' },

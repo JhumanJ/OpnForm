@@ -85,4 +85,13 @@ const activeTab = computed({
 const closeModal = () => {
   isOpen.value = false
 }
+
+// Define keyboard shortcuts
+defineShortcuts({
+  escape: {
+    handler: () => {
+      closeModal()
+    }
+  }
+})
 </script> 

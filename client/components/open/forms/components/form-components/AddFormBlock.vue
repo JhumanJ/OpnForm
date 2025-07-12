@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-16">
     <div class="p-2 border-b border-neutral-300 sticky top-0 z-10 bg-white">
       <div class="flex items-center">
         <UButton

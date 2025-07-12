@@ -243,6 +243,63 @@
     :where(.dark .bg-neutral-50) {
         background-color: var(--color-notion-dark-light);
     }
+}
+
+/* Hide feedback buttons in some cases */
+.fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    .fb-feedback-widget-feedback-button-container {
+        display: block !important;
+    }
+}
+
+.public-page .fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+/* Actual CSS */
+body.dark * {
+    @apply border-neutral-600;
+}
+
+#app {
+    font-family: Inter, sans-serif !important;
+    @apply min-h-screen;
+}
+
+@layer base {
+    p,
+    div,
+    span,
+    ol,
+    ul,
+    li {
+        @apply text-inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply text-neutral-900 dark:text-white text-inherit;
+    }
+
+    h1 {
+        @apply text-2xl sm:text-3xl font-extrabold;
+    }
+
+    h2 {
+        @apply text-2xl font-extrabold;
+    }
+
+    a {
+        @apply text-blue-500;
+    }
 
     /* Field help styles */
     .field-help p,
@@ -294,59 +351,6 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-fill-color: transparent;
-    }
-}
-
-/* Hide feedback buttons in some cases */
-.fb-feedback-widget-feedback-button-container {
-    display: none !important;
-}
-
-@media (min-width: 768px) {
-    .fb-feedback-widget-feedback-button-container {
-        display: block !important;
-    }
-}
-
-.public-page .fb-feedback-widget-feedback-button-container {
-    display: none !important;
-}
-
-/* Actual CSS */
-body.dark * {
-    @apply border-neutral-600;
-}
-
-#app {
-    font-family: Inter, sans-serif !important;
-    @apply min-h-screen;
-}
-
-@layer base {
-    p,
-    div {
-        @apply text-inherit;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply text-neutral-900 dark:text-white text-inherit;
-    }
-
-    h1 {
-        @apply text-2xl sm:text-3xl font-extrabold;
-    }
-
-    h2 {
-        @apply text-2xl font-extrabold;
-    }
-
-    a {
-        @apply text-blue-500;
     }
 }
 

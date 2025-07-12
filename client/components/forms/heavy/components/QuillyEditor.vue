@@ -19,6 +19,10 @@ const props = defineProps({
   options: {
     type: Object,
     default: () => ({})
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -67,7 +71,7 @@ const initializeQuill = () => {
         ...(props.options.modules || {})
       }
     }
-    
+
     // Initialize Quill with merged options
     quillInstance = new Quill(container.value, mergedOptions)
 
@@ -128,11 +132,31 @@ watch(model, (newValue, oldValue) => {
   }
 })
 
+watch(() => props.disabled, (newValue) => {
+  if (newValue) {
+    quillInstance.disable()
+  } else {
+    quillInstance.enable()
+  }
+})
+
 onBeforeUnmount(() => {
   if (quillInstance) {
     quillInstance.off('selection-change')
     quillInstance.off('text-change')
     quillInstance.off('editor-change')
+    
+    // Properly destroy the Quill instance
+    if (container.value && container.value.parentNode) {
+      // Find the toolbar - it's a sibling of the container
+      const toolbar = container.value.parentNode.querySelector('.ql-toolbar')
+      if (toolbar) {
+        toolbar.remove()
+      }
+      
+      // Clear the container content but don't remove the container itself
+      container.value.remove()
+    }
   }
   quillInstance = null
 })

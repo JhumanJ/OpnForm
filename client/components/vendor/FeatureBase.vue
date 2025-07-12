@@ -1,4 +1,14 @@
-<template></template>
+<template>
+  <button
+    v-if="user && featureBaseOrganization"
+    v-show="scriptLoaded && appStore.featureBaseButtonVisible"
+    data-featurebase-feedback
+    class="fixed -right-9 top-1/2 -translate-y-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-t-lg shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105 flex items-center space-x-1 -rotate-90 origin-center"
+  >
+    <Icon name="i-heroicons-chat-bubble-left-ellipsis" class="w-4 h-4" />
+    <span class="text-xs">Feedback</span>
+  </button>
+</template>
 <script setup>
 import { onMounted } from "vue"
 import { default as _has } from "lodash/has"
@@ -7,6 +17,7 @@ const scriptLoaded = ref(false)
 let setupQueue = []
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const { data: user } = useAuth().user()
 const isImpersonating = computed(() => authStore.isImpersonating)
 const featureBaseOrganization =
@@ -67,7 +78,6 @@ const setupForUser = () => {
   window.Featurebase("initialize_feedback_widget", {
     organization: featureBaseOrganization,
     theme: "light",
-    placement: "right",
     email: user.value?.email,
     usersName: user.value?.name,
   })
@@ -115,7 +125,9 @@ watch(
 </script>
 
 <style>
-.fb-feedback-widget-feedback-button {
-  z-index: 20 !important;
+/* Hide native FeatureBase button if it appears */
+.fb-feedback-widget-feedback-button[data-placement="right"],
+.fb-feedback-widget-feedback-button[data-placement="left"] {
+  display: none !important;
 }
 </style>

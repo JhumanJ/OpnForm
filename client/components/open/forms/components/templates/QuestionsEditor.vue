@@ -45,6 +45,7 @@
         />
         <rich-text-area-input
           name="answer"
+          :allow-fullscreen="true"
           :form="questionForm"
           class="mt-4"
           placeholder="Question response"
