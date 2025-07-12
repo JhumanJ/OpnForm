@@ -78,7 +78,6 @@ export const useAuthFlow = () => {
     }
   }
 
-
   /**
    * Handle social login callback
    */
@@ -102,21 +101,51 @@ export const useAuthFlow = () => {
   }
 
   /**
-   * Handle logout coordination
-   * Token clearing and cache management handled by useAuth logout mutation
+   * Handle manual logout (e.g., from UserDropdown)
+   * Clears tokens, cache, and navigates to login page
    */
-  const handleLogout = async () => {
-    // Clear auth store
+  const handleManualLogout = async () => {
+    // Clear auth store tokens
     authStore.clearToken()
     
+    // Clear user data
+    authStore.user = null
+    
     // Navigate to login page
-    router.push({ name: 'login' })
+    await router.push({ name: 'login' })
+  }
+
+  /**
+   * Handle token expiry (401 errors)
+   * Preserves cache and work state, opens QuickRegister modal
+   */
+  const handleTokenExpiry = async () => {
+    const appStore = useAppStore()
+    
+    // Handle admin token expiry by undoing impersonation
+    if (authStore.isImpersonating) {
+      console.log("Admin token expired, undoing impersonation")
+      authStore.stopImpersonating()
+      useAlert().error("User token expired. You have been logged out of the admin account.")
+      await router.push({ name: 'home' })
+      return 
+    }
+    
+    // Clear only the token, preserve user data and cache
+    authStore.clearToken()
+    
+    // Set unauthorized error state and open quick login modal
+    appStore.isUnauthorizedError = true
+    appStore.quickLoginModal = true
   }
 
   return {
     // Auth flow functions
     handleAuthSuccess,
     handleSocialCallback,
-    handleLogout
+    
+    // Distinct logout methods
+    handleManualLogout,
+    handleTokenExpiry
   }
 } 

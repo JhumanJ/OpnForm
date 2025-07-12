@@ -1,104 +1,106 @@
 <template>
-  <div
-    v-if="form"
-    id="form-editor"
-    class="relative flex w-full flex-col grow max-h-screen"
-    key="form"
-  >
-    <!-- Loading overlay -->
+  <VTransition name="fade">
     <div
-      v-if="form.busy"
-      class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
+      v-if="form"
+      id="form-editor"
+      class="relative flex w-full flex-col grow max-h-screen"
+      key="form"
     >
-      <loader class="h-6 w-6 text-blue-500" />
-    </div>
-    <div
-      class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center"
-    >
-      <Icon
-        name="heroicons:exclamation-circle"
-        class="w-10 h-10 text-blue-800"
-      />
-      <div class="p-5 text-blue-800 text-center">
-        OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
+      <!-- Loading overlay -->
+      <div
+        v-if="form.busy || loading"
+        class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
+      >
+        <loader class="h-6 w-6 text-blue-500" />
       </div>
-      <div>
-        <UButton
-          color="neutral"
-          variant="outline"
-          size="lg"
-          class="w-full"
-          :to="{ name: 'home' }"
-        >
-          Back to dashboard
-        </UButton>
-      </div>
-    </div>
-
-    <FormEditorNavbar
-      :back-button="backButton"
-      :update-form-loading="form.busy"
-      :save-button-class="saveButtonClass"
-      @go-back="goBack"
-      @save-form="saveForm"
-    >
-      <template #before-save>
-        <slot name="before-save" />
-      </template>
-    </FormEditorNavbar>
-
-    <FormEditorErrorHandler>
-      <div class="w-full flex grow overflow-y-scroll relative bg-white">
-        <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
-          <VForm
-            size="sm"
-            @submit.prevent=""
-          >
-            <div
-              v-show="activeTab === 'build'"
-            >
-              <FormFieldsEditor />
-            </div>
-            <div
-              v-show="activeTab === 'design'"
-            >
-              <FormCustomization />
-            </div>
-          </VForm>
+      <div
+        class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center"
+      >
+        <Icon
+          name="heroicons:exclamation-circle"
+          class="w-10 h-10 text-blue-800"
+        />
+        <div class="p-5 text-blue-800 text-center">
+          OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
         </div>
-
-        <FormEditorPreview />
-
-        <FormEditorSidebar />
+        <div>
+          <UButton
+            color="neutral"
+            variant="outline"
+            size="lg"
+            class="w-full"
+            :to="{ name: 'home' }"
+          >
+            Back to dashboard
+          </UButton>
+        </div>
       </div>
-    </FormEditorErrorHandler>
 
-    <!-- Form Error Modal -->
-    <FormErrorModal
-      :show="showFormErrorModal"
-      :validation-error-response="validationErrorResponse"
-      @close="showFormErrorModal = false"
-    />
+      <FormEditorNavbar
+        :back-button="backButton"
+        :update-form-loading="form.busy"
+        :save-button-class="saveButtonClass"
+        @go-back="goBack"
+        @save-form="saveForm"
+      >
+        <template #before-save>
+          <slot name="before-save" />
+        </template>
+      </FormEditorNavbar>
 
-    <!-- Logic Confirmation Modal -->
-    <LogicConfirmationModal
-      :is-visible="showLogicConfirmationModal"
-      :errors="logicErrors"
-      @cancel="handleLogicConfirmationCancel"
-      @confirm="handleLogicConfirmationConfirm"
+      <FormEditorErrorHandler>
+        <div class="w-full flex grow overflow-y-scroll relative bg-white">
+          <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
+            <VForm
+              size="sm"
+              @submit.prevent=""
+            >
+              <div
+                v-show="activeTab === 'build'"
+              >
+                <FormFieldsEditor />
+              </div>
+              <div
+                v-show="activeTab === 'design'"
+              >
+                <FormCustomization />
+              </div>
+            </VForm>
+          </div>
+
+          <FormEditorPreview />
+
+          <FormEditorSidebar />
+        </div>
+      </FormEditorErrorHandler>
+
+      <!-- Form Error Modal -->
+      <FormErrorModal
+        :show="showFormErrorModal"
+        :validation-error-response="validationErrorResponse"
+        @close="showFormErrorModal = false"
+      />
+
+      <!-- Logic Confirmation Modal -->
+      <LogicConfirmationModal
+        :is-visible="showLogicConfirmationModal"
+        :errors="logicErrors"
+        @cancel="handleLogicConfirmationCancel"
+        @confirm="handleLogicConfirmationConfirm"
+      />
+    </div>
+    <FormEditorSkeleton
+      v-else
+      key="skeleton"
+      :back-button="backButton"
+      @go-back="goBack"
     />
-  </div>
-  <div
-    v-else
-    key="loader"
-    class="flex justify-center items-center p-8"
-  >
-    <Loader class="w-6 h-6" />
-  </div>
+  </VTransition>
 </template>
 
 <script setup>
 import FormEditorNavbar from './FormEditorNavbar.vue'
+import FormEditorSkeleton from './FormEditorSkeleton.vue'
 import FormEditorSidebar from "./form-components/FormEditorSidebar.vue"
 import FormErrorModal from "./form-components/FormErrorModal.vue"
 import FormFieldsEditor from './FormFieldsEditor.vue'
@@ -134,6 +136,11 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  loading: {
+    required: false,
+    type: Boolean,
+    default: false,
+  }
 })
 
 // Define emits
@@ -168,7 +175,6 @@ const formId = computed(() => form.value?.id)
 const updateMutation = updateFormMutationFactory(formId)
 
 const workingFormStore = useWorkingFormStore()
-const appStore = useAppStore()
 const crisp = useCrisp()
 const amplitude = useAmplitude()
 
@@ -273,7 +279,16 @@ const saveFormEdit = () => {
     }
   }).catch((error) => {
     console.error("Error saving form", error)
-    if (error?.response?.status === 422) {
+    
+    // Check for 401 errors - these are handled by the HTTP interceptor
+    const errorStatus = error?.response?.status || error?.status
+    if (errorStatus === 401) {
+      // Token expiry is handled by the HTTP interceptor (opens QuickRegister modal)
+      // Don't show an additional error message
+      return
+    }
+    
+    if (errorStatus === 422) {
       validationErrorResponse.value = error.data
       showValidationErrors()
     } else {
@@ -324,7 +339,16 @@ const saveFormCreate = () => {
     })
   }).catch((error) => {
     console.error("Error saving form", error)
-    if (error?.response?.status === 422) {
+    
+    // Check for 401 errors - these are handled by the HTTP interceptor
+    const errorStatus = error?.response?.status || error?.status
+    if (errorStatus === 401) {
+      // Token expiry is handled by the HTTP interceptor (opens QuickRegister modal)
+      // Don't show an additional error message
+      return
+    }
+    
+    if (errorStatus === 422) {
       validationErrorResponse.value = error.data
       showValidationErrors()
     } else {
@@ -349,16 +373,11 @@ onMounted(() => {
   emit("mounted")
   workingFormStore.activeTab = 'build'
   amplitude.logEvent('form_editor_viewed')
-  appStore.hideNavbar()
   if (!props.isEdit) {
     nextTick(() => {
       workingFormStore.openAddFieldSidebar()
     })
   }
-})
-
-onBeforeUnmount(() => {
-  appStore.showNavbar()
 })
 </script>
 

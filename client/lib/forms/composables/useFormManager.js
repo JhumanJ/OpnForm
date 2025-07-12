@@ -96,8 +96,8 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     timer.reset()
     timer.start()
     
-    // Start partial submission sync if enabled
-    if (import.meta.client && config.value.enable_partial_submissions) {
+    // Start partial submission sync if enabled in both config and strategy
+    if (import.meta.client && config.value.enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
       partialSubmissionService.startSync()
     }
     
@@ -172,7 +172,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
 
     try {
       // Stop partial submission sync during submission if enabled
-      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+      if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
         partialSubmissionService.stopSync() // This will sync immediately before stopping
       }
       
@@ -201,7 +201,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
       
       // 3. Get submission hash from partialSubmission if enabled
       let submissionHash = null
-      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+      if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
         submissionHash = partialSubmissionService.getSubmissionHash()
       }
 
@@ -268,7 +268,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
 
     } catch (error) {
       // Restart partial submission sync if there was an error and it's enabled
-      if (!import.meta.server && toValue(config).enable_partial_submissions) {
+      if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
         partialSubmissionService.startSync()
       }
       
@@ -294,7 +294,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     timer.start() // Restart timer
     
     // Restart partial submission if enabled
-    if (!import.meta.server && toValue(config).enable_partial_submissions) {
+    if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
       partialSubmissionService.stopSync() // This will sync immediately before stopping
       partialSubmissionService.startSync() // Start fresh sync
     }
@@ -303,7 +303,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
   // Clean up when component using the manager is unmounted
   if (import.meta.client) {
     onBeforeUnmount(() => {
-      if (toValue(config).enable_partial_submissions) {
+      if (toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
         partialSubmissionService.stopSync()
       }
     })

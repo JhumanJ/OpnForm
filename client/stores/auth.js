@@ -86,5 +86,10 @@ export const useAuthStore = defineStore("auth", {
       this.setCookie("token", null, { maxAge: 0 })
       this.token = null
     },
+
+    clearTokens(){
+      this.clearToken()
+      this.setAdminToken(null)
+    },
   },
 })

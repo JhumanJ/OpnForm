@@ -4,7 +4,7 @@
     class="bg-white dark:bg-notion-dark border-b"
   >
     <div class="max-w-7xl mx-auto px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-12">
         <div class="flex items-center gap-2">
           <NuxtLink
             :to="{ name: user ? 'home' : 'index' }"
@@ -13,7 +13,7 @@
             <img
               src="/img/logo.svg"
               alt="notion tools logo"
-              class="w-8 h-8"
+              class="w-6 h-6"
             >
             <span
               class="ml-2 text-md hidden sm:inline text-black dark:text-white"
@@ -140,6 +140,7 @@
                   </NuxtLink>
 
                   <TrackClick
+                    class="flex items-center"
                     v-if="!isSelfHosted"
                     name="nav_create_form_click"
                   >
@@ -192,7 +193,7 @@ const { data: form } = useForms().detail(formSlug.value, {
 
 // Constants / classes
 const navLinkClasses =
-  'border border-transparent hover:border-neutral-200 text-neutral-500 hover:text-neutral-800 hover:no-underline dark:hover:text-white py-2 px-3 hover:bg-neutral-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
+  'border border-transparent hover:border-neutral-200 text-neutral-500 hover:text-neutral-800 hover:no-underline dark:hover:text-white py-1.5 px-3 hover:bg-neutral-50 rounded-md text-sm font-medium transition-colors w-full md:w-auto text-center md:text-left'
 
 // Computed values
 const helpUrl = computed(() => opnformConfig.links.help_url)
@@ -207,7 +208,7 @@ const hasNavbar = computed(() => {
     // Form not found/404 case - show the navbar
     return true
   }
-  return !appStore.navbarHidden
+  return true
 })
 
 const hasNewChanges = computed(() => {

@@ -10,19 +10,15 @@
         @close="showInitialFormModal = false"
       />
 
-      <form-editor
-        v-if="form && !workspacesLoading"
-        ref="editor"
-        class="w-full flex flex-grow"
-        :error="error"
-        @on-save="formInitialHash = null"
-      />
-      <div
-        v-else
-        class="text-center mt-4 py-6"
-      >
-        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
-      </div>
+      <VTransition name="fade">
+        <FormEditor
+          v-if="form"
+          ref="editor"
+          class="w-full flex flex-grow"
+          :error="error"
+          @on-save="formInitialHash = null"
+        />
+      </VTransition>
     </div>
   </div>
 </template>
@@ -37,6 +33,7 @@ import { onBeforeRouteLeave } from "vue-router"
 
 definePageMeta({
   middleware: "auth",
+  layout: 'empty'
 })
 
 useOpnSeoMeta({
@@ -65,7 +62,7 @@ if (route.query.template) {
   template = data.value
 }
 
-const { current: workspace, isLoading: workspacesLoading } = useCurrentWorkspace()
+const { current: workspace } = useCurrentWorkspace()
 const { content: form } = storeToRefs(workingFormStore)
 
 // Pre-load forms list for the current workspace (replaces formStore.loadAll)

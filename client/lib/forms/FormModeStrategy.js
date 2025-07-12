@@ -39,6 +39,11 @@ export function createFormModeStrategy(mode) {
     admin: {
       allowDragging: false,
       showAdminControls: false,
+    },
+    
+    // Submission behaviors
+    submission: {
+      enablePartialSubmissions: true
     }
   }
 
@@ -65,6 +70,8 @@ export function createFormModeStrategy(mode) {
       
       strategy.admin.allowDragging = true
       strategy.admin.showAdminControls = true
+      
+      strategy.submission.enablePartialSubmissions = false
       break
 
     case FormMode.PREFILL:
@@ -82,12 +89,14 @@ export function createFormModeStrategy(mode) {
       // Editing submission - same validation as LIVE mode, but show hidden fields
       // This ensures edit mode behaves like live mode for validation
       strategy.display.showHiddenFields = true
+      strategy.submission.enablePartialSubmissions = false
       break
 
     case FormMode.TEST:
       // Test mode - validate on submit but don't submit, and don't validate on next page
       strategy.validation.performActualSubmission = false
       strategy.validation.validateOnNextPage = false
+      strategy.submission.enablePartialSubmissions = false
       break
   }
 

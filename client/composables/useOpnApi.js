@@ -59,23 +59,12 @@ export function getOpnRequestsOptions(request, opts) {
 
   return {
     async onResponseError({ response }) {
-      const authStore = useAuthStore()
-
       const { status } = response
       if (status === 401) {
-        // Check authentication using only the auth store (no Vue Query context needed)
-        if (authStore.token) {
-          console.log("Logging out due to 401")
-          // Clear tokens directly to avoid context issues
-          authStore.clearToken()
-          useAppStore().isUnauthorizedError = true
-          useAppStore().quickLoginModal = true
-          
-          // Navigate to login
-          if (import.meta.client) {
-            await navigateTo({ name: 'login' })
-          }
-        }
+        // Always handle 401 errors with token expiry flow
+        // This covers both cases: token expired AND no token present
+        const { handleTokenExpiry } = useAuthFlow()
+        await handleTokenExpiry()
       } else if (status === 420) {
         // If invalid domain, redirect to main domain
         console.warn("Invalid response from back-end - redirecting to main domain")

@@ -2,7 +2,6 @@ import { defineStore } from "pinia"
 import { ref, reactive, computed } from "vue"
 
 export const useAppStore = defineStore("app", () => {
-  const navbarHidden = ref(false)
   const crisp = reactive({
     chatOpened: false,
     hidden: false
@@ -16,14 +15,6 @@ export const useAppStore = defineStore("app", () => {
   
   // FeatureBase custom button state
   const featureBaseButtonVisible = ref(true)
-
-  const hideNavbar = () => {
-    navbarHidden.value = true
-  }
-
-  const showNavbar = () => {
-    navbarHidden.value = false
-  }
 
   // Workspace
   const currentId = useCookie("currentWorkspace")
@@ -42,16 +33,13 @@ export const useAppStore = defineStore("app", () => {
   }
 
   return {
-    navbarHidden,
     crisp,
     isUnauthorizedError,
     quickLoginModal,
     quickRegisterModal,
     featureBaseEnabled,
     crispEnabled,
-    hideNavbar,
-    showNavbar,
-
+  
     // FeatureBase
     featureBaseButtonVisible,
     showFeatureBaseButton,

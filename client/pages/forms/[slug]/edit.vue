@@ -1,23 +1,34 @@
 <template>
   <div class="w-full flex flex-col flex-grow">
-    <form-editor
-      v-if="form && !error"
+    <VTransition name="fade">
+    <FormEditor
+      v-if="!error"
       ref="editor"
       :is-edit="true"
       @on-save="formInitialHash = null"
+      :loading="formsLoading"
     />
-    <div
+    <UAlert
       v-else-if="error && !formsLoading"
-      class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500"
+      icon="i-heroicons-exclamation-triangle"
+      color="error"
+      variant="soft"
+      class="max-w-xl mx-auto mt-4"
+      title="Error"
+      :description="errorMessage"
     >
-      {{ error }}
-    </div>
-    <div
-      v-else
-      class="text-center mt-4 py-6"
-    >
-      <Loader class="h-6 w-6 text-blue-500 mx-auto" />
-    </div>
+      <template #actions>
+        <UButton
+          color="neutral"
+          variant="outline"
+          :to="{ name: 'home' }"
+          icon="i-heroicons-arrow-left"
+        >
+          Back to dashboard
+        </UButton>
+      </template>
+    </UAlert>
+    </VTransition>
   </div>
 </template>
 
@@ -36,6 +47,18 @@ const slug = route.params.slug
 // Get form by slug using TanStack Query
 const { data: form, isLoading: formsLoading, error } = formDetail(slug,{
   enabled: import.meta.client,
+})
+
+const errorMessage = computed(() => {
+  if (error.value?.response?.status === 401) {
+    return "You are not authorized to access this form."
+  } else if (error.value?.response?.status === 404) {
+    return "Form not found."
+  }
+  if (error.value?.response?.data?.message) {
+    return error.value.response.data.message
+  }
+  return "Error loading form"
 })
 
 const updatedForm = storeToRefs(workingFormStore).content
@@ -106,5 +129,6 @@ useOpnSeoMeta({
 })
 definePageMeta({
   middleware: "auth",
+  layout: 'empty'
 })
 </script>

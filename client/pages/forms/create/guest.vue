@@ -5,20 +5,17 @@
       @form-generated="formGenerated"
       @close="showInitialFormModal = false"
     />
-    <form-editor
-      v-if="!workspacesLoading"
-      ref="editor"
-      class="w-full flex flex-grow"
-      :error="error"
-      :is-guest="isGuest"
-      @open-register="appStore.quickRegisterModal = true"
-    />
-    <div
-      v-else
-      class="text-center mt-4 py-6"
-    >
-      <Loader class="h-6 w-6 text-blue-500 mx-auto" />
-    </div>
+    <VTransition name="fade">
+      <FormEditor
+        v-if="stateReady"
+        ref="editor"
+        class="w-full flex flex-grow"
+        :error="error"
+        :is-guest="isGuest"
+        :loading="workspacesLoading"
+        @open-register="appStore.quickRegisterModal = true"
+      />
+    </VTransition>
   </div>
 </template>
 
@@ -57,6 +54,7 @@ useOpnSeoMeta({
 })
 definePageMeta({
   middleware: ["guest", "self-hosted"],
+  layout: 'empty'
 })
 
 // Data

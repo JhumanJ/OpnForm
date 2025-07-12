@@ -4,7 +4,7 @@ import { initServiceClients } from '~/composables/useAuthFlow'
 
 export function useAuth() {
   const queryClient = useQueryClient()
-  const { handleAuthSuccess, handleLogout: handleLogoutFlow } = useAuthFlow()
+  const { handleAuthSuccess, handleManualLogout } = useAuthFlow()
   const { isAuthenticated } = useIsAuthenticated()
 
   // Queries
@@ -61,7 +61,7 @@ export function useAuth() {
         queryClient.clear()
         
         // Handle logout coordination (token clearing + navigation)
-        handleLogoutFlow()
+        handleManualLogout()
       },
       ...options
     })
@@ -116,16 +116,16 @@ export function useAuth() {
         // Clear cached data
         queryClient.clear()
         
-        // Handle logout coordination (token clearing + navigation)
-        handleLogoutFlow()
+        // Handle manual logout coordination (token clearing + navigation)
+        handleManualLogout()
       },
       onError: (error) => {
         console.error(error)
         // Even if logout API fails, clear local state
         queryClient.clear()
         
-        // Handle logout coordination (token clearing + navigation)
-        handleLogoutFlow()
+        // Handle manual logout coordination (token clearing + navigation)
+        handleManualLogout()
       },
       ...options
     })

@@ -29,6 +29,7 @@
           target="_blank"
           @click="trackOpenDbClick"
           label="See Submissions"
+          trailing-icon=""
         />
       </div>
 

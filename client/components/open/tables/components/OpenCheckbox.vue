@@ -1,7 +1,7 @@
 <template>
   <UBadge
     v-if="value === true"
-    color="success"
+    color="primary"
     variant="soft"
     class="mx-auto"
     size="sm"
@@ -10,7 +10,7 @@
   </UBadge>
   <UBadge
     v-else-if="value === false"
-    color="error"
+    color="neutral"
     variant="soft"
     class="mx-auto"
     size="sm"
