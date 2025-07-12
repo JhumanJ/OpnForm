@@ -100,6 +100,7 @@
           class="mb-4 mx-2"
           :form="form"
           :specify-form-owner="true"
+          :use-cookie-dismissal="true"
         />
 
         <v-transition name="fade" v-if="form && !form.is_password_protected">

@@ -136,7 +136,7 @@
               <!-- Status Badges and Form Cleanings -->
               <div class="flex flex-wrap gap-2">
                 <FormStatusBadges class="mt-2" size="sm" :form="form" />
-                <FormCleanings :form="form" />
+                <FormCleanings class="mt-2" :form="form" />
               </div>
             </div>
           </div>
