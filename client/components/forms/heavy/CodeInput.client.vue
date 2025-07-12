@@ -29,7 +29,7 @@
           color="neutral"
           size="xs"
           icon="i-heroicons-arrows-pointing-out"
-          class="absolute top-2 right-2 z-10 !bg-white/80 dark:!bg-gray-800/80 hover:!bg-white dark:hover:!bg-gray-800 !opacity-70 hover:!opacity-100 disabled:!opacity-30"
+          class="absolute top-2 right-2 z-10 !bg-white/80 dark:!bg-neutral-800/80 hover:!bg-white dark:hover:!bg-neutral-800 !opacity-70 hover:!opacity-100 disabled:!opacity-30"
           :ui="{ rounded: 'rounded-md' }"
         />
       </UTooltip>
@@ -55,7 +55,7 @@
         <div class="flex flex-col h-full">
           <div class="flex items-center justify-between p-4 border-b">
             <div>
-              <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+              <h3 class="text-lg font-medium text-neutral-900 dark:text-white">
                 {{ label || 'Code Editor' }}
               </h3>
             </div>

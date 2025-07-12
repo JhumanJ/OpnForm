@@ -93,7 +93,7 @@
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div
-          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-3 ring-inset ring-neutral-200 isolate"
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring ring-inset ring-neutral-200 isolate"
         >
           <p class="text-sm font-medium text-center text-neutral-500 -mt-2 mb-2">
             Template Preview
@@ -222,7 +222,7 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-neutral-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 1
               </div>
@@ -244,7 +244,7 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring-3 ring-inset ring-neutral-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 2
               </div>

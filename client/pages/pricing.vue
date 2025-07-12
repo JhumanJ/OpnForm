@@ -282,7 +282,7 @@
         </div>
 
         <div
-          class="max-w-3xl p-6 mx-auto mt-12 sm:mt-16 bg-yellow-50 ring-3 ring-inset ring-yellow-200 rounded-2xl"
+          class="max-w-3xl p-6 mx-auto mt-12 sm:mt-16 bg-yellow-50 ring ring-inset ring-yellow-200 rounded-2xl"
         >
           <div class="flex items-start gap-4">
             <svg

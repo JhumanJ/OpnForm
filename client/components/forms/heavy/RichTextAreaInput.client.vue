@@ -56,7 +56,7 @@
     <div class="flex flex-col h-full">
       <div class="flex items-center justify-between p-4 border-b">
         <div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+          <h3 class="text-lg font-medium text-neutral-900 dark:text-white">
             {{ label || 'Rich Text Editor' }}
           </h3>
         </div>

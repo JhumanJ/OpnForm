@@ -145,14 +145,14 @@
           class="w-full mt-12 relative px-6 mx-auto max-w-4xl sm:px-10 lg:px-0 z-10 flex items-center justify-center"
         >
           <div
-                          class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-xs ring-3 ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
+                          class="-m-2 rounded-xl bg-blue-900/5 p-2 backdrop-blur-xs ring ring-inset ring-blue-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 w-full"
           >
             <img
               src="/img/pages/welcome/product-cover.jpg"
               sizes="320px sm:650px lg:896px"
               alt="Product screenshot"
               loading="lazy"
-                                class="rounded-sm w-full shadow-2xl ring-3 ring-neutral-900/10"
+                                class="rounded-sm w-full shadow-2xl ring ring-neutral-900/10"
             >
           </div>
         </div>
