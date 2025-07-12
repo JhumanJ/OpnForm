@@ -20,9 +20,10 @@
       <USelectMenu
         size="sm"
         variant="ghost"
-        class="w-32"
+        class="w-24"
         v-if="hasStatus"
         v-model="selectedStatus"
+        value-key="value"
         :items="statusList"
         :search-input="false"
       />
@@ -106,16 +107,6 @@
           />
         </div>
       </template>
-      
-      <template #status-cell="{ row }">
-        <div :style="{ width: `var(--col-status-size, auto)` }">
-          <UBadge
-            :label="row.original.status === 'partial' ? 'In Progress' : 'Submitted'"
-            :color="row.original.status === 'partial' ? 'warning' : 'success'"
-            variant="subtle"
-          />
-        </div>
-      </template>
     </UTable>
   </div>
 </template>
@@ -132,6 +123,7 @@ import OpenDate from "./components/OpenDate.vue"
 import OpenFile from "./components/OpenFile.vue"
 import OpenCheckbox from "./components/OpenCheckbox.vue"
 import OpenPayment from "./components/OpenPayment.vue"
+import OpenSubmissionStatus from "./components/OpenSubmissionStatus.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
@@ -188,6 +180,7 @@ const fieldComponents = {
   signature: OpenFile,
   payment: OpenPayment,
   barcode: OpenText,
+  status: OpenSubmissionStatus,
 }
 
 const exportLoading = ref(false)

@@ -302,6 +302,7 @@ export function useTableState(form, withActions = false) {
           id: 'status',
           accessorKey: 'status',
           header: 'Status',
+          type: 'status',
           enableColumnFilter: true,
           filterFn: 'equals',
           enableResizing: true,
