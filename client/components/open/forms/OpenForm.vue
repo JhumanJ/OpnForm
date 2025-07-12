@@ -54,8 +54,7 @@
       <open-form-button
         v-if="formPageIndex>0 && previousFieldsPageBreak"
         native-type="button"
-        :color="form.color"
-        :theme="theme"
+        :form="form"
         class="mt-2 px-8 mx-1"
         @click="handlePreviousClick"
       >
@@ -70,8 +69,7 @@
       <open-form-button
         v-else-if="currentFieldsPageBreak"
         native-type="button"
-        :color="form.color"
-        :theme="theme"
+        :form="form"
         class="mt-2 px-8 mx-1"
         :loading="isProcessing"
         @click.stop="handleNextClick"

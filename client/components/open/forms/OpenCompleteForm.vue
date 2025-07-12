@@ -41,8 +41,7 @@
           </div>
           <div class="flex flex-wrap justify-center w-full text-center">
             <open-form-button
-              :theme="theme"
-              :color="form.color"
+              :form="form"
               class="my-4"
               @click="passwordEntered"
             >
@@ -117,8 +116,7 @@
               <template #submit-btn="{loading}">
                 <open-form-button
                   :loading="loading || isProcessing"
-                  :theme="theme"
-                  :color="form.color"
+                  :form="form"
                   class="mt-2 px-8 mx-1"
                   :class="submitButtonClass"
                   @click.prevent="triggerSubmit"
@@ -144,8 +142,7 @@
             />
             <open-form-button
               v-if="form.re_fillable"
-              :theme="theme"
-              :color="form.color"
+              :form="form"
               class="my-4"
               @click="restart"
             >
