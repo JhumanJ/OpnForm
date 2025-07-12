@@ -61,7 +61,7 @@
       />
 
       <UButton
-        v-if="useFeatureFlag('services.google.auth')"
+        v-if="useFeatureFlag('services.google.auth') && !useFeatureFlag('self_hosted')"
         native-type="button"
         color="neutral"
         variant="outline"

@@ -105,7 +105,7 @@
       label="Create account"
     />
 
-    <template v-if="useFeatureFlag('services.google.auth')">
+    <template v-if="useFeatureFlag('services.google.auth') && !useFeatureFlag('self_hosted')">
       <p class="text-neutral-500 text-sm text-center my-4">
         OR
       </p>

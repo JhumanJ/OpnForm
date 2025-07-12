@@ -105,6 +105,11 @@ class OAuthController extends Controller
             return null;
         }
 
+        // Check if registration is allowed in self-hosted mode
+        if (config('app.self_hosted') && app()->environment() !== 'testing') {
+            return null;
+        }
+
         $email = strtolower($socialiteUser->getEmail());
         $user = User::whereEmail($email)->first();
 
