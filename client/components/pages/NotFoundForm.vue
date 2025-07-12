@@ -5,7 +5,7 @@
         <img
           src="/img/icons/404.png"
           alt="404 Error"
-          class="mx-auto w-1/3"
+          class="w-full max-w-[250px] mb-5 mx-auto"
         >
         <h1 class="text-dark text-2xl md:text-4xl leading-none font-medium text-center pt-4 md:pt-0 mx-auto md:max-w-full">
           We're sorry! This Form Is No Longer Here

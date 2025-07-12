@@ -75,6 +75,7 @@ import WorkspaceDropdown from "~/components/dashboard/WorkspaceDropdown.vue"
 import WorkspaceIcon from "~/components/workspaces/WorkspaceIcon.vue"
 import UserDropdown from "~/components/dashboard/UserDropdown.vue"
 import NavigationList from "~/components/global/NavigationList.vue"
+import { useSharedNavigation } from "~/composables/components/useSharedNavigation"
 
 const route = useRoute()
 

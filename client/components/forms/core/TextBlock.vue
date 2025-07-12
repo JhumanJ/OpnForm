@@ -6,6 +6,8 @@
 </template>
   
   <script setup>
+  import { useParseMention } from '@/composables/components/useParseMention'
+  
   const props = defineProps({
     content: {
       type: String,

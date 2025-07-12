@@ -1,5 +1,5 @@
 import { toValue, ref } from 'vue'
-import { createStripeElements } from '~/composables/useStripeElements'
+import { createStripeElements } from '~/composables/components/stripe/useStripeElements'
 import { formsApi } from '~/api'
 // Assume Stripe is loaded globally or via another mechanism if needed client-side
 // For server-side/Nuxt API routes, import Stripe library properly.
@@ -64,9 +64,6 @@ export function useFormPayment(formConfig, form) {
         console.error('Missing form slug in config')
         return { success: false, error: 'Invalid form configuration' }
       }
-      
-      // Construct the URL (no query params needed for POST)
-      const url = `/forms/${formSlug}/stripe-connect/payment-intent`
       
       // Use formsApi for the payment intent creation
       const response = await formsApi.stripe.createPaymentIntent(formSlug)

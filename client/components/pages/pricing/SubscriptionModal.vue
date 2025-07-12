@@ -336,7 +336,7 @@
 import SlidingTransition from '~/components/global/transitions/SlidingTransition.vue'
 import TrackClick from '~/components/global/TrackClick.vue'
 
-import { useCheckoutUrl } from '@/composables/useCheckoutUrl'
+import { useCheckoutUrl } from '@/composables/components/stripe/useCheckoutUrl'
 import { authApi } from '~/api'
 
 const props = defineProps({

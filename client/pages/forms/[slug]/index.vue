@@ -74,6 +74,7 @@ const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const slug = useRoute().params.slug
 const { t } = useI18n()
+const { performRedirect } = useSubdomainRedirect()
 
 // Use TanStack Query to load the form
 const { data: form, isLoading: formLoading, error: formError, refetch: refetchForm, suspense } = useForms().detail(slug, {
@@ -107,6 +108,9 @@ const passwordEntered = function (password) {
 if (import.meta.server && formError.value) {
   const event = useRequestEvent()
   console.error(`Error loading form [${slug}]:`, formError.value)
+  
+  // Check if we should redirect on 404 (subdomain redirect feature)
+  await performRedirect({ skipIfIframe: true })
   setResponseStatus(event, 404, 'Page Not Found')
 }
 
@@ -124,6 +128,13 @@ watch(form, (newForm) => {
     })
   }
 }, { immediate: true })
+
+// Handle client-side 404 redirects for forms (subdomain redirect feature)
+watch([formLoading, formError], async ([loading, error]) => {
+  if (import.meta.client && !loading && (error || !form.value)) {
+    await performRedirect({ skipIfIframe: true })
+  }
+})
 
 onMounted(() => {
   crisp.hideChat()

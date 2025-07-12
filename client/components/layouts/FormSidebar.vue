@@ -42,6 +42,7 @@
 <script setup>
 import BaseSidebar from "~/components/layouts/BaseSidebar.vue"
 import NavigationList from "~/components/global/NavigationList.vue"
+import { useSharedNavigation } from "~/composables/components/useSharedNavigation"
 
 const props = defineProps({
   form: {
