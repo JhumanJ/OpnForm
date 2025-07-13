@@ -4,7 +4,7 @@
     class="bg-white dark:bg-notion-dark border-b"
   >
     <div class="max-w-7xl mx-auto px-8">
-      <div class="flex items-center justify-between h-12">
+      <div class="flex items-center justify-between h-14">
         <div class="flex items-center gap-2">
           <NuxtLink
             :to="{ name: user ? 'home' : 'index' }"
@@ -23,7 +23,8 @@
             <template #default="{ workspace }">
               <button
                 v-if="workspace"
-                class="flex items-center cursor border border-transparent hover:border-neutral-200 py-2 px-3 hover:bg-neutral-50 rounded-md transition-colors"
+                :class="navLinkClasses"
+                class="flex items-center"
               >
                 <WorkspaceIcon :workspace="workspace" />
                 <p

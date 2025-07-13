@@ -28,7 +28,6 @@ class OAuthController extends Controller
     /**
      * Redirect the user to the provider authentication page.
      *
-     * @param  string  $provider
      * @return \Illuminate\Http\RedirectResponse
      */
     public function redirect(OAuthProviderService $provider)
