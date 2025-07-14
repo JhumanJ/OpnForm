@@ -6,10 +6,17 @@
 </template>
   
 <script setup>
-import Quill from 'quill'
-import 'quill/dist/quill.snow.css'
-import '~/lib/quill/quillPatches'
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+
+// Conditionally import Quill only on client side
+let Quill = null
+if (import.meta.client) {
+  import('quill').then(module => {
+    Quill = module.default
+  })
+  import('quill/dist/quill.snow.css')
+  import('~/lib/quill/quillPatches')
+}
 
 const props = defineProps({
   modelValue: {
@@ -57,7 +64,7 @@ const pasteHTML = (instance) => {
 }
 
 const initializeQuill = () => {
-  if (container.value) {
+  if (container.value && Quill) {
     // Merge default options with user options
     const defaultOptions = {
       formats: ['bold', 'color', 'font', 'code', 'italic', 'link', 'size', 'strike', 'script', 'underline', 'header', 'list', 'mention']
@@ -104,7 +111,20 @@ const initializeQuill = () => {
 }
 
 onMounted(() => {
-  initializeQuill()
+  // Wait for Quill to be loaded if not already
+  if (Quill) {
+    initializeQuill()
+  } else {
+    // Wait for the import to complete
+    const checkQuill = () => {
+      if (Quill) {
+        initializeQuill()
+      } else {
+        setTimeout(checkQuill, 10)
+      }
+    }
+    checkQuill()
+  }
 })
 
 // Watch modelValue and paste HTML if has changes
@@ -133,6 +153,7 @@ watch(model, (newValue, oldValue) => {
 })
 
 watch(() => props.disabled, (newValue) => {
+  if (!quillInstance) return
   if (newValue) {
     quillInstance.disable()
   } else {

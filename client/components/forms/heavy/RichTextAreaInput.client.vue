@@ -126,20 +126,30 @@
 </template>
 
 <script setup>
-import Quill from 'quill'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import QuillyEditor from './components/QuillyEditor.vue'
 import MentionDropdown from './components/MentionDropdown.vue'
-import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
 
-// Global icon registration - only happens once
+// Conditionally import Quill and extensions only on client side
+let Quill = null
+let registerMentionExtension = null
+
 if (import.meta.client) {
-  const icons = Quill.import("ui/icons")
-  if (!icons["fullscreen"]) {
-    icons["fullscreen"] = `<svg viewBox="0 0 18 18" width="14" height="14">
-      <path fill="none" class="ql-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M2.8 2.8v3.4m0-3.4h3.4m-3.4 0L6.8 6.8M2.8 15.2v-3.4m0 3.4h3.4m-3.4 0L6.8 11.2M15.2 2.8h-3.4m3.4 0v3.4m0-3.4L11.2 6.8m4 8.4h-3.4m3.4 0v-3.4m0 3.4L11.2 11.2"/>
-    </svg>`
-  }
+  import('quill').then(module => {
+    Quill = module.default
+    
+    // Global icon registration - only happens once
+    const icons = Quill.import("ui/icons")
+    if (!icons["fullscreen"]) {
+      icons["fullscreen"] = `<svg viewBox="0 0 18 18" width="14" height="14">
+        <path fill="none" class="ql-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M2.8 2.8v3.4m0-3.4h3.4m-3.4 0L6.8 6.8M2.8 15.2v-3.4m0 3.4h3.4m-3.4 0L6.8 11.2M15.2 2.8h-3.4m3.4 0v3.4m0-3.4L11.2 6.8m4 8.4h-3.4m3.4 0v-3.4m0 3.4L11.2 11.2"/>
+      </svg>`
+    }
+  })
+  
+  import('~/lib/quill/quillMentionExtension.js').then(module => {
+    registerMentionExtension = module.default
+  })
 }
 
 const props = defineProps({
@@ -199,12 +209,20 @@ watch(compVal, (val) => {
 }, { immediate: true })
 
 // Initialize mention extension and fullscreen icon
-if (import.meta.client) {
-  if (props.enableMentions) {
-    // Register the mention extension with Quill
-    mentionState.value = registerMentionExtension(Quill)
+watch(() => props.enableMentions, async (enableMentions) => {
+  if (import.meta.client && enableMentions) {
+    // Wait for both Quill and registerMentionExtension to be loaded
+    const checkDependencies = () => {
+      if (Quill && registerMentionExtension) {
+        // Register the mention extension with Quill
+        mentionState.value = registerMentionExtension(Quill)
+      } else {
+        setTimeout(checkDependencies, 10)
+      }
+    }
+    checkDependencies()
   }
-}
+}, { immediate: true })
 
 // Handle editor ready event
 const onEditorReady = (quillInstance) => {
