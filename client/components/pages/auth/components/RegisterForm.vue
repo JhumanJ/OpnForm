@@ -139,9 +139,15 @@
       </NuxtLink>
     </p>
   </VForm>
+
+  <!-- Google One Tap -->
+  <ClientOnly>
+    <GoogleOneTap context="signup" />
+  </ClientOnly>
 </template>
 
 <script setup>
+import GoogleOneTap from "~/components/vendor/GoogleOneTap.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 // Props

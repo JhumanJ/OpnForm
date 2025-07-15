@@ -3,9 +3,9 @@ title: "Adding a New OAuth Integration"
 description: "Complete guide to implementing OAuth integrations in OpnForm with architecture overview, flow diagrams, and step-by-step implementation"
 ---
 
-This guide covers how to add new OAuth integrations to OpnForm. The system uses a modern, service-oriented architecture with strategy patterns to handle different OAuth flows including authentication, integrations, and widget-based providers.
+This guide covers how to add new OAuth integrations to OpnForm. The system uses a modern, service-oriented architecture with intent-based OAuth flows to handle different authentication scenarios including user authentication, account integrations, and widget-based providers.
 
-<Card title="Configuration Guide" icon="settings" href="/configuration/oauth-setup">
+<Card title="Configuration Guide" icon="gear" href="/configuration/oauth-setup">
 Before implementing a new integration, you may want to review the OAuth configuration guide to understand how to set up the existing Google, Stripe, and Telegram integrations.
 </Card>
 
@@ -13,9 +13,9 @@ Before implementing a new integration, you may want to review the OAuth configur
 
 OpnForm's OAuth system is built around several key architectural patterns:
 
-- **Strategy Pattern**: Different completion strategies for auth vs integration flows
-- **Driver Pattern**: Abstracted OAuth provider implementations 
-- **Service Layer**: Centralized connection handling and flow coordination
+- **Intent-based Flows**: Different OAuth scopes and handling based on auth vs integration intents
+- **Driver Pattern**: Abstracted OAuth provider implementations with support for redirect and widget flows
+- **Service Layer**: Centralized user and provider management through dedicated services
 - **Message-based Communication**: Cross-window communication for OAuth callbacks
 
 ```mermaid
@@ -30,16 +30,12 @@ graph TB
     
     subgraph "Backend API (Laravel)"
         OAuthController[OAuthController]
-        OAuthConnectionService[OAuthConnectionService]
-        
-        subgraph "Completion Strategies"
-            AuthStrategy[AuthenticationStrategy]
-            IntegrationStrategy[IntegrationStrategy] 
-            WidgetStrategy[WidgetStrategy]
-        end
+        OAuthUserService[OAuthUserService]
+        OAuthProviderService[OAuthProviderService]
         
         subgraph "OAuth Drivers"
             GoogleDriver[OAuthGoogleDriver]
+            GoogleOneTapDriver[OAuthGoogleOneTapDriver]
             StripeDriver[OAuthStripeDriver]
             TelegramDriver[OAuthTelegramDriver]
             NewDriver[OAuthNewProviderDriver]
@@ -65,33 +61,29 @@ graph TB
     useAuthFlow --> OAuthController
     
     %% OAuth Controller orchestration
-    OAuthController --> OAuthConnectionService
+    OAuthController --> OAuthUserService
+    OAuthController --> OAuthProviderService
     OAuthController --> Cache
     
-    %% Service to Strategies
-    OAuthConnectionService --> AuthStrategy
-    OAuthConnectionService --> IntegrationStrategy
-    OAuthConnectionService --> WidgetStrategy
-    
-    %% Strategies to Drivers
-    AuthStrategy --> GoogleDriver
-    AuthStrategy --> StripeDriver
-    AuthStrategy --> TelegramDriver
-    IntegrationStrategy --> GoogleDriver
-    IntegrationStrategy --> StripeDriver
-    WidgetStrategy --> TelegramDriver
+    %% Service to Drivers
+    OAuthUserService --> GoogleDriver
+    OAuthUserService --> GoogleOneTapDriver
+    OAuthUserService --> StripeDriver
+    OAuthProviderService --> GoogleDriver
+    OAuthProviderService --> GoogleOneTapDriver
+    OAuthProviderService --> StripeDriver
+    OAuthProviderService --> TelegramDriver
     
     %% Drivers to External Services
     GoogleDriver --> GoogleOAuth
+    GoogleOneTapDriver --> GoogleOAuth
     StripeDriver --> StripeOAuth
     TelegramDriver --> TelegramWidget
     NewDriver --> NewProviderOAuth
     
     %% Data persistence
-    AuthStrategy --> UserModel
-    AuthStrategy --> OAuthProviderModel
-    IntegrationStrategy --> OAuthProviderModel
-    WidgetStrategy --> OAuthProviderModel
+    OAuthUserService --> UserModel
+    OAuthProviderService --> OAuthProviderModel
     
     %% Cross-window communication
     useWindowMessage -.->|"OAuth Callbacks"| useOAuth
@@ -106,7 +98,7 @@ graph TB
     classDef data fill:#e8f5e8
     
     class UI,useOAuth,useWindowMessage,useAuthFlow,TanStackQuery frontend
-    class OAuthController,OAuthConnectionService,AuthStrategy,IntegrationStrategy,WidgetStrategy,GoogleDriver,StripeDriver,TelegramDriver,NewDriver backend
+    class OAuthController,OAuthUserService,OAuthProviderService,GoogleDriver,GoogleOneTapDriver,StripeDriver,TelegramDriver,NewDriver backend
     class GoogleOAuth,StripeOAuth,TelegramWidget,NewProviderOAuth external
     class UserModel,OAuthProviderModel,Cache data
 ```
@@ -120,7 +112,10 @@ The main controller that orchestrates OAuth flows:
 ```php
 class OAuthController extends Controller
 {
-    public function __construct(private OAuthConnectionService $oauthService) {}
+    public function __construct(
+        private OAuthUserService $oauthUserService,
+        private OAuthProviderService $oauthProviderService
+    ) {}
 
     // Initiates OAuth flow with intent-based scoping
     public function redirect(Request $request, string $provider)
@@ -128,7 +123,7 @@ class OAuthController extends Controller
     // Handles standard OAuth callbacks
     public function callback(string $provider)
     
-    // Handles widget-based OAuth (e.g., Telegram)
+    // Handles widget-based OAuth (e.g., Telegram, Google One Tap)
     public function handleWidgetCallback(string $service, Request $request)
 }
 ```
@@ -136,67 +131,77 @@ class OAuthController extends Controller
 **Key Features:**
 - **Intent-based scoping**: Different OAuth scopes for `auth` vs `integration` flows
 - **Context caching**: Stores integration context for callback handling
-- **Strategy selection**: Automatically chooses completion strategy based on authentication state
+- **Flow determination**: Automatically chooses authentication vs integration flow based on user state
 
-### 2. OAuthConnectionService (`api/app/Integrations/OAuth/OAuthConnectionService.php`)
+### 2. OAuthUserService (`api/app/Service/OAuth/OAuthUserService.php`)
 
-Central service that handles OAuth connection logic:
+Service that handles user-related OAuth operations:
 
 ```php
-class OAuthConnectionService
+class OAuthUserService
 {
-    // Generates OAuth redirect URLs with custom scopes
-    public function getRedirectUrl(OAuthProviderService $provider, array $scopes = []): string
+    // Handles user authentication and registration flow
+    public function handleAuthenticationFlow(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
     
-    // Processes OAuth callbacks using completion strategies  
-    public function handleCallback(OAuthProviderService $provider, OAuthCompletionStrategy $strategy): JsonResponse
+    // Finds or creates user from OAuth provider data
+    public function findOrCreateUser(OAuthProviderService $provider, SocialiteUser $socialiteUser): User
 }
 ```
 
-### 3. Completion Strategies
+### 3. OAuthProviderService (`api/app/Service/OAuth/OAuthProviderService.php`)
 
-The system uses three completion strategies that implement `OAuthCompletionStrategy`:
+Service that handles provider-related OAuth operations:
 
-#### AuthenticationStrategy 
+```php
+class OAuthProviderService
+{
+    // Handles provider connection and integration flow
+    public function handleIntegrationFlow(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
+    
+    // Creates or updates OAuth provider records
+    public function createOrUpdateProvider(OAuthProviderService $provider, SocialiteUser $socialiteUser): OAuthProvider
+}
+```
+
+### 4. Intent-based Flow Handling
+
+The system uses intent-based flow handling instead of strategies:
+
+#### Authentication Flow
 For user login/registration when user is not authenticated:
 
 ```php
-class AuthenticationStrategy extends BaseOAuthCompletionStrategy
-{
-    public function execute(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
-    {
-        // Handle user creation/login, workspace assignment, JWT generation
-    }
+// In OAuthController::callback()
+if (!Auth::check()) {
+    // User not authenticated - handle auth flow
+    return $this->oauthUserService->handleAuthenticationFlow($providerService, $socialiteUser);
 }
 ```
 
-#### IntegrationStrategy
+#### Integration Flow
 For connecting OAuth accounts when user is already logged in:
 
-```php  
-class IntegrationStrategy extends BaseOAuthCompletionStrategy
-{
-    public function execute(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
-    {
-        // Create/update OAuthProvider record, return connection details
-    }
+```php
+// In OAuthController::callback()
+if (Auth::check()) {
+    // User authenticated - handle integration flow
+    return $this->oauthProviderService->handleIntegrationFlow($providerService, $socialiteUser);
 }
 ```
 
-#### WidgetStrategy
-For widget-based authentication (like Telegram Login Widget):
+#### Widget Flow
+For widget-based authentication (like Telegram Login Widget, Google One Tap):
 
 ```php
-class WidgetStrategy extends BaseOAuthCompletionStrategy
-{
-    public function handleWidgetCallback(OAuthProviderService $service, Request $request): JsonResponse
-    {
-        // Verify widget data, extract user info, create provider record
-    }
+// In OAuthController::handleWidgetCallback()
+if ($request->input('intent') === 'auth') {
+    return $this->oauthUserService->handleWidgetAuthFlow($providerService, $request);
+} else {
+    return $this->oauthProviderService->handleWidgetIntegrationFlow($providerService, $request);
 }
 ```
 
-### 4. OAuth Drivers
+### 5. OAuth Drivers
 
 Each provider implements the `OAuthDriver` interface:
 
@@ -238,8 +243,8 @@ flowchart TD
     I --> J["Provider redirects to callback"]
     J --> K["API: POST /oauth/provider/callback"]
     K --> L{User authenticated?}
-    L -->|No| M["Use AuthenticationStrategy"]
-    L -->|Yes| N["Use IntegrationStrategy"]
+    L -->|No| M["Use Authentication Flow"]
+    L -->|Yes| N["Use Integration Flow"]
     M --> O["Find or create user"]
     O --> P["Create workspace if new user"]
     P --> Q["Generate JWT token"]
@@ -275,16 +280,16 @@ sequenceDiagram
     participant F as Frontend
     participant API as OAuthController
     participant P as OAuth Provider
-    participant AS as AuthenticationStrategy
+    participant US as OAuthUserService
     
     U->>F: Click "Sign in with Provider"
     F->>API: POST /oauth/connect/{provider}?intent=auth
     API->>P: Redirect to provider OAuth
     P->>U: User authorizes app
     P->>API: Callback with authorization code
-    API->>AS: Execute authentication strategy
-    AS->>AS: Create/find user, generate JWT
-    AS->>F: Return JWT token
+    API->>US: Execute authentication flow
+    US->>US: Create/find user, generate JWT
+    US->>F: Return JWT token
     F->>F: Store token, redirect to dashboard
 ```
 
@@ -304,7 +309,7 @@ sequenceDiagram
     participant F as Frontend
     participant API as OAuthController
     participant P as OAuth Provider
-    participant IS as IntegrationStrategy
+    participant PS as OAuthProviderService
     participant C as Cache
     
     U->>F: Click "Connect Account" 
@@ -313,10 +318,10 @@ sequenceDiagram
     API->>P: Redirect with full permission scopes
     P->>U: User authorizes extended permissions
     P->>API: Callback with authorization code
-    API->>IS: Execute integration strategy
-    IS->>IS: Create/update OAuthProvider record
-    IS->>C: Retrieve integration context
-    IS->>F: Return provider details + context
+    API->>PS: Execute integration flow
+    PS->>PS: Create/update OAuthProvider record
+    PS->>C: Retrieve integration context
+    PS->>F: Return provider details + context
     F->>F: Update UI, invalidate cache
 ```
 
@@ -333,16 +338,16 @@ sequenceDiagram
     participant W as Widget
     participant F as Frontend  
     participant API as OAuthController
-    participant WS as WidgetStrategy
+    participant US as OAuthUserService
     
     U->>W: Authenticate with provider widget
     W->>F: Widget callback with auth data
     F->>API: POST /oauth/widget-callback/{provider}
-    API->>WS: Execute widget strategy
-    WS->>WS: Verify widget data signature
-    WS->>WS: Extract user data
-    WS->>WS: Create OAuthProvider record
-    WS->>F: Return provider details
+    API->>US: Execute widget flow
+    US->>US: Verify widget data signature
+    US->>US: Extract user data
+    US->>US: Create user or OAuthProvider record
+    US->>F: Return auth token or provider details
     F->>F: Update UI, show success
 ```
 
@@ -503,6 +508,7 @@ Add your new provider to the enum:
 enum OAuthProviderService: string
 {
     case Google = 'google';
+    case GoogleOneTap = 'google_one_tap';
     case Stripe = 'stripe';
     case Telegram = 'telegram';
     case NewProvider = 'newprovider'; // Add your provider
@@ -511,9 +517,21 @@ enum OAuthProviderService: string
     {
         return match ($this) {
             self::Google => new OAuthGoogleDriver(),
+            self::GoogleOneTap => new OAuthGoogleOneTapDriver(),
             self::Stripe => new OAuthStripeDriver(), 
             self::Telegram => new OAuthTelegramDriver(),
             self::NewProvider => new OAuthNewProviderDriver(), // Add mapping
+        };
+    }
+
+    public function getDatabaseProvider(): string
+    {
+        return match ($this) {
+            self::Google => 'google',
+            self::GoogleOneTap => 'google', // Normalize to 'google'
+            self::Stripe => 'stripe',
+            self::Telegram => 'telegram',
+            self::NewProvider => 'newprovider',
         };
     }
 }
@@ -655,6 +673,36 @@ Register the handler and add frontend integration components as needed.
 </Step>
 </Steps>
 
+## Provider Normalization
+
+<Info>
+**Important**: When creating providers that represent the same OAuth service but with different authentication methods (like Google OAuth vs Google One Tap), they should be normalized to the same provider name in the database.
+</Info>
+
+OpnForm handles provider normalization through the `getDatabaseProvider()` method in the enum:
+
+```php
+public function getDatabaseProvider(): string
+{
+    return match ($this) {
+        self::Google => 'google',
+        self::GoogleOneTap => 'google', // Both normalize to 'google'
+        self::Stripe => 'stripe',
+        self::Telegram => 'telegram',
+    };
+}
+```
+
+This ensures that:
+- Users can't connect multiple "Google" accounts (regular OAuth + One Tap)
+- Provider scopes and permissions are properly merged
+- The same OAuth provider record is updated regardless of authentication method
+- Integration handlers work consistently with the normalized provider name
+
+When adding new providers, consider if they should be normalized:
+- **Same OAuth service, different auth methods**: Normalize (like Google/GoogleOneTap)
+- **Different OAuth services**: Don't normalize (like Google/GitHub)
+
 ## Widget-Based Providers
 
 For providers that use widget authentication (like Telegram), implement `WidgetOAuthDriver`:
@@ -686,7 +734,6 @@ class OAuthWidgetProviderDriver implements WidgetOAuthDriver
             'name' => $data['name'],
             'email' => $data['email'] ?? null,
             'provider_user_id' => $data['user_id'],
-            'provider' => 'widgetprovider',
             'access_token' => $data['auth_token'],
             'scopes' => []
         ];
@@ -795,19 +842,22 @@ public function handleCallback(OAuthProviderService $provider, OAuthCompletionSt
 
 ### Intent-Based Flow Control
 
-The controller automatically selects the appropriate completion strategy:
+The controller automatically selects the appropriate flow based on user authentication state:
 
 ```php
 public function callback(string $provider)
 {
     $providerService = OAuthProviderService::from($provider);
+    $socialiteUser = $providerService->getDriver()->getUser();
 
-    // Strategy is determined by the user's authentication state
-    $strategy = Auth::check()
-        ? app(IntegrationStrategy::class)  // User logged in = integration
-        : app(AuthenticationStrategy::class); // User not logged in = authentication
-
-    return $this->oauthService->handleCallback($providerService, $strategy);
+    // Flow is determined by the user's authentication state
+    if (Auth::check()) {
+        // User logged in = integration flow
+        return $this->oauthProviderService->handleIntegrationFlow($providerService, $socialiteUser);
+    } else {
+        // User not logged in = authentication flow
+        return $this->oauthUserService->handleAuthenticationFlow($providerService, $socialiteUser);
+    }
 }
 ```
 

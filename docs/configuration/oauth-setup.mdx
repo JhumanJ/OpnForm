@@ -15,9 +15,9 @@ If you're looking to add a new OAuth integration to OpnForm, check out the compl
 
 ## Available OAuth Integrations
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
 <Card title="Google OAuth" icon="google" href="#google-oauth">
-    Authentication and Google Sheets integration for form data export
+    Authentication, Google One Tap, and Google Sheets integration for form data export
 </Card>
 
 <Card title="Stripe OAuth" icon="stripe" href="#stripe-oauth">
@@ -35,6 +35,7 @@ Google OAuth enables user authentication and integrates with Google Sheets for e
 
 ### Features
 - **User Authentication**: Allow users to sign up and log in with their Google accounts
+- **Google One Tap**: Seamless authentication with Google's One Tap sign-in widget
 - **Google Sheets Integration**: Export form submissions directly to Google Sheets
 - **Automatic Scope Management**: OpnForm requests appropriate permissions based on usage
 
@@ -72,6 +73,10 @@ Google OAuth enables user authentication and integrates with Google Sheets for e
        https://yourdomain.com
        ```
     5. Leave redirect URIs empty - OpnForm handles these automatically
+    
+    <Info>
+    For Google One Tap to work, ensure your domain is added to the authorized origins. This enables the seamless authentication widget to function properly.
+    </Info>
     
     <Check>
     Save the **Client ID** and **Client Secret** for environment configuration.

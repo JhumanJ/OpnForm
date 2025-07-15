@@ -94,11 +94,17 @@
         </NuxtLink>
       </p>
     </form>
+
+    <!-- Google One Tap -->
+    <ClientOnly>
+      <GoogleOneTap context="signin" />
+    </ClientOnly>
   </div>
 </template>
 
 <script setup>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
+import GoogleOneTap from "~/components/vendor/GoogleOneTap.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
 // Props

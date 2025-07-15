@@ -170,25 +170,26 @@ export function useOAuth() {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.widgetCallback(service, data),
       onSuccess: (response) => {
-      const updatedProvider = response.provider
-      console.log(updatedProvider)
-      // Update provider in cache
-      queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
-      
-      // Update providers list
-      queryClient.setQueryData(['oauth', 'providers'], (old) => {
-        if (!old) return [updatedProvider]
-        if (!Array.isArray(old)) return old
-        const existingIndex = old.findIndex(provider => provider.id === updatedProvider.id)
-        if (existingIndex >= 0) {
-          // Update existing
-          const updated = [...old]
-          updated[existingIndex] = { ...old[existingIndex], ...updatedProvider }
-          return updated
+       if (response.provider) {
+          const updatedProvider = response.provider
+          // Update provider in cache
+          queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
+          
+          // Update providers list
+          queryClient.setQueryData(['oauth', 'providers'], (old) => {
+            if (!old) return [updatedProvider]
+            if (!Array.isArray(old)) return old
+            const existingIndex = old.findIndex(provider => provider.id === updatedProvider.id)
+            if (existingIndex >= 0) {
+              // Update existing
+              const updated = [...old]
+              updated[existingIndex] = { ...old[existingIndex], ...updatedProvider }
+              return updated
+            }
+            // Add as new if not found
+            return [...old, updatedProvider]
+          })
         }
-        // Add as new if not found
-        return [...old, updatedProvider]
-      })
       },
       ...options
     })
