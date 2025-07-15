@@ -49,7 +49,7 @@ import { inputProps, useFormInput } from "../useFormInput.js"
 
 export default {
   name: "SliderInput",
-  components: { InputWrapper },
+  components: { },
 
   props: {
     ...inputProps,

@@ -28,7 +28,7 @@
           <div
             class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer !text-neutral-500 dark:!text-neutral-500 flex items-center justify-center rounded-md"
             role="button"
-            @click.prevent="openAddFieldSidebar"
+            @click.stop.prevent="openAddFieldSidebar"
           >
             <UTooltip
               text="Add new field"
@@ -44,7 +44,7 @@
           <div
             class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer flex items-center justify-center text-center !text-neutral-500 dark:!text-neutral-500 rounded-md"
             role="button"
-            @click.prevent="editFieldOptions"
+            @click.stop.prevent="editFieldOptions"
           >
             <UTooltip
               text="Edit field settings"
@@ -60,7 +60,7 @@
           <div
             class="p-1 hover:!text-red-600 dark:hover:!text-red-600 hover:bg-red-50 cursor-pointer flex items-center justify-center text-center !text-red-500 dark:!text-red-500 rounded-md"
             role="button"
-            @click.prevent="removeField"
+            @click.stop.prevent="removeField"
           >
             <UTooltip
               text="Delete field"
