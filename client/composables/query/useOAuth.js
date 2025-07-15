@@ -1,5 +1,6 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
 import { oauthApi } from '~/api/oauth'
+import { WindowMessageTypes, useWindowMessage } from '~/composables/useWindowMessage'
 
 export function useOAuth() {
   const queryClient = useQueryClient()
@@ -45,6 +46,12 @@ export function useOAuth() {
   // Utility to get service configuration
   const getService = (service) => {
     return services.value.find((item) => item.name === service)
+  }
+
+  // Enhanced error handling for OAuth operations
+  const handleOAuthError = (error) => {
+    const message = error.response?.data?.message || error.data?.message
+    alert.error(message ?? "An error occurred while connecting an account")
   }
 
   // Queries
@@ -95,11 +102,7 @@ export function useOAuth() {
         }
       })
       .catch((error) => {
-        try {
-          alert.error(error.data.message)
-        } catch {
-          alert.error("An error occurred while connecting an account")
-        }
+        handleOAuthError(error)
       })
   }
 
@@ -114,11 +117,7 @@ export function useOAuth() {
         window.open(data.url, '_blank')
       })
       .catch((error) => {
-        try {
-          alert.error(error.data.message)
-        } catch {
-          alert.error("An error occurred while connecting an account")
-        }
+        handleOAuthError(error)
       })
   }
 
@@ -170,7 +169,9 @@ export function useOAuth() {
   const widgetCallback = (options = {}) => {
     return useMutation({
       mutationFn: ({ service, data }) => oauthApi.widgetCallback(service, data),
-      onSuccess: (updatedProvider) => {
+      onSuccess: (response) => {
+      const updatedProvider = response.provider
+      console.log(updatedProvider)
       // Update provider in cache
       queryClient.setQueryData(['oauth', 'providers', updatedProvider.id], updatedProvider)
       
@@ -178,9 +179,15 @@ export function useOAuth() {
       queryClient.setQueryData(['oauth', 'providers'], (old) => {
         if (!old) return [updatedProvider]
         if (!Array.isArray(old)) return old
-        return old.map(provider =>
-          provider.id === updatedProvider.id ? { ...provider, ...updatedProvider } : provider
-        )
+        const existingIndex = old.findIndex(provider => provider.id === updatedProvider.id)
+        if (existingIndex >= 0) {
+          // Update existing
+          const updated = [...old]
+          updated[existingIndex] = { ...old[existingIndex], ...updatedProvider }
+          return updated
+        }
+        // Add as new if not found
+        return [...old, updatedProvider]
       })
       },
       ...options
@@ -211,6 +218,20 @@ export function useOAuth() {
       ...options
     })
   }
+
+  // Window message integration for cache invalidation
+  onMounted(() => {
+    // Listen for OAuth provider connections to invalidate cache
+    const windowMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
+    
+    windowMessage.listen((_event) => {
+      // Invalidate providers cache when OAuth connection completes
+      invalidateProviders()
+    }, {
+      useMessageChannel: false,
+      acknowledge: false
+    })
+  })
 
   // Utility functions
   const prefetchProviders = () => {

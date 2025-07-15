@@ -12,8 +12,21 @@
     </template>
 
     <template #body>
-      <div v-if="loading">
-        <Loader class="h-6 w-6 mx-auto" />
+      <div v-if="loading" class="text-center py-8">
+        <Loader class="h-8 w-8 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-neutral-900 mb-2">
+          Connecting your account...
+        </h3>
+        <p class="text-sm text-neutral-500">
+          Complete the authentication in the new tab that opened.
+        </p>
+      <UButton
+        color="neutral"
+        variant="soft"
+        label="Cancel"
+        class="mt-4"
+        @click="loading = false"
+      />
       </div>
       <div
         v-else
@@ -60,6 +73,8 @@
 </template>
 
 <script setup>
+import { WindowMessageTypes, useWindowMessage } from '~/composables/useWindowMessage'
+
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -74,6 +89,22 @@ const services = oAuth.services
 const loading = ref(false)
 const showWidgetModal = ref(false)
 const selectedService = ref(null)
+const alert = useAlert()
+
+// Listen for OAuth completion to close modal and refresh
+onMounted(() => {
+  const windowMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
+  
+  windowMessage.listen((_event) => {
+    // OAuth connection completed, close modal and refresh
+    loading.value = false
+    closeModal()
+    alert.success('Account connected successfully!')
+  }, {
+    useMessageChannel: false,
+    acknowledge: false
+  })
+})
 
 // Modal state
 const isOpen = computed({
@@ -97,9 +128,9 @@ function connect(service) {
     selectedService.value = service
     showWidgetModal.value = true
   } else {
-    // Use existing redirect flow
+    // Open OAuth flow in new tab to avoid losing current page
     loading.value = true
-    oAuth.connect(service.name)
+    oAuth.connect(service.name, false, true, true)
   }
 }
 </script>

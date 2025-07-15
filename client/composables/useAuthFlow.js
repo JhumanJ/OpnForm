@@ -84,8 +84,16 @@ export const useAuthFlow = () => {
   const handleSocialCallback = async (provider, code, utmData) => {
     const tokenData = await authApi.oauth.callback(provider, { code, utm_data: utmData })
     
-    // Send message to parent window if applicable
+    // Send messages to parent window if applicable
     if (window.opener && !window.opener.closed) {
+      // Send login complete message (for auth flows)
+      useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE).send(window.opener, {
+        eventType: WindowMessageTypes.LOGIN_COMPLETE,
+        useMessageChannel: false,
+        waitForAcknowledgment: false
+      })
+      
+      // Send OAuth provider connected message (for cache invalidation)
       useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED).send(window.opener, {
         eventType: `${WindowMessageTypes.OAUTH_PROVIDER_CONNECTED}:${provider}`,
         useMessageChannel: false,

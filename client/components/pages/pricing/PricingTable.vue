@@ -195,10 +195,12 @@ export default {
   setup() {
     const { openSubscriptionModal } = useAppModals()
     const { isAuthenticated: authenticated } = useIsAuthenticated()
+    const auth = useAuth()
+    
     return {
       openSubscriptionModal,
       authenticated,
-      user: computed(() => useAuth().user().data.value),
+      user: computed(() => auth.user().data.value),
     }
   },
   data: () => ({

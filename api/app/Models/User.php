@@ -8,6 +8,7 @@ use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -227,8 +228,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'ip' => \Hash::make(request()->ip()),
-            'ua' => \Hash::make(request()->userAgent()),
+            'ip' => Hash::make(request()->ip()),
+            'ua' => Hash::make(request()->userAgent()),
         ];
     }
 

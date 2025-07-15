@@ -29,6 +29,7 @@
 <script setup>
 import { useNuxtApp } from "nuxt/app"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
+import { authApi } from "~/api"
 
 const { $utm } = useNuxtApp()
 const router = useRouter()
@@ -41,42 +42,79 @@ const handleCallback = async () => {
   const provider = route.params.provider
   
   try {
-    const { isNewUser } = await authFlow.handleSocialCallback(
-      provider,
-      route.query.code,
-      $utm.value
-    )
+    // Call the OAuth callback endpoint directly to get the raw response
+    const response = await authApi.oauth.callback(provider, { 
+      code: route.query.code, 
+      utm_data: $utm.value 
+    })
 
-    if (!isNewUser) {
-      // Handle existing user login
+    // Check if this is an authentication response (has token) or integration response (has provider)
+    if (response.token) {
+      // Authentication flow - user was not logged in
+      await authFlow.handleAuthSuccess(response, provider, response.new_user)
+      
+      if (!response.new_user) {
+        // Handle existing user login
+        if (window.opener) {
+          try {
+            const loginMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+            const providerMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
+            
+            await Promise.all([
+              loginMessage.send(window.opener, {
+                waitForAcknowledgment: true,
+                timeout: 500
+              }),
+              providerMessage.send(window.opener, {
+                useMessageChannel: false,
+                waitForAcknowledgment: false
+              })
+            ])
+            
+            window.close()
+            loading.value = false
+          } catch (err) {
+            console.error("Error in social callback:", err)
+            loading.value = false
+          }
+        } else {
+          router.push({ name: "home" })
+        }
+      } else {
+        // Handle new user registration
+        router.push({ name: "forms-create" })
+        useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
+      }
+    } else if (response.provider) {
+      // Integration flow - user was already logged in, provider was connected
       if (window.opener) {
         try {
-          // Use the WindowMessage composable for more reliable communication
-          const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+          const providerMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
           
-          // Send the login-complete message and wait for acknowledgment
-          await windowMessage.send(window.opener, {
-            waitForAcknowledgment: true,
-            timeout: 500
+          await providerMessage.send(window.opener, {
+            useMessageChannel: false,
+            waitForAcknowledgment: false
           })
           
-          // Now we can safely close the window
-          window.close()
-          
-          // If window doesn't close (some browsers prevent it), show a message
-          loading.value = false
+          // Auto-close if specified in response
+          if (response.autoClose) {
+            window.close()
+          } else {
+            useAlert().success(`${response.provider.name} account connected successfully!`)
+            loading.value = false
+          }
         } catch (err) {
-          console.error("Error in social callback:", err)
+          console.error("Error in integration callback:", err)
+          useAlert().success(`${response.provider.name} account connected successfully!`)
           loading.value = false
         }
       } else {
-        // No opener, redirect to home
+        // No opener, show success and redirect
+        useAlert().success(`${response.provider.name} account connected successfully!`)
         router.push({ name: "home" })
       }
     } else {
-      // Handle new user registration
-      router.push({ name: "forms-create" })
-      useAlert().success("Success! You're now registered with your Google account! Welcome to OpnForm.")
+      throw new Error("Unexpected response format from OAuth callback")
     }
   } catch (error) {
     console.error("Social login error:", error)

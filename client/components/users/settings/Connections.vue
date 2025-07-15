@@ -56,7 +56,13 @@
         </template>
 
         <template #email-cell="{ row: { original: item } }">
-          <span class="text-neutral-600">{{ item.name }}</span>
+          <div class="flex flex-col items-start" v-if="item.name || item.email">
+            <span class="text-neutral-600" v-if="item.name">{{ item.name }}</span>
+            <span class="text-neutral-400 text-xs" v-if="item.email">{{ item.email }}</span>
+          </div>
+          <span v-else class="text-neutral-400">
+            -
+          </span>
         </template>
 
         <template #actions-cell="{ row: { original: item } }">
@@ -87,7 +93,7 @@ const providerModal = ref(false)
 const oAuth = useOAuth()
 const alert = useAlert()
 
-const { data: providersData, isLoading, refetch } = oAuth.providers()
+const { data: providersData, isLoading: isLoading, refetch } = oAuth.providers()
 const providers = computed(() => providersData.value || [])
 
 // Column pinning state

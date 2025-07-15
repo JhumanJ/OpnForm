@@ -12,9 +12,9 @@ interface OAuthDriver
     public function getUser(): User;
     public function canCreateUser(): bool;
 
+
     /**
-     * Set up all the scopes required by OpnForm for various integrations.
-     * This method configures the necessary permissions for the current OAuth driver.
+     * Get the appropriate scopes for a given intent (auth or integration).
      */
-    public function fullScopes(): self;
+    public function getScopesForIntent(string $intent): array;
 }

@@ -169,7 +169,19 @@ const redirect = () => {
   }
 }
 
+const showOAuthError = (error) => {
+  if (error.response?.status === 422 && error.response?.data?.message) {
+    useAlert().error(error.response.data.message)
+  } else {
+    useAlert().error("Sign-in failed. Please try again.")
+  }
+}
+
 const signInwithGoogle = () => {
-  oAuth.guestConnect('google', true)
+  try {
+    oAuth.guestConnect('google', true)
+  } catch (error) {
+    showOAuthError(error)
+  }
 }
 </script>

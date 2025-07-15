@@ -64,9 +64,6 @@ Route::group(['middleware' => 'auth.multi'], function () {
         });
 
         Route::prefix('/providers')->name('providers.')->group(function () {
-            Route::post('/connect/{service}', [OAuthProviderController::class, 'connect'])->name('connect');
-            Route::post('/callback/{service}', [OAuthProviderController::class, 'handleRedirect'])->name('callback');
-            Route::post('widget-callback/{service}', [OAuthProviderController::class, 'handleWidgetRedirect'])->name('widget.callback');
             Route::delete('/{provider}', [OAuthProviderController::class, 'destroy'])->name('destroy');
         });
     });
@@ -274,15 +271,20 @@ Route::group(['middleware' => 'guest:api'], function () {
 
     Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend']);
-
-    Route::post('oauth/{provider}', [OAuthController::class, 'redirect']);
-    Route::post('oauth/connect/{provider}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
-    Route::post('oauth/{provider}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
 });
 
 Route::group(['prefix' => 'appsumo'], function () {
     Route::get('oauth/callback', [\App\Http\Controllers\Auth\AppSumoAuthController::class, 'handleCallback'])->name('appsumo.callback');
     Route::post('webhook', [\App\Http\Controllers\Webhook\AppSumoController::class, 'handle'])->name('appsumo.webhook');
+});
+
+/*
+ * OAuth routes (public - authentication handled in controller)
+ */
+Route::prefix('oauth')->name('oauth.')->group(function () {
+    Route::post('/connect/{provider}', [OAuthController::class, 'redirect'])->name('redirect');
+    Route::post('/{provider}/callback', [OAuthController::class, 'callback'])->name('callback');
+    Route::post('/widget-callback/{provider}', [OAuthController::class, 'handleWidgetCallback'])->name('widget.callback');
 });
 
 /*

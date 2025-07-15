@@ -59,8 +59,12 @@ class OAuthGoogleDriver implements OAuthDriver
         return $this;
     }
 
-    public function fullScopes(): OAuthDriver
+    public function getScopesForIntent(string $intent): array
     {
-        return $this->setScopes([Sheets::DRIVE_FILE]);
+        return match ($intent) {
+            'auth' => ['openid', 'profile', 'email'],
+            'integration' => ['openid', 'profile', 'email', Sheets::DRIVE_FILE],
+            default => ['openid', 'profile', 'email'],
+        };
     }
 }

@@ -73,14 +73,11 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URL'),
-        'auth_redirect' => env('GOOGLE_AUTH_REDIRECT_URL'),
-
+        'redirect' => env('GOOGLE_REDIRECT_URL', front_url('/oauth/google/callback')),
         'fonts_api_key' => env('GOOGLE_FONTS_API_KEY'),
     ],
 
     'telegram' => [
-        'bot_id' => env('TELEGRAM_BOT_ID'),
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
     ],
 
@@ -91,6 +88,6 @@ return [
     'stripe' => [
         'client_id' => env('STRIPE_CLIENT_ID'),
         'client_secret' => env('STRIPE_CLIENT_SECRET', env('STRIPE_SECRET')),
-        'redirect' => env('STRIPE_REDIRECT_URI', front_url('/connections/callback/stripe')),
+        'redirect' => env('STRIPE_REDIRECT_URL', front_url('/oauth/stripe/callback')),
     ]
 ];
