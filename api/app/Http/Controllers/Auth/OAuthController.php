@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\Cache;
 
 class OAuthController extends Controller
 {
-    public function __construct(private OAuthConnectionService $oauthService)
-    {
-    }
+    public const INTENT_AUTH = 'auth';
+    public const INTENT_INTEGRATION = 'integration';
+
+    public function __construct(private OAuthConnectionService $oauthService) {}
 
     /**
      * Redirect the user to the provider authentication page.
@@ -24,17 +25,17 @@ class OAuthController extends Controller
     public function redirect(Request $request, string $provider)
     {
         $providerService = OAuthProviderService::from($provider);
-        $intent = $request->input('intent', 'auth');
+        $intent = $request->input('intent', self::INTENT_AUTH);
 
         // Guard Clause: Prevent auth flow if provider can't create users
-        if ($intent === 'auth' && !$providerService->getDriver()->canCreateUser()) {
+        if ($intent === self::INTENT_AUTH && !$providerService->getDriver()->canCreateUser()) {
             return response()->json(['message' => 'This provider does not support user sign-ups.'], 422);
         }
 
         $scopes = $providerService->getDriver()->getScopesForIntent($intent);
 
         // For integrations, store context for the callback
-        if ($intent === 'integration') {
+        if ($intent === self::INTENT_INTEGRATION) {
             $context = [
                 'intention' => $request->input('intention'),
                 'autoClose' => $request->boolean('autoClose', false),
@@ -43,7 +44,6 @@ class OAuthController extends Controller
         }
 
         $url = $this->oauthService->getRedirectUrl($providerService, $scopes);
-        ray($url);
         return response()->json(['url' => $url]);
     }
 

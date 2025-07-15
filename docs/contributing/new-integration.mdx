@@ -5,6 +5,10 @@ description: "Complete guide to implementing OAuth integrations in OpnForm with 
 
 This guide covers how to add new OAuth integrations to OpnForm. The system uses a modern, service-oriented architecture with strategy patterns to handle different OAuth flows including authentication, integrations, and widget-based providers.
 
+<Card title="Configuration Guide" icon="settings" href="/configuration/oauth-setup">
+Before implementing a new integration, you may want to review the OAuth configuration guide to understand how to set up the existing Google, Stripe, and Telegram integrations.
+</Card>
+
 ## System Architecture Overview
 
 OpnForm's OAuth system is built around several key architectural patterns:
@@ -424,6 +428,7 @@ Implement the OAuth driver class:
 
 namespace App\Integrations\OAuth\Drivers;
 
+use App\Http\Controllers\Auth\OAuthController;
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
@@ -477,8 +482,8 @@ class OAuthNewProviderDriver implements OAuthDriver
     public function getScopesForIntent(string $intent): array
     {
         return match ($intent) {
-            'auth' => ['user:email', 'read:user'],
-            'integration' => ['user:email', 'read:user', 'write:data'],
+            OAuthController::INTENT_AUTH => ['user:email', 'read:user'],
+            OAuthController::INTENT_INTEGRATION => ['user:email', 'read:user', 'write:data'],
             default => ['user:email', 'read:user'],
         };
     }
@@ -486,7 +491,7 @@ class OAuthNewProviderDriver implements OAuthDriver
 ```
 
 <Tip>
-Configure different scopes for `auth` vs `integration` intents. Auth scopes should be minimal (just enough for user identification), while integration scopes should include all permissions needed for the provider's functionality.
+Configure different scopes for `auth` vs `integration` intents using the `OAuthController::INTENT_AUTH` and `OAuthController::INTENT_INTEGRATION` constants. Auth scopes should be minimal (just enough for user identification), while integration scopes should include all permissions needed for the provider's functionality.
 </Tip>
 </Step>
 
