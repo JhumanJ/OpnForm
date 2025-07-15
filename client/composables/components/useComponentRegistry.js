@@ -10,6 +10,12 @@ const integrationRegistry = new Map([
   ['zapier', () => import('~/components/open/integrations/ZapierIntegration.vue')],
 ])
 
+const clientOnlyHeavyFormComponentsRegistry = new Map([
+  ['RichTextAreaInput', () => import('~/components/forms/heavy/RichTextAreaInput.client.vue')],
+  ['PaymentInput', () => import('~/components/forms/heavy/PaymentInput.client.vue')],
+  ['CodeInput', () => import('~/components/forms/heavy/CodeInput.client.vue')],
+])
+
 const actionRegistry = new Map([
   ['WebhookIntegrationActions', () => import('~/components/open/integrations/components/WebhookIntegrationActions.vue')],
   ['SlackIntegrationActions', () => import('~/components/open/integrations/components/SlackIntegrationActions.vue')],
@@ -24,9 +30,7 @@ const providerRegistry = new Map([
 
 const heavyFormComponentsRegistry = new Map([
   ['BarcodeInput', () => import('~/components/forms/heavy/BarcodeInput.vue')],
-  ['RichTextAreaInput', () => import('~/components/forms/heavy/RichTextAreaInput.client.vue')],
   ['DateInput', () => import('~/components/forms/heavy/DateInput.vue')],
-  ['PaymentInput', () => import('~/components/forms/heavy/PaymentInput.client.vue')],
   ['SignatureInput', () => import('~/components/forms/heavy/SignatureInput.vue')],
   ['FileInput', () => import('~/components/forms/heavy/FileInput.vue')],
   ['ImageInput', () => import('~/components/forms/heavy/ImageInput.vue')],
@@ -34,7 +38,6 @@ const heavyFormComponentsRegistry = new Map([
   ['MatrixInput', () => import('~/components/forms/heavy/MatrixInput.vue')],
   ['PhoneInput', () => import('~/components/forms/heavy/PhoneInput.vue')],
   ['RatingInput', () => import('~/components/forms/heavy/RatingInput.vue')],
-  ['CodeInput', () => import('~/components/forms/heavy/CodeInput.client.vue')],
 ])
 
 // Component loading cache to avoid duplicate imports
@@ -159,11 +162,29 @@ export function useComponentRegistry() {
    * @returns {Object|string} An async component definition or a string name.
    */
   const getFormComponent = (componentName) => {
+    if (!componentName) {
+      return null
+    }
+
+    if (clientOnlyHeavyFormComponentsRegistry.has(componentName)) {
+      const loader = clientOnlyHeavyFormComponentsRegistry.get(componentName)
+      return {
+        component: createAsyncComponent(loader),
+        clientOnly: true
+      }
+    }
+
     if (heavyFormComponentsRegistry.has(componentName)) {
       const loader = heavyFormComponentsRegistry.get(componentName)
-      return createAsyncComponent(loader)
+      return {
+        component: createAsyncComponent(loader),
+        clientOnly: false
+      }
     }
-    return componentName // Return string for core components
+    return {
+      component: componentName,
+      clientOnly: false
+    }
   }
 
   /**

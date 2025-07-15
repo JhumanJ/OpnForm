@@ -75,21 +75,24 @@
           </div>
         </div>
       </div>
-      <div v-if="getFieldComponents">
-        <Suspense>
-          <component
-            :is="getFieldComponents"
-            v-bind="inputProperties(field)"
-            :required="isFieldRequired"
-            :disabled="isFieldDisabled"
-            :is-admin-preview="isAdminPreview"
-          />
+      <div v-if="fieldComponentInfo && fieldComponentInfo.component">
+        <ClientOnlyWrapper :client-only="fieldComponentInfo.clientOnly">
+          <Suspense>
+            <component
+              :is="fieldComponentInfo.component"
+              v-bind="inputProperties(field)"
+              :required="isFieldRequired"
+              :disabled="isFieldDisabled"
+              :is-admin-preview="isAdminPreview"
+            />
+            <template #fallback>
+              <USkeleton class="w-full h-16 my-1.5" />
+            </template>
+          </Suspense>
           <template #fallback>
-            <div class="p-4">
-              <USkeleton class="w-full h-10" />
-            </div>
+            <USkeleton class="w-full h-16 my-1.5" />
           </template>
-        </Suspense>
+        </ClientOnlyWrapper>
       </div>
       <template v-else>
         <div
@@ -197,7 +200,7 @@ const strategy = computed(() => props.formManager?.strategy?.value || createForm
 const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls || false)
 
 // Computed properties
-const getFieldComponents = computed(() => {
+const fieldComponentInfo = computed(() => {
   const field = props.field
   let componentName
 

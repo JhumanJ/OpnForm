@@ -29,6 +29,7 @@
           :key="option[optionKey]"
           :role="multiple?'checkbox':'radio'"
           :aria-checked="isSelected(option[optionKey])"
+          class="relative"
           :class="[
             theme.FlatSelectInput.spacing.vertical,
             theme.FlatSelectInput.fontSize,

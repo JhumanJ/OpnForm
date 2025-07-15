@@ -55,7 +55,7 @@
             >
               <div
                 v-if="compVal"
-                class="w-full flex items-center justify-center"
+                class="w-full flex items-center justify-center relative"
                 role="radio"
                 :aria-checked="compVal[row] === column"
                 :class="[

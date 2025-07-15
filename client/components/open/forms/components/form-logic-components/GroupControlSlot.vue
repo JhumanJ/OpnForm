@@ -15,7 +15,8 @@
     />
     <UButton
       class="ml-1 mt-1"
-      color="blue"
+      color="neutral"
+      variant="outline"
       size="sm"
       :disabled="selectedRule === '' ? true : null"
       @click="addRule"
@@ -24,7 +25,7 @@
     <UButton
       class="ml-1 mt-1"
       variant="outline"
-      color="blue"
+      color="neutral"
       size="sm"
       @click="groupCtrl.newGroup"
       label="Add Group"
