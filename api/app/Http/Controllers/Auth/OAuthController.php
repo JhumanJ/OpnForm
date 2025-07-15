@@ -122,7 +122,7 @@ class OAuthController extends Controller
         $user = $this->oauthUserService->findOrCreateUser($userData, $providerService);
 
         // Create/update OAuth provider record
-        $oauthProvider = $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
+        $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
 
         // Return JWT token for authentication
         return $this->sendLoginResponse($user);

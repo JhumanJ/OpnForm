@@ -4,6 +4,7 @@
     v-if="user && workspaces && workspaces.length >= 1"
     :items="dropdownItems"
     :content="content"
+    v-bind="$attrs"
     arrow
   >
     <slot :workspace="workspace" />

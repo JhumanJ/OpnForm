@@ -256,6 +256,9 @@ class User extends Authenticatable implements JWTSubject
     {
         parent::boot();
         static::deleting(function (User $user) {
+            // Delete all OAuth providers for this user
+            $user->oauthProviders()->delete();
+
             // Remove user's workspace if he's the only one with this workspace
             foreach ($user->workspaces as $workspace) {
                 if ($workspace->users()->count() == 1) {

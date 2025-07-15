@@ -39,7 +39,17 @@ const dismissedCookie = useCookie(COOKIE_NAME, {
 })
 
 // Computed
-const showBanner = computed(() => !dismissedCookie.value)
+const { current: workspace } = useCurrentWorkspace()
+const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
+
+const showBanner = computed(() => {
+  return (
+    !dismissedCookie.value &&
+    workspace.value &&
+    !workspace.value.is_pro &&
+    !isSelfHosted.value
+  )
+})
 
 const dismissBanner = () => {
   dismissedCookie.value = true

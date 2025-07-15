@@ -40,7 +40,7 @@
     </SettingsModalPage>
 
     <SettingsModalPage
-      v-if="user.has_customer_id"
+      v-if="user && user.has_customer_id"
       id="billing"
       label="Billing"
       icon="i-heroicons-credit-card"

@@ -19,8 +19,6 @@ class OAuthProviderController extends Controller
         return OAuthProviderResource::collection($providers);
     }
 
-
-
     public function destroy(OAuthProvider $provider)
     {
         $this->authorize('delete', $provider);

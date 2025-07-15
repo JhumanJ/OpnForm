@@ -24,16 +24,14 @@
       color="warning"
       variant="subtle"
       title="Pro plan required"
-    >
-      <template #description>
-        Please <NuxtLink
-          @click.prevent="openSubscriptionModal"
-          class="underline"
-        >
-          upgrade your account
-        </NuxtLink> to setup an email settings.
-      </template>
-    </UAlert>
+      description="Please upgrade your account to setup an email settings."
+      :actions="[{
+        label: 'Try Pro plan',
+        color: 'warning',
+        variant: 'solid',
+        onClick: () => openSubscriptionModal()
+      }]"
+    />
 
     <VForm size="sm">
       <form

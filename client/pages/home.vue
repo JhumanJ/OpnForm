@@ -110,7 +110,7 @@
             </div>
           </div>
           
-          <UpgradeBanner class="mt-2" />
+          <UpgradeBanner v-if="enrichedForms.length >= 2" class="mt-2" />
         </div>
 
           <!-- Loading Skeletons -->

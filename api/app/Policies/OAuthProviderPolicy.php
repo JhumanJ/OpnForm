@@ -69,12 +69,23 @@ class OAuthProviderPolicy
                 ->get()
                 ->filter(function ($form) use ($provider) {
                     return collect($form->properties)
-                        ->some(fn ($prop) => ($prop['stripe_account_id'] ?? null) === $provider->id);
+                        ->some(fn($prop) => ($prop['stripe_account_id'] ?? null) === $provider->id);
                 })
                 ->isNotEmpty();
             if ($formsUsingStripe) {
                 return $this->denyWithStatus(400, 'This Stripe connection cannot be removed because it is being used in a form payment field.');
             }
+        }
+
+        // Check if this is the user's primary OAuth provider and they don't have a password
+        if (
+            isset($user->meta['signup_provider']) &&
+            isset($user->meta['signup_provider_user_id']) &&
+            str_starts_with($user->meta['signup_provider'], $provider->provider->value) &&
+            $user->meta['signup_provider_user_id'] === $provider->provider_user_id &&
+            is_null($user->password)
+        ) {
+            return $this->denyWithStatus(400, 'You cannot remove your primary sign-in method. Please create a password first in your account settings.');
         }
 
         return $provider->user()->is($user);
