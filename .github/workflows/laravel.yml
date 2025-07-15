@@ -74,7 +74,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install npm dependencies
-        run: npm ci --no-audit --no-progress --silent --legacy-peer-deps
+        run: npm install --no-audit --no-progress --silent
 
       - name: Run ESLint
         run: npm run lint
@@ -220,7 +220,7 @@ jobs:
         run: cp .env.example .env
 
       - name: Install npm dependencies
-        run: npm ci --no-audit --no-progress --silent --legacy-peer-deps
+        run: npm install --no-audit --no-progress --silent
 
       - name: Build client
         run: npm run build
