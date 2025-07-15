@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\RateLimiter;
 
 it('allows first two email changes within an hour', function () {
     $user = User::factory()->create([

@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Cache;
 
 class OAuthController extends Controller
 {
-    public function __construct(private OAuthConnectionService $oauthService) {}
+    public function __construct(private OAuthConnectionService $oauthService)
+    {
+    }
 
     /**
      * Redirect the user to the provider authentication page.

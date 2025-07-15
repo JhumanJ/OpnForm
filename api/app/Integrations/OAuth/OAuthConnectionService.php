@@ -4,7 +4,6 @@ namespace App\Integrations\OAuth;
 
 use App\Integrations\OAuth\Contracts\OAuthCompletionStrategy;
 use Illuminate\Http\JsonResponse;
-use Laravel\Socialite\Two\AbstractProvider;
 
 class OAuthConnectionService
 {
