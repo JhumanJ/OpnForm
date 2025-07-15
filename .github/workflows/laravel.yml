@@ -64,7 +64,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22.17.0"
 
       - uses: actions/cache@v4
         with:
@@ -74,7 +74,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install npm dependencies
-        run: npm install --no-audit --no-progress --silent
+        run: npm ci --no-audit --no-progress --silent
 
       - name: Run ESLint
         run: npm run lint
@@ -207,7 +207,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22.17.0"
 
       - uses: actions/cache@v4
         with:
@@ -220,7 +220,7 @@ jobs:
         run: cp .env.example .env
 
       - name: Install npm dependencies
-        run: npm install --no-audit --no-progress --silent
+        run: npm ci --no-audit --no-progress --silent
 
       - name: Build client
         run: npm run build
