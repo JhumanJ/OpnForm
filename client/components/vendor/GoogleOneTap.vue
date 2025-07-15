@@ -168,21 +168,6 @@ watch(user, (newUser) => {
   }
 })
 
-// Method to reset One Tap state (for debugging)
-const resetOneTap = () => {
-  if (window.google?.accounts?.id) {
-    window.google.accounts.id.cancel()
-  }
-  oneTapInitialized.value = false
-  
-  // Try to reinitialize after a delay
-  setTimeout(() => {
-    if (shouldShowOneTap.value) {
-      initializeOneTap()
-    }
-  }, 1000)
-}
-
 // Cleanup on unmount
 onUnmounted(() => {
   if (window.google?.accounts?.id) {

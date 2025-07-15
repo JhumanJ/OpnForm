@@ -102,7 +102,6 @@
 </template>
 
 <script setup>
-import Collapse from "~/components/app/Collapse.vue"
 import { ref, defineProps, computed } from "vue"
 import { appUrl } from "~/lib/utils.js"
 import TrackClick from "~/components/global/TrackClick.vue"

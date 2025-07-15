@@ -69,7 +69,7 @@ class OAuthProviderPolicy
                 ->get()
                 ->filter(function ($form) use ($provider) {
                     return collect($form->properties)
-                        ->some(fn($prop) => ($prop['stripe_account_id'] ?? null) === $provider->id);
+                        ->some(fn ($prop) => ($prop['stripe_account_id'] ?? null) === $provider->id);
                 })
                 ->isNotEmpty();
             if ($formsUsingStripe) {
