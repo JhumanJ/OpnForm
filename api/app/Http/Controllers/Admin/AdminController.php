@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Jobs\Template\GenerateTemplateJob;
 use App\Models\Forms\Form;
 use App\Models\User;
+use App\Service\UserActionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
 
@@ -57,6 +59,9 @@ class AdminController extends Controller
                 'message' => 'You cannot fetch an admin.'
             ]);
         }
+
+        $user->makeVisible('meta');
+
         $workspaces = $user->workspaces()
             ->withCount('forms')
             ->get()
@@ -81,6 +86,54 @@ class AdminController extends Controller
         return $this->success([
             'user' => $user,
             'workspaces' => $workspaces
+        ]);
+    }
+
+    public function blockUser(Request $request, UserActionService $userActionService)
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $user = User::findOrFail($request->get('user_id'));
+
+        if ($user->admin) {
+            return $this->error([
+                'message' => 'You cannot block an admin.'
+            ]);
+        }
+
+        $user = $userActionService->block(
+            $user,
+            $request->get('reason'),
+            request()->user()->id
+        );
+
+        return $this->success([
+            "message" => "User has been blocked.",
+            "user" => $user->makeVisible('meta'),
+        ]);
+    }
+
+    public function unblockUser(Request $request, UserActionService $userActionService)
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $user = User::findOrFail($request->get('user_id'));
+
+        $user = $userActionService->unblock(
+            $user,
+            $request->get('reason'),
+            request()->user()->id
+        );
+
+        return $this->success([
+            "message" => "User has been unblocked.",
+            "user" => $user->makeVisible('meta'),
         ]);
     }
 
@@ -119,7 +172,7 @@ class AdminController extends Controller
             'subcription_id' => $subscription->id,
             'coupon_id' => $couponId,
             'subscription_stripe_id' => $subscription->stripe_id,
-            'moderator_id' => auth()->id(),
+            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -147,7 +200,7 @@ class AdminController extends Controller
             'subcription_id' => $subscription->id,
             'nb_days' => $request->get('number_of_day'),
             'subscription_stripe_id' => $subscription->stripe_id,
-            'moderator_id' => auth()->id(),
+            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -180,7 +233,7 @@ class AdminController extends Controller
         self::log('Cancel Subscription', [
             'user_id' => $user->id,
             'cancel_reason' => $request->get('cancellation_reason'),
-            'moderator_id' => auth()->id(),
+            'moderator_id' => request()->user()->id,
             'subcription_id' => $subscription->id,
             'subscription_stripe_id' => $subscription->stripe_id
         ]);
@@ -204,7 +257,7 @@ class AdminController extends Controller
 
         self::log('Sent password reset email', [
             'user_id' => $user->id,
-            'moderator_id' => auth()->id(),
+            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -214,6 +267,6 @@ class AdminController extends Controller
 
     public static function log($message, $data = [])
     {
-        \Log::warning(self::ADMIN_LOG_PREFIX . $message, $data);
+        Log::warning(self::ADMIN_LOG_PREFIX . $message, $data);
     }
 }

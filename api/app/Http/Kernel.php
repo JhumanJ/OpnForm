@@ -15,6 +15,7 @@ use App\Http\Middleware\IsSubscribed;
 use App\Http\Middleware\RequireProPlan;
 use App\Http\Middleware\SelfHostedCredentialsMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\CheckUserIsBlocked;
 
 class Kernel extends HttpKernel
 {
@@ -91,6 +92,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             SelfHostedCredentialsMiddleware::class,
             ImpersonationMiddleware::class,
+            CheckUserIsBlocked::class,
         ],
 
         'api-external' => [

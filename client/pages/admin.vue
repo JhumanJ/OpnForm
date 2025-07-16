@@ -115,6 +115,10 @@
         <DiscountOnSubscription
           :user="userInfo"
         />
+        <BlockUser
+          :user="userInfo"
+          @user-updated="onUserUpdate"
+        />
         <ExtendTrial
           :user="userInfo"
         />
@@ -214,6 +218,10 @@ async function fetchUser() {
       alert.error(error.data.message)
       loading.value = false
     })
+}
+
+function onUserUpdate(updatedUser) {
+  userInfo.value = updatedUser
 }
 
 function getUserPlan(workspaces) {

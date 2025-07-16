@@ -141,6 +141,11 @@ class User extends Authenticatable implements JWTSubject
         });
     }
 
+    public function getIsBlockedAttribute()
+    {
+        return isset($this->meta['blocked_at']) && $this->meta['blocked_at'];
+    }
+
     /**
      * =================================
      *  Helper Related

@@ -248,6 +248,15 @@ Route::group(['middleware' => 'auth.multi'], function () {
             [\App\Http\Controllers\Admin\AdminController::class, 'sendPasswordResetEmail']
         );
 
+        Route::post(
+            'block-user',
+            [\App\Http\Controllers\Admin\AdminController::class, 'blockUser']
+        );
+        Route::post(
+            'unblock-user',
+            [\App\Http\Controllers\Admin\AdminController::class, 'unblockUser']
+        );
+
         Route::group(['prefix'  => 'billing'], function () {
             Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
             Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
