@@ -223,7 +223,6 @@ async function fetchUser() {
 function onUserUpdate(updatedUser) {
   userInfo.value = updatedUser
 }
-
 function getUserPlan(workspaces) {
   if (workspaces.some(w => w.plan === 'enterprise')) {
     userPlan.value = 'enterprise'
