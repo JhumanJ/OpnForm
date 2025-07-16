@@ -36,7 +36,7 @@
           :variant="getColumnPreference().wrapped ? 'soft' : 'ghost'"
           icon="i-ic-baseline-wrap-text"
           :color="getColumnPreference().wrapped ? 'primary' : 'neutral'"
-          @click="tableState.toggleColumnWrap(column.id)"
+          @click="tableState.toggleColumnWrapping(column.id)"
         />
       </div>
 

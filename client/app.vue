@@ -21,7 +21,6 @@
 
       <ClientOnly>
         <FeatureBase />
-        <GoogleOneTap />
         <SubscriptionModal />
         <QuickRegister />
       </ClientOnly>
@@ -31,7 +30,6 @@
 
 <script setup>
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
-import GoogleOneTap from "~/components/vendor/GoogleOneTap.vue"
 
 const config = useRuntimeConfig()
 

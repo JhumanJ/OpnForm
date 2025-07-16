@@ -122,7 +122,7 @@
                               :variant="columnPreferencesMap[column.id]?.wrapped ? 'soft' : 'ghost'"
                               icon="i-ic-baseline-wrap-text"
                               :color="columnPreferencesMap[column.id]?.wrapped ? 'primary' : 'neutral'"
-                              @click.prevent="tableState.toggleColumnWrap(column.id)"
+                              @click.prevent="tableState.toggleColumnWrapping(column.id)"
                             />
                           </UTooltip>
 
