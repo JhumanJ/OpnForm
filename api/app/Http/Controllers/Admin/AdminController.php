@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserBlockRequest;
 use App\Jobs\Template\GenerateTemplateJob;
 use App\Models\Forms\Form;
 use App\Models\User;
@@ -89,13 +90,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function blockUser(Request $request, UserActionService $userActionService)
+    public function blockUser(UserBlockRequest $request, UserActionService $userActionService)
     {
-        $request->validate([
-            'user_id' => 'required',
-            'reason' => 'required|string|max:1000',
-        ]);
-
         $user = User::findOrFail($request->get('user_id'));
 
         if ($user->admin) {
@@ -116,13 +112,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function unblockUser(Request $request, UserActionService $userActionService)
+    public function unblockUser(UserBlockRequest $request, UserActionService $userActionService)
     {
-        $request->validate([
-            'user_id' => 'required',
-            'reason' => 'required|string|max:1000',
-        ]);
-
         $user = User::findOrFail($request->get('user_id'));
 
         $user = $userActionService->unblock(
