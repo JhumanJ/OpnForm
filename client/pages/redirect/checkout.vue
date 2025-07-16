@@ -29,10 +29,7 @@ onMounted(async () => {
     // Update customer details if provided
     if (name && email) {
       try {
-        await billingApi.updateCustomerDetails({
-          method: 'PUT',
-          body: { name, email }
-        })
+        await billingApi.updateCustomerDetails({ name, email })
       } catch {
         useAlert().error('Failed to update customer details, but proceeding with checkout')
       }
@@ -40,8 +37,12 @@ onMounted(async () => {
 
     // Get checkout URL
     const params = { trial_duration, currency }
+    const subscription = yearly === 'true' ? 'yearly' : 'monthly'
     const { checkout_url } = await billingApi.getCheckoutUrl(
-      `/subscription/new/${plan}/${yearly === 'true' ? 'yearly' : 'monthly'}/checkout/with-trial?${new URLSearchParams(params)}`
+      plan, 
+      subscription, 
+      'with-trial', 
+      { params }
     )
     
     if (!checkout_url) {

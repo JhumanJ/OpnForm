@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, toValue } from "vue"
 import { useComponentRegistry } from "~/composables/components/useComponentRegistry"
 import ProTag from "~/components/app/ProTag.vue"
 
@@ -88,12 +88,17 @@ const emit = defineEmits(["close"])
 
 const { createIntegration, updateIntegration } = useFormIntegrations()
 
-const createIntegrationMutation = createIntegration()
-const updateIntegrationMutation = updateIntegration()
+// Create mutations with reactive IDs
+const formId = computed(() => props.form.id)
+const formIntegrationId = computed(() => props.formIntegrationId)
+
+const createIntegrationMutation = createIntegration(formId)
+const updateIntegrationMutation = updateIntegration(formId, formIntegrationId)
 
 const loading = computed(
   () =>
-    integrationData.value?.busy || false
+    createIntegrationMutation.isPending.value ||
+    updateIntegrationMutation.isPending.value,
 )
 
 // Computed property to handle show/hide logic for UModal
@@ -166,40 +171,23 @@ initIntegrationData()
 const save = () => {
   if (loading.value) return
 
-  if (props.formIntegrationId) {
-    integrationData.value.mutate(updateIntegrationMutation, {
-      data: {
-        formId: props.form.id,
-        integrationId: props.formIntegrationId,
-      }
-    }).then((result) => {
+  const isUpdating = !!toValue(formIntegrationId)
+  const mutation = isUpdating ? updateIntegrationMutation : createIntegrationMutation
+
+  const promise = integrationData.value.mutate(mutation)
+
+  promise
+    .then((result) => {
       alert.success(result.message)
-      emit("close")
-    }).catch((error) => {
+      emit('close')
+    })
+    .catch((error) => {
       try {
         alert.error(error.data.message)
       }
       catch {
-        alert.error("An error occurred while saving the integration")
+        alert.error('An error occurred while saving the integration')
       }
     })
-  }
-  else {
-    integrationData.value.mutate(createIntegrationMutation, {
-      data: {
-        formId: props.form.id,
-      }
-    }).then((result) => {
-      alert.success(result.message)
-      emit("close")
-    }).catch((error) => {
-      try {
-        alert.error(error.data.message)
-      }
-      catch {
-        alert.error("An error occurred while saving the integration")
-      }
-    })
-  }
 }
 </script>

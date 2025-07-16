@@ -119,7 +119,13 @@ export const mentionAsText = (content) => {
     (match, fieldId, fieldName, text) => {
       return `${text}`
     }
-  ).replace(/<[^>]*>/g, '')
+  )
+  .replace(/<br\s*\/?>/gi, '\n') // Convert <br> tags to newlines
+  .replace(/<\/p>/gi, '\n') // Convert closing </p> tags to newlines
+  .replace(/<p[^>]*>/gi, '') // Remove opening <p> tags
+  .replace(/<\/div>/gi, '\n') // Convert closing </div> tags to newlines  
+  .replace(/<div[^>]*>/gi, '') // Remove opening <div> tags
+  .replace(/<[^>]*>/g, '') // Remove all other HTML tags
 }
 
 export function formatNumber(num) {

@@ -4,13 +4,15 @@
       v-if="integration"
       class="hidden md:block space-y-1"
     >
-      <UBadge
-        :label="integration.data.webhook_url"
-        color="neutral"
-        variant="subtle"
-        size="sm"
-        class="max-w-[300px] block truncate"
-      />
+      <UTooltip :text="integration.data.webhook_url">
+        <UBadge
+          :label="integration.data.webhook_url"
+          color="neutral"
+          variant="subtle"
+          size="sm"
+          class="max-w-40 block truncate"
+        />
+      </UTooltip>
     </div>
   </div>
 </template>
