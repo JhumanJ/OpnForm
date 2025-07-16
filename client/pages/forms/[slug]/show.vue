@@ -1,205 +1,227 @@
 <template>
-  <div class="bg-white">
-    <template v-if="form">
-      <div class="flex bg-gray-50">
-        <div class="w-full md:w-4/5 lg:w-3/5 md:mx-auto md:max-w-4xl px-4">
-          <div class="pt-4 pb-0">
-            <a
-              href="#"
-              class="flex text-blue mb-2 font-semibold text-sm"
-              @click.prevent="goBack"
-            >
-              <svg
-                class="w-3 h-3 text-blue mt-1 mr-1"
-                viewBox="0 0 6 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5 9L1 5L5 1"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Go back
-            </a>
-
-            <div class="flex flex-wrap">
-              <h2 class="flex-grow text-gray-900 truncate">
-                {{ form.title }}
-              </h2>
-              <div class="flex mt-4 gap-2 lg:mt-0">
-                <UButton
-                  v-if="form.visibility === 'draft'"
-                  color="white"
-                  class="hover:no-underline"
-                  icon="i-heroicons-eye"
-                  @click="showDraftFormWarningNotification"
-                >
-                  <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
-                </UButton>
-                <UButton
-                  v-else
-                  v-track.view_form_click="{form_id:form.id, form_slug:form.slug}"
-                  target="_blank"
-                  :to="form.share_url"
-                  color="white"
-                  class="hover:no-underline"
-                  icon="i-heroicons-eye"
-                >
-                  <span class="hidden sm:inline">View <span class="hidden md:inline">form</span></span>
-                </UButton>
-                <UButton
-                  v-if="!workspace.is_readonly"
-                  v-track.edit_form_click="{form_id: form.id, form_slug: form.slug}"
-                  color="primary"
-                  icon="i-heroicons-pencil"
-                  class="hover:no-underline"
-                  :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
-                >
-                  Edit <span class="hidden md:inline">form</span>
-                </UButton>
-                <extra-menu
-                  v-if="!workspace.is_readonly"
-                  :form="form"
-                />
+  <div class="flex flex-col sm:flex-row h-screen bg-white">
+    <!-- Form Sidebar - Always shown -->
+    <FormSidebar :form="form" :loading="isLoading" />
+    
+    <!-- Main content area -->
+    <main class="flex-1 sm:pl-58 overflow-hidden">
+      <div class="flex flex-col h-full">
+        <!-- Loading State -->
+        <div v-if="isLoading || !isFormFinished" class="flex-1 bg-white">
+          <!-- Top Bar Skeleton -->
+          <div class="bg-white p-4">
+            <div class="max-w-4xl mx-auto">
+              <!-- Form Title and Actions Skeleton -->
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <USkeleton class="h-7 w-64 mb-2" />
+                  <div class="flex flex-wrap items-center gap-2">
+                    <USkeleton class="h-5 w-16" />
+                    <USkeleton class="h-5 w-16" />
+                    <USkeleton class="h-5 w-32" />
+                  </div>
+                </div>
+                
+                <!-- Action Buttons Skeleton -->
+                <div class="hidden md:flex gap-2">
+                  <USkeleton class="h-9 w-20" />
+                  <USkeleton class="h-9 w-20" />
+                  <USkeleton class="h-9 w-8" />
+                </div>
+              </div>
+              
+              <!-- Status Badges Skeleton -->
+              <div class="flex flex-wrap gap-2 mt-2">
+                <USkeleton class="h-4 w-16" />
+                <USkeleton class="h-4 w-20" />
               </div>
             </div>
+          </div>
 
-            <p class="text-gray-500 text-sm">
-              <span class="pr-1">{{ form.views_count }} view{{
-                form.views_count > 0 ? "s" : ""
-              }}</span>
-              <span class="pr-1">- {{ form.submissions_count }} submission{{
-                form.submissions_count > 0 ? "s" : ""
-              }}
-              </span>
-              <span>- Edited {{ form.last_edited_human }}</span>
-            </p>
-            
-            <FormStatusBadges 
-              :form="form"
-              class="mt-2"
-            />
-
-            <form-cleanings
-              class="mt-4"
-              :form="form"
-            />
-
-            <div class="border-b border-gray-200 dark:border-gray-700">
-              <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
-                <li
-                  v-for="(tab, i) in tabsList"
-                  :key="i + 1"
-                  class="mr-6"
-                >
-                  <nuxt-link
-                    :to="{ name: tab.route, params: tab.params ?? {} }"
-                    class="hover:no-underline inline-block py-4 rounded-t-lg border-b-2 text-gray-500 hover:text-gray-600"
-                    active-class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
-                  >
-                    {{ tab.name }}
-                  </nuxt-link>
-                </li>
-              </ul>
+          <!-- Page Content Skeleton -->
+          <div :class="['flex-1 bg-white p-4', { 'overflow-y-auto': !isSubmissionsPage }]">
+            <div class="max-w-4xl mx-auto space-y-4">
+              <USkeleton class="h-8 w-48" />
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <USkeleton class="h-32 w-full" />
+                <USkeleton class="h-32 w-full" />
+                <USkeleton class="h-32 w-full" />
+              </div>
+              <USkeleton class="h-64 w-full" />
             </div>
           </div>
         </div>
+
+        <!-- Loaded Content -->
+        <template v-else-if="form">
+          <!-- Top Bar (Non-Sticky) -->
+          <div class="bg-white p-4 pb-0">
+            <div class="max-w-4xl mx-auto">
+              <!-- Form Title and Actions -->
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex-1 min-w-0 hidden sm:block">
+                  <h1 class="text-xl font-semibold text-neutral-900 truncate ">
+                    {{ form.title }}
+                  </h1>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                  <UButton
+                    v-if="form.visibility === 'draft'"
+                    color="neutral"
+                    variant="outline"
+                    class="hover:no-underline"
+                    icon="i-heroicons-eye"
+                    @click="showDraftFormWarningNotification"
+                  >
+                    <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
+                  </UButton>
+                  <TrackClick
+                    v-else
+                    name="view_form_click"
+                    :properties="{form_id:form.id, form_slug:form.slug}"
+                  >
+                    <UButton
+                      target="_blank"
+                      :to="form.share_url"
+                      color="neutral"
+                      variant="outline"
+                      class="hover:no-underline"
+                      icon="i-heroicons-arrow-top-right-on-square"
+                    >
+                      <span class="hidden sm:inline">Open <span class="hidden md:inline">form</span></span>
+                    </UButton>
+                  </TrackClick>
+                  <TrackClick
+                    v-if="!workspace?.is_readonly"
+                    name="edit_form_click"
+                    :properties="{form_id: form.id, form_slug: form.slug}"
+                  >
+                    <UButton
+                      color="primary"
+                      icon="i-heroicons-pencil"
+                      class="hover:no-underline"
+                      :to="{ name: 'forms-slug-edit', params: { slug: form.slug } }"
+                    >
+                      Edit <span class="hidden md:inline">form</span>
+                    </UButton>
+                  </TrackClick>
+                  <extra-menu
+                    v-if="!workspace?.is_readonly"
+                    :form="form"
+                    portal="#form-show-portals"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2 text-neutral-500 text-xs mt-2 sm:mt-0">
+                <UTooltip :text="`${formatNumberWithCommas(form.views_count)} views`">
+                  <div class="flex items-center gap-1">
+                    <UIcon name="i-heroicons-eye" />
+                    <span>{{ formatNumber(form.views_count) }}</span>
+                  </div>
+                </UTooltip>
+
+                <UTooltip :text="`${formatNumberWithCommas(form.submissions_count)} submissions`">
+                  <div class="flex items-center gap-1">
+                    <UIcon name="i-heroicons-document-text" />
+                    <span>{{ formatNumber(form.submissions_count) }}</span>
+                  </div>
+                </UTooltip>
+
+                <span class="whitespace-nowrap">Edited {{ form.last_edited_human }}</span>
+              </div>
+              
+              <!-- Status Badges and Form Cleanings -->
+              <div class="flex flex-wrap gap-2">
+                <FormStatusBadges class="mt-2" size="sm" :form="form" />
+                <FormCleanings class="mt-2" :form="form" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Page Content -->
+          <div :class="['flex-1 bg-white', { 'overflow-y-auto': !isSubmissionsPage }]">
+            <NuxtPage :form="form" />
+          </div>
+        </template>
+
+        <!-- Not Found State -->
+        <div
+          v-else
+          class="flex items-center justify-center h-screen bg-white"
+        >
+          <div class="flex flex-col gap-4 items-center justify-center">
+            <h2 class="text-lg font-semibold text-neutral-900">Form not found</h2>
+            <p class="text-neutral-500">The form you're looking for doesn't exist or has been deleted.</p>
+            <div class="">
+            <UButton
+              variant="soft"
+              class="hover:no-underline"
+              icon="i-heroicons-arrow-left"
+              :to="{ name: 'home' }"
+            >
+                Go to Dashboard
+              </UButton>
+            </div>
+          </div>
+        </div>
+
+        <div id="form-show-portals" class="z-20" />
       </div>
-      <div class="flex flex-col bg-white">
-        <NuxtPage :form="form" />
-      </div>
-    </template>
-    <div
-      v-else-if="loading"
-      class="text-center w-full p-5"
-    >
-      <Loader class="h-6 w-6 mx-auto" />
-    </div>
-    <div
-      v-else
-      class="text-center w-full p-5"
-    >
-      Form not found.
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue"
+import { formatNumber, formatNumberWithCommas } from "~/lib/utils.js"
+import FormSidebar from "../../../components/layouts/FormSidebar.vue"
 import ExtraMenu from "../../../components/pages/forms/show/ExtraMenu.vue"
 import FormCleanings from "../../../components/pages/forms/show/FormCleanings.vue"
 import FormStatusBadges from "../../../components/open/forms/components/FormStatusBadges.vue"
+import TrackClick from "../../../components/global/TrackClick.vue"
 
 definePageMeta({
-  middleware: "auth",
+  layout: "empty",
 })
+
 useOpnSeoMeta({
   title: "Home",
 })
 
+// Composables
 const route = useRoute()
-const formsStore = useFormsStore()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
+const { detail: formDetail } = useForms()
 
-const slug = useRoute().params.slug
+const slug = route.params.slug
 
-formsStore.startLoading()
-const form = computed(() => formsStore.getByKey(slug))
-const workspace = computed(() => workspacesStore.getCurrent)
+// Get current workspace
+const { current: workspaceRef } = useCurrentWorkspace()
+const workspace = workspaceRef.value
 
-const loading = computed(() => formsStore.loading || workspacesStore.loading)
+// Get form by slug
+const { data: form, isLoading: isFormLoading, isFetched: isFormFinished } = formDetail(slug)
 
-const tabsList = [
-  {
-    name: "Submissions",
-    route: "forms-slug-show-submissions",
-    params: { 'slug': slug }
-  },
-  ...workspace.value.is_readonly ? [] : [
-    {
-      name: "Integrations",
-      route: "forms-slug-show-integrations",
-      params: { 'slug': slug }
-    },
-  ],
-  {
-    name: "Analytics",
-    route: "forms-slug-show-stats",
-    params: { 'slug': slug }
-  },
-  {
-    name: "Share",
-    route: "forms-slug-show-share",
-    params: { 'slug': slug }
-  },
-]
+// Combined loading state
+const isLoading = computed(() => isFormLoading.value)
 
-onMounted(() => {
-  workingFormStore.reset()
-  if (form.value) {
-    workingFormStore.set(form.value)
-  } else {
-    formsStore.loadForm(route.params.slug)
-  }
-})
+// Disable sticky top-bar behaviour on the submissions page only
+const isSubmissionsPage = computed(() => route.name?.includes('submissions'))
 
+// Update working form store when form changes
 watch(
-  () => form?.value?.id,
-  (id) => {
-    if (id) {
-      workingFormStore.set(form.value)
+  () => form.value,
+  (newForm) => {
+    workingFormStore.reset()
+    if (newForm) {
+      workingFormStore.set(newForm)
     }
   },
+  { immediate: true }
 )
-
-const goBack = () => {
-  useRouter().push({ name: "home" })
-}
 
 const showDraftFormWarningNotification = () => {
   useAlert().warning(

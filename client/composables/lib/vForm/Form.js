@@ -1,7 +1,7 @@
 import { serialize } from "object-to-formdata"
 import Errors from "./Errors"
 import cloneDeep from "clone-deep"
-import { opnFetch } from "~/composables/useOpnApi.js"
+import { apiService } from "~/api"
 function hasFiles(data) {
   return (
     data instanceof File ||
@@ -145,7 +145,7 @@ class Form {
       }
     }
     return new Promise((resolve, reject) => {
-      opnFetch(config.url, config)
+      apiService.mutate(config.url, config)
         .then((data) => {
           this.finishProcessing()
           resolve(data)
@@ -182,7 +182,7 @@ class Form {
       }
     }
     return new Promise((resolve, reject) => {
-      opnFetch(config.url, config)
+      apiService.mutate(config.url, config)
         .then((data) => {
           this.finishProcessing()
           resolve(data)
@@ -218,12 +218,41 @@ class Form {
     return { ...data }
   }
 
-  onKeydown(event) {
-    const target = event.target
+  /**
+   * Submit form data using TanStack Query mutation
+   * @param {Object} mutation - TanStack Query mutation object
+   * @param {Object} options - Additional options
+   * @returns {Promise}
+   */
+  mutate(mutation, options = {}) {
+    return this.mutateAsync(mutation, options)
+  }
 
-    if (target.name) {
-      this.errors.clear(target.name)
-    }
+  /**
+   * Submit form data using TanStack Query mutation (async)
+   * @param {Object} mutation - TanStack Query mutation object
+   * @param {Object} options - Additional options
+   * @returns {Promise}
+   */
+  mutateAsync(mutation, options = {}) {
+    this.startProcessing()
+    
+    const payload = { ...this.data(), ...options.data }
+    
+    // Handle file uploads if needed
+    const processedPayload = hasFiles(payload) && options.transformRequest
+      ? options.transformRequest.reduce((data, fn) => fn(data), payload)
+      : payload
+          
+    return mutation.mutateAsync(processedPayload)
+      .then((response) => {
+        this.finishProcessing()
+        return response
+      })
+      .catch((error) => {
+        this.handleErrors(error)
+        throw error
+      })
   }
 }
 

@@ -1,4 +1,6 @@
 import { defineStore } from "pinia"
+import { authApi } from "~/api"
+import { initServiceClients } from '~/composables/useAuthFlow'
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -64,35 +66,30 @@ export const useAuthStore = defineStore("auth", {
       }
 
       this.user = user
-      this.initServiceClients()
+      initServiceClients(user)
     },
 
     updateUser(payload) {
       this.user = payload
-      this.initServiceClients()
-    },
-
-    initServiceClients() {
-      if (!this.user) return
-      useAmplitude().setUser(this.user)
-      useCrisp().setUser(this.user)
-
-      // todo: set sentry user
+      initServiceClients(payload)
     },
 
     logout() {
-      opnFetch("logout", { method: "POST" }).catch(() => {})
+      authApi.logout().catch(() => {})
 
       this.user = null
       
-      // Clear the token cookie by setting maxAge to 0
+      this.clearToken()
+    },
+
+    clearToken(){
       this.setCookie("token", null, { maxAge: 0 })
       this.token = null
     },
 
-    // async fetchOauthUrl() {
-      // const {data} = await axios.post(`/api/oauth/${provider}`)
-      // return data.url
-    // },
+    clearTokens(){
+      this.clearToken()
+      this.setAdminToken(null)
+    },
   },
 })

@@ -1,14 +1,14 @@
 <template>
   <VTransition>
     <section
-      v-if="hasCleanings && !hideWarning"
+      v-if="shouldShowWarning"
       class="flex gap-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-300 border-solid max-md:flex-wrap mb-2"
       aria-labelledby="notification-title"
     >
       <div class="flex justify-center items-center self-start py-px">
         <Icon
           name="i-heroicons-sparkles-16-solid"
-          class="w-6 h-6 text-nt-blue"
+          class="w-6 h-6 text-blue-500"
         />
       </div>
       <div class="flex flex-col flex-1 max-md:max-w-full">
@@ -29,22 +29,26 @@
           />
         </div>
         <div class="flex gap-0 self-start mt-2 text-xs font-medium leading-3 text-center">
-          <UButton
-            v-track.form_cleanings_unlock_all_features
-            icon="i-heroicons-check-badge-16-solid"
-            @click.prevent="onUpgradeClick"
+          <TrackClick
+            name="form_cleanings_unlock_all_features"
+            :properties="{}"
           >
-            <template v-if="form.is_pro">
-              Upgrade plan - Unlock all features
-            </template>
-            <template v-else>
-              Start free trial - Unlock all features
-            </template>
-          </UButton>
+            <UButton
+              icon="i-heroicons-check-badge-16-solid"
+              @click.prevent="onUpgradeClick"
+            >
+              <template v-if="form.is_pro">
+                Upgrade plan - Unlock all features
+              </template>
+              <template v-else>
+                Start free trial - Unlock all features
+              </template>
+            </UButton>
+          </TrackClick>
           <UButton
             v-if="specifyFormOwner"
             variant="link"
-            @click.prevent="hideWarning=true"
+            @click.prevent="dismissWarning"
           >
             Dismiss
           </UButton>
@@ -54,60 +58,93 @@
   </VTransition>
 </template>
 
-<script>
+<script setup>
 import VTransition from '~/components/global/transitions/VTransition.vue'
+import TrackClick from '~/components/global/TrackClick.vue'
 
-export default {
-  name: 'FormCleanings',
-  components: { VTransition },
-  props: {
-    form: { type: Object, required: true },
-    specifyFormOwner: { type: Boolean, default: false },
-    hideable: { type: Boolean, default: false }
-  },
-  setup () {
-    const subscriptionModalStore = useSubscriptionModalStore()
-    return {
-      subscriptionModalStore
-    }
-  },
-  data () {
-    return {
-      collapseOpened: false,
-      hideWarning: false
-    }
-  },
-  computed: {
-    hasCleanings () {
-      return this.form.cleanings && Object.keys(this.form.cleanings).length > 0
-    },
-    cleanings () {
-      return this.form.cleanings
-    },
-    cleaningContent () {
-      let message = ''
-      Object.keys(this.cleanings).forEach((key) => {
-        let fieldName = key.charAt(0).toUpperCase() + key.slice(1)
-        if (fieldName !== 'Form') {
-          fieldName = '"' + fieldName + '" field'
-        }
-        let fieldInfo = '<br><span class="font-semibold">' + fieldName + '</span><br/><ul class=\'list-disc list-inside\'>'
-        this.cleanings[key].forEach((msg) => {
-          if (!msg) return
-          fieldInfo = fieldInfo + '<li>' + msg + '</li>'
-        })
-        if (fieldInfo) {
-          message = message + fieldInfo + '</ul>'
-        }
-      })
-      return message
-    }
-  },
-  methods: {
-    onUpgradeClick () {
-      this.subscriptionModalStore.setModalContent('Upgrade to unlock all features for your form', 'Some features are disabled on the published form. Upgrade your plan to unlock these features and much more. Gain full access to all advanced features.')
-      this.subscriptionModalStore.openModal()
-    }
+const props = defineProps({
+  form: { type: Object, required: true },
+  specifyFormOwner: { type: Boolean, default: false },
+  hideable: { type: Boolean, default: false },
+  useCookieDismissal: { type: Boolean, default: false }
+})
+
+const { openSubscriptionModal } = useAppModals()
+
+// Create a cookie to store dismissal state for each form
+const cookieName = `form_cleanings_dismissed_${props.form.id}`
+const dismissedCookie = useCookie(cookieName, {
+  default: () => null,
+  maxAge: 60 * 60 // 1 hour in seconds
+})
+
+// Reactive data
+const hideWarning = ref(false)
+
+// Computed properties
+const hasCleanings = computed(() => {
+  return props.form.cleanings && Object.keys(props.form.cleanings).length > 0
+})
+
+const shouldShowWarning = computed(() => {
+  // Don't show if manually dismissed
+  if (hideWarning.value) return false
+  
+  // Don't show if no cleanings
+  if (!hasCleanings.value) return false
+  
+  // If cookie dismissal is enabled, check if dismissed within last hour
+  if (props.useCookieDismissal && dismissedCookie.value && isWithinLastHour(dismissedCookie.value)) {
+    return false
   }
+  
+  return true
+})
+
+const cleanings = computed(() => {
+  return props.form.cleanings
+})
+
+const cleaningContent = computed(() => {
+  let message = ''
+  Object.keys(cleanings.value).forEach((key) => {
+    let fieldName = key.charAt(0).toUpperCase() + key.slice(1)
+    if (fieldName !== 'Form') {
+      fieldName = '"' + fieldName + '" field'
+    }
+    let fieldInfo = '<br><span class="font-semibold">' + fieldName + '</span><br/><ul class=\'list-disc list-inside\'>'
+    cleanings.value[key].forEach((msg) => {
+      if (!msg) return
+      fieldInfo = fieldInfo + '<li>' + msg + '</li>'
+    })
+    if (fieldInfo) {
+      message = message + fieldInfo + '</ul>'
+    }
+  })
+  return message
+})
+
+// Methods
+const onUpgradeClick = () => {
+  openSubscriptionModal({
+    modal_title: 'Upgrade to unlock all features for your form',
+    modal_description: 'Some features are disabled on the published form. Upgrade your plan to unlock these features and much more. Gain full access to all advanced features.'
+  })
 }
+
+const dismissWarning = () => {
+  // Set the cookie with current timestamp (only if cookie dismissal is enabled)
+  if (props.useCookieDismissal) {
+    dismissedCookie.value = Date.now()
+  }
+  hideWarning.value = true
+}
+
+const isWithinLastHour = (timestamp) => {
+  const now = Date.now()
+  const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
+  return (now - timestamp) < oneHour
+}
+
+
 </script>

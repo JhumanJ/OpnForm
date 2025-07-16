@@ -1,5 +1,5 @@
 import { toValue } from 'vue'
-import { opnFetch } from '~/composables/useOpnApi.js'
+import { formsApi } from '~/api'
 import clonedeep from 'clone-deep'
 
 /**
@@ -215,7 +215,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     }
 
     // Use the correct route format: /forms/{slug}/submissions/{submission_id}
-    return opnFetch(`/forms/${slug}/submissions/${submissionIdValue}`)
+    return formsApi.submissions.get(slug, submissionIdValue)
       .then(submissionData => {
         if (submissionData.data) {
           resetAndFill({

@@ -1,13 +1,15 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen gap-4">
     <Loader class="w-8 h-8 text-blue-500" />
-    <p class="text-gray-500">
+    <p class="text-neutral-500">
       Preparing your checkout...
     </p>
   </div>
 </template>
 
 <script setup>
+import { billingApi } from "~/api"
+
 definePageMeta({
   middleware: 'auth'
 })
@@ -27,7 +29,7 @@ onMounted(async () => {
     // Update customer details if provided
     if (name && email) {
       try {
-        await opnFetch('subscription/update-customer-details', {
+        await billingApi.updateCustomerDetails({
           method: 'PUT',
           body: { name, email }
         })
@@ -38,7 +40,7 @@ onMounted(async () => {
 
     // Get checkout URL
     const params = { trial_duration, currency }
-    const { checkout_url } = await opnFetch(
+    const { checkout_url } = await billingApi.getCheckoutUrl(
       `/subscription/new/${plan}/${yearly === 'true' ? 'yearly' : 'monthly'}/checkout/with-trial?${new URLSearchParams(params)}`
     )
     

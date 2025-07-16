@@ -1,125 +1,123 @@
 <template>
   <div class="flex">
-    <v-button
-      v-track.url_form_prefill_click="{
+    <TrackClick
+      name="url_form_prefill_click"
+      :properties="{
         form_id: form.id,
         form_slug: form.slug,
       }"
-      class="w-full"
-      color="light-gray"
-      @click="showUrlFormPrefillModal = true"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 mr-2 text-blue-600 inline"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17 16v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2h2m3-4H9a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-1m-1 4l-3 3m0 0l-3-3m3 3V3"
-        />
-      </svg>
-      Url pre-fill
-    </v-button>
+      <UButton
+        variant="outline"
+        color="neutral"
+        icon="i-heroicons-link"
+        @click="showUrlFormPrefillModal = true"
+        label="URL Pre-fill"
+      />
+    </TrackClick>
 
-    <modal
-      :show="showUrlFormPrefillModal"
-      @close="showUrlFormPrefillModal = false"
+    <UModal
+      v-model:open="isModalOpen"
+      :ui="{ content: 'sm:max-w-2xl' }"
     >
-      <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-10 h-10 text-blue"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 16v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2h2m3-4H9a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-1m-1 4l-3 3m0 0l-3-3m3 3V3"
-          />
-        </svg>
-      </template>
-      <template #title>
-        <span>Url Form Prefill</span>
-      </template>
-
-      <div
-        ref="content"
-        class="p-4"
-      >
-        <p>
-          Create dynamic links when sharing your form (whether it's embedded or
-          not), that allows you to prefill your form fields. You can use this to
-          personalize the form when sending it to multiple contacts for
-          instance.
-        </p>
-
-        <h3 class="mt-6 border-t text-xl font-semibold mb-4 pt-6">
-          How does it work?
-        </h3>
-
-        <p>
-          Complete your form below and fill only the fields you want to prefill.
-          You can even leave the required fields empty.
-        </p>
-
-        <div class="rounded-lg p-5 bg-gray-100 dark:bg-gray-900 mt-4">
-          <open-form
-            v-if="formManager"
-            :theme="theme"
-            :form-manager="formManager"
-            @submit="generateUrl"
-          >
-            <template #submit-btn="{loading}">
-              <v-button
-                class="mt-2 px-8 mx-1"
-                :loading="loading"
-                @click.prevent="generateUrl"
-              >
-                Generate Pre-filled URL
-              </v-button>
-            </template>
-          </open-form>
+      <template #header>
+        <div class="flex items-center w-full gap-4 px-2">
+          <h2 class="font-semibold">
+            Url Form Prefill
+          </h2>
         </div>
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-heroicons-question-mark-circle"
+          size="sm"
+          @click="crisp.openHelpdeskArticle('how-to-use-url-form-pre-fill-1juyi21')"
+        >
+          Help
+        </UButton>
+      </template>
 
-        <template v-if="prefillFormData">
-          <h3 class="mt-6 text-xl font-semibold mb-4 pt-6">
-            Your Prefill url
+      <template #body>
+        <div ref="content">
+          <p>
+            Create dynamic links when sharing your form (whether it's embedded or
+            not), that allows you to prefill your form fields. You can use this to
+            personalize the form when sending it to multiple contacts for
+            instance.
+          </p>
+
+          <h3 class="mt-6 border-t text-xl font-semibold mb-4 pt-6">
+            How does it work?
           </h3>
-          <form-url-prefill
-            :form="form"
-            :form-data="prefillFormData"
-            :extra-query-param="extraQueryParam"
-          />
-        </template>
-      </div>
-    </modal>
+
+          <p>
+            Complete your form below and fill only the fields you want to prefill.
+            You can even leave the required fields empty.
+          </p>
+
+          <div class="rounded-lg p-5 bg-neutral-100 dark:bg-neutral-900 mt-4">
+            <OpenForm
+              v-if="formManager"
+              :theme="theme"
+              :form-manager="formManager"
+              @submit="generateUrl"
+            >
+              <template #submit-btn="{loading}">
+                <UButton
+                  class="mt-4"
+                  :loading="loading"
+                  @click="generateUrl"
+                  label="Generate Pre-filled URL"
+                />
+              </template>
+            </OpenForm>
+          </div>
+
+          <template v-if="prefillFormData">
+            <h3 class="mt-6 text-xl font-semibold mb-4 pt-6">
+              Your Prefill url
+            </h3>
+            <FormUrlPrefill
+              :form="form"
+              :form-data="prefillFormData"
+              :extra-query-param="extraQueryParam"
+            />
+          </template>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup>
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
-import FormUrlPrefill from "../../../open/forms/components/FormUrlPrefill.vue"
-import OpenForm from "../../../open/forms/OpenForm.vue"
+import FormUrlPrefill from "~/components/open/forms/components/FormUrlPrefill.vue"
+import OpenForm from "~/components/open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const props = defineProps({
   form: { type: Object, required: true },
   extraQueryParam: { type: String, default: "" },
 })
 
+const crisp = useCrisp()
+
 // State variables
 const prefillFormData = ref(null)
 const showUrlFormPrefillModal = ref(false)
 const content = ref(null)
+
+// Modal state
+const isModalOpen = computed({
+  get() {
+    return showUrlFormPrefillModal.value
+  },
+  set(value) {
+    showUrlFormPrefillModal.value = value
+  }
+})
 
 // Theme computation
 const theme = computed(() => {

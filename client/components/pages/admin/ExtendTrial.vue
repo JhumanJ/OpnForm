@@ -8,13 +8,13 @@
       class="space-y-6 flex flex-col justify-between"
       @submit.prevent="extendTrial"
     >
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-neutral-500">
         You can extend the trial of subscribers that are still in the trial
         period. Usually, you should not offer more than 7 days of trial, but
         you can add up to 14 days if needed.
       </p>
       <div>
-        <text-input
+        <TextInput
           name="number_of_day"
           :form="form"
           label="Number of days"
@@ -23,14 +23,12 @@
           help="Number Of Days"
           placeholder="7"
         />
-        <v-button
+        <UButton
           :loading="loading"
-          type="success"
-          class="w-full"
-          color="white"
-        >
-          Apply Extend Trial
-        </v-button>
+          type="submit"
+          block
+          label="Apply Extend Trial"
+        />
       </div>
     </form>
   </AdminCard>

@@ -47,10 +47,10 @@
     >
       Connect Stripe Account
     </UButton>
-    <p class="text-sm text-gray-500 mt-3">
+    <p class="text-sm text-neutral-500 mt-3">
       <a
         target="#"
-        class="text-gray-500 cursor-pointer text-sm"
+        class="text-neutral-500 cursor-pointer text-sm"
         @click.prevent="crisp.openHelpdeskArticle('how-to-collect-payment-svig30')"
       >
         <Icon
@@ -76,14 +76,15 @@ const props = defineProps({
 })
 
 const crisp = useCrisp()
-const providersStore = useOAuthProvidersStore()
+const oAuth = useOAuth()
+const { data: providersData, refetch } = oAuth.providers()
 const stripeLoading = ref(false)
 
 // Setup window message listener for Stripe connection
 const { listen, cleanup } = useWindowMessage()
 
 onMounted(async () => {
-  await providersStore.fetchOAuthProviders()
+  await oAuth.fetchOAuthProviders()
 
   if(props.field?.currency === undefined || props.field?.currency === null) {
     props.field.currency = 'USD'
@@ -99,7 +100,7 @@ onMounted(async () => {
 
   // Listen for Stripe connection message
   listen(async () => {
-    await providersStore.fetchOAuthProviders()
+    await refetch()
     // Auto-select first Stripe account after refresh if one isn't already selected (or maybe always select the newest? for now, first)
     if (stripeAccounts.value.length > 0) {
       props.field.stripe_account_id = stripeAccounts.value[0].value
@@ -116,7 +117,7 @@ onUnmounted(() => {
   cleanup()
 })
 
-const stripeAccounts = computed(() => providersStore.getAll.filter((item) => item.provider === 'stripe').map((item) => ({
+const stripeAccounts = computed(() => (providersData.value || []).filter((item) => item.provider === 'stripe').map((item) => ({
   name: item.name + (item.email ? ' (' + item.email + ')' : ''),
   value: item.id
 })))
@@ -128,10 +129,9 @@ const currencyList = computed(() => {
   }))
 })
 
-
 const connectStripe = () => {
   stripeLoading.value = true
-  providersStore.connect('stripe', false, true, true)
+  oAuth.connect('stripe', false, true, true)
   setTimeout(() => {
     stripeLoading.value = false
   }, 10000)

@@ -1,163 +1,142 @@
 <template>
-  <modal
-    :show="show"
-    @close="emit('close')"
+  <UModal
+    v-model:open="isOpen"
+    :ui="{ content: 'sm:max-w-4xl' }"
   >
-    <template #icon>
-      <svg
-        class="w-10 h-10 text-blue"
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+    <template #header>
+      <div class="flex items-center w-full gap-4 px-2">
+        <h2 class="font-semibold">
+          {{ template ? 'Edit Template' : 'Create Template' }}
+        </h2>
+      </div>
+      <UButton
+        color="neutral"
+        variant="outline"
+        icon="i-heroicons-question-mark-circle"
+        size="sm"
+        @click="crisp.openHelpdeskArticle('how-to-create-an-opnform-template-1fn84i4')"
       >
-        <path
-          d="M17 27C16.0681 27 15.6022 27 15.2346 26.8478C14.7446 26.6448 14.3552 26.2554 14.1522 25.7654C14 25.3978 14 24.9319 14 24V17.2C14 16.0799 14 15.5198 14.218 15.092C14.4097 14.7157 14.7157 14.4097 15.092 14.218C15.5198 14 16.0799 14 17.2 14H24C24.9319 14 25.3978 14 25.7654 14.1522C26.2554 14.3552 26.6448 14.7446 26.8478 15.2346C27 15.6022 27 16.0681 27 17M24.2 34H30.8C31.9201 34 32.4802 34 32.908 33.782C33.2843 33.5903 33.5903 33.2843 33.782 32.908C34 32.4802 34 31.9201 34 30.8V24.2C34 23.0799 34 22.5198 33.782 22.092C33.5903 21.7157 33.2843 21.4097 32.908 21.218C32.4802 21 31.9201 21 30.8 21H24.2C23.0799 21 22.5198 21 22.092 21.218C21.7157 21.4097 21.4097 21.7157 21.218 22.092C21 22.5198 21 23.0799 21 24.2V30.8C21 31.9201 21 32.4802 21.218 32.908C21.4097 33.2843 21.7157 33.5903 22.092 33.782C22.5198 34 23.0799 34 24.2 34Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+        Help
+      </UButton>
     </template>
-    <template #title>
-      <template v-if="template">
-        Edit Template
-      </template>
-      <template v-else>
-        Create Template
-      </template>
-    </template>
-    <div class="p-4">
-      <p v-if="!template">
+
+    <template #body>
+      <p v-if="!template" class="mb-4">
         New template will be create from your form:
         <span class="font-semibold">{{ form.title }}</span>.
       </p>
 
       <form
         v-if="templateForm"
-        class="mt-6"
         @submit.prevent="onSubmit"
-        @keydown="templateForm.onKeydown($event)"
       >
-        <div class="-m-6">
-          <div class="border-t py-4 px-6">
-            <toggle-switch-input
-              v-if="user && (user.admin || user.template_editor)"
-              name="publicly_listed"
-              :form="templateForm"
-              class="mt-4"
-              label="Publicly Listed?"
-            />
-            <text-input
-              name="name"
-              :form="templateForm"
-              class="mt-4"
-              label="Title"
-              :required="true"
-            />
-            <text-input
-              name="slug"
-              :form="templateForm"
-              class="mt-4"
-              label="Slug"
-              :required="true"
-            />
-            <text-area-input
-              name="short_description"
-              :form="templateForm"
-              class="mt-4"
-              label="Short Description"
-              :required="true"
-            />
-            <rich-text-area-input
-              name="description"
-              :form="templateForm"
-              class="mt-4"
-              label="Description"
-              :required="true"
-            />
-            <text-input
-              name="image_url"
-              :form="templateForm"
-              class="mt-4"
-              label="Image"
-              :required="true"
-            />
-            <select-input
-              name="types"
-              :form="templateForm"
-              class="mt-4"
-              label="Types"
-              :options="typesOptions"
-              :multiple="true"
-              :searchable="true"
-            />
-            <select-input
-              name="industries"
-              :form="templateForm"
-              class="mt-4"
-              label="Industries"
-              :options="industriesOptions"
-              :multiple="true"
-              :searchable="true"
-            />
-            <select-input
-              name="related_templates"
-              :form="templateForm"
-              class="mt-4"
-              label="Related Templates"
-              :options="templatesOptions"
-              :multiple="true"
-              :searchable="true"
-            />
-            <questions-editor
-              name="questions"
-              :questions="templateForm.questions"
-              class="mt-4"
-              label="Frequently asked questions"
-            />
-          </div>
-          <div class="flex justify-end mt-4 pb-5 px-6">
-            <v-button
-              class="mr-2"
-              :loading="templateForm.busy"
-            >
-              <template v-if="template">
-                Update
-              </template>
-              <template v-else>
-                Create
-              </template>
-            </v-button>
-            <v-button
-              v-if="template"
-              color="red"
-              class="mr-2"
-              @click.prevent="
-                useAlert().confirm(
-                  'Do you really want to delete this template?',
-                  deleteFormTemplate,
-                )
-              "
-            >
-              Delete
-            </v-button>
-            <v-button
-              color="white"
-              @click.prevent="emit('close')"
-            >
-              Close
-            </v-button>
-          </div>
+        <div class="space-y-4">
+          <toggle-switch-input
+            v-if="user && (user.admin || user.template_editor)"
+            name="publicly_listed"
+            :form="templateForm"
+            label="Publicly Listed?"
+          />
+          <text-input
+            name="name"
+            :form="templateForm"
+            label="Title"
+            :required="true"
+          />
+          <text-input
+            name="slug"
+            :form="templateForm"
+            label="Slug"
+            :required="true"
+          />
+          <text-area-input
+            name="short_description"
+            :form="templateForm"
+            label="Short Description"
+            :required="true"
+          />
+          <rich-text-area-input
+            name="description"
+            :allow-fullscreen="true"
+            :form="templateForm"
+            label="Description"
+            :required="true"
+          />
+          <text-input
+            name="image_url"
+            :form="templateForm"
+            label="Image"
+            :required="true"
+          />
+          <select-input
+            name="types"
+            :form="templateForm"
+            label="Types"
+            :options="typesOptions"
+            :multiple="true"
+            :searchable="true"
+          />
+          <select-input
+            name="industries"
+            :form="templateForm"
+            label="Industries"
+            :options="industriesOptions"
+            :multiple="true"
+            :searchable="true"
+          />
+          <select-input
+            name="related_templates"
+            :form="templateForm"
+            label="Related Templates"
+            :options="templatesOptions"
+            :multiple="true"
+            :searchable="true"
+          />
+          <questions-editor
+            name="questions"
+            :questions="templateForm.questions"
+            label="Frequently asked questions"
+          />
         </div>
       </form>
-    </div>
-  </modal>
+    </template>
+
+    <template #footer>
+      <div class="flex justify-end gap-x-2 w-full">
+        <UButton
+          color="neutral"
+          variant="outline"
+          @click="close"
+          label="Close"
+        />
+        <UButton
+          v-if="template"
+          color="error"
+          variant="outline"
+          @click="
+            useAlert().confirm(
+              'Do you really want to delete this template?',
+              deleteFormTemplate,
+            )
+          "
+          label="Delete template"
+        />
+        <div class="grow"/>
+        <UButton
+          class="px-8"
+          :loading="createMutation.isPending.value || updateMutation.isPending.value"
+          @click="onSubmit"
+          :label="template ? 'Update' : 'Create'"
+        />
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, computed } from "vue"
+import { ref, defineProps, defineEmits, computed, watch, onMounted } from "vue"
 import QuestionsEditor from "./QuestionsEditor.vue"
+import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -165,16 +144,41 @@ const props = defineProps({
   template: { type: Object, required: false, default: () => {} },
 })
 
-const authStore = useAuthStore()
-const templatesStore = useTemplatesStore()
+const crisp = useCrisp()
 const router = useRouter()
-const user = computed(() => authStore.user)
-const templates = computed(() => [...templatesStore.content.values()])
-const industries = computed(() => [...templatesStore.industries.values()])
-const types = computed(() => [...templatesStore.types.values()])
+const { data: user } = useAuth().user()
+
+const { list, create, update, remove } = useTemplates()
+
+const { industries: industriesMap, types: typesMap } = useTemplateMeta()
+
+const industries = computed(() => [...(industriesMap.value?.values() ?? [])])
+const types = computed(() => [...(typesMap.value?.values() ?? [])])
 
 const templateForm = ref(null)
 const emit = defineEmits(["close"])
+
+// Modal state
+const isOpen = computed({
+  get() {
+    return props.show
+  },
+  set(value) {
+    if (!value) {
+      close()
+    }
+  }
+})
+
+// Initialize templates query - this needs to be called at setup level
+const templatesQuery = list({ enabled: false })
+
+// Enable the query when modal is opened
+watch(isOpen, (open) => {
+  if (open) {
+    templatesQuery.refetch()
+  }
+})
 
 onMounted(() => {
   templateForm.value = useForm(
@@ -185,22 +189,13 @@ onMounted(() => {
       short_description: "",
       description: "",
       image_url: "",
-      types: null,
-      industries: null,
-      related_templates: null,
+      types: [],
+      industries: [],
+      related_templates: [],
       questions: [],
     },
   )
 })
-
-watch(
-  () => props.show,
-  () => {
-    if (props.show) {
-      loadAllTemplates(templatesStore)
-    }
-  },
-)
 
 const typesOptions = computed(() => {
   return Object.values(types.value).map((type) => {
@@ -219,13 +214,22 @@ const industriesOptions = computed(() => {
   })
 })
 const templatesOptions = computed(() => {
-  return Object.values(templates.value).map((template) => {
+  if (!templatesQuery.data.value) return []
+  return Object.values(templatesQuery.data.value).map((template) => {
     return {
       name: template.name,
       value: template.slug,
     }
   })
 })
+
+const close = () => {
+  emit("close")
+}
+
+const createMutation = create()
+const updateMutation = update()
+const deleteMutation = remove()
 
 const onSubmit = () => {
   if (props.template) {
@@ -234,39 +238,32 @@ const onSubmit = () => {
     createFormTemplate()
   }
 }
-const createFormTemplate = async () => {
+const createFormTemplate = () => {
   templateForm.value.form = props.form
-  await templateForm.value.post("/templates").then((data) => {
-    if (data.message) {
-      useAlert().success(data.message)
-    }
-    templatesStore.save(data.data)
+  createMutation.mutateAsync(templateForm.value).then(() => {
+    useAlert().success("Template created successfully")
     emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
   })
 }
-const updateFormTemplate = async () => {
+const updateFormTemplate = () => {
   templateForm.value.form = props.form
-  await templateForm.value
-    .put("/templates/" + props.template.id)
-    .then((data) => {
-      if (data.message) {
-        useAlert().success(data.message)
-      }
-      templatesStore.save(data.data)
-      emit("close")
-    })
+  updateMutation.mutateAsync({ id: props.template.id, data: templateForm.value }).then(() => {
+    useAlert().success("Template updated successfully")
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
-const deleteFormTemplate = async () => {
+const deleteFormTemplate = () => {
   if (!props.template) return
-  opnFetch("/templates/" + props.template.id, { method: "DELETE" }).then(
-    (data) => {
-      if (data.message) {
-        useAlert().success(data.message)
-      }
-      router.push({ name: "templates" })
-      templatesStore.remove(props.template)
-      emit("close")
-    },
-  )
+  deleteMutation.mutateAsync(props.template.id).then(() => {
+    useAlert().success("Template deleted successfully")
+    router.push({ name: "templates" })
+    emit("close")
+  }).catch((error) => {
+    useAlert().error(error.message)
+  })
 }
 </script>

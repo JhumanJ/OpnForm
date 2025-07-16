@@ -6,22 +6,25 @@
     >
       <UBadge
         :label="mentionAsText(integration.data.subject)"
-        color="gray"
-        size="xs"
+        color="neutral"
+        variant="subtle"
+        size="sm"
         class="max-w-[300px] block truncate"
       />
       <div class="flex items-center gap-1">
         <UBadge
           :label="firstEmail"
-          color="white"
-          size="xs"
+          color="neutral"
+          variant="outline"
+          size="sm"
           class="max-w-[300px] block truncate"
         />
         <UBadge
           v-if="additionalEmailsCount > 0"
           :label="`+${additionalEmailsCount}`"
-          color="white"
-          size="xs"
+          color="neutral"
+          variant="outline"
+          size="sm"
         />
       </div>
     </div>
@@ -42,12 +45,12 @@ const props = defineProps({
   }
 })
 
-const formIntegrationsStore = useFormIntegrationsStore()
+const { invalidateIntegrations } = useFormIntegrations()
 let interval = null
 
 onMounted(() => {
   if (!props.integration.data || props.integration.data.length === 0) {
-    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id), 3000)
+    interval = setInterval(() => invalidateIntegrations(props.form.id), 3000)
     setTimeout(() => { clearInterval(interval) }, 30000)
   }
 })
@@ -58,13 +61,18 @@ onBeforeUnmount(() => {
   }
 })
 
+const sendToEmails = computed(() => {
+  if (!props.integration.data.send_to) {
+    return []
+  }
+  return mentionAsText(props.integration.data.send_to).split(/[,;\s\n]+/).filter(Boolean)
+})
+
 const firstEmail = computed(() => {
-  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
-  return emails[0].replace(/<[^>]*>/g, '') || ''
+  return sendToEmails.value[0] || ''
 })
 
 const additionalEmailsCount = computed(() => {
-  const emails = mentionAsText(props.integration.data.send_to).split('\n').filter(Boolean)
-  return Math.max(0, emails.length - 1)
+  return Math.max(0, sendToEmails.value.length - 1)
 })
 </script>

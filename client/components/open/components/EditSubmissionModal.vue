@@ -1,30 +1,30 @@
 <template>
-  <modal
-    :show="show"
-    max-width="lg"
-    @close="emit('close')"
+  <UModal
+    v-model:open="isModalOpen"
+    title="Edit Submission"
   >
-    <open-form
-      v-if="form"
-      :form-manager="formManager"
-      :theme="theme"
-      @submit="updateForm"
-    >
-      <template #submit-btn="{ loading }">
-        <v-button
-          :loading="loading"
-          class="mt-2 px-8 mx-1"
-          @click.prevent="updateForm"
-        >
-          Update Submission
-        </v-button>
-      </template>
-    </open-form>
-  </modal>
+    <template #body>
+      <OpenForm
+        v-if="form"
+        :form-manager="formManager"
+        :theme="theme"
+        @submit="updateForm"
+      >
+        <template #submit-btn="{ loading }">
+          <UButton
+            class="mt-4"
+            :loading="loading"
+            @click.prevent="updateForm"
+            label="Update Submission"
+          />
+        </template>
+      </OpenForm>
+    </template>
+  </UModal>
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from "vue"
+import { ref, defineProps, defineEmits, computed } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
@@ -43,6 +43,18 @@ const props = defineProps({
       }
     },
   submission: { type: Object },
+})
+
+// Modal state
+const isModalOpen = computed({
+  get() {
+    return props.show
+  },
+  set(value) {
+    if (!value) {
+      emit("close")
+    }
+  }
 })
 
 // Set up form manager with proper mode

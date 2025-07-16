@@ -72,7 +72,7 @@ export default {
 @import "vue-notion/src/styles.css";
 
 .notion-blue {
-  @apply text-nt-blue;
+  @apply text-blue-500;
 }
 
 .notion-spacer {

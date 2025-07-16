@@ -1,22 +1,20 @@
 <template>
-  <modal
-    :show="show"
-    @close="$emit('close')"
+  <UModal
+    v-model:open="isOpen"
+    :ui="{ content: 'sm:max-w-lg' }"
+    title="We couldn't save your form"
   >
-    <div class="-mx-5">
-      <h2 class="text-red-600 text-2xl font-medium mb-4 px-4">
-        We couldn't save your form
-      </h2>
-
+    <template #body>
       <div
         v-if="validationErrorResponse"
-        class="p-4 border-b border-t"
+        class="p-4 border border-red-200 rounded-lg bg-red-50"
       >
         <p
           v-if="validationErrorResponse.message"
+          class="text-red-800 mb-3"
           v-text="validationErrorResponse.message"
         />
-        <ul class="list-disc list-inside">
+        <ul class="list-disc list-inside text-red-700 space-y-1">
           <li
             v-for="(err, key) in validationErrorResponse.errors"
             :key="key"
@@ -25,27 +23,42 @@
           </li>
         </ul>
       </div>
+    </template>
 
-      <div class="px-4 pt-4 text-right">
-        <v-button
-          color="gray"
-          shade="light"
-          @click="$emit('close')"
+    <template #footer>
+      <div class="flex justify-end">
+        <UButton
+          color="neutral"
+          variant="outline"
+          @click="closeModal"
         >
           Close
-        </v-button>
+        </UButton>
       </div>
-    </div>
-  </modal>
+    </template>
+  </UModal>
 </template>
 
-<script>
-export default {
-  name: 'FormErrorModal',
-  props: {
-    show: { type: Boolean, required: true },
-    validationErrorResponse: { type: Object, required: false },
-  },
-  emits: ['close'],
+<script setup>
+const props = defineProps({
+  show: { type: Boolean, required: true },
+  validationErrorResponse: { type: Object, required: false },
+})
+
+const emit = defineEmits(['close'])
+
+// Modal state
+const isOpen = computed({
+  get: () => props.show,
+  set: (value) => {
+    if (!value) {
+      emit('close')
+    }
+  }
+})
+
+// Methods
+const closeModal = () => {
+  isOpen.value = false
 }
 </script>

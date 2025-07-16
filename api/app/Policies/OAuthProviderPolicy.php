@@ -77,6 +77,17 @@ class OAuthProviderPolicy
             }
         }
 
+        // Check if this is the user's primary OAuth provider and they don't have a password
+        if (
+            isset($user->meta['signup_provider']) &&
+            isset($user->meta['signup_provider_user_id']) &&
+            str_starts_with($user->meta['signup_provider'], $provider->provider->value) &&
+            $user->meta['signup_provider_user_id'] === $provider->provider_user_id &&
+            is_null($user->password)
+        ) {
+            return $this->denyWithStatus(400, 'You cannot remove your primary sign-in method. Please create a password first in your account settings.');
+        }
+
         return $provider->user()->is($user);
     }
 

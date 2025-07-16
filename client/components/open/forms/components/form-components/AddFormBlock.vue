@@ -1,22 +1,25 @@
 <template>
-  <div>
-    <div class="p-2 border-b border-gray-300 sticky top-0 z-10 bg-white">
+  <div class="pb-16">
+    <div class="p-2 border-b border-neutral-300 sticky top-0 z-10 bg-white">
       <div class="flex items-center">
         <UButton
           size="sm"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-x-mark-20-solid"
-          variant="ghost"
+          variant="outlint"
           @click="closeSidebar"
         />
         <div class="font-medium inline ml-2 flex-grow truncate">
           Add Block
         </div>
+        <AiFieldGenerator
+          class="py-2 px-4"
+        />
       </div>
     </div>
 
     <div class="py-2 px-4">
-      <p class="text-gray-500 text-xs font-medium my-2">
+      <p class="text-neutral-500 text-xs font-medium my-2">
         Input Blocks
       </p>
       <draggable
@@ -32,20 +35,20 @@
       >
         <template #item="{element}">
           <div
-            class="flex hover:bg-gray-50 rounded-md items-center gap-2 p-2 group"
+            class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2 group"
             role="button"
             @click.prevent="addBlock(element.name)"
           >
             <BlockTypeIcon :type="element.name" />
             <p
-              class="w-full text-sm text-gray-500"
+              class="w-full text-sm text-neutral-500"
             >
               {{ element.title }}
             </p>
             <Icon
               v-if="element.auth_required && !authenticated"
               name="heroicons:lock-closed"
-              class="text-gray-400 w-4 h-4"
+              class="text-neutral-400 w-4 h-4"
             />
           </div>
         </template>
@@ -68,20 +71,20 @@
       >
         <template #item="{element}">
           <div
-            class="flex hover:bg-gray-50 rounded-md items-center gap-2 p-2"
+            class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2"
             role="button"
             @click.prevent="addBlock(element.name)"
           >
             <BlockTypeIcon :type="element.name" />
             <p
-              class="w-full text-sm text-gray-500"
+              class="w-full text-sm text-neutral-500"
             >
               {{ element.title }}
             </p>
             <Icon
               v-if="element.auth_required && !authenticated"
               name="heroicons:lock-closed"
-              class="text-gray-400 w-4 h-4"
+              class="text-neutral-400 w-4 h-4"
             />
           </div>
         </template>
@@ -94,10 +97,10 @@
 import draggable from 'vuedraggable'
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
+import AiFieldGenerator from './components/AiFieldGenerator.vue'
 
 const workingFormStore = useWorkingFormStore()
-const authStore = useAuthStore()
-const authenticated = computed(() => authStore.check)
+const { isAuthenticated: authenticated } = useIsAuthenticated()
 
 const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
 const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))

@@ -51,6 +51,11 @@ class WorkspacePolicy
      */
     public function create(User $user)
     {
+        // Check if user already has a workspace
+        if (!$user->is_pro && $user->workspaces()->count() > 0) {
+            return Response::deny('You have reached the limit for free workspaces. Upgrade to Pro to create additional workspaces.');
+        }
+
         if ($token = $user->currentAccessToken()) {
             return $token->can('workspaces-write');
         }
@@ -79,10 +84,12 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace)
     {
-        $basePermission = !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+        if (!$user->ownsWorkspace($workspace)) {
+            return Response::deny('You cannot delete this workspace.');
+        }
 
-        if (! $basePermission) {
-            return false;
+        if ($user->workspaces()->count() <= 1) {
+            return Response::deny('You cannot delete your last workspace. Delete your account instead.');
         }
 
         if ($token = $user->currentAccessToken()) {

@@ -9,7 +9,7 @@
           <UButton
             :to="{ name: 'integrations' }"
             variant="ghost"
-            color="gray"
+            color="neutral"
             class="mb-4"
             icon="i-heroicons-arrow-left"
           >

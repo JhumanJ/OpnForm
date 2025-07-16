@@ -5,7 +5,7 @@ import sitemap from "./sitemap"
 export default defineNuxtConfig({
   loglevel: process.env.NUXT_LOG_LEVEL || 'info',
   devtools: {enabled: true},
-  css: ['~/scss/app.scss'],
+  css: ['~/css/app.css'],
 
   modules: [
       '@pinia/nuxt', 
@@ -17,7 +17,7 @@ export default defineNuxtConfig({
       '@nuxtjs/i18n',
       '@nuxt/icon', 
       '@sentry/nuxt/module',
-      ...(process.env.NUXT_PUBLIC_GTM_CODE ? ['@zadigetvoltaire/nuxt-gtm'] : []),
+      '@zadigetvoltaire/nuxt-gtm',
   ],
 
   build: {
@@ -81,41 +81,42 @@ export default defineNuxtConfig({
       id: process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_CODE,
   },
 
+  ui: {
+    theme: {
+        colors: [
+            'primary',
+            'secondary',
+            'success',
+            'error',
+            'warning',
+            'info',
+            'neutral',
+            'form'
+        ]
+    }
+  },
+
   components: [
       {
-          path: '~/components/forms',
+          path: '~/components/forms/core',
           pathPrefix: false,
           global: true,
+      },
+      {
+          path: '~/components/forms/heavy',
+          pathPrefix: false,
+          global: false,
       },
       {
           path: '~/components/global',
           pathPrefix: false,
       },
       {
-          path: '~/components/forms',
-          pathPrefix: false,
-          global: true
-      },
-      {
           path: '~/components/pages',
           pathPrefix: false,
       },
-      {
-          path: '~/components/open/integrations',
-          pathPrefix: false,
-          global: true,
-      },
-      {
-          path: '~/components/settings',
-          pathPrefix: false,
-          global: true,
-      },
       '~/components',
   ],
-
-  tailwindcss: {
-      cssPath: '~/scss/app.scss'
-  },
 
   colorMode: {
       preference: 'light',

@@ -20,7 +20,17 @@ it('can register', function () {
         'g-recaptcha-response' => 'test-token', // Mock token for testing
     ])
         ->assertSuccessful()
-        ->assertJsonStructure(['id', 'name', 'email']);
+        ->assertJsonStructure([
+            'token',
+            'token_type',
+            'expires_in',
+            'appsumo_license',
+            'new_user',
+            'user' => [
+                'name',
+                'email'
+            ]
+        ]);
 
     $user = User::where('email', 'test@test.app')->first();
     expect($user)->not->toBeNull();

@@ -3,13 +3,14 @@ import clonedeep from "clone-deep"
 import { generateUUID } from "~/lib/utils.js"
 import blocksTypes from "~/data/blocks_types.json"
 import { useAlert } from '~/composables/useAlert'
-import { useAuthStore } from '~/stores/auth'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
+
 import { useForm } from '~/composables/useForm'
 
 export const useWorkingFormStore = defineStore("working_form", {
   state: () => ({
     content: null,
-    activeTab: 0,
+    activeTab: 'build',
     
     // Field being edited
     selectedFieldIndex: null,
@@ -120,13 +121,14 @@ export const useWorkingFormStore = defineStore("working_form", {
      * @param {number|null} explicitIndex - Optional explicit index to insert at
      * @returns {number} The index where the block should be inserted relative to all properties
      */
-    determineInsertIndex(explicitIndex) {
+    determineInsertIndex(explicitIndex, insertOnSamePage = false) {
       // If we have a structure service, use its method
       if (this.structureService) {
         return this.structureService.determineInsertIndex(
           this.selectedFieldIndex,
           this.formPageIndex,
-          explicitIndex
+          explicitIndex,
+          insertOnSamePage
         )
       }
       
@@ -183,8 +185,8 @@ export const useWorkingFormStore = defineStore("working_form", {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
         return
       }
-      if (originalBlockDefinition?.auth_required && !useAuthStore().check) {
-        useAlert().error('Please login first to add this block')
+      if (originalBlockDefinition?.auth_required && !useIsAuthenticated().isAuthenticated.value) {
+        useAlert().error('Please login to add this block.')
         return
       }
 
@@ -224,6 +226,15 @@ export const useWorkingFormStore = defineStore("working_form", {
         this.openSettingsForField(insertIndex)
       }
     },
+    addGeneratedFields(fields) {
+      if (!this.content) return
+      
+      const insertIndex = this.determineInsertIndex(null, true)
+      
+      const newFields = clonedeep(this.content.properties || [])
+      newFields.splice(insertIndex, 0, ...fields)
+      this.setProperties(newFields)
+    },
     removeField(field) {
       this.internalRemoveField(field)
     },
@@ -236,7 +247,7 @@ export const useWorkingFormStore = defineStore("working_form", {
           actions: [{
             label: 'Undo',
             icon:"i-material-symbols-undo",
-            click: () => {
+            onclick: () => {
               this.undo()
             }
           }]

@@ -1,0 +1,113 @@
+---
+description: Nuxt client side, API and TanStack Query patterns for data fetching, caching, and state management. Use when needed to change how data is fetched from back-end, or when working with @/api modules, @/composables/query files, cache invalidation, SSR data fetching, or TanStack Query implementation.
+globs:
+alwaysApply: false
+---
+
+# API & TanStack Query Guidelines
+
+> **Scope** – These rules cover _front-end server-state management_ in the Nuxt client. They do **not** address UI-only state (handled by Pinia) nor back-end Laravel endpoints.
+
+---
+
+## 1. Two-Layer Approach
+
+| Layer                 | Folder                       | Responsibility                                                                                   |
+| --------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| **API functions**     | `client/api/*`               | Thin wrappers around `$fetch` that talk to the REST API. No caching, no Vue code.                |
+| **Query composables** | `client/composables/query/*` | Wrap API calls with TanStack Query for caching, mutations, optimistic updates, and invalidation. |
+
+> Example mapping – `client/api/workspace.js` ↔︎ `client/composables/query/useWorkspaces.js`
+
+---
+
+## 2. Query Composable Conventions
+
+1. **Expose factories, not results** – Each composable returns methods (`list()`, `detail(id)`, `create()`, …). The caller decides _when_ to register the query/mutation.
+2. **Query keys** – Use predictable, hierarchical keys:
+    - List: `["workspaces", "list"]`
+    - Item: `["workspaces", id]`
+3. **Cache writes after mutations** – Inside `onSuccess` use `queryClient.setQueryData` to update affected caches, then call `invalidate()` only when a true refetch is needed.
+4. **Utilities** – Provide at minimum `invalidate()` (call `queryClient.invalidateQueries({ queryKey: [domain] })`).
+
+---
+
+## 3. Usage in Components
+
+```vue
+<script setup>
+// Queries
+const { list } = useWorkspaces();
+const { data: workspaces, isLoading, isError } = list();
+
+// Mutations (Promise-based)
+const { create } = useWorkspaces();
+const createWorkspace = create();
+
+const onSubmit = (form) => {
+    createWorkspace
+        .mutateAsync(form)
+        .then(() => useAlert().success("Created"))
+        .catch((err) => useAlert().error(err.message));
+};
+</script>
+
+<template>
+    <div v-if="isLoading">Loading…</div>
+    <div v-else-if="isError">Failed to load</div>
+    <ul v-else>
+        <li v-for="ws in workspaces" :key="ws.id">{{ ws.name }}</li>
+    </ul>
+    <UButton :loading="createWorkspace.isPending" @click="onSubmit(form)"
+        >Create</UButton
+    >
+</template>
+```
+
+### Why `.mutateAsync().then().catch()`?
+
+It keeps control flow explicit, works with native Promises, and avoids `try/catch` inside template methods.
+
+---
+
+## 4. SSR & Suspense
+
+During SSR we sometimes need the data _before_ HTML is streamed. TanStack Query offers `.suspense()` on every query:
+
+```js
+// middleware/client/middleware/01.check-auth.global.js (excerpt)
+await Promise.all([
+    useAuth().user().suspense(),
+    useWorkspaces().list().suspense(),
+]);
+```
+
+`<Suspense>` blocks in Vue templates are discouraged – prefer awaiting in middleware or `serverPrefetch`.
+
+---
+
+## 5. Authentication Plumbing
+
+`client/composables/useOpnApi.js` injects `Authorization: Bearer <token>` automatically (token is stored in cookies). The `01.check-auth.global.js` middleware initializes the store and pre-loads user + workspace data on navigation.
+
+You normally **don’t** need to add headers manually.
+
+---
+
+## 6. Common Pitfalls
+
+| ❌ Anti-pattern                              | ✅ Fix                                                   |
+| -------------------------------------------- | -------------------------------------------------------- |
+| Creating queries inside `watch` / `computed` | Call composables at top level; use `enabled` when needed |
+| Mixing UI state in TanStack cache            | Keep UI state in Pinia                                   |
+| Broad `queryClient.invalidateQueries()`      | Use domain-level `invalidate()`                          |
+
+---
+
+## 7. Checklist for New Composables
+
+-   [ ] Map 1-to-1 with an API module
+-   [ ] Provide `list`, `detail`, and the necessary mutations
+-   [ ] Use consistent query keys
+-   [ ] Handle optimistic cache updates in `onSuccess`
+-   [ ] Expose `invalidate()`

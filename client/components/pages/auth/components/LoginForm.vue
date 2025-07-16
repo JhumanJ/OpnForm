@@ -9,7 +9,6 @@
       method="POST"
       class="mt-4"
       @submit.prevent="login"
-      @keydown="form.onKeydown($event)"
     >
       <!-- Email -->
       <text-input
@@ -33,7 +32,7 @@
       <!-- Remember Me -->
       <div class="relative flex items-center mt-3">
         <CheckboxInput
-          v-model="remember"
+          :form="form"
           class="w-full md:w-1/2"
           name="remember"
           size="small"
@@ -43,7 +42,7 @@
         <div class="w-full md:w-1/2 text-right">
           <a
             href="#"
-            class="text-xs hover:underline text-gray-500 sm:text-sm hover:text-gray-700"
+            class="text-xs hover:underline text-neutral-500 sm:text-sm hover:text-neutral-700"
             @click.prevent="showForgotModal = true"
           >
             Forgot your password?
@@ -52,30 +51,32 @@
       </div>
 
       <!-- Submit Button -->
-      <v-button
-        class="w-full flex mt-2"
-        :loading="form.busy || loading"
-      >
-        Log in to continue
-      </v-button>
+      <UButton
+        class="mt-2"
+        block
+        size="lg"
+        :loading="form.busy"
+        type="submit"
+        label="Log in to continue"
+      />
 
-      <v-button
-        v-if="useFeatureFlag('services.google.auth')"
+      <UButton
+        v-if="useFeatureFlag('services.google.auth') && !useFeatureFlag('self_hosted')"
         native-type="button"
-        color="white"
-        class="space-x-4 mt-4 flex items-center w-full"
+        color="neutral"
+        variant="outline"
+        size="lg"
+        class="space-x-4 mt-4 flex items-center"
+        block
+        :disabled="form.busy"
         :loading="false"
         @click.prevent="signInwithGoogle"
-      >
-        <Icon
-          name="devicon:google"
-          class="w-4 h-4"
-        />
-        <span class="mx-2">Sign in with Google</span>
-      </v-button>
+        icon="devicon:google"
+        label="Sign in with Google"
+      />
       <p
         v-if="!useFeatureFlag('self_hosted')"
-        class="text-gray-500 text-sm text-center mt-4"
+        class="text-neutral-500 text-sm text-center mt-4"
       >
         Don't have an account?
         <a
@@ -93,97 +94,100 @@
         </NuxtLink>
       </p>
     </form>
+
+    <!-- Google One Tap -->
+    <ClientOnly>
+      <GoogleOneTap context="signin" />
+    </ClientOnly>
   </div>
 </template>
 
-<script>
+<script setup>
 import ForgotPasswordModal from "../ForgotPasswordModal.vue"
+import GoogleOneTap from "~/components/vendor/GoogleOneTap.vue"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 
-export default {
-  name: "LoginForm",
-  components: {
-    ForgotPasswordModal,
+// Props
+const props = defineProps({
+  isQuick: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
-  props: {
-    isQuick: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
+})
 
-  emits: ['openRegister'],
-  setup() {
-    return {
-      appStore: useAppStore(),
-      authStore: useAuthStore(),
-      formsStore: useFormsStore(),
-      workspaceStore: useWorkspacesStore(),
-      providersStore: useOAuthProvidersStore()
+// Emits
+defineEmits(['openRegister'])
+
+// Composables
+const oAuth = useOAuth()
+const router = useRouter()
+const { login: loginMutationFactory } = useAuth()
+
+// Reactive data
+const form = useForm({
+  email: "",
+  password: "",
+  remember: false,
+})
+
+const loginMutation = loginMutationFactory()
+const showForgotModal = ref(false)
+
+// Lifecycle
+onMounted(() => {
+  // Use the window message composable
+  const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+  
+  // Listen for login complete messages
+  windowMessage.listen(() => {
+    redirect()
+  })
+})
+
+// Methods
+const login = () => {
+  form.mutate(loginMutation).then(() => {
+    redirect()
+  }).catch((error) => {
+    console.log(error)
+    if (error.response?._data?.message == "You must change your credentials when in self host mode") {
+      redirect()
     }
-  },
+  })
+}
 
-  data: () => ({
-    form: useForm({
-      email: "",
-      password: "",
-    }),
-    loading: false,
-    remember: false,
-    showForgotModal: false,
-  }),
+const redirect = () => {
+  if (props.isQuick) {
+    // Use window message instead of event
+    const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
+    afterLoginMessage.send(window)
+    return
+  }
 
-  computed: {},
+  const intendedUrlCookie = useCookie("intended_url")
 
-  mounted() {
-    // Use the window message composable
-    const windowMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
-    
-    // Listen for login complete messages
-    windowMessage.listen(() => {
-      this.redirect()
-    })
-  },
+  if (intendedUrlCookie.value) {
+    router.push({ path: intendedUrlCookie.value })
+    useCookie("intended_url").value = null
+  } else {
+    router.push({ name: "home" })
+  }
+}
 
-  methods: {
-    async login() {
-      this.loading = true
-      const auth = useAuth()
-      
-      try {
-        await auth.loginWithCredentials(this.form, this.remember)
-        this.redirect()
-      } catch (error) {
-        if (error.response?._data?.message == "You must change your credentials when in self host mode") {
-          this.redirect()
-        }
-      } finally {
-        this.loading = false
-      }
-    },
+const showOAuthError = (error) => {
+  if (error.response?.status === 422 && error.response?.data?.message) {
+    useAlert().error(error.response.data.message)
+  } else {
+    useAlert().error("Sign-in failed. Please try again.")
+  }
+}
 
-    redirect() {
-      if (this.isQuick) {
-        // Use window message instead of event
-        const afterLoginMessage = useWindowMessage(WindowMessageTypes.AFTER_LOGIN)
-        afterLoginMessage.send(window)
-        return
-      }
-
-      const intendedUrlCookie = useCookie("intended_url")
-      const router = useRouter()
-
-      if (intendedUrlCookie.value) {
-        router.push({ path: intendedUrlCookie.value })
-        useCookie("intended_url").value = null
-      } else {
-        router.push({ name: "home" })
-      }
-    },
-    signInwithGoogle() {
-      this.providersStore.guestConnect('google', true)
-    }
-  },
+const signInwithGoogle = () => {
+  try {
+    oAuth.guestConnect('google', true)
+  } catch (error) {
+    showOAuthError(error)
+  }
 }
 </script>

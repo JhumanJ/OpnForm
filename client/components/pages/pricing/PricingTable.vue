@@ -6,21 +6,21 @@
         class="absolute inset-0 grid"
         aria-hidden="true"
       >
-        <div class="bg-gray-100" />
+        <div class="bg-neutral-100" />
         <div class="bg-white" />
       </div>
 
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div
-          class="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl ring-1 ring-gray-200 lg:flex isolate"
+          class="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl ring-1 ring-neutral-200 lg:flex isolate"
         >
           <div class="p-8 sm:p-8 lg:flex-auto">
             <h3
               v-if="homePage"
-              class="text-3xl font-semibold tracking-tight text-gray-950"
+              class="text-3xl font-semibold tracking-tight text-neutral-950"
             >
               Check out our
-              <span class="ml-2 text-nt-blue">
+              <span class="ml-2 text-blue-500">
                 <svg
                   class="inline w-10 h-10"
                   viewBox="0 0 32 32"
@@ -54,27 +54,27 @@
             </h3>
             <h3
               v-else
-              class="text-3xl font-semibold tracking-tight text-gray-950"
+              class="text-3xl font-semibold tracking-tight text-neutral-950"
             >
               Pro Plan
             </h3>
-            <p class="mt-2 text-base font-medium leading-7 text-gray-600">
+            <p class="mt-2 text-base font-medium leading-7 text-neutral-600">
               OpnForm Pro offers empowering features tailored to the advanced
               needs of teams and creators. Enjoy our free 3-day trial!
             </p>
 
             <div class="flex items-center mt-6 gap-x-4">
               <h4
-                class="flex-none text-sm font-semibold leading-6 tracking-widest text-gray-400 uppercase"
+                class="flex-none text-sm font-semibold leading-6 tracking-widest text-neutral-400 uppercase"
               >
                 What's included
               </h4>
-              <div class="flex-auto h-px bg-gray-200" />
+              <div class="flex-auto h-px bg-neutral-200" />
             </div>
 
             <ul
               role="list"
-              class="grid grid-cols-1 gap-4 mt-4 text-sm font-medium leading-6 text-gray-900 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-2"
+              class="grid grid-cols-1 gap-4 mt-4 text-sm font-medium leading-6 text-neutral-900 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-2"
             >
               <li
                 v-for="(title, i) in pricingInfo"
@@ -108,7 +108,7 @@
             class="p-2 -mt-2 flex-col lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0"
           >
             <div
-              class="grow h-full py-10 text-center rounded-2xl bg-gray-50 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-12"
+              class="grow h-full py-10 text-center rounded-2xl bg-neutral-50 ring-1 ring-inset ring-neutral-900/5 lg:flex lg:flex-col lg:justify-center lg:py-12"
             >
               <div class="max-w-xs px-8 mx-auto space-y-6">
                 <div class="flex items-center justify-center mb-10">
@@ -118,46 +118,43 @@
 
                 <p class="flex flex-col items-center">
                   <span
-                    class="text-6xl font-semibold tracking-tight text-gray-950"
+                    class="text-6xl font-semibold tracking-tight text-neutral-950"
                   >
                     <template v-if="isYearly">$16</template>
                     <template v-else>$19</template>
                   </span>
-                  <span class="text-sm font-medium leading-6 text-gray-600">
+                  <span class="text-sm font-medium leading-6 text-neutral-600">
                     per month
                   </span>
                 </p>
 
                 <div class="flex justify-center">
-                  <v-button
+                  <UButton
                     v-if="!authenticated"
                     class="mr-1"
                     :to="{ name: 'register' }"
-                    :arrow="true"
-                  >
-                    Start free trial
-                  </v-button>
-                  <v-button
+                    trailing-icon="i-heroicons-arrow-right"
+                    label="Start free trial"
+                  />
+                  <UButton
                     v-else-if="authenticated && user.is_subscribed"
                     class="mr-1"
-                    :arrow="true"
+                    trailing-icon="i-heroicons-arrow-right"
                     :to="{ name: 'redirect-billing-portal' }"
                     target="_blank"
-                  >
-                    View Billing
-                  </v-button>
-                  <v-button
+                    label="View Billing"
+                  />
+                  <UButton
                     v-else
                     class="mr-1"
-                    :arrow="true"
-                    @click.prevent="subscriptionModalStore.openModal('default', isYearly)"
-                  >
-                    Start free trial
-                  </v-button>
+                    trailing-icon="i-heroicons-arrow-right"
+                    @click.prevent="openSubscriptionModal({ plan: 'default', yearly: isYearly })"
+                    label="Start free trial"
+                  />
                 </div>
                 <p
                   v-if="!homePage"
-                  class="text-xs font-medium leading-5 text-gray-600"
+                  class="text-xs font-medium leading-5 text-neutral-600"
                 >
                   Invoices and receipts available for easy company
                   reimbursement.
@@ -178,9 +175,9 @@
 
 <script>
 import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
 import MonthlyYearlySelector from "./MonthlyYearlySelector.vue"
 import CustomPlan from "./CustomPlan.vue"
+import { useIsAuthenticated } from "~/composables/useAuthFlow"
 
 MonthlyYearlySelector.compatConfig = { MODE: 3 }
 
@@ -196,17 +193,20 @@ export default {
     },
   },
   setup() {
-    const subscriptionModalStore = useSubscriptionModalStore()
-    const authStore = useAuthStore()
+    const { openSubscriptionModal } = useAppModals()
+    const { isAuthenticated: authenticated } = useIsAuthenticated()
+    const auth = useAuth()
+    
     return {
-      subscriptionModalStore,
-      authenticated: computed(() => authStore.check),
-      user: computed(() => authStore.user),
+      openSubscriptionModal,
+      authenticated,
+      user: computed(() => auth.user().data.value),
     }
   },
   data: () => ({
     isYearly: true,
     pricingInfo: [
+      "Unlimited workspaces",
       "Form confirmation emails",
       "Slack notifications",
       "Discord notifications",

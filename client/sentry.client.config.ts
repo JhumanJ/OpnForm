@@ -45,17 +45,16 @@ Sentry.init({
       }
     }
 
-    const authStore = useAuthStore()
-    if (authStore.check) {
-      const user = authStore.user as { id?: string; email?: string } | null
+    const { isAuthenticated } = useIsAuthenticated()
+    const { user } = useAuth()
+    const { data: userData } = user()
+    
+    if (isAuthenticated.value) {
+      const userValue = userData.value as { id?: string; email?: string } | null
       Sentry.setUser({
-        id: user?.id,
-        email: user?.email
+        id: userValue?.id,
+        email: userValue?.email
       })
-      event.user = {
-        id: user?.id,
-        email: user?.email
-      }
     }
     return event
   }

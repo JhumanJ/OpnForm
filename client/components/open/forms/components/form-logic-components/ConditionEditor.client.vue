@@ -45,7 +45,7 @@
 </template>
 
 <script>
- 
+import ErrorBoundary from '~/components/app/ErrorBoundary.vue'
 import { defineComponent } from "vue"
 import QueryBuilder from "query-builder-vue-3"
 import ColumnCondition from "./ColumnCondition.vue"
@@ -56,6 +56,7 @@ export default {
     GroupControlSlot,
     QueryBuilder,
     ColumnCondition,
+    ErrorBoundary,
   },
 
   props: {

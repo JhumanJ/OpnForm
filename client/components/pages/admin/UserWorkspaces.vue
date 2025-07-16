@@ -8,21 +8,21 @@
       :progress="{ color: 'primary', animation: 'carousel' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
       :columns="columns"
-      :rows="rows"
+      :data="rows"
       class="-mx-6"
     >
-      <template #plan-data="{ row }">
+      <template #plan-cell="{ row }">
         <span
           class="text-xs select-all rounded-md px-2 py-1 border"
-          :class="userPlanStyles(row.plan)"
+          :class="userPlanStyles(row.original.plan)"
         >
-          {{ row.plan }}
+          {{ row.original.plan }}
         </span>
       </template>
     </UTable>
     <div 
       v-if="workspaces?.length > pageCount"
-      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+      class="flex justify-end px-3 py-3.5 border-t border-neutral-200 dark:border-neutral-700"
     >
       <UPagination
         v-model="page"
@@ -49,19 +49,19 @@ const rows = computed(() => {
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+    accessorKey: 'id',
+    header: 'ID'
 }, {
-    key: 'name',
-    label: 'Name',
+    accessorKey: 'name',
+    header: 'Name',
     sortable: true
 }, {
-    key: 'plan',
-    label: 'Plan',
+    accessorKey: 'plan',
+    header: 'Plan',
     sortable: true
 }, {
-    key: 'forms_count',
-    label: '# of forms',
+    accessorKey: 'forms_count',
+    header: '# of forms',
     sortable: true
 }]
 
@@ -72,7 +72,7 @@ function userPlanStyles(plan) {
         case 'enterprise':
             return 'capitalize text-xs select-all bg-blue-50 rounded-md px-2 py-1 border border-blue-200  text-blue-500'
         default:
-            return 'capitalize text-xs select-all bg-gray-50 rounded-md px-2 py-1 border'
+            return 'capitalize text-xs select-all bg-neutral-50 rounded-md px-2 py-1 border'
     }
 }
 

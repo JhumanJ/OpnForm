@@ -4,12 +4,12 @@
     title="Billing email"
     icon="heroicons:envelope-16-solid"
   >
-    <p class="text-xs text-gray-500">
+    <p class="text-xs text-neutral-500">
       You can update the billing email of the subscriber.
     </p>
     <div
       v-if="loading"
-      class="text-gray-600 dark:text-gray-400"
+      class="text-neutral-600 dark:text-neutral-400"
     >
       <Loader class="h-6 w-6 mx-auto m-10" />
     </div>
@@ -19,7 +19,7 @@
       @submit.prevent="updateUserBillingEmail"
     >
       <div>
-        <text-input
+        <TextInput
           name="billing_email"
           :form="form"
           label="Billing email"
@@ -29,21 +29,21 @@
           placeholder="Billing email"
           :disabled="!userCreated"
         />
-        <v-button
+        <UButton
           :loading="loading"
-          type="success"
-          class="w-full"
-          color="white"
+          type="submit"
+          block
           :disabled="!userCreated"
-        >
-          Update billing email
-        </v-button>
+          label="Update billing email"
+        />
       </div>
     </form>
   </AdminCard>
 </template>
 
 <script setup>
+import { adminApi } from '~/api'
+
 const props = defineProps({
     user: { type: Object, required: true }
 })
@@ -59,7 +59,7 @@ const form = useForm({
 onMounted(() => {
   if (!props.user.stripe_id) return
     loadingBillingEmail.value = true
-    opnFetch("/moderator/billing/" + props.user.id + "/email",).then(data => {
+    adminApi.billing.getEmail(props.user.id).then(data => {
         loadingBillingEmail.value = false
         userCreated.value = true
         form.billing_email = data.billing_email
@@ -71,7 +71,10 @@ onMounted(() => {
 
 const updateUserBillingEmail = () => {
     loading.value = true
-    form.patch("/moderator/billing/email")
+    adminApi.billing.updateEmail({
+        billing_email: form.billing_email,
+        user_id: form.user_id
+    })
         .then(async (data) => {
             loading.value = false
             useAlert().success(data.message)

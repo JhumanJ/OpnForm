@@ -121,3 +121,25 @@ export const mentionAsText = (content) => {
     }
   ).replace(/<[^>]*>/g, '')
 }
+
+export function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+  }
+  return num
+}
+
+export function formatNumberWithCommas(num) {
+  if (typeof num !== 'number') {
+    return num
+  }
+  return num.toLocaleString()
+}
+
+export function cleanQuotes(str) {
+  if (!str) return ''
+  return str.replace(/^"|"$/g, '')
+}

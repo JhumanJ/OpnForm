@@ -8,26 +8,26 @@ Personal Access Tokens are the credentials you'll use to authenticate with the O
 ## Creating a token
 
 1. Sign in to your OpnForm account.
-2. Open **Settings → Access Tokens** (`/settings/access-tokens`).
+2. Open **Settings → Access Tokens** (`/home?user-settings=access-tokens`).
 3. Click **Create new token**.
 4. Pick a descriptive name (e.g. "Zapier Integration").
 5. Select the abilities you want to grant (see the table below).
 6. Click **Create** and copy the token value – you **won't** be able to see it again after closing the dialog.
 
 <Frame>
-  <img src="/api-reference/images/create-token.png" alt="Create token" />
+    <img src="/api-reference/images/create-token.png" alt="Create token" />
 </Frame>
 
 ## Abilities
 
-| Ability | Grants |
-|---------|--------|
-| workspaces-read | List workspaces |
-| workspaces-write | Create, update or delete workspaces |
-| workspace-users-read | List members and invites |
-| workspace-users-write | Manage members and invites |
-| forms-read | List forms and submissions |
-| forms-write | Create or modify forms and submissions |
+| Ability               | Grants                                 |
+| --------------------- | -------------------------------------- |
+| workspaces-read       | List workspaces                        |
+| workspaces-write      | Create, update or delete workspaces    |
+| workspace-users-read  | List members and invites               |
+| workspace-users-write | Manage members and invites             |
+| forms-read            | List forms and submissions             |
+| forms-write           | Create or modify forms and submissions |
 
 You can combine abilities as needed – choose the minimum set your integration requires.
 
@@ -49,7 +49,7 @@ If a token is leaked or no longer needed:
 
 ## Best practices
 
-* Store tokens securely (environment variables, secret managers, CI secrets).
-* Use a dedicated token per integration – easier to revoke individually.
-* Avoid committing tokens to version control.
-* Rotate tokens periodically.
+-   Store tokens securely (environment variables, secret managers, CI secrets).
+-   Use a dedicated token per integration – easier to revoke individually.
+-   Avoid committing tokens to version control.
+-   Rotate tokens periodically.

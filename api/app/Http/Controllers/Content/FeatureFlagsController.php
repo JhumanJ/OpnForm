@@ -30,15 +30,16 @@ class FeatureFlagsController extends Controller
                     'google' => [
                         'fonts' => !empty(config('services.google.fonts_api_key')),
                         'auth' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
+                        'client_id' => config('services.google.client_id'),
                     ],
                     'telegram' => [
-                        'bot_id' => config('services.telegram.bot_id') ?? false
+                        'bot_id' => $this->extractTelegramBotId()
                     ]
                 ],
                 'integrations' => [
                     'zapier' => config('services.zapier.enabled'),
                     'google_sheets' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
-                    'telegram' => !empty(config('services.telegram.bot_id')) && !empty(config('services.telegram.bot_token')),
+                    'telegram' => !empty(config('services.telegram.bot_token')),
                 ],
             ];
         });
@@ -57,5 +58,23 @@ class FeatureFlagsController extends Controller
         }
 
         return config('app.docker_version');
+    }
+
+    /**
+     * Extract bot ID from Telegram bot token
+     */
+    private function extractTelegramBotId(): string|false
+    {
+        $botToken = config('services.telegram.bot_token');
+
+        if (empty($botToken)) {
+            return false;
+        }
+
+        // Bot token format: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+        // Extract the bot ID (everything before the colon)
+        $parts = explode(':', $botToken);
+
+        return $parts[0] ?? false;
     }
 }

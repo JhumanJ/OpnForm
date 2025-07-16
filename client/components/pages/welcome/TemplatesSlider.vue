@@ -5,11 +5,11 @@
         Single or multi-page forms
       </h2>
       <p
-        class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl"
+        class="mt-2 text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl"
       >
         Discover our beautiful templates
       </p>
-      <p class="mt-3 px-8 text-center text-lg text-gray-400">
+      <p class="mt-3 px-8 text-center text-lg text-neutral-400">
         If you need inspiration, checkout our templates.
       </p>
     </div>
@@ -53,27 +53,16 @@
 </template>
 
 <script>
-import { computed } from "vue"
 import SingleTemplate from "../templates/SingleTemplate.vue"
 
 export default {
   components: { SingleTemplate },
   setup() {
-    const templatesStore = useTemplatesStore()
-    templatesStore.initTypesAndIndustries()
-
-    onMounted(() => {
-      if (templatesStore.getAll.length < 10) {
-        opnFetch("templates", { query: { limit: 10 } }).then((data) => {
-          templatesStore.set(data)
-        })
-      }
-    })
+    const { list } = useTemplates()
+    const { data: templates } = list({ limit: 10 })
 
     return {
-      templatesStore,
-      allLoaded: computed(() => templatesStore.allLoaded),
-      sliderTemplates: computed(() => templatesStore.getAll.slice(0, 10)),
+      sliderTemplates: computed(() => templates.value ?? []),
     }
   },
 

@@ -17,10 +17,18 @@ const props = defineProps({
   type: {
     type: String,
     required: true
+  },
+  bgClass: {
+    type: String,
+    default: ''
+  },
+  textClass: {
+    type: String,
+    default: ''
   }
 })
 
-const bgClass = computed(() => blocksTypes[props.type]?.bg_class || '')
-const textClass = computed(() => blocksTypes[props.type]?.text_class || '')
+const bgClass = computed(() => props.bgClass || blocksTypes[props.type]?.bg_class || '')
+const textClass = computed(() => props.textClass || blocksTypes[props.type]?.text_class || '')
 const icon = computed(() => blocksTypes[props.type]?.icon || '')
 </script>

@@ -1,7 +1,9 @@
 export default defineNuxtRouteMiddleware(() => {
-  const authStore = useAuthStore()
+  const { isAuthenticated } = useIsAuthenticated()
+  const { user } = useAuth()
+  const { data: userData } = user()
 
-  if (authStore.check && !authStore.user?.is_subscribed) {
-    return navigateTo({ name: "pricing" })
+  if (isAuthenticated.value && !userData.value?.is_subscribed) {
+    throw createError({ statusCode: 403, statusMessage: 'Subscription required' })
   }
 })

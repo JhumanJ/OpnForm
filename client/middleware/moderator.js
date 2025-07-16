@@ -1,6 +1,9 @@
 export default defineNuxtRouteMiddleware(() => {
-  const authStore = useAuthStore()
-  if (authStore.check && !authStore.user?.moderator) {
-    return navigateTo({ name: "home" })
+  const { isAuthenticated } = useIsAuthenticated()
+  const { user } = useAuth()
+  const { data: userData } = user()
+  
+  if (isAuthenticated.value && !userData.value?.moderator) {
+    throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
 })

@@ -2,7 +2,7 @@
   <div class="relative">
     <hr
       v-if="showLine"
-      class="border-t border-gray-200 mb-6 mt-8 -mx-4"
+      class="border-t border-neutral-200 mb-6 mt-8 -mx-4"
     >
     <div
       :class="[
@@ -12,9 +12,9 @@
     >
       <Icon
         :name="icon"
-        class="w-4 h-4 text-gray-400"
+        class="w-4 h-4 text-neutral-400"
       />
-      <h3 class="text-sm font-semibold text-gray-500">
+      <h3 class="text-sm font-semibold text-neutral-500">
         {{ title }}
       </h3>
     </div>

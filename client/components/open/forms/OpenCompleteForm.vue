@@ -3,7 +3,7 @@
     v-if="form"
     class="open-complete-form"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
-    :style="{ '--font-family': form.font_family, 'direction': form?.layout_rtl ? 'rtl' : 'ltr',  '--form-color': form.color, '--form': form.color }"
+    :style="formStyle"
   >
     <ClientOnly>
       <Teleport to="head">
@@ -20,12 +20,12 @@
 
     <v-transition name="fade" mode="out-in">
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
-        <Loader class="h-6 w-6 text-nt-blue mx-auto" />
+        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
 
       <div v-else key="form-content">
         <div v-if="isPublicFormPage && form.is_password_protected">
-          <p class="form-description text-gray-700 dark:text-gray-300 px-2">
+          <p class="form-description text-neutral-700 dark:text-neutral-300 px-2">
             {{ t('forms.password_protected') }}
           </p>
           <div class="form-group flex flex-wrap w-full">
@@ -41,8 +41,7 @@
           </div>
           <div class="flex flex-wrap justify-center w-full text-center">
             <open-form-button
-              :theme="theme"
-              :color="form.color"
+              :form="form"
               class="my-4"
               @click="passwordEntered"
             >
@@ -54,8 +53,8 @@
         <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" 
           class="m-2 my-4">
           <UAlert
-            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'gray', variant: 'link', padded: false }"
-            color="amber"
+            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'neutral', variant: 'link', padded: false }"
+            color="warning"
             variant="subtle"
             icon="i-material-symbols-info-outline"
             @close="hidePasswordDisabledMsg = true"
@@ -67,7 +66,7 @@
         <UAlert
           v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >
@@ -82,7 +81,7 @@
         <UAlert
           v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
           icon="i-heroicons-lock-closed-20-solid"
-          color="amber"
+          color="warning"
           variant="subtle"
           class="m-2 my-4"
         >
@@ -100,6 +99,7 @@
           class="mb-4 mx-2"
           :form="form"
           :specify-form-owner="true"
+          :use-cookie-dismissal="true"
         />
 
         <v-transition name="fade" v-if="form && !form.is_password_protected">
@@ -116,8 +116,7 @@
               <template #submit-btn="{loading}">
                 <open-form-button
                   :loading="loading || isProcessing"
-                  :theme="theme"
-                  :color="form.color"
+                  :form="form"
                   class="mt-2 px-8 mx-1"
                   :class="submitButtonClass"
                   @click.prevent="triggerSubmit"
@@ -126,18 +125,7 @@
                 </open-form-button>
               </template>
             </open-form>
-            <p
-              v-if="!form.no_branding"
-              class="text-center w-full mt-2"
-            >
-              <a
-                href="https://opnform.com?utm_source=form&utm_content=powered_by"
-                class="text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500 cursor-pointer hover:underline text-xs"
-                target="_blank"
-              >
-                {{ t('forms.powered_by') }} <span class="font-semibold">{{ t('app.name') }}</span>
-              </a>
-            </p>
+            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
           <div
             v-else
@@ -146,7 +134,7 @@
           >
             <TextBlock
               v-if="form.submitted_text"
-              class="form-description text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+              class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
               :content="form.submitted_text"
               :mentions-allowed="true"
               :form="form"
@@ -154,8 +142,7 @@
             />
             <open-form-button
               v-if="form.re_fillable"
-              :theme="theme"
-              :color="form.color"
+              :form="form"
               class="my-4"
               @click="restart"
             >
@@ -168,19 +155,19 @@
               <a
                 target="_parent"
                 :href="form.share_url+'?submission_id='+submissionId"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ form.editable_submissions_button_text }}
               </a>
             </p>
             <p
-              v-if="!form.no_branding"
+              v-if="!form.no_branding && formModeStrategy.display.showBranding"
               class="mt-5"
             >
               <a
                 target="_parent"
                 href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-                class="text-nt-blue hover:underline"
+                class="text-blue-500 hover:underline"
               >
                 {{ t('forms.create_form_free') }}
               </a>
@@ -199,19 +186,20 @@
 
 <script setup>
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
-import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import TextBlock from '~/components/forms/TextBlock.vue'
+import PoweredBy from '../../pages/forms/show/PoweredBy.vue'
 import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
 import { useIsIframe } from '~/composables/useIsIframe'
 import Loader from '~/components/global/Loader.vue'
+import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -231,10 +219,9 @@ const emit = defineEmits(['submitted', 'password-entered', 'restarted'])
 
 const { t, setLocale } = useI18n()
 const route = useRoute()
-const authStore = useAuthStore()
 const alert = useAlert()
 const workingFormStore = useWorkingFormStore()
-
+const { data: user } = useAuth().user()
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
 const submissionId = ref(route.query.submission_id || null)
@@ -245,6 +232,8 @@ const queryString = route.fullPath.split('?')[1] || ''
 
 // Check for auto_submit parameter during setup
 const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
+
+const formModeStrategy = computed(() => createFormModeStrategy(props.mode))
 
 // Create a reactive reference directly from the prop
 const darkModeRef = toRef(props, 'darkMode')
@@ -258,6 +247,7 @@ const theme = computed(() => {
     borderRadius: props.form.border_radius
   }).getAllComponents()
 })
+provide('theme', theme)
 
 let formManager = null
 if (props.form) {
@@ -320,7 +310,8 @@ const getFontUrl = computed(() => {
 })
 
 const isFormOwner = computed(() => {
-  return authStore.check && props.form && props.form.creator_id === authStore.user.id
+  const { isAuthenticated } = useIsAuthenticated()
+  return isAuthenticated.value && props.form && props.form.creator_id === user.value.id
 })
 
 const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
@@ -329,6 +320,25 @@ const showFormCleanings = computed(() => formManager?.strategy.value.display.sho
 const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
 const shouldDisplayForm = computed(() => {
   return (!props.form.is_closed && !props.form.max_number_of_submissions_reached) || formManager?.strategy?.value.admin?.showAdminControls
+})
+
+const formStyle = computed(() => {
+  const baseStyle = {
+    '--font-family': props.form.font_family,
+    'direction': props.form?.layout_rtl ? 'rtl' : 'ltr',
+    '--form-color': props.form.color,
+    '--color-form': props.form.color
+  }
+
+  // Generate color palette variants
+  if (props.form.color) {
+    const colorPalette = tailwindcssPaletteGenerator(props.form.color).primary
+    Object.entries(colorPalette).forEach(([shade, colorValue]) => {
+      baseStyle[`--color-form-${shade}`] = colorValue
+    })
+  }
+
+  return baseStyle
 })
 
 watch(() => props.form.language, (newLanguage) => {
@@ -361,7 +371,7 @@ const handleScrollToError = () => {
   })
 }
 
-const triggerSubmit = async () => {
+const triggerSubmit = () => {
   if (!formManager || isProcessing.value) return
 
   formManager.submit({
@@ -379,12 +389,13 @@ const triggerSubmit = async () => {
         }
         
         emit('submitted', true)
-              } else {
+      } else {
         console.warn('Form submission failed via composable, but no error thrown?')
         alert.error(t('forms.submission_error'))
       }
     })
     .catch(error => {
+      console.error(error)
       if (error.response && error.response.status === 422 && error.data) {
         useAlert().formValidationError(error.data)
       } else if (error.message) {
@@ -396,12 +407,13 @@ const triggerSubmit = async () => {
     })
 }
 
-const restart = async () => {
+const restart = () => {
   if (!formManager) return
-  await formManager.restart()
-  submittedData.value = null
-  submissionId.value = null
-  emit('restarted', true)
+  formManager.restart().then(() => {
+    submittedData.value = null
+    submissionId.value = null
+    emit('restarted', true)
+  })
 }
 
 const passwordEntered = () => {
