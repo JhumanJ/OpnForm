@@ -23,6 +23,7 @@
           name="reason"
           :form="form"
           :required="true"
+          help="Reason will be sent to the user via email."
         />
         <UButton
           :loading="loading"
