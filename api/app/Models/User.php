@@ -77,6 +77,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $appends = [
         'photo_url',
+        'is_blocked'
     ];
 
     public function ownsForm(Form $form)
@@ -143,7 +144,50 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsBlockedAttribute()
     {
-        return isset($this->meta['blocked_at']) && $this->meta['blocked_at'];
+        $lastBlock = $this->getLastBlock();
+
+        return $lastBlock && !isset($lastBlock['unblocked_at']);
+    }
+
+    public function blockUser(string $reason, int $moderatorId): void
+    {
+        $history = $this->meta['blocking_history'] ?? [];
+        $history[] = [
+            'reason' => $reason,
+            'blocked_at' => now(),
+            'blocked_by' => $moderatorId,
+            'unblock_reason' => null,
+            'unblocked_at' => null,
+            'unblocked_by' => null,
+        ];
+        $this->meta = array_merge($this->meta ?? [], ['blocking_history' => $history]);
+        $this->save();
+    }
+
+    public function unblockUser(string $reason, int $moderatorId): void
+    {
+        $history = $this->meta['blocking_history'] ?? [];
+        if (empty($history)) {
+            return;
+        }
+
+        $lastBlockKey = array_key_last($history);
+        $history[$lastBlockKey]['unblock_reason'] = $reason;
+        $history[$lastBlockKey]['unblocked_at'] = now();
+        $history[$lastBlockKey]['unblocked_by'] = $moderatorId;
+
+        $this->meta = array_merge($this->meta ?? [], ['blocking_history' => $history]);
+        $this->save();
+    }
+
+    public function getLastBlock(): ?array
+    {
+        $history = $this->meta['blocking_history'] ?? [];
+        if (empty($history)) {
+            return null;
+        }
+
+        return end($history);
     }
 
     /**

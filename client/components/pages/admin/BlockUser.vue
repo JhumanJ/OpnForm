@@ -8,9 +8,9 @@
         <template v-if="isBlocked">
           This will unblock the user and allow them to log in again. Their forms will remain in draft status.
           <br>
-          <b>Blocked on:</b> {{ new Date(user.meta.blocked_at).toLocaleString() }}
+          <b>Blocked on:</b> {{ new Date(lastBlock.blocked_at).toLocaleString() }}
           <br>
-          <b>Reason:</b> {{ user.meta.block_reason }}
+          <b>Reason:</b> {{ lastBlock.reason }}
         </template>
         <template v-else>
           This will block the user from accessing their account and set all their forms to draft.
@@ -25,15 +25,36 @@
           :required="true"
           help="Reason will be sent to the user via email."
         />
-        <UButton
-          :loading="loading"
-          type="submit"
-          class="mt-4"
-          block
-          :label="isBlocked ? 'Unblock User' : 'Block User'"
-        />
+        <div class="flex space-x-2 mt-4">
+          <UButton
+            block
+            :loading="loading"
+            type="submit"
+            class="grow"
+            :label="isBlocked ? 'Unblock User' : 'Block User'"
+          />
+          <UButton
+            v-if="blockingHistory && blockingHistory.length"
+            variant="outline"
+            icon="i-heroicons-clock"
+            @click="isModalOpen = true"
+            label="View History"
+          />
+        </div>
       </VForm>
     </div>
+    <UModal 
+      v-model:open="isModalOpen"
+      :ui="{ content: 'sm:max-w-4xl' }"
+      title="Blocking History"
+    >
+      <template #body>
+        <UTable 
+          :columns="historyColumns"
+          :data="blockingHistory"
+        />
+      </template>
+    </UModal>
   </AdminCard>
 </template>
 
@@ -47,15 +68,55 @@ const emit = defineEmits(['user-updated'])
 
 const alert = useAlert()
 const loading = ref(false)
+const isModalOpen = ref(false)
 
 const form = useForm({
   user_id: props.user.id,
   reason: ''
 })
 
-const isBlocked = computed(() => {
-  return props.user.meta && props.user.meta.blocked_at
+const historyColumns = [
+  {
+    accessorKey: 'blocked_at',
+    header: 'Blocked At',
+    cell: ({ row }) => {
+      return row.original.blocked_at ? new Date(row.original.blocked_at).toLocaleString() : ''
+    }
+  },
+  {
+    accessorKey: 'blocked_by',
+    header: 'Blocked By'
+  },
+  {
+    accessorKey: 'reason',
+    header: 'Reason'
+  },
+  {
+    accessorKey: 'unblocked_at',
+    header: 'Unblocked At',
+    cell: ({ row }) => {
+      return row.original.unblocked_at ? new Date(row.original.unblocked_at).toLocaleString() : ''
+    }
+  },
+  {
+    accessorKey: 'unblocked_by',
+    header: 'Unblocked By'
+  },
+  {
+    accessorKey: 'unblock_reason',
+    header: 'Unblock Reason'
+  }
+]
+
+const isBlocked = computed(() => props.user.is_blocked)
+const blockingHistory = computed(() => props.user.meta?.blocking_history || [])
+const lastBlock = computed(() => {
+  if (!blockingHistory.value.length) {
+    return null
+  }
+  return blockingHistory.value[blockingHistory.value.length - 1]
 })
+
 
 async function submit() {
   loading.value = true

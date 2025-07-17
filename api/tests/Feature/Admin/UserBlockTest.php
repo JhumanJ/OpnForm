@@ -34,8 +34,10 @@ it('can block a user', function () {
 
     $user->refresh();
     expect($user->is_blocked)->toBeTrue();
-    expect($user->meta['block_reason'])->toBe('Test block reason');
-    expect($user->meta['blocked_by'])->toBe($moderator->id);
+    $lastBlock = $user->getLastBlock();
+    expect($lastBlock['reason'])->toBe('Test block reason');
+    expect($lastBlock['blocked_by'])->toBe($moderator->id);
+    expect($lastBlock['unblocked_at'])->toBeNull();
 
     Mail::assertSent(UserBlockedEmail::class, function ($mail) use ($user) {
         return $mail->hasTo($user->email);
@@ -45,9 +47,10 @@ it('can block a user', function () {
 it('can unblock a user', function () {
     Mail::fake();
     [$moderator, $user] = setupUsers();
-    $user->update([
-        'meta' => ['blocked_at' => now(), 'block_reason' => 'Initial reason'],
-    ]);
+    $user->blockUser('Initial reason', $moderator->id);
+    $user->refresh();
+    expect($user->is_blocked)->toBeTrue();
+
 
     $this->actingAs($moderator)
         ->postJson('/moderator/unblock-user', [
@@ -61,8 +64,10 @@ it('can unblock a user', function () {
 
     $user->refresh();
     expect($user->is_blocked)->toBeFalse();
-    expect($user->meta)->not->toHaveKey('block_reason');
-    expect($user->meta['unblock_reason'])->toBe('Test unblock reason');
+    $lastBlock = $user->getLastBlock();
+    expect($lastBlock['unblock_reason'])->toBe('Test unblock reason');
+    expect($lastBlock['unblocked_by'])->toBe($moderator->id);
+    expect($lastBlock['unblocked_at'])->not->toBeNull();
 
     Mail::assertSent(UserUnblockedEmail::class, function ($mail) use ($user) {
         return $mail->hasTo($user->email);

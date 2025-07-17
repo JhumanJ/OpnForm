@@ -12,12 +12,7 @@ class UserActionService
 {
     public function block(User $user, string $reason, int $moderatorId): User
     {
-        $meta = $user->meta ?? [];
-        $meta['block_reason'] = $reason;
-        $meta['blocked_at'] = now();
-        $meta['blocked_by'] = $moderatorId;
-        $user->meta = $meta;
-        $user->save();
+        $user->blockUser($reason, $moderatorId);
 
         $user->forms()->update(['visibility' => 'draft']);
 
@@ -34,15 +29,7 @@ class UserActionService
 
     public function unblock(User $user, string $reason, int $moderatorId): User
     {
-        $meta = $user->meta ?? [];
-        unset($meta['block_reason']);
-        unset($meta['blocked_at']);
-        unset($meta['blocked_by']);
-        $meta['unblock_reason'] = $reason;
-        $meta['unblocked_at'] = now();
-        $meta['unblocked_by'] = $moderatorId;
-        $user->meta = $meta;
-        $user->save();
+        $user->unblockUser($reason, $moderatorId);
 
         AdminController::log('User unblocked', [
             'user_id' => $user->id,
