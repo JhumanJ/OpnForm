@@ -6,6 +6,8 @@ export const adminApi = {
   // User management
   fetchUser: (identifier, options) => apiService.get(`${BASE_PATH}/fetch-user/${encodeURI(identifier)}`, options),
   impersonate: (userId, options) => apiService.get(`${BASE_PATH}/impersonate/${userId}`, options),
+  blockUser: (data) => apiService.post(`${BASE_PATH}/block-user`, data),
+  unblockUser: (data) => apiService.post(`${BASE_PATH}/unblock-user`, data),
 
   // Template management
   createTemplate: (data) => apiService.post(`${BASE_PATH}/create-template`, data),

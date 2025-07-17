@@ -41,7 +41,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'hear_about_us',
         'utm_data',
-        'meta'
+        'meta',
+        'blocked_at'
     ];
 
     /**
@@ -67,6 +68,7 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'utm_data' => 'array',
             'meta' => 'array',
+            'blocked_at' => 'datetime',
         ];
     }
 
@@ -77,6 +79,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $appends = [
         'photo_url',
+        'is_blocked'
     ];
 
     public function ownsForm(Form $form)
@@ -139,6 +142,55 @@ class User extends Authenticatable implements JWTSubject
         return $this->workspaces()->get()->some(function ($workspace) {
             return $workspace->is_pro;
         });
+    }
+
+    public function getIsBlockedAttribute()
+    {
+        return !is_null($this->blocked_at);
+    }
+
+    public function blockUser(string $reason, int $moderatorId): void
+    {
+        $this->blocked_at = now();
+        $history = $this->meta['blocking_history'] ?? [];
+        $history[] = [
+            'reason' => $reason,
+            'blocked_at' => $this->blocked_at,
+            'blocked_by' => $moderatorId,
+            'unblock_reason' => null,
+            'unblocked_at' => null,
+            'unblocked_by' => null,
+        ];
+        $this->meta = array_merge($this->meta ?? [], ['blocking_history' => $history]);
+        $this->save();
+    }
+
+    public function unblockUser(string $reason, int $moderatorId): void
+    {
+        $this->blocked_at = null;
+        $history = $this->meta['blocking_history'] ?? [];
+        if (empty($history)) {
+            $this->save();
+            return;
+        }
+
+        $lastBlockKey = array_key_last($history);
+        $history[$lastBlockKey]['unblock_reason'] = $reason;
+        $history[$lastBlockKey]['unblocked_at'] = now();
+        $history[$lastBlockKey]['unblocked_by'] = $moderatorId;
+
+        $this->meta = array_merge($this->meta ?? [], ['blocking_history' => $history]);
+        $this->save();
+    }
+
+    public function getLastBlock(): ?array
+    {
+        $history = $this->meta['blocking_history'] ?? [];
+        if (empty($history)) {
+            return null;
+        }
+
+        return end($history);
     }
 
     /**
