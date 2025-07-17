@@ -1,6 +1,5 @@
 <template>
   <UButton
-    variant="outline"
     icon="i-heroicons-eye-16-solid"
     :loading="loading"
     @click="impersonate"
@@ -9,7 +8,7 @@
 </template>
 
 <script setup>
-import { adminApi, authApi } from '~/api'
+import { adminApi } from '~/api'
 import { useQueryClient } from '@tanstack/vue-query'
 
 const props = defineProps({
@@ -21,8 +20,6 @@ const queryClient = useQueryClient()
 
 const loading = ref(false)
 
-const { invalidateAll: invalidateWorkspaces } = useWorkspaces()
-const { invalidateAll: invalidateForms } = useForms()
 const { user } = useAuth()
 const { data: userData } = user()
 
@@ -34,15 +31,7 @@ const impersonate = () => {
 
     // Save the token with its expiration time.
     authStore.setToken(data.token, data.expires_in)
-
-    // Fetch the user.
-    await authApi.user.get()
-    useAuth().invalidateUser()
-
-    // Clear all query cache and invalidate to refetch fresh data for the impersonated user
-    queryClient.clear()
-    await invalidateWorkspaces()
-    await invalidateForms()
+    await queryClient.invalidateQueries()
 
     useAlert().success(`Impersonating ${userData.value.name}`)
     useRouter().push({ name: 'home' })

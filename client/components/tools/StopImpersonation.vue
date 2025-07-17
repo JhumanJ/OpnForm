@@ -6,7 +6,6 @@
     <UButton
       color="neutral"
       variant="outline"
-      :loading="loading"
       icon="i-heroicons-arrow-left-start-on-rectangle-20-solid"
       @click="reverseImpersonation"
     />
@@ -14,25 +13,15 @@
 </template>
 
 <script setup>
-import { authApi } from "~/api/auth"
-
+import { useQueryClient } from '@tanstack/vue-query'
 const authStore = useAuthStore()
-const router = useRouter()
+const queryClient = useQueryClient()
 
 const isImpersonating = computed(() => authStore.isImpersonating)
-const loading = ref(false)
 
 function reverseImpersonation() {
-  loading.value = true
   authStore.stopImpersonating()
-
-  // Fetch the user.
-  authApi.user.get().then(() => {
-    useAuth().invalidateUser()
-    useWorkspaces().invalidateAll()
-    router.push({ name: 'admin' })
-    loading.value = false
-  })
+  queryClient.invalidateQueries()
 }
 </script>
 

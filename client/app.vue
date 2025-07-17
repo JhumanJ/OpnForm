@@ -11,7 +11,7 @@
 
       <ClientOnly>
         <div
-          class="fixed left-0 bottom-0 p-4"
+          class="fixed z-[9999] left-0 bottom-0 p-4" id="admin-actions"
         >
           <UButtonGroup size="sm">
             <ToolsStopImpersonation />
