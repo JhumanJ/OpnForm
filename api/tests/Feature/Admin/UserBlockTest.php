@@ -34,9 +34,11 @@ it('can block a user', function () {
 
     $user->refresh();
     expect($user->is_blocked)->toBeTrue();
+    expect($user->blocked_at)->not->toBeNull();
     $lastBlock = $user->getLastBlock();
     expect($lastBlock['reason'])->toBe('Test block reason');
     expect($lastBlock['blocked_by'])->toBe($moderator->id);
+    expect($lastBlock['blocked_at'])->not->toBeNull();
     expect($lastBlock['unblocked_at'])->toBeNull();
 
     Mail::assertSent(UserBlockedEmail::class, function ($mail) use ($user) {
@@ -64,6 +66,7 @@ it('can unblock a user', function () {
 
     $user->refresh();
     expect($user->is_blocked)->toBeFalse();
+    expect($user->blocked_at)->toBeNull();
     $lastBlock = $user->getLastBlock();
     expect($lastBlock['unblock_reason'])->toBe('Test unblock reason');
     expect($lastBlock['unblocked_by'])->toBe($moderator->id);

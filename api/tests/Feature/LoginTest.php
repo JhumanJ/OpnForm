@@ -38,14 +38,7 @@ it('can log out', function () {
 
 it('cannot login if user is blocked', function () {
     $user = User::factory()->create([
-        'meta' => [
-            'blocking_history' => [
-                [
-                    'blocked_at' => now(),
-                    'unblocked_at' => null,
-                ],
-            ],
-        ],
+        'blocked_at' => now(),
     ]);
 
     $this->postJson('/login', [

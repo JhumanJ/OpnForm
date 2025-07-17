@@ -41,7 +41,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'hear_about_us',
         'utm_data',
-        'meta'
+        'meta',
+        'blocked_at'
     ];
 
     /**
@@ -67,6 +68,7 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'utm_data' => 'array',
             'meta' => 'array',
+            'blocked_at' => 'datetime',
         ];
     }
 
@@ -144,17 +146,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsBlockedAttribute()
     {
-        $lastBlock = $this->getLastBlock();
-
-        return $lastBlock && !isset($lastBlock['unblocked_at']);
+        return !is_null($this->blocked_at);
     }
 
     public function blockUser(string $reason, int $moderatorId): void
     {
+        $this->blocked_at = now();
         $history = $this->meta['blocking_history'] ?? [];
         $history[] = [
             'reason' => $reason,
-            'blocked_at' => now(),
+            'blocked_at' => $this->blocked_at,
             'blocked_by' => $moderatorId,
             'unblock_reason' => null,
             'unblocked_at' => null,
@@ -166,8 +167,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function unblockUser(string $reason, int $moderatorId): void
     {
+        $this->blocked_at = null;
         $history = $this->meta['blocking_history'] ?? [];
         if (empty($history)) {
+            $this->save();
             return;
         }
 

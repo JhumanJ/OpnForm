@@ -8,9 +8,9 @@
         <template v-if="isBlocked">
           This will unblock the user and allow them to log in again. Their forms will remain in draft status.
           <br>
-          <b>Blocked on:</b> {{ new Date(lastBlock.blocked_at).toLocaleString() }}
+          <b>Blocked on:</b> {{ new Date(user.blocked_at).toLocaleString() }}
           <br>
-          <b>Reason:</b> {{ lastBlock.reason }}
+          <b>Reason:</b> {{ lastBlock?.reason }}
         </template>
         <template v-else>
           This will block the user from accessing their account and set all their forms to draft.
