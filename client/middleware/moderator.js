@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware(() => {
   const { data: userData } = user()
   
   if (isAuthenticated.value && !userData.value?.moderator) {
-    throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+    throw createError({ statusCode: 404, statusMessage: 'Not found' })
   }
 })

@@ -33,19 +33,7 @@
           </div>
 
           <!-- Column Sections -->
-          <div class="relative mt-1">
-            <!-- Top Fade -->
-            <VTransition name="fade">
-              <div
-                v-if="showTopFade"
-                class="absolute top-0 left-0 right-0 z-10 h-8 bg-gradient-to-b from-white to-transparent pointer-events-none"
-              />
-            </VTransition>
-
-            <div 
-              ref="sectionsContainer"
-              class="max-h-80 overflow-y-auto"
-            >
+          <ScrollableContainer class="mt-1">
             <template v-for="section in columnSections" :key="section.type">
             <div 
               v-if="section.columns.length > 0"
@@ -143,16 +131,7 @@
                 </draggable>
             </div>
           </template>
-            </div>
-
-            <!-- Bottom Fade -->
-            <VTransition name="fade">
-              <div
-                v-if="showBottomFade"
-                class="absolute bottom-0 left-0 right-0 z-10 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"
-              />
-            </VTransition>
-          </div>
+          </ScrollableContainer>
           <div class="w-full h-1"></div>
         </div>
       </template>
@@ -163,8 +142,7 @@
 <script setup>
 import draggable from 'vuedraggable'
 import BlockTypeIcon from '~/components/open/forms/components/BlockTypeIcon.vue'
-import VTransition from '@/components/global/transitions/VTransition.vue'
-import { useScroll, useResizeObserver } from '@vueuse/core'
+import ScrollableContainer from '~/components/dashboard/ScrollableContainer.vue'
 
 const props = defineProps({
   tableState: {
@@ -184,26 +162,6 @@ const props = defineProps({
 
 const isPopoverOpen = ref(false)
 const searchQuery = ref('')
-
-// Scroll fade detection for sections container
-const sectionsContainer = ref(null)
-const { y: scrollY } = useScroll(sectionsContainer)
-const contentHeight = ref(0)
-const containerHeight = ref(0)
-
-const showTopFade = computed(() => scrollY.value > 0)
-const showBottomFade = computed(() => {
-  if (containerHeight.value === 0 || contentHeight.value === 0) return false
-  return scrollY.value < contentHeight.value - containerHeight.value - 1 // -1 for subpixel precision
-})
-
-useResizeObserver(sectionsContainer, (entries) => {
-  const entry = entries[0]
-  containerHeight.value = entry.contentRect.height
-  if (sectionsContainer.value) {
-    contentHeight.value = sectionsContainer.value.scrollHeight
-  }
-})
 
 // Computed maps for better performance - avoid repeated function calls in templates
 const columnVisibilityMap = computed(() => {

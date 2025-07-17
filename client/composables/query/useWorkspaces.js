@@ -32,11 +32,11 @@ export function useWorkspaces() {
     })
   }
 
-  const detail = (id, options = {}) => {
+  const detail = (workspaceId, options = {}) => {
     return useQuery({
-      queryKey: ['workspaces', id],
-      queryFn: () => opnFetch(`/open/workspaces/${id}`),
-      enabled: !!id,
+      queryKey: ['workspaces', workspaceId],
+      queryFn: () => workspaceApi.get(toValue(workspaceId)),
+      enabled: computed(() => !!toValue(workspaceId)),
       ...options
     })
   }
@@ -61,13 +61,11 @@ export function useWorkspaces() {
     })
   }
 
-  const update = (options = {}) => {
+  const update = (workspaceId, options = {}) => {
     return useMutation({
-      mutationFn: ({ id, data }) => opnFetch(`/open/workspaces/${id}`, { 
-        method: 'PUT', 
-        body: data 
-      }),
-      onSuccess: (response, { id }) => {
+      mutationFn: (data) => workspaceApi.update(toValue(workspaceId), data),
+      onSuccess: (response) => {
+        const id = toValue(workspaceId)
         const updatedWorkspace = response.workspace
         // Update individual item cache
         queryClient.setQueryData(['workspaces', id], response)

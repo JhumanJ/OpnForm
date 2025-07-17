@@ -16,7 +16,7 @@
     <slot />
 
     <slot name="logic">
-      <div class="-mx-6 px-6 border-t mt-6 pt-6">
+      <div class="border-t mt-6 pt-6">
         <collapse
           v-model="showLogic"
           class="w-full"

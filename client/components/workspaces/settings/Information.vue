@@ -89,7 +89,7 @@ const router = useRouter()
 
 const { current: workspace } = useCurrentWorkspace()
 
-const updateMutation = update()
+const updateMutation = update(workspace.value.id)
 const removeMutation = remove()
 const leaveMutation = leave()
 
@@ -101,9 +101,7 @@ const workspaceForm = useForm({
 
 // Update profile
 const updateProfile = () => {
-  workspaceForm.mutate(updateMutation, {
-    data: { id: workspace.value.id }
-  }).then(() => {
+  workspaceForm.mutate(updateMutation).then(() => {
     useAlert().success('Workspace information successfully updated!')
   }).catch((error) => {
       console.error('Error updating workspace:', error)

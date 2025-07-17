@@ -5,7 +5,9 @@ const BASE_PATH = '/open/workspaces'
 export const workspaceApi = {
   // Workspace operations
   list: (options) => apiService.get(BASE_PATH, options),
+  get: (workspaceId) => apiService.get(`${BASE_PATH}/${workspaceId}`),
   create: (data) => apiService.post(`${BASE_PATH}/create`, data),
+  update: (workspaceId, data) => apiService.put(`${BASE_PATH}/${workspaceId}`, data),
   delete: (workspaceId) => apiService.delete(`${BASE_PATH}/${workspaceId}`),
   leave: (workspaceId) => apiService.post(`${BASE_PATH}/${workspaceId}/leave`),
 

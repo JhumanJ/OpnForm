@@ -28,7 +28,29 @@ alwaysApply: false
     - List: `["workspaces", "list"]`
     - Item: `["workspaces", id]`
 3. **Cache writes after mutations** – Inside `onSuccess` use `queryClient.setQueryData` to update affected caches, then call `invalidate()` only when a true refetch is needed.
-4. **Utilities** – Provide at minimum `invalidate()` (call `queryClient.invalidateQueries({ queryKey: [domain] })`).
+4. **URL parameters in mutations** – Pass URL parameters (like IDs) when creating the mutation, not when executing it. Use `toValue()` to handle reactive values.
+5. **Utilities** – Provide at minimum `invalidate()` (call `queryClient.invalidateQueries({ queryKey: [domain] })`).
+
+### Handling Reactive Parameters
+
+Use `toValue()` when working with reactive values (refs, computed) in mutations and queries:
+
+```js
+const update = (workspaceId, options = {}) => {
+    return useMutation({
+        mutationFn: (data) => workspaceApi.update(toValue(workspaceId), data),
+        onSuccess: (response) => {
+            const id = toValue(workspaceId);
+            // Update caches using the resolved ID...
+        },
+        ...options,
+    });
+};
+
+// Usage in component:
+const { current: workspace } = useCurrentWorkspace();
+const updateMutation = update(workspace.value.id); // ID passed at creation
+```
 
 ---
 
@@ -109,5 +131,7 @@ You normally **don’t** need to add headers manually.
 -   [ ] Map 1-to-1 with an API module
 -   [ ] Provide `list`, `detail`, and the necessary mutations
 -   [ ] Use consistent query keys
+-   [ ] Pass URL parameters at mutation creation time, not execution time
+-   [ ] Use `toValue()` for reactive parameters (refs, computed)
 -   [ ] Handle optimistic cache updates in `onSuccess`
 -   [ ] Expose `invalidate()`
