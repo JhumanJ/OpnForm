@@ -9,7 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class UserUnblockedEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public User $user;
     public string $reason;
