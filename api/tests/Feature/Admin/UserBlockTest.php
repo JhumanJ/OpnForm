@@ -6,11 +6,13 @@ use App\Mail\UserBlockedEmail;
 use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 
 function setupUsers()
 {
+    Config::set('opnform.moderator_emails', ['example@moderator.com']);
     $moderator = User::factory()->create([
-        'email' => 'julien@notionforms.io',
+        'email' => 'example@moderator.com',
     ]);
 
     $user = User::factory()->create();
