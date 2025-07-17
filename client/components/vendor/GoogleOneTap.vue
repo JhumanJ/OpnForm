@@ -17,10 +17,12 @@ const { context = 'signin' } = defineProps({
   }
 })
 
+// Use a global state to track script loading status
+const scriptLoaded = useState('google-one-tap-script-loaded', () => false)
+
 const { data: user } = useAuth().user()
 const { widgetCallback } = useOAuth()
 const widgetCallbackMutation = widgetCallback()
-const scriptLoaded = ref(false)
 const oneTapInitialized = ref(false)
 const googleClientId = computed(() => useFeatureFlag('services.google.client_id'))
 const authFlow = useAuthFlow()
@@ -36,34 +38,44 @@ const shouldShowOneTap = computed(() => {
 })
 
 const loadGoogleScript = () => {
-  if (scriptLoaded.value || !googleClientId.value) return
-  
-  // Check if script is already loaded or being loaded
-  const existingScript = document.getElementById('google-one-tap-script')
-  if (existingScript) {
-    // Script already exists, check if Google API is available
-    if (window.google?.accounts?.id) {
-      scriptLoaded.value = true
+  if (!googleClientId.value || scriptLoaded.value) {
+    if (scriptLoaded.value) {
       initializeOneTap()
     }
     return
   }
 
-  const script = document.createElement('script')
-  script.src = 'https://accounts.google.com/gsi/client'
-  script.id = 'google-one-tap-script'
-  script.async = true
-  script.defer = true
-  document.head.appendChild(script)
-  
-  script.onload = () => {
-    scriptLoaded.value = true
-    initializeOneTap()
+  // Use a global promise to ensure the script is only loaded once
+  if (!window._googleOneTapLoadPromise) {
+    window._googleOneTapLoadPromise = new Promise((resolve, reject) => {
+      // Double-check if script was added by another instance
+      const existingScript = document.getElementById('google-one-tap-script')
+      if (existingScript && window.google?.accounts?.id) {
+        return resolve()
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.id = 'google-one-tap-script'
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+      
+      script.onload = () => resolve()
+      script.onerror = () => reject(new Error('Failed to load Google One Tap script'))
+    })
   }
   
-  script.onerror = () => {
-    console.error('Failed to load Google One Tap script')
-  }
+  window._googleOneTapLoadPromise.then(() => {
+    if (window.google?.accounts?.id) {
+      scriptLoaded.value = true
+      initializeOneTap()
+    } else {
+      console.error('Google One Tap script loaded but API not available.')
+    }
+  }).catch((error) => {
+    console.error(error)
+  })
 }
 
 const initializeOneTap = () => {
@@ -145,11 +157,11 @@ const handleCredentialResponse = (response) => {
 }
 
 // Initialize when component is mounted
-  onMounted(() => {
-    if (import.meta.client) {
-      loadGoogleScript()
-    }
-  })
+onMounted(() => {
+  if (import.meta.client) {
+    loadGoogleScript()
+  }
+})
 
 // Watch for changes in shouldShowOneTap to re-initialize
 watch(shouldShowOneTap, (newVal) => {

@@ -74,37 +74,40 @@ export function useFormIntegrations() {
     })
   }
 
-  const createIntegration = (options = {}) => {
+  const createIntegration = (formId, options = {}) => {
     return useMutation({
-      mutationFn: ({ formId, data }) => formsApi.integrations.create(formId, data),
-      onSuccess: (response, { formId }) => {
+      mutationFn: (data) => formsApi.integrations.create(toValue(formId), data),
+      onSuccess: (response) => {
       const newIntegration = response.form_integration
+      const currentFormId = toValue(formId)
       // Add to integrations list
-      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
+      queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
         if (!old) return [newIntegration]
         if (!Array.isArray(old)) return old
         return [...old, newIntegration]
       })
       // Cache the individual integration
-      queryClient.setQueryData(['forms', formId, 'integrations', newIntegration.id], newIntegration)
+      queryClient.setQueryData(['forms', currentFormId, 'integrations', newIntegration.id], newIntegration)
       },
       ...options
     })
   }
 
-  const updateIntegration = (options = {}) => {
+  const updateIntegration = (formId, integrationId, options = {}) => {
     return useMutation({
-      mutationFn: ({ formId, integrationId, data }) => formsApi.integrations.update(formId, integrationId, data),
-      onSuccess: (response, { formId, integrationId }) => {
+      mutationFn: (data) => formsApi.integrations.update(toValue(formId), toValue(integrationId), data),
+      onSuccess: (response) => {
       const updatedIntegration = response.form_integration
+      const currentFormId = toValue(formId)
+      const currentIntegrationId = toValue(integrationId)
       // Update individual integration cache
-      queryClient.setQueryData(['forms', formId, 'integrations', integrationId], updatedIntegration)
+      queryClient.setQueryData(['forms', currentFormId, 'integrations', currentIntegrationId], updatedIntegration)
       
       // Update in integrations list
-      queryClient.setQueryData(['forms', formId, 'integrations'], (old) => {
+      queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
         if (!Array.isArray(old)) return old
         return old.map(integration =>
-          integration.id === integrationId ? { ...integration, ...updatedIntegration } : integration
+          integration.id === currentIntegrationId ? { ...integration, ...updatedIntegration } : integration
         )
       })
       },

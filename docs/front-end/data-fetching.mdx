@@ -63,6 +63,117 @@ const onSubmit = (form) => {
 </script>
 ```
 
+### Mutations with URL parameters
+For endpoints that require IDs in the URL (like `/forms/{formId}/integrations/{integrationId}`), pass the required IDs when creating the mutation factory. This ensures proper cache invalidation and prevents stale closure issues:
+
+```vue
+<script setup>
+const props = defineProps({
+  formId: { type: Number, required: true },
+  integrationId: { type: Number, required: false }
+})
+
+const { createIntegration, updateIntegration } = useFormIntegrations()
+
+// ✅ Pass reactive IDs when creating mutations
+const formId = computed(() => props.formId)
+const integrationId = computed(() => props.integrationId)
+
+const createMutation = createIntegration(formId)
+const updateMutation = updateIntegration(formId, integrationId)
+
+const save = () => {
+  const mutation = props.integrationId ? updateMutation : createMutation
+  
+  mutation
+    .mutateAsync(formData)
+    .then(() => useAlert().success('Integration saved!'))
+    .catch((err) => useAlert().error(err.message))
+}
+</script>
+```
+
+**Why this pattern?**
+- The mutation factory receives the IDs and can properly update query cache keys
+- No need to pass IDs in the `mutateAsync()` call
+- Reactive IDs ensure cache updates work correctly when props change
+- Cleaner separation between mutation setup and execution
+
+#### Defining mutations with URL parameters in composables
+
+In your query composable, define mutation factories that accept the required IDs as parameters:
+
+```javascript
+// client/composables/query/forms/useFormIntegrations.js
+import { useQueryClient, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
+import { formsApi } from '~/api/forms'
+
+export function useFormIntegrations() {
+  const queryClient = useQueryClient()
+
+  const createIntegration = (formId, options = {}) => {
+    return useMutation({
+      mutationFn: (data) => formsApi.integrations.create(toValue(formId), data),
+      onSuccess: (response) => {
+        const newIntegration = response.form_integration
+        const currentFormId = toValue(formId)
+        
+        // Update integrations list cache
+        queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
+          if (!old) return [newIntegration]
+          if (!Array.isArray(old)) return old
+          return [...old, newIntegration]
+        })
+        
+        // Cache the individual integration
+        queryClient.setQueryData(['forms', currentFormId, 'integrations', newIntegration.id], newIntegration)
+      },
+      ...options
+    })
+  }
+
+  const updateIntegration = (formId, integrationId, options = {}) => {
+    return useMutation({
+      mutationFn: (data) => formsApi.integrations.update(toValue(formId), toValue(integrationId), data),
+      onSuccess: (response) => {
+        const updatedIntegration = response.form_integration
+        const currentFormId = toValue(formId)
+        const currentIntegrationId = toValue(integrationId)
+        
+        // Update individual integration cache
+        queryClient.setQueryData(['forms', currentFormId, 'integrations', currentIntegrationId], updatedIntegration)
+        
+        // Update in integrations list
+        queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
+          if (!Array.isArray(old)) return old
+          return old.map(integration =>
+            integration.id === currentIntegrationId ? { ...integration, ...updatedIntegration } : integration
+          )
+        })
+      },
+      ...options
+    })
+  }
+
+  return {
+    createIntegration,
+    updateIntegration,
+    // ... other methods
+  }
+}
+```
+
+<Note>
+Always use `toValue()` to unwrap reactive references (refs, computed) when building query keys or making API calls. This ensures the actual values are used rather than reactive objects.
+</Note>
+
+**Key patterns:**
+- **Factory functions**: Return `useMutation()` instances rather than calling them directly
+- **Reactive ID handling**: Use `toValue()` to extract values from refs/computed properties
+- **Consistent cache keys**: Match the hierarchical structure used in queries
+- **Optimistic updates**: Update cache immediately in `onSuccess` to avoid refetching
+
 ### Optimistic updates & cache layer
 All mutations live in their composable (`client/composables/query/*`). After a successful API call they update the cache **manually** using `queryClient.setQueryData` so the UI reflects changes instantly *without* needing an extra network round-trip.
 
