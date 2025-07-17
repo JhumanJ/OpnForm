@@ -30,10 +30,6 @@ class AuthenticateWithJwtOrSanctum
                 throw new AuthenticationException('Pro subscription required for API access.');
             }
 
-            if ($user->is_blocked) {
-                throw new AuthenticationException('Your account has been blocked. Please contact support.');
-            }
-
             Auth::setUser($user);
 
             // Validate route against whitelist

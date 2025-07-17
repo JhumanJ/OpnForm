@@ -20,7 +20,9 @@ class CheckUserIsBlocked
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->is_blocked) {
-                Auth::logout();
+                if (!Auth::guard('sanctum')->check()) {
+                    Auth::guard('api')->logout();
+                }
 
                 return response()->json([
                     'message' => 'Your account has been blocked. Please contact support.',
