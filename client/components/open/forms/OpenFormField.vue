@@ -206,6 +206,8 @@ const fieldComponentInfo = computed(() => {
 
   if (field.type === 'text' && field.multi_lines) {
     componentName = 'TextAreaInput'
+  } else if (field.type === 'text' && field.input_mask) {
+    componentName = 'MaskInput'
   } else if (field.type === 'url' && field.file_upload) {
     componentName = 'FileInput'
   } else if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
@@ -339,6 +341,10 @@ function inputProperties(field) {
     locale: (form.value?.language) ? form.value.language : 'en'
   }
 
+  if(field.type === 'text' && field.input_mask) {
+    inputProperties.mask = field.input_mask
+    inputProperties.slotChar = field.slot_char
+  }
 
   if (field.type === 'matrix') {
     inputProperties.rows = field.rows

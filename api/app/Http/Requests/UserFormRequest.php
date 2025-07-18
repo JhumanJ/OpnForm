@@ -161,6 +161,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.align' => ['sometimes', Rule::in(['left', 'center', 'right', 'justify'])],
             'properties.*.allowed_file_types' => 'sometimes|nullable',
             'properties.*.use_toggle_switch' => 'boolean|nullable',
+            'properties.*.input_mask' => 'sometimes|nullable|string|regex:/^[9a*().\\-?\\s]*$/',
 
             // Logic
             'properties.*.logic' => ['array', 'nullable', new FormPropertyLogicRule()],
