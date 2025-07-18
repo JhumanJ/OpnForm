@@ -688,7 +688,7 @@ export default {
   setup() {
     const { current: currentWorkspace } = useCurrentWorkspace()
     return {
-      currentWorkspace
+      currentWorkspace,
       crisp: useCrisp()
     }
   },
