@@ -1,6 +1,6 @@
 import { computed, toRef } from 'vue'
 
-export function useInputMask(maskPattern) {
+export function useInputMask(maskPattern, slotChar = '_') {
   // Convert to ref if not already reactive
   const mask = toRef(maskPattern)
 
@@ -114,11 +114,11 @@ export function useInputMask(maskPattern) {
         if (token.optional) {
           // For optional tokens, show underscore if we have a value but not enough characters
           if (cleanValue.length > 0) {
-            display += '_'
+            display += slotChar
           }
         } else {
           // For required tokens, always show underscore
-          display += '_'
+          display += slotChar
         }
         continue
       }
@@ -127,7 +127,7 @@ export function useInputMask(maskPattern) {
         display += cleanValue[valueIndex]
         valueIndex++
       } else if (!token.optional) {
-        display += '_'
+        display += slotChar
       }
     }
     

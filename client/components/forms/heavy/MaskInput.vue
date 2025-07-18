@@ -77,11 +77,12 @@ export default {
     autocomplete: {type: [Boolean, String, Object], default: null},
     maxCharLimit: {type: Number, required: false, default: null},
     pattern: { type: String, default: null },
-    mask: { type: String, default: null }
+    mask: { type: String, default: null },
+    slotChar: { type: String, default: '_' }
   },
 
   setup(props, context) {
-    const { formatValue, isValidMask, getDisplayValue } = useInputMask(() => props.mask)
+    const { formatValue, isValidMask, getDisplayValue } = useInputMask(() => props.mask, props.slotChar)
 
     const { compVal } = useFormInput(
       props,

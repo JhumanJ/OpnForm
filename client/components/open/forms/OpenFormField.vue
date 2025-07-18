@@ -343,6 +343,7 @@ function inputProperties(field) {
 
   if(field.type === 'text' && field.input_mask) {
     inputProperties.mask = field.input_mask
+    inputProperties.slotChar = field.slot_char
   }
 
   if (field.type === 'matrix') {

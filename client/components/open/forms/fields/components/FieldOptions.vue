@@ -271,6 +271,16 @@
                 </InputHelp>
               </template>
             </TextInput>
+            <TextInput
+              v-if="field.input_mask"
+              name="slot_char"
+              :form="field"
+              class="mt-2"
+              label="Slot Character"
+              placeholder="_"
+              :max-char-limit="1"
+              help="The character to use when the input is empty"
+            />
           </div>
         </template>
       </UPopover>
@@ -964,6 +974,10 @@ export default {
         // Remove invalid characters
         const cleanedValue = val.replace(/[^a9*()\-_.,/\s]/g, '')
         this.field.input_mask = cleanedValue
+      }
+
+      if (val) {
+        this.field.slot_char = this.field.slot_char ?? '_'
       }
     }
   }
