@@ -53,17 +53,17 @@
     />
     <div class="grid grid-cols-2 gap-4">
       <div class="flex-grow my-1" v-if="useFeatureFlag('services.google.fonts')">
-        <label class="text-gray-700 font-semibold text-sm mb-1 block">Font Family</label>
-        <v-button
-          color="white"
-          class="w-full py-1.5"
-          size="small"
+        <label class="text-neutral-700 font-semibold text-sm mb-1 block">Font Family</label>
+        <UButton
+          color="neutral"
+          variant="outline"
+          block
           @click="showGoogleFontPicker = true"
         >
           <span :style="{ 'font-family': (form.font_family ? form.font_family + ' !important' : null) }">
             {{ form.font_family || 'Default' }}
           </span>
-        </v-button>
+        </UButton>
         <GoogleFontPicker
           :show="showGoogleFontPicker"
           :font="form.font_family || null"
@@ -224,22 +224,20 @@
 import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
-import ProTag from "~/components/global/ProTag.vue"
+import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 
 
 const workingFormStore = useWorkingFormStore()
-const subscriptionModalStore = useSubscriptionModalStore()
-const authStore = useAuthStore()
-const workspacesStore = useWorkspacesStore()
+const { openSubscriptionModal } = useAppModals()
 const form = storeToRefs(workingFormStore).content
 const isMounted = ref(false)
 const confetti = useConfetti()
 const showGoogleFontPicker = ref(false)
 const { $i18n } = useNuxtApp()
 
-const user = computed(() => authStore.user)
-const workspace = computed(() => workspacesStore.getCurrent)
+const { data: user } = useAuth().user()
+const { current: workspace } = useCurrentWorkspace()
 
 const isPro = computed(() => {
   if (!useFeatureFlag('billing.enabled')) return true
@@ -263,8 +261,7 @@ const onChangeConfettiOnSubmission = (val) => {
 
 const onChangeNoBranding = (val) => {
   if (!isPro.value && val) {
-    subscriptionModalStore.setModalContent("Upgrade today to remove OpnForm branding")
-    subscriptionModalStore.openModal()
+    openSubscriptionModal({ modal_title: "Upgrade today to remove OpnForm branding" })
     setTimeout(() => {
       form.value.no_branding = false
     }, 300)

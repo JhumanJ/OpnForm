@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex flex-col p-3 rounded-md shadow border-gray-200 border-[0.5px] justify-between w-full cursor-pointer hover:ring ring-blue-300 relative"
-    :class="{'ring': isSelected }"
+    class="flex flex-col p-3 rounded-md shadow border-neutral-200 border-[0.5px] transition-colors justify-between w-full cursor-pointer ring-blue-300  relative"
+    :class="{'ring bg-blue-100': isSelected, 'bg-white hover:ring-2 hover:bg-blue-50': !isSelected}"
     @click="$emit('select-font')"
   >
     <template v-if="isVisible">
@@ -28,7 +28,7 @@
       />
     </div>
 
-    <div class="text-gray-400 flex justify-between">
+    <div class="text-neutral-400 flex justify-between">
       <p class="text-xs">
         {{ fontName }}
       </p>
@@ -36,7 +36,7 @@
     <Icon
       v-if="isSelected"
       name="heroicons:check-circle-16-solid"
-      class="w-5 h-5 text-nt-blue absolute bottom-4 right-4"
+                class="w-5 h-5 text-blue-500 absolute bottom-4 right-4"
     />
   </div>
 </template>

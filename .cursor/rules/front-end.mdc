@@ -1,30 +1,34 @@
 ---
 description: Vue and Nuxt guidelines
 globs: client/**.*
+alwaysApply: false
 ---
-You are an expert in Nuxt, Vue.js, Vue Router, Pinia, VueUse, NuxtUI library and Tailwind, with a deep understanding of best practices and performance optimization techniques in these technologies.
+You are an expert in Nuxt, Vue.js, Vue Router, Pinia, VueUse, NuxtUI v3 library and Tailwind, with a deep understanding of best practices and performance optimization techniques in these technologies.
 
-Code Style and Structure
+## Code Style and Structure
 - Write concise, maintainable, and technically accurate code with relevant examples.
 - Use functional and declarative programming patterns; avoid classes.
 - Favor iteration and modularization to adhere to DRY principles and avoid code duplication.
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
 - Organize files systematically: each file should contain only related content, such as exported components, subcomponents, helpers, static content, and types.
+- No need to import Vue Reactivity APIs like ref or computed, as well as lifecycle hooks and helpers in .vue components, as they are auto-imported by Nuxt
+- For promises and async, always use ().then().error().finally() syntax over try/catch/await
 
-Naming Conventions
+## Naming Conventions
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).
 - Favor named exports for functions.
 
 We don't use typescript, javascript only (except when really required for config file for instance).
 
-Syntax and Formatting
+## Syntax and Formatting
 - Use the "function" keyword for pure functions to benefit from hoisting and clarity.
-- Always use the Vue Composition API script setup style. If a legacy file still used
+- Always use the Vue Composition API script setup style. If a legacy file still using options API, it it's short then directly update the script section. If it's longer and a bit more complex, make the requried change using the existing options API and at the end ask if you should migrate to composition API.
 
-UI and Styling
-- Use Nuxt UI components (https://ui.nuxt.com/components) and Tailwind for components and styling.
+## UI and Styling
+- Use Nuxt UI v3 components (https://ui.nuxt.com/components) and Tailwind for components and styling. Ex: <UModal>, <UPopover>, <UToolTip>, <UBadge> etc... Essentially use NuxtUI for everything but for form components.
 - Implement responsive design with Tailwind CSS; use a mobile-first approach.
 - Build UI components using atomic design principles, organizing them from smallest to largest (e.g., atoms, molecules, organisms, pages).
+- Icons: use the <Icon> component, and for icon names always use `i-library-icon` syntax.
 
 Forms
 - For forms inputs, use the components in client/components/forms such as <TextInput> etc.

@@ -2,48 +2,56 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-    class="fixed inset-0 z-40 bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm"
+            class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
   <!--   Form Preview (desktop only)   -->
   <div
+    class="form-editor-preview"
     ref="parent"
     :class="{
       'fixed inset-8 z-50 !flex': isExpanded,
-      'bg-gray-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center overflow-y-scroll shadow-inner': !isExpanded
+      'bg-neutral-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center overflow-y-scroll shadow-inner': !isExpanded
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-sm transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-xs transition-all flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
-      <div class="w-full bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-blue-900 dark:border-gray-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
+      <div class="w-full bg-white dark:bg-neutral-950 border-b border-neutral-300 dark:border-blue-900 dark:border-neutral-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
         <div class="bg-red-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-yellow-500 rounded-full w-2.5 h-2.5" />
         <div class="bg-green-500 rounded-full w-2.5 h-2.5" />
-        <p class="text-sm text-gray-500/70 text-sm ml-4 select-none">
+        <p class="text-sm text-neutral-500/70 text-sm ml-4 select-none">
           Form Preview
         </p>
         <div class="flex-grow" />
         <UButton
           v-if="previewFormSubmitted"
           icon="i-heroicons-arrow-path-rounded-square"
-          color="white"
+          color="neutral"
+          variant="outline"
           size="xs"
           @click="restartForm"
         >
           Re-start
         </UButton>
+        <TrackClick
+            name="form_editor_toggle_expand"
+            :properties="{toggle: !isExpanded}"
+          >
         <UTooltip :text="isExpanded ? 'Collapse' : 'Expand'">
-          <UButton
-            v-track.form_editor_toggle_expand="{toggle: !isExpanded}"
-            :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
-            color="white"
-            size="xs"
-            @click="toggleExpand"
-          />
+         
+            <UButton
+              :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
+              color="neutral"
+              variant="outline"
+              size="xs"
+              @click="toggleExpand"
+            />
         </UTooltip>
+      </TrackClick>
       </div>
       <div class="flex-grow overflow-y-auto">
         <transition
@@ -84,7 +92,7 @@
         </transition>
         <div v-if="recordLoading">
           <p class="text-center p-4">
-            <loader class="h-6 w-6 text-nt-blue mx-auto" />
+            <loader class="h-6 w-6 text-blue-500 mx-auto" />
           </p>
         </div>
         <open-complete-form
@@ -111,6 +119,10 @@ import { useRecordsStore } from '~/stores/records'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { useCrisp } from '~/composables/useCrisp.js'
+import TrackClick from '~/components/global/TrackClick.vue'
+
+const { hideChat, showChat } = useCrisp()
 
 const recordsStore = useRecordsStore()
 const workingFormStore = useWorkingFormStore()
@@ -119,6 +131,13 @@ const parent = ref(null)
 const formPreview = ref(null)
 const previewFormSubmitted = ref(false)
 const isExpanded = ref(false)
+
+watch(isExpanded, (expanded) => {
+  if (expanded)
+    hideChat()
+  else
+    showChat()
+})
 
 const { content: form } = storeToRefs(workingFormStore)
 const recordLoading = computed(() => recordsStore.loading)
@@ -190,5 +209,13 @@ function toggleExpand() {
 <style scoped>
 .fixed {
   transition: all 0.3s ease-in-out;
+}
+</style>
+
+<style>
+@reference '~/css/app.css';
+
+.form-editor-preview .powered-by-button {
+  @apply bottom-10 right-10 z-50;
 }
 </style>

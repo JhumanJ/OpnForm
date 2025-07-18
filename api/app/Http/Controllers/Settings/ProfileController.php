@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 class ProfileController extends Controller
 {
@@ -22,6 +24,21 @@ class ProfileController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
+
+        // Check if email is actually changing
+        $emailChanged = strtolower($request->email) !== strtolower($user->email);
+
+        // Apply throttling only if email is changing
+        if ($emailChanged) {
+            $key = 'profilechange:' . $user->id;
+            $attempts = RateLimiter::attempts($key);
+
+            if ($attempts >= 2) {
+                throw new ThrottleRequestsException('Too Many Attempts.');
+            }
+
+            RateLimiter::hit($key, 3600); // 1 hour
+        }
 
         return tap($user)->update([
             'name' => $request->name,

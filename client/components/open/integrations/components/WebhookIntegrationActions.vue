@@ -4,12 +4,15 @@
       v-if="integration"
       class="hidden md:block space-y-1"
     >
-      <UBadge
-        :label="integration.data.webhook_url"
-        color="gray"
-        size="xs"
-        class="max-w-[300px] block truncate"
-      />
+      <UTooltip :text="integration.data.webhook_url">
+        <UBadge
+          :label="integration.data.webhook_url"
+          color="neutral"
+          variant="subtle"
+          size="sm"
+          class="max-w-40 block truncate"
+        />
+      </UTooltip>
     </div>
   </div>
 </template>
@@ -26,12 +29,12 @@ const props = defineProps({
   }
 })
 
-const formIntegrationsStore = useFormIntegrationsStore()
+const { invalidateIntegrations } = useFormIntegrations()
 let interval = null
 
 onMounted(() => {
   if (!props.integration.data || props.integration.data.length === 0) {
-    interval = setInterval(() => formIntegrationsStore.fetchFormIntegrations(props.form.id), 3000)
+    interval = setInterval(() => invalidateIntegrations(props.form.id), 3000)
     setTimeout(() => { clearInterval(interval) }, 30000)
   }
 })

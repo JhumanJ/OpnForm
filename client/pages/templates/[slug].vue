@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-full">
-    <breadcrumb
+    <Breadcrumb
       v-if="template"
       :path="breadcrumbs"
     >
@@ -9,13 +9,12 @@
           v-if="canEditTemplate"
           class="ml-5"
         >
-          <v-button
-            color="gray"
-            size="small"
+          <UButton
+            color="neutral"
+            size="sm"
             @click.prevent="showFormTemplateModal = true"
-          >
-            Edit Template
-          </v-button>
+            label="Edit Template"
+          />
           <form-template-modal
             v-if="form"
             :form="form"
@@ -26,26 +25,30 @@
         </div>
       </template>
       <template #right>
-        <v-button
+        <TrackClick
           v-if="canEditTemplate"
-          v-track.copy_template_button_clicked
-          size="small"
-          color="white"
+          name="copy_template_button_clicked"
           class="mr-5"
-          @click.prevent="copyTemplateUrl"
         >
-          Copy Template URL
-        </v-button>
-        <v-button
-          v-track.use_template_button_clicked
-          size="small"
+          <UButton
+            size="sm"
+            variant="outline"
+            @click.prevent="copyTemplateUrl"
+            label="Copy Template URL"
+          />
+        </TrackClick>
+        <TrackClick
+          name="use_template_button_clicked"
           class="mr-5"
-          :to="createFormWithTemplateUrl"
         >
-          Use this template
-        </v-button>
+          <UButton
+            size="sm"
+            :to="createFormWithTemplateUrl"
+            label="Use this template"
+          />
+        </TrackClick>
       </template>
-    </breadcrumb>
+    </Breadcrumb>
 
     <p
       v-if="template === null || !template"
@@ -54,13 +57,13 @@
       We could not find this template.
     </p>
     <template v-else>
-      <section class="pt-12 bg-gray-50 sm:pt-16 border-b pb-[250px] relative">
+      <section class="pt-12 bg-neutral-50 sm:pt-16 border-b pb-[250px] relative">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div
             class="flex flex-col items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 md:flex-row"
           >
             <div
-              class="aspect-[4/3] shrink-0 rounded-lg shadow-sm overflow-hidden group w-full max-w-sm relative"
+              class="aspect-[4/3] shrink-0 rounded-lg shadow-xs overflow-hidden group w-full max-w-sm relative"
             >
               <img
                 class="object-cover w-full h-full transition-all duration-200 group-hover:scale-110 absolute inset-0"
@@ -71,11 +74,11 @@
 
             <div class="flex-1 text-center md:text-left relative">
               <h1
-                class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                class="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl"
               >
                 {{ template.name }}
               </h1>
-              <p class="mt-2 text-lg font-normal text-gray-600">
+              <p class="mt-2 text-lg font-normal text-neutral-600">
                 {{ cleanQuotes(template.short_description) }}
               </p>
               <template-tags
@@ -90,32 +93,35 @@
 
       <section class="w-full max-w-4xl relative px-4 mx-auto sm:px-6 lg:px-8 -mt-[210px]">
         <div
-          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring-1 ring-inset ring-gray-200 isolate"
+          class="p-4 mx-auto bg-white shadow-lg sm:p-6 lg:p-8 rounded-xl ring ring-inset ring-neutral-200 isolate"
         >
-          <p class="text-sm font-medium text-center text-gray-500 -mt-2 mb-2">
+          <p class="text-sm font-medium text-center text-neutral-500 -mt-2 mb-2">
             Template Preview
           </p>
-          <open-complete-form
+          <OpenCompleteForm
             ref="open-complete-form"
             :form="form"
             :mode="FormMode.TEST"
-            class="mb-4 p-4 bg-gray-50 border border-gray-200 border-dashed rounded-lg"
+            class="mb-4 p-4 bg-neutral-50 border border-neutral-200 border-dashed rounded-lg"
           />
         </div>
 
         <div class="absolute bottom-0 translate-y-full inset-x-0">
           <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl -mt-[20px]">
             <div class="flex items-center justify-center">
-              <v-button
-                v-track.use_template_button_clicked
+              <TrackClick
+                name="use_template_button_clicked"
                 class="mx-auto w-full max-w-[300px]"
-                :to="createFormWithTemplateUrl"
               >
-                Use this template
-              </v-button>
+                <UButton
+                  block
+                  :to="createFormWithTemplateUrl"
+                  label="Use this template"
+                />
+              </TrackClick>
             </div>
             <div class="flex items-center justify-center">
-              <div class="text-left mx-auto text-gray-500 text-xs mt-4">
+              <div class="text-left mx-auto text-neutral-500 text-xs mt-4">
                 ✓ Core features 100% free<br>
                 ✓ No credit card required<br>
                 ✓ No submissions limit on Free plan
@@ -136,15 +142,15 @@
             />
 
             <template v-if="template.questions.length > 0">
-              <hr class="mt-12 border-gray-200">
+              <hr class="mt-12 border-neutral-200">
               <div>
                 <div class="text-center">
                   <h3
-                    class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+                    class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
                   >
                     Frequently asked questions
                   </h3>
-                  <p class="mt-2 text-base font-normal text-gray-600">
+                  <p class="mt-2 text-base font-normal text-neutral-600">
                     Everything you need to know about this template.
                   </p>
                 </div>
@@ -154,11 +160,11 @@
                     :key="ques_key"
                     class="space-y-4"
                   >
-                    <dt class="font-semibold text-gray-900 dark:text-gray-100">
+                    <dt class="font-semibold text-neutral-900 dark:text-neutral-100">
                       {{ ques.question }}
                     </dt>
                     <dd
-                      class="mt-2 leading-6 text-gray-600 dark:text-gray-400"
+                      class="mt-2 leading-6 text-neutral-600 dark:text-neutral-400"
                       v-html="ques.answer"
                     />
                   </div>
@@ -171,23 +177,22 @@
 
       <section
         v-if="relatedTemplates && relatedTemplates.length > 0"
-        class="py-12 bg-white border-t border-gray-200 sm:py-16"
+        class="py-12 bg-white border-t border-neutral-200 sm:py-16"
       >
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="flex items-center justify-between">
             <h4
-              class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+              class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
             >
               Related templates
             </h4>
-            <v-button
+            <UButton
               :to="{ name: 'templates' }"
               color="white"
-              size="small"
-              :arrow="true"
-            >
-              View All
-            </v-button>
+              size="sm"
+              trailing-icon="i-heroicons-arrow-right-20-solid"
+              label="View All"
+            />
           </div>
 
           <div
@@ -202,11 +207,11 @@
         </div>
       </section>
 
-      <section class="py-12 bg-white border-t border-gray-200 sm:py-16">
+      <section class="py-12 bg-white border-t border-neutral-200 sm:py-16">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="text-center">
             <h4
-              class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl"
+              class="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl"
             >
               How OpnForm works
             </h4>
@@ -217,15 +222,15 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 1
               </div>
               <div>
-                <h5 class="text-base font-bold leading-tight text-gray-900">
+                <h5 class="text-base font-bold leading-tight text-neutral-900">
                   Copy the template and change it the way you like
                 </h5>
-                <p class="mt-2 text-sm font-normal text-gray-600">
+                <p class="mt-2 text-sm font-normal text-neutral-600">
                   <NuxtLink :to="createFormWithTemplateUrl">
                     Click here to copy this template
                   </NuxtLink>
@@ -239,15 +244,15 @@
               class="flex flex-col items-center gap-4 text-center lg:items-start sm:text-left sm:items-start xl:flex-row"
             >
               <div
-                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-200 text-blue-500 shrink-0"
+                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold bg-white rounded-full shadow-xs ring ring-inset ring-neutral-200 text-blue-500 shrink-0"
               >
                 2
               </div>
               <div>
-                <h5 class="text-base font-bold leading-tight text-gray-900">
+                <h5 class="text-base font-bold leading-tight text-neutral-900">
                   Embed the form or share it via a link
                 </h5>
-                <p class="mt-2 text-sm font-normal text-gray-600">
+                <p class="mt-2 text-sm font-normal text-neutral-600">
                   You can directly share your form link, or embed the form on
                   your website. It's magic! 🪄
                 </p>
@@ -266,127 +271,101 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import OpenCompleteForm from "../../components/open/forms/OpenCompleteForm.vue"
-import Breadcrumb from "~/components/global/Breadcrumb.vue"
-import SingleTemplate from "../../components/pages/templates/SingleTemplate.vue"
-import { fetchTemplate } from "~/stores/templates.js"
+import { computed, ref } from "vue"
+import { useRoute } from "vue-router"
 import FormTemplateModal from "~/components/open/forms/components/templates/FormTemplateModal.vue"
+import TemplateTags from "~/components/pages/templates/TemplateTags.vue"
+import SingleTemplate from "~/components/pages/templates/SingleTemplate.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
-
-defineRouteRules({
-  swr: 3600,
-})
-
-const { copy } = useClipboard()
-const authStore = useAuthStore()
-const templatesStore = useTemplatesStore()
+import { cleanQuotes } from "~/lib/utils"
+import OpenCompleteForm from "~/components/open/forms/OpenCompleteForm.vue"
+import Breadcrumb from "~/components/app/Breadcrumb.vue"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const route = useRoute()
-const slug = computed(() => route.params.slug)
+const { detail, list } = useTemplates()
 
-const template = computed(() => templatesStore.getByKey(slug.value))
-const form = computed(() => template.value.structure)
+const { data: template } = detail(route.params.slug)
+const { data: allTemplates } = list()
 
-// Fetch the template
-if (!template.value) {
-  const { data } = await fetchTemplate(slug.value)
-  templatesStore.save(data.value)
-}
+const form = computed(() => {
+  if (!template.value) {
+    return null
+  }
+  return template.value.structure
+})
 
-// Fetch related templates
-const { data: relatedTemplatesData } = await useAsyncData(
-  "related-templates",
-  () => {
-    return Promise.all(
-      template.value.related_templates.map((slug) => {
-        if (templatesStore.getByKey(slug)) {
-          return Promise.resolve(templatesStore.getByKey(slug))
-        }
-        return fetchTemplate(slug).then((res) => res.data.value)
-      }),
-    )
-  },
-)
-templatesStore.save(relatedTemplatesData.value)
-templatesStore.initTypesAndIndustries()
+const relatedTemplates = computed(() => {
+  if (!template.value?.related_templates || !allTemplates.value) {
+    return []
+  }
+  const relatedSlugs = new Set(template.value.related_templates)
+  return allTemplates.value.filter(
+    (t) => relatedSlugs.has(t.slug) && t.slug !== template.value.slug,
+  )
+})
 
-// State
 const showFormTemplateModal = ref(false)
+const { data: user } = useAuth().user()
+const canEditTemplate = computed(
+  () => user.value && (user.value.admin || user.value.template_editor),
+)
 
-// Computed
+const createFormWithTemplateUrl = computed(() => {
+  if (!user.value) {
+    return {
+      name: "register",
+      query: {
+        redirect: route.fullPath,
+        template: route.params.slug,
+      },
+    }
+  }
+  return {
+    name: "forms-create",
+    query: {
+      template: route.params.slug,
+    },
+  }
+})
+
 const breadcrumbs = computed(() => {
   if (!template.value) {
-    return [{ route: { name: "templates" }, label: "Templates" }]
+    return []
   }
   return [
-    { route: { name: "templates" }, label: "Templates" },
-    { label: template.value.name },
+    { name: "Templates", to: { name: "templates" } },
+    {
+      name: template.value.name,
+      to: { name: "templates-slug", params: { slug: template.value.slug } },
+    },
   ]
 })
-const relatedTemplates = computed(() =>
-  templatesStore.getByKey(template?.value?.related_templates),
-)
-const canEditTemplate = computed(
-  () =>
-    authStore.check &&
-    template.value &&
-    template.value?.from_prod !== true &&
-    (authStore.user.admin ||
-      authStore.user.template_editor ||
-      template.value.creator_id === authStore.user.id),
-)
-const createFormWithTemplateUrl = computed(() => {
-  return {
-    name: authStore.check ? "forms-create" : "forms-create-guest",
-    query: { template: template?.value?.slug },
-  }
-})
-
-// methods
-const cleanQuotes = (str) => {
-  // Remove starting and ending quotes if any
-  return str ? str.replace(/^"/, "").replace(/"$/, "") : ""
-}
 
 const copyTemplateUrl = () => {
-  copy(template.value.share_url)
-  useAlert().success("Copied!")
+  navigator.clipboard.writeText(window.location.href)
+  useAlert().success("URL copied to clipboard!")
 }
 
-useOpnSeoMeta({
-  title: () => {
-    if (!template.value || !template.value) return "Form Template"
-    return template.value.name
-  },
-  description() {
-    if (!template.value || !template.value) return null
-    // take the first 140 characters of the description
-    return (
-      template.value.short_description?.substring(0, 140) +
-      "... | Customize any template and create your own form in minutes."
-    )
-  },
-  ogImage() {
-    if (!template.value || !template.value) return null
-    return template.value.image_url
-  },
-  robots: () => {
-    if (!template.value || !template.value) return null
-    return template.value.publicly_listed ? null : "noindex"
-  },
-})
+useOpnSeoMeta(
+  computed(() => ({
+    title: template.value?.name,
+    description: template.value?.short_description,
+  })),
+)
 </script>
 
-<style lang="scss">
+<style>
+@reference '~/css/app.css';
+
 .nf-text {
   @apply space-y-4;
   h2 {
-    @apply text-sm font-normal tracking-widest text-gray-500 uppercase;
+    @apply text-sm font-normal tracking-widest text-neutral-500 uppercase;
   }
 
   p {
-    @apply font-normal leading-7 text-gray-900 dark:text-gray-100;
+    @apply font-normal leading-7 text-neutral-900 dark:text-neutral-100;
   }
 
   ol {

@@ -5,7 +5,7 @@
     :form="form"
   >
     <div class="mb-4">
-      <p class="text-gray-500 mb-4">
+      <p class="text-neutral-500 mb-4">
         Receive Telegram messages on each form submission.
       </p>
       <template v-if="providers.length">
@@ -22,12 +22,12 @@
           <template #help>
             <InputHelp>
               <span>
-                <NuxtLink
-                  class="text-blue-500"
-                  :to="{ name: 'settings-connections' }"
-                >
-                  Click here
-                </NuxtLink>
+                              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
+              >
+                Click here
+              </a>
                 to connect another account.
               </span>
             </InputHelp>
@@ -43,20 +43,19 @@
         />
       </template>
 
-      <v-button
+      <UButton
         v-else
-        color="white"
-        :loading="providersStore.loading"
-        @click.prevent="connect"
-      >
-        Connect Telegram account
-      </v-button>
+        color="neutral"
+        variant="outline"
+        :loading="isLoading"
+        @click.prevent="openConnectionsModal"
+        label="Connect Telegram account"
+      />
     </div>
   </IntegrationWrapper>
 </template>
 
 <script setup>
-import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 import NotificationsMessageActions from './components/NotificationsMessageActions.vue'
 
@@ -67,10 +66,13 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 })
 
-const providersStore = useOAuthProvidersStore()
-const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'telegram'))
+const oAuth = useOAuth()
+const { data: providersData, isLoading } = oAuth.providers()
+const providers = computed(() => (providersData.value || []).filter(provider => provider.provider == 'telegram'))
 
-function connect () {
-  useRouter().push({ name: 'settings-connections' })
+const { openUserSettings } = useAppModals()
+
+function openConnectionsModal () {
+  openUserSettings('connections')
 }
 </script> 

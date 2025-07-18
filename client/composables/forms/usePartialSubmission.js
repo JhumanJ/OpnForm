@@ -1,4 +1,4 @@
-import { opnFetch } from "./../useOpnApi.js"
+import { formsApi } from "~/api"
 import { watch, onBeforeUnmount, ref, toValue } from 'vue'
 
 // Create a Map to store submission hashes for different forms
@@ -72,13 +72,10 @@ export function usePartialSubmission(formConfig, formDataRef, pendingSubmissionS
     }
 
     try {
-      const response = await opnFetch(`/forms/${config.slug}/answer`, {
-        method: "POST",
-        body: {
-          ...currentData,
-          'is_partial': true,
-          'submission_hash': getSubmissionHash() // Use the updated getter
-        }
+      const response = await formsApi.submissions.answer(config.slug, {
+        ...currentData,
+        'is_partial': true,
+        'submission_hash': getSubmissionHash() // Use the updated getter
       })
       if (response.submission_hash) {
         setSubmissionHash(response.submission_hash) // Use the updated setter

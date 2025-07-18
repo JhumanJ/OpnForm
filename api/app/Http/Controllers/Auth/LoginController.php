@@ -49,7 +49,12 @@ class LoginController extends Controller
             return false;
         }
 
-        $this->guard()->setToken($token);
+        if ($user->is_blocked) {
+            $this->guard()->logout();
+            return false;
+        }
+
+        $guard->setToken($token);
 
         return true;
     }
@@ -98,6 +103,14 @@ class LoginController extends Controller
         $user = $this->guard()->user();
         if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
             throw VerifyEmailException::forUser($user);
+        }
+
+        $user = \App\Models\User::where($this->username(), strtolower($request->get($this->username())))->first();
+
+        if ($user && $user->is_blocked) {
+            throw ValidationException::withMessages([
+                $this->username() => ['Your account has been blocked. Please contact support.'],
+            ]);
         }
 
         throw ValidationException::withMessages([

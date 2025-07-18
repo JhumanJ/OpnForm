@@ -8,7 +8,7 @@
           class="w-56 mb-5"
         >
 
-        <h1 class="mb-6 font-semibold text-3xl text-gray-900">
+        <h1 class="mb-6 font-semibold text-3xl text-neutral-900">
           Page not found (404)
         </h1>
 

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="field"
-    class="pb-2"
+    class="pb-20"
   >
     <!-- General -->
     <div class="px-4">
@@ -513,6 +513,7 @@
       />
       <rich-text-area-input
         v-else-if="field.type === 'rich_text'"
+        :allow-fullscreen="true"
         name="prefill"
         class="mt-3"
         :form="field"
@@ -527,7 +528,7 @@
       />
       <div
         v-if="['select', 'multi_select'].includes(field.type)"
-        class="-mt-3 mb-3 text-gray-400 dark:text-gray-500"
+        class="-mt-3 mb-3 text-neutral-400 dark:text-neutral-500"
       >
         <small>
           A problem? <a
@@ -573,11 +574,11 @@
       />
 
       <!--   Help  -->
-      <rich-text-area-input
+      <RichTextAreaInput
         name="help"
         class="mt-3"
+        :allow-fullscreen="true"
         :form="field"
-        :editor-toolbar="editorToolbarCustom"
         label="Help Text"
         :editor-options="{
           formats: [
@@ -666,13 +667,14 @@ import MatrixFieldOptions from './MatrixFieldOptions.vue'
 import PaymentFieldOptions from './PaymentFieldOptions.vue'
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
+import ProTag from '~/components/app/ProTag.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 import blocksTypes from '~/data/blocks_types.json'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions },
+  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions, ProTag },
   props: {
     field: {
       type: Object,
@@ -684,17 +686,15 @@ export default {
     }
   },
   setup() {
+    const { current: currentWorkspace } = useCurrentWorkspace()
     return {
-      currentWorkspace: computed(() => useWorkspacesStore().getCurrent),
+      currentWorkspace
       crisp: useCrisp()
     }
   },
   data() {
     return {
       typesWithoutPlaceholder: ['date', 'checkbox', 'files', 'payment', 'matrix', 'signature', 'barcode', 'scale', 'slider', 'rating'],
-      editorToolbarCustom: [
-        ['bold', 'italic', 'underline', 'link']
-      ],
       allCountries: countryCodes,
       barcodeDecodersOptions: [
         { name: 'QR Code', value: 'qr_reader' },

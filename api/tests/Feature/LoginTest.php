@@ -35,3 +35,18 @@ it('can log out', function () {
     $this->getJson('/user')
         ->assertStatus(401);
 });
+
+it('cannot login if user is blocked', function () {
+    $user = User::factory()->create([
+        'blocked_at' => now(),
+    ]);
+
+    $this->postJson('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['email' => 'Your account has been blocked. Please contact support.']);
+
+    $this->assertGuest();
+});

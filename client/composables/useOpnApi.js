@@ -52,20 +52,19 @@ export function getOpnRequestsOptions(request, opts) {
   addPasswordToFormRequest(request, opts)
   addCustomDomainHeader(request, opts)
 
-  if (!opts.baseURL) opts.baseURL = config.privateApiBase || config.public.apiBase
+  if (!opts.baseURL) {
+    // Use privateApiBase only on server side, fallback to public.apiBase on client
+    opts.baseURL = (import.meta.server && config.privateApiBase) || config.public.apiBase
+  }
 
   return {
     async onResponseError({ response }) {
-      const authStore = useAuthStore()
-
       const { status } = response
       if (status === 401) {
-        if (authStore.check) {
-          console.log("Logging out due to 401")
-          authStore.logout()
-          useAppStore().isUnauthorizedError = true
-          useAppStore().quickLoginModal = true
-        }
+        // Always handle 401 errors with token expiry flow
+        // This covers both cases: token expired AND no token present
+        const { handleTokenExpiry } = useAuthFlow()
+        await handleTokenExpiry()
       } else if (status === 420) {
         // If invalid domain, redirect to main domain
         console.warn("Invalid response from back-end - redirecting to main domain")

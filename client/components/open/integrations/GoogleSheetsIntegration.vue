@@ -5,7 +5,7 @@
     :form="form"
   >
     <div class="mb-4">
-      <p class="text-gray-500 mb-4">
+      <p class="text-neutral-500 mb-4">
         Adds new entry to spreadsheets on each form submission.
       </p>
       <FlatSelectInput
@@ -24,32 +24,31 @@
         <template #help>
           <InputHelp>
             <span>
-              <NuxtLink
-                class="text-blue-500"
-                :to="{ name: 'settings-connections' }"
+              <a
+                class="text-blue-500 cursor-pointer"
+                @click="openConnectionsModal"
               >
                 Click here
-              </NuxtLink>
+              </a>
               to connect another account.
             </span>
           </InputHelp>
         </template>
       </FlatSelectInput>
 
-      <v-button
+      <UButton
         v-else
-        color="white"
-        :loading="providersStore.loading"
+        color="neutral"
+        variant="outline"
+        :loading="isLoading"
         @click.prevent="connect"
-      >
-        Connect Google account
-      </v-button>
+        label="Connect Google account"
+      />
     </div>
   </IntegrationWrapper>
 </template>
 
 <script setup>
-import FlatSelectInput from '~/components/forms/FlatSelectInput.vue'
 import IntegrationWrapper from './components/IntegrationWrapper.vue'
 
 const props = defineProps({
@@ -59,11 +58,17 @@ const props = defineProps({
   formIntegrationId: { type: Number, required: false, default: null }
 })
 
-const providersStore = useOAuthProvidersStore()
-const providers = computed(() => providersStore.getAll.filter(provider => provider.provider == 'google'))
-const disableProviders = computed(() => providersStore.getAll.filter(provider => !provider.scopes.includes(providersStore.googleDrivePermission)).map((provider) => provider.id))
+const oAuth = useOAuth()
+const { data: providersData, isLoading } = oAuth.providers()
+const providers = computed(() => (providersData.value || []).filter(provider => provider.provider == 'google'))
+const disableProviders = computed(() => (providersData.value || []).filter(provider => !provider.scopes.includes(oAuth.googleDrivePermission)).map((provider) => provider.id))
+const { openUserSettings } = useAppModals()
 
 function connect () {
-  providersStore.connect('google', true)
+  oAuth.connect('google', true)
+}
+
+function openConnectionsModal () {
+  openUserSettings('connections')
 }
 </script>

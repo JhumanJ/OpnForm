@@ -119,5 +119,33 @@ export const mentionAsText = (content) => {
     (match, fieldId, fieldName, text) => {
       return `${text}`
     }
-  ).replace(/<[^>]*>/g, '')
+  )
+  .replace(/<br\s*\/?>/gi, '\n') // Convert <br> tags to newlines
+  .replace(/<\/p>/gi, '\n') // Convert closing </p> tags to newlines
+  .replace(/<p[^>]*>/gi, '') // Remove opening <p> tags
+  .replace(/<\/div>/gi, '\n') // Convert closing </div> tags to newlines  
+  .replace(/<div[^>]*>/gi, '') // Remove opening <div> tags
+  .replace(/<[^>]*>/g, '') // Remove all other HTML tags
+}
+
+export function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+  }
+  return num
+}
+
+export function formatNumberWithCommas(num) {
+  if (typeof num !== 'number') {
+    return num
+  }
+  return num.toLocaleString()
+}
+
+export function cleanQuotes(str) {
+  if (!str) return ''
+  return str.replace(/^"|"$/g, '')
 }

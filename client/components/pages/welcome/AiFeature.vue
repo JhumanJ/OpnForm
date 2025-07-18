@@ -3,7 +3,7 @@
     <section>
       <div class="mx-auto max-w-7xl isolate sm:px-6 lg:px-8">
         <div
-          class="relative px-4 py-8 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:py-0 sm:shadow-gray-600/10"
+          class="relative px-4 py-8 overflow-hidden bg-blue-100 ring-blue-100 ring-1 sm:shadow-lg isolate sm:rounded-2xl sm:px-16 md:pt-20 lg:flex lg:gap-x-20 lg:px-16 lg:py-0 sm:shadow-neutral-600/10"
         >
           <div class="absolute inset-0">
             <img
@@ -17,7 +17,7 @@
             class="relative max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:flex-auto lg:py-16 lg:text-left"
           >
             <span
-              class="bg-white text-xs font-semibold inline-flex items-center shadow-sm ring-blue-200 ring-1 text-blue-600 px-2.5 py-1.5 rounded-full"
+              class="bg-white text-xs font-semibold inline-flex items-center shadow-xs ring-blue-200 ring text-blue-600 px-2.5 py-1.5 rounded-full"
             >
               <svg
                 aria-hidden="true"
@@ -36,7 +36,7 @@
             </span>
 
             <h2
-              class="mt-6 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl"
+              class="mt-6 text-2xl font-semibold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl"
             >
               Say goodbye to tedious form building with OpnForm's new
               <span
@@ -44,31 +44,32 @@
               >AI-powered feature!</span>
             </h2>
             <p
-              class="mt-4 text-base font-medium leading-7 text-gray-500 sm:text-lg sm:leading-8"
+              class="mt-4 text-base font-medium leading-7 text-neutral-500 sm:text-lg sm:leading-8"
             >
               Easily generate a fully working form in seconds with just a simple
               description.
             </p>
 
             <div class="flex justify-center lg:justify-start mt-4">
-              <v-button
-                v-track.welcome_ai_builder_click
-                class="block"
-                :to="{ name: 'forms-create-guest' }"
-                :arrow="true"
-                color="blue"
-              >
-                Try our AI form builder
-              </v-button>
+              <TrackClick name="welcome_ai_builder_click">
+                <UButton
+                  class="block"
+                  :to="{ name: 'forms-create-guest' }"
+                  :trailing="true"
+                  color="primary"
+                  size="lg"
+                  label="Try our AI form builder"
+                />
+              </TrackClick>
             </div>
 
             <ul
-              class="flex flex-wrap items-center justify-center mt-4 gap-4 text-sm font-medium text-gray-900 lg:justify-start"
+              class="flex flex-wrap items-center justify-center mt-4 gap-4 text-sm font-medium text-neutral-900 lg:justify-start"
             >
               <li class="flex items-center gap-2">
                 <svg
                   aria-hidden="true"
-                  class="w-5 h-5 text-gray-400 shrink-0"
+                  class="w-5 h-5 text-neutral-400 shrink-0"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -85,7 +86,7 @@
               <li class="flex items-center gap-2">
                 <svg
                   aria-hidden="true"
-                  class="w-5 h-5 text-gray-400 shrink-0"
+                  class="w-5 h-5 text-neutral-400 shrink-0"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -102,7 +103,7 @@
               <li class="flex items-center gap-2">
                 <svg
                   aria-hidden="true"
-                  class="w-5 h-5 text-gray-400 shrink-0"
+                  class="w-5 h-5 text-neutral-400 shrink-0"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -116,20 +117,6 @@
                 No-coding required
               </li>
             </ul>
-
-            <div
-              class="mt-6 sm:mt-8 flex text-center justify-center lg:justify-start"
-            >
-              <!--                <v-button v-if="!authenticated" class="mr-2 block" :to="{ name: 'forms-create-guest' }" :arrow="true">-->
-              <!--                  Get started for free-->
-              <!--                </v-button>-->
-              <!--                <v-button v-else class="mr-2 block" :to="{ name: 'forms-create' }" :arrow="true">-->
-              <!--                  Get started for free-->
-              <!--                </v-button>-->
-              <!--                <v-button color="light-gray" class="mr-1 block" :to="{ name: 'aiformbuilder' }">-->
-              <!--                  Learn more-->
-              <!--                </v-button>-->
-            </div>
           </div>
 
           <div
@@ -147,20 +134,6 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue"
-import { useAuthStore } from "../../../stores/auth"
-
-export default {
-  props: {},
-  setup() {
-    const authStore = useAuthStore()
-    return {
-      authenticated: computed(() => authStore.check),
-    }
-  },
-  data: () => ({}),
-  computed: {},
-  methods: {},
-}
+<script setup>
+import TrackClick from '~/components/global/TrackClick.vue'
 </script>

@@ -1,13 +1,11 @@
 <template>
   <UButton
-    size="sm"
-    color="white"
+    variant="outline"
     icon="i-heroicons-key-16-solid"
     :loading="loading"
     @click="resetPassword"
-  >
-    Reset Password
-  </UButton>
+    label="Reset Password"
+  />
 </template>
 
 <script setup>

@@ -15,6 +15,7 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         $personalData = \Auth::id() === $this->id ? [
+            'is_pro' => $this->is_pro,
             'is_subscribed' => $this->is_subscribed,
             'has_enterprise_subscription' => $this->has_enterprise_subscription,
             'admin' => $this->admin,

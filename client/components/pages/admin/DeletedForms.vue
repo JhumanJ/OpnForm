@@ -9,24 +9,24 @@
       :progress="{ color: 'primary', animation: 'carousel' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }"
       :columns="columns"
-      :rows="rows"
+      :data="rows"
       class="-mx-6"
     >
-      <template #actions-data="{ row }">
-        <VButton
+      <template #actions-cell="{ row }">
+        <UButton
           :loading="restoringForm"
-          native-type="button"
-          size="small"
-          color="white"
-          @click.prevent="restoreForm(row.slug)"
+          size="sm"
+          color="neutral"
+          variant="outline"
+          @click.prevent="restoreForm(row.original.slug)"
         >
           Restore
-        </VButton>
+        </UButton>
       </template>
     </UTable>
     <div 
       v-if="forms?.length > pageCount"
-      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+      class="flex justify-end px-3 py-3.5 border-t border-neutral-200 dark:border-neutral-700"
     >
       <UPagination
         v-model="page"
@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+import { adminApi } from '~/api'
 
 const props = defineProps({
     user: { type: Object, required: true }
@@ -58,7 +59,7 @@ onMounted(() => {
 
 const getDeletedForms = () => {
     loading.value = true
-    opnFetch("/moderator/forms/" + props.user.id + "/deleted-forms",).then(data => {
+    adminApi.forms.getDeleted(props.user.id).then(data => {
         loading.value = false
         forms.value = data.forms
     }).catch(error => {
@@ -72,9 +73,7 @@ const restoreForm = (slug) => {
         "Are you sure you want to restore this form?",
         () => {
             restoringForm.value = true
-            opnFetch("/moderator/forms/" + slug + "/restore", {
-                method: 'PATCH',
-            }).then(data => {
+            adminApi.forms.restore(slug).then(data => {
                 restoringForm.value = false
                 useAlert().success(data.message)
                 getDeletedForms()
@@ -87,27 +86,27 @@ const restoreForm = (slug) => {
 
 
 const columns = [{
-    key: 'id',
-    label: 'ID'
+    accessorKey: 'id',
+    header: 'ID'
 }, {
-    key: 'slug',
-    label: 'Slug',
+    accessorKey: 'slug',
+    header: 'Slug',
     sortable: true
 }, {
-    key: 'title',
-    label: 'Title',
+    accessorKey: 'title',
+    header: 'Title',
     sortable: true
 }, {
-    key: 'created_by',
-    label: 'Created by',
+    accessorKey: 'created_by',
+    header: 'Created by',
     sortable: true
 }, {
-    key: 'deleted_at',
-    label: 'Deleted at',
+    accessorKey: 'deleted_at',
+    header: 'Deleted at',
     sortable: true,
 }, {
-    key: 'actions',
-    label: 'Restore',
+    id: 'actions',
+    header: 'Restore',
     sortable: false,
 }]
 

@@ -59,13 +59,15 @@ class WorkspaceController extends Controller
         $workspace->delete();
 
         return $this->success([
-            'message' => 'Workspace deleted.',
+            'message' => 'Workspace successfully deleted.',
             'workspace_id' => $id,
         ]);
     }
 
     public function create(Request $request)
     {
+        $this->authorize('create', Workspace::class);
+
         $user   = $request->user();
 
         $this->validate($request, [

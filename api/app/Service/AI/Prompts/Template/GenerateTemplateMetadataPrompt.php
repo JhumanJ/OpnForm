@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 
 class GenerateTemplateMetadataPrompt extends Prompt
 {
-    protected float $temperature = 0.81;
+    protected ?float $temperature = null;
 
-    protected int $maxTokens = 3000;
+    protected ?int $maxTokens = null;
 
     /**
      * Available industries and types loaded from the database

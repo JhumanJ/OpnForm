@@ -1,0 +1,222 @@
+---
+title: "Data Fetching"
+description: "How we fetch and mutate server data in the front-end with TanStack Query."
+---
+
+<Info>
+Authentication tokens are stored in **cookies** after login. `client/composables/useOpnApi.js` automatically injects the
+`Authorization: Bearer <token>` header on every request, and the global middleware
+`client/middleware/01.check-auth.global.js` pre-loads the current user & workspaces during navigation.<br/>
+If you need to generate new tokens (e.g. for external scripts) see the [Authentication](../api-reference/introduction#authentication) docs.
+</Info>
+
+## Why TanStack Query?
+We use [TanStack Query](https://tanstack.com/query/latest) to handle **server state**—data that lives in the database and is accessed through our API. It gives us:
+
+- Automatic caching & background refetching
+- Declarative loading / error states
+- Built-in mutations with optimistic updates
+- DevTools for debugging
+
+For purely **client-side UI state** (theme, modals, etc.) we still rely on [Pinia](https://pinia.vuejs.org/) – see `client/stores/app.js` for an example.
+
+## Reading data
+```vue
+<script setup>
+// 1️⃣ Grab the query factory from the composable
+const { list } = useWorkspaces()
+
+// 2️⃣ Call it to register the query
+const {
+  data: workspaces,
+  isLoading,
+  isError,
+  error
+} = list()
+</script>
+
+<template>
+  <div v-if="isLoading">Loading…</div>
+  <div v-else-if="isError">{{ error.message }}</div>
+  <ul v-else>
+    <li v-for="ws in workspaces" :key="ws.id">{{ ws.name }}</li>
+  </ul>
+</template>
+```
+
+A query composable always returns a function (e.g. `list`) that you **call** to register the query. The options object you pass is forwarded directly to TanStack Query in case you need `staleTime`, `enabled`, etc.
+
+## Mutating data
+`mutateAsync` returns a Promise, so we recommend chaining handlers with `.then().catch()` to keep control flow explicit:
+
+```vue
+<script setup>
+const { create } = useWorkspaces()
+const createWorkspace = create() // register the mutation
+
+const onSubmit = (form) => {
+  createWorkspace
+    .mutateAsync(form)
+    .then(() => useAlert().success('Workspace created!'))
+    .catch((err) => useAlert().error(err.message))
+}
+</script>
+```
+
+### Mutations with URL parameters
+For endpoints that require IDs in the URL (like `/forms/{formId}/integrations/{integrationId}`), pass the required IDs when creating the mutation factory. This ensures proper cache invalidation and prevents stale closure issues:
+
+```vue
+<script setup>
+const props = defineProps({
+  formId: { type: Number, required: true },
+  integrationId: { type: Number, required: false }
+})
+
+const { createIntegration, updateIntegration } = useFormIntegrations()
+
+// ✅ Pass reactive IDs when creating mutations
+const formId = computed(() => props.formId)
+const integrationId = computed(() => props.integrationId)
+
+const createMutation = createIntegration(formId)
+const updateMutation = updateIntegration(formId, integrationId)
+
+const save = () => {
+  const mutation = props.integrationId ? updateMutation : createMutation
+  
+  mutation
+    .mutateAsync(formData)
+    .then(() => useAlert().success('Integration saved!'))
+    .catch((err) => useAlert().error(err.message))
+}
+</script>
+```
+
+**Why this pattern?**
+- The mutation factory receives the IDs and can properly update query cache keys
+- No need to pass IDs in the `mutateAsync()` call
+- Reactive IDs ensure cache updates work correctly when props change
+- Cleaner separation between mutation setup and execution
+
+#### Defining mutations with URL parameters in composables
+
+In your query composable, define mutation factories that accept the required IDs as parameters:
+
+```javascript
+// client/composables/query/forms/useFormIntegrations.js
+import { useQueryClient, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
+import { formsApi } from '~/api/forms'
+
+export function useFormIntegrations() {
+  const queryClient = useQueryClient()
+
+  const createIntegration = (formId, options = {}) => {
+    return useMutation({
+      mutationFn: (data) => formsApi.integrations.create(toValue(formId), data),
+      onSuccess: (response) => {
+        const newIntegration = response.form_integration
+        const currentFormId = toValue(formId)
+        
+        // Update integrations list cache
+        queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
+          if (!old) return [newIntegration]
+          if (!Array.isArray(old)) return old
+          return [...old, newIntegration]
+        })
+        
+        // Cache the individual integration
+        queryClient.setQueryData(['forms', currentFormId, 'integrations', newIntegration.id], newIntegration)
+      },
+      ...options
+    })
+  }
+
+  const updateIntegration = (formId, integrationId, options = {}) => {
+    return useMutation({
+      mutationFn: (data) => formsApi.integrations.update(toValue(formId), toValue(integrationId), data),
+      onSuccess: (response) => {
+        const updatedIntegration = response.form_integration
+        const currentFormId = toValue(formId)
+        const currentIntegrationId = toValue(integrationId)
+        
+        // Update individual integration cache
+        queryClient.setQueryData(['forms', currentFormId, 'integrations', currentIntegrationId], updatedIntegration)
+        
+        // Update in integrations list
+        queryClient.setQueryData(['forms', currentFormId, 'integrations'], (old) => {
+          if (!Array.isArray(old)) return old
+          return old.map(integration =>
+            integration.id === currentIntegrationId ? { ...integration, ...updatedIntegration } : integration
+          )
+        })
+      },
+      ...options
+    })
+  }
+
+  return {
+    createIntegration,
+    updateIntegration,
+    // ... other methods
+  }
+}
+```
+
+<Note>
+Always use `toValue()` to unwrap reactive references (refs, computed) when building query keys or making API calls. This ensures the actual values are used rather than reactive objects.
+</Note>
+
+**Key patterns:**
+- **Factory functions**: Return `useMutation()` instances rather than calling them directly
+- **Reactive ID handling**: Use `toValue()` to extract values from refs/computed properties
+- **Consistent cache keys**: Match the hierarchical structure used in queries
+- **Optimistic updates**: Update cache immediately in `onSuccess` to avoid refetching
+
+### Optimistic updates & cache layer
+All mutations live in their composable (`client/composables/query/*`). After a successful API call they update the cache **manually** using `queryClient.setQueryData` so the UI reflects changes instantly *without* needing an extra network round-trip.
+
+If you need to invalidate and refetch, every composable exposes `invalidate()` which calls `queryClient.invalidateQueries` for its namespace:
+
+```js
+import { useWorkspaces } from '@/composables/query'
+
+useWorkspaces().invalidate() // refetch every workspace query
+```
+
+## Anatomy of a composable (quick tour)
+Take `useWorkspaces.js` as an example:
+
+1. **Queries** – `list()`, `detail(id)`
+2. **Mutations** – `create()`, `update()`, `remove()`
+3. **Utilities** – `invalidate()`
+
+Each query/mutation is a thin wrapper around `workspaceApi.*`, keeps its own `queryKey`, and touches only the part of the cache it owns. This isolation makes cache behaviour predictable and prevents accidental over-fetching.
+
+### Waiting for completion with `suspense()`
+Every query instance exposes a `suspense()` method that returns a Promise resolving once the data is loaded. Our auth middleware uses it to block navigation until the user and workspace lists are ready:
+
+```js
+// client/middleware/01.check-auth.global.js (excerpt)
+const userQuery = useAuth().user()
+const workspacesQuery = useWorkspaces().list()
+
+await Promise.all([
+  userQuery.suspense(),
+  workspacesQuery.suspense(),
+])
+```
+
+## Loading & error states
+Every query exposes booleans such as `isLoading`, `isFetching`, `isError`. Mutations expose `isPending`. Use them to drive spinners, disabled states, or retry logic.
+
+<Tip>
+`isFetching && data` is perfect for subtle "background update" indicators.
+</Tip>
+
+## TL;DR
+- Use **TanStack Query composables** for anything that comes from the API.
+- Use **Pinia** only for UI or session state.
+- Mutate with `mutateAsync().then().catch()`.
+- Call `invalidate()` when you really need a refetch—otherwise rely on optimistic updates. 

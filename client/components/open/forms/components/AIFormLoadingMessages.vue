@@ -33,11 +33,11 @@
         v-motion
         :initial="{ opacity: 0, y: 5 }"
         :enter="{ opacity: 1, y: 0, transition: { duration: 200 } }"
-        class="text-sm text-gray-700 font-medium"
+        class="text-sm text-neutral-700 font-medium"
       >
         {{ currentMessage }}
       </span>
-      <span class="text-xs text-gray-500 ml-auto tabular-nums">{{ elapsedTime }}s</span>
+      <span class="text-xs text-neutral-500 ml-auto tabular-nums">{{ elapsedTime }}s</span>
     </div>
   </div>
 </template>

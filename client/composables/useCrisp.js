@@ -23,14 +23,20 @@ export function useCrisp () {
     if (!crisp)
       return
     crisp.chat.show()
-    useAppStore().crisp.hidden = false
+    useAppStore().crisp = {
+      ...useAppStore().crisp,
+      hidden: false
+    }
   }
 
   function hideChat () {
     if (!crisp)
       return
     crisp.chat.hide()
-    useAppStore().crisp.hidden = true
+    useAppStore().crisp = {
+      ...useAppStore().crisp,
+      hidden: true
+    }
   }
 
   function closeChat () {

@@ -3,7 +3,7 @@
     <button class="font-medium block flex-grow cursor-pointer">
       <div
         class="py-1.5 px-3 rounded-lg transition-colors transition-colors text-slate-500"
-        :class="{ 'bg-white shadow text-slate-900': !modelValue }"
+        :class="{ 'bg-white shadow-sm text-slate-900': !modelValue }"
         @click="set(false)"
       >
         Monthly
@@ -15,7 +15,7 @@
     >
       <div
         class="py-1.5 px-4 rounded-lg transition-colors text-slate-500"
-        :class="{ 'bg-white shadow text-slate-900': modelValue }"
+        :class="{ 'bg-white shadow-sm text-slate-900': modelValue }"
       >
         Yearly
       </div>

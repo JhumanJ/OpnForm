@@ -10,7 +10,7 @@
         We're checking the status of your subscription please wait a moment...
       </h4>
       <div class="text-center">
-        <Loader class="h-6 w-6 text-nt-blue mx-auto mt-20" />
+        <Loader class="h-6 w-6 text-blue-500 mx-auto mt-20" />
       </div>
     </div>
     <open-form-footer />
@@ -20,6 +20,7 @@
 
 <script setup>
 import { useBroadcastChannel } from '@vueuse/core'
+import { authApi } from "~/api"
 
 definePageMeta({
   middleware: 'auth'
@@ -29,9 +30,8 @@ useOpnSeoMeta({
   title: 'Subscription Success'
 })
 
-const authStore = useAuthStore()
 const confetti = useConfetti()
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const subscribeBroadcast = useBroadcastChannel('subscribe')
 
 const interval = ref(null)
@@ -44,8 +44,8 @@ const redirectIfSubscribed = () => {
 }
 const checkSubscription = () => {
   // Fetch the user.
-  return opnFetch('user').then((data) => {
-    authStore.setUser(data)
+              return authApi.user.get().then((_data) => {
+     useAuth().invalidateUser()
     redirectIfSubscribed()
   }).catch((error) => {
     console.error(error)

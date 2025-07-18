@@ -63,6 +63,7 @@
     >
       <rich-text-area-input
         class="mx-4"
+        :allow-fullscreen="true"
         name="content"
         :form="field"
         label="Content"
@@ -104,9 +105,10 @@
 
     <div
       v-else-if="field.type == 'nf-code'"
-      class="border-t"
+      class="border-t mt-6"
     >
-      <code-input
+      <CodeInput
+        :allow-fullscreen="true"
         name="content"
         class="mt-4 mx-4"
         :form="field"

@@ -63,6 +63,12 @@ class WorkspaceUserController extends Controller
 
     private function inviteUser(Workspace $workspace, string $email, string $role)
     {
+        if (!$workspace->is_pro) {
+            return $this->error([
+                'message' => 'A Pro plan is required to invite users.'
+            ], 403);
+        }
+
         if (
             UserInvite::where('email', $email)
             ->where('workspace_id', $workspace->id)
@@ -76,10 +82,11 @@ class WorkspaceUserController extends Controller
         }
 
         // Send new invite
-        UserInvite::inviteUser($email, $role, $workspace, now()->addDays(7));
+        $invite = UserInvite::inviteUser($email, $role, $workspace, now()->addDays(7));
 
         return $this->success([
-            'message' => 'Registration invitation email sent to user.'
+            'message' => 'Registration invitation email sent to user.',
+            'invite' => $invite
         ]);
     }
 

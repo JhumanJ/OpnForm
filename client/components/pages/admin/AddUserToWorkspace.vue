@@ -25,7 +25,7 @@
       <UButton
         type="submit"
         :disabled="disabled"
-        :loading="addingUsersState"
+        :loading="addMutation.isPending.value"
         icon="i-heroicons-envelope"
       >
         Invite User
@@ -42,9 +42,9 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['fetchUsers'])
 
-const workspacesStore = useWorkspacesStore()
+const { currentId } = useCurrentWorkspace()
+const { addUser: addUserMutation } = useWorkspaceUsers()
 
 const roleOptions = [
   {name: "User", value: "user"},
@@ -54,33 +54,22 @@ const roleOptions = [
 
 const newUser = ref("")
 const newUserRole = ref("user")
-const addingUsersState = ref(false)
 
+const addMutation = addUserMutation(currentId)
 
 const addUser = () => {
   if (!newUser.value) return
-  addingUsersState.value = true
-  opnFetch(
-    "/open/workspaces/" + workspacesStore.currentId + "/users/add",
-    {
-      method: "POST",
-      body: {
-        email: newUser.value,
-        role: newUserRole.value,
-      },
-    }
-  ).then((data) => {
+  
+  addMutation.mutateAsync({
+    email: newUser.value,
+    role: newUserRole.value,
+  }).then((data) => {
     newUser.value = ""
     newUserRole.value = "user"
-
     useAlert().success(data.message)
-
-    emit("fetchUsers")
+    // No need to emit 'fetchUsers' - the mutation handles cache updates automatically
   }).catch((error) => {
     useAlert().error("There was an error adding user: " + error.data.message)
-  }).finally(() => {
-    addingUsersState.value = false
   })
 }
-
 </script>

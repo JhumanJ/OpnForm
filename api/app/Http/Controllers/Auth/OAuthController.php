@@ -3,149 +3,221 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Auth\Traits\ManagesJWT;
+use App\Http\Resources\OAuthProviderResource;
+use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
+use App\Integrations\OAuth\OAuthConnectionService;
 use App\Integrations\OAuth\OAuthProviderService;
-use App\Models\OAuthProvider;
-use App\Models\User;
-use App\Models\Workspace;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Service\OAuth\OAuthUserService;
+use App\Service\OAuth\OAuthProviderService as OAuthProviderServiceClass;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class OAuthController extends Controller
 {
-    use AuthenticatesUsers;
+    use ManagesJWT;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        config([
-            'services.github.redirect' => route('oauth.callback', 'github'),
-        ]);
+    public const INTENT_AUTH = 'auth';
+    public const INTENT_INTEGRATION = 'integration';
+
+    public function __construct(
+        private OAuthConnectionService $oauthConnectionService,
+        private OAuthUserService $oauthUserService,
+        private OAuthProviderServiceClass $oauthProviderService
+    ) {
     }
 
     /**
      * Redirect the user to the provider authentication page.
-     *
-     * @param  string  $provider
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirect(OAuthProviderService $provider)
+    public function redirect(Request $request, string $provider)
     {
-        return response()->json([
-            'url' => $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getRedirectUrl()
+        $request->validate([
+            'intent' => 'required|in:auth,integration'
         ]);
+
+        $providerService = OAuthProviderService::from($provider);
+        $intent = $request->input('intent');
+
+        // Validate intent requirements
+        $this->validateIntentRequirements($intent, $providerService);
+
+        $scopes = $providerService->getDriver()->getScopesForIntent($intent);
+
+        // For integrations, store context for the callback
+        if ($intent === self::INTENT_INTEGRATION) {
+            $context = [
+                'intent' => $intent,
+                'intention' => $request->input('intention'),
+                'autoClose' => $request->boolean('autoClose', false),
+            ];
+            Cache::put("oauth-context:" . Auth::id(), $context, now()->addMinutes(5));
+        } else {
+            // For auth, store UTM data
+            Cache::put("oauth-context:auth:" . session()->getId(), [
+                'intent' => $intent,
+                'utm_data' => $request->input('utm_data')
+            ], now()->addMinutes(5));
+        }
+
+        $url = $this->oauthConnectionService->getRedirectUrl($providerService, $scopes);
+        return response()->json(['url' => $url]);
     }
 
     /**
-     * Obtain the user information from the provider.
-     *
-     * @param  string  $driver
-     * @return \Illuminate\Http\Response
+     * Handle the OAuth callback from the provider.
      */
-    public function handleCallback(OAuthProviderService $provider)
+    public function callback(string $provider)
     {
-        try {
-            $driverUser = $provider->getDriver()->setRedirectUrl(config('services.google.auth_redirect'))->getUser();
-        } catch (\Exception $e) {
-            return $this->error([
-                "message" => "OAuth service failed to authenticate: " . $e->getMessage()
-            ]);
-        }
+        $providerService = OAuthProviderService::from($provider);
 
-        $user = $this->findOrCreateUser($provider, $driverUser);
+        // Get user data from OAuth redirect
+        $userData = $this->getUserDataFromRedirect($providerService);
 
-        if (!$user) {
-            return $this->error([
-                "message" => "User not found."
-            ]);
-        }
+        // Determine intent from cached context
+        $intent = $this->getIntentFromContext();
 
-        if ($user->has_registered) {
-            return $this->error([
-                "message" => "This email is already registered. Please sign in with your password."
-            ]);
-        }
-
-        $this->guard()->setToken(
-            $token = $this->guard()->login($user)
-        );
-
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
-            'new_user' => $user->new_user
-        ]);
+        return $this->handleIntent($intent, $providerService, $userData);
     }
 
     /**
-     * @p   aram  \Laravel\Socialite\Contracts\User  $socialiteUser
-     * @return \App\Models\User | null
+     * Handle widget-based OAuth callback.
      */
-    protected function findOrCreateUser($provider, $socialiteUser)
+    public function handleWidgetCallback(string $service, Request $request)
     {
-        $oauthProvider = OAuthProvider::where('provider', $provider)
-            ->where('provider_user_id', $socialiteUser->getId())
-            ->first();
+        $request->validate([
+            'intent' => 'required|in:auth,integration'
+        ]);
 
-        if ($oauthProvider) {
-            $oauthProvider->update([
-                'access_token' => $socialiteUser->token,
-                'refresh_token' => $socialiteUser->refreshToken,
-                'scopes' => $socialiteUser->approvedScopes
-            ]);
+        $providerService = OAuthProviderService::from($service);
+        $intent = $request->input('intent');
 
-            return $oauthProvider->user;
+        // Validate intent requirements
+        $this->validateIntentRequirements($intent, $providerService);
+
+        // Get user data from widget
+        $userData = $this->getUserDataFromWidget($providerService, $request);
+
+        return $this->handleIntent($intent, $providerService, $userData);
+    }
+
+    /**
+     * Handle intent-based flow
+     */
+    private function handleIntent(string $intent, OAuthProviderService $providerService, array $userData)
+    {
+        return match ($intent) {
+            self::INTENT_AUTH => $this->handleAuthenticationFlow($providerService, $userData),
+            self::INTENT_INTEGRATION => $this->handleIntegrationFlow($providerService, $userData),
+            default => abort(400, 'Invalid intent')
+        };
+    }
+
+    /**
+     * Handle authentication flow (create user + authenticate)
+     */
+    private function handleAuthenticationFlow(OAuthProviderService $providerService, array $userData)
+    {
+        // Find or create user
+        $user = $this->oauthUserService->findOrCreateUser($userData, $providerService);
+
+        // Create/update OAuth provider record
+        $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
+
+        // Return JWT token for authentication
+        return $this->sendLoginResponse($user);
+    }
+
+    /**
+     * Handle integration flow (connect OAuth provider to existing user)
+     */
+    private function handleIntegrationFlow(OAuthProviderService $providerService, array $userData)
+    {
+        if (!Auth::check()) {
+            abort(401, 'Authentication required for integration connections');
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        if (!$provider->getDriver()->canCreateUser()) {
-            return null;
+        // Create/update OAuth provider record
+        $oauthProvider = $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
+
+        // Get cached context
+        $context = Cache::pull("oauth-context:{$user->id}", [
+            'intention' => null,
+            'autoClose' => false
+        ]);
+
+        return response()->json([
+            'provider' => OAuthProviderResource::make($oauthProvider),
+            'autoClose' => $context['autoClose'],
+            'intention' => $context['intention'],
+        ]);
+    }
+
+    // Helper methods
+    private function validateIntentRequirements(string $intent, OAuthProviderService $providerService): void
+    {
+        if ($intent === self::INTENT_INTEGRATION && !Auth::check()) {
+            abort(401, 'Integration requires authentication');
         }
 
-        $email = strtolower($socialiteUser->getEmail());
-        $user = User::whereEmail($email)->first();
-
-        if ($user) {
-            $user->has_registered = true;
-            return $user;
+        if (!$providerService->supportsIntent($intent)) {
+            abort(400, "Service {$providerService->value} does not support intent {$intent}");
         }
+    }
 
-        $utmData = request()->utm_data;
-        $user = User::create([
+    private function getUserDataFromRedirect(OAuthProviderService $providerService): array
+    {
+        $driver = $providerService->getDriver();
+        $socialiteUser = $driver->getUser();
+
+        return [
+            'id' => $socialiteUser->getId(),
             'name' => $socialiteUser->getName(),
-            'email' => $email,
-            'email_verified_at' => now(),
-            'utm_data' => is_string($utmData) ? json_decode($utmData, true) : $utmData
-        ]);
+            'email' => $socialiteUser->getEmail(),
+            'provider_user_id' => $socialiteUser->getId(),
+            'access_token' => $socialiteUser->token,
+            'refresh_token' => $socialiteUser->refreshToken,
+            'avatar' => $socialiteUser->getAvatar(),
+            'scopes' => $socialiteUser->approvedScopes ?? [],
+        ];
+    }
 
-        // Create and sync workspace
-        $workspace = Workspace::create([
-            'name' => 'My Workspace',
-            'icon' => '🧪',
-        ]);
+    private function getUserDataFromWidget(OAuthProviderService $providerService, Request $request): array
+    {
+        $driver = $providerService->getDriver();
 
-        $user->workspaces()->sync([
-            $workspace->id => [
-                'role' => User::ROLE_ADMIN,
-            ],
-        ], false);
-        $user->new_user = true;
+        if (!$driver instanceof WidgetOAuthDriver) {
+            abort(400, 'This provider does not support widget authentication');
+        }
 
-        OAuthProvider::create(
-            [
-                'user_id' => $user->id,
-                'provider' => $provider,
-                'provider_user_id' => $socialiteUser->getId(),
-                'access_token' => $socialiteUser->token,
-                'refresh_token' => $socialiteUser->refreshToken,
-                'name' => $socialiteUser->getName(),
-                'email' => $socialiteUser->getEmail(),
-                'scopes' => $socialiteUser->approvedScopes
-            ]
-        );
-        return $user;
+        if (!$driver->verifyWidgetData($request->all())) {
+            abort(400, 'Invalid widget data');
+        }
+
+        return $driver->getUserFromWidgetData($request->all());
+    }
+
+    private function getIntentFromContext(): string
+    {
+        // Try authenticated user context first
+        if (Auth::check()) {
+            $context = Cache::get("oauth-context:" . Auth::id());
+            if ($context && isset($context['intent'])) {
+                return $context['intent'];
+            }
+        }
+
+        // Try session context for auth flows
+        $context = Cache::get("oauth-context:auth:" . session()->getId());
+        if ($context && isset($context['intent'])) {
+            return $context['intent'];
+        }
+
+        // Default to auth if no context found
+        return self::INTENT_AUTH;
     }
 }
