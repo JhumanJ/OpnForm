@@ -231,33 +231,49 @@
         </template>
       </toggle-switch-input>
 
-      <text-input
-        v-if="!field.multi_lines"
-        name="input_mask"
-        class="mt-3"
-        :form="field"
-        label="Input Mask Pattern"
-        placeholder="(999) 999-9999"
-        @update:model-value="onInputMaskChange"
+      <UPopover
+        arrow
+        :content="{ side: 'left', align: 'center' }"
       >
-        <template #help>
-          <InputHelp>
-            <span>
-              Format: 9=number, a=letter, *=both. 
-              <br/>
-              Examples: (999) 999-9999, 999-99-9999, a*-999
-              <br/>
-              <a
-                href="#"
-                class="text-blue-500 hover:underline"
-                @click.prevent="crisp.openHelpdeskArticle('how-to-set-mask-pattern-197qqps')"
+        <UButton
+          class="mt-4"
+          block
+          color="neutral"
+          variant="outline"
+          :trailing-icon="field.input_mask ? 'i-heroicons-check-circle' : ''"
+          label="Input Mask Pattern"
+        />
+        <template #content>
+          <div class="p-4">
+            <TextInput
+              v-if="!field.multi_lines"
+              name="input_mask"
+              :form="field"
+              label="Input Mask Pattern"
+              placeholder="(999) 999-9999"
+              @update:model-value="onInputMaskChange"
             >
-              Learn more?
-            </a>
-            </span>
-          </InputHelp>
+              <template #help>
+                <InputHelp>
+                  <span>
+                    <b>Format:</b> 9=number, a=letter, *=both. 
+                    <br/>
+                    <b>Examples:</b> (999) 999-9999, 999-99-9999, a*-999
+                    <br/>
+                    <a
+                      href="#"
+                      class="text-blue-500 hover:underline"
+                      @click.prevent="crisp.openHelpdeskArticle('how-to-set-mask-pattern-197qqps')"
+                  >
+                    Learn more?
+                  </a>
+                  </span>
+                </InputHelp>
+              </template>
+            </TextInput>
+          </div>
         </template>
-      </text-input>
+      </UPopover>
     </div>
 
     <!--   Date Options   -->
