@@ -37,7 +37,7 @@
 
     /* Custom animations */
     --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
-    --animate-infinite-scroll: infinite-scroll 80s linear infinite;
+    --animate-infinite-scroll: infinite-scroll 550s linear infinite;
     --animate-text: text 5s ease infinite;
 
     /* Custom keyframes */
