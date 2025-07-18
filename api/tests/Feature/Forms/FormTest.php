@@ -412,7 +412,7 @@ it('validates min/max selection constraints format in form creation', function (
     $this->postJson(route('open.forms.store', $formData))
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'properties.10.min_selection',
-            'properties.10.max_selection'
+            'properties.14.min_selection',
+            'properties.14.max_selection'
         ]);
 });
