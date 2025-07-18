@@ -27,6 +27,8 @@
       :help-position="helpPosition"
       :remote="remote"
       :dropdown-class="dropdownClass"
+      :min-selection="minSelection"
+      :max-selection="maxSelection"
       @update-options="updateOptions"
       @update:model-value="updateModelValue"
     >
@@ -94,6 +96,23 @@
       <slot name="help" />
     </template>
 
+    <template
+      v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
+      #bottom_after_help
+    >
+      <small :class="theme.default.help">
+        <span v-if="minSelection && maxSelection">
+          {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
+        </span>
+        <span v-else-if="minSelection">
+          {{ selectedCount }} selected (min {{ minSelection }})
+        </span>
+        <span v-else-if="maxSelection">
+          {{ selectedCount }}/{{ maxSelection }} selected
+        </span>
+      </small>
+    </template>
+
     <template #error>
       <slot name="error" />
     </template>
@@ -122,7 +141,9 @@ export default {
     clearable: { type: Boolean, default: false },
     allowCreation: { type: Boolean, default: false },
     dropdownClass: { type: String, default: 'w-full' },
-    remote: { type: Function, default: null }
+    remote: { type: Function, default: null },
+    minSelection: { type: Number, default: null },
+    maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
     return {
@@ -138,7 +159,11 @@ export default {
   computed: {
     finalOptions() {
       return this.options.concat(this.additionalOptions)
-    }
+    },
+    selectedCount() {
+      if (!this.multiple || !Array.isArray(this.selectedValues)) return 0
+      return this.selectedValues.length
+    },
   },
   watch: {
     compVal: {

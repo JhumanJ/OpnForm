@@ -88,6 +88,24 @@
     <template #help>
       <slot name="help" />
     </template>
+
+    <template
+      v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
+      #bottom_after_help
+    >
+      <small :class="theme.default.help">
+        <span v-if="minSelection && maxSelection">
+          {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
+        </span>
+        <span v-else-if="minSelection">
+          {{ selectedCount }} selected (min {{ minSelection }})
+        </span>
+        <span v-else-if="maxSelection">
+          {{ selectedCount }}/{{ maxSelection }} selected
+        </span>
+      </small>
+    </template>
+
     <template #error>
       <slot name="error" />
     </template>
@@ -117,6 +135,8 @@ export default {
     disableOptions: { type: Array, default: () => [] },
     disableOptionsTooltip: { type: String, default: "Not allowed" },
     clearable: { type: Boolean, default: false },
+    minSelection: { type: Number, default: null },
+    maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
     return {
@@ -136,10 +156,18 @@ export default {
       
       return this.options.find(option => option[this.optionKey] === this.compVal) || null
     },
+    selectedCount() {
+      if (!this.multiple || !Array.isArray(this.compVal)) return 0
+      return this.compVal.length
+    },
+    maxSelectionReached() {
+      if (!this.multiple || !this.maxSelection) return false
+      return this.selectedCount >= this.maxSelection
+    },
   },
   methods: {
     onSelect(value) {
-      if (this.disabled || this.disableOptions.includes(value)) {
+      if (this.disabled || this.disableOptions.includes(value) || this.isOptionDisabled(value)) {
         return
       }
 
@@ -171,6 +199,12 @@ export default {
         return this.compVal.includes(value)
       }
       return this.compVal === value
+    },
+    isOptionDisabled(value) {
+      if (!this.multiple || !this.maxSelection) return false
+      // Allow deselection of already selected options
+      const isSelected = this.isSelected(value)
+      return !isSelected && this.maxSelectionReached
     },
     getOptionName(option) {
       return option ? option[this.displayKey] : ''
