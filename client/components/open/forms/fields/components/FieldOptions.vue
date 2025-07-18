@@ -232,6 +232,7 @@
       </toggle-switch-input>
 
       <UPopover
+        v-if="!field.multi_lines"
         arrow
         :content="{ side: 'left', align: 'center' }"
       >
@@ -246,7 +247,6 @@
         <template #content>
           <div class="p-4">
             <TextInput
-              v-if="!field.multi_lines"
               name="input_mask"
               :form="field"
               label="Input Mask Pattern"
