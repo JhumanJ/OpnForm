@@ -21,7 +21,7 @@
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
           :class="[
-            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-gray-800' : '',
+            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-neutral-800' : '',
           ]"
           ghost-class="ghost-item"
           filter=".not-draggable"
@@ -54,8 +54,7 @@
       <open-form-button
         v-if="formPageIndex>0 && previousFieldsPageBreak"
         native-type="button"
-        :color="form.color"
-        :theme="theme"
+        :form="form"
         class="mt-2 px-8 mx-1"
         @click="handlePreviousClick"
       >
@@ -70,8 +69,7 @@
       <open-form-button
         v-else-if="currentFieldsPageBreak"
         native-type="button"
-        :color="form.color"
-        :theme="theme"
+        :form="form"
         class="mt-2 px-8 mx-1"
         :loading="isProcessing"
         @click.stop="handleNextClick"
@@ -85,7 +83,7 @@
         v-if="hasPaymentBlock"
         class="mt-6 flex justify-center w-full"
       >
-        <p class="text-xs text-gray-400 dark:text-gray-500 flex text-center max-w-md">
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 flex text-center max-w-md">
           {{ $t('forms.payment.payment_disclaimer') }}
         </p>
       </div>
@@ -96,7 +94,7 @@
 <script setup>
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
-import CaptchaWrapper from '~/components/forms/components/CaptchaWrapper.vue'
+import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
@@ -143,9 +141,10 @@ const handlePreviousClick = () => {
   if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const handleNextClick = async () => {
-  await props.formManager.nextPage()
-  if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+const handleNextClick = () => {
+  props.formManager.nextPage().then(() => {
+    if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
 }
 
 const handleDragDropped = (data) => {

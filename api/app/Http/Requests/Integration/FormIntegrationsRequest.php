@@ -23,15 +23,15 @@ class FormIntegrationsRequest extends FormRequest
         if ($request->integration_id) {
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);
-            if ($integration && isset($integration['file_name']) && class_exists(
+            if (! is_null($integration) && isset($integration['file_name']) && class_exists(
                 'App\Integrations\Handlers\\' . $integration['file_name']
             )) {
                 $this->integrationClassName = 'App\Integrations\Handlers\\' . $integration['file_name'];
                 $this->loadIntegrationRules();
                 return;
             }
-            throw new \Exception('Unknown Integration!');
         }
+        throw new \Exception('Unknown Integration.');
     }
 
     /**

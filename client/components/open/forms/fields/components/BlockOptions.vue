@@ -19,36 +19,42 @@
         :can-be-hidden="true"
         :can-be-required="false"
       />
-      
-      <div class="grid grid-cols-2 gap-2 mt-2">
-        <select-input
+
+      <OptionSelectorInput
+          v-model="field.width"
           name="width"
-          class="flex-grow"
-          :options="[
-            { name: 'Full', value: 'full' },
-            { name: '1/2', value: '1/2' },
-            { name: '1/3', value: '1/3' },
-            { name: '2/3', value: '2/3' },
-            { name: '1/4', value: '1/4' },
-            { name: '3/4', value: '3/4' },
-          ]"
+          class="grow"
           :form="field"
-          label="Width"
+          label="Block Width"
+          seamless
+          :options="[
+            { name: 'full', label: 'Full' },
+            { name: '1/2', label: '1/2' },
+            { name: '1/3', label: '1/3' },
+            { name: '2/3', label: '2/3' },
+            { name: '1/4', label: '1/4' },
+            { name: '3/4', label: '3/4' },
+          ]"
+          :multiple="false"
+          :columns="6"
         />
-        <select-input
+        <OptionSelectorInput
           v-if="['nf-text', 'nf-image'].includes(field.type)"
+          v-model="field.align"
           name="align"
-          class="flex-grow"
-          :options="[
-            { name: 'Left', value: 'left' },
-            { name: 'Center', value: 'center' },
-            { name: 'Right', value: 'right' },
-            { name: 'Justify', value: 'justify' },
-          ]"
+          class="w-2/3"
           :form="field"
-          label="Alignment"
+          label="Text Alignment"
+          seamless
+          :options="[
+            { name: 'left', icon: 'i-heroicons-bars-3-bottom-left', tooltip: 'Align left' },
+            { name: 'center', icon: 'i-heroicons-bars-3', tooltip: 'Align center' },
+            { name: 'right', icon: 'i-heroicons-bars-3-bottom-right', tooltip: 'Align right' },
+            { name: 'justify', icon: 'i-heroicons-bars-4', tooltip: 'Justify text' },
+          ]"
+          :multiple="false"
+          :columns="4"
         />
-      </div>
     </div>
 
     <div
@@ -57,6 +63,7 @@
     >
       <rich-text-area-input
         class="mx-4"
+        :allow-fullscreen="true"
         name="content"
         :form="field"
         label="Content"
@@ -98,9 +105,10 @@
 
     <div
       v-else-if="field.type == 'nf-code'"
-      class="border-t"
+      class="border-t mt-6"
     >
-      <code-input
+      <CodeInput
+        :allow-fullscreen="true"
         name="content"
         class="mt-4 mx-4"
         :form="field"

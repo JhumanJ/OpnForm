@@ -1,0 +1,66 @@
+---
+openapi: put /open/forms/{id}/submissions/{submission_id}
+---
+
+# Update Submission
+
+Modify an existing submission's answers. This endpoint is useful when you want to correct values or enrich a submission after it was created.
+
+## Authentication & Scope
+
+Requires `forms-write` ability.
+
+## Request
+
+```http
+PUT /open/forms/{id}/submissions/{submission_id} HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter      | Type   | Description                               |
+|----------------|--------|-------------------------------------------|
+| id             | number | ID of the parent form.                    |
+| submission_id  | number | ID of the submission you want to update.  |
+
+### Body Parameters
+
+The payload should be an object whose keys correspond to the **field IDs** in the form definition. You only need to send the fields you intend to change. Other special meta-fields:
+
+| Field            | Type    | Description                           |
+|------------------|---------|---------------------------------------|
+| completion_time  | integer | Optional; total time in seconds.      |
+
+Example (updating two answers):
+
+```json
+{
+  "field_name": "Alice",
+  "field_email": "alice@example.com",
+  "completion_time": 125
+}
+```
+
+## Response
+
+`200 OK` – Returns the updated `Submission` object plus a success message.
+
+```json
+{
+  "message": "Record successfully updated.",
+  "data": {
+    "submission_id": 17,
+    "form_id": 99,
+    "submitted_at": "2024-06-12T10:11:12Z",
+    "data": {
+      "field_name": "Alice",
+      "field_email": "alice@example.com"
+    }
+  }
+}
+```
+
+`403 Forbidden` – Token lacks `forms-write` or you do not have permission.

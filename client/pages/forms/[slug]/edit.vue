@@ -1,43 +1,67 @@
 <template>
   <div class="w-full flex flex-col flex-grow">
-    <form-editor
-      v-if="(!formsLoading || form ) && !error "
+    <VTransition name="fade">
+    <FormEditor
+      v-if="!error"
       ref="editor"
       :is-edit="true"
       @on-save="formInitialHash = null"
+      :loading="formsLoading"
     />
-    <div
+    <UAlert
       v-else-if="error && !formsLoading"
-      class="mt-4 rounded-lg max-w-xl mx-auto p-6 bg-red-100 text-red-500"
+      icon="i-heroicons-exclamation-triangle"
+      color="error"
+      variant="soft"
+      class="max-w-xl mx-auto mt-4"
+      title="Error"
+      :description="errorMessage"
     >
-      {{ error }}
-    </div>
-    <div
-      v-else
-      class="text-center mt-4 py-6"
-    >
-      <Loader class="h-6 w-6 text-nt-blue mx-auto" />
-    </div>
+      <template #actions>
+        <UButton
+          color="neutral"
+          variant="outline"
+          :to="{ name: 'home' }"
+          icon="i-heroicons-arrow-left"
+        >
+          Back to dashboard
+        </UButton>
+      </template>
+    </UAlert>
+    </VTransition>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue"
+
 import FormEditor from "~/components/open/forms/components/FormEditor.vue"
 import { hash } from "~/lib/utils.js"
 
-const formsStore = useFormsStore()
+// Composables
+const route = useRoute()
 const workingFormStore = useWorkingFormStore()
-const workspacesStore = useWorkspacesStore()
+const { detail: formDetail } = useForms()
 
-if (!formsStore.allLoaded) {
-  formsStore.startLoading()
-}
+const slug = route.params.slug
+
+// Get form by slug using TanStack Query
+const { data: form, isLoading: formsLoading, error } = formDetail(slug,{
+  enabled: import.meta.client,
+})
+
+const errorMessage = computed(() => {
+  if (error.value?.response?.status === 401) {
+    return "You are not authorized to access this form."
+  } else if (error.value?.response?.status === 404) {
+    return "Form not found."
+  }
+  if (error.value?.response?.data?.message) {
+    return error.value.response.data.message
+  }
+  return "Error loading form"
+})
+
 const updatedForm = storeToRefs(workingFormStore).content
-const form = computed(() => formsStore.getByKey(useRoute().params.slug))
-const formsLoading = computed(() => formsStore.loading)
-
-const error = ref(null)
 const formInitialHash = ref(null)
 
 function isDirty() {
@@ -54,7 +78,7 @@ function isDirty() {
 }
 
 function initUpdatedForm() {
-  if (!form.value || !form.value) {
+  if (!form.value) {
     return
   }
 
@@ -65,13 +89,18 @@ function initUpdatedForm() {
   formInitialHash.value = hash(JSON.stringify(updatedForm.value.data()))
 }
 
-// Create a form.id watcher that updates working form
-watch(form, (form) => {
-  if (form?.value) {
-    initUpdatedForm()
-    
-  }
-})
+// Update working form store when form changes
+watch(
+  () => form.value,
+  (newForm) => {
+    workingFormStore.reset()
+    if (newForm) {
+      workingFormStore.set(newForm)
+      initUpdatedForm()
+    }
+  },
+  { immediate: true }
+)
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty()) {
@@ -93,20 +122,13 @@ onBeforeMount(() => {
       }
     }
   }
-
-  if (!form.value && !formsStore.allLoaded) {
-    formsStore.loadAll(workspacesStore.currentId).then(() => {
-      initUpdatedForm()
-    })
-  } else {
-    initUpdatedForm()
-  }
 })
 
 useOpnSeoMeta({
-  title: "Edit " + (form.value && form.value ? form.value.title : "Your Form"),
+  title: "Edit " + (form.value ? form.value.title : "Your Form"),
 })
 definePageMeta({
   middleware: "auth",
+  layout: 'empty'
 })
 </script>

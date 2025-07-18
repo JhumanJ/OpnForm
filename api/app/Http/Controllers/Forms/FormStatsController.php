@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStatsRequest;
 use App\Models\Forms\FormSubmission;
 use Carbon\CarbonPeriod;
-use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FormStatsController extends Controller
 {
@@ -47,7 +47,7 @@ class FormStatsController extends Controller
         $totalViews = $form->views_count;
         $totalSubmissions = $form->submissions_count;
 
-        $averageDuration = \Cache::remember('form_stats_average_duration_' . $form->id, 1800, function () use ($form) {
+        $averageDuration = Cache::remember('form_stats_average_duration_' . $form->id, 1800, function () use ($form) {
             $submissionsWithDuration = $form->submissions()->whereNotNull('completion_time')->count() ?? 0;
             $totalDuration = $form->submissions()->whereNotNull('completion_time')->sum('completion_time') ?? 0;
             return $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : null;
@@ -57,7 +57,30 @@ class FormStatsController extends Controller
             'views' => $totalViews,
             'submissions' => $totalSubmissions,
             'completion_rate' => $totalViews > 0 ? round(($totalSubmissions / $totalViews) * 100, 2) : 0,
-            'average_duration' => $averageDuration ? CarbonInterval::seconds($averageDuration)->cascade()->forHumans(null, true) : null
+            'average_duration' => $averageDuration ? $this->formatDuration($averageDuration) : null
         ];
+    }
+
+    private function formatDuration(int $seconds): string
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $remainingSeconds = $seconds % 60;
+
+        $parts = [];
+
+        if ($hours > 0) {
+            $parts[] = $hours . 'h';
+        }
+
+        if ($minutes > 0) {
+            $parts[] = $minutes . 'm';
+        }
+
+        if ($remainingSeconds > 0 || empty($parts)) {
+            $parts[] = $remainingSeconds . 's';
+        }
+
+        return implode(' ', $parts);
     }
 }

@@ -7,11 +7,12 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-gray-100/50 relative hover:z-10 transition-colors hover:border-gray-200 dark:hover:!bg-gray-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': isAdminPreview,
+        'group/nffield hover:bg-neutral-100/50 relative hover:z-10 transition-colors hover:border-neutral-200 dark:hover:!bg-neutral-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': isAdminPreview,
         'cursor-pointer':workingFormStore.showEditFieldSidebar && isAdminPreview,
-        'bg-blue-50 hover:!bg-blue-50 dark:bg-gray-800 rounded-md': beingEdited,
+        'bg-blue-50 hover:!bg-blue-50 dark:bg-neutral-800 rounded-md': beingEdited,
       }]"
     @click="setFieldAsSelected"
+    @dblclick="fieldDoubleClick"
   >
     <div
       class="-m-[1px] w-full max-w-full mx-auto"
@@ -22,12 +23,12 @@
         class="absolute translate-y-full lg:translate-y-0 -bottom-1 left-1/2 -translate-x-1/2 lg:-translate-x-full lg:-left-1 lg:top-1 lg:bottom-0 hidden group-hover/nffield:block z-10"
       >
         <div
-          class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-md shadow-sm z-50 p-[1px] relative"
+          class="flex lg:flex-col bg-white !bg-white dark:!bg-white border rounded-sm shadow-xs z-50 p-[1px] relative"
         >
           <div
-            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer !text-gray-500 dark:!text-gray-500 flex items-center justify-center rounded-md"
+            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer !text-neutral-500 dark:!text-neutral-500 flex items-center justify-center rounded-md"
             role="button"
-            @click.prevent="openAddFieldSidebar"
+            @click.stop.prevent="openAddFieldSidebar"
           >
             <UTooltip
               text="Add new field"
@@ -36,14 +37,14 @@
             >
               <Icon
                 name="i-heroicons-plus-circle-20-solid"
-                class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
+                class="w-5 h-5 !text-neutral-500 dark:!text-neutral-500 hover:!text-blue-500 dark:hover:!text-blue-500"
               />
             </UTooltip>
           </div>
           <div
-            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer flex items-center justify-center text-center !text-gray-500 dark:!text-gray-500 rounded-md"
+            class="p-1 hover:!text-blue-500 dark:hover:!text-blue-500 hover:bg-blue-50 cursor-pointer flex items-center justify-center text-center !text-neutral-500 dark:!text-neutral-500 rounded-md"
             role="button"
-            @click.prevent="editFieldOptions"
+            @click.stop.prevent="editFieldOptions"
           >
             <UTooltip
               text="Edit field settings"
@@ -52,14 +53,14 @@
             >
               <Icon
                 name="heroicons:cog-8-tooth-20-solid"
-                class="w-5 h-5 !text-gray-500 dark:!text-gray-500 hover:!text-blue-500 dark:hover:!text-blue-500"
+                class="w-5 h-5 !text-neutral-500 dark:!text-neutral-500 hover:!text-blue-500 dark:hover:!text-blue-500"
               />
             </UTooltip>
           </div>
           <div
             class="p-1 hover:!text-red-600 dark:hover:!text-red-600 hover:bg-red-50 cursor-pointer flex items-center justify-center text-center !text-red-500 dark:!text-red-500 rounded-md"
             role="button"
-            @click.prevent="removeField"
+            @click.stop.prevent="removeField"
           >
             <UTooltip
               text="Delete field"
@@ -74,22 +75,34 @@
           </div>
         </div>
       </div>
-      <component
-        :is="getFieldComponents"
-        v-if="getFieldComponents"
-        v-bind="inputProperties(field)"
-        :required="isFieldRequired"
-        :disabled="isFieldDisabled"
-        :is-admin-preview="isAdminPreview"
-      />
+      <div v-if="fieldComponentInfo && fieldComponentInfo.component">
+        <ClientOnlyWrapper :client-only="fieldComponentInfo.clientOnly">
+          <Suspense>
+            <component
+              :is="fieldComponentInfo.component"
+              v-bind="inputProperties(field)"
+              :required="isFieldRequired"
+              :disabled="isFieldDisabled"
+              :is-admin-preview="isAdminPreview"
+            />
+            <template #fallback>
+              <USkeleton class="w-full h-16 my-1.5" />
+            </template>
+          </Suspense>
+          <template #fallback>
+            <USkeleton class="w-full h-16 my-1.5" />
+          </template>
+        </ClientOnlyWrapper>
+      </div>
       <template v-else>
         <div
           v-if="field.type === 'nf-text' && field.content"
           :id="field.id"
           :key="field.id"
-          class="nf-text w-full my-1.5"
+          class="nf-text w-full my-1.5 break-words whitespace-break-spaces"
           :class="[getFieldAlignClasses(field)]"
           v-html="field.content"
+          @dblclick="editFieldOptions"
         />
         <div
           v-if="field.type === 'nf-code' && field.content"
@@ -135,7 +148,7 @@
         class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3"
       >
         <div
-          class="flex items-center bg-gray-100 dark:bg-gray-800 border rounded-md h-12 text-gray-500 dark:text-gray-400 dark:border-gray-500 cursor-grab handle min-h-[40px]"
+          class="flex items-center bg-neutral-100 dark:bg-neutral-800 border rounded-md h-12 text-neutral-500 dark:text-neutral-400 dark:border-neutral-500 cursor-grab handle min-h-[40px]"
         >
           <Icon
             name="clarity:drag-handle-line"
@@ -153,6 +166,7 @@ import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { default as _has } from 'lodash/has'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { useWorkingFormStore } from '~/stores/working_form'
+import { useComponentRegistry } from '~/composables/components/useComponentRegistry'
 
 // Define props
 const props = defineProps({
@@ -179,52 +193,54 @@ const enableDisabledFields = computed(() => props.formManager?.strategy?.value?.
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
+const { getFormComponent } = useComponentRegistry()
 const selectedFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
 const showEditFieldSidebar = computed(() => workingFormStore.showEditFieldSidebar)
 const strategy = computed(() => props.formManager?.strategy?.value || createFormModeStrategy(FormMode.LIVE))
 const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls || false)
 
 // Computed properties
-const getFieldComponents = computed(() => {
+const fieldComponentInfo = computed(() => {
   const field = props.field
+  let componentName
+
   if (field.type === 'text' && field.multi_lines) {
-    return 'TextAreaInput'
-  }
-  if (field.type === 'url' && field.file_upload) {
-    return 'FileInput'
-  }
-  if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
-    return 'FlatSelectInput'
-  }
-  if (field.type === 'checkbox' && field.use_toggle_switch) {
-    return 'ToggleSwitchInput'
-  }
-  if (field.type === 'signature') {
-    return 'SignatureInput'
-  }
-  if (field.type === 'phone_number' && !field.use_simple_text_input) {
-    return 'PhoneInput'
+    componentName = 'TextAreaInput'
+  } else if (field.type === 'url' && field.file_upload) {
+    componentName = 'FileInput'
+  } else if (['select', 'multi_select'].includes(field.type) && field.without_dropdown) {
+    componentName = 'FlatSelectInput'
+  } else if (field.type === 'checkbox' && field.use_toggle_switch) {
+    componentName = 'ToggleSwitchInput'
+  } else if (field.type === 'signature') {
+    componentName = 'SignatureInput'
+  } else if (field.type === 'phone_number' && !field.use_simple_text_input) {
+    componentName = 'PhoneInput'
+  } else {
+    componentName = {
+      text: 'TextInput',
+      rich_text: 'RichTextAreaInput',
+      number: 'TextInput',
+      rating: 'RatingInput',
+      scale: 'ScaleInput',
+      slider: 'SliderInput',
+      select: 'SelectInput',
+      multi_select: 'SelectInput',
+      date: 'DateInput',
+      files: 'FileInput',
+      checkbox: 'CheckboxInput',
+      url: 'TextInput',
+      email: 'TextInput',
+      phone_number: 'TextInput',
+      matrix: 'MatrixInput',
+      barcode: 'BarcodeInput',
+      payment: 'PaymentInput',
+      code: 'CodeInput'
+    }[field.type]
   }
 
-  return {
-    text: 'TextInput',
-    rich_text: 'RichTextAreaInput',
-    number: 'TextInput',
-    rating: 'RatingInput',
-    scale: 'ScaleInput',
-    slider: 'SliderInput',
-    select: 'SelectInput',
-    multi_select: 'SelectInput',
-    date: 'DateInput',
-    files: 'FileInput',
-    checkbox: 'CheckboxInput',
-    url: 'TextInput',
-    email: 'TextInput',
-    phone_number: 'TextInput',
-    matrix: 'MatrixInput',
-    barcode: 'BarcodeInput',
-    payment: 'PaymentInput'
-  }[field.type]
+  // Let the component registry handle whether to return a string or an async component
+  return getFormComponent(componentName)
 })
 
 const isPublicFormPage = computed(() => useRoute().name === 'forms-slug')
@@ -258,6 +274,11 @@ function editFieldOptions() {
 
 function setFieldAsSelected() {
   if (!isAdminPreview.value || !workingFormStore.showEditFieldSidebar) return
+  workingFormStore.openSettingsForField(props.field)
+}
+
+function fieldDoubleClick() {
+  if (!isAdminPreview.value) return
   workingFormStore.openSettingsForField(props.field)
 }
 

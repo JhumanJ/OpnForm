@@ -36,17 +36,28 @@ class CustomDomainRequest extends FormRequest
                         return ! empty(trim($domain));
                     })->each(function ($domain) use (&$errors) {
                         if (! preg_match(self::CUSTOM_DOMAINS_REGEX, $domain)) {
-                            $errors[] = 'Invalid domain: '.$domain;
+                            $errors[] = 'Invalid domain: ' . $domain;
                         }
                     });
 
                     if (count($errors)) {
-                        $fail($errors);
+                        $fail(implode(' ', $errors));
+                    }
+
+                    // Check if domains are already used by other workspaces
+                    foreach ($domains as $domain) {
+                        $exists = Workspace::where('id', '!=', $this->workspace->id)
+                            ->whereJsonContains('custom_domains', $domain)
+                            ->exists();
+
+                        if ($exists) {
+                            $fail("The domain {$domain} is already in use by another workspace.");
+                        }
                     }
 
                     $limit = $this->workspace->custom_domain_count_limit;
                     if ($limit && $domains->count() > $limit) {
-                        $fail('You can only add '.$limit.' domain(s).');
+                        $fail('You can only add ' . $limit . ' domain(s).');
                     }
 
                     $this->customDomains = $domains->toArray();

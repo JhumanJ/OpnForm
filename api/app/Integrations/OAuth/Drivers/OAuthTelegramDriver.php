@@ -37,9 +37,9 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
         return true;
     }
 
-    public function fullScopes(): self
+    public function getScopesForIntent(string $intent): array
     {
-        return $this;
+        return []; // Telegram widget doesn't use OAuth scopes
     }
 
     public function isWidgetBased(): bool

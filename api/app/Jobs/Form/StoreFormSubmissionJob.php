@@ -114,12 +114,54 @@ class StoreFormSubmissionJob implements ShouldQueue
     }
 
     /**
+     * Resolve the record to update
+     *
+     * @param array $submissionData
+     * @return int|null
+     */
+    private function resolveRecordToUpdate(array $submissionData)
+    {
+        if (!$this->form->is_pro || !isset($this->form->database_fields_update) || $this->submissionId) {
+            return null;
+        }
+
+        $propertyIds = $this->form->database_fields_update;
+        $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
+            return in_array($property['id'], $propertyIds);
+        });
+
+        // Build query to find record based on database_fields_update fields
+        $query = $this->form->submissions();
+        foreach ($properties as $property) {
+            $fieldId = $property['id'];
+            if (isset($submissionData[$fieldId]) && $submissionData[$fieldId]) {
+                $newValue = $submissionData[$fieldId];
+
+                // Remove country code from phone number
+                if ($property['type'] == 'phone_number' && (!$property['use_simple_text_input'] ?? false)) {
+                    $newValue = substr($newValue, 2);
+                }
+
+                $query->where("data->$fieldId", $newValue);
+            }
+        }
+        $record = $query->first();
+
+        return $record ? $record->id : null;
+    }
+
+    /**
      * Store the submission in the database
      *
      * @param array $formData
      */
     private function storeSubmission(array $formData)
     {
+        // Handle record update
+        if ($recordToUpdate = $this->resolveRecordToUpdate($this->submissionData)) {
+            $this->submissionId = $recordToUpdate;
+        }
+
         $submission = $this->submissionId
             ? $this->form->submissions()->findOrFail($this->submissionId)
             : new FormSubmission();
@@ -179,10 +221,18 @@ class StoreFormSubmissionJob implements ShouldQueue
                 }
             } else {
                 // Standard field processing (text, ID generation, etc.)
-                if ($field['type'] == 'text' && isset($field['generates_uuid']) && $field['generates_uuid']) {
-                    $finalData[$field['id']] = ($this->form->is_pro) ? Str::uuid()->toString() : 'Please upgrade your OpenForm subscription to use our ID generation features';
-                } elseif ($field['type'] == 'text' && isset($field['generates_auto_increment_id']) && $field['generates_auto_increment_id']) {
-                    $finalData[$field['id']] = ($this->form->is_pro) ? (string) ($this->form->submissions_count + 1) : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                if (isset($field['generates_uuid']) && $field['generates_uuid'] && $field['type'] == 'text') {
+                    if (empty($answerValue) || !Str::isUuid($answerValue)) {
+                        $finalData[$field['id']] = ($this->form->is_pro) ? Str::uuid()->toString() : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                    } else {
+                        $finalData[$field['id']] = $answerValue;
+                    }
+                } elseif (isset($field['generates_auto_increment_id']) && $field['generates_auto_increment_id'] && $field['type'] == 'text') {
+                    if (empty($answerValue) || !is_numeric($answerValue)) {
+                        $finalData[$field['id']] = ($this->form->is_pro) ? (string)($this->form->submissions_count + 1) : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                    } else {
+                        $finalData[$field['id']] = $answerValue;
+                    }
                 } else {
                     $finalData[$field['id']] = $answerValue;
                 }
@@ -289,13 +339,34 @@ class StoreFormSubmissionJob implements ShouldQueue
     private function addHiddenPrefills(array &$formData): void
     {
         collect($this->form->properties)->filter(function ($property) {
-            return isset($property['hidden'])
-                && isset($property['prefill'])
-                && FormLogicPropertyResolver::isHidden($property, $this->submissionData)
-                && !is_null($property['prefill'])
-                && !in_array($property['type'], ['files'])
-                && !($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload']);
+            return FormLogicPropertyResolver::isHidden($property, $this->submissionData);
         })->each(function (array $property) use (&$formData) {
+            // If a value is already set, we don't do anything for this property
+            if (array_key_exists($property['id'], $formData) && $formData[$property['id']] !== '' && $formData[$property['id']] !== [] && !is_null($formData[$property['id']])) {
+                return;
+            }
+
+            // Handle ID Generation for text fields
+            if ($property['type'] == 'text') {
+                if (isset($property['generates_uuid']) && $property['generates_uuid']) {
+                    $formData[$property['id']] = ($this->form->is_pro) ? Str::uuid()->toString() : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                    return; // ID generated, so we skip prefill logic for this field.
+                }
+
+                if (isset($property['generates_auto_increment_id']) && $property['generates_auto_increment_id']) {
+                    $formData[$property['id']] = ($this->form->is_pro) ? (string)($this->form->submissions_count + 1) : 'Please upgrade your OpenForm subscription to use our ID generation features';
+                    return; // ID generated, so we skip prefill logic for this field.
+                }
+            }
+
+            // From here, it's prefill logic.
+            if (!isset($property['prefill']) || is_null($property['prefill'])) {
+                return;
+            }
+            if (in_array($property['type'], ['files']) || ($property['type'] == 'url' && isset($property['file_upload']) && $property['file_upload'])) {
+                return;
+            }
+
             if ($property['type'] === 'date' && isset($property['prefill_today']) && $property['prefill_today']) {
                 $formData[$property['id']] = now()->format((isset($property['with_time']) && $property['with_time']) ? 'Y-m-d H:i' : 'Y-m-d');
             } else {

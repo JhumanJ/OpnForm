@@ -10,6 +10,7 @@ use App\Models\Workspace;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidReCaptcha;
@@ -45,12 +46,19 @@ class RegisterController extends Controller
             return response()->json(['status' => trans('verification.sent')]);
         }
 
-        return response()->json(array_merge(
-            (new UserResource($user))->toArray($request),
-            [
-                'appsumo_license' => $this->appsumoLicense,
-            ]
-        ));
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = Auth::guard('api');
+        $token = $guard->fromUser($user);
+
+        // The 'new_user' field is used by the front-end to ensure that we can track this event as a registration.
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $guard->factory()->getTTL() * 60,
+            'appsumo_license' => $this->appsumoLicense,
+            'new_user' => true,
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**

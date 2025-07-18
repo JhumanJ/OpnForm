@@ -5,12 +5,12 @@
   >
     <div class="mb-16 max-w-xl md:mx-auto sm:text-center lg:max-w-2xl">
       <h2
-        class="mb-6 font-sans text-4xl font-semibold leading-none tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:mx-auto"
+        class="mb-6 font-sans text-4xl font-semibold leading-none tracking-tight text-neutral-900 dark:text-neutral-100 sm:text-4xl md:mx-auto"
       >
         The easiest way to create forms. <br>
-        Generous unlimited <span class="text-nt-blue">free plan.</span>
+        Generous unlimited <span class="text-blue-500">free plan.</span>
       </h2>
-      <p class="text-base text-gray-700 dark:text-gray-300 md:text-lg">
+      <p class="text-base text-neutral-700 dark:text-neutral-300 md:text-lg">
         Need a contact form? Doing a survey? Create a form in 2 minutes and
         start receiving submissions.
       </p>
@@ -61,7 +61,7 @@
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           stroke="currentColor"
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
         >
           <path
             d="M22 7.99997H13.6C10.2397 7.99997 8.55953 7.99997 7.27606 8.65393C6.14708 9.22917 5.2292 10.1471 4.65396 11.276C4 12.5595 4 14.2397 4 17.6V34.4C4 37.7603 4 39.4404 4.65396 40.7239C5.2292 41.8529 6.14708 42.7708 7.27606 43.346C8.55953 44 10.2397 44 13.6 44H30.4C33.7603 44 35.4405 44 36.7239 43.346C37.8529 42.7708 38.7708 41.8529 39.346 40.7239C40 39.4404 40 37.7603 40 34.4V26M15.9999 32H19.349C20.3274 32 20.8166 32 21.2769 31.8894C21.6851 31.7915 22.0753 31.6298 22.4331 31.4105C22.8368 31.1632 23.1827 30.8173 23.8745 30.1255L43 11C44.6569 9.34311 44.6569 6.65682 43 4.99997C41.3431 3.34311 38.6569 3.34311 37 4.99996L17.8745 24.1255C17.1827 24.8173 16.8368 25.1632 16.5894 25.5668C16.3701 25.9247 16.2085 26.3149 16.1105 26.723C15.9999 27.1834 15.9999 27.6726 15.9999 28.6509V32Z"
@@ -77,7 +77,7 @@
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           stroke="currentColor"
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
         >
           <path
             d="M17.18 27.02L30.84 34.98M30.82 13.02L17.18 20.98M42 10C42 13.3137 39.3137 16 36 16C32.6863 16 30 13.3137 30 10C30 6.68629 32.6863 4 36 4C39.3137 4 42 6.68629 42 10ZM18 24C18 27.3137 15.3137 30 12 30C8.68629 30 6 27.3137 6 24C6 20.6863 8.68629 18 12 18C15.3137 18 18 20.6863 18 24ZM42 38C42 41.3137 39.3137 44 36 44C32.6863 44 30 41.3137 30 38C30 34.6863 32.6863 32 36 32C39.3137 32 42 34.6863 42 38Z"
@@ -88,7 +88,7 @@
         </svg>
         <svg
           v-else-if="step.title == 'Get Results'"
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +120,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-4 h-4 mt-1 mr-2 text-nt-blue"
+              class="w-4 h-4 mt-1 mr-2 text-blue-500"
             >
               <path
                 stroke-linecap="round"
@@ -149,7 +149,7 @@
     <div class="grid md:grid-cols-3 mt-20">
       <div class="mb-8 md:mr-10">
         <svg
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
           viewBox="0 0 44 42"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +172,7 @@
       </div>
       <div class="mb-8 md:mr-10">
         <svg
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
           viewBox="0 0 45 44"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +195,7 @@
       </div>
       <div class="mb-8 md:mr-10">
         <svg
-          class="w-10 h-10 text-nt-blue"
+          class="w-10 h-10 text-blue-500"
           viewBox="0 0 45 44"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

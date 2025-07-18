@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 dark:bg-notion-dark py-8">
+  <div class="bg-neutral-50 dark:bg-notion-dark py-8">
     <div class="md:max-w-5xl md:mx-auto w-full">
       <div class="my-5 text-center">
         <h3 class="font-semibold text-3xl">
@@ -13,7 +13,7 @@
         >
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 23 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 23 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 20 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +64,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 23 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 19 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 21 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 21 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +132,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 21 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +149,7 @@
           </div>
           <div class="flex font-semibold my-3">
             <svg
-              class="w-5 h-5 mr-2 text-nt-blue"
+              class="w-5 h-5 mr-2 text-blue-500"
               viewBox="0 0 19 18"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

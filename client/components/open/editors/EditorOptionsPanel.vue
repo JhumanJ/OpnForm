@@ -7,7 +7,7 @@
       <div class="flex items-center pr-8 space-x-2">
         <div
           class="mr-3"
-          :class="{ 'text-blue-600': show, 'text-gray-500': !show }"
+          :class="{ 'text-blue-600': show, 'text-neutral-500': !show }"
         >
           <slot name="icon" />
         </div>
@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import Collapse from "~/components/global/Collapse.vue"
-import ProTag from "~/components/global/ProTag.vue"
+import Collapse from "~/components/app/Collapse.vue"
+import ProTag from "~/components/app/ProTag.vue"
 
 export default {
   name: "EditorOptionsPanel",

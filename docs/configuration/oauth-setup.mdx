@@ -1,0 +1,281 @@
+---
+title: OAuth Integration Setup
+description: Complete guide to configuring OAuth integrations for Google, Stripe, and Telegram in OpnForm
+---
+
+OpnForm supports several OAuth integrations that enable users to connect external services for enhanced functionality. This guide covers setting up Google, Stripe, and Telegram OAuth integrations.
+
+<Info>
+OpnForm handles OAuth redirect URLs automatically. You don't need to manually configure redirect URLs in your OAuth applications - the system generates them dynamically based on your domain configuration.
+</Info>
+
+<Card title="Developer Guide" icon="code" href="/contributing/new-integration">
+If you're looking to add a new OAuth integration to OpnForm, check out the complete developer guide with architecture overview and implementation steps.
+</Card>
+
+## Available OAuth Integrations
+
+<CardGroup cols={2}>
+<Card title="Google OAuth" icon="google" href="#google-oauth">
+    Authentication, Google One Tap, and Google Sheets integration for form data export
+</Card>
+
+<Card title="Stripe OAuth" icon="stripe" href="#stripe-oauth">
+    Payment processing integration for collecting payments through forms
+</Card>
+
+<Card title="Telegram OAuth" icon="telegram" href="#telegram-oauth">
+    Notification integration for form submission alerts via Telegram
+</Card>
+</CardGroup>
+
+## Google OAuth
+
+Google OAuth enables user authentication and integrates with Google Sheets for exporting form submissions.
+
+### Features
+- **User Authentication**: Allow users to sign up and log in with their Google accounts
+- **Google One Tap**: Seamless authentication with Google's One Tap sign-in widget
+- **Google Sheets Integration**: Export form submissions directly to Google Sheets
+- **Automatic Scope Management**: OpnForm requests appropriate permissions based on usage
+
+### Setup Steps
+
+<Steps>
+<Step title="Create Google Cloud Project">
+    Navigate to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project or select an existing one.
+</Step>
+
+<Step title="Enable APIs">
+    Enable the following APIs for your project:
+    - Google+ API (for authentication)
+    - Google Drive API (for Sheets integration)
+    - Google Sheets API (for spreadsheet access)
+</Step>
+
+<Step title="Configure OAuth Consent Screen">
+    1. Go to **APIs & Services > OAuth consent screen**
+    2. Choose **External** user type (unless using Google Workspace)
+    3. Fill in the required information:
+       - **App name**: Your application name
+       - **User support email**: Your contact email
+       - **Developer contact information**: Your email address
+    4. Add scopes if needed (OpnForm handles this automatically)
+    5. Add test users if your app is in testing mode
+</Step>
+
+<Step title="Create OAuth Credentials">
+    1. Go to **APIs & Services > Credentials**
+    2. Click **Create Credentials > OAuth 2.0 Client IDs**
+    3. Select **Web application** as the application type
+    4. Add authorized origins:
+       ```
+       https://yourdomain.com
+       ```
+    5. Leave redirect URIs empty - OpnForm handles these automatically
+    
+    <Info>
+    For Google One Tap to work, ensure your domain is added to the authorized origins. This enables the seamless authentication widget to function properly.
+    </Info>
+    
+    <Check>
+    Save the **Client ID** and **Client Secret** for environment configuration.
+    </Check>
+</Step>
+
+<Step title="Configure Environment Variables">
+    Add the following variables to your backend `.env` file:
+    
+    ```bash
+    GOOGLE_CLIENT_ID=your_google_client_id
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+    GOOGLE_FONTS_API_KEY=your_google_fonts_api_key (optional)
+    ```
+    
+    <Note>
+    The Google Fonts API key is optional and only needed if you want to use Google Fonts in your forms.
+    </Note>
+</Step>
+</Steps>
+
+## Stripe OAuth
+
+Stripe OAuth enables payment processing capabilities within OpnForm, allowing you to collect payments through your forms.
+
+### Features
+- **Payment Collection**: Accept payments directly through forms
+- **Multiple Accounts**: Connect multiple Stripe accounts for different forms
+- **Automatic Processing**: Handle payment intents and confirmations seamlessly
+
+### Setup Steps
+
+<Steps>
+<Step title="Create Stripe Application">
+    1. Log into your [Stripe Dashboard](https://dashboard.stripe.com/)
+    2. Navigate to **Settings > Connect > Platform settings**
+    3. Click **Get started** to enable Stripe Connect
+</Step>
+
+<Step title="Configure Platform Settings">
+    1. Set your **Platform name** and **Support email**
+    2. Add your website URL in **Brand settings**
+    3. Configure **Redirect URIs** (OpnForm handles these automatically)
+    4. Save your settings
+</Step>
+
+<Step title="Get OAuth Credentials">
+    1. In **Settings > Connect > Platform settings**
+    2. Find your **Platform client ID** in the OAuth settings section
+    3. Note your **Client secret** (you may need to generate one)
+    
+    <Check>
+    Save the **Client ID** and **Client Secret** for environment configuration.
+    </Check>
+</Step>
+
+<Step title="Configure Environment Variables">
+    Add the following variables to your backend `.env` file:
+    
+    ```bash
+    STRIPE_CLIENT_ID=your_stripe_client_id
+    STRIPE_CLIENT_SECRET=your_stripe_client_secret
+    ```
+    
+    <Note>
+    These OAuth credentials are separate from your regular Stripe API keys. The OAuth credentials enable connecting multiple Stripe accounts, while regular API keys are for direct payment processing.
+    </Note>
+</Step>
+</Steps>
+
+## Telegram OAuth
+
+Telegram OAuth enables notification integration, allowing OpnForm to send form submission alerts to Telegram chats.
+
+### Features
+- **Form Notifications**: Receive instant notifications when forms are submitted
+- **Rich Messages**: Formatted messages with form data and submission details
+- **Multiple Chats**: Connect different Telegram accounts for various forms
+
+<Warning>
+**Domain Requirement**: Telegram requires that your bot is linked to a valid domain with HTTPS. Localhost URLs are not supported. For development, consider using a tunneling service like [localtunnel](https://theboroer.github.io/localtunnel-www/) to expose your local development server with a public HTTPS URL.
+</Warning>
+
+### Setup Steps
+
+<Steps>
+<Step title="Create Telegram Bot">
+    1. Open Telegram and search for [@BotFather](https://t.me/botfather)
+    2. Start a conversation and send `/newbot`
+    3. Follow the prompts to name your bot and choose a username
+    4. Save the **Bot Token** provided by BotFather
+    
+    <Check>
+    Your bot token will look like: `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`
+    </Check>
+</Step>
+
+<Step title="Link Domain to Bot">
+    1. Send `/setdomain` to [@BotFather](https://t.me/botfather)
+    2. Select your bot from the list
+    3. Enter your domain (e.g., `yourdomain.com` or for development: `abc123.loca.lt`)
+    4. BotFather will confirm the domain has been linked
+    
+    <Note>
+    **For Development**: If you're developing locally, use [localtunnel](https://theboroer.github.io/localtunnel-www/) to get a public HTTPS URL:
+    ```bash
+    npm install -g localtunnel
+    lt --port 3000  # Replace 3000 with your local port
+    ```
+    Use the provided `.loca.lt` URL as your domain with BotFather.
+    </Note>
+</Step>
+
+<Step title="Configure Environment Variables">
+    Add the following variable to your backend `.env` file:
+    
+    ```bash
+    TELEGRAM_BOT_TOKEN=your_bot_token # format: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+    ```
+    
+    <Note>
+    The bot ID is automatically extracted from the bot token (the numeric part before the colon), so you don't need to configure it separately.
+    </Note>
+</Step>
+
+<Step title="Test Your Bot">
+    1. Start a conversation with your bot in Telegram
+    2. Connect the bot in OpnForm's integration settings
+    3. Submit a test form to verify notifications work
+    
+    <Check>
+    You should receive a formatted message with form submission details.
+    </Check>
+</Step>
+</Steps>
+
+## Security Considerations
+
+<Warning>
+**Important Security Notes:**
+- Never commit OAuth credentials to version control
+- Use environment variables for all sensitive configuration
+- Regularly rotate your OAuth secrets and API keys
+- Monitor OAuth application usage in your provider dashboards
+</Warning>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Google OAuth Issues">
+    **Common problems and solutions:**
+    
+    - **"OAuth app blocked"**: Ensure your OAuth consent screen is properly configured
+    - **"Invalid redirect URI"**: OpnForm handles redirects automatically - don't manually configure them
+    - **"Insufficient permissions"**: Check that required APIs are enabled in Google Cloud Console
+    - **"Quota exceeded"**: Monitor your API usage in Google Cloud Console
+</Accordion>
+
+<Accordion title="Stripe OAuth Issues">
+    **Common problems and solutions:**
+    
+    - **"Invalid client ID"**: Verify your Stripe Connect platform is properly set up
+    - **"Webhook failures"**: Ensure your domain is accessible and SSL is configured
+    - **"Payment processing errors"**: Check your Stripe account status and verification
+    - **"Connect account creation failed"**: Verify platform settings and business details
+</Accordion>
+
+<Accordion title="Telegram OAuth Issues">
+    **Common problems and solutions:**
+    
+    - **"Bot not responding"**: Ensure your bot token is correct and the bot is not disabled
+    - **"Message delivery failed"**: Check that users have started a conversation with your bot
+    - **"Formatting errors"**: Telegram uses MarkdownV2 formatting for rich messages
+    - **"Rate limiting"**: Telegram has message rate limits - avoid sending too many messages quickly
+</Accordion>
+</AccordionGroup>
+
+## Testing Your Integration
+
+<Steps>
+<Step title="Verify Configuration">
+    Check that all environment variables are set correctly and restart your application.
+</Step>
+
+<Step title="Test Authentication">
+    Try logging in with each OAuth provider to ensure the authentication flow works.
+</Step>
+
+<Step title="Test Integrations">
+    - **Google**: Create a form and test exporting to Google Sheets
+    - **Stripe**: Set up a payment form and process a test transaction
+    - **Telegram**: Configure notifications and submit a test form
+</Step>
+
+<Step title="Monitor Logs">
+    Check your application logs for any OAuth-related errors or warnings.
+</Step>
+</Steps>
+
+<Check>
+With properly configured OAuth integrations, your OpnForm installation will support seamless user authentication and powerful third-party service integrations.
+</Check> 

@@ -3,27 +3,30 @@
     v-if="logic"
     :key="resetKey"
   >
-    <p class="text-gray-400 text-xs mb-3">
+    <p class="text-neutral-400 text-xs mb-3">
       Select a field, add some conditions, and finally add some actions.
     </p>
     <div class="relative flex">
       <UButtonGroup size="xs">
         <UButton
-          color="gray"
+          color="neutral"
+          variant="subtle"
           icon="i-heroicons-arrow-down-on-square"
           @click="showCopyFormModal = true"
         >
           Copy from
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
+          variant="subtle"
           icon="i-heroicons-arrow-up-on-square"
           @click="showCopyToModal = true"
         >
           Copy to
         </UButton>
         <UButton
-          color="gray"
+          color="neutral"
+          variant="subtle"
           icon="i-mdi-clear-outline"
           @click="clearAll"
         >
@@ -32,7 +35,7 @@
       </UButtonGroup>
     </div>
 
-    <h5 class="font-medium text-gray-700 mt-3">
+    <h5 class="font-medium text-neutral-700 mt-3">
       1. Conditions
     </h5>
     <condition-editor
@@ -42,10 +45,10 @@
       :form="form"
     />
 
-    <h5 class="font-medium text-gray-700 mt-3">
+    <h5 class="font-medium text-neutral-700 mt-3">
       2. Actions
     </h5>
-    <p class="text-gray-500 text-xs mb-3">
+    <p class="text-neutral-500 text-xs mb-3">
       Action(s) triggered when above conditions are true.
     </p>
     <flat-select-input
@@ -59,104 +62,85 @@
       @update:model-value="onActionInput"
     />
 
-    <p class="text-gray-500 text-xs mb-3">
+    <p class="text-neutral-500 text-xs mb-3">
       Note that hidden fields can never be required.
     </p>
 
-    <modal
-      max-width="sm"
-      
-      :show="showCopyFormModal"
-      @close="showCopyFormModal = false"
+    <UModal
+      v-model:open="showCopyFormModal"
+      title="Copy logic from another field"
+      :description="`Select another field/block to copy its logic and apply it to '${field.name}'.`"
     >
-      <h3 class="font-semibold block text-lg">
-        Copy logic from another field
-      </h3>
-      <p class="text-gray-400 text-xs mb-5">
-        Select another field/block to copy its logic and apply it to "{{
-          field.name
-        }}".
-      </p>
-      <select-input
-        v-model="copyFrom"
-        name="copy_from"
-        emit-key="value"
-        label="Copy logic from"
-        placeholder="Choose a field/block..."
-        :options="copyFromOptions"
-        :searchable="copyFromOptions && copyFromOptions.options > 5"
-      />
-      <div class="flex justify-between mt-2">
+      <template #body>
+        <SelectInput
+          v-model="copyFrom"
+          name="copy_from"
+          emit-key="value"
+          label="Copy logic from"
+          placeholder="Choose a field/block..."
+          :options="copyFromOptions"
+          :searchable="copyFromOptions && copyFromOptions.options > 5"
+        />
+      </template>
+
+      <template #footer>
         <UButton
-          color="primary"
-          icon="i-heroicons-check"
-          @click="copyLogic"
-        >
-          Confirm & Copy
-        </UButton>
-        <UButton
-          color="gray"
-          icon="i-heroicons-x-mark"
-          class="ml-1"
+          color="neutral"
+          variant="outline"
+          label="Close"
           @click="showCopyFormModal = false"
-        >
-          Close
-        </UButton>
-      </div>
-    </modal>
-
-
-    <modal
-      max-width="sm"
-      :show="showCopyToModal"
-      @close="showCopyToModal = false"
-    >
-      <h3 class="font-semibold block text-lg">
-        Copy logic to other fields
-      </h3>
-      <p class="text-gray-400 text-xs mb-5">
-        Select fields to copy the logic from "{{ field.name }}" to them.
-      </p>
-      <select-input
-        v-model="copyTo"
-        name="copy_to"
-        emit-key="value"
-        label="Copy logic to"
-        placeholder="Choose fields..."
-        :options="copyToOptions"
-        :multiple="true"
-        :searchable="copyToOptions && copyToOptions.length > 5"
-      />
-      <div class="flex justify-between mt-2">
+        />
         <UButton
           color="primary"
-          icon="i-heroicons-check"
-          @click="copyLogicToFields"
-        >
-          Confirm & Copy
-        </UButton>
+          @click="copyLogic"
+          label="Confirm & Copy"
+        />
+      </template>
+    </UModal>
+
+    <UModal
+      v-model:open="showCopyToModal"
+      title="Copy logic to other fields"
+      :description="`Select other fields to copy the logic from '${field.name}' to.`"
+    >
+      <template #body>
+        <SelectInput
+          v-model="copyTo"
+          name="copy_to"
+          emit-key="value"
+          label="Copy logic to"
+          placeholder="Choose fields..."
+          :options="copyToOptions"
+          :multiple="true"
+          :searchable="copyToOptions && copyToOptions.length > 5"
+        />
+      </template>
+
+      <template #footer>
         <UButton
-          color="gray"
-          icon="i-heroicons-x-mark"
-          class="ml-1"
+          color="neutral"
+          variant="outline"
+          label="Close"
           @click="showCopyToModal = false"
-        >
-          Close
-        </UButton>
-      </div>
-    </modal>
+        />
+        <UButton
+          color="primary"
+          @click="copyLogicToFields"
+          label="Confirm & Copy"
+        />
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script>
 import ConditionEditor from "./ConditionEditor.client.vue"
-import Modal from "../../../../global/Modal.vue"
 import clonedeep from "clone-deep"
 import { default as _has } from "lodash/has"
 
 export default {
   name: "FormBlockLogicEditor",
-  components: { Modal, ConditionEditor },
+  components: { ConditionEditor },
   props: {
     field: {
       type: Object,

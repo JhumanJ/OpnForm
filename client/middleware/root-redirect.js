@@ -1,21 +1,7 @@
-import { sendRedirect } from 'h3'
-
-export default defineNuxtRouteMiddleware(() => {
-  if (!useFeatureFlag('self_hosted')) return
-  const redirectUrl = useRuntimeConfig().public.rootRedirectUrl
-
-  // Only run if env var is set and is a valid URL
-  if (!redirectUrl || !/^https?:\/\//.test(redirectUrl)) return
-
-  // Server-side: use h3's sendRedirect
-  if (import.meta.server) {
-
-    const event = useRequestEvent()
-    if (event) {
-      return sendRedirect(event, redirectUrl, 301)
-    }
-  }
+export default defineNuxtRouteMiddleware(async () => {
+  const { performRedirect } = useSubdomainRedirect()
   
-  // Client-side handling
-  return navigateTo(redirectUrl, { external: true })
+  // Perform redirect with iframe check disabled for root pages
+  // (root pages should always redirect regardless of iframe context)
+  await performRedirect({ skipIfIframe: false })
 }) 

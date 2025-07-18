@@ -69,10 +69,10 @@ class OAuthStripeDriver implements OAuthDriver
         return $this;
     }
 
-    public function fullScopes(): OAuthDriver
+    public function getScopesForIntent(string $intent): array
     {
-        return $this->setScopes([
-            'read_write',
-        ]);
+        return match ($intent) {
+            default => ['read_write'],
+        };
     }
 }

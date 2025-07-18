@@ -1,30 +1,40 @@
-import gtmConfig from '../gtm'
-
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig()
+  const gtmId = config.public.gtmCode
+
   const route = useRoute()
   const isIframe = useIsIframe()
   const isPublicFormPage = route.name === 'forms-slug'
   
+  const gtm = useGtm()
+
   // Only enable GTM if not in a form page (for respondents) and not in an iframe
-  if (!isPublicFormPage && !isIframe && process.env.NUXT_PUBLIC_GTM_CODE) {
-    // Initialize GTM manually only when needed
-    const gtm = useGtm()
+  if (gtmId && gtmId !== 'GTM-XXXXXX' && gtm && !isPublicFormPage && !isIframe) {
     
     // Override the enabled setting to true for this session
-    gtmConfig.enabled = true
-    
-    // Watch for route changes to track page views
-    watch(() => route.fullPath, () => {
-      if (!route.name || route.name !== 'forms-slug') {
-        gtm.trackView(route.name, route.fullPath)
-      }
-    }, { immediate: true })
-    
-    return {
-      provide: {
-        gtm
-      }
+    gtm.enable(true)
+        
+    // Initialize Consent Mode
+    window.dataLayer = window.dataLayer || []
+    function gtag() {
+      window.dataLayer.push(arguments)
     }
+    
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'granted',
+      'security_storage': 'granted'
+    })
+
+    gtag('consent', 'update', {
+      'ad_storage': 'granted',
+      'analytics_storage': 'granted',
+    })
+    
+    // Enable IP anonymization
+    gtag('set', 'anonymize_ip', true)
+    
   }
   
   return {}

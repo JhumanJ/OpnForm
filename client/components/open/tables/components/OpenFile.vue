@@ -5,29 +5,31 @@
       :key="file.file_url"
       class="whitespace-nowrap rounded-md transition-colors hover:decoration-none"
       :class="{
-        'open-file text-gray-700 dark:text-gray-300 truncate': !file.is_image,
+        'open-file text-neutral-700 dark:text-neutral-300 truncate': !file.is_image,
         'open-file-img': file.is_image,
       }"
     >
       <a
-        class="text-gray-700 dark:text-gray-300"
+        class="text-neutral-700 dark:text-neutral-300"
         :href="file.file_url"
         target="_blank"
         rel="nofollow"
       >
         <div
           v-if="file.is_image"
-          class="w-8 h-8"
+          class="w-8 h-8 rounded border border-neutral-200"
         >
           <img
-            class="object-cover h-full w-full rounded"
+            class="object-cover h-full w-full"
             :src="file.file_url"
             @error="failedImages.push(file.file_url)"
           >
         </div>
-        <span
+        <UBadge
           v-else
-          class="py-1 px-2"
+          size="sm"
+          color="neutral"
+          variant="ghost"
         >
           <a
             :href="file.file_url"
@@ -36,61 +38,51 @@
           >{{
             file.displayed_file_name
           }}</a>
-        </span>
+        </UBadge>
       </a>
     </span>
   </p>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: {
-    value: {
-      type: Array,
-      required: false,
-    },
+<script setup>
+const props = defineProps({
+  value: {
+    type: Array,
+    required: false,
   },
+})
 
-  data() {
-    return {
-      failedImages: [],
-    }
-  },
+const failedImages = ref([])
 
-  computed: {
-    parsedFiles() {
-      return this.value && Array.isArray(this.value)
-        ? this.value.map((file) => {
-            return {
-              file_name: file.file_name,
-              file_url: file.file_url,
-              displayed_file_name: this.displayedFileName(file.file_name),
-              is_image:
-                !this.failedImages.includes(file.file_url) &&
-                this.isImage(file.file_name),
-            }
-          })
-        : []
-    },
-  },
-
-  methods: {
-    isImage(fileName) {
-      return ["png", "gif", "jpg", "jpeg", "tif"].some((suffix) => {
-        return fileName && fileName.endsWith(suffix)
+const parsedFiles = computed(() => {
+  return props.value && Array.isArray(props.value)
+    ? props.value.map((file) => {
+        return {
+          file_name: file.file_name,
+          file_url: file.file_url,
+          displayed_file_name: displayedFileName(file.file_name),
+          is_image:
+            !failedImages.value.includes(file.file_url) &&
+            isImage(file.file_name),
+        }
       })
-    },
-    displayedFileName(fileName) {
-      const extension = fileName.substr(fileName.lastIndexOf(".") + 1)
-      const filename = fileName.substr(0, fileName.lastIndexOf("."))
+    : []
+})
 
-      if (filename.length > 10) {
-        return filename.substr(0, 10) + "[...]." + extension
-      }
-      return filename + "." + extension
-    },
-  },
+const isImage = (fileName) => {
+  return ["png", "gif", "jpg", "jpeg", "tif"].some((suffix) => {
+    return fileName && fileName.endsWith(suffix)
+  })
+}
+
+const displayedFileName = (fileName) => {
+  const extension = fileName.substr(fileName.lastIndexOf(".") + 1)
+  const filename = fileName.substr(0, fileName.lastIndexOf("."))
+
+  if (filename.length > 10) {
+    return filename.substr(0, 10) + "[...]." + extension
+  }
+  return filename + "." + extension
 }
 </script>
 

@@ -7,7 +7,7 @@ module.exports = {
   fields: [
     {
       helpText:
-        'Enter your API key, located at https://opnform.com/settings/access-tokens',
+        'Enter your API key, located at https://opnform.com/home?user-settings=access-tokens',
       computed: false,
       key: 'api_key',
       required: true,

@@ -14,7 +14,7 @@ test('list all workspaces of a user', function () {
 
     Sanctum::actingAs(
         $user,
-        ['list-workspaces']
+        ['workspaces-read']
     );
 
     get(route('zapier.workspaces'))

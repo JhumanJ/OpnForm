@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="grid md:grid-cols-3 my-8">
       <div class="flex mt-2 items-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400 text-center w-full">
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 text-center w-full">
           © Copyright {{ currYear }}. All Rights Reserved
           <span v-if="version">
             <br>Version {{ version }}
@@ -27,54 +27,54 @@
           <a
             :href="opnformConfig.links.feature_requests"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             Feature Requests
           </a>
           <a
             :href="opnformConfig.links.roadmap"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             Roadmap
           </a>
           <a
             :href="opnformConfig.links.discord"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             Discord
           </a>
           <a
             :href="opnformConfig.links.tech_docs"
             target="_blank"
-            class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+            class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
           >
             Technical Docs
           </a>
           <template v-if="!useFeatureFlag('self_hosted')">
             <router-link
               :to="{ name: 'integrations' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
             >
               Integrations
             </router-link>
             <router-link
               :to="{ name: 'report-abuse' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
             >
               Report Abuse
             </router-link>
             <router-link
               :to="{ name: 'privacy-policy' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
             >
               Privacy Policy
             </router-link>
 
             <router-link
               :to="{ name: 'terms-conditions' }"
-              class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue"
+              class="text-neutral-600 dark:text-neutral-400 transition-colors duration-300 hover:text-blue-500"
             >
               Terms & Conditions
             </router-link>
@@ -88,9 +88,7 @@
 <script setup>
 import opnformConfig from "~/opnform.config.js"
 
-const authStore = useAuthStore()
-
-const user = computed(() => authStore.user)
+const { data: user } = useAuth().user()
 const currYear = ref(new Date().getFullYear())
 
 // Use the reactive version for proper template reactivity

@@ -5,12 +5,12 @@
         <img
           src="/img/icons/404.png"
           alt="404 Error"
-          class="mx-auto w-1/3"
+          class="w-full max-w-[250px] mb-5 mx-auto"
         >
         <h1 class="text-dark text-2xl md:text-4xl leading-none font-medium text-center pt-4 md:pt-0 mx-auto md:max-w-full">
           We're sorry! This Form Is No Longer Here
         </h1>
-        <p class="text-gray-500 mt-3 max-w-xl mx-auto">
+        <p class="text-neutral-500 mt-3 max-w-xl mx-auto">
           It may have been deleted, deactivated, or the form URL might have been regenerated or updated by its owner. But don't worry—you've got plenty of other options!
         </p>
         
@@ -23,12 +23,12 @@
             :key="index"
             :to="action.to"
             :href="action.href"
-            class="bg-blue-100/50 rounded-lg px-4 py-6 text-center text-gray-700 hover:bg-blue-100 flex flex-col items-center hover:no-underline"
+            class="bg-blue-100/50 rounded-lg px-4 py-6 text-center text-neutral-700 hover:bg-blue-100 flex flex-col items-center hover:no-underline"
             @click="action.onClick ? action.onClick() : null"
           >
             <Icon
               :name="action.icon"
-              class="w-8 h-8 mb-2 text-nt-blue"
+              class="w-8 h-8 mb-2 text-blue-500"
             />
             <span class="font-medium">
               {{ action.text }}
@@ -36,11 +36,11 @@
           </NuxtLink>
         </div>
         
-        <div class="mt-10 text-gray-700">
+        <div class="mt-10 text-neutral-700">
           <h3 class="mt-8 text-dark text-xl font-semibold text-center md:pt-0 mx-auto md:max-w-full">
             Still not sure what to do? Here are more ways to get started!
           </h3>
-          <p class="mt-4 text-gray-500">
+          <p class="mt-4 text-neutral-500">
             No worries! Here are some other options for you:
           </p>
           <ul class="mt-4 space-y-2 text-sm">

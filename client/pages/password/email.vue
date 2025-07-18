@@ -7,11 +7,13 @@
         </h1>
         <form
           @submit.prevent="send"
-          @keydown="form.onKeydown($event)"
         >
-          <alert-success
-            :form="form"
-            :message="status"
+          <UAlert
+            v-if="status"
+            color="success"
+            variant="subtle"
+            :description="status"
+            icon="i-heroicons-check-circle"
             class="mb-4"
           />
 
@@ -24,12 +26,12 @@
           />
 
           <!-- Submit Button -->
-          <v-button
+          <UButton
             class="w-full"
             :loading="form.busy"
-          >
-            Send Password Reset Link
-          </v-button>
+            type="submit"
+            label="Send Password Reset Link"
+          />
         </form>
       </div>
     </div>

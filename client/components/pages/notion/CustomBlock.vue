@@ -16,11 +16,11 @@
           :key="question.label"
           class="space-y-2"
         >
-          <dt class="font-semibold text-gray-900 dark:text-gray-100">
+          <dt class="font-semibold text-neutral-900 dark:text-neutral-100">
             {{ question.label }}
           </dt>
           <dd
-            class="leading-6 text-gray-600 dark:text-gray-400"
+            class="leading-6 text-neutral-600 dark:text-neutral-400"
             v-html="question.content"
           />
         </div>
@@ -45,7 +45,8 @@
         </h2>
         <UButton
           to="/register"
-          color="white"
+          color="neutral"
+          variant="outline"
           class="hover:no-underline"
           icon="i-heroicons-arrow-right"
           trailing

@@ -20,6 +20,11 @@ class WorkspacePolicy
      */
     public function viewAny(User $user)
     {
+        // Check if authenticated via Sanctum token
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-read');
+        }
+
         return true;
     }
 
@@ -30,6 +35,12 @@ class WorkspacePolicy
      */
     public function view(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            $canAccess = $token->can('workspaces-read');
+
+            return $canAccess && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -40,7 +51,16 @@ class WorkspacePolicy
      */
     public function create(User $user)
     {
-        return false;
+        // Check if user already has a workspace
+        if (!$user->is_pro && $user->workspaces()->count() > 0) {
+            return Response::deny('You have reached the limit for free workspaces. Upgrade to Pro to create additional workspaces.');
+        }
+
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write');
+        }
+
+        return true;
     }
 
     /**
@@ -50,6 +70,10 @@ class WorkspacePolicy
      */
     public function update(User $user, Workspace $workspace)
     {
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write') && $user->ownsWorkspace($workspace);
+        }
+
         return $user->ownsWorkspace($workspace);
     }
 
@@ -60,7 +84,19 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace)
     {
-        return !$workspace->owners->where('id', $user->id)->isEmpty() && $user->workspaces()->count() > 1;
+        if (!$user->ownsWorkspace($workspace)) {
+            return Response::deny('You cannot delete this workspace.');
+        }
+
+        if ($user->workspaces()->count() <= 1) {
+            return Response::deny('You cannot delete your last workspace. Delete your account instead.');
+        }
+
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('workspaces-write');
+        }
+
+        return true;
     }
 
     /**
@@ -107,6 +143,13 @@ class WorkspacePolicy
             }
         }
 
+        // If using Sanctum token, require write ability first
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces-write')) {
+                return Response::deny('Token lacks workspaces:write ability.');
+            }
+        }
+
         return true;
     }
 
@@ -117,9 +160,21 @@ class WorkspacePolicy
      */
     public function adminAction(User $user, Workspace $workspace)
     {
+        // Sanctum token must include write ability
+        if ($token = $user->currentAccessToken()) {
+            if (! $token->can('workspaces-write')) {
+                return false;
+            }
+        }
+
         $userWorkspace = UserWorkspace::where('user_id', $user->id)
             ->where('workspace_id', $workspace->id)
             ->first();
         return $userWorkspace && $userWorkspace->role === 'admin';
+    }
+
+    public function ownsWorkspace(User $user, Workspace $workspace)
+    {
+        return $user->ownsWorkspace($workspace);
     }
 }

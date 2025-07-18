@@ -1,5 +1,5 @@
 <template>
-  <form-submissions />
+  <FormSubmissions :form="form" />
 </template>
 
 <script setup>

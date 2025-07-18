@@ -1,0 +1,45 @@
+---
+openapi: delete /open/workspaces/{workspaceId}/invites/{inviteId}/cancel
+---
+
+# Cancel Workspace Invite
+
+Delete an outstanding workspace invitation.
+
+## Authentication & Scope
+
+Requires `workspace-users-write` ability and **admin** privileges in the workspace.
+
+## Request
+
+```http
+DELETE /open/workspaces/{workspaceId}/invites/{inviteId}/cancel HTTP/1.1
+Host: api.opnform.com
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                               |
+|-------------|--------|-------------------------------------------|
+| workspaceId | number | ID of the workspace.                      |
+| inviteId    | number | ID of the invite to cancel.               |
+
+## Response
+
+`200 OK` – Confirmation message.
+
+```json
+{
+  "message": "Invite deleted successfully."
+}
+```
+
+Possible errors:
+
+* `Invite not found for this workspace.`
+* `Invite already accepted.`
+
+Both are returned with status **400**.
+
+`403 Forbidden` – Token lacks `workspace-users-write` or insufficient privileges.

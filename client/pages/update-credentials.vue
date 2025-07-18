@@ -1,20 +1,19 @@
 <template>
-  <div class=" bg-gray-50 flex flex-col justify-center sm:px-6 lg:px-8 py-10 flex-grow">
+  <div class=" bg-neutral-50 flex flex-col justify-center sm:px-6 lg:px-8 py-10 flex-grow">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2 class="text-center text-3xl font-bold tracking-tight text-gray-900">
+      <h2 class="text-center text-3xl font-bold tracking-tight text-neutral-900">
         Welcome to OpnForm!
       </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
+      <p class="mt-2 text-center text-sm text-neutral-600">
         You're using the self-hosted version of OpnForm and need to set up your account.
         Please enter your email and create a password to continue.
       </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div class="bg-white py-8 px-4 shadow-sm sm:rounded-sm sm:px-10">
         <form
           @submit.prevent="updateCredentials"
-          @keydown="form.onKeydown($event)"
         >
           <!-- Email -->
           <text-input
@@ -47,19 +46,19 @@
 
           <!-- Submit Button -->
           <div class="mt-6">
-            <v-button
+            <UButton
               class="w-full justify-center"
               :loading="form.busy || loading"
-            >
-              Update Credentials
-            </v-button>
+              type="submit"
+              label="Update Credentials"
+            />
           </div>
 
           <!-- Cancel Link -->
           <div class="mt-4 text-center">
             <button 
               type="button" 
-              class="text-sm text-gray-600 hover:text-gray-900"
+              class="text-sm text-neutral-600 hover:text-neutral-900"
               @click="logout"
             >
               Cancel and return to login
@@ -74,12 +73,10 @@
 <script setup>
 import { onMounted } from "vue"
 
-const authStore = useAuthStore()
-const workspacesStore = useWorkspacesStore()
-const formsStore = useFormsStore()
-const user = computed(() => authStore.user)
+const { data: user, logout: logoutMutationFactory } = useAuth()
 const router = useRouter()
 const loading = ref(false)
+const logoutMutation = logoutMutationFactory()
 const form = useForm({
   name: "",
   email: "",
@@ -93,15 +90,18 @@ onMounted(() => {
   form.email = user?.value?.email
 })
 
+const { invalidateAll: invalidateWorkspaces } = useWorkspaces()
+const { invalidateAll: invalidateForms } = useForms()
+
 const updateCredentials = () => {
   loading.value = true
   form
     .post("update-credentials")
-    .then(async (data) => {
-      authStore.setUser(data.user)
-      const workspaces = await fetchAllWorkspaces()
-      workspacesStore.set(workspaces.data.value)
-      formsStore.loadAll(workspacesStore.currentId)
+    .then(async (_data) => {
+      useAuth().invalidateUser()
+      // Invalidate all workspace and form queries to refetch fresh data
+      await invalidateWorkspaces()
+      await invalidateForms()
       router.push({ name: "home" })
     })
     .catch((error) => {
@@ -114,7 +114,7 @@ const updateCredentials = () => {
 }
 
 const logout = () => {
-  authStore.logout()
-  router.push({ name: "login" })
+  // Logout mutation handles cache clearing and navigation automatically
+  logoutMutation.mutateAsync()
 }
 </script>

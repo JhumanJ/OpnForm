@@ -1,0 +1,60 @@
+---
+openapi: post /open/workspaces/{workspaceId}/users/add
+---
+
+# Add Workspace User
+
+Invite an existing OpnForm user to a workspace or send an email invite if the user doesn't yet have an account.
+
+## Authentication & Scope
+
+Requires the `workspace-users-write` ability and **admin** privileges in the workspace.
+
+## Request
+
+```http
+POST /open/workspaces/{workspaceId}/users/add HTTP/1.1
+Host: api.opnform.com
+Content-Type: application/json
+Authorization: Bearer <token>
+```
+
+### Path Parameters
+
+| Parameter   | Type   | Description                  |
+|-------------|--------|------------------------------|
+| workspaceId | number | ID of the target workspace.  |
+
+### Body Parameters
+
+| Field | Type   | Required | Description                                                        |
+|-------|--------|----------|--------------------------------------------------------------------|
+| email | string | Yes      | Email address of the user to add/invite.                           |
+| role  | string | Yes      | Role to assign (`admin`, `user`, or `readonly`).                   |
+
+Example:
+
+```json
+{
+  "email": "jane@example.com",
+  "role": "user"
+}
+```
+
+## Response
+
+`200 OK` – One of the following messages:
+
+* `"User has been successfully added to workspace."` – when the user account already exists.
+* `"Registration invitation email sent to user."` – when an invitation email was sent.
+* `"User is already in workspace."` – if the user is already a member.
+
+The response structure:
+
+```json
+{
+  "message": "User has been successfully added to workspace."
+}
+```
+
+`403 Forbidden` – Token lacks `workspace-users-write` or insufficient privileges.

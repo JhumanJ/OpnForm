@@ -1,23 +1,31 @@
 <template>
-  <UButtonGroup
-    size="xs"
-    orientation="horizontal"
-  >
-    <UButton
-      v-track.edit_record_click
-      size="sm"
-      color="white"
-      icon="heroicons:pencil-square"
-      @click="showEditSubmissionModal = true"
-    />
-    <UButton
-      v-track.delete_record_click
-      size="sm"
-      color="white"
-      icon="heroicons:trash"
-      @click="onDeleteClick"
-    />
-  </UButtonGroup>
+  <div class="flex gap-1">
+    <TrackClick
+      name="edit_record_click"
+      :properties="{}"
+    >
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="outline"
+        icon="heroicons:pencil-square"
+        @click="showEditSubmissionModal = true"
+      />
+    </TrackClick>
+    <TrackClick
+      name="delete_record_click"
+      :properties="{}"
+    >
+      <UButton
+        size="xs"
+        color="error"
+        variant="outline"
+        icon="heroicons:trash"
+        @click="onDeleteClick"
+      />
+    </TrackClick>
+  </div>
+  
   <EditSubmissionModal
     :show="showEditSubmissionModal"
     :form="form"
@@ -27,66 +35,43 @@
   />
 </template>
 
-<script>
+<script setup>
 import EditSubmissionModal from "./EditSubmissionModal.vue"
+import TrackClick from "~/components/global/TrackClick.vue"
+import { formsApi } from "~/api/forms"
 
-export default {
-  components: { EditSubmissionModal },
-  props: {
-    form: {
-      type: Object,
-      required: true,
-    },
-    structure: {
-      type: Array,
-      default: () => [],
-    },
-    submission: {
-      type: Object,
-      default: () => {},
-    },
+const props = defineProps({
+  form: {
+    type: Object,
+    required: true,
   },
-  emits: ["updated", "deleted"],
-  setup() {
-    return {
-      useAlert: useAlert(),
-    }
+  submission: {
+    type: Object,
+    default: () => {},
   },
-  data() {
-    return {
-      showEditSubmissionModal: false,
-    }
-  },
-  computed: {},
-  mounted() {},
-  methods: {
-    onDeleteClick() {
-      this.useAlert.confirm(
-        "Do you really want to delete this record?",
-        this.deleteRecord,
-      )
-    },
-    async deleteRecord() {
-      opnFetch(
-        "/open/forms/" +
-          this.form.id +
-          "/records/" +
-          this.submission.id +
-          "/delete",
-        { method: "DELETE" },
-      )
-        .then(async (data) => {
-          if (data.type === "success") {
-            this.$emit("deleted", this.submission)
-            this.useAlert.success(data.message)
-          } else {
-            this.useAlert.error("Something went wrong!")
-          }
-        })
-        .catch((error) => {
-          this.useAlert.error(error.data.message)
-        })
-    },
-  },
+})
+
+const emit = defineEmits(["updated", "deleted"])
+
+const alert = useAlert()
+const showEditSubmissionModal = ref(false)
+
+const onDeleteClick = () => {
+  alert.confirm("Do you really want to delete this record?", deleteRecord)
+}
+
+const deleteRecord = () => {
+  formsApi.submissions.delete(props.form.id, props.submission.id)
+    .then((data) => {
+      if (data.type === "success") {
+        emit("deleted", props.submission)
+        alert.success(data.message)
+      } else {
+        alert.error("Something went wrong!")
+      }
+    })
+    .catch((error) => {
+      alert.error(error.data.message)
+    })
 }
 </script>

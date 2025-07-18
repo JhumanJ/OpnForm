@@ -4,28 +4,43 @@
     :integration="props.integration"
     :form="form"
   >
-    <p class="text-gray-500 text-sm mb-3">
-      You can <NuxtLink
-        class="underline"
-        :to="{ name: 'settings-workspace' }"
-        target="_blank"
+    <p class="text-neutral-500 text-sm mb-3">
+      You can <a
+        class="underline cursor-pointer"
+        @click="openEmailsModal"
       >
         use our custom SMTP feature
-      </NuxtLink> to send emails from your own domain.
+      </a> to send emails from your own domain.
     </p>
 
     <MentionInput
       :form="integrationData"
       :mentions="form.properties"
       :disable-mention="!form.is_pro"
+      :disabled="!form.is_pro"
       name="settings.send_to"
       required
       label="Send To"
-      help="Add one email per line"
-    /> 
+    >
+      <template #help>
+        <InputHelp>
+        <span v-if="form.is_pro">
+          Add one email per line
+        </span>
+        <span v-else>
+          You can only send email notification to your own email address. 
+          Please <a
+            class="underline cursor-pointer"
+            @click="openSubscriptionModal"
+          >upgrade to the Pro plan</a> to send to other email addresses.
+        </span>
+        </InputHelp>
+      </template>
+    </MentionInput> 
     <div class="flex space-x-4">
-      <text-input
+      <MentionInput
         :form="integrationData"
+        :mentions="form.properties"
         name="settings.sender_name"
         label="Sender Name"
         class="flex-1"
@@ -89,9 +104,23 @@ const props = defineProps({
 })
 
 const selfHosted = computed(() => useFeatureFlag('self_hosted'))
+const { openWorkspaceSettings } = useAppModals()
+const { data: user } = useAuth().user()
+
+function openEmailsModal () {
+  openWorkspaceSettings('emails')
+}
+
+function openSubscriptionModal () {
+  useAppModals().openSubscriptionModal({
+    modal_title: 'Upgrade to unlock powerful email integration',
+    modal_description: 'Upgrade to Pro to customize email notification recipients, send confirmation email to form respondents, and more: form customization, custom domain, collaboration, etc.'
+  })
+}
 
 onBeforeMount(() => {
   for (const [keyname, defaultValue] of Object.entries({
+    send_to: user.value.email || '',
     sender_name: "OpnForm",
     subject: "We saved your answers",
     email_content: "Hello there 👋 <br>This is a confirmation that your submission was successfully saved.",
