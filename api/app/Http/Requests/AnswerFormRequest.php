@@ -181,19 +181,19 @@ class AnswerFormRequest extends FormRequest
         $messages = [];
         foreach ($this->form->properties as $property) {
             if ($property['type'] == 'date' && isset($property['date_range']) && $property['date_range']) {
-                $messages[$property['id'] . '.0.required_with'] = 'From date is required';
-                $messages[$property['id'] . '.1.required_with'] = 'To date is required';
-                $messages[$property['id'] . '.0.before_or_equal'] = 'From date must be before or equal To date';
+                $messages[$property['id'] . '.0.required_with'] = __('validation.from_date_required');
+                $messages[$property['id'] . '.1.required_with'] = __('validation.to_date_required');
+                $messages[$property['id'] . '.0.before_or_equal'] = __('validation.from_date_before_or_equal');
             }
             if ($property['type'] == 'rating') {
-                $messages[$property['id'] . '.min'] = 'A rating must be selected';
+                $messages[$property['id'] . '.min'] = __('validation.rating_min');
             }
             if ($property['type'] == 'multi_select') {
                 if (isset($property['min_selection']) && $property['min_selection'] > 0) {
-                    $messages[$property['id'] . '.min'] = 'Please select at least ' . $property['min_selection'] . ' options';
+                    $messages[$property['id'] . '.min'] = __('validation.select_min', ['min' => $property['min_selection']]);
                 }
                 if (isset($property['max_selection']) && $property['max_selection'] > 0) {
-                    $messages[$property['id'] . '.max'] = 'Please select no more than ' . $property['max_selection'] . ' options';
+                    $messages[$property['id'] . '.max'] = __('validation.select_max', ['max' => $property['max_selection']]);
                 }
             }
         }
