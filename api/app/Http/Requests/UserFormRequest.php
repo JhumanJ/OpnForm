@@ -128,9 +128,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'custom_code' => 'string|nullable',
 
             // Submission
-            'submit_button_text' => 'string|min:1|max:50',
+            'submit_button_text' => 'nullable|string|max:50',
             're_fillable' => 'boolean',
-            're_fill_button_text' => 'string|min:1|max:50',
+            're_fill_button_text' => 'nullable|string|max:50',
             'submitted_text' => 'string|max:2000',
             'redirect_url' => 'nullable|string',
             'database_fields_update' => 'nullable|array',
