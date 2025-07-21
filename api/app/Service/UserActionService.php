@@ -7,6 +7,7 @@ use App\Mail\UserBlockedEmail;
 use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class UserActionService
 {
@@ -22,6 +23,14 @@ class UserActionService
             'moderator_id' => $moderatorId,
         ]);
 
+        // Log to Slack
+        Log::channel('slack_churn')->info('User blocked 🚫', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'reason' => $reason,
+            'moderator_id' => $moderatorId,
+        ]);
+
         Mail::to($user)->send(new UserBlockedEmail($user, $reason));
 
         return $user->fresh();
@@ -33,6 +42,14 @@ class UserActionService
 
         AdminController::log('User unblocked', [
             'user_id' => $user->id,
+            'reason' => $reason,
+            'moderator_id' => $moderatorId,
+        ]);
+
+        // Log to Slack
+        Log::channel('slack_churn')->info('User unblocked 🔓', [
+            'user_id' => $user->id,
+            'email' => $user->email,
             'reason' => $reason,
             'moderator_id' => $moderatorId,
         ]);
