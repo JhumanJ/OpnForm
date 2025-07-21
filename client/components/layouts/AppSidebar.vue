@@ -1,5 +1,5 @@
 <template>
-  <BaseSidebar>
+  <BaseSidebar ref="sidebar">
     <!-- Header Slot -->
     <template #header>
       <!-- Workspace Dropdown -->
@@ -63,6 +63,7 @@
           :items="section.items"
           tracking-name="sidebar_nav_click"
           :tracking-properties="(item) => ({ label: item.label })"
+          @item-click="handleItemClick"
         />
       </div>
     </template>
@@ -78,6 +79,7 @@ import NavigationList from "~/components/global/NavigationList.vue"
 import { useSharedNavigation } from "~/composables/components/useSharedNavigation"
 
 const route = useRoute()
+const sidebar = ref(null)
 
 const { sharedNavigationSections, createNavItem } = useSharedNavigation()
 
@@ -135,4 +137,10 @@ const navigationSections = computed(() => [
   // Add shared navigation sections (Product and Help)
   ...sharedNavigationSections.value
 ])
+
+function handleItemClick(_item) {
+  if (sidebar.value && sidebar.value.isMobileMenuOpen) {
+    sidebar.value.isMobileMenuOpen = false
+  }
+}
 </script> 
