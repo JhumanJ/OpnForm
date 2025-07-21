@@ -1,5 +1,7 @@
+import { useFeatureFlags } from './query/useFeatureFlags'
 
 export function useFeatureFlag(flagName, defaultValue = null) {
-  const featureStore = useFeatureFlagsStore()
-  return featureStore.getFlag(flagName, defaultValue)
+  const { getFlag } = useFeatureFlags()
+  
+  return getFlag(flagName, defaultValue)
 }

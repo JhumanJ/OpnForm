@@ -24,7 +24,7 @@
     />
 
     <select-input
-      v-if="!disableEmail"
+      v-if="!disableEmail && !isSetup"
       name="hear_about_us"
       :options="hearAboutUsOptions"
       :form="form"
@@ -105,7 +105,7 @@
       label="Create account"
     />
 
-    <template v-if="useFeatureFlag('services.google.auth') && !useFeatureFlag('self_hosted')">
+    <template v-if="useFeatureFlag('services.google.auth') && !useFeatureFlag('self_hosted') && !isSetup">
       <p class="text-neutral-500 text-sm text-center my-4">
         OR
       </p>
@@ -122,7 +122,7 @@
       />
     </template>
 
-    <p class="text-neutral-500 mt-4 text-sm text-center">
+    <p v-if="!isSetup" class="text-neutral-500 mt-4 text-sm text-center">
       Already have an account?
       <a
         v-if="isQuick"
@@ -142,7 +142,7 @@
 
   <!-- Google One Tap -->
   <ClientOnly>
-    <GoogleOneTap context="signup" />
+    <GoogleOneTap v-if="!isSetup" context="signup" />
   </ClientOnly>
 </template>
 
@@ -157,10 +157,15 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  isSetup: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 })
 
 // Emits
-defineEmits(['openLogin'])
+const emit = defineEmits(['openLogin', 'registered'])
 
 // Composables
 const { $utm } = useNuxtApp()
@@ -239,6 +244,11 @@ onMounted(() => {
     }
     form.invite_token = route.query?.invite_token
   }
+
+  // Set default hear_about_us for setup mode
+  if (props.isSetup) {
+    form.hear_about_us = 'setup'
+  }
 })
 
 // Methods
@@ -252,11 +262,16 @@ const register = () => {
       source: form.hear_about_us
     }
   }).then(() => {
+    if (props.isSetup) {
+      // In setup mode, emit registered event instead of showing alert/redirecting
+      emit('registered')
+    } else {
     useAlert().success({
       title: "Welcome to OpnForm 👋",
       ...!props.isQuick ? {description: "Time to create your first form!"} : {}
     })
     redirect()
+    }
   }).catch((err) => {
     useAlert().error(err.response?._data?.message)
   }).finally(() => {

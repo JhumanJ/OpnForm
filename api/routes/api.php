@@ -48,7 +48,7 @@ if (config('app.self_hosted')) {
 
 Route::group(['middleware' => 'auth.multi'], function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-    Route::post('update-credentials', [ProfileController::class, 'updateAdminCredentials'])->name('credentials.update');
+
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);

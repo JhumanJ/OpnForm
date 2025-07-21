@@ -6,6 +6,7 @@ export { useAuth } from './query/useAuth.js'
 export { useOAuth } from './query/useOAuth.js'
 export { useTemplates } from './query/useTemplates.js'
 export { useTokens } from './query/useTokens.js'
+export { useFeatureFlags } from './query/useFeatureFlags.js'
 
 // Form-specific composables
 export { useForms } from './query/forms/useForms.js'
