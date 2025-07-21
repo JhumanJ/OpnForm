@@ -424,14 +424,4 @@ function inputProperties(field) {
 }
 </script>
 
-<style lang='scss' scoped>
-.nf-text {
-  ol {
-    @apply list-decimal list-inside;
-  }
 
-  ul {
-    @apply list-disc list-inside;
-  }
-}
-</style>
