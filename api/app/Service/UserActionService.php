@@ -24,12 +24,14 @@ class UserActionService
         ]);
 
         // Log to Slack
-        Log::channel('slack_churn')->info('User blocked 🚫', [
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'reason' => $reason,
-            'moderator_id' => $moderatorId,
-        ]);
+        if (app()->environment() !== 'testing') {
+            Log::channel('slack_churn')->info('User blocked 🚫', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'reason' => $reason,
+                'moderator_id' => $moderatorId,
+            ]);
+        }
 
         Mail::to($user)->send(new UserBlockedEmail($user, $reason));
 
@@ -47,12 +49,14 @@ class UserActionService
         ]);
 
         // Log to Slack
-        Log::channel('slack_churn')->info('User unblocked 🔓', [
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'reason' => $reason,
-            'moderator_id' => $moderatorId,
-        ]);
+        if (app()->environment() !== 'testing') {
+            Log::channel('slack_churn')->info('User unblocked 🔓', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'reason' => $reason,
+                'moderator_id' => $moderatorId,
+            ]);
+        }
 
         Mail::to($user)->send(new UserUnblockedEmail($user, $reason));
 
