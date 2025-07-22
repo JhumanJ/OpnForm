@@ -13,7 +13,6 @@ use App\Http\Middleware\IsModerator;
 use App\Http\Middleware\IsNotSubscribed;
 use App\Http\Middleware\IsSubscribed;
 use App\Http\Middleware\RequireProPlan;
-
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\CheckUserIsBlocked;
 
