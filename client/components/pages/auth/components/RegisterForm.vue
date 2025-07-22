@@ -71,6 +71,7 @@
       name="agree_terms"
       class="my-3"
       :required="true"
+      v-if="!useFeatureFlag('self_hosted')"
     >
       <template #label>
         <label for="agree_terms">
@@ -273,7 +274,8 @@ const register = () => {
     redirect()
     }
   }).catch((err) => {
-    useAlert().error(err.response?._data?.message)
+    console.error(err)
+    useAlert().error(err.response?._data?.message ?? "Something went wrong. Please try again.")
   }).finally(() => {
     // Reset captcha after submission
     if (import.meta.client && reCaptchaSiteKey.value) {

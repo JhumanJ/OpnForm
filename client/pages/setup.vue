@@ -7,16 +7,13 @@
           alt="OpnForm logo"
           class="w-8 h-8"
         >
-        <span class="ml-2 text-xl font-semibold text-black">
+        <h1 class="ml-2 text-xl font-semibold text-black">
           OpnForm
-        </span>
+        </h1>
       </div>
       
-      <h2 class="text-center text-3xl font-bold tracking-tight text-neutral-900">
-        Welcome to OpnForm!
-      </h2>
       <p class="mt-2 text-center text-sm text-neutral-600">
-        Let's get you set up. Create your admin account to start building beautiful forms.
+        Welcome to OpnForm! Let's get you set up. Create your admin account to start building beautiful forms.
       </p>
     </div>
 

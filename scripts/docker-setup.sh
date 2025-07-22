@@ -55,9 +55,16 @@ else
     COMPOSE_FILE="docker-compose.yml"
 fi
 
+# Check for override file and build compose command
+COMPOSE_CMD="docker compose -f $COMPOSE_FILE"
+if [ -f "docker-compose.override.yml" ]; then
+    echo -e "${BLUE}Found docker-compose.override.yml - including local overrides${NC}"
+    COMPOSE_CMD="$COMPOSE_CMD -f docker-compose.override.yml"
+fi
+
 # Start Docker containers
 echo -e "${GREEN}Starting Docker containers...${NC}"
-docker compose -f $COMPOSE_FILE up -d
+$COMPOSE_CMD up -d
 
 # Display access instructions
 if [ "$DEV_MODE" = true ]; then

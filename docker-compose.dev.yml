@@ -11,14 +11,14 @@ services:
     environment:
       # Core Laravel settings
       APP_ENV: local
-      APP_DEBUG: true
-      APP_DEV_CORS: true
+      APP_DEBUG: "true"
+      APP_DEV_CORS: "true"
       APP_URL: http://localhost
       FRONT_URL: http://localhost:3000
       APP_KEY: base64:dD8AFEB45nKZ0VWmIPiW495rDYb+ywRJnCCSdycw0pI=
       JWT_SECRET: 38hjE96gYu4ceKSSHNnzgeynMr2m3WkNBN2u7zzpVeiITtxFEloxAjcr7TCKuiiy
       # Self-hosted configuration
-      SELF_HOSTED: true
+      SELF_HOSTED: "true"
       # Database settings
       DB_HOST: db
       DB_DATABASE: ${DB_DATABASE:-forge}
@@ -52,24 +52,22 @@ services:
   ui:
     image: jhumanj/opnform-client:dev
     container_name: opnform-client
-    command: sh -c "npm ci --prefer-offline --no-audit && NITRO_HOST=0.0.0.0 NITRO_PORT=3000 npm run dev"
+    command: sh -c "
+      if [ ! -f node_modules/.install-complete ] || [ package.json -nt node_modules/.install-complete ]; then
+      echo 'Installing dependencies...';
+      npm install && touch node_modules/.install-complete;
+      else
+      echo 'Dependencies up to date, skipping install';
+      fi && npm run docker-dev"
     volumes:
       - ./client:/app:delegated
-      - /app/.nuxt # Keep container's .nuxt directory
-      - /app/.output # Keep container's .output directory (Nitro)
+      - client_node_modules:/app/node_modules # Named volume for persistence
     environment:
       NODE_ENV: development
       NUXT_PUBLIC_APP_ENV: development
-      HOST: "0.0.0.0"
-      PORT: 3000
-      # HMR settings
-      CHOKIDAR_USEPOLLING: "true"
-      WATCHPACK_POLLING: "true"
-      VITE_HMR_HOST: "localhost"
-      VITE_HMR_PORT: 24678
-      # API settings
-      NUXT_PUBLIC_APP_URL_BASE: "http://localhost"
-      NUXT_PUBLIC_API_BASE: "http://localhost/api"
+      NUXT_PUBLIC_APP_URL: "http://localhost:3000"
+      NUXT_PUBLIC_API_BASE: "http://localhost"
+      NUXT_PRIVATE_API_BASE: "http://opnform-ingress"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -112,3 +110,4 @@ services:
 
 volumes:
   postgres-data:
+  client_node_modules:

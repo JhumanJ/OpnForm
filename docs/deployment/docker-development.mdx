@@ -50,7 +50,7 @@ OpnForm provides a minimal Docker-based development environment optimized for lo
 
 ### Initial Setup
 
-After starting the development environment, OpnForm will automatically redirect you to a setup page where you can create your admin account. Simply visit `http://localhost:3000` and you'll be guided through the setup process.
+After starting the development environment, OpnForm will automatically redirect you to a setup page where you can create your admin account. Simply visit `http://localhost:3000/setup` and you'll be guided through the setup process.
 
 <Note>
     Public registration is disabled in the self-hosted version after setup is
@@ -112,6 +112,17 @@ The development setup includes:
 -   **PHP Hot Reload**: Changes to PHP files are immediately available
 -   **Xdebug Integration**: Ready for step-by-step debugging
 -   **Artisan Commands**: Direct access to Laravel's CLI tools
+
+#### Performance Optimizations
+
+The development setup includes smart optimizations for faster iteration:
+
+-   **Smart Dependency Install**: Automatically detects when `package.json` has changed and only reinstalls when necessary
+    -   First startup: Full npm install (2-3 minutes)
+    -   Subsequent startups: "Dependencies up to date, skipping install" (5 seconds)
+    -   Automatic detection when dependencies change
+-   **Persistent Node Modules**: Dependencies stored in Docker volumes to avoid reinstallation
+-   **Fast Container Restarts**: Skip dependency installation on container restart
 
 ### Development URLs
 
@@ -202,6 +213,32 @@ If containers aren't starting properly:
 ./scripts/docker-setup.sh --dev
 ```
 
+### Frontend Access Issues
+
+If you get **503 errors** when accessing the frontend:
+
+<Steps>
+<Step title="Use IPv4 address">
+    Always use `http://127.0.0.1:3000` instead of `http://localhost:3000`
+    
+    <Warning>
+    `localhost` can resolve to IPv6 (`::1`) on some systems, causing connection issues with Docker's port binding.
+    </Warning>
+</Step>
+
+<Step title="Check container logs">
+    Verify the Nuxt dev server started successfully: ```bash docker compose -f
+    docker-compose.dev.yml logs ui ``` Look for: `"Dependencies up to date,
+    skipping install"` and `"➜ Local: http://0.0.0.0:3000/"`
+</Step>
+
+<Step title="Restart containers if needed">
+    ```bash
+    docker compose -f docker-compose.dev.yml restart ui
+    ```
+</Step>
+</Steps>
+
 ### Environment Variables
 
 Development mode uses embedded configuration - no `.env` files needed:
@@ -235,6 +272,18 @@ If hot reload isn't working:
     ```bash
     docker compose -f docker-compose.dev.yml restart ui
     ```
+
+### Dependency Installation Issues
+
+If you need to force reinstall dependencies:
+
+```bash
+# Remove the install marker to force reinstall
+docker compose -f docker-compose.dev.yml exec ui rm -f node_modules/.install-complete
+
+# Or clear the entire volume
+docker volume rm opnform_client_node_modules
+```
 
 ## Environment Variables
 
