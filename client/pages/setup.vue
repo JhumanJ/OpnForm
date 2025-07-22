@@ -32,21 +32,15 @@
 <script setup>
 import RegisterForm from '~/components/pages/auth/components/RegisterForm.vue'
 
-// Check if setup is actually required
-const { flags, getFlag, invalidateFlags } = useFeatureFlags()
-const { suspense } = flags()
+const { invalidateFlags } = useFeatureFlags()
 const router = useRouter()
 
-// Load flags during SSR  
-if (import.meta.server) {
-  await suspense()
-}
-
-const setupRequired = computed(() => getFlag('setup_required', false))
-const selfHosted = computed(() => getFlag('self_hosted', false))
+// Check if setup is required
+const setupRequired = useFeatureFlag('setup_required', false)
+const selfHosted = useFeatureFlag('self_hosted', false)
 
 // Show 404 if setup not required or not self-hosted
-if (!setupRequired.value || !selfHosted.value) {
+if (!setupRequired || !selfHosted) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
 }
 
