@@ -1,24 +1,27 @@
-import { contentApi } from '~/api/content'
-
-export default defineNuxtPlugin(async () => {
-  // Only run on server
-  if (import.meta.client) return
-
-  // Initialize state
+export default defineNuxtPlugin(async (nuxtApp) => {
+  // Load feature flags during SSR
   const featureFlagsState = useState('featureFlags', () => ({}))
-
+  
   try {
-    // Fetch feature flags fresh from API during SSR
+    const { contentApi } = await import('~/api/content')
     const flags = await contentApi.featureFlags.list()
-    
-    // Set the state value
     featureFlagsState.value = flags
-    
-    console.log('Feature flags loaded during SSR:', flags)
+    console.log('Feature flags loaded on server:', flags)
   } catch (error) {
-    console.error('Failed to load feature flags during SSR:', error)
-    // Provide fallback
-    const fallbackFlags = { self_hosted: true, setup_required: false }
-    featureFlagsState.value = fallbackFlags
+    console.error('Failed to load feature flags on server:', error)
+    // Keep empty object as fallback
   }
+
+  // Provide refresh capability
+  nuxtApp.provide('refreshFeatureFlags', async () => {
+    try {
+      const { contentApi } = await import('~/api/content')
+      const newFlags = await contentApi.featureFlags.list()
+      featureFlagsState.value = newFlags
+      return newFlags
+    } catch (error) {
+      console.error('Failed to refresh feature flags:', error)
+      throw error
+    }
+  })
 }) 
