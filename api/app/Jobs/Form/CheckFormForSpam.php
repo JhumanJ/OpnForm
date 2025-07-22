@@ -12,9 +12,14 @@ use Illuminate\Queue\SerializesModels;
 
 class CheckFormForSpam implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    public function __construct(public Form $form) {}
+    public function __construct(public Form $form)
+    {
+    }
 
     public function handle(FormSpamService $formSpamService): void
     {

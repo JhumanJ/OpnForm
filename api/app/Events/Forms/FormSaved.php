@@ -8,7 +8,10 @@ use Illuminate\Queue\SerializesModels;
 
 class FormSaved
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
-    public function __construct(public Form $form) {}
+    public function __construct(public Form $form)
+    {
+    }
 }

@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class FormSpamService
 {
-    public function __construct(protected UserActionService $userActionService) {}
+    public function __construct(protected UserActionService $userActionService)
+    {
+    }
 
     public function checkForm(Form $form): void
     {
