@@ -1,13 +1,5 @@
 // Main composable - returns raw value (not computed)
 export function useFeatureFlag(flagName, defaultValue = null) {
-  // Server-side: use provided flags
-  if (import.meta.server) {
-    const nuxtApp = useNuxtApp()
-    const flags = nuxtApp.$featureFlags || {}
-    return getFlagFromObject(flags, flagName, defaultValue)
-  }
-  
-  // Client-side: get current value from reactive state
   const featureFlags = useState('featureFlags', () => ({}))
   return getFlagFromObject(unref(featureFlags), flagName, defaultValue)
 }
@@ -19,14 +11,6 @@ export function useFeatureFlags() {
   return {
     // Get all flags 
     flags: () => {
-      if (import.meta.server) {
-        return {
-          data: computed(() => nuxtApp.$featureFlags || {}),
-          suspense: () => Promise.resolve() // No-op on server since already loaded
-        }
-      }
-      
-      // Client-side - return reactive reference
       return {
         data: useState('featureFlags', () => ({})),
         suspense: () => Promise.resolve() // No-op since loaded via SSR
