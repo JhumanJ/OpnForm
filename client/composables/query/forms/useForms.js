@@ -68,7 +68,6 @@ export function useForms() {
       onSuccess: (updatedForm) => {
       const form = updatedForm.form
       const currentFormId = toValue(formId)
-      console.log(updatedForm)
 
       // Update individual form cache
       queryClient.setQueryData(['forms', currentFormId], form)

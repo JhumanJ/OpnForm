@@ -305,7 +305,6 @@ const downloadAsCsv = () => {
   formsApi.submissions.export(props.form.id, {
     columns: columnVisibility.value
   }).then(data => {
-    console.log(data)
     
     // Convert string to Blob if needed
     let blob

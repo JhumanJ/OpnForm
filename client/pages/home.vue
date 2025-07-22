@@ -134,7 +134,7 @@ import TrackClick from '~/components/global/TrackClick.vue'
 import UpgradeBanner from "~/components/dashboard/UpgradeBanner.vue"
 
 definePageMeta({
-  middleware: ["auth", "self-hosted-credentials"],
+  middleware: ["auth"],
   layout: "dashboard",
 })
 

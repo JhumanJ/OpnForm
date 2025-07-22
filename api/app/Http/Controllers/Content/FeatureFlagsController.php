@@ -12,6 +12,7 @@ class FeatureFlagsController extends Controller
         $featureFlags = Cache::remember('feature_flags', 3600, function () {
             return [
                 'self_hosted' => config('app.self_hosted', true),
+                'setup_required' => config('app.self_hosted', true) && !\App\Models\User::max('id'),
                 'custom_domains' => config('custom-domains.enabled', false),
                 'ai_features' => !empty(config('services.openai.api_key')),
                 'version' => $this->getAppVersion(),
