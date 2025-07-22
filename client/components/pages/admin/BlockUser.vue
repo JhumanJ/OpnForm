@@ -85,7 +85,10 @@ const historyColumns = [
   },
   {
     accessorKey: 'blocked_by',
-    header: 'Blocked By'
+    header: 'Blocked By',
+    cell: ({ row }) => {
+      return row.original.blocked_by ? row.original.blocked_by : 'AI'
+    }
   },
   {
     accessorKey: 'reason',
