@@ -118,12 +118,10 @@ const isFullscreen = ref(false)
 
 const openFullscreen = () => {
   isFullscreen.value = true
-  console.log('openFullscreen')
 }
 
 const closeFullscreen = () => {
   isFullscreen.value = false
-  console.log('closeFullscreen')
 }
 
 // Handle keyboard shortcuts

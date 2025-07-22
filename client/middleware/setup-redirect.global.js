@@ -16,12 +16,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const setupRequiredRef = useFeatureFlag('setup_required', false)
     const setupRequired = unref(setupRequiredRef) // Handle both ref and non-ref values
     
-    console.log('Setup redirect check:', { 
-      setupRequired, 
-      setupRequiredRef: setupRequiredRef?.value ?? setupRequiredRef,
-      path: to.path 
-    })
-    
     if (!setupRequired) {
       return // Setup not required, continue normally
     }
