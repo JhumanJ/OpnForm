@@ -84,7 +84,7 @@
           :disabled="!workspace.is_pro"
           placeholder="Add a new user by email"
         />
-        <SelectInput
+        <FlatSelectInput
           :form="inviteUserForm"
           name="role"
           :options="roleOptions"

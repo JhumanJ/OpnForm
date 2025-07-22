@@ -441,16 +441,6 @@ defineExpose({
   * {
     font-family: var(--font-family) !important;
   }
-  .form-description, .nf-text {
-    ol {
-      @apply list-decimal list-inside;
-      margin-left: 10px;
-    }
 
-    ul {
-      @apply list-disc list-inside;
-      margin-left: 10px;
-    }
-  }
 }
 </style>
