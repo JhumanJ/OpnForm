@@ -24,8 +24,7 @@ class FormSpamService
             $result = CheckSpamFormPrompt::run($form);
 
             if ($result['is_spam']) {
-                $reason = 'AI detected potential policy violation: ' . $result['reason'];
-                $this->userActionService->block($form->creator, $reason, null);
+                $this->userActionService->block($form->creator, $result['reason'] ?? 'Your form was detected as spam', null);
             }
         } catch (\Exception $e) {
             Log::error('Failed to check form for spam.', [

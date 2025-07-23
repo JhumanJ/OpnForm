@@ -15,7 +15,7 @@ use App\Listeners\Forms\FormCreationConfirmation;
 use App\Listeners\Forms\FormIntegrationCreatedHandler;
 use App\Listeners\Forms\FormIntegrationsEventListener;
 use App\Listeners\Forms\NotifyFormSubmission;
-use App\Listeners\Forms\QueueSpamCheck;
+use App\Listeners\Forms\FormSpamCheckListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -35,7 +35,7 @@ class EventServiceProvider extends ServiceProvider
             FormCreationConfirmation::class,
         ],
         FormSaved::class => [
-            QueueSpamCheck::class,
+            FormSpamCheckListener::class,
         ],
         FormSubmitted::class => [
             NotifyFormSubmission::class
