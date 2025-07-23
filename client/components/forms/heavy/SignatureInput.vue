@@ -57,7 +57,7 @@
       ]"
       height="150px"
       :name="name"
-      :options="{ onEnd }"
+      :options="{ onEnd, penColor }"
     />
 
     <template #bottom_after_help>
@@ -125,6 +125,12 @@ export default {
       handler(file) {
         this.compVal = file?.url || null
       }
+    }
+  },
+
+  computed: {
+    penColor() {
+      return this.isDark ? '#fff' : '#000'
     }
   },
   
