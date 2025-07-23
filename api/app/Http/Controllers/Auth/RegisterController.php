@@ -73,11 +73,15 @@ class RegisterController extends Controller
             'email' => 'required|email:filter|max:255|unique:users|indisposable',
             'password' => 'required|min:6|confirmed',
             'hear_about_us' => 'required|string',
-            'agree_terms' => ['required', Rule::in([true])],
             'appsumo_license' => ['nullable'],
             'invite_token' => ['nullable', 'string'],
             'utm_data' => ['nullable', 'array'],
         ];
+
+        // Only require terms agreement in cloud/hosted mode, not self-hosted
+        if (!config('app.self_hosted')) {
+            $rules['agree_terms'] = ['required', Rule::in([true])];
+        }
 
         if (config('services.re_captcha.secret_key')) {
             $rules['g-recaptcha-response'] = [new ValidReCaptcha()];
@@ -114,13 +118,22 @@ class RegisterController extends Controller
 
         $this->appsumoLicense = AppSumoAuthController::registerWithLicense($user, $data['appsumo_license'] ?? null);
 
+        // Clear feature flags cache when first user is created (affects setup_required flag)
+        if (config('app.self_hosted') && $user->id === 1) {
+            \Illuminate\Support\Facades\Cache::forget('feature_flags');
+        }
+
         return $user;
     }
 
     private function checkRegistrationAllowed(array $data)
     {
         if (config('app.self_hosted') && !array_key_exists('invite_token', $data) && (app()->environment() !== 'testing')) {
-            response()->json(['message' => 'Registration is not allowed in self host mode'], 400)->throwResponse();
+            // Allow registration during setup (when no users exist)
+            if (!\App\Models\User::max('id')) {
+                return; // Setup mode - allow registration
+            }
+            return response()->json(['message' => 'Registration is not allowed.'], 400)->throwResponse();
         }
     }
 

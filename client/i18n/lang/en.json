@@ -3,6 +3,12 @@
         "name": "OpnForm"
     },
     "forms": {
+        "buttons": {
+            "submit": "Submit",
+            "next": "Next",
+            "previous": "Previous",
+            "re_fill": "Submit another response"
+        },
         "powered_by": "Powered by",
         "password_protected": "This form is protected by a password.",
         "invalid_password": "Invalid password.",

@@ -69,6 +69,14 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'slack_churn' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_CHURN_WEBHOOK_URL', env('LOG_SLACK_WEBHOOK_URL')),
+            'username' => 'OpenForm Churn Bot',
+            'emoji' => ':wave:',
+            'level' => 'info',
+        ],
+
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),

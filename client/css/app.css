@@ -37,7 +37,7 @@
 
     /* Custom animations */
     --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
-    --animate-infinite-scroll: infinite-scroll 80s linear infinite;
+    --animate-infinite-scroll: infinite-scroll 550s linear infinite;
     --animate-text: text 5s ease infinite;
 
     /* Custom keyframes */
@@ -182,96 +182,6 @@
     }
 
     p,
-    div {
-        text-align: inherit;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        color: var(--color-neutral-900);
-        text-align: inherit;
-    }
-
-    :where(.dark) h1,
-    :where(.dark) h2,
-    :where(.dark) h3,
-    :where(.dark) h4,
-    :where(.dark) h5,
-    :where(.dark) h6 {
-        color: white;
-    }
-
-    h1 {
-        font-size: var(--text-2xl);
-        font-weight: 800;
-    }
-
-    @media (min-width: 640px) {
-        h1 {
-            font-size: var(--text-3xl);
-        }
-    }
-
-    h2 {
-        font-size: var(--text-2xl);
-        font-weight: 800;
-    }
-
-    a {
-        color: var(--color-blue-500);
-    }
-}
-
-/* Default overrides with low specificity - can be easily overridden */
-@layer components {
-    :where(.bg-white) {
-        background-color: white;
-    }
-
-    :where(.dark .bg-white) {
-        background-color: var(--color-notion-dark);
-    }
-
-    :where(.bg-neutral-50) {
-        background-color: var(--color-neutral-50);
-    }
-
-    :where(.dark .bg-neutral-50) {
-        background-color: var(--color-notion-dark-light);
-    }
-}
-
-/* Hide feedback buttons in some cases */
-.fb-feedback-widget-feedback-button-container {
-    display: none !important;
-}
-
-@media (min-width: 768px) {
-    .fb-feedback-widget-feedback-button-container {
-        display: block !important;
-    }
-}
-
-.public-page .fb-feedback-widget-feedback-button-container {
-    display: none !important;
-}
-
-/* Actual CSS */
-body.dark * {
-    @apply border-neutral-600;
-}
-
-#app {
-    font-family: Inter, sans-serif !important;
-    @apply min-h-screen;
-}
-
-@layer base {
-    p,
     div,
     span,
     ol,
@@ -352,6 +262,103 @@ body.dark * {
         background-clip: text;
         text-fill-color: transparent;
     }
+
+    /* Text content styling for forms */
+    .nf-text,
+    .form-description {
+        p,
+        div,
+        span,
+        ol,
+        ul,
+        li {
+            @apply text-inherit;
+        }
+
+        :where(.dark) & {
+            p,
+            div,
+            span,
+            ol,
+            ul,
+            li {
+                color: white;
+            }
+        }
+
+        ol {
+            @apply list-decimal list-inside;
+            margin-left: 10px;
+        }
+
+        ul {
+            @apply list-disc list-inside;
+            margin-left: 10px;
+        }
+    }
+
+    /* Form input labels - checkbox, toggle switch, etc. */
+    .form-input-wrapper,
+    .input-wrapper,
+    [data-wrapper="input"] {
+        label {
+            @apply text-inherit;
+        }
+
+        :where(.dark) & label {
+            color: white;
+        }
+    }
+
+    /* Additional fallback for form labels */
+    form label,
+    .form-group label {
+        @apply text-inherit;
+    }
+
+    :where(.dark) form label,
+    :where(.dark) .form-group label {
+        color: white;
+    }
+}
+
+/* Default overrides with low specificity - can be easily overridden */
+@layer components {
+    :where(.bg-white) {
+        background-color: white;
+    }
+
+    :where(.dark .bg-white) {
+        background-color: var(--color-notion-dark);
+    }
+
+    :where(.bg-neutral-50) {
+        background-color: var(--color-neutral-50);
+    }
+
+    :where(.dark .bg-neutral-50) {
+        background-color: var(--color-notion-dark-light);
+    }
+}
+
+/* Hide feedback buttons in some cases */
+.fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    .fb-feedback-widget-feedback-button-container {
+        display: block !important;
+    }
+}
+
+.public-page .fb-feedback-widget-feedback-button-container {
+    display: none !important;
+}
+
+/* Actual CSS */
+body.dark * {
+    @apply border-neutral-600;
 }
 
 :root {

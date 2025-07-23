@@ -173,12 +173,12 @@
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
               { 
-                'opacity-50 cursor-not-allowed': isOptionDisabled(item),
-                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !isOptionDisabled(item)
+                'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
+                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
               }
             ]"
-            class="text-gray-900 select-none relative group rounded focus:outline-none"
-            @click="isOptionDisabled(item) ? null : select(item)"
+            class="text-neutral-900 dark:text-neutral-50 select-none relative group rounded-sm focus:outline-hidden"
+            @click="select(item)"
           >
             <slot
               name="option"
@@ -316,6 +316,16 @@ export default {
     maxSelectionReached () {
       if (!this.multiple || !this.maxSelection) return false
       return this.selectedCount >= this.maxSelection
+    },
+    disabledOptionsMap () {
+      if (!this.multiple || !this.maxSelection || !this.data) return {}
+      
+      const map = {}
+      for (const item of this.data) {
+        const isSelected = this.isSelected(item)
+        map[item[this.optionKey]] = !isSelected && this.maxSelectionReached
+      }
+      return map
     }
   },
   watch: {
@@ -373,6 +383,11 @@ export default {
       }
     },
     select (value) {
+      // Check if option is disabled (similar to how we check for input disabled)
+      if (this.disabledOptionsMap[value[this.optionKey]]) {
+        return
+      }
+
       if (!this.multiple) {
         // Close after select
         this.toggleDropdown()
@@ -421,12 +436,6 @@ export default {
         this.select(newItem)
         this.searchTerm = ''
       }
-    },
-    isOptionDisabled (option) {
-      if (!this.multiple || !this.maxSelection) return false
-      // Allow deselection of already selected options
-      const isSelected = this.isSelected(option)
-      return !isSelected && this.maxSelectionReached
     }
   }
 }
