@@ -59,7 +59,12 @@ class FormController extends Controller
     public function show($slug)
     {
         $form = Form::whereSlug($slug)->firstOrFail();
-        $this->authorize('view', $form);
+
+        try {
+            $this->authorize('view', $form);
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return redirect()->route('forms.show', ['slug' => $slug]);
+        }
 
         // Add attributes for faster loading
         $workspace = $form->workspace;
