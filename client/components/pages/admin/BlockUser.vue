@@ -4,18 +4,15 @@
     :icon="isBlocked ? 'heroicons:lock-open-20-solid' : 'heroicons:no-symbol-20-solid'"
   >
     <div class="space-y-6 flex flex-col justify-between">
-      <p class="text-xs text-neutral-500">
-        <template v-if="isBlocked">
-          This will unblock the user and allow them to log in again. Their forms will remain in draft status.
-          <br>
-          <b>Blocked on:</b> {{ new Date(user.blocked_at).toLocaleString() }}
-          <br>
-          <b>Reason:</b> {{ lastBlock?.reason }}
+      <UAlert
+        :icon="alertContent.icon"
+        :color="alertContent.color"
+        :variant="alertContent.variant"
+      >
+        <template #description>
+          <div v-html="alertContent.content" />
         </template>
-        <template v-else>
-          This will block the user from accessing their account and set all their forms to draft.
-        </template>
-      </p>
+      </UAlert>
 
       <VForm @submit.prevent="submit">
         <TextAreaInput
@@ -118,6 +115,34 @@ const lastBlock = computed(() => {
     return null
   }
   return blockingHistory.value[blockingHistory.value.length - 1]
+})
+
+const alertContent = computed(() => {
+  if (isBlocked.value) {
+    const blockedBy = lastBlock.value?.blocked_by || 'Automatically blocked by our AI'
+    return {
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'error',
+      variant: 'subtle',
+      content: `
+        This will unblock the user and allow them to log in again. Their forms will remain in draft status.
+        <div class="mt-2">
+          <b>Blocked on:</b> ${new Date(props.user.blocked_at).toLocaleString()}
+          <br>
+          <b>Blocked by:</b> ${blockedBy}
+          <br>
+          <b>Reason:</b> ${lastBlock.value?.reason || ''}
+        </div>
+      `
+    }
+  } else {
+    return {
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'warning',
+      variant: 'subtle',
+      content: 'This will block the user from accessing their account and set all their forms to draft.'
+    }
+  }
 })
 
 
