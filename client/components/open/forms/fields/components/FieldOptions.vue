@@ -331,37 +331,37 @@
       
       <!-- Min/Max Selection Constraints for multi_select only -->
       <template v-if="field.type === 'multi_select'">
-        <div class="flex gap-3 mt-3">
-          <text-input
-            name="min_selection"
-            native-type="number"
-            :min="0"
-            class="flex-1"
-            :form="field"
-            label="Min. required"
-            placeholder="1"
-            @update:model-value="onFieldMinSelectionChange"
-          />
-          <text-input
-            name="max_selection"
-            native-type="number"
-            :min="1"
-            class="flex-1"
-            :form="field"
-            label="Max. allowed"
-            placeholder="2"
-            @update:model-value="onFieldMaxSelectionChange"
-          />
-          <UButton
-            icon="i-heroicons-backspace"
-            size="sm"
-            color="white"
-            class="self-end mb-1"
-            title="Clear both values"
-            @click="clearMinMaxSelection"
-          />
-        </div>
-        <InputHelp help="Minimum and maximum number of options users can select. Leave empty for no constraints." />
+        <div class="flex gap-1">
+        <text-input
+          name="min_selection"
+          native-type="number"
+          :min="0"
+          class="flex-1"
+          :form="field"
+          label="Min. required"
+          placeholder="1"
+          @update:model-value="onFieldMinSelectionChange"
+        />
+        <text-input
+          name="max_selection"
+          native-type="number"
+          :min="1"
+          class="flex-1"
+          :form="field"
+          label="Max. allowed"
+          placeholder="2"
+          @update:model-value="onFieldMaxSelectionChange"
+        />
+        <UButton
+          icon="i-heroicons-backspace"
+          color="neutral"
+          variant="outline"
+          class="self-end mb-1"
+          title="Clear both values"
+          @click="clearMinMaxSelection"
+        />
+      </div>
+      <InputHelp help="Set min/max options allowed, or leave empty for unlimited. Save form to test changes." />
       </template>
     </div>
 
