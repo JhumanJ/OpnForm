@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class UserActionService
 {
-    public function block(User $user, string $reason, int $moderatorId): User
+    public function block(User $user, string $reason, ?int $moderatorId): User
     {
         $user->blockUser($reason, $moderatorId);
 

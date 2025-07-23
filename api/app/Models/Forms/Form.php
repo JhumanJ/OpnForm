@@ -20,6 +20,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
 use Carbon\Carbon;
+use App\Events\Forms\FormSaved;
 
 class Form extends Model implements CachableAttributes
 {
@@ -142,6 +143,7 @@ class Form extends Model implements CachableAttributes
      */
     protected $dispatchesEvents = [
         'created' => FormCreated::class,
+        'saved' => FormSaved::class,
     ];
 
     public function getIsProAttribute()
