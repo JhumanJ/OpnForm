@@ -160,8 +160,8 @@ export const useWorkingFormStore = defineStore("working_form", {
       if (data.type === "nf-text") {
         data.content = "<p>This is a text block.</p>"
       } else if (data.type === "nf-page-break") {
-        data.next_btn_text = "Next"
-        data.previous_btn_text = "Previous"
+        data.next_btn_text = null
+        data.previous_btn_text = null
       } else if (data.type === "nf-code") {
         data.content =
           '<div class="text-blue-500 italic">This is a code block.</div>'

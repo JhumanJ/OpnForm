@@ -121,7 +121,7 @@
                   :class="submitButtonClass"
                   @click.prevent="triggerSubmit"
                 >
-                  {{ form.submit_button_text }}
+                  {{ form.submit_button_text || t('forms.buttons.submit') }}
                 </open-form-button>
               </template>
             </open-form>
@@ -146,7 +146,7 @@
               class="my-4"
               @click="restart"
             >
-              {{ form.re_fill_button_text }}
+              {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
             </open-form-button>
             <p
               v-if="form.editable_submissions && submissionId"

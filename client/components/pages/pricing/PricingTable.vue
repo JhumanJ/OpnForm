@@ -137,7 +137,7 @@
                     label="Start free trial"
                   />
                   <UButton
-                    v-else-if="authenticated && user.is_subscribed"
+                    v-else-if="authenticated && user && user.is_subscribed"
                     class="mr-1"
                     trailing-icon="i-heroicons-arrow-right"
                     :to="{ name: 'redirect-billing-portal' }"
