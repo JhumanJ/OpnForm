@@ -7,9 +7,9 @@
     :class="[
       getFieldWidthClasses(field),
       {
-        'group/nffield hover:bg-neutral-100/50 relative hover:z-10 transition-colors hover:border-neutral-200 dark:hover:!bg-neutral-900 border-dashed border border-transparent box-border dark:hover:border-blue-900 rounded-md': isAdminPreview,
+        'group/nffield hover:bg-neutral-100/50 relative hover:z-10 transition-colors hover:border-neutral-200 border-dashed border border-transparent box-border dark:hover:border-blue-900 dark:hover:bg-blue-950 rounded-md': isAdminPreview,
         'cursor-pointer':workingFormStore.showEditFieldSidebar && isAdminPreview,
-        'bg-blue-50 hover:!bg-blue-50 dark:bg-neutral-800 rounded-md': beingEdited,
+        'bg-blue-50 hover:!bg-blue-50 dark:bg-neutral-700! dark:hover:bg-neutral-700! rounded-md': beingEdited,
       }]"
     @click="setFieldAsSelected"
     @dblclick="fieldDoubleClick"
