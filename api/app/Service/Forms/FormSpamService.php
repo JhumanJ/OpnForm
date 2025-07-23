@@ -37,7 +37,7 @@ class FormSpamService
 
     private function shouldCheck(Form $form): bool
     {
-        if ($form->creator->is_blocked) {
+        if ($form->creator->is_blocked || $form->creator->admin || $form->creator->moderator) {
             return false;
         }
 
@@ -56,7 +56,7 @@ class FormSpamService
     private function isRiskyUser(User $user): bool
     {
         // Example: Free user registered in the last N days
-        return !$user->isSubscribed() && $user->created_at->diffInDays(now()) <= config('spam.risky_user_days', 7);
+        return !$user->is_subscribed && $user->created_at->diffInDays(now()) <= config('spam.risky_user_days', 7);
     }
 
     private function containsKeywords(Form $form): bool
