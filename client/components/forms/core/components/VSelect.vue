@@ -173,7 +173,7 @@
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
             ]"
-            class="text-neutral-900 select-none relative cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
+            class="text-neutral-900 dark:text-neutral-50 select-none relative cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
             @click="select(item)"
           >
             <slot
