@@ -328,4 +328,11 @@ class Form extends Model implements CachableAttributes
     {
         return FormFactory::new();
     }
+
+    public static function booted(): void
+    {
+        static::deleted(function (Form $form) {
+            $form->integrations()->delete();
+        });
+    }
 }

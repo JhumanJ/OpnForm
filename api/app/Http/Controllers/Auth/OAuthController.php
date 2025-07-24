@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\Traits\ManagesJWT;
 use App\Http\Resources\OAuthProviderResource;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
-use App\Integrations\OAuth\OAuthConnectionService;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Service\OAuth\OAuthUserService;
 use App\Service\OAuth\OAuthProviderService as OAuthProviderServiceClass;
@@ -22,7 +21,6 @@ class OAuthController extends Controller
     public const INTENT_INTEGRATION = 'integration';
 
     public function __construct(
-        private OAuthConnectionService $oauthConnectionService,
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
     ) {
@@ -61,7 +59,7 @@ class OAuthController extends Controller
             ], now()->addMinutes(5));
         }
 
-        $url = $this->oauthConnectionService->getRedirectUrl($providerService, $scopes);
+        $url = $this->getRedirectUrl($providerService, $scopes);
         return response()->json(['url' => $url]);
     }
 
@@ -219,5 +217,16 @@ class OAuthController extends Controller
 
         // Default to auth if no context found
         return self::INTENT_AUTH;
+    }
+
+    private function getRedirectUrl(OAuthProviderService $provider, array $scopes = []): string
+    {
+        $driver = $provider->getDriver();
+
+        if (!empty($scopes)) {
+            $driver->setScopes($scopes);
+        }
+
+        return $driver->getRedirectUrl();
     }
 }

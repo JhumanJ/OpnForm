@@ -44,8 +44,9 @@ const { detail: formDetail } = useForms()
 
 const slug = route.params.slug
 
-// Get form by slug using TanStack Query
-const { data: form, isLoading: formsLoading, error } = formDetail(slug,{
+// Get form by slug using TanStack Query with private authenticated endpoint
+const { data: form, isLoading: formsLoading, error } = formDetail(slug, {
+  usePrivate: true,
   enabled: import.meta.client,
 })
 
