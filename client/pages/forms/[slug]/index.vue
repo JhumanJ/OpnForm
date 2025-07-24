@@ -167,6 +167,7 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave(() => {
+  appStore.showFeatureBaseButton()
   document.body.classList.remove('public-page')
   crisp.showChat()
   disableDarkMode()
