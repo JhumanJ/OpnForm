@@ -160,18 +160,7 @@
                 {{ form.editable_submissions_button_text }}
               </a>
             </p>
-            <p
-              v-if="!form.no_branding && formModeStrategy.display.showBranding"
-              class="mt-5"
-            >
-              <a
-                target="_parent"
-                href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-                class="text-blue-500 hover:underline"
-              >
-                {{ t('forms.create_form_free') }}
-              </a>
-            </p>
+            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
         </v-transition>
         <FirstSubmissionModal
@@ -193,7 +182,7 @@ import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import PoweredBy from '../../pages/forms/show/PoweredBy.vue'
+import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'

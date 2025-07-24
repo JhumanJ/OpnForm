@@ -215,6 +215,15 @@ const onEditorReady = (quillInstance) => {
       mentionState.value = mentionModule.state
     }
   }
+
+  // Limit the number of characters
+  if (props.maxCharLimit) {
+    quillInstance.on('text-change', function() {
+      if (quillInstance.getLength() > props.maxCharLimit) {
+        quillInstance.deleteText(props.maxCharLimit, quillInstance.getLength())
+      }
+    })
+  }
 }
 
 const quillOptions = computed(() => {

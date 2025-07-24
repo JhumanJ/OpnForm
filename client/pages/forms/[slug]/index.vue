@@ -70,6 +70,7 @@ import {
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 
 const crisp = useCrisp()
+const appStore = useAppStore()
 const darkMode = useDarkMode()
 const isIframe = useIsIframe()
 const slug = useRoute().params.slug
@@ -138,6 +139,7 @@ watch([formLoading, formError], async ([loading, error]) => {
 
 onMounted(() => {
   crisp.hideChat()
+  appStore.hideFeatureBaseButton()
   document.body.classList.add('public-page')
   if (form.value) {
     handleDarkMode(form.value?.dark_mode)
@@ -165,6 +167,7 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave(() => {
+  appStore.showFeatureBaseButton()
   document.body.classList.remove('public-page')
   crisp.showChat()
   disableDarkMode()
