@@ -231,7 +231,7 @@ useOpnSeoMeta({
   robots: () => {
     return (form.value && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
   }
-})
+}, true)
 
 const getHtmlClass = computed(() => {
   return {
