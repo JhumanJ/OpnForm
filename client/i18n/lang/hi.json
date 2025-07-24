@@ -66,6 +66,8 @@
                 "failedIntent": "भुगतान इरादा बनाने में विफल।",
                 "processingFailed": "भुगतान प्रसंस्करण विफल रहा।"
             }
-        }
+        },
+        "validation_error": "सत्यापन त्रुटि",
+        "validation_error_with_count": "सत्यापन त्रुटि ({count} फ़ील्ड)"
     }
 } 

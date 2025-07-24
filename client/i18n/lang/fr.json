@@ -66,6 +66,8 @@
                 "failedIntent": "Échec de la création de l'intention de paiement.",
                 "processingFailed": "Le traitement du paiement a échoué."
             }
-        }
+        },
+        "validation_error": "Erreur de validation",
+        "validation_error_with_count": "Erreur de validation ({count} champs)"
     }
 }

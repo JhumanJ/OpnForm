@@ -66,6 +66,8 @@
                 "failedIntent": "فشل في إنشاء نية الدفع.",
                 "processingFailed": "فشلت معالجة الدفع."
             }
-        }
+        },
+        "validation_error": "خطأ في التحقق",
+        "validation_error_with_count": "خطأ في التحقق ({count} حقول)"
     }
 } 

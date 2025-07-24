@@ -66,6 +66,8 @@
                 "failedIntent": "Det gick inte att skapa betalningsavsikt.",
                 "processingFailed": "Betalningsbehandlingen misslyckades."
             }
-        }
+        },
+        "validation_error": "Valideringsfel",
+        "validation_error_with_count": "Valideringsfel ({count} fält)"
     }
 } 

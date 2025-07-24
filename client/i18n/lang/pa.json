@@ -66,6 +66,8 @@
                 "failedIntent": "ਭੁਗਤਾਨ ਇਰਾਦਾ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ।",
                 "processingFailed": "ਭੁਗਤਾਨ ਪ੍ਰਕਿਰਿਆ ਅਸਫਲ ਰਹੀ।"
             }
-        }
+        },
+        "validation_error": "ਪ੍ਰਮਾਣਿਕਤਾ ਗਲਤੀ",
+        "validation_error_with_count": "ਪ੍ਰਮਾਣਿਕਤਾ ਗਲਤੀ ({count} ਖੇਤਰ)"
     }
 } 

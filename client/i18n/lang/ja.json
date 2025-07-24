@@ -66,6 +66,8 @@
                 "failedIntent": "支払いインテントを作成できませんでした。",
                 "processingFailed": "支払処理に失敗しました。"
             }
-        }
+        },
+        "validation_error": "検証エラー",
+        "validation_error_with_count": "検証エラー（{count}フィールド）"
     }
 } 

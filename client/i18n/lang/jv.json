@@ -66,6 +66,8 @@
                 "failedIntent": "Gagal nggawe niat pembayaran.",
                 "processingFailed": "Proses pembayaran gagal."
             }
-        }
+        },
+        "validation_error": "Kesalahan validasi",
+        "validation_error_with_count": "Kesalahan validasi ({count} kolom)"
     }
 } 
