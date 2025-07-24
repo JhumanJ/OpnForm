@@ -1,20 +1,6 @@
-import { h, getCurrentInstance } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { h } from 'vue'
 
 export function useAlert() {
-  const vm = getCurrentInstance()
-  
-  // Get translation function - either from component context or global nuxt app
-  let t
-  if (vm) {
-    // Inside component context
-    const i18n = useI18n()
-    t = i18n.t
-  } else {
-    // Outside component context (JS files, stores, etc.)
-    const nuxtApp = useNuxtApp()
-    t = nuxtApp.$i18n.t
-  }
 
   function success (message, autoClose = 10000, options = {}) {
     if (typeof message === 'object' && message !== null) {
@@ -82,6 +68,7 @@ export function useAlert() {
   }
 
   function validationError(error, autoClose = 10000, options = {}) {
+    const t = useNuxtApp().$i18n.t
     const message = error.message || t('forms.validation_error')
     let description = message
 
@@ -110,6 +97,8 @@ export function useAlert() {
       return error(error.message || 'An unknown validation error occurred', autoClose, options)
     }
 
+    const t = useNuxtApp().$i18n.t
+    
     // Count total errors
     const errorCount = Object.keys(error.errors).length
 
