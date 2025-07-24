@@ -66,6 +66,8 @@
                 "failedIntent": "Ödeme amacı oluşturulamadı.",
                 "processingFailed": "Ödeme işlemi başarısız oldu."
             }
-        }
+        },
+        "validation_error": "Doğrulama Hatası",
+        "validation_error_with_count": "Doğrulama Hatası ({count} alan)"
     }
 } 

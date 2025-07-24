@@ -66,6 +66,8 @@
                 "failedIntent": "Ezin izan da ordainketa asmoa sortu.",
                 "processingFailed": "Ordainketaren prozesamenduak huts egin du."
             }
-        }
+        },
+        "validation_error": "Balidazio errorea",
+        "validation_error_with_count": "Balidazio errorea ({count} eremu)"
     }
 } 

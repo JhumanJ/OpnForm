@@ -66,6 +66,8 @@
                 "failedIntent": "No s'ha pogut crear la intenció de pagament.",
                 "processingFailed": "El processament del pagament ha fallat."
             }
-        }
+        },
+        "validation_error": "Error de validació",
+        "validation_error_with_count": "Error de validació ({count} camps)"
     }
 } 

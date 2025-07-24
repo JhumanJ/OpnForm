@@ -66,6 +66,8 @@
                 "failedIntent": "ادائیگی کا ارادہ بنانے میں ناکام۔",
                 "processingFailed": "ادائیگی کی کارروائی ناکام ہوگئی۔"
             }
-        }
+        },
+        "validation_error": "تصدیق کی خرابی",
+        "validation_error_with_count": "تصدیق کی خرابی ({count} فیلڈز)"
     }
 } 

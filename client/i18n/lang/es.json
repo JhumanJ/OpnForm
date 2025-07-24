@@ -66,6 +66,8 @@
                 "failedIntent": "Error al crear la intención de pago.",
                 "processingFailed": "El procesamiento del pago ha fallado."
             }
-        }
+        },
+        "validation_error": "Error de validación",
+        "validation_error_with_count": "Error de validación ({count} campos)"
     }
 } 

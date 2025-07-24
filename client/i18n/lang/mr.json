@@ -66,6 +66,8 @@
                 "failedIntent": "पेमेंट उद्देश तयार करण्यात अयशस्वी.",
                 "processingFailed": "पेमेंट प्रक्रिया अयशस्वी झाली."
             }
-        }
+        },
+        "validation_error": "प्रमाणीकरण त्रुटी",
+        "validation_error_with_count": "प्रमाणीकरण त्रुटी ({count} फील्ड)"
     }
 } 

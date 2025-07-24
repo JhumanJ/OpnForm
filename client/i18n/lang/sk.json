@@ -66,6 +66,8 @@
                 "failedIntent": "Nepodarilo sa vytvoriť zámer platby.",
                 "processingFailed": "Spracovanie platby zlyhalo."
             }
-        }
+        },
+        "validation_error": "Chyba overenia",
+        "validation_error_with_count": "Chyba overenia ({count} polí)"
     }
 }

@@ -66,6 +66,8 @@
                 "failedIntent": "পেমেন্ট ইনটেন্ট তৈরি করতে ব্যর্থ হয়েছে।",
                 "processingFailed": "পেমেন্ট প্রক্রিয়াকরণ ব্যর্থ হয়েছে।"
             }
-        }
+        },
+        "validation_error": "যাচাইকরণ ত্রুটি",
+        "validation_error_with_count": "যাচাইকরণ ত্রুটি ({count}টি ক্ষেত্র)"
     }
 } 

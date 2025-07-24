@@ -66,6 +66,8 @@
                 "failedIntent": "చెల్లింపు ఉద్దేశాన్ని సృష్టించడంలో విఫలమైంది.",
                 "processingFailed": "చెల్లింపు ప్రాసెసింగ్ విఫలమైంది."
             }
-        }
+        },
+        "validation_error": "ధ్రువీకరణ లోపం",
+        "validation_error_with_count": "ధ్రువీకరణ లోపం ({count} ఫీల్డ్‌లు)"
     }
 } 

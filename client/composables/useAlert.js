@@ -1,6 +1,20 @@
-import { h } from 'vue'
+import { h, getCurrentInstance } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-export function useAlert () {
+export function useAlert() {
+  const vm = getCurrentInstance()
+  
+  // Get translation function - either from component context or global nuxt app
+  let t
+  if (vm) {
+    // Inside component context
+    const i18n = useI18n()
+    t = i18n.t
+  } else {
+    // Outside component context (JS files, stores, etc.)
+    const nuxtApp = useNuxtApp()
+    t = nuxtApp.$i18n.t
+  }
 
   function success (message, autoClose = 10000, options = {}) {
     if (typeof message === 'object' && message !== null) {
@@ -68,7 +82,7 @@ export function useAlert () {
   }
 
   function validationError(error, autoClose = 10000, options = {}) {
-    const message = error.message || 'Validation Error'
+    const message = error.message || t('forms.validation_error')
     let description = message
 
     if (error.errors) {
@@ -83,7 +97,7 @@ export function useAlert () {
 
     return useToast().add({
       icon: 'i-heroicons-x-circle',
-      title: options.title ?? 'Validation Error',
+      title: options.title ?? t('forms.validation_error'),
       description,
       color: 'error',
       duration: autoClose,
@@ -114,8 +128,8 @@ export function useAlert () {
 
     // Add count of errors to the title
     const title = options.title || (errorCount > 1 
-      ? `Validation Error (${errorCount} fields)` 
-      : 'Validation Error')
+      ? t('forms.validation_error_with_count', { count: errorCount })
+      : t('forms.validation_error'))
 
     return useToast().add({
       icon: 'i-heroicons-x-circle',

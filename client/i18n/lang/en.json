@@ -66,6 +66,8 @@
                 "failedIntent": "Failed to create payment intent.",
                 "processingFailed": "Payment processing failed."
             }
-        }
+        },
+        "validation_error": "Validation Error",
+        "validation_error_with_count": "Validation Error ({count} fields)"
     }
 } 

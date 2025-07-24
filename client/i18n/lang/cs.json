@@ -66,6 +66,8 @@
                 "failedIntent": "Nepodařilo se vytvořit záměr platby.",
                 "processingFailed": "Zpracování platby se nezdařilo."
             }
-        }
+        },
+        "validation_error": "Chyba ověření",
+        "validation_error_with_count": "Chyba ověření ({count} polí)"
     }
 } 
