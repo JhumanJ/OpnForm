@@ -14,20 +14,21 @@
 </template>
 
 <script setup>
-const isVisible = ref(false)
-const localStorageKey = 'hide-github-star-button'
+const COOKIE_NAME = 'github_star_dismissed'
+const COOKIE_EXPIRY_DAYS = 14
 
-onMounted(() => {
-  const hideUntil = localStorage.getItem(localStorageKey)
-  if (!hideUntil || new Date().getTime() > parseInt(hideUntil, 10)) {
-    isVisible.value = true
-  }
+const dismissedCookie = useCookie(COOKIE_NAME, {
+  default: () => false,
+  maxAge: COOKIE_EXPIRY_DAYS * 24 * 60 * 60 * 1000, // 14 days in milliseconds
+  sameSite: 'lax',
+  secure: true,
+  httpOnly: false,
 })
 
+const isVisible = computed(() => !dismissedCookie.value)
+
 function hide() {
-  const hideUntil = new Date().getTime() + 14 * 24 * 60 * 60 * 1000   // 14 days
-  localStorage.setItem(localStorageKey, hideUntil.toString())
-  isVisible.value = false
+  dismissedCookie.value = true
 }
 
 const scriptTag = computed(() => {
