@@ -100,6 +100,40 @@ class CheckSpamFormPrompt extends Prompt
         $isSubscribed = $this->form->creator->is_subscribed ? 'yes' : 'no';
         $totalFormsCreated = $this->form->creator->forms()->count();
 
+        // Only include blocking information if user has history
+        $hasBlockingHistory = !empty($this->form->creator->meta['blocking_history'] ?? []);
+
+        if ($hasBlockingHistory) {
+            $currentBlockStatus = $this->form->creator->is_blocked ? 'BLOCKED' : 'ACTIVE';
+            $blockingHistory = $this->extractBlockingHistory();
+
+            $blockingHistorySection = "Current block status: {$currentBlockStatus}\nBlocking history: {$blockingHistory}";
+
+            $blockingConsiderations = "**BLOCKING HISTORY CONSIDERATIONS:**
+- If user was previously blocked but manually unblocked by admin, use EXTRA CAUTION before re-blocking
+- Manual unblocks indicate admin review and approval - respect this decision
+- Only re-block previously reviewed users for CLEAR violations (login forms, obvious phishing)
+- Consider the pattern: repeated blocks may indicate persistent bad behavior
+- Give benefit of doubt to users who were unblocked and haven't violated since
+
+";
+
+            $adminReviewFactor = "5. **Admin Review History**: If user was manually unblocked, they were likely reviewed and cleared";
+
+            $enhancedTemplate = Str::of($template)
+                ->replace('<userInformation>', "<userInformation>\n{$blockingHistorySection}")
+                ->replace('CRITICAL ANALYSIS GUIDELINES:', $blockingConsiderations . 'CRITICAL ANALYSIS GUIDELINES:')
+                ->replace('4. **User Trust**: Subscribed users and users with multiple forms get more benefit of doubt', '4. **User Trust**: Subscribed users and users with multiple forms get more benefit of doubt' . "\n        {$adminReviewFactor}")
+                ->toString();
+
+            return Str::of($enhancedTemplate)
+                ->replace('{formContent}', $formContent)
+                ->replace('{userRegisteredSince}', $userRegisteredSince)
+                ->replace('{isSubscribed}', $isSubscribed)
+                ->replace('{totalFormsCreated}', $totalFormsCreated)
+                ->toString();
+        }
+
         return Str::of($template)
             ->replace('{formContent}', $formContent)
             ->replace('{userRegisteredSince}', $userRegisteredSince)
@@ -121,5 +155,34 @@ class CheckSpamFormPrompt extends Prompt
         }
 
         return implode("\n", $content);
+    }
+
+    private function extractBlockingHistory(): string
+    {
+        $history = $this->form->creator->meta['blocking_history'] ?? [];
+
+        if (empty($history)) {
+            return "No previous blocking history - clean record.";
+        }
+
+        $totalBlocks = count($history);
+        $manualUnblocks = collect($history)->filter(fn ($block) => !is_null($block['unblocked_by']))->count();
+
+        $summary = [];
+        $summary[] = "Total times blocked: {$totalBlocks}";
+        $summary[] = "Manual unblocks by admin: {$manualUnblocks}";
+
+        // Get the most recent block details
+        $lastBlock = end($history);
+        if ($lastBlock) {
+            $summary[] = "Last block reason: " . ($lastBlock['reason'] ?? 'N/A');
+
+            if ($lastBlock['unblocked_by']) {
+                $summary[] = "Last unblock reason: " . ($lastBlock['unblock_reason'] ?? 'N/A');
+                $summary[] = "STATUS: Previously blocked user was manually reviewed and unblocked by admin.";
+            }
+        }
+
+        return implode("\n", $summary);
     }
 }

@@ -66,6 +66,8 @@
                 "failedIntent": "Не удалось создать намерение платежа.",
                 "processingFailed": "Ошибка обработки платежа."
             }
-        }
+        },
+        "validation_error": "Ошибка валидации",
+        "validation_error_with_count": "Ошибка валидации ({count} поля)"
     }
 } 

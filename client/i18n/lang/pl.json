@@ -66,6 +66,8 @@
                 "failedIntent": "Nie udało się utworzyć zamiaru płatności.",
                 "processingFailed": "Przetwarzanie płatności nie powiodło się."
             }
-        }
+        },
+        "validation_error": "Błąd walidacji",
+        "validation_error_with_count": "Błąd walidacji ({count} pola)"
     }
 } 

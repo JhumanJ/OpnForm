@@ -66,6 +66,8 @@
                 "failedIntent": "Zahlungsabsicht konnte nicht erstellt werden.",
                 "processingFailed": "Zahlungsabwicklung fehlgeschlagen."
             }
-        }
+        },
+        "validation_error": "Validierungsfehler",
+        "validation_error_with_count": "Validierungsfehler ({count} Felder)"
     }
 } 

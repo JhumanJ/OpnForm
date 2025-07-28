@@ -386,9 +386,9 @@ const triggerSubmit = () => {
     .catch(error => {
       console.error(error)
       if (error.response && error.response.status === 422 && error.data) {
-        useAlert().formValidationError(error.data)
+        alert.formValidationError(error.data)
       } else if (error.message) {
-        useAlert().error(error.message)
+        alert.error(error.message)
       }
       handleScrollToError()
     }).finally(() => {

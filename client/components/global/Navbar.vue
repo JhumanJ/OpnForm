@@ -189,6 +189,7 @@ const route = useRoute()
 const isFormSlugRoute = computed(() => route.name && route.name.startsWith('forms-slug'))
 const formSlug = computed(() => isFormSlugRoute.value ? route.params.slug : null)
 const { data: form } = useForms().detail(formSlug.value, {
+  usePrivate: true,
   enabled: computed(() => !!formSlug.value)
 })
 

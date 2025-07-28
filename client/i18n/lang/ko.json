@@ -66,6 +66,8 @@
                 "failedIntent": "결제 의도를 생성하지 못했습니다.",
                 "processingFailed": "결제 처리에 실패했습니다."
             }
-        }
+        },
+        "validation_error": "유효성 검사 오류",
+        "validation_error_with_count": "유효성 검사 오류 ({count}개 필드)"
     }
 } 

@@ -66,6 +66,8 @@
                 "failedIntent": "创建支付意图失败。",
                 "processingFailed": "支付处理失败。"
             }
-        }
+        },
+        "validation_error": "验证错误",
+        "validation_error_with_count": "验证错误 ({count} 个字段)"
     }
 } 
