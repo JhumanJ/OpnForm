@@ -97,6 +97,7 @@ export function createFormModeStrategy(mode) {
       strategy.validation.performActualSubmission = false
       strategy.validation.validateOnNextPage = false
       strategy.submission.enablePartialSubmissions = false
+      strategy.display.showBranding = false
       break
   }
 
