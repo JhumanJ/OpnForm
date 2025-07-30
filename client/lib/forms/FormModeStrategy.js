@@ -6,7 +6,8 @@ export const FormMode = {
   PREVIEW: 'preview',     // Admin preview with no validation
   PREFILL: 'prefill',     // URL prefill preview with no validation
   EDIT: 'edit',           // Editing an existing submission
-  TEST: 'test'            // Test mode with validation but no actual submission
+  TEST: 'test',           // Test mode with validation but no actual submission
+  TEMPLATE: 'template'    // Template mode with no validation
 }
 
 /**
@@ -97,8 +98,16 @@ export function createFormModeStrategy(mode) {
       strategy.validation.performActualSubmission = false
       strategy.validation.validateOnNextPage = false
       strategy.submission.enablePartialSubmissions = false
+      break
+
+    case FormMode.TEMPLATE:
+      // Template mode
+      strategy.validation.performActualSubmission = false
+      strategy.validation.validateOnNextPage = false
+      strategy.submission.enablePartialSubmissions = false
       strategy.display.showBranding = false
       break
+    
   }
 
   return strategy
