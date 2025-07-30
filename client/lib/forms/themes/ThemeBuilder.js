@@ -1,7 +1,7 @@
 import {twMerge} from 'tailwind-merge'
 import {themes} from './form-themes.js'
 
-export const sizes = ['sm', 'md', 'lg']
+export const sizes = ['xs', 'sm', 'md', 'lg']
 
 class ThemeBuilder {
   constructor(theme = 'default', options = {}) {
