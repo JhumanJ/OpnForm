@@ -122,12 +122,15 @@ const customDomainOptions = computed(() => {
 
 onMounted(() => {
   if (!form.value.seo_meta || Array.isArray(form.value.seo_meta))
-    form.value.seo_meta = {};
+    form.value.seo_meta = {}
 
-  ['page_title', 'page_description', 'page_thumbnail', 'page_favicon'].forEach((keyname) => {
-    if (form.value.seo_meta[keyname] === undefined)
-      form.value.seo_meta[keyname] = null
-  })
+  form.value.seo_meta = {
+    ...form.value.seo_meta,
+    page_title: form.value.seo_meta.page_title === undefined ? null : form.value.seo_meta.page_title,
+    page_description: form.value.seo_meta.page_description === undefined ? null : form.value.seo_meta.page_description,
+    page_thumbnail: form.value.seo_meta.page_thumbnail === undefined ? null : form.value.seo_meta.page_thumbnail,
+    page_favicon: form.value.seo_meta.page_favicon === undefined ? null : form.value.seo_meta.page_favicon,
+  }
 
   if (form.value.custom_domain && workspace.value?.custom_domains && !workspace.value.custom_domains.find((item) => { return item === form.value.custom_domain })) {
     form.value.custom_domain = null
