@@ -25,6 +25,8 @@ class FormSpamService
 
             if ($result['is_spam']) {
                 $this->userActionService->block($form->creator, $result['reason'] ?? 'Your form was detected as spam', null);
+            } elseif ($result['needs_admin_review'] ?? false) {
+                $this->logAdminReview($form, $result['reason'] ?? 'Form flagged for admin review');
             }
         } catch (\Exception $e) {
             Log::error('Failed to check form for spam.', [
@@ -71,5 +73,27 @@ class FormSpamService
         }
 
         return false;
+    }
+
+    private function logAdminReview(Form $form, string $reason): void
+    {
+        Log::channel('slack_churn')->warning('Form flagged for admin review 🚨', [
+            'form_id' => $form->id,
+            'form_title' => $form->title,
+            'user_id' => $form->creator->id,
+            'user_email' => $form->creator->email,
+            'user_registered_days_ago' => $form->creator->created_at->diffInDays(now()),
+            'is_subscribed' => $form->creator->is_subscribed,
+            'total_forms' => $form->creator->forms()->count(),
+            'reason' => $reason,
+            'form_url' => config('app.client_url') . '/forms/' . $form->slug,
+        ]);
+
+        Log::info('Form flagged for admin review', [
+            'form_id' => $form->id,
+            'form_title' => $form->title,
+            'user_id' => $form->creator->id,
+            'reason' => $reason,
+        ]);
     }
 }
