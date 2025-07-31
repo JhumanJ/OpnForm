@@ -7,7 +7,7 @@
           Step 1: Set Validation Rules
         </h3>
         <p class="text-neutral-500 text-xs mb-3">
-          Define <span class="font-semibold">conditions that must be met</span> for this field to be valid. If these conditions are not met, the field will be marked as invalid.
+          Add validation rules. The field is <span class="font-semibold">valid if these conditions are met</span>.
         </p>
         <condition-editor
           ref="filter-editor"
@@ -24,7 +24,7 @@
           Step 2: Set Error Message
         </h3>
         <p class="text-neutral-500 text-xs mb-2">
-          Enter the message that will be <span class="font-semibold">shown to users when the validation rules above are not met</span>.
+          The error message to show <span class="font-semibold">when validation fails</span>.
         </p>
         <text-input
           name="error_message"
