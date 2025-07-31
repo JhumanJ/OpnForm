@@ -40,6 +40,13 @@
           class="hidden md:flex gap-x-2 ml-auto"
         >
           <NuxtLink
+            v-if="user"
+            :to="{ name: 'home' }"
+            :class="navLinkClasses"
+          >
+            My Forms
+          </NuxtLink>  
+          <NuxtLink
             v-if="$route.name !== 'templates'"
             :to="{ name: 'templates' }"
             :class="navLinkClasses"
