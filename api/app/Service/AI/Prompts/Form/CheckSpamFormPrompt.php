@@ -154,7 +154,7 @@ class CheckSpamFormPrompt extends Prompt
         }
 
         $totalBlocks = count($history);
-        $manualUnblocks = collect($history)->filter(fn($block) => !is_null($block['unblocked_by']))->count();
+        $manualUnblocks = collect($history)->filter(fn ($block) => !is_null($block['unblocked_by']))->count();
 
         $summary = [];
         $summary[] = "Total times blocked: {$totalBlocks}";
