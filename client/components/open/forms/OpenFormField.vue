@@ -190,6 +190,7 @@ const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false)
 const enableDisabledFields = computed(() => props.formManager?.strategy?.value?.display?.enableDisabledFields || false)
+const isReadOnlyMode = computed(() => props.formManager?.mode?.value === FormMode.READ_ONLY)
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
@@ -256,6 +257,7 @@ const isFieldRequired = computed(() =>
 )
 
 const isFieldDisabled = computed(() => {
+  if (isReadOnlyMode.value) return true
   if (enableDisabledFields.value) return false
   return (new FormLogicPropertyResolver(props.field, dataForm.value)).isDisabled()
 })
