@@ -7,7 +7,8 @@ export const FormMode = {
   PREFILL: 'prefill',     // URL prefill preview with no validation
   EDIT: 'edit',           // Editing an existing submission
   TEST: 'test',           // Test mode with validation but no actual submission
-  TEMPLATE: 'template'    // Template mode with no validation
+  TEMPLATE: 'template',   // Template mode with no validation
+  READ_ONLY: 'read_only'  // Read only mode
 }
 
 /**

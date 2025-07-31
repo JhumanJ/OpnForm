@@ -101,7 +101,8 @@
         <div class="flex justify-center" :style="{ width: `var(--col-actions-size, auto)` }">
           <RecordOperations
             :form="form"
-            :submission="row.original"
+            :submission-id="row.original.id"
+            :data="sortedData"
             @deleted="(submission) => $emit('deleted', submission)"
             @updated="(submission) => $emit('updated', submission)"
           />
@@ -199,6 +200,11 @@ const statusList = [
   { label: 'In Progress', value: 'partial' }
 ]
 
+// Default sort by created_at desc
+const sortedData = computed(() => {
+  return props.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+})
+
 const filteredTableData = computed(() => {
   let data = [...props.data]
 
@@ -219,8 +225,7 @@ const filteredTableData = computed(() => {
     })
     return fuse.search(debouncedSearch.value).map(res => res.item)
   } else {
-    // Default sort by created_at desc
-    return data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    return sortedData.value
   }
 })
 

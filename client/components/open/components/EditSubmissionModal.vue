@@ -1,6 +1,7 @@
 <template>
   <UModal
     v-model:open="isModalOpen"
+    :ui="{ content: 'sm:max-w-2xl' }"
     title="Edit Submission"
   >
     <template #body>
@@ -12,7 +13,7 @@
       >
         <template #submit-btn="{ loading }">
           <UButton
-            class="mt-4"
+            class="mt-2"
             :loading="loading"
             @click.prevent="updateForm"
             label="Update Submission"
