@@ -175,6 +175,11 @@ const operatorOptions = computed(() => {
 })
 
 function addRule(ruleIdentifier = null) {
+  if (!props.config.rules || props.config.rules.length === 0) {
+    console.warn('No rules configured for query builder')
+    return
+  }
+
   // Default to first available field if no identifier provided
   const defaultIdentifier = ruleIdentifier || (props.config.rules.length > 0 ? props.config.rules[0].identifier : '')
   const ruleDefinition = props.config.rules.find(r => r.identifier === defaultIdentifier)

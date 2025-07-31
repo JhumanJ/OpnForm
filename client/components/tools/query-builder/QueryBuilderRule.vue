@@ -5,7 +5,7 @@
     <!-- Second rule: operator selector -->
     <!-- Third+ rules: text-only operator -->
     
-    <div v-if="index === 0" class="flex-shrink-0 text-sm font-medium text-gray-600 w-17 text-right">
+    <div v-if="index === 0" class="flex-shrink-0 text-sm font-medium text-neutral-600 w-17 text-right">
       {{ whereText }}
     </div>
     
@@ -21,7 +21,7 @@
       />
     </div>
     
-    <div v-else class="flex-shrink-0 text-sm font-medium text-gray-600 w-17 text-right">
+    <div v-else class="flex-shrink-0 text-sm font-medium text-neutral-600 w-17 text-right">
       {{ operatorDisplayName }}
     </div>
 

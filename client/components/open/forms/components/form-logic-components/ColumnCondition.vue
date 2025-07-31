@@ -66,7 +66,7 @@ export default {
         checkbox: "CheckboxInput",
         url: "TextInput",
         email: "TextInput",
-        phone_number: "TextIneput",
+        phone_number: "TextInput",
         matrix: "MatrixInput",
       },
       // Create small-sized theme for all child components
