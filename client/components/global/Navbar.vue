@@ -43,6 +43,7 @@
             v-if="user"
             :to="{ name: 'home' }"
             :class="navLinkClasses"
+            class="hidden lg:block"
           >
             My Forms
           </NuxtLink>  
