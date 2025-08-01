@@ -12,7 +12,7 @@
       label: 'text-gray-700 dark:text-gray-300 font-semibold',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent',
-      help: 'text-gray-500',
+      help: 'text-gray-500 dark:text-gray-400',
       spacing: {
         horizontal: {
           sm: 'px-2',
@@ -174,7 +174,7 @@
       label: 'text-gray-700 dark:text-gray-300 font-medium',
       input:
         'flex-1 appearance-none border border-gray-300 dark:border-gray-600 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/100 focus:border-transparent',
-      help: 'text-gray-500',
+      help: 'text-gray-500 dark:text-gray-400',
       spacing: {
         horizontal: {
           sm: 'px-2',
@@ -330,7 +330,7 @@
       label: 'text-gray-900 dark:text-gray-100 mb-1 block mt-4',
       input:
         'rounded-xs border border-notion-input-border dark:border-notion-input-borderDark flex-1 appearance-none w-full bg-notion-input-background dark:bg-notion-dark-light text-gray-900 dark:text-gray-100 dark:placeholder-gray-500 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent',
-      help: 'text-gray-500',
+      help: 'text-gray-500 dark:text-gray-400',
       spacing: {
         horizontal: {
           sm: 'px-2',

@@ -216,14 +216,14 @@
     .field-help ol,
     .field-help ul,
     .field-help li {
-        color: var(--color-neutral-400);
+        color: var(--color-neutral-500);
     }
 
     :where(.dark) .field-help p,
     :where(.dark) .field-help ol,
     :where(.dark) .field-help ul,
     :where(.dark) .field-help li {
-        color: var(--color-neutral-500);
+        color: var(--color-neutral-400);
     }
 
     .field-help ol {
