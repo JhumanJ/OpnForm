@@ -51,10 +51,10 @@
       <FormEditorErrorHandler>
         <div class="w-full flex grow overflow-y-scroll relative bg-white">
           <div 
-            ref="leftSidebar"
+            ref="elementRef"
             class="relative shrink-0 overflow-y-scroll border-r"
-            :class="isLeftSidebarResizable ? '' : 'w-full md:w-1/2 md:max-w-xs lg:w-2/5'"
-            :style="isLeftSidebarResizable ? { width: sidebarWidth + 'px', minWidth: '280px', maxWidth: '600px' } : {}"
+            :class="isResizable ? '' : 'w-full md:w-1/2 md:max-w-xs lg:w-2/5'"
+            :style="isResizable ? dynamicStyles : {}"
           >
             <VForm
               size="sm"
@@ -73,15 +73,11 @@
             </VForm>
           </div>
 
-          <!-- Resize handle - only show on large screens when resizable -->
-          <div
-            v-if="isLeftSidebarResizable"
-            ref="resizeHandle"
-            class="w-1 hover:bg-blue-400 cursor-col-resize flex-shrink-0 transition-colors duration-150 relative group"
-            @mousedown="startResize"
-          >
-            <div class="absolute inset-y-0 -left-1 -right-1 group-hover:bg-blue-400 group-hover:opacity-20"></div>
-          </div>
+          <ResizeHandle
+            :show="isResizable"
+            direction="left"
+            @start-resize="startResize"
+          />
 
           <FormEditorPreview />
 
@@ -128,6 +124,8 @@ import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import LogicConfirmationModal from '~/components/forms/heavy/LogicConfirmationModal.vue'
 import { formsApi } from "~/api"
+import { useResizable } from '~/composables/components/useResizable'
+import ResizeHandle from '@/components/global/ResizeHandle.vue'
 
 // Define props
 const props = defineProps({
@@ -168,16 +166,22 @@ const validationErrorResponse = ref(null)
 const createdFormSlug = ref(null)
 const logicErrors = ref([])
 
-// Sidebar resizing state
-const sidebarWidth = ref(320) // Default width
-const isResizing = ref(false)
-const leftSidebar = ref(null)
-const resizeHandle = ref(null)
+// Sidebar resizing using composable
+const { 
+  elementRef, 
+  isResizable, 
+  dynamicStyles, 
+  startResize
+} = useResizable({
+  storageKey: 'formEditorSidebarWidth',
+  defaultWidth: 320,
+  direction: 'left',
+  maxWidth: () => Math.min(600, window.innerWidth * 0.6)
+})
 
 // Check if the editor is visible on smaller screens then send an email
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isVisible = ref(breakpoints.smaller("md"))
-const isLeftSidebarResizable = computed(() => breakpoints.greater('lg').value)
 watch(isVisible, (newValue) => {
   if (newValue && form?.value && form?.value?.id) {
     formsApi.mobileEditorEmail(form.value.id)
@@ -386,41 +390,7 @@ const saveFormGuest = () => {
   emit("openRegister")
 }
 
-// Sidebar resizing methods
-const startResize = (e) => {
-  if (!isLeftSidebarResizable.value) return
-  
-  isResizing.value = true
-  document.addEventListener('mousemove', doResize)
-  document.addEventListener('mouseup', stopResize)
-  document.body.style.cursor = 'col-resize'
-  document.body.style.userSelect = 'none'
-  e.preventDefault()
-}
 
-const doResize = (e) => {
-  if (!isResizing.value) return
-  
-  const containerRect = leftSidebar.value.parentElement.getBoundingClientRect()
-  const newWidth = e.clientX - containerRect.left
-  
-  // Apply min/max width constraints
-  const minWidth = 280
-  const maxWidth = Math.min(600, containerRect.width * 0.6) // Max 60% of container width
-  
-  sidebarWidth.value = Math.max(minWidth, Math.min(maxWidth, newWidth))
-  
-  // Save to localStorage
-  localStorage.setItem('formEditorSidebarWidth', sidebarWidth.value.toString())
-}
-
-const stopResize = () => {
-  isResizing.value = false
-  document.removeEventListener('mousemove', doResize)
-  document.removeEventListener('mouseup', stopResize)
-  document.body.style.cursor = ''
-  document.body.style.userSelect = ''
-}
 
 defineExpose({
   saveFormCreate
@@ -432,23 +402,10 @@ onMounted(() => {
   workingFormStore.activeTab = 'build'
   amplitude.logEvent('form_editor_viewed')
   
-  // Restore saved sidebar width from localStorage
-  const savedWidth = localStorage.getItem('formEditorSidebarWidth')
-  if (savedWidth) {
-    sidebarWidth.value = parseInt(savedWidth, 10)
-  }
-  
   if (!props.isEdit) {
     nextTick(() => {
       workingFormStore.openAddFieldSidebar()
     })
-  }
-})
-
-// Cleanup event listeners on unmount
-onBeforeUnmount(() => {
-  if (isResizing.value) {
-    stopResize()
   }
 })
 </script>
