@@ -56,6 +56,12 @@
             :class="isResizable ? '' : 'w-full md:w-1/2 md:max-w-xs lg:w-2/5'"
             :style="isResizable ? dynamicStyles : {}"
           >
+            <ResizeHandle
+              :show="isResizable"
+              direction="left"
+              @start-resize="startResize"
+            />
+            
             <VForm
               size="sm"
               @submit.prevent=""
@@ -72,12 +78,6 @@
               </div>
             </VForm>
           </div>
-
-          <ResizeHandle
-            :show="isResizable"
-            direction="left"
-            @start-resize="startResize"
-          />
 
           <FormEditorPreview />
 

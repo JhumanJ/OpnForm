@@ -25,7 +25,7 @@
 import { slideRight, useMotion } from '@vueuse/motion'
 import { watch, computed } from 'vue'
 import { useResizable } from '~/composables/components/useResizable'
-import ResizeHandle from '~/components/global/ResizeHandle.vue'
+import ResizeHandle from '@/components/global/ResizeHandle.vue'
 
 const props = defineProps({
   show: {

@@ -3,10 +3,10 @@
     v-if="show"
     ref="handleRef"
     :class="[
-      'hover:bg-blue-500 cursor-col-resize transition-colors duration-150 group',
+      'absolute top-0 h-full w-0.5 hover:bg-blue-300 cursor-col-resize transition-colors duration-150 group z-10',
       direction === 'left' 
-        ? 'flex-shrink-0 relative' 
-        : 'absolute left-0 top-0 w-1 h-full bg-neutral-200 -translate-x-1 z-10'
+        ? 'right-0' 
+        : 'left-0'
     ]"
     @mousedown="$emit('start-resize', $event)"
   >
