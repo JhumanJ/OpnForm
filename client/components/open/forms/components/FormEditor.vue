@@ -125,7 +125,7 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import LogicConfirmationModal from '~/components/forms/heavy/LogicConfirmationModal.vue'
 import { formsApi } from "~/api"
 import { useResizable } from '~/composables/components/useResizable'
-import ResizeHandle from '@/components/global/ResizeHandle.vue'
+import ResizeHandle from '~/components/global/ResizeHandle.vue'
 
 // Define props
 const props = defineProps({
