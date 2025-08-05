@@ -121,7 +121,7 @@
                   :class="submitButtonClass"
                   @click.prevent="triggerSubmit"
                 >
-                  {{ form.submit_button_text }}
+                  {{ form.submit_button_text || t('forms.buttons.submit') }}
                 </open-form-button>
               </template>
             </open-form>
@@ -146,7 +146,7 @@
               class="my-4"
               @click="restart"
             >
-              {{ form.re_fill_button_text }}
+              {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
             </open-form-button>
             <p
               v-if="form.editable_submissions && submissionId"
@@ -160,18 +160,7 @@
                 {{ form.editable_submissions_button_text }}
               </a>
             </p>
-            <p
-              v-if="!form.no_branding && formModeStrategy.display.showBranding"
-              class="mt-5"
-            >
-              <a
-                target="_parent"
-                href="https://opnform.com/?utm_source=form&utm_content=create_form_free"
-                class="text-blue-500 hover:underline"
-              >
-                {{ t('forms.create_form_free') }}
-              </a>
-            </p>
+            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
         </v-transition>
         <FirstSubmissionModal
@@ -193,7 +182,7 @@ import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import PoweredBy from '../../pages/forms/show/PoweredBy.vue'
+import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
@@ -397,9 +386,9 @@ const triggerSubmit = () => {
     .catch(error => {
       console.error(error)
       if (error.response && error.response.status === 422 && error.data) {
-        useAlert().formValidationError(error.data)
+        alert.formValidationError(error.data)
       } else if (error.message) {
-        useAlert().error(error.message)
+        alert.error(error.message)
       }
       handleScrollToError()
     }).finally(() => {
@@ -441,16 +430,6 @@ defineExpose({
   * {
     font-family: var(--font-family) !important;
   }
-  .form-description, .nf-text {
-    ol {
-      @apply list-decimal list-inside;
-      margin-left: 10px;
-    }
 
-    ul {
-      @apply list-disc list-inside;
-      margin-left: 10px;
-    }
-  }
 }
 </style>

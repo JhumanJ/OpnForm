@@ -29,9 +29,9 @@ export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
     size: 'md',
 
     // Submission
-    submit_button_text: "Submit",
+    submit_button_text: null,
     re_fillable: false,
-    re_fill_button_text: "Fill Again",
+    re_fill_button_text: null,
     submitted_text:
       "Amazing, we saved your answers. Thank you for your time and have a great day!",
     use_captcha: false,
@@ -104,7 +104,7 @@ export function setFormDefaults(formData) {
     uppercase_labels: false,
     no_branding: false,
     transparent_background: false,
-    submit_button_text: 'Submit',
+    submit_button_text: null,
     confetti_on_submission: false,
     show_progress_bar: false,
     bypass_success_page: false,

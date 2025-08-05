@@ -6,7 +6,7 @@ export const authApi = {
   user: {
     get: (options) => apiService.get('/user', options),
     delete: () => apiService.delete('/user'),
-    updateCredentials: (data) => apiService.post('/update-credentials', data),
+
     updateProfile: (data) => apiService.patch('/settings/profile', data)
   },
 

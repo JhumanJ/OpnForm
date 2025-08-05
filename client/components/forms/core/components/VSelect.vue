@@ -172,8 +172,12 @@
               theme.SelectInput.spacing.horizontal,
               theme.SelectInput.spacing.vertical,
               { 'pr-9': multiple},
+              { 
+                'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
+                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
+              }
             ]"
-            class="text-neutral-900 select-none relative cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
+            class="text-neutral-900 dark:text-neutral-50 select-none relative group rounded-sm focus:outline-hidden"
             @click="select(item)"
           >
             <slot
@@ -254,7 +258,9 @@ export default {
       }
     },
     allowCreation: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    minSelection: { type: Number, default: null },
+    maxSelection: { type: Number, default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
@@ -302,6 +308,24 @@ export default {
     },
     isEmpty () {
       return this.multiple ? !this.modelValue || this.modelValue.length === 0 : !this.modelValue
+    },
+    selectedCount () {
+      if (!this.multiple || !Array.isArray(this.modelValue)) return 0
+      return this.modelValue.length
+    },
+    maxSelectionReached () {
+      if (!this.multiple || !this.maxSelection) return false
+      return this.selectedCount >= this.maxSelection
+    },
+    disabledOptionsMap () {
+      if (!this.multiple || !this.maxSelection || !this.data) return {}
+      
+      const map = {}
+      for (const item of this.data) {
+        const isSelected = this.isSelected(item)
+        map[item[this.optionKey]] = !isSelected && this.maxSelectionReached
+      }
+      return map
     }
   },
   watch: {
@@ -359,6 +383,11 @@ export default {
       }
     },
     select (value) {
+      // Check if option is disabled (similar to how we check for input disabled)
+      if (this.disabledOptionsMap[value[this.optionKey]]) {
+        return
+      }
+
       if (!this.multiple) {
         // Close after select
         this.toggleDropdown()

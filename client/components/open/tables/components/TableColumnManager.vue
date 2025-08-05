@@ -262,7 +262,7 @@ const getPinTooltip = (columnId) => {
 
 // Toggle all columns visibility - now using computed map
 const toggleAllColumns = (targetVisibility) => {
-  const columns = props.tableState.columnConfigurations.value || []
+  const columns = props.tableState.orderedColumns.value || []
   const visibilityMap = columnVisibilityMap.value
   
   columns

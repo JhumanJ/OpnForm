@@ -308,6 +308,7 @@ import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 definePageMeta({
   layout: "default",
+  middleware: ['root-redirect']
 })
 
 const { isAuthenticated: authenticated } = useIsAuthenticated()

@@ -15,7 +15,6 @@
         :form="form"
         class="max-w-xs"
         label="Submit button text"
-        :required="true"
       />
       <ToggleSwitchInput
         name="auto_save"
@@ -184,7 +183,6 @@
               name="re_fill_button_text"
               :form="form"
               label="Text of re-start button"
-              :required="true"
             />
           </div>
 

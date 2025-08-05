@@ -7,14 +7,8 @@ export function useOAuth() {
   const alert = useAlert()
 
   // Constants
-  const googleDrivePermission = {
-    scope: 'https://www.googleapis.com/auth/drive.file',
-    access_type: 'offline',
-    prompt: 'consent',
-    response_type: 'code',
-    approval_prompt: 'force'
-  }
-
+  const googleDrivePermissionFileScope = 'https://www.googleapis.com/auth/drive.file'
+  
   // Service definitions
   const services = computed(() => {
     return [
@@ -265,7 +259,7 @@ export function useOAuth() {
 
   return {
     // Constants
-    googleDrivePermission,
+    googleDrivePermissionFileScope,
     
     // Service definitions
     services,
