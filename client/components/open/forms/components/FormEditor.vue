@@ -60,6 +60,7 @@
               :show="isResizable"
               direction="left"
               @start-resize="startResize"
+              class="z-20"
             />
             
             <VForm
