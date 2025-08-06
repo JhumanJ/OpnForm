@@ -77,6 +77,17 @@ return [
             'level' => 'info',
         ],
 
+        // Custom Slack channels using JoliCode Slack API
+        'slack_security' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\SlackLoggerFactory::class,
+            'token' => env('SLACK_BOT_TOKEN'),
+            'channel' => env('SLACK_SECURITY_CHANNEL', '#general'),
+            'username' => 'OpenForm Security Bot',
+            'emoji' => ':shield:',
+            'level' => 'warning',
+        ],
+
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
