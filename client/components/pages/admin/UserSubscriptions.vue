@@ -34,6 +34,16 @@
           {{ row.original.status }}
         </span>
       </template>
+      <template #actions-cell="{ row }">
+        <UButton
+          v-if="row.original.status == 'active' || row.original.status == 'trialing'"
+          color="error"
+          variant="outline"
+          size="sm"
+          icon="heroicons:trash-16-solid"
+          @click="showCancelSubscriptionModal = true"
+        />
+      </template>
     </UTable>
     <div
       v-if="subscriptions?.length > pageCount"
@@ -45,6 +55,41 @@
         :total="subscriptions.length"
       />
     </div>
+
+    <UModal
+      v-model:open="showCancelSubscriptionModal"
+      :ui="{ content: 'sm:max-w-lg' }"
+      title="Cancel subscription"
+    >
+      <template #body>
+        <form @submit.prevent="askCancel">
+            <p class="text-xs text-neutral-500">
+              Ideally customers should cancel subscription themselves via the UI. If
+              you cancel the subscription for them, please provide a reason.
+            </p>
+            <div class="mt-4">
+              <TextInput
+                name="cancellation_reason"
+                :form="form"
+                label="Cancellation reason"
+                native-type="reason"
+                :required="true"
+                help="Cancellation reason"
+              />
+
+              <UButton
+                class="mt-4"
+                :loading="form.busy"
+                type="submit"
+                block
+                icon="heroicons:exclamation-triangle-16-solid"
+                label="Cancel subscription now"
+              />
+            </div>
+          </form>
+        </template>
+    </UModal>
+
   </AdminCard>
 </template>
 
@@ -52,7 +97,7 @@
 import { adminApi } from '~/api'
 
 const props = defineProps({
-    user: { type: Object, required: true }
+  user: { type: Object, required: true }
 })
 
 const loading = ref(true)
@@ -103,6 +148,34 @@ const columns = [{
 }, {
     accessorKey: 'status',
     header: 'Status'
+}, {
+    accessorKey: 'actions',
+    header: '',
 }]
+
+const showCancelSubscriptionModal = ref(false)
+const alert = useAlert()
+const form = useForm({
+  user_id: props.user.id,
+  cancellation_reason: ''
+})
+
+const askCancel = () => {
+  alert.confirm('Are you sure? This will cancel the subscription for this user.', cancelSubscription)
+}
+
+const cancelSubscription = () => {
+  if (!props.user.stripe_id) return
+  form
+    .patch('/moderator/cancellation-subscription')
+    .then(async (data) => {
+      alert.success(data.message)
+      showCancelSubscriptionModal.value = false
+      getSubscriptions()
+    })
+    .catch((error) => {
+      alert.error(error.data.message)
+    })
+}
 
 </script>

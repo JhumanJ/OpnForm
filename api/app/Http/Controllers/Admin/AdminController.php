@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
+use Stripe\Stripe;
+use Stripe\Refund;
 
 class AdminController extends Controller
 {
@@ -253,6 +255,59 @@ class AdminController extends Controller
 
         return $this->success([
             'message' => "Password reset email has been sent to the user's email address"
+        ]);
+    }
+
+    public function refundPayment(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'refund_reason' => 'required'
+        ]);
+
+        $user = User::findOrFail($request->get('user_id'));
+        $latestInvoice = $user->invoices()->first();
+
+        if (!$latestInvoice) {
+            return $this->error(['message' => 'No invoices found for this user.'], 404);
+        }
+
+        try {
+            Stripe::setApiKey(config('cashier.secret'));
+
+            // Get the Stripe invoice to find the payment
+            $stripeInvoice = $latestInvoice->asStripeInvoice();
+            if (!$stripeInvoice->charge) {
+                return $this->error(['message' => 'It\'s trial period invoice so can not refund.'], 404);
+            }
+
+            $refund = Refund::create([
+                'charge' => $stripeInvoice->charge,
+                'reason' => 'requested_by_customer',
+                'metadata' => [
+                    'refund_reason' => $request->get('refund_reason'),
+                    'moderator_id' => request()->user()->id,
+                    'user_id' => $user->id
+                ]
+            ]);
+
+            self::log('Refund Payment', [
+                'user_id' => $user->id,
+                'invoice_id' => $latestInvoice->id,
+                'stripe_refund_id' => $refund->id,
+                'refund_reason' => $request->get('refund_reason'),
+                'moderator_id' => request()->user()->id,
+            ]);
+        } catch (\Exception $e) {
+            self::log('Refund Error', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->error(['message' => 'An error occurred while processing the refund.'], 500);
+        }
+
+        return $this->success([
+            'message' => "The payment has been successfully refunded."
         ]);
     }
 
