@@ -50,7 +50,19 @@
 
       <FormEditorErrorHandler>
         <div class="w-full flex grow overflow-y-scroll relative bg-white">
-          <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
+          <div 
+            ref="elementRef"
+            class="relative shrink-0 overflow-y-scroll border-r"
+            :class="isResizable ? '' : 'w-full md:w-1/2 md:max-w-xs lg:w-2/5'"
+            :style="isResizable ? dynamicStyles : {}"
+          >
+            <ResizeHandle
+              :show="isResizable"
+              direction="left"
+              @start-resize="startResize"
+              class="z-20"
+            />
+            
             <VForm
               size="sm"
               @submit.prevent=""
@@ -113,6 +125,8 @@ import { setFormDefaults } from '~/composables/forms/initForm.js'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import LogicConfirmationModal from '~/components/forms/heavy/LogicConfirmationModal.vue'
 import { formsApi } from "~/api"
+import { useResizable } from '~/composables/components/useResizable'
+import ResizeHandle from '~/components/global/ResizeHandle.vue'
 
 // Define props
 const props = defineProps({
@@ -152,6 +166,19 @@ const showLogicConfirmationModal = ref(false)
 const validationErrorResponse = ref(null)
 const createdFormSlug = ref(null)
 const logicErrors = ref([])
+
+// Sidebar resizing using composable
+const { 
+  elementRef, 
+  isResizable, 
+  dynamicStyles, 
+  startResize
+} = useResizable({
+  storageKey: 'formEditorSidebarWidth',
+  defaultWidth: 320,
+  direction: 'left',
+  maxWidth: () => Math.min(600, window.innerWidth * 0.6)
+})
 
 // Check if the editor is visible on smaller screens then send an email
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -364,6 +391,8 @@ const saveFormGuest = () => {
   emit("openRegister")
 }
 
+
+
 defineExpose({
   saveFormCreate
 })
@@ -373,6 +402,7 @@ onMounted(() => {
   emit("mounted")
   workingFormStore.activeTab = 'build'
   amplitude.logEvent('form_editor_viewed')
+  
   if (!props.isEdit) {
     nextTick(() => {
       workingFormStore.openAddFieldSidebar()
