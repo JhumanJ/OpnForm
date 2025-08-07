@@ -1,28 +1,35 @@
 <template>
   <div
     v-if="content"
-    class="flex flex-wrap"
+    class="flex items-center gap-2"
   >
-    <div class="w-full font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
-      {{ property.name }}
-    </div>
-    <SelectInput
+    <!-- Operator Selection -->
+    <USelectMenu
       v-model="content.operator"
-      class="w-full"
-      :options="operators"
-      :name="'operator_' + property.id"
-      placeholder="Comparison operator"
+      class="w-[100px]"
+      :items="operators"
+      value-key="value"
+      placeholder="Operator"
+      size="sm"
+      variant="outline"
+      :search-input="false"
       @update:model-value="operatorChanged()"
+      :ui="{
+        content: 'min-w-fit'
+      }"
     />
 
+    <!-- Value Input (if needed) -->
     <template v-if="needsInput">
       <component
         v-bind="inputComponentData"
         :is="inputComponentData.component"
         v-model="content.value"
-        class="w-full"
+        class="flex-1 min-w-[120px]"
         :name="'value_' + property.id"
-        placeholder="Filter Value"
+        placeholder="Value"
+        wrapper-class="my-0"
+        margin-bottom=""
         @update:model-value="emitInput()"
       />
     </template>
@@ -31,18 +38,19 @@
 
 <script>
 import OpenFilters from "../../../../../data/open_filters.json"
+import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
   components: {},
   props: {
-    modelValue: { type: Object, required: true },
+    modelValue: { type: Object, required: false, default: null },
     customValidation: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
   data() {
     return {
-      content: { ...this.modelValue },
+      content: this.modelValue ? { ...this.modelValue } : {},
       available_filters: OpenFilters,
       hasInput: false,
       inputComponent: {
@@ -61,6 +69,11 @@ export default {
         phone_number: "TextInput",
         matrix: "MatrixInput",
       },
+      // Create small-sized theme for all child components
+      smallTheme: new ThemeBuilder('simple', { 
+        size: 'xs',
+        borderRadius: 'small'
+      }).getAllComponents()
     }
   },
 
@@ -71,6 +84,8 @@ export default {
         component: this.inputComponent[this.property.type],
         name: this.property.id,
         required: true,
+        theme: this.smallTheme,
+        wrapperClass: 'm-0',
       }
 
       if (
@@ -108,7 +123,7 @@ export default {
         .map(([filterKey]) => {
           return {
             value: filterKey,
-            name: this.optionFilterNames(filterKey),
+            label: this.optionFilterNames(filterKey),
           }
         })
     },
@@ -221,7 +236,7 @@ export default {
       this.$emit("update:modelValue", this.castContent(this.content))
     },
     refreshContent() {
-      const modelValue = { ...this.modelValue }
+      const modelValue = this.modelValue ? { ...this.modelValue } : {}
       
       // Migrate legacy checkbox operators
       if (this.property.type === 'checkbox') {
@@ -233,7 +248,7 @@ export default {
       }
 
       this.content = {
-        operator: this.operators[0].value,
+        operator: this.operators[0]?.value,
         ...modelValue,
         property_meta: {
           id: this.property.id,

@@ -48,7 +48,7 @@
           <condition-editor
             ref="filter-editor"
             v-model="modelValue.logic"
-            class="mt-4 border-t border rounded-md integration-logic"
+            class="mt-4 rounded-md integration-logic"
             :form="form"
           />
         </collapse>
