@@ -153,7 +153,7 @@ import { computed, ref, onMounted } from 'vue'
 import { adminApi } from '~/api'
 
 definePageMeta({
-  middleware: 'moderator',
+  middleware: ["auth", "moderator"],
   layout: 'dashboard'
 })
 
