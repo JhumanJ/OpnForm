@@ -313,18 +313,6 @@ definePageMeta({
 
 const { isAuthenticated: authenticated } = useIsAuthenticated()
 
-useHead({
-  title: 'OpnForm: Open-Source Form Builder',
-  titleTemplate: '%s',
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: 'The Open-Source Typeform Alternative',
-    },
-  ],
-})
-
 const config = opnformConfig
 const configLinks = computed(() => config.links)
 </script>

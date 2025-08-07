@@ -35,9 +35,9 @@ const config = useRuntimeConfig()
 
 // SEO and head configuration
 useOpnSeoMeta({
-  title: "Beautiful forms & Surveys",
+  title: "Free Form Builder with Unlimited Submissions",
   description:
-    "Create beautiful forms for free. Unlimited fields, unlimited submissions. It's free and it takes less than 1 minute to create your first form.",
+    "Build beautiful, powerful forms for free with OpnForm. Unlimited submissions, rich features, and seamless integrations — fully open-source and easy to use.",
   ogImage: "/img/social-preview.jpg",
   robots: () => {
     return config.public.env === "production" ? null : "noindex, nofollow"
