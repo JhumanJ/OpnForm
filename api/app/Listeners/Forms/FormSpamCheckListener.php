@@ -4,12 +4,16 @@ namespace App\Listeners\Forms;
 
 use App\Events\Forms\FormSaved;
 use App\Jobs\Form\CheckFormForSpam;
+use Illuminate\Support\Facades\App;
 
 class FormSpamCheckListener
 {
     public function handle(FormSaved $event): void
     {
-        // We can add logic here to not queue for certain users if needed
+        if (App::environment('testing')) {
+            return;
+        }
+
         CheckFormForSpam::dispatch($event->form);
     }
 }
