@@ -67,6 +67,13 @@ return [
             'channel' => env('SLACK_SECURITY_CHANNEL', '#security-opnform'),
         ],
 
+        'slack_error' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\SlackLoggerFactory::class,
+            'token' => env('SLACK_BOT_TOKEN'),
+            'channel' => env('SLACK_ERROR_CHANNEL', '#errors'),
+        ],
+
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),

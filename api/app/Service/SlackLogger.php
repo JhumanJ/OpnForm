@@ -13,4 +13,12 @@ class SlackLogger
     {
         Log::channel('slack_security')->info($message, $context);
     }
+
+    /**
+     * Log error events to the error Slack channel
+     */
+    public static function error(string $message, array $context = []): void
+    {
+        Log::channel('slack_error')->error($message, $context);
+    }
 }

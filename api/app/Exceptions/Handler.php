@@ -66,7 +66,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         if ($this->shouldReport($e) && ! in_array(\App::environment(), ['testing']) && config('logging.channels.slack_security.token')) {
-            SlackLogger::security('Exception', [
+            SlackLogger::error('Exception', [
                 'exception' => $e,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
