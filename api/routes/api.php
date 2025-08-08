@@ -242,6 +242,10 @@ Route::group(['middleware' => 'auth.multi'], function () {
             'cancellation-subscription',
             [\App\Http\Controllers\Admin\AdminController::class, 'cancelSubscription']
         );
+        Route::patch(
+            'refund-payment',
+            [\App\Http\Controllers\Admin\AdminController::class, 'refundPayment']
+        );
 
         Route::patch(
             'send-password-reset-email',
