@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Cashier\Cashier;
-use Stripe\Stripe;
-use Stripe\Refund;
 
 class AdminController extends Controller
 {
@@ -275,15 +273,13 @@ class AdminController extends Controller
         }
 
         try {
-            Stripe::setApiKey(config('cashier.secret'));
-
             // Get the Stripe invoice to find the payment
-            $stripeInvoice = $latestInvoice->asStripeInvoice();
+            $stripeInvoice = Cashier::stripe()->invoices->retrieve($latestInvoice->id);
             if (!$stripeInvoice->charge) {
                 return $this->error(['message' => 'It\'s trial period invoice so can not refund.'], 404);
             }
 
-            $refund = Refund::create([
+            $refund = Cashier::stripe()->refunds->create([
                 'charge' => $stripeInvoice->charge,
                 'reason' => 'requested_by_customer',
                 'metadata' => [
