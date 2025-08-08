@@ -31,7 +31,7 @@ class UserActionService
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
                 'actions' => [
-                    'Admin Panel' => config('app.client_url') . '/admin?user_id=' . $user->id,
+                    'Admin Panel' => front_url('/admin?user_id=' . $user->id),
                 ]
             ]);
         }
@@ -59,7 +59,7 @@ class UserActionService
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
                 'actions' => [
-                    'Admin Panel' => config('app.client_url') . '/admin?user_id=' . $user->id,
+                    'Admin Panel' => front_url('/admin?user_id=' . $user->id),
                 ]
             ]);
         }

@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class FormSpamService
 {
-    public function __construct(protected UserActionService $userActionService)
-    {
-    }
+    public function __construct(protected UserActionService $userActionService) {}
 
     public function checkForm(Form $form): void
     {
@@ -88,8 +86,8 @@ class FormSpamService
             'total_forms' => $form->creator->forms()->count(),
             'reason' => $reason,
             'actions' => [
-                'View Form' => config('app.client_url') . '/forms/' . $form->slug,
-                'Admin Panel' => config('app.client_url') . '/admin?user_id=' . $form->creator->id,
+                'View Form' => front_url('/forms/' . $form->slug),
+                'Admin Panel' => front_url('/admin?user_id=' . $form->creator->id),
             ],
         ]);
 
