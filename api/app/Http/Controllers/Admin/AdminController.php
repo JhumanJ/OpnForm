@@ -205,22 +205,19 @@ class AdminController extends Controller
     {
         $request->validate([
             'user_id' => 'required',
+            'subscription_id' => 'required',
             'cancellation_reason' => 'required'
         ]);
         $user = User::find($request->get("user_id"));
+        $subscription = $user->subscriptions()->find($request->get("subscription_id"));
 
-        $activeSubscriptions = $user->subscriptions()->where(function ($q) {
-            $q->where('stripe_status', 'trialing')
-                ->orWhere('stripe_status', 'active');
-        })->get();
-
-        if ($activeSubscriptions->count() != 1) {
+        if ($subscription && !in_array($subscription->stripe_status, ['active', 'trialing'])) {
             return $this->error([
-                "message" => "The user has more than one active subscriptions or doesn't have one."
+                "message" => "The subscription is not active or trialing."
             ]);
         }
 
-        $subscription = $activeSubscriptions->first();
+        // Cancel the subscription
         $subscription->cancel();
 
         self::log('Cancel Subscription', [
@@ -262,6 +259,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'user_id' => 'required',
+            'invoice_id' => 'required',
             'refund_reason' => 'required'
         ]);
 
@@ -270,6 +268,10 @@ class AdminController extends Controller
 
         if (!$latestInvoice) {
             return $this->error(['message' => 'No invoices found for this user.'], 404);
+        }
+
+        if ($latestInvoice->id !== $request->get('invoice_id')) {
+            return $this->error(['message' => 'You can only refund the last invoice.'], 422);
         }
 
         try {

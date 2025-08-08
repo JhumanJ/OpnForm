@@ -41,7 +41,7 @@
           variant="outline"
           size="sm"
           icon="heroicons:trash-16-solid"
-          @click="showCancelSubscriptionModal = true"
+          @click="openCancelSubscriptionModal(row.original)"
         />
       </template>
     </UTable>
@@ -74,7 +74,7 @@
                 label="Cancellation reason"
                 native-type="reason"
                 :required="true"
-                help="Cancellation reason"
+                help="Please provide a clear reason for cancelling this subscription. This will be logged for future reference."
               />
 
               <UButton
@@ -157,8 +157,21 @@ const showCancelSubscriptionModal = ref(false)
 const alert = useAlert()
 const form = useForm({
   user_id: props.user.id,
-  cancellation_reason: ''
+  subscription_id: null,
+  cancellation_reason: null
 })
+
+watch(showCancelSubscriptionModal, (value) => {
+  if (!value) {
+    form.subscription_id = null
+    form.cancellation_reason = null
+  }
+})
+
+const openCancelSubscriptionModal = (subscription) => {
+  form.subscription_id = subscription.id
+  showCancelSubscriptionModal.value = true
+}
 
 const askCancel = () => {
   alert.confirm('Are you sure? This will cancel the subscription for this user.', cancelSubscription)

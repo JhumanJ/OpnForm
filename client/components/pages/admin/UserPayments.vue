@@ -45,7 +45,7 @@
           size="sm"
           icon="heroicons:arrow-uturn-left-16-solid"
           label="Refund"
-          @click="showRefundModal = true"
+          @click="openRefundModal(row.original)"
         />
       </template>
     </UTable>
@@ -78,7 +78,7 @@
                 label="Refund reason"
                 native-type="reason"
                 :required="true"
-                help="Refund reason"
+                help="Please provide a clear reason for refunding this payment. This will be logged for future reference."
               />
 
               <UButton
@@ -167,8 +167,21 @@ const columns = [{
 const showRefundModal = ref(false)
 const form = useForm({
   user_id: props.user.id,
-  refund_reason: ''
+  invoice_id: null,
+  refund_reason: null
 })
+
+watch(showRefundModal, (value) => {
+  if (!value) {
+    form.invoice_id = null
+    form.refund_reason = null
+  }
+})
+
+const openRefundModal = (payment) => {
+  form.invoice_id = payment.id
+  showRefundModal.value = true
+}
 
 const askRefund = () => {
   alert.confirm('Are you sure? This will refund the payment for this user.', refundPayment)
