@@ -48,7 +48,7 @@ class SlackLogHandler extends AbstractProcessingHandler
                 'channel' => $this->channel,
                 'username' => $this->username,
                 'icon_emoji' => $this->emoji,
-                'blocks' => $blocks,
+                'blocks' => json_encode($blocks),
                 'text' => $record->message, // Fallback for notifications
             ]);
         } catch (Exception $e) {
@@ -64,15 +64,6 @@ class SlackLogHandler extends AbstractProcessingHandler
     {
         $blocks = [];
 
-        // Header block with log level and timestamp
-        $blocks[] = [
-            'type' => 'header',
-            'text' => [
-                'type' => 'plain_text',
-                'text' => $this->getLevelEmoji($record->level) . ' ' . $record->level->getName() . ' Log',
-            ],
-        ];
-
         // Main message block
         $messageText = $this->formatMessage($record);
         $blocks[] = [
@@ -81,26 +72,6 @@ class SlackLogHandler extends AbstractProcessingHandler
                 'type' => 'mrkdwn',
                 'text' => $messageText,
             ],
-        ];
-
-        // Context block with timestamp and channel info
-        $contextElements = [
-            [
-                'type' => 'mrkdwn',
-                'text' => '*Time:* ' . $record->datetime->format('Y-m-d H:i:s T'),
-            ],
-        ];
-
-        if (!empty($record->context['channel'])) {
-            $contextElements[] = [
-                'type' => 'mrkdwn',
-                'text' => '*Channel:* ' . $record->context['channel'],
-            ];
-        }
-
-        $blocks[] = [
-            'type' => 'context',
-            'elements' => $contextElements,
         ];
 
         // Add action buttons if provided in context
@@ -113,8 +84,7 @@ class SlackLogHandler extends AbstractProcessingHandler
                         'type' => 'plain_text',
                         'text' => $label,
                     ],
-                    'url' => $url,
-                    'action_id' => 'button_' . strtolower(str_replace(' ', '_', $label)),
+                    'url' => $url
                 ];
             }
 
@@ -131,7 +101,7 @@ class SlackLogHandler extends AbstractProcessingHandler
             $fields = [];
             foreach ($record->context as $key => $value) {
                 // Skip special keys that we handle separately
-                if (in_array($key, ['actions', 'channel'])) {
+                if (in_array($key, ['actions'])) {
                     continue;
                 }
 
@@ -188,23 +158,6 @@ class SlackLogHandler extends AbstractProcessingHandler
         }
 
         return $message;
-    }
-
-    /**
-     * Get emoji for log level
-     */
-    protected function getLevelEmoji(Level $level): string
-    {
-        return match ($level->value) {
-            Level::Emergency->value, Level::Alert->value => '🚨',
-            Level::Critical->value => '💥',
-            Level::Error->value => '❌',
-            Level::Warning->value => '⚠️',
-            Level::Notice->value => '📢',
-            Level::Info->value => 'ℹ️',
-            Level::Debug->value => '🐛',
-            default => '📝',
-        };
     }
 
     /**

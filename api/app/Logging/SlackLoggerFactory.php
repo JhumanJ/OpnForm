@@ -13,10 +13,7 @@ class SlackLoggerFactory
     {
         $handler = new SlackLogHandler(
             $config['token'] ?? null,
-            $config['channel'] ?? null,
-            $config['username'] ?? 'OpenForm Bot',
-            $config['emoji'] ?? ':robot_face:',
-            $config['level'] ?? Logger::DEBUG
+            $config['channel'] ?? null
         );
 
         return new Logger('slack', [$handler]);

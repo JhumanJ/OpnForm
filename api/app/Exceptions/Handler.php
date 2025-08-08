@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Service\SlackLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
@@ -50,7 +51,7 @@ class Handler extends ExceptionHandler
         if ($this->shouldReport($exception)) {
             if (app()->bound('sentry') && $this->sentryShouldReport($exception)) {
                 app('sentry')->captureException($exception);
-                Log::debug('Un-handled Exception: '.$exception->getMessage(), [
+                Log::debug('Un-handled Exception: ' . $exception->getMessage(), [
                     'exception' => $exception,
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),
@@ -64,8 +65,13 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($this->shouldReport($e) && ! in_array(\App::environment(), ['testing']) && config('logging.channels.slack.enabled')) {
-            Log::channel('slack')->error($e);
+        if ($this->shouldReport($e) && ! in_array(\App::environment(), ['testing']) && config('logging.channels.slack_security.token')) {
+            SlackLogger::security('Exception', [
+                'exception' => $e,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace()
+            ]);
         }
 
         return parent::render($request, $e);

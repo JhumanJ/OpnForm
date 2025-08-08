@@ -60,32 +60,11 @@ return [
             'days' => 14,
         ],
 
-        'slack' => [
-            'enabled' => env('LOG_SLACK_WEBHOOK_URL') ? true : false,
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'OpenForm Log',
-            'emoji' => ':boom:',
-            'level' => env('LOG_LEVEL', 'debug'),
-        ],
-
-        'slack_churn' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_CHURN_WEBHOOK_URL', env('LOG_SLACK_WEBHOOK_URL')),
-            'username' => 'OpenForm Churn Bot',
-            'emoji' => ':wave:',
-            'level' => 'info',
-        ],
-
-        // Custom Slack channels using JoliCode Slack API
         'slack_security' => [
             'driver' => 'custom',
             'via' => \App\Logging\SlackLoggerFactory::class,
             'token' => env('SLACK_BOT_TOKEN'),
-            'channel' => env('SLACK_SECURITY_CHANNEL', '#general'),
-            'username' => 'OpenForm Security Bot',
-            'emoji' => ':shield:',
-            'level' => 'warning',
+            'channel' => env('SLACK_SECURITY_CHANNEL', '#security-opnform'),
         ],
 
         'papertrail' => [

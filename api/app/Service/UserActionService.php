@@ -8,7 +8,6 @@ use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-use App\Service\SlackLogger;
 
 class UserActionService
 {
@@ -31,15 +30,10 @@ class UserActionService
                 'email' => $user->email,
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
+                'actions' => [
+                    'Admin Panel' => config('app.client_url') . '/admin?user_id=' . $user->id,
+                ]
             ]);
-            /*
-            Log::channel('slack_churn')->info('User blocked 🚫', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'reason' => $reason,
-                'moderator_id' => $moderatorId,
-            ]);
-            */
         }
 
         Mail::to($user)->send(new UserBlockedEmail($user, $reason));
@@ -59,11 +53,14 @@ class UserActionService
 
         // Log to Slack
         if (app()->environment() !== 'testing') {
-            Log::channel('slack_churn')->info('User unblocked 🔓', [
+            SlackLogger::security('User unblocked 🔓', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
+                'actions' => [
+                    'Admin Panel' => config('app.client_url') . '/admin?user_id=' . $user->id,
+                ]
             ]);
         }
 
