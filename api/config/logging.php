@@ -60,21 +60,18 @@ return [
             'days' => 14,
         ],
 
-        'slack' => [
-            'enabled' => env('LOG_SLACK_WEBHOOK_URL') ? true : false,
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'OpenForm Log',
-            'emoji' => ':boom:',
-            'level' => env('LOG_LEVEL', 'debug'),
+        'slack_security' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\SlackLoggerFactory::class,
+            'token' => env('SLACK_BOT_TOKEN'),
+            'channel' => env('SLACK_SECURITY_CHANNEL', '#security-opnform'),
         ],
 
-        'slack_churn' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_CHURN_WEBHOOK_URL', env('LOG_SLACK_WEBHOOK_URL')),
-            'username' => 'OpenForm Churn Bot',
-            'emoji' => ':wave:',
-            'level' => 'info',
+        'slack_error' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\SlackLoggerFactory::class,
+            'token' => env('SLACK_BOT_TOKEN'),
+            'channel' => env('SLACK_ERROR_CHANNEL', '#errors'),
         ],
 
         'papertrail' => [

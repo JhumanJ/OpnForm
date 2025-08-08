@@ -20,6 +20,7 @@
         "giggsey/libphonenumber-for-php": "*",
         "google/apiclient": "^2.16",
         "guzzlehttp/guzzle": "*",
+        "jolicode/slack-php-api": "^4.8",
         "laravel/cashier": "*",
         "laravel/framework": "^11.9",
         "laravel/horizon": "*",
