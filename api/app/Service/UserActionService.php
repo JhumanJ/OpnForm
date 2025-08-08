@@ -7,7 +7,6 @@ use App\Mail\UserBlockedEmail;
 use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 
 class UserActionService
 {
