@@ -76,6 +76,7 @@
                 :key="file.url"
                 :file="file"
                 :theme="theme"
+                :disabled="disabled"
                 @remove="clearFile(file)"
               />
             </div>

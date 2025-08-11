@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="[theme.fileInput.uploadedFile, 'overflow-hidden']"
+    class="overflow-hidden"
+    :class="[
+      theme.fileInput.uploadedFile, 
+      { 'bg-white': !disabled, 'bg-gray-300': disabled }
+    ]"
     :title="file.file.name"
   >
     <div
@@ -37,7 +41,7 @@
         {{ file.file.name }}
       </p>
       <a
-        v-if="showRemove"
+        v-if="showRemove && !disabled"
         href="javascript:void(0);"
                   class="flex text-neutral-400 rounded-sm hover:bg-neutral-50 hover:text-red-500 dark:text-neutral-600 p-1"
         role="button"
@@ -71,6 +75,7 @@ export default {
 
   props: {
     file: { type: Object, default: null },
+    disabled: { type: Boolean, default: false },
     showRemove: { type: Boolean, default: true },
     theme: {
       type: Object, default: () => {
