@@ -122,9 +122,6 @@
         <ExtendTrial
           :user="userInfo"
         />
-        <CancelSubscription
-          :user="userInfo"
-        />
         <BillingEmail
           :user="userInfo"
         />
