@@ -286,7 +286,7 @@ it('uses exact email address without timestamp in self-hosted mode', function ()
 });
 
 it('send email with hidden field as mention to send email', function () {
-    $user = $this->actingAsUser();
+    $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
