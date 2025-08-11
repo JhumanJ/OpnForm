@@ -284,3 +284,44 @@ it('uses exact email address without timestamp in self-hosted mode', function ()
     // In self-hosted mode, the email should be exactly as configured without timestamp
     expect($renderedMail->from[0])->toBe('default@example.com');
 });
+
+it('send email with hidden field as mention to send email', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $emailProperty = collect($form->properties)->first(function ($property) {
+        return $property['type'] == 'email';
+    });
+
+    $integrationData = $this->createFormIntegration('email', $form->id, [
+        'send_to' => '<span mention-field-id="' . $emailProperty['id'] . '" mention-field-name="' . $emailProperty['name'] . '" mention-fallback="" contenteditable="false" mention="true">' . $emailProperty['name'] . '</span>',
+        'sender_name' => 'OpnForm',
+        'subject' => 'New form submission',
+        'email_content' => 'Hello there 👋 <br>Test body',
+        'include_submission_data' => true,
+        'include_hidden_fields_submission_data' => false,
+        'reply_to' => null,
+    ]);
+
+    $formData = [
+        $emailProperty['id'] => 'test@test.com',
+    ];
+
+    Notification::fake();
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+
+    Notification::assertSentTo(
+        new AnonymousNotifiable(),
+        FormEmailNotification::class,
+        function (FormEmailNotification $notification, $channels, $notifiable) {
+            return $notifiable->routes['mail'] === 'test@test.com';
+        }
+    );
+});
