@@ -47,7 +47,6 @@ class DeleteFormSubmissionFiles
     {
         $path = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $formId) . '/' . urldecode($fileName);
         if (Storage::exists($path)) {
-            ray('Delete File', $path);
             Storage::delete($path);
         }
     }
