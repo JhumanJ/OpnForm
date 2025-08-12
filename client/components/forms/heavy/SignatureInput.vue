@@ -36,6 +36,7 @@
         :file="file"
         :theme="theme"
         :show-remove="false"
+        :disabled="disabled"
       />
     </div>
 
