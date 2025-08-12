@@ -229,19 +229,12 @@ export function useOAuth() {
   })
 
   // Utility functions
-  const prefetchProviders = () => {
-    return queryClient.prefetchQuery({
-      queryKey: ['oauth', 'providers'],
-      queryFn: () => oauthApi.list()
-    })
-  }
-
   const invalidateProviders = () => {
-    queryClient.invalidateQueries(['oauth', 'providers'])
+    queryClient.invalidateQueries({ queryKey: ['oauth', 'providers'] })
   }
 
   const invalidateProvider = (providerId) => {
-    queryClient.invalidateQueries(['oauth', 'providers', providerId])
+    queryClient.invalidateQueries({ queryKey: ['oauth', 'providers', providerId] })
   }
 
   const getProviderByService = (service) => {
@@ -282,7 +275,6 @@ export function useOAuth() {
     redirect,
     
     // Utilities
-    prefetchProviders,
     invalidateProviders,
     invalidateProvider,
     getProviderByService

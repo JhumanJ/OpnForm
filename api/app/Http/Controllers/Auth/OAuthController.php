@@ -23,8 +23,7 @@ class OAuthController extends Controller
     public function __construct(
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {
-    }
+    ) {}
 
     /**
      * Redirect the user to the provider authentication page.
@@ -174,7 +173,7 @@ class OAuthController extends Controller
 
         return [
             'id' => $socialiteUser->getId(),
-            'name' => $socialiteUser->getName(),
+            'name' => $socialiteUser->getName() ?? $socialiteUser->getNickname(),
             'email' => $socialiteUser->getEmail(),
             'provider_user_id' => $socialiteUser->getId(),
             'access_token' => $socialiteUser->token,
