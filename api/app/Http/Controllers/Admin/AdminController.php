@@ -203,22 +203,19 @@ class AdminController extends Controller
     {
         $request->validate([
             'user_id' => 'required',
+            'subscription_id' => 'required',
             'cancellation_reason' => 'required'
         ]);
         $user = User::find($request->get("user_id"));
+        $subscription = $user->subscriptions()->find($request->get("subscription_id"));
 
-        $activeSubscriptions = $user->subscriptions()->where(function ($q) {
-            $q->where('stripe_status', 'trialing')
-                ->orWhere('stripe_status', 'active');
-        })->get();
-
-        if ($activeSubscriptions->count() != 1) {
+        if ($subscription && !in_array($subscription->stripe_status, ['active', 'trialing'])) {
             return $this->error([
-                "message" => "The user has more than one active subscriptions or doesn't have one."
+                "message" => "The subscription is not active or trialing."
             ]);
         }
 
-        $subscription = $activeSubscriptions->first();
+        // Cancel the subscription
         $subscription->cancel();
 
         self::log('Cancel Subscription', [
@@ -253,6 +250,62 @@ class AdminController extends Controller
 
         return $this->success([
             'message' => "Password reset email has been sent to the user's email address"
+        ]);
+    }
+
+    public function refundPayment(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'invoice_id' => 'required',
+            'refund_reason' => 'required'
+        ]);
+
+        $user = User::findOrFail($request->get('user_id'));
+        $latestInvoice = $user->invoices()->first();
+
+        if (!$latestInvoice) {
+            return $this->error(['message' => 'No invoices found for this user.'], 404);
+        }
+
+        if ($latestInvoice->id !== $request->get('invoice_id')) {
+            return $this->error(['message' => 'You can only refund the last invoice.'], 422);
+        }
+
+        try {
+            // Get the Stripe invoice to find the payment
+            $stripeInvoice = Cashier::stripe()->invoices->retrieve($latestInvoice->id);
+            if (!$stripeInvoice->charge) {
+                return $this->error(['message' => 'It\'s trial period invoice so can not refund.'], 404);
+            }
+
+            $refund = Cashier::stripe()->refunds->create([
+                'charge' => $stripeInvoice->charge,
+                'reason' => 'requested_by_customer',
+                'metadata' => [
+                    'refund_reason' => $request->get('refund_reason'),
+                    'moderator_id' => request()->user()->id,
+                    'user_id' => $user->id
+                ]
+            ]);
+
+            self::log('Refund Payment', [
+                'user_id' => $user->id,
+                'invoice_id' => $latestInvoice->id,
+                'stripe_refund_id' => $refund->id,
+                'refund_reason' => $request->get('refund_reason'),
+                'moderator_id' => request()->user()->id,
+            ]);
+        } catch (\Exception $e) {
+            self::log('Refund Error', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->error(['message' => 'An error occurred while processing the refund.'], 500);
+        }
+
+        return $this->success([
+            'message' => "The payment has been successfully refunded."
         ]);
     }
 

@@ -165,7 +165,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-notion-dark-light rounded-lg shadow-xs max-w-10'
+        'border border-neutral-300 dark:border-neutral-600 dark:bg-notion-dark-light rounded-lg shadow-xs max-w-10'
     },
     SignatureInput: {
       minHeight: {
@@ -337,7 +337,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-notion-dark-light shadow-xs max-w-10'
+        'border border-neutral-300 dark:border-neutral-600 dark:bg-notion-dark-light shadow-xs max-w-10'
     },
     SignatureInput: {
       minHeight: {
@@ -515,7 +515,7 @@
         dark: 'bg-notion-dark-light'
       },
       uploadedFile:
-        'border border-notion-input-border dark:border-notion-input-borderDark bg-white dark:bg-notion-dark-light rounded-xs max-w-10 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
+        'border border-notion-input-border dark:border-notion-input-borderDark dark:bg-notion-dark-light rounded-xs max-w-10 focus:outline-hidden focus:ring-2 focus:ring-form/40 focus:border-transparent'
     },
     SignatureInput: {
       minHeight: {
