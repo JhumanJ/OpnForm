@@ -17,17 +17,13 @@ class SlackLogHandler extends AbstractProcessingHandler
     protected string $emoji;
 
     public function __construct(
-        ?string $token,
+        string $token,
         ?string $channel = null,
         string $username = 'OpenForm Bot',
         string $emoji = ':robot_face:',
         int|string|Level $level = Level::Debug,
         bool $bubble = true
     ) {
-        if (!$token) {
-            throw new \InvalidArgumentException('Slack token is required');
-        }
-
         $this->client = ClientFactory::create($token);
         $this->channel = $channel;
         $this->username = $username;
@@ -53,6 +49,7 @@ class SlackLogHandler extends AbstractProcessingHandler
             ]);
         } catch (Exception $e) {
             // Log the error without causing recursion
+            ray($e);
             error_log("Failed to send Slack message: " . $e->getMessage());
         }
     }

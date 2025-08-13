@@ -7,6 +7,7 @@ use App\Mail\UserBlockedEmail;
 use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class UserActionService
 {
@@ -24,7 +25,7 @@ class UserActionService
 
         // Log to Slack
         if (app()->environment() !== 'testing') {
-            SlackLogger::security('User blocked 🚫', [
+            Log::channel('slack_admin')->info('User blocked 🚫', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'reason' => $reason,
@@ -52,7 +53,7 @@ class UserActionService
 
         // Log to Slack
         if (app()->environment() !== 'testing') {
-            SlackLogger::security('User unblocked 🔓', [
+            Log::channel('slack_admin')->info('User unblocked 🔓', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'reason' => $reason,

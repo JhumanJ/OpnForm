@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Service\SlackLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
@@ -65,8 +64,8 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($this->shouldReport($e) && ! in_array(\App::environment(), ['testing']) && config('logging.channels.slack_security.token')) {
-            SlackLogger::error('Exception', [
+        if ($this->shouldReport($e) && ! in_array(\App::environment(), ['testing'])) {
+            Log::channel('slack_errors')->error('Exception', [
                 'exception' => $e,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

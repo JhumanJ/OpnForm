@@ -5,7 +5,6 @@ namespace App\Service\Forms;
 use App\Models\Forms\Form;
 use App\Models\User;
 use App\Service\AI\Prompts\Form\CheckSpamFormPrompt;
-use App\Service\SlackLogger;
 use App\Service\UserActionService;
 use Illuminate\Support\Facades\Log;
 
@@ -78,7 +77,7 @@ class FormSpamService
 
     private function logAdminReview(Form $form, string $reason): void
     {
-        SlackLogger::security('Form flagged for admin review 🚨', [
+        Log::channel('slack_alerts')->info('Form flagged for admin review 🚨', [
             'form_id' => $form->id,
             'form_title' => $form->title,
             'user_id' => $form->creator->id,
