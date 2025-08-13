@@ -141,7 +141,7 @@
               v-html="template.description"
             />
 
-            <template v-if="template.questions.length > 0">
+            <template v-if="template.questions?.length > 0">
               <hr class="mt-12 border-neutral-200">
               <div>
                 <div class="text-center">
