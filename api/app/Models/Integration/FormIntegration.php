@@ -62,4 +62,11 @@ class FormIntegration extends Model
     {
         return self::getAllIntegrations()[$key] ?? null;
     }
+
+    public static function booted(): void
+    {
+        static::deleting(function (FormIntegration $integration) {
+            $integration->events()->delete();
+        });
+    }
 }
