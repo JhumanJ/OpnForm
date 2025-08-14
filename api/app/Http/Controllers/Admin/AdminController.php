@@ -209,6 +209,12 @@ class AdminController extends Controller
         $user = User::find($request->get("user_id"));
         $subscription = $user->subscriptions()->find($request->get("subscription_id"));
 
+        if (! $subscription) {
+            return $this->error([
+                "message" => "Subscription not found."
+            ], 404);
+        }
+
         if ($subscription && !in_array($subscription->stripe_status, ['active', 'trialing'])) {
             return $this->error([
                 "message" => "The subscription is not active or trialing."

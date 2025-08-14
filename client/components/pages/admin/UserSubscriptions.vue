@@ -36,7 +36,7 @@
       </template>
       <template #actions-cell="{ row }">
         <UButton
-          v-if="row.original.status == 'active' || row.original.status == 'trialing'"
+          v-if="['active', 'trialing'].includes(row.original.status) && !row.original.canceled_at"
           color="error"
           variant="outline"
           size="sm"
@@ -148,6 +148,9 @@ const columns = [{
 }, {
     accessorKey: 'status',
     header: 'Status'
+},{
+    accessorKey: 'canceled_at',
+    header: 'Canceled at'
 }, {
     accessorKey: 'actions',
     header: '',
