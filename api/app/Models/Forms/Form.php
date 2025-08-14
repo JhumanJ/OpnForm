@@ -331,8 +331,12 @@ class Form extends Model implements CachableAttributes
 
     public static function booted(): void
     {
-        static::deleted(function (Form $form) {
-            $form->integrations()->delete();
+        static::deleting(function (Form $form) {
+            $form->integrations()
+                ->lazyById()
+                ->each(function (FormIntegration $integration): void {
+                    $integration->delete();
+                });
         });
     }
 }

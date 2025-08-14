@@ -1,4 +1,4 @@
-name: laravel
+name: CI/CD Pipeline
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - "client/**"
       - "docker/**"
       - "docker-compose*.yml"
-      - ".github/workflows/laravel.yml"
+      - ".github/workflows/ci-cd.yml"
   pull_request:
   workflow_dispatch:
 

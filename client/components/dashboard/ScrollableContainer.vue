@@ -56,8 +56,7 @@
 
 <script setup>
 import VTransition from '@/components/global/transitions/VTransition.vue'
-import { useScroll, useResizeObserver } from '@vueuse/core'
-import { watch, nextTick } from 'vue'
+import { useScroll, useResizeObserver, useMutationObserver } from '@vueuse/core'
 
 const props = defineProps({
   maxHeightClass: {
@@ -108,13 +107,38 @@ const contentWidth = ref(0)
 const containerWidth = ref(0)
 
 const showTopFade = computed(() => {
-  return (props.direction === 'vertical' || props.direction === 'both') && scrollY.value > props.scrollTolerance
+  if (!['vertical', 'both'].includes(props.direction)) return false
+  // ensure reactivity on scroll
+  void scrollY.value
+  // ensure reactivity on size changes
+  void containerHeight.value
+  const element = scrollContainer.value
+  const currentTop = element ? element.scrollTop : 0
+  return currentTop > props.scrollTolerance
 })
 
 const showBottomFade = computed(() => {
   if (!['vertical', 'both'].includes(props.direction)) return false
-  if (containerHeight.value === 0 || contentHeight.value === 0) return false
-  return scrollY.value < contentHeight.value - containerHeight.value - props.scrollTolerance
+  // ensure reactivity on scroll
+  void scrollY.value
+  // ensure reactivity on size/content changes
+  void containerHeight.value
+  void contentHeight.value
+  const element = scrollContainer.value
+  if (!element) return false
+
+  const realContainerHeight = element.clientHeight
+  const realContentHeight = element.scrollHeight
+  const realCurrentScroll = element.scrollTop
+  const realMaxScroll = realContentHeight - realContainerHeight
+
+  if (realMaxScroll <= 0) return false
+
+  const effectiveTolerance = Math.max(props.scrollTolerance, 1)
+  const distanceFromEnd = realMaxScroll - realCurrentScroll
+  const isAtEnd = distanceFromEnd <= effectiveTolerance
+
+  return !isAtEnd
 })
 
 const showLeftFade = computed(() => {
@@ -128,6 +152,11 @@ const showRightFade = computed(() => {
   // Get real-time measurements from the actual element for more accuracy
   const element = scrollContainer.value
   if (!element) return false
+  // ensure reactivity on scroll
+  void scrollX.value
+  // ensure reactivity on size/content changes
+  void containerWidth.value
+  void contentWidth.value
   
   const realContainerWidth = element.clientWidth // excludes scrollbar, includes padding
   const realContentWidth = element.scrollWidth
@@ -235,6 +264,20 @@ watch([contentWidth, contentHeight], () => {
   nextTick(() => {
     updateDimensions()
   })
+})
+
+// Initialize dimensions once mounted
+onMounted(() => {
+  nextTick(() => updateDimensions())
+})
+
+// Observe slot/content mutations to keep dimensions fresh when content changes
+useMutationObserver(scrollContainer, () => {
+  nextTick(() => updateDimensions())
+}, {
+  childList: true,
+  subtree: true,
+  characterData: true
 })
 
 // Expose container ref and utility functions for parent components
