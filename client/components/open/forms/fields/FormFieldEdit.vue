@@ -224,6 +224,7 @@ const dropdownItems = computed(() => {
     [{
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
+      kbds: ['meta', 'd'],
       onClick: () => {
         const newField = clonedeep(field.value)
         newField.id = generateUUID()
@@ -257,6 +258,7 @@ const dropdownItems = computed(() => {
 
   return baseItems
 })
+defineShortcuts(extractShortcuts(dropdownItems.value))
 
 const activeTab = ref('options')
 
