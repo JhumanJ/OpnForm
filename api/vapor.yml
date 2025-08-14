@@ -18,7 +18,6 @@ environments:
     runtime: "php-8.2:al2-arm"
     storage: opnforms-prod
     database: OpnForm
-    database-proxy: true
     domain: api.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
@@ -36,7 +35,6 @@ environments:
     runtime: "php-8.2:al2-arm"
     storage: opnforms-staging
     database: OpnForm
-    database-proxy: true
     domain: api.stg.opnform.com
     build:
       - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
