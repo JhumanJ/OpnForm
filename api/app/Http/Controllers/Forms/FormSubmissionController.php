@@ -125,13 +125,20 @@ class FormSubmissionController extends Controller
         $request->validate([
             'submissionIds' => 'required|array',
             'submissionIds.*' => 'required|integer',
+            'submissionIds.*' => 'exists:form_submissions,id',
         ]);
 
         $form = Form::findOrFail((int) $id);
         $this->authorize('delete', $form);
 
         $submissionIds = $request->submissionIds;
-        $form->submissions()->whereIn('id', $submissionIds)->delete();
+        $form->submissions()
+            ->whereIn('id', $submissionIds)
+            ->chunk(100, function ($submissions) {
+                foreach ($submissions as $submission) {
+                    $submission->delete();
+                }
+            });
 
         return $this->success([
             'message' => 'Records successfully removed.',
