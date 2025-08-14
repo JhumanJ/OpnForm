@@ -77,7 +77,7 @@ class FormSpamService
 
     private function logAdminReview(Form $form, string $reason): void
     {
-        Log::channel('slack_alerts')->info('Form flagged for admin review 🚨', [
+        Log::channel('slack_alerts')->info('🚨 Form flagged for admin review 🚨', [
             'form_id' => $form->id,
             'form_title' => $form->title,
             'user_id' => $form->creator->id,

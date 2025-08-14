@@ -51,7 +51,7 @@ class CheckSpamFormPrompt extends Prompt
 
     protected ?array $jsonSchema = [
         'type' => 'object',
-        'required' => ['is_spam', 'reason'],
+        'required' => ['is_spam', 'needs_admin_review', 'reason'],
         'additionalProperties' => false,
         'properties' => [
             'is_spam' => [
