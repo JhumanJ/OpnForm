@@ -1,7 +1,7 @@
 <template>
   <UButton
     icon="i-heroicons-eye-16-solid"
-    :loading="loading"
+    :loading="form.busy"
     @click="impersonate"
     label="Impersonate User"
   />
@@ -18,17 +18,16 @@ const props = defineProps({
 const authStore = useAuthStore()
 const queryClient = useQueryClient()
 
-const loading = ref(false)
+const form = useForm({
+  user_id: props.user.id
+})
 
 const { user } = useAuth()
 const { data: userData } = user()
 
 const impersonate = () => {
-  loading.value = true
   authStore.startImpersonating()
-  adminApi.impersonate(props.user.id).then(async (data) => {
-    loading.value = false
-
+  form.post(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
     // Save the token with its expiration time.
     authStore.setToken(data.token, data.expires_in)
     await queryClient.invalidateQueries()
@@ -38,7 +37,6 @@ const impersonate = () => {
   })
     .catch((error) => {
       useAlert().error(error.data.message)
-      loading.value = false
     })
 }
 </script>

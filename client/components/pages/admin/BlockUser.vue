@@ -25,7 +25,7 @@
         <div class="flex space-x-2 mt-4">
           <UButton
             block
-            :loading="loading"
+            :loading="form.busy"
             type="submit"
             class="grow"
             :label="isBlocked ? 'Unblock User' : 'Block User'"
@@ -64,7 +64,6 @@ const props = defineProps({
 const emit = defineEmits(['user-updated'])
 
 const alert = useAlert()
-const loading = ref(false)
 const isModalOpen = ref(false)
 
 const form = useForm({
@@ -147,21 +146,18 @@ const alertContent = computed(() => {
 
 
 async function submit() {
-  loading.value = true
   try {
     let response
     if (isBlocked.value) {
-      response = await adminApi.unblockUser(form.data())
+      response = await form.post('/moderator/unblock-user')
     } else {
-      response = await adminApi.blockUser(form.data())
+      response = await form.post('/moderator/block-user')
     }
     alert.success(response.message)
     emit('user-updated', response.user)
     form.reset()
   } catch (error) {
     alert.error(error.data?.message || 'An error occurred.')
-  } finally {
-    loading.value = false
   }
 }
 </script> 
