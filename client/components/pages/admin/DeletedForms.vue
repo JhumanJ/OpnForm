@@ -14,7 +14,7 @@
     >
       <template #actions-cell="{ row }">
         <UButton
-          :loading="restoringForm"
+          :loading="restoreFormForm.busy"
           size="sm"
           color="neutral"
           variant="outline"
@@ -45,10 +45,13 @@ const props = defineProps({
 })
 
 const loading = ref(true)
-const restoringForm = ref(false)
 const forms = ref([])
 const page = ref(1)
 const pageCount = 5
+
+const restoreFormForm = useForm({
+  slug: null
+})
 
 const rows = computed(() => {
     return forms.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
@@ -72,13 +75,11 @@ const restoreForm = (slug) => {
     return useAlert().confirm(
         "Are you sure you want to restore this form?",
         () => {
-            restoringForm.value = true
-            adminApi.forms.restore(slug).then(data => {
-                restoringForm.value = false
+            restoreFormForm.slug = slug
+            restoreFormForm.patch(`/moderator/forms/${slug}/restore`).then(data => {
                 useAlert().success(data.message)
                 getDeletedForms()
             }).catch(error => {
-                restoringForm.value = false
                 useAlert().error(error.data.message)
             })
         })
