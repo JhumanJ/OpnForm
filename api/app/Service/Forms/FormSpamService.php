@@ -77,7 +77,7 @@ class FormSpamService
 
     private function logAdminReview(Form $form, string $reason): void
     {
-        Log::channel('slack_churn')->warning('Form flagged for admin review 🚨', [
+        Log::channel('slack_alerts')->info('Form flagged for admin review 🚨', [
             'form_id' => $form->id,
             'form_title' => $form->title,
             'user_id' => $form->creator->id,
@@ -86,7 +86,10 @@ class FormSpamService
             'is_subscribed' => $form->creator->is_subscribed,
             'total_forms' => $form->creator->forms()->count(),
             'reason' => $reason,
-            'form_url' => config('app.client_url') . '/forms/' . $form->slug,
+            'actions' => [
+                'View Form' => front_url('/forms/' . $form->slug),
+                'Admin Panel' => front_url('/admin?user_id=' . $form->creator->id),
+            ],
         ]);
 
         Log::info('Form flagged for admin review', [
