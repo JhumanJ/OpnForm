@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { adminApi } from '~/api'
+
 import { useQueryClient } from '@tanstack/vue-query'
 
 const props = defineProps({

@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { adminApi } from '~/api'
+
 
 const props = defineProps({
   user: { type: Object, required: true }
