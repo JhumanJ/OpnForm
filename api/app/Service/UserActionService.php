@@ -24,11 +24,14 @@ class UserActionService
 
         // Log to Slack
         if (app()->environment() !== 'testing') {
-            Log::channel('slack_churn')->info('User blocked 🚫', [
+            Log::channel('slack_admin')->info('User blocked 🚫', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
+                'actions' => [
+                    'Admin Panel' => front_url('/admin?user_id=' . $user->id),
+                ]
             ]);
         }
 
@@ -48,11 +51,14 @@ class UserActionService
 
         // Log to Slack
         if (app()->environment() !== 'testing') {
-            Log::channel('slack_churn')->info('User unblocked 🔓', [
+            Log::channel('slack_admin')->info('User unblocked 🔓', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'reason' => $reason,
                 'moderator_id' => $moderatorId,
+                'actions' => [
+                    'Admin Panel' => front_url('/admin?user_id=' . $user->id),
+                ]
             ]);
         }
 

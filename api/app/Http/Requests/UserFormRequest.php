@@ -67,7 +67,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
         // Log to both default channel and Slack
         if (!in_array(\App::environment(), ['testing'])) {
-            Log::channel('combined')->warning(
+            Log::channel('slack_errors')->warning(
                 'Frontend validation bypass detected in form submission',
                 $logData
             );
