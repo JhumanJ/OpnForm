@@ -295,6 +295,40 @@ onMounted(() => {
 
 useEventListener(window, 'resize', computeMaxHeight)
 
+// Create a CSV Blob that opens correctly in Windows Excel (Unicode-safe)
+const ensureCsvBlobWithBom = async (data) => {
+  const toText = async (input) => {
+    if (typeof input === 'string') {
+      return input
+    }
+    if (input instanceof Blob) {
+      try {
+        return await input.text()
+      } catch {
+        return ''
+      }
+    }
+    throw new Error('Invalid export data format')
+  }
+
+  let text = await toText(data)
+  text = text.replace(/\r?\n/g, '\r\n')
+  if (!text.startsWith('sep=')) {
+    text = 'sep=,\r\n' + text
+  }
+
+  const bom = new Uint8Array([0xFF, 0xFE])
+  const buffer = new Uint8Array(2 + text.length * 2)
+  buffer[0] = bom[0]
+  buffer[1] = bom[1]
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i)
+    buffer[2 + i * 2] = code & 0xFF
+    buffer[2 + i * 2 + 1] = code >> 8
+  }
+  return new Blob([buffer], { type: 'text/csv;charset=utf-16le;' })
+}
+
 // Download as CSV
 const downloadAsCsv = () => {
   if (exportLoading.value) {
@@ -304,18 +338,9 @@ const downloadAsCsv = () => {
   exportLoading.value = true
   formsApi.submissions.export(props.form.id, {
     columns: columnVisibility.value
-  }).then(data => {
-    
-    // Convert string to Blob if needed
-    let blob
-    if (typeof data === 'string') {
-      blob = new Blob([data], { type: 'text/csv;charset=utf-8;' })
-    } else if (data instanceof Blob) {
-      blob = data
-    } else {
-      throw new Error('Invalid export data format')
-    }
-    
+  }).then(async (data) => {
+    const blob = await ensureCsvBlobWithBom(data)
+
     const filename = `${props.form.slug}-${Date.now()}-submissions.csv`
     const a = document.createElement("a")
     document.body.appendChild(a)
