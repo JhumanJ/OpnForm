@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
@@ -56,7 +57,7 @@ class FormSubmissionController extends Controller
         $this->authorize('view', $form);
 
         $allRows = [];
-        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
+        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
         foreach ($form->submissions->toArray() as $row) {
             $formatter = (new FormSubmissionFormatter($form, $row['data']))
                 ->outputStringsOnly()
@@ -67,7 +68,7 @@ class FormSubmissionController extends Controller
             $formattedData = $formatter->getCleanKeyValue();
             $filteredData = ['id' => Hashids::encode($row['id'])];
             foreach ($displayColumns as $column => $value) {
-                $key = collect($formattedData)->keys()->first(fn ($key) => str_contains($key, $column));
+                $key = collect($formattedData)->keys()->first(fn($key) => str_contains($key, $column));
                 if ($key) {
                     $filteredData[$key] = $formattedData[$key];
                 }
@@ -116,6 +117,24 @@ class FormSubmissionController extends Controller
 
         return $this->success([
             'message' => 'Record successfully removed.',
+        ]);
+    }
+
+    public function destroyMulti(Request $request, $id)
+    {
+        $request->validate([
+            'submissionIds' => 'required|array',
+            'submissionIds.*' => 'required|integer',
+        ]);
+
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('delete', $form);
+
+        $submissionIds = $request->submissionIds;
+        $form->submissions()->whereIn('id', $submissionIds)->delete();
+
+        return $this->success([
+            'message' => 'Records successfully removed.',
         ]);
     }
 }
