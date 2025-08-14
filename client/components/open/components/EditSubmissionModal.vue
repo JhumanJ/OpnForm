@@ -10,10 +10,10 @@
         :theme="theme"
         @submit="updateForm"
       >
-        <template #submit-btn="{ loading }">
+        <template #submit-btn="{ isProcessing }">
           <UButton
             class="mt-4"
-            :loading="loading"
+            :loading="loading || isProcessing"
             @click.prevent="updateForm"
             label="Update Submission"
           />
