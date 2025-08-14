@@ -1,7 +1,7 @@
 <template>
   <UButton
     icon="i-heroicons-eye-16-solid"
-    :loading="form.busy"
+    :loading="loading"
     @click="impersonate"
     label="Impersonate User"
   />
@@ -17,17 +17,17 @@ const props = defineProps({
 
 const authStore = useAuthStore()
 const queryClient = useQueryClient()
-
-const form = useForm({
-  user_id: props.user.id
-})
+const loading = ref(false)
 
 const { user } = useAuth()
 const { data: userData } = user()
 
 const impersonate = () => {
+  loading.value = true
   authStore.startImpersonating()
-  form.post(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
+  opnFetch(`/moderator/impersonate/${props.user.id}`).then(async (data) => {
+    loading.value = false
+
     // Save the token with its expiration time.
     authStore.setToken(data.token, data.expires_in)
     await queryClient.invalidateQueries()
@@ -36,7 +36,8 @@ const impersonate = () => {
     useRouter().push({ name: 'home' })
   })
     .catch((error) => {
-      useAlert().error(error.data.message)
+      useAlert().error(error.data?.message || 'Failed to impersonate user')
+      loading.value = false
     })
 }
 </script>
