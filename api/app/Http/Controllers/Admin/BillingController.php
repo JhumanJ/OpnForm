@@ -49,7 +49,6 @@ class BillingController extends Controller
         AdminController::log('Update billing email', [
             'user_id' => $user->id,
             'stripe_id' => $user->stripe_id,
-            'moderator_id' => auth()->id()
         ]);
         $user->updateStripeCustomer(['email' => $request->billing_email]);
 

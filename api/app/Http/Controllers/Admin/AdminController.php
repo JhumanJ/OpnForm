@@ -163,7 +163,6 @@ class AdminController extends Controller
             'subcription_id' => $subscription->id,
             'coupon_id' => $couponId,
             'subscription_stripe_id' => $subscription->stripe_id,
-            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -191,7 +190,6 @@ class AdminController extends Controller
             'subcription_id' => $subscription->id,
             'nb_days' => $request->get('number_of_day'),
             'subscription_stripe_id' => $subscription->stripe_id,
-            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -227,7 +225,6 @@ class AdminController extends Controller
         self::log('Cancel Subscription', [
             'user_id' => $user->id,
             'cancel_reason' => $request->get('cancellation_reason'),
-            'moderator_id' => request()->user()->id,
             'subcription_id' => $subscription->id,
             'subscription_stripe_id' => $subscription->stripe_id
         ]);
@@ -251,7 +248,6 @@ class AdminController extends Controller
 
         self::log('Sent password reset email', [
             'user_id' => $user->id,
-            'moderator_id' => request()->user()->id,
         ]);
 
         return $this->success([
@@ -300,7 +296,6 @@ class AdminController extends Controller
                 'invoice_id' => $latestInvoice->id,
                 'stripe_refund_id' => $refund->id,
                 'refund_reason' => $request->get('refund_reason'),
-                'moderator_id' => request()->user()->id,
             ]);
         } catch (\Exception $e) {
             self::log('Refund Error', [
@@ -317,6 +312,28 @@ class AdminController extends Controller
 
     public static function log($message, $data = [])
     {
+        $moderator = request()->user();
+
+        // Always include moderator information
+        $baseData = [
+            'moderator' => $moderator->email . ' (' . $moderator->id . ')',
+        ];
+
+        // Add action button for admin panel if user_id or target_id is present
+        if (isset($data['user_id'])) {
+            $baseData['actions'] = [
+                'Open Admin' => front_url('/settings/admin?user_id=' . $data['user_id'])
+            ];
+        } elseif (isset($data['target_id'])) {
+            $baseData['actions'] = [
+                'Open Admin' => front_url('/settings/admin?user_id=' . $data['target_id'])
+            ];
+        }
+
+        // Merge with provided data (provided data takes precedence)
+        $logData = array_merge($baseData, $data);
+
         Log::warning(self::ADMIN_LOG_PREFIX . $message, $data);
+        Log::channel('slack_admin')->warning($message, $logData);
     }
 }

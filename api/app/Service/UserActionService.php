@@ -20,7 +20,6 @@ class UserActionService
         AdminController::log('User blocked', [
             'user_id' => $user->id,
             'reason' => $reason,
-            'moderator_id' => $moderatorId,
         ]);
 
         // Log to Slack
@@ -45,7 +44,6 @@ class UserActionService
         AdminController::log('User unblocked', [
             'user_id' => $user->id,
             'reason' => $reason,
-            'moderator_id' => $moderatorId,
         ]);
 
         // Log to Slack
