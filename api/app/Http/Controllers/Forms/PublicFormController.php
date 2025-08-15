@@ -11,6 +11,7 @@ use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormSubmissionProcessor;
 use App\Service\Forms\FormCleaner;
+use App\Service\UserAgentHelper;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,18 @@ class PublicFormController extends Controller
 
         // Increase form view counter if not login
         if (!Auth::check()) {
-            $form->views()->create();
+            // Metadata for analytics
+            $meta = [
+                'ip' => $request->ip(),
+                'source' => UserAgentHelper::getTrafficSource($request),
+                'device' => UserAgentHelper::detectDevice($request),
+                'country' => $request->header('CF-IPCountry') ?? null,
+                'city' => null,
+                'browser' => UserAgentHelper::detectBrowser($request),
+                'os' => UserAgentHelper::detectOS($request),
+            ];
+
+            $form->views()->create(['meta' => $meta]);
         }
 
         return (new FormResource($form))
