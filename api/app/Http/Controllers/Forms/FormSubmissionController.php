@@ -6,12 +6,16 @@ use App\Exports\FormSubmissionExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerFormRequest;
 use App\Http\Requests\FormSubmissionExportRequest;
+
 use App\Http\Resources\FormSubmissionResource;
+use App\Http\Resources\ExportJobStatusResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
+use App\Jobs\Form\ExportFormSubmissionsJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
-use App\Service\Forms\FormSubmissionFormatter;
+use App\Service\Forms\FormExportService;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
@@ -50,33 +54,64 @@ class FormSubmissionController extends Controller
         ]);
     }
 
-    public function export(FormSubmissionExportRequest $request, string $id)
+    // ===== EXPORT METHODS =====
+
+    public function export(FormSubmissionExportRequest $request, string $id, FormExportService $exportService)
     {
         $form = $request->form;
         $this->authorize('view', $form);
 
-        $allRows = [];
-        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
-        foreach ($form->submissions->toArray() as $row) {
-            $formatter = (new FormSubmissionFormatter($form, $row['data']))
-                ->outputStringsOnly()
-                ->setEmptyForNoValue()
-                ->showRemovedFields()
-                ->showHiddenFields()
-                ->useSignedUrlForFiles();
-            $formattedData = $formatter->getCleanKeyValue();
-            $filteredData = ['id' => Hashids::encode($row['id'])];
-            foreach ($displayColumns as $column => $value) {
-                $key = collect($formattedData)->keys()->first(fn ($key) => str_contains($key, $column));
-                if ($key) {
-                    $filteredData[$key] = $formattedData[$key];
-                }
-            }
-            if (isset($displayColumns['created_at'])) {
-                $filteredData['created_at'] = date('Y-m-d H:i', strtotime($row['created_at']));
-            }
-            $allRows[] = $filteredData;
+        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
+
+        // Check if we should process asynchronously
+        if ($exportService->shouldExportAsync($form)) {
+            return $this->startAsyncExport($form, $displayColumns, $exportService);
         }
+
+        // Process synchronously for small exports
+        return $this->processSyncExport($form, $displayColumns, $exportService);
+    }
+
+    public function exportStatus(string $id, string $jobId, FormExportService $exportService)
+    {
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('view', $form);
+
+        $cacheKey = $exportService->getCacheKey($jobId);
+        $jobData = Cache::get($cacheKey);
+
+        if (!$jobData) {
+            return $this->error([
+                'message' => 'Export job not found or has expired.'
+            ], 404);
+        }
+
+        // Add job_id to the response data
+        $jobData['job_id'] = $jobId;
+
+        return new ExportJobStatusResource($jobData);
+    }
+
+    private function startAsyncExport(Form $form, array $displayColumns, FormExportService $exportService)
+    {
+        $jobId = $exportService->generateJobId();
+
+        ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, auth()->id());
+
+        return $this->success([
+            'message' => 'Export started. Large export will be processed in the background.',
+            'job_id' => $jobId,
+            'is_async' => true
+        ]);
+    }
+
+    private function processSyncExport(Form $form, array $displayColumns, FormExportService $exportService)
+    {
+        $allRows = [];
+        foreach ($form->submissions as $submission) {
+            $allRows[] = $exportService->formatSubmissionForExport($form, $submission, $displayColumns);
+        }
+
         $csvExport = (new FormSubmissionExport($allRows));
 
         return Excel::download(
@@ -105,6 +140,8 @@ class FormSubmissionController extends Controller
             Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
+
+
 
     public function destroy($id, $submissionId)
     {

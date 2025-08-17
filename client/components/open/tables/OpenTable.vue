@@ -3,7 +3,7 @@
     ref="root" 
     :class="[
       'flex-1 divide-y divide-accented w-full flex flex-col', 
-      { 'fixed inset-0 z-50 bg-white dark:bg-neutral-900 z-[70]': isExpanded,
+      { 'fixed inset-0 bg-white dark:bg-neutral-900 z-[70]': isExpanded,
         'border-t mt-4': !isExpanded
        }
     ]"
@@ -33,13 +33,9 @@
         :table-state="tableState"
       />
 
-      <UButton
-        size="sm"
-        color="neutral"
-        variant="ghost"
-        label="Export"
-        :loading="exportLoading"
-        @click="downloadAsCsv"
+      <FormExportModal 
+        :form="form"
+        :columns="columnVisibility"
       />
       <UButton  
         size="sm"
@@ -108,13 +104,15 @@
         </div>
       </template>
     </UTable>
+
+
   </div>
 </template>
 
 <script setup>
-import { formsApi } from '~/api'
 import { useEventListener, refDebounced } from '@vueuse/core'
 import { useTableState } from '~/composables/components/tables/useTableState'
+import FormExportModal from '~/components/open/forms/FormExportModal.vue'
 import OpenText from "./components/OpenText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
@@ -183,7 +181,6 @@ const fieldComponents = {
   status: OpenSubmissionStatus,
 }
 
-const exportLoading = ref(false)
 const table = ref(null)
 const root = ref(null)
 const topBar = ref(null)
@@ -294,41 +291,4 @@ onMounted(() => {
 })
 
 useEventListener(window, 'resize', computeMaxHeight)
-
-// Download as CSV
-const downloadAsCsv = () => {
-  if (exportLoading.value) {
-    return
-  }
-
-  exportLoading.value = true
-  formsApi.submissions.export(props.form.id, {
-    columns: columnVisibility.value
-  }).then(data => {
-    
-    // Convert string to Blob if needed
-    let blob
-    if (typeof data === 'string') {
-      blob = new Blob([data], { type: 'text/csv;charset=utf-8;' })
-    } else if (data instanceof Blob) {
-      blob = data
-    } else {
-      throw new Error('Invalid export data format')
-    }
-    
-    const filename = `${props.form.slug}-${Date.now()}-submissions.csv`
-    const a = document.createElement("a")
-    document.body.appendChild(a)
-    a.style = "display: none"
-    const url = window.URL.createObjectURL(blob)
-    a.href = url
-    a.download = filename
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }).catch((error) => {
-    console.error(error)
-  }).finally(() => {
-    exportLoading.value = false
-  })
-}
 </script>
