@@ -84,6 +84,7 @@
       help="If enabled the email will contain hidden fields"
     />
     <toggle-switch-input
+      v-if="form.editable_submissions"
       :form="integrationData"
       name="settings.link_edit_submission"
       class="mt-4"
