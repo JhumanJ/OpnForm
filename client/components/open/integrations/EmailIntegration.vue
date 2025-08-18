@@ -83,9 +83,16 @@
       label="Include hidden fields"
       help="If enabled the email will contain hidden fields"
     />
+    <toggle-switch-input
+      :form="integrationData"
+      name="settings.link_edit_submission"
+      class="mt-4"
+      label="Edit Submission Link"
+    />
     <MentionInput
       :form="integrationData"
       :mentions="form.properties"
+      class="mt-4"
       name="settings.reply_to"
       label="Reply To"
       help="If empty, Reply-to will be your own email."
