@@ -4,8 +4,8 @@ namespace App\Service\Forms;
 
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
-use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -40,7 +40,7 @@ class FormExportService
 
         foreach ($displayColumns as $column => $value) {
             if ($value === true) {
-                $key = collect($formattedData)->keys()->first(fn($key) => str_contains($key, $column));
+                $key = collect($formattedData)->keys()->first(fn ($key) => str_contains($key, $column));
                 if ($key) {
                     $filteredData[$key] = $formattedData[$key];
                 }
@@ -55,7 +55,7 @@ class FormExportService
     }
 
     /**
-     * Generate CSV content from rows and upload to S3
+     * Generate CSV content from rows and upload to storage
      */
     public function generateAndUploadCsvFile(array $rows, string $fileName): string
     {
@@ -66,17 +66,18 @@ class FormExportService
         // Generate CSV content
         $csvContent = $this->generateCsvContent($rows);
 
-        // Upload to S3 with temporary path
+        // Upload to configured storage disk
         $filePath = self::EXPORT_FILE_PATH . $fileName;
+        $disk = Storage::disk(config('filesystems.default'));
 
-        Storage::disk('s3')->put($filePath, $csvContent, [
+        $disk->put($filePath, $csvContent, [
             'visibility' => 'private',
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
         ]);
 
-        // Generate a signed URL valid for 24 hours
-        return Storage::disk('s3')->temporaryUrl($filePath, now()->addDay());
+        // Generate temporary URL for download (works for all storage types)
+        return $disk->temporaryUrl($filePath, now()->addDay());
     }
 
     /**
@@ -117,11 +118,29 @@ class FormExportService
     }
 
     /**
-     * Generate a unique job ID for tracking
+     * Initialize async export job and return job ID
      */
-    public function generateJobId(): string
+    public function initializeAsyncExport(Form $form, int $userId): string
     {
-        return (string) Str::uuid();
+        $jobId = (string) Str::uuid();
+        $cacheKey = $this->getCacheKey($jobId);
+
+        // Initialize cache entry before dispatching job to prevent race condition
+        Cache::put($cacheKey, [
+            'status' => 'queued',
+            'progress' => 0,
+            'form_id' => $form->id,
+            'user_id' => $userId,
+            'created_at' => now()->toISOString(),
+            'updated_at' => now()->toISOString(),
+            'processed_submissions' => null,
+            'total_submissions' => null,
+            'file_url' => null,
+            'error_message' => null,
+            'expires_at' => null,
+        ], now()->addHours(2));
+
+        return $jobId;
     }
 
     /**

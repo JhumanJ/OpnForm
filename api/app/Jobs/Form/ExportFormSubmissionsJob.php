@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Log;
 
 class ExportFormSubmissionsJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $timeout = 900; // 15 minutes
     public $tries = 1;
@@ -24,7 +27,8 @@ class ExportFormSubmissionsJob implements ShouldQueue
         public array $columns,
         public string $jobId,
         public int $userId
-    ) {}
+    ) {
+    }
 
     public function handle(FormExportService $exportService): void
     {

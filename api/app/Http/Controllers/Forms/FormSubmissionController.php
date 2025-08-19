@@ -6,7 +6,6 @@ use App\Exports\FormSubmissionExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerFormRequest;
 use App\Http\Requests\FormSubmissionExportRequest;
-
 use App\Http\Resources\FormSubmissionResource;
 use App\Http\Resources\ExportJobStatusResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
@@ -19,7 +18,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Vinkla\Hashids\Facades\Hashids;
 
 class FormSubmissionController extends Controller
 {
@@ -96,7 +94,7 @@ class FormSubmissionController extends Controller
         $form = $request->form;
         $this->authorize('view', $form);
 
-        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
+        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
 
         // Check if we should process asynchronously
         if ($exportService->shouldExportAsync($form)) {
@@ -129,7 +127,7 @@ class FormSubmissionController extends Controller
 
     private function startAsyncExport(Form $form, array $displayColumns, FormExportService $exportService)
     {
-        $jobId = $exportService->generateJobId();
+        $jobId = $exportService->initializeAsyncExport($form, Auth::id());
 
         ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, Auth::id());
 
@@ -175,8 +173,6 @@ class FormSubmissionController extends Controller
             Storage::temporaryUrl($fileName, now()->addMinute())
         );
     }
-
-
 
     public function destroy($id, $submissionId)
     {
