@@ -13,7 +13,7 @@ class CheckSpamFormPrompt extends Prompt
     protected string $model = 'gpt-4.1-mini';
 
     public const PROMPT_TEMPLATE = <<<'EOD'
-        Analyze this form for spam/phishing. Be CONSERVATIVE - only block obvious threats.
+        Analyze this form for spam/phishing. Focus on CONTENT RISK, not user characteristics.
 
         <formContent>
         {formContent}
@@ -30,20 +30,29 @@ class CheckSpamFormPrompt extends Prompt
         - Forms asking for existing passwords/credentials to "verify" accounts or for fake login
         - Clear brand impersonation with sensitive data collection
 
-        **FLAG FOR ADMIN REVIEW (needs_admin_review: true):**
-        - New users with vague titles but no clear phishing intent
-        - Basic info collection (email/phone) without passwords
-        - Borderline suspicious but possibly legitimate testing
+        **FLAG FOR ADMIN REVIEW (needs_admin_review: true) - RARE CASES ONLY:**
+        - Forms with suspicious brand impersonation but unclear intent
+        - Requests for highly sensitive data (SSN, banking details) without clear business purpose
+        - Forms that appear to be testing system vulnerabilities
 
-        **ALLOW (both false):**
+        **ALLOW (both false) - DEFAULT FOR MOST FORMS:**
+        - Business inquiry forms, contact forms, surveys
+        - Forms in any language (Arabic, Spanish, etc. are legitimate)
+        - Forms from new users (being new is NOT suspicious)
+        - Adult content related forms (unless clearly illegal)
+        - Vague or simple forms (common for legitimate use cases)
         - New account creation forms (password setup normal)
         - Surveys, event codes, referral forms
         - General contact/support forms
 
-        **KEY RULES:**
+        **IMPORTANT GUIDELINES:**
+        - User age/registration date is NOT a spam indicator
+        - Non-English content is NOT suspicious
+        - Adult content is acceptable unless clearly illegal
+        - Vague titles are common and legitimate
         - Login forms = phishing, Registration forms = often legitimate
         - Subscribed users get benefit of doubt
-        - When uncertain, prefer admin review over blocking
+        - When uncertain, prefer allowing over flagging
 
         Classify as: SPAM (block), ADMIN REVIEW (flag), or LEGITIMATE (allow).
         Respond with JSON: {"is_spam": boolean, "needs_admin_review": boolean, "reason": "explanation"}
@@ -51,7 +60,7 @@ class CheckSpamFormPrompt extends Prompt
 
     protected ?array $jsonSchema = [
         'type' => 'object',
-        'required' => ['is_spam', 'reason'],
+        'required' => ['is_spam', 'needs_admin_review', 'reason'],
         'additionalProperties' => false,
         'properties' => [
             'is_spam' => [

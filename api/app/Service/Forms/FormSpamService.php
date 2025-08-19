@@ -6,6 +6,7 @@ use App\Models\Forms\Form;
 use App\Models\User;
 use App\Service\AI\Prompts\Form\CheckSpamFormPrompt;
 use App\Service\UserActionService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class FormSpamService
@@ -77,7 +78,21 @@ class FormSpamService
 
     private function logAdminReview(Form $form, string $reason): void
     {
-        Log::channel('slack_alerts')->info('Form flagged for admin review 🚨', [
+        $cacheKey = "form_admin_review_flagged_{$form->id}";
+
+        // Check if we've already flagged this form in the last 24 hours
+        if (Cache::has($cacheKey)) {
+            Log::info('Skipping duplicate admin review alert for form', [
+                'form_id' => $form->id,
+                'reason' => 'Already flagged within 24 hours',
+            ]);
+            return;
+        }
+
+        // Cache this form as flagged for 24 hours
+        Cache::put($cacheKey, true, now()->addDay());
+
+        Log::channel('slack_alerts')->info('🚨 Form flagged for admin review 🚨', [
             'form_id' => $form->id,
             'form_title' => $form->title,
             'user_id' => $form->creator->id,
