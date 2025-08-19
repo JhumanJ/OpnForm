@@ -1,0 +1,27 @@
+# fly.toml app configuration file generated for dd-opnform-api on 2025-08-19T13:08:52+10:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'dd-opnform-api'
+primary_region = 'syd'
+
+[build]
+  dockerfile = 'docker/Dockerfile.api'
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[processes]
+  app = "php artisan serve --host=0.0.0.0 --port=8000"
+  worker = "php artisan queue:work --verbose --tries=3 --timeout=90"
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
