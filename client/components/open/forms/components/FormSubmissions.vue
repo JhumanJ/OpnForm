@@ -74,7 +74,6 @@ const onFormChange = () => {
 }
 
 const getSubmissionsData = () => {
-  return
   if (fullyLoaded.value) {
     return
   }

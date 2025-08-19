@@ -16,6 +16,7 @@ use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormExportService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
@@ -33,7 +34,41 @@ class FormSubmissionController extends Controller
         $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
 
-        return FormSubmissionResource::collection($form->submissions()->paginate(100));
+        $query = $form->submissions();
+
+        // Handle search parameter - search only in JSON values, not keys
+        if (request()->has('search') && !empty(request()->get('search'))) {
+            $searchTerm = request()->get('search');
+
+            if (config('database.default') === 'mysql') {
+                // MySQL: Use JSON_SEARCH to find values containing the search term
+                $query->whereRaw("JSON_SEARCH(data, 'one', ?) IS NOT NULL", ["%{$searchTerm}%"]);
+            } else {
+                // PostgreSQL: Use jsonb_each_text to search only in values
+                $query->whereRaw("EXISTS (
+                    SELECT 1 FROM jsonb_each_text(data) AS kv(key, value) 
+                    WHERE kv.value ILIKE ?
+                )", ["%{$searchTerm}%"]);
+            }
+        }
+
+        // Handle status filtering for pro forms with partial submissions
+        if (request()->has('status') && request()->get('status') !== 'all') {
+            $status = request()->get('status');
+            if ($status === FormSubmission::STATUS_COMPLETED) {
+                $query->where('status', '!=', FormSubmission::STATUS_PARTIAL);
+            } elseif ($status === FormSubmission::STATUS_PARTIAL) {
+                $query->where('status', FormSubmission::STATUS_PARTIAL);
+            }
+        }
+
+        // Default ordering by created_at desc
+        $query->orderByDesc('created_at');
+
+        // Use configurable per_page, default to 50 for better performance
+        $perPage = min((int) request()->get('per_page', 100), 100);
+
+        return FormSubmissionResource::collection($query->paginate($perPage));
     }
 
     public function update(AnswerFormRequest $request, $id, $submissionId)
@@ -96,7 +131,7 @@ class FormSubmissionController extends Controller
     {
         $jobId = $exportService->generateJobId();
 
-        ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, auth()->id());
+        ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, Auth::id());
 
         return $this->success([
             'message' => 'Export started. Large export will be processed in the background.',
