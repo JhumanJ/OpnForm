@@ -17,7 +17,7 @@ const form = useForm({
   user_id: props.user.id
 })
 
-const resetPassword = ()=>{
+const resetPassword = () => {
     return useAlert().confirm(
         "Are you sure you want to send a password reset email?",
         () => {
@@ -27,7 +27,7 @@ const resetPassword = ()=>{
                     useAlert().success(data.message)
                 })
                 .catch((error) => {
-                    useAlert().error(error.data.message)
+                    useAlert().error(error.data?.message || 'Failed to send password reset email')
                 })
         })
 }

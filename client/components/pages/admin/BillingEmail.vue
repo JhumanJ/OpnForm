@@ -8,7 +8,7 @@
       You can update the billing email of the subscriber.
     </p>
     <div
-      v-if="loading"
+      v-if="loadingBillingEmail"
       class="text-neutral-600 dark:text-neutral-400"
     >
       <Loader class="h-6 w-6 mx-auto m-10" />
