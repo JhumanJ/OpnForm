@@ -3,7 +3,6 @@
 namespace App\Service\Forms\Analytics;
 
 use Illuminate\Http\Request;
-use App\Service\Forms\Analytics\BrowserDetection;
 use Illuminate\Support\Facades\Http;
 
 class UserAgentHelper
@@ -12,7 +11,7 @@ class UserAgentHelper
     private $request;
     private $userAgent;
 
-    function __construct(Request $request)
+    public function __construct(Request $request)
     {
         $this->browser = new BrowserDetection();
         $this->request = $request;
