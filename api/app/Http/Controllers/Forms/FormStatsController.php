@@ -73,7 +73,7 @@ class FormStatsController extends Controller
             foreach ($views as $view) {
                 $meta = $view->meta;
                 foreach ($metadataFields as $field) {
-                    $value = $meta[$field] ?? 'unknown';
+                    $value = $meta[$field] ?? 'Unknown';
                     $collections[$field][$value] = ($collections[$field][$value] ?? 0) + 1;
                 }
             }
