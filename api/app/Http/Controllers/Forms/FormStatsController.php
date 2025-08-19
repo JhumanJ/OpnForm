@@ -59,7 +59,6 @@ class FormStatsController extends Controller
                 'source',
                 'device',
                 'country',
-                'city',
                 'browser',
                 'os'
             ];

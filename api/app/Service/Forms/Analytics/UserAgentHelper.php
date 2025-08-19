@@ -24,15 +24,17 @@ class UserAgentHelper
         // Get browser metadata
         $result = $this->browser->getAll($this->userAgent);
 
+        // Get location info
         $location = $this->getLocation();
+
+        // Return metadata
         return [
             'ip' => $this->request->ip(),
             'source' => ucfirst($this->getTrafficSource()),
             'device' => $result['device_type'],
             'browser' => $result['browser_name'],
             'os' => $result['os_name'],
-            'country' => $location['country'] ?? 'Unknown',
-            'city' => $location['city'] ?? 'Unknown'
+            'country' => $location['country'] ?? 'Unknown'
         ];
     }
 
@@ -75,9 +77,16 @@ class UserAgentHelper
     // Get Location from IP
     public function getLocation(): array
     {
-        $url = 'http://ip-api.com/json/' . $this->request->ip();
+        if (!config('services.ipinfo.token')) {
+            return [];
+        }
+
+        $url = 'https://api.ipinfo.io/lite/' . $this->request->ip() . '?token=' . config('services.ipinfo.token');
         $response = Http::get($url);
-        $data = $response->json();
-        return $data;
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return [];
     }
 }

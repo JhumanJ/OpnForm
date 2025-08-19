@@ -99,17 +99,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Cities (kept as separate implementation) -->
-        <div class="border border-neutral-300 rounded-lg shadow-xs p-4" v-if="Object.keys(metaStats.city || {}).length > 0">
-          <h4 class="font-medium mb-3">Cities</h4>
-          <div class="space-y-2 max-h-40 overflow-y-auto">
-            <div v-for="(count, city) in metaStats.city" :key="city" class="flex items-center justify-between">
-              <span class="text-sm">{{ city === 'unknown' ? 'Unknown' : city }}</span>
-              <span class="text-sm font-medium">{{ count }}</span>
-            </div>
-          </div>
-        </div>
       </div>
     </VTransition>
   </div>
@@ -178,7 +167,6 @@ const metaStats = computed(() => {
     source: props.metaData?.source || {},
     device: props.metaData?.device || {},
     country: props.metaData?.country || {},
-    city: props.metaData?.city || {},
     browser: props.metaData?.browser || {},
     os: props.metaData?.os || {}
   }
