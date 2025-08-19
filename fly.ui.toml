@@ -1,7 +1,6 @@
 # fly.toml app configuration file generated for dd-opnform-ui on 2025-08-19T13:18:00+10:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
 
 app = 'dd-opnform-ui'
 primary_region = 'syd'
