@@ -73,16 +73,14 @@
             </OpenForm>
           </div>
 
-          <template v-if="prefillFormData">
-            <h3 class="mt-6 text-xl font-semibold mb-4 pt-6">
-              Your Prefill url
-            </h3>
-            <FormUrlPrefill
-              :form="form"
-              :form-data="prefillFormData"
-              :extra-query-param="extraQueryParam"
-            />
-          </template>
+          <h3 class="mt-6 text-xl font-semibold mb-4 pt-6">
+            Your Prefill url
+          </h3>
+          <FormUrlPrefill
+            :form="form"
+            :form-data="prefillFormData || {}"
+            :extra-query-param="extraQueryParam"
+          />
         </div>
       </template>
     </UModal>

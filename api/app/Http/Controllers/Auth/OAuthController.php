@@ -174,7 +174,7 @@ class OAuthController extends Controller
 
         return [
             'id' => $socialiteUser->getId(),
-            'name' => $socialiteUser->getName(),
+            'name' => $socialiteUser->getName() ?? $socialiteUser->getNickname(),
             'email' => $socialiteUser->getEmail(),
             'provider_user_id' => $socialiteUser->getId(),
             'access_token' => $socialiteUser->token,

@@ -7,7 +7,6 @@ use App\Mail\UserBlockedEmail;
 use App\Mail\UserUnblockedEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 
 class UserActionService
 {
@@ -17,21 +16,14 @@ class UserActionService
 
         $user->forms()->update(['visibility' => 'draft']);
 
-        AdminController::log('User blocked', [
-            'user_id' => $user->id,
+        AdminController::log('User blocked 🚫', [
+            'user' => $user->email . ' (' . $user->id . ')',
             'reason' => $reason,
             'moderator_id' => $moderatorId,
+            'actions' => [
+                'Admin Panel' => front_url('/admin?user_id=' . $user->id),
+            ]
         ]);
-
-        // Log to Slack
-        if (app()->environment() !== 'testing') {
-            Log::channel('slack_churn')->info('User blocked 🚫', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'reason' => $reason,
-                'moderator_id' => $moderatorId,
-            ]);
-        }
 
         Mail::to($user)->send(new UserBlockedEmail($user, $reason));
 
@@ -42,21 +34,14 @@ class UserActionService
     {
         $user->unblockUser($reason, $moderatorId);
 
-        AdminController::log('User unblocked', [
-            'user_id' => $user->id,
+        AdminController::log('User unblocked 🔓', [
+            'user' => $user->email . ' (' . $user->id . ')',
             'reason' => $reason,
             'moderator_id' => $moderatorId,
+            'actions' => [
+                'Admin Panel' => front_url('/admin?user_id=' . $user->id),
+            ]
         ]);
-
-        // Log to Slack
-        if (app()->environment() !== 'testing') {
-            Log::channel('slack_churn')->info('User unblocked 🔓', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'reason' => $reason,
-                'moderator_id' => $moderatorId,
-            ]);
-        }
 
         Mail::to($user)->send(new UserUnblockedEmail($user, $reason));
 
