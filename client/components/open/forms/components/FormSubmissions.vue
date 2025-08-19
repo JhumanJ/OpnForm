@@ -9,6 +9,7 @@
         :form="form"
         @deleted="onDeleteRecord"
         @updated="(submission)=>onUpdateRecord(submission)"
+        @multi-delete="onDeleteMultiRecord"
       />
 
       <!-- Submissions Table Skeleton -->
@@ -117,4 +118,9 @@ const onDeleteRecord = (submission) => {
   recordStore.remove(submission)
 }
 
+const onDeleteMultiRecord = (submissionIds) => {
+  submissionIds.forEach(id => {
+    recordStore.remove(id)
+  })
+}
 </script>

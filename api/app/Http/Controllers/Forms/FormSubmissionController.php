@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
@@ -116,6 +117,31 @@ class FormSubmissionController extends Controller
 
         return $this->success([
             'message' => 'Record successfully removed.',
+        ]);
+    }
+
+    public function destroyMulti(Request $request, $id)
+    {
+        $request->validate([
+            'submissionIds' => 'required|array',
+            'submissionIds.*' => 'required|integer',
+            'submissionIds.*' => 'exists:form_submissions,id',
+        ]);
+
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('delete', $form);
+
+        $submissionIds = $request->submissionIds;
+        $form->submissions()
+            ->whereIn('id', $submissionIds)
+            ->chunk(100, function ($submissions) {
+                foreach ($submissions as $submission) {
+                    $submission->delete();
+                }
+            });
+
+        return $this->success([
+            'message' => 'Records successfully removed.',
         ]);
     }
 }
