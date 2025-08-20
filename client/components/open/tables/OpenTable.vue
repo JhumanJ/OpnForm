@@ -15,14 +15,14 @@
         class="max-w-sm min-w-[12ch]" 
         placeholder="Search..." 
         icon="i-heroicons-magnifying-glass-solid"
-        v-model="search"
+        v-model="searchInput"
       />
       <USelectMenu
         size="sm"
         variant="ghost"
         class="w-24"
         v-if="hasStatus"
-        v-model="selectedStatus"
+        v-model="statusFilter"
         value-key="value"
         :items="statusList"
         :search-input="false"
@@ -55,6 +55,28 @@
         :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
         @click="toggleExpanded"
       />
+
+      <!-- Add pagination section -->
+      <UPagination
+        v-if="pagination && pagination.last_page > 1"
+        v-model:page="pagination.current_page"
+        :items-per-page="pagination.per_page"
+        :total="pagination.total"
+        size="sm"
+        :sibling-count="0"
+        :ui="{
+          wrapper: 'w-auto',
+          list: 'gap-0',
+          ellipsis: 'hidden',
+          first: 'hidden',
+          last: 'hidden'
+        }"
+        @update:page="$emit('page-change', $event)"
+      >
+        <template #item="{ page, pageCount }">
+          <span class="text-sm font-medium px-2">{{ page }} of {{ pageCount }}</span>
+        </template>
+      </UPagination>
     </div>
 
     <UTable
@@ -156,7 +178,6 @@ import OpenSubmissionStatus from "./components/OpenSubmissionStatus.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
-import Fuse from "fuse.js"
 import { formsApi } from "~/api/forms"
 
 const props = defineProps({
@@ -172,9 +193,13 @@ const props = defineProps({
     type: Object,
     default: () => null,
   },
+  pagination: {
+    type: Object,
+    default: () => null,
+  },
 })
 
-const emit = defineEmits(["updated", "deleted", "multi-delete"])
+const emit = defineEmits(["updated", "deleted", "multi-delete", "search", "filter", "page-change"])
 
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
@@ -221,10 +246,19 @@ const root = ref(null)
 const topBar = ref(null)
 const isExpanded = ref(false)
 const maxHeight = ref('800px') // fallback default
-const search = ref("")
-const debouncedSearch = refDebounced(search, 300)
-const selectedStatus = ref('all')
+const searchInput = ref("")
+const debouncedSearch = refDebounced(searchInput, 300)
+const statusFilter = ref('all')
 const alert = useAlert()
+
+// Watch and emit instead of filtering locally:
+watch(debouncedSearch, (newSearch) => {
+  emit('search', newSearch)
+})
+
+watch(statusFilter, (newStatus) => {
+  emit('filter', { status: newStatus })
+})
 
 // Table row selection
 const rowSelection = ref({})
@@ -265,30 +299,8 @@ const statusList = [
   { label: 'In Progress', value: 'partial' }
 ]
 
-const filteredTableData = computed(() => {
-  let data = [...props.data]
-
-  // Status filter (client-side)
-  if (hasStatus.value && selectedStatus.value !== 'all') {
-    data = data.filter(row => {
-      if (selectedStatus.value === 'completed') return row.status !== 'partial'
-      if (selectedStatus.value === 'partial') return row.status === 'partial'
-      return true
-    })
-  }
-
-  // Search (client-side, fuzzy)
-  if (debouncedSearch.value && debouncedSearch.value.trim() !== "") {
-    const fuse = new Fuse(data, {
-      keys: allColumns.value.map(col => col.id).filter(id => id !== 'actions'),
-      threshold: 0.4,
-    })
-    return fuse.search(debouncedSearch.value).map(res => res.item)
-  } else {
-    // Default sort by created_at desc
-    return data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-  }
-})
+// Replace with simple data pass-through:
+const filteredTableData = computed(() => props.data || [])
 
 const hasStatus = computed(() => {
   return props.form?.is_pro && (props.form.enable_partial_submissions ?? false)
@@ -360,4 +372,4 @@ onMounted(() => {
 })
 
 useEventListener(window, 'resize', computeMaxHeight)
-</script>
+</script> 
