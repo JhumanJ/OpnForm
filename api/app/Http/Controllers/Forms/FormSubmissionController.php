@@ -95,7 +95,7 @@ class FormSubmissionController extends Controller
         $form = $request->form;
         $this->authorize('view', $form);
 
-        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
+        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
 
         // Check if we should process asynchronously
         if ($exportService->shouldExportAsync($form)) {
