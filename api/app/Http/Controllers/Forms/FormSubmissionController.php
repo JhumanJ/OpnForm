@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
@@ -94,7 +95,7 @@ class FormSubmissionController extends Controller
         $form = $request->form;
         $this->authorize('view', $form);
 
-        $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
+        $displayColumns = collect($request->columns)->filter(fn($value, $key) => $value === true)->toArray();
 
         // Check if we should process asynchronously
         if ($exportService->shouldExportAsync($form)) {
@@ -184,6 +185,31 @@ class FormSubmissionController extends Controller
 
         return $this->success([
             'message' => 'Record successfully removed.',
+        ]);
+    }
+
+    public function destroyMulti(Request $request, $id)
+    {
+        $request->validate([
+            'submissionIds' => 'required|array',
+            'submissionIds.*' => 'required|integer',
+            'submissionIds.*' => 'exists:form_submissions,id',
+        ]);
+
+        $form = Form::findOrFail((int) $id);
+        $this->authorize('delete', $form);
+
+        $submissionIds = $request->submissionIds;
+        $form->submissions()
+            ->whereIn('id', $submissionIds)
+            ->chunk(100, function ($submissions) {
+                foreach ($submissions as $submission) {
+                    $submission->delete();
+                }
+            });
+
+        return $this->success([
+            'message' => 'Records successfully removed.',
         ]);
     }
 }

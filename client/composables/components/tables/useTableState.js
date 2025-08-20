@@ -311,8 +311,22 @@ export function useTableState(form, withActions = false) {
         })
       }
 
-      // Add actions column if workspace is not readonly
+      // Add actions columns
       if (import.meta.client && withActions) {
+        cols.unshift({
+          id: 'select',
+          accessorKey: 'select',
+          header: '',
+          enableResizing: false,
+          size: 40,
+          meta: {
+            class: {
+              th: 'bg-transparent',
+              td: 'backdrop-blur-xs bg-white/70'
+            }
+          }
+        })
+
         cols.push({
           id: 'actions',
           accessorKey: 'actions',
@@ -323,7 +337,7 @@ export function useTableState(form, withActions = false) {
             class: {
               th: 'bg-transparent',
               td: 'backdrop-blur-xs bg-white/70'
-      }
+            }
           }
         })
       }

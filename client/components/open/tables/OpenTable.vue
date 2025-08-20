@@ -33,10 +33,21 @@
         :table-state="tableState"
       />
 
+      <UButton
+        v-if="canModify && selectedIds.length > 0"
+        size="sm"
+        color="error"
+        variant="outline"
+        :label="`Delete (${selectedIds.length})`"
+        :loading="multiDeleteLoading"
+        @click="onDeleteMultiClick"
+      />
+
       <FormExportModal 
         :form="form"
         :columns="columnVisibility"
       />
+
       <UButton  
         size="sm"
         color="neutral"
@@ -49,6 +60,7 @@
     <UTable
       v-if="form"
       ref="table"
+      v-model:row-selection="rowSelection"
       :columns="allColumns"
       :column-visibility="columnVisibility"
       :column-pinning="columnPinning"
@@ -64,6 +76,25 @@
         td: 'px-3 py-2 overflow-hidden data-[pinned=left]:bg-white data-[pinned=left]:border-t data-[pinned=left]:border-r data-[pinned=left]:border-neutral-200 border-r',
       }"
     >
+      <template #select-header="{ table }">
+        <div class="flex items-center justify-center" :style="{ width: '45px' }">
+          <UCheckbox
+            :model-value="table?.getIsSomeRowsSelected?.() ? 'indeterminate' : (table?.getIsAllRowsSelected?.() || false)"
+            @update:model-value="() => table?.toggleAllRowsSelected?.()"
+            :disabled="filteredTableData.length === 0"
+          />
+        </div>
+      </template>
+
+      <template #select-cell="{ row }">
+        <div class="flex items-center justify-center" :style="{ width: '30px' }">
+          <UCheckbox
+            :model-value="row?.getIsSelected?.() || false"
+            @update:model-value="() => row?.toggleSelected?.()"
+          />
+        </div>
+      </template>
+
       <template v-for="col in tableColumns" :key="`${col.id}-header`" #[`${col.id}-header`]="{ column }">
         <TableHeader 
           :column="column"
@@ -126,6 +157,7 @@ import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
 import Fuse from "fuse.js"
+import { formsApi } from "~/api/forms"
 
 const props = defineProps({
   data: {
@@ -142,21 +174,24 @@ const props = defineProps({
   },
 })
 
-defineEmits(["updated", "deleted"])
+const emit = defineEmits(["updated", "deleted", "multi-delete"])
 
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
 
+// Check if the user can modify the table
+const canModify = computed(() => (workspace && !workspace.is_readonly))
+
 // Initialize table state (includes preferences internally)
 const tableState = useTableState(
   computed(() => props.form),
-  workspace && !workspace.is_readonly
+  canModify.value
 )
 
 const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, handleColumnResize: handleColumnResizeState } = tableState
 
 const tableColumns = computed(() => {
-  return allColumns.value.filter(column => column.id !== 'actions')
+  return allColumns.value.filter(column => !['actions', 'select'].includes(column.id))
 })
 
 const fieldComponents = {
@@ -189,6 +224,40 @@ const maxHeight = ref('800px') // fallback default
 const search = ref("")
 const debouncedSearch = refDebounced(search, 300)
 const selectedStatus = ref('all')
+const alert = useAlert()
+
+// Table row selection
+const rowSelection = ref({})
+const multiDeleteLoading = ref(false)
+const selectedIds = computed(() => {
+  return table.value?.tableApi?.getFilteredSelectedRowModel()?.rows.map(row => row.original.id) || []
+})
+const clearSelection = () => {
+  rowSelection.value = {}
+}
+const onDeleteMultiClick = () => {
+  alert.confirm(`Do you really want to delete selected ${selectedIds.value.length} record${selectedIds.value.length > 1 ? 's' : ''}?`, deleteMultiRecord)
+}
+const deleteMultiRecord = () => {
+  multiDeleteLoading.value = true
+  formsApi.submissions.deleteMulti(props.form.id, selectedIds.value)
+    .then((data) => {
+      multiDeleteLoading.value = false
+      clearSelection()
+      if (data.type === "success") {
+        emit('multi-delete', selectedIds.value)
+        alert.success(data.message)
+      } else {
+        alert.error("Something went wrong!")
+      }
+    })
+    .catch((error) => {
+      multiDeleteLoading.value = false
+      clearSelection()
+      alert.error(error.data.message)
+    })
+}
+
 
 const statusList = [
   { label: 'All', value: 'all' },
