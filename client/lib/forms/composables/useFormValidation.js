@@ -23,7 +23,13 @@ export function useFormValidation(formConfig, form, managerState) {
     const validationUrl = `/forms/${config.slug}/answer` // Use reactive config
 
     // Use the reactive formRef
-    await formRef.value.validate(httpMethod, validationUrl, {}, fieldIds)
+    try {
+      await formRef.value.validate(httpMethod, validationUrl, {}, fieldIds)
+    } catch (error) {
+      console.error('Validation error:', error)
+      useAlert().formValidationError(error.data)
+      throw error
+    }
     return true // Validation passed
   }
 

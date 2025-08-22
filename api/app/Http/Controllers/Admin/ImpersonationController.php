@@ -26,18 +26,20 @@ class ImpersonationController extends Controller
         }
 
         AdminController::log('Impersonation started', [
-            'from_id' => auth()->id(),
-            'from_email' => auth()->user()->email,
-            'target_id' => $user->id,
-            'target_email' => $user->id,
+            'impersonated_user' => $user->email . ' (' . $user->id . ')',
+            'target_is_blocked' => $user->is_blocked,
         ]);
 
-        $token = auth()->claims(
-            auth()->user()->admin ? [] : [
-                'impersonating' => true,
-                'impersonator_id' => auth()->id(),
-            ]
-        )->login($user);
+        // Enhanced JWT claims: admins get admin_impersonating, moderators get impersonating
+        $claims = auth()->user()->admin ? [
+            'admin_impersonating' => true,
+            'impersonator_id' => auth()->id(),
+        ] : [
+            'impersonating' => true,
+            'impersonator_id' => auth()->id(),
+        ];
+
+        $token = auth()->claims($claims)->login($user);
 
         return $this->success([
             'token' => $token,

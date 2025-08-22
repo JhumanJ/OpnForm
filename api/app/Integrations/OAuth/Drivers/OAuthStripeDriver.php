@@ -54,7 +54,7 @@ class OAuthStripeDriver implements OAuthDriver
 
     public function canCreateUser(): bool
     {
-        return true;
+        return false;
     }
 
     public function setRedirectUrl(string $url): OAuthDriver

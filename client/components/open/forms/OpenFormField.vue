@@ -190,6 +190,7 @@ const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const showHidden = computed(() => props.formManager?.strategy?.value?.display?.showHiddenFields || false)
 const enableDisabledFields = computed(() => props.formManager?.strategy?.value?.display?.enableDisabledFields || false)
+const isReadOnlyMode = computed(() => props.formManager?.strategy?.value?.display?.disableFields || false)
 
 // Setup stores and reactive state
 const workingFormStore = useWorkingFormStore()
@@ -256,6 +257,7 @@ const isFieldRequired = computed(() =>
 )
 
 const isFieldDisabled = computed(() => {
+  if (isReadOnlyMode.value) return true
   if (enableDisabledFields.value) return false
   return (new FormLogicPropertyResolver(props.field, dataForm.value)).isDisabled()
 })
@@ -365,6 +367,12 @@ function inputProperties(field) {
     inputProperties.multiple = (field.type === 'multi_select')
     inputProperties.allowCreation = (field.allow_creation === true)
     inputProperties.searchable = (inputProperties.options.length > 4)
+    
+    // Add min/max selection constraints for multi_select
+    if (field.type === 'multi_select') {
+      inputProperties.minSelection = field.min_selection || null
+      inputProperties.maxSelection = field.max_selection || null
+    }
   } else if (field.type === 'date') {
     inputProperties.dateFormat = field.date_format
     inputProperties.timeFormat = field.time_format

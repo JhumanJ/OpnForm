@@ -67,7 +67,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
         // Log to both default channel and Slack
         if (!in_array(\App::environment(), ['testing'])) {
-            Log::channel('combined')->warning(
+            Log::channel('slack_errors')->warning(
                 'Frontend validation bypass detected in form submission',
                 $logData
             );
@@ -128,9 +128,9 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'custom_code' => 'string|nullable',
 
             // Submission
-            'submit_button_text' => 'string|min:1|max:50',
+            'submit_button_text' => 'nullable|string|max:50',
             're_fillable' => 'boolean',
-            're_fill_button_text' => 'string|min:1|max:50',
+            're_fill_button_text' => 'nullable|string|max:50',
             'submitted_text' => 'string|max:2000',
             'redirect_url' => 'nullable|string',
             'database_fields_update' => 'nullable|array',
@@ -184,6 +184,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Select / Multi Select field
             'properties.*.allow_creation' => 'boolean|nullable',
             'properties.*.without_dropdown' => 'boolean|nullable',
+            'properties.*.min_selection' => 'integer|nullable|min:0',
+            'properties.*.max_selection' => 'integer|nullable|min:1',
 
             // Advanced Options
             'properties.*.generates_uuid' => 'boolean|nullable',

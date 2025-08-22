@@ -30,7 +30,6 @@ class FormController extends Controller
 
         AdminController::log('Restore deleted form', [
             'form_id' => $form->id,
-            'moderator_id' => auth()->id()
         ]);
 
         return  $this->success(['message' => 'Form restored successfully']);

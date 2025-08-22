@@ -101,7 +101,7 @@
           <OpenCompleteForm
             ref="open-complete-form"
             :form="form"
-            :mode="FormMode.TEST"
+            :mode="FormMode.TEMPLATE"
             class="mb-4 p-4 bg-neutral-50 border border-neutral-200 border-dashed rounded-lg"
           />
         </div>
@@ -141,7 +141,7 @@
               v-html="template.description"
             />
 
-            <template v-if="template.questions.length > 0">
+            <template v-if="template.questions?.length > 0">
               <hr class="mt-12 border-neutral-200">
               <div>
                 <div class="text-center">

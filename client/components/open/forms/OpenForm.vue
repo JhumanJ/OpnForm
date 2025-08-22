@@ -56,9 +56,9 @@
         native-type="button"
         :form="form"
         class="mt-2 px-8 mx-1"
-        @click="handlePreviousClick"
+        @click.stop="handlePreviousClick"
       >
-        {{ previousFieldsPageBreak.previous_btn_text }}
+        {{ previousFieldsPageBreak.previous_btn_text || $t('forms.buttons.previous') }}
       </open-form-button>
 
       <slot
@@ -74,7 +74,7 @@
         :loading="isProcessing"
         @click.stop="handleNextClick"
       >
-        {{ currentFieldsPageBreak.next_btn_text }}
+        {{ currentFieldsPageBreak.next_btn_text || $t('forms.buttons.next') }}
       </open-form-button>
       <div v-if="!currentFieldsPageBreak && !isLastPage">
         {{ $t('forms.wrong_form_structure') }}

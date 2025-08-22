@@ -7,14 +7,8 @@ export function useOAuth() {
   const alert = useAlert()
 
   // Constants
-  const googleDrivePermission = {
-    scope: 'https://www.googleapis.com/auth/drive.file',
-    access_type: 'offline',
-    prompt: 'consent',
-    response_type: 'code',
-    approval_prompt: 'force'
-  }
-
+  const googleDrivePermissionFileScope = 'https://www.googleapis.com/auth/drive.file'
+  
   // Service definitions
   const services = computed(() => {
     return [
@@ -235,19 +229,12 @@ export function useOAuth() {
   })
 
   // Utility functions
-  const prefetchProviders = () => {
-    return queryClient.prefetchQuery({
-      queryKey: ['oauth', 'providers'],
-      queryFn: () => oauthApi.list()
-    })
-  }
-
   const invalidateProviders = () => {
-    queryClient.invalidateQueries(['oauth', 'providers'])
+    queryClient.invalidateQueries({ queryKey: ['oauth', 'providers'] })
   }
 
   const invalidateProvider = (providerId) => {
-    queryClient.invalidateQueries(['oauth', 'providers', providerId])
+    queryClient.invalidateQueries({ queryKey: ['oauth', 'providers', providerId] })
   }
 
   const getProviderByService = (service) => {
@@ -265,7 +252,7 @@ export function useOAuth() {
 
   return {
     // Constants
-    googleDrivePermission,
+    googleDrivePermissionFileScope,
     
     // Service definitions
     services,
@@ -288,7 +275,6 @@ export function useOAuth() {
     redirect,
     
     // Utilities
-    prefetchProviders,
     invalidateProviders,
     invalidateProvider,
     getProviderByService

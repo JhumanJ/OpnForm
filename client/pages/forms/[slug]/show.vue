@@ -202,8 +202,8 @@ const slug = route.params.slug
 const { current: workspaceRef } = useCurrentWorkspace()
 const workspace = workspaceRef.value
 
-// Get form by slug
-const { data: form, isLoading: isFormLoading, isFetched: isFormFinished } = formDetail(slug)
+// Get form by slug using private authenticated endpoint
+const { data: form, isLoading: isFormLoading, isFetched: isFormFinished } = formDetail(slug, { usePrivate: true })
 
 // Combined loading state
 const isLoading = computed(() => isFormLoading.value)

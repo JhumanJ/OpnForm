@@ -1,6 +1,6 @@
 import { h } from 'vue'
 
-export function useAlert () {
+export function useAlert() {
 
   function success (message, autoClose = 10000, options = {}) {
     if (typeof message === 'object' && message !== null) {
@@ -68,7 +68,8 @@ export function useAlert () {
   }
 
   function validationError(error, autoClose = 10000, options = {}) {
-    const message = error.message || 'Validation Error'
+    const t = useNuxtApp().$i18n.t
+    const message = error.message || t('forms.validation_error')
     let description = message
 
     if (error.errors) {
@@ -83,7 +84,7 @@ export function useAlert () {
 
     return useToast().add({
       icon: 'i-heroicons-x-circle',
-      title: options.title ?? 'Validation Error',
+      title: options.title ?? t('forms.validation_error'),
       description,
       color: 'error',
       duration: autoClose,
@@ -96,6 +97,8 @@ export function useAlert () {
       return error(error.message || 'An unknown validation error occurred', autoClose, options)
     }
 
+    const t = useNuxtApp().$i18n.t
+    
     // Count total errors
     const errorCount = Object.keys(error.errors).length
 
@@ -114,8 +117,8 @@ export function useAlert () {
 
     // Add count of errors to the title
     const title = options.title || (errorCount > 1 
-      ? `Validation Error (${errorCount} fields)` 
-      : 'Validation Error')
+      ? t('forms.validation_error_with_count', { count: errorCount })
+      : t('forms.validation_error'))
 
     return useToast().add({
       icon: 'i-heroicons-x-circle',

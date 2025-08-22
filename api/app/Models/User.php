@@ -149,14 +149,14 @@ class User extends Authenticatable implements JWTSubject
         return !is_null($this->blocked_at);
     }
 
-    public function blockUser(string $reason, int $moderatorId): void
+    public function blockUser(string $reason, ?int $moderatorId): void
     {
         $this->blocked_at = now();
         $history = $this->meta['blocking_history'] ?? [];
         $history[] = [
             'reason' => $reason,
             'blocked_at' => $this->blocked_at,
-            'blocked_by' => $moderatorId,
+            'blocked_by' => $moderatorId ?? null,
             'unblock_reason' => null,
             'unblocked_at' => null,
             'unblocked_by' => null,
