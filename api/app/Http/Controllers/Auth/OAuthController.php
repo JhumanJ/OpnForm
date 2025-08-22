@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\Traits\ManagesJWT;
 use App\Http\Resources\OAuthProviderResource;
+use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
+use App\Integrations\OAuth\Drivers\OAuthGoogleDriver;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Service\OAuth\OAuthUserService;
 use App\Service\OAuth\OAuthProviderService as OAuthProviderServiceClass;
@@ -23,8 +25,7 @@ class OAuthController extends Controller
     public function __construct(
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {
-    }
+    ) {}
 
     /**
      * Redirect the user to the provider authentication page.
@@ -32,14 +33,22 @@ class OAuthController extends Controller
     public function redirect(Request $request, string $provider)
     {
         $request->validate([
-            'intent' => 'required|in:auth,integration'
+            'intent' => 'required|in:auth,integration',
+            'invite_token' => 'sometimes|string',
         ]);
 
         $providerService = OAuthProviderService::from($provider);
         $intent = $request->input('intent');
+        $inviteToken = $request->input('invite_token');
 
         // Validate intent requirements
         $this->validateIntentRequirements($intent, $providerService);
+
+        // Validate invite token and get invited email if provided
+        $invitedEmail = null;
+        if ($inviteToken && $intent === self::INTENT_AUTH) {
+            $invitedEmail = $this->validateInviteToken($inviteToken);
+        }
 
         $scopes = $providerService->getDriver()->getScopesForIntent($intent);
 
@@ -53,20 +62,27 @@ class OAuthController extends Controller
             Cache::put("oauth-context:" . Auth::id(), $context, now()->addMinutes(5));
         } else {
             // For auth, store UTM data
-            Cache::put("oauth-context:auth:" . session()->getId(), [
+            $this->setCacheContextAuth([
                 'intent' => $intent,
-                'utm_data' => $request->input('utm_data')
-            ], now()->addMinutes(5));
+                'utm_data' => $request->input('utm_data'),
+                'invited_email' => $invitedEmail
+            ]);
         }
 
-        $url = $this->getRedirectUrl($providerService, $scopes);
+        // Set email restrictions on the driver if it's Google and we have an invited email
+        $driver = $providerService->getDriver();
+        if ($provider === 'google' && $invitedEmail && $driver instanceof OAuthGoogleDriver) {
+            $driver->setEmailRestrictions([$invitedEmail]);
+        }
+
+        $url = $this->getRedirectUrl($driver, $scopes);
         return response()->json(['url' => $url]);
     }
 
     /**
      * Handle the OAuth callback from the provider.
      */
-    public function callback(string $provider)
+    public function callback(string $provider, Request $request)
     {
         $providerService = OAuthProviderService::from($provider);
 
@@ -76,7 +92,14 @@ class OAuthController extends Controller
         // Determine intent from cached context
         $intent = $this->getIntentFromContext();
 
-        return $this->handleIntent($intent, $providerService, $userData);
+        // For auth intent with invite token, validate and set cache context
+        $invitedEmail = null;
+        $inviteToken = $request->input('invite_token');
+        if ($inviteToken && $intent === self::INTENT_AUTH) {
+            $invitedEmail = $this->validateInviteToken($inviteToken);
+        }
+
+        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
     }
 
     /**
@@ -85,28 +108,46 @@ class OAuthController extends Controller
     public function handleWidgetCallback(string $service, Request $request)
     {
         $request->validate([
-            'intent' => 'required|in:auth,integration'
+            'intent' => 'required|in:auth,integration',
+            'invite_token' => 'sometimes|string',
         ]);
 
         $providerService = OAuthProviderService::from($service);
         $intent = $request->input('intent');
+        $inviteToken = $request->input('invite_token');
 
         // Validate intent requirements
         $this->validateIntentRequirements($intent, $providerService);
 
+        // For auth intent with invite token, validate and set cache context
+        $invitedEmail = null;
+        if ($inviteToken && $intent === self::INTENT_AUTH) {
+            $invitedEmail = $this->validateInviteToken($inviteToken);
+        }
+
         // Get user data from widget
         $userData = $this->getUserDataFromWidget($providerService, $request);
 
-        return $this->handleIntent($intent, $providerService, $userData);
+        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+    }
+
+    private function setCacheContextAuth(array $context)
+    {
+        Cache::put("oauth-context:auth:" . session()->getId(), $context, now()->addMinutes(5));
+    }
+
+    private function getCacheContextAuth(): array
+    {
+        return Cache::get("oauth-context:auth:" . session()->getId(), []);
     }
 
     /**
      * Handle intent-based flow
      */
-    private function handleIntent(string $intent, OAuthProviderService $providerService, array $userData)
+    private function handleIntent(string $intent, OAuthProviderService $providerService, array $userData, ?string $inviteToken = null, ?string $invitedEmail = null)
     {
         return match ($intent) {
-            self::INTENT_AUTH => $this->handleAuthenticationFlow($providerService, $userData),
+            self::INTENT_AUTH => $this->handleAuthenticationFlow($providerService, $userData, $inviteToken, $invitedEmail),
             self::INTENT_INTEGRATION => $this->handleIntegrationFlow($providerService, $userData),
             default => abort(400, 'Invalid intent')
         };
@@ -115,10 +156,15 @@ class OAuthController extends Controller
     /**
      * Handle authentication flow (create user + authenticate)
      */
-    private function handleAuthenticationFlow(OAuthProviderService $providerService, array $userData)
+    private function handleAuthenticationFlow(OAuthProviderService $providerService, array $userData, ?string $inviteToken = null, ?string $invitedEmail = null)
     {
+        // Validate invite token restrictions for Google OAuth
+        if ($providerService === OAuthProviderService::Google || $providerService === OAuthProviderService::GoogleOneTap) {
+            $this->validateInviteEmailRestrictions($userData['email'], $invitedEmail);
+        }
+
         // Find or create user
-        $user = $this->oauthUserService->findOrCreateUser($userData, $providerService);
+        $user = $this->oauthUserService->findOrCreateUser($userData, $providerService, $inviteToken);
 
         // Create/update OAuth provider record
         $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
@@ -210,7 +256,7 @@ class OAuthController extends Controller
         }
 
         // Try session context for auth flows
-        $context = Cache::get("oauth-context:auth:" . session()->getId());
+        $context = $this->getCacheContextAuth();
         if ($context && isset($context['intent'])) {
             return $context['intent'];
         }
@@ -219,14 +265,42 @@ class OAuthController extends Controller
         return self::INTENT_AUTH;
     }
 
-    private function getRedirectUrl(OAuthProviderService $provider, array $scopes = []): string
+    private function getRedirectUrl(OAuthDriver $driver, array $scopes = []): string
     {
-        $driver = $provider->getDriver();
-
         if (!empty($scopes)) {
             $driver->setScopes($scopes);
         }
 
         return $driver->getRedirectUrl();
+    }
+
+    /**
+     * Validate invite token and return invited email
+     */
+    private function validateInviteToken(string $inviteToken): string
+    {
+        $userInvite = \App\Models\UserInvite::where('token', $inviteToken)
+            ->where('status', \App\Models\UserInvite::PENDING_STATUS)
+            ->first();
+
+        if (!$userInvite) {
+            abort(400, 'Invalid invite token');
+        }
+
+        if ($userInvite->hasExpired()) {
+            abort(400, 'Invite token has expired');
+        }
+
+        return $userInvite->email;
+    }
+
+    /**
+     * Validate email matches invited email for OAuth authentication
+     */
+    private function validateInviteEmailRestrictions(string $email, ?string $invitedEmail = null): void
+    {
+        if ($invitedEmail && $email !== $invitedEmail) {
+            abort(400, 'You must login with the invited email address: ' . $invitedEmail);
+        }
     }
 }

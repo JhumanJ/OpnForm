@@ -12,6 +12,7 @@ class OAuthGoogleDriver implements OAuthDriver
 {
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
+    private array $allowedEmails = [];
 
     protected GoogleProvider $provider;
 
@@ -22,14 +23,21 @@ class OAuthGoogleDriver implements OAuthDriver
 
     public function getRedirectUrl(): string
     {
+        $additionalParams = [
+            'access_type' => 'offline',
+            'prompt' => 'consent select_account'
+        ];
+
+        // Add login hint for specific email (use first allowed email if available)
+        if (!empty($this->allowedEmails)) {
+            $additionalParams['login_hint'] = $this->allowedEmails[0];
+        }
+
         return $this->provider
             ->scopes($this->scopes ?? [])
             ->stateless()
             ->redirectUrl($this->redirectUrl ?? config('services.google.redirect'))
-            ->with([
-                'access_type' => 'offline',
-                'prompt' => 'consent select_account'
-            ])
+            ->with($additionalParams)
             ->redirect()
             ->getTargetUrl();
     }
@@ -66,5 +74,12 @@ class OAuthGoogleDriver implements OAuthDriver
             'integration' => ['openid', 'profile', 'email', Sheets::DRIVE_FILE],
             default => ['openid', 'profile', 'email'],
         };
+    }
+
+    // Set email restrictions for Google OAuth
+    public function setEmailRestrictions(array $allowedEmails = []): self
+    {
+        $this->allowedEmails = $allowedEmails;
+        return $this;
     }
 }
