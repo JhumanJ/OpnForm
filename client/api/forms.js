@@ -1,6 +1,9 @@
 import { apiService } from './base'
 
 export const formsApi = {
+  // Form views
+  view: (slug, options) => apiService.get(`/forms/${slug}/view`, options),
+
   // Form operations
   list: (workspaceId, options) => apiService.get(`/open/workspaces/${workspaceId}/forms`, options),
   get: (slug, options) => apiService.get(`/open/forms/${slug}`, options),
