@@ -5,10 +5,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Provide refresh capability
   nuxtApp.provide('refreshFeatureFlags', async () => {
     try {
-      const { contentApi } = await import('~/api/content')
-      const newFlags = await contentApi.featureFlags.list()
-      featureFlagsState.value = newFlags
-      return newFlags
+      // Force fresh fetch by adding cache-busting timestamp
+      const flags = await $fetch(`/api/feature-flags?t=${Date.now()}`)
+      featureFlagsState.value = flags
+      return flags
     } catch (error) {
       console.error('Failed to refresh feature flags:', error)
       throw error
