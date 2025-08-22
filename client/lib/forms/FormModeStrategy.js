@@ -34,7 +34,8 @@ export function createFormModeStrategy(mode) {
       enableDisabledFields: false,
       showFormCleanings: true,
       showFontLink: false,
-      showBranding: true
+      showBranding: true,
+      disableFields: false
     },
     
     // Admin behaviors
@@ -107,6 +108,15 @@ export function createFormModeStrategy(mode) {
       strategy.validation.validateOnNextPage = false
       strategy.submission.enablePartialSubmissions = false
       strategy.display.showBranding = false
+      break
+
+    case FormMode.READ_ONLY:
+      // Read only mode - no validation, no submission, fields are disabled
+      strategy.validation.validateOnNextPage = false
+      strategy.validation.validateOnSubmit = false
+      strategy.validation.performActualSubmission = false
+      strategy.display.disableFields = true
+      strategy.submission.enablePartialSubmissions = false
       break
     
   }
