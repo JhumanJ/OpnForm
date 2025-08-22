@@ -1,5 +1,5 @@
 // Cached server API route for feature flags
-export default defineCachedEventHandler(async (event) => {
+export default defineCachedEventHandler(async () => {
   const config = useRuntimeConfig()
   
   // Call Laravel API directly with proper headers
