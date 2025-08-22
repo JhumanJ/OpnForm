@@ -150,7 +150,8 @@
         <div class="flex justify-center" :style="{ width: `var(--col-actions-size, auto)` }">
           <RecordOperations
             :form="form"
-            :submission="row.original"
+            :submission-id="row.original.id"
+            :data="sortedData"
             @deleted="(submission) => $emit('deleted', submission)"
             @updated="(submission) => $emit('updated', submission)"
           />
@@ -298,6 +299,11 @@ const statusList = [
   { label: 'Submitted', value: 'completed' },
   { label: 'In Progress', value: 'partial' }
 ]
+
+// Default sort by created_at desc
+const sortedData = computed(() => {
+  return props.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+})
 
 // Replace with simple data pass-through:
 const filteredTableData = computed(() => props.data || [])
