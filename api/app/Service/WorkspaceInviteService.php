@@ -11,7 +11,7 @@ class WorkspaceInviteService
 {
     /**
      * Get workspace and role based on provided data
-     * 
+     *
      * @param array $data Must contain 'email' and optionally 'invite_token'
      * @return array [Workspace $workspace, string $role]
      * @throws HttpResponseException

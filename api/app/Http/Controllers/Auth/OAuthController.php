@@ -25,7 +25,8 @@ class OAuthController extends Controller
     public function __construct(
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {}
+    ) {
+    }
 
     /**
      * Redirect the user to the provider authentication page.
