@@ -42,11 +42,19 @@ const handleCallback = async () => {
   const provider = route.params.provider
   
   try {
+    let payloadData = {
+      code: route.query.code,
+      utm_data: $utm.value
+    }
+    // Get invite token from localStorage if it was stored during OAuth initiation
+    const inviteToken = localStorage.getItem('oauth_invite_token')
+    if (inviteToken) {
+      payloadData.invite_token = inviteToken
+      localStorage.removeItem('oauth_invite_token')
+    }
+
     // Call the OAuth callback endpoint directly to get the raw response
-    const response = await authApi.oauth.callback(provider, { 
-      code: route.query.code, 
-      utm_data: $utm.value 
-    })
+    const response = await authApi.oauth.callback(provider, payloadData)
 
     // Check if this is an authentication response (has token) or integration response (has provider)
     if (response.token) {

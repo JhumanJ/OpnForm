@@ -135,13 +135,25 @@ const handleCredentialResponse = (response) => {
     return
   }
 
+  // Get invite token from URL params if present
+  const route = useRoute()
+  const inviteToken = route.query.invite_token
+
+  // Prepare request data
+  const requestData = { 
+    credential: response.credential,
+    intent: 'auth'
+  }
+
+  // Add invite token if present
+  if (inviteToken) {
+    requestData.invite_token = inviteToken
+  }
+
   // Send JWT to backend widget callback
   widgetCallbackMutation.mutateAsync({
     service: 'google_one_tap',
-    data: { 
-      credential: response.credential,
-      intent: 'auth'
-    }
+    data: requestData
   }).then((response) => {
     // Handle both authentication and integration responses
     if (response.token) {
@@ -152,7 +164,7 @@ const handleCredentialResponse = (response) => {
     }
   }).catch((error) => {
     console.error('Google One Tap authentication error:', error)
-    useAlert().error(error.response?.data?.message || 'Google One Tap authentication failed')
+    useAlert().error(error.response?._data?.message || 'Google One Tap authentication failed')
   })
 }
 

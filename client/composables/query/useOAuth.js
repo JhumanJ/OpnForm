@@ -101,13 +101,18 @@ export function useOAuth() {
   }
 
   // Guest connect method
-  const guestConnect = (service, redirect = false) => {
+  const guestConnect = (service, redirect = false, additionalData = {}) => {
     const intention = new URL(window.location.href).pathname
 
     return oauthApi.redirect(service, {
       ...redirect ? { intention } : {},
+      ...additionalData
     })
       .then((data) => {
+        // If we have invite_token in additionalData store it in localStorage
+        if (additionalData.invite_token) {
+          localStorage.setItem('oauth_invite_token', additionalData.invite_token)
+        }
         window.open(data.url, '_blank')
       })
       .catch((error) => {
