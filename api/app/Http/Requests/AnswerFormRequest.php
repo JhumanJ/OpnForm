@@ -45,8 +45,8 @@ class AnswerFormRequest extends FormRequest
      */
     public function authorize()
     {
-        // Allow always if user is authenticated
-        if (Auth::check()) {
+        // If from edit submission
+        if ($this->route()->getName() === 'open.forms.submissions.update' && Auth::check()) {
             return true;
         }
 
