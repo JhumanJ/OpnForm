@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Stevebauman\Purify\Facades\Purify;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerFormRequest extends FormRequest
 {
@@ -44,6 +45,11 @@ class AnswerFormRequest extends FormRequest
      */
     public function authorize()
     {
+        // If from edit submission
+        if ($this->route()->getName() === 'open.forms.submissions.update' && Auth::check()) {
+            return true;
+        }
+
         return !$this->form->is_closed && !$this->form->max_number_of_submissions_reached && $this->form->visibility === 'public';
     }
 

@@ -30,7 +30,7 @@ services:
       SESSION_DRIVER: file
       QUEUE_CONNECTION: sync
       # Storage settings
-      FILESYSTEM_DISK: local
+      FILESYSTEM_DRIVER: local
       LOCAL_FILESYSTEM_VISIBILITY: public
       # Mail settings (development - uses log driver)
       MAIL_MAILER: log
