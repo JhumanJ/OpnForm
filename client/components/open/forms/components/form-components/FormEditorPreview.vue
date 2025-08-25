@@ -90,13 +90,7 @@
             </div>
           </div>
         </transition>
-        <div v-if="recordLoading">
-          <p class="text-center p-4">
-            <loader class="h-6 w-6 text-blue-500 mx-auto" />
-          </p>
-        </div>
         <open-complete-form
-          v-show="!recordLoading"
           ref="formPreview"
           class="w-full mx-auto py-5"
           :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
@@ -115,7 +109,6 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import OpenCompleteForm from '../../OpenCompleteForm.vue'
 import {handleDarkMode, useDarkMode} from "~/lib/forms/public-page.js"
-import { useRecordsStore } from '~/stores/records'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { storeToRefs } from 'pinia'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
@@ -124,7 +117,6 @@ import TrackClick from '~/components/global/TrackClick.vue'
 
 const { hideChat, showChat } = useCrisp()
 
-const recordsStore = useRecordsStore()
 const workingFormStore = useWorkingFormStore()
 
 const parent = ref(null)
@@ -140,7 +132,6 @@ watch(isExpanded, (expanded) => {
 })
 
 const { content: form } = storeToRefs(workingFormStore)
-const recordLoading = computed(() => recordsStore.loading)
 const darkMode = useDarkMode(parent)
 
 // Use PREVIEW mode when not expanded, TEST mode when expanded

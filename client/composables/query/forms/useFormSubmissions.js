@@ -1,4 +1,4 @@
-import { useQueryClient, useQuery, useMutation } from '@tanstack/vue-query'
+import { useQueryClient, useQuery, useMutation, keepPreviousData } from '@tanstack/vue-query'
 import { formsApi } from '~/api/forms'
 
 export function useFormSubmissions() {
@@ -31,6 +31,104 @@ export function useFormSubmissions() {
       },
       ...options
     })
+  }
+
+  const paginatedList = (formId, options = {}) => {
+    const page = ref(1)
+    const search = ref('')
+    const status = ref('all')
+    const perPage = ref(100)
+
+    // Debounced search (500ms)
+    const debouncedSearch = refDebounced(search, 500)
+
+    // Query key changes trigger refetch
+    const queryKey = computed(() => [
+      'forms',
+      toValue(formId),
+      'submissions',
+      'paginated',
+      page.value,
+      debouncedSearch.value,
+      status.value,
+      perPage.value
+    ])
+
+    const query = useQuery({
+      queryKey,
+      queryFn: async () => {
+        const params = {
+          page: page.value,
+          per_page: perPage.value
+        }
+
+        if (debouncedSearch.value) {
+          params.search = debouncedSearch.value
+        }
+
+        if (status.value !== 'all') {
+          params.status = status.value
+        }
+
+        return await formsApi.submissions.list(toValue(formId), { query: params })
+      },
+      placeholderData: keepPreviousData,
+      staleTime: 30000, // 30 seconds
+      enabled: computed(() => !!toValue(formId)),
+      ...options
+    })
+
+    // Computed properties
+    const submissions = computed(() =>
+      query.data.value?.data?.map(record => record.data) || []
+    )
+
+    const pagination = computed(() => query.data.value?.meta || null)
+
+    // Actions that reset to page 1
+    const setSearch = (value) => {
+      search.value = value
+      page.value = 1
+    }
+
+    const setStatus = (value) => {
+      status.value = value
+      page.value = 1
+    }
+
+    const setPage = (value) => {
+      page.value = value
+    }
+
+    // Reset when form changes
+    watch(() => toValue(formId), () => {
+      page.value = 1
+      search.value = ''
+      status.value = 'all'
+    })
+
+    return {
+      // Data
+      submissions,
+      pagination,
+
+      // States
+      isLoading: query.isLoading,
+      isFetching: query.isFetching,
+      isError: query.isError,
+      error: query.error,
+      isPlaceholderData: query.isPlaceholderData,
+
+      // Current values (readonly)
+      page: readonly(page),
+      search: readonly(search),
+      status: readonly(status),
+
+      // Actions
+      setSearch,
+      setStatus,
+      setPage
+    }
   }
 
   const submissionDetail = (slug, submissionId, options = {}) => {
@@ -115,6 +213,7 @@ export function useFormSubmissions() {
   return {
     submissions,
     paginatedSubmissions,
+    paginatedList,
     submissionDetail,
     updateSubmission,
     deleteSubmission,
