@@ -82,8 +82,20 @@ it('checks form stats details', function () {
         [] // Incomplete submission
     ]);
 
-    // Create form views
-    $form->views()->createMany(array_fill(0, 10, []));
+    // Create form views with metadata for testing aggregation
+    $form->views()->createMany([
+        ['meta' => ['source' => 'Google', 'device' => 'Desktop', 'country' => 'US', 'browser' => 'Chrome', 'os' => 'Windows']],
+        ['meta' => ['source' => 'Google', 'device' => 'Mobile', 'country' => 'US', 'browser' => 'Chrome', 'os' => 'Android']],
+        ['meta' => ['source' => 'Facebook', 'device' => 'Desktop', 'country' => 'UK', 'browser' => 'Firefox', 'os' => 'MacOS']],
+        ['meta' => ['source' => 'Direct', 'device' => 'Desktop', 'country' => 'CA', 'browser' => 'Safari', 'os' => 'MacOS']],
+        ['meta' => ['source' => 'Google', 'device' => 'Tablet', 'country' => 'US', 'browser' => 'Safari', 'os' => 'iOS']],
+        // Views with incomplete metadata (should default to 'Unknown')
+        ['meta' => ['source' => null]],
+        ['meta' => ['device' => null]],
+        ['meta' => []],  // Empty metadata object
+        ['meta' => null], // Null metadata
+        []  // No metadata field at all
+    ]);
 
     $this->getJson(route('open.workspaces.form.stats-details', [$workspace->id, $form->id]))
         ->assertSuccessful()
@@ -92,10 +104,33 @@ it('checks form stats details', function () {
                 ->has('submissions')
                 ->has('completion_rate')
                 ->has('average_duration')
+                ->has('meta_stats')
                 ->where('views', 10)
                 ->where('submissions', 6)
                 ->where('completion_rate', 60)
                 ->where('average_duration', '1m 24s')
+                // Test metadata aggregation
+                ->where('meta_stats.source.Google', 3)
+                ->where('meta_stats.source.Facebook', 1)
+                ->where('meta_stats.source.Direct', 1)
+                ->where('meta_stats.source.Unknown', 5)
+                ->where('meta_stats.device.Desktop', 3)
+                ->where('meta_stats.device.Mobile', 1)
+                ->where('meta_stats.device.Tablet', 1)
+                ->where('meta_stats.device.Unknown', 5)
+                ->where('meta_stats.country.US', 3)
+                ->where('meta_stats.country.UK', 1)
+                ->where('meta_stats.country.CA', 1)
+                ->where('meta_stats.country.Unknown', 5)
+                ->where('meta_stats.browser.Chrome', 2)
+                ->where('meta_stats.browser.Firefox', 1)
+                ->where('meta_stats.browser.Safari', 2)
+                ->where('meta_stats.browser.Unknown', 5)
+                ->where('meta_stats.os.Windows', 1)
+                ->where('meta_stats.os.Android', 1)
+                ->where('meta_stats.os.MacOS', 2)
+                ->where('meta_stats.os.iOS', 1)
+                ->where('meta_stats.os.Unknown', 5)
                 ->etc();
         });
 });
