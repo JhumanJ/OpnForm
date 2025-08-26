@@ -27,6 +27,7 @@ class EmailIntegration extends AbstractIntegrationHandler
             'include_submission_data' => 'boolean',
             'include_hidden_fields_submission_data' => ['nullable', 'boolean'],
             'reply_to' => 'nullable',
+            'link_edit_submission' => ['nullable', 'boolean']
         ];
 
         if ($form->is_pro || config('app.self_hosted')) {
