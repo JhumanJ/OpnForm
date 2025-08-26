@@ -45,14 +45,14 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => env('LOCAL_FILESYSTEM_ROOT', storage_path('app')),
             'visibility' => env('LOCAL_FILESYSTEM_VISIBILITY', 'private'),
             'directory_visibility' => env('LOCAL_FILESYSTEM_VISIBILITY', 'private'),
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => env('LOCAL_FILESYSTEM_ROOT', storage_path('app')) . '/public',
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],

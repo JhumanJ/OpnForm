@@ -4,6 +4,9 @@ main() {
     local COMMAND_AS_STRING="$*"
     local ROLE="api" # Default role
 
+    # Mount Supabase S3 before doing anything else
+    mount_supabase_s3
+
     case "$COMMAND_AS_STRING" in
         *"artisan queue:work"*)
             ROLE="worker"
@@ -47,6 +50,35 @@ main() {
     fi
 }
 
+mount_supabase_s3() {
+    local MNT_PATH="${LOCAL_FILESYSTEM_ROOT:-/mnt/supabase}"
+
+    mkdir -p "$MNT_PATH"
+
+    if ! mountpoint -q "$MNT_PATH"; then
+        echo "[entrypoint] Mounting Supabase S3 bucket with s3fs: ${AWS_BUCKET} -> $MNT_PATH"
+
+        # Write credentials to /etc/passwd-s3fs
+        echo "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" > /etc/passwd-s3fs
+        chmod 600 /etc/passwd-s3fs
+
+        # Mount with Supabase endpoint (reduced cache timeout to try and keep it in sync between servers)
+        # Ideas to improve: setup temp and cache folders on a fly volume
+        s3fs "${AWS_BUCKET}" "$MNT_PATH" \
+            -o passwd_file=/etc/passwd-s3fs \
+            -o url="${AWS_ENDPOINT}" \
+            -o use_path_request_style \
+            -o allow_other \
+            -o nonempty \
+            -o stat_cache_expire=30 &
+
+        sleep 2
+    else
+        echo "[entrypoint] $MNT_PATH already mounted."
+    fi
+}
+
+
 apply_php_configuration() {
     echo "Applying PHP configuration from environment variables"
     
@@ -80,7 +112,7 @@ apply_php_configuration() {
     else
         echo "post_max_size = 55M" >> $PHP_CUSTOM_CONFIG_FILE
     fi
-    
+
     # Log applied configuration
     echo "Applied PHP configuration:"
     cat $PHP_CUSTOM_CONFIG_FILE

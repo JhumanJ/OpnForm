@@ -40,6 +40,8 @@ RUN apk add --no-cache \
     unzip \
     bash \
     icu-libs \
+    fuse \
+    s3fs-fuse \
     && rm -rf /var/cache/apk/*
 
 # Install build dependencies and PHP extensions
