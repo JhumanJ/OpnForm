@@ -8,6 +8,7 @@ use App\Models\Forms\FormSubmission;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class FormStatsController extends Controller
 {
@@ -53,8 +54,8 @@ class FormStatsController extends Controller
             return $submissionsWithDuration > 0 ? round($totalDuration / $submissionsWithDuration) : null;
         });
 
-        // Aggregate metadata from form views
-        $metaStats = Cache::remember('form_stats_metadata_' . $form->id, 1800, function () use ($form) {
+        // Aggregate metadata from form views using single database query
+        $metaStats = Cache::remember('form_stats_metadata_' . $form->id, 3600, function () use ($form) {
             $metadataFields = [
                 'source',
                 'device',
@@ -63,21 +64,50 @@ class FormStatsController extends Controller
                 'os'
             ];
 
-            $collections = [];
+            // Determine JSON extraction syntax based on database type
+            $isMySQL = config('database.default') === 'mysql';
+            $jsonExtractPattern = $isMySQL
+                ? "COALESCE(JSON_UNQUOTE(JSON_EXTRACT(meta, '$.%s')), 'Unknown')"
+                : "COALESCE(meta->>'%s', 'Unknown')";
+
+            // Build query with safe field binding
+            $query = DB::table('form_views')->where('form_id', $form->id);
+
+            $selectFields = [];
+            $groupByFields = [];
+
             foreach ($metadataFields as $field) {
-                $collections[$field] = [];
+                $extractExpression = sprintf($jsonExtractPattern, $field);
+                $selectFields[] = DB::raw("$extractExpression as $field");
+                $groupByFields[] = DB::raw($extractExpression);
             }
 
-            $views = $form->views()->whereNotNull('meta')->get();
-            foreach ($views as $view) {
-                $meta = $view->meta;
+            $results = $query
+                ->select(array_merge($selectFields, [DB::raw('COUNT(*) as count')]))
+                ->groupBy($groupByFields)
+                ->orderBy('count', 'desc')
+                ->get();
+
+            // Initialize stats arrays
+            $stats = [];
+            foreach ($metadataFields as $field) {
+                $stats[$field] = [];
+            }
+
+            // Aggregate results into stats arrays
+            foreach ($results as $row) {
                 foreach ($metadataFields as $field) {
-                    $value = $meta[$field] ?? 'Unknown';
-                    $collections[$field][$value] = ($collections[$field][$value] ?? 0) + 1;
+                    $value = $row->$field;
+                    $stats[$field][$value] = ($stats[$field][$value] ?? 0) + $row->count;
                 }
             }
 
-            return $collections;
+            // Sort each field by count (descending)
+            foreach ($metadataFields as $field) {
+                arsort($stats[$field]);
+            }
+
+            return $stats;
         });
 
         return [

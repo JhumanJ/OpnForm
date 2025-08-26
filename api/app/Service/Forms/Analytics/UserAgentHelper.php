@@ -3,19 +3,20 @@
 namespace App\Service\Forms\Analytics;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class UserAgentHelper
 {
     private $browser;
     private $request;
     private $userAgent;
+    private $ipLocationService;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, ?IpLocationService $ipLocationService = null)
     {
         $this->browser = new BrowserDetection();
         $this->request = $request;
         $this->userAgent = $request->userAgent() ?? '';
+        $this->ipLocationService = $ipLocationService ?? new IpLocationService();
     }
 
     public function getMetadata(): array
@@ -28,7 +29,7 @@ class UserAgentHelper
 
         // Return metadata
         return [
-            'ip' => $this->request->ip(),
+            'ip' => $this->getHashedIp(),
             'source' => ucfirst($this->getTrafficSource()),
             'device' => $result['device_type'],
             'browser' => $result['browser_name'],
@@ -73,19 +74,17 @@ class UserAgentHelper
         return preg_replace('/^www\./', '', $host);
     }
 
-    // Get Location from IP
+    // Get Location from IP (cached)
     public function getLocation(): array
     {
-        if (!config('services.ipinfo.token')) {
-            return [];
-        }
+        return $this->ipLocationService->getLocationData($this->request->ip());
+    }
 
-        $url = 'https://api.ipinfo.io/lite/' . $this->request->ip() . '?token=' . config('services.ipinfo.token');
-        $response = Http::get($url);
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return [];
+    // Get hashed IP with daily rotating salt for privacy
+    private function getHashedIp(): string
+    {
+        $ip = $this->request->ip();
+        $dailySalt = date('Y-m-d'); // Rotates daily
+        return hash('sha256', $ip . $dailySalt);
     }
 }

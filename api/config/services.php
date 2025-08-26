@@ -93,5 +93,7 @@ return [
 
     'ipinfo' => [
         'token' => env('IPINFO_TOKEN'),
+        'cache_ttl_hours' => env('IPINFO_CACHE_TTL_HOURS', 24),
+        'request_timeout' => env('IPINFO_REQUEST_TIMEOUT', 5),
     ],
 ];
