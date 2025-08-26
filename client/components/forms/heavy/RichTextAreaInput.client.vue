@@ -230,6 +230,7 @@ const quillOptions = computed(() => {
   const defaultOptions = {
     placeholder: props.placeholder || '',
     theme: 'snow',
+    formats: ['bold', 'italic', 'underline', 'strike', 'link', 'header', 'list', 'color'],
     modules: {
       toolbar: [
         [{ 'header': 1 }, { 'header': 2 }],
@@ -283,6 +284,7 @@ const modalQuillOptions = computed(() => {
   const defaultOptions = {
     placeholder: props.placeholder || '',
     theme: 'snow',
+    formats: ['bold', 'italic', 'underline', 'strike', 'link', 'header', 'list', 'color'],
     modules: {
       toolbar: [
         [{ 'header': 1 }, { 'header': 2 }],
