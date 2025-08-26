@@ -7,7 +7,8 @@ export const FormMode = {
   PREFILL: 'prefill',     // URL prefill preview with no validation
   EDIT: 'edit',           // Editing an existing submission
   TEST: 'test',           // Test mode with validation but no actual submission
-  TEMPLATE: 'template'    // Template mode with no validation
+  TEMPLATE: 'template',   // Template mode with no validation
+  READ_ONLY: 'read_only'  // Read only mode
 }
 
 /**
@@ -33,7 +34,8 @@ export function createFormModeStrategy(mode) {
       enableDisabledFields: false,
       showFormCleanings: true,
       showFontLink: false,
-      showBranding: true
+      showBranding: true,
+      disableFields: false
     },
     
     // Admin behaviors
@@ -106,6 +108,15 @@ export function createFormModeStrategy(mode) {
       strategy.validation.validateOnNextPage = false
       strategy.submission.enablePartialSubmissions = false
       strategy.display.showBranding = false
+      break
+
+    case FormMode.READ_ONLY:
+      // Read only mode - no validation, no submission, fields are disabled
+      strategy.validation.validateOnNextPage = false
+      strategy.validation.validateOnSubmit = false
+      strategy.validation.performActualSubmission = false
+      strategy.display.disableFields = true
+      strategy.submission.enablePartialSubmissions = false
       break
     
   }
