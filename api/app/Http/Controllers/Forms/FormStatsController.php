@@ -67,7 +67,8 @@ class FormStatsController extends Controller
             // Determine JSON extraction syntax based on database type
             $isMySQL = config('database.default') === 'mysql';
             $jsonExtractPattern = $isMySQL
-                ? "COALESCE(JSON_UNQUOTE(JSON_EXTRACT(meta, '$.%s')), 'Unknown')"
+                // Normalize empty string and literal 'null' to 'Unknown' in MySQL
+                ? "COALESCE(NULLIF(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(meta, '$.%s')), ''), 'null'), 'Unknown')"
                 : "COALESCE(meta->>'%s', 'Unknown')";
 
             // Build query with safe field binding
