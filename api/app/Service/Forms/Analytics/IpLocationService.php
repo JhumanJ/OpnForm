@@ -119,14 +119,6 @@ class IpLocationService
     }
 
     /**
-     * Clear all IP location cache (useful for maintenance)
-     */
-    public function clearAllCache(): bool
-    {
-        return Cache::flush(); // This clears all cache, be careful in production
-    }
-
-    /**
      * Get cache statistics (for monitoring)
      */
     public function getCacheStats(array $ips): array
