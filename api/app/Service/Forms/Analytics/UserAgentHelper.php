@@ -43,7 +43,12 @@ class UserAgentHelper
     {
         $referer = $this->request->header('Referer');
         $origin = $this->request->header('Origin');
-        if (!$referer || str_starts_with($referer, $origin)) {
+        if (!$referer) {
+            return 'Direct';
+        }
+
+        // Guard against null/empty origin to avoid errors in str_starts_with
+        if (is_string($origin) && $origin !== '' && str_starts_with($referer, $origin)) {
             return 'Direct';
         }
 
