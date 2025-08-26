@@ -56,7 +56,7 @@
         native-type="button"
         :form="form"
         class="mt-2 px-8 mx-1"
-        @click="handlePreviousClick"
+        @click.stop="handlePreviousClick"
       >
         {{ previousFieldsPageBreak.previous_btn_text || $t('forms.buttons.previous') }}
       </open-form-button>
