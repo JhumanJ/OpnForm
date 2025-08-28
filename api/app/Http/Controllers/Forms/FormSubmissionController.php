@@ -12,7 +12,6 @@ use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Http\Request;
@@ -89,8 +88,7 @@ class FormSubmissionController extends Controller
 
     public function submissionFile($id, $fileName)
     {
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id) . '/'
-            . urldecode($fileName);
+        $fileName = PublicFormController::getFileUploadPath($id, urldecode($fileName));
 
         if (! Storage::exists($fileName)) {
             return $this->error([

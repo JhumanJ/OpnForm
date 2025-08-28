@@ -25,6 +25,30 @@ class PublicFormController extends Controller
 
     public const TMP_FILE_UPLOAD_PATH = 'tmp/';
 
+    // Generate the file upload path for a specific form
+    public static function getFileUploadPath(int|string $formId, ?string $fileName = null): string
+    {
+        $path = Str::of(self::FILE_UPLOAD_PATH)->replace('?', $formId);
+
+        if ($fileName) {
+            $path = $path . '/' . $fileName;
+        }
+
+        return $path;
+    }
+
+    // Generate the temporary file upload path
+    public static function getTmpFileUploadPath(?string $fileName = null): string
+    {
+        $path = self::TMP_FILE_UPLOAD_PATH;
+
+        if ($fileName) {
+            $path = $path . $fileName;
+        }
+
+        return $path;
+    }
+
     public function show(Request $request, string $slug)
     {
         $form = Form::whereSlug($slug)->whereIn('visibility', ['public', 'closed'])->firstOrFail();
