@@ -41,7 +41,7 @@ class FormSubmissionResource extends JsonResource
     {
         $this->data = array_merge($this->data, [
             'status' => $this->status,
-            'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
+            'created_at' => $this->created_at->toDateTimeString(),
             'id' => $this->id,
         ]);
     }
