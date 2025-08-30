@@ -84,11 +84,21 @@ class User extends Authenticatable implements JWTSubject
 
     public function ownsForm(Form $form)
     {
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('workspaces')) {
+            return $this->workspaces->contains('id', $form->workspace_id);
+        }
+
         return $this->workspaces()->where('workspaces.id', $form->workspace_id)->exists();
     }
 
     public function ownsWorkspace(Workspace $workspace)
     {
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('workspaces')) {
+            return $this->workspaces->contains('id', $workspace->id);
+        }
+
         return $this->workspaces()->where('workspaces.id', $workspace->id)->exists();
     }
 

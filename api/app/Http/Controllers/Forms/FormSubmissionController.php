@@ -28,9 +28,8 @@ class FormSubmissionController extends Controller
         $this->middleware('signed', ['only' => ['submissionFile']]);
     }
 
-    public function submissions(string $id)
+    public function submissions(Form $form)
     {
-        $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
 
         $query = $form->submissions();
@@ -70,17 +69,16 @@ class FormSubmissionController extends Controller
         return FormSubmissionResource::collection($query->paginate($perPage));
     }
 
-    public function update(AnswerFormRequest $request, $id, $submissionId)
+    public function update(AnswerFormRequest $request, Form $form, $submission_id)
     {
-        $form = $request->form;
         $this->authorize('update', $form);
 
         $submissionData = $request->validated();
-        $submissionData['submission_id'] = $submissionId;
-        $job = new StoreFormSubmissionJob($request->form, $submissionData);
+        $submissionData['submission_id'] = $submission_id;
+        $job = new StoreFormSubmissionJob($form, $submissionData);
         $job->handle();
 
-        $data = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $data = new FormSubmissionResource(FormSubmission::findOrFail($submission_id));
 
         return $this->success([
             'message' => 'Record successfully updated.',
@@ -90,9 +88,8 @@ class FormSubmissionController extends Controller
 
     // ===== EXPORT METHODS =====
 
-    public function export(FormSubmissionExportRequest $request, string $id, FormExportService $exportService)
+    public function export(FormSubmissionExportRequest $request, Form $form, FormExportService $exportService)
     {
-        $form = $request->form;
         $this->authorize('view', $form);
 
         $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
@@ -106,9 +103,8 @@ class FormSubmissionController extends Controller
         return $this->processSyncExport($form, $displayColumns, $exportService);
     }
 
-    public function exportStatus(string $id, string $jobId, FormExportService $exportService)
+    public function exportStatus(Form $form, string $jobId, FormExportService $exportService)
     {
-        $form = Form::findOrFail((int) $id);
         $this->authorize('view', $form);
 
         $cacheKey = $exportService->getCacheKey($jobId);
@@ -155,10 +151,10 @@ class FormSubmissionController extends Controller
         );
     }
 
-    public function submissionFile($id, $fileName)
+    public function submissionFile(Form $form, $filename)
     {
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id) . '/'
-            . urldecode($fileName);
+        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id) . '/'
+            . urldecode($filename);
 
         if (! Storage::exists($fileName)) {
             return $this->error([
@@ -175,12 +171,11 @@ class FormSubmissionController extends Controller
         );
     }
 
-    public function destroy($id, $submissionId)
+    public function destroy(Form $form, $submission_id)
     {
-        $form = Form::findOrFail((int) $id);
         $this->authorize('delete', $form);
 
-        $submission = $form->submissions()->where('id', $submissionId)->firstOrFail();
+        $submission = $form->submissions()->where('id', $submission_id)->firstOrFail();
         $submission->delete();
 
         return $this->success([
@@ -188,7 +183,7 @@ class FormSubmissionController extends Controller
         ]);
     }
 
-    public function destroyMulti(Request $request, $id)
+    public function destroyMulti(Request $request, Form $form)
     {
         $request->validate([
             'submissionIds' => 'required|array',
@@ -196,7 +191,6 @@ class FormSubmissionController extends Controller
             'submissionIds.*' => 'exists:form_submissions,id',
         ]);
 
-        $form = Form::findOrFail((int) $id);
         $this->authorize('delete', $form);
 
         $submissionIds = $request->submissionIds;

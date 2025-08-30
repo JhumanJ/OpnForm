@@ -50,9 +50,8 @@ class WorkspaceController extends Controller
         return new WorkspaceResource($request->workspace);
     }
 
-    public function delete($id)
+    public function delete(Workspace $workspace)
     {
-        $workspace = Workspace::findOrFail($id);
         $this->authorize('delete', $workspace);
 
         $id = $workspace->id;
@@ -94,9 +93,8 @@ class WorkspaceController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Workspace $workspace)
     {
-        $workspace = Auth::user()->workspaces()->findOrFail($id);
         $this->authorize('update', $workspace);
 
         $this->validate($request, [

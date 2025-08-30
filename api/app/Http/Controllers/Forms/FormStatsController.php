@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStatsRequest;
 use App\Models\Forms\FormSubmission;
+use App\Models\Workspace;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Forms\Form;
 
 class FormStatsController extends Controller
 {
@@ -16,9 +18,8 @@ class FormStatsController extends Controller
         $this->middleware('auth');
     }
 
-    public function getFormStats(FormStatsRequest $request)
+    public function getFormStats(FormStatsRequest $request, Workspace $workspace, Form $form)
     {
-        $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
 
         $formStats = $form->statistics()->whereBetween('date', [$request->date_from, $request->date_to])->get();
@@ -39,9 +40,8 @@ class FormStatsController extends Controller
         return $periodStats;
     }
 
-    public function getFormStatsDetails(Request $request)
+    public function getFormStatsDetails(Request $request, Workspace $workspace, Form $form)
     {
-        $form = $request->form; // Added by ProForm middleware
         $this->authorize('view', $form);
 
         $totalViews = $form->views_count;

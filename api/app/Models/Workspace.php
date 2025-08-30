@@ -229,16 +229,35 @@ class Workspace extends Model implements CachableAttributes
 
     public function isAdminUser(?User $user)
     {
-        return $user ? $this->users()
+        if (!$user) {
+            return false;
+        }
+
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('users')) {
+            return $this->users->where('id', $user->id)->first()?->pivot->role === User::ROLE_ADMIN;
+        }
+
+        return $this->users()
             ->wherePivot('user_id', $user->id)
             ->wherePivot('role', User::ROLE_ADMIN)
-            ->exists() : false;
+            ->exists();
     }
+
     public function isReadonlyUser(?User $user)
     {
-        return $user ? $this->users()
+        if (!$user) {
+            return false;
+        }
+
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('users')) {
+            return $this->users->where('id', $user->id)->first()?->pivot->role === User::ROLE_READONLY;
+        }
+
+        return $this->users()
             ->wherePivot('user_id', $user->id)
             ->wherePivot('role', User::ROLE_READONLY)
-            ->exists() : false;
+            ->exists();
     }
 }

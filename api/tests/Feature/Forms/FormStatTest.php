@@ -39,7 +39,7 @@ it('check formstat chart data', function () {
     }
 
     // Now check chart data
-    $this->getJson(route('open.workspaces.form.stats', [$workspace->id, $form->id]) . '?date_from=' . now()->subDays(29)->format('Y-m-d') . '&date_to=' . now()->format('Y-m-d'))
+    $this->getJson(route('open.workspaces.form.stats', [$workspace, $form]) . '?date_from=' . now()->subDays(29)->format('Y-m-d') . '&date_to=' . now()->format('Y-m-d'))
         ->assertSuccessful()
         ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) use ($views, $submissions) {
             return $json->whereType('views', 'array')
@@ -85,7 +85,7 @@ it('checks form stats details', function () {
     // Create form views
     $form->views()->createMany(array_fill(0, 10, []));
 
-    $this->getJson(route('open.workspaces.form.stats-details', [$workspace->id, $form->id]))
+    $this->getJson(route('open.workspaces.form.stats-details', [$workspace, $form]))
         ->assertSuccessful()
         ->assertJson(function (\Illuminate\Testing\Fluent\AssertableJson $json) {
             return $json->has('views')

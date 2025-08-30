@@ -24,7 +24,6 @@ use App\Http\Controllers\Auth\UserInviteController;
 use App\Http\Controllers\Forms\FormPaymentController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceUserController;
-use App\Http\Middleware\Form\ResolveFormMiddleware;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -82,13 +81,13 @@ Route::group(['middleware' => 'auth.multi'], function () {
         Route::get('/providers', [OAuthProviderController::class, 'index'])->name('providers');
 
         Route::get('/forms', [FormController::class, 'indexAll'])->name('forms.index-all');
-        Route::get('/forms/{slug}', [FormController::class, 'show'])->name('forms.show');
+        Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
 
         Route::prefix('workspaces')->name('workspaces.')->group(function () {
             Route::get('/', [WorkspaceController::class, 'index'])->name('index');
             Route::post('/create', [WorkspaceController::class, 'create'])->name('create');
 
-            Route::prefix('/{workspaceId}')->group(function () {
+            Route::prefix('/{workspace}')->group(function () {
                 Route::get(
                     '/users',
                     [WorkspaceUserController::class, 'listUsers']
@@ -104,7 +103,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 )->name('users.add');
 
                 Route::delete(
-                    '/users/{userId}/remove',
+                    '/users/{user}/remove',
                     [WorkspaceUserController::class, 'removeUser']
                 )->name('users.remove');
 
@@ -119,7 +118,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 )->name('invites.cancel');
 
                 Route::put(
-                    '/users/{userId}/update-role',
+                    '/users/{user}/update-role',
                     [WorkspaceUserController::class, 'updateUserRole']
                 )->name('users.update-role');
 
@@ -139,22 +138,22 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
                 Route::middleware('pro-form')->group(function () {
-                    Route::get('form-stats/{formId}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
-                    Route::get('form-stats-details/{formId}', [FormStatsController::class, 'getFormStatsDetails'])->name('form.stats-details');
+                    Route::get('form-stats/{form}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
+                    Route::get('form-stats-details/{form}', [FormStatsController::class, 'getFormStatsDetails'])->name('form.stats-details');
                 });
             });
         });
 
         Route::prefix('forms')->name('forms.')->group(function () {
             Route::post('/', [FormController::class, 'store'])->name('store');
-            Route::post('/{id}/workspace/{workspace_id}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
-            Route::put('/{id}', [FormController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
-            Route::delete('/{id}', [FormController::class, 'destroy'])->name('destroy');
-            Route::get('/{id}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
+            Route::post('/{form}/workspace/{workspace}', [FormController::class, 'updateWorkspace'])->name('workspace.update');
+            Route::put('/{form}', [FormController::class, 'update'])->name('update');
+            Route::delete('/{form}', [FormController::class, 'destroy'])->name('destroy');
+            Route::get('/{form}/mobile-editor-email', [FormController::class, 'mobileEditorEmail'])->name('mobile-editor-email');
 
-            Route::prefix('/{id}/submissions')->name('submissions.')->group(function () {
+            Route::prefix('/{form}/submissions')->name('submissions.')->group(function () {
                 Route::get('/', [FormSubmissionController::class, 'submissions'])->name('index');
-                Route::put('/{submission_id}', [FormSubmissionController::class, 'update'])->name('update')->middleware([ResolveFormMiddleware::class]);
+                Route::put('/{submission_id}', [FormSubmissionController::class, 'update'])->name('update');
                 Route::post('/export', [FormSubmissionController::class, 'export'])->name('export');
                 Route::get('/export/status/{jobId}', [FormSubmissionController::class, 'exportStatus'])->name('export.status');
                 Route::get('/file/{filename}', [FormSubmissionController::class, 'submissionFile'])
@@ -167,13 +166,13 @@ Route::group(['middleware' => 'auth.multi'], function () {
 
             // Form Admin tool
             Route::put(
-                '/{id}/regenerate-link/{option}',
+                '/{form}/regenerate-link/{option}',
                 [FormController::class, 'regenerateLink']
             )
                 ->where('option', '(uuid|slug)')
                 ->name('regenerate-link');
             Route::post(
-                '/{id}/duplicate',
+                '/{form}/duplicate',
                 [FormController::class, 'duplicate']
             )->name('duplicate');
 
@@ -183,7 +182,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 [FormController::class, 'uploadAsset']
             )->withoutMiddleware(['auth.multi'])->name('assets.upload');
             Route::get(
-                '/{id}/uploaded-file/{filename}',
+                '/{form}/uploaded-file/{filename}',
                 [FormController::class, 'viewFile']
             )->name('uploaded_file');
 
@@ -197,23 +196,23 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 [FormZapierWebhookController::class, 'delete']
             )->name('integrations.zapier-hooks.delete');
             Route::get(
-                '/{id}/integrations',
+                '/{form}/integrations',
                 [FormIntegrationsController::class, 'index']
             )->name('integrations');
             Route::post(
-                '/{id}/integration',
+                '/{form}/integration',
                 [FormIntegrationsController::class, 'create']
             )->name('integration.create');
             Route::put(
-                '/{id}/integration/{integrationid}',
+                '/{form}/integration/{integrationid}',
                 [FormIntegrationsController::class, 'update']
             )->name('integration.update');
             Route::delete(
-                '/{id}/integration/{integrationid}',
+                '/{form}/integration/{integrationid}',
                 [FormIntegrationsController::class, 'destroy']
             )->name('integration.destroy');
             Route::get(
-                '/{id}/integration/{integrationid}/events',
+                '/{form}/integration/{integrationid}/events',
                 [FormIntegrationsEventController::class, 'index']
             )->name('integrations.events');
         });
@@ -229,7 +228,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
             [\App\Http\Controllers\Admin\AdminController::class, 'fetchUser']
         );
         Route::get(
-            'impersonate/{userId}',
+            'impersonate/{user}',
             [\App\Http\Controllers\Admin\ImpersonationController::class, 'impersonate']
         );
         Route::patch(
@@ -264,14 +263,14 @@ Route::group(['middleware' => 'auth.multi'], function () {
         );
 
         Route::group(['prefix'  => 'billing'], function () {
-            Route::get('{userId}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
+            Route::get('{user}/email', [\App\Http\Controllers\Admin\BillingController::class, 'getEmail']);
             Route::patch('/email', [\App\Http\Controllers\Admin\BillingController::class, 'updateEmail']);
-            Route::get('{userId}/subscriptions', [\App\Http\Controllers\Admin\BillingController::class, 'getSubscriptions']);
-            Route::get('{userId}/payments', [\App\Http\Controllers\Admin\BillingController::class, 'getPayments']);
+            Route::get('{user}/subscriptions', [\App\Http\Controllers\Admin\BillingController::class, 'getSubscriptions']);
+            Route::get('{user}/payments', [\App\Http\Controllers\Admin\BillingController::class, 'getPayments']);
         });
 
         Route::group(['prefix' => 'forms'], function () {
-            Route::get('{userId}/deleted-forms', [\App\Http\Controllers\Admin\FormController::class, 'getDeletedForms']);
+            Route::get('{user}/deleted-forms', [\App\Http\Controllers\Admin\FormController::class, 'getDeletedForms']);
             Route::patch('{slug}/restore', [\App\Http\Controllers\Admin\FormController::class, 'restoreDeletedForm']);
         });
     });
@@ -307,20 +306,20 @@ Route::prefix('oauth')->name('oauth.')->group(function () {
  */
 Route::prefix('forms')->name('forms.')->group(function () {
     Route::middleware('protected-form')->group(function () {
-        Route::post('{slug}/answer', [PublicFormController::class, 'answer'])->name('answer')->middleware(HandlePrecognitiveRequests::class);
-        Route::get('{slug}/stripe-connect/get-account', [FormPaymentController::class, 'getAccount'])->name('stripe-connect.get-account')->middleware(HandlePrecognitiveRequests::class);
-        Route::post('{slug}/stripe-connect/payment-intent', [FormPaymentController::class, 'createIntent'])->name('stripe-connect.create-intent')->middleware(HandlePrecognitiveRequests::class);
+        Route::post('{form}/answer', [PublicFormController::class, 'answer'])->name('answer')->middleware(HandlePrecognitiveRequests::class);
+        Route::get('{form}/stripe-connect/get-account', [FormPaymentController::class, 'getAccount'])->name('stripe-connect.get-account')->middleware(HandlePrecognitiveRequests::class);
+        Route::post('{form}/stripe-connect/payment-intent', [FormPaymentController::class, 'createIntent'])->name('stripe-connect.create-intent')->middleware(HandlePrecognitiveRequests::class);
 
         // Form content endpoints (user lists, relation lists etc.)
         Route::get(
-            '{slug}/users',
+            '{form}/users',
             [PublicFormController::class, 'listUsers']
         )->name('users.index');
     });
 
     // Get form and submit
-    Route::get('{slug}', [PublicFormController::class, 'show'])->name('show');
-    Route::get('{slug}/submissions/{submission_id}', [PublicFormController::class, 'fetchSubmission'])->name('fetchSubmission');
+    Route::get('{form}', [PublicFormController::class, 'show'])->name('show');
+    Route::get('{form}/submissions/{submission_id}', [PublicFormController::class, 'fetchSubmission'])->name('fetchSubmission');
 
     // File uploads
     Route::get('assets/{assetFileName}', [PublicFormController::class, 'showAsset'])->name('assets.show');
