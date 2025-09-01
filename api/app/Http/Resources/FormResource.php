@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Middleware\Form\ProtectedForm;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User as UserModel;
 
 class FormResource extends JsonResource
 {
@@ -42,13 +43,13 @@ class FormResource extends JsonResource
             'is_pro' => $this->workspaceIsPro(),
             'is_trialing' => $this->workspaceIsTrialing(),
             'workspace_id' => $this->workspace_id,
-            'workspace' => new WorkspaceResource($this->getWorkspace()),
+            'workspace' => new WorkspaceResource($this->workspace),
             'is_closed' => $this->is_closed,
             'is_password_protected' => false,
             'has_password' => $this->has_password,
             'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached,
             'form_pending_submission_key' => $this->form_pending_submission_key,
-            'max_file_size' => $this->max_file_size / 1000000,
+            'max_file_size' => $this->workspace->max_file_size / 1000000,
             'auto_save' => $this->getAutoSave(),
         ]);
     }
@@ -86,32 +87,37 @@ class FormResource extends JsonResource
         ];
     }
 
-    private function getWorkspace()
-    {
-        return $this->extra?->loadedWorkspace ?? $this->workspace;
-    }
-
     private function workspaceIsPro()
     {
-        return $this->extra?->workspaceIsPro ?? $this->getWorkspace()->is_pro ?? $this->is_pro;
+        return $this->workspace->is_pro ?? $this->is_pro;
     }
 
     private function workspaceIsTrialing()
     {
-        return $this->getWorkspace()->is_trialing;
+        return $this->workspace->is_trialing;
     }
 
     private function userIsFormOwner()
     {
-        return $this->extra?->userIsOwner ??
-            (
-                Auth::check() && Auth::user()->ownsForm($this->resource)
-            );
+        if (!Auth::check()) {
+            return false;
+        }
+
+        /** @var UserModel|null $user */
+        $user = Auth::user();
+
+        // Use preloaded workspace users if available to avoid N+1 queries
+        if ($this->relationLoaded('workspace') && $this->workspace->relationLoaded('users')) {
+            return $this->workspace->users->contains('id', $user->id);
+        }
+
+        // Fallback to checking ownership
+        return $user instanceof UserModel && $user->ownsForm($this->resource);
     }
 
     private function getCleanigns()
     {
-        return $this->extra?->cleanings ?? $this->cleanings;
+        return $this->cleanings;
     }
 
     private function hasPaymentBlock()

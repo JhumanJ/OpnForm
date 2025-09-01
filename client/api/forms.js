@@ -29,6 +29,7 @@ export const formsApi = {
     delete: (formId, submissionId) => apiService.delete(`/open/forms/${formId}/submissions/${submissionId}`),
     deleteMulti: (formId, submissionIds) => apiService.post(`/open/forms/${formId}/submissions/multi`, { submissionIds }),
     export: (formId, data) => apiService.post(`/open/forms/${formId}/submissions/export`, data),
+    exportStatus: (formId, jobId) => apiService.get(`/open/forms/${formId}/submissions/export/status/${jobId}`),
     answer: (slug, data, options) => apiService.post(`/forms/${slug}/answer`, data, options)
   },
 

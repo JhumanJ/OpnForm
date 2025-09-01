@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateFormRequest;
 use App\Http\Requests\UploadAssetRequest;
 use App\Http\Resources\FormResource;
 use App\Models\Forms\Form;
+use App\Models\Forms\FormSubmission;
 use App\Models\Workspace;
 use App\Notifications\Forms\MobileEditorEmail;
 use App\Service\Forms\FormCleaner;
@@ -29,50 +30,24 @@ class FormController extends Controller
         $this->formCleaner = new FormCleaner();
     }
 
-    public function index($workspaceId)
+    public function index(Workspace $workspace)
     {
-        $workspace = Workspace::findOrFail($workspaceId);
         $this->authorize('ownsWorkspace', $workspace);
         $this->authorize('viewAny', Form::class);
 
-        $workspaceIsPro = $workspace->is_pro;
         $forms = $workspace->forms()
+            ->with(['workspace.users' => fn ($q) => $q->withPivot('role')])
+            ->withCount(['submissions as submissions_count' => fn ($q) => $q->where('status', FormSubmission::STATUS_COMPLETED)])
+            ->withTotalViews()
             ->orderByDesc('updated_at')
-            ->paginate(10)->through(function (Form $form) use ($workspace, $workspaceIsPro) {
-
-                // Add attributes for faster loading
-                $form->extra = (object) [
-                    'loadedWorkspace' => $workspace,
-                    'workspaceIsPro' => $workspaceIsPro,
-                    'userIsOwner' => true,
-                    'cleanings' => $this->formCleaner
-                        ->processForm(request(), $form)
-                        ->simulateCleaning($workspace)
-                        ->getPerformedCleanings(),
-                ];
-
-                return $form;
-            });
+            ->paginate(10);
 
         return FormResource::collection($forms);
     }
 
-    public function show($slug)
+    public function show(Form $form)
     {
-        $form = Form::whereSlug($slug)->firstOrFail();
         $this->authorize('view', $form);
-
-        // Add attributes for faster loading
-        $workspace = $form->workspace;
-        $form->extra = (object)[
-            'loadedWorkspace' => $workspace,
-            'workspaceIsPro' => $workspace->is_pro,
-            'userIsOwner' => true,
-            'cleanings' => $this->formCleaner
-                ->processForm(request(), $form)
-                ->simulateCleaning($workspace)
-                ->getPerformedCleanings(),
-        ];
 
         return new FormResource($form);
     }
@@ -141,9 +116,8 @@ class FormController extends Controller
         ]);
     }
 
-    public function update(UpdateFormRequest $request, string $id)
+    public function update(UpdateFormRequest $request, Form $form)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('update', $form);
 
         $formData = $this->formCleaner
@@ -174,9 +148,8 @@ class FormController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Form $form)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('delete', $form);
 
         $form->delete();
@@ -186,9 +159,8 @@ class FormController extends Controller
         ]);
     }
 
-    public function duplicate($id)
+    public function duplicate(Form $form)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('update', $form);
 
         // Create copy
@@ -210,9 +182,8 @@ class FormController extends Controller
         ]);
     }
 
-    public function regenerateLink($id, $option)
+    public function regenerateLink(Form $form, $option)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('update', $form);
 
         if ($option == 'slug') {
@@ -253,9 +224,8 @@ class FormController extends Controller
     /**
      * File uploads retrieval
      */
-    public function viewFile($id, $fileName)
+    public function viewFile(Form $form, $fileName)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('view', $form);
 
         $path = FileUploadPathService::getFileUploadPath($form->id, $fileName);
@@ -271,15 +241,12 @@ class FormController extends Controller
     /**
      * Updates a form's workspace
      */
-    public function updateWorkspace($id, $workspace_id)
+    public function updateWorkspace(Form $form, Workspace $workspace)
     {
-        $form =  Form::findOrFail($id);
-        $workspace =  Workspace::findOrFail($workspace_id);
-
         $this->authorize('update', $form);
         $this->authorize('ownsWorkspace', $workspace);
 
-        $form->workspace_id = $workspace_id;
+        $form->workspace_id = $workspace->id;
         $form->creator_id = auth()->user()->id;
         $form->save();
 
@@ -288,9 +255,8 @@ class FormController extends Controller
         ]);
     }
 
-    public function mobileEditorEmail($id)
+    public function mobileEditorEmail(Form $form)
     {
-        $form = Form::findOrFail($id);
         $this->authorize('update', $form);
 
         $form->creator->notify(new MobileEditorEmail($form->slug));
