@@ -474,6 +474,72 @@ paths:
                     description: Deleted
                 "403":
                     description: Forbidden
+    "/forms/{slug}/answer":
+        post:
+            tags:
+                - Submissions
+            summary: Create Submission
+            description: "Create a new submission for a form. Public endpoint - no authentication required."
+            security: []
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            additionalProperties: true
+                            properties:
+                                completion_time:
+                                    type: number
+                                    description: "Time in seconds it took to complete the form"
+                                is_partial:
+                                    type: boolean
+                                    description: "If you want to submit your form as partial"
+            responses:
+                "200":
+                    description: "Form submission saved successfully"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    type:
+                                        type: string
+                                        example: "success"
+                                    message:
+                                        type: string
+                                        example: "Form submission saved."
+                                    submission_id:
+                                        type: string
+                                        nullable: true
+                                    is_first_submission:
+                                        type: boolean
+                                    redirect:
+                                        type: boolean
+                "422":
+                    description: "Validation error"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: "The Name field is required."
+                                    errors:
+                                        type: object
+                                        additionalProperties:
+                                            type: array
+                                            items:
+                                                type: string
+                "404":
+                    description: "Form not found"
     "/open/forms/{id}/submissions":
         get:
             tags:
