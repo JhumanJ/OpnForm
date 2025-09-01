@@ -39,6 +39,7 @@ Content-Type: application/json
 }
 
 ````
+
 </RequestExample>
 
 ### Path Parameters
@@ -86,7 +87,7 @@ When `true`, the response includes a `submission_hash` that can be used to updat
   "redirect": false,
   "submission_hash": null
 }
-```
+````
 
 ```json Partial Success (200 OK)
 {
@@ -226,4 +227,3 @@ const completeSubmission = async (finalData) => {
     return await response.json();
 };
 ```
-````
