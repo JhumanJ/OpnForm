@@ -24,7 +24,8 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
     public function __construct(Request $request)
     {
-        $this->form = $request?->form ?? null;
+        // Get form from route model binding instead of middleware
+        $this->form = $request?->route('form') ?? null;
     }
 
     protected function prepareForValidation()

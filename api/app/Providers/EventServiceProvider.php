@@ -40,7 +40,8 @@ class EventServiceProvider extends ServiceProvider
             FormSpamCheckListener::class,
         ],
         FormSubmitted::class => [
-            NotifyFormSubmission::class
+            NotifyFormSubmission::class,
+            \App\Listeners\Forms\InvalidateFormSubmissionCache::class,
         ],
         FormSubmissionDeleting::class => [
             DeleteFormSubmissionFiles::class,
