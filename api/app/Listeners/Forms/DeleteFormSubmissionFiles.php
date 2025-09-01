@@ -3,7 +3,7 @@
 namespace App\Listeners\Forms;
 
 use App\Events\Models\FormSubmissionDeleting;
-use App\Http\Controllers\Forms\PublicFormController;
+use App\Service\Storage\FileUploadPathService;
 use Illuminate\Support\Facades\Storage;
 
 class DeleteFormSubmissionFiles
@@ -44,7 +44,7 @@ class DeleteFormSubmissionFiles
 
     private function deleteFile(int|string $formId, string $fileName): void
     {
-        $path = PublicFormController::getFileUploadPath($formId, urldecode($fileName));
+        $path = FileUploadPathService::getFileUploadPath($formId, urldecode($fileName));
         if (Storage::exists($path)) {
             Storage::delete($path);
         }

@@ -11,6 +11,7 @@ use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormSubmissionFormatter;
+use App\Service\Storage\FileUploadPathService;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Vinkla\Hashids\Facades\Hashids;
@@ -88,7 +89,7 @@ class FormSubmissionController extends Controller
 
     public function submissionFile($id, $fileName)
     {
-        $fileName = PublicFormController::getFileUploadPath($id, urldecode($fileName));
+        $fileName = FileUploadPathService::getFileUploadPath($id, urldecode($fileName));
 
         if (! Storage::exists($fileName)) {
             return $this->error([

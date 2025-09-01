@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Http\Controllers\Forms\PublicFormController;
+use App\Service\Storage\FileUploadPathService;
 use App\Models\Forms\Form;
 use App\Service\Storage\StorageFileNameParser;
 use Closure;
@@ -35,7 +35,7 @@ class StorageFile implements ValidationRule
 
         // This is use when updating a record, and file uploads aren't changed.
         if ($this->form) {
-            if (Storage::exists(PublicFormController::getFileUploadPath($this->form->id, $fileNameParser->getMovedFileName()))) {
+            if (Storage::exists(FileUploadPathService::getFileUploadPath($this->form->id, $fileNameParser->getMovedFileName()))) {
                 return true;
             }
         }
@@ -45,7 +45,7 @@ class StorageFile implements ValidationRule
             return false;
         }
 
-        $filePath = PublicFormController::getTmpFileUploadPath($uuid);
+        $filePath = FileUploadPathService::getTmpFileUploadPath($uuid);
         if (! Storage::exists($filePath)) {
             return false;
         }

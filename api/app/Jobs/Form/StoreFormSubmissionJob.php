@@ -4,8 +4,8 @@ namespace App\Jobs\Form;
 
 use App\Events\Forms\FormSubmitted;
 use App\Http\Controllers\Forms\FormController;
-use App\Http\Controllers\Forms\PublicFormController;
 use App\Http\Requests\AnswerFormRequest;
+use App\Service\Storage\FileUploadPathService;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormLogicPropertyResolver;
@@ -258,7 +258,7 @@ class StoreFormSubmissionJob implements ShouldQueue
             return false; // Input $value couldn't be resolved to a canonical stored name format
         }
 
-        $fullPathToCheck = PublicFormController::getFileUploadPath($this->form->id, $canonicalStoredName);
+        $fullPathToCheck = FileUploadPathService::getFileUploadPath($this->form->id, $canonicalStoredName);
         return Storage::exists($fullPathToCheck);
     }
 
@@ -279,7 +279,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (filter_var($value, FILTER_VALIDATE_URL) !== false && str_contains($value, parse_url(config('app.url'))['host'])) {
             $fileName = explode('?', basename($value))[0];
             $path = FormController::ASSETS_UPLOAD_PATH . '/' . $fileName; // Assuming assets are in a defined path
-            $newPath = PublicFormController::getFileUploadPath($this->form->id, $fileName);
+            $newPath = FileUploadPathService::getFileUploadPath($this->form->id, $fileName);
             Storage::move($path, $newPath);
             return $fileName;
         }
@@ -299,7 +299,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (!$fileNameParser || !$fileNameParser->uuid) {
             return null; // Cannot derive UUID from the reference
         }
-        $fileNameInTmp = PublicFormController::getTmpFileUploadPath($fileNameParser->uuid);
+        $fileNameInTmp = FileUploadPathService::getTmpFileUploadPath($fileNameParser->uuid);
         if (!Storage::exists($fileNameInTmp)) {
             return null; // Temporary file not found
         }
@@ -307,7 +307,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (empty($movedFileName)) {
             return null; // Canonical name generation failed
         }
-        $completeNewFilename = PublicFormController::getFileUploadPath($this->form->id, $movedFileName);
+        $completeNewFilename = FileUploadPathService::getFileUploadPath($this->form->id, $movedFileName);
         Storage::move($fileNameInTmp, $completeNewFilename);
         return $movedFileName;
     }
@@ -323,7 +323,7 @@ class StoreFormSubmissionJob implements ShouldQueue
             return null;
         }
         $fileName = 'sign_' . (string) Str::uuid() . '.png';
-        $completeNewFilename = PublicFormController::getFileUploadPath($this->form->id, $fileName);
+        $completeNewFilename = FileUploadPathService::getFileUploadPath($this->form->id, $fileName);
         Storage::put($completeNewFilename, base64_decode(explode(',', $value)[1]));
         return $fileName;
     }
