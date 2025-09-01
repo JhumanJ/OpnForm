@@ -9,6 +9,7 @@ use App\Http\Resources\FormResource;
 use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
 use App\Models\Forms\FormSubmission;
+use App\Service\Forms\Analytics\UserAgentHelper;
 use App\Service\Forms\FormSubmissionProcessor;
 use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
@@ -47,13 +48,36 @@ class PublicFormController extends Controller
                 ->getData()
         );
 
-        // Increase form view counter if not login
-        if (!Auth::check()) {
-            $form->views()->create();
-        }
-
         return (new FormResource($form))
             ->setCleanings($formCleaner->getPerformedCleanings());
+    }
+
+    public function view(Request $request, Form $form)
+    {
+        // Ensure form is public
+        if ($form->visibility !== 'public') {
+            abort(404);
+        }
+
+        if ($form->workspace == null) {
+            return $this->error([
+                'message' => 'Form not found.',
+            ], 404);
+        }
+
+        if (Auth::check()) {
+            return $this->success([
+                'message' => 'Form viewed by logged in user.',
+            ]);
+        }
+
+        // Increment view count and store metadata for analytics
+        $userAgent = new UserAgentHelper($request);
+        $form->views()->create(['meta' => $userAgent->getMetadata()]);
+
+        return $this->success([
+            'message' => 'Form viewed.',
+        ]);
     }
 
     public function listUsers(Request $request, Form $form)

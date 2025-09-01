@@ -306,6 +306,7 @@ Route::prefix('oauth')->name('oauth.')->group(function () {
  */
 Route::prefix('forms')->name('forms.')->group(function () {
     Route::middleware('protected-form')->group(function () {
+        Route::get('{form}/view', [PublicFormController::class, 'view'])->name('view');
         Route::post('{form}/answer', [PublicFormController::class, 'answer'])->name('answer')->middleware(HandlePrecognitiveRequests::class);
         Route::get('{form}/stripe-connect/get-account', [FormPaymentController::class, 'getAccount'])->name('stripe-connect.get-account')->middleware(HandlePrecognitiveRequests::class);
         Route::post('{form}/stripe-connect/payment-intent', [FormPaymentController::class, 'createIntent'])->name('stripe-connect.create-intent')->middleware(HandlePrecognitiveRequests::class);
