@@ -32,7 +32,7 @@ class FormSubmissionController extends Controller
     {
         $this->authorize('view', $form);
 
-        $query = $form->submissions();
+        $query = $form->submissions()->with('form');
 
         // Handle search parameter - search only in JSON values, not keys
         if (request()->has('search') && !empty(request()->get('search'))) {
@@ -78,7 +78,7 @@ class FormSubmissionController extends Controller
         $job = new StoreFormSubmissionJob($form, $submissionData);
         $job->handle();
 
-        $data = new FormSubmissionResource(FormSubmission::findOrFail($submission_id));
+        $data = new FormSubmissionResource(FormSubmission::with('form')->findOrFail($submission_id));
 
         return $this->success([
             'message' => 'Record successfully updated.',
@@ -138,7 +138,8 @@ class FormSubmissionController extends Controller
     private function processSyncExport(Form $form, array $displayColumns, FormExportService $exportService)
     {
         $allRows = [];
-        foreach ($form->submissions as $submission) {
+        // Use query builder with orderBy for consistency with async export
+        foreach ($form->submissions()->orderByDesc('created_at')->get() as $submission) {
             $allRows[] = $exportService->formatSubmissionForExport($form, $submission, $displayColumns);
         }
 

@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        ray()->showQueries()->label(url()->current());
+        ray()->showQueries()->label(url()->current() . ' - ' . \Str::random(10));
 
         if (config('filesystems.default') === 'local') {
             Storage::disk('local')->buildTemporaryUrlsUsing(function ($path, $expiration, $options) {

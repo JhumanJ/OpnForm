@@ -20,7 +20,21 @@ class WorkspaceController extends Controller
     {
         $this->authorize('viewAny', Workspace::class);
 
-        return WorkspaceResource::collection(Auth::user()->workspaces);
+        // Eager load users with pivot roles to prevent N+1 queries in WorkspaceResource
+        // Make this query identical to UserController to avoid duplicate database work
+        $user = Auth::user()->load([
+            'workspaces' => function ($query) {
+                $query->withPivot('role')->with([
+                    'users' => function ($subQuery) {
+                        $subQuery->withPivot('role');
+                    }
+                ]);
+            }
+        ]);
+
+        $workspaces = $user->workspaces;
+
+        return WorkspaceResource::collection($workspaces);
     }
 
     public function saveCustomDomain(CustomDomainRequest $request)
