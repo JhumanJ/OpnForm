@@ -134,6 +134,7 @@ class Form extends Model implements CachableAttributes
         'is_pro',
         'views_count',
         'max_file_size',
+        'submissions_count',
     ];
 
     /**
@@ -178,21 +179,68 @@ class Form extends Model implements CachableAttributes
 
     public function getSubmissionsCountAttribute()
     {
-        return $this->submissions()->where('status', FormSubmission::STATUS_COMPLETED)->count();
+        // If hydrated from withCount, use it directly (no cache needed)
+        if (isset($this->attributes['submissions_count'])) {
+            return $this->attributes['submissions_count'];
+        }
+
+        // Fallback to cached query for individual form access
+        return $this->remember('submissions_count', 15 * 60, function (): int {
+            return $this->submissions()->where('status', FormSubmission::STATUS_COMPLETED)->count();
+        });
     }
 
     public function getViewsCountAttribute()
     {
-        return $this->remember('views_count', 15 * 60, function (): int {
-            if (config('database.default') === 'mysql') {
-                return (int) ($this->views()->count() +
-                    $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
-            }
+        // If preloaded via scope, use the combined count
+        if (isset($this->attributes['total_views_count'])) {
+            return (int) $this->attributes['total_views_count'];
+        }
 
-            return $this->views()->count() +
-                $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
-        });
+        // Fallback to cached calculation for individual access
+        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
     }
+
+    /**
+     * Calculate total views from both views table and statistics table
+     */
+    private function calculateTotalViews(): int
+    {
+        $directViews = $this->views()->count();
+        $statisticsViews = $this->getStatisticsViewsSum();
+        return $directViews + $statisticsViews;
+    }
+
+    /**
+     * Get views sum from statistics table (database agnostic)
+     */
+    private function getStatisticsViewsSum(): int
+    {
+        return (int) $this->statistics()->sum(
+            config('database.default') === 'mysql'
+                ? DB::raw("CAST(JSON_EXTRACT(data, '$.views') AS SIGNED)")
+                : DB::raw("CAST(data->>'views' AS INTEGER)")
+        );
+    }
+
+    /**
+     * Scope to efficiently load total views count
+     */
+    public function scopeWithTotalViews($query)
+    {
+        $statisticsExpression = config('database.default') === 'mysql'
+            ? 'SUM(CAST(JSON_EXTRACT(data, "$.views") AS SIGNED))'
+            : 'SUM(CAST(data->>\'views\' AS INTEGER))';
+
+        return $query->addSelect([
+            'total_views_count' => DB::raw(
+                'COALESCE((SELECT COUNT(*) FROM form_views WHERE form_views.form_id = forms.id), 0) + ' .
+                    'COALESCE((SELECT ' . $statisticsExpression . ' FROM form_statistics WHERE form_statistics.form_id = forms.id), 0)'
+            )
+        ]);
+    }
+
+
 
     public function setSubmittedTextAttribute($value)
     {

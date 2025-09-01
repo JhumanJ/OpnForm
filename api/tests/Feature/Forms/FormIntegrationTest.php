@@ -20,25 +20,25 @@ it('can CRUD form integration', function () {
         ]
     ];
 
-    $response = $this->postJson(route('open.forms.integration.create', $form->id), $data)
+    $response = $this->postJson(route('open.forms.integration.create', $form), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
             'message' => 'Form Integration was created.'
         ]);
 
-    $this->getJson(route('open.forms.integrations', $form->id))
+    $this->getJson(route('open.forms.integrations', $form))
         ->assertSuccessful()
         ->assertJsonCount(1);
 
-    $this->putJson(route('open.forms.integration.update', [$form->id, $response->json('form_integration.id')]), $data)
+    $this->putJson(route('open.forms.integration.update', [$form, $response->json('form_integration.id')]), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
             'message' => 'Form Integration was updated.'
         ]);
 
-    $this->deleteJson(route('open.forms.integration.destroy', [$form->id, $response->json('form_integration.id')]), $data)
+    $this->deleteJson(route('open.forms.integration.destroy', [$form, $response->json('form_integration.id')]), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
@@ -93,7 +93,7 @@ it('can create form integration with checkbox logic', function () {
         ]
     ];
 
-    $this->postJson(route('open.forms.integration.create', $form->id), $data)
+    $this->postJson(route('open.forms.integration.create', $form), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
