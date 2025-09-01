@@ -13,10 +13,10 @@ use App\Jobs\Form\ExportFormSubmissionsJob;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormExportService;
+use App\Service\Storage\FileUploadPathService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
@@ -154,8 +154,7 @@ class FormSubmissionController extends Controller
 
     public function submissionFile(Form $form, $filename)
     {
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id) . '/'
-            . urldecode($filename);
+        $fileName = FileUploadPathService::getFileUploadPath($form->id, urldecode($filename));
 
         if (! Storage::exists($fileName)) {
             return $this->error([

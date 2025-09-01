@@ -13,6 +13,7 @@ use App\Models\Workspace;
 use App\Notifications\Forms\MobileEditorEmail;
 use App\Service\Forms\FormCleaner;
 use App\Service\Storage\StorageFileNameParser;
+use App\Service\Storage\FileUploadPathService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -206,7 +207,7 @@ class FormController extends Controller
         $fileNameParser = StorageFileNameParser::parse($request->url);
 
         // Make sure we retrieve the file in tmp storage, move it to persistent
-        $fileName = PublicFormController::TMP_FILE_UPLOAD_PATH . $fileNameParser->uuid;
+        $fileName = FileUploadPathService::getTmpFileUploadPath($fileNameParser->uuid);
         if (!Storage::exists($fileName)) {
             // File not found, we skip
             return null;
@@ -227,7 +228,7 @@ class FormController extends Controller
     {
         $this->authorize('view', $form);
 
-        $path = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $form->id) . '/' . $fileName;
+        $path = FileUploadPathService::getFileUploadPath($form->id, $fileName);
         if (!Storage::exists($path)) {
             return $this->error([
                 'message' => 'File not found.',

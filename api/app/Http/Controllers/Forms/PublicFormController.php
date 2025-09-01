@@ -21,10 +21,6 @@ use Illuminate\Support\Str;
 
 class PublicFormController extends Controller
 {
-    public const FILE_UPLOAD_PATH = 'forms/?/submissions';
-
-    public const TMP_FILE_UPLOAD_PATH = 'tmp/';
-
     public function show(Request $request, Form $form)
     {
         // Ensure form is public or closed
