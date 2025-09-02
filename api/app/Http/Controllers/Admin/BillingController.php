@@ -15,9 +15,8 @@ class BillingController extends Controller
         $this->middleware('moderator');
     }
 
-    public function getEmail($userId)
+    public function getEmail(User $user)
     {
-        $user  = User::find($userId);
 
         if (!$user->hasStripeId()) {
             return $this->error([
@@ -55,9 +54,8 @@ class BillingController extends Controller
         return $this->success(['message' => 'Billing email updated successfully']);
     }
 
-    public function getSubscriptions($userId)
+    public function getSubscriptions(User $user)
     {
-        $user  = User::find($userId);
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",
@@ -79,9 +77,8 @@ class BillingController extends Controller
         ]);
     }
 
-    public function getPayments($userId)
+    public function getPayments(User $user)
     {
-        $user  = User::find($userId);
         if (!$user->hasStripeId()) {
             return $this->error([
                 "message" => "Stripe user not created",

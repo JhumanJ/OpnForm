@@ -27,8 +27,7 @@ class ExportFormSubmissionsJob implements ShouldQueue
         public array $columns,
         public string $jobId,
         public int $userId
-    ) {
-    }
+    ) {}
 
     public function handle(FormExportService $exportService): void
     {
@@ -102,12 +101,16 @@ class ExportFormSubmissionsJob implements ShouldQueue
     ): void {
         $exportService = app(FormExportService::class);
         $cacheKey = $exportService->getCacheKey($this->jobId);
+
+        // Get existing data to preserve created_at
+        $existingData = Cache::get($cacheKey, []);
+
         $data = [
             'status' => $status,
             'progress' => $progress,
             'form_id' => $this->form->id,
             'user_id' => $this->userId,
-            'created_at' => now()->toISOString(),
+            'created_at' => $existingData['created_at'] ?? now()->toISOString(),
             'updated_at' => now()->toISOString(),
         ];
 

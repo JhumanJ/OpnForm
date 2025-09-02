@@ -47,7 +47,7 @@ it('can create and delete Workspace', function () {
     foreach ($user->workspaces as $workspace) {
         $i++;
         if ($i !== 3) {
-            $this->deleteJson(route('open.workspaces.delete', $workspace->id))
+            $this->deleteJson(route('open.workspaces.delete', $workspace))
                 ->assertSuccessful()
                 ->assertJson([
                     'type' => 'success',
@@ -55,7 +55,7 @@ it('can create and delete Workspace', function () {
                 ]);
         } else {
             // Last workspace can not delete
-            $this->deleteJson(route('open.workspaces.delete', $workspace->id))
+            $this->deleteJson(route('open.workspaces.delete', $workspace))
                 ->assertStatus(403);
         }
     }
@@ -77,7 +77,7 @@ it('can update workspace', function () {
     expect($user->workspaces()->count())->toBe(1);
 
     $workspace = $user->workspaces()->first();
-    $this->putJson(route('open.workspaces.update', $workspace->id), [
+    $this->putJson(route('open.workspaces.update', $workspace), [
         'name' => 'Workspace Test Updated',
         'icon' => '🔬',
     ])
@@ -92,7 +92,7 @@ it('can save custom domain for workspace', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
 
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
         'custom_domains' => ['example.com']
     ])
         ->assertSuccessful();
@@ -106,7 +106,7 @@ it('can set custom domain to null', function () {
     $workspace = $this->createUserWorkspace($user);
     $workspace->update(['custom_domains' => ['example.com']]);
 
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
         'custom_domains' => []
     ])
         ->assertSuccessful();
@@ -119,7 +119,7 @@ it('validates custom domain format', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
 
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
         'custom_domains' => ['invalid-domain']
     ])
         ->assertStatus(422)
@@ -127,7 +127,7 @@ it('validates custom domain format', function () {
             'message' => 'Invalid domain: invalid-domain',
         ]);
 
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
         'custom_domains' => ['https://example.com']
     ])
         ->assertStatus(422)
@@ -142,13 +142,13 @@ it('prevents duplicate custom domains across workspaces', function () {
     $workspace2 = $this->createUserWorkspace($user);
 
     // Set domain for first workspace
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace1->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace1), [
         'custom_domains' => ['example.com']
     ])
         ->assertSuccessful();
 
     // Try to set same domain for second workspace
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace2->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace2), [
         'custom_domains' => ['example.com']
     ])
         ->assertStatus(422)
@@ -163,7 +163,7 @@ it('allows same workspace to update its own custom domain', function () {
     $workspace->update(['custom_domains' => ['example.com']]);
 
     // Same workspace should be able to "update" to the same domain
-    $this->putJson(route('open.workspaces.save-custom-domains', [$workspace->id]), [
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
         'custom_domains' => ['example.com']
     ])
         ->assertSuccessful();

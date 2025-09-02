@@ -28,7 +28,8 @@ class AnswerFormRequest extends FormRequest
 
     public function __construct(Request $request)
     {
-        $this->form = $request->form;
+        // Get form from route model binding instead of middleware
+        $this->form = $request->route('form') ?? $request->form;
         $this->maxFileSize = $this->form->workspace->max_file_size;
     }
 
@@ -78,7 +79,7 @@ class AnswerFormRequest extends FormRequest
 
             // User custom validation
             if (!(Str::of($property['type'])->startsWith('nf-')) && isset($property['validation'])) {
-                $rules[] = (new CustomFieldValidationRule($property['validation'], $data));
+                $rules[] = (new CustomFieldValidationRule($property['validation'], $data, $this->form));
             }
 
             // For get values instead of Id for select/multi select options
