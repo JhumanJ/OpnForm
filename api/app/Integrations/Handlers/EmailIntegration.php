@@ -69,7 +69,17 @@ class EmailIntegration extends AbstractIntegrationHandler
 
     protected function shouldRun(): bool
     {
-        return $this->integrationData?->send_to && parent::shouldRun() && !$this->riskLimitReached();
+        // Check basic conditions first
+        if (!$this->integrationData?->send_to || !parent::shouldRun()) {
+            return false;
+        }
+
+        // Only check risk limit if integration would otherwise run
+        if ($this->riskLimitReached()) {
+            throw new \Exception('Email integration temporarily blocked due to account restrictions. Please contact support to unblock your account or upgrade to a Pro plan to continue sending emails.');
+        }
+
+        return true;
     }
 
     // To avoid phishing abuse we limit this feature for risky users
