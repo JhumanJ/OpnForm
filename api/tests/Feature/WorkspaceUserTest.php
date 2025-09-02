@@ -13,17 +13,17 @@ beforeEach(function () {
 
 it('can list users in a workspace', function () {
 
-    $this->getJson(route('open.workspaces.users.index', ['workspaceId' => $this->workspace->id]))
+    $this->getJson(route('open.workspaces.users.index', ['workspace' => $this->workspace]))
         ->assertSuccessful()
         ->assertJsonCount(1);
 });
 
 it('can add a user to a workspace', function () {
     $newUser = User::factory()->create(['email' => 'newuser@example.com']);
-    $this->postJson(route('open.workspaces.users.add', ['workspaceId' => $this->workspace->id]), [
-            'email' => $newUser->email,
-            'role' => 'user',
-        ])
+    $this->postJson(route('open.workspaces.users.add', ['workspace' => $this->workspace]), [
+        'email' => $newUser->email,
+        'role' => 'user',
+    ])
         ->assertSuccessful()
         ->assertJson([
             'message' => 'User has been successfully added to workspace.'
@@ -35,10 +35,10 @@ it('can add a user to a workspace', function () {
 it('can send an invitation email to a non-existing user', function () {
     Mail::fake();
 
-    $this->postJson(route('open.workspaces.users.add', ['workspaceId' => $this->workspace->id]), [
-            'email' => 'nonexisting@example.com',
-            'role' => 'user',
-        ])
+    $this->postJson(route('open.workspaces.users.add', ['workspace' => $this->workspace]), [
+        'email' => 'nonexisting@example.com',
+        'role' => 'user',
+    ])
         ->assertSuccessful()
         ->assertJson([
             'message' => 'Registration invitation email sent to user.'
@@ -52,11 +52,11 @@ it('can update user role in a workspace', function () {
     $this->workspace->users()->attach($existingUser, ['role' => 'user']);
 
     $this->putJson(route('open.workspaces.users.update-role', [
-            'workspaceId' => $this->workspace->id,
-            'userId' => $existingUser->id
-        ]), [
-            'role' => 'admin',
-        ])
+        'workspace' => $this->workspace,
+        'user' => $existingUser
+    ]), [
+        'role' => 'admin',
+    ])
         ->assertSuccessful()
         ->assertJson([
             'message' => 'User role changed successfully.'
@@ -68,9 +68,9 @@ it('can remove a user from a workspace', function () {
     $this->workspace->users()->attach($existingUser);
 
     $this->deleteJson(route('open.workspaces.users.remove', [
-            'workspaceId' => $this->workspace->id,
-            'userId' => $existingUser->id
-        ]))
+        'workspace' => $this->workspace,
+        'user' => $existingUser
+    ]))
         ->assertSuccessful()
         ->assertJson([
             'message' => 'User removed from workspace successfully.'
@@ -80,7 +80,7 @@ it('can remove a user from a workspace', function () {
 });
 
 it('can leave a workspace', function () {
-    $this->postJson(route('open.workspaces.leave', ['workspaceId' => $this->workspace->id]))
+    $this->postJson(route('open.workspaces.leave', ['workspace' => $this->workspace]))
         ->assertSuccessful()
         ->assertJson([
             'message' => 'You have left the workspace successfully.'

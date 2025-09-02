@@ -386,7 +386,6 @@ class FormLogicConditionChecker
                 try {
                     return (bool) preg_match('/' . $propertyCondition['value'] . '/', $value);
                 } catch (\Exception $e) {
-                    ray('matches_regex_error', $e);
                     return false;
                 }
             case 'does_not_match_regex':

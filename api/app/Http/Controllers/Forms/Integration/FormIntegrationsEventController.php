@@ -14,9 +14,8 @@ class FormIntegrationsEventController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(string $id, string $integrationid)
+    public function index(Form $form, string $integrationid)
     {
-        $form = Form::findOrFail((int)$id);
         $this->authorize('view', $form);
 
         return FormIntegrationsEventResource::collection(
