@@ -44,6 +44,7 @@ test('cannot create an integration without a corresponding ability', function ()
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
+
         'form_id' => $form->id,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
@@ -63,6 +64,7 @@ test('cannot create an integration for other users form', function () {
     Sanctum::actingAs($user);
 
     post(route('zapier.webhooks.store'), [
+
         'form_id' => $form->id,
         'hookUrl' => 'https://zapier.com/hook/test'
     ])
@@ -92,7 +94,7 @@ test('delete an integration', function () {
 
     assertDatabaseCount('form_integrations', 1);
 
-    delete(route('zapier.webhooks.destroy', $integration), [
+    delete(route('zapier.webhooks.destroy'), [
         'form_id' => $form->id,
         'hookUrl' => $hookUrl,
     ])
@@ -120,7 +122,7 @@ test('cannot delete an integration with an incorrect hook url', function () {
             ]
         ]);
 
-    delete(route('zapier.webhooks.destroy', $integration), [
+    delete(route('zapier.webhooks.destroy'), [
         'form_id' => $form->id,
         'hookUrl' => 'https://google.com',
     ])
