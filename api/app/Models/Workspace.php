@@ -168,12 +168,7 @@ class Workspace extends Model implements CachableAttributes
     public function getIsRiskyAttribute()
     {
         return $this->remember('is_risky', 15 * 60, function (): bool {
-            // A workspace is risky if all of his users are risky
-            $owners = $this->relationLoaded('users')
-                ? $this->users->where('pivot.role', 'admin')
-                : $this->owners()->get();
-
-            foreach ($owners as $owner) {
+            foreach ($this->owners as $owner) {
                 if (!$owner->is_risky) {
                     return false;
                 }
