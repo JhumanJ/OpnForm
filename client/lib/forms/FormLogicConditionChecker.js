@@ -84,11 +84,12 @@ function areValidNumbers(condition, fieldValue) {
 }
 
 function checkEquals(condition, fieldValue) {
+  const conditionValue = condition.value
   // For numeric values, convert to numbers before comparison
-  if (areValidNumbers(condition, fieldValue)) {
-    return parseFloat(condition.value) === parseFloat(fieldValue)
+  if (areValidNumbers(condition, fieldValue) && typeof conditionValue === 'number' && typeof fieldValue === 'number') {
+    return parseFloat(conditionValue) === parseFloat(fieldValue)
   }
-  return condition.value === fieldValue
+  return conditionValue === fieldValue
 }
 
 function checkObjectEquals(condition, fieldValue) {
