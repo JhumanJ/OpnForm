@@ -27,7 +27,8 @@ class ExportFormSubmissionsJob implements ShouldQueue
         public array $columns,
         public string $jobId,
         public int $userId
-    ) {}
+    ) {
+    }
 
     public function handle(FormExportService $exportService): void
     {
