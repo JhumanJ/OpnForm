@@ -54,6 +54,7 @@ const props = defineProps({
 const queryClient = useQueryClient()
 const table = ref(null)
 
+// Replace all the recordStore logic with this:
 const { paginatedList } = useFormSubmissions()
 const {
   submissions,
@@ -65,6 +66,7 @@ const {
   setPage
 } = paginatedList(computed(() => props.form?.id))
 
+// Replace existing event handlers:
 const handleSearch = (searchTerm) => {
   setSearch(searchTerm)
 }
