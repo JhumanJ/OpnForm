@@ -198,12 +198,11 @@ watch(compVal, (val) => {
   }
 }, { immediate: true })
 
-// Initialize mention extension and fullscreen icon
+// Initialize mention extension - always register blot to prevent crashes
 if (import.meta.client) {
-  if (props.enableMentions) {
-    // Register the mention extension with Quill
-    mentionState.value = registerMentionExtension(Quill)
-  }
+  // Always register mention blot globally for backward compatibility
+  // This ensures any content with mentions can be parsed without crashing
+  mentionState.value = registerMentionExtension(Quill)
 }
 
 // Handle editor ready event
@@ -226,11 +225,19 @@ const onEditorReady = (quillInstance) => {
   }
 }
 
-const quillOptions = computed(() => {
-  const defaultOptions = {
+const buildQuillOptions = (includeFullscreen = false) => {
+  // Build formats array dynamically based on enabled features
+  const baseFormats = ['bold', 'color', 'italic', 'link', 'strike', 'underline', 'header', 'list']
+  
+  // Add mention format when mentions are enabled
+  if (props.enableMentions) {
+    baseFormats.push('mention')
+  }
+  
+  const baseOptions = {
     placeholder: props.placeholder || '',
     theme: 'snow',
-    formats: ['bold', 'italic', 'underline', 'strike', 'link', 'header', 'list', 'color'],
+    formats: baseFormats,
     modules: {
       toolbar: [
         [{ 'header': 1 }, { 'header': 2 }],
@@ -252,10 +259,17 @@ const quillOptions = computed(() => {
     }
   }
 
-  const mergedOptions = { ...defaultOptions, ...props.editorOptions, modules: { ...defaultOptions.modules, ...props.editorOptions.modules } }
+  const mergedOptions = { 
+    ...baseOptions, 
+    ...props.editorOptions, 
+    modules: { 
+      ...baseOptions.modules, 
+      ...props.editorOptions.modules 
+    } 
+  }
   
-  // Add fullscreen button to toolbar if enabled
-  if (props.allowFullscreen) {
+  // Add fullscreen button to toolbar if enabled and requested
+  if (includeFullscreen && props.allowFullscreen) {
     mergedOptions.modules.toolbar.push(['fullscreen'])
     
     // Set up toolbar with handlers
@@ -269,57 +283,24 @@ const quillOptions = computed(() => {
     }
   }
   
+  // Add mentions module and toolbar button if enabled
   if (props.enableMentions) {
     mergedOptions.modules.mention = true
-    if (!mergedOptions.modules.toolbar.container) {
-      mergedOptions.modules.toolbar.container = mergedOptions.modules.toolbar
+    
+    // Handle toolbar container properly
+    const toolbar = mergedOptions.modules.toolbar
+    if (toolbar.container) {
+      toolbar.container.push(['mention'])
+    } else {
+      mergedOptions.modules.toolbar.push(['mention'])
     }
-    mergedOptions.modules.toolbar.container.push(['mention'])
   }
   
   return mergedOptions
-})
+}
 
-const modalQuillOptions = computed(() => {
-  const defaultOptions = {
-    placeholder: props.placeholder || '',
-    theme: 'snow',
-    formats: ['bold', 'italic', 'underline', 'strike', 'link', 'header', 'list', 'color'],
-    modules: {
-      toolbar: [
-        [{ 'header': 1 }, { 'header': 2 }],
-        ['bold', 'italic', 'underline', 'strike'],
-        ['link'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ color: [] }],
-      ],
-      keyboard: {
-        bindings: {
-          tab: {
-            key: 9,
-            handler (range) {
-              this.quill.insertText(range.index, '    ', 'user')
-            }
-          }
-        }
-      }
-    }
-  }
-
-  const mergedOptions = { ...defaultOptions, ...props.editorOptions, modules: { ...defaultOptions.modules, ...props.editorOptions.modules } }
-  
-  // NOTE: No fullscreen button for modal editor
-  
-  if (props.enableMentions) {
-    mergedOptions.modules.mention = true
-    if (!mergedOptions.modules.toolbar) {
-      mergedOptions.modules.toolbar = []
-    }
-    mergedOptions.modules.toolbar.push(['mention'])
-  }
-  
-  return mergedOptions
-})
+const quillOptions = computed(() => buildQuillOptions(true))
+const modalQuillOptions = computed(() => buildQuillOptions(false))
 
 const charCount = computed(() => {
   return compVal.value ? compVal.value.replace(/<[^>]*>/g, '').trim().length : 0
