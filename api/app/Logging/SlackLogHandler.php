@@ -49,7 +49,6 @@ class SlackLogHandler extends AbstractProcessingHandler
             ]);
         } catch (Exception $e) {
             // Log the error without causing recursion
-            ray($e);
             error_log("Failed to send Slack message: " . $e->getMessage());
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\Forms\Form;
 use App\Service\Forms\FormLogicConditionChecker;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -20,7 +21,7 @@ class CustomFieldValidationRule implements ValidationRule
      *
      * @return void
      */
-    public function __construct(public array $validation, public array $formData)
+    public function __construct(public array $validation, public array $formData, public ?Form $form = null)
     {
     }
 
@@ -38,9 +39,20 @@ class CustomFieldValidationRule implements ValidationRule
             return true;
         }
 
+        // Prepare form data with form context if form is provided
+        $formDataWithContext = $this->formData;
+        if ($this->form) {
+            $formDataWithContext = array_merge($this->formData, [
+                'form' => [
+                    'id' => $this->form->id,
+                    'slug' => $this->form->slug,
+                ]
+            ]);
+        }
+
         return FormLogicConditionChecker::conditionsMet(
             $logicConditions,
-            $this->formData
+            $formDataWithContext
         );
     }
 

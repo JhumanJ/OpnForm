@@ -65,7 +65,7 @@ describe('Public API Policy Tests', function () {
         // Act & Assert
         Sanctum::actingAs($user, ['forms-read']);
 
-        $this->getJson(route('open.forms.submissions.index', ['id' => $form->id]))
+        $this->getJson(route('open.forms.submissions.index', ['form' => $form]))
             ->assertSuccessful();
     });
 
@@ -79,7 +79,7 @@ describe('Public API Policy Tests', function () {
         // Act & Assert
         Sanctum::actingAs($user, ['forms-read']);
 
-        $this->deleteJson(route('open.forms.submissions.destroy', ['id' => $form->id, 'submission_id' => $submission->id]))
+        $this->deleteJson(route('open.forms.submissions.destroy', ['form' => $form, 'submission_id' => $submission->id]))
             ->assertForbidden();
     });
 
@@ -93,7 +93,7 @@ describe('Public API Policy Tests', function () {
         // Act & Assert
         Sanctum::actingAs($user, ['forms-write']);
 
-        $this->deleteJson(route('open.forms.submissions.destroy', ['id' => $form->id, 'submission_id' => $submission->id]))
+        $this->deleteJson(route('open.forms.submissions.destroy', ['form' => $form, 'submission_id' => $submission->id]))
             ->assertSuccessful();
     });
 
@@ -109,10 +109,10 @@ describe('Public API Policy Tests', function () {
         Sanctum::actingAs($userA, ['forms-read']);
 
         // Assert: Laravel will return a 401 when a policy check fails on a model binding.
-        $this->getJson(route('open.forms.show', ['slug' => $formB->slug]))
+        $this->getJson(route('open.forms.show', ['form' => $formB]))
             ->assertUnauthorized();
 
-        $this->getJson(route('open.forms.submissions.index', ['id' => $formB->id]))
+        $this->getJson(route('open.forms.submissions.index', ['form' => $formB]))
             ->assertUnauthorized();
     });
 });
