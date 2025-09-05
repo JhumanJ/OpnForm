@@ -71,7 +71,8 @@ class FormSubmissionController extends Controller
 
     public function update(AnswerFormRequest $request, Form $form, $submission_id)
     {
-        $this->authorize('update', $form);
+        $submission = FormSubmission::findOrFail($submission_id);
+        $this->authorize('update', $submission);
 
         $submissionData = $request->validated();
         $submissionData['submission_id'] = $submission_id;

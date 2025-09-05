@@ -81,24 +81,49 @@ const handlePageChange = (page) => {
   setPage(page)
 }
 
-const onUpdateRecord = (_submission) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
+const onUpdateRecord = (updatedSubmission) => {
+  // Update the specific record in cache instead of refetching
+  queryClient.setQueriesData(
+    { queryKey: ['forms', props.form.id, 'submissions', 'paginated'] },
+    (oldData) => {
+      if (!oldData?.data) return oldData
+      
+      return {
+        ...oldData,
+        data: oldData.data.map(record => 
+          record.data.id === updatedSubmission.id 
+            ? { ...record, data: { ...record.data, ...updatedSubmission } }
+            : record
+        )
+      }
+    }
+  )
 }
 
-const onDeleteRecord = (_submission) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
+// Common function to remove submissions from cache
+const removeSubmissionsFromCache = (idsToRemove) => {
+  queryClient.setQueriesData(
+    { queryKey: ['forms', props.form.id, 'submissions', 'paginated'] },
+    (oldData) => {
+      if (!oldData?.data) return oldData
+      
+      return {
+        ...oldData,
+        data: oldData.data.filter(record => 
+          !idsToRemove.includes(record.data.id)
+        )
+      }
+    }
+  )
 }
 
-const onDeleteMultiRecord = (_submissionIds) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
+const onDeleteRecord = (deletedSubmission) => {
+  // Remove the specific record from cache instead of refetching
+  removeSubmissionsFromCache([deletedSubmission.id])
+}
+
+const onDeleteMultiRecord = (submissionIds) => {
+  // Remove multiple records from cache instead of refetching
+  removeSubmissionsFromCache(submissionIds)
 }
 </script>
