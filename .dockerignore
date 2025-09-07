@@ -1,7 +1,8 @@
 /.git
 /Dockerfile
 /data
-\.env
+\.env*
+!\.env.example
 
 # API ignores
 api/vendor/

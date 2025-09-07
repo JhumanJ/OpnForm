@@ -10,7 +10,8 @@
 .env.backup
 .env.testing
 .env.dusk.local
-.env.api-*
+.env.api*
+.env.ui*
 .env.docker.local
 .phpunit.result.cache
 .idea/*
