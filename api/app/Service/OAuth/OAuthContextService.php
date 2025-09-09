@@ -40,7 +40,10 @@ class OAuthContextService
     public function getIntent(): string
     {
         $context = $this->getContext();
-        return $context['intent'] ?? 'auth';
+        if (!isset($context['intent'])) {
+            abort(419, 'OAuth context expired');
+        }
+        return $context['intent'];
     }
 
     /**

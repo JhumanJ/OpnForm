@@ -15,6 +15,7 @@ class OAuthFlowOrchestrator
 
     public const INTENT_AUTH = 'auth';
     public const INTENT_INTEGRATION = 'integration';
+    public const INTENTS = [self::INTENT_AUTH, self::INTENT_INTEGRATION];
 
     public function __construct(
         private OAuthContextService $contextService,
@@ -22,8 +23,7 @@ class OAuthFlowOrchestrator
         private OAuthUserDataService $userDataService,
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {
-    }
+    ) {}
 
     /**
      * Process OAuth redirect request

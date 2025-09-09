@@ -7,6 +7,7 @@ use App\Integrations\OAuth\Drivers\OAuthGoogleDriver;
 use App\Integrations\OAuth\Drivers\OAuthGoogleOneTapDriver;
 use App\Integrations\OAuth\Drivers\OAuthStripeDriver;
 use App\Integrations\OAuth\Drivers\OAuthTelegramDriver;
+use App\Service\OAuth\OAuthFlowOrchestrator;
 
 enum OAuthProviderService: string
 {
@@ -28,10 +29,10 @@ enum OAuthProviderService: string
     public function supportsIntent(string $intent): bool
     {
         return match ($this) {
-            self::Google => in_array($intent, ['auth', 'integration']),
-            self::GoogleOneTap => $intent === 'auth',
-            self::Stripe => $intent === 'integration',
-            self::Telegram => $intent === 'integration',
+            self::Google => in_array($intent, OAuthFlowOrchestrator::INTENTS),
+            self::GoogleOneTap => $intent === OAuthFlowOrchestrator::INTENT_AUTH,
+            self::Stripe => $intent === OAuthFlowOrchestrator::INTENT_INTEGRATION,
+            self::Telegram => $intent === OAuthFlowOrchestrator::INTENT_INTEGRATION,
         };
     }
 

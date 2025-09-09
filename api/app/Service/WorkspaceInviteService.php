@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserInvite;
 use App\Models\Workspace;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\DB;
 
 class WorkspaceInviteService
 {
@@ -38,23 +39,22 @@ class WorkspaceInviteService
             );
         }
 
-        if ($userInvite->hasExpired()) {
-            throw new HttpResponseException(
-                response()->json(['message' => 'Invite token has expired.'], 400)
-            );
-        }
+        // Use transaction for consistency, atomic update handles race conditions
+        return DB::transaction(function () use ($userInvite) {
+            // Re-check expiration inside transaction (status check handled by atomic update)
+            if ($userInvite->hasExpired()) {
+                throw new HttpResponseException(
+                    response()->json(['message' => 'Invite token has expired.'], 400)
+                );
+            }
 
-        if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
-            throw new HttpResponseException(
-                response()->json(['message' => 'Invite is already accepted.'], 400)
-            );
-        }
+            // markAsAccepted() uses atomic conditional update to prevent races
+            $userInvite->markAsAccepted();
 
-        $userInvite->markAsAccepted();
-
-        return [
-            $userInvite->workspace,
-            $userInvite->role,
-        ];
+            return [
+                $userInvite->workspace,
+                $userInvite->role,
+            ];
+        });
     }
 }
