@@ -2,14 +2,16 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
-use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
+use App\Integrations\OAuth\Drivers\Traits\SupportsEmailRestrictions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Contracts\User;
 
-class OAuthGoogleOneTapDriver implements OAuthDriver, WidgetOAuthDriver
+class OAuthGoogleOneTapDriver extends BaseOAuthDriver implements WidgetOAuthDriver
 {
+    use SupportsEmailRestrictions;
+
     public function getRedirectUrl(): string
     {
         throw new \Exception('Google One Tap does not use redirect URLs');

@@ -2,17 +2,18 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
-use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use App\Integrations\OAuth\Drivers\Traits\SupportsEmailRestrictions;
 use Google\Service\Sheets;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 
-class OAuthGoogleDriver implements OAuthDriver
+class OAuthGoogleDriver extends BaseOAuthDriver
 {
+    use SupportsEmailRestrictions;
+
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
-    private array $allowedEmails = [];
 
     protected GoogleProvider $provider;
 
@@ -23,21 +24,24 @@ class OAuthGoogleDriver implements OAuthDriver
 
     public function getRedirectUrl(): string
     {
-        $additionalParams = [
+        $baseParameters = [
             'access_type' => 'offline',
             'prompt' => 'consent select_account'
         ];
 
-        // Add login hint for specific email (use first allowed email if available)
-        if (!empty($this->allowedEmails)) {
-            $additionalParams['login_hint'] = $this->allowedEmails[0];
-        }
+        // Merge email restriction parameters from trait
+        $emailParameters = $this->getEmailRestrictionParameters();
+
+        // Merge additional parameters from base class
+        $additionalParameters = $this->getAdditionalParameters();
+
+        $allParameters = array_merge($baseParameters, $emailParameters, $additionalParameters);
 
         return $this->provider
             ->scopes($this->scopes ?? [])
             ->stateless()
             ->redirectUrl($this->redirectUrl ?? config('services.google.redirect'))
-            ->with($additionalParams)
+            ->with($allParameters)
             ->redirect()
             ->getTargetUrl();
     }
@@ -55,13 +59,13 @@ class OAuthGoogleDriver implements OAuthDriver
         return true;
     }
 
-    public function setRedirectUrl(string $url): OAuthDriver
+    public function setRedirectUrl(string $url): self
     {
         $this->redirectUrl = $url;
         return $this;
     }
 
-    public function setScopes(array $scopes): OAuthDriver
+    public function setScopes(array $scopes): self
     {
         $this->scopes = $scopes;
         return $this;
@@ -74,12 +78,5 @@ class OAuthGoogleDriver implements OAuthDriver
             'integration' => ['openid', 'profile', 'email', Sheets::DRIVE_FILE],
             default => ['openid', 'profile', 'email'],
         };
-    }
-
-    // Set email restrictions for Google OAuth
-    public function setEmailRestrictions(array $allowedEmails = []): self
-    {
-        $this->allowedEmails = $allowedEmails;
-        return $this;
     }
 }

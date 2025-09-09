@@ -5,7 +5,7 @@ namespace App\Integrations\OAuth\Drivers;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Laravel\Socialite\Contracts\User;
 
-class OAuthTelegramDriver implements WidgetOAuthDriver
+class OAuthTelegramDriver extends BaseOAuthDriver implements WidgetOAuthDriver
 {
     protected string $redirectUrl;
     protected array $scopes = [];

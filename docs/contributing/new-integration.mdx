@@ -6,17 +6,19 @@ description: "Complete guide to implementing OAuth integrations in OpnForm with 
 This guide covers how to add new OAuth integrations to OpnForm. The system uses a modern, service-oriented architecture with intent-based OAuth flows to handle different authentication scenarios including user authentication, account integrations, and widget-based providers.
 
 <Card title="Configuration Guide" icon="gear" href="/configuration/oauth-setup">
-Before implementing a new integration, you may want to review the OAuth configuration guide to understand how to set up the existing Google, Stripe, and Telegram integrations.
+    Before implementing a new integration, you may want to review the OAuth
+    configuration guide to understand how to set up the existing Google, Stripe,
+    and Telegram integrations.
 </Card>
 
 ## System Architecture Overview
 
 OpnForm's OAuth system is built around several key architectural patterns:
 
-- **Intent-based Flows**: Different OAuth scopes and handling based on auth vs integration intents
-- **Driver Pattern**: Abstracted OAuth provider implementations with support for redirect and widget flows
-- **Service Layer**: Centralized user and provider management through dedicated services
-- **Message-based Communication**: Cross-window communication for OAuth callbacks
+-   **Intent-based Flows**: Different OAuth scopes and handling based on auth vs integration intents
+-   **Driver Pattern**: Abstracted OAuth provider implementations with support for redirect and widget flows
+-   **Service Layer**: Centralized user and provider management through dedicated services
+-   **Message-based Communication**: Cross-window communication for OAuth callbacks
 
 ```mermaid
 graph TB
@@ -27,12 +29,12 @@ graph TB
         useAuthFlow[useAuthFlow Composable]
         TanStackQuery[TanStack Query Cache]
     end
-    
+
     subgraph "Backend API (Laravel)"
         OAuthController[OAuthController]
         OAuthUserService[OAuthUserService]
         OAuthProviderService[OAuthProviderService]
-        
+
         subgraph "OAuth Drivers"
             GoogleDriver[OAuthGoogleDriver]
             GoogleOneTapDriver[OAuthGoogleOneTapDriver]
@@ -40,31 +42,31 @@ graph TB
             TelegramDriver[OAuthTelegramDriver]
             NewDriver[OAuthNewProviderDriver]
         end
-        
+
         subgraph "Data Layer"
             UserModel[User Model]
             OAuthProviderModel[OAuthProvider Model]
             Cache[Laravel Cache]
         end
     end
-    
+
     subgraph "External Services"
         GoogleOAuth[Google OAuth]
         StripeOAuth[Stripe Connect]
         TelegramWidget[Telegram Widget]
         NewProviderOAuth[New Provider OAuth]
     end
-    
+
     %% Frontend to Backend API calls
     UI --> useOAuth
     useOAuth --> OAuthController
     useAuthFlow --> OAuthController
-    
+
     %% OAuth Controller orchestration
     OAuthController --> OAuthUserService
     OAuthController --> OAuthProviderService
     OAuthController --> Cache
-    
+
     %% Service to Drivers
     OAuthUserService --> GoogleDriver
     OAuthUserService --> GoogleOneTapDriver
@@ -73,30 +75,30 @@ graph TB
     OAuthProviderService --> GoogleOneTapDriver
     OAuthProviderService --> StripeDriver
     OAuthProviderService --> TelegramDriver
-    
+
     %% Drivers to External Services
     GoogleDriver --> GoogleOAuth
     GoogleOneTapDriver --> GoogleOAuth
     StripeDriver --> StripeOAuth
     TelegramDriver --> TelegramWidget
     NewDriver --> NewProviderOAuth
-    
+
     %% Data persistence
     OAuthUserService --> UserModel
     OAuthProviderService --> OAuthProviderModel
-    
+
     %% Cross-window communication
     useWindowMessage -.->|"OAuth Callbacks"| useOAuth
     useWindowMessage -.->|"Cache Invalidation"| TanStackQuery
-    
+
     %% Cache invalidation
     TanStackQuery -.->|"Refetch on Changes"| useOAuth
-    
+
     classDef frontend fill:#e1f5fe
     classDef backend fill:#f3e5f5
     classDef external fill:#fff3e0
     classDef data fill:#e8f5e8
-    
+
     class UI,useOAuth,useWindowMessage,useAuthFlow,TanStackQuery frontend
     class OAuthController,OAuthUserService,OAuthProviderService,GoogleDriver,GoogleOneTapDriver,StripeDriver,TelegramDriver,NewDriver backend
     class GoogleOAuth,StripeOAuth,TelegramWidget,NewProviderOAuth external
@@ -119,19 +121,20 @@ class OAuthController extends Controller
 
     // Initiates OAuth flow with intent-based scoping
     public function redirect(Request $request, string $provider)
-    
+
     // Handles standard OAuth callbacks
     public function callback(string $provider)
-    
+
     // Handles widget-based OAuth (e.g., Telegram, Google One Tap)
     public function handleWidgetCallback(string $service, Request $request)
 }
 ```
 
 **Key Features:**
-- **Intent-based scoping**: Different OAuth scopes for `auth` vs `integration` flows
-- **Context caching**: Stores integration context for callback handling
-- **Flow determination**: Automatically chooses authentication vs integration flow based on user state
+
+-   **Intent-based scoping**: Different OAuth scopes for `auth` vs `integration` flows
+-   **Context caching**: Stores integration context for callback handling
+-   **Flow determination**: Automatically chooses authentication vs integration flow based on user state
 
 ### 2. OAuthUserService (`api/app/Service/OAuth/OAuthUserService.php`)
 
@@ -142,7 +145,7 @@ class OAuthUserService
 {
     // Handles user authentication and registration flow
     public function handleAuthenticationFlow(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
-    
+
     // Finds or creates user from OAuth provider data
     public function findOrCreateUser(OAuthProviderService $provider, SocialiteUser $socialiteUser): User
 }
@@ -157,7 +160,7 @@ class OAuthProviderService
 {
     // Handles provider connection and integration flow
     public function handleIntegrationFlow(OAuthProviderService $provider, SocialiteUser $socialiteUser): JsonResponse
-    
+
     // Creates or updates OAuth provider records
     public function createOrUpdateProvider(OAuthProviderService $provider, SocialiteUser $socialiteUser): OAuthProvider
 }
@@ -168,6 +171,7 @@ class OAuthProviderService
 The system uses intent-based flow handling instead of strategies:
 
 #### Authentication Flow
+
 For user login/registration when user is not authenticated:
 
 ```php
@@ -179,6 +183,7 @@ if (!Auth::check()) {
 ```
 
 #### Integration Flow
+
 For connecting OAuth accounts when user is already logged in:
 
 ```php
@@ -190,6 +195,7 @@ if (Auth::check()) {
 ```
 
 #### Widget Flow
+
 For widget-based authentication (like Telegram Login Widget, Google One Tap):
 
 ```php
@@ -253,21 +259,21 @@ flowchart TD
     S --> T["Send LOGIN_COMPLETE message"]
     T --> U["Close OAuth window"]
     U --> V["Redirect to dashboard"]
-    
+
     E --> W["Show error message"]
-    
+
     subgraph "Window Communication"
         X["OAuth Callback Window"] --> Y["useWindowMessage.send()"]
         Y --> Z["Parent Window Listener"]
         Z --> AA["Cache invalidation"]
         AA --> BB["UI updates"]
     end
-    
+
     classDef process fill:#e3f2fd
     classDef decision fill:#fff3e0
     classDef error fill:#ffebee
     classDef communication fill:#f3e5f5
-    
+
     class A,B,C,F,G,H,I,J,K,O,P,Q,R,S,T,U,V process
     class D,L decision
     class E,W error
@@ -281,7 +287,7 @@ sequenceDiagram
     participant API as OAuthController
     participant P as OAuth Provider
     participant US as OAuthUserService
-    
+
     U->>F: Click "Sign in with Provider"
     F->>API: POST /oauth/connect/{provider}?intent=auth
     API->>P: Redirect to provider OAuth
@@ -294,6 +300,7 @@ sequenceDiagram
 ```
 
 **Key Steps:**
+
 1. Frontend calls `/oauth/connect/{provider}` with `intent=auth`
 2. Controller validates provider can create users
 3. User redirected to OAuth provider with basic scopes
@@ -311,8 +318,8 @@ sequenceDiagram
     participant P as OAuth Provider
     participant PS as OAuthProviderService
     participant C as Cache
-    
-    U->>F: Click "Connect Account" 
+
+    U->>F: Click "Connect Account"
     F->>API: POST /oauth/connect/{provider}?intent=integration
     API->>C: Store integration context
     API->>P: Redirect with full permission scopes
@@ -326,9 +333,10 @@ sequenceDiagram
 ```
 
 **Key Features:**
-- **Enhanced scopes**: Requests full permissions needed for integrations
-- **Context preservation**: Stores `intention` and `autoClose` settings in cache
-- **Provider management**: Creates/updates `OAuthProvider` records
+
+-   **Enhanced scopes**: Requests full permissions needed for integrations
+-   **Context preservation**: Stores `intention` and `autoClose` settings in cache
+-   **Provider management**: Creates/updates `OAuthProvider` records
 
 ### Widget Flow (e.g., Telegram)
 
@@ -336,10 +344,10 @@ sequenceDiagram
 sequenceDiagram
     participant U as User
     participant W as Widget
-    participant F as Frontend  
+    participant F as Frontend
     participant API as OAuthController
     participant US as OAuthUserService
-    
+
     U->>W: Authenticate with provider widget
     W->>F: Widget callback with auth data
     F->>API: POST /oauth/widget-callback/{provider}
@@ -352,9 +360,10 @@ sequenceDiagram
 ```
 
 **Widget Authentication Features:**
-- **No redirect flow**: Authentication happens in-place via widget
-- **Data verification**: Cryptographic verification of widget data
-- **Direct provider creation**: Immediately creates provider records
+
+-   **No redirect flow**: Authentication happens in-place via widget
+-   **Data verification**: Cryptographic verification of widget data
+-   **Direct provider creation**: Immediately creates provider records
 
 ## Frontend Integration
 
@@ -365,18 +374,18 @@ The frontend uses `useWindowMessage` composable for cross-window communication:
 ```javascript
 // WindowMessageTypes for consistent messaging
 export const WindowMessageTypes = {
-  LOGIN_COMPLETE: 'login-complete',
-  AFTER_LOGIN: 'after-login', 
-  OAUTH_PROVIDER_CONNECTED: 'oauth-provider-connected'
-}
+    LOGIN_COMPLETE: "login-complete",
+    AFTER_LOGIN: "after-login",
+    OAUTH_PROVIDER_CONNECTED: "oauth-provider-connected",
+};
 
 // Usage in OAuth callback
-const { send } = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+const { send } = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE);
 send(window.opener, {
-  eventType: WindowMessageTypes.LOGIN_COMPLETE,
-  useMessageChannel: false,
-  waitForAcknowledgment: false
-})
+    eventType: WindowMessageTypes.LOGIN_COMPLETE,
+    useMessageChannel: false,
+    waitForAcknowledgment: false,
+});
 ```
 
 ### OAuth Composable (`useOAuth`)
@@ -384,25 +393,25 @@ send(window.opener, {
 Centralized OAuth operations with TanStack Query integration:
 
 ```javascript
-const { connect, connectMutation, services } = useOAuth()
+const { connect, connectMutation, services } = useOAuth();
 
 // Connect to OAuth provider
-await connect('google', false, true, true) // service, redirect, newtab, autoClose
+await connect("google", false, true, true); // service, redirect, newtab, autoClose
 
 // Service definitions with auth types
 const services = [
-  {
-    name: 'google',
-    title: 'Google', 
-    auth_type: 'redirect' // Standard OAuth redirect flow
-  },
-  {
-    name: 'telegram',
-    title: 'Telegram',
-    auth_type: 'widget', // Widget-based authentication
-    widget_file: 'TelegramWidget'
-  }
-]
+    {
+        name: "google",
+        title: "Google",
+        auth_type: "redirect", // Standard OAuth redirect flow
+    },
+    {
+        name: "telegram",
+        title: "Telegram",
+        auth_type: "widget", // Widget-based authentication
+        widget_file: "TelegramWidget",
+    },
+];
 ```
 
 ### Cache Management
@@ -411,12 +420,15 @@ The system automatically invalidates TanStack Query cache when OAuth connections
 
 ```javascript
 // Listen for OAuth provider connections
-windowMessage.listen((_event) => {
-  invalidateProviders() // Refresh OAuth providers list
-}, {
-  useMessageChannel: false,
-  acknowledge: false
-})
+windowMessage.listen(
+    (_event) => {
+        invalidateProviders(); // Refresh OAuth providers list
+    },
+    {
+        useMessageChannel: false,
+        acknowledge: false,
+    }
+);
 ```
 
 ## Adding a New Integration
@@ -487,8 +499,8 @@ class OAuthNewProviderDriver implements OAuthDriver
     public function getScopesForIntent(string $intent): array
     {
         return match ($intent) {
-            OAuthController::INTENT_AUTH => ['user:email', 'read:user'],
-            OAuthController::INTENT_INTEGRATION => ['user:email', 'read:user', 'write:data'],
+            OAuthFlowOrchestrator::INTENT_AUTH => ['user:email', 'read:user'],
+            OAuthFlowOrchestrator::INTENT_INTEGRATION => ['user:email', 'read:user', 'write:data'],
             default => ['user:email', 'read:user'],
         };
     }
@@ -496,7 +508,7 @@ class OAuthNewProviderDriver implements OAuthDriver
 ```
 
 <Tip>
-Configure different scopes for `auth` vs `integration` intents using the `OAuthController::INTENT_AUTH` and `OAuthController::INTENT_INTEGRATION` constants. Auth scopes should be minimal (just enough for user identification), while integration scopes should include all permissions needed for the provider's functionality.
+Configure different scopes for `auth` vs `integration` intents using the `OAuthFlowOrchestrator::INTENT_AUTH` and `OAuthFlowOrchestrator::INTENT_INTEGRATION` constants. Auth scopes should be minimal (just enough for user identification), while integration scopes should include all permissions needed for the provider's functionality.
 </Tip>
 </Step>
 
@@ -518,7 +530,7 @@ enum OAuthProviderService: string
         return match ($this) {
             self::Google => new OAuthGoogleDriver(),
             self::GoogleOneTap => new OAuthGoogleOneTapDriver(),
-            self::Stripe => new OAuthStripeDriver(), 
+            self::Stripe => new OAuthStripeDriver(),
             self::Telegram => new OAuthTelegramDriver(),
             self::NewProvider => new OAuthNewProviderDriver(), // Add mapping
         };
@@ -536,6 +548,7 @@ enum OAuthProviderService: string
     }
 }
 ```
+
 </Step>
 
 <Step title="Configure Services">
@@ -557,6 +570,7 @@ Add environment variables to `.env.example`:
 NEWPROVIDER_CLIENT_ID=
 NEWPROVIDER_CLIENT_SECRET=
 ```
+
 </Step>
 
 <Step title="Install Socialite Provider">
@@ -575,6 +589,7 @@ protected $listen = [
     ],
 ];
 ```
+
 </Step>
 
 <Step title="Add Frontend Service Definition">
@@ -583,18 +598,19 @@ Update the frontend service configuration:
 ```javascript
 // client/composables/query/useOAuth.js
 const services = computed(() => {
-  return [
-    // ... existing services
-    {
-      name: 'newprovider',
-      title: 'New Provider',
-      icon: 'mdi:newprovider', // Use appropriate icon
-      enabled: useFeatureFlag('services.newprovider.client_id', false),
-      auth_type: 'redirect'
-    }
-  ]
-})
+    return [
+        // ... existing services
+        {
+            name: "newprovider",
+            title: "New Provider",
+            icon: "mdi:newprovider", // Use appropriate icon
+            enabled: useFeatureFlag("services.newprovider.client_id", false),
+            auth_type: "redirect",
+        },
+    ];
+});
 ```
+
 </Step>
 
 <Step title="Add Feature Flag">
@@ -615,18 +631,21 @@ public function index(): JsonResponse
     ]);
 }
 ```
+
 </Step>
 
 <Step title="Test the Integration">
 Test both authentication and integration flows:
 
 **Authentication Test:**
+
 1. Start fresh (logged out)
 2. Click "Sign in with New Provider"
 3. Complete OAuth flow
 4. Verify user creation and login
 
 **Integration Test:**
+
 1. Log in with existing account
 2. Go to Settings → Connections
 3. Click "Connect New Provider"
@@ -663,20 +682,23 @@ class NewProviderIntegration extends AbstractIntegrationHandler
     {
         // Implement integration logic here
         // e.g., send data to external API, create records, etc.
-        
+
         return true;
     }
 }
 ```
 
 Register the handler and add frontend integration components as needed.
+
 </Step>
 </Steps>
 
 ## Provider Normalization
 
 <Info>
-**Important**: When creating providers that represent the same OAuth service but with different authentication methods (like Google OAuth vs Google One Tap), they should be normalized to the same provider name in the database.
+    **Important**: When creating providers that represent the same OAuth service
+    but with different authentication methods (like Google OAuth vs Google One
+    Tap), they should be normalized to the same provider name in the database.
 </Info>
 
 OpnForm handles provider normalization through the `getDatabaseProvider()` method in the enum:
@@ -694,14 +716,16 @@ public function getDatabaseProvider(): string
 ```
 
 This ensures that:
-- Users can't connect multiple "Google" accounts (regular OAuth + One Tap)
-- Provider scopes and permissions are properly merged
-- The same OAuth provider record is updated regardless of authentication method
-- Integration handlers work consistently with the normalized provider name
+
+-   Users can't connect multiple "Google" accounts (regular OAuth + One Tap)
+-   Provider scopes and permissions are properly merged
+-   The same OAuth provider record is updated regardless of authentication method
+-   Integration handlers work consistently with the normalized provider name
 
 When adding new providers, consider if they should be normalized:
-- **Same OAuth service, different auth methods**: Normalize (like Google/GoogleOneTap)
-- **Different OAuth services**: Don't normalize (like Google/GitHub)
+
+-   **Same OAuth service, different auth methods**: Normalize (like Google/GoogleOneTap)
+-   **Different OAuth services**: Don't normalize (like Google/GitHub)
 
 ## Widget-Based Providers
 
@@ -718,11 +742,11 @@ use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 
 class OAuthWidgetProviderDriver implements WidgetOAuthDriver
 {
-    public function verifyWidgetData(array $data): bool
-    {
-        // Implement cryptographic verification of widget data
-        // e.g., HMAC signature verification
-        
+public function verifyWidgetData(array $data): bool
+{
+// Implement cryptographic verification of widget data
+// e.g., HMAC signature verification
+
         $expectedHash = hash_hmac('sha256', $dataString, $secretKey);
         return hash_equals($expectedHash, $data['hash']);
     }
@@ -749,8 +773,10 @@ class OAuthWidgetProviderDriver implements WidgetOAuthDriver
     {
         return ''; // Not used for widget auth
     }
+
 }
-```
+
+````
 </Tab>
 
 <Tab title="Frontend Widget Component">
@@ -758,7 +784,7 @@ class OAuthWidgetProviderDriver implements WidgetOAuthDriver
 <!-- client/components/settings/widgets/WidgetProviderWidget.vue -->
 <template>
   <div class="widget-provider-container">
-    <div 
+    <div
       id="widget-provider-login"
       @click="initializeWidget"
     >
@@ -773,7 +799,7 @@ const emit = defineEmits(['auth-data'])
 const initializeWidget = () => {
   // Initialize provider widget
   // Handle widget callback and emit auth data
-  
+
   window.WidgetProvider.init({
     onAuth: (authData) => {
       emit('auth-data', authData)
@@ -781,7 +807,8 @@ const initializeWidget = () => {
   })
 }
 </script>
-```
+````
+
 </Tab>
 
 <Tab title="Frontend Service Config">
@@ -872,15 +899,15 @@ public function callback(string $provider)
 </Accordion>
 
 <Accordion title="OAuth redirect URL mismatch">
-- Verify `redirect` URL in `config/services.php` matches provider configuration
-- Check that `APP_URL` environment variable is correct
-- Ensure provider OAuth app is configured with correct callback URL
+    - Verify `redirect` URL in `config/services.php` matches provider
+    configuration - Check that `APP_URL` environment variable is correct -
+    Ensure provider OAuth app is configured with correct callback URL
 </Accordion>
 
 <Accordion title="Scopes not working correctly">
-- Check `getScopesForIntent()` method returns correct scopes
-- Verify provider OAuth app has necessary permissions enabled
-- Test with minimal scopes first, then add additional ones
+    - Check `getScopesForIntent()` method returns correct scopes - Verify
+    provider OAuth app has necessary permissions enabled - Test with minimal
+    scopes first, then add additional ones
 </Accordion>
 
 <Accordion title="Widget authentication failing">
@@ -894,24 +921,21 @@ public function callback(string $provider)
 ## Best Practices
 
 <Card title="Security" icon="shield-check">
-- Always verify widget data signatures cryptographically
-- Use minimal scopes for authentication flows
-- Validate all OAuth provider responses
-- Implement proper error handling and logging
+    - Always verify widget data signatures cryptographically - Use minimal
+    scopes for authentication flows - Validate all OAuth provider responses -
+    Implement proper error handling and logging
 </Card>
 
 <Card title="User Experience" icon="heart">
-- Provide clear loading states during OAuth flows
-- Handle popup blockers gracefully
-- Show appropriate error messages for OAuth failures
-- Auto-close OAuth windows when appropriate
+    - Provide clear loading states during OAuth flows - Handle popup blockers
+    gracefully - Show appropriate error messages for OAuth failures - Auto-close
+    OAuth windows when appropriate
 </Card>
 
 <Card title="Performance" icon="bolt">
-- Cache OAuth provider configurations
-- Use TanStack Query for efficient data fetching
-- Implement proper cleanup for event listeners
-- Minimize API calls during OAuth flows
+    - Cache OAuth provider configurations - Use TanStack Query for efficient
+    data fetching - Implement proper cleanup for event listeners - Minimize API
+    calls during OAuth flows
 </Card>
 
 This comprehensive architecture allows OpnForm to support any OAuth provider with a consistent, maintainable codebase that handles all the complexities of modern OAuth flows.
