@@ -2,15 +2,17 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
-use App\Integrations\OAuth\Drivers\Traits\SupportsEmailRestrictions;
+use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use App\Integrations\OAuth\Drivers\Contracts\SupportsEmailRestrictions as SupportsEmailRestrictionsContract;
+use App\Integrations\OAuth\Drivers\Traits\HasEmailRestrictions;
 use Google\Service\Sheets;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 
-class OAuthGoogleDriver extends BaseOAuthDriver
+class OAuthGoogleDriver implements OAuthDriver, SupportsEmailRestrictionsContract
 {
-    use SupportsEmailRestrictions;
+    use HasEmailRestrictions;
 
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
@@ -24,24 +26,19 @@ class OAuthGoogleDriver extends BaseOAuthDriver
 
     public function getRedirectUrl(): string
     {
-        $baseParameters = [
+        $parameters = [
             'access_type' => 'offline',
             'prompt' => 'consent select_account'
         ];
 
         // Merge email restriction parameters from trait
-        $emailParameters = $this->getEmailRestrictionParameters();
-
-        // Merge additional parameters from base class
-        $additionalParameters = $this->getAdditionalParameters();
-
-        $allParameters = array_merge($baseParameters, $emailParameters, $additionalParameters);
+        $parameters = array_merge($parameters, $this->getEmailRestrictionParameters());
 
         return $this->provider
             ->scopes($this->scopes ?? [])
             ->stateless()
             ->redirectUrl($this->redirectUrl ?? config('services.google.redirect'))
-            ->with($allParameters)
+            ->with($parameters)
             ->redirect()
             ->getTargetUrl();
     }

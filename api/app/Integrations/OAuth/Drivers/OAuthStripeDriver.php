@@ -2,13 +2,14 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
+use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use SocialiteProviders\Stripe\Provider as StripeProvider;
 
-class OAuthStripeDriver extends BaseOAuthDriver
+class OAuthStripeDriver implements OAuthDriver
 {
     private ?string $redirectUrl = null;
     private ?array $scopes = [];

@@ -4,6 +4,7 @@ namespace App\Service\OAuth;
 
 use App\Models\UserInvite;
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use App\Integrations\OAuth\Drivers\Contracts\SupportsEmailRestrictions;
 
 class OAuthInviteService
 {
@@ -36,13 +37,13 @@ class OAuthInviteService
     }
 
     /**
-     * Configure driver with email restrictions (generic approach)
+     * Configure driver with email restrictions (capability-based approach)
      */
     public function configureDriverEmailRestrictions(
         OAuthDriver $driver,
         ?string $invitedEmail = null
     ): void {
-        if (!$invitedEmail || !$driver->supportsEmailRestrictions()) {
+        if (!$invitedEmail || !($driver instanceof SupportsEmailRestrictions)) {
             return;
         }
 
