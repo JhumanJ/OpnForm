@@ -3,6 +3,7 @@
 namespace App\Integrations\OAuth;
 
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
+use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use App\Integrations\OAuth\Drivers\OAuthGoogleDriver;
 use App\Integrations\OAuth\Drivers\OAuthGoogleOneTapDriver;
 use App\Integrations\OAuth\Drivers\OAuthStripeDriver;
@@ -16,7 +17,7 @@ enum OAuthProviderService: string
     case Stripe = 'stripe';
     case Telegram = 'telegram';
 
-    public function getDriver(): OAuthDriver
+    public function getDriver(): OAuthDriver|WidgetOAuthDriver
     {
         return match ($this) {
             self::Google =>  new OAuthGoogleDriver(),

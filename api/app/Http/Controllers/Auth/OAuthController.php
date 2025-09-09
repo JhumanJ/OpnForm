@@ -11,7 +11,8 @@ class OAuthController extends Controller
 {
     public function __construct(
         private OAuthFlowOrchestrator $flowOrchestrator
-    ) {}
+    ) {
+    }
 
     /**
      * Redirect the user to the provider authentication page.
@@ -29,7 +30,7 @@ class OAuthController extends Controller
     /**
      * Handle the OAuth callback from the provider.
      */
-    public function callback(string $provider, Request $request)
+    public function callback(Request $request, string $provider)
     {
         $params = $request->all();
         $result = $this->flowOrchestrator->processCallback($provider, $params);
@@ -40,7 +41,7 @@ class OAuthController extends Controller
     /**
      * Handle widget-based OAuth callback.
      */
-    public function handleWidgetCallback(string $service, Request $request)
+    public function handleWidgetCallback(Request $request, string $service)
     {
         $request->validate([
             'intent' => 'required|in:auth,integration',

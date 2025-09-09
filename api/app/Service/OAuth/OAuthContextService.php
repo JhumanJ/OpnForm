@@ -56,6 +56,15 @@ class OAuthContextService
     }
 
     /**
+     * Get invite token from context if present
+     */
+    public function getInviteToken(): ?string
+    {
+        $context = $this->getContext();
+        return $context['invite_token'] ?? null;
+    }
+
+    /**
      * Get UTM data from context
      */
     public function getUtmData(): ?array

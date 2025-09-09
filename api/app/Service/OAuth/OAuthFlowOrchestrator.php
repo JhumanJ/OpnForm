@@ -23,7 +23,8 @@ class OAuthFlowOrchestrator
         private OAuthUserDataService $userDataService,
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {}
+    ) {
+    }
 
     /**
      * Process OAuth redirect request
@@ -48,6 +49,7 @@ class OAuthFlowOrchestrator
             'intent' => $intent,
             'utm_data' => $params['utm_data'] ?? null,
             'invited_email' => $invitedEmail,
+            'invite_token' => $inviteToken,
             'intention' => $params['intention'] ?? null,
             'autoClose' => $params['autoClose'] ?? false,
         ]);
@@ -80,7 +82,7 @@ class OAuthFlowOrchestrator
         // Get intent and context
         $intent = $this->contextService->getIntent();
         $invitedEmail = $this->contextService->getInvitedEmail();
-        $inviteToken = $params['invite_token'] ?? null;
+        $inviteToken = $params['invite_token'] ?? $this->contextService->getInviteToken();
 
         return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
     }

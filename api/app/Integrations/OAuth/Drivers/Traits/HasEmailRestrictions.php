@@ -3,7 +3,7 @@
 namespace App\Integrations\OAuth\Drivers\Traits;
 
 /**
- * Classes using this trait should also implement 
+ * Classes using this trait should also implement
  * App\Integrations\OAuth\Drivers\Contracts\SupportsEmailRestrictions
  */
 trait HasEmailRestrictions

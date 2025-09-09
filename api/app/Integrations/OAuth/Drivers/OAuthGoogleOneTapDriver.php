@@ -9,7 +9,6 @@ use Laravel\Socialite\Contracts\User;
 
 class OAuthGoogleOneTapDriver implements WidgetOAuthDriver
 {
-
     public function getRedirectUrl(): string
     {
         throw new \Exception('Google One Tap does not use redirect URLs');
