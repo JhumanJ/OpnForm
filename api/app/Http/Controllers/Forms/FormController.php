@@ -42,14 +42,23 @@ class FormController extends Controller
             ->orderByDesc('updated_at')
             ->paginate(10);
 
-        return FormResource::collection($forms);
+        $formCollection = FormResource::collection($forms);
+        $formCollection->each(function ($formResource) {
+            $formResource->setCleanings(
+                $this->formCleaner->processForm(request(), $formResource->resource)->simulateCleaning($formResource->resource->workspace)->getPerformedCleanings()
+            );
+        });
+
+        return $formCollection;
     }
 
     public function show(Form $form)
     {
         $this->authorize('view', $form);
 
-        return new FormResource($form);
+        return (new FormResource($form))->setCleanings(
+            $this->formCleaner->processForm(request(), $form)->simulateCleaning($form->workspace)->getPerformedCleanings()
+        );
     }
 
     /**
