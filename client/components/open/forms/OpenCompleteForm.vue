@@ -140,26 +140,24 @@
               :form="form"
               :form-data="submittedData"
             />
-            <open-form-button
-              v-if="form.re_fillable"
-              :form="form"
-              class="my-4"
-              @click="restart"
-            >
-              {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
-            </open-form-button>
-            <p
-              v-if="form.editable_submissions && submissionId"
-              class="mt-5"
-            >
-              <a
-                target="_parent"
-                :href="form.share_url+'?submission_id='+submissionId"
-                class="text-blue-500 hover:underline"
+            <div class="flex w-full gap-2 items-center mt-4">
+
+                          <open-form-button
+                v-if="form.re_fillable"
+                :form="form"
+                icon="i-lucide-rotate-ccw"
+                @click="restart"
               >
-                {{ form.editable_submissions_button_text }}
-              </a>
-            </p>
+                {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
+              </open-form-button>
+            <open-form-button
+              v-if="form.editable_submissions && submissionId"
+              :form="form"
+              @click="editSubmission"
+            >
+              {{ form.editable_submissions_button_text }}
+            </open-form-button>
+            </div>
             <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
         </v-transition>
@@ -403,6 +401,11 @@ const restart = () => {
     submissionId.value = null
     emit('restarted', true)
   })
+}
+
+const editSubmission = () => {
+  const editUrl = props.form.share_url + '?submission_id=' + submissionId.value
+  window.parent.location.href = editUrl
 }
 
 const passwordEntered = () => {
