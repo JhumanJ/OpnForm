@@ -43,7 +43,6 @@
     :form="form"
     :submission="submission"
     @close="showEditSubmissionModal = false"
-    @updated="(submission) => $emit('updated', submission)"
   />
 
   <ViewSubmissionModal
@@ -59,7 +58,7 @@
 import EditSubmissionModal from "./EditSubmissionModal.vue"
 import ViewSubmissionModal from "./ViewSubmissionModal.vue"
 import TrackClick from "~/components/global/TrackClick.vue"
-import { formsApi } from "~/api/forms"
+import { useFormSubmissions } from "~/composables/query/forms/useFormSubmissions"
 
 const props = defineProps({
   form: {
@@ -76,12 +75,14 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["updated", "deleted"])
-
 const alert = useAlert()
 const route = useRoute()
 const showEditSubmissionModal = ref(false)
 const showViewSubmissionModal = ref(false)
+
+// Use form submissions composable for cache management
+const { deleteSubmission } = useFormSubmissions()
+const deleteSubmissionMutation = deleteSubmission()
 
 const submission = computed(() => props.data.find(s => s.id === props.submissionId))
 
@@ -100,17 +101,23 @@ const onDeleteClick = () => {
 }
 
 const deleteRecord = () => {
-  formsApi.submissions.delete(props.form.id, submission.value.id)
-    .then((data) => {
-      if (data.type === "success") {
-        emit("deleted", submission.value)
-        alert.success(data.message)
-      } else {
-        alert.error("Something went wrong!")
+  deleteSubmissionMutation.mutate(
+    { 
+      formId: props.form.id, 
+      submissionId: submission.value.id 
+    },
+    {
+      onSuccess: (data) => {
+        if (data.type === "success") {
+          alert.success(data.message)
+        } else {
+          alert.error("Something went wrong!")
+        }
+      },
+      onError: (error) => {
+        alert.error(error.data?.message || "Something went wrong!")
       }
-    })
-    .catch((error) => {
-      alert.error(error.data.message)
-    })
+    }
+  )
 }
 </script>

@@ -39,7 +39,7 @@
         color="error"
         variant="outline"
         :label="`Delete (${selectedIds.length})`"
-        :loading="multiDeleteLoading"
+        :loading="deleteMultiSubmissionsMutation.isPending.value"
         @click="onDeleteMultiClick"
       />
 
@@ -152,8 +152,6 @@
             :form="form"
             :submission-id="row.original.id"
             :data="sortedData"
-            @deleted="(submission) => $emit('deleted', submission)"
-            @updated="(submission) => $emit('updated', submission)"
           />
         </div>
       </template>
@@ -179,7 +177,7 @@ import OpenSubmissionStatus from "./components/OpenSubmissionStatus.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
-import { formsApi } from "~/api/forms"
+import { useFormSubmissions } from "~/composables/query/forms/useFormSubmissions"
 
 const props = defineProps({
   data: {
@@ -200,7 +198,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["updated", "deleted", "multi-delete", "search", "filter", "page-change"])
+const emit = defineEmits(["search", "filter", "page-change"])
 
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
@@ -252,6 +250,10 @@ const debouncedSearch = refDebounced(searchInput, 300)
 const statusFilter = ref('all')
 const alert = useAlert()
 
+// Use form submissions composable for multi-delete
+const { deleteMultiSubmissions } = useFormSubmissions()
+const deleteMultiSubmissionsMutation = deleteMultiSubmissions()
+
 // Watch and emit instead of filtering locally:
 watch(debouncedSearch, (newSearch) => {
   emit('search', newSearch)
@@ -263,7 +265,6 @@ watch(statusFilter, (newStatus) => {
 
 // Table row selection
 const rowSelection = ref({})
-const multiDeleteLoading = ref(false)
 const selectedIds = computed(() => {
   return table.value?.tableApi?.getFilteredSelectedRowModel()?.rows.map(row => row.original.id) || []
 })
@@ -274,23 +275,26 @@ const onDeleteMultiClick = () => {
   alert.confirm(`Do you really want to delete selected ${selectedIds.value.length} record${selectedIds.value.length > 1 ? 's' : ''}?`, deleteMultiRecord)
 }
 const deleteMultiRecord = () => {
-  multiDeleteLoading.value = true
-  formsApi.submissions.deleteMulti(props.form.id, selectedIds.value)
-    .then((data) => {
-      multiDeleteLoading.value = false
-      clearSelection()
-      if (data.type === "success") {
-        emit('multi-delete', selectedIds.value)
-        alert.success(data.message)
-      } else {
-        alert.error("Something went wrong!")
+  deleteMultiSubmissionsMutation.mutate(
+    { 
+      formId: props.form.id, 
+      submissionIds: selectedIds.value 
+    },
+    {
+      onSuccess: (data) => {
+        clearSelection()
+        if (data.type === "success") {
+          alert.success(data.message)
+        } else {
+          alert.error("Something went wrong!")
+        }
+      },
+      onError: (error) => {
+        clearSelection()
+        alert.error(error.data?.message || "Something went wrong!")
       }
-    })
-    .catch((error) => {
-      multiDeleteLoading.value = false
-      clearSelection()
-      alert.error(error.data.message)
-    })
+    }
+  )
 }
 
 

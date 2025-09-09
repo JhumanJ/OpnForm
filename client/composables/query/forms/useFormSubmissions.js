@@ -144,27 +144,22 @@ export function useFormSubmissions() {
     return useMutation({
       mutationFn: ({ formId, submissionId, data }) => formsApi.submissions.update(formId, submissionId, data),
       onSuccess: (updatedSubmission, { formId, submissionId }) => {
-      // Update submission cache
-      queryClient.setQueryData(['submissions', submissionId], updatedSubmission)
-      
-      // Update in submissions list
-      queryClient.setQueryData(['forms', formId, 'submissions'], (old) => {
-        if (!old) return old
-        if (Array.isArray(old)) {
-          return old.map(submission => 
-            submission.id === submissionId ? { ...submission, ...updatedSubmission } : submission
-          )
-        }
-        if (old.data) {
+      // Update in paginated submissions cache (main cache used by UI)
+      queryClient.setQueriesData(
+        { queryKey: ['forms', formId, 'submissions', 'paginated'] },
+        (oldData) => {
+          if (!oldData?.data) return oldData
+          
           return {
-            ...old,
-            data: old.data.map(submission => 
-              submission.id === submissionId ? { ...submission, ...updatedSubmission } : submission
+            ...oldData,
+            data: oldData.data.map(record => 
+              record.data.id === submissionId 
+                ? { ...record, data: { ...record.data, ...updatedSubmission.data?.data } }
+                : record
             )
           }
         }
-        return old
-      })
+      )
       },
       ...options
     })
@@ -174,30 +169,48 @@ export function useFormSubmissions() {
     return useMutation({
       mutationFn: ({ formId, submissionId }) => formsApi.submissions.delete(formId, submissionId),
       onSuccess: (_, { formId, submissionId }) => {
-      // Remove from submission cache
-      queryClient.removeQueries({ queryKey: ['submissions', submissionId] })
-      
-      // Remove from submissions list
-      queryClient.setQueryData(['forms', formId, 'submissions'], (old) => {
-        if (!old) return old
-        if (Array.isArray(old)) {
-          return old.filter(submission => submission.id !== submissionId)
-        }
-        if (old.data) {
+      // Remove from paginated submissions cache (main cache used by UI)
+      queryClient.setQueriesData(
+        { queryKey: ['forms', formId, 'submissions', 'paginated'] },
+        (oldData) => {
+          if (!oldData?.data) return oldData
+          
           return {
-            ...old,
-            data: old.data.filter(submission => submission.id !== submissionId)
+            ...oldData,
+            data: oldData.data.filter(record => 
+              record.data.id !== submissionId
+            )
           }
         }
-        return old
-      })
-      
-      // Invalidate stats
-      queryClient.invalidateQueries(['forms', formId, 'stats'])
+      )
       },
       ...options
     })
   }
+
+  const deleteMultiSubmissions = (options = {}) => {
+    return useMutation({
+      mutationFn: ({ formId, submissionIds }) => formsApi.submissions.deleteMulti(formId, submissionIds),
+      onSuccess: (_, { formId, submissionIds }) => {
+      // Remove multiple submissions from paginated submissions cache
+      queryClient.setQueriesData(
+        { queryKey: ['forms', formId, 'submissions', 'paginated'] },
+        (oldData) => {
+          if (!oldData?.data) return oldData
+          
+          return {
+            ...oldData,
+            data: oldData.data.filter(record => 
+              !submissionIds.includes(record.data.id)
+            )
+          }
+        }
+      )
+      },
+      ...options
+    })
+  }
+  
 
   const exportSubmissions = (options = {}) => {
     return useMutation({
@@ -217,6 +230,7 @@ export function useFormSubmissions() {
     submissionDetail,
     updateSubmission,
     deleteSubmission,
+    deleteMultiSubmissions,
     exportSubmissions,
     invalidateSubmissions,
   }

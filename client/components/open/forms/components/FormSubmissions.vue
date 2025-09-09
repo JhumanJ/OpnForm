@@ -11,9 +11,6 @@
         @search="handleSearch"
         @filter="handleFilter"
         @page-change="handlePageChange"
-        @deleted="onDeleteRecord"
-        @updated="onUpdateRecord"
-        @multi-delete="onDeleteMultiRecord"
       />
 
       <!-- Submissions Table Skeleton -->
@@ -43,7 +40,6 @@
 </template>
 
 <script setup>
-import { useQueryClient } from '@tanstack/vue-query'
 import OpenTable from '~/components/open/tables/OpenTable.vue'
 import { useFormSubmissions } from '~/composables/query/forms/useFormSubmissions'
 
@@ -51,7 +47,6 @@ const props = defineProps({
   form: { type: Object, required: true },
 })
 
-const queryClient = useQueryClient()
 const table = ref(null)
 
 // Replace all the recordStore logic with this:
@@ -81,49 +76,4 @@ const handlePageChange = (page) => {
   setPage(page)
 }
 
-const onUpdateRecord = (updatedSubmission) => {
-  // Update the specific record in cache instead of refetching
-  queryClient.setQueriesData(
-    { queryKey: ['forms', props.form.id, 'submissions', 'paginated'] },
-    (oldData) => {
-      if (!oldData?.data) return oldData
-      
-      return {
-        ...oldData,
-        data: oldData.data.map(record => 
-          record.data.id === updatedSubmission.id 
-            ? { ...record, data: { ...record.data, ...updatedSubmission } }
-            : record
-        )
-      }
-    }
-  )
-}
-
-// Common function to remove submissions from cache
-const removeSubmissionsFromCache = (idsToRemove) => {
-  queryClient.setQueriesData(
-    { queryKey: ['forms', props.form.id, 'submissions', 'paginated'] },
-    (oldData) => {
-      if (!oldData?.data) return oldData
-      
-      return {
-        ...oldData,
-        data: oldData.data.filter(record => 
-          !idsToRemove.includes(record.data.id)
-        )
-      }
-    }
-  )
-}
-
-const onDeleteRecord = (deletedSubmission) => {
-  // Remove the specific record from cache instead of refetching
-  removeSubmissionsFromCache([deletedSubmission.id])
-}
-
-const onDeleteMultiRecord = (submissionIds) => {
-  // Remove multiple records from cache instead of refetching
-  removeSubmissionsFromCache(submissionIds)
-}
 </script>
