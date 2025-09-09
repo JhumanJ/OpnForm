@@ -12,7 +12,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + [theme.SelectInput.dropdown, theme.SelectInput.borderRadius].join(' ')
+        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + [theme.SelectInput.borderRadius].join(' ')
       }"
     >
       <template #anchor>
