@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\OAuthRedirectRequest;
 use App\Service\OAuth\OAuthFlowOrchestrator;
 use Illuminate\Http\Request;
 
@@ -10,25 +11,19 @@ class OAuthController extends Controller
 {
     public function __construct(
         private OAuthFlowOrchestrator $flowOrchestrator
-    ) {
-    }
+    ) {}
 
     /**
      * Redirect the user to the provider authentication page.
      */
-    public function redirect(Request $request, string $provider)
+    public function redirect(OAuthRedirectRequest $request, string $provider)
     {
-        $validated = $request->validate([
-            'intent' => 'required|in:auth,integration',
-            'invite_token' => 'sometimes|string',
-            'intention' => 'sometimes|string',
-            'autoClose' => 'sometimes|boolean',
-            'utm_data' => 'sometimes|array'
-        ]);
-
-        $result = $this->flowOrchestrator->processRedirect($provider, $validated);
-
-        return response()->json($result);
+        return response()->json(
+            $this->flowOrchestrator->processRedirect(
+                $provider,
+                $request->validated()
+            )
+        );
     }
 
     /**
