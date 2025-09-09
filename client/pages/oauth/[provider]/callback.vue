@@ -46,6 +46,12 @@ const handleCallback = async () => {
       code: route.query.code,
       utm_data: $utm.value
     }
+    
+    // Get state token from URL query parameters (OAuth provider includes it)
+    if (route.query.state) {
+      payloadData.state = route.query.state
+    }
+    
     // Get invite token from localStorage if it was stored during OAuth initiation
     const inviteToken = localStorage.getItem('oauth_invite_token')
     if (inviteToken) {

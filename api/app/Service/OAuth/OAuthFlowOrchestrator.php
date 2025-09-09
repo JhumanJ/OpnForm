@@ -23,8 +23,7 @@ class OAuthFlowOrchestrator
         private OAuthUserDataService $userDataService,
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {
-    }
+    ) {}
 
     /**
      * Process OAuth redirect request
@@ -44,8 +43,8 @@ class OAuthFlowOrchestrator
             $invitedEmail = $this->inviteService->getInvitedEmail($inviteToken);
         }
 
-        // Store unified context
-        $this->contextService->storeContext([
+        // Store context and get state token
+        $stateToken = $this->contextService->storeContext([
             'intent' => $intent,
             'utm_data' => $params['utm_data'] ?? null,
             'invited_email' => $invitedEmail,
@@ -66,7 +65,13 @@ class OAuthFlowOrchestrator
             $driver->setScopes($scopes);
         }
 
-        return ['url' => $driver->getRedirectUrl()];
+        // Set state parameter for OAuth flow
+        $driver->setState($stateToken);
+
+        return [
+            'url' => $driver->getRedirectUrl(),
+            'state' => $stateToken
+        ];
     }
 
     /**
@@ -79,10 +84,20 @@ class OAuthFlowOrchestrator
         // Get user data from OAuth provider
         $userData = $this->userDataService->extractFromRedirect($providerService);
 
-        // Get intent and context
-        $intent = $this->contextService->getIntent();
-        $invitedEmail = $this->contextService->getInvitedEmail();
-        $inviteToken = $params['invite_token'] ?? $this->contextService->getInviteToken();
+        // Get context using state token from OAuth callback
+        $stateToken = $params['state'] ?? null;
+        $context = $this->contextService->getContext($stateToken);
+
+        if (!$context) {
+            abort(419, 'OAuth context expired or invalid state');
+        }
+
+        $intent = $context['intent'];
+        $invitedEmail = $context['invited_email'] ?? null;
+        $inviteToken = $params['invite_token'] ?? $context['invite_token'] ?? null;
+
+        // Clear the context after use
+        $this->contextService->clearContext($stateToken);
 
         return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
     }

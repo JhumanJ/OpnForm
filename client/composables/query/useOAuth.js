@@ -113,6 +113,7 @@ export function useOAuth() {
         if (additionalData.invite_token) {
           localStorage.setItem('oauth_invite_token', additionalData.invite_token)
         }
+        
         window.open(data.url, '_blank')
       })
       .catch((error) => {

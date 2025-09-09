@@ -10,28 +10,45 @@ class OAuthContextService
     private const CACHE_TTL_MINUTES = 5;
 
     /**
-     * Store OAuth context (automatically determines appropriate key)
+     * Store OAuth context with a unique state token
      */
-    public function storeContext(array $context): void
+    public function storeContext(array $context): string
     {
-        $key = $this->getContextKey();
+        // Generate a unique state token for this OAuth flow
+        $stateToken = bin2hex(random_bytes(16));
+        $key = "oauth-context:state:" . $stateToken;
+
         Cache::put($key, $context, now()->addMinutes(self::CACHE_TTL_MINUTES));
+
+        return $stateToken;
     }
 
     /**
-     * Get context from cache
+     * Get context from cache using state token
      */
-    public function getContext(): ?array
+    public function getContext(?string $stateToken = null): ?array
     {
-        return Cache::get($this->getContextKey());
+        $stateToken = $stateToken ?? request()->input('state');
+
+        if (!$stateToken) {
+            return null;
+        }
+
+        $key = "oauth-context:state:" . $stateToken;
+        return Cache::get($key);
     }
 
     /**
      * Clear context after use
      */
-    public function clearContext(): void
+    public function clearContext(?string $stateToken = null): void
     {
-        Cache::forget($this->getContextKey());
+        $stateToken = $stateToken ?? request()->input('state');
+
+        if ($stateToken) {
+            $key = "oauth-context:state:" . $stateToken;
+            Cache::forget($key);
+        }
     }
 
     /**
@@ -71,19 +88,5 @@ class OAuthContextService
     {
         $context = $this->getContext();
         return $context['utm_data'] ?? null;
-    }
-
-    /**
-     * Get appropriate cache key based on authentication state
-     */
-    private function getContextKey(): string
-    {
-        if (Auth::check()) {
-            // For authenticated users (integration flows)
-            return "oauth-context:" . Auth::id();
-        }
-
-        // For guest users (auth flows)
-        return "oauth-context:auth:" . session()->getId();
     }
 }

@@ -27,6 +27,12 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
         return $this;
     }
 
+    public function setState(string $state): self
+    {
+        // Widget-based auth doesn't use state, but interface requires it
+        return $this;
+    }
+
     public function getUser(): User
     {
         throw new \Exception('Use getUserFromWidgetData for Widget based authentication');

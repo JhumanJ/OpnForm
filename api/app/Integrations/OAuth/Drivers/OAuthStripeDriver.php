@@ -13,6 +13,7 @@ class OAuthStripeDriver implements OAuthDriver
 {
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
+    private ?string $state = null;
 
     protected StripeProvider $provider;
 
@@ -30,6 +31,11 @@ class OAuthStripeDriver implements OAuthDriver
             'stripe_user[url]' => config('app.url'),
             'stripe_user[business_name]' => $user->name,
         ];
+
+        // Add state parameter if provided
+        if ($this->state) {
+            $params['state'] = $this->state;
+        }
 
         Log::info('Initiating Stripe Connect flow', [
             'user_id' => $user->id
@@ -66,6 +72,12 @@ class OAuthStripeDriver implements OAuthDriver
     public function setScopes(array $scopes): self
     {
         $this->scopes = $scopes;
+        return $this;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
         return $this;
     }
 

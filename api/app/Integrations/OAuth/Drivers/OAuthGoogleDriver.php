@@ -5,7 +5,6 @@ namespace App\Integrations\OAuth\Drivers;
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use App\Integrations\OAuth\Drivers\Contracts\SupportsEmailRestrictions as SupportsEmailRestrictionsContract;
 use App\Integrations\OAuth\Drivers\Traits\HasEmailRestrictions;
-use Google\Service\Sheets;
 use Laravel\Socialite\Contracts\User;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
@@ -16,6 +15,7 @@ class OAuthGoogleDriver implements OAuthDriver, SupportsEmailRestrictionsContrac
 
     private ?string $redirectUrl = null;
     private ?array $scopes = [];
+    private ?string $state = null;
 
     protected GoogleProvider $provider;
 
@@ -30,6 +30,11 @@ class OAuthGoogleDriver implements OAuthDriver, SupportsEmailRestrictionsContrac
             'access_type' => 'offline',
             'prompt' => 'consent select_account'
         ];
+
+        // Add state parameter if provided
+        if ($this->state) {
+            $parameters['state'] = $this->state;
+        }
 
         // Merge email restriction parameters from trait
         $parameters = array_merge($parameters, $this->getEmailRestrictionParameters());
@@ -68,11 +73,17 @@ class OAuthGoogleDriver implements OAuthDriver, SupportsEmailRestrictionsContrac
         return $this;
     }
 
+    public function setState(string $state): self
+    {
+        $this->state = $state;
+        return $this;
+    }
+
     public function getScopesForIntent(string $intent): array
     {
         return match ($intent) {
             'auth' => ['openid', 'profile', 'email'],
-            'integration' => ['openid', 'profile', 'email', Sheets::DRIVE_FILE],
+            'integration' => ['openid', 'profile', 'email', 'https://www.googleapis.com/auth/drive.file'],
             default => ['openid', 'profile', 'email'],
         };
     }
