@@ -55,7 +55,7 @@
           sideOffset: 8 
         }"
         :ui="{ 
-          content: 'w-[650px] overflow-auto' 
+          content: 'w-[650px] overflow-hidden' 
         }"
         arrow
       >
@@ -72,16 +72,18 @@
         <template #content>
             <ScrollableContainer
               ref="scrollableContainer"
-              direction="horizontal"
-              max-width-class="max-w-[650px] p-4"
+              direction="both"
+              max-width-class="max-w-[650px]"
+              max-height-class="max-h-96"
               :fade-class="'from-white via-white/80 to-transparent'"
-              class="rounded-lg"
               left-fade-width="w-4"
               right-fade-width="w-4"
+              top-fade-height="h-4"
+              bottom-fade-height="h-4"
               :scroll-tolerance="5"
             >
               <condition-editor
-                class="w-full"
+                class="w-full p-4"
                 ref="filter-editor"
                 v-model="logic.conditions"
                 :form="form"
